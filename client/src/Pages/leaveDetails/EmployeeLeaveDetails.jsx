@@ -23,7 +23,7 @@ import {
   FullWidthInput,
   TwoColumnRow,
 TwoColumnRows
-} from "./EmployeeLeaveDeails.Styles";
+} from "./EmployeeLeaveDetails.Styles";
 
 const EmployeeLeaveForm = () => {
   return (

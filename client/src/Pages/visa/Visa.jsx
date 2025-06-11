@@ -20,7 +20,7 @@
  ActionArea,
    RightSection,
    TitleSection
- } from "./EmployeeList.styles";
+ } from "../employee/EmployeeList.styles";
  import { FaInfoCircle, FaTrash,FaPlus } from "react-icons/fa";
  import { FiUserPlus } from "react-icons/fi";
  import { LuArrowLeft } from "react-icons/lu";

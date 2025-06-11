@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #f9fbe9;
+  background: #FBFEF3;
   font-family: 'Segoe UI', sans-serif;
 `;
 
@@ -23,10 +23,27 @@ export const Header = styled.div`
 `;
 
 export const RoleInfo = styled.div`
-  background: #fff;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+   display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #fff;
+  font-size: 0.95rem;
+  color: #333;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+
+  span {
+    font-weight: 500;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 
 export const Stepper = styled.div`
@@ -50,13 +67,14 @@ export const SectionTitle = styled.h4`
   margin-top: 2rem;
   margin-bottom: 1rem;
   color: #333;
+  background:white;
 `;
 
 export const FormSection = styled.div`
-  background: #fff;
+ 
   border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+
+
 `;
 
 export const Row = styled.div`
@@ -116,4 +134,21 @@ export const Button = styled.button`
   &:hover {
     background: ${({ secondary }) => (secondary ? '#aab3d0' : '#002244')};
   }
+`;
+export const Title = styled.h2`
+  font-size: 24px;
+  margin: 0;
+  margin-left:10px;
+`;
+
+export const Subtitle = styled.p`
+  font-size: 14px;
+  color: #555;
+  margin-left:10px;
+  margin-top:-1px;
+`;
+export const Hr = styled.hr`
+  border: none;
+  border-top: 1px solid #ccc;
+
 `;

@@ -2,49 +2,65 @@
 import React from "react";
 import {
   Container,
-  Header,
+  Title,
   TitleSection,
-  RoleBadge,
-  TopRightBox,
-  TabBar,
-  Tab,
+  Subtitle,
+  HeaderSection,
+  HRManager,
+  TopBar,
   SearchInput,
   Table,
   TableHeader,
   TableRow,
   TableCell,
   EmployeeImg,
-  TableTitle
-} from "./Attendance.Style";
-
+  TableTitle,
+  ActionArea,
+  DateInput ,
+  Tab,
+  Tabs
+} from "./OnLeave.Style";
+// import{FaPlus} from 'react-icons/fa';
+import { IoEyeOutline } from "react-icons/io5";
 const mockData = new Array(10).fill({
   name: "Employee name",
   id: "12545166",
   date: "12/12/2025",
- type:"Paid Leave",
+  type: "Paid Leave",
 });
 
 export default function EmployeeAttendance() {
   return (
     <Container>
-      <Header>
-        <TitleSection>
-          <h2>👨‍💼 Employee</h2>
-          <p>Manage your Employee</p>
-        </TitleSection>
-        <TopRightBox>
-          <RoleBadge>HR Manager</RoleBadge>
-          <input type="date" />
-        </TopRightBox>
-      </Header>
+      <TopBar>
+        <div />
+        <HRManager>
+          <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
+          <span>HR Manager</span>
+        </HRManager>
+      </TopBar>
 
-      <TabBar>
-        <Tab>Employee list</Tab>
+      <HeaderSection>
+        <TitleSection>
+          {/* <LuArrowLeft style={{width:"30px", height:30}} /> */}
+          <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
+          <div>
+            <Title>Employee</Title>
+            <Subtitle>Manage your Employee.</Subtitle>
+          </div>
+        </TitleSection>
+        <ActionArea>
+          <DateInput  type="date" />
+          <SearchInput type="text" placeholder="Search by Department name" />
+        </ActionArea>
+
+      </HeaderSection>
+      <Tabs>
+        <Tab active>Employee list</Tab>
         <Tab>Employee leave request</Tab>
-        <Tab active>Employee Attendance</Tab>
+        <Tab>Employee Attendance</Tab>
         <Tab>Employee Visa</Tab>
-        <SearchInput placeholder="Search by employee name or ID" />
-      </TabBar>
+      </Tabs>
 
       <TableTitle>12 March 2025</TableTitle>
 
@@ -59,7 +75,8 @@ export default function EmployeeAttendance() {
             <TableHeader>Employee ID</TableHeader>
             <TableHeader> Date</TableHeader>
             <TableHeader>Leave Type</TableHeader>
-          
+            <TableHeader></TableHeader>
+
           </TableRow>
         </thead>
         <tbody>
@@ -72,7 +89,9 @@ export default function EmployeeAttendance() {
               <TableCell>{row.id}</TableCell>
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.type}</TableCell>
-            
+  <TableCell>
+     <IoEyeOutline style={{ fontSize: '18px', color: '#5F53A5' }} />
+   </TableCell>
             </TableRow>
           ))}
         </tbody>

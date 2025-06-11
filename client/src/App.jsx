@@ -4,7 +4,7 @@ import LoginForm from "./Pages/login/Login";
 import Layout from "./Components/Layout";
 import Department from "./Pages/department/Department";
 import Dashboard from "./Pages/dashboard/Dashboard";
-import AddDepartment from "./Pages/department/AddDepartment.jsx";
+// import AddDepartment from "./Pages/department/AddDepartment.jsx";
 import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
 import Table from "./Components/Table.jsx";
 import EmployeeList from "./Pages/employee/EmployeeList.jsx";
@@ -13,16 +13,16 @@ import Payroll from "./Pages/payroll/Payroll.jsx"
 import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx"
 import AddCompany from "./Pages/superAdmin/AddCompany.jsx"
 import EditCompany from "./Pages/superAdmin/EditCompany.jsx";
-import Visa from "./Pages/employee/Visa.jsx"
+import Visa from "./Pages/visa/Visa.jsx"
 import DailyTask from "./Pages/dailytask/Daily.jsx";
 import BasicLevel from "./Pages/employee/BasicLevel.jsx";
 import BankPayment from "./Pages/employee/BankPayment.jsx"
 import Documents from "./Pages/employee/Documents.jsx"
 import EditBasicLevel from "./Pages/employee/EditBasiclevel.jsx"
-import LeaveRequest from "./Pages/employee/LeaveRequest.jsx";
-import EmployeeLeaveDetails from "./Pages/employee/EmployeeLeaveDetails.jsx";
-import Attendance from "./Pages/employee/Attendance.jsx";
-import OnLeave from "./Pages/employee/OnLeave.jsx";
+import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
+import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
+import Attendance from "./Pages/leaveDetails/Attendance.jsx";
+import OnLeave from "./Pages/leaveDetails/OnLeave.jsx";
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="/department" element={<Department />} />
-          <Route path="/add-department" element={<AddDepartment />} />
+          {/* <Route path="/add-department" element={<AddDepartment />} /> */}
           <Route path="/employee" element={<EmployeeList />} />
           <Route path="/department-details" element={<DepartmentDetails />} />
           <Route path="/table" element={<Table />} />

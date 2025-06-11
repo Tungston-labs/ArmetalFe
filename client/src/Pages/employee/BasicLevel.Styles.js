@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #f9fbe9;
+  background: #FBFEF3;
   font-family: 'Segoe UI', sans-serif;
 `;
 
@@ -40,7 +40,7 @@ export const RoleInfo = styled.div`
 `;
 export const InfoGrid = styled.div`
   display: flex;
-  gap: 2rem;
+  gap: 10px;
   // margin-bottom: 2rem;
   width:100%;
       // justify-content: space-between;
@@ -96,7 +96,7 @@ export const TwoColumn = styled.div`
   // display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 5rem;
-  width: 30%;
+  width: 40%;
 `;
 
 export const ThreeColumn = styled.div`
@@ -108,7 +108,7 @@ export const ThreeColumn = styled.div`
 
 export const FlexRow = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content:center;
   gap: 1rem;
 `;
 
@@ -122,14 +122,13 @@ export const ActionButton = styled.button`
 `;
 
 export const ApproveButton = styled(ActionButton)`
-  background-color: #6c7b8b;
-  color: white;
+  background-color:#172554;
+  color: white;height:42px;
+  width:8%;
+
 `;
 
-export const DeclineButton = styled(ActionButton)`
-  background-color: #f17070;
-  color: white;
-`;
+
 export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;

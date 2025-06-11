@@ -2,27 +2,37 @@
 import React from 'react';
 import {
   Container, Header, RoleInfo, Stepper, Step, SectionTitle, FormSection,
-  FormGroup, Input, Select, Row, ButtonGroup, Button, ImageUpload
+  FormGroup, Input, Select, Row, ButtonGroup, Button, ImageUpload,Title,Subtitle
+  ,Hr,
 } from './BankPayment.Styles';
-
+import Multistep from '../../Components/Multistep'
+import Table from '../../Components/Table'
 export default function BankPaymentForm() {
   return (
     <Container>
       <Header>
-        <div>
-          <h2>👨‍💼 Employee</h2>
-          <p>Manage your Employee</p>
+              <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <img src="/images/employee.png" alt="Icon" style={{ height: "50px" }} />
+                <div>
+                  <Title>Employee</Title>
+                  <Subtitle>Manage your Employee.</Subtitle>
+                </div>
+              </div>
+      
+              <RoleInfo>
+                <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
+                <span>HR Manager</span>
+              </RoleInfo>
+            </Header>
+
+ <Hr />
+      <div style={{ width: "100%", justifyContent: "center", display: "flex", padding: "20px" }}>
+        <div style={{ width: "50%" }}>
+          <Multistep />
         </div>
-        <RoleInfo>HR Manager</RoleInfo>
-      </Header>
+      </div>
 
-      <Stepper>
-        <Step active>1<br />Basic Details</Step>
-        <Step active>2<br />Bank and payment details</Step>
-        <Step>3<br />Documents</Step>
-      </Stepper>
-
-      <FormSection>
+      {/* <FormSection>
         <SectionTitle>Bank and payment details</SectionTitle>
 
         <FormGroup><Input placeholder="Bank name" /></FormGroup>
@@ -69,7 +79,8 @@ export default function BankPaymentForm() {
           <Button secondary>Previous step</Button>
           <Button>Next</Button>
         </ButtonGroup>
-      </FormSection>
+      </FormSection> */}
+      <Table />
     </Container>
   );
 }

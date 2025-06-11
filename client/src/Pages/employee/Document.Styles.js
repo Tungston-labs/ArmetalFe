@@ -23,10 +23,27 @@ export const Header = styled.div`
 `;
 
 export const RoleInfo = styled.div`
-  background: #fff;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+   display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #fff;
+  font-size: 0.95rem;
+  color: #333;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+
+  span {
+    font-weight: 500;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 
 export const Stepper = styled.div`
@@ -47,22 +64,25 @@ export const Step = styled.div`
 `;
 
 export const SectionTitle = styled.h4`
-  margin-top: 2rem;
+  // margin-top: 2rem;
   margin-bottom: 1rem;
-  color: #333;
+  font-size:18px;
+  // color: #333;
 `;
 
 export const UploadSection = styled.div`
-  margin-bottom: 1.5rem;
-  background: #fff;
+  // margin-bottom: 1.5rem;
+  // background: #fff;
   padding: 1rem;
   border-radius: 8px;
 `;
 
 export const LabelRow = styled.div`
-  font-size: 0.95rem;
+  font-size: 16px;
   font-weight: 500;
   margin-bottom: 0.8rem;
+  background:white;
+  color:#999999;
 `;
 
 export const UploadButton = styled.button`
@@ -70,8 +90,11 @@ export const UploadButton = styled.button`
   color: #fff;
   padding: 0.6rem 1rem;
   border: none;
+  width:15%;
+  font-size:18px;
+  height:80px;
   border-radius: 6px;
-  margin-bottom: 1rem;
+  // margin-bottom: 1rem;
   font-weight: 500;
   cursor: pointer;
 
@@ -86,21 +109,31 @@ export const ImagePreviewRow = styled.div`
 `;
 
 export const ImageBox = styled.div`
-  width: 60px;
-  height: 60px;
-  background: #ccc;
+  width: 117px;
+  height: 80px;
+  background: #f0f0f0;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const InlineUploadRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap; /* makes it responsive */
 `;
 
 export const ButtonGroup = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 1rem;
   margin-top: 2rem;
 `;
 
 export const Button = styled.button`
-  background: ${({ secondary }) => (secondary ? '#c7ceec' : '#003366')};
+  background: ${({ secondary }) => (secondary ? '#9EABD8' : '#172554')};
   color: ${({ secondary }) => (secondary ? '#000' : '#fff')};
   padding: 0.7rem 1.5rem;
   border: none;
@@ -111,4 +144,22 @@ export const Button = styled.button`
   &:hover {
     background: ${({ secondary }) => (secondary ? '#aab3d0' : '#002244')};
   }
+`;
+export const Title = styled.h2`
+  font-size: 24px;
+  margin: 0;
+  margin-left:10px;
+`;
+
+export const Subtitle = styled.p`
+  font-size: 14px;
+  color: #555;
+  margin-left:10px;
+  margin-top:-1px;
+`;
+
+export const Hr = styled.hr`
+  border: none;
+  border-top: 1px solid #ccc;
+
 `;

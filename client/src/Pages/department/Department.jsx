@@ -32,7 +32,7 @@ import {
   CancelButton,
   SaveButton,
   BackArrow,
-} from '../department/AddDepartment.Styles.js';
+} from './AddDepartment.Styles';
 import { FaPlus, FaSearch, FaSitemap, FaTimes, FaArrowLeft } from 'react-icons/fa';
 
 const Department = () => {
