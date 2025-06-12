@@ -15,19 +15,55 @@ import {
   CustomLink
 } from '../login/Login.styles';
 
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { login } from '../../Redux/authSlice';
+import { useNavigate } from 'react-router-dom';
+
 const LoginForm = () => {
   const [formData, setFormData] = useState({ username: '', password: '', remember: false });
   const [view, setView] = useState('login');
+  const [error, setError] = useState(null);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login submitted:', formData);
-    // You can add API call logic here
+    setError(null);
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/token/", {
+        username: formData.username,
+        password: formData.password,
+      });
+
+      const accessToken = response.data.access;
+      const refreshToken = response.data.refresh;
+
+      // Store in localStorage
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      // Dispatch to Redux store
+      dispatch(
+        login({
+          userName: formData.username,
+          accessToken: accessToken,
+          user: { role: "admin" }, // Customize this as needed
+        })
+      );
+
+      navigate("/"); // Redirect to dashboard
+    } catch (err) {
+      console.log(err);
+      
+      setError(err.response?.data?.detail || "Login failed. Check credentials.");
+    }
   };
 
   return (
@@ -58,7 +94,7 @@ const LoginForm = () => {
             <h2 style={{ fontSize: 41, fontFamily: 'Satoshi' }}>Log in</h2>
             <p style={{ fontSize: 20, fontFamily: 'Raleway' }}>
               Welcome back!<br />
-              please log in to your account
+              Please log in to your account
             </p>
             <form onSubmit={handleSubmit}>
               <Label>Username</Label>
@@ -91,6 +127,7 @@ const LoginForm = () => {
                 Remember me
               </CheckboxContainer>
               <Button type="submit">Log in</Button>
+              {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
           </FormBox>
         ) : (
