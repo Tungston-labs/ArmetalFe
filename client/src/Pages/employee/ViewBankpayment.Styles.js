@@ -95,7 +95,7 @@ export const Avatar = styled.img`
 
 export const Section = styled.div`
 //   padding: 2rem;
-  background: #f9fce8;
+  background: #FBFEF3;
   font-family: sans-serif;
 `;
 
@@ -259,4 +259,4 @@ export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
 
-`;
+`; 

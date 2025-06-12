@@ -24,7 +24,11 @@ import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx"
 import Attendance from "./Pages/leaveDetails/Attendance.jsx";
 import OnLeave from "./Pages/leaveDetails/OnLeave.jsx";
 import ViewBasic from "./Pages/employee/ViewBasic.jsx"
-
+import ViewBankpayment from "./Pages/employee/ViewBankpayment.jsx"
+import ViewDocument from "./Pages/employee/ViewDocument.jsx"
+import BasicFormEdit from "./Pages/editform/BasicFormEdit.jsx"
+import BankpaymentEdit from "./Pages/editform/BankpaymentEdit.jsx"
+import DocumentEdit from "./Pages/editform/DocumentEdit.jsx"
 function App() {
   return (
     <>
@@ -50,11 +54,16 @@ function App() {
           <Route path="/bank-payment" element={<BankPayment />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/edit-basic-level " element={<EditBasicLevel />} />
-          <Route path="/leave-request" element={<LeaveRequest/>}/>
-          <Route path="/leave-details" element={<EmployeeLeaveDetails/>}/>
-            <Route path="/employee-attendance" element={<Attendance/>}/>
-               <Route path="/on-leave" element={<OnLeave/>}/>
-                  <Route path="/view-basic" element={<ViewBasic/>}/>
+          <Route path="/leave-request" element={<LeaveRequest />} />
+          <Route path="/leave-details" element={<EmployeeLeaveDetails />} />
+          <Route path="/employee-attendance" element={<Attendance />} />
+          <Route path="/on-leave" element={<OnLeave />} />
+          <Route path="/view-basic" element={<ViewBasic />} />
+          <Route path="/view-bankpayment" element={<ViewBankpayment />} />
+          <Route path="/view-documents" element={<ViewDocument />} />
+          <Route path="/edit-basicform" element={<BasicFormEdit />} />
+             <Route path="/edit-bankpayment" element={<BankpaymentEdit/>} />
+               <Route path="/edit-document" element={<DocumentEdit/>} />
         </Route>
       </Routes>
     </>

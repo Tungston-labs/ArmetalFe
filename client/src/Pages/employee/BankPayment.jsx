@@ -32,54 +32,7 @@ export default function BankPaymentForm() {
         </div>
       </div>
 
-      {/* <FormSection>
-        <SectionTitle>Bank and payment details</SectionTitle>
-
-        <FormGroup><Input placeholder="Bank name" /></FormGroup>
-
-        <Row>
-          <ImageUpload />
-        </Row>
-
-        <Row>
-          <FormGroup><Input placeholder="Swift code" /></FormGroup>
-          <FormGroup><Input placeholder="Payment Mode" /></FormGroup>
-        </Row>
-
-        <Row>
-          <FormGroup><Input placeholder="Account number" /></FormGroup>
-          <FormGroup><Input placeholder="UAN / EPF Account number" /></FormGroup>
-        </Row>
-
-        <SectionTitle>Tax and compliance</SectionTitle>
-        <Row>
-          <FormGroup><Input placeholder="Pan Number" /></FormGroup>
-          <FormGroup><Input placeholder="Tax Regima Selected" /></FormGroup>
-        </Row>
-        <Row>
-          <FormGroup>
-            <Select>
-              <option>TDS Deduction Amount</option>
-            </Select>
-          </FormGroup>
-          <FormGroup><Input placeholder="Selection 80C Declaration" /></FormGroup>
-        </Row>
-
-        <SectionTitle>Salary and increment</SectionTitle>
-        <Row>
-          <FormGroup><Input placeholder="Basic Salary" /></FormGroup>
-          <FormGroup>
-            <Select>
-              <option>Salary increment</option>
-            </Select>
-          </FormGroup>
-        </Row>
-
-        <ButtonGroup>
-          <Button secondary>Previous step</Button>
-          <Button>Next</Button>
-        </ButtonGroup>
-      </FormSection> */}
+      
       <Table />
     </Container>
   );

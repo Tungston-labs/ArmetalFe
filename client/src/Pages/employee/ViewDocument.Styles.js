@@ -95,7 +95,7 @@ export const Avatar = styled.img`
 
 export const Section = styled.div`
 //   padding: 2rem;
-  background: #f9fce8;
+  background: #FBFEF3;
   font-family: sans-serif;
 `;
 
@@ -144,17 +144,17 @@ export const Column = styled.div`
 `;
 
 
-export const Button = styled.button`
-  display: block;             /* makes margin: auto work */
-  margin: 1rem auto 0 auto;   /* top: 1rem, auto on left/right to center */
-  background:#172554;
-  color: white;
-  border: none;
-  padding: 0.6rem 2rem;
-  border-radius: 6px;
-  cursor: pointer;
-  text-align: center;
-`;
+// export const Button = styled.button`
+//   display: block;             /* makes margin: auto work */
+//   margin: 1rem auto 0 auto;   /* top: 1rem, auto on left/right to center */
+//   background:#172554;
+//   color: white;
+//   border: none;
+//   padding: 0.6rem 2rem;
+//   border-radius: 6px;
+//   cursor: pointer;
+//   text-align: center;
+// `;
 
 export const Rowes = styled.div`
   display: flex;
@@ -259,4 +259,105 @@ export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
 
+`;
+export const UploadSection = styled.div`
+  // margin-bottom: 1.5rem;
+  // background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+`;
+
+export const LabelRow = styled.div`
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+  background:white;
+  color:#999999;
+`;
+
+export const UploadButton = styled.button`
+  background-color: #1e40af;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border: none;
+  width:15%;
+  font-size:18px;
+  height:80px;
+  border-radius: 6px;
+  // margin-bottom: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1c3aa9;
+  }
+`;
+
+// export const ImagePreviewRow = styled.div`
+//   display: flex;
+//   gap: 0.8rem;
+// `;
+
+// export const ImageBox = styled.div`
+//   width: 117px;
+//   height: 80px;
+//   background: #f0f0f0;
+//   border-radius: 4px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `;
+
+export const InlineUploadRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap; /* makes it responsive */
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+`;
+
+export const Button = styled.button`
+  background: ${({ secondary }) => (secondary ? '#9EABD8' : '#172554')};
+  color: ${({ secondary }) => (secondary ? '#000' : '#fff')};
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ secondary }) => (secondary ? '#aab3d0' : '#002244')};
+  }
+`;
+
+export const SectionTitle = styled.h4`
+  // margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size:18px;
+  // color: #333;
+`;
+export const ImagePreviewRow = styled.div`
+  display: flex;
+  gap: 0.8rem;
+`;
+
+export const ImageBox = styled.div`
+ width: 117px;
+//   height: 80px;
+//   border-radius: 10px;
+//   border: 1px solid #ccc;
+  overflow: hidden;
+//   background-color: #f8f8f8;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;

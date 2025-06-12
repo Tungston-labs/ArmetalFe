@@ -5,9 +5,9 @@ import {
   LeftSection,
   RightSection,
   Avatar,
-  Column,
+
   Textarea,
-  EditButton,
+//  
   Row,
     Tabs,
   Tab,
@@ -21,8 +21,9 @@ import {
   Title,FormWrapper,
   Subtitle,Rightside,
   HeaderWrapper,TextGroup,HRManager
-} from "./ViewBasic.Style";
+} from "./BankpaymentEdit.Styles";
 import { HiOutlinePencilAlt } from "react-icons/hi";
+import Tables from "../../Components/Table";
 const AddEmployee = () => {
   return (
     <Container>
@@ -43,7 +44,7 @@ const AddEmployee = () => {
           <span>HR Manager</span>
         </HRManager>
       
-        <EditButton><HiOutlinePencilAlt />Edit</EditButton>
+        {/* <EditButton><HiOutlinePencilAlt />Edit</EditButton> */}
         </Rightside>
       </Header>
 <Hr/>
@@ -78,40 +79,9 @@ const AddEmployee = () => {
         <Tab>Documents</Tab>
       </Tabs>
 
-      <GroupLabel>Job Details</GroupLabel>
-  <Rowes>
-  <Input placeholder="Developer" />
-  <Input placeholder="21/12/2002" />
-</Rowes>
-
-<Rowes>
-  <Select>
-    <option value="">Department</option>
-    <option value="dev">Development</option>
-  </Select>
-  <Input placeholder="Full time" />
-</Rowes>
-
-<Rowes>
-  <Input placeholder="Pranav G" />
-  <Select>
-    <option value="Development">Development</option>
-  </Select>
-</Rowes>
+<Tables/>
 
 
-      <GroupLabel>Employee Legal & ID Information</GroupLabel>
-   <Column>
-  <Input placeholder="Passport number" />
-  <Input placeholder="Work Permit" />
-  <Input placeholder="Visa expiry Date" />
-  <Input placeholder="Iqama Number" />
-  <Input placeholder="Employment Contract" />
-
-  <Input placeholder="Insurance number" />
-</Column>
-
-      <Button>Next</Button>
     </Section>
 
 
