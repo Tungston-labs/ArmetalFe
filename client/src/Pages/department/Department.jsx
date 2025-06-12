@@ -44,7 +44,7 @@ const Department = () => {
   const [formData, setFormData] = useState({
     name: '',
     department_code: '',
-    department_head: ''
+    // department_head: ''
   });
 
   useEffect(() => {
@@ -57,15 +57,12 @@ const Department = () => {
 
   const handleSave = async () => {
     try {
-      const dataToSend = {
-        ...formData,
-        department_head: formData.department_head || null,
-      };
+      const dataToSend = { ...formData };
       const result = await dispatch(createNewDepartment(dataToSend));
       if (createNewDepartment.fulfilled.match(result)) {
         setShowModal(false);
-        setFormData({ name: '', code: '', head: '' });
-        dispatch(getDepartments()); // refresh list
+        setFormData({ name: '', department_code: '' });
+        dispatch(getDepartments());
       } else {
         console.error('Department creation failed:', result.payload);
       }
@@ -73,7 +70,8 @@ const Department = () => {
       console.error('Unexpected error:', err);
     }
   };
-  
+
+
 
   return (
     <DepartmentContainer>
@@ -100,32 +98,32 @@ const Department = () => {
       </HeaderSection>
 
       <CardGrid>
-  {loading ? (
-    <p>Loading...</p>
-  ) : error ? (
-    <p style={{ color: 'red' }}>Error: {error.toString()}</p>
-  ) : Array.isArray(departments) && departments.length > 0 ? (
-    departments.map((dept) => (
-      <DepartmentCard key={dept.id}>
-        <h3>{dept.name}</h3>
-        <HeadInfo>
-          <Avatar src="https://i.pravatar.cc/40?img=3" />
-          <div>
-            <small>Department head</small>
-            <p>
-              {typeof dept.department_head === 'object'
-                ? dept.department_head?.name
-                : dept.department_head || 'Not Assigned'}
-            </p>
-          </div>
-          <CardValue>{dept.employee_count || 0}</CardValue>
-        </HeadInfo>
-      </DepartmentCard>
-    ))
-  ) : (
-    <p>No departments found.</p>
-  )}
-</CardGrid>
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p style={{ color: 'red' }}>Error: {error.toString()}</p>
+        ) : Array.isArray(departments) && departments.length > 0 ? (
+          departments.map((dept) => (
+            <DepartmentCard key={dept.id}>
+              <h3>{dept.name}</h3>
+              <HeadInfo>
+                <Avatar src="https://i.pravatar.cc/40?img=3" />
+                <div>
+                  <small>Department head</small>
+                  <p>
+                    {typeof dept.department_head === 'object'
+                      ? dept.department_head?.name
+                      : dept.department_head || 'Not Assigned'}
+                  </p>
+                </div>
+                <CardValue>{dept.employee_count || 0}</CardValue>
+              </HeadInfo>
+            </DepartmentCard>
+          ))
+        ) : (
+          <p>No departments found.</p>
+        )}
+      </CardGrid>
 
 
       {showModal && (
@@ -159,22 +157,23 @@ const Department = () => {
                   <Label>Department Code Name</Label>
                   <Input
                     type="text"
-                    name="code"
+                    name="department_code" 
                     placeholder="Eg HR"
-                    value={formData.code}
+                    value={formData.department_code}
                     onChange={handleChange}
                     required
                   />
+
                 </FormGroup>
 
-                <FormGroup fullWidth>
+                {/* <FormGroup fullWidth>
                   <Label>Department head</Label>
-                  <Select name="head" value={formData.head} onChange={handleChange} required>
+                  <Select name="head" value={formData.department_head} onChange={handleChange} required>
                     <option value="">Choose an Employee</option>
                     <option value="1">John Marshal</option>
                     <option value="2">Jane Doe</option>
                   </Select>
-                </FormGroup>
+                </FormGroup> */}
 
                 {error && <p style={{ color: 'red' }}>{error}</p>}
 

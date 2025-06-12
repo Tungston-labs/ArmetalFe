@@ -28,12 +28,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Change Password (Employee, HR, Superadmin)
 POST http://localhost:8000/api/change-password/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTM2MzI1LCJpYXQiOjE3NDg5MzI3MjUsImp0aSI6ImZmNDZjNGE5MTgyYzQwZTU5NWU2YmEyMzgwMjFiY2JlIiwidXNlcl9pZCI6M30.z4yb1fY_WVtcC5hkoY_Or8vnYn23zA2SvCkTs9eYdzI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzExNjkzLCJpYXQiOjE3NDk3MDgwOTMsImp0aSI6ImZjM2M5ZjlhMWJkOTRkMGZhMmUzZTU0ODM4MjNjOTRiIiwidXNlcl9pZCI6M30.YMx-WBBSHdmilhjQaEdmSfEf81zK4ELDXryDV7FsLAA
 Content-Type: application/json
 
 {
-  "old_password": "CMPM7426ZDB2H",
-  "new_password": "password@123"
+  "old_password": "CMPL3YIQN2BUY",
+  "new_password": "123"
 }
 
 
@@ -110,8 +110,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "bxi_arm_koc_761",     
-  "password": "CMPQL2DC4NY38"  
+  "username": "hwr_arm_dub_841",     
+  "password": "CMPL3YIQN2BUY"  
 }
 
 
@@ -121,11 +121,11 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:8000/api/departments/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NjIzMjQ4LCJpYXQiOjE3NDk2MTk2NDgsImp0aSI6ImQ1YjI0NzQ1YmYwMjRmYjhhNTU5NTQ1NWNmM2Q1MGU4IiwidXNlcl9pZCI6Mn0.0sPrHZU3VqB7pCbCNLdw7QU0EVBHtD21k9ivzlzGx3o
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzExNjkzLCJpYXQiOjE3NDk3MDgwOTMsImp0aSI6ImZjM2M5ZjlhMWJkOTRkMGZhMmUzZTU0ODM4MjNjOTRiIiwidXNlcl9pZCI6M30.YMx-WBBSHdmilhjQaEdmSfEf81zK4ELDXryDV7FsLAA
 
 {
-  "name": "backend",
-  "department_code": "Br01",
+  "name": "Manufacturer",
+  "department_code": "M001",
   "department_head": ""
 }
 
@@ -134,7 +134,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 GET http://127.0.0.1:8000/api/departments/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NTQ1NzQxLCJpYXQiOjE3NDk1NDIxNDEsImp0aSI6IjA4MjQ3ZTQxNjQ0YzQ2ZjliNmRkZmIwNTUzOGNjYTQwIiwidXNlcl9pZCI6MjB9.irmd11sDEDhNi9ySegRQ6p1u22FJGpsHYXMlp6kDQz0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzExNjkzLCJpYXQiOjE3NDk3MDgwOTMsImp0aSI6ImZjM2M5ZjlhMWJkOTRkMGZhMmUzZTU0ODM4MjNjOTRiIiwidXNlcl9pZCI6M30.YMx-WBBSHdmilhjQaEdmSfEf81zK4ELDXryDV7FsLAA
 
 
 # retrieve single department

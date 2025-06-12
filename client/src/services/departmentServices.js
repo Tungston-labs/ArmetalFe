@@ -3,7 +3,7 @@ import API from "./api"; // Your Axios instance with baseURL & headers
 // GET: List all departments
 export const fetchDepartments = async () => {
   const response = await API.get("/api/departments/");
-  return response.data;
+  return response.data.results;
 };
 
 // POST: Create a department
