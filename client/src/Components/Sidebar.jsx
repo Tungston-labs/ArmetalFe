@@ -71,7 +71,7 @@ export default function Sidebar() {
         <CustomLink to="/department" className={collapsed ? 'collapsed' : ''}>
           <FaSitemap /><span>Department</span>
         </CustomLink>
-        <CustomLink to="/dailytask" className={collapsed ? 'collapsed' : ''}>
+        <CustomLink to="/daily-task" className={collapsed ? 'collapsed' : ''}>
           <FaTasks /><span>Daily Task</span>
         </CustomLink>
         <CustomLink to="/payroll" className={collapsed ? 'collapsed' : ''}>

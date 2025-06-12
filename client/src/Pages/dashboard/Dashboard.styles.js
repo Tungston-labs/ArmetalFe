@@ -5,7 +5,7 @@ import styled from 'styled-components';
 export const DashboardContainer = styled.div`
   // margin-left: 250px;
   padding: 40px 20px;
-  background: #f8faf4;
+  background: #FBFEF3;
  
 
   @media (max-width: 768px) {

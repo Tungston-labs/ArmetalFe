@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const DepartmentContainer = styled.div`
   padding: 2rem;
-  background-color: #f9faf4;
+  background-color: #FBFEF3;
 `;
 
 export const TopBar = styled.div`
