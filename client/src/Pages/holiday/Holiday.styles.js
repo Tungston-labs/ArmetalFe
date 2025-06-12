@@ -167,7 +167,8 @@ width: 100%;
 
   /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
-    box-shadow: 0 0 0 1px #00000047;
+box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+
   }
 
   /* Optional: radius for only first and last td of each row */
@@ -198,11 +199,8 @@ export const Td = styled.td`
     background: #fff;
 `;
 export const Tr = styled.tr`
-  // background-color: #fff;
-  // border-radius: 8px;
- box-shadow: 0 0 0 1px #00000047;
   overflow: hidden;
-`; 
+`;
 export const TrashIcon = styled.span`
   cursor: pointer;
 `;

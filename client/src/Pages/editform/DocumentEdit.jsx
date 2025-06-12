@@ -4,25 +4,28 @@ import {
   Header,
   LeftSection,
   RightSection,
-  Avatar,
-  Column,
+UploadSection,
+InlineUploadRow,
   Textarea,
-  EditButton,
-  Row,
-    Tabs,
-  Tab,
+//   EditButton,
+  Row,ImageBox,
+    Tabs,LabelRow,
+  Tab,SectionTitle,
   Section,
-  GroupLabel,
-  Rows,
-  Input,
+  GroupLabel,ButtonGroup,
+  Rows,ImagePreviewRow,
+  Input,UploadButton,
   Select,Hr,
   Button,ProfileImage,
   Rowes,ImageColumn,
   Title,FormWrapper,
   Subtitle,Rightside,
   HeaderWrapper,TextGroup,HRManager
-} from "./ViewBasic.Style";
+} from "./DocumentEdit.Styles";
+import { LuCirclePlus } from "react-icons/lu";
+import { IoImageOutline } from "react-icons/io5";
 import { HiOutlinePencilAlt } from "react-icons/hi";
+import Tables from "../../Components/Table";
 const AddEmployee = () => {
   return (
     <Container>
@@ -42,8 +45,8 @@ const AddEmployee = () => {
      <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
           <span>HR Manager</span>
         </HRManager>
-      
-        <EditButton><HiOutlinePencilAlt />Edit</EditButton>
+{/*       
+        <EditButton><HiOutlinePencilAlt />Edit</EditButton> */}
         </Rightside>
       </Header>
 <Hr/>
@@ -78,40 +81,47 @@ const AddEmployee = () => {
         <Tab>Documents</Tab>
       </Tabs>
 
-      <GroupLabel>Job Details</GroupLabel>
-  <Rowes>
-  <Input placeholder="Developer" />
-  <Input placeholder="21/12/2002" />
-</Rowes>
 
-<Rowes>
-  <Select>
-    <option value="">Department</option>
-    <option value="dev">Development</option>
-  </Select>
-  <Input placeholder="Full time" />
-</Rowes>
+      <SectionTitle>Documents</SectionTitle>
 
-<Rowes>
-  <Input placeholder="Pranav G" />
-  <Select>
-    <option value="Development">Development</option>
-  </Select>
-</Rowes>
+   {["Passport", "Work Permit", "Employement Contract",  "Insurance "].map((label, idx) => (
+  <UploadSection key={idx}>
+    <LabelRow>{label}</LabelRow>
+    <InlineUploadRow>
+      <UploadButton><LuCirclePlus /> Upload images</UploadButton>
+      <ImagePreviewRow>
+     <ImageBox>    <img src="/images/pic.jpg" alt="Preview 1" /></ImageBox>
+         <ImageBox>    <img src="/images/pic.jpg" alt="Preview 1" /></ImageBox>
+      </ImagePreviewRow>
+    </InlineUploadRow>
+  </UploadSection>
+))}
 
 
-      <GroupLabel>Employee Legal & ID Information</GroupLabel>
-   <Column>
-  <Input placeholder="Passport number" />
-  <Input placeholder="Work Permit" />
-  <Input placeholder="Visa expiry Date" />
-  <Input placeholder="Iqama Number" />
-  <Input placeholder="Employment Contract" />
+      <SectionTitle>Certificate</SectionTitle>
+  <UploadSection>
+  <LabelRow>Upload certificate</LabelRow>
+  <InlineUploadRow>
+    <UploadButton> Upload images</UploadButton>
+   <ImagePreviewRow>
+  <ImageBox>
+    <img src="/images/pic.jpg" alt="Preview 1" />
+  </ImageBox>
+  <ImageBox>
+    <img src="/images/pic.jpg" alt="Preview 2" />
+  </ImageBox>
+</ImagePreviewRow>
 
-  <Input placeholder="Insurance number" />
-</Column>
+  </InlineUploadRow>
+</UploadSection>
 
-      <Button>Next</Button>
+
+      <ButtonGroup>
+     
+        <Button>Submit</Button>
+      </ButtonGroup>
+
+
     </Section>
 
 

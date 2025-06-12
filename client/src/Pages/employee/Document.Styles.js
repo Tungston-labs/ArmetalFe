@@ -103,20 +103,20 @@ export const UploadButton = styled.button`
   }
 `;
 
-export const ImagePreviewRow = styled.div`
-  display: flex;
-  gap: 0.8rem;
-`;
+// export const ImagePreviewRow = styled.div`
+//   display: flex;
+//   gap: 0.8rem;
+// `;
 
-export const ImageBox = styled.div`
-  width: 117px;
-  height: 80px;
-  background: #f0f0f0;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+// export const ImageBox = styled.div`
+//   width: 117px;
+//   height: 80px;
+//   background: #f0f0f0;
+//   border-radius: 4px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `;
 
 export const InlineUploadRow = styled.div`
   display: flex;
@@ -162,4 +162,23 @@ export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
 
+`;
+export const ImagePreviewRow = styled.div`
+  display: flex;
+  gap: 0.8rem;
+`;
+
+export const ImageBox = styled.div`
+ width: 117px;
+//   height: 80px;
+//   border-radius: 10px;
+//   border: 1px solid #ccc;
+  overflow: hidden;
+//   background-color: #f8f8f8;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;

@@ -154,7 +154,9 @@ width: 100%;
     color: #333;
   }
 
-
+ tbody tr {
+  box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+  }
 
   /* Optional: radius for only first and last td of each row */
   tbody tr td:first-child {

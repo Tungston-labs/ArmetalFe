@@ -7,7 +7,7 @@ import {
   Avatar,
   Column,
   Textarea,
-  EditButton,
+//   EditButton,
   Row,
     Tabs,
   Tab,
@@ -21,7 +21,7 @@ import {
   Title,FormWrapper,
   Subtitle,Rightside,
   HeaderWrapper,TextGroup,HRManager
-} from "./ViewBasic.Style";
+} from "./BasicForm.Styles";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 const AddEmployee = () => {
   return (
@@ -43,7 +43,7 @@ const AddEmployee = () => {
           <span>HR Manager</span>
         </HRManager>
       
-        <EditButton><HiOutlinePencilAlt />Edit</EditButton>
+        {/* <EditButton><HiOutlinePencilAlt />Edit</EditButton> */}
         </Rightside>
       </Header>
 <Hr/>
@@ -111,7 +111,7 @@ const AddEmployee = () => {
   <Input placeholder="Insurance number" />
 </Column>
 
-      <Button>Next</Button>
+      <Button>Submit</Button>
     </Section>
 
 

@@ -73,8 +73,8 @@ swalWithBootstrapButtons.fire({
     <InlineUploadRow>
       <UploadButton><LuCirclePlus /> Upload images</UploadButton>
       <ImagePreviewRow>
-     <ImageBox><IoImageOutline size={100} color="#555" /></ImageBox>
-         <ImageBox><IoImageOutline size={100} color="#555" /></ImageBox>
+     <ImageBox>    <img src="/images/pic.jpg" alt="Preview 1" /></ImageBox>
+         <ImageBox>    <img src="/images/pic.jpg" alt="Preview 1" /></ImageBox>
       </ImagePreviewRow>
     </InlineUploadRow>
   </UploadSection>
@@ -87,8 +87,8 @@ swalWithBootstrapButtons.fire({
   <InlineUploadRow>
     <UploadButton>⬆ Upload images</UploadButton>
     <ImagePreviewRow>
- <ImageBox><IoImageOutline size={100} color="#555" /></ImageBox>
- <ImageBox><IoImageOutline size={100} color="#555" /></ImageBox>
+ <ImageBox>    <img src="/images/pic.jpg" alt="Preview 1" /></ImageBox>
+ <ImageBox>    <img src="/images/pic.jpg" alt="Preview 1" /></ImageBox>
     </ImagePreviewRow>
   </InlineUploadRow>
 </UploadSection>
