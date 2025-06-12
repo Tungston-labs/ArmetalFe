@@ -14,7 +14,7 @@ const data = new Array(5).fill({
   leaveType: 'Sick leave',
   email: 'Athuluixix@gmail.com',
   contact: '6235689542',
-  note: 'dummy dummy dummy dummeee',
+ Date: '11/12/2025-12/12/2025',
   profile: 'https://i.pravatar.cc/40?img=12' // mock profile image
 });
 
@@ -58,7 +58,7 @@ export default function LeaveRequest() {
             <TableHead>Leave type</TableHead>
             <TableHead>Email ID</TableHead>
             <TableHead>Contact number</TableHead>
-            <TableHead>Note</TableHead>
+            <TableHead>StartDate and EndDate</TableHead>
             <TableHead></TableHead>
              <TableHead></TableHead>
           </TableRow>
@@ -70,7 +70,7 @@ export default function LeaveRequest() {
               <TableCell>{row.leaveType}</TableCell>
               <TableCell>{row.email}</TableCell>
               <TableCell>{row.contact}</TableCell>
-              <TableCell>{row.note}</TableCell>
+              <TableCell>{row.Date}</TableCell>
            <TableCell>
     <IoEyeOutline style={{ fontSize: '18px', color: '#5F53A5' }} />
   </TableCell>

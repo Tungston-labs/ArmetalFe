@@ -23,6 +23,7 @@ ActionArea,
 } from "./EmployeeList.styles";
 import { FaInfoCircle, FaTrash,FaPlus } from "react-icons/fa";
 import { FiUserPlus } from "react-icons/fi";
+import { CiSearch } from "react-icons/ci";
 import { LuArrowLeft } from "react-icons/lu";
 
 const employees = new Array(11).fill({
@@ -48,7 +49,7 @@ const EmployeeList = () => {
            <HeaderSection>
              <TitleSection>
              <LuArrowLeft style={{width:"30px", height:30}} />
-                            <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
+                            <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "70px", color:"black" }} />
                             <div>
                               <Title>Employee</Title>
                               <Subtitle>Manage your Employee.</Subtitle>
@@ -56,7 +57,7 @@ const EmployeeList = () => {
              </TitleSection>
              <ActionArea>
                <AddButton onClick={() => setShowModal(true)}><FaPlus /> Add Department</AddButton>
-               <SearchInput type="text" placeholder="Search by Department name" />
+               <SearchInput type="text" placeholder="Search by employee name or ID" />
              </ActionArea>
            </HeaderSection>
       <Tabs>

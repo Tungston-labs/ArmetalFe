@@ -23,11 +23,13 @@ export const IconTitle = styled.div`
 export const Title = styled.h2`
   font-size: 1.4rem;
   margin: 0;
+    font-family: Satoshi;
 `;
 
 export const SubTitle = styled.p`
   font-size: 0.9rem;
   color: #666;
+  font-family:raleway;
 `;
 
 export const FormSection = styled.div`

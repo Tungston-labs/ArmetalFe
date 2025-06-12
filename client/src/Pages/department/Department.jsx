@@ -18,7 +18,7 @@ import {
   HRManager,
   ModalOverlay,
   CloseButton,
-  ModalContent,
+  ModalContent,TitleSection,Subtitle
 } from '../department/DepartmentStyles';
 import {
   Container,
@@ -86,13 +86,14 @@ const Department = () => {
       </TopBar>
 
       <HeaderSection>
-        <TitleGroup>
-          <Icon><FaSitemap /></Icon>
-          <div>
-            <h2>Department</h2>
-            <p>Manage all departments within the organization.</p>
-          </div>
-        </TitleGroup>
+       <TitleSection>
+                  {/* > <LuArrowLeft style={{ width: "36px", height: 36 }} / */}
+                   <img src="/images/department.png" alt="Payroll Icon" style={{ height: "74px" }} />
+                   <div>
+                     <Title>Department</Title>
+                     <Subtitle>Manage all departments within the organization.</Subtitle>
+                   </div>
+                 </TitleSection>
         <ActionArea>
           <AddButton onClick={() => setShowModal(true)}><FaPlus /> Add Department</AddButton>
           <SearchInput type="text" placeholder="Search by Department name" />

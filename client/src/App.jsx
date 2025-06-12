@@ -52,7 +52,7 @@ function App() {
           <Route path="/basic-details" element={<BasicLevel />} />
           <Route path="/bank-payment" element={<BankPayment />} />
           <Route path="/documents" element={<Documents />} />
-          <Route path="/edit-basic-level " element={<EditBasicLevel />} />
+          {/* <Route path="/edit-basic-level " element={<EditBasicLevel />} /> */}
           <Route path="/leave-request" element={<LeaveRequest />} />
           <Route path="/leave-details" element={<EmployeeLeaveDetails />} />
           <Route path="/employee-attendance" element={<Attendance />} />

@@ -1,7 +1,10 @@
-  body {
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
     margin: 0;
     padding: 0;
 
     overflow-y: auto; /* or scroll, hidden, visible */
-    background-color: #f5f5f5;
+   background: #FBFEF3;
   }

@@ -112,11 +112,13 @@ export const TopBar = styled.div`
 
 export const HRManager = styled.div`
   display: flex;
+  height:30px;
+ 
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem ;
   border: 1px solid #ccc;
-  border-radius: 12px;
+  border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
@@ -127,8 +129,8 @@ export const HRManager = styled.div`
   }
 
   img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -191,3 +193,49 @@ export const TwoColumnRows= styled.div`
 //   border: 1px solid #ccc;
 //   border-radius: 6px;
 // `; make this as responsvie
+export const FlexRows = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  width: 100%;
+`;
+
+export const LeftSide = styled.div`
+  width: 30%;
+  min-width: 150px;
+
+  input {
+    width: 100%;
+  }
+`;
+
+export const RightSide = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 3rem;
+  width: 20%;
+  min-width: 150px;
+  
+
+  input {
+    width: 40%; /* Split the 20% area between two inputs */
+    min-width: 70px;
+  }
+`;
+export const DateField = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  color: black;
+
+  label {
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  input {
+    width: 80%;
+  }
+`;

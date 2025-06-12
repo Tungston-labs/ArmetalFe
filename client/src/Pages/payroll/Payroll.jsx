@@ -28,16 +28,17 @@ const data = Array(10).fill({
 const PayrollTable = () => {
   return (
     <Container>
-      <Header>
-        <SearchInput placeholder="Search by Employee name" />
-         <TopBar>
-                <div />
-                <HRManager>
-                  <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
-                  <span>HR Manager</span>
-                </HRManager>
-              </TopBar>
-      </Header>
+ 
+
+        <TopBar>
+  <div /> {/* keeps left side empty */}
+  <HRManager>
+    <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
+    <span>HR Manager</span>
+  </HRManager>
+</TopBar>
+
+     
 
    <Header>
   <TitleSection>
@@ -48,8 +49,9 @@ const PayrollTable = () => {
       <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
     </div>
   </TitleSection>
+  
 </Header>
-
+        <SearchInput placeholder="Search by Employee name" />
 
 
       <TableWrapper>

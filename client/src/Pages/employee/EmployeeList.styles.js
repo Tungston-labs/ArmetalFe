@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 2rem;
-  font-family: Arial, sans-serif;
+ font-family: Satoshi;
   background:#FBFEF3;
 `;
 
@@ -72,11 +72,14 @@ export const SearchInput = styled.input`
   border-radius: 8px;
   min-width: 250px;
   margin-top:10px;
+  height:20px;
+  font-family:satoshi;
 `;
 export const Tabs = styled.div`
   display: flex;
   gap: 2rem;
   margin: 1.5rem 0;
+  font-family:raleway;
   border-bottom: 2px solid #ddd;
 `;
 
@@ -93,11 +96,13 @@ width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
+ 
 
   th, td {
     text-align: left;
-    padding: 0.75rem;
+    padding: 0.5rem;
     white-space: nowrap;
+  
     background-color: white;
     border: none; /* remove cell borders */
   }
@@ -105,11 +110,16 @@ width: 100%;
   th {
     background-color: #5F53A53B;
     color: #333;
+      font-family:raleway;
+     padding: 0.75rem;
+
   }
 
   /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
 box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+font-family:satoshi;
+
   }
 
   /* Optional: radius for only first and last td of each row */
@@ -182,11 +192,13 @@ export const TopBar = styled.div`
 
 export const HRManager = styled.div`
   display: flex;
+  height:30px;
+ 
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem ;
   border: 1px solid #ccc;
-  border-radius: 12px;
+  border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
@@ -197,8 +209,8 @@ export const HRManager = styled.div`
   }
 
   img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -229,9 +241,10 @@ export const ActionArea = styled.div`
   gap: 1rem;
 `;
 export const Title = styled.h2`
-  font-size: 24px;
+  font-size: 22px;
   margin: 0;
   margin-left:10px;
+ font-family:satoshi;
 `;
 
 export const Subtitle = styled.p`
@@ -239,4 +252,5 @@ export const Subtitle = styled.p`
   color: #555;
   margin-left:10px;
   margin-top:-1px;
+  font-size:raleway;
 `;

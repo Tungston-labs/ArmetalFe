@@ -16,13 +16,14 @@ import {
   TopBar,
   HRManager,
   TitleSection,
-  Title,
+  Title,LeftSide,
   Subtitle,
-  Hr,
+  Hr,RightSide,
   InfoSection,
   FullWidthInput,
   TwoColumnRow,
-TwoColumnRows
+TwoColumnRows,FlexRows,
+DateField
 } from "./EmployeeLeaveDetails.Styles";
 
 const EmployeeLeaveForm = () => {
@@ -91,8 +92,23 @@ const EmployeeLeaveForm = () => {
       </TwoColumnRows>
 
       <SectionTitle>Leave Application</SectionTitle>
-      <Input placeholder="Leave Type" value="Sick leave" />
+     <FlexRows>
+  <LeftSide>
+    <Input placeholder="Leave Type" value="Sick leave" />
+  </LeftSide>
 
+  <RightSide>
+  <DateField>
+    <label>From</label>
+    <Input type="date" />
+  </DateField>
+  <DateField>
+    <label>To</label>
+    <Input type="date" />
+  </DateField>
+</RightSide>
+
+</FlexRows>
       <SectionTitle>Reason for Leave</SectionTitle>
       <TextArea defaultValue="I am requesting leave due to health reasons and will be unable to attend work on the mentioned dates. Kindly consider my application and grant the leave." />
 

@@ -22,8 +22,9 @@ export const BackArrow = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 22px;
+  margin: 0;
+  font-family:satoshi;
 `;
 
 export const Form = styled.form`
