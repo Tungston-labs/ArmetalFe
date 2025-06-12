@@ -111,7 +111,7 @@ Content-Type: application/json
 
 {
   "username": "hwr_arm_dub_841",     
-  "password": "CMPL3YIQN2BUY"  
+  "password": "123"  
 }
 
 
@@ -426,19 +426,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Create Holiday
 POST http://127.0.0.1:8000/api/holidays/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTI4NDM2LCJpYXQiOjE3NDg5MjQ4MzYsImp0aSI6IjM5ZGEzOGRiYjAyODRkOTM5ZDgxZjI1YTZlNTM4ZTkyIiwidXNlcl9pZCI6M30.9VK8uzpdHaP3_BcP2LKSGvrzzr9CdssbFRt41jgEwjs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzIzNzU0LCJpYXQiOjE3NDk3MjAxNTQsImp0aSI6ImY3OGZmMDJmZTMzNTQzYWNiMTVjZTE3MDA3YzJhMTJiIiwidXNlcl9pZCI6M30.84NQjY64oSBUX-zgV8yfFJXPfWTlBROm-ricQT6GAzk
 Content-Type: application/json
 
 {
-  "date": "2025-07-07",
-  "description": "Annual day",
+  "date": "2025-09-15",
+  "description": "Outing day",
   "holiday_type":"public"
 }
 
 
 ### List Holidays (HR Admin)
 GET http://127.0.0.1:8000/api/holidays/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTI4NDM2LCJpYXQiOjE3NDg5MjQ4MzYsImp0aSI6IjM5ZGEzOGRiYjAyODRkOTM5ZDgxZjI1YTZlNTM4ZTkyIiwidXNlcl9pZCI6M30.9VK8uzpdHaP3_BcP2LKSGvrzzr9CdssbFRt41jgEwjs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzIzNzU0LCJpYXQiOjE3NDk3MjAxNTQsImp0aSI6ImY3OGZmMDJmZTMzNTQzYWNiMTVjZTE3MDA3YzJhMTJiIiwidXNlcl9pZCI6M30.84NQjY64oSBUX-zgV8yfFJXPfWTlBROm-ricQT6GAzk
 
 
 ### Get Single Holiday by ID

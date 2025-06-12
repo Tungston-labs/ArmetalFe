@@ -24,3 +24,16 @@ class PublicHolidayEmployeeListView(generics.ListAPIView):
     queryset = PublicHoliday.objects.all().order_by('date')
     serializer_class = PublicHolidaySerializer
     permission_classes = [IsAuthenticated, IsEmployee]
+
+
+
+
+# list types
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import PublicHoliday
+
+class HolidayTypeListView(APIView):
+    def get(self, request):
+        types = [ {"key": key, "label": label} for key, label in PublicHoliday.HOLIDAY_TYPES ]
+        return Response(types)

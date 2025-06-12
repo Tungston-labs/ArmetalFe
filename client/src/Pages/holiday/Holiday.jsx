@@ -1,41 +1,63 @@
-// src/Pages/holiday/HolidayManager.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Container,
-  Header,
-
-  Title,
-  Subtitle,
-  FormSection,
-  Input,
-  Select,
-  DateInput,
-  AddButton,
-  TableWrapper,
-  Table,
-  Th,
-  Td,
-  TrashIcon,
-  TitleSection,
-  Hr,
-  TopBar,
-  HRManager,
-  DateWrapper,
-
-
+  Container, Header, Title, Subtitle, FormSection, Input, Select, DateInput,
+  AddButton, TableWrapper, Table, Th, Td, TitleSection, Hr, TopBar, HRManager, DateWrapper
 } from './Holiday.styles';
 import { MdDateRange } from "react-icons/md";
 import { FaTrashAlt } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
-const initialData = Array(10).fill({
-  slNo: '001',
-  name: 'Independence Day',
-  type: 'Public',
-  date: '2025-08-15',
-});
+import { useDispatch, useSelector } from "react-redux";
+import { getHolidays, addHoliday, removeHoliday } from '../../Redux/holidaySlice';
+import { fetchHolidayTypes } from '../../services/holidayService';
+
+const formatDateToISO = (dateStr) => {
+  const date = new Date(dateStr);
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
 
 const HolidayManager = () => {
-  const [holidays, setHolidays] = useState(initialData);
+  const dispatch = useDispatch();
+  const { list: holidays, loading, error } = useSelector(state => state.holidays);
+
+  const [formData, setFormData] = useState({ name: "", type: "", date: "" });
+
+  const [typeOptions, setTypeOptions] = useState([]);
+
+  useEffect(() => {
+    fetchHolidayTypes().then(data => setTypeOptions(data));
+  }, []);
+
+  useEffect(() => {
+    dispatch(getHolidays());
+  }, [dispatch]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+
+  const handleAdd = () => {
+  if (formData.name && formData.type && formData.date) {
+    const formattedDate = formatDateToISO(formData.date);
+
+    dispatch(addHoliday({
+      description: formData.name,
+      holiday_type: formData.type,
+      date: formattedDate
+    }));
+
+    setFormData({ name: "", type: "", date: "" });
+  }
+};
+
+
+  const handleDelete = (id) => {
+    dispatch(removeHoliday(id));
+  };
 
   return (
     <Container>
@@ -49,30 +71,35 @@ const HolidayManager = () => {
               <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
             </div>
           </TitleSection>
-
           <HRManager>
             <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
             <span>HR Manager</span>
           </HRManager>
         </TopBar>
-
       </Header>
 
       <FormSection>
-        <Input placeholder="Holiday name" />
-        <Select>
-          <option>Select</option>
-          <option>Public</option>
-          <option>Optional</option>
-        </Select>
-        <DateWrapper>
-          <MdDateRange />
-          <DateInput type="date" />
-        </DateWrapper>
-        <AddButton>Add</AddButton>
-      </FormSection>
+  <Input name="name" placeholder="Holiday name" value={formData.name} onChange={handleChange} />
+  
+  <Select name="type" value={formData.type} onChange={handleChange}>
+    <option value="">Select</option>
+    {typeOptions.map(({ key, label }) => (
+      <option key={key} value={key}>
+        {label}
+      </option>
+    ))}
+  </Select>
 
-      <Hr /> 
+  <DateWrapper>
+    <MdDateRange />
+    <DateInput type="date" name="date" value={formData.date} onChange={handleChange} />
+  </DateWrapper>
+  
+  <AddButton onClick={handleAdd}>Add</AddButton>
+</FormSection>
+
+
+      <Hr />
 
       <TableWrapper>
         <Table>
@@ -87,21 +114,19 @@ const HolidayManager = () => {
           </thead>
           <tbody>
             {holidays.map((item, index) => (
-              <tr key={index}>
-                <Td>{item.slNo}</Td>
-                <Td>{item.name}</Td>
-                <Td>{item.type}</Td>
+              <tr key={item.id}>
+                <Td>{index + 1}</Td>
+                <Td>{item.description}</Td>
+                <Td>{item.holiday_type_display}</Td> 
                 <Td>{item.date}</Td>
                 <Td>
-                  {/* <TrashIcon role="button"><CiTrash /></TrashIcon> */}
-        <FaTrashAlt style={{color:"red"}}/>
+                  <FaTrashAlt style={{ color: "red", cursor: "pointer" }} onClick={() => handleDelete(item.id)} />
                 </Td>
               </tr>
             ))}
           </tbody>
         </Table>
       </TableWrapper>
-
     </Container>
   );
 };

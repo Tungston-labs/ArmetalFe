@@ -41,30 +41,41 @@ const LoginForm = () => {
         username: formData.username,
         password: formData.password,
       });
-
-      const accessToken = response.data.access;
-      const refreshToken = response.data.refresh;
-
+  
+      const { access, refresh, user } = response.data;
+  
       // Store in localStorage
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-
+      localStorage.setItem("accessToken", access);
+      localStorage.setItem("refreshToken", refresh);
+      localStorage.setItem("user", JSON.stringify(user)); // store user role info
+  
       // Dispatch to Redux store
       dispatch(
         login({
-          userName: formData.username,
-          accessToken: accessToken,
-          user: { role: "admin" }, // Customize this as needed
+          userName: user.username,
+          accessToken: access,
+          user: {
+            id: user.id,
+            email: user.email,
+            is_superadmin: user.is_superadmin,
+            is_hr_admin: user.is_hr_admin,
+            is_employee: user.is_employee,
+          },
         })
       );
-
-      navigate("/"); // Redirect to dashboard
+  
+      // Redirect based on role
+      if (user.is_superadmin) {
+        navigate("/superadmin"); // or show a message
+      } else {
+        navigate("/"); // dashboard
+      }
     } catch (err) {
       console.log(err);
-      
       setError(err.response?.data?.detail || "Login failed. Check credentials.");
     }
   };
+  
 
   return (
     <Container>
