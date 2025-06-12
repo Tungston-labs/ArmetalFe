@@ -23,6 +23,7 @@ import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
 import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
 import Attendance from "./Pages/leaveDetails/Attendance.jsx";
 import OnLeave from "./Pages/leaveDetails/OnLeave.jsx";
+import ViewBasic from "./Pages/employee/ViewBasic.jsx"
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
           <Route path="/leave-details" element={<EmployeeLeaveDetails/>}/>
             <Route path="/employee-attendance" element={<Attendance/>}/>
                <Route path="/on-leave" element={<OnLeave/>}/>
+                  <Route path="/view-basic" element={<ViewBasic/>}/>
         </Route>
       </Routes>
     </>
