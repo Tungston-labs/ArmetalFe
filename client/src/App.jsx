@@ -4,7 +4,6 @@ import LoginForm from "./Pages/login/Login";
 import Layout from "./Components/Layout";
 import Department from "./Pages/department/Department";
 import Dashboard from "./Pages/dashboard/Dashboard";
-// import AddDepartment from "./Pages/department/AddDepartment.jsx";
 import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
 import Table from "./Components/Table.jsx";
 import EmployeeList from "./Pages/employee/EmployeeList.jsx";
@@ -39,7 +38,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="/department" element={<Department />} />
-          {/* <Route path="/add-department" element={<AddDepartment />} /> */}
+        
           <Route path="/employee" element={<EmployeeList />} />
           <Route path="/department-details" element={<DepartmentDetails />} />
           <Route path="/table" element={<Table />} />

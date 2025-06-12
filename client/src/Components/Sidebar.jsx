@@ -4,6 +4,8 @@ import { RiHome5Line } from "react-icons/ri";
 import { FaUsers, FaSitemap, FaTasks } from "react-icons/fa";
 import { MdOutlineLaptopChromebook } from "react-icons/md";
 import { HiMiniArrowRightEndOnRectangle } from "react-icons/hi2";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
   SidebarContainer,
@@ -18,6 +20,37 @@ import {
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+  
+      if (!refreshToken) {
+        console.error("No refresh token found.");
+        return;
+      }
+  
+      await axios.post(
+        "http://127.0.0.1:8000/api/logout/",
+        { refresh: refreshToken },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+  
+      // Clear stored tokens and redirect to login
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error.response?.data || error.message);
+    }
+  };
+  
 
   return (
     <SidebarContainer className={collapsed ? 'collapsed' : ''}>
@@ -38,7 +71,7 @@ export default function Sidebar() {
         <CustomLink to="/department" className={collapsed ? 'collapsed' : ''}>
           <FaSitemap /><span>Department</span>
         </CustomLink>
-        <CustomLink to="/daily-task" className={collapsed ? 'collapsed' : ''}>
+        <CustomLink to="/dailytask" className={collapsed ? 'collapsed' : ''}>
           <FaTasks /><span>Daily Task</span>
         </CustomLink>
         <CustomLink to="/payroll" className={collapsed ? 'collapsed' : ''}>
@@ -53,7 +86,7 @@ export default function Sidebar() {
       </Nav>
 
       <BottomSection>
-        <LogoutButton>
+        <LogoutButton onClick={handleLogout}>
           <HiMiniArrowRightEndOnRectangle />
           <span>Log out</span>
         </LogoutButton>
