@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   padding: 20px;
   font-family: 'Segoe UI', sans-serif;
-  background: #f9fbf4;
+background: #FBFEF3;
   min-height: 100vh;
 `;
 export const HeaderSection = styled.div`
@@ -146,7 +146,7 @@ width: 100%;
 
   th, td {
     text-align: left;
-    padding: 0.5rem;
+    padding: 0.1rem;
     white-space: nowrap;
     background-color: white;
     border: none; /* remove cell borders */
