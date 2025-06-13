@@ -44,14 +44,14 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:8000/api/create-company/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NjIzMDI0LCJpYXQiOjE3NDk2MTk0MjQsImp0aSI6IjM5NzMzODUxZjBmMjRjZmU4YWE5YTYyZTYyYWQ2MzQwIiwidXNlcl9pZCI6MX0.vk368Lo5Nc80qibmwQdYAa2tPcZWNc3hdlG1wyRduWU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODAwMTg4LCJpYXQiOjE3NDk3OTY1ODgsImp0aSI6IjUwN2U3ZDY2YWM1OTQ1MGM4Zjc0N2U1ODIwMTkzMzcyIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.jRqwHu5Nf9LbyWS4wokIbEwQ2LBxhBMtsQ5BqKVXtJo
 
 {
-  "name": "abcd",
-  "address": "xyz street, London",
-  "location": "dubai",
-  "contact_number": "8748543210",
-  "email": "contact@abcd.com",
+  "name": "asdfgh lab",
+  "address": "xyz street, kochi",
+  "location": "kakanad",
+  "contact_number": "89005985610",
+  "email": "contact@ddfghmzo.com",
   "modules": {
     "attendance": true,
     "leave": true,
@@ -65,7 +65,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### 
 GET http://127.0.0.1:8000/api/companies/list/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NjIzMDI0LCJpYXQiOjE3NDk2MTk0MjQsImp0aSI6IjM5NzMzODUxZjBmMjRjZmU4YWE5YTYyZTYyYWQ2MzQwIiwidXNlcl9pZCI6MX0.vk368Lo5Nc80qibmwQdYAa2tPcZWNc3hdlG1wyRduWU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODAwMTg4LCJpYXQiOjE3NDk3OTY1ODgsImp0aSI6IjUwN2U3ZDY2YWM1OTQ1MGM4Zjc0N2U1ODIwMTkzMzcyIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.jRqwHu5Nf9LbyWS4wokIbEwQ2LBxhBMtsQ5BqKVXtJo
+
+# search comapny by name
+###
+GET http://127.0.0.1:8000/api/companies/list/?search=lumi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODA0NzEwLCJpYXQiOjE3NDk4MDExMTAsImp0aSI6Ijg5MjM0NzczMWU3NDRmMzk5NzkwZmQwZjE0ZmI1ZjQwIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.aejv_GUBd-7esQC2AUjn_rNdnR7LA-Bs800v8ncgb00
+
+
 
 ### Get details of a single company (replace 1 with actual ID)
 GET http://127.0.0.1:8000/api/companies/1/
