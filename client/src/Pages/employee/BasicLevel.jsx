@@ -16,7 +16,10 @@ import {
   TwoColumn
 } from './BasicLevel.Styles';
 import Multistep from '../../Components/Multistep'
+import { useNavigate } from 'react-router-dom';
 export default function AddEmployeeForm() {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <Header>
@@ -93,7 +96,9 @@ export default function AddEmployeeForm() {
       <Input placeholder="Insurance number" value="Insurance number" />
 
       <FlexRow>
-        <ApproveButton>Next</ApproveButton>
+      <ApproveButton onClick={() => navigate('/bank-payment')}>
+  Next
+</ApproveButton>
       </FlexRow>
     </Container>
   );

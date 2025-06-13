@@ -22,10 +22,9 @@ ActionArea,
   TitleSection
 } from "./EmployeeList.styles";
 import { FaInfoCircle, FaTrash,FaPlus } from "react-icons/fa";
-import { FiUserPlus } from "react-icons/fi";
-import { CiSearch } from "react-icons/ci";
+import { useLocation, NavLink } from 'react-router-dom';
 import { LuArrowLeft } from "react-icons/lu";
-
+import { useNavigate } from 'react-router-dom';
 const employees = new Array(11).fill({
   slNo: "001",
   name: "Ajay kumar",
@@ -36,6 +35,8 @@ const employees = new Array(11).fill({
 });
 
 const EmployeeList = () => {
+  const navigate = useNavigate();
+   const location = useLocation();
   return (
     <Container>
        <TopBar>
@@ -49,23 +50,36 @@ const EmployeeList = () => {
            <HeaderSection>
              <TitleSection>
              <LuArrowLeft style={{width:"30px", height:30}} />
-                            <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "70px", color:"black" }} />
+                            <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px", color:"black" }} />
                             <div>
                               <Title>Employee</Title>
                               <Subtitle>Manage your Employee.</Subtitle>
                             </div>
              </TitleSection>
              <ActionArea>
-               <AddButton onClick={() => setShowModal(true)}><FaPlus /> Add Department</AddButton>
+           <AddButton onClick={() => navigate('/basic-details')}>
+      <FaPlus /> Add Employee
+    </AddButton>
                <SearchInput type="text" placeholder="Search by employee name or ID" />
              </ActionArea>
            </HeaderSection>
-      <Tabs>
-        <Tab active>Employee list</Tab>
-        <Tab>Employee leave request</Tab>
-        <Tab>Employee Attendance</Tab>
-           <Tab>Employee Visa</Tab>
-      </Tabs>
+       <Tabs>
+      <NavLink to="/employee" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/employee'}>Employee list</Tab>
+      </NavLink>
+
+      <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
+      </NavLink>
+
+      <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+      </NavLink>
+
+      <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+      </NavLink>
+    </Tabs>
 
       <Table>
         <thead>

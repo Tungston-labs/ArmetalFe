@@ -6,8 +6,14 @@ export const StepsWrapper = styled.div`
   .ant-steps-item-icon {
     position: relative; /* allow ::before to be placed behind */
     z-index: 1;
+    
   }
-
+    .ant-steps-item:nth-child(2) .ant-steps-item-title {
+   width:150px;
+  }
+ .ant-steps-item-title {
+    font-size: 13px !important;  /* default is ~14px */
+  }
   .ant-steps-item-icon::before {
     content: "";
     position: absolute;

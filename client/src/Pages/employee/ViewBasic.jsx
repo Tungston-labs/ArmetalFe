@@ -24,6 +24,7 @@ import {
 } from "./ViewBasic.Style";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 const AddEmployee = () => {
+     const location = useLocation();
   return (
     <Container>
       <Header>

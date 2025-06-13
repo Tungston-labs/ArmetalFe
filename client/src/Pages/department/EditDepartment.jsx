@@ -9,7 +9,7 @@ Subtitle,
   InputGroup,
   Label,
   Input,SearchInput,
-  TableWrapper,StyledIcon,
+  TableWrapper,
   StyledTable,
   Avatar,AddButton,HRManager,
   IconButton,TitleSection,
@@ -95,7 +95,7 @@ const DepartmentDetail = () => {
                        </TitleSection>
               <ActionArea>
            <AddButton>
-  <StyledIcon /> Save
+ Save
 </AddButton>
 
               

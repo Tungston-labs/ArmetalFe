@@ -225,20 +225,18 @@ export const TopBar = styled.div`
   align-items: center;
   margin-bottom: 1.5rem;
 `;
-
 export const Tabs = styled.div`
   display: flex;
   gap: 2rem;
   margin: 1.5rem 0;
+  font-family:raleway;
   border-bottom: 2px solid #ddd;
 `;
 
-export const Tab = styled.button`
-  background: none;
-  border: none;
-  padding: 0.7rem 1.2rem;
-  border-bottom: 3px solid ${({ active }) => (active ? '#1e40af' : 'transparent')};
-  color: ${({ active }) => (active ? '#1e40af' : '#333')};
-  font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
+export const Tab = styled.div`
+  padding-bottom: 0.5rem;
   cursor: pointer;
+  font-weight: 500;
+  border-bottom: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
+  color: ${({ active }) => (active ? "#1e3a8a" : "#555")};
 `;

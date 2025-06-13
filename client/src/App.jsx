@@ -17,7 +17,7 @@ import DailyTask from "./Pages/dailytask/Daily.jsx";
 import BasicLevel from "./Pages/employee/BasicLevel.jsx";
 import BankPayment from "./Pages/employee/BankPayment.jsx"
 import Documents from "./Pages/employee/Documents.jsx"
-import EditBasicLevel from "./Pages/employee/EditBasiclevel.jsx"
+// import EditBasicLevel from "./Pages/employee/EditBasiclevel.jsx"
 import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
 import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
 import Attendance from "./Pages/leaveDetails/Attendance.jsx";
@@ -31,6 +31,7 @@ import DocumentEdit from "./Pages/editform/DocumentEdit.jsx"
 import Succes  from "./Components/Succes.jsx";
 import ConfirmLeaveModal from "./Components/ConfirmLeaveModal.jsx";
 import EditDepartment from "./Pages/department/EditDepartment.jsx"
+import Payroll1 from "./Pages/payroll/Payroll1.jsx"
 function App() {
   return (
     <>
@@ -69,7 +70,7 @@ function App() {
                <Route path="/edit-document" element={<DocumentEdit/>} />
                <Route path="/succes" element={<Succes/>}/>
                 <Route path="/confirm" element={<ConfirmLeaveModal/>}/>
-
+  <Route path="/payrolls" element={<Payroll1/>}/>
         </Route>
       </Routes>
     </>

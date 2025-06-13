@@ -22,6 +22,7 @@ import {
 } from "./OnLeave.Style";
 // import{FaPlus} from 'react-icons/fa';
 import { IoEyeOutline } from "react-icons/io5";
+import { useLocation, NavLink } from 'react-router-dom';
 const mockData = new Array(10).fill({
   name: "Employee name",
   id: "12545166",
@@ -30,6 +31,8 @@ const mockData = new Array(10).fill({
 });
 
 export default function EmployeeAttendance() {
+     const location = useLocation();
+   
   return (
     <Container>
       <TopBar>
@@ -55,12 +58,24 @@ export default function EmployeeAttendance() {
         </ActionArea>
 
       </HeaderSection>
-      <Tabs>
-        <Tab active>Employee list</Tab>
-        <Tab>Employee leave request</Tab>
-        <Tab>Employee Attendance</Tab>
-        <Tab>Employee Visa</Tab>
-      </Tabs>
+       <Tabs>
+           <NavLink to="/employee" style={{ textDecoration: 'none' }}>
+             <Tab active={location.pathname === '/employee'}>Employee list</Tab>
+           </NavLink>
+     
+           <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
+             <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
+           </NavLink>
+     
+           <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
+             <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+           </NavLink>
+     
+           <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
+             <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+           </NavLink>
+         </Tabs>
+     
 
       <TableTitle>12 March 2025</TableTitle>
 
