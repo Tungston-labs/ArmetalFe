@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getHolidays, addHoliday, removeHoliday } from '../../Redux/holidaySlice';
 import { fetchHolidayTypes } from '../../services/holidayService';
 
+
+
 const formatDateToISO = (dateStr) => {
   const date = new Date(dateStr);
   const yyyy = date.getFullYear();
@@ -26,6 +28,8 @@ const HolidayManager = () => {
   const [formData, setFormData] = useState({ name: "", type: "", date: "" });
 
   const [typeOptions, setTypeOptions] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [selectedIdToDelete, setSelectedIdToDelete] = React.useState(null);
 
   useEffect(() => {
     fetchHolidayTypes().then(data => setTypeOptions(data));
@@ -55,9 +59,23 @@ const HolidayManager = () => {
 };
 
 
-  const handleDelete = (id) => {
-    dispatch(removeHoliday(id));
-  };
+const handleDeleteClick = (id) => {
+  setSelectedIdToDelete(id);
+  setShowDeleteModal(true);
+};
+
+const confirmDelete = () => {
+  dispatch(removeHoliday(selectedIdToDelete));
+  setShowDeleteModal(false);
+  setSelectedIdToDelete(null);
+};
+
+
+const cancelDelete = () => {
+  setShowDeleteModal(false);
+  setSelectedIdToDelete(null);
+};
+
 
   return (
     <Container>
@@ -120,13 +138,66 @@ const HolidayManager = () => {
                 <Td>{item.holiday_type_display}</Td> 
                 <Td>{item.date}</Td>
                 <Td>
-                  <FaTrashAlt style={{ color: "red", cursor: "pointer" }} onClick={() => handleDelete(item.id)} />
+                <FaTrashAlt style={{ color: "red", cursor: "pointer" }} onClick={() => handleDeleteClick(item.id)} />
                 </Td>
               </tr>
             ))}
           </tbody>
         </Table>
       </TableWrapper>
+      {showDeleteModal && (
+  <div style={{
+    position: "fixed",
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000
+  }}>
+    <div style={{
+      background: "white",
+      padding: "2rem",
+      borderRadius: "10px",
+      textAlign: "center",
+      maxWidth: "400px",
+      width: "100%"
+    }}>
+      <h3>Confirm Deletion</h3>
+      <p>Are you sure you want to delete this Holiday?</p>
+      <div style={{ marginTop: "1rem" }}>
+        <button
+          onClick={confirmDelete}
+          style={{
+            marginRight: "1rem",
+            backgroundColor: "red",
+            color: "white",
+            border: "none",
+            padding: "0.5rem 1rem",
+            borderRadius: "5px",
+            cursor: "pointer"
+          }}
+        >
+          Delete
+        </button>
+        <button
+          onClick={cancelDelete}
+          style={{
+            backgroundColor: "gray",
+            color: "white",
+            border: "none",
+            padding: "0.5rem 1rem",
+            borderRadius: "5px",
+            cursor: "pointer"
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </Container>
   );
 };
