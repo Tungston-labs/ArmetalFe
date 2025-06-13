@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import AddCompanyModal from '../superAdmin/AddCompany'; // adjust path as needed
+
 import {
   Container,
   Header,
@@ -39,6 +41,8 @@ const CompanyTable = () => {
   const [search, setSearch] = useState('');
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+
 
   useEffect(() => {
     dispatch(getCompanies({ page, search: search.trim() }));
@@ -87,9 +91,10 @@ const CompanyTable = () => {
           </div>
         </TitleSection>
         <ActionArea>
-          <AddButton onClick={() => navigate('/add-company')}>
-            <FaPlus /> Add Company
-          </AddButton>
+        <AddButton onClick={() => setShowAddModal(true)}>
+  <FaPlus /> Add Company
+</AddButton>
+
           <SearchInput
             type="text"
             placeholder="Search by Company name"
@@ -205,6 +210,30 @@ const CompanyTable = () => {
           </div>
         </div>
       )}
+      {showAddModal && (
+  <div style={{
+    position: "fixed",
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000
+  }}>
+    <div style={{
+      background: "white",
+      padding: "2rem",
+      borderRadius: "10px",
+      maxWidth: "900px",
+      width: "90%",
+      maxHeight: "90vh",
+      overflowY: "auto"
+    }}>
+      <AddCompanyModal onClose={() => setShowAddModal(false)} />
+    </div>
+  </div>
+)}
+
 
       <Pagination>
         <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>

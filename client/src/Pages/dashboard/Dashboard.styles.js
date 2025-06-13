@@ -6,6 +6,7 @@ export const DashboardContainer = styled.div`
   // margin-left: 250px;
   padding: 40px 20px;
   background: #FBFEF3;
+
  
 
   @media (max-width: 768px) {
@@ -17,12 +18,14 @@ export const DashboardContainer = styled.div`
 export const SectionTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: 20px;
+  font-family: Satoshi;
 `;
 
 export const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
+
   margin-bottom: 40px;
 `;
 
@@ -40,12 +43,14 @@ export const StatCard = styled.div`
 export const CardTitle = styled.p`
   font-weight: 600;
   color: #111827;
+   font-family: Satoshi;
 `;
 
 export const CardValue = styled.p`
   font-size: 1.5rem;
   font-weight: bold;
   color: #111;
+  font-family: Satoshi;
 `;
 
 export const DepartmentSection = styled.div``;
@@ -54,11 +59,13 @@ export const DepartmentCard = styled.div`
   background: #e5eaf4;
   padding: 15px;
   border-radius: 12px;
+ font-family: Raleway;
 `;
 
 export const HeadInfo = styled.div`
   display: flex;
   align-items: center;
+    font-family: Raleway;
   justify-content: space-between;
 
   small {
@@ -82,6 +89,7 @@ export const Avatar = styled.img`
 export const ViewMoreButton = styled.button`
   background: linear-gradient(to right, #1e3a8a, #3b82f6);
   color: white;
+  font-size:satoshi;
   font-weight: 600;
   padding: 20px;
   border-radius: 12px;

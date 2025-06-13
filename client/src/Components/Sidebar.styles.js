@@ -11,10 +11,10 @@ export const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
-  // position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
+  overflow-y: auto;
 
   &.collapsed {
     width: 60px;
@@ -33,27 +33,39 @@ export const SidebarContainer = styled.div`
   }
 `;
 
+
 export const TopSection = styled.div`
   padding: 20px;
   text-align: center;
 `;
 
 export const Logo = styled.h1`
-  font-size: 24px;
-  font-weight: bold;
   margin: 50px 0 0 0;
-  color: white;
   white-space: nowrap;
+
+  img {
+    width: 150px; /* default size */
+    transition: width 0.3s ease;
+  }
+
+  @media (max-width: 1024px) {
+    margin: 30px 0 0 0;
+
+    img {
+      width: 100px; /* smaller on laptop/tablet */
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: none; /* hide the whole logo on mobile */
+  }
 
   &.hidden {
     display: none;
   }
-
-  @media (max-width: 768px) {
-    font-size: 18px;
-    margin: 20px 0 0 0;
-  }
 `;
+
+
 
 export const Nav = styled.ul`
   list-style: none;
@@ -139,7 +151,7 @@ export const CustomLink = styled(Link)`
 
   span {
     white-space: nowrap;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, width 0.3s ease;
   }
 
   &:hover {
@@ -151,6 +163,7 @@ export const CustomLink = styled(Link)`
     }
   }
 
+  /* Sidebar collapsed (on large screens) */
   &.collapsed {
     justify-content: center;
 
@@ -163,12 +176,17 @@ export const CustomLink = styled(Link)`
     }
   }
 
+  /* Small screen behavior: Always hide text */
   @media (max-width: 768px) {
-    width: 100%;
-    font-size: 0;
+    justify-content: center;
+
+    span {
+      display: none;
+    }
 
     svg {
-      font-size: 20px;
+      margin-right: 0;
     }
   }
 `;
+

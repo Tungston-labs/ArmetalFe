@@ -5,6 +5,7 @@ export const Container = styled.div`
   padding: 2rem;
   font-family: 'Segoe UI', sans-serif;
   background:#FBFEF3;
+   font-family: Satoshi;
 `;
 
 export const Header = styled.div`
@@ -170,11 +171,13 @@ export const TimeBox = styled.div`
 `;
 export const HRManager = styled.div`
   display: flex;
+  height:30px;
+ 
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem ;
   border: 1px solid #ccc;
-  border-radius: 12px;
+  border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
@@ -185,8 +188,8 @@ export const HRManager = styled.div`
   }
 
   img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
   }

@@ -2,20 +2,20 @@ import React from 'react';
 import {
   Container,
   HeaderSection,
-  IconTitle,
-  Title,
-  SubTitle,
+  IconTitle,TopBar,
+  Title,ActionArea,
+Subtitle,
   FormSection,
   InputGroup,
   Label,
-  Input,
+  Input,SearchInput,
   TableWrapper,
   StyledTable,
-  Avatar,
-  IconButton,
+  Avatar,AddButton,HRManager,
+  IconButton,TitleSection,
 } from '../department/DepartmentDetails.Styles';
-import { FaArrowLeft, FaInfoCircle, FaTrash } from 'react-icons/fa';
-
+import { FaPlus, FaInfoCircle, FaTrash } from 'react-icons/fa';
+import { HiOutlinePencilSquare } from "react-icons/hi2";
 const employees = [
   {
     id: '001',
@@ -77,16 +77,30 @@ const employees = [
 const DepartmentDetail = () => {
   return (
     <Container>
-      <HeaderSection>
-        <IconTitle>
-          <FaArrowLeft />
-          <div>
-            <Title>Department</Title>
-            <SubTitle>Manage all departments within the organization.</SubTitle>
-          </div>
-        </IconTitle>
-      </HeaderSection>
+        <TopBar>
+              <div />
+              <HRManager>
+                <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
+                <span>HR Manager</span>
+              </HRManager>
+            </TopBar>
+       <HeaderSection>
+             <TitleSection>
+                        {/* > <LuArrowLeft style={{ width: "36px", height: 36 }} / */}
+                         <img src="/images/department.png" alt="Icon" style={{ height: "74px" }} />
+                         <div>
+                           <Title>Department</Title>
+                           <Subtitle>Manage all departments within the organization.</Subtitle>
+                         </div>
+                       </TitleSection>
+              <ActionArea>
+            <AddButton>
+  <HiOutlinePencilSquare style={{ width: '18px', height: '18px' }} /> Edit
+</AddButton>
 
+              
+              </ActionArea>
+            </HeaderSection>
       <FormSection>
         <InputGroup>
           <Label>Department name</Label>

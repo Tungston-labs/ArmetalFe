@@ -1,35 +1,23 @@
 import React, { useState } from 'react';
 import {
-  Container,
-  Header,
-  Title,
-  Subtitle,
   FormWrapper,
+  BackHeader,
   FormSection,
   Input,
   CheckboxGroup,
   CheckboxLabel,
   ButtonGroup,
   Button,
-  HRManager,
-  TopBar,
-  SearchInput,
-  TitleSection,
-  BackHeader,
   Hr,
   FormField,
   Label
 } from './AddCompany.Styles';
-
-import { LuArrowLeft } from "react-icons/lu";
 import { GoArrowLeft } from "react-icons/go";
 import { useDispatch } from 'react-redux';
-import { addCompany } from '../../Redux/superAdminSlice'; // Adjust path as needed
-import { useNavigate } from 'react-router-dom';
+import { addCompany } from '../../Redux/superAdminSlice';
 
-const AddCompany = () => {
+const AddCompanyModal = ({ onClose }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -37,150 +25,141 @@ const AddCompany = () => {
     email: '',
     location: '',
     contact_number: '',
-    modules: [],
+    modules: []
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleModuleChange = (e) => {
-    const { value, checked } = e.target;
+    const value = e.target.value;
     setFormData(prev => ({
       ...prev,
-      modules: checked
-        ? [...prev.modules, value]
-        : prev.modules.filter(m => m !== value)
+      modules: prev.modules.includes(value)
+        ? prev.modules.filter(m => m !== value)
+        : [...prev.modules, value]
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Convert modules array → object format
+    const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
+    const modulesObject = {};
+    allModules.forEach((mod) => {
+      modulesObject[mod] = formData.modules.includes(mod);
+    });
+  
+    const finalData = {
+      ...formData,
+      modules: modulesObject,
+    };
+  
     try {
-      await dispatch(addCompany(formData)).unwrap();
-      navigate('/superadmin/companies'); // change as needed
+      await dispatch(addCompany(finalData)).unwrap();
+      onClose();
     } catch (err) {
-      console.error("Failed to add company:", err);
+      console.error("Add Company failed", err);
     }
   };
+  
 
   return (
-    <Container>
-      <Header>
-        <TopBar>
-          <TitleSection>
-            <LuArrowLeft style={{ width: "36px", height: 36 }} />
-            <img src="/images/superadmin.png" alt="Payroll Icon" style={{ height: "51px" }} />
-            <div>
-              <Title>Super admin</Title>
-              <Subtitle>Manage all departments within the organization.</Subtitle>
-            </div>
-          </TitleSection>
-          <HRManager>
-            <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
-            <span>HR Manager</span>
-          </HRManager>
-        </TopBar>
-      </Header>
+    <FormWrapper>
+      <BackHeader>
+        <GoArrowLeft onClick={onClose} style={{ cursor: "pointer" }} />
+        <span>Add Company</span>
+      </BackHeader>
 
-      <FormWrapper>
-        <BackHeader>
-          <GoArrowLeft />
-          <span>Add Company</span>
-        </BackHeader>
+      <form onSubmit={handleSubmit}>
+        <FormSection>
+          <div>
+            <FormField>
+              <Label>Company Name</Label>
+              <Input
+                type="text"
+                name="name"
+                placeholder="Company name"
+                value={formData.name}
+                onChange={handleChange}
+              />
+            </FormField>
 
-        <form onSubmit={handleSubmit}>
-          <FormSection>
-            <div>
-              <FormField>
-                <Label>Company Name</Label>
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder="Company name"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </FormField>
+            <FormField>
+              <Label>Address</Label>
+              <Input
+                type="text"
+                name="address"
+                placeholder="Address"
+                value={formData.address}
+                onChange={handleChange}
+              />
+            </FormField>
 
-              <FormField>
-                <Label>Address</Label>
-                <Input
-                  type="text"
-                  name="address"
-                  placeholder="Address"
-                  value={formData.address}
-                  onChange={handleChange}
-                />
-              </FormField>
+            <FormField>
+              <Label>Email</Label>
+              <Input
+                type="email"
+                name="email"
+                placeholder="E-mail"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </FormField>
+          </div>
 
-              <FormField>
-                <Label>Email</Label>
-                <Input
-                  type="email"
-                  name="email"
-                  placeholder="E-mail"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </FormField>
-            </div>
+          <div>
+            <FormField>
+              <Label>Location</Label>
+              <Input
+                type="text"
+                name="location"
+                placeholder="Company location"
+                value={formData.location}
+                onChange={handleChange}
+              />
+            </FormField>
 
-            <div>
-              <FormField>
-                <Label>Location</Label>
-                <Input
-                  type="text"
-                  name="location"
-                  placeholder="Company location"
-                  value={formData.location}
-                  onChange={handleChange}
-                />
-              </FormField>
+            <FormField>
+              <Label>Contact Number</Label>
+              <Input
+                type="text"
+                name="contact_number"
+                placeholder="Contact number"
+                value={formData.contact_number}
+                onChange={handleChange}
+              />
+            </FormField>
+          </div>
+        </FormSection>
 
-              {/* Company ID is auto-generated — remove input */}
-              <FormField>
-                <Label>Contact Number</Label>
-                <Input
-                  type="text"
-                  name="contact_number"
-                  placeholder="Contact number"
-                  value={formData.contact_number}
-                  onChange={handleChange}
-                />
-              </FormField>
-            </div>
-          </FormSection>
+        <h4>Privileges</h4>
+        <CheckboxGroup>
+        {["dashboard", "employee", "department", "daily_task", "payroll", "holiday"].map((module) => (
+  <CheckboxLabel key={module}>
+    <input
+      type="checkbox"
+      value={module}
+      checked={formData.modules.includes(module)}
+      onChange={handleModuleChange}
+    />
+    {module.charAt(0).toUpperCase() + module.slice(1).replace('_', ' ')}
+  </CheckboxLabel>
+))}
 
-          <h4>Privileges</h4>
-          <CheckboxGroup>
-            {["dashboard", "employee", "department", "daily_task"].map((module) => (
-              <CheckboxLabel key={module}>
-                <input
-                  type="checkbox"
-                  value={module}
-                  checked={formData.modules.includes(module)}
-                  onChange={handleModuleChange}
-                />
-                {module.charAt(0).toUpperCase() + module.slice(1).replace('_', ' ')}
-              </CheckboxLabel>
-            ))}
-          </CheckboxGroup>
+        </CheckboxGroup>
 
-          <Hr />
+        <Hr />
 
-          <ButtonGroup>
-            <Button type="button" cancel onClick={() => navigate(-1)}>Cancel</Button>
-            <Button type="submit">Save</Button>
-          </ButtonGroup>
-        </form>
-      </FormWrapper>
-    </Container>
+        <ButtonGroup>
+          <Button type="button" cancel onClick={onClose}>Cancel</Button>
+          <Button type="submit">Save</Button>
+        </ButtonGroup>
+      </form>
+    </FormWrapper>
   );
 };
 
-export default AddCompany;
+export default AddCompanyModal;

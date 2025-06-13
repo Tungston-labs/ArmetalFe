@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   padding: 20px;
   font-family: 'Segoe UI', sans-serif;
-  background: #f9fbf4;
+background: #FBFEF3;
   min-height: 100vh;
 `;
 export const HeaderSection = styled.div`
@@ -64,11 +64,13 @@ export const TitleGroup = styled.div`
 `;
 export const HRManager = styled.div`
   display: flex;
+  height:30px;
+ 
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem ;
   border: 1px solid #ccc;
-  border-radius: 12px;
+  border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
@@ -79,8 +81,8 @@ export const HRManager = styled.div`
   }
 
   img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -140,10 +142,11 @@ width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
+  font-size:19px;
 
   th, td {
     text-align: left;
-    padding: 0.75rem;
+    padding: 0.1rem;
     white-space: nowrap;
     background-color: white;
     border: none; /* remove cell borders */
@@ -152,10 +155,13 @@ width: 100%;
   th {
     background-color: #5F53A53B;
     color: #333;
+    font-family:raleway;
+      padding: 0.75rem;
   }
 
  tbody tr {
   box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+  font-family:satoshi;
   }
 
   /* Optional: radius for only first and last td of each row */

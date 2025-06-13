@@ -14,11 +14,13 @@ export const TopBar = styled.div`
 
 export const HRManager = styled.div`
   display: flex;
+  height:30px;
+ 
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem ;
   border: 1px solid #ccc;
-  border-radius: 12px;
+  border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
@@ -29,19 +31,39 @@ export const HRManager = styled.div`
   }
 
   img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
   }
 `;
-
+export const Subtitle = styled.p`
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  margin-left: 2px;
+  font-family:raleway;
+`;
 export const HeaderSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+`;
+export const TitleSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  img {
+    height: 51px;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 export const TitleGroup = styled.div`
@@ -80,6 +102,7 @@ export const AddButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-family:satoshi;
   background: linear-gradient(to right, #2a2a86, #3e64ff);
   color: white;
   padding: 0.5rem 1rem;

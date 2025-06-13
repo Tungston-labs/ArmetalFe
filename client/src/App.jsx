@@ -28,6 +28,9 @@ import ViewDocument from "./Pages/employee/ViewDocument.jsx"
 import BasicFormEdit from "./Pages/editform/BasicFormEdit.jsx"
 import BankpaymentEdit from "./Pages/editform/BankpaymentEdit.jsx"
 import DocumentEdit from "./Pages/editform/DocumentEdit.jsx"
+import Succes  from "./Components/Succes.jsx";
+import ConfirmLeaveModal from "./Components/ConfirmLeaveModal.jsx";
+import EditDepartment from "./Pages/department/EditDepartment.jsx"
 function App() {
   return (
     <>
@@ -38,9 +41,10 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="/department" element={<Department />} />
-        
+             <Route path="/department-details" element={<DepartmentDetails />} />
+                  <Route path="/edit-department" element={<EditDepartment />} />
           <Route path="/employee" element={<EmployeeList />} />
-          <Route path="/department-details" element={<DepartmentDetails />} />
+     
           <Route path="/table" element={<Table />} />
           <Route path="/holiday" element={<Holiday />} />
           <Route path="/payroll" element={<Payroll />} />
@@ -52,7 +56,7 @@ function App() {
           <Route path="/basic-details" element={<BasicLevel />} />
           <Route path="/bank-payment" element={<BankPayment />} />
           <Route path="/documents" element={<Documents />} />
-          <Route path="/edit-basic-level " element={<EditBasicLevel />} />
+          {/* <Route path="/edit-basic-level " element={<EditBasicLevel />} /> */}
           <Route path="/leave-request" element={<LeaveRequest />} />
           <Route path="/leave-details" element={<EmployeeLeaveDetails />} />
           <Route path="/employee-attendance" element={<Attendance />} />
@@ -63,6 +67,9 @@ function App() {
           <Route path="/edit-basicform" element={<BasicFormEdit />} />
              <Route path="/edit-bankpayment" element={<BankpaymentEdit/>} />
                <Route path="/edit-document" element={<DocumentEdit/>} />
+               <Route path="/succes" element={<Succes/>}/>
+                <Route path="/confirm" element={<ConfirmLeaveModal/>}/>
+
         </Route>
       </Routes>
     </>

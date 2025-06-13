@@ -23,6 +23,7 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user")); // Get user info from localStorage
+  const modules = user?.company_modules || {};
 
   const handleLogout = async () => {
     try {
@@ -62,41 +63,62 @@ export default function Sidebar() {
         </Logo>
       </TopSection>
 
-      <Nav>
+     
         
        
 
-        {/* Superadmin and HR admin shared tabs */}
-        {(user?.is_hr_admin) && (
-          <>
-           <CustomLink to="/" className={collapsed ? 'collapsed' : ''}>
-          <RiHome5Line /><span>Dashboard</span>
-        </CustomLink>
-            <CustomLink to="/employee" className={collapsed ? 'collapsed' : ''}>
-              <FaUsers /><span>Employee</span>
-            </CustomLink>
-            <CustomLink to="/department" className={collapsed ? 'collapsed' : ''}>
-              <FaSitemap /><span>Department</span>
-            </CustomLink>
-            <CustomLink to="/daily-task" className={collapsed ? 'collapsed' : ''}>
-              <FaTasks /><span>Daily Task</span>
-            </CustomLink>
-            <CustomLink to="/payroll" className={collapsed ? 'collapsed' : ''}>
-              <FaTasks /><span>Payroll</span>
-            </CustomLink>
-            <CustomLink to="/holiday" className={collapsed ? 'collapsed' : ''}>
-              <FaTasks /><span>Holiday</span>
-            </CustomLink>
-          </>
-        )}
+      <Nav>
+  {/* Superadmin: only Super Admin tab */}
+  {user?.is_superadmin && (
+    <CustomLink to="/superadmin" className={collapsed ? 'collapsed' : ''}>
+      <MdOutlineLaptopChromebook />
+      <span>Super Admin</span>
+    </CustomLink>
+  )}
 
-        {/* Only superadmin sees this */}
-        {user?.is_superadmin && (
-          <CustomLink to="/superadmin" className={collapsed ? 'collapsed' : ''}>
-            <MdOutlineLaptopChromebook /><span>Super Admin</span>
-          </CustomLink>
-        )}
-      </Nav>
+  {/* HR Admin: show only privileged modules */}
+  {user?.is_hr_admin && user?.company_modules && (
+    <>
+      {user.company_modules.dashboard && (
+        <CustomLink to="/" className={collapsed ? 'collapsed' : ''}>
+          <RiHome5Line />
+          <span>Dashboard</span>
+        </CustomLink>
+      )}
+      {user.company_modules.employee && (
+        <CustomLink to="/employee" className={collapsed ? 'collapsed' : ''}>
+          <FaUsers />
+          <span>Employee</span>
+        </CustomLink>
+      )}
+      {user.company_modules.department && (
+        <CustomLink to="/department" className={collapsed ? 'collapsed' : ''}>
+          <FaSitemap />
+          <span>Department</span>
+        </CustomLink>
+      )}
+      {user.company_modules.daily_task && (
+        <CustomLink to="/daily-task" className={collapsed ? 'collapsed' : ''}>
+          <FaTasks />
+          <span>Daily Task</span>
+        </CustomLink>
+      )}
+      {user.company_modules.payroll && (
+        <CustomLink to="/payroll" className={collapsed ? 'collapsed' : ''}>
+          <FaTasks />
+          <span>Payroll</span>
+        </CustomLink>
+      )}
+      {user.company_modules.holiday && (
+        <CustomLink to="/holiday" className={collapsed ? 'collapsed' : ''}>
+          <FaTasks />
+          <span>Holiday</span>
+        </CustomLink>
+      )}
+    </>
+  )}
+</Nav>
+
 
       <BottomSection>
         <LogoutButton onClick={handleLogout}>

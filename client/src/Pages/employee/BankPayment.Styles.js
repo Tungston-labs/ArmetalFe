@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   padding: 2rem;
   background: #FBFEF3;
-  font-family: 'Segoe UI', sans-serif;
+ font-family: Satoshi;
 `;
 
 export const Header = styled.div`

@@ -7,8 +7,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "TlsLab",
-  "password": "123"
+  "username": "ydm_arm_aaa_746",
+  "password": "CMPXM3PBGL801"
 }
 
 
@@ -17,8 +17,7 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:8000/api/logout/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4ODYwOTI0LCJpYXQiOjE3NDg4NTczMjQsImp0aSI6IjAwOGI3MzJlMGU4MzQ0YTBiMGIwZjk0Njg4OWE1NTY5IiwidXNlcl9pZCI6Mn0.yxeDI2bIKF8IExatX5AN9mbQjGMHEEfGbnEDfNf6OtE
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5Nzk1NTU0LCJpYXQiOjE3NDk3OTE5NTQsImp0aSI6IjI2YjNhZmE3ZDU1NTRiMDBiNTNmYTU1MmE2MmU4MzMyIiwidXNlcl9pZCI6MX0.nqiJ5M8wuC57RbmRKXJt1ckQXt8S1LdmzQ47JIK2smA
 {
   "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0ODk0MzcyNCwiaWF0IjoxNzQ4ODU3MzI0LCJqdGkiOiIzNTk1NDFkMjMzMzY0NGFjYmE1NWY4NTI5M2ZhNDM4ZiIsInVzZXJfaWQiOjJ9.XBDxkP19tY9Z_wBG4sRl4lYBWInp8H_B2qkafZFGIe8"
 }
@@ -28,11 +27,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Change Password (Employee, HR, Superadmin)
 POST http://localhost:8000/api/change-password/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzExNjkzLCJpYXQiOjE3NDk3MDgwOTMsImp0aSI6ImZjM2M5ZjlhMWJkOTRkMGZhMmUzZTU0ODM4MjNjOTRiIiwidXNlcl9pZCI6M30.YMx-WBBSHdmilhjQaEdmSfEf81zK4ELDXryDV7FsLAA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODE4MDk0LCJpYXQiOjE3NDk4MTQ0OTQsImp0aSI6IjI0YjM4MDYzYTJlNzQ2MTI5ODg3MzM5OTBjYmU3MTRkIiwidXNlcl9pZCI6MTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.pjUe3KfOPzqvPH5m3LCnAOX040fuTA8kikqU3m5gFS8
 Content-Type: application/json
 
 {
-  "old_password": "CMPL3YIQN2BUY",
+  "old_password": "CMPXM3PBGL801",
   "new_password": "123"
 }
 
@@ -44,18 +43,24 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:8000/api/create-company/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODAwMTg4LCJpYXQiOjE3NDk3OTY1ODgsImp0aSI6IjUwN2U3ZDY2YWM1OTQ1MGM4Zjc0N2U1ODIwMTkzMzcyIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.jRqwHu5Nf9LbyWS4wokIbEwQ2LBxhBMtsQ5BqKVXtJo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODE1Mzc2LCJpYXQiOjE3NDk4MTE3NzYsImp0aSI6IjMzNDVhNmQ0YTE4YzRjODI4Yjg0ZDRkMWQ3YWYzNGI2IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9._dHxEUTpDDWgGj6iPZ62j6bl-zSOJ-4vUSvCuN5Qxio
 
 {
-  "name": "asdfgh lab",
+  "name": "dls lab",
   "address": "xyz street, kochi",
   "location": "kakanad",
-  "contact_number": "89005985610",
-  "email": "contact@ddfghmzo.com",
+  "contact_number": "99005985610",
+  "email": "contact@dhmzo.com",
   "modules": {
-    "attendance": true,
-    "leave": true,
-    "tasks": true
+    
+  "dashboard": true,
+  "employee": true,
+  "department": false,
+  "daily_task": true,
+  "payroll": false,
+  "holiday": true
+
+
   }
 }
 
@@ -107,7 +112,7 @@ DELETE http://127.0.0.1:8000/api/companies/4/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTExODIwLCJpYXQiOjE3NDg1MDgyMjAsImp0aSI6ImMyYmMxZmRhNTMyNDQ3YjU5MmZlNmE0MzUxYmVlZThiIiwidXNlcl9pZCI6Mn0.3FUWk6avJUq1AmfRGZrip8RG9Bj5shf5Fw_u-HERfLw
 
 
-# ----------------------------API FOR HR ADMIN:COMPANY--------------------------------
+# ----------------------------API FOR HR ADMIN:HR COMPANY--------------------------------
 
 # API for generating token pair for company HR
 
@@ -117,8 +122,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "hwr_arm_dub_841",     
-  "password": "123"  
+  "username": "fia_arm_kak_176",     
+  "password": "CMPQJLUFALWXP"  
 }
 
 
@@ -433,7 +438,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Create Holiday
 POST http://127.0.0.1:8000/api/holidays/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzIzNzU0LCJpYXQiOjE3NDk3MjAxNTQsImp0aSI6ImY3OGZmMDJmZTMzNTQzYWNiMTVjZTE3MDA3YzJhMTJiIiwidXNlcl9pZCI6M30.84NQjY64oSBUX-zgV8yfFJXPfWTlBROm-ricQT6GAzk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODE4MDk0LCJpYXQiOjE3NDk4MTQ0OTQsImp0aSI6IjI0YjM4MDYzYTJlNzQ2MTI5ODg3MzM5OTBjYmU3MTRkIiwidXNlcl9pZCI6MTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.pjUe3KfOPzqvPH5m3LCnAOX040fuTA8kikqU3m5gFS8
 Content-Type: application/json
 
 {
@@ -445,8 +450,7 @@ Content-Type: application/json
 
 ### List Holidays (HR Admin)
 GET http://127.0.0.1:8000/api/holidays/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzIzNzU0LCJpYXQiOjE3NDk3MjAxNTQsImp0aSI6ImY3OGZmMDJmZTMzNTQzYWNiMTVjZTE3MDA3YzJhMTJiIiwidXNlcl9pZCI6M30.84NQjY64oSBUX-zgV8yfFJXPfWTlBROm-ricQT6GAzk
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODE4MDk0LCJpYXQiOjE3NDk4MTQ0OTQsImp0aSI6IjI0YjM4MDYzYTJlNzQ2MTI5ODg3MzM5OTBjYmU3MTRkIiwidXNlcl9pZCI6MTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.pjUe3KfOPzqvPH5m3LCnAOX040fuTA8kikqU3m5gFS8
 
 ### Get Single Holiday by ID
 GET http://127.0.0.1:8000/api/holidays/3/

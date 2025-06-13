@@ -1,13 +1,4 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from user.models import User
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.auth import authenticate
-from rest_framework import serializers
-from user.models import User
-
-
-
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
@@ -15,12 +6,12 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = User.USERNAME_FIELD  # usually 'email'
+    username_field = User.USERNAME_FIELD  # usually 'username' or 'email'
 
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Add custom claims to the token
+        # Add roles to token payload
         token['is_superadmin'] = user.is_superadmin
         token['is_hr_admin'] = user.is_hr_admin
         token['is_employee'] = user.is_employee
@@ -37,7 +28,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         data = super().validate(attrs)
 
-        # Add user info in response body (not just in the token)
+        # Extract company module access if user belongs to a company
+        company_modules = {}
+        if user.company:
+            company_modules = user.company.modules
+
+        # Return structured user data
         data['user'] = {
             'id': user.id,
             'username': user.username,
@@ -45,7 +41,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'is_superadmin': user.is_superadmin,
             'is_hr_admin': user.is_hr_admin,
             'is_employee': user.is_employee,
+            'company_modules': company_modules,
         }
 
         return data
-   
