@@ -88,7 +88,7 @@ const Department = () => {
       <HeaderSection>
        <TitleSection>
                   {/* > <LuArrowLeft style={{ width: "36px", height: 36 }} / */}
-                   <img src="/images/department.png" alt="Payroll Icon" style={{ height: "74px" }} />
+                   <img src="/images/department.png" alt="Icon" style={{ height: "74px" }} />
                    <div>
                      <Title>Department</Title>
                      <Subtitle>Manage all departments within the organization.</Subtitle>

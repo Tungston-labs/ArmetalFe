@@ -9,7 +9,7 @@ Subtitle,
   InputGroup,
   Label,
   Input,SearchInput,
-  TableWrapper,
+  TableWrapper,StyledIcon,
   StyledTable,
   Avatar,AddButton,HRManager,
   IconButton,TitleSection,
@@ -94,8 +94,8 @@ const DepartmentDetail = () => {
                          </div>
                        </TitleSection>
               <ActionArea>
-            <AddButton>
-  <HiOutlinePencilSquare style={{ width: '18px', height: '18px' }} /> Edit
+           <AddButton>
+  <StyledIcon /> Save
 </AddButton>
 
               

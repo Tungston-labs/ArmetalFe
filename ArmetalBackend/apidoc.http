@@ -46,11 +46,11 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5Nzk2MzEzLCJpYXQiOjE3NDk3OTI3MTMsImp0aSI6ImE0ZjUyNDc0ODNhZDQzNTJhMmY0YTUxNDY5NjQ0ODg2IiwidXNlcl9pZCI6MX0.vP5e9OuCS5iMg4P0u6NXFXtvWgcKR_x7hqKQYejzd-Y
 
 {
-  "name": "abcd",
+  "name": "jesna",
   "address": "xyz street, London",
   "location": "dubai",
-  "contact_number": "8748543210",
-  "email": "contact@abcd.com",
+  "contact_number": "8778543210",
+  "email": "contact@hghhcd.com",
   "modules": {
     "attendance": true,
     "leave": true,
@@ -99,7 +99,7 @@ DELETE http://127.0.0.1:8000/api/companies/4/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTExODIwLCJpYXQiOjE3NDg1MDgyMjAsImp0aSI6ImMyYmMxZmRhNTMyNDQ3YjU5MmZlNmE0MzUxYmVlZThiIiwidXNlcl9pZCI6Mn0.3FUWk6avJUq1AmfRGZrip8RG9Bj5shf5Fw_u-HERfLw
 
 
-# ----------------------------API FOR HR ADMIN:COMPANY--------------------------------
+# ----------------------------API FOR HR ADMIN:HR COMPANY--------------------------------
 
 # API for generating token pair for company HR
 

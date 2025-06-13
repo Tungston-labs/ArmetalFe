@@ -1,32 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Breadcrumb,
   InfoGrid,
   ProfileImage,
   TwoColumn,
-  ThreeColumn,
   Input,
   SectionTitle,
   TextArea,
   FlexRow,
-  // ActionButton,
   ApproveButton,
   DeclineButton,
   TopBar,
   HRManager,
   TitleSection,
-  Title,LeftSide,
+  Title, LeftSide,
   Subtitle,
-  Hr,RightSide,
+  Hr, RightSide,
   InfoSection,
   FullWidthInput,
   TwoColumnRow,
-TwoColumnRows,FlexRows,
-DateField
+  TwoColumnRows, FlexRows,
+  DateField
 } from "./EmployeeLeaveDetails.Styles";
+import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal'; // ✅ Import your modal
 
 const EmployeeLeaveForm = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [actionType, setActionType] = useState('approve');
+
+  const handleConfirm = () => {
+    // Logic to process approval or decline
+    console.log(`Leave ${actionType}d`);
+    setShowModal(false);
+  };
+
   return (
     <Container>
       <TopBar>
@@ -38,7 +46,6 @@ const EmployeeLeaveForm = () => {
       </TopBar>
 
       <TitleSection>
-
         <img src="/images/employee.png" alt=" Icon" style={{ height: "50px" }} />
         <div>
           <Title>Employee</Title>
@@ -52,10 +59,10 @@ const EmployeeLeaveForm = () => {
       </Breadcrumb>
 
       <InfoGrid>
-        <div style={{width:"10%"}}>
+        <div style={{ width: "10%" }}>
           <ProfileImage src="https://i.pravatar.cc/100?img=5" alt="Employee" />
         </div>
-        <div style={{display:"flex", width:"90%",justifyContent:"space-between"}}>
+        <div style={{ display: "flex", width: "90%", justifyContent: "space-between" }}>
           <TwoColumn>
             <Input placeholder="Name" />
             <Input placeholder="Employee ID" />
@@ -69,18 +76,10 @@ const EmployeeLeaveForm = () => {
               <Input placeholder="Gender" />
             </TwoColumnRow>
           </InfoSection>
-          {/* <TwoColumn>
-             <Input placeholder="Address" />
-            
-          </TwoColumn> */}
-          {/* <ThreeColumn>
-   
-            <Input placeholder="DOB" />
-            <Input placeholder="Gender" />
-          </ThreeColumn> */}
         </div>
       </InfoGrid>
-<Hr />
+
+      <Hr />
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
         <Input placeholder="Job position / Designation" />
@@ -92,30 +91,45 @@ const EmployeeLeaveForm = () => {
       </TwoColumnRows>
 
       <SectionTitle>Leave Application</SectionTitle>
-     <FlexRows>
-  <LeftSide>
-    <Input placeholder="Leave Type" value="Sick leave" />
-  </LeftSide>
+      <FlexRows>
+        <LeftSide>
+          <Input placeholder="Leave Type" value="Sick leave" />
+        </LeftSide>
+        <RightSide>
+          <DateField>
+            <label>From</label>
+            <Input type="date" />
+          </DateField>
+          <DateField>
+            <label>To</label>
+            <Input type="date" />
+          </DateField>
+        </RightSide>
+      </FlexRows>
 
-  <RightSide>
-  <DateField>
-    <label>From</label>
-    <Input type="date" />
-  </DateField>
-  <DateField>
-    <label>To</label>
-    <Input type="date" />
-  </DateField>
-</RightSide>
-
-</FlexRows>
       <SectionTitle>Reason for Leave</SectionTitle>
       <TextArea defaultValue="I am requesting leave due to health reasons and will be unable to attend work on the mentioned dates. Kindly consider my application and grant the leave." />
 
       <FlexRow>
-        <DeclineButton>Decline</DeclineButton>
-        <ApproveButton>Approve</ApproveButton>
+        <DeclineButton onClick={() => {
+          setActionType('decline');
+          setShowModal(true);
+        }}>Decline</DeclineButton>
+
+        <ApproveButton onClick={() => {
+          setActionType('approve');
+          setShowModal(true);
+        }}>Approve</ApproveButton>
       </FlexRow>
+
+      {/* ✅ Modal */}
+      {showModal && (
+        <ConfirmLeaveModal
+          onClose={() => setShowModal(false)}
+          onConfirm={handleConfirm}
+          actionType={actionType}
+        />
+      )}
     </Container>
   );
 };
