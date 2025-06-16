@@ -8,11 +8,13 @@ import {
 import Multistep from '../../Components/Multistep';
 import { LuCirclePlus } from "react-icons/lu";
 import { IoImageOutline } from "react-icons/io5";
-
+import { useNavigate } from 'react-router-dom';
 import SuccessModal from '../../Components/Succes'; // <-- Import Success Modal
 
 export default function DocumentUploadForm() {
   const [showSuccessModal, setShowSuccessModal] = useState(false); // <-- State for Modal
+  const navigate = useNavigate();
+ 
 
   return (
     <Container>
@@ -75,7 +77,7 @@ export default function DocumentUploadForm() {
       </UploadSection>
 
       <ButtonGroup>
-        <Button secondary>Previous step</Button>
+          <Button secondary onClick={() => navigate(-1)}>Previous step</Button>
         <Button onClick={() => setShowSuccessModal(true)}>Submit</Button>
       </ButtonGroup>
 

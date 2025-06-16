@@ -69,14 +69,14 @@ export const Input = styled.input`
   padding: 0.6rem 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  width: 99%;
+  width: 95%;
   margin-bottom: 1rem;
   color:#999999;
   
 `;
 
 export const TextArea = styled.textarea`
-  width: 99%;
+  width: 98%;
   min-height: 120px;
   padding: 0.8rem;
   border: 1px solid #ccc;
@@ -96,7 +96,7 @@ export const TwoColumn = styled.div`
   // display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 5rem;
-  width: 40%;
+  width: 30%;
 `;
 
 export const ThreeColumn = styled.div`
@@ -104,6 +104,7 @@ export const ThreeColumn = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   gap: 2rem;
   width: 100%;
+
 `;
 
 export const FlexRow = styled.div`
@@ -185,9 +186,9 @@ export const Hr = styled.hr`
 
 
 export const InfoSection = styled.div`
-  width: 55%;
+  width: 60%;
   // padding: 1rem 0;
-  // margin-left:10%;
+  margin-left:5%;
 `;
 
 export const FullWidthInput = styled.input`
@@ -209,7 +210,7 @@ export const TwoColumnRows= styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
-  width:99%;
+  width:100%;
 `;
 
 export const Stepper = styled.div`
@@ -275,8 +276,9 @@ export const FormGroup = styled.div`
 
 export const Select = styled.select`
   width: 100%;
-  padding: 0.6rem;
-  border-radius: 8px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
   border: 1px solid #ccc;
 `;
 

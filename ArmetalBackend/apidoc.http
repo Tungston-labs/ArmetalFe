@@ -27,12 +27,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Change Password (Employee, HR, Superadmin)
 POST http://localhost:8000/api/change-password/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTM2MzI1LCJpYXQiOjE3NDg5MzI3MjUsImp0aSI6ImZmNDZjNGE5MTgyYzQwZTU5NWU2YmEyMzgwMjFiY2JlIiwidXNlcl9pZCI6M30.z4yb1fY_WVtcC5hkoY_Or8vnYn23zA2SvCkTs9eYdzI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODE4MDk0LCJpYXQiOjE3NDk4MTQ0OTQsImp0aSI6IjI0YjM4MDYzYTJlNzQ2MTI5ODg3MzM5OTBjYmU3MTRkIiwidXNlcl9pZCI6MTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.pjUe3KfOPzqvPH5m3LCnAOX040fuTA8kikqU3m5gFS8
 Content-Type: application/json
 
 {
-  "old_password": "CMPM7426ZDB2H",
-  "new_password": "password@123"
+  "old_password": "CMPXM3PBGL801",
+  "new_password": "123"
 }
 
 
@@ -43,18 +43,24 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:8000/api/create-company/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5Nzk2MzEzLCJpYXQiOjE3NDk3OTI3MTMsImp0aSI6ImE0ZjUyNDc0ODNhZDQzNTJhMmY0YTUxNDY5NjQ0ODg2IiwidXNlcl9pZCI6MX0.vP5e9OuCS5iMg4P0u6NXFXtvWgcKR_x7hqKQYejzd-Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMDc0MzY4LCJpYXQiOjE3NTAwNzA3NjgsImp0aSI6ImZlNjcxMDc5NGEyZDQ1MDNhOGQ1NTdkZTJlZTQ1ZWM4IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.aUy63FOpdM587dOnRhg-rCKlG1BuafRUVNtqewXx6W8
 
 {
-  "name": "jesna",
-  "address": "xyz street, London",
-  "location": "dubai",
-  "contact_number": "8778543210",
-  "email": "contact@hghhcd.com",
+  "name": "dls lab",
+  "address": "xyz street, kochi",
+  "location": "kakanad",
+  "contact_number": "99005985610",
+  "email": "contact@hgh.com",
   "modules": {
-    "attendance": true,
-    "leave": true,
-    "tasks": true
+    
+  "dashboard": true,
+  "employee": true,
+  "department": false,
+  "daily_task": true,
+  "payroll": false,
+  "holiday": true
+
+
   }
 }
 
@@ -64,7 +70,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### 
 GET http://127.0.0.1:8000/api/companies/list/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NjIzMDI0LCJpYXQiOjE3NDk2MTk0MjQsImp0aSI6IjM5NzMzODUxZjBmMjRjZmU4YWE5YTYyZTYyYWQ2MzQwIiwidXNlcl9pZCI6MX0.vk368Lo5Nc80qibmwQdYAa2tPcZWNc3hdlG1wyRduWU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODAwMTg4LCJpYXQiOjE3NDk3OTY1ODgsImp0aSI6IjUwN2U3ZDY2YWM1OTQ1MGM4Zjc0N2U1ODIwMTkzMzcyIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.jRqwHu5Nf9LbyWS4wokIbEwQ2LBxhBMtsQ5BqKVXtJo
+
+# search comapny by name
+###
+GET http://127.0.0.1:8000/api/companies/list/?search=lumi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODA0NzEwLCJpYXQiOjE3NDk4MDExMTAsImp0aSI6Ijg5MjM0NzczMWU3NDRmMzk5NzkwZmQwZjE0ZmI1ZjQwIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.aejv_GUBd-7esQC2AUjn_rNdnR7LA-Bs800v8ncgb00
+
+
 
 ### Get details of a single company (replace 1 with actual ID)
 GET http://127.0.0.1:8000/api/companies/1/
@@ -109,8 +122,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "bxi_arm_koc_761",     
-  "password": "CMPQL2DC4NY38"  
+  "username": "ydm_arm_aaa_746",     
+  "password": "123"  
 }
 
 
@@ -120,11 +133,11 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:8000/api/departments/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NjIzMjQ4LCJpYXQiOjE3NDk2MTk2NDgsImp0aSI6ImQ1YjI0NzQ1YmYwMjRmYjhhNTU5NTQ1NWNmM2Q1MGU4IiwidXNlcl9pZCI6Mn0.0sPrHZU3VqB7pCbCNLdw7QU0EVBHtD21k9ivzlzGx3o
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzExNjkzLCJpYXQiOjE3NDk3MDgwOTMsImp0aSI6ImZjM2M5ZjlhMWJkOTRkMGZhMmUzZTU0ODM4MjNjOTRiIiwidXNlcl9pZCI6M30.YMx-WBBSHdmilhjQaEdmSfEf81zK4ELDXryDV7FsLAA
 
 {
-  "name": "backend",
-  "department_code": "Br01",
+  "name": "Manufacturer",
+  "department_code": "M001",
   "department_head": ""
 }
 
@@ -133,7 +146,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 GET http://127.0.0.1:8000/api/departments/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NTQ1NzQxLCJpYXQiOjE3NDk1NDIxNDEsImp0aSI6IjA4MjQ3ZTQxNjQ0YzQ2ZjliNmRkZmIwNTUzOGNjYTQwIiwidXNlcl9pZCI6MjB9.irmd11sDEDhNi9ySegRQ6p1u22FJGpsHYXMlp6kDQz0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzExNjkzLCJpYXQiOjE3NDk3MDgwOTMsImp0aSI6ImZjM2M5ZjlhMWJkOTRkMGZhMmUzZTU0ODM4MjNjOTRiIiwidXNlcl9pZCI6M30.YMx-WBBSHdmilhjQaEdmSfEf81zK4ELDXryDV7FsLAA
 
 
 # retrieve single department
@@ -425,20 +438,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Create Holiday
 POST http://127.0.0.1:8000/api/holidays/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTI4NDM2LCJpYXQiOjE3NDg5MjQ4MzYsImp0aSI6IjM5ZGEzOGRiYjAyODRkOTM5ZDgxZjI1YTZlNTM4ZTkyIiwidXNlcl9pZCI6M30.9VK8uzpdHaP3_BcP2LKSGvrzzr9CdssbFRt41jgEwjs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODE4MDk0LCJpYXQiOjE3NDk4MTQ0OTQsImp0aSI6IjI0YjM4MDYzYTJlNzQ2MTI5ODg3MzM5OTBjYmU3MTRkIiwidXNlcl9pZCI6MTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.pjUe3KfOPzqvPH5m3LCnAOX040fuTA8kikqU3m5gFS8
 Content-Type: application/json
 
 {
-  "date": "2025-07-07",
-  "description": "Annual day",
+  "date": "2025-09-15",
+  "description": "Outing day",
   "holiday_type":"public"
 }
 
 
 ### List Holidays (HR Admin)
 GET http://127.0.0.1:8000/api/holidays/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTI4NDM2LCJpYXQiOjE3NDg5MjQ4MzYsImp0aSI6IjM5ZGEzOGRiYjAyODRkOTM5ZDgxZjI1YTZlNTM4ZTkyIiwidXNlcl9pZCI6M30.9VK8uzpdHaP3_BcP2LKSGvrzzr9CdssbFRt41jgEwjs
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODE4MDk0LCJpYXQiOjE3NDk4MTQ0OTQsImp0aSI6IjI0YjM4MDYzYTJlNzQ2MTI5ODg3MzM5OTBjYmU3MTRkIiwidXNlcl9pZCI6MTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.pjUe3KfOPzqvPH5m3LCnAOX040fuTA8kikqU3m5gFS8
 
 ### Get Single Holiday by ID
 GET http://127.0.0.1:8000/api/holidays/3/

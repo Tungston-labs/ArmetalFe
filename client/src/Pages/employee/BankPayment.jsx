@@ -7,7 +7,19 @@ import {
 } from './BankPayment.Styles';
 import Multistep from '../../Components/Multistep'
 import Table from '../../Components/Table'
-export default function BankPaymentForm() {
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+export default function BankPaymentForm() 
+{
+
+const dispatch = useDispatch();
+const currentStep = useSelector((state) => state.employee.currentStep);
+
+const stepTitles = [
+  'Basic Info',
+  'Bank Details',
+  'Document Upload'
+];
   return (
     <Container>
       <Header>
@@ -28,7 +40,7 @@ export default function BankPaymentForm() {
  <Hr />
       <div style={{ width: "100%", justifyContent: "center", display: "flex", padding: "20px" }}>
         <div style={{ width: "50%" }}>
-          <Multistep />
+        <Multistep currentStep={currentStep} steps={stepTitles} /> 
         </div>
       </div>
 

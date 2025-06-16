@@ -1,7 +1,16 @@
 from rest_framework import serializers
+from datetime import datetime
 from .models import (
-    Employee_db, EmpBankPaymentModel
+    Employee_db, EmpBankPaymentModel, EmpDocument, TempUpload
 )
+
+# Custom field to handle datetime-to-date safely
+class SafeDateField(serializers.DateField):
+    def to_representation(self, value):
+        if isinstance(value, datetime):
+            return value.date().isoformat()
+        return super().to_representation(value)
+
 
 class EmpBankPaymentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,15 +20,18 @@ class EmpBankPaymentSerializer(serializers.ModelSerializer):
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    dob = SafeDateField(required=False)
+    joining_date = SafeDateField(required=False)
+    visa_expiry = SafeDateField(required=False)
+    passport_expiry = SafeDateField(required=False)
+    contract_start = SafeDateField(required=False)
+    contract_end = SafeDateField(required=False)
+
     class Meta:
         model = Employee_db
-        exclude = ['user', 'password']  # password and user will be handled internally
+        exclude = ['user', 'password']
 
 
-from rest_framework import serializers
-from .models import EmpDocument,TempUpload
-
-# serializers.py
 class TempUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TempUpload
