@@ -121,7 +121,7 @@ export const Value = styled.div`
 
 export const Pagination = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content:flex-start;
   gap: 0.5rem;
 
   span {
@@ -143,4 +143,18 @@ export const Textarea = styled.textarea`
   width: 100%;
   resize: none;
   height: 70px;
+`;
+export const SectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+`;
+export const Select = styled.select`
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  background-color: white;
+  outline: none;
 `;

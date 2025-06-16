@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Container, Tab,
-  SearchInput, AddButton, Table, TableHead, TableRow, TableCell,
+  SearchInput, AddButton, Table, TableHead, TableRow, TableCell,Pagination,
   ProfileImage, ActionButtons, DeclineButton, ApproveButton, TopBar,
   HRManager, HeaderSection, TitleSection, Tabs, Title, Subtitle, ActionArea
 } from './LeaveRequest.Styles';
@@ -124,7 +124,15 @@ const navigate = useNavigate();
           ))}
         </tbody>
       </Table>
-
+   <Pagination>
+              <span>&larr;</span>
+              <span className="active">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>&rarr;</span>
+            </Pagination>
       {/* ✅ Confirmation Modal */}
       {showModal && (
         <ConfirmLeaveModal

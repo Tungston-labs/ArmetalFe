@@ -212,3 +212,20 @@ export const Tr = styled.tr`
 export const TrashIcon = styled.span`
   cursor: pointer;
 `;
+export const Pagination = styled.div`
+  display: flex;
+  justify-content:flex-start;
+  gap: 0.5rem;
+
+  span {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &.active {
+      background-color: #2f4cac;
+      color: white;
+    }
+  }
+`;

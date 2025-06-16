@@ -102,11 +102,13 @@ width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
+ 
 
   th, td {
     text-align: left;
-    padding: 0.75rem;
+    padding: 0.5rem;
     white-space: nowrap;
+  
     background-color: white;
     border: none; /* remove cell borders */
   }
@@ -114,13 +116,16 @@ width: 100%;
   th {
     background-color: #5F53A53B;
     color: #333;
-    font-family:raleway;
+      font-family:raleway;
+     padding: 0.75rem;
+
   }
 
   /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
-   box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-   font-family:satoshi;
+box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+font-family:satoshi;
+
   }
 
   /* Optional: radius for only first and last td of each row */
@@ -254,4 +259,21 @@ export const Subtitle = styled.p`
   color: #555;
   margin-left:10px;
   margin-top:-1px;
+`;
+export const Pagination = styled.div`
+  display: flex;
+  justify-content:flex-start;
+  gap: 0.5rem;
+
+  span {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &.active {
+      background-color: #2f4cac;
+      color: white;
+    }
+  }
 `;

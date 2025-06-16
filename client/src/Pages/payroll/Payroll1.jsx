@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Container,SearchInput,
   Section,RightSection,
-  SectionTitle,Rows,
+  SectionTitle,Rows,SectionHeader,Select,
   Table,FormWrapper,
   Row,ImageColumn,Hr,
   Label,Input,LeftSection,
@@ -39,6 +39,15 @@ const PayrollSummary = () => {
              <Hr/>
         
       <Section>
+           <SectionHeader>
+    <SectionTitle>Payroll status</SectionTitle>
+    <Select>
+      <option value="">Select Status</option>
+      <option value="paid">Paid</option>
+      <option value="pending">Pending</option>
+      <option value="hold">On Hold</option>
+    </Select>
+  </SectionHeader>
         <SectionTitle>Employee Details</SectionTitle>
         <Table>
           <Row>
@@ -110,9 +119,6 @@ const PayrollSummary = () => {
         </Table>
       </Section>
 
-      <Section>
-        <SectionTitle>Payroll status</SectionTitle>
-      </Section>
 
       <Pagination>
         <span>&larr;</span>

@@ -21,7 +21,7 @@ import {
   TopBar,
   HRManager,
   DateWrapper,
-
+Pagination,
 
 } from './Holiday.styles';
 import { MdDateRange } from "react-icons/md";
@@ -101,6 +101,16 @@ const HolidayManager = () => {
           </tbody>
         </Table>
       </TableWrapper>
+
+        <Pagination>
+              <span>&larr;</span>
+              <span className="active">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>&rarr;</span>
+            </Pagination>
 
     </Container>
   );

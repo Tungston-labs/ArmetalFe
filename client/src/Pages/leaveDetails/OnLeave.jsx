@@ -14,7 +14,7 @@ import {
   TableRow,
   TableCell,
   EmployeeImg,
-  TableTitle,
+  TableTitle,Pagination,
   ActionArea,
   DateInput ,
   Tab,
@@ -111,6 +111,15 @@ export default function EmployeeAttendance() {
           ))}
         </tbody>
       </Table>
+         <Pagination>
+                    <span>&larr;</span>
+                    <span className="active">1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                    <span>&rarr;</span>
+                    </Pagination>
     </Container>
   );
 }
