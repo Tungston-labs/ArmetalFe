@@ -144,7 +144,7 @@ export const Title = styled.h2`
 export const Subtitle = styled.p`
   font-size: 14px;
   color: #555;
-  margin-left:10px;
+\
   margin-top:-1px;
 `;
 export const Hr = styled.hr`

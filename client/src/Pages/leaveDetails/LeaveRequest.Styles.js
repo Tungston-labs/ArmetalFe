@@ -61,15 +61,14 @@ export const Tabs = styled.div`
   border-bottom: 2px solid #ddd;
 `;
 
-export const Tab = styled.button`
-  background: none;
-  border: none;
-  padding: 0.7rem 1.2rem;
-  border-bottom: 3px solid ${({ active }) => (active ? '#1e40af' : 'transparent')};
-  color: ${({ active }) => (active ? '#1e40af' : '#333')};
-  font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
+export const Tab = styled.div`
+  padding-bottom: 0.5rem;
   cursor: pointer;
+  font-weight: 500;
+  border-bottom: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
+  color: ${({ active }) => (active ? "#1e3a8a" : "#555")};
 `;
+
 
 export const SearchSection = styled.div`
   display: flex;
@@ -103,11 +102,13 @@ width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
+ 
 
   th, td {
     text-align: left;
-    padding: 0.75rem;
+    padding: 0.5rem;
     white-space: nowrap;
+  
     background-color: white;
     border: none; /* remove cell borders */
   }
@@ -115,13 +116,16 @@ width: 100%;
   th {
     background-color: #5F53A53B;
     color: #333;
-    font-family:raleway;
+      font-family:raleway;
+     padding: 0.75rem;
+
   }
 
   /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
-   box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-   font-family:satoshi;
+box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+font-family:satoshi;
+
   }
 
   /* Optional: radius for only first and last td of each row */
@@ -255,4 +259,21 @@ export const Subtitle = styled.p`
   color: #555;
   margin-left:10px;
   margin-top:-1px;
+`;
+export const Pagination = styled.div`
+  display: flex;
+  justify-content:flex-start;
+  gap: 0.5rem;
+
+  span {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &.active {
+      background-color: #2f4cac;
+      color: white;
+    }
+  }
 `;

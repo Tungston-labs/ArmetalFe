@@ -13,8 +13,20 @@ import {
   Button,
   TwoColumnRows
 } from './Table.Styles';
+import { useNavigate } from 'react-router-dom';
 
 const BankPaymentForm = () => {
+  const navigate = useNavigate();
+
+  const handleNext = () => {
+navigate('/documents');   // Update this path as needed
+  };
+
+  const handlePrevious = () => {
+    
+      navigate('/basic-details'); // Update this path as needed
+  };
+
   return (
     <Container>
       <Header>
@@ -30,92 +42,52 @@ const BankPaymentForm = () => {
             <span>📷</span>
           </ImageUpload>
         </Row>
-<Row>
-  <TwoColumnRows>
-                <Input placeholder="Swift code" />
-                <Input placeholder="Payment Mode" />
-              </TwoColumnRows>
-               <TwoColumnRows>
-                <Input placeholder="Account number" />
-                <Input placeholder="UAN / EPF Account number " />
-              </TwoColumnRows>
-  {/* <FormGroup>
-    <Input type="text" placeholder="Payment Mode" />
-  </FormGroup> */}
-</Row>
 
-{/* <Row>
-  <FormGroup>
-    <Input type="text" placeholder="Account number" />
-  </FormGroup>
-  <FormGroup>
-    <Input type="text" placeholder="UAN / EPF Account number" />
-  </FormGroup>
-</Row> */}
-
+        <Row>
+          <TwoColumnRows>
+            <Input placeholder="Swift code" />
+            <Input placeholder="Payment Mode" />
+          </TwoColumnRows>
+          <TwoColumnRows>
+            <Input placeholder="Account number" />
+            <Input placeholder="UAN / EPF Account number " />
+          </TwoColumnRows>
+        </Row>
 
         <SectionTitle>Tax and compliance</SectionTitle>
         <Row>
-         <TwoColumnRows>
-                <Input placeholder="Pan Number" />
-                <Input placeholder="Tax Regima Selected" />
-              </TwoColumnRows>
+          <TwoColumnRows>
+            <Input placeholder="Pan Number" />
+            <Input placeholder="Tax Regima Selected" />
+          </TwoColumnRows>
 
-
-               <TwoColumnRows>
-  <Select>
-    <option value="">TDS Deduction Amount</option>
-    <option value="10%">10%</option>
-    <option value="20%">20%</option>
-    <option value="30%">30%</option>
-  </Select>
-
-  <Input placeholder="Selection 80C Declaration" />
-</TwoColumnRows>
-
-</Row>
-          {/* <FormGroup>
-            <Input type="text" placeholder="Tax Regima Selected" />
-          </FormGroup> */}
-
-
-          {/* <FormGroup>
+          <TwoColumnRows>
             <Select>
               <option value="">TDS Deduction Amount</option>
               <option value="10%">10%</option>
               <option value="20%">20%</option>
+              <option value="30%">30%</option>
             </Select>
-          </FormGroup> */}
-
-
-          {/* <FormGroup>
-            <Input type="text" placeholder="Selection 80C Declaration" />
-          </FormGroup> */}
-    
+            <Input placeholder="Selection 80C Declaration" />
+          </TwoColumnRows>
+        </Row>
 
         <SectionTitle>Salary and increment</SectionTitle>
         <Row>
-       <TwoColumnRows>
-              <Input placeholder="Basic Salary" />
-              <Select>
-    <option value="">Salary increment</option>
-    <option value="10%">10%</option>
-    <option value="20%">20%</option>
-    <option value="30%">30%</option>
-  </Select>
-            </TwoColumnRows>
-          {/* <FormGroup>
+          <TwoColumnRows>
+            <Input placeholder="Basic Salary" />
             <Select>
               <option value="">Salary increment</option>
-              <option value="5%">5%</option>
               <option value="10%">10%</option>
+              <option value="20%">20%</option>
+              <option value="30%">30%</option>
             </Select>
-          </FormGroup> */}
+          </TwoColumnRows>
         </Row>
 
         <ButtonGroup>
-          <Button secondary>Previous step</Button>
-          <Button>Next</Button>
+          <Button secondary onClick={handlePrevious}>Previous step</Button>
+          <Button onClick={handleNext}>Next</Button>
         </ButtonGroup>
       </FormSection>
     </Container>

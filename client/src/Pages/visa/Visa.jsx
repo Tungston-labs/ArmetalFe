@@ -23,6 +23,7 @@
  } from "../employee/EmployeeList.styles";
  import { FaInfoCircle, FaTrash,FaPlus } from "react-icons/fa";
  import { FiUserPlus } from "react-icons/fi";
+ import { useLocation, NavLink } from 'react-router-dom';
  import { LuArrowLeft } from "react-icons/lu";
  
  const employees = new Array(11).fill({
@@ -59,12 +60,24 @@
                 <SearchInput type="text" placeholder="Search by Department name" />
               </ActionArea>
             </HeaderSection>
-       <Tabs>
-         <Tab active>Employee list</Tab>
-         <Tab>Employee leave request</Tab>
-         <Tab>Employee Attendance</Tab>
-            <Tab>Employee Visa</Tab>
-       </Tabs>
+         <Tabs>
+      <NavLink to="/employee" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/employee'}>Employee list</Tab>
+      </NavLink>
+
+      <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
+      </NavLink>
+
+      <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+      </NavLink>
+
+      <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+      </NavLink>
+    </Tabs>
+
  
        <Table>
          <thead>

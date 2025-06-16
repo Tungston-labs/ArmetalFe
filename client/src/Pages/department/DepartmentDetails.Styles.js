@@ -75,7 +75,7 @@ export const AddButton = styled.button`
   margin-top:-5%;
   width:80px;
   font-family:satoshi;
-  background: linear-gradient(to right, #2a2a86, #3e64ff);
+background: linear-gradient(181deg,rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -201,8 +201,10 @@ export const HRManager = styled.div`
     object-fit: cover;
   }
 `;
-export const StyledIcon = styled(HiOutlinePencilSquare)`
-  width: 10px;
-  height: 20px;
-  margin-right: 0.5rem;
-`;
+// export const StyledIcon = styled(HiOutlinePencilSquare)`
+//   width: 20px;
+//   height: 20px;
+//   margin-right: 0.5rem;
+//   color: white;
+//   vertical-align: middle;
+// `;

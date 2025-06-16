@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Container, Tab,
-  SearchInput, AddButton, Table, TableHead, TableRow, TableCell,
+  SearchInput, AddButton, Table, TableHead, TableRow, TableCell,Pagination,
   ProfileImage, ActionButtons, DeclineButton, ApproveButton, TopBar,
   HRManager, HeaderSection, TitleSection, Tabs, Title, Subtitle, ActionArea
 } from './LeaveRequest.Styles';
@@ -10,7 +10,7 @@ import { LuArrowLeft } from "react-icons/lu";
 import { FaPlus } from 'react-icons/fa';
 import { IoEyeOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
-
+import { useLocation, NavLink } from 'react-router-dom';
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal'; // ✅ Import modal
 
 const data = new Array(5).fill({
@@ -26,7 +26,7 @@ export default function LeaveRequest() {
   const [showModal, setShowModal] = useState(false);
   const [actionType, setActionType] = useState('approve');
 const navigate = useNavigate();
-
+   const location = useLocation();
   const handleConfirm = () => {
     console.log(`Leave ${actionType}d`);
     setShowModal(false);
@@ -59,11 +59,22 @@ const navigate = useNavigate();
       </HeaderSection>
 
       <Tabs>
-        <Tab active>Employee list</Tab>
-        <Tab>Employee leave request</Tab>
-        <Tab>Employee Attendance</Tab>
-        <Tab>Employee Visa</Tab>
-      </Tabs>
+      <NavLink to="/employee" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/employee'}>Employee list</Tab>
+      </NavLink>
+
+      <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
+      </NavLink>
+
+      <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+      </NavLink>
+
+      <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
+        <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+      </NavLink>
+    </Tabs>
 
       <Table>
         <thead>
@@ -113,7 +124,15 @@ const navigate = useNavigate();
           ))}
         </tbody>
       </Table>
-
+   <Pagination>
+              <span>&larr;</span>
+              <span className="active">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>&rarr;</span>
+            </Pagination>
       {/* ✅ Confirmation Modal */}
       {showModal && (
         <ConfirmLeaveModal

@@ -1,7 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Container, Header, Title, Subtitle, FormSection, Input, Select, DateInput,
-  AddButton, TableWrapper, Table, Th, Td, TitleSection, Hr, TopBar, HRManager, DateWrapper
+  Container,
+  Header,
+
+  Title,
+  Subtitle,
+  FormSection,
+  Input,
+  Select,
+  DateInput,
+  AddButton,
+  TableWrapper,
+  Table,
+  Th,
+  Td,
+  TrashIcon,
+  TitleSection,
+  Hr,
+  TopBar,
+  HRManager,
+  DateWrapper,
+Pagination,
+
 } from './Holiday.styles';
 import { MdDateRange } from "react-icons/md";
 import { FaTrashAlt } from "react-icons/fa";
@@ -197,6 +217,16 @@ const cancelDelete = () => {
     </div>
   </div>
 )}
+
+        <Pagination>
+              <span>&larr;</span>
+              <span className="active">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>&rarr;</span>
+            </Pagination>
 
     </Container>
   );

@@ -91,6 +91,7 @@ export const Tab = styled.div`
   color: ${({ active }) => (active ? "#1e3a8a" : "#555")};
 `;
 
+
 export const Table = styled.table`
 width: 100%;
   border-collapse: separate;
