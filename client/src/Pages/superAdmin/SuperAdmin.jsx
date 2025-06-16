@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import AddCompanyModal from '../superAdmin/AddCompany'; // adjust path as needed
-
 import {
   Container,
   Header,
@@ -25,7 +24,6 @@ import {
 import { LuArrowLeft } from "react-icons/lu";
 import { FaTrashAlt, FaPlus } from 'react-icons/fa';
 import { TbPencilMinus } from "react-icons/tb";
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getCompanies,
@@ -34,20 +32,20 @@ import {
 
 const CompanyTable = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { companies, loading, pagination } = useSelector((state) => state.superAdmin);
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
 
+  const [showCompanyModal, setShowCompanyModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState(null);
 
   useEffect(() => {
     dispatch(getCompanies({ page, search: search.trim() }));
   }, [dispatch, page, search]);
-  
 
   const handleDelete = (id) => {
     setSelectedCompanyId(id);
@@ -71,6 +69,18 @@ const CompanyTable = () => {
     }
   };
 
+  const handleAdd = () => {
+    setIsEditMode(false);
+    setSelectedCompany(null);
+    setShowCompanyModal(true);
+  };
+
+  const handleEdit = (company) => {
+    setIsEditMode(true);
+    setSelectedCompany(company);
+    setShowCompanyModal(true);
+  };
+
   return (
     <Container>
       <TopBar>
@@ -91,9 +101,9 @@ const CompanyTable = () => {
           </div>
         </TitleSection>
         <ActionArea>
-        <AddButton onClick={() => setShowAddModal(true)}>
-  <FaPlus /> Add Company
-</AddButton>
+          <AddButton onClick={handleAdd}>
+            <FaPlus /> Add Company
+          </AddButton>
 
           <SearchInput
             type="text"
@@ -133,7 +143,7 @@ const CompanyTable = () => {
                   <Td>{item.contact_number}</Td>
                   <Td>{item.number_of_employees}</Td>
                   <Td>
-                    <IconButton onClick={() => navigate(`/edit-company/${item.id}`)}>
+                    <IconButton onClick={() => handleEdit(item)}>
                       <TbPencilMinus />
                     </IconButton>
                   </Td>
@@ -158,6 +168,7 @@ const CompanyTable = () => {
         </Table>
       </TableWrapper>
 
+      {/* Delete Modal */}
       {showDeleteModal && (
         <div style={{
           position: "fixed",
@@ -210,31 +221,37 @@ const CompanyTable = () => {
           </div>
         </div>
       )}
-      {showAddModal && (
-  <div style={{
-    position: "fixed",
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000
-  }}>
-    <div style={{
-      background: "white",
-      padding: "2rem",
-      borderRadius: "10px",
-      maxWidth: "900px",
-      width: "90%",
-      maxHeight: "90vh",
-      overflowY: "auto"
-    }}>
-      <AddCompanyModal onClose={() => setShowAddModal(false)} />
-    </div>
-  </div>
-)}
 
+      {/* Add/Edit Company Modal */}
+      {showCompanyModal && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: "white",
+            padding: "2rem",
+            borderRadius: "10px",
+            maxWidth: "900px",
+            width: "90%",
+            maxHeight: "90vh",
+            overflowY: "auto"
+          }}>
+            <AddCompanyModal
+              isEdit={isEditMode}
+              selectedCompany={selectedCompany}
+              onClose={() => setShowCompanyModal(false)}
+            />
+          </div>
+        </div>
+      )}
 
+      {/* Pagination */}
       <Pagination>
         <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
           {'←'}

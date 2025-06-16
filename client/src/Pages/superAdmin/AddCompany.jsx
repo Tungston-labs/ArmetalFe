@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormWrapper,
   BackHeader,
@@ -14,9 +14,9 @@ import {
 } from './AddCompany.Styles';
 import { GoArrowLeft } from "react-icons/go";
 import { useDispatch } from 'react-redux';
-import { addCompany } from '../../Redux/superAdminSlice';
+import { addCompany, editCompany } from '../../Redux/superAdminSlice';
 
-const AddCompanyModal = ({ onClose }) => {
+const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) => {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
@@ -25,8 +25,25 @@ const AddCompanyModal = ({ onClose }) => {
     email: '',
     location: '',
     contact_number: '',
-    modules: []
+    modules: [],
   });
+
+  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
+
+  // Pre-fill form data in edit mode
+  useEffect(() => {
+    if (isEdit && selectedCompany) {
+      const modulesChecked = allModules.filter((mod) => selectedCompany.modules?.[mod]);
+      setFormData({
+        name: selectedCompany.name || '',
+        address: selectedCompany.address || '',
+        email: selectedCompany.email || '',
+        location: selectedCompany.location || '',
+        contact_number: selectedCompany.contact_number || '',
+        modules: modulesChecked,
+      });
+    }
+  }, [isEdit, selectedCompany]);
 
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -44,33 +61,35 @@ const AddCompanyModal = ({ onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Convert modules array → object format
-    const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
+
+    // Convert modules array → object
     const modulesObject = {};
-    allModules.forEach((mod) => {
+    allModules.forEach(mod => {
       modulesObject[mod] = formData.modules.includes(mod);
     });
-  
+
     const finalData = {
       ...formData,
       modules: modulesObject,
     };
-  
+
     try {
-      await dispatch(addCompany(finalData)).unwrap();
+      if (isEdit && selectedCompany?.id) {
+        await dispatch(editCompany({ id: selectedCompany.id, data: finalData })).unwrap();
+      } else {
+        await dispatch(addCompany(finalData)).unwrap();
+      }
       onClose();
     } catch (err) {
-      console.error("Add Company failed", err);
+      console.error("Company save failed", err);
     }
   };
-  
 
   return (
     <FormWrapper>
       <BackHeader>
         <GoArrowLeft onClick={onClose} style={{ cursor: "pointer" }} />
-        <span>Add Company</span>
+        <span>{isEdit ? "Edit Company" : "Add Company"}</span>
       </BackHeader>
 
       <form onSubmit={handleSubmit}>
@@ -137,25 +156,24 @@ const AddCompanyModal = ({ onClose }) => {
 
         <h4>Privileges</h4>
         <CheckboxGroup>
-        {["dashboard", "employee", "department", "daily_task", "payroll", "holiday"].map((module) => (
-  <CheckboxLabel key={module}>
-    <input
-      type="checkbox"
-      value={module}
-      checked={formData.modules.includes(module)}
-      onChange={handleModuleChange}
-    />
-    {module.charAt(0).toUpperCase() + module.slice(1).replace('_', ' ')}
-  </CheckboxLabel>
-))}
-
+          {allModules.map((module) => (
+            <CheckboxLabel key={module}>
+              <input
+                type="checkbox"
+                value={module}
+                checked={formData.modules.includes(module)}
+                onChange={handleModuleChange}
+              />
+              {module.charAt(0).toUpperCase() + module.slice(1).replace('_', ' ')}
+            </CheckboxLabel>
+          ))}
         </CheckboxGroup>
 
         <Hr />
 
         <ButtonGroup>
           <Button type="button" cancel onClick={onClose}>Cancel</Button>
-          <Button type="submit">Save</Button>
+          <Button type="submit">{isEdit ? "Update" : "Save"}</Button>
         </ButtonGroup>
       </form>
     </FormWrapper>
