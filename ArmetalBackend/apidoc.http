@@ -122,8 +122,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "fia_arm_kak_176",     
-  "password": "CMPQJLUFALWXP"  
+  "username": "ydm_arm_aaa_746",     
+  "password": "123"  
 }
 
 

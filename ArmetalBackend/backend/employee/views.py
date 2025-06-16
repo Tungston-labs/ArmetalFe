@@ -21,6 +21,9 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         employee = serializer.save()
+        company = employee.department.company
+        company.number_of_employees = (company.number_of_employees or 0) + 1
+        company.save()
 
         return Response({
             "message": "Employee created successfully.",
