@@ -1,101 +1,127 @@
+// components/PayrollDetails.jsx
 import React from 'react';
 import {
   Container,
   Header,
-  TitleSection,
   Title,
-  Subtitle,
-  SearchInput,
+  Badge,
+  PrintIcon,
+  GridLayout,
+  InfoTable,
+  InfoRow,
+  Label,
+  Value,
+  SectionTitle,
   TableWrapper,
-  Table,
-  Th,
-  Td,
-  Select,
-  TopBar,
-  HRManager
+  Table,RightHeader,
+  TableHeader,
+  TableData,
+  TotalRow,
+  Footer,LeftHeader
 } from './Payroll.styles';
-import { LuArrowLeft } from "react-icons/lu";
-const data = Array(10).fill({
-  slNo: '001',
-  empID: '1254/125',
-  name: 'Ajay Kumar',
-  job: 'UI/UX designer',
-  joinDate: '12 January 2025',
-  email: 'Ajaykumar@gmail.com',
-  salary: '₹19,000',
-});
-
-const PayrollTable = () => {
+import { BsPrinter } from "react-icons/bs";
+const PayrollDetails = () => {
   return (
     <Container>
- 
-
-        <TopBar>
-  <div /> {/* keeps left side empty */}
-  <HRManager>
-    <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
-    <span>HR Manager</span>
-  </HRManager>
-</TopBar>
-
-     
-
-   <Header>
-  <TitleSection>
- <LuArrowLeft style={{width:"30px", height:30}} />
-    <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
-    <div>
-      <Title>Payroll And Holiday</Title>
-      <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
-    </div>
-  </TitleSection>
-  
+     <Header>
+  <LeftHeader>
+    <Title>Employee Details</Title>
+  </LeftHeader>
+  <RightHeader>
+    <Badge>Unpaid</Badge>
+    <PrintIcon><BsPrinter/></PrintIcon>
+  </RightHeader>
 </Header>
-        <SearchInput placeholder="Search by Employee name" />
 
 
-      <TableWrapper>
-        <Table>
-          <thead>
-            <tr>
-              <Th></Th>
-              <Th>Sl No</Th>
-              <Th>Employee ID</Th>
-              <Th>Employee name</Th>
-              <Th>Job Position</Th>
-              <Th>Joining Date</Th>
-              <Th>Email ID</Th>
-              <Th>Salary Details</Th>
-              <Th>Info</Th>
-              <Th>Status</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, index) => (
-              <tr key={index}>
-                <Td><input type="checkbox" /></Td>
-                <Td>{row.slNo}</Td>
-                <Td>{row.empID}</Td>
-                <Td>{row.name}</Td>
-                <Td>{row.job}</Td>
-                <Td>{row.joinDate}</Td>
-                <Td>{row.email}</Td>
-                <Td>{row.salary}</Td>
-                <Td>🛈</Td>
-                <Td>
-                  <Select>
-                    <option>Select</option>
-                    <option>Active</option>
-                    <option>Inactive</option>
-                  </Select>
-                </Td>
+      <GridLayout>
+        <InfoTable>
+          <InfoRow><Label>Employee name</Label><Value>Ajay kumar M.A</Value></InfoRow>
+          <InfoRow><Label>Department</Label><Value>UI UX Designer</Value></InfoRow>
+          <InfoRow><Label>No. of Working Days</Label><Value>25</Value></InfoRow>
+        </InfoTable>
+        <InfoTable>
+          <InfoRow><Label>Employee ID</Label><Value>EMP123652</Value></InfoRow>
+          <InfoRow><Label>Designation</Label><Value>Bank transfer</Value></InfoRow>
+          <InfoRow><Label>Days Present</Label><Value>25</Value></InfoRow>
+        </InfoTable>
+      </GridLayout>
+
+      <SectionTitle>Net pay Summary</SectionTitle>
+      <GridLayout>
+        <TableWrapper>
+          <Table>
+            <thead>
+              <tr><TableHeader>Field Label</TableHeader><TableHeader>Value</TableHeader></tr>
+            </thead>
+            <tbody>
+              <tr><TableData>Gross Earnings</TableData><TableData>1200</TableData></tr>
+              <tr><TableData>Total deduction</TableData><TableData>1500</TableData></tr>
+              <tr><TableData>Net pay</TableData><TableData>1255</TableData></tr>
+              <tr><TableData>Payment mode</TableData><TableData>Bank transfer</TableData></tr>
+              <tr><TableData>Bank Account</TableData><TableData>****4512</TableData></tr>
+            </tbody>
+          </Table>
+        </TableWrapper>
+        <TableWrapper>
+          <Table>
+            <thead>
+              <tr><TableHeader> </TableHeader><TableHeader>Value</TableHeader></tr>
+            </thead>
+            <tbody>
+              <tr><TableData>Leave taken</TableData><TableData>1</TableData></tr>
+              <tr><TableData>Casual leave</TableData><TableData>0</TableData></tr>
+              <tr><TableData>Paid leave</TableData><TableData>0</TableData></tr>
+            </tbody>
+          </Table>
+        </TableWrapper>
+      </GridLayout>
+
+      <GridLayout>
+        <TableWrapper>
+          <SectionTitle>Salary Earnings</SectionTitle>
+          <Table>
+            <thead>
+              <tr>
+                <TableHeader>Earnings</TableHeader>
+                <TableHeader>Days</TableHeader>
+                <TableHeader>Hours</TableHeader>
+                <TableHeader>Amount</TableHeader>
               </tr>
-            ))}
-          </tbody>
-        </Table>
-      </TableWrapper>
+            </thead>
+            <tbody>
+              <tr><TableData>Basic salary</TableData><TableData>1200</TableData><TableData>1200</TableData><TableData>1200</TableData></tr>
+              <tr><TableData>Housing allowance</TableData><TableData>-</TableData><TableData>-</TableData><TableData>1500</TableData></tr>
+              <tr><TableData>Transportation allowance</TableData><TableData>-</TableData><TableData>-</TableData><TableData>1255</TableData></tr>
+              <TotalRow>
+                <TableData colSpan="3"><strong>Total Earnings</strong></TableData>
+                <TableData><strong>10,000</strong></TableData>
+              </TotalRow>
+            </tbody>
+          </Table>
+        </TableWrapper>
+
+        <TableWrapper>
+          <SectionTitle>Salary Deduction</SectionTitle>
+          <Table>
+            <thead>
+              <tr><TableHeader>Deductions</TableHeader><TableHeader>Value</TableHeader></tr>
+            </thead>
+            <tbody>
+              <TotalRow>
+                <TableData><strong>Total Deduction</strong></TableData>
+                <TableData><strong>0</strong></TableData>
+              </TotalRow>
+            </tbody>
+          </Table>
+        </TableWrapper>
+      </GridLayout>
+
+      <Footer>
+        Net pay : Ten Thousand <span>10,000</span>
+      </Footer>
     </Container>
   );
 };
 
-export default PayrollTable;
+export default PayrollDetails;

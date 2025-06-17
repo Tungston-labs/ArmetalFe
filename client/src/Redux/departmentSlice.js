@@ -1,4 +1,3 @@
-// src/redux/slices/departmentSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   fetchDepartments,
@@ -37,11 +36,11 @@ export const createNewDepartment = createAsyncThunk(
   "departments/create",
   async (data, { rejectWithValue }) => {
     try {
-        const payload = {
-            name: data.name,
-            department_code: data.department_code,
-            department_head: data.department_head,
-          };
+      const payload = {
+        name: data.name,
+        department_code: data.department_code,
+        department_head: data.department_head?.id || data.department_head, // safely get id
+      };
       return await createDepartment(payload);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -54,7 +53,12 @@ export const updateDepartmentById = createAsyncThunk(
   "departments/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      return await updateDepartment(id, data);
+      const payload = {
+        name: data.name,
+        department_code: data.department_code,
+        department_head: data.department_head?.id || data.department_head,
+      };
+      return await updateDepartment(id, payload);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -89,13 +93,17 @@ const departmentSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
       // Get All
       .addCase(getDepartments.pending, (state) => {
         state.loading = true;
       })
       .addCase(getDepartments.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload;
+        state.error = null;
+        state.list = [...action.payload].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
       })
       .addCase(getDepartments.rejected, (state, action) => {
         state.loading = false;
@@ -109,6 +117,7 @@ const departmentSlice = createSlice({
       .addCase(getDepartmentById.fulfilled, (state, action) => {
         state.loading = false;
         state.current = action.payload;
+        state.error = null;
       })
       .addCase(getDepartmentById.rejected, (state, action) => {
         state.loading = false;
@@ -122,6 +131,7 @@ const departmentSlice = createSlice({
       .addCase(createNewDepartment.fulfilled, (state, action) => {
         state.loading = false;
         state.list.push(action.payload);
+        state.error = null;
       })
       .addCase(createNewDepartment.rejected, (state, action) => {
         state.loading = false;
@@ -134,7 +144,10 @@ const departmentSlice = createSlice({
       })
       .addCase(updateDepartmentById.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.list.findIndex((dept) => dept.id === action.payload.id);
+        state.error = null;
+        const index = state.list.findIndex(
+          (dept) => dept.id === action.payload.id
+        );
         if (index !== -1) state.list[index] = action.payload;
       })
       .addCase(updateDepartmentById.rejected, (state, action) => {
@@ -149,6 +162,7 @@ const departmentSlice = createSlice({
       .addCase(deleteDepartmentById.fulfilled, (state, action) => {
         state.loading = false;
         state.list = state.list.filter((dept) => dept.id !== action.payload);
+        state.error = null;
       })
       .addCase(deleteDepartmentById.rejected, (state, action) => {
         state.loading = false;

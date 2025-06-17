@@ -1,4 +1,4 @@
-// Multistep.jsx
+// Components/Multistep.jsx
 import React from "react";
 import { ConfigProvider, Steps } from "antd";
 import { StepsWrapper } from "./Multistep.Style";
@@ -18,8 +18,8 @@ const Multistep = ({ currentStep }) => (
     }}
   >
     <StepsWrapper>
-      <Steps 
-        current={currentStep} // <-- use dynamic value
+      <Steps
+        current={currentStep}
         labelPlacement="vertical"
         items={items}
       />

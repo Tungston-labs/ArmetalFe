@@ -1,160 +1,121 @@
+// components/PayrollDetailsStyles.js
 import styled from 'styled-components';
-import { FaArrowLeft } from "react-icons/fa6";
 
 export const Container = styled.div`
-  font-family: 'Segoe UI', sans-serif;
   background-color: #FBFEF3;
-  padding: 20px;
- 
-`;
-
-export const TopBar = styled.div`
-  display: flex;
-  justify-content: space-between; /* spread content to edges */
-  align-items: center;
-  margin-bottom: 1.5rem;
-   
-`;
-
-export const HRManager = styled.div`
-  display: flex;
-  height:30px;
- 
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.3rem ;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  font-size: 0.95rem;
-  color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
-
-  span {
-    font-weight: 500;
-  }
-
-  img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  color: #111;
 `;
 export const Header = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-    flex-wrap: wrap;
+  gap:5px;
 `;
-export const HeaderImage = styled.img`
-  height: 60px;
-  @media (max-width: 768px) {
-    margin-top: 10px;
-    height: 50px;
-  }
-`;
-const BackIcon = styled(FaArrowLeft)`
-  color: #2f57ef;
-  font-size: 20px;
-  cursor: pointer;
 
-  &:hover {
-    color: #1e3fa3;
-  }
-`;
-export const TitleSection = styled.div`
+export const LeftHeader = styled.div`
   display: flex;
   align-items: center;
-   margin-top:-80px;
+`;
+
+export const RightHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 export const Title = styled.h2`
-  margin-left: 10px;
-  font-size: 22px;
+  font-size: 1.4rem;
+  margin: 0;
 `;
 
-export const Subtitle = styled.p`
-  font-size: 16px;
-  margin-top: -10px;
-  margin-left:10px;
+export const Badge = styled.span`
+  background: #ffdddd;
+  color: red;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid red;
+  border-radius: 6px;
+  font-size: 0.75rem;
 `;
 
-export const SearchInput = styled.input`
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+export const PrintIcon = styled.span`
+  font-size: 1.5rem;
+  cursor: pointer;
+`;
+
+
+export const GridLayout = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1rem;
+`;
+
+export const InfoTable = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+`;
+
+export const InfoRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const Label = styled.div`
+  font-weight: 500;
+`;
+
+export const Value = styled.div`
+  font-weight: normal;
+`;
+
+export const SectionTitle = styled.h3`
+text-decortion:underline;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5rem;
 `;
 
 export const TableWrapper = styled.div`
-  margin-top: 10px;
-  // overflow-x: auto;
+  width: 100%;
 `;
 
 export const Table = styled.table`
- width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 10px; 
+  width: 100%;
+  border-collapse: collapse;
   margin-top: 1rem;
 
-  th, td {
+  td, th {
+    border: 1px solid #999;
+    padding: 0.4rem;
     text-align: left;
-    padding: 0.3rem;
-    white-space: nowrap;
-    background-color: white;
-    border: none; /* remove cell borders */
-  }
-
-  th {
-    background-color: #5F53A53B;
-    color: #333;
-    font-family:raleway;
-    padding: 0.75rem;
-  }
-
-  /* ✅ Apply box-shadow only to tbody rows */
-  tbody tr {
-  box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-  font-family:satoshi;
-  }
-
-  /* Optional: radius for only first and last td of each row */
-  tbody tr td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-  }
-
-  tbody tr td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-  }
-
-  tbody tr:hover td {
-    background-color: #f5f5f5;
   }
 `;
 
-export const Th = styled.th`
-  background-color: #E1E8EC;
-  padding: 10px;
-  text-align: left;
-  font-weight: 600;
+export const TableHeader = styled.th`
+ margin-top:20px;
+   border-bottom: 1px solid #ccc;
 `;
 
-export const Td = styled.td`
-  padding: 10px;
-  background: #fff;
+export const TableData = styled.td`
+  font-size: 0.9rem;
 `;
 
-export const Tr = styled.tr`
-  // background-color: #fff;
-  // border-radius: 8px;
- box-shadow: 0 0 0 1px #00000047;
-  overflow: hidden;
+export const TotalRow = styled.tr`
+  font-weight: bold;
 `;
 
-export const Select = styled.select`
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+export const Footer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background: #f3f3f3;
+  padding: 1rem;
+  margin-top: 2rem;
+  font-weight: bold;
+
+  span {
+    font-weight: bold;
+  }
 `;

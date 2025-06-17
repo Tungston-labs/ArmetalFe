@@ -39,7 +39,7 @@ import { FaPlus, FaSearch, FaSitemap, FaTimes, FaArrowLeft } from 'react-icons/f
 const Department = () => {
   const dispatch = useDispatch();
   const { list: departments, loading, error } = useSelector((state) => state.departments);
-
+console.log(error)
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -102,7 +102,7 @@ const Department = () => {
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
-          <p style={{ color: 'red' }}>Error: {error.toString()}</p>
+          <p style={{ color: 'red' }}>Error: {error?.detail?.toString()}</p>
         ) : Array.isArray(departments) && departments.length > 0 ? (
           departments.map((dept) => (
             <DepartmentCard key={dept.id}>
@@ -176,7 +176,8 @@ const Department = () => {
                   </Select>
                 </FormGroup> */}
 
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
+                {error?.detail && <p style={{ color: 'red' }}>{error?.detail||"wageges"}</p>}
 
                 <ButtonRow>
                   <CancelButton type="button" onClick={() => setShowModal(false)}>Cancel</CancelButton>

@@ -3,6 +3,7 @@ import API from "./api"; // Your Axios instance with baseURL & headers
 // GET: List all departments
 export const fetchDepartments = async () => {
   const response = await API.get("/departments/");
+  console.log(response)
   return response.data.results;
 };
 

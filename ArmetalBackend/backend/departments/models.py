@@ -1,6 +1,4 @@
 from django.db import models
-
-from django.db import models
 from shared.models import TimeStampedModel
 from superadmin.models import Company
 
@@ -9,15 +7,15 @@ class Department(TimeStampedModel):
     name = models.CharField(max_length=100)
     department_code = models.CharField(max_length=10, unique=True)
     department_head = models.ForeignKey(
-    'employee.Employee_db',  # ✅ String reference avoids circular import
-    on_delete=models.SET_NULL,
-    null=True,
-    blank=True,
-    related_name='headed_departments'
-)
-
+        'employee.Employee_db',  # ✅ String reference avoids circular import
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='headed_departments'
+    )
 
     def __str__(self):
         return f"{self.name} ({self.department_code})"
 
-
+    class Meta:
+        ordering = ['name']  # ✅ Add ordering to avoid pagination inconsistency
