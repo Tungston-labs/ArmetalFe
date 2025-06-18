@@ -1,36 +1,29 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createEmployee, createBankPayment, getBankPayment } from '../services/employeeService';
+import {
+  createEmployee,
+  updateEmployee,
+  createBankPayment,
+  updateBankPayment,
+  getBankPayment,
+  uploadTempImage,
+  saveEmployeeDocuments
+} from '../services/employeeService';
 
-// --- Thunk: Submit Basic Info ---
+// --- Submit Basic Info ---
 export const submitEmployee = createAsyncThunk(
   'employee/submitEmployee',
   async (data, thunkAPI) => {
+    const { employee } = thunkAPI.getState();
     try {
-      const response = await createEmployee(data);
+      let response;
+      if (employee.employeeCreated && employee.employeeId) {
+        response = await updateEmployee(employee.employeeId, data);
+      } else {
+        response = await createEmployee(data);
+      }
       return response;
     } catch (err) {
       let message = 'Something went wrong.';
-      if (err.response?.data) {
-        if (err.response.data.message) {
-          message = err.response.data.message;
-        } else if (Array.isArray(err.response.data.errors)) {
-          message = err.response.data.errors.join('\n');
-        }
-      }
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
-// ✅ Thunk: Submit Bank Payment
-export const submitBankPayment = createAsyncThunk(
-  'employee/submitBankPayment',
-  async ({ employeeId, data }, thunkAPI) => {
-    try {
-      const response = await createBankPayment(employeeId, data);
-      return response;
-    } catch (err) {
-      let message = 'Something went wrong while saving bank details.';
       if (err.response?.data?.message) {
         message = err.response.data.message;
       }
@@ -39,15 +32,44 @@ export const submitBankPayment = createAsyncThunk(
   }
 );
 
-// ✅ Thunk: Fetch Bank Payment
+// --- Submit or Update Bank Payment ---
+export const submitBankPayment = createAsyncThunk(
+  'employee/submitBankPayment',
+  async ({ employeeId, data }, thunkAPI) => {
+    const { employee } = thunkAPI.getState();
+    try {
+      let response;
+      if (employee.bankPaymentId) {
+        response = await updateBankPayment(employeeId, employee.bankPaymentId, data);
+      } else {
+        const created = await createBankPayment(employeeId, data);
+        thunkAPI.dispatch(setBankPaymentId(created.id));
+        response = created;
+      }
+      return response;
+    } catch (err) {
+      let message = 'Error saving bank payment.';
+      if (err.response?.data?.message) {
+        message = err.response.data.message;
+      }
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// --- Fetch Bank Payment ---
 export const fetchBankPayment = createAsyncThunk(
   'employee/fetchBankPayment',
   async (employeeId, thunkAPI) => {
     try {
       const response = await getBankPayment(employeeId);
-      return response;
+      if (Array.isArray(response) && response.length > 0) {
+        thunkAPI.dispatch(setBankPaymentId(response[0].id));
+        return response[0];
+      }
+      return null;
     } catch (err) {
-      let message = 'Failed to fetch bank payment data.';
+      let message = 'Failed to fetch bank payment.';
       if (err.response?.data?.message) {
         message = err.response.data.message;
       }
@@ -56,37 +78,86 @@ export const fetchBankPayment = createAsyncThunk(
   }
 );
 
-// Redux Slice
+// --- Upload Image ---
+export const uploadImage = createAsyncThunk(
+  'employee/uploadImage',
+  async (file) => {
+    return await uploadTempImage(file);
+  }
+);
+
+export const submitDocuments = createAsyncThunk(
+  'employee/submitDocuments',
+  async ({ employeeId, documents }) => {
+ return await saveEmployeeDocuments(employeeId, documents);// not submitAllDocuments
+  }
+);
+
+// --- Slice ---
 const employeeSlice = createSlice({
   name: 'employee',
   initialState: {
     status: 'idle',
     error: null,
     employeeId: null,
+    employeeCreated: false,
+    bankPaymentId: null,
     bankPayment: null,
+    formData: {},
+    documentUrls: {
+      passport: [],
+      workPermit: [],
+      contract: [],
+      insurance: [],
+      certificate: [],
+    },
   },
   reducers: {
     setEmployeeId: (state, action) => {
       state.employeeId = action.payload;
     },
+    setBankFormData: (state, action) => {
+      state.formData.bank = action.payload;
+    },
+    setBasicFormData: (state, action) => {
+      state.formData.basic = action.payload;
+    },
+    setBankPaymentId: (state, action) => {
+      state.bankPaymentId = action.payload;
+    },
+    addDocumentUrl: (state, action) => {
+      const { type, url } = action.payload;
+      state.documentUrls[type].push(url);
+    },
+    removeDocumentUrl: (state, action) => {
+      const { type, index } = action.payload;
+      state.documentUrls[type].splice(index, 1);
+    },
+    clearDocumentUrls: (state) => {
+      state.documentUrls = {
+        passport: [],
+        workPermit: [],
+        contract: [],
+        insurance: [],
+        certificate: [],
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
-      // Basic Info
       .addCase(submitEmployee.pending, (state) => {
         state.status = 'loading';
         state.error = null;
       })
       .addCase(submitEmployee.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.employeeId = action.payload?.id || null;
+        state.employeeId = action.payload?.id || action.payload?.employee?.id || null;
+        state.employeeCreated = true;
       })
       .addCase(submitEmployee.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload || 'Failed to create employee';
+        state.error = action.payload || 'Failed to save employee';
       })
-
-      // Bank Payment Submission
       .addCase(submitBankPayment.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -96,10 +167,8 @@ const employeeSlice = createSlice({
       })
       .addCase(submitBankPayment.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload || 'Failed to submit bank payment';
+        state.error = action.payload || 'Bank payment failed';
       })
-
-      // Bank Payment Fetch
       .addCase(fetchBankPayment.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -110,11 +179,43 @@ const employeeSlice = createSlice({
       })
       .addCase(fetchBankPayment.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload || 'Failed to fetch bank payment';
+        state.error = action.payload;
         state.bankPayment = null;
-      });
+      })
+      .addCase(uploadImage.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(uploadImage.fulfilled, (state) => {
+        state.status = 'succeeded';
+      })
+      .addCase(uploadImage.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+    .addCase(submitDocuments.pending, (state) => {
+  state.status = 'loading';
+  state.error = null;
+})
+.addCase(submitDocuments.fulfilled, (state) => {
+  state.status = 'succeeded';
+})
+.addCase(submitDocuments.rejected, (state, action) => {
+  state.status = 'failed';
+  state.error = action.error.message;
+})
+      
   },
 });
 
-export const { setEmployeeId } = employeeSlice.actions;
+export const {
+  setEmployeeId,
+  setBankFormData,
+  setBasicFormData,
+  setBankPaymentId,
+  addDocumentUrl,
+  removeDocumentUrl,
+  clearDocumentUrls,
+} = employeeSlice.actions;
+
 export default employeeSlice.reducer;

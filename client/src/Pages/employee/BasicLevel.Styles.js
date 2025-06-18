@@ -63,7 +63,15 @@ export const ProfileImage = styled.img`
     height: 30px;
   }
 `;
-
+export const Select = styled.select`
+ width:100%;
+              padding: 0.5rem;
+              fontSize: 1rem;
+              borderRadius: 6px;
+              border: 1px solid #ccc;
+                  background:white;
+                    color:#999999;
+`;
 
 export const Input = styled.input`
   padding: 0.6rem 1rem;
@@ -274,13 +282,6 @@ export const FormGroup = styled.div`
 //   border: 1px solid #ccc;
 // `;
 
-export const Select = styled.select`
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-`;
 
 export const Avatar = styled.img`
   width: 80px;

@@ -1,7 +1,11 @@
-// pages/AddEmployeeForm.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { submitEmployee, setEmployeeId } from '../../Redux/employeeSlice';
+import {
+  submitEmployee,
+  setEmployeeId,
+  setBasicFormData,
+} from '../../Redux/employeeSlice';
+import { getDepartments } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import {
   Container, Header, RoleInfo, Stepper, Step, FormSection, Input,
@@ -14,17 +18,18 @@ import Multistep from '../../Components/Multistep';
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status, error } = useSelector((state) => state.employee);
+  const { status, error, formData: reduxFormData } = useSelector((state) => state.employee);
   const departmentList = useSelector((state) => state.departments.list);
 
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const stepTitles = ['Basic Info', 'Job Details', 'Legal Info'];
-console.log(errors)
+
   const [formData, setFormData] = useState({
     name: '',
     employeeId: '',
     email: '',
+    phoneNumber: '',
     address: '',
     dob: '',
     gender: '',
@@ -38,6 +43,16 @@ console.log(errors)
     iqamaNumber: '',
     insuranceNumber: '',
   });
+
+  useEffect(() => {
+    if (reduxFormData?.basic) {
+      setFormData(reduxFormData.basic);
+    }
+
+    if (departmentList.length === 0) {
+      dispatch(getDepartments());
+    }
+  }, [reduxFormData, dispatch, departmentList]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,45 +69,52 @@ console.log(errors)
         newErrors[key] = 'This field is required';
       }
     }
+
+    const phoneRegex = /^[0-9]{10}$/;
+    if (formData.phoneNumber && !phoneRegex.test(formData.phoneNumber.trim())) {
+      newErrors.phoneNumber = 'Enter a valid 10-digit phone number';
+    }
+
     setErrors(newErrors);
-    return Object.keys(newErrors).length > 0; // returns true if form has errors
+    return Object.keys(newErrors).length > 0;
   };
 
   const handleSubmit = () => {
-    console.log(validateForm())
     if (validateForm()) return;
 
-  const modifiedData = {
-  name: formData.name.trim(),
-  employee_id: formData.employeeId.trim(),
-  email: formData.email.trim(),
-  address: formData.address.trim(),
-  dob: new Date(formData.dob).toISOString().split("T")[0], // ✅ YYYY-MM-DD
-  gender: formData.gender.trim(),
-  designation: formData.position.trim(),
-  joining_date: new Date(formData.joiningDate).toISOString().split("T")[0], // ✅
-  department: parseInt(formData.department), // ✅ ensure it's a number ID
-  employment_type: formData.contractType.trim(),
-  passport_number: formData.passportNumber.trim(),
-  work_permit: formData.workPermit.trim(),
-  visa_expiry_date: new Date(formData.visaExpiry).toISOString().split("T")[0], // ✅
-  iqama_number: formData.iqamaNumber.trim(),
-  insurance_number: formData.insuranceNumber.trim(),
-};
+    const modifiedData = {
+      name: formData.name.trim(),
+      employee_id: formData.employeeId.trim(),
+      email: formData.email.trim(),
+      phone_number: formData.phoneNumber.trim(),
+      address: formData.address.trim(),
+      dob: new Date(formData.dob).toISOString().split("T")[0],
+      gender: formData.gender.trim(),
+      designation: formData.position.trim(),
+      joining_date: new Date(formData.joiningDate).toISOString().split("T")[0],
+      department: parseInt(formData.department),
+      employment_type: formData.contractType.trim(),
+      passport_number: formData.passportNumber.trim(),
+      work_permit: formData.workPermit.trim(),
+      visa_expiry_date: new Date(formData.visaExpiry).toISOString().split("T")[0],
+      iqama_number: formData.iqamaNumber.trim(),
+      insurance_number: formData.insuranceNumber.trim(),
+    };
 
-  dispatch(submitEmployee(modifiedData)).then((res) => {
-  if (res.meta.requestStatus === 'fulfilled') {
-    // Set employeeId in Redux from the response payload
-    console.log("ubuhbujn",res)
-    dispatch(setEmployeeId(res.payload.employee.id));
-
-    // Navigate to next step
-    navigate('/bank-payment');
-  } else {
-    console.error('Employee creation failed:', res.payload);
-  }
-});
- 
+    dispatch(submitEmployee(modifiedData)).then((res) => {
+      if (res.meta.requestStatus === 'fulfilled') {
+        const id = res.payload?.id || res.payload?.employee?.id;
+        if (id) {
+          dispatch(setEmployeeId(id));
+          dispatch(setBasicFormData(formData));
+          navigate('/bank-payment');
+        } else {
+          console.error('ID not found in response:', res.payload);
+        }
+      } else {
+        console.error('Employee creation failed:', res.payload);
+      }
+    });
   };
 
   return (
@@ -124,33 +146,67 @@ console.log(errors)
         <TwoColumn>
           <div>
             {errors.name && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name}</p>}
-            <Input name="name" placeholder="Name" onChange={handleChange} />
+            <Input name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
           </div>
           <div>
             {errors.employeeId && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.employeeId}</p>}
-            <Input name="employeeId" placeholder="Employee ID" onChange={handleChange} />
+            <Input name="employeeId" placeholder="Employee ID" value={formData.employeeId} onChange={handleChange} />
           </div>
           <div>
             {errors.email && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.email}</p>}
-            <Input name="email" placeholder="Email ID" onChange={handleChange} />
+            <Input name="email" placeholder="Email ID" value={formData.email} onChange={handleChange} />
           </div>
         </TwoColumn>
 
         <InfoSection>
           <div>
             {errors.address && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.address}</p>}
-            <FullWidthInput name="address" placeholder="Address" onChange={handleChange} />
+            <FullWidthInput name="address" placeholder="Address" value={formData.address} onChange={handleChange} />
           </div>
 
           <TwoColumnRow>
-            <div>
-              {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
-              <Input type="date" name="dob" placeholder="DOB" onChange={handleChange} />
-            </div>
-            <div>
+          <div>
+             {errors.dob && (
+    <p style={{ color: 'red', fontSize: '0.8rem', marginTop: '0.25rem' }}>
+      {errors.dob}
+    </p>
+  )}
+  <Input
+    type="date"
+    name="dob"
+    id="dob"
+    placeholder="Date of Birth"
+    value={formData.dob}
+    onChange={handleChange}
+  />
+ 
+</div>
+
+           <div>
               {errors.gender && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.gender}</p>}
-              <Input name="gender" placeholder="Gender" onChange={handleChange} />
-            </div>
+
+  <select
+    name="gender"
+    value={formData.gender}
+    onChange={handleChange}
+    style={{
+            width:'100%',
+              padding: '0.5rem',
+              fontSize: '1rem',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+                  background:'white',
+                    color:'#999999',
+            }}
+          >
+ 
+    <option value="">Select Gender</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Other">Other</option>
+  </select>
+
+</div>
           </TwoColumnRow>
         </InfoSection>
       </InfoGrid>
@@ -160,11 +216,11 @@ console.log(errors)
       <TwoColumnRows>
         <div>
           {errors.position && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.position}</p>}
-          <Input name="position" placeholder="Job Position" onChange={handleChange} />
+          <Input name="position" placeholder="Job Position" value={formData.position} onChange={handleChange} />
         </div>
         <div>
           {errors.joiningDate && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.joiningDate}</p>}
-          <Input type="date" name="joiningDate" placeholder="Joining Date" onChange={handleChange} />
+          <Input type="date" name="joiningDate" value={formData.joiningDate} onChange={handleChange} />
         </div>
       </TwoColumnRows>
 
@@ -181,6 +237,8 @@ console.log(errors)
               fontSize: '1rem',
               borderRadius: '6px',
               border: '1px solid #ccc',
+                  background:'white',
+                  color:'#999999',
             }}
           >
             <option value="">Select Department</option>
@@ -193,32 +251,60 @@ console.log(errors)
         </div>
 
         <div>
-          {errors.contractType && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.contractType}</p>}
-          <Input name="contractType" placeholder="Full time" onChange={handleChange} />
-        </div>
+          {errors.contractType && (
+    <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.contractType}</p>
+  )}
+
+  <select
+    name="contractType"
+    value={formData.contractType}
+    onChange={handleChange}
+  style={{
+            width:'100%',
+              padding: '0.5rem',
+              fontSize: '1rem',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+              background:'white',
+              color:'#999999',
+            }}
+          >
+
+    <option value="">Select Employment Type</option>
+    <option value="Full-time">Full-time</option>
+    <option value="Part-time">Part-time</option>
+    <option value="Contract">Contract</option>
+  </select>
+  
+</div>
       </TwoColumnRows>
 
-      <SectionTitle>Legal Info</SectionTitle>
-
+      <SectionTitle>Employee Legal & ID Information</SectionTitle>
+      <div>
+        {errors.phoneNumber && (
+          <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.phoneNumber}</p>
+        )}
+        <Input name="phoneNumber" placeholder="Phone number" value={formData.phoneNumber} onChange={handleChange} />
+      </div>
       <div>
         {errors.passportNumber && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.passportNumber}</p>}
-        <Input name="passportNumber" placeholder="Passport number" onChange={handleChange} />
+        <Input name="passportNumber" placeholder="Passport number" value={formData.passportNumber} onChange={handleChange} />
       </div>
       <div>
         {errors.workPermit && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.workPermit}</p>}
-        <Input name="workPermit" placeholder="Work Permit" onChange={handleChange} />
+        <Input name="workPermit" placeholder="Work Permit" value={formData.workPermit} onChange={handleChange} />
       </div>
       <div>
         {errors.visaExpiry && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.visaExpiry}</p>}
-        <Input name="visaExpiry" placeholder="Visa Expiry Date" onChange={handleChange} />
+        <Input type="date" name="visaExpiry" value={formData.visaExpiry} onChange={handleChange} />
       </div>
       <div>
         {errors.iqamaNumber && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.iqamaNumber}</p>}
-        <Input name="iqamaNumber" placeholder="Iqama Number" onChange={handleChange} />
+        <Input name="iqamaNumber" placeholder="Iqama Number" value={formData.iqamaNumber} onChange={handleChange} />
       </div>
       <div>
         {errors.insuranceNumber && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.insuranceNumber}</p>}
-        <Input name="insuranceNumber" placeholder="Insurance Number" onChange={handleChange} />
+        <Input name="insuranceNumber" placeholder="Insurance Number" value={formData.insuranceNumber} onChange={handleChange} />
       </div>
 
       <FlexRow>

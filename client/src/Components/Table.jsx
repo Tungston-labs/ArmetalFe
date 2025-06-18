@@ -55,18 +55,16 @@ const Table = ({
           <TwoColumnRows>
             <div>
                  <ErrorMsg msg={errors.swiftCode} />
-              <Select placeholder="Swift code" value={swiftCode} onChange={(e) => setSwiftCode(e.target.value)} >
-            <option value="">For domestic</option>
-        <option value="old">International transfers</option>
-      
-              </Select>
+              <Input placeholder="Swift code" value={swiftCode} onChange={(e) => setSwiftCode(e.target.value)} />
+           
+             
             </div>
             <div>
                       <ErrorMsg msg={errors.paymentMode} />
               <Select placeholder="Payment Mode" value={paymentMode} onChange={(e) => setPaymentMode(e.target.value)} >
-      <option value="">Bank Transfer</option>
-        <option value="old">Cash</option>
-        <option value="new">Cheque</option>
+      <option value="online">Online</option>
+        <option value="cod">Cash on Delivery</option>
+        <option value="cheque">Cheque</option>
               </Select>
             </div>
           </TwoColumnRows>

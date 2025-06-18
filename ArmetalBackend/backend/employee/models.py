@@ -22,6 +22,7 @@ class Employee_db(TimeStampedModel):
     name = models.CharField(max_length=255)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     email = models.EmailField(unique=True)
+    phno = models.CharField(max_length=15,unique=True,null=True,blank=True)
     address = models.TextField()
     dob = models.DateField()
     gender = models.CharField(max_length=10, choices=[

@@ -141,6 +141,7 @@ export const Button = styled.button`
   font-size: 1rem;
   cursor: pointer;
 
+
   &:hover {
     background: ${({ secondary }) => (secondary ? '#aab3d0' : '#002244')};
   }
