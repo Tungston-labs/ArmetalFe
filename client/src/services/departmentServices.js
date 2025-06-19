@@ -1,11 +1,14 @@
 import API from "./api"; // Your Axios instance with baseURL & headers
 
 // GET: List all departments
-export const fetchDepartments = async () => {
-  const response = await API.get("/departments/");
-  console.log(response)
+// services/departmentService.js
+
+export const fetchDepartments = async (search = '') => {
+  const query = search ? `?search=${encodeURIComponent(search)}` : '';
+  const response = await API.get(`/departments/${query}`);
   return response.data.results;
 };
+
 
 // POST: Create a department
 export const createDepartment = async (data) => {
@@ -16,6 +19,13 @@ export const createDepartment = async (data) => {
 // GET: Department detail by ID
 export const fetchDepartmentById = async (id) => {
   const response = await API.get(`/departments/${id}/`);
+  return response.data;
+};
+
+// list employees of a department
+
+export const fetchEmployeesByDepartment = async (departmentId) => {
+  const response = await API.get(`/employees/department/${departmentId}/`);
   return response.data;
 };
 

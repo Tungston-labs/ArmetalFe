@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartments, createNewDepartment } from '../../Redux/departmentSlice.js';
+import { useNavigate } from 'react-router-dom';
 import {
   DepartmentContainer,
   HeaderSection,
-  Icon,
   TitleGroup,
   ActionArea,
   AddButton,
@@ -18,7 +18,9 @@ import {
   HRManager,
   ModalOverlay,
   CloseButton,
-  ModalContent,TitleSection,Subtitle
+  ModalContent,
+  TitleSection,
+  Subtitle
 } from '../department/DepartmentStyles';
 import {
   Container,
@@ -28,28 +30,28 @@ import {
   FormGroup,
   Label,
   Input,
-  Select,
   ButtonRow,
   CancelButton,
   SaveButton,
   BackArrow,
 } from './AddDepartment.Styles';
-import { FaPlus, FaSearch, FaSitemap, FaTimes, FaArrowLeft } from 'react-icons/fa';
+import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 
 const Department = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { list: departments, loading, error } = useSelector((state) => state.departments);
 console.log(error)
   const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState('');
   const [formData, setFormData] = useState({
     name: '',
-    department_code: '',
-    // department_head: ''
+    department_code: ''
   });
 
   useEffect(() => {
-    dispatch(getDepartments());
-  }, [dispatch]);
+    dispatch(getDepartments(search));
+  }, [dispatch, search]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,12 +59,11 @@ console.log(error)
 
   const handleSave = async () => {
     try {
-      const dataToSend = { ...formData };
-      const result = await dispatch(createNewDepartment(dataToSend));
+      const result = await dispatch(createNewDepartment(formData));
       if (createNewDepartment.fulfilled.match(result)) {
         setShowModal(false);
         setFormData({ name: '', department_code: '' });
-        dispatch(getDepartments());
+        dispatch(getDepartments(search.trim()));
       } else {
         console.error('Department creation failed:', result.payload);
       }
@@ -71,7 +72,9 @@ console.log(error)
     }
   };
 
-
+  const handleCardClick = (id) => {
+    navigate(`/departments/${id}`);
+  };
 
   return (
     <DepartmentContainer>
@@ -84,17 +87,21 @@ console.log(error)
       </TopBar>
 
       <HeaderSection>
-       <TitleSection>
-                  {/* > <LuArrowLeft style={{ width: "36px", height: 36 }} / */}
-                   <img src="/images/department.png" alt="Icon" style={{ height: "74px" }} />
-                   <div>
-                     <Title>Department</Title>
-                     <Subtitle>Manage all departments within the organization.</Subtitle>
-                   </div>
-                 </TitleSection>
+        <TitleSection>
+          <img src="/images/department.png" alt="Icon" style={{ height: "74px" }} />
+          <div>
+            <Title>Department</Title>
+            <Subtitle>Manage all departments within the organization.</Subtitle>
+          </div>
+        </TitleSection>
         <ActionArea>
           <AddButton onClick={() => setShowModal(true)}><FaPlus /> Add Department</AddButton>
-          <SearchInput type="text" placeholder="Search by Department name" />
+          <SearchInput
+            type="text"
+            placeholder="Search by Department name"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </ActionArea>
       </HeaderSection>
 
@@ -105,7 +112,7 @@ console.log(error)
           <p style={{ color: 'red' }}>Error: {error?.detail?.toString()}</p>
         ) : Array.isArray(departments) && departments.length > 0 ? (
           departments.map((dept) => (
-            <DepartmentCard key={dept.id}>
+            <DepartmentCard key={dept.id} onClick={() => handleCardClick(dept.id)}>
               <h3>{dept.name}</h3>
               <HeadInfo>
                 <Avatar src="https://i.pravatar.cc/40?img=3" />
@@ -125,7 +132,6 @@ console.log(error)
           <p>No departments found.</p>
         )}
       </CardGrid>
-
 
       {showModal && (
         <ModalOverlay>
@@ -158,13 +164,12 @@ console.log(error)
                   <Label>Department Code Name</Label>
                   <Input
                     type="text"
-                    name="department_code" 
+                    name="department_code"
                     placeholder="Eg HR"
                     value={formData.department_code}
                     onChange={handleChange}
                     required
                   />
-
                 </FormGroup>
 
                 {/* <FormGroup fullWidth>
@@ -178,6 +183,7 @@ console.log(error)
 
                 {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
                 {error?.detail && <p style={{ color: 'red' }}>{error?.detail||"wageges"}</p>}
+                {error && <p style={{ color: 'red' }}>{error}</p>}
 
                 <ButtonRow>
                   <CancelButton type="button" onClick={() => setShowModal(false)}>Cancel</CancelButton>
@@ -186,7 +192,6 @@ console.log(error)
                   </SaveButton>
                 </ButtonRow>
               </Form>
-
             </Container>
           </ModalContent>
         </ModalOverlay>

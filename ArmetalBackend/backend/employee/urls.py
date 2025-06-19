@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import EmployeesInMyDepartmentView,EmployeeListCreateView,EmployeeRetrieveUpdateDestroyView,EmpBankPaymentCreateListView,EmpBankPaymentRetrieveUpdateDeleteView,UploadImageView,EmpDocumentCreateFromURLView
+from .views import EmployeesInMyDepartmentView,EmployeeListCreateView,EmployeeRetrieveUpdateDestroyView,EmpBankPaymentCreateListView,EmpBankPaymentRetrieveUpdateDeleteView,UploadImageView,EmpDocumentCreateFromURLView,DashboardSummaryView
 
 urlpatterns = [
     path('employees/', EmployeeListCreateView.as_view(), name='employee-list-create'),
@@ -15,5 +15,9 @@ urlpatterns = [
     path('employees/<int:employee_id>/documents/', EmpDocumentCreateFromURLView.as_view(), name='upload-emp-documents'),
     # list employees of same department
     path('employees/my-department/', EmployeesInMyDepartmentView.as_view(), name='employees-in-my-department'),
+
+
+    path('admin/dashboard-summary/', DashboardSummaryView.as_view(), name='dashboard-summary'),
+
 
 ]

@@ -8,9 +8,9 @@ export const fetchHolidayTypes = async () => {
 
 
 // GET: List all holidays
-export const fetchHolidays = async () => {
-  const response = await API.get("/holidays/");
-  return response.data.results;
+export const fetchHolidays = async (page = 1) => {
+  const response = await API.get(`/holidays/?page=${page}`);
+  return response.data;
 };
 
 // POST: Create a holiday

@@ -43,7 +43,8 @@ const formatDateToISO = (dateStr) => {
 
 const HolidayManager = () => {
   const dispatch = useDispatch();
-  const { list: holidays, loading, error } = useSelector(state => state.holidays);
+  const [page, setPage] = useState(1);
+  const { list: holidays, loading, error,totalPages, currentPage } = useSelector(state => state.holidays);
 
   const [formData, setFormData] = useState({ name: "", type: "", date: "" });
 
@@ -56,12 +57,19 @@ const HolidayManager = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getHolidays());
-  }, [dispatch]);
+    dispatch(getHolidays(page));
+  }, [dispatch,page]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  
 
 
   const handleAdd = () => {
@@ -153,7 +161,8 @@ const cancelDelete = () => {
           <tbody>
             {holidays.map((item, index) => (
               <tr key={item.id}>
-                <Td>{index + 1}</Td>
+                <Td>{(currentPage - 1) * 7 + index + 1}</Td>
+
                 <Td>{item.description}</Td>
                 <Td>{item.holiday_type_display}</Td> 
                 <Td>{item.date}</Td>
@@ -218,15 +227,36 @@ const cancelDelete = () => {
   </div>
 )}
 
-        <Pagination>
-              <span>&larr;</span>
-              <span className="active">1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>4</span>
-              <span>5</span>
-              <span>&rarr;</span>
-            </Pagination>
+<Pagination>
+  <span
+    onClick={() => handlePageChange(page - 1)}
+    style={{ cursor: page > 1 ? 'pointer' : 'not-allowed', opacity: page > 1 ? 1 : 0.5 }}
+  >
+    &larr;
+  </span>
+
+  {[...Array(totalPages)].map((_, i) => {
+    const pageNum = i + 1;
+    return (
+      <span
+        key={pageNum}
+        onClick={() => handlePageChange(pageNum)}
+        className={pageNum === currentPage ? "active" : ""}
+        style={{ cursor: 'pointer', fontWeight: pageNum === currentPage ? 'bold' : 'normal' }}
+      >
+        {pageNum}
+      </span>
+    );
+  })}
+
+  <span
+    onClick={() => handlePageChange(page + 1)}
+    style={{ cursor: page < totalPages ? 'pointer' : 'not-allowed', opacity: page < totalPages ? 1 : 0.5 }}
+  >
+    &rarr;
+  </span>
+</Pagination>
+
 
     </Container>
   );

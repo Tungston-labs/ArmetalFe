@@ -18,7 +18,6 @@ class EmpBankPaymentSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['employee']
 
-
 class EmployeeSerializer(serializers.ModelSerializer):
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
@@ -26,10 +25,12 @@ class EmployeeSerializer(serializers.ModelSerializer):
     passport_expiry = SafeDateField(required=False)
     contract_start = SafeDateField(required=False)
     contract_end = SafeDateField(required=False)
+    department = serializers.CharField(source='department.name', read_only=True)
 
     class Meta:
         model = Employee_db
         exclude = ['user', 'password']
+  # password and user will be handled internally
 
 
 class TempUploadSerializer(serializers.ModelSerializer):

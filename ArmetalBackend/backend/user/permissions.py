@@ -9,3 +9,11 @@ class IsHRAdmin(permissions.BasePermission):
 class IsEmployee(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.is_employee
+    
+
+class IsHRorIsEmployee(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.is_hr_admin or request.user.is_employee
+    
+        

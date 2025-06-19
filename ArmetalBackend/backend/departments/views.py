@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count
 
 # Create your views here.
 
@@ -15,7 +16,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
     search_fields = ['name']
 
     def get_queryset(self):
-        return Department.objects.filter(company=self.request.user.company)
+        return Department.objects.filter(company=self.request.user.company).annotate(employee_count=Count('employees'))
 
     def perform_create(self, serializer):
         serializer.save(company=self.request.user.company)

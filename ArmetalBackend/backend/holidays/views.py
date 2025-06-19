@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import PublicHoliday
 from .serializers import PublicHolidaySerializer
 from user.permissions import IsHRAdmin, IsEmployee
+from shared.pagination import CustomPagination
 
 # HR Admin Views
 
@@ -13,6 +14,7 @@ from user.permissions import IsHRAdmin, IsEmployee
 class PublicHolidayCreateListView(generics.ListCreateAPIView):
     serializer_class = PublicHolidaySerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return PublicHoliday.objects.filter(company=self.request.user.company).order_by('date')
