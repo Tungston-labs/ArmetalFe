@@ -126,7 +126,14 @@ export default function DailyTask() {
               </TaskCard>
             ))
           ) : (
-            <p>No tasks available for this date.</p>
+           <div style={{ textAlign: 'center', padding: '2rem',alignContent:"end" }}>
+    <img
+      src="/images/dailytask.png"
+      alt="No tasks"
+      style={{ width: '400px', height: '350px', marginBottom: '', opacity: 0.8 }}
+    />
+    <p>No tasks available for this date.</p>
+  </div>
           )}
         </TaskPanel>
       </div>

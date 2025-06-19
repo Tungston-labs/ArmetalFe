@@ -1,136 +1,73 @@
 import React from 'react';
 import {
-  Container,SearchInput,
-  Section,RightSection,
-  SectionTitle,Rows,SectionHeader,Select,
-  Table,FormWrapper,
-  Row,ImageColumn,Hr,
-  Label,Input,LeftSection,
-  Value,Rowes,Textarea,
-  Pagination,ProfileImage,
+  Container, Header, PlanBox, PlanTitle, PlanDesc, Price,
+  Table, Row, Cell, Input, Select, IconCell, ButtonGroup, Button
 } from './Payroll1.Styles';
+import { FaDownload, FaPlay } from 'react-icons/fa';
 
-const PayrollSummary = () => {
+const paymentData = [
+  { month: 'January', date: '12-12-25', amount: 1500, status: 'Paid' },
+  { month: 'February', date: '12-12-25', amount: 1500, status: 'Paid' },
+  { month: 'March', date: '12-12-24', amount: 1500, status: 'Paid' },
+  { month: 'April', date: '12-12-24', amount: 1500, status: 'Paid' },
+  { month: 'May', date: '12-12-24', amount: 1500, status: 'Un-Paid' },
+];
+
+const PaymentOverview = () => {
   return (
     <Container>
-        <SearchInput placeholder="Search by Employee name" />
-             
-                 <FormWrapper>
-               <ImageColumn>
-                 <ProfileImage src="https://i.pravatar.cc/100?img=5" alt="Profile" />
-               </ImageColumn>
-             
-               <Rowes>
-                 <LeftSection>
-                   <Input type="text" placeholder="Ajay kumar" />
-                   <Input type="text" placeholder="254125" />
-                   <Input type="email" placeholder="Ajaykumar@gmail.com" />
-                 </LeftSection>
-             
-                 <RightSection>
-                   <Textarea placeholder="Ajaykumar dummy dummy dummy 1231 dummy" />
-                   <Rows style={{ marginTop: "1rem" }}>
-                     <Input type="text" placeholder="12/12/1980" />
-                     <Input type="text" placeholder="Male" />
-                   </Rows>
-                 </RightSection>
-               </Rowes>
-             </FormWrapper>
-             <Hr/>
-        
-      <Section>
-           <SectionHeader>
-    <SectionTitle>Payroll status</SectionTitle>
-    <Select>
-      <option value="">Select Status</option>
-      <option value="paid">Paid</option>
-      <option value="pending">Pending</option>
-      <option value="hold">On Hold</option>
-    </Select>
-  </SectionHeader>
-        <SectionTitle>Employee Details</SectionTitle>
-        <Table>
-          <Row>
-            <Label>Employee name</Label>
-            <Value>Ajay kumar M.A</Value>
-          </Row>
-          <Row>
-            <Label>Employee ID</Label>
-            <Value>EMP123652</Value>
-          </Row>
-          <Row>
-            <Label>Department</Label>
-            <Value>dummy</Value>
-          </Row>
-          <Row>
-            <Label>Designation</Label>
-            <Value>Bank transfer</Value>
-          </Row>
-        </Table>
-      </Section>
+      <Header>Payment Overview</Header>
 
-      <Section>
-        <SectionTitle>Net pay Summary</SectionTitle>
-        <Table>
-          <Row>
-            <Label>Gross Earnings</Label>
-            <Value>1200</Value>
-          </Row>
-          <Row>
-            <Label>Total deduction</Label>
-            <Value>1500</Value>
-          </Row>
-          <Row>
-            <Label>Net pay</Label>
-            <Value>1255</Value>
-          </Row>
-          <Row>
-            <Label>Payment mode</Label>
-            <Value>Bank transfer</Value>
-          </Row>
-          <Row>
-            <Label>Bank Account</Label>
-            <Value>****4512</Value>
-          </Row>
-        </Table>
-      </Section>
+      <PlanBox>
+        <div>
+          <PlanTitle>Enterprise plan</PlanTitle>
+          <PlanDesc>
+            Pay a fixed $5 per employee. <br />
+            Simple, transparent, and ideal for managing individual payroll with ease.
+          </PlanDesc>
+        </div>
+        <Price>$5</Price>
+      </PlanBox>
 
-      <Section>
-        <SectionTitle>Gross salary breakdown</SectionTitle>
-        <Table>
-          <Row>
-            <Label>Base salary</Label>
-            <Value>1200</Value>
-          </Row>
-        </Table>
-      </Section>
+      <Table>
+        <thead>
+          <tr>
+            <Cell header>Month</Cell>
+            <Cell header>Paid date</Cell>
+            <Cell header>Amount</Cell>
+            <Cell header>Status</Cell>
+            <Cell header>Import</Cell>
+          </tr>
+        </thead>
+        <tbody>
+          {paymentData.map((item, index) => (
+            <Row key={index} unpaid={item.status === 'Un-Paid'}>
+              <Cell>{item.month}</Cell>
+              <Cell>
+                <Input type="text" value={item.date} readOnly />
+              </Cell>
+              <Cell>{item.amount}</Cell>
+              <Cell>
+                <Select defaultValue={item.status}>
+                  <option>Paid</option>
+                  <option>Un-Paid</option>
+                </Select>
+              </Cell>
+              <IconCell>
+                <FaDownload style={{ cursor: 'pointer', marginRight: '1rem' }} />
+                <FaPlay style={{ cursor: 'pointer' }} />
+              </IconCell>
+            </Row>
+          ))}
+        </tbody>
+      </Table>
 
-      <Section>
-        <SectionTitle>Deductions</SectionTitle>
-        <Table>
-          <Row>
-            <Label>Leave taken</Label>
-            <Value>1</Value>
-          </Row>
-          <Row>
-            <Label>Total Leave Deduction Amount</Label>
-            <Value>0</Value>
-          </Row>
-        </Table>
-      </Section>
-
-
-      <Pagination>
-        <span>&larr;</span>
-        <span className="active">1</span>
-        <span>2</span>
-        <span>3</span>
-        <span>4</span>
-        <span>5</span>
-        <span>&rarr;</span>
-      </Pagination>
+      <ButtonGroup>
+        <Button cancel>Cancel</Button>
+        <Button>Save</Button>
+      </ButtonGroup>
     </Container>
   );
 };
 
-export default PayrollSummary;
+export default PaymentOverview;

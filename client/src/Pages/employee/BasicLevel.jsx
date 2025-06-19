@@ -128,7 +128,7 @@ export default function AddEmployeeForm() {
           </div>
         </div>
         <RoleInfo>
-          <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
+          <img src="/images/user.jpg" alt="HR Manager" />
           <span>HR Manager</span>
         </RoleInfo>
       </Header>

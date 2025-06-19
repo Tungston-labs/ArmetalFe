@@ -29,14 +29,17 @@ import BankpaymentEdit from "./Pages/editform/BankpaymentEdit.jsx"
 import DocumentEdit from "./Pages/editform/DocumentEdit.jsx"
 import Succes from "./Components/Succes.jsx";
 import ConfirmLeaveModal from "./Components/ConfirmLeaveModal.jsx";
-import Payroll1 from "./Pages/payroll/Payroll1.jsx"
+// import Payroll1 from "./Pages/payroll/Payroll1.jsx"
+import RequireAuth from "./Components/RequireAuth.jsx";
 function App() {
   return (
     <>
-hrzser
       <Routes>
 
         <Route path="/login" element={<LoginForm />} />
+
+        <Route element={<RequireAuth/>}>
+
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="/department" element={<Department />} />
@@ -66,9 +69,11 @@ hrzser
           <Route path="/edit-document" element={<DocumentEdit />} />
           <Route path="/succes" element={<Succes />} />
           <Route path="/confirm" element={<ConfirmLeaveModal />} />
-          <Route path="/payrolls" element={<Payroll1 />} />
+          {/* <Route path="/payrolls" element={<Payroll1 />} /> */}
+        </Route>
         </Route>
       </Routes>
+    
     </>
   );
 }

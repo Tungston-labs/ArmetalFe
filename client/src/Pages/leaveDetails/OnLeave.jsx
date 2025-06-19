@@ -9,7 +9,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { useLocation, NavLink,useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
-
+import { LuArrowLeft } from "react-icons/lu";
 export default function EmployeeAttendance() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -44,13 +44,14 @@ export default function EmployeeAttendance() {
       <TopBar>
         <div />
         <HRManager>
-          <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
+          <img src="/images/user.jpg" alt="HR Manager" />
           <span>HR Manager</span>
         </HRManager>
       </TopBar>
 
       <HeaderSection>
         <TitleSection>
+                    <LuArrowLeft style={{ width: "30px", height: 30 }} />
           <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Employee</Title>
@@ -69,11 +70,19 @@ export default function EmployeeAttendance() {
       </HeaderSection>
 
       <Tabs>
-        <NavLink to="/employee"><Tab active={location.pathname === '/employee'}>Employee list</Tab></NavLink>
-        <NavLink to="/leave-request"><Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab></NavLink>
-        <NavLink to="/on-leave"><Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab></NavLink>
-        <NavLink to="/employee-visa"><Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab></NavLink>
-      </Tabs>
+             <NavLink to="/employee" style={{ textDecoration: 'none' }}>
+               <Tab active={location.pathname === '/employee'}>Employee list</Tab>
+             </NavLink>
+             <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
+               <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
+             </NavLink>
+             <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
+               <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+             </NavLink>
+             <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
+               <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+             </NavLink>
+           </Tabs>
 
       <TableTitle>{selectedDate || "All Dates"}</TableTitle>
 

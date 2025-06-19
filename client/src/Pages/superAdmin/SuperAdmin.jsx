@@ -29,7 +29,7 @@ import {
   getCompanies,
   removeCompany
 } from '../../Redux/superAdminSlice';
-
+import { IoInformationCircleOutline } from "react-icons/io5";
 const CompanyTable = () => {
   const dispatch = useDispatch();
   const { companies, loading, pagination } = useSelector((state) => state.superAdmin);
@@ -127,6 +127,7 @@ const CompanyTable = () => {
               <Th>Company ID</Th>
               <Th>Contact details</Th>
               <Th>No of Employees</Th>
+              <Th>Info</Th>
               <Th>Edit</Th>
               <Th>Delete</Th>
               <Th>Impersonate</Th>
@@ -144,6 +145,7 @@ const CompanyTable = () => {
                   <Td>{item.company_id}</Td>
                   <Td>{item.contact_number}</Td>
                   <Td>{item.number_of_employees}</Td>
+                  <Td><IoInformationCircleOutline/></Td>
                   <Td>
                     <IconButton onClick={() => handleEdit(item)}>
                       <TbPencilMinus />
