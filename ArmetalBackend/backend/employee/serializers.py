@@ -3,6 +3,7 @@ from datetime import datetime
 from .models import (
     Employee_db, EmpBankPaymentModel, EmpDocument, TempUpload
 )
+from departments.models import Department
 
 # Custom field to handle datetime-to-date safely
 class SafeDateField(serializers.DateField):
@@ -17,7 +18,6 @@ class EmpBankPaymentSerializer(serializers.ModelSerializer):
         model = EmpBankPaymentModel
         fields = '__all__'
         read_only_fields = ['employee']
-
 class EmployeeSerializer(serializers.ModelSerializer):
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
@@ -25,12 +25,18 @@ class EmployeeSerializer(serializers.ModelSerializer):
     passport_expiry = SafeDateField(required=False)
     contract_start = SafeDateField(required=False)
     contract_end = SafeDateField(required=False)
+
+    department_id = serializers.PrimaryKeyRelatedField(
+        source='department',
+        queryset=Department.objects.all(),
+        write_only=True
+    )
     department = serializers.CharField(source='department.name', read_only=True)
 
     class Meta:
         model = Employee_db
         exclude = ['user', 'password']
-  # password and user will be handled internally
+
 
 
 class TempUploadSerializer(serializers.ModelSerializer):

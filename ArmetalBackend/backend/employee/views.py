@@ -36,16 +36,25 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         employee = serializer.save()
+
+        # Check if department exists
+        if not employee.department:
+            return Response(
+                {"error": "Department is required or invalid."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         company = employee.department.company
-        company.number_of_employees = (company.number_of_employees or 0) + 1
-        company.save()
+        if company:
+            company.number_of_employees = (company.number_of_employees or 0) + 1
+            company.save()
 
         return Response({
             "message": "Employee created successfully.",
             "employee": EmployeeSerializer(employee).data,
             "login_credentials": {
                 "username": employee.employee_id,
-                "password": employee.password  # ⚠️ Only show once
+                "password": employee.password  # ⚠️ Show only once
             }
         }, status=status.HTTP_201_CREATED)
 

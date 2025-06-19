@@ -93,10 +93,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'db_armetal',         
-        'USER': 'postgres',
+        'USER': 'superuser',
         'PASSWORD': 'password@123',
         'HOST': 'localhost',
-        'PORT': '5432',                
+        'PORT': '5433',                
     }
 }
 
