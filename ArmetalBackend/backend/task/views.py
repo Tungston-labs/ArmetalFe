@@ -33,11 +33,26 @@ class HRDailyTaskListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
 
 # HR:list daily task of particular employee with id
+from datetime import datetime
+
+
 class HRDailyTaskByEmployeeView(generics.ListAPIView):
     serializer_class = DailyTaskSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
 
     def get_queryset(self):
         employee_id = self.kwargs['employee_id']
-        return DailyTask.objects.filter(employee__id=employee_id).order_by('-created_at')
+        queryset = DailyTask.objects.filter(employee__id=employee_id)
+
+        # Optional date filter: ?date=2025-06-16
+        date_str = self.request.query_params.get('date')
+        if date_str:
+            try:
+                date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+                queryset = queryset.filter(created_at__date=date_obj)
+            except ValueError:
+                pass  # Optionally raise a validation error
+
+        return queryset.order_by('-created_at')
+
 

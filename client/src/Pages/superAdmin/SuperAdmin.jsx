@@ -136,7 +136,9 @@ const CompanyTable = () => {
             {!loading && companies.length > 0 ? (
               companies.map((item, idx) => (
                 <tr key={item.id}>
-                  <Td>{idx + 1}</Td>
+                  <Td>{(page - 1) * 7 + idx + 1}</Td>
+
+                  
                   <Td>{item.name}</Td>
                   <Td>{item.address}</Td>
                   <Td>{item.company_id}</Td>

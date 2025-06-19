@@ -22,6 +22,7 @@ import {
   Subtitle,Rightside,
   HeaderWrapper,TextGroup,HRManager
 } from "./ViewBasic.Style";
+import { useLocation } from "react-router-dom";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 const AddEmployee = () => {
      const location = useLocation();

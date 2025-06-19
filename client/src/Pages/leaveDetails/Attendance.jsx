@@ -1,118 +1,133 @@
 // src/components/TimesheetPage.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams,useNavigate } from 'react-router-dom';
+import { getAttendanceDetail } from '../../Redux/attendanceSlice';
 import {
   Container,
   HeaderSection,
   ProfileImage,
-  InputGroup,
   Input,
   DateNavigation,
   DateBox,
   Table,
   TableRow,
   TimeCell,
-  TwoColumn,
   TimeRange,
   TimeIcon,
   InfoGrid,
+  TwoColumn,
   TwoColumnRow,
   FullWidthInput,
   InfoSection,
   Hr,
   DateNavCenter,
 } from './Attendance.Style';
-import { FaUserCircle, FaClock } from 'react-icons/fa';
+import { FaClock } from 'react-icons/fa';
 
 const TimesheetPage = () => {
-  const [selectedDate, setSelectedDate] = useState('2025-03-12');
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { attendanceDetail, detailLoading } = useSelector((state) => state.attendance);
+
+  const [selectedDate, setSelectedDate] = useState('');
+  
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getAttendanceDetail(id));
+    }
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (attendanceDetail?.date) {
+      setSelectedDate(attendanceDetail.date);
+    }
+  }, [attendanceDetail]);
 
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
   };
 
+  if (detailLoading || !attendanceDetail) return <p>Loading attendance details...</p>;
+
+  const employee = attendanceDetail.employee || {};
+  const sessions = attendanceDetail.sessions || [];
+
   return (
     <Container>
       <HeaderSection>
         <InfoGrid>
-          <div style={{ width: "10%" }}>
-            <ProfileImage src="https://i.pravatar.cc/100?img=5" alt="Employee" />
+          <div style={{ width: '10%' }}>
+            <ProfileImage src={employee.profile_pic} alt="Employee" />
           </div>
-          <div style={{ display: "flex", width: "90%", justifyContent: "space-between" }}>
+          <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between' }}>
             <TwoColumn>
-              <Input placeholder="Name" />
-              <Input placeholder="Employee ID" />
-              <Input placeholder="Email ID" />
+              <Input value={employee.name || ''} readOnly />
+              <Input value={employee.employee_id || ''} readOnly />
+              <Input value={employee.email || ''} readOnly />
             </TwoColumn>
 
             <InfoSection>
-              <FullWidthInput placeholder="Address" />
+              <FullWidthInput value={employee.department?.name || ''} readOnly />
               <TwoColumnRow>
-                <Input placeholder="DOB" />
-                <Input placeholder="Gender" />
+                <Input value={employee.designation || ''} readOnly />
+                <Input value={selectedDate} onChange={handleDateChange} type="date" />
               </TwoColumnRow>
             </InfoSection>
-            {/* <TwoColumn>
-                         <Input placeholder="Address" />
-                        
-                      </TwoColumn> */}
-            {/* <ThreeColumn>
-               
-                        <Input placeholder="DOB" />
-                        <Input placeholder="Gender" />
-                      </ThreeColumn> */}
           </div>
-
         </InfoGrid>
-
-
-
-
       </HeaderSection>
+
       <Hr />
+
       <DateNavigation>
-  <DateNavCenter>
-    <button>{'<'}</button>
-    <span>
-      {new Date(selectedDate).toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      })}
-    </span>
-    <button>{'>'}</button>
-  </DateNavCenter>
+        <DateNavCenter>
+          <button>{'<'}</button>
+          <span>
+            {new Date(selectedDate).toLocaleDateString('en-GB', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
+          </span>
+          <button>{'>'}</button>
+        </DateNavCenter>
 
-  <DateBox>
-    <input type="date" value={selectedDate} onChange={handleDateChange} />
-  </DateBox>
-</DateNavigation>
-
+        <DateBox>
+          <input type="date" value={selectedDate} onChange={handleDateChange} />
+        </DateBox>
+      </DateNavigation>
 
       <Table>
         <thead>
           <tr>
-            <th>Time in</th>
+            <th>Time In</th>
             <th></th>
-            <th>Time out</th>
+            <th>Time Out</th>
           </tr>
         </thead>
         <tbody>
-          {[
-            { in: '08:30 Am', out: '11:30 Am' },
-            { in: '11:30 Am', out: '02:30 Pm' },
-            { in: '02:30 Pm', out: '05:30 Pm' }
-          ].map((row, index) => (
+          {sessions.map((session, index) => (
             <TableRow key={index}>
-              <TimeCell>{row.in}</TimeCell>
+              <TimeCell>{session.time_in?.slice(0, 5)}</TimeCell>
               <TimeRange>
-                <TimeIcon><FaClock /></TimeIcon>
-                <span>................................................. To ..................................................</span>
+                <TimeIcon>
+                  <FaClock />
+                </TimeIcon>
+                <span>
+                  ................................................. To ..................................................
+                </span>
               </TimeRange>
-              <TimeCell>{row.out}</TimeCell>
+              <TimeCell>{session.time_out?.slice(0, 5) || '--:--'}</TimeCell>
             </TableRow>
           ))}
         </tbody>
       </Table>
+
+      <p style={{ marginTop: '20px' }}>
+        <strong>Total Hours Worked:</strong> {attendanceDetail.total_hours || '0.00'} hrs
+      </p>
     </Container>
   );
 };

@@ -4,6 +4,12 @@ import authReducer from '../Redux/authSlice';
 import departmentReducer from "../Redux/departmentSlice";
 import holidayReducer from "../Redux/holidaySlice"
 import superAdminReducer from '../Redux/superAdminSlice'
+import dailyTaskReducer from '../Redux/dailyTaskSlice'
+import employeesReducer from '../Redux/employeeSlice'
+import leaveReducer from '../Redux/leaveSlice'
+import attendanceReducer from '../Redux/attendanceSlice'
+import dashboardReducer from '../Redux/dashboardSlice'
+
 
 
 export const store = configureStore({
@@ -13,6 +19,12 @@ export const store = configureStore({
     auth:authReducer,
     departments: departmentReducer,
     holidays: holidayReducer,
-    superAdmin:superAdminReducer
+    superAdmin:superAdminReducer,
+    dailyTask: dailyTaskReducer,
+    employees: employeesReducer,
+    leave: leaveReducer,
+    attendance: attendanceReducer,
+    dashboard: dashboardReducer,
+
   },
 });

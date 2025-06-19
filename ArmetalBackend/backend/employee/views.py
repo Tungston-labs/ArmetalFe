@@ -8,14 +8,29 @@ from .models import Employee_db
 from .serializers import EmployeeSerializer,EmpDocumentSerializer
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from shared.pagination import PageNumberPagination
 
 # 1. List and Create
+
+
+
+
 class EmployeeListCreateView(generics.ListCreateAPIView):
-    queryset = Employee_db.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'employee_id']  # optional
+    search_fields = ['name', 'employee_id']
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        company = user.company
+        if not company:
+            print(f"❌ No valid company found for user: {user.username}")
+            return Employee_db.objects.none()
+        
+        print(f"✅ Returning employees for company: {company.name}")
+        return Employee_db.objects.filter(department__company=company).order_by('name')
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -30,9 +45,10 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
             "employee": EmployeeSerializer(employee).data,
             "login_credentials": {
                 "username": employee.employee_id,
-                "password": employee.password  # ⚠️ show only once if needed
+                "password": employee.password  # ⚠️ Only show once
             }
         }, status=status.HTTP_201_CREATED)
+
 
 # 2. Retrieve, Update, Delete
 class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -161,6 +177,49 @@ class EmployeeSelfView(APIView):
         employee = request.user.employee_db
         return Response(EmployeeSerializer(employee).data)
 
+# for dashboard details 
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from employee.models import Employee_db
+from attendance.models import Attendance
+from leave.models import LeaveRequest
+from datetime import date, timedelta
+
+class DashboardSummaryView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def get(self, request):
+        today = date.today()
+        upcoming_range = today + timedelta(days=30)
+        company = request.user.company  # assuming the logged-in user is linked to a company
+
+        # Fixing all queries using department__company
+        total_employees = Employee_db.objects.filter(department__company=company).count()
+
+        today_attendance = Attendance.objects.filter(
+            date=today,
+            employee__department__company=company
+        ).count()
+
+        today_leave = LeaveRequest.objects.filter(
+            from_date__lte=today,
+            to_date__gte=today,
+            employee__department__company=company
+        ).count()
+
+        visa_expiring_soon = Employee_db.objects.filter(
+            department__company=company,
+            visa_expiry_date__range=[today, upcoming_range]
+        ).count()
+
+        return Response({
+            "total_employees": total_employees,
+            "today_attendance": today_attendance,
+            "today_leave": today_leave,
+            "visa_expiring_soon": visa_expiring_soon
+        })
 
 
 

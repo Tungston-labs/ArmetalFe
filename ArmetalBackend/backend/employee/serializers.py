@@ -9,11 +9,13 @@ class EmpBankPaymentSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['employee']
 
-
 class EmployeeSerializer(serializers.ModelSerializer):
+    department = serializers.CharField(source='department.name', read_only=True)
+
     class Meta:
         model = Employee_db
-        exclude = ['user', 'password']  # password and user will be handled internally
+        exclude = ['user', 'password']
+  # password and user will be handled internally
 
 
 from rest_framework import serializers

@@ -127,10 +127,9 @@ font-family:satoshi;
 `;
 
 export const TableRow = styled.tr`
-  &:nth-child(even) {
-    background: #fff;
-  }
+  background-color: ${(props) => (props.$header ? '#f0f0f0' : 'white')};
 `;
+
 export const TableHeader = styled.th`
     text-align: left;
   padding: 1rem;

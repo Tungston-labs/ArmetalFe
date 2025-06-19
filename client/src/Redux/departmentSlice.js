@@ -6,19 +6,23 @@ import {
   createDepartment,
   updateDepartment,
   deleteDepartment,
+  fetchEmployeesByDepartment,
 } from "../services/departmentServices";
 
 // Get all departments
+
+
 export const getDepartments = createAsyncThunk(
   "departments/getAll",
-  async (_, { rejectWithValue }) => {
+  async (search = '', { rejectWithValue }) => {
     try {
-      return await fetchDepartments();
+      return await fetchDepartments(search);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
 
 // Get department by ID
 export const getDepartmentById = createAsyncThunk(
@@ -37,11 +41,11 @@ export const createNewDepartment = createAsyncThunk(
   "departments/create",
   async (data, { rejectWithValue }) => {
     try {
-        const payload = {
-            name: data.name,
-            department_code: data.department_code,
-            department_head: data.department_head,
-          };
+      const payload = {
+        name: data.name,
+        department_code: data.department_code,
+        department_head: data.department_head,
+      };
       return await createDepartment(payload);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -61,7 +65,7 @@ export const updateDepartmentById = createAsyncThunk(
   }
 );
 
-// Delete department
+// Delete employee
 export const deleteDepartmentById = createAsyncThunk(
   "departments/delete",
   async (id, { rejectWithValue }) => {
@@ -73,6 +77,18 @@ export const deleteDepartmentById = createAsyncThunk(
     }
   }
 );
+// Get employees by department ID
+export const getEmployeesByDepartment = createAsyncThunk(
+  "departments/getEmployeesByDepartment",
+  async (departmentId, { rejectWithValue }) => {
+    try {
+      return await fetchEmployeesByDepartment(departmentId);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 
 const departmentSlice = createSlice({
   name: "departments",
@@ -80,6 +96,7 @@ const departmentSlice = createSlice({
     list: [],
     current: null,
     loading: false,
+    departmentEmployees: [],
     error: null,
   },
   reducers: {
@@ -153,7 +170,20 @@ const departmentSlice = createSlice({
       .addCase(deleteDepartmentById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // Get Employees by Department
+      .addCase(getEmployeesByDepartment.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getEmployeesByDepartment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.departmentEmployees = action.payload;
+      })
+      .addCase(getEmployeesByDepartment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
+
   },
 });
 

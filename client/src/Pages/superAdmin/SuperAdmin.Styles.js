@@ -187,6 +187,8 @@ export const Th = styled.th`
   background: #e7eaf6;
   color: #111;
   font-size: 14px;
+  text-align: center;       // ← horizontally center the text
+  vertical-align: middle;
 `;
 
 export const Td = styled.td`
@@ -194,7 +196,10 @@ export const Td = styled.td`
   background: #fff;
   font-size: 14px;
   white-space: nowrap;
+  text-align: center;       // ← horizontally center the text
+  vertical-align: middle;   // ← vertically center the content (optional)
 `;
+
 
 export const IconButton = styled.button`
   background: inherit;

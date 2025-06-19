@@ -22,6 +22,7 @@ class Employee_db(TimeStampedModel):
     name = models.CharField(max_length=255)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     email = models.EmailField(unique=True)
+    phno = models.CharField(max_length=15,unique=True,null=True,blank=True)
     address = models.TextField()
     dob = models.DateField()
     gender = models.CharField(max_length=10, choices=[
@@ -88,6 +89,8 @@ class EmpBankPaymentModel(models.Model):
     basic_salary = models.DecimalField(max_digits=10, decimal_places=2)
     salary_increment = models.DecimalField(max_digits=10,decimal_places=2,null=True,blank=True)
     document = models.FileField(upload_to='bank_documents/', null=True, blank=True)
+    housing_allowance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00,null=True,blank=True)
+    transportation = models.DecimalField(max_digits=10, decimal_places=2, default=0.00,null=True,blank=True)
 
     def __str__(self):
         return f"{self.employee.name} - {self.bank_name}"

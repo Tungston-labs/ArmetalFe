@@ -9,9 +9,11 @@ import {
 } from "../services/holidayService";
 
 // Thunks
-export const getHolidays = createAsyncThunk("holidays/get", async () => {
-  return await fetchHolidays();
+// Redux/holidaySlice.js
+export const getHolidays = createAsyncThunk("holidays/get", async (page = 1) => {
+  return await fetchHolidays(page);
 });
+
 
 export const addHoliday = createAsyncThunk("holidays/add", async (data) => {
   return await createHolidays(data);
@@ -35,6 +37,11 @@ const holidaySlice = createSlice({
   name: "holidays",
   initialState: {
     list: [],
+    count: 0,
+    totalPages: 1,
+    currentPage: 1,
+    next: null,
+    previous: null,
     loading: false,
     error: null,
     selected: null,
@@ -46,9 +53,16 @@ const holidaySlice = createSlice({
         state.loading = true;
       })
       .addCase(getHolidays.fulfilled, (state, action) => {
+        const payload = action.payload;
         state.loading = false;
-        state.list = action.payload;
+        state.list = payload.results; 
+        state.count = payload.total_items;
+        state.totalPages = payload.total_pages;
+        state.currentPage = payload.current_page;
+        state.next = payload.next;
+        state.previous = payload.previous;
       })
+      
       .addCase(getHolidays.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartments } from '../../Redux/departmentSlice';
+import { getDashboardSummary } from '../../Redux/dashboardSlice';
 import {
   DashboardContainer,
   SectionTitle,
@@ -17,10 +18,22 @@ import {
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { list: departments, loading, error } = useSelector(state => state.departments);
+
+  const {
+    list: departments,
+    loading: deptLoading,
+    error: deptError,
+  } = useSelector(state => state.departments);
+
+  const {
+    summary,
+    loading: dashLoading,
+    error: dashError,
+  } = useSelector(state => state.dashboard);
 
   useEffect(() => {
     dispatch(getDepartments());
+    dispatch(getDashboardSummary());
   }, [dispatch]);
 
   return (
@@ -29,30 +42,38 @@ const Dashboard = () => {
 
       <CardGrid>
         <StatCard>
-          <CardTitle>Total employees</CardTitle>
-          <CardValue>255</CardValue>
+          <CardTitle>Total Employees</CardTitle>
+          <CardValue>
+            {dashLoading ? '...' : dashError ? '-' : summary.total_employees}
+          </CardValue>
         </StatCard>
         <StatCard>
-          <CardTitle>Employee Attendance</CardTitle>
-          <CardValue>255</CardValue>
+          <CardTitle>Today's Attendance</CardTitle>
+          <CardValue>
+            {dashLoading ? '...' : dashError ? '-' : summary.today_attendance}
+          </CardValue>
         </StatCard>
         <StatCard>
-          <CardTitle>Employee leave Request</CardTitle>
-          <CardValue>255</CardValue>
+          <CardTitle>Today's Leave</CardTitle>
+          <CardValue>
+            {dashLoading ? '...' : dashError ? '-' : summary.today_leave}
+          </CardValue>
         </StatCard>
         <StatCard>
-          <CardTitle>Employee visa Expiry</CardTitle>
-          <CardValue>32</CardValue>
+          <CardTitle>Upcoming Visa Expiry</CardTitle>
+          <CardValue>
+            {dashLoading ? '...' : dashError ? '-' : summary.visa_expiring_soon}
+          </CardValue>
         </StatCard>
       </CardGrid>
 
       <DepartmentSection>
         <SectionTitle>Departments</SectionTitle>
         <CardGrid>
-          {loading ? (
+          {deptLoading ? (
             <p>Loading...</p>
-          ) : error ? (
-            <p style={{ color: 'red' }}>{error.toString()}</p>
+          ) : deptError ? (
+            <p style={{ color: 'red' }}>{deptError.toString()}</p>
           ) : departments.length === 0 ? (
             <p>No departments found.</p>
           ) : (
@@ -61,7 +82,7 @@ const Dashboard = () => {
                 <h3>{dept.name}</h3>
                 <HeadInfo>
                   <div>
-                    <small>Department head</small>
+                    <small>Department Head</small>
                     <p>
                       {typeof dept.department_head === 'object'
                         ? dept.department_head?.name

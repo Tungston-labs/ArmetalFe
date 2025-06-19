@@ -1,4 +1,4 @@
-from rest_framework import generics,status
+from rest_framework import generics,status,filters
 from .models import LeaveRequest
 from .serializers import LeaveRequestSerializer
 from employee.models import Employee_db
@@ -9,6 +9,8 @@ from rest_framework.response import Response
 class LeaveRequestCreateListView(generics.ListCreateAPIView):
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsEmployee]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'employee_id']
 
     def get_queryset(self):
         return LeaveRequest.objects.filter(employee__user=self.request.user)

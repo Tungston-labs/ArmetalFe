@@ -4,7 +4,7 @@
 import API from './api'; // axios instance
 
 export const fetchCompany = async (page = 1, search = '') => {
-  let url = `/api/companies/list/?page=${page}`;
+  let url = `/companies/list/?page=${page}`;
   if (search && search.trim() !== '') {
     url += `&search=${search}`;
   }
@@ -15,25 +15,25 @@ export const fetchCompany = async (page = 1, search = '') => {
 
 // POST: Create a Company
 export const createCompany = async (data) => {
-  const response = await API.post("/api/create-company/",data);
+  const response = await API.post("/create-company/",data);
   return response.data;
 };
 
 // GET: company detail by ID
 export const fetchCompanyById = async (id) => {
-  const response = await API.get(`/api/companies/${id}/`);
+  const response = await API.get(`/companies/${id}/`);
   return response.data;
 };
 
 // PUT: compny  by ID
 export const updateCompany = async (id, data) => {
-  const response = await API.put(`/api/companies/${id}/`, data);
+  const response = await API.put(`/companies/${id}/`, data);
   return response.data;
 };
 
 // DELETE: Delete Company by ID
 export const deleteCompany = async (id) => {
-  const response = await API.delete(`/api/companies/${id}/`);
+  const response = await API.delete(`/companies/${id}/`);
   return response.data;
 };
 

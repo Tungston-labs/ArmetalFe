@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Container,
   Breadcrumb,
@@ -14,25 +13,55 @@ import {
   TopBar,
   HRManager,
   TitleSection,
-  Title, LeftSide,
+  Title,
+  LeftSide,
   Subtitle,
-  Hr, RightSide,
+  Hr,
+  RightSide,
   InfoSection,
   FullWidthInput,
   TwoColumnRow,
-  TwoColumnRows, FlexRows,
+  TwoColumnRows,
+  FlexRows,
   DateField
 } from "./EmployeeLeaveDetails.Styles";
-import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal'; // ✅ Import your modal
+
+import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { getLeaveDetails, patchLeaveStatus } from '../../Redux/leaveSlice';
+import { useParams } from 'react-router-dom';
 
 const EmployeeLeaveForm = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [actionType, setActionType] = useState('approve');
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { leaveDetails, loading } = useSelector(state => state.leave);
 
-  const handleConfirm = () => {
-    // Logic to process approval or decline
-    console.log(`Leave ${actionType}d`);
-    setShowModal(false);
+  const [showModal, setShowModal] = useState(false);
+  const [actionType, setActionType] = useState('');
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getLeaveDetails(id));
+    }
+  }, [dispatch, id]);
+
+  const employee = leaveDetails?.employee || {};
+
+  const handleStatusUpdate = async () => {
+    if (!id || !actionType) return;
+
+    const status = actionType === 'approve' ? 'approved' : 'rejected';
+
+    try {
+      await dispatch(patchLeaveStatus({ leaveId: id, status }));
+      dispatch(getLeaveDetails(id)); // refresh updated status
+    } catch (error) {
+      console.error("Error updating leave status:", error);
+    } finally {
+      setShowModal(false);
+      setActionType('');
+    }
   };
 
   return (
@@ -60,20 +89,23 @@ const EmployeeLeaveForm = () => {
 
       <InfoGrid>
         <div style={{ width: "10%" }}>
-          <ProfileImage src="https://i.pravatar.cc/100?img=5" alt="Employee" />
+          <ProfileImage
+            src={employee.profile_pic}
+            alt="Employee"
+          />
         </div>
         <div style={{ display: "flex", width: "90%", justifyContent: "space-between" }}>
           <TwoColumn>
-            <Input placeholder="Name" />
-            <Input placeholder="Employee ID" />
-            <Input placeholder="Email ID" />
+            <Input placeholder="Name" value={employee.name || ''} readOnly />
+            <Input placeholder="Employee ID" value={employee.employee_id || ''} readOnly />
+            <Input placeholder="Email ID" value={employee.email || ''} readOnly />
           </TwoColumn>
 
           <InfoSection>
-            <FullWidthInput placeholder="Address" />
+            <FullWidthInput placeholder="Address" value={employee.address || ''} readOnly />
             <TwoColumnRow>
-              <Input placeholder="DOB" />
-              <Input placeholder="Gender" />
+              <Input placeholder="DOB" value={employee.dob || ''} readOnly />
+              <Input placeholder="Gender" value={employee.gender || ''} readOnly />
             </TwoColumnRow>
           </InfoSection>
         </div>
@@ -82,37 +114,37 @@ const EmployeeLeaveForm = () => {
       <Hr />
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
-        <Input placeholder="Job position / Designation" />
-        <Input placeholder="Employment Type (Full-Time, Part-Time, Contract)" />
+        <Input placeholder="Job position / Designation" value={employee.designation || ''} readOnly />
+        <Input placeholder="Employment Type" value={employee.employment_type || ''} readOnly />
       </TwoColumnRows>
       <TwoColumnRows>
-        <Input placeholder="Department" />
-        <Input placeholder="Joining Date" />
+        <Input placeholder="Department" value={employee.department || ''} readOnly />
+        <Input placeholder="Joining Date" value={employee.joining_date || ''} readOnly />
       </TwoColumnRows>
 
       <SectionTitle>Leave Application</SectionTitle>
       <FlexRows>
         <LeftSide>
-          <Input placeholder="Leave Type" value="Sick leave" />
+          <Input placeholder="Leave Type" value={leaveDetails?.leave_type || ''} readOnly />
         </LeftSide>
         <RightSide>
           <DateField>
             <label>From</label>
-            <Input type="date" />
+            <Input type="date" value={leaveDetails?.from_date || ''} readOnly />
           </DateField>
           <DateField>
             <label>To</label>
-            <Input type="date" />
+            <Input type="date" value={leaveDetails?.to_date || ''} readOnly />
           </DateField>
         </RightSide>
       </FlexRows>
 
       <SectionTitle>Reason for Leave</SectionTitle>
-      <TextArea defaultValue="I am requesting leave due to health reasons and will be unable to attend work on the mentioned dates. Kindly consider my application and grant the leave." />
+      <TextArea value={leaveDetails?.reason || ''} readOnly />
 
       <FlexRow>
         <DeclineButton onClick={() => {
-          setActionType('decline');
+          setActionType('rejected');
           setShowModal(true);
         }}>Decline</DeclineButton>
 
@@ -122,11 +154,10 @@ const EmployeeLeaveForm = () => {
         }}>Approve</ApproveButton>
       </FlexRow>
 
-      {/* ✅ Modal */}
       {showModal && (
         <ConfirmLeaveModal
           onClose={() => setShowModal(false)}
-          onConfirm={handleConfirm}
+          onConfirm={handleStatusUpdate}
           actionType={actionType}
         />
       )}
