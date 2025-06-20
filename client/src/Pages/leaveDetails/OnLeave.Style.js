@@ -152,7 +152,6 @@ export const HRManager = styled.div`
   height:30px;
  
   align-items: center;
-  gap: 0.75rem;
   padding: 0.3rem ;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -233,7 +232,6 @@ export const Tabs = styled.div`
   display: flex;
   gap: 2rem;
   margin: 1.5rem 0;
-  font-family:raleway;
   border-bottom: 2px solid #ddd;
 `;
 
@@ -244,6 +242,7 @@ export const Tab = styled.div`
   border-bottom: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
   color: ${({ active }) => (active ? "#1e3a8a" : "#555")};
 `;
+
 export const Pagination = styled.div`
   display: flex;
   justify-content:flex-start;

@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   createEmployee,
   updateEmployee,
@@ -70,10 +70,7 @@ export const submitBankPayment = createAsyncThunk(
       }
       return response;
     } catch (err) {
-      let message = 'Error saving bank payment.';
-      if (err.response?.data?.message) {
-        message = err.response.data.message;
-      }
+      let message = err.response?.data?.message || 'Error saving bank payment.';
       return thunkAPI.rejectWithValue(message);
     }
   }
@@ -103,16 +100,13 @@ export const fetchBankPayment = createAsyncThunk(
       }
       return null;
     } catch (err) {
-      let message = 'Failed to fetch bank payment.';
-      if (err.response?.data?.message) {
-        message = err.response.data.message;
-      }
+      let message = err.response?.data?.message || 'Failed to fetch bank payment.';
       return thunkAPI.rejectWithValue(message);
     }
   }
 );
 
-// --- Upload Image ---
+// --- Upload Temp Image ---
 export const uploadImage = createAsyncThunk(
   'employee/uploadImage',
   async (file) => {
@@ -197,7 +191,7 @@ const employeeSlice = createSlice({
       })
       .addCase(submitEmployee.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload || 'Failed to save employee';
+        state.error = action.payload;
       })
 
       // Submit/Update Bank Payment
@@ -210,7 +204,7 @@ const employeeSlice = createSlice({
       })
       .addCase(submitBankPayment.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload || 'Bank payment failed';
+        state.error = action.payload;
       })
 
       // Fetch Bank Payment

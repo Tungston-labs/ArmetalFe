@@ -203,7 +203,6 @@ export const HRManager = styled.div`
   height:30px;
  
   align-items: center;
-  gap: 0.75rem;
   padding: 0.3rem ;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -249,9 +248,10 @@ export const ActionArea = styled.div`
   gap: 1rem;
 `;
 export const Title = styled.h2`
-  font-size: 24px;
+  font-size: 22px;
   margin: 0;
   margin-left:10px;
+ font-family:satoshi;
 `;
 
 export const Subtitle = styled.p`
@@ -259,6 +259,7 @@ export const Subtitle = styled.p`
   color: #555;
   margin-left:10px;
   margin-top:-1px;
+  font-size:raleway;
 `;
 export const Pagination = styled.div`
   display: flex;

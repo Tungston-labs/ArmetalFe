@@ -146,7 +146,7 @@ width: 100%;
 
   th, td {
     text-align: left;
-    padding: 0.1rem;
+    padding: 0.7rem;
     white-space: nowrap;
     background-color: white;
     border: none; /* remove cell borders */
@@ -156,7 +156,7 @@ width: 100%;
     background-color: #5F53A53B;
     color: #333;
     font-family:raleway;
-      padding: 0.75rem;
+      padding: 0.7rem;
   }
 
  tbody tr {

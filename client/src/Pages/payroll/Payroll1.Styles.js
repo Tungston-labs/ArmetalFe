@@ -2,159 +2,88 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 2rem;
-  background-color: #f9fbf2;
-  font-family: Arial, sans-serif;
-`;
-export const SearchInput = styled.input`
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  margin-bottom:0.9rem;
+  font-family: sans-serif;
 `;
 
-export const Section = styled.div`
-  margin-bottom: 2rem;
-`;
-export const FormWrapper = styled.div`
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-`;
-export const ImageColumn = styled.div`
-  flex: 0 0 auto;
-
-  img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50px;
-    object-fit: cover;
-  }
-`;
-export const Hr = styled.hr`
-  border: none;
-  border-top: 1px solid #ccc;
-
-`;
-export const Rowes = styled.div`
-  display: flex;
-  gap: 2.5rem;
-  width:100%;
-  flex-wrap: wrap;
-  align-items: flex-start;
-`;
-export const Rows = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  align-items: flex-start; /* ensures top alignment */
+export const Header = styled.h2`
+  margin-bottom: 1.5rem;
 `;
 
-export const LeftSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  flex: 1;
-  min-width: 250px;
-`;
-
-export const RightSection = styled.div`
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  gap: rem;
-  min-width: 300px;
-`;
-
-
-export const Input = styled.input`
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 100%;
-
-`;
-export const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-
-  @media (max-width: 768px) {
-    width: 50px;
-    height: 60px;
-  }
-
-  @media (max-width: 480px) {
-    width: 20px;
-    height: 30px;
-  }
-`;
-export const SectionTitle = styled.h3`
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #333;
-`;
-
-export const Table = styled.div`
-  width: 100%;
-  border-collapse: collapse;
-`;
-
-export const Row = styled.div`
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ddd;
-  padding: 0.5rem 0;
-`;
-
-export const Label = styled.div`
-  width: 50%;
-  font-weight: 500;
-  color: #333;
-`;
-
-export const Value = styled.div`
-  width: 50%;
-  text-align: right;
-  color: #444;
-`;
-
-export const Pagination = styled.div`
-  display: flex;
-  justify-content:flex-start;
-  gap: 0.5rem;
-
-  span {
-    padding: 0.4rem 0.8rem;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    border-radius: 4px;
-
-    &.active {
-      background-color: #2f4cac;
-      color: white;
-    }
-  }
-`;
-export const Textarea = styled.textarea`
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 100%;
-  resize: none;
-  height: 70px;
-`;
-export const SectionHeader = styled.div`
+export const PlanBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  background: #e6eefe;
+  border: 2px solid #c6d6f5;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
 `;
-export const Select = styled.select`
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
+
+export const PlanTitle = styled.h3`
+  margin: 0;
+  font-size: 1.1rem;
+`;
+
+export const PlanDesc = styled.p`
+  font-size: 0.85rem;
+  color: #444;
+`;
+
+export const Price = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+export const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+`;
+
+export const Row = styled.tr`
+  background-color: ${({ unpaid }) => (unpaid ? '#fceaea' : '#f1f9f5')};
+  border-bottom: 1px solid #ccc;
+`;
+
+export const Cell = styled.td`
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  font-weight: ${({ header }) => (header ? 'bold' : 'normal')};
+  text-align: left;
+`;
+
+export const Input = styled.input`
+  width: 100px;
+  padding: 0.4rem;
   border: 1px solid #ccc;
-  font-size: 0.95rem;
-  background-color: white;
-  outline: none;
+  border-radius: 4px;
+`;
+
+export const Select = styled.select`
+  padding: 0.4rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+`;
+
+export const IconCell = styled.td`
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+`;
+
+export const Button = styled.button`
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  background: ${({ cancel }) => (cancel ? '#f97373' : '#909dc1')};
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
 `;

@@ -115,7 +115,6 @@ export const HRManager = styled.div`
   height:30px;
  
   align-items: center;
-  gap: 0.75rem;
   padding: 0.3rem ;
   border: 1px solid #ccc;
   border-radius: 8px;
