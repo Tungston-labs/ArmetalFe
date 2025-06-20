@@ -14,7 +14,7 @@ import {
   ButtonGroup,
   CancelButton,
   SaveButton
-} from './Payroll1.Styles';
+} from './Plan.Styles';
 
 const initialData = [
   { month: 'January', date: '12-12-25', amount: 1500, status: 'Paid' },

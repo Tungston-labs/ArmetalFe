@@ -21,17 +21,18 @@ import {
   ActionArea,
   HRManager
 } from './SuperAdmin.Styles';
+
 import { LuArrowLeft } from "react-icons/lu";
 import { FaTrashAlt, FaPlus } from 'react-icons/fa';
 import { TbPencilMinus } from "react-icons/tb";
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getCompanies,
-  removeCompany
-} from '../../Redux/superAdminSlice';
+import { getCompanies, removeCompany } from '../../Redux/superAdminSlice';
 import { IoInformationCircleOutline } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
+
 const CompanyTable = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { companies, loading, pagination } = useSelector((state) => state.superAdmin);
 
   const [page, setPage] = useState(1);
@@ -138,14 +139,19 @@ const CompanyTable = () => {
               companies.map((item, idx) => (
                 <tr key={item.id}>
                   <Td>{(page - 1) * 7 + idx + 1}</Td>
-
-                  
                   <Td>{item.name}</Td>
                   <Td>{item.address}</Td>
                   <Td>{item.company_id}</Td>
                   <Td>{item.contact_number}</Td>
                   <Td>{item.number_of_employees}</Td>
-                  <Td><IoInformationCircleOutline/></Td>
+                  
+                  {/* ✅ Navigate with company_id */}
+                  <Td onClick={() => navigate(`/view/
+                    ${item.company_id}`
+                    )} style={{ cursor: 'pointer' }}>
+                    <IoInformationCircleOutline />
+                  </Td>
+
                   <Td>
                     <IconButton onClick={() => handleEdit(item)}>
                       <TbPencilMinus />
@@ -163,7 +169,7 @@ const CompanyTable = () => {
               ))
             ) : (
               <tr>
-                <Td colSpan="9" style={{ textAlign: 'center' }}>
+                <Td colSpan="10" style={{ textAlign: 'center' }}>
                   {loading ? "Loading..." : "No companies found"}
                 </Td>
               </tr>
