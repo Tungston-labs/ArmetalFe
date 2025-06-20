@@ -24,10 +24,8 @@ export default function AddEmployeeForm() {
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const stepTitles = ['Basic Info', 'Job Details', 'Legal Info'];
-
   const [formData, setFormData] = useState({
     name: '',
-    employeeId: '',
     email: '',
     phoneNumber: '',
     address: '',
@@ -42,30 +40,24 @@ export default function AddEmployeeForm() {
     visaExpiry: '',
     iqamaNumber: '',
     insuranceNumber: '',
+    profilePic: null,
   });
 
   useEffect(() => {
-    if (reduxFormData?.basic) {
-      setFormData(reduxFormData.basic);
-    }
-
-    if (departmentList.length === 0) {
-      dispatch(getDepartments());
-    }
+    if (reduxFormData?.basic) setFormData(reduxFormData.basic);
+    if (departmentList.length === 0) dispatch(getDepartments());
   }, [reduxFormData, dispatch, departmentList]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const validateForm = () => {
     const newErrors = {};
+
     for (const [key, value] of Object.entries(formData)) {
-      if (!value || value.trim() === '') {
+      if (typeof value === 'string' && !value.trim()) {
         newErrors[key] = 'This field is required';
       }
     }
@@ -81,27 +73,46 @@ export default function AddEmployeeForm() {
 
   const handleSubmit = () => {
     if (validateForm()) return;
-
-    const modifiedData = {
-      name: formData.name.trim(),
-      employee_id: formData.employeeId.trim(),
-      email: formData.email.trim(),
-      phone_number: formData.phoneNumber.trim(),
-      address: formData.address.trim(),
-      dob: new Date(formData.dob).toISOString().split("T")[0],
-      gender: formData.gender.trim(),
-      designation: formData.position.trim(),
-      joining_date: new Date(formData.joiningDate).toISOString().split("T")[0],
-      department: parseInt(formData.department),
-      employment_type: formData.contractType.trim(),
-      passport_number: formData.passportNumber.trim(),
-      work_permit: formData.workPermit.trim(),
-      visa_expiry_date: new Date(formData.visaExpiry).toISOString().split("T")[0],
-      iqama_number: formData.iqamaNumber.trim(),
-      insurance_number: formData.insuranceNumber.trim(),
+  
+    const formPayload = new FormData();
+  
+    // Convert and sanitize values
+    const payload = {
+      name: formData.name?.trim(),
+      email: formData.email?.trim(),
+      phno: formData.phoneNumber?.trim(),
+      address: formData.address?.trim(),
+      dob: formData.dob ? new Date(formData.dob).toISOString().split("T")[0] : '',
+      gender: formData.gender?.trim(),
+      designation: formData.position?.trim(),
+      joining_date: formData.joiningDate ? new Date(formData.joiningDate).toISOString().split("T")[0] : '',
+      department_id: formData.department ? parseInt(formData.department) : '',
+      employment_type: formData.contractType?.trim(),
+      passport_number: formData.passportNumber?.trim(),
+      work_permit: formData.workPermit?.trim(),
+      visa_expiry_date: formData.visaExpiry ? new Date(formData.visaExpiry).toISOString().split("T")[0] : '',
+      iqama_number: formData.iqamaNumber?.trim(),
+      insurance_number: formData.insuranceNumber?.trim(),
     };
-
-    dispatch(submitEmployee(modifiedData)).then((res) => {
+  
+    // Append fields to FormData
+    for (const [key, value] of Object.entries(payload)) {
+      if (value !== '' && value !== undefined && value !== null) {
+        formPayload.append(key, value);
+      }
+    }
+  
+    // Append image if selected
+    if (formData.profilePic) {
+      formPayload.append("profile_pic", formData.profilePic);
+    }
+  
+    // Optional: log FormData keys
+    for (let [key, val] of formPayload.entries()) {
+      console.log(`${key}: ${val}`);
+    }
+  
+    dispatch(submitEmployee(formPayload)).then((res) => {
       if (res.meta.requestStatus === 'fulfilled') {
         const id = res.payload?.id || res.payload?.employee?.id;
         if (id) {
@@ -116,9 +127,11 @@ export default function AddEmployeeForm() {
       }
     });
   };
+  
 
   return (
     <Container>
+      {/* Header Section */}
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <img src="/images/employee.png" alt="Icon" style={{ height: '50px' }} />
@@ -141,16 +154,54 @@ export default function AddEmployeeForm() {
         </div>
       </div>
 
+      {/* Profile Upload */}
       <InfoGrid>
-        <ProfileImage src="https://i.pravatar.cc/100?img=5" alt="Employee" />
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <ProfileImage
+            src={formData.profilePic ? URL.createObjectURL(formData.profilePic) : "https://i.pravatar.cc/100?img=5"}
+            alt="Employee"
+            style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+          />
+          <label
+            htmlFor="profile-upload"
+            style={{
+              position: 'absolute',
+              top: '-5px',
+              right: '-5px',
+              background: '#001F3F',
+              color: 'white',
+              borderRadius: '50%',
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '16px',
+              cursor: 'pointer',
+              boxShadow: '0 0 4px rgba(0,0,0,0.3)',
+            }}
+          >
+            +
+          </label>
+          <input
+            id="profile-upload"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                profilePic: e.target.files[0],
+              }));
+            }}
+            style={{ display: 'none' }}
+          />
+        </div>
+
+        {/* Basic Info Fields */}
         <TwoColumn>
           <div>
             {errors.name && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name}</p>}
             <Input name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
-          </div>
-          <div>
-            {errors.employeeId && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.employeeId}</p>}
-            <Input name="employeeId" placeholder="Employee ID" value={formData.employeeId} onChange={handleChange} />
           </div>
           <div>
             {errors.email && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.email}</p>}
@@ -165,53 +216,39 @@ export default function AddEmployeeForm() {
           </div>
 
           <TwoColumnRow>
-          <div>
-             {errors.dob && (
-    <p style={{ color: 'red', fontSize: '0.8rem', marginTop: '0.25rem' }}>
-      {errors.dob}
-    </p>
-  )}
-  <Input
-    type="date"
-    name="dob"
-    id="dob"
-    placeholder="Date of Birth"
-    value={formData.dob}
-    onChange={handleChange}
-  />
- 
-</div>
-
-           <div>
+            <div>
+              {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
+              <Input type="date" name="dob" value={formData.dob} onChange={handleChange} />
+            </div>
+            <div>
               {errors.gender && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.gender}</p>}
-
-  <select
-    name="gender"
-    value={formData.gender}
-    onChange={handleChange}
-    style={{
-            width:'100%',
-              padding: '0.5rem',
-              fontSize: '1rem',
-              borderRadius: '6px',
-              border: '1px solid #ccc',
-                  background:'white',
-                    color:'#999999',
-            }}
-          >
- 
-    <option value="">Select Gender</option>
-    <option value="Male">Male</option>
-    <option value="Female">Female</option>
-    <option value="Other">Other</option>
-  </select>
-
-</div>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  fontSize: '1rem',
+                  borderRadius: '6px',
+                  border: '1px solid #ccc',
+                  background: 'white',
+                  color: '#999999',
+                }}
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
           </TwoColumnRow>
         </InfoSection>
       </InfoGrid>
 
       <Hr />
+
+      {/* Job Details Section */}
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
         <div>
@@ -237,75 +274,62 @@ export default function AddEmployeeForm() {
               fontSize: '1rem',
               borderRadius: '6px',
               border: '1px solid #ccc',
-                  background:'white',
-                  color:'#999999',
+              background: 'white',
+              color: '#999999',
             }}
           >
             <option value="">Select Department</option>
             {departmentList.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.name}
-              </option>
+              <option key={dept.id} value={dept.id}>{dept.name}</option>
             ))}
           </select>
         </div>
 
         <div>
-          {errors.contractType && (
-    <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.contractType}</p>
-  )}
-
-  <select
-    name="contractType"
-    value={formData.contractType}
-    onChange={handleChange}
-  style={{
-            width:'100%',
+          {errors.contractType && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.contractType}</p>}
+          <select
+            name="contractType"
+            value={formData.contractType}
+            onChange={handleChange}
+            style={{
+              width: '100%',
               padding: '0.5rem',
               fontSize: '1rem',
               borderRadius: '6px',
               border: '1px solid #ccc',
-              background:'white',
-              color:'#999999',
+              background: 'white',
+              color: '#999999',
             }}
           >
-
-    <option value="">Select Employment Type</option>
-    <option value="Full-time">Full-time</option>
-    <option value="Part-time">Part-time</option>
-    <option value="Contract">Contract</option>
-  </select>
-  
-</div>
+            <option value="">Select Employment Type</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Contract">Contract</option>
+          </select>
+        </div>
       </TwoColumnRows>
 
+      {/* Legal Info Section */}
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
-      <div>
-        {errors.phoneNumber && (
-          <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.phoneNumber}</p>
-        )}
-        <Input name="phoneNumber" placeholder="Phone number" value={formData.phoneNumber} onChange={handleChange} />
-      </div>
-      <div>
-        {errors.passportNumber && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.passportNumber}</p>}
-        <Input name="passportNumber" placeholder="Passport number" value={formData.passportNumber} onChange={handleChange} />
-      </div>
-      <div>
-        {errors.workPermit && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.workPermit}</p>}
-        <Input name="workPermit" placeholder="Work Permit" value={formData.workPermit} onChange={handleChange} />
-      </div>
-      <div>
-        {errors.visaExpiry && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.visaExpiry}</p>}
-        <Input type="date" name="visaExpiry" value={formData.visaExpiry} onChange={handleChange} />
-      </div>
-      <div>
-        {errors.iqamaNumber && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.iqamaNumber}</p>}
-        <Input name="iqamaNumber" placeholder="Iqama Number" value={formData.iqamaNumber} onChange={handleChange} />
-      </div>
-      <div>
-        {errors.insuranceNumber && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.insuranceNumber}</p>}
-        <Input name="insuranceNumber" placeholder="Insurance Number" value={formData.insuranceNumber} onChange={handleChange} />
-      </div>
+      {[
+        { key: 'phoneNumber', label: 'Phone number' },
+        { key: 'passportNumber', label: 'Passport number' },
+        { key: 'workPermit', label: 'Work Permit' },
+        { key: 'visaExpiry', label: 'Visa Expiry', type: 'date' },
+        { key: 'iqamaNumber', label: 'Iqama Number' },
+        { key: 'insuranceNumber', label: 'Insurance Number' },
+      ].map(({ key, label, type }) => (
+        <div key={key}>
+          {errors[key] && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>}
+          <Input
+            name={key}
+            placeholder={label}
+            type={type || 'text'}
+            value={formData[key]}
+            onChange={handleChange}
+          />
+        </div>
+      ))}
 
       <FlexRow>
         <ApproveButton onClick={handleSubmit}>Next</ApproveButton>
