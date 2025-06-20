@@ -1,9 +1,13 @@
 import API from './api';
 
 // 1. Create employee
-export const createEmployee = async (data) => {
+export const createEmployee = async (formData) => {
   try {
-    const res = await API.post("employees/", data);
+    const res = await API.post("/employees/", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
     return res.data;
   } catch (error) {
     console.error("❌ Error creating employee:", error.response?.data || error.message);
@@ -11,10 +15,12 @@ export const createEmployee = async (data) => {
   }
 };
 
+
+
 // 2. Create bank payment
 export const createBankPayment = async (employeeId, data) => {
   try {
-    const res = await API.post(`employees/${employeeId}/bank-payments/`, data);
+    const res = await API.post(`/employees/${employeeId}/bank-payments/`, data);
     return res.data;
   } catch (error) {
     console.error("❌ Error creating bank payment:", error.response?.data || error.message);
@@ -38,7 +44,7 @@ export const uploadTempImage = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await API.post('upload-image/', formData, {
+  const res = await API.post('/upload-image/', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -48,26 +54,30 @@ export const uploadTempImage = async (file) => {
 
 // Submit final employee documents
 export const saveEmployeeDocuments = async (employeeId, data) => {
-  const res = await API.post(`employees/${employeeId}/documents/`, data);
+  const res = await API.post(`/employees/${employeeId}/documents/`, data);
   return res.data;
 };
 
 // 4. Get employees in my department
 export const getMyDepartmentEmployees = async () => {
-  const res = await API.get('employees/my-department/');
+  const res = await API.get('/employees/my-department/');
   return res.data;
 };
 
 // 5. Fetch bank payment list
 export const getBankPayment = async (employeeId) => {
-  const res = await API.get(`employees/${employeeId}/bank-payments/`);
+  const res = await API.get(`/employees/${employeeId}/bank-payments/`);
   return res.data;
 };
 
 // 6. Update employee
 export const updateEmployee = async (employeeId, data) => {
   try {
-    const res = await API.patch(`employees/${employeeId}/`, data);
+    const res = await API.patch(`/employees/${employeeId}/`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
     return res.data;
   } catch (error) {
     console.error("❌ Error updating employee:", error.response?.data || error.message);

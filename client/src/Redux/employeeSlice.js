@@ -9,24 +9,47 @@ import {
   saveEmployeeDocuments,
   fetchAllEmployees,
 } from '../services/employeeService';
-import api from '../services/api';
+import axios from 'axios';
 
-// --- Submit or Update Basic Info ---
+// --- Submit Basic Info ---
+// Redux employeeSlice.js
+import API from '../services/api';
+
 export const submitEmployee = createAsyncThunk(
   'employee/submitEmployee',
-  async (data, thunkAPI) => {
+  async (formData, thunkAPI) => {
     const { employee } = thunkAPI.getState();
+
     try {
       let response;
       if (employee.employeeCreated && employee.employeeId) {
-        response = await updateEmployee(employee.employeeId, data);
+        console.log("bhbh",employee.employeeCreated , employee.employeeId);
+        
+        response = await updateEmployee(employee.employeeId, formData);
       } else {
-        response = await createEmployee(data);
+        response = await createEmployee(formData);
       }
       return response;
     } catch (err) {
-      let message = err.response?.data?.message || 'Something went wrong.';
+      console.error('❌ Error submitting employee:', err.response?.data || err.message);
+      const message = err.response?.data?.message || 'Something went wrong.';
       return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+
+
+
+// --- Delete Employee ---
+export const deleteEmployeeById = createAsyncThunk(
+  'employees/deleteEmployeeById',
+  async (employeeId, { rejectWithValue }) => {
+    try {
+      await API.delete(`/employees/${employeeId}/`);
+      return employeeId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Delete failed');
     }
   }
 );
@@ -49,6 +72,18 @@ export const submitBankPayment = createAsyncThunk(
     } catch (err) {
       let message = err.response?.data?.message || 'Error saving bank payment.';
       return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// --- Fetch All Employees ---
+export const getAllEmployees = createAsyncThunk(
+  'employees/getAll',
+  async ({ page, search }, thunkAPI) => {
+    try {
+      return await fetchAllEmployees(page, search);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || 'Server error');
     }
   }
 );
@@ -79,7 +114,7 @@ export const uploadImage = createAsyncThunk(
   }
 );
 
-// --- Submit Documents ---
+// --- Submit Employee Documents ---
 export const submitDocuments = createAsyncThunk(
   'employee/submitDocuments',
   async ({ employeeId, documents }) => {
@@ -87,36 +122,10 @@ export const submitDocuments = createAsyncThunk(
   }
 );
 
-// --- Get All Employees ---
-export const getAllEmployees = createAsyncThunk(
-  'employee/getAllEmployees',
-  async ({ page, search }, thunkAPI) => {
-    try {
-      return await fetchAllEmployees(page, search);
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data || 'Server error');
-    }
-  }
-);
-
-// --- Delete Employee by ID ---
-export const deleteEmployeeById = createAsyncThunk(
-  'employee/deleteEmployeeById',
-  async (employeeId, thunkAPI) => {
-    try {
-      await api.delete(`/employees/${employeeId}/`);
-      return employeeId;
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data || 'Delete failed');
-    }
-  }
-);
-
-// --- Slice ---
 const employeeSlice = createSlice({
   name: 'employee',
   initialState: {
-    // Form
+    // Creation-related
     status: 'idle',
     error: null,
     employeeId: null,
@@ -132,7 +141,7 @@ const employeeSlice = createSlice({
       certificate: [],
     },
 
-    // List
+    // List-related
     loading: false,
     employeeList: [],
     pagination: { count: 0, next: null, previous: null },
@@ -170,7 +179,7 @@ const employeeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Submit Employee
+      // Create/Update Employee
       .addCase(submitEmployee.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -185,7 +194,7 @@ const employeeSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Submit Bank Payment
+      // Submit/Update Bank Payment
       .addCase(submitBankPayment.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -247,13 +256,15 @@ const employeeSlice = createSlice({
       .addCase(getAllEmployees.fulfilled, (state, action) => {
         state.loading = false;
         state.employeeList = action.payload.results;
-        state.pagination.count = action.payload.count;
-        state.pagination.next = action.payload.next;
-        state.pagination.previous = action.payload.previous;
+        state.pagination = {
+          count: action.payload.count,
+          next: action.payload.next,
+          previous: action.payload.previous,
+        };
       })
       .addCase(getAllEmployees.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || 'Failed to load employees';
       })
 
       // Delete Employee
@@ -266,7 +277,7 @@ const employeeSlice = createSlice({
       })
       .addCase(deleteEmployeeById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || 'Delete failed';
       });
   },
 });
