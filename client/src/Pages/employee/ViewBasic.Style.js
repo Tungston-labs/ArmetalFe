@@ -24,24 +24,26 @@ export const Header = styled.div`
 `;
 
 export const EditButton = styled.button`
-  display: flex; /* enable inline icon + text */
+  display: flex;
   align-items: center;
-  gap: 0.4rem; /* space between icon and text */
-  padding: 0.4rem 1rem;
+  justify-content: center; /* ✅ Center content horizontally */
+  padding: 0.5rem;
   border: none;
-   background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
+  background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
   border-radius: 8px;
-  width:50%;
-  height:42px;
+  width: 50%;
+  height: 42px;
   font-size: 0.9rem;
   cursor: pointer;
+  gap: 0.5rem; /* ✅ Add space between icon and text */
 
   svg {
     font-size: 1rem;
   }
-
 `;
+
+
 export const Row = styled.div`
   display: flex;
   gap: 2.5rem;
@@ -62,7 +64,7 @@ export const RightSection = styled.div`
   flex: 2;
   display: flex;
   flex-direction: column;
-  gap: rem;
+ 
   min-width: 300px;
 `;
 
@@ -95,7 +97,7 @@ export const Avatar = styled.img`
 
 export const Section = styled.div`
 //   padding: 2rem;
-  background: #f9fce8;
+  background: #FBFEF3;
   font-family: sans-serif;
 `;
 

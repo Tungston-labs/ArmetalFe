@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import SuccessModal from '../../Components/Succes';
 import { uploadTempImage } from '../../services/employeeService';
 import { useSelector, useDispatch } from 'react-redux';
-import { submitDocuments, addDocumentUrl, uploadImage } from '../../Redux/employeeSlice';
+import { submitDocumentsThunk, addDocumentUrl, uploadImageThunk } from '../../Redux/employeeSlice';
 
 export default function DocumentUploadForm() {
   const navigate = useNavigate();
@@ -91,7 +91,7 @@ export default function DocumentUploadForm() {
     certificate_urls: documentUrls.certificate || []
   };
     try {
-      await dispatch(submitDocuments({ employeeId, documents: payload })).unwrap();
+      await dispatch(submitDocumentsThunk({ employeeId, documents: payload })).unwrap();
       setShowSuccessModal(true);
     } catch (err) {
       alert("Final submission failed: " + err.message);

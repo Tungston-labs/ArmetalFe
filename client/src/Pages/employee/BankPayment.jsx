@@ -13,7 +13,7 @@ import Multistep from '../../Components/Multistep';
 import Table from '../../Components/Table';
 import {
   submitBankPayment,
-  fetchBankPayment,
+  fetchAllBankPaymentsThunk,
   setBankFormData
 } from '../../Redux/employeeSlice';
 
@@ -59,7 +59,7 @@ export default function BankPaymentForm() {
       setHousingAllowance(savedBankForm.housing_allowance?.toString() || '');
       setTransportation(savedBankForm.transportation?.toString() || '');
     } else if (employeeId) {
-      dispatch(fetchBankPayment(employeeId));
+      dispatch(fetchAllBankPaymentsThunk(employeeId));
     }
   }, [dispatch, employeeId, savedBankForm]);
 

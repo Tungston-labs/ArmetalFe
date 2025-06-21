@@ -26,8 +26,9 @@ export const Header = styled.div`
 export const EditButton = styled.button`
   display: flex; /* enable inline icon + text */
   align-items: center;
+    justify-content: center; /* ✅ Center content horizontally */
   gap: 0.4rem; /* space between icon and text */
-  padding: 0.4rem 1rem;
+  padding: 0.4rem;
   border: none;
    background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
@@ -44,7 +45,7 @@ export const EditButton = styled.button`
 `;
 export const Row = styled.div`
   display: flex;
-  gap: 2.5rem;
+  gap:2.5rem;
   width:100%;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -81,7 +82,7 @@ export const Textarea = styled.textarea`
   border-radius: 6px;
   width: 100%;
   resize: none;
-  height: 70px;
+height:70px;
 `;
 
 export const Avatar = styled.img`
