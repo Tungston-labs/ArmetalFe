@@ -144,13 +144,12 @@ const CompanyTable = () => {
                   <Td>{item.company_id}</Td>
                   <Td>{item.contact_number}</Td>
                   <Td>{item.number_of_employees}</Td>
-                  
+
                   {/* ✅ Navigate with company_id */}
-                  <Td onClick={() => navigate(`/view/
-                    ${item.company_id}`
-                    )} style={{ cursor: 'pointer' }}>
-                    <IoInformationCircleOutline />
-                  </Td>
+                  <Td onClick={() => navigate(`/view/${item.id}`)} style={{ cursor: 'pointer' }}>
+  <IoInformationCircleOutline />
+</Td>
+
 
                   <Td>
                     <IconButton onClick={() => handleEdit(item)}>

@@ -31,7 +31,7 @@ import Succes from "./Components/Succes.jsx";
 import ConfirmLeaveModal from "./Components/ConfirmLeaveModal.jsx";
 import Payroll1 from "./Pages/payroll/Payroll1.jsx"
 import RequireAuth from "./Components/RequireAuth.jsx";
-import Viewpage from "./Pages/superAdmin/Viewpage.jsx"
+import CompanyViewPage from "./Pages/superAdmin/Viewpage.jsx"
 function App() {
   return (
     <>
@@ -51,7 +51,7 @@ function App() {
           <Route path="/holiday" element={<Holiday />} />
           <Route path="/payroll" element={<Payroll />} />
           <Route path="/superadmin" element={<SuperAdmin />} />
-                <Route path="/view" element={<Viewpage />} />
+          <Route path="/view/:id" element={<CompanyViewPage />} />
           <Route path="/add-company" element={<AddCompany />} />
           <Route path="/employee-visa" element={<Visa />} />
           <Route path="/daily-task" element={<DailyTask />} />

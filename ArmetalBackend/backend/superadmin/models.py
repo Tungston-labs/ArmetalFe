@@ -2,6 +2,8 @@ import random
 import string
 from django.db import models
 from shared.models import TimeStampedModel  
+from django.utils.timezone import now
+from calendar import month_name
 
 def generate_password():
     return 'CMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
@@ -33,3 +35,45 @@ class Company(TimeStampedModel):
     def __str__(self):
         return f"{self.name} ({self.company_id})"
 
+
+class CompanySubscription(TimeStampedModel):
+  
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='subscriptions')
+    month = models.PositiveSmallIntegerField(choices=[(i, month_name[i]) for i in range(1, 13)])
+    year = models.PositiveIntegerField(default=now().year)
+    paid_date = models.DateField(blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=10,default='unpaid')
+    currency = models.CharField(max_length=10, default='AED')
+
+    class Meta:
+        unique_together = ('company', 'month', 'year')
+        ordering = ['-year', '-month']
+
+    def __str__(self):
+        return f"{self.company.name} - {month_name[self.month]} {self.year} ({self.status})"
+
+    def save(self, *args, **kwargs):
+        # Auto-calculate only if not already set
+        if not self.amount:
+            rate, currency = self.get_rate_per_employee_and_currency()
+            self.amount = self.company.number_of_employees * rate
+            self.currency = currency
+
+        # Update paid_date if status becomes 'paid'
+        if self.status == 'paid' and not self.paid_date:
+            self.paid_date = now().date()
+
+        super().save(*args, **kwargs)
+
+    def get_rate_per_employee_and_currency(self):
+        """Return per-employee rate and currency based on location"""
+        location = self.company.location.lower()
+        if location == 'dubai':
+            return 5.0, 'AED'
+        elif location == 'india':
+            return 113.0, 'INR'
+        elif location == 'usa':
+            return 2.0, 'USD'  # Example
+        # Add more logic as needed
+        return 5.0, 'AED'  # Default fallback

@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from .models import Company
+from .models import Company,CompanySubscription
 from user.models import User
+from calendar import month_name
+
 
 class CompanyCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,5 +51,14 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
         if not isinstance(value, dict):
             raise serializers.ValidationError("Modules must be a dictionary")
         return value
-    
+
+class CompanySubscriptionSerializer(serializers.ModelSerializer):
+    month_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CompanySubscription
+        fields = ['id', 'company', 'month', 'month_display', 'year', 'paid_date', 'amount', 'currency', 'status']
+
+    def get_month_display(self, obj):
+        return month_name[obj.month]    
     

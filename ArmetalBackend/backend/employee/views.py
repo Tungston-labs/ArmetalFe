@@ -36,25 +36,16 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         employee = serializer.save()
-
-        # Check if department exists
-        if not employee.department:
-            return Response(
-                {"error": "Department is required or invalid."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         company = employee.department.company
-        if company:
-            company.number_of_employees = (company.number_of_employees or 0) + 1
-            company.save()
+        company.number_of_employees = (company.number_of_employees or 0) + 1
+        company.save()
 
         return Response({
             "message": "Employee created successfully.",
             "employee": EmployeeSerializer(employee).data,
             "login_credentials": {
                 "username": employee.employee_id,
-                "password": employee.password  # ⚠️ Show only once
+                "password": employee.password  # ⚠️ Only show once
             }
         }, status=status.HTTP_201_CREATED)
 
@@ -101,7 +92,7 @@ class EmpBankPaymentRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIVi
     queryset = EmpBankPaymentModel.objects.all()
     serializer_class = EmpBankPaymentSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
-    lookup_field = 'id' 
+    lookup_field = 'employee_id' 
 
 
 # views.py
@@ -113,7 +104,7 @@ from .models import TempUpload
 from .serializers import TempUploadSerializer
 
 class UploadImageView(APIView):
-    permission_classes = [permissions.IsAuthenticated]  # or AllowAny for testing
+    permission_classes = [permissions.IsAuthenticated,IsHRAdmin]  # or AllowAny for testing
 
     def post(self, request, *args, **kwargs):
         serializer = TempUploadSerializer(data=request.data)
@@ -124,6 +115,12 @@ class UploadImageView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class UploadImageDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = TempUpload.objects.all()
+    serializer_class = TempUploadSerializer
+    permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
+    lookup_field = 'employee_id' 
 
 
 class EmpDocumentCreateFromURLView(APIView):
@@ -140,6 +137,16 @@ class EmpDocumentCreateFromURLView(APIView):
 
 
 
+
+from rest_framework import generics, permissions
+from .models import EmpDocument
+from .serializers import EmpDocumentSerializer
+
+class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EmpDocument.objects.all()
+    serializer_class = EmpDocumentSerializer
+    permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
+    lookup_field = 'employee_id' 
 
 
 

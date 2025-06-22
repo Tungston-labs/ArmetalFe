@@ -1,184 +1,110 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   FormWrapper,
   BackHeader,
   FormSection,
-  Input,
-  CheckboxGroup,
-  CheckboxLabel,
-  ButtonGroup,
-  Button,
   Hr,
   FormField,
-  Label
+  Label,
+  Input,
+  CheckboxGroup,
+  CheckboxLabel
 } from './View.Styles';
 import { GoArrowLeft } from "react-icons/go";
-import { useDispatch } from 'react-redux';
-import { addCompany, editCompany } from '../../Redux/superAdminSlice';
-import  Plan from '../../Components/Plan';
-const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) => {
-  const dispatch = useDispatch();
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getCompanyById,
+  clearSelectedCompany
+} from '../../Redux/superAdminSlice';
+import { useParams, useNavigate } from 'react-router-dom';
+import Plan from '../../Components/Plan';
 
-  const [formData, setFormData] = useState({
-    name: '',
-    address: '',
-    email: '',
-    location: '',
-    contact_number: '',
-    modules: [],
-  });
+const CompanyViewPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const selectedCompany = useSelector(state => state.superAdmin.selectedCompany);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getCompanyById(id));
+    }
+
+    return () => {
+      dispatch(clearSelectedCompany());
+    };
+  }, [dispatch, id]);
+
+  if (!selectedCompany) return <p>Loading...</p>;
 
   const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
-
-  // Pre-fill form data in edit mode
-  useEffect(() => {
-    if (isEdit && selectedCompany) {
-      const modulesChecked = allModules.filter((mod) => selectedCompany.modules?.[mod]);
-      setFormData({
-        name: selectedCompany.name || '',
-        address: selectedCompany.address || '',
-        email: selectedCompany.email || '',
-        location: selectedCompany.location || '',
-        contact_number: selectedCompany.contact_number || '',
-        modules: modulesChecked,
-      });
-    }
-  }, [isEdit, selectedCompany]);
-
-  const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleModuleChange = (e) => {
-    const value = e.target.value;
-    setFormData(prev => ({
-      ...prev,
-      modules: prev.modules.includes(value)
-        ? prev.modules.filter(m => m !== value)
-        : [...prev.modules, value]
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Convert modules array → object
-    const modulesObject = {};
-    allModules.forEach(mod => {
-      modulesObject[mod] = formData.modules.includes(mod);
-    });
-
-    const finalData = {
-      ...formData,
-      modules: modulesObject,
-    };
-
-    try {
-      if (isEdit && selectedCompany?.id) {
-        await dispatch(editCompany({ id: selectedCompany.id, data: finalData })).unwrap();
-      } else {
-        await dispatch(addCompany(finalData)).unwrap();
-      }
-      onClose();
-    } catch (err) {
-      console.error("Company save failed", err);
-    }
-  };
+  const enabledModules = allModules.filter(mod => selectedCompany.modules?.[mod]);
 
   return (
     <FormWrapper>
       <BackHeader>
-        <GoArrowLeft onClick={onClose} style={{ cursor: "pointer" }} />
-        <span>{isEdit ? "Edit Company" : "Add Company"}</span>
+        <GoArrowLeft onClick={() => navigate(-1)} style={{ cursor: "pointer" }} />
+        <span>Company Details</span>
       </BackHeader>
 
-      <form onSubmit={handleSubmit}>
-        <FormSection>
-          <div>
-            <FormField>
-              <Label>Company Name</Label>
-              <Input
-                type="text"
-                name="name"
-                placeholder="Company name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </FormField>
+      <FormSection>
+        <div>
+          <FormField>
+            <Label>Company Name</Label>
+            <Input type="text" value={selectedCompany.name} readOnly />
+          </FormField>
 
-            <FormField>
-              <Label>Address</Label>
-              <Input
-                type="text"
-                name="address"
-                placeholder="Address"
-                value={formData.address}
-                onChange={handleChange}
-              />
-            </FormField>
+          <FormField>
+            <Label>Address</Label>
+            <Input type="text" value={selectedCompany.address} readOnly />
+          </FormField>
 
-            <FormField>
-              <Label>Email</Label>
-              <Input
-                type="email"
-                name="email"
-                placeholder="E-mail"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </FormField>
-          </div>
+          <FormField>
+            <Label>Email</Label>
+            <Input type="text" value={selectedCompany.email} readOnly />
+          </FormField>
+        </div>
 
-          <div>
-            <FormField>
-              <Label>Location</Label>
-              <Input
-                type="text"
-                name="location"
-                placeholder="Company location"
-                value={formData.location}
-                onChange={handleChange}
-              />
-            </FormField>
+        <div>
+          <FormField>
+            <Label>Location</Label>
+            <Input type="text" value={selectedCompany.location} readOnly />
+          </FormField>
 
-            <FormField>
-              <Label>Contact Number</Label>
-              <Input
-                type="text"
-                name="contact_number"
-                placeholder="Contact number"
-                value={formData.contact_number}
-                onChange={handleChange}
-              />
-            </FormField>
-          </div>
-        </FormSection>
+          <FormField>
+            <Label>Contact Number</Label>
+            <Input type="text" value={selectedCompany.contact_number} readOnly />
+          </FormField>
 
-        <h4>Privileges</h4>
-        <CheckboxGroup>
-          {allModules.map((module) => (
-            <CheckboxLabel key={module}>
-              <input
-                type="checkbox"
-                value={module}
-                checked={formData.modules.includes(module)}
-                onChange={handleModuleChange}
-              />
-              {module.charAt(0).toUpperCase() + module.slice(1).replace('_', ' ')}
-            </CheckboxLabel>
-          ))}
-        </CheckboxGroup>
+          <FormField>
+            <Label>No. of Employees</Label>
+            <Input type="text" value={selectedCompany.number_of_employees} readOnly />
+          </FormField>
+        </div>
+      </FormSection>
 
-        <Hr />
+      <h4>Enabled Modules</h4>
+<CheckboxGroup>
+  {allModules.map((mod) => (
+    <CheckboxLabel key={mod}>
+      <input
+        type="checkbox"
+        value={mod}
+        checked={selectedCompany.modules?.[mod]}
+        disabled
+      />
+      {mod.charAt(0).toUpperCase() + mod.slice(1).replace('_', ' ')}
+    </CheckboxLabel>
+  ))}
+</CheckboxGroup>
 
-        <ButtonGroup>
-          <Button type="button" cancel onClick={onClose}>Cancel</Button>
-          <Button type="submit">{isEdit ? "Update" : "Save"}</Button>
-        </ButtonGroup>
-      </form>
-      <Plan/>
+
+      <Hr />
+
+      <Plan />
     </FormWrapper>
   );
 };
 
-export default AddCompanyModal;
+export default CompanyViewPage;

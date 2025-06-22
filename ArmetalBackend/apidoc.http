@@ -80,8 +80,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ### Get details of a single company (replace 1 with actual ID)
-GET http://127.0.0.1:8000/api/companies/1/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTExODIwLCJpYXQiOjE3NDg1MDgyMjAsImp0aSI6ImMyYmMxZmRhNTMyNDQ3YjU5MmZlNmE0MzUxYmVlZThiIiwidXNlcl9pZCI6Mn0.3FUWk6avJUq1AmfRGZrip8RG9Bj5shf5Fw_u-HERfLw
+GET http://127.0.0.1:8000/api/companies/2/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNDAzMjM3LCJpYXQiOjE3NTAzOTk2MzcsImp0aSI6IjA1NjU3OWYyMjkxNjRhNGRhYzIzMWRlODIyMzZkMDE4IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.-igFKB4tGpVq37ZC8N_m-HSpjnN6OuiEXLbTxUesZQI
 
 
 
@@ -110,6 +110,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ### Delete a company with id
 DELETE http://127.0.0.1:8000/api/companies/4/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTExODIwLCJpYXQiOjE3NDg1MDgyMjAsImp0aSI6ImMyYmMxZmRhNTMyNDQ3YjU5MmZlNmE0MzUxYmVlZThiIiwidXNlcl9pZCI6Mn0.3FUWk6avJUq1AmfRGZrip8RG9Bj5shf5Fw_u-HERfLw
+
+
+# list subscription plan for comapany
+###
+GET http://localhost:8000/api/subscriptions/2/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNDE1MjEzLCJpYXQiOjE3NTA0MTE2MTMsImp0aSI6IjY1YTliYWUxMjg5YjQ0ZWRiY2I0YWYxOTEyMTNhMWFiIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.ufG74btU1rNKNEp2OdeiK4ytAbkICWCUMHYHerLW1CY
+
+# update subscription status for company
+###
+PUT http://localhost:8000/api/subscriptions/mark-paid/5/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNDA5NzE3LCJpYXQiOjE3NTA0MDYxMTcsImp0aSI6IjMwYzM4NmQ0ZDcwZjRlZmNhMmYwMjk2ODA1Mzk0ZjJiIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.9jO_r8Uiwrw9vmGLIAS6oB-kEy919wlv1AEuV4o7H-c
 
 
 # ----------------------------API FOR HR ADMIN:HR COMPANY--------------------------------
@@ -321,6 +332,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 GET http://127.0.0.1:8000/api/employees/my-department/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4ODUxMDU4LCJpYXQiOjE3NDg4NDc0NTgsImp0aSI6IjVkNWM2ODk1YzA4YTRjODNhYzkxNDliODkzZGVmMmE2IiwidXNlcl9pZCI6MTh9.1Iy041hGXmFjpHe9GB1z1ebv0flSLWL6r0odzks0ArU
 
+
+
+# retirieve single bank details 
+###
+GET http://127.0.0.1:8000/api/bank-payments/28/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNDg1NzQ0LCJpYXQiOjE3NTA0ODIxNDQsImp0aSI6ImVmZDk2Yjg0NTlhOTQwMWM4MTY5YzA3MDdlODU4Y2QwIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.ETHXCcVHI4KKcr3tCLwZvRGH_NzkW1JxjxjHl8AG7oo
 # -----------------------------API FOR LEAVE-----------------
 
 

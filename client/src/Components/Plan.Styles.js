@@ -49,10 +49,13 @@ export const PlanPrice = styled.div`
 `;
 
 export const PaymentTable = styled.table`
-  width: 90%;
+  width: 100%;
+  table-layout: fixed; /* Ensures uniform column width */
   border-collapse: collapse;
-
+  text-align: center;
 `;
+
+
 
 export const TableHead = styled.th`
   border: 1px solid #ccc;
@@ -65,13 +68,24 @@ export const TableRow = styled.tr`
   background-color: ${({ status }) =>
     status === 'Un-Paid' ? '#FFEBEB' : '#FBFFF9'};
   transition: background-color 0.3s ease;
+  table-layout: fixed;
 `;
+
 
 export const TableData = styled.td`
   border: 1px solid #ccc;
   padding: 0.6rem;
   text-align: center;
 `;
+
+export const TableWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+`;
+
+
 
 export const StatusSelect = styled.select`
   padding: 0.3rem;
@@ -107,3 +121,22 @@ export const CancelButton = styled.button`
   border: none;
   border-radius: 5px;
 `;
+
+
+export const ScrollableTbody = styled.tbody`
+  display: block;
+  max-height: 250px; /* Approx height for 5 rows, adjust as needed */
+  overflow-y: auto;
+  width: 100%;
+`;
+export const ScrollWrapper = styled.div`
+  max-height: 300px;         /* Limits visible rows to ~5 */
+  overflow-y: auto;
+  width: 100%;
+  margin: 0 auto;            /* Center horizontally */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+`;
+
+
+
