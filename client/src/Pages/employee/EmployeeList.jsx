@@ -142,7 +142,9 @@ const EmployeeList = () => {
                 <td>{emp.email}</td>
                 <td>{emp.designation}</td>
                 <td>{emp.department}</td>
-                <td><FaInfoCircle /></td>
+               <td onClick={() => navigate(`/ViewBasic/${emp.id}`)} style={{ cursor: 'pointer' }}>
+  <FaInfoCircle />
+</td>
                 <td>
   <FaTrash color="red" style={{ cursor: 'pointer' }} onClick={() => handleDeleteClick(emp.id)} />
 </td>

@@ -4,44 +4,33 @@ import {
   updateEmployee,
   createBankPayment,
   updateBankPayment,
-  getBankPayment,
+  deleteBankPayment as deleteBankPaymentAPI,
   uploadTempImage,
   saveEmployeeDocuments,
   fetchAllEmployees,
+  fetchEmployeeById,
+  fetchAllBankPaymentsByEmployee,
+  fetchEmployeeDocuments,
+  deleteEmployeeDocument,
 } from '../services/employeeService';
-import axios from 'axios';
-
-// --- Submit Basic Info ---
-// Redux employeeSlice.js
 import API from '../services/api';
 
+// Submit Employee
 export const submitEmployee = createAsyncThunk(
   'employee/submitEmployee',
   async (formData, thunkAPI) => {
     const { employee } = thunkAPI.getState();
-
     try {
-      let response;
-      if (employee.employeeCreated && employee.employeeId) {
-        console.log("bhbh",employee.employeeCreated , employee.employeeId);
-        
-        response = await updateEmployee(employee.employeeId, formData);
-      } else {
-        response = await createEmployee(formData);
-      }
-      return response;
+      return employee.employeeCreated && employee.employeeId
+        ? await updateEmployee(employee.employeeId, formData)
+        : await createEmployee(formData);
     } catch (err) {
-      console.error('❌ Error submitting employee:', err.response?.data || err.message);
-      const message = err.response?.data?.message || 'Something went wrong.';
-      return thunkAPI.rejectWithValue(message);
+      return thunkAPI.rejectWithValue(err.response?.data?.message || 'Something went wrong.');
     }
   }
 );
 
-
-
-
-// --- Delete Employee ---
+// Delete Employee
 export const deleteEmployeeById = createAsyncThunk(
   'employees/deleteEmployeeById',
   async (employeeId, { rejectWithValue }) => {
@@ -54,29 +43,48 @@ export const deleteEmployeeById = createAsyncThunk(
   }
 );
 
-// --- Submit or Update Bank Payment ---
+// Submit Bank Payment
 export const submitBankPayment = createAsyncThunk(
   'employee/submitBankPayment',
-  async ({ employeeId, data }, thunkAPI) => {
-    const { employee } = thunkAPI.getState();
+  async ({ employeeId, data, paymentId = null }, thunkAPI) => {
     try {
-      let response;
-      if (employee.bankPaymentId) {
-        response = await updateBankPayment(employeeId, employee.bankPaymentId, data);
-      } else {
-        const created = await createBankPayment(employeeId, data);
-        thunkAPI.dispatch(setBankPaymentId(created.id));
-        response = created;
-      }
+      const response = paymentId
+        ? await updateBankPayment(employeeId, paymentId, data)
+        : await createBankPayment(employeeId, data);
+      if (!paymentId) thunkAPI.dispatch(setBankPaymentId(response.id));
       return response;
     } catch (err) {
-      let message = err.response?.data?.message || 'Error saving bank payment.';
-      return thunkAPI.rejectWithValue(message);
+      return thunkAPI.rejectWithValue(err.response?.data?.message || 'Error saving bank payment.');
     }
   }
 );
 
-// --- Fetch All Employees ---
+// Delete Bank Payment
+export const deleteBankPayment = createAsyncThunk(
+  'employee/deleteBankPayment',
+  async ({ employeeId, paymentId }, { rejectWithValue }) => {
+    try {
+      await deleteBankPaymentAPI(employeeId, paymentId);
+      return paymentId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to delete bank payment');
+    }
+  }
+);
+
+// Get Single Employee
+export const getEmployeeById = createAsyncThunk(
+  'employees/getById',
+  async (id, thunkAPI) => {
+    try {
+      return await fetchEmployeeById(id);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || 'Failed to fetch employee');
+    }
+  }
+);
+
+// Fetch All Employees
 export const getAllEmployees = createAsyncThunk(
   'employees/getAll',
   async ({ page, search }, thunkAPI) => {
@@ -88,50 +96,72 @@ export const getAllEmployees = createAsyncThunk(
   }
 );
 
-// --- Fetch Bank Payment ---
-export const fetchBankPayment = createAsyncThunk(
-  'employee/fetchBankPayment',
-  async (employeeId, thunkAPI) => {
+// Fetch All Bank Payments
+export const fetchAllBankPaymentsThunk = createAsyncThunk(
+  'employee/fetchAllBankPayments',
+  async (employeeId) => await fetchAllBankPaymentsByEmployee(employeeId)
+);
+
+// Upload Temp Image
+export const uploadImageThunk = createAsyncThunk(
+  'documents/uploadTempImage',
+  async (file, { rejectWithValue }) => {
     try {
-      const response = await getBankPayment(employeeId);
-      if (Array.isArray(response) && response.length > 0) {
-        thunkAPI.dispatch(setBankPaymentId(response[0].id));
-        return response[0];
-      }
-      return null;
+      const response = await uploadTempImage(file);
+      return response.url;
     } catch (err) {
-      let message = err.response?.data?.message || 'Failed to fetch bank payment.';
-      return thunkAPI.rejectWithValue(message);
+      return rejectWithValue(err.response?.data || 'Upload failed');
     }
   }
 );
 
-// --- Upload Temp Image ---
-export const uploadImage = createAsyncThunk(
-  'employee/uploadImage',
-  async (file) => {
-    return await uploadTempImage(file);
+// Submit Documents
+export const submitDocumentsThunk = createAsyncThunk(
+  'documents/submit',
+  async ({ employeeId, documents }, { rejectWithValue }) => {
+    try {
+      return await saveEmployeeDocuments(employeeId, documents);
+    } catch (err) {
+      return rejectWithValue(err.response?.data || 'Document submission failed');
+    }
   }
 );
 
-// --- Submit Employee Documents ---
-export const submitDocuments = createAsyncThunk(
-  'employee/submitDocuments',
-  async ({ employeeId, documents }) => {
-    return await saveEmployeeDocuments(employeeId, documents);
+// Fetch Employee Documents
+export const getEmployeeDocumentsThunk = createAsyncThunk(
+  'documents/getByEmployee',
+  async (employeeId, { rejectWithValue }) => {
+    try {
+      return await fetchEmployeeDocuments(employeeId);
+    } catch (err) {
+      return rejectWithValue(err.response?.data || 'Fetch failed');
+    }
   }
 );
 
+// Delete Document
+export const deleteDocumentThunk = createAsyncThunk(
+  'documents/delete',
+  async (docId, { rejectWithValue }) => {
+    try {
+      await deleteEmployeeDocument(docId);
+      return docId;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || 'Delete failed');
+    }
+  }
+);
+
+// Slice
 const employeeSlice = createSlice({
   name: 'employee',
   initialState: {
-    // Creation-related
     status: 'idle',
     error: null,
-    employeeId: null,
+    loading: false,
     employeeCreated: false,
+    employeeId: null,
     bankPaymentId: null,
-    bankPayment: null,
     formData: {},
     documentUrls: {
       passport: [],
@@ -140,9 +170,9 @@ const employeeSlice = createSlice({
       insurance: [],
       certificate: [],
     },
-
-    // List-related
-    loading: false,
+    documentList: [],
+    employeeDocuments: [],
+    employeeBankPayments: [],
     employeeList: [],
     pagination: { count: 0, next: null, previous: null },
   },
@@ -168,93 +198,51 @@ const employeeSlice = createSlice({
       state.documentUrls[type].splice(index, 1);
     },
     clearDocumentUrls: (state) => {
-      state.documentUrls = {
-        passport: [],
-        workPermit: [],
-        contract: [],
-        insurance: [],
-        certificate: [],
-      };
+      Object.keys(state.documentUrls).forEach(key => state.documentUrls[key] = []);
     },
   },
   extraReducers: (builder) => {
     builder
-      // Create/Update Employee
-      .addCase(submitEmployee.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
+      .addCase(submitEmployee.pending, state => { state.status = 'loading'; state.error = null; })
       .addCase(submitEmployee.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.employeeId = action.payload?.id || action.payload?.employee?.id || null;
+        state.employeeId = action.payload?.id || action.payload?.employee?.id;
         state.employeeCreated = true;
       })
       .addCase(submitEmployee.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
+        state.status = 'failed'; state.error = action.payload;
       })
 
-      // Submit/Update Bank Payment
-      .addCase(submitBankPayment.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
+      .addCase(submitBankPayment.fulfilled, (state, action) => {
+        const updated = action.payload;
+        const index = state.employeeBankPayments.findIndex(p => p.id === updated.id);
+        if (index !== -1) state.employeeBankPayments[index] = updated;
+        else state.employeeBankPayments.push(updated);
       })
-      .addCase(submitBankPayment.fulfilled, (state) => {
-        state.status = 'succeeded';
+      .addCase(deleteBankPayment.fulfilled, (state, action) => {
+        state.employeeBankPayments = state.employeeBankPayments.filter(p => p.id !== action.payload);
       })
-      .addCase(submitBankPayment.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
-      })
-
-      // Fetch Bank Payment
-      .addCase(fetchBankPayment.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
-      .addCase(fetchBankPayment.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.bankPayment = action.payload;
-      })
-      .addCase(fetchBankPayment.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
-        state.bankPayment = null;
+      .addCase(fetchAllBankPaymentsThunk.fulfilled, (state, action) => {
+        state.employeeBankPayments = action.payload;
       })
 
-      // Upload Image
-      .addCase(uploadImage.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
-      .addCase(uploadImage.fulfilled, (state) => {
-        state.status = 'succeeded';
-      })
-      .addCase(uploadImage.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
+      .addCase(uploadImageThunk.fulfilled, (state, action) => {
+        // you can optionally push to documentUrls or tempUrls here
       })
 
-      // Submit Documents
-      .addCase(submitDocuments.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
-      .addCase(submitDocuments.fulfilled, (state) => {
-        state.status = 'succeeded';
-      })
-      .addCase(submitDocuments.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
+      .addCase(submitDocumentsThunk.fulfilled, (state, action) => {
+        state.documentList = action.payload;
+        state.documentUrls = { passport: [], workPermit: [], contract: [], insurance: [], certificate: [] };
       })
 
-      // Get All Employees
-      .addCase(getAllEmployees.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+      .addCase(getEmployeeDocumentsThunk.fulfilled, (state, action) => {
+        state.employeeDocuments = action.payload;
       })
+      .addCase(deleteDocumentThunk.fulfilled, (state, action) => {
+        state.employeeDocuments = state.employeeDocuments.filter(doc => doc.id !== action.payload);
+      })
+
       .addCase(getAllEmployees.fulfilled, (state, action) => {
-        state.loading = false;
         state.employeeList = action.payload.results;
         state.pagination = {
           count: action.payload.count,
@@ -262,22 +250,9 @@ const employeeSlice = createSlice({
           previous: action.payload.previous,
         };
       })
-      .addCase(getAllEmployees.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || 'Failed to load employees';
-      })
 
-      // Delete Employee
-      .addCase(deleteEmployeeById.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(deleteEmployeeById.fulfilled, (state, action) => {
-        state.loading = false;
-        state.employeeList = state.employeeList.filter(emp => emp.id !== action.payload);
-      })
-      .addCase(deleteEmployeeById.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || 'Delete failed';
+      .addCase(getEmployeeById.fulfilled, (state, action) => {
+        state.employeeDetail = action.payload;
       });
   },
 });

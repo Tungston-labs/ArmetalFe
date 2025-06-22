@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import EmployeesInMyDepartmentView,EmployeeListCreateView,EmployeeRetrieveUpdateDestroyView,EmpBankPaymentCreateListView,EmpBankPaymentRetrieveUpdateDeleteView,UploadImageView,EmpDocumentCreateFromURLView,DashboardSummaryView,UploadImageDetailView,EmpDocumentDetailView
+from .views import EmployeesInMyDepartmentView,EmployeeListCreateView,EmployeeRetrieveUpdateDestroyView,EmpBankPaymentCreateListView,UploadImageView,EmpDocumentCreateFromURLView,DashboardSummaryView,UploadImageDetailView,EmpBankPaymentEmployeeScopedDetailView,EmployeeDocumentsView
 
 urlpatterns = [
     path('employees/', EmployeeListCreateView.as_view(), name='employee-list-create'),
@@ -7,17 +7,18 @@ urlpatterns = [
 
     # bank payment views
 
-    path('employees/<int:employee_id>/bank-payments/', EmpBankPaymentCreateListView.as_view(), name='create-bank-payment'),
-    path('bank-payments/<int:employee_id>/', EmpBankPaymentRetrieveUpdateDeleteView.as_view(), name='detail-bank-payment'),
+       # List + Create
+    path('employees/<int:employee_id>/bank-payments/', EmpBankPaymentCreateListView.as_view(), name='employee-bank-payment-list-create'),
+    path('employees/<int:employee_id>/bank-payments/<int:payment_id>/', EmpBankPaymentEmployeeScopedDetailView.as_view(), name='employee-bank-payment-detail'),
+
 
     # document upload
+  # document upload
     path('upload-image/', UploadImageView.as_view(), name='upload-image'),
     path('upload/<int:pk>/', UploadImageDetailView.as_view(), name='upload-image-detail'),
     path('employees/<int:employee_id>/documents/', EmpDocumentCreateFromURLView.as_view(), name='upload-emp-documents'),
-    
-    
-    
-    
+   path('employees/<int:employee_id>/documents/', EmployeeDocumentsView.as_view(), name='employee-documents'),
+    # path('documents/<int:pk>/', EmpDocumentDetailView.as_view(), name='emp-documents-detail'),
     # list employees of same department
     path('employees/my-department/', EmployeesInMyDepartmentView.as_view(), name='employees-in-my-department'),
 

@@ -24,6 +24,7 @@ export const SectionTitle = styled.h4`
 
 export const FormSection = styled.div`
   border-radius: 12px;
+
 `;
 
 export const Row = styled.div`
@@ -44,7 +45,7 @@ export const Input = styled.input`
   padding: 0.6rem;
   border-radius: 8px;
   border: 1px solid #ccc;
-
+gap:1rem;
 `;
 
 export const Select = styled.select`

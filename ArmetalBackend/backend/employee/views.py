@@ -77,19 +77,15 @@ class EmpBankPaymentCreateListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
 
     def get_queryset(self):
-        return EmpBankPaymentModel.objects.all()
+        employee_id = self.kwargs.get('employee_id')
+        return EmpBankPaymentModel.objects.filter(employee__id=employee_id)
 
     def perform_create(self, serializer):
         employee_id = self.kwargs.get('employee_id')
-        try:
-            employee = Employee_db.objects.get(id=employee_id)
-        except Employee_db.DoesNotExist:
-            raise NotFound('Employee not found.')
-
+        employee = get_object_or_404(Employee_db, id=employee_id)
         serializer.save(employee=employee)
 
-class EmpBankPaymentRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = EmpBankPaymentModel.objects.all()
+class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EmpBankPaymentSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
     lookup_field = 'employee_id' 
@@ -98,11 +94,12 @@ class EmpBankPaymentRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIVi
 # views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
-from django.conf import settings
-from .models import TempUpload
-from .serializers import TempUploadSerializer
+from rest_framework import status, permissions, generics
+from django.shortcuts import get_object_or_404
 
+from .models import TempUpload, EmpDocument, Employee_db
+from .serializers import TempUploadSerializer, EmpDocumentSerializer
+from user.permissions import IsHRAdmin
 class UploadImageView(APIView):
     permission_classes = [permissions.IsAuthenticated,IsHRAdmin]  # or AllowAny for testing
 
@@ -115,6 +112,7 @@ class UploadImageView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# views.py
 
 class UploadImageDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TempUpload.objects.all()
@@ -123,12 +121,16 @@ class UploadImageDetailView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'employee_id' 
 
 
-class EmpDocumentCreateFromURLView(APIView):
+class EmployeeDocumentsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, employee_id):
+        documents = EmpDocument.objects.filter(employee_id=employee_id)
+        serializer = EmpDocumentSerializer(documents, many=True)
+        return Response(serializer.data)
 
     def post(self, request, employee_id):
         employee = get_object_or_404(Employee_db, id=employee_id)
-
         serializer = EmpDocumentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(employee=employee)
@@ -136,6 +138,47 @@ class EmpDocumentCreateFromURLView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class EmpDocumentCreateFromURLView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, employee_id):
+        employee = get_object_or_404(Employee_db, id=employee_id)
+        serializer = EmpDocumentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(employee=employee)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UploadImageDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = TempUpload.objects.all()
+    serializer_class = TempUploadSerializer
+    permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
+
+    queryset = TempUpload.objects.all()
+    serializer_class = TempUploadSerializer
+    permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
+
+# class EmployeeDocumentsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, employee_id):
+        documents = EmpDocument.objects.filter(employee_id=employee_id)
+        serializer = EmpDocumentSerializer(documents, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, employee_id):
+        employee = get_object_or_404(Employee_db, id=employee_id)
+        serializer = EmpDocumentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(employee=employee)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = EmpDocument.objects.all()
+#     serializer_class = EmpDocumentSerializer
+#     permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
 
 
 from rest_framework import generics, permissions
@@ -148,10 +191,13 @@ class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
     lookup_field = 'employee_id' 
 
+# class EmployeeDocumentListView(generics.ListAPIView):
+#     serializer_class = EmpDocumentSerializer
+#     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
 
-
-
-
+#     def get_queryset(self):
+#         employee_id = self.kwargs['employee_id']
+#         return EmpDocument.objects.filter(employee_id=employee_id)
 
 
 

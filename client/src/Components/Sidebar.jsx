@@ -104,7 +104,7 @@ export default function Sidebar() {
         </CustomLink>
       )}
       {user.company_modules.payroll && (
-        <CustomLink to="/payroll" className={collapsed ? 'collapsed' : ''}>
+        <CustomLink to="/payrolldetails" className={collapsed ? 'collapsed' : ''}>
           <FaTasks />
           <span>Payroll</span>
         </CustomLink>

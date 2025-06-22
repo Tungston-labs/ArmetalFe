@@ -26,8 +26,9 @@ export const Header = styled.div`
 export const EditButton = styled.button`
   display: flex; /* enable inline icon + text */
   align-items: center;
+    justify-content: center; /* ✅ Center content horizontally */
   gap: 0.4rem; /* space between icon and text */
-  padding: 0.4rem 1rem;
+  padding: 0.4rem ;
   border: none;
    background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
@@ -53,7 +54,7 @@ export const Row = styled.div`
 export const LeftSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1em;
   flex: 1;
   min-width: 250px;
 `;
