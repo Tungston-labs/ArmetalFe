@@ -46,7 +46,7 @@ class TempUploadSerializer(serializers.ModelSerializer):
 
 
 class EmpDocumentSerializer(serializers.ModelSerializer):
-    class Meta:
+    class Meta :
         model = EmpDocument
         fields = [
             'passport_image1_url',

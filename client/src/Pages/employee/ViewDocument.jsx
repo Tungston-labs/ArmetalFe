@@ -1,38 +1,75 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container, Header, LeftSection, RightSection, UploadSection,
   InlineUploadRow, Textarea, EditButton, Row, ImageBox, Tabs,
   LabelRow, Tab, SectionTitle, Section, ButtonGroup, Rows,
-  ImagePreviewRow, Input, UploadButton, Select, Hr, Button,
+  ImagePreviewRow, Input, UploadButton, Hr, Button,
   ProfileImage, Rowes, ImageColumn, Title, FormWrapper,
   Subtitle, Rightside, HeaderWrapper, TextGroup, HRManager
 } from "./ViewDocument.Styles";
 
 import { LuCirclePlus } from "react-icons/lu";
-import { HiOutlinePencilAlt } from "react-icons/hi";
 import { NavLink, useParams, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getEmployeeDocumentsThunk } from "../../Redux/employeeSlice";
+import {
+  getEmployeeDocumentsThunk,
+  updateEmployeeDocumentsThunk,
+  deleteEmployeeDocumentImageThunk
+} from "../../Redux/employeeSlice";
 
 const ViewDocument = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { employeeDetail } = useSelector((state) => state.employees);
+  const { employeeDetail, employeeDocuments } = useSelector((state) => state.employees);
+
+  const [refreshKey, setRefreshKey] = useState(Date.now());
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    dispatch(getEmployeeDocumentsThunk(id));
+    if (id) {
+      dispatch(getEmployeeDocumentsThunk(id));
+    }
   }, [id, dispatch]);
 
-  const renderImageList = (label, images = []) => (
+  const handleImageChange = (e, key) => {
+    const files = Array.from(e.target.files);
+    setFormData((prev) => ({
+      ...prev,
+      [key]: files,
+    }));
+  };
+
+  const renderImageList = (label, images = [], inputKey) => (
     <UploadSection>
       <LabelRow>{label}</LabelRow>
       <InlineUploadRow>
-        <UploadButton disabled><LuCirclePlus /> Uploaded Images</UploadButton>
+        <UploadButton as="label">
+          <LuCirclePlus /> {editMode ? "Choose Images" : "Uploaded Images"}
+          {editMode && (
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => handleImageChange(e, inputKey)}
+            />
+          )}
+        </UploadButton>
+
         <ImagePreviewRow>
-          {images.length > 0 ? (
+          {editMode && formData[inputKey] ? (
+            formData[inputKey].map((file, idx) => (
+              <ImageBox key={idx}>
+                <img src={URL.createObjectURL(file)} alt={`${label} preview ${idx + 1}`} />
+              </ImageBox>
+            ))
+          ) : images.length > 0 ? (
             images.map((url, idx) => (
-              <ImageBox key={idx}><img src={url} alt={`${label} ${idx + 1}`} /></ImageBox>
+              <ImageBox key={idx}>
+                <img src={`${url}?updated=${refreshKey}`} alt={`${label} ${idx + 1}`} />
+              </ImageBox>
             ))
           ) : (
             <p style={{ marginLeft: "1rem", color: "#aaa" }}>No image uploaded</p>
@@ -41,6 +78,24 @@ const ViewDocument = () => {
       </InlineUploadRow>
     </UploadSection>
   );
+
+  const handleSubmit = async () => {
+    const form = new FormData();
+    Object.entries(formData).forEach(([key, files]) => {
+      files.forEach((file) => form.append(key, file));
+    });
+
+    try {
+      await dispatch(updateEmployeeDocumentsThunk({ id, form }));
+      await dispatch(getEmployeeDocumentsThunk(id));
+      setFormData({});
+      setEditMode(false);
+      setRefreshKey(Date.now()); // forces image refresh in frontend
+      alert("Documents updated successfully!");
+    } catch (error) {
+      console.error("Error updating documents:", error);
+    }
+  };
 
   return (
     <Container>
@@ -60,7 +115,9 @@ const ViewDocument = () => {
             <img src="/images/user.jpg" alt="HR Manager" />
             <span>HR Manager</span>
           </HRManager>
-          <EditButton>Edit</EditButton>
+          <EditButton onClick={() => setEditMode((prev) => !prev)}>
+            {editMode ? "Cancel" : "Edit"}
+          </EditButton>
         </Rightside>
       </Header>
 
@@ -74,12 +131,12 @@ const ViewDocument = () => {
 
         <Row>
           <LeftSection>
-           <Input type="text" value={employeeDetail?.name || ""} readOnly />
-                       <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
-                       <Input type="email" value={employeeDetail?.email || ""} readOnly />
+            <Input type="text" value={employeeDetail?.name || ""} readOnly />
+            <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
+            <Input type="email" value={employeeDetail?.email || ""} readOnly />
           </LeftSection>
 
-  <RightSection>
+          <RightSection>
             <Textarea value={employeeDetail?.address || ""} readOnly />
             <Rows style={{ marginTop: "1rem" }}>
               <Input type="text" value={employeeDetail?.dob || ""} readOnly />
@@ -93,30 +150,29 @@ const ViewDocument = () => {
 
       <Section>
         <Tabs>
-          <NavLink to={`/ViewBasic/${id}`} style={{ textDecoration: 'none' }}>
-            <Tab active={location.pathname === `/ViewBasic/${id}`}>Basic Details</Tab>
-          </NavLink>
-          <NavLink to={`/ViewBasic/${id}/bank`} style={{ textDecoration: 'none' }}>
-            <Tab active={location.pathname === `/ViewBasic/${id}/bank`}>Bank and payment details</Tab>
-          </NavLink>
-          <NavLink to={`/ViewBasic/${id}/documents`} style={{ textDecoration: 'none' }}>
-            <Tab active={location.pathname === `/ViewBasic/${id}/documents`}>Documents</Tab>
-          </NavLink>
+          <NavLink to={`/ViewBasic/${id}`}><Tab active={location.pathname === `/ViewBasic/${id}`}>Basic Details</Tab></NavLink>
+          <NavLink to={`/ViewBasic/${id}/bank`}><Tab active={location.pathname === `/ViewBasic/${id}/bank`}>Bank and payment details</Tab></NavLink>
+          <NavLink to={`/ViewBasic/${id}/documents`}><Tab active={location.pathname === `/ViewBasic/${id}/documents`}>Documents</Tab></NavLink>
         </Tabs>
 
         <SectionTitle>Documents</SectionTitle>
-        {renderImageList("Passport", employeeDetail?.passport)}
-        {renderImageList("Work Permit", employeeDetail?.work_permit)}
-        {renderImageList("Employment Contract", employeeDetail?.employment_contract)}
-        {renderImageList("Insurance", employeeDetail?.insurance)}
 
-        <SectionTitle>Certificate</SectionTitle>
-        {renderImageList("Certificate", employeeDetail?.certificate)}
+        {renderImageList("Passport", [
+          employeeDocuments?.passport_image1_url,
+          employeeDocuments?.passport_image2_url,
+        ].filter(Boolean), "passport_images")}
 
-        <ButtonGroup>
-          <Button secondary>Previous Step</Button>
-          <Button>Submit</Button>
-        </ButtonGroup>
+        {renderImageList("Work Permit", employeeDocuments?.work_permit_urls || [], "work_permit")}
+        {renderImageList("Employment Contract", employeeDocuments?.contract_urls || [], "contract")}
+        {renderImageList("Insurance", [employeeDocuments?.insurance_image_url].filter(Boolean), "insurance")}
+        {renderImageList("Certificate", employeeDocuments?.certificate_urls || [], "certificate")}
+
+        {editMode && (
+          <ButtonGroup>
+            <Button secondary onClick={() => setEditMode(false)}>Cancel</Button>
+            <Button onClick={handleSubmit}>Save</Button>
+          </ButtonGroup>
+        )}
       </Section>
     </Container>
   );

@@ -160,7 +160,7 @@ export default function BankPaymentForm() {
         </div>
       </div>
 
-      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+{error && <p>{error.message || error.toString()}</p>}
 
       <Table
         bankName={bankName} setBankName={setBankName}

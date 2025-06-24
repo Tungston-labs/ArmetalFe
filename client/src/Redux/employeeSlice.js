@@ -12,6 +12,8 @@ import {
   fetchAllBankPaymentsByEmployee,
   fetchEmployeeDocuments,
   deleteEmployeeDocument,
+  updateEmployeeDocument,
+    updateEmployeeDocuments
 } from '../services/employeeService';
 import API from '../services/api';
 
@@ -103,17 +105,7 @@ export const fetchAllBankPaymentsThunk = createAsyncThunk(
 );
 
 // Upload Temp Image
-export const uploadImageThunk = createAsyncThunk(
-  'documents/uploadTempImage',
-  async (file, { rejectWithValue }) => {
-    try {
-      const response = await uploadTempImage(file);
-      return response.url;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || 'Upload failed');
-    }
-  }
-);
+
 
 // Submit Documents
 export const submitDocumentsThunk = createAsyncThunk(
@@ -129,16 +121,39 @@ export const submitDocumentsThunk = createAsyncThunk(
 
 // Fetch Employee Documents
 export const getEmployeeDocumentsThunk = createAsyncThunk(
-  'documents/getByEmployee',
-  async (employeeId, { rejectWithValue }) => {
+  "employees/getDocuments",
+  async (employeeId, thunkAPI) => {
     try {
-      return await fetchEmployeeDocuments(employeeId);
-    } catch (err) {
-      return rejectWithValue(err.response?.data || 'Fetch failed');
+      const data = await fetchEmployeeDocuments(employeeId);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Error fetching documents");
     }
   }
 );
-
+export const updateEmployeeDocumentThunk = createAsyncThunk(
+  "employees/updateSingleDocument",
+  async ({ docId, data }, thunkAPI) => {
+    try {
+      const res = await updateEmployeeDocument(docId, data);
+      return res; // optionally you can return { docId, data: res } if you want to handle merge
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Error updating document");
+    }
+  }
+);
+export const updateEmployeeDocumentsThunk = createAsyncThunk(
+  "employees/updateDocuments",
+  async ({ id, form }, thunkAPI) => {
+    try {
+      const response = await updateEmployeeDocuments(id, form);
+      thunkAPI.dispatch(getEmployeeDocumentsThunk(id)); // Refresh after update
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Update failed");
+    }
+  }
+);
 // Delete Document
 export const deleteDocumentThunk = createAsyncThunk(
   'documents/delete',
@@ -151,7 +166,31 @@ export const deleteDocumentThunk = createAsyncThunk(
     }
   }
 );
-
+export const deleteEmployeeDocumentImageThunk = createAsyncThunk(
+  "employees/deleteDocumentImage",
+  async ({ id, field, url }, thunkAPI) => {
+    try {
+      const response = await axiosPrivate.delete(`/employees/${id}/documents/delete-image/`, {
+        data: { field, url },
+      });
+      thunkAPI.dispatch(getEmployeeDocumentsThunk(id));
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Delete failed");
+    }
+  }
+);
+export const uploadImageThunk = createAsyncThunk(
+  "documents/uploadTempImage",
+  async (file, { rejectWithValue }) => {
+    try {
+      const response = await uploadTempImage(file);
+      return response.url;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Upload failed");
+    }
+  }
+);
 // Slice
 const employeeSlice = createSlice({
   name: 'employee',
@@ -211,6 +250,21 @@ const employeeSlice = createSlice({
       })
       .addCase(submitEmployee.rejected, (state, action) => {
         state.status = 'failed'; state.error = action.payload;
+      })
+  .addCase(updateEmployeeDocumentThunk.pending, (state) => {
+        state.updateStatus = "loading";
+        state.updateError = null;
+      })
+      .addCase(updateEmployeeDocumentThunk.fulfilled, (state, action) => {
+        state.updateStatus = "succeeded";
+        state.employeeDocuments = {
+          ...state.employeeDocuments,
+          ...action.payload, // update returned fields only
+        };
+      })
+      .addCase(updateEmployeeDocumentThunk.rejected, (state, action) => {
+        state.updateStatus = "failed";
+        state.updateError = action.payload;
       })
 
       .addCase(submitBankPayment.fulfilled, (state, action) => {

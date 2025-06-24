@@ -112,14 +112,18 @@ class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIVi
 # views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions, generics
+from rest_framework import status, permissions
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
+from django.core.files.storage import default_storage
 
-from .models import TempUpload, EmpDocument, Employee_db
-from .serializers import TempUploadSerializer, EmpDocumentSerializer
-from user.permissions import IsHRAdmin
+from .models import EmpDocument, Employee_db
+from .serializers import EmpDocumentSerializer
+
+
+
 class UploadImageView(APIView):
-    permission_classes = [permissions.IsAuthenticated]  # or use AllowAny for testing
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = TempUploadSerializer(data=request.data)
@@ -130,82 +134,140 @@ class UploadImageView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# views.py
+class UploadImageDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
+
+    def get_object(self, pk):
+        return get_object_or_404(TempUpload, pk=pk)
+
+    def get(self, request, pk):
+        instance = self.get_object(pk)
+        serializer = TempUploadSerializer(instance)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        instance = self.get_object(pk)
+        serializer = TempUploadSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        instance = self.get_object(pk)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
+from django.core.files.storage import default_storage
 from .models import Employee_db, EmpDocument
 from .serializers import EmpDocumentSerializer
 
 class EmployeeDocumentsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request, employee_id):
-        documents = EmpDocument.objects.filter(employee_id=employee_id)
-        serializer = EmpDocumentSerializer(documents, many=True)
-        return Response(serializer.data)
+        try:
+            emp_doc = EmpDocument.objects.get(employee_id=employee_id)
+            serializer = EmpDocumentSerializer(emp_doc)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except EmpDocument.DoesNotExist:
+            return Response({"detail": "No document found."}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, employee_id):
         employee = get_object_or_404(Employee_db, id=employee_id)
-        serializer = EmpDocumentSerializer(data=request.data)
+
+        try:
+            emp_doc = EmpDocument.objects.get(employee=employee)
+            serializer = EmpDocumentSerializer(emp_doc, data=request.data, partial=True)
+        except EmpDocument.DoesNotExist:
+            serializer = EmpDocumentSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save(employee=employee)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, employee_id):
-        documents = EmpDocument.objects.filter(employee_id=employee_id)
-        serializer = EmpDocumentSerializer(documents, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, employee_id):
+    def patch(self, request, employee_id):  # ✅ Inside class now
         employee = get_object_or_404(Employee_db, id=employee_id)
-        serializer = EmpDocumentSerializer(data=request.data)
+
+        try:
+            emp_doc = EmpDocument.objects.get(employee=employee)
+        except EmpDocument.DoesNotExist:
+            return Response({"detail": "Document not found for PATCH."}, status=status.HTTP_404_NOT_FOUND)
+
+        data = request.data.copy()
+        for key in request.FILES:
+            data.setlist(key, request.FILES.getlist(key))
+
+        for field in request.FILES:
+            old_file = getattr(emp_doc, field, None)
+            if old_file and default_storage.exists(str(old_file)):
+                default_storage.delete(str(old_file))
+
+        serializer = EmpDocumentSerializer(emp_doc, data=data, partial=True)
+
         if serializer.is_valid():
-            serializer.save(employee=employee)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def patch(self, request, employee_id):
+    #     employee = get_object_or_404(Employee_db, id=employee_id)
 
+    #     try:
+    #         emp_doc = EmpDocument.objects.get(employee=employee)
+    #     except EmpDocument.DoesNotExist:
+    #         return Response({"detail": "Document not found for PATCH."}, status=status.HTTP_404_NOT_FOUND)
 
-class EmpDocumentCreateFromURLView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    #     # Combine form data and files
+    #     data = request.data.copy()
+    #     for key in request.FILES:
+    #         data.setlist(key, request.FILES.getlist(key))
 
-    def post(self, request, employee_id):
-        employee = get_object_or_404(Employee_db, id=employee_id)
-        serializer = EmpDocumentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(employee=employee)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     serializer = EmpDocumentSerializer(emp_doc, data=data, partial=True)
 
-class UploadImageDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = TempUpload.objects.all()
-    serializer_class = TempUploadSerializer
-    permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
-
-    queryset = TempUpload.objects.all()
-    serializer_class = TempUploadSerializer
-    permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class EmployeeDocumentsView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+#     permission_classes = [permissions.IsAuthenticated]
+#     parser_classes = (MultiPartParser, FormParser)
 
-    def get(self, request, employee_id):
-        documents = EmpDocument.objects.filter(employee_id=employee_id)
-        serializer = EmpDocumentSerializer(documents, many=True)
-        return Response(serializer.data)
+   
+    # def patch(self, request, employee_id):
+    #     employee = get_object_or_404(Employee_db, id=employee_id)
 
-    def post(self, request, employee_id):
-        employee = get_object_or_404(Employee_db, id=employee_id)
-        serializer = EmpDocumentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(employee=employee)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     try:
+    #         emp_doc = EmpDocument.objects.get(employee=employee)
+    #     except EmpDocument.DoesNotExist:
+    #         return Response({"detail": "Document not found for PATCH."}, status=status.HTTP_404_NOT_FOUND)
+
+    #     # Merge request.data and request.FILES
+    #     data = request.data.copy()
+    #     for key in request.FILES:
+    #         data.setlist(key, request.FILES.getlist(key))
+
+    #     # Prepare to delete old files if new ones are replacing them
+    #     for field in request.FILES:
+    #         old_file = getattr(emp_doc, field, None)
+    #         if old_file and default_storage.exists(old_file):  # ✅ FIXED: removed .name
+    #             default_storage.delete(old_file)
+
+    #     serializer = EmpDocumentSerializer(emp_doc, data=data, partial=True)
+
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = EmpDocument.objects.all()
