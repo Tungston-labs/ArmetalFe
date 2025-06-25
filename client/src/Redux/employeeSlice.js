@@ -246,6 +246,8 @@ const employeeSlice = createSlice({
         state.employeeList = action.payload.results;
         state.pagination = {
           count: action.payload.count,
+          total_pages: action.payload.total_pages,
+          current_page: action.payload.current_page,
           next: action.payload.next,
           previous: action.payload.previous,
         };

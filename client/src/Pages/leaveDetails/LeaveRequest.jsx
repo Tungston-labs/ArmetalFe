@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getLeaveRequests, patchLeaveStatus } from '../../Redux/leaveSlice';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { IoEyeOutline } from 'react-icons/io5';
-import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
 
@@ -33,21 +33,24 @@ import {
 
 export default function LeaveRequest() {
   const dispatch = useDispatch();
-  const { leaves, loading } = useSelector(state => state.leave);
+  const { leaves, loading, pagination } = useSelector(state => state.leave);
   const [actionType, setActionType] = useState('');
   const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState(null);
+  const [page, setPage] = useState(1); // <-- Pagination state
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getLeaveRequests());
-  }, [dispatch]);
+    dispatch(getLeaveRequests(page)); // <-- Pass page number
+  }, [dispatch, page]);
+  useEffect(() => {
+    console.log("Pagination Info:", pagination);
+  }, [pagination]);
 
-  const leaveData = leaves?.results || [];
+  const leaveData = leaves || [];
 
-  // Filter leaves by employee name or ID
   const filteredLeaves = leaveData.filter((leave) => {
     const name = leave?.employee?.name?.toLowerCase() || '';
     const empId = leave?.employee?.employee_id?.toLowerCase() || '';
@@ -62,7 +65,7 @@ export default function LeaveRequest() {
 
     try {
       await dispatch(patchLeaveStatus({ leaveId: selectedLeave.id, status }));
-      dispatch(getLeaveRequests()); // Refresh list
+      dispatch(getLeaveRequests(page)); // Refresh current page
     } catch (error) {
       console.error('Error updating leave status:', error);
     } finally {
@@ -74,6 +77,7 @@ export default function LeaveRequest() {
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
+    setPage(1); // reset to first page on new search
   };
 
   return (
@@ -151,7 +155,6 @@ export default function LeaveRequest() {
                   />
                   {leave?.employee?.name || 'N/A'}
                 </TableCell>
-
                 <TableCell>{leave.leave_type}</TableCell>
                 <TableCell>{leave.employee.email}</TableCell>
                 <TableCell>{leave.employee.phno}</TableCell>
@@ -171,7 +174,6 @@ export default function LeaveRequest() {
                     }}>
                       Decline
                     </DeclineButton>
-
                     <ApproveButton onClick={() => {
                       setSelectedLeave(leave);
                       setActionType('approve');
@@ -186,6 +188,46 @@ export default function LeaveRequest() {
           )}
         </tbody>
       </Table>
+
+            <Pagination>
+        <span
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          style={{ cursor: 'pointer', marginRight: '8px' }}
+        >
+          &larr;
+        </span>
+      
+        {[1, 2].map((pageNumber) => {
+          const isActive = pagination?.current_page === pageNumber;
+      
+          return (
+            <span
+              key={pageNumber}
+              onClick={() => setPage(pageNumber)}
+              style={{
+                margin: '0 4px',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                backgroundColor: isActive ? '#003366' : '#e0e0e0',
+                color: isActive ? '#ffffff' : '#000000',
+                fontWeight: isActive ? 'bold' : 'normal',
+              }}
+            >
+              {pageNumber}
+            </span>
+          );
+        })}
+      
+        <span
+          onClick={() =>
+            setPage((prev) => Math.min(prev + 1, 2))
+          }
+          style={{ cursor: 'pointer', marginLeft: '8px' }}
+        >
+          &rarr;
+        </span>
+      </Pagination>
 
       {showModal && (
         <ConfirmLeaveModal

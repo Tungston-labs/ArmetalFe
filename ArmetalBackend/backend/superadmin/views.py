@@ -87,8 +87,44 @@ class MarkSubscriptionPaidView(UpdateAPIView):
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
-
-
-
     
 
+
+# email services 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from superadmin.models import Company 
+
+class SendInvoiceEmailView(APIView):
+    def post(self, request):
+        entry = request.data.get("entry")
+        company_id = request.data.get("company_id")  # <-- change here
+
+        if not entry or not company_id:
+            return Response({"error": "Missing required fields"}, status=400)
+
+        try:
+            company = Company.objects.get(id=company_id)
+        except Company.DoesNotExist:
+            return Response({"error": "Company not found"}, status=404)
+
+        html_content = render_to_string("invoice_template.html", {
+            "entry": entry,
+            "company": company.name
+        })
+
+        email = EmailMessage(
+            subject=f"Invoice for {entry['month_display']} {entry['year']}",
+            body=html_content,
+            from_email=None,
+            to=[company.email]
+        )
+        email.content_subtype = "html"
+
+        try:
+            email.send()
+            return Response({"message": "Email sent successfully"}, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)

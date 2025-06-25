@@ -91,18 +91,27 @@ const handleDownload = (entry) => {
   };
   html2pdf().from(html).set(opt).save();
 };
-const handleSendEmail = () => {
-  const entry = {
-    month_display: "June",
-    year: 2025,
-    amount: 299.99,
-    status: "Paid",
-    paid_date: "2025-06-20",
-    currency: "USD"
-  };
+const handleSendEmail = async (entry) => {
+  try {
+    const token = localStorage.getItem("accessToken");
 
-  sendInvoiceEmail(entry, "customer@example.com", "Tungston Labs");
+    await axios.post("http://localhost:8000/api/invoice/send-email/", {
+      entry: entry,
+      company_id: entry.company,  // now sending company ID
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+
+    alert("Invoice email sent successfully.");
+  } catch (error) {
+    console.error("Email send failed:", error);
+    alert("Failed to send invoice email.");
+  }
 };
+
+  
   return (
     <>
       <SectionTitle>Payment Overview</SectionTitle>
@@ -181,7 +190,7 @@ const handleSendEmail = () => {
                     <button onClick={() => handleDownload(entry)} title="Download" style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
                       <MdOutlineFileDownload />
                     </button>
-                    <button title="Import" onClick={()=>handleSendEmail()} style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
+                    <button title="Import" onClick={()=>handleSendEmail(entry)} style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
                       <VscSend />
                     </button>
                   </TableData>

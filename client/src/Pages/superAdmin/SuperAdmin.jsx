@@ -131,7 +131,7 @@ const CompanyTable = () => {
               <Th>Info</Th>
               <Th>Edit</Th>
               <Th>Delete</Th>
-              <Th>Impersonate</Th>
+              {/* <Th>Impersonate</Th> */}
             </tr>
           </thead>
           <tbody>
@@ -161,9 +161,9 @@ const CompanyTable = () => {
                       <FaTrashAlt />
                     </IconButton>
                   </Td>
-                  <Td>
+                  {/* <Td>
                     <ImpersonateButton>Impersonate</ImpersonateButton>
-                  </Td>
+                  </Td> */}
                 </tr>
               ))
             ) : (

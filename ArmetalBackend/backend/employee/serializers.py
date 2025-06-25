@@ -13,11 +13,7 @@ class SafeDateField(serializers.DateField):
         return super().to_representation(value)
 
 
-class EmpBankPaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EmpBankPaymentModel
-        fields = '__all__'
-        read_only_fields = ['employee']
+
 class EmployeeSerializer(serializers.ModelSerializer):
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
@@ -36,6 +32,13 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee_db
         exclude = ['user', 'password']
+
+class EmpBankPaymentSerializer(serializers.ModelSerializer):
+    employee = EmployeeSerializer(read_only=True)
+    class Meta:
+        model = EmpBankPaymentModel
+        fields = '__all__'
+        read_only_fields = ['employee']
 
 
 
@@ -56,3 +59,9 @@ class EmpDocumentSerializer(serializers.ModelSerializer):
             'contract_urls',
             'certificate_urls'
         ]
+
+# combined serializer for basic details+bank
+
+
+
+

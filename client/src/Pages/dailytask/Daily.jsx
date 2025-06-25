@@ -55,7 +55,7 @@ export default function DailyTask() {
           </TextBlock>
         </TitleSection>
         <HRManager>
-          <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
+          <img src="/images/user.jpg" alt="HR Manager" />
           <span>HR Manager</span>
         </HRManager>
       </Header>
@@ -126,14 +126,14 @@ export default function DailyTask() {
               </TaskCard>
             ))
           ) : (
-           <div style={{ textAlign: 'center', padding: '2rem',alignContent:"end" }}>
-    <img
-      src="/images/dailytask.png"
-      alt="No tasks"
-      style={{ width: '400px', height: '350px', marginBottom: '', opacity: 0.8 }}
-    />
-    <p>No tasks available for this date.</p>
-  </div>
+            <div style={{ textAlign: 'center', padding: '2rem', alignContent: "end" }}>
+              <img
+                src="/images/dailytask.png"
+                alt="No tasks"
+                style={{ width: '400px', height: '350px', marginBottom: '', opacity: 0.8 }}
+              />
+              <p>No tasks available for this date.</p>
+            </div>
           )}
         </TaskPanel>
       </div>

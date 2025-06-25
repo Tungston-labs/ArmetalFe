@@ -8,9 +8,9 @@ from .models import Employee_db
 from .serializers import EmployeeSerializer,EmpDocumentSerializer
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-from shared.pagination import PageNumberPagination
+from shared.pagination import CustomPagination
 
-# 1. List and Create
+# BASIC DETAILS
 
 
 
@@ -20,7 +20,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'employee_id']
-    pagination_class = PageNumberPagination
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -65,7 +65,8 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-# views.py
+# BANK DETAILS
+
 from rest_framework import generics, permissions
 from .models import EmpBankPaymentModel, Employee_db
 from .serializers import EmpBankPaymentSerializer
@@ -91,6 +92,9 @@ class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIVi
     lookup_field = 'employee_id' 
 
 
+
+
+
 # views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -100,6 +104,7 @@ from django.shortcuts import get_object_or_404
 from .models import TempUpload, EmpDocument, Employee_db
 from .serializers import TempUploadSerializer, EmpDocumentSerializer
 from user.permissions import IsHRAdmin
+
 class UploadImageView(APIView):
     permission_classes = [permissions.IsAuthenticated,IsHRAdmin]  # or AllowAny for testing
 
@@ -150,16 +155,9 @@ class EmpDocumentCreateFromURLView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UploadImageDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = TempUpload.objects.all()
-    serializer_class = TempUploadSerializer
-    permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
 
-    queryset = TempUpload.objects.all()
-    serializer_class = TempUploadSerializer
-    permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
 
-# class EmployeeDocumentsView(APIView):
+class EmployeeDocumentsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, employee_id):

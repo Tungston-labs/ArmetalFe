@@ -51,10 +51,10 @@ function App() {
 
             <Route path="/table" element={<Table />} />
             <Route path="/holiday" element={<Holiday />} />
-            <Route path="/payroll" element={<Payroll />} />
+            <Route path="/payroll/:id" element={<Payroll />} />
             <Route path="/payrolldetails" element={<PayrollFinal />} />
             <Route path="/superadmin" element={<SuperAdmin />} />
-            <Route path="/view" element={<Viewpage />} />
+            <Route path="/view/:id" element={<Viewpage />} />
             <Route path="/add-company" element={<AddCompany />} />
             <Route path="/employee-visa" element={<Visa />} />
             <Route path="/daily-task" element={<DailyTask />} />

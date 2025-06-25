@@ -133,7 +133,7 @@ const EmployeeList = () => {
 
             employeeList.map((emp, index) => (
               <tr key={emp.id}>
-                <td>{index + 1 + (page - 1) * 10}</td>
+                <td>{index + 1 + (page - 1) * 7}</td>
                 <td>
                   <ProfileImg src={emp.profile_pic || "/profile-placeholder.png"} alt="profile" />
                   {emp.name}
@@ -157,11 +157,45 @@ const EmployeeList = () => {
         </tbody>
       </Table>
 
-      <Pagination>
-        <span onClick={() => page > 1 && setPage(page - 1)}>&larr;</span>
-        <span className="active">{page}</span>
-        {pagination && pagination.next && <span onClick={() => setPage(page + 1)}>&rarr;</span>}
-        </Pagination>
+            <Pagination>
+        <span
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          style={{ cursor: 'pointer', marginRight: '8px' }}
+        >
+          &larr;
+        </span>
+      
+        {[1, 2].map((pageNumber) => {
+          const isActive = pagination?.current_page === pageNumber;
+      
+          return (
+            <span
+              key={pageNumber}
+              onClick={() => setPage(pageNumber)}
+              style={{
+                margin: '0 4px',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                backgroundColor: isActive ? '#003366' : '#e0e0e0',
+                color: isActive ? '#ffffff' : '#000000',
+                fontWeight: isActive ? 'bold' : 'normal',
+              }}
+            >
+              {pageNumber}
+            </span>
+          );
+        })}
+      
+        <span
+          onClick={() =>
+            setPage((prev) => Math.min(prev + 1, 2))
+          }
+          style={{ cursor: 'pointer', marginLeft: '8px' }}
+        >
+          &rarr;
+        </span>
+      </Pagination>
 
         {showDeleteModal && (
   <div style={{

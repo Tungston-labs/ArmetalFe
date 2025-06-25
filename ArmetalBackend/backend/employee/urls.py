@@ -12,12 +12,11 @@ urlpatterns = [
     path('employees/<int:employee_id>/bank-payments/<int:payment_id>/', EmpBankPaymentEmployeeScopedDetailView.as_view(), name='employee-bank-payment-detail'),
 
 
-    # document upload
   # document upload
     path('upload-image/', UploadImageView.as_view(), name='upload-image'),
     path('upload/<int:pk>/', UploadImageDetailView.as_view(), name='upload-image-detail'),
     path('employees/<int:employee_id>/documents/', EmpDocumentCreateFromURLView.as_view(), name='upload-emp-documents'),
-   path('employees/<int:employee_id>/documents/', EmployeeDocumentsView.as_view(), name='employee-documents'),
+    path('employees/<int:employee_id>/documents/', EmployeeDocumentsView.as_view(), name='employee-documents'),
     # path('documents/<int:pk>/', EmpDocumentDetailView.as_view(), name='emp-documents-detail'),
     # list employees of same department
     path('employees/my-department/', EmployeesInMyDepartmentView.as_view(), name='employees-in-my-department'),

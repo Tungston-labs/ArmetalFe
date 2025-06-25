@@ -56,9 +56,9 @@ export const Subtitle = styled.p`
 
 export const FormWrapper = styled.div`
   background: white;
-  padding: 30px;
+  // padding: 30px;
   border-radius: 10px;
-  margin-top: 30px;
+  // margin-top: 30px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 `;
 
@@ -182,7 +182,7 @@ export const Input = styled.input`
 
 export const FormSection = styled.div`
   display: flex;
-  gap: 270px;
+  gap: 100px;
   margin-bottom: 30px;
 
   > div {

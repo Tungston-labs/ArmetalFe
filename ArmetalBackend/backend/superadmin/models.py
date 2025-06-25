@@ -4,6 +4,7 @@ from django.db import models
 from shared.models import TimeStampedModel  
 from django.utils.timezone import now
 from calendar import month_name
+from user.models import User
 
 def generate_password():
     return 'CMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
@@ -77,3 +78,15 @@ class CompanySubscription(TimeStampedModel):
             return 2.0, 'USD'  # Example
         # Add more logic as needed
         return 5.0, 'AED'  # Default fallback
+    
+
+class ImpersonationRequest(models.Model):
+    super_admin = models.ForeignKey(User, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    is_approved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    approved_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('super_admin', 'company')
+

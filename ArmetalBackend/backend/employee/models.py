@@ -121,3 +121,7 @@ class EmpDocument(models.Model):
 
     def __str__(self):
         return f"Documents for {self.employee}"
+
+
+
+        

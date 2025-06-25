@@ -28,6 +28,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     modules: [],
   });
 
+  const [formErrors, setFormErrors] = useState({});
   const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
 
   // Pre-fill form data in edit mode
@@ -62,7 +63,20 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Convert modules array → object
+    const errors = {};
+
+    if (!formData.name.trim()) errors.name = "Company name is required.";
+    if (!formData.address.trim()) errors.address = "Address is required.";
+    if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Valid email is required.";
+    if (!formData.location.trim()) errors.location = "Location is required.";
+    if (!formData.contact_number.trim() || !/^\d{7,15}$/.test(formData.contact_number)) {
+      errors.contact_number = "Valid contact number is required.";
+    }
+    if (formData.modules.length === 0) errors.modules = "Select at least one module.";
+
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
     const modulesObject = {};
     allModules.forEach(mod => {
       modulesObject[mod] = formData.modules.includes(mod);
@@ -104,6 +118,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
                 value={formData.name}
                 onChange={handleChange}
               />
+              {formErrors.name && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.name}</p>}
             </FormField>
 
             <FormField>
@@ -115,6 +130,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
                 value={formData.address}
                 onChange={handleChange}
               />
+              {formErrors.address && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.address}</p>}
             </FormField>
 
             <FormField>
@@ -126,6 +142,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
                 value={formData.email}
                 onChange={handleChange}
               />
+              {formErrors.email && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.email}</p>}
             </FormField>
           </div>
 
@@ -139,6 +156,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
                 value={formData.location}
                 onChange={handleChange}
               />
+              {formErrors.location && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.location}</p>}
             </FormField>
 
             <FormField>
@@ -150,6 +168,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
                 value={formData.contact_number}
                 onChange={handleChange}
               />
+              {formErrors.contact_number && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.contact_number}</p>}
             </FormField>
           </div>
         </FormSection>
@@ -168,6 +187,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
             </CheckboxLabel>
           ))}
         </CheckboxGroup>
+        {formErrors.modules && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.modules}</p>}
 
         <Hr />
 

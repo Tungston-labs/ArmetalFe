@@ -1,58 +1,197 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Container,
-  Header,
-  TitleSection,
-  Title,
-  Subtitle,
-  SearchInput,
-  TableWrapper,
-  Table,
-  Th,
-  Td,
-  Select,
-  TopBar,
-  HRManager
+  Container, Header, TitleSection, Title, Subtitle, SearchInput,
+  TableWrapper, Table, Th, Td, Select, TopBar, HRManager
 } from './Final.Styles';
 import { LuArrowLeft } from "react-icons/lu";
 import { Link } from 'react-router-dom';
 import { GoInfo } from "react-icons/go";
-const data = Array(10).fill({
-  slNo: '001',
-  empID: '1254/125',
-  name: 'Ajay Kumar',
-  job: 'UI/UX designer',
-  joinDate: '12 January 2025',
-  email: 'Ajaykumar@gmail.com',
-  salary: '₹19,000',
-});
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getPayrollData,
+  submitPayrollRecords,
+  updatePayrollStatus
+} from '../../Redux/payrollSlice';
+
+const months = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+const today = new Date();
+const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1);
+const defaultMonth = nextMonthDate.getMonth() + 1;
+const defaultYear = nextMonthDate.getFullYear();
+const years = Array.from({ length: 10 }, (_, i) => defaultYear - 2 + i);
 
 const PayrollTable = () => {
+  const dispatch = useDispatch();
+  const { data, loading, error, totalPages } = useSelector((state) => state.payroll);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
+  const [selectedYear, setSelectedYear] = useState(defaultYear);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+
+  useEffect(() => {
+    if (selectedMonth && selectedYear) {
+      dispatch(getPayrollData({
+        page,
+        search: searchTerm,
+        month: selectedMonth,
+        year: selectedYear
+      }));
+    }
+  }, [dispatch, page, searchTerm, selectedMonth, selectedYear]);
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    setPage(1);
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages) setPage(page + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
+  const handleMonthChange = (e) => {
+    setSelectedMonth(Number(e.target.value));
+    setPage(1);
+  };
+
+  const handleYearChange = (e) => {
+    setSelectedYear(Number(e.target.value));
+    setPage(1);
+  };
+
+  const toggleEmployeeSelect = (id) => {
+    setSelectedEmployees((prev) =>
+      prev.includes(id) ? prev.filter(empId => empId !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedEmployees.length === data.length) {
+      setSelectedEmployees([]);
+    } else {
+      setSelectedEmployees(data.map(emp => emp.employee));
+    }
+  };
+
+  const handleBulkStatusChange = async (e) => {
+    const newStatus = e.target.value;
+    if (!newStatus || selectedEmployees.length === 0) return;
+
+    await dispatch(submitPayrollRecords({
+      month: selectedMonth,
+      year: selectedYear,
+      employee_ids: selectedEmployees,
+      status: newStatus,
+    }));
+
+    e.target.selectedIndex = 0;
+
+    dispatch(getPayrollData({
+      page,
+      search: searchTerm,
+      month: selectedMonth,
+      year: selectedYear,
+    }));
+  };
+
+  const handleSingleStatusChange = async (empId, newStatus) => {
+    await dispatch(updatePayrollStatus({
+      employeeId: empId,
+      month: selectedMonth,
+      year: selectedYear,
+      status: newStatus,
+    }));
+
+    dispatch(getPayrollData({
+      page,
+      search: searchTerm,
+      month: selectedMonth,
+      year: selectedYear,
+    }));
+  };
+
   return (
     <Container>
-      <Header>
-        <SearchInput placeholder="Search by Employee name" />
-         <TopBar>
-                <div />
-                <HRManager>
-                  <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
-                  <span>HR Manager</span>
-                </HRManager>
-              </TopBar>
+      <Header style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <HRManager>
+          <img src="/images/user.jpg" alt="HR Manager" />
+          <span>HR Manager</span>
+        </HRManager>
       </Header>
 
-   <Header>
-  <TitleSection>
- <LuArrowLeft style={{width:"30px", height:30}} />
-    <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
-    <div>
-      <Title>Payroll And Holiday</Title>
-      <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
-    </div>
-  </TitleSection>
-</Header>
+      <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px' }}>
+        <SearchInput
+          placeholder="Search by Employee name"
+          value={searchTerm}
+          onChange={handleSearch}
+          style={{ width: '250px' }}
+        />
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <Select value={selectedMonth} onChange={handleMonthChange}>
+            <option value="">Month</option>
+            {months.map((month, index) => (
+              <option key={month} value={index + 1}>{month}</option>
+            ))}
+          </Select>
+          <Select value={selectedYear} onChange={handleYearChange}>
+            <option value="">Year</option>
+            {years.map(year => (
+              <option key={year} value={year}>{year}</option>
+            ))}
+          </Select>
+        </div>
+      </Header>
 
+      <Header>
+        <TitleSection>
+          <LuArrowLeft style={{ width: "30px", height: 30 }} />
+          <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
+          <div>
+            <Title>Payroll</Title>
+            <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
+          </div>
+        </TitleSection>
+      </Header>
 
+      <div style={{
+        background: '#0546A0',
+        color: '#fff',
+        padding: '10px 20px',
+        margin: '20px 0 10px 0',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderRadius: '8px'
+      }}>
+        <div>
+          <input
+            type="checkbox"
+            checked={selectedEmployees.length === data.length}
+            onChange={handleSelectAll}
+            style={{ marginRight: '10px' }}
+          />
+          <strong>Selected {selectedEmployees.length} Employees</strong>
+        </div>
+        <Select
+          style={{ background: '#fff', color: '#000', minWidth: '120px' }}
+          onChange={handleBulkStatusChange}
+        >
+          <option>Select</option>
+          <option value="OnHold">OnHold</option>
+          <option value="Cancelled">Cancelled</option>
+          <option value="Pending">Pending</option>
+          <option value="Paid">Paid</option>
+        </Select>
+      </div>
 
       <TableWrapper>
         <Table>
@@ -65,40 +204,69 @@ const PayrollTable = () => {
               <Th>Job Position</Th>
               <Th>Joining Date</Th>
               <Th>Email ID</Th>
-              <Th>Salary Details</Th>
+              <Th>Salary</Th>
               <Th>Info</Th>
               <Th>Status</Th>
             </tr>
           </thead>
           <tbody>
-            {data.map((row, index) => (
-              <tr key={index}>
-                <Td><input type="checkbox" /></Td>
-                <Td>{row.slNo}</Td>
-                <Td>{row.empID}</Td>
-                <Td>{row.name}</Td>
-                <Td>{row.job}</Td>
-                <Td>{row.joinDate}</Td>
-                <Td>{row.email}</Td>
-                <Td>{row.salary}</Td>
-              
-<Td>
-  <Link to={`/payroll`}>
-    <GoInfo style={{ cursor: 'pointer' }} />
-  </Link>
-  </Td>
-                <Td>
-                  <Select>
-                    <option>Select</option>
-                    <option>Active</option>
-                    <option>Inactive</option>
-                  </Select>
-                </Td>
-              </tr>
-            ))}
+            {loading ? (
+              <tr><Td colSpan="10">Loading...</Td></tr>
+            ) : error ? (
+              <tr><Td colSpan="10">Error: {error}</Td></tr>
+            ) : data?.length > 0 ? (
+              data.map((emp, index) => (
+                <tr key={emp.id}>
+                  <Td>
+                    <input
+                      type="checkbox"
+                      checked={selectedEmployees.includes(emp.employee)}
+                      onChange={() => toggleEmployeeSelect(emp.employee)}
+                    />
+                  </Td>
+                  <Td>{(page - 1) * 10 + index + 1}</Td>
+                  <Td>{emp.employee_id}</Td>
+                  <Td>{emp.employee_name}</Td>
+                  <Td>{emp.designation}</Td>
+                  <Td>{emp.joining_date}</Td>
+                  <Td>{emp.email}</Td>
+                  <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
+                  <Td>
+                    <Link to={`/payroll/${emp.id}`}>
+                      <GoInfo style={{ cursor: 'pointer' }} />
+                    </Link>
+                  </Td>
+
+                  <Td>
+                    <Select
+                      value={emp.status || ''}
+                      onChange={(e) => handleSingleStatusChange(emp.employee, e.target.value)}
+                    >
+                      <option value="">Select</option>
+                      <option value="OnHold">OnHold</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Paid">Paid</option>
+                    </Select>
+                  </Td>
+                </tr>
+              ))
+            ) : (
+              <tr><Td colSpan="10">No data found</Td></tr>
+            )}
           </tbody>
         </Table>
       </TableWrapper>
+
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+        <button onClick={handlePrevPage} disabled={page === 1} style={{ marginRight: '10px' }}>
+          Previous
+        </button>
+        <span>Page {page} of {totalPages}</span>
+        <button onClick={handleNextPage} disabled={page === totalPages} style={{ marginLeft: '10px' }}>
+          Next
+        </button>
+      </div>
     </Container>
   );
 };

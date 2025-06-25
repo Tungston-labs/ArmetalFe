@@ -1,10 +1,11 @@
 // src/services/leaveServices.js
 import API from './api';
 
-export const fetchAllLeaveRequests = async () => {
-  const response = await API.get('/leave/admin/?status=pending');
+export const fetchAllLeaveRequests = async (page = 1) => {
+  const response = await API.get(`/leave/admin/?status=pending&page=${page}`);
   return response.data;
 };
+
 
 export const fetchLeaveDetailsById = async (id) => {
   const response = await API.get(`/leave/admin/${id}/`);

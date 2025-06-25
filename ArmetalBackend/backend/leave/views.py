@@ -5,12 +5,14 @@ from employee.models import Employee_db
 from user.permissions import IsEmployee,IsHRAdmin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from shared.pagination import CustomPagination
 
 class LeaveRequestCreateListView(generics.ListCreateAPIView):
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsEmployee]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'employee_id']
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return LeaveRequest.objects.filter(employee__user=self.request.user)
@@ -49,6 +51,7 @@ class LeaveRequestAdminListView(generics.ListAPIView):
     filterset_fields = ['status']  # filter by status using ?status=pending
     search_fields = ['employee__name']  # allow name search if needed
     ordering_fields = ['from_date', 'to_date']
+    pagination_class=CustomPagination
 
 
 
