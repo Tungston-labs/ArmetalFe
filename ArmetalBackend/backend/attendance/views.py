@@ -13,7 +13,7 @@ from rest_framework import status
 from rest_framework import generics, filters
 from .serializers import AttendanceSerializer,AttendanceSessionSerializer,AttendanceDetailSerializer
 from rest_framework.generics import RetrieveAPIView
-
+from shared.pagination import CustomPagination
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
 
@@ -61,6 +61,7 @@ class AttendanceAdminListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     filter_backends = [filters.SearchFilter]
     search_fields = ['employee__name', 'employee__employee_id', 'date']
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         queryset = Attendance.objects.all().order_by('-date')

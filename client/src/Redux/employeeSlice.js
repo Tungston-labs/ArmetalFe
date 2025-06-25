@@ -21,16 +21,29 @@ import API from '../services/api';
 export const submitEmployee = createAsyncThunk(
   'employee/submitEmployee',
   async (formData, thunkAPI) => {
-    const { employee } = thunkAPI.getState();
     try {
-      return employee.employeeCreated && employee.employeeId
-        ? await updateEmployee(employee.employeeId, formData)
-        : await createEmployee(formData);
+      const form = new FormData();
+
+      // Convert formData to FormData object
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          form.append(key, value);
+        }
+      });
+
+      if (formData.id) {
+        return await updateEmployee(formData.id, form);
+      } else {
+        return await createEmployee(form); // if creation also expects multipart
+      }
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || 'Something went wrong.');
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || 'Something went wrong.'
+      );
     }
   }
 );
+
 
 // Delete Employee
 export const deleteEmployeeById = createAsyncThunk(
@@ -307,6 +320,8 @@ const employeeSlice = createSlice({
         state.employeeList = action.payload.results;
         state.pagination = {
           count: action.payload.count,
+          total_pages: action.payload.total_pages,
+          current_page: action.payload.current_page,
           next: action.payload.next,
           previous: action.payload.previous,
         };

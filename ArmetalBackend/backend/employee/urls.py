@@ -12,7 +12,6 @@ urlpatterns = [
     path('employees/<int:employee_id>/bank-payments/<int:payment_id>/', EmpBankPaymentEmployeeScopedDetailView.as_view(), name='employee-bank-payment-detail'),
 
 
-    # document upload
   # document upload
     path('employees/<int:employee_id>/documents/', EmployeeDocumentsView.as_view(), name='employee-documents'),
     path('upload-image/', UploadImageView.as_view(), name='upload-temp-image'),

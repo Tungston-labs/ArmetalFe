@@ -71,7 +71,7 @@ export const Value = styled.div`
 `;
 
 export const SectionTitle = styled.h3`
-text-decortion:underline;
+  text-decoration:underline;
   font-size: 1.1rem;
   margin-top: 2rem;
   border-bottom: 1px solid #ccc;

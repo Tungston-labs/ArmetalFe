@@ -133,7 +133,7 @@ const EmployeeList = () => {
 
             employeeList.map((emp, index) => (
               <tr key={emp.id}>
-                <td>{index + 1 + (page - 1) * 10}</td>
+                <td>{index + 1 + (page - 1) * 7}</td>
                 <td>
                   <ProfileImg src={emp.profile_pic || "/profile-placeholder.png"} alt="profile" />
                   {emp.name}
@@ -142,7 +142,7 @@ const EmployeeList = () => {
                 <td>{emp.email}</td>
                 <td>{emp.visa_expiry_date}</td>
                 
-                <td><FaInfoCircle /></td>
+                <td onClick={() => navigate(`/ViewBasic/${emp.id}`)}><FaInfoCircle /></td>
                 <td>
   <FaTrash color="red" style={{ cursor: 'pointer' }} onClick={() => handleDeleteClick(emp.id)} />
 </td>
@@ -155,11 +155,47 @@ const EmployeeList = () => {
         </tbody>
       </Table>
 
-      <Pagination>
-        <span onClick={() => page > 1 && setPage(page - 1)}>&larr;</span>
-        <span className="active">{page}</span>
-        {pagination && pagination.next && <span onClick={() => setPage(page + 1)}>&rarr;</span>}
-        </Pagination>
+      {pagination?.total_pages > 1 && (
+  <Pagination>
+    <span
+      onClick={() => page > 1 && setPage(page - 1)}
+      style={{ cursor: 'pointer', marginRight: '8px' }}
+    >
+      &larr;
+    </span>
+
+    {Array.from({ length: pagination.total_pages }, (_, i) => {
+      const pageNumber = i + 1;
+      const isActive = page === pageNumber;
+      return (
+        <span
+          key={pageNumber}
+          onClick={() => setPage(pageNumber)}
+          style={{
+            margin: '0 4px',
+            padding: '6px 10px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            backgroundColor: isActive ? '#003366' : '#e0e0e0',
+            color: isActive ? '#fff' : '#000',
+            fontWeight: isActive ? 'bold' : 'normal',
+          }}
+        >
+          {pageNumber}
+        </span>
+      );
+    })}
+
+    <span
+      onClick={() => page < pagination.total_pages && setPage(page + 1)}
+      style={{ cursor: 'pointer', marginLeft: '8px' }}
+    >
+      &rarr;
+    </span>
+  </Pagination>
+)}
+
+
 
         {showDeleteModal && (
   <div style={{

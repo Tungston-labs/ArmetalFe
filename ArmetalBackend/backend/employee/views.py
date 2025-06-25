@@ -8,9 +8,9 @@ from .models import Employee_db
 from .serializers import EmployeeSerializer,EmpDocumentSerializer
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-from shared.pagination import PageNumberPagination
+from shared.pagination import CustomPagination
 
-# 1. List and Create
+# BASIC DETAILS
 
 
 
@@ -20,7 +20,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'employee_id']
-    pagination_class = PageNumberPagination
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -36,25 +36,16 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         employee = serializer.save()
-
-        # Check if department exists
-        if not employee.department:
-            return Response(
-                {"error": "Department is required or invalid."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         company = employee.department.company
-        if company:
-            company.number_of_employees = (company.number_of_employees or 0) + 1
-            company.save()
+        company.number_of_employees = (company.number_of_employees or 0) + 1
+        company.save()
 
         return Response({
             "message": "Employee created successfully.",
             "employee": EmployeeSerializer(employee).data,
             "login_credentials": {
                 "username": employee.employee_id,
-                "password": employee.password  # ⚠️ Show only once
+                "password": employee.password  # ⚠️ Only show once
             }
         }, status=status.HTTP_201_CREATED)
 
@@ -74,7 +65,8 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-# views.py
+# BANK DETAILS
+
 from rest_framework import generics, permissions
 from .models import EmpBankPaymentModel, Employee_db
 from .serializers import EmpBankPaymentSerializer
@@ -97,16 +89,10 @@ class EmpBankPaymentCreateListView(generics.ListCreateAPIView):
 class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EmpBankPaymentSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
+    lookup_field = 'employee_id' 
 
-    def get_object(self):
-        employee_id = self.kwargs.get('employee_id')
-        payment_id = self.kwargs.get('payment_id')
 
-        return get_object_or_404(
-            EmpBankPaymentModel,
-            id=payment_id,
-            employee__id=employee_id
-        )
+
 
 
 # views.py
@@ -276,6 +262,16 @@ class EmployeeDocumentsView(APIView):
 #     serializer_class = EmpDocumentSerializer
 #     permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
 
+
+from rest_framework import generics, permissions
+from .models import EmpDocument
+from .serializers import EmpDocumentSerializer
+
+class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EmpDocument.objects.all()
+    serializer_class = EmpDocumentSerializer
+    permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
+    lookup_field = 'employee_id' 
 
 # class EmployeeDocumentListView(generics.ListAPIView):
 #     serializer_class = EmpDocumentSerializer

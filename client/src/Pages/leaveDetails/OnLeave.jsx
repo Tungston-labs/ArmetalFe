@@ -137,18 +137,45 @@ export default function EmployeeAttendance() {
       </Table>
 
       <Pagination>
-        <span onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>&larr;</span>
-        {Array.from({ length: pagination.total_pages || 1 }, (_, index) => (
-          <span
-            key={index}
-            className={pagination.current_page === index + 1 ? 'active' : ''}
-            onClick={() => setPage(index + 1)}
-          >
-            {index + 1}
-          </span>
-        ))}
-        <span onClick={() => setPage((prev) => Math.min(prev + 1, pagination.total_pages || 1))}>&rarr;</span>
-      </Pagination>
+  <span
+    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+    style={{ cursor: 'pointer', marginRight: '8px' }}
+  >
+    &larr;
+  </span>
+
+  {[1, 2].map((pageNumber) => {
+    const isActive = pagination?.current_page === pageNumber;
+
+    return (
+      <span
+        key={pageNumber}
+        onClick={() => setPage(pageNumber)}
+        style={{
+          margin: '0 4px',
+          padding: '6px 12px',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          backgroundColor: isActive ? '#003366' : '#e0e0e0',
+          color: isActive ? '#ffffff' : '#000000',
+          fontWeight: isActive ? 'bold' : 'normal',
+        }}
+      >
+        {pageNumber}
+      </span>
+    );
+  })}
+
+  <span
+    onClick={() =>
+      setPage((prev) => Math.min(prev + 1, 2))
+    }
+    style={{ cursor: 'pointer', marginLeft: '8px' }}
+  >
+    &rarr;
+  </span>
+</Pagination>
+
     </Container>
   );
 }

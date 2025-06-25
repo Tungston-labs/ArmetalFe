@@ -10,6 +10,8 @@ import employeesReducer from '../Redux/employeeSlice'
 import leaveReducer from '../Redux/leaveSlice'
 import attendanceReducer from '../Redux/attendanceSlice'
 import dashboardReducer from '../Redux/dashboardSlice'
+import payrollReducer from '../Redux/payrollSlice'
+
 
 
 
@@ -27,6 +29,7 @@ export const store = configureStore({
     leave: leaveReducer,
     attendance: attendanceReducer,
     dashboard: dashboardReducer,
+    payroll: payrollReducer,
 
   },
 });

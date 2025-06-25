@@ -216,7 +216,7 @@ const DepartmentDetail = () => {
                 <td>{emp.designation}</td>
                 <td>{department.name}</td>
                 <td>
-                  <IconButton onClick={() => navigate('/view-basic')}>
+                  <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`)}>
                     <FaInfoCircle />
                   </IconButton>
 

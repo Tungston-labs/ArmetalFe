@@ -15,10 +15,10 @@ import {
   Avatar,
   ViewMoreButton
 } from '../dashboard/Dashboard.styles';
-
+import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const dispatch = useDispatch();
-
+const navigate = useNavigate();
   const {
     list: departments,
     loading: deptLoading,
@@ -96,9 +96,10 @@ const Dashboard = () => {
             ))
           )}
 
-          <ViewMoreButton onClick={() => window.location.href = "/department"}>
-            <span>➜</span> View more
-          </ViewMoreButton>
+<ViewMoreButton onClick={() => navigate('/department')}>
+  <span>➜</span> View more
+</ViewMoreButton>
+
         </CardGrid>
       </DepartmentSection>
     </DashboardContainer>
