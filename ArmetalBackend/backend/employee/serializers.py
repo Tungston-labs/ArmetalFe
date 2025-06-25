@@ -47,11 +47,11 @@ class TempUploadSerializer(serializers.ModelSerializer):
         model = TempUpload
         fields = ['id', 'file']
 
-
 class EmpDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmpDocument
         fields = [
+            "employee",
             'passport_image1_url',
             'passport_image2_url',
             'insurance_image_url',
@@ -59,9 +59,4 @@ class EmpDocumentSerializer(serializers.ModelSerializer):
             'contract_urls',
             'certificate_urls'
         ]
-
-# combined serializer for basic details+bank
-
-
-
-
+        read_only_fields = ['employee']

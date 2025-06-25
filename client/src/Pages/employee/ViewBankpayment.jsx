@@ -30,7 +30,7 @@ import Table from "../../Components/Table";
 import { useParams, NavLink, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmployeeById, fetchAllBankPaymentsThunk } from "../../Redux/employeeSlice";
-
+import { useNavigate } from "react-router-dom";
 const ViewBankPayment = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -54,7 +54,7 @@ const ViewBankPayment = () => {
   const [salaryIncrement, setSalaryIncrement] = useState("");
   const [housingAllowance, setHousingAllowance] = useState("");
   const [transportation, setTransportation] = useState("");
-
+const navigate = useNavigate();
   const [errors, setErrors] = useState({});
 
   // Load employee & bank payments
@@ -87,7 +87,7 @@ const ViewBankPayment = () => {
     <Container>
       <Header>
         <HeaderWrapper>
-          <div style={{ width: "10%" }}>
+          <div style={{ width: "10%", }}>
             <img src="/images/employee.png" alt="Icon" style={{ height: "50px" }} />
           </div>
           <TextGroup>

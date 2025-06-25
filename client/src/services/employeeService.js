@@ -151,13 +151,14 @@ export const uploadTempImage = async (file) => {
 
 // 2. Save employee document URLs
 export const saveEmployeeDocuments = async (employeeId, data) => {
-  const res = await API.post(`/employees/${employeeId}/documents/`, payload);
+  const res = await API.post(`/employees/${employeeId}/documents/`, data);
+  console.log("object",res)
   return res.data;
 };
 
 // 3. Get employee documents
 export const fetchEmployeeDocuments = async (employeeId) => {
-  const res = await API.post(`/employees/${employeeId}/documents/`,data);
+  const res = await API.get(`/employees/${employeeId}/documents/`);
   return res.data;
 };
 
@@ -171,4 +172,10 @@ export const deleteEmployeeDocument = async (docId) => {
 export const updateEmployeeDocument = async (docId, data) => {
   const res = await API.put(`/documents/${docId}/`, data);
   return res.data;
+};
+ export const updateEmployeeDocuments = async (id, formData) => {
+  const response = await API.patch(`/employees/${id}/documents/`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return response.data;
 };

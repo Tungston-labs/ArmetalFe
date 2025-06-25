@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import EmployeesInMyDepartmentView,EmployeeListCreateView,EmployeeRetrieveUpdateDestroyView,EmpBankPaymentCreateListView,UploadImageView,EmpDocumentCreateFromURLView,DashboardSummaryView,UploadImageDetailView,EmpBankPaymentEmployeeScopedDetailView,EmployeeDocumentsView
+from .views import EmployeesInMyDepartmentView,EmployeeListCreateView,EmployeeRetrieveUpdateDestroyView,EmpBankPaymentCreateListView,UploadImageView,DashboardSummaryView,UploadImageDetailView,EmpBankPaymentEmployeeScopedDetailView,EmployeeDocumentsView
 
 urlpatterns = [
     path('employees/', EmployeeListCreateView.as_view(), name='employee-list-create'),
@@ -13,10 +13,10 @@ urlpatterns = [
 
 
   # document upload
-    path('upload-image/', UploadImageView.as_view(), name='upload-image'),
-    path('upload/<int:pk>/', UploadImageDetailView.as_view(), name='upload-image-detail'),
-    path('employees/<int:employee_id>/documents/', EmpDocumentCreateFromURLView.as_view(), name='upload-emp-documents'),
     path('employees/<int:employee_id>/documents/', EmployeeDocumentsView.as_view(), name='employee-documents'),
+    path('upload-image/', UploadImageView.as_view(), name='upload-temp-image'),
+    path('upload-image/<int:pk>/', UploadImageDetailView.as_view(), name='upload-image-detail'),
+
     # path('documents/<int:pk>/', EmpDocumentDetailView.as_view(), name='emp-documents-detail'),
     # list employees of same department
     path('employees/my-department/', EmployeesInMyDepartmentView.as_view(), name='employees-in-my-department'),
