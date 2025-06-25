@@ -49,7 +49,7 @@ export default function BankPaymentForm() {
       setSwiftCode(savedBankForm.swift_code || '');
       setPaymentMode(savedBankForm.payment_mode || '');
       setAccountNumber(savedBankForm.account_number || '');
-      setUanNumber(savedBankForm.uan_number || '');
+      setUanNumber(savedBankForm.  uan_epf_number || '');
       setPanNumber(savedBankForm.pan_number || '');
       setTaxRegime(savedBankForm.tax_regime || '');
       setTdsAmount(savedBankForm.tds_deduction_amount?.toString() || '');
@@ -69,7 +69,7 @@ export default function BankPaymentForm() {
       setSwiftCode(bankPayment.swift_code || '');
       setPaymentMode(bankPayment.payment_mode || '');
       setAccountNumber(bankPayment.account_number || '');
-      setUanNumber(bankPayment.uan_number || '');
+      setUanNumber(bankPayment.uan_epf_number || '');
       setPanNumber(bankPayment.pan_number || '');
       setTaxRegime(bankPayment.tax_regime || '');
       setTdsAmount(bankPayment.tds_deduction?.toString() || '');
@@ -112,7 +112,7 @@ export default function BankPaymentForm() {
   swift_code: swiftCode,
   payment_mode: paymentMode,
   account_number: accountNumber,
-  uan_number: uanNumber,
+  uan_epf_number : uanNumber,
   pan_number: panNumber,
   tax_regime: taxRegime,
   tds_deduction_amount: parseFloat(tdsAmount),

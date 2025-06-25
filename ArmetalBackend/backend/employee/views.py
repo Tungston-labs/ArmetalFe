@@ -118,7 +118,7 @@ from django.shortcuts import get_object_or_404
 from django.core.files.storage import default_storage
 
 from .models import EmpDocument, Employee_db
-from .serializers import EmpDocumentSerializer
+from .serializers import EmpDocumentSerializer,TempUploadSerializer
 
 
 
@@ -159,7 +159,7 @@ class UploadImageDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
@@ -169,15 +169,13 @@ from .serializers import EmpDocumentSerializer
 
 class EmployeeDocumentsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser,JSONParser)
 
     def get(self, request, employee_id):
-        try:
-            emp_doc = EmpDocument.objects.get(employee_id=employee_id)
-            serializer = EmpDocumentSerializer(emp_doc)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except EmpDocument.DoesNotExist:
-            return Response({"detail": "No document found."}, status=status.HTTP_404_NOT_FOUND)
+        employee = get_object_or_404(Employee_db, id=employee_id)
+        emp_doc, created = EmpDocument.objects.get_or_create(employee=employee)
+        serializer = EmpDocumentSerializer(emp_doc)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, employee_id):
         employee = get_object_or_404(Employee_db, id=employee_id)
@@ -201,6 +199,10 @@ class EmployeeDocumentsView(APIView):
         except EmpDocument.DoesNotExist:
             return Response({"detail": "Document not found for PATCH."}, status=status.HTTP_404_NOT_FOUND)
 
+
+        # ✅ DEBUG: Print incoming files and data
+        print("FILES:", request.FILES)
+        print("DATA:", request.data)
         data = request.data.copy()
         for key in request.FILES:
             data.setlist(key, request.FILES.getlist(key))

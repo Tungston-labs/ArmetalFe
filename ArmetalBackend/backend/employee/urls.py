@@ -14,7 +14,7 @@ urlpatterns = [
 
     # document upload
   # document upload
-path('employees/<int:employee_id>/documents/', EmployeeDocumentsView.as_view(), name='employee-documents'),
+    path('employees/<int:employee_id>/documents/', EmployeeDocumentsView.as_view(), name='employee-documents'),
     path('upload-image/', UploadImageView.as_view(), name='upload-temp-image'),
     path('upload-image/<int:pk>/', UploadImageDetailView.as_view(), name='upload-image-detail'),
 

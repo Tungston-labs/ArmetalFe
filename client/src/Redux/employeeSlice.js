@@ -267,11 +267,18 @@ const employeeSlice = createSlice({
         state.updateError = action.payload;
       })
 
-      .addCase(submitBankPayment.fulfilled, (state, action) => {
+          .addCase(submitBankPayment.fulfilled, (state, action) => {
         const updated = action.payload;
+        if (!Array.isArray(state.employeeBankPayments)) {
+          state.employeeBankPayments = []; // fallback
+        }
+
         const index = state.employeeBankPayments.findIndex(p => p.id === updated.id);
-        if (index !== -1) state.employeeBankPayments[index] = updated;
-        else state.employeeBankPayments.push(updated);
+        if (index !== -1) {
+          state.employeeBankPayments[index] = updated;
+        } else {
+          state.employeeBankPayments.push(updated);
+        }
       })
       .addCase(deleteBankPayment.fulfilled, (state, action) => {
         state.employeeBankPayments = state.employeeBankPayments.filter(p => p.id !== action.payload);

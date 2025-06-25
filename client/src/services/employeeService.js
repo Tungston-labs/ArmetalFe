@@ -151,7 +151,8 @@ export const uploadTempImage = async (file) => {
 
 // 2. Save employee document URLs
 export const saveEmployeeDocuments = async (employeeId, data) => {
-  const res = await API.post(`/employees/${employeeId}/documents/`, payload);
+  const res = await API.post(`/employees/${employeeId}/documents/`, data);
+  console.log("object",res)
   return res.data;
 };
 

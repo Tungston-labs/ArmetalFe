@@ -87,7 +87,7 @@ const navigate = useNavigate();
     <Container>
       <Header>
         <HeaderWrapper>
-          <div style={{ width: "10%" }}>
+          <div style={{ width: "10%", }}>
             <img src="/images/employee.png" alt="Icon" style={{ height: "50px" }} />
           </div>
           <TextGroup>

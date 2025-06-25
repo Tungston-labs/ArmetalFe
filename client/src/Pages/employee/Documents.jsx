@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {
-  Container, Header, RoleInfo, Stepper, Step, SectionTitle,
+  Container, Header, RoleInfo, SectionTitle,
   UploadSection, LabelRow, UploadButton, ImagePreviewRow,
   ImageBox, ButtonGroup, Button, Title, Subtitle, Hr, InlineUploadRow
 } from './Document.Styles';
@@ -9,16 +9,19 @@ import { LuCirclePlus } from "react-icons/lu";
 import { FaTrash } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import SuccessModal from '../../Components/Succes';
-import { uploadTempImage } from '../../services/employeeService';
 import { useSelector, useDispatch } from 'react-redux';
-import { submitDocumentsThunk, addDocumentUrl, uploadImageThunk } from '../../Redux/employeeSlice';
+import {
+  submitDocumentsThunk,
+  addDocumentUrl,
+  uploadImageThunk
+} from '../../Redux/employeeSlice';
 
 export default function DocumentUploadForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const employeeId = useSelector((state) => state.employee.employeeId);
-  const documentUrls = useSelector((state) => state.employee.documentUrls); // assuming this holds image URLs
+  const documentUrls = useSelector((state) => state.employee.documentUrls);
 
   const [selectedFiles, setSelectedFiles] = useState({
     passport: [],
@@ -59,107 +62,111 @@ export default function DocumentUploadForm() {
     });
   };
 
-  const handleSaveImages = async (type) => {
-    const files = selectedFiles[type];
-    if (files.length === 0) return;
-
-    try {
-      const uploaded = await Promise.all(
-        files.map(file => dispatch(uploadImage(file)).unwrap())
-      );
-
-      uploaded.forEach(url => {
-        dispatch(addDocumentUrl({ type, url }));
-      });
-
-      setSelectedFiles(prev => ({
-        ...prev,
-        [type]: [],
-      }));
-    } catch (err) {
-      alert("Upload failed: " + err.message);
-    }
-  };
-
   const handleSubmit = async () => {
-    const payload = {
-    passport_image1_url: documentUrls.passport[0] || "",
-    passport_image2_url: documentUrls.passport[1] || "",
-    insurance_image_url: documentUrls.insurance[0] || "",
-    work_permit_urls: documentUrls.workPermit || [],
-    contract_urls: documentUrls.contract || [],
-    certificate_urls: documentUrls.certificate || []
-  };
+    console.log("📤 Submit button clicked");
+
     try {
+      const uploadAndGetUrls = async (type) => {
+        const files = selectedFiles[type] || [];
+        if (files.length === 0) return documentUrls[type] || [];
+
+        const uploadedUrls = await Promise.all(
+          files.map(file => dispatch(uploadImageThunk(file)).unwrap())
+        );
+
+        uploadedUrls.forEach(url => {
+          dispatch(addDocumentUrl({ type, url }));
+        });
+
+        return [...(documentUrls[type] || []), ...uploadedUrls];
+      };
+
+      const passportUrls = await uploadAndGetUrls('passport');
+      const insuranceUrls = await uploadAndGetUrls('insurance');
+      const workPermitUrls = await uploadAndGetUrls('workPermit');
+      const contractUrls = await uploadAndGetUrls('contract');
+      const certificateUrls = await uploadAndGetUrls('certificate');
+
+      const payload = {
+        passport_image1_url: passportUrls[0] || "",
+        passport_image2_url: passportUrls[1] || "",
+        insurance_image_url: insuranceUrls[0] || "",
+        work_permit_urls: workPermitUrls,
+        contract_urls: contractUrls,
+        certificate_urls: certificateUrls
+      };
+
+      console.log("Sending documents payload:", payload);
+
       await dispatch(submitDocumentsThunk({ employeeId, documents: payload })).unwrap();
       setShowSuccessModal(true);
+
+      // Clear local selected files
+      setSelectedFiles({
+        passport: [],
+        insurance: [],
+        workPermit: [],
+        contract: [],
+        certificate: [],
+      });
     } catch (err) {
+      console.error("❌ Document submission failed:", err);
       alert("Final submission failed: " + err.message);
     }
   };
 
- const renderPreviewImages = (type) => {
-  const localFiles = selectedFiles[type].map((file, index) => (
-    <ImageBox key={`local-${index}`} style={{ position: 'relative' }}>
-      <img
-        src={URL.createObjectURL(file)}
-        alt="Preview"
-        onLoad={e => URL.revokeObjectURL(e.target.src)}
-      />
-      <FaTrash
-        onClick={() => handleDeleteImage(type, index)}
-        style={{
-          position: 'absolute',
-          top: '5px',
-          right: '5px',
-          cursor: 'pointer',
-          color: 'red',
-          background: 'white',
-          borderRadius: '50%',
-          padding: '5px',
-          fontSize: '14px',
-        }}
-      />
-    </ImageBox>
-  ));
+  const renderPreviewImages = (type) => {
+    const localFiles = selectedFiles[type].map((file, index) => (
+      <ImageBox key={`local-${index}`} style={{ position: 'relative' }}>
+        <img
+          src={URL.createObjectURL(file)}
+          alt="Preview"
+          onLoad={e => URL.revokeObjectURL(e.target.src)}
+        />
+        <FaTrash
+          onClick={() => handleDeleteImage(type, index)}
+          style={{
+            position: 'absolute',
+            top: '5px',
+            right: '5px',
+            cursor: 'pointer',
+            color: 'red',
+            background: 'white',
+            borderRadius: '50%',
+            padding: '5px',
+            fontSize: '14px',
+          }}
+        />
+      </ImageBox>
+    ));
 
-  const uploadedUrls = (documentUrls[type] || []).map((url, index) => (
-    <ImageBox key={`uploaded-${index}`} style={{ position: 'relative' }}>
-      <img src={url} alt="Uploaded" />
-    </ImageBox>
-  ));
+    const uploadedUrls = (documentUrls[type] || []).map((url, index) => (
+      <ImageBox key={`uploaded-${index}`} style={{ position: 'relative' }}>
+        <img src={url} alt="Uploaded" />
+      </ImageBox>
+    ));
 
-  return [...uploadedUrls, ...localFiles];
-};
-
+    return [...uploadedUrls, ...localFiles];
+  };
 
   const renderUploadBlock = (label, key) => (
-<UploadSection key={key}>
-  <LabelRow>{label}</LabelRow>
-  <InlineUploadRow>
-    <UploadButton onClick={() => handleUploadClick(key)}>
-      <LuCirclePlus /> Upload images
-    </UploadButton>
-    <input
-      type="file"
-      multiple
-      accept="image/*"
-      ref={fileInputRefs[key]}
-      style={{ display: 'none' }}
-      onChange={(e) => handleFileChange(e, key)}
-    />
-    <ImagePreviewRow>{renderPreviewImages(key)}</ImagePreviewRow>
-  </InlineUploadRow>
-
-  {selectedFiles[key].length > 0 && (
-    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-      <Button onClick={() => handleSaveImages(key)}>
-        Save {label} Images
-      </Button>
-    </div>
-  )}
-</UploadSection>
-
+    <UploadSection key={key}>
+      <LabelRow>{label}</LabelRow>
+      <InlineUploadRow>
+        <UploadButton onClick={() => handleUploadClick(key)}>
+          <LuCirclePlus /> Upload images
+        </UploadButton>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          ref={fileInputRefs[key]}
+          style={{ display: 'none' }}
+          onChange={(e) => handleFileChange(e, key)}
+        />
+        <ImagePreviewRow>{renderPreviewImages(key)}</ImagePreviewRow>
+      </InlineUploadRow>
+    </UploadSection>
   );
 
   return (

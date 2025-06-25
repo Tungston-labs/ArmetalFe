@@ -93,4 +93,5 @@ export const TwoColumnRows= styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
   width:100%;
+  margin-top:10px;
 `;
