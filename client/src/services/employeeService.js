@@ -3,6 +3,8 @@ import API from './api';
 
 // 1. Create employee
 export const createEmployee = async (formData) => {
+  console.log('submitting data',formData);
+  
   try {
     const res = await API.post("/employees/", formData, {
       headers: {

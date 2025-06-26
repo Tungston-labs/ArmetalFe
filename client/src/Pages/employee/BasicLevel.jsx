@@ -148,7 +148,7 @@ export default function AddEmployeeForm() {
 
       <Hr />
 
-      <div style={{ width: '99%', justifyContent: 'center', display: 'flex', padding: '20px' }}>
+      <div style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '20px' }}>
         <div style={{ width: '50%' }}>
           <Multistep currentStep={currentStep} steps={stepTitles} />
         </div>

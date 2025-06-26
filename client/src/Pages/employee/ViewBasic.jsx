@@ -61,10 +61,11 @@ const ViewBasic = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    dispatch(submitEmployee(formData));
-    setEditMode(false);
-  };
+ const handleSubmit = async () => {
+  await dispatch(submitEmployee(formData));
+  await dispatch(getEmployeeById(id)); // refresh Redux state after submit
+  setEditMode(false);
+};
 
   if (loading || !formData) return <p>Loading employee details...</p>;
 
@@ -260,9 +261,11 @@ const ViewBasic = () => {
           />
         </Column>
 
-        <Button onClick={editMode ? handleSubmit : null}>
-          {editMode ? "Submit" : "Next"}
-        </Button>
+       
+        {editMode && (
+  <Button onClick={handleSubmit}>Submit</Button>
+)}
+        
       </Section>
     </Container>
   );
