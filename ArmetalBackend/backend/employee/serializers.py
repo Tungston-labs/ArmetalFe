@@ -17,10 +17,9 @@ class SafeDateField(serializers.DateField):
 class EmployeeSerializer(serializers.ModelSerializer):
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
-    visa_expiry = SafeDateField(required=False)
-    passport_expiry = SafeDateField(required=False)
-    contract_start = SafeDateField(required=False)
-    contract_end = SafeDateField(required=False)
+    visa_expiry_date = SafeDateField(required=False)
+  
+ 
 
     department_id = serializers.PrimaryKeyRelatedField(
         source='department',

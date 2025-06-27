@@ -34,7 +34,7 @@ export const submitEmployee = createAsyncThunk(
       if (formData.id) {
         return await updateEmployee(formData.id, form);
       } else {
-        return await createEmployee(form); // if creation also expects multipart
+        return await createEmployee(formData); // if creation also expects multipart
       }
     } catch (err) {
       return thunkAPI.rejectWithValue(
