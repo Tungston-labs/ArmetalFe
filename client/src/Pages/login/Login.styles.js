@@ -49,10 +49,11 @@ export const RightPanel = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  
 `;
 
 export const FormBox = styled.div`
-  max-width: 300px;
+  max-width: 400px;
   width: 100%;
 `;
 
@@ -125,4 +126,24 @@ export const CustomLink = styled.p`
   font-size: 22px;
   text-decoration: none;
   cursor: pointer;
+`;
+export const CodeInputWrapper = styled.div`
+  display: flex;
+  gap: 30px;
+  margin: 20px 0;
+`;
+
+export const CodeInputBox = styled.input`
+  width: 50px;
+  height: 60px;
+  font-size: 24px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+
+  &:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 2px #007bff;
+  }
 `;
