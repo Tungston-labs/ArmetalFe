@@ -4,11 +4,12 @@ from rest_framework import generics, status, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from user.permissions import IsHRAdmin,IsEmployee
-from .models import Employee_db
+from .models import Employee_db,TempUpload
 from .serializers import EmployeeSerializer,EmpDocumentSerializer
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from shared.pagination import CustomPagination
+from rest_framework import serializers
 
 # BASIC DETAILS
 
