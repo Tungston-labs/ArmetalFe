@@ -42,7 +42,7 @@ isEditMode=false,
   handleNext,
   errors = {}
 }) => {
-  if (readOnly && records.length > 0) {
+  if (!isEditMode && records.length > 0) {
     return (
       <Container>
         <Header><h2>Bank & Payment History</h2></Header>

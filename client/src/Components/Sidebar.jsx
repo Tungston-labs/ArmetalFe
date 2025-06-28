@@ -8,14 +8,13 @@ import axios from 'axios';
 import { useNavigate, } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
-  SidebarContainer,
-  TopSection,
+  SidebarContainer, 
   Logo,
   Nav,
   BottomSection,
   LogoutButton,
   ToggleButton,
-  CustomLink,
+  CustomLink,TopSection,
   ChangePasswordLink
 } from './Sidebar.styles';
 

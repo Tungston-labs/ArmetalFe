@@ -224,13 +224,13 @@ const ViewBasic = () => {
             onChange={handleChange}
             readOnly={!editMode}
           />
-          <Input
+          {/* <Input
             name="work_permit"
             placeholder="Work Permit"
             value={formData.work_permit || ""}
             onChange={handleChange}
             readOnly={!editMode}
-          />
+          /> */}
           <Input
             name="visa_expiry_date"
             placeholder="Visa Expiry Date"
@@ -245,13 +245,13 @@ const ViewBasic = () => {
             onChange={handleChange}
             readOnly={!editMode}
           />
-          <Input
+          {/* <Input
             name="contract_id"
             placeholder="Employment Contract"
             value={formData.contract_id || ""}
             onChange={handleChange}
             readOnly={!editMode}
-          />
+          /> */}
           <Input
             name="insurance_number"
             placeholder="Insurance Number"

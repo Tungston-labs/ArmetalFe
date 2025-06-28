@@ -63,29 +63,26 @@ export const submitBankPayment = createAsyncThunk(
   'employee/submitBankPayment',
   async ({ employeeId, data, paymentId = null, bankProofImage = null }, thunkAPI) => {
     try {
-      let payloadToSend;
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
 
       if (bankProofImage) {
-        payloadToSend = new FormData();
-        Object.entries(data).forEach(([key, value]) => {
-          payloadToSend.append(key, value);
-        });
-        payloadToSend.append('bank_proof_image', bankProofImage);
-      } else {
-        payloadToSend = data;
+        formData.append('bank_proof_image', bankProofImage);
       }
 
       const response = paymentId
-        ? await updateBankPayment(employeeId, paymentId, payloadToSend, bankProofImage)
-        : await createBankPayment(employeeId, payloadToSend, bankProofImage);
+        ? await updateBankPayment(employeeId, paymentId, formData)
+        : await createBankPayment(employeeId, formData);
 
-      if (!paymentId) thunkAPI.dispatch(setBankPaymentId(response.id));
       return response;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || 'Error saving bank payment.');
+      return thunkAPI.rejectWithValue(err|| 'Error saving bank payment.');
     }
   }
 );
+
 
 
 
