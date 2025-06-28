@@ -61,11 +61,24 @@ export const deleteEmployeeById = createAsyncThunk(
 // Submit Bank Payment
 export const submitBankPayment = createAsyncThunk(
   'employee/submitBankPayment',
-  async ({ employeeId, data, paymentId = null }, thunkAPI) => {
+  async ({ employeeId, data, paymentId = null, bankProofImage = null }, thunkAPI) => {
     try {
+      let payloadToSend;
+
+      if (bankProofImage) {
+        payloadToSend = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+          payloadToSend.append(key, value);
+        });
+        payloadToSend.append('bank_proof_image', bankProofImage);
+      } else {
+        payloadToSend = data;
+      }
+
       const response = paymentId
-        ? await updateBankPayment(employeeId, paymentId, data)
-        : await createBankPayment(employeeId, data);
+        ? await updateBankPayment(employeeId, paymentId, payloadToSend, bankProofImage)
+        : await createBankPayment(employeeId, payloadToSend, bankProofImage);
+
       if (!paymentId) thunkAPI.dispatch(setBankPaymentId(response.id));
       return response;
     } catch (err) {
@@ -73,6 +86,8 @@ export const submitBankPayment = createAsyncThunk(
     }
   }
 );
+
+
 
 // Delete Bank Payment
 export const deleteBankPayment = createAsyncThunk(

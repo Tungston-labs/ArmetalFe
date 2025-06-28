@@ -13,7 +13,6 @@ import {
   Button,
   TwoColumnRows
 } from './Table.Styles';
-
 const ErrorMsg = ({ msg }) =>
   msg ? <p style={{ color: 'red', fontSize: '0.75rem', marginTop: '4px' }}>{msg}</p> : null;
 
@@ -21,9 +20,8 @@ const Table = ({
   // Read-only props
   readOnly = false,
   records = [],
+isEditMode=false,
 
-  // Editable form props
-  isEditMode = false, // 👈 New prop: true for edit, false for new
 
   bankName, setBankName,
   swiftCode, setSwiftCode,
@@ -38,6 +36,7 @@ const Table = ({
   salaryIncrement, setSalaryIncrement,
   housingAllowance, setHousingAllowance,
   transportation, setTransportation,
+
   handleSubmit,
   handlePrevious,
   handleNext,
@@ -197,22 +196,18 @@ const Table = ({
           </TwoColumnRows>
         </Row>
 
-     <ButtonGroup>
+  <ButtonGroup>
   {!isEditMode ? (
-    <>
-      <Button secondary type="button" onClick={handlePrevious}>
-        Previous
-      </Button>
-      <Button type="button" onClick={handleNext}>
-        Next
-      </Button>
-    </>
+    <Button type="button" onClick={handleNext}>
+      Next
+    </Button>
   ) : (
     <Button type="button" onClick={handleSubmit}>
-      Submit
+      Save
     </Button>
   )}
 </ButtonGroup>
+
       </FormSection>
     </Container>
   );

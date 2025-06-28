@@ -81,15 +81,22 @@ class EmpBankPaymentCreateListView(generics.ListCreateAPIView):
         employee_id = self.kwargs.get('employee_id')
         return EmpBankPaymentModel.objects.filter(employee__id=employee_id)
 
-    def perform_create(self, serializer):
-        employee_id = self.kwargs.get('employee_id')
-        employee = get_object_or_404(Employee_db, id=employee_id)
-        serializer.save(employee=employee)
+def perform_create(self, serializer):
+    employee_id = self.kwargs.get('employee_id')
+    employee = get_object_or_404(Employee_db, id=employee_id)
+
+    if EmpBankPaymentModel.objects.filter(employee=employee).exists():
+        raise serializers.ValidationError("Bank payment record already exists for this employee.")
+
+    serializer.save(employee=employee)
 
 class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EmpBankPaymentSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
-    lookup_field = 'employee_id' 
+  
+    def get_queryset(self):
+        employee_id = self.kwargs.get('employee_id')
+        return EmpBankPaymentModel.objects.filter(employee_id=employee_id)
 
 
 
