@@ -43,7 +43,7 @@ const LoginForm = () => {
     e.preventDefault();
     setError(null);
     try {
-      const response = await axios.post("http://178.248.112.16:8000/api/token/", {
+      const response = await axios.post("http://localhost:8000/api/token/", {
         username: formData.username,
         password: formData.password,
       });
@@ -124,7 +124,7 @@ const LoginForm = () => {
           </p>
         </LeftHeader>
         <CustomLink onClick={() => setView('changePassword')}>
-          Change password
+          {/* Change password */}
         </CustomLink>
       </LeftPanel>
 

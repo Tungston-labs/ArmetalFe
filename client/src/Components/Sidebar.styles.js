@@ -8,7 +8,7 @@ export const SidebarContainer = styled.div`
   height: 100vh;
   background: linear-gradient(181deg, rgba(23, 37, 84, 1) 20%, rgba(51, 82, 186, 1) 100%);
   color: white;
-  display: flex;
+  // display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
   top: 0;
@@ -79,41 +79,43 @@ export const Nav = styled.ul`
 `;
 
 export const BottomSection = styled.div`
+  position: absolute;
+  bottom: 5px;
+  left:0px;
+  width: 100%;
   padding: 20px;
-  text-align: center;
-  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
+// Logout icon/button
 export const LogoutButton = styled.button`
-  background: #FF230426;
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  border: 1px solid #a5b4fc;
-  padding: 10px 16px;
-  border-radius: 8px;
-  width: 100%;
+  font-size: 28px;
+  color: red;
+  border: none;
+  background: none;
   cursor: pointer;
   display: flex;
-  justify-content: center;
   align-items: center;
+`;
 
-  svg {
-    margin-right: 8px;
-  }
-
+// Change Password link
+export const ChangePasswordLink = styled(Link)`
+  font-size: 14px;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+margin-left:30px;
   &:hover {
-    background: rgba(255, 35, 4, 0.3);
+    color:blue;
+    
   }
 
-  @media (max-width: 768px) {
-    font-size: 0;
-    padding: 10px;
 
-    svg {
-      margin: 0;
-    }
-  }
+  
+
+  
 `;
 
 export const ToggleButton = styled.button`

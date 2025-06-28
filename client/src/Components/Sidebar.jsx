@@ -5,8 +5,8 @@ import { FaUsers, FaSitemap, FaTasks } from "react-icons/fa";
 import { MdOutlineLaptopChromebook } from "react-icons/md";
 import { HiMiniArrowRightEndOnRectangle } from "react-icons/hi2";
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-
+import { useNavigate, } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   SidebarContainer,
   TopSection,
@@ -15,7 +15,8 @@ import {
   BottomSection,
   LogoutButton,
   ToggleButton,
-  CustomLink
+  CustomLink,
+  ChangePasswordLink
 } from './Sidebar.styles';
 
 export default function Sidebar() {
@@ -36,7 +37,7 @@ export default function Sidebar() {
       }
 
       await axios.post(
-        "http://178.248.112.16:8000/api/logout/",
+        "http://localhost:8000/api/logout/",
         { refresh: refreshToken },
         {
           headers: {
@@ -62,70 +63,70 @@ export default function Sidebar() {
           <img src="/images/logo.png" alt="ARMETAL Logo" />
         </Logo>
       </TopSection>
-
-     
-        
-       
-
       <Nav>
-  {/* Superadmin: only Super Admin tab */}
-  {user?.is_superadmin && (
-    <CustomLink to="/superadmin" className={collapsed ? 'collapsed' : ''}>
-      <MdOutlineLaptopChromebook />
-      <span>Super Admin</span>
-    </CustomLink>
-  )}
+        {/* Superadmin: only Super Admin tab */}
+        {user?.is_superadmin && (
+          <CustomLink to="/superadmin" className={collapsed ? 'collapsed' : ''}>
+            <MdOutlineLaptopChromebook />
+            <span>Super Admin</span>
+          </CustomLink>
+        )}
 
-  {/* HR Admin: show only privileged modules */}
-  {user?.is_hr_admin && user?.company_modules && (
-    <>
-      {user.company_modules.dashboard && (
-        <CustomLink to="/" className={collapsed ? 'collapsed' : ''}>
-          <RiHome5Line />
-          <span>Dashboard</span>
-        </CustomLink>
-      )}
-      {user.company_modules.employee && (
-        <CustomLink to="/employee" className={collapsed ? 'collapsed' : ''}>
-          <FaUsers />
-          <span>Employee</span>
-        </CustomLink>
-      )}
-      {user.company_modules.department && (
-        <CustomLink to="/department" className={collapsed ? 'collapsed' : ''}>
-          <FaSitemap />
-          <span>Department</span>
-        </CustomLink>
-      )}
-      {user.company_modules.daily_task && (
-        <CustomLink to="/daily-task" className={collapsed ? 'collapsed' : ''}>
-          <FaTasks />
-          <span>Daily Task</span>
-        </CustomLink>
-      )}
-      {user.company_modules.payroll && (
-        <CustomLink to="/payrolldetails" className={collapsed ? 'collapsed' : ''}>
-          <FaTasks />
-          <span>Payroll</span>
-        </CustomLink>
-      )}
-      {user.company_modules.holiday && (
-        <CustomLink to="/holiday" className={collapsed ? 'collapsed' : ''}>
-          <FaTasks />
-          <span>Holiday</span>
-        </CustomLink>
-      )}
-    </>
-  )}
-</Nav>
+        {/* HR Admin: show only privileged modules */}
+        {user?.is_hr_admin && user?.company_modules && (
+          <>
+            {user.company_modules.dashboard && (
+              <CustomLink to="/" className={collapsed ? 'collapsed' : ''}>
+                <RiHome5Line />
+                <span>Dashboard</span>
+              </CustomLink>
+            )}
+            {user.company_modules.employee && (
+              <CustomLink to="/employee" className={collapsed ? 'collapsed' : ''}>
+                <FaUsers />
+                <span>Employee</span>
+              </CustomLink>
+            )}
+            {user.company_modules.department && (
+              <CustomLink to="/department" className={collapsed ? 'collapsed' : ''}>
+                <FaSitemap />
+                <span>Department</span>
+              </CustomLink>
+            )}
+            {user.company_modules.daily_task && (
+              <CustomLink to="/daily-task" className={collapsed ? 'collapsed' : ''}>
+                <FaTasks />
+                <span>Daily Task</span>
+              </CustomLink>
+            )}
+            {user.company_modules.payroll && (
+              <CustomLink to="/payrolldetails" className={collapsed ? 'collapsed' : ''}>
+                <FaTasks />
+                <span>Payroll</span>
+              </CustomLink>
+            )}
+            {user.company_modules.holiday && (
+              <CustomLink to="/holiday" className={collapsed ? 'collapsed' : ''}>
+                <FaTasks />
+                <span>Holiday</span>
+              </CustomLink>
+            )}
+          </>
+        )}
+      </Nav>
 
 
       <BottomSection>
-        <LogoutButton onClick={handleLogout}>
-          <HiMiniArrowRightEndOnRectangle />
-          <span>Log out</span>
-        </LogoutButton>
-      </BottomSection>
+  <LogoutButton>
+    <HiMiniArrowRightEndOnRectangle style={{marginRight:"30px"}} onClick={handleLogout} />
+    {!collapsed && (
+      <ChangePasswordLink to="/new-password">
+        Change Password
+      </ChangePasswordLink>
+    )}
+  </LogoutButton>
+</BottomSection>
+
     </SidebarContainer>
   );
 }
