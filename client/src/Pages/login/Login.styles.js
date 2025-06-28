@@ -31,7 +31,7 @@ export const LeftPanel = styled.div`
     width: 100%;
     height: 100%;
     background-image: url('/images/side.png');
-    background-size: auto;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center bottom;
     z-index: 0;

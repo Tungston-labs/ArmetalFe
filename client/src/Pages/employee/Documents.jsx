@@ -22,7 +22,7 @@ export default function DocumentUploadForm() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const employeeId = useSelector((state) => state.employee.employeeId);
   const documentUrls = useSelector((state) => state.employee.documentUrls);
-
+const [uploadErrors,setUploadErrors]= useState({});
   const [selectedFiles, setSelectedFiles] = useState({
     passport: [],
     workPermit: [],
@@ -64,7 +64,24 @@ export default function DocumentUploadForm() {
 
   const handleSubmit = async () => {
     console.log("📤 Submit button clicked");
+ const requiredFields = ['passport', 'workPermit', 'contract', 'insurance', 'certificate'];
+  const newErrors = {};
 
+  for (const field of requiredFields) {
+    const hasLocal = selectedFiles[field]?.length > 0;
+    const hasUploaded = documentUrls[field]?.length > 0;
+    if (!hasLocal && !hasUploaded) {
+      newErrors[field] = `${field} is required`;
+    }
+  }
+
+  if (Object.keys(newErrors).length > 0) {
+    setUploadErrors(newErrors);
+    console.warn("❌ Missing document fields:", newErrors);
+    return;
+  }
+
+  setUploadErrors({});
     try {
       const uploadAndGetUrls = async (type) => {
         const files = selectedFiles[type] || [];
@@ -149,25 +166,32 @@ export default function DocumentUploadForm() {
     return [...uploadedUrls, ...localFiles];
   };
 
-  const renderUploadBlock = (label, key) => (
-    <UploadSection key={key}>
-      <LabelRow>{label}</LabelRow>
-      <InlineUploadRow>
-        <UploadButton onClick={() => handleUploadClick(key)}>
-          <LuCirclePlus /> Upload images
-        </UploadButton>
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          ref={fileInputRefs[key]}
-          style={{ display: 'none' }}
-          onChange={(e) => handleFileChange(e, key)}
-        />
-        <ImagePreviewRow>{renderPreviewImages(key)}</ImagePreviewRow>
-      </InlineUploadRow>
-    </UploadSection>
-  );
+ const renderUploadBlock = (label, key) => (
+  <UploadSection key={key}>
+    <LabelRow>
+      {label}
+      {uploadErrors[key] && (
+        <span style={{ color: 'red', fontSize: '0.8rem', marginLeft: '1rem' }}>
+          {uploadErrors[key]}
+        </span>
+      )}
+    </LabelRow>
+    <InlineUploadRow>
+      <UploadButton onClick={() => handleUploadClick(key)}>
+        <LuCirclePlus /> Upload images
+      </UploadButton>
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        ref={fileInputRefs[key]}
+        style={{ display: 'none' }}
+        onChange={(e) => handleFileChange(e, key)}
+      />
+      <ImagePreviewRow>{renderPreviewImages(key)}</ImagePreviewRow>
+    </InlineUploadRow>
+  </UploadSection>
+);
 
   return (
     <Container>
@@ -194,24 +218,25 @@ export default function DocumentUploadForm() {
       </div>
 
       <SectionTitle>Documents</SectionTitle>
-      {renderUploadBlock("Passport", "passport")}
+      {renderUploadBlock("Passport-Front / Passport-Back", "passport")}
       {renderUploadBlock("Work Permit", "workPermit")}
       {renderUploadBlock("Employment Contract", "contract")}
       {renderUploadBlock("Insurance", "insurance")}
       <SectionTitle>Certificate</SectionTitle>
       {renderUploadBlock("Certificate", "certificate")}
 
-      <ButtonGroup>
-        <Button secondary onClick={() => navigate(-1)}>Previous step</Button>
-        <Button onClick={handleSubmit}>Submit</Button>
-      </ButtonGroup>
+   <ButtonGroup>
+  <Button onClick={handleSubmit}>Submit</Button>
+</ButtonGroup>
 
-      {showSuccessModal && (
-        <SuccessModal
-          onClose={() => setShowSuccessModal(false)}
-          onAddAnother={() => setShowSuccessModal(false)}
-        />
-      )}
+     {showSuccessModal && (
+  <SuccessModal
+    onClose={() => setShowSuccessModal(false)}
+    onAddAnother={() => setShowSuccessModal(false)}
+    navigate={navigate} // 👈 pass navigate function
+  />
+)}
+
     </Container>
   );
 }

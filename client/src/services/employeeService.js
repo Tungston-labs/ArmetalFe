@@ -105,7 +105,16 @@ export const fetchBankPaymentsByEmployee = async (employeeId) => {
 // 2. Create a new bank payment for a specific employee
 export const createBankPayment = async (employeeId, data) => {
   try {
-    const res = await API.post(`/employees/${employeeId}/bank-payments/`, data);
+    const isFormData = data instanceof FormData;
+
+    const res = await API.post(
+      `/employees/${employeeId}/bank-payments/`,
+      data,
+      {
+        headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+      }
+    );
+
     return res.data;
   } catch (error) {
     console.error("❌ Error creating bank payment:", error.response?.data || error.message);

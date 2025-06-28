@@ -9,7 +9,7 @@ urlpatterns = [
 
        # List + Create
     path('employees/<int:employee_id>/bank-payments/', EmpBankPaymentCreateListView.as_view(), name='employee-bank-payment-list-create'),
-    path('employees/<int:employee_id>/bank-payments/<int:payment_id>/', EmpBankPaymentEmployeeScopedDetailView.as_view(), name='employee-bank-payment-detail'),
+    path('employees/<int:employee_id>/bank-payments/<int:pk>/', EmpBankPaymentEmployeeScopedDetailView.as_view(), name='employee-bank-payment-detail'),
 
 
   # document upload
