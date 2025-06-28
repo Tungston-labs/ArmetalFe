@@ -21,7 +21,13 @@ import { login } from '../../Redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
-  const [formData, setFormData] = useState({ username: '', password: '', remember: false });
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    remember: false,
+    old_password: '',
+    new_password: ''
+  });
   const [view, setView] = useState('login');
   const [error, setError] = useState(null);
 
@@ -41,15 +47,15 @@ const LoginForm = () => {
         username: formData.username,
         password: formData.password,
       });
-  
+
       const { access, refresh, user } = response.data;
-  
-      // Store in localStorage
+
+      // Store tokens
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
-      localStorage.setItem("user", JSON.stringify(user)); // store user role info
-  
-      // Dispatch to Redux store
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Redux
       dispatch(
         login({
           userName: user.username,
@@ -63,19 +69,42 @@ const LoginForm = () => {
           },
         })
       );
-  
-      // Redirect based on role
+
+      // Redirect
       if (user.is_superadmin) {
-        navigate("/superadmin"); // or show a message
+        navigate("/superadmin");
       } else {
-        navigate("/"); // dashboard
+        navigate("/");
       }
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.detail || "Login failed. Check credentials.");
     }
   };
-  
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      await axios.post("http://178.248.112.16:8000/api/change-password/", {
+        old_password: formData.old_password,
+        new_password: formData.new_password
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      alert("Password changed successfully");
+      setFormData({ ...formData, old_password: '', new_password: '' });
+      setView('login');
+    } catch (err) {
+      console.log(err);
+      setError(err.response?.data?.detail || "Password change failed.");
+    }
+  };
 
   return (
     <Container>
@@ -125,7 +154,6 @@ const LoginForm = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                marginBottom="10px"
               />
               <SmallLink>Forgot password?</SmallLink>
               <CheckboxContainer>
@@ -148,11 +176,28 @@ const LoginForm = () => {
               Enter a new password<br />
               Below to change your password
             </p>
-            <Label>New password</Label>
-            <Input type="text" placeholder="New password" />
-            <Label>Confirm Password</Label>
-            <Input type="password" placeholder="Confirm Password" />
-            <Button>Change Password</Button>
+            <form onSubmit={handlePasswordChange}>
+              <Label>Old password</Label>
+              <Input
+                type="password"
+                name="old_password"
+                placeholder="Old password"
+                value={formData.old_password}
+                onChange={handleChange}
+                required
+              />
+              <Label>New Password</Label>
+              <Input
+                type="password"
+                name="new_password"
+                placeholder="New Password"
+                value={formData.new_password}
+                onChange={handleChange}
+                required
+              />
+              <Button type="submit">Change Password</Button>
+              {error && <p style={{ color: 'red' }}>{error}</p>}
+            </form>
           </FormBox>
         )}
       </RightPanel>
