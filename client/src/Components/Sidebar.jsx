@@ -36,7 +36,7 @@ export default function Sidebar() {
       }
 
       await axios.post(
-        "http://127.0.0.1:8000/api/logout/",
+        "http://178.248.112.16:8000/api/logout/",
         { refresh: refreshToken },
         {
           headers: {

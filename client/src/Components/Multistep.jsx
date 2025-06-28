@@ -5,7 +5,7 @@ import { StepsWrapper } from "./Multistep.Style";
 
 const items = [
   { title: "Basic Details" },
-  { title: "Bank and payment details" },
+  { title: "Bank Details" },
   { title: "Documents" },
 ];
 

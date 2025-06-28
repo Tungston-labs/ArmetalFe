@@ -213,7 +213,7 @@ const [uploadErrors,setUploadErrors]= useState({});
 
       <div style={{ width: "100%", justifyContent: "center", display: "flex", padding: "10px" }}>
         <div style={{ width: "50%" }}>
-          <Multistep />
+          <Multistep currentStep={2} />
         </div>
       </div>
 
