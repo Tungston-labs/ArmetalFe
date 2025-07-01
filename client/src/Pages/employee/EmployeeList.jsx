@@ -29,9 +29,10 @@ const EmployeeList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { employeeList, pagination, loading } = useSelector((state) => state.employees);
-
+console.log(employeeList)
   const [searchText, setSearchText] = useState("");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(pagination?.current_page || 1);
+
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -156,44 +157,58 @@ console.log("loading",loading)
           )}
         </tbody>
       </Table>
+<Pagination>
+  {/* ← Previous */}
+  <span
+    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+    style={{
+      cursor: page > 1 ? 'pointer' : 'not-allowed',
+      marginRight: '8px',
+      color: page > 1 ? '#000' : '#ccc',
+    }}
+  >
+    &larr;
+  </span>
 
-      <Pagination>
-        <span
-          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-          style={{ cursor: 'pointer', marginRight: '8px' }}
-        >
-          &larr;
-        </span>
+  {/* Page Numbers */}
+  {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map((pageNumber) => {
+    const isActive = pageNumber === page;
+    return (
+      <span
+        key={pageNumber}
+        onClick={() => setPage(pageNumber)}
+        style={{
+          margin: '0 4px',
+          padding: '6px 12px',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          backgroundColor: isActive ? '#003366' : '#e0e0e0',
+          color: isActive ? '#ffffff' : '#000000',
+          fontWeight: isActive ? 'bold' : 'normal',
+        }}
+      >
+        {pageNumber}
+      </span>
+    );
+  })}
 
-        {[1, 2].map((pageNumber) => {
-          const isActive = pagination?.current_page === pageNumber;
+  {/* → Next */}
+  <span
+    onClick={() => {
+      if (page < (pagination?.total_pages || 1)) {
+        setPage(page + 1);
+      }
+    }}
+    style={{
+      cursor: page < (pagination?.total_pages || 1) ? 'pointer' : 'not-allowed',
+      marginLeft: '8px',
+      color: page < (pagination?.total_pages || 1) ? '#000' : '#ccc',
+    }}
+  >
+    &rarr;
+  </span>
+</Pagination>
 
-          return (
-            <span
-              key={pageNumber}
-              onClick={() => setPage(pageNumber)}
-              style={{
-                margin: '0 4px',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                backgroundColor: isActive ? '#003366' : '#e0e0e0',
-                color: isActive ? '#ffffff' : '#000000',
-                fontWeight: isActive ? 'bold' : 'normal',
-              }}
-            >
-              {pageNumber}
-            </span>
-          );
-        })}
-
-        <span
-          onClick={() => setPage((prev) => Math.min(prev + 1, 2))}
-          style={{ cursor: 'pointer', marginLeft: '8px' }}
-        >
-          &rarr;
-        </span>
-      </Pagination>
 
       {showDeleteModal && (
         <div style={{

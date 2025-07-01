@@ -29,7 +29,7 @@ export const submitEmployee = createAsyncThunk(
         if (value !== undefined && value !== null) {
           form.append(key, value);
         }
-      });
+      }); 
 
       if (formData.id) {
         return await updateEmployee(formData.id, form);
@@ -37,9 +37,9 @@ export const submitEmployee = createAsyncThunk(
         return await createEmployee(formData); // if creation also expects multipart
       }
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || 'Something went wrong.'
-      );
+      return thunkAPI.
+       rejectWithValue(err.response?.data || err.message);
+    
     }
   }
 );
