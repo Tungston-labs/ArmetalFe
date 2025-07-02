@@ -1,5 +1,4 @@
-// src/pages/LoginPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   LeftPanel,
@@ -7,27 +6,32 @@ import {
   FormBox,
   Label,
   Input,
-  CheckboxContainer,
   Button,
-  SmallLink,
   LeftHeader,
   Logo,
   CustomLink
 } from '../login/Login.styles';
 
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { login } from '../../Redux/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ChangePasswordPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const email = location.state?.email;
+
   const [formData, setFormData] = useState({
-    email: '',
     newPassword: '',
     confirmPassword: '',
   });
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
+
+  useEffect(() => {
+    if (!email) {
+      setError("Email not found. Please restart the reset process.");
+    }
+  }, [email]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,9 +43,9 @@ const ChangePasswordPage = () => {
     setError(null);
     setMessage(null);
 
-    const { email, newPassword, confirmPassword } = formData;
+    const { newPassword, confirmPassword } = formData;
 
-    if (!email || !newPassword || !confirmPassword) {
+    if (!newPassword || !confirmPassword) {
       setError('Please fill in all fields.');
       return;
     }
@@ -52,17 +56,20 @@ const ChangePasswordPage = () => {
     }
 
     try {
-      await axios.post('http://localhost:8000/api/change-password/', {
+      await axios.post('http://178.248.112.16:8000/api/forgot-password/reset/', {
         email,
         new_password: newPassword,
+        confirm_password: confirmPassword
       });
 
-      setMessage('Password changed successfully.');
+      setMessage('Password changed successfully. Redirecting to login...');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to change password.');
     }
   };
-
 
   return (
     <Container>
@@ -74,25 +81,18 @@ const ChangePasswordPage = () => {
             Manage your employees with ease.<br />
             Log in to access your HR dashboard.
           </p>
-          <p
-            onClick={() => setView('login')}
-            style={{ cursor: 'pointer', textDecoration: 'none', fontFamily: 'Raleway', fontSize: 22 }}
-          >
-            Get started →
-          </p>
         </LeftHeader>
-        <CustomLink onClick={() => setView('changePassword')}>
-          {/* Change password */}
-        </CustomLink>
+        <CustomLink />
       </LeftPanel>
 
-       <RightPanel>
+      <RightPanel>
         <FormBox>
-          <h2 style={{ fontSize: 40, fontFamily: 'Satoshi' }}>Set new Password</h2>
-           <p style={{ fontSize: 20, fontFamily: 'Raleway', color: "#686868",marginTop:"-25px" }}>
-             Enter new password</p>
+          <h2 style={{ fontSize: 40, fontFamily: 'Satoshi' }}>Set New Password</h2>
+          <p style={{ fontSize: 20, fontFamily: 'Raleway', color: "#686868", marginTop: "-25px" }}>
+            You're resetting for <strong>{email}</strong>
+          </p>
+
           <form onSubmit={handleChangePasswordSubmit}>
-           
             <Label>New Password</Label>
             <Input
               type="password"
@@ -111,7 +111,7 @@ const ChangePasswordPage = () => {
               onChange={handleChange}
               required
             />
-            <Button type="submit">Continue </Button>
+            <Button type="submit">Continue</Button>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {message && <p style={{ color: 'green' }}>{message}</p>}
           </form>
