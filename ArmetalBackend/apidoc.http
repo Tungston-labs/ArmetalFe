@@ -31,7 +31,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 Content-Type: application/json
 
 {
-  "old_password": "CMPXM3PBGL801",
+  "old_password": "CMPX3PBGL801",
   "new_password": "123"
 }
 
@@ -89,15 +89,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ### Update a company (replace 1 with actual ID)
 PUT http://127.0.0.1:8000/api/companies/2/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTExODIwLCJpYXQiOjE3NDg1MDgyMjAsImp0aSI6ImMyYmMxZmRhNTMyNDQ3YjU5MmZlNmE0MzUxYmVlZThiIiwidXNlcl9pZCI6Mn0.3FUWk6avJUq1AmfRGZrip8RG9Bj5shf5Fw_u-HERfLw
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMDg4NDU2LCJpYXQiOjE3NTEwODQ4NTYsImp0aSI6IjNkNjM2NjVmNDU1ZDQxYTk5Zjk5ZTU2NGQ2NmE2NTUwIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.RY3L5WAxxGogEWD9sH9Hb5JQSn0lUy6d8J5NtcY7jFU
 
 {
-  "name": "TLS Corp Ltd",
-  "address": "Updated address, Dubai",
-  "location": "Dubai",
+  "name": "abcde",
+  "address": "xyz street, London",
+  "location": "dubai",
   "contact_number": "9988776655",
-  "email": "newcontact@tls.com",
+  "email": "nisna.u5@gmail.com",
   "modules": {
     "attendance": true,
     "leave": false,
@@ -153,7 +152,7 @@ Content-Type: application/json
 
 {
   "username": "hwr_arm_dub_841",     
-  "password": "123"  
+  "password": "password123"  
 }
 
 
@@ -362,6 +361,36 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ###
 GET http://localhost:8000/api/payroll/record/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNzQ2MzM1LCJpYXQiOjE3NTA3NDI3MzUsImp0aSI6IjE2NjM4NmIxNGVkMzRlZWM5NzQ5NDY4YjdjYTI1ZWJmIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.6sxAj8SAUeo5DLazhufVbuUzk_K45nIJcWG_BQcz3Og
+
+# forgot password
+###
+POST http://localhost:8000/api/forgot-password/send-otp/
+Content-Type: application/json
+
+{
+  "email": "nisna.u5@gmail.com"
+}
+# verify OPTIONS 
+###
+POST http://localhost:8000/api/forgot-password/verify-otp/
+Content-Type: application/json
+
+{
+  "email": "nisna.u5@gmail.com",
+  "otp": "098417"
+}
+
+# reset password after otp verification
+###
+
+POST http://localhost:8000/api/forgot-password/reset/
+Content-Type: application/json
+
+{
+  "email": "nisna.u5@gmail.com",
+  "new_password": "password123",
+  "confirm_password": "password123"
+}
 
 
 
