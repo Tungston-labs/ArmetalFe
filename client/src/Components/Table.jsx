@@ -24,6 +24,8 @@ isEditMode=false,
 
 
   bankName, setBankName,
+    bankProofImage,
+  setBankProofImage,
   swiftCode, setSwiftCode,
   paymentMode, setPaymentMode,
   accountNumber, setAccountNumber,
@@ -42,7 +44,7 @@ isEditMode=false,
   handleNext,
   errors = {}
 }) => {
-  if (readOnly && records.length > 0) {
+  if (!isEditMode && records.length > 0) {
     return (
       <Container>
         <Header><h2>Bank & Payment History</h2></Header>
@@ -96,7 +98,30 @@ isEditMode=false,
             <ErrorMsg msg={errors.bankName} />
             <Input placeholder="Bank name" value={bankName} onChange={(e) => setBankName(e.target.value)} />
           </FormGroup>
-          <ImageUpload><span>📷</span></ImageUpload>
+    <FormGroup style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
+  <label style={{ fontWeight: '500' }}>Upload Bank Passbook Image</label>
+  
+  {bankProofImage && (
+    <img
+      src={URL.createObjectURL(bankProofImage)}
+      alt="Bank Proof Preview"
+      style={{
+        marginTop: '0.75rem',
+        width: '160px',
+        borderRadius: '6px',
+        border: '1px solid #ccc',
+        display:"flex"
+      }}
+    />
+  )}
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => setBankProofImage(e.target.files[0])}
+    style={{ marginTop: '0.5rem',display:"flex" }}
+  />
+</FormGroup>
+
         </Row>
 
         <Row>

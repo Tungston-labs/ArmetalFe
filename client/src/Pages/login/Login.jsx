@@ -82,6 +82,11 @@ const LoginForm = () => {
     }
   };
 
+  const handleForgotPassword = () => {
+    navigate('/forget-password');
+  };
+  
+
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     setError(null);
@@ -155,7 +160,10 @@ const LoginForm = () => {
                 onChange={handleChange}
                 required
               />
-              <SmallLink>Forgot password?</SmallLink>
+              <SmallLink onClick={handleForgotPassword} style={{ cursor: 'pointer' }}>
+  Forgot password?
+</SmallLink>
+
               <CheckboxContainer>
                 <input
                   type="checkbox"

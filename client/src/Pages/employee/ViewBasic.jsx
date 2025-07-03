@@ -41,8 +41,11 @@ const ViewBasic = () => {
   const { id } = useParams();
   const { employeeDetail, loading } = useSelector((state) => state.employees);
   const departmentList = useSelector((state) => state.departments.list);
+  console.log("employeeDetail",employeeDetail)
+  console.log("departmentList",departmentList)
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+console.log("fff",formData)
 
   useEffect(() => {
     if (id) {
@@ -50,11 +53,25 @@ const ViewBasic = () => {
     }
   }, [dispatch, id]);
 
-  useEffect(() => {
-    if (employeeDetail) {
-      setFormData({ ...employeeDetail });
+useEffect(() => {
+  if (employeeDetail) {
+    let deptId = "";
+    if (typeof employeeDetail.department === "string") {
+      // department is a name → convert it to an ID
+      const match = departmentList.find((d) => d.name === employeeDetail.department);
+      deptId = match ? match.id : "";
+    } else if (typeof employeeDetail.department === "number") {
+      // department is already an ID
+      deptId = employeeDetail.department;
     }
-  }, [employeeDetail]);
+
+    setFormData({
+      ...employeeDetail,
+      department: deptId,
+    });
+  }
+}, [employeeDetail, departmentList]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,8 +79,15 @@ const ViewBasic = () => {
   };
 
  const handleSubmit = async () => {
-  await dispatch(submitEmployee(formData));
-  await dispatch(getEmployeeById(id)); // refresh Redux state after submit
+  const payload = {
+    ...formData,
+    department_id: formData.department, // ✅ required for PATCH
+  };
+
+  delete payload.department; // 🚫 remove read-only field if it exists
+
+  await dispatch(submitEmployee(payload));
+  await dispatch(getEmployeeById(id));
   setEditMode(false);
 };
 
@@ -224,13 +248,13 @@ const ViewBasic = () => {
             onChange={handleChange}
             readOnly={!editMode}
           />
-          <Input
+          {/* <Input
             name="work_permit"
             placeholder="Work Permit"
             value={formData.work_permit || ""}
             onChange={handleChange}
             readOnly={!editMode}
-          />
+          /> */}
           <Input
             name="visa_expiry_date"
             placeholder="Visa Expiry Date"
@@ -245,13 +269,13 @@ const ViewBasic = () => {
             onChange={handleChange}
             readOnly={!editMode}
           />
-          <Input
+          {/* <Input
             name="contract_id"
             placeholder="Employment Contract"
             value={formData.contract_id || ""}
             onChange={handleChange}
             readOnly={!editMode}
-          />
+          /> */}
           <Input
             name="insurance_number"
             placeholder="Insurance Number"

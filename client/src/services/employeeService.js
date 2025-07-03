@@ -125,14 +125,19 @@ export const createBankPayment = async (employeeId, data) => {
 };
 
 // 3. Update a specific bank payment under a specific employee
-export const updateBankPayment = async (employeeId, paymentId, data) => {
-  try {
-    const res = await API.put(`/employees/${employeeId}/bank-payments/${paymentId}/`, data);
-    return res.data;
-  } catch (error) {
-    console.error("❌ Error updating bank payment:", error.response?.data || error.message);
-    throw error;
-  }
+export const updateBankPayment = async (employeeId, paymentId, formData, hasImage) => {
+  return await API.put(
+    `/employees/${employeeId}/bank-payments/${paymentId}/`,
+    formData ,
+    {
+      headers: {
+        "Content-Type":   "multipart/form-data" 
+      },
+      // headers: {
+      //   "Content-Type": hasImage ? "multipart/form-data" : "application/json",
+      // },
+    }
+  );
 };
 
 // 4. Delete a specific bank payment under a specific employee

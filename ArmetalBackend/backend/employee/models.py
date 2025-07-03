@@ -35,7 +35,7 @@ class Employee_db(TimeStampedModel):
         ('Full-time', 'Full-time'), ('Part-time', 'Part-time'), ('Contract', 'Contract')
     ])
     passport_number = models.CharField(max_length=50)
-    iqama_number = models.CharField(max_length=50)
+    iqama_number = models.CharField(max_length=50,blank=True, null=True)
     insurance_number = models.CharField(max_length=50)
     visa_expiry_date = models.DateField()
 

@@ -1,4 +1,3 @@
-// src/Components/Sidebar.jsx
 import React, { useState } from 'react';
 import { RiHome5Line } from "react-icons/ri";
 import { FaUsers, FaSitemap, FaTasks } from "react-icons/fa";
@@ -7,14 +6,13 @@ import { HiMiniArrowRightEndOnRectangle } from "react-icons/hi2";
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  SidebarContainer,
-  TopSection,
+  SidebarContainer, 
   Logo,
   Nav,
   BottomSection,
   LogoutButton,
   ToggleButton,
-  CustomLink,
+  CustomLink,TopSection,
   ChangePasswordLink
 } from './Sidebar.styles';
 
@@ -53,7 +51,7 @@ export default function Sidebar() {
     try {
       const token = localStorage.getItem("accessToken");
       const res = await axios.post(
-        "http://localhost:8000/api/change-password/",
+        "http://178.248.112.16:8000/api/change-password/",
         { old_password: oldPassword, new_password: newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -66,6 +64,9 @@ export default function Sidebar() {
       }, 1500);
     } catch (err) {
       setMessage(err.response?.data?.detail || "Password change failed.");
+      setTimeout(() => {
+        setMessage('');
+      }, 3000);
     }
   };
 
@@ -129,9 +130,21 @@ export default function Sidebar() {
           <LogoutButton>
             <HiMiniArrowRightEndOnRectangle style={{ marginRight: "30px" }} onClick={handleLogout} />
             {!collapsed && (
-              <ChangePasswordLink as="button" onClick={() => setShowChangeModal(true)}>
+              <button
+                onClick={() => setShowChangeModal(true)}
+                style={{
+                  backgroundColor: '#003366',
+                  color: 'white',
+                  padding: '8px 12px',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  width: '100%',
+                  textAlign: 'left'
+                }}
+              >
                 Change Password
-              </ChangePasswordLink>
+              </button>
             )}
           </LogoutButton>
         </BottomSection>
@@ -170,11 +183,22 @@ export default function Sidebar() {
             />
             <button onClick={handlePasswordChange} style={{
               width: '100%', marginTop: '20px', padding: '10px',
-              backgroundColor: '#003366', color: 'white', border: 'none', borderRadius: '5px'
+              backgroundColor: 'transparent'
+, color: 'white', border: 'none', borderRadius: '5px'
             }}>
               Change Password
             </button>
-            {message && <p style={{ marginTop: '10px', color: 'green' }}>{message}</p>}
+            {message && (
+              <p
+                style={{
+                  marginTop: '10px',
+                  color: message.toLowerCase().includes("success") ? 'green' : 'red',
+                  fontWeight: 'bold'
+                }}
+              >
+                {message}
+              </p>
+            )}
           </div>
         </div>
       )}

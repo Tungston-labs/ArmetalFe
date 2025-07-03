@@ -73,28 +73,33 @@ from .models import EmpBankPaymentModel, Employee_db
 from .serializers import EmpBankPaymentSerializer
 from user.permissions import IsHRAdmin
 from rest_framework.exceptions import NotFound
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.shortcuts import get_object_or_404
+from rest_framework import serializers
 
 class EmpBankPaymentCreateListView(generics.ListCreateAPIView):
     serializer_class = EmpBankPaymentSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
         employee_id = self.kwargs.get('employee_id')
         return EmpBankPaymentModel.objects.filter(employee__id=employee_id)
 
-def perform_create(self, serializer):
-    employee_id = self.kwargs.get('employee_id')
-    employee = get_object_or_404(Employee_db, id=employee_id)
+    def perform_create(self, serializer):  # ✅ Move this method **inside** the class
+        employee_id = self.kwargs.get('employee_id')
+        employee = get_object_or_404(Employee_db, id=employee_id)
 
-    if EmpBankPaymentModel.objects.filter(employee=employee).exists():
-        raise serializers.ValidationError("Bank payment record already exists for this employee.")
+        if EmpBankPaymentModel.objects.filter(employee=employee).exists():
+            raise serializers.ValidationError("Bank payment record already exists for this employee.")
 
-    serializer.save(employee=employee)
+        serializer.save(employee=employee)
+
 
 class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EmpBankPaymentSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
-  
+    parser_classes = [MultiPartParser, FormParser]
     def get_queryset(self):
         employee_id = self.kwargs.get('employee_id')
         return EmpBankPaymentModel.objects.filter(employee_id=employee_id)

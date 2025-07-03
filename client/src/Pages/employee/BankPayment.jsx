@@ -40,6 +40,9 @@ export default function BankPaymentForm() {
   const [transportation, setTransportation] = useState('');
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
+const [bankProofImage, setBankProofImage] = useState(null);
+
+
 
   const stepTitles = ['Basic Info', 'Bank Details', 'Document Upload'];
 
@@ -109,6 +112,7 @@ export default function BankPaymentForm() {
 
   const bankData = {
   bank_name: bankName,
+
   swift_code: swiftCode,
   payment_mode: paymentMode,
   account_number: accountNumber,
@@ -126,7 +130,7 @@ export default function BankPaymentForm() {
     dispatch(setBankFormData(bankData)); // ✅ Save to Redux
 
     try {
-      await dispatch(submitBankPayment({ employeeId, data: bankData })).unwrap();
+      await dispatch(submitBankPayment({ employeeId, data: bankData,bankProofImage, })).unwrap();
       navigate('/documents');
     } catch (err) {
       setError(err);
@@ -164,6 +168,8 @@ export default function BankPaymentForm() {
 
       <Table
         bankName={bankName} setBankName={setBankName}
+          bankProofImage={bankProofImage}
+  setBankProofImage={setBankProofImage}
         swiftCode={swiftCode} setSwiftCode={setSwiftCode}
         paymentMode={paymentMode} setPaymentMode={setPaymentMode}
         accountNumber={accountNumber} setAccountNumber={setAccountNumber}
