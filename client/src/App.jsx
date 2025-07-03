@@ -43,8 +43,8 @@ function App() {
       <Routes>
 <Route path="/loader" element={<Loder/> }/>
         <Route path="/login" element={<LoginForm />} />
-   <Route path="/forget-password" element={<ForgetPassword />} />
-      <Route path="/verification" element={<Verification />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/verification" element={<Verification />} />
          <Route path="/new-password" element={<NewPassword />} />
         <Route path="/payrolls" element={<Payroll1 />} />
         <Route element={<RequireAuth />}>
