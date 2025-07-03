@@ -43,14 +43,14 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:8000/api/create-company/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMDc0MzY4LCJpYXQiOjE3NTAwNzA3NjgsImp0aSI6ImZlNjcxMDc5NGEyZDQ1MDNhOGQ1NTdkZTJlZTQ1ZWM4IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.aUy63FOpdM587dOnRhg-rCKlG1BuafRUVNtqewXx6W8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNTQxNjc1LCJpYXQiOjE3NTE1MzgwNzUsImp0aSI6ImU5OGZmMzUxOWMyZDQ1MTg5ZDNhZDBlMDMxZTAyNDBhIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.LN_VeohFR_R5uurHWsfCX5UVk3d_WO376leujNgmoyk
 
 {
-  "name": "dls lab",
+  "name": "dldfg",
   "address": "xyz street, kochi",
   "location": "kakanad",
-  "contact_number": "99005985610",
-  "email": "contact@hgh.com",
+  "contact_number": "97805985610",
+  "email": "ssdsddsdsdfddff@hgh.com",
   "modules": {
     
   "dashboard": true,
