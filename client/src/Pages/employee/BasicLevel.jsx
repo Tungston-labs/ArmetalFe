@@ -211,24 +211,35 @@ console.log("formPayload",formPayload)
         <TwoColumn>
           <div>
             {errors.name && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name}</p>}
-            <Input name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
+            <Input name="name" placeholder="Name" value={formData.name} onChange={handleChange} autoComplete="off" />
           </div>
           <div>
             {errors.email && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.email}</p>}
-            <Input name="email" placeholder="Email ID" value={formData.email} onChange={handleChange} />
+            <Input name="email" placeholder="Email ID" value={formData.email} onChange={handleChange} autoComplete="off" />
           </div>
         </TwoColumn>
 
         <InfoSection>
           <div>
             {errors.address && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.address}</p>}
-            <FullWidthInput name="address" placeholder="Address" value={formData.address} onChange={handleChange} />
+            <FullWidthInput name="address" placeholder="Address" value={formData.address} onChange={handleChange} autoComplete="off"/>
           </div>
 
           <TwoColumnRow>
             <div>
               {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
-              <Input type="date" name="dob" value={formData.dob} onChange={handleChange} />
+              <Input
+  type="text"
+  name="dob"
+  value={formData.dob}
+  onChange={handleChange}
+  autoComplete="off"
+  placeholder="Date of Birth"
+  onFocus={(e) => (e.target.type = 'date')}
+  onBlur={(e) => {
+    if (!e.target.value) e.target.type = 'text';
+  }}
+/>
             </div>
             <div>
               {errors.gender && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.gender}</p>}
@@ -236,6 +247,7 @@ console.log("formPayload",formPayload)
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
+                 autoComplete="off"
                 style={{
                   width: '100%',
                   padding: '0.5rem',
@@ -263,11 +275,22 @@ console.log("formPayload",formPayload)
       <TwoColumnRows>
         <div>
           {errors.designation && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.designation}</p>}
-          <Input name="designation" placeholder=" designation" value={formData.designation} onChange={handleChange} />
+          <Input name="designation" placeholder=" Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
         </div>
         <div>
           {errors.joining_date && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.joining_date}</p>}
-          <Input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} />
+          <Input
+  type="text"
+  name="joining_date"
+  value={formData.joining_date}
+  onChange={handleChange}
+   autoComplete="off"
+  placeholder="Joining Date"
+  onFocus={(e) => (e.target.type = 'date')}
+  onBlur={(e) => {
+    if (!e.target.value) e.target.type = 'text';
+  }}
+/>
         </div>
       </TwoColumnRows>
 
@@ -277,6 +300,7 @@ console.log("formPayload",formPayload)
           <select
             name="department"
             value={formData.department}
+             autoComplete="off"
             onChange={handleChange}
             style={{
               width: '100%',
@@ -301,6 +325,7 @@ console.log("formPayload",formPayload)
             name="employment_type"
             value={formData.employment_type}
             onChange={handleChange}
+             autoComplete="off"
             style={{
               width: '100%',
               padding: '0.5rem',
@@ -322,24 +347,40 @@ console.log("formPayload",formPayload)
       {/* Legal Info Section */}
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
       {[
-        { key: 'phno', label: 'Phno' },
-        { key: 'passport_number', label: 'passport_number' },
-        // { key: 'workPermit', label: 'Work Permit' },
-        { key: 'visa_expiry_date', label: 'visa_expiry_date', type: 'date' },
-        { key: 'iqama_number', label: 'iqama_number ' },
-        { key: 'insurance_number', label: 'insurance_number' },
-      ].map(({ key, label, type }) => (
-        <div key={key}>
-          {errors[key] && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>}
-          <Input
-            name={key}
-            placeholder={label}
-            type={type || 'text'}
-            value={formData[key]}
-            onChange={handleChange}
-          />
-        </div>
-      ))}
+  { key: 'phno', label: 'Phone number' },
+  { key: 'passport_number', label: 'passport_number' },
+  // { key: 'workPermit', label: 'Work Permit' },
+  { key: 'visa_expiry_date', label: 'visa_expiry_date', type: 'date' },
+  { key: 'iqama_number', label: 'iqama_number ' },
+  { key: 'insurance_number', label: 'insurance_number' },
+].map(({ key, label, type }) => (
+  <div key={key}>
+    {errors[key] && (
+      <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>
+    )}
+    <Input
+      name={key}
+      placeholder={label}
+      type={key === 'visa_expiry_date' ? 'text' : type || 'text'}
+      value={formData[key]}
+      onChange={handleChange}
+       autoComplete="off"
+      onFocus={
+        key === 'visa_expiry_date'
+          ? (e) => (e.target.type = 'date')
+          : undefined
+      }
+      onBlur={
+        key === 'visa_expiry_date'
+          ? (e) => {
+              if (!e.target.value) e.target.type = 'text';
+            }
+          : undefined
+      }
+    />
+  </div>
+))}
+
 
       <FlexRow>
         <ApproveButton onClick={handleSubmit}>Next</ApproveButton>

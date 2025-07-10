@@ -184,7 +184,7 @@ export default function Sidebar() {
             />
             <button onClick={handlePasswordChange} style={{
               width: '100%', marginTop: '20px', padding: '10px',
-              backgroundColor: 'transparent'
+              backgroundColor: 'blue'
 , color: 'white', border: 'none', borderRadius: '5px'
             }}>
               Change Password
