@@ -26,6 +26,7 @@ class EmployeePayrollRecord(models.Model):
     tax_regime = models.CharField(max_length=10, choices=EmpBankPaymentModel.TAX_REGIMES, blank=True, null=True)
     pan_number = models.CharField(max_length=15, blank=True, null=True)
     account_number = models.CharField(max_length=30, blank=True, null=True)
+    payslip_file = models.FileField(upload_to='payslips/', null=True, blank=True)
 
     class Meta:
         unique_together = ('employee', 'month', 'year')

@@ -169,3 +169,68 @@ class PayrollRecordDetailView(RetrieveAPIView):
     serializer_class = EmployeePayrollRecordSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'id'
+
+
+# views.py
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.http import HttpResponse
+from .models import EmployeePayrollRecord
+from .serializers import EmployeePayrollRecordSerializer
+from employee.models import Employee_db
+from .utils import generate_payslip_pdf
+class EmployeePayslipView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        employee = Employee_db.objects.get(user=request.user)
+        year = request.query_params.get('year')
+        month = request.query_params.get('month')
+
+        queryset = EmployeePayrollRecord.objects.filter(employee=employee)
+        if year:
+            queryset = queryset.filter(year=year)
+        if month:
+            queryset = queryset.filter(month__iexact=month)
+
+        serializer = EmployeePayrollRecordSerializer(queryset, many=True)
+        return Response(serializer.data)
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from django.http import HttpResponse, Http404
+from payroll.models import EmployeePayrollRecord
+from employee.models import Employee_db
+from .utils import generate_payslip_pdf  # Make sure this points to your updated utils.py
+
+class PayslipDownloadView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        month = request.query_params.get('month')
+        year = request.query_params.get('year')
+
+        if not (month and year):
+            return HttpResponse("Month and year required", status=400)
+
+        try:
+            employee = Employee_db.objects.get(user=request.user)
+        except Employee_db.DoesNotExist:
+            return HttpResponse("Employee not found", status=404)
+
+        try:
+            record = EmployeePayrollRecord.objects.get(
+                employee=employee, month=int(month), year=int(year)
+            )
+        except EmployeePayrollRecord.DoesNotExist:
+            raise Http404("Payroll record not found")
+
+        # Generate the PDF content using the utility function
+        pdf_bytes = generate_payslip_pdf(employee, record)
+
+        # Return as PDF response
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="Payslip_{month}_{year}.pdf"'
+        response.write(pdf_bytes)
+        return response

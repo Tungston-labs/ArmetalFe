@@ -19,11 +19,26 @@ import { addCompany, editCompany } from '../../Redux/superAdminSlice';
 const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) => {
   const dispatch = useDispatch();
 
+  const countryOptions = [
+    { code: "IN", name: "India" },
+    { code: "US", name: "United States" },
+    { code: "AE", name: "United Arab Emirates" },
+    { code: "SG", name: "Singapore" },
+    { code: "GB", name: "United Kingdom" },
+    { code: "DE", name: "Germany" },
+    { code: "FR", name: "France" },
+    { code: "JP", name: "Japan" },
+    { code: "CN", name: "China" },
+    { code: "AU", name: "Australia" },
+    { code: "CA", name: "Canada" },
+  ];
+
   const [formData, setFormData] = useState({
     name: '',
     address: '',
     email: '',
     location: '',
+    country: '',
     contact_number: '',
     modules: [],
   });
@@ -31,7 +46,6 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
   const [formErrors, setFormErrors] = useState({});
   const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
 
-  // Pre-fill form data in edit mode
   useEffect(() => {
     if (isEdit && selectedCompany) {
       const modulesChecked = allModules.filter((mod) => selectedCompany.modules?.[mod]);
@@ -40,6 +54,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
         address: selectedCompany.address || '',
         email: selectedCompany.email || '',
         location: selectedCompany.location || '',
+        country: selectedCompany.country || '',
         contact_number: selectedCompany.contact_number || '',
         modules: modulesChecked,
       });
@@ -69,6 +84,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     if (!formData.address.trim()) errors.address = "Address is required.";
     if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Valid email is required.";
     if (!formData.location.trim()) errors.location = "Location is required.";
+    if (!formData.country) errors.country = "Country is required.";
     if (!formData.contact_number.trim() || !/^\d{7,15}$/.test(formData.contact_number)) {
       errors.contact_number = "Valid contact number is required.";
     }
@@ -169,6 +185,31 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
                 onChange={handleChange}
               />
               {formErrors.contact_number && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.contact_number}</p>}
+            </FormField>
+
+            <FormField>
+              <Label>Country</Label>
+              <select
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  borderRadius: '6px',
+                  border: '1px solid #ccc',
+                  backgroundColor: '#fdfdfd',
+                  color: '#333',
+                }}
+              >
+                <option value="">-- Select Country --</option>
+                {countryOptions.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+              {formErrors.country && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.country}</p>}
             </FormField>
           </div>
         </FormSection>

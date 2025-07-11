@@ -15,11 +15,29 @@ def generate_company_id(location):
     digits = ''.join(random.choices(string.digits, k=3))
     return f"{letters}_arm_{location_part}_{digits}"
 
+
+COUNTRY_CHOICES = [
+    ("IN", "India"),
+    ("US", "United States"),
+    ("AE", "United Arab Emirates"),
+    ("SG", "Singapore"),
+    ("GB", "United Kingdom"),
+    ("DE", "Germany"),
+    ("FR", "France"),
+    ("JP", "Japan"),
+    ("CN", "China"),
+    ("AU", "Australia"),
+    ("CA", "Canada"),
+    
+]
+
+
 class Company(TimeStampedModel):
     company_id = models.CharField(max_length=20, unique=True, editable=False)
     name = models.CharField(max_length=255)
     address = models.TextField()
     location = models.CharField(max_length=100)
+    country = models.CharField(max_length=3, choices=COUNTRY_CHOICES, blank=True, null=True)
     contact_number = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
     modules = models.JSONField(default=dict)  # e.g. {"attendance": True, "leave": True}
