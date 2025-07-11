@@ -34,6 +34,7 @@ import {
   fetchAllBankPaymentsThunk,
   submitBankPayment,
 } from "../../Redux/employeeSlice";
+import SyncLoader from "../../Components/Loder";
 
 const ViewBankPayment = () => {
   const { id } = useParams();
@@ -94,7 +95,7 @@ const ViewBankPayment = () => {
   const handleImageChange = (e) => {
     setBankProofImage(e.target.files[0]);
   };
-
+const { loading } = useSelector((state) => state.employees);
   const handleSubmit = () => {
     if (!bankName || !accountNumber || !panNumber || !basicSalary) {
       setErrors({
@@ -124,6 +125,7 @@ const ViewBankPayment = () => {
 
     dispatch(
       submitBankPayment({
+        
         employeeId: id,
         data: formData,
         paymentId,
@@ -136,11 +138,15 @@ const ViewBankPayment = () => {
         setIsEditable(false);
       })
       .catch((err) => {
+        console.log(err)
         alert("❌ Error: " + (err.message || "Update failed"));
       });
   };
 
   return (
+    <>
+    {loading && <SyncLoader/>}
+
     <Container>
       <Header>
         <HeaderWrapper>
@@ -240,7 +246,7 @@ const ViewBankPayment = () => {
         
 
         <Table
-          readOnly={!isEditable}
+        
           records={employeeBankPayments?.results || []}
           isEditMode={isEditable}
           bankName={bankName}
@@ -274,6 +280,7 @@ const ViewBankPayment = () => {
         />
       </Section>
     </Container>
+        </>
   );
 };
 

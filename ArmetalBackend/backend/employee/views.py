@@ -10,7 +10,8 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from shared.pagination import CustomPagination
 from rest_framework import serializers
-
+from django.core.mail import send_mail
+from django.conf import settings
 # BASIC DETAILS
 
 
@@ -33,22 +34,51 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
         print(f"✅ Returning employees for company: {company.name}")
         return Employee_db.objects.filter(department__company=company).order_by('name')
 
+
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         employee = serializer.save()
+
         company = employee.department.company
         company.number_of_employees = (company.number_of_employees or 0) + 1
         company.save()
+
+        # ⚠️ Assuming employee.email and employee.password are available
+        try:
+            send_mail(
+                subject=f"Welcome to {company.name}",
+                message=f"""
+    Hello {employee.name},
+
+    You have been successfully registered as an employee at {company.name}.
+
+    Your login credentials are:
+    Username: {employee.employee_id}
+    Password: {employee.password}
+
+    Please log in and change your password as soon as possible.
+
+    Regards,
+    {company.name} HR
+    """,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[employee.email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            print(f"❌ Failed to send email to {employee.email}: {str(e)}")
 
         return Response({
             "message": "Employee created successfully.",
             "employee": EmployeeSerializer(employee).data,
             "login_credentials": {
                 "username": employee.employee_id,
-                "password": employee.password  # ⚠️ Only show once
+                "password": employee.password
             }
         }, status=status.HTTP_201_CREATED)
+
 
 
 # 2. Retrieve, Update, Delete
@@ -73,28 +103,33 @@ from .models import EmpBankPaymentModel, Employee_db
 from .serializers import EmpBankPaymentSerializer
 from user.permissions import IsHRAdmin
 from rest_framework.exceptions import NotFound
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.shortcuts import get_object_or_404
+from rest_framework import serializers
 
 class EmpBankPaymentCreateListView(generics.ListCreateAPIView):
     serializer_class = EmpBankPaymentSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
         employee_id = self.kwargs.get('employee_id')
         return EmpBankPaymentModel.objects.filter(employee__id=employee_id)
 
-def perform_create(self, serializer):
-    employee_id = self.kwargs.get('employee_id')
-    employee = get_object_or_404(Employee_db, id=employee_id)
+    def perform_create(self, serializer):  # ✅ Move this method **inside** the class
+        employee_id = self.kwargs.get('employee_id')
+        employee = get_object_or_404(Employee_db, id=employee_id)
 
-    if EmpBankPaymentModel.objects.filter(employee=employee).exists():
-        raise serializers.ValidationError("Bank payment record already exists for this employee.")
+        if EmpBankPaymentModel.objects.filter(employee=employee).exists():
+            raise serializers.ValidationError("Bank payment record already exists for this employee.")
 
-    serializer.save(employee=employee)
+        serializer.save(employee=employee)
+
 
 class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EmpBankPaymentSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
-  
+    parser_classes = [MultiPartParser, FormParser]
     def get_queryset(self):
         employee_id = self.kwargs.get('employee_id')
         return EmpBankPaymentModel.objects.filter(employee_id=employee_id)

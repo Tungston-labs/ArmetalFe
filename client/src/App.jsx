@@ -36,14 +36,15 @@ import PayrollFinal from "./Pages/payroll/PayrollFinal.jsx"
 import ForgetPassword from "./Pages/login/ForgetPassword.jsx"
 import Verification from "./Pages/login/Verification.jsx"
 import NewPassword from "./Pages/login/NewPassword.jsx"
+import Loder from "./Components/Loder.jsx";
 function App() {
   return (
     <>
       <Routes>
-
+<Route path="/loader" element={<Loder/> }/>
         <Route path="/login" element={<LoginForm />} />
-   <Route path="/forget-password" element={<ForgetPassword />} />
-      <Route path="/verification" element={<Verification />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/verification" element={<Verification />} />
          <Route path="/new-password" element={<NewPassword />} />
         <Route path="/payrolls" element={<Payroll1 />} />
         <Route element={<RequireAuth />}>
