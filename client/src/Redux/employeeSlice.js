@@ -27,19 +27,26 @@ export const submitEmployee = createAsyncThunk(
       // Convert formData to FormData object
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          form.append(key, value);
+          if (key === "profilePic") {
+            form.append("profile_pic", value);
+          } else if (key === "department") {
+            form.append("department_id", value); // ✅ this line is correct!
+          } else {
+            form.append(key, value);
+          }
         }
       });
+      
 
       if (formData.id) {
         return await updateEmployee(formData.id, form);
       } else {
-        return await createEmployee(formData); // if creation also expects multipart
+        return await createEmployee(form); // if creation also expects multipart
       }
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || 'Something went wrong.'
-      );
+      return thunkAPI.
+       rejectWithValue(err.response?.data || err.message);
+    
     }
   }
 );
@@ -63,29 +70,26 @@ export const submitBankPayment = createAsyncThunk(
   'employee/submitBankPayment',
   async ({ employeeId, data, paymentId = null, bankProofImage = null }, thunkAPI) => {
     try {
-      let payloadToSend;
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
 
       if (bankProofImage) {
-        payloadToSend = new FormData();
-        Object.entries(data).forEach(([key, value]) => {
-          payloadToSend.append(key, value);
-        });
-        payloadToSend.append('bank_proof_image', bankProofImage);
-      } else {
-        payloadToSend = data;
+        formData.append('bank_proof_image', bankProofImage);
       }
 
       const response = paymentId
-        ? await updateBankPayment(employeeId, paymentId, payloadToSend, bankProofImage)
-        : await createBankPayment(employeeId, payloadToSend, bankProofImage);
+        ? await updateBankPayment(employeeId, paymentId, formData)
+        : await createBankPayment(employeeId, formData);
 
-      if (!paymentId) thunkAPI.dispatch(setBankPaymentId(response.id));
       return response;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || 'Error saving bank payment.');
+      return thunkAPI.rejectWithValue(err|| 'Error saving bank payment.');
     }
   }
 );
+
 
 
 

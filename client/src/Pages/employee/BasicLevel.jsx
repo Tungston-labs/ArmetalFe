@@ -8,10 +8,9 @@ import {
 import { getDepartments } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container, Header, RoleInfo, Stepper, Step, FormSection, Input,
-  TextArea, Button, Title, Subtitle, SectionTitle,
-  InfoGrid, FlexRow, ProfileImage, ApproveButton, Hr,
-  InfoSection, FullWidthInput, TwoColumnRow, TwoColumnRows, TwoColumn
+  Container, Header, RoleInfo, Title, Subtitle, Hr,
+  InfoGrid, FlexRow, ProfileImage, ApproveButton,
+  FullWidthInput, TwoColumn, TwoColumnRow, TwoColumnRows, SectionTitle, Input, InfoSection
 } from './BasicLevel.Styles';
 import Multistep from '../../Components/Multistep';
 
@@ -24,6 +23,7 @@ export default function AddEmployeeForm() {
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const stepTitles = ['Basic Info', 'Job Details', 'Legal Info'];
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -36,7 +36,6 @@ export default function AddEmployeeForm() {
     department: '',
     employment_type: '',
     passport_number: '',
-    // workPermit: '',
     visa_expiry_date: '',
     iqama_number: '',
     insurance_number: '',
@@ -56,92 +55,146 @@ export default function AddEmployeeForm() {
   const validateForm = () => {
     const newErrors = {};
 
-    for (const [key, value] of Object.entries(formData)) {
-      if (typeof value === 'string' && !value.trim()) {
-        newErrors[key] = 'This field is required';
-      }
+     // Required fields
+  const requiredFields = [
+    'name',
+    'address',
+    'email',
+    'dob',
+    'phno',
+    'gender',
+    'designation',
+    'department',
+    'employment_type',
+    'joining_date',
+    'passport_number',
+    'visa_expiry_date',
+    'insurance_number',
+  ];
+
+  requiredFields.forEach((field) => {
+    if (!formData[field] || !formData[field].toString().trim()) {
+      newErrors[field] = 'This field is required';
     }
+  });
 
     const phoneRegex = /^[0-9]{10}$/;
     if (formData.phno && !phoneRegex.test(formData.phno.trim())) {
-      newErrors.phoneNumber = 'Enter a valid 10-digit phone number';
+      newErrors.phno = 'Enter a valid 10-digit phone number';
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailRegex.test(formData.email.trim())) {
+      newErrors.email = alert('Enter a valid email address')
+    } 
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+//   const handleSubmit = () => {
+//     if (!validateForm()) return;
+
+//     const formPayload = new FormData();
+//     const payload = {
+//       name: formData.name,
+//       email: formData.email,
+//       phno: formData.phno,
+//       address: formData.address,
+//       dob: new Date(formData.dob).toISOString().split("T")[0],
+//       gender: formData.gender,
+//       designation: formData.designation,
+//       joining_date: new Date(formData.joining_date).toISOString().split("T")[0],
+//       department_id: parseInt(formData.department),
+//       employment_type: formData.employment_type,
+//       passport_number: formData.passport_number,
+//       visa_expiry_date: new Date(formData.visa_expiry_date).toISOString().split("T")[0],
+//       iqama_number: formData.iqama_number,
+//       insurance_number: formData.insurance_number,
+//     };
+    
+//     for (const [key, value] of Object.entries(payload)) {
+//       if (value) formPayload.append(key, value);
+//     }
+
+//     if (formData.profilePic) {
+//       formPayload.append("profile_pic", formData.profilePic);
+//     }
+
+//     dispatch(submitEmployee(formData)).then((res) => {
+//       if (res.meta.requestStatus === 'fulfilled') {
+//         const id = res.payload?.id || res.payload?.employee?.id;
+//         if (id) {
+//           dispatch(setEmployeeId(id));
+//           dispatch(setBasicFormData(formData));
+//           navigate('/bank-payment');
+//         }
+//       } else {
+//   const backendErrors = res.payload;
+
+// if (backendErrors && typeof backendErrors === 'object') {
+//   const newErrors = { ...errors };
+
+//   for (const field in backendErrors) {
+//     let message = Array.isArray(backendErrors[field])
+//       ? backendErrors[field][0]
+//       : backendErrors[field];
+
+//     // ✅ Customize specific messages
+//     if (field === 'email' && message.includes('already exists')) {
+//       message = 'Email is already registered';
+//     } else if (field === 'phno' && message.includes('already exists')) {
+//       message = 'Phone number is already registered';
+//     }
+
+//     newErrors[field] = message;
+//   }
+
+//   setErrors(newErrors);
+// }
+//       }
+
+//     });
+//   };
 const handleSubmit = () => {
-  console.log('🔄 Submitting form...');
+  if (!validateForm()) return;
 
-  if (!validateForm()) {
-    console.log('❌ Validation failed');
-    return; // exit if form is invalid
-  }
-
-  // ✅ now proceed to prepare FormData and submit
-  const formPayload = new FormData();
-  const payload = {
-    name: formData.name,
-    email: formData.email,
-    phno: formData.phno,
-    address: formData.address,
-    dob: new Date(formData.dob).toISOString().split("T")[0],
-    gender: formData.gender,
-    designation: formData.designation,
-    joining_date: new Date(formData.joining_date).toISOString().split("T")[0],
-    department_id: parseInt(formData.department),
-    employment_type: formData.employment_type,
-    passport_number: formData.passport_number,
-    visa_expiry_date: new Date(formData.visa_expiry_date).toISOString().split("T")[0],
-    iqama_number: formData.iqama_number,
-    insurance_number: formData.insurance_number,
-  };
-  console.log("payload",payload)
-
-  for (const [key, value] of Object.entries(payload)) {
-    if (value !== '' && value !== undefined && value !== null) {
-      formPayload.append(key, value);
-    }
-  }
-
-  if (formData.profilePic) {
-    formPayload.append("profile_pic", formData.profilePic);
-  }
-console.log("formPayload",formPayload)
-  dispatch(submitEmployee(formPayload)).then((res) => {
+  dispatch(submitEmployee(formData)).then((res) => {
     if (res.meta.requestStatus === 'fulfilled') {
       const id = res.payload?.id || res.payload?.employee?.id;
       if (id) {
         dispatch(setEmployeeId(id));
         dispatch(setBasicFormData(formData));
         navigate('/bank-payment');
-      } else {
-        console.error('ID not found in response:', res.payload);
       }
     } else {
-      const err = res.payload;
-      if (err && typeof err === 'object') {
+      const backendErrors = res.payload;
+
+      if (backendErrors && typeof backendErrors === 'object') {
         const newErrors = {};
-        for (let key in err) {
-          newErrors[key] = Array.isArray(err[key]) ? err[key][0] : err[key];
+
+        for (const field in backendErrors) {
+          let message = Array.isArray(backendErrors[field])
+            ? backendErrors[field][0]
+            : backendErrors[field];
+
+          if (field === 'email' && message.includes('already exists')) {
+            message = 'Email is already registered';
+          } else if (field === 'phno' && message.includes('already exists')) {
+            message = 'Phone number is already registered';
+          }
+
+          newErrors[field] = message;
         }
+
         setErrors(newErrors);
-      } else {
-        console.error('Employee creation failed:', err);
       }
     }
   });
-}; 
-
-
-
-
-  
+};
 
   return (
     <Container>
-      {/* Header Section */}
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <img src="/images/employee.png" alt="Icon" style={{ height: '50px' }} />
@@ -158,56 +211,36 @@ console.log("formPayload",formPayload)
 
       <Hr />
 
-      <div style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
         <div style={{ width: '50%' }}>
           <Multistep currentStep={currentStep} steps={stepTitles} />
         </div>
       </div>
 
-      {/* Profile Upload */}
       <InfoGrid>
         <div style={{ position: 'relative', display: 'inline-block' }}>
           <ProfileImage
             src={formData.profilePic ? URL.createObjectURL(formData.profilePic) : "https://i.pravatar.cc/100?img=5"}
             alt="Employee"
-            style={{ width: '100px', height: '100px', borderRadius: '50%' }}
           />
-          <label
-            htmlFor="profile-upload"
-            style={{
-              position: 'absolute',
-              top: '-5px',
-              right: '-5px',
-              background: '#001F3F',
-              color: 'white',
-              borderRadius: '50%',
-              width: '24px',
-              height: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '16px',
-              cursor: 'pointer',
-              boxShadow: '0 0 4px rgba(0,0,0,0.3)',
-            }}
-          >
-            +
-          </label>
+          <label htmlFor="profile-upload" style={{
+            position: 'absolute',
+            top: '-5px', right: '-5px', background: '#001F3F', color: 'white',
+            borderRadius: '50%', width: '24px', height: '24px', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', fontSize: '16px', cursor: 'pointer'
+          }}>+</label>
           <input
             id="profile-upload"
             type="file"
             accept="image/*"
-            onChange={(e) => {
-              setFormData((prev) => ({
-                ...prev,
-                profilePic: e.target.files[0],
-              }));
-            }}
+            onChange={(e) => setFormData((prev) => ({
+              ...prev,
+              profilePic: e.target.files[0],
+            }))}
             style={{ display: 'none' }}
           />
         </div>
 
-        {/* Basic Info Fields */}
         <TwoColumn>
           <div>
             {errors.name && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name}</p>}
@@ -270,7 +303,6 @@ console.log("formPayload",formPayload)
 
       <Hr />
 
-      {/* Job Details Section */}
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
         <div>
@@ -302,15 +334,7 @@ console.log("formPayload",formPayload)
             value={formData.department}
              autoComplete="off"
             onChange={handleChange}
-            style={{
-              width: '100%',
-              padding: '0.5rem',
-              fontSize: '1rem',
-              borderRadius: '6px',
-              border: '1px solid #ccc',
-              background: 'white',
-              color: '#999999',
-            }}
+            style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
           >
             <option value="">Select Department</option>
             {departmentList.map((dept) => (
@@ -318,7 +342,6 @@ console.log("formPayload",formPayload)
             ))}
           </select>
         </div>
-
         <div>
           {errors.employment_type && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.employment_type}</p>}
           <select
@@ -344,7 +367,6 @@ console.log("formPayload",formPayload)
         </div>
       </TwoColumnRows>
 
-      {/* Legal Info Section */}
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
       {[
   { key: 'phno', label: 'Phone number' },
@@ -387,7 +409,7 @@ console.log("formPayload",formPayload)
       </FlexRow>
 
       {status === 'loading' && <p>Submitting...</p>}
-      {status === 'failed' && <p style={{ color: 'red' }}>{error}</p>}
+
     </Container>
   );
 }

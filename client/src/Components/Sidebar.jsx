@@ -6,14 +6,13 @@ import { HiMiniArrowRightEndOnRectangle } from "react-icons/hi2";
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  SidebarContainer,
-  TopSection,
+  SidebarContainer, 
   Logo,
   Nav,
   BottomSection,
   LogoutButton,
   ToggleButton,
-  CustomLink,
+  CustomLink,TopSection,
   ChangePasswordLink
 } from './Sidebar.styles';
 
