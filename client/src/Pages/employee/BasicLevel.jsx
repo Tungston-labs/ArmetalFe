@@ -92,70 +92,106 @@ export default function AddEmployeeForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (!validateForm()) return;
+//   const handleSubmit = () => {
+//     if (!validateForm()) return;
 
-    const formPayload = new FormData();
-    const payload = {
-      name: formData.name,
-      email: formData.email,
-      phno: formData.phno,
-      address: formData.address,
-      dob: new Date(formData.dob).toISOString().split("T")[0],
-      gender: formData.gender,
-      designation: formData.designation,
-      joining_date: new Date(formData.joining_date).toISOString().split("T")[0],
-      department_id: parseInt(formData.department),
-      employment_type: formData.employment_type,
-      passport_number: formData.passport_number,
-      visa_expiry_date: new Date(formData.visa_expiry_date).toISOString().split("T")[0],
-      iqama_number: formData.iqama_number,
-      insurance_number: formData.insurance_number,
-    };
+//     const formPayload = new FormData();
+//     const payload = {
+//       name: formData.name,
+//       email: formData.email,
+//       phno: formData.phno,
+//       address: formData.address,
+//       dob: new Date(formData.dob).toISOString().split("T")[0],
+//       gender: formData.gender,
+//       designation: formData.designation,
+//       joining_date: new Date(formData.joining_date).toISOString().split("T")[0],
+//       department_id: parseInt(formData.department),
+//       employment_type: formData.employment_type,
+//       passport_number: formData.passport_number,
+//       visa_expiry_date: new Date(formData.visa_expiry_date).toISOString().split("T")[0],
+//       iqama_number: formData.iqama_number,
+//       insurance_number: formData.insurance_number,
+//     };
     
-    for (const [key, value] of Object.entries(payload)) {
-      if (value) formPayload.append(key, value);
-    }
+//     for (const [key, value] of Object.entries(payload)) {
+//       if (value) formPayload.append(key, value);
+//     }
 
-    if (formData.profilePic) {
-      formPayload.append("profile_pic", formData.profilePic);
-    }
+//     if (formData.profilePic) {
+//       formPayload.append("profile_pic", formData.profilePic);
+//     }
 
-    dispatch(submitEmployee(formPayload)).then((res) => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        const id = res.payload?.id || res.payload?.employee?.id;
-        if (id) {
-          dispatch(setEmployeeId(id));
-          dispatch(setBasicFormData(formData));
-          navigate('/bank-payment');
-        }
-      } else {
-  const backendErrors = res.payload;
+//     dispatch(submitEmployee(formData)).then((res) => {
+//       if (res.meta.requestStatus === 'fulfilled') {
+//         const id = res.payload?.id || res.payload?.employee?.id;
+//         if (id) {
+//           dispatch(setEmployeeId(id));
+//           dispatch(setBasicFormData(formData));
+//           navigate('/bank-payment');
+//         }
+//       } else {
+//   const backendErrors = res.payload;
 
-if (backendErrors && typeof backendErrors === 'object') {
-  const newErrors = { ...errors };
+// if (backendErrors && typeof backendErrors === 'object') {
+//   const newErrors = { ...errors };
 
-  for (const field in backendErrors) {
-    let message = Array.isArray(backendErrors[field])
-      ? backendErrors[field][0]
-      : backendErrors[field];
+//   for (const field in backendErrors) {
+//     let message = Array.isArray(backendErrors[field])
+//       ? backendErrors[field][0]
+//       : backendErrors[field];
 
-    // ✅ Customize specific messages
-    if (field === 'email' && message.includes('already exists')) {
-      message = 'Email is already registered';
-    } else if (field === 'phno' && message.includes('already exists')) {
-      message = 'Phone number is already registered';
-    }
+//     // ✅ Customize specific messages
+//     if (field === 'email' && message.includes('already exists')) {
+//       message = 'Email is already registered';
+//     } else if (field === 'phno' && message.includes('already exists')) {
+//       message = 'Phone number is already registered';
+//     }
 
-    newErrors[field] = message;
-  }
+//     newErrors[field] = message;
+//   }
 
-  setErrors(newErrors);
-}
+//   setErrors(newErrors);
+// }
+//       }
+
+//     });
+//   };
+const handleSubmit = () => {
+  if (!validateForm()) return;
+
+  dispatch(submitEmployee(formData)).then((res) => {
+    if (res.meta.requestStatus === 'fulfilled') {
+      const id = res.payload?.id || res.payload?.employee?.id;
+      if (id) {
+        dispatch(setEmployeeId(id));
+        dispatch(setBasicFormData(formData));
+        navigate('/bank-payment');
       }
+    } else {
+      const backendErrors = res.payload;
 
-    });
-  };
+      if (backendErrors && typeof backendErrors === 'object') {
+        const newErrors = {};
+
+        for (const field in backendErrors) {
+          let message = Array.isArray(backendErrors[field])
+            ? backendErrors[field][0]
+            : backendErrors[field];
+
+          if (field === 'email' && message.includes('already exists')) {
+            message = 'Email is already registered';
+          } else if (field === 'phno' && message.includes('already exists')) {
+            message = 'Phone number is already registered';
+          }
+
+          newErrors[field] = message;
+        }
+
+        setErrors(newErrors);
+      }
+    }
+  });
+};
 
   return (
     <Container>
@@ -208,24 +244,35 @@ if (backendErrors && typeof backendErrors === 'object') {
         <TwoColumn>
           <div>
             {errors.name && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name}</p>}
-            <Input name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
+            <Input name="name" placeholder="Name" value={formData.name} onChange={handleChange} autoComplete="off" />
           </div>
           <div>
             {errors.email && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.email}</p>}
-            <Input name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
+            <Input name="email" placeholder="Email ID" value={formData.email} onChange={handleChange} autoComplete="off" />
           </div>
         </TwoColumn>
 
         <InfoSection>
           <div>
             {errors.address && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.address}</p>}
-            <FullWidthInput name="address" placeholder="Address" value={formData.address} onChange={handleChange} />
+            <FullWidthInput name="address" placeholder="Address" value={formData.address} onChange={handleChange} autoComplete="off"/>
           </div>
 
           <TwoColumnRow>
             <div>
               {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
-              <Input type="date" name="dob" value={formData.dob} onChange={handleChange} />
+              <Input
+  type="text"
+  name="dob"
+  value={formData.dob}
+  onChange={handleChange}
+  autoComplete="off"
+  placeholder="Date of Birth"
+  onFocus={(e) => (e.target.type = 'date')}
+  onBlur={(e) => {
+    if (!e.target.value) e.target.type = 'text';
+  }}
+/>
             </div>
             <div>
               {errors.gender && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.gender}</p>}
@@ -233,7 +280,16 @@ if (backendErrors && typeof backendErrors === 'object') {
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
+                 autoComplete="off"
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  fontSize: '1rem',
+                  borderRadius: '6px',
+                  border: '1px solid #ccc',
+                  background: 'white',
+                  color: '#999999',
+                }}
               >
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
@@ -251,11 +307,22 @@ if (backendErrors && typeof backendErrors === 'object') {
       <TwoColumnRows>
         <div>
           {errors.designation && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.designation}</p>}
-          <Input name="designation" placeholder="Designation" value={formData.designation} onChange={handleChange} />
+          <Input name="designation" placeholder=" Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
         </div>
         <div>
           {errors.joining_date && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.joining_date}</p>}
-          <Input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} />
+          <Input
+  type="text"
+  name="joining_date"
+  value={formData.joining_date}
+  onChange={handleChange}
+   autoComplete="off"
+  placeholder="Joining Date"
+  onFocus={(e) => (e.target.type = 'date')}
+  onBlur={(e) => {
+    if (!e.target.value) e.target.type = 'text';
+  }}
+/>
         </div>
       </TwoColumnRows>
 
@@ -264,6 +331,8 @@ if (backendErrors && typeof backendErrors === 'object') {
           {errors.department && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.department}</p>}
           <select
             name="department"
+            value={formData.department}
+             autoComplete="off"
             onChange={handleChange}
             style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
           >
@@ -279,7 +348,16 @@ if (backendErrors && typeof backendErrors === 'object') {
             name="employment_type"
             value={formData.employment_type}
             onChange={handleChange}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
+             autoComplete="off"
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              fontSize: '1rem',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+              background: 'white',
+              color: '#999999',
+            }}
           >
             <option value="">Select Employment Type</option>
             <option value="Full-time">Full-time</option>
@@ -291,23 +369,40 @@ if (backendErrors && typeof backendErrors === 'object') {
 
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
       {[
-        { key: 'phno', label: 'Phone Number' },
-        { key: 'passport_number', label: 'Passport Number' },
-        { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date' },
-        { key: 'iqama_number', label: 'Iqama Number' },
-        { key: 'insurance_number', label: 'Insurance Number' },
-      ].map(({ key, label, type }) => (
-        <div key={key}>
-          {errors[key] && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>}
-          <Input
-            name={key}
-            placeholder={label}
-            type={type || 'text'}
-            value={formData[key]}
-            onChange={handleChange}
-          />
-        </div>
-      ))}
+  { key: 'phno', label: 'Phone number' },
+  { key: 'passport_number', label: 'passport_number' },
+  // { key: 'workPermit', label: 'Work Permit' },
+  { key: 'visa_expiry_date', label: 'visa_expiry_date', type: 'date' },
+  { key: 'iqama_number', label: 'iqama_number ' },
+  { key: 'insurance_number', label: 'insurance_number' },
+].map(({ key, label, type }) => (
+  <div key={key}>
+    {errors[key] && (
+      <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>
+    )}
+    <Input
+      name={key}
+      placeholder={label}
+      type={key === 'visa_expiry_date' ? 'text' : type || 'text'}
+      value={formData[key]}
+      onChange={handleChange}
+       autoComplete="off"
+      onFocus={
+        key === 'visa_expiry_date'
+          ? (e) => (e.target.type = 'date')
+          : undefined
+      }
+      onBlur={
+        key === 'visa_expiry_date'
+          ? (e) => {
+              if (!e.target.value) e.target.type = 'text';
+            }
+          : undefined
+      }
+    />
+  </div>
+))}
+
 
       <FlexRow>
         <ApproveButton onClick={handleSubmit}>Next</ApproveButton>

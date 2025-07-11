@@ -27,14 +27,21 @@ export const submitEmployee = createAsyncThunk(
       // Convert formData to FormData object
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          form.append(key, value);
+          if (key === "profilePic") {
+            form.append("profile_pic", value);
+          } else if (key === "department") {
+            form.append("department_id", value); // ✅ this line is correct!
+          } else {
+            form.append(key, value);
+          }
         }
-      }); 
+      });
+      
 
       if (formData.id) {
         return await updateEmployee(formData.id, form);
       } else {
-        return await createEmployee(formData); // if creation also expects multipart
+        return await createEmployee(form); // if creation also expects multipart
       }
     } catch (err) {
       return thunkAPI.
