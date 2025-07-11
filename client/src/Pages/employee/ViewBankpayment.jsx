@@ -80,10 +80,10 @@ const ViewBankPayment = () => {
       setSwiftCode(latest.swift_code || "");
       setPaymentMode(latest.payment_mode || "");
       setAccountNumber(latest.account_number || "");
-      setUanNumber(latest.uan_number || "");
+       setUanNumber(latest.uan_epf_number || "");
       setPanNumber(latest.pan_number || "");
       setTaxRegime(latest.tax_regime || "");
-      setTdsAmount(latest.tds_amount || "");
+          setTdsAmount(latest.tds_deduction_amount || "");
       setDeclaration80C(String(latest.declaration_80c) || "");
       setBasicSalary(latest.basic_salary || "");
       setSalaryIncrement(latest.salary_increment || "");
