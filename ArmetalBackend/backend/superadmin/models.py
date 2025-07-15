@@ -72,6 +72,7 @@ class CompanySubscription(TimeStampedModel):
     def __str__(self):
         return f"{self.company.name} - {month_name[self.month]} {self.year} ({self.status})"
 
+  
     def save(self, *args, **kwargs):
         if self.amount is None or self.amount == 0:
             rate, currency = self.get_rate_per_employee_and_currency()

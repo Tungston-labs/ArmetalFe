@@ -57,6 +57,12 @@ from django.utils.timezone import now
 from .models import Company, CompanySubscription
 from .serializers import CompanySubscriptionSerializer
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.utils.timezone import now
+from .models import Company, CompanySubscription
+from .serializers import CompanySubscriptionSerializer
+
 class CompanySubscriptionListCreateView(APIView):
     """
     GET: Return all 12 months for a company/year (generate missing).
@@ -80,6 +86,7 @@ class CompanySubscriptionListCreateView(APIView):
 
         serializer = CompanySubscriptionSerializer(subs, many=True)
         return Response(serializer.data)
+
 
 
 class MarkSubscriptionPaidView(UpdateAPIView):
