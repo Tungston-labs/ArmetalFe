@@ -63,7 +63,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
     Regards,
     {company.name} HR
     """,
-                from_email=settings.EMAIL_HOST_USER,
+                from_email=company.email,
                 recipient_list=[employee.email],
                 fail_silently=False,
             )

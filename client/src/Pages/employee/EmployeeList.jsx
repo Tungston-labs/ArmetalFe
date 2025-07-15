@@ -135,7 +135,7 @@ console.log("loading",loading)
               <tr key={emp.id}>
                 <td>{index + 1 + (page - 1) * 7}</td>
                 <td>
-                  <ProfileImg src={emp.profile_pic || "/profile-placeholder.png"} alt="profile" />
+                  <ProfileImg src={emp.profile_pic || "/profile-placeholder.png"} alt="" />
                   {emp.name}
                 </td>
                 <td>{emp.employee_id}</td>

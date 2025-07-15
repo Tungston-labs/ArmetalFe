@@ -15,7 +15,11 @@ export const fetchCompany = async (page = 1, search = '') => {
 
 // POST: Create a Company
 export const createCompany = async (data) => {
-  const response = await API.post("/create-company/",data);
+  const response = await API.post("/create-company/",data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 
@@ -27,7 +31,11 @@ export const fetchCompanyById = async (id) => {
 
 // PUT: compny  by ID
 export const updateCompany = async (id, data) => {
-  const response = await API.put(`/companies/${id}/`, data);
+  const response = await API.put(`/companies/${id}/`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 

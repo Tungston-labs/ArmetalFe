@@ -13,7 +13,6 @@ import {
   Label,
   LogoUploadBox,
   LogoPreview,
-  
 } from './AddCompany.Styles';
 import { GoArrowLeft } from "react-icons/go";
 import { useDispatch } from 'react-redux';
@@ -25,20 +24,34 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
   const dispatch = useDispatch();
   const fileInputRef = useRef();
 
-  const countryOptions = [
-    { code: "IN", name: "India" },
-    { code: "US", name: "United States" },
-    { code: "AE", name: "United Arab Emirates" },
-    { code: "SA", name: "Saudi Arabia" },
-    { code: "SG", name: "Singapore" },
-    { code: "GB", name: "United Kingdom" },
-    { code: "DE", name: "Germany" },
-    { code: "FR", name: "France" },
-    { code: "JP", name: "Japan" },
-    { code: "CN", name: "China" },
-    { code: "AU", name: "Australia" },
-    { code: "CA", name: "Canada" },
+  const countryDialCodes = [
+    { code: '+971', label: 'UAE (+971)' },
+    { code: '+966', label: 'Saudi Arabia (+966)' },
+    { code: '+965', label: 'Kuwait (+965)' },
+    { code: '+973', label: 'Bahrain (+973)' },
+    { code: '+968', label: 'Oman (+968)' },
+    { code: '+974', label: 'Qatar (+974)' },
+    { code: '+91', label: 'India (+91)' },
+    { code: '+880', label: 'Bangladesh (+880)' },
+    { code: '+92', label: 'Pakistan (+92)' },
   ];
+
+  const COUNTRY_CHOICES = [
+    { code: 'IN', name: 'India' },
+    { code: 'US', name: 'United States' },
+    { code: 'AE', name: 'United Arab Emirates' },
+    { code: 'SG', name: 'Singapore' },
+    { code: 'GB', name: 'United Kingdom' },
+    { code: 'DE', name: 'Germany' },
+    { code: 'FR', name: 'France' },
+    { code: 'JP', name: 'Japan' },
+    { code: 'CN', name: 'China' },
+    { code: 'AU', name: 'Australia' },
+    { code: 'CA', name: 'Canada' },
+  ];
+  
+
+  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
 
   const [formData, setFormData] = useState({
     name: '',
@@ -46,6 +59,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     email: '',
     location: '',
     country: '',
+    country_code: '+971',
     contact_number: '',
     modules: [],
     logo: null,
@@ -53,23 +67,27 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
 
   const [logoPreview, setLogoPreview] = useState(null);
   const [formErrors, setFormErrors] = useState({});
-  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
 
   useEffect(() => {
     if (isEdit && selectedCompany) {
       const modulesChecked = allModules.filter((mod) => selectedCompany.modules?.[mod]);
+
+      const match = selectedCompany.contact_number?.match(/^(\+\d{1,4})(\d{6,15})$/);
+
       setFormData({
         name: selectedCompany.name || '',
         address: selectedCompany.address || '',
         email: selectedCompany.email || '',
         location: selectedCompany.location || '',
         country: selectedCompany.country || '',
-        contact_number: selectedCompany.contact_number || '',
+        country_code: match ? match[1] : '+971',
+        contact_number: match ? match[2] : '',
         modules: modulesChecked,
         logo: null,
       });
+
       if (selectedCompany.logo) {
-        setLogoPreview(selectedCompany.logo); // if editing and already has logo
+        setLogoPreview(selectedCompany.logo);
       }
     }
   }, [isEdit, selectedCompany]);
@@ -113,9 +131,12 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Valid email is required.";
     if (!formData.location.trim()) errors.location = "Location is required.";
     if (!formData.country) errors.country = "Country is required.";
-    if (!formData.contact_number.trim() || !/^\d{7,15}$/.test(formData.contact_number)) {
-      errors.contact_number = "Valid contact number is required.";
+
+    const phoneRegex = /^\d{7,12}$/;
+    if (!formData.contact_number.trim() || !phoneRegex.test(formData.contact_number)) {
+      errors.contact_number = "Phone must be 7 to 12 digits.";
     }
+
     if (formData.modules.length === 0) errors.modules = "Select at least one module.";
 
     setFormErrors(errors);
@@ -132,7 +153,10 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     payload.append("email", formData.email);
     payload.append("location", formData.location);
     payload.append("country", formData.country);
-    payload.append("contact_number", formData.contact_number);
+
+    const fullPhone = `${formData.country_code}${formData.contact_number}`;
+    payload.append("contact_number", fullPhone);
+
     payload.append("modules", JSON.stringify(modulesObject));
     if (formData.logo) {
       payload.append("logo", formData.logo);
@@ -162,7 +186,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
           <div>
             <FormField>
               <Label>Company Name</Label>
-              <Input name="name" value={formData.name} onChange={handleChange} placeholder="Department name" />
+              <Input name="name" value={formData.name} onChange={handleChange} placeholder="Company name" />
               {formErrors.name && <p style={{ color: 'blue' }}>{formErrors.name}</p>}
             </FormField>
 
@@ -188,16 +212,41 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
 
             <FormField>
               <Label>Contact Number</Label>
-              <Input name="contact_number" value={formData.contact_number} onChange={handleChange} placeholder="Contact Number" />
-              {formErrors.contact_number && <p style={{ color: 'blue' }}>{formErrors.contact_number}</p>}
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <select
+                  name="country_code"
+                  value={formData.country_code}
+                  onChange={handleChange}
+                  style={{ width: '35%', padding: '8px' }}
+                >
+                  {countryDialCodes.map((item) => (
+                    <option key={item.code} value={item.code}>
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+
+                <Input
+                  name="contact_number"
+                  value={formData.contact_number}
+                  onChange={handleChange}
+                  placeholder="Phone number"
+                  style={{ width: '65%' }}
+                />
+              </div>
+              {formErrors.contact_number && (
+                <p style={{ color: 'blue' }}>{formErrors.contact_number}</p>
+              )}
             </FormField>
 
             <FormField>
               <Label>Country</Label>
               <select name="country" value={formData.country} onChange={handleChange}>
                 <option value="">Select country</option>
-                {countryOptions.map(c => (
-                  <option key={c.code} value={c.code}>{c.name}</option>
+                {COUNTRY_CHOICES.map((item) => (
+                  <option key={item.code} value={item.code}>
+                    {item.name}
+                  </option>
                 ))}
               </select>
               {formErrors.country && <p style={{ color: 'blue' }}>{formErrors.country}</p>}

@@ -121,7 +121,7 @@ isEditMode=false,
             <ErrorMsg msg={errors.bankName} />
             <Input placeholder="Bank name" value={bankName} onChange={(e) => setBankName(e.target.value)} />
           </FormGroup>
-    {/* <FormGroup style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
+    <FormGroup style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
   <label style={{ fontWeight: '500' }}>Upload Bank Passbook Image</label>
   
   {bankProofImage && (
@@ -143,7 +143,7 @@ isEditMode=false,
     onChange={(e) => setBankProofImage(e.target.files[0])}
     style={{ marginTop: '0.5rem',display:"flex" }}
   />
-</FormGroup> */}
+</FormGroup>
 
         </Row>
 
