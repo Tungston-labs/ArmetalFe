@@ -56,7 +56,7 @@ export const Subtitle = styled.p`
 
 export const FormWrapper = styled.div`
   background: white;
-  // padding: 30px;
+  padding: 30px;
   border-radius: 10px;
   // margin-top: 30px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);

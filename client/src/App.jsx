@@ -48,7 +48,7 @@ function App() {
          <Route path="/new-password" element={<NewPassword />} />
         <Route path="/payrolls" element={<Payroll1 />} />
         <Route element={<RequireAuth />}>
-
+        <Route path="/view/:id" element={<Viewpage />} />
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="/department" element={<Department />} />
@@ -60,7 +60,7 @@ function App() {
             <Route path="/payroll/:id" element={<Payroll />} />
             <Route path="/payrolldetails" element={<PayrollFinal />} />
             <Route path="/superadmin" element={<SuperAdmin />} />
-            <Route path="/view/:id" element={<Viewpage />} />
+    
             <Route path="/add-company" element={<AddCompany />} />
             <Route path="/employee-visa" element={<Visa />} />
             <Route path="/daily-task" element={<DailyTask />} />

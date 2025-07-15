@@ -63,27 +63,27 @@ export const ProfileImage = styled.img`
   }
 `;
 export const Select = styled.select`
- width:100%;
-              padding: 0.5rem;
-              fontSize: 1rem;
-              borderRadius: 6px;
-              border: 1px solid #ccc;
-                  background:white;
-                    color:#999999;
-`;
+    width:100%;
+                  padding: 0.5rem;
+                  fontSize: 1rem;
+                  borderRadius: 6px;
+                  border: 1px solid #ccc;
+                      background:white;
+                        color:#999999;
+    `;
 
 export const Input = styled.input`
   padding: 0.6rem 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  width: 99%;
+  width: 96%;
   margin-bottom: 1rem;
   color:#999999;
   
 `;
 
 export const TextArea = styled.textarea`
-  width: 98%;
+  width: 99%;
   min-height: 120px;
   padding: 0.8rem;
   border: 1px solid #ccc;
@@ -110,7 +110,7 @@ export const ThreeColumn = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 2rem;
-  width: 100%;
+  width: 90%;
 
 `;
 
@@ -199,7 +199,7 @@ export const InfoSection = styled.div`
 `;
 
 export const FullWidthInput = styled.input`
-  width: 97%;
+  width: 96%;
   padding: 0.6rem 1rem;
   margin-bottom: 1rem;
   border: 1px solid #ccc;
@@ -211,12 +211,12 @@ export const TwoColumnRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
-  width:97%;
+  width:100%;
 `;
 export const TwoColumnRows= styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: 2rem;
   width:100%;
 `;
 

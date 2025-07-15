@@ -5,15 +5,6 @@ import { VscSend } from "react-icons/vsc";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { generateInvoiceHTML } from '../utlis/invoiceGenerator';
-import html2pdf from 'html2pdf.js';
-import { sendInvoiceEmail } from '../utlis/emailService';
-
-
-
-
-
-
-
 import {
   SectionTitle,
   PlanCard,
@@ -32,29 +23,42 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const companyId = propCompanyId || urlCompanyId;
 
   const [paymentData, setPaymentData] = useState([]);
+  const [companyName, setCompanyName] = useState("Company");
 
   useEffect(() => {
     if (companyId) {
       fetchPaymentData(companyId);
+      fetchCompanyName(companyId); // ✅ Fetch company name
     }
   }, [companyId]);
 
   const fetchPaymentData = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`http://localhost:8000/api/subscriptions/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const res = await axios.get(`http://178.248.112.16:8000/api/subscriptions/${id}/`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (Array.isArray(res.data)) {
         setPaymentData(res.data);
-      } else {
-        console.warn("Expected array, got:", res.data);
       }
     } catch (error) {
       console.error("Failed to fetch payment data:", error);
+    }
+  };
+
+  const fetchCompanyName = async (id) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await axios.get(`http://178.248.112.16:8000/api/companies/${id}/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.data?.name) {
+        setCompanyName(res.data.name);
+      }
+    } catch (error) {
+      console.error("Failed to fetch company name:", error);
     }
   };
 
@@ -63,55 +67,67 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
     try {
       const token = localStorage.getItem("accessToken");
       await axios.patch(
-        `http://localhost:8000/api/subscriptions/mark-paid/${subscriptionId}/`,
+        `http://178.248.112.16:8000/api/subscriptions/mark-paid/${subscriptionId}/`,
         { status: newStatus },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-
-      // ✅ Refresh payment data
       await fetchPaymentData(companyId);
-
     } catch (error) {
       console.error("Failed to update status:", error);
     }
   };
 
-const handleDownload = (entry) => {
-  const html = generateInvoiceHTML(entry, "Your Company Name");
-  const opt = {
-    margin:       0.5,
-    filename:     `invoice_${entry.month_display}_${entry.year}.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  const handleDownload = (entry) => {
+    const html = generateInvoiceHTML(entry, companyName); // ✅ pass actual company name
+
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    printWindow.document.open();
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Invoice - ${entry.month_display} ${entry.year}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+            h1 { text-align: center; color: #0546A0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+            th, td { border: 1px solid #ccc; padding: 12px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            .section-title { margin-top: 40px; font-size: 20px; font-weight: bold; color: #444; }
+          </style>
+        </head>
+        <body>
+          ${html}
+          <script>
+            window.onload = function () {
+              window.print();
+              setTimeout(() => window.close(), 100);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
-  html2pdf().from(html).set(opt).save();
-};
-const handleSendEmail = async (entry) => {
-  try {
-    const token = localStorage.getItem("accessToken");
 
-    await axios.post("http://localhost:8000/api/invoice/send-email/", {
-      entry: entry,
-      company_id: entry.company,  // now sending company ID
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    });
+  const handleSendEmail = async (entry) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      await axios.post("http://178.248.112.16:8000/api/invoice/send-email/", {
+        entry: entry,
+        company_id: entry.company,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    alert("Invoice email sent successfully.");
-  } catch (error) {
-    console.error("Email send failed:", error);
-    alert("Failed to send invoice email.");
-  }
-};
+      alert("Invoice email sent successfully.");
+    } catch (error) {
+      console.error("Email send failed:", error);
+      alert("Failed to send invoice email.");
+    }
+  };
 
-  
   return (
     <>
       <SectionTitle>Payment Overview</SectionTitle>
@@ -162,12 +178,8 @@ const handleSendEmail = async (entry) => {
               paymentData.map((entry) => (
                 <TableRow key={entry.id} status={entry.status}>
                   <TableData>{entry.month_display}</TableData>
-                  <TableData>
-                    {entry.paid_date || '-'} <SlCalender />
-                  </TableData>
-                  <TableData>
-                    <strong>{entry.amount} {entry.currency}</strong>
-                  </TableData>
+                  <TableData>{entry.paid_date || '-'} <SlCalender /></TableData>
+                  <TableData><strong>{entry.amount} {entry.currency}</strong></TableData>
                   <TableData>
                     <button
                       onClick={() => handleStatusChange(entry.id, entry.status)}
@@ -190,7 +202,7 @@ const handleSendEmail = async (entry) => {
                     <button onClick={() => handleDownload(entry)} title="Download" style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
                       <MdOutlineFileDownload />
                     </button>
-                    <button title="Import" onClick={()=>handleSendEmail(entry)} style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
+                    <button title="Import" onClick={() => handleSendEmail(entry)} style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
                       <VscSend />
                     </button>
                   </TableData>
