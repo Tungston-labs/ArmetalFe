@@ -117,7 +117,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
     
 
 
-class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
+class EmployeePayrollRecordSerializer2(serializers.ModelSerializer):
     download_url = serializers.SerializerMethodField()
 
     class Meta:

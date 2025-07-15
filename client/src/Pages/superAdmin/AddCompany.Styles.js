@@ -189,3 +189,56 @@ export const FormSection = styled.div`
     width: 50%;
   }
 `;
+
+
+export const LogoUploadBox = styled.div`
+  border: 2px dashed #a1a1a1;
+  background-color: #f5f8fd;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 13px;
+  cursor: pointer;
+  width:300px;
+  height:100px;
+
+  p {
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  &:hover {
+    background-color: #eef3fb;
+  }
+`;
+
+export const LogoPreview = styled.div`
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+
+  img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: #f2f2f2;
+  }
+
+  button {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 10px;
+    color: red;
+    cursor: pointer;
+    line-height: 1;
+  }
+`;
+

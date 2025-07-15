@@ -22,6 +22,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             'location',
             'contact_number',
             'country',
+            'logo',
             'email',
             'modules',
             'number_of_employees',

@@ -11,6 +11,7 @@ export const Container = styled.div`
 export const ContentArea = styled.div`
   flex-grow: 1;
   overflow: auto;
+  width:100%;
   // margin-top: 20px; /* roughly mt-5 */
   // height: fit-content;
 `;

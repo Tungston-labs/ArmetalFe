@@ -48,13 +48,13 @@ function App() {
          <Route path="/new-password" element={<NewPassword />} />
         <Route path="/payrolls" element={<Payroll1 />} />
         <Route element={<RequireAuth />}>
-        <Route path="/view/:id" element={<Viewpage />} />
+
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="/department" element={<Department />} />
             <Route path="/departments/:id" element={<DepartmentDetails />} />
             <Route path="/employee" element={<EmployeeList />} />
-
+        <Route path="/view/:id" element={<Viewpage />} />
             <Route path="/table" element={<Table />} />
             <Route path="/holiday" element={<Holiday />} />
             <Route path="/payroll/:id" element={<Payroll />} />

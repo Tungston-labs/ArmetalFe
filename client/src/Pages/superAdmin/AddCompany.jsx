@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   FormWrapper,
   BackHeader,
@@ -10,19 +10,26 @@ import {
   Button,
   Hr,
   FormField,
-  Label
+  Label,
+  LogoUploadBox,
+  LogoPreview,
+  
 } from './AddCompany.Styles';
 import { GoArrowLeft } from "react-icons/go";
 import { useDispatch } from 'react-redux';
 import { addCompany, editCompany } from '../../Redux/superAdminSlice';
+import { FiUpload } from "react-icons/fi";
+import { AiOutlineClose } from "react-icons/ai";
 
 const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) => {
   const dispatch = useDispatch();
+  const fileInputRef = useRef();
 
   const countryOptions = [
     { code: "IN", name: "India" },
     { code: "US", name: "United States" },
     { code: "AE", name: "United Arab Emirates" },
+    { code: "SA", name: "Saudi Arabia" },
     { code: "SG", name: "Singapore" },
     { code: "GB", name: "United Kingdom" },
     { code: "DE", name: "Germany" },
@@ -41,8 +48,10 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     country: '',
     contact_number: '',
     modules: [],
+    logo: null,
   });
 
+  const [logoPreview, setLogoPreview] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
 
@@ -57,7 +66,11 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
         country: selectedCompany.country || '',
         contact_number: selectedCompany.contact_number || '',
         modules: modulesChecked,
+        logo: null,
       });
+      if (selectedCompany.logo) {
+        setLogoPreview(selectedCompany.logo); // if editing and already has logo
+      }
     }
   }, [isEdit, selectedCompany]);
 
@@ -75,11 +88,26 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     }));
   };
 
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type === "image/png") {
+      setFormData(prev => ({ ...prev, logo: file }));
+      setLogoPreview(URL.createObjectURL(file));
+    } else {
+      alert("Only PNG files are allowed.");
+    }
+  };
+
+  const removeLogo = () => {
+    setFormData(prev => ({ ...prev, logo: null }));
+    setLogoPreview(null);
+    fileInputRef.current.value = '';
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const errors = {};
-
     if (!formData.name.trim()) errors.name = "Company name is required.";
     if (!formData.address.trim()) errors.address = "Address is required.";
     if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Valid email is required.";
@@ -98,16 +126,23 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
       modulesObject[mod] = formData.modules.includes(mod);
     });
 
-    const finalData = {
-      ...formData,
-      modules: modulesObject,
-    };
+    const payload = new FormData();
+    payload.append("name", formData.name);
+    payload.append("address", formData.address);
+    payload.append("email", formData.email);
+    payload.append("location", formData.location);
+    payload.append("country", formData.country);
+    payload.append("contact_number", formData.contact_number);
+    payload.append("modules", JSON.stringify(modulesObject));
+    if (formData.logo) {
+      payload.append("logo", formData.logo);
+    }
 
     try {
       if (isEdit && selectedCompany?.id) {
-        await dispatch(editCompany({ id: selectedCompany.id, data: finalData })).unwrap();
+        await dispatch(editCompany({ id: selectedCompany.id, data: payload })).unwrap();
       } else {
-        await dispatch(addCompany(finalData)).unwrap();
+        await dispatch(addCompany(payload)).unwrap();
       }
       onClose();
     } catch (err) {
@@ -127,108 +162,86 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
           <div>
             <FormField>
               <Label>Company Name</Label>
-              <Input
-                type="text"
-                name="name"
-                placeholder="Company name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-              {formErrors.name && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.name}</p>}
+              <Input name="name" value={formData.name} onChange={handleChange} placeholder="Department name" />
+              {formErrors.name && <p style={{ color: 'blue' }}>{formErrors.name}</p>}
             </FormField>
 
             <FormField>
               <Label>Address</Label>
-              <Input
-                type="text"
-                name="address"
-                placeholder="Address"
-                value={formData.address}
-                onChange={handleChange}
-              />
-              {formErrors.address && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.address}</p>}
+              <Input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" />
+              {formErrors.address && <p style={{ color: 'blue' }}>{formErrors.address}</p>}
             </FormField>
 
             <FormField>
               <Label>Email</Label>
-              <Input
-                type="email"
-                name="email"
-                placeholder="E-mail"
-                value={formData.email}
-                onChange={handleChange}
-              />
-              {formErrors.email && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.email}</p>}
+              <Input name="email" value={formData.email} onChange={handleChange} placeholder="Company E-mail" />
+              {formErrors.email && <p style={{ color: 'blue' }}>{formErrors.email}</p>}
             </FormField>
           </div>
 
           <div>
             <FormField>
               <Label>Location</Label>
-              <Input
-                type="text"
-                name="location"
-                placeholder="Company location"
-                value={formData.location}
-                onChange={handleChange}
-              />
-              {formErrors.location && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.location}</p>}
+              <Input name="location" value={formData.location} onChange={handleChange} placeholder="Location" />
+              {formErrors.location && <p style={{ color: 'blue' }}>{formErrors.location}</p>}
             </FormField>
 
             <FormField>
               <Label>Contact Number</Label>
-              <Input
-                type="text"
-                name="contact_number"
-                placeholder="Contact number"
-                value={formData.contact_number}
-                onChange={handleChange}
-              />
-              {formErrors.contact_number && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.contact_number}</p>}
+              <Input name="contact_number" value={formData.contact_number} onChange={handleChange} placeholder="Contact Number" />
+              {formErrors.contact_number && <p style={{ color: 'blue' }}>{formErrors.contact_number}</p>}
             </FormField>
 
             <FormField>
               <Label>Country</Label>
-              <select
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  borderRadius: '6px',
-                  border: '1px solid #ccc',
-                  backgroundColor: '#fdfdfd',
-                  color: '#333',
-                }}
-              >
-                <option value="">-- Select Country --</option>
-                {countryOptions.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.name}
-                  </option>
+              <select name="country" value={formData.country} onChange={handleChange}>
+                <option value="">Select country</option>
+                {countryOptions.map(c => (
+                  <option key={c.code} value={c.code}>{c.name}</option>
                 ))}
               </select>
-              {formErrors.country && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.country}</p>}
+              {formErrors.country && <p style={{ color: 'blue' }}>{formErrors.country}</p>}
             </FormField>
           </div>
         </FormSection>
 
+        <Label>Upload logo</Label>
+        <LogoUploadBox onClick={() => fileInputRef.current.click()}>
+          <FiUpload size={24} />
+          <p>Click to upload or Drag and Drop<br />Max 00 mb File size Only png file</p>
+          <input
+            type="file"
+            accept=".png"
+            ref={fileInputRef}
+            onChange={handleLogoChange}
+            style={{ display: "none" }}
+          />
+        </LogoUploadBox>
+
+        {logoPreview && (
+          <LogoPreview>
+            <img src={logoPreview} alt="Logo" />
+            <button onClick={removeLogo} type="button">
+              <AiOutlineClose />
+            </button>
+          </LogoPreview>
+        )}
+
         <h4>Privileges</h4>
         <CheckboxGroup>
-          {allModules.map((module) => (
-            <CheckboxLabel key={module}>
+          {allModules.map((mod) => (
+            <CheckboxLabel key={mod}>
               <input
                 type="checkbox"
-                value={module}
-                checked={formData.modules.includes(module)}
+                value={mod}
+                checked={formData.modules.includes(mod)}
                 onChange={handleModuleChange}
               />
-              {module.charAt(0).toUpperCase() + module.slice(1).replace('_', ' ')}
+              {mod.charAt(0).toUpperCase() + mod.slice(1).replace('_', ' ')}
             </CheckboxLabel>
           ))}
         </CheckboxGroup>
-        {formErrors.modules && <p style={{ color: 'blue', marginTop: '4px' }}>{formErrors.modules}</p>}
+        {formErrors.modules && <p style={{ color: 'blue' }}>{formErrors.modules}</p>}
 
         <Hr />
 

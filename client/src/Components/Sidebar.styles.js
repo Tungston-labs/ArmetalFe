@@ -83,7 +83,7 @@ export const BottomSection = styled.div`
   bottom: 5px;
   left:0px;
   // width: 100%;
-  padding: 20px;
+  // padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;

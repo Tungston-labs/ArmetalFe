@@ -5,6 +5,7 @@ from shared.models import TimeStampedModel
 from django.utils.timezone import now
 from calendar import month_name
 from user.models import User
+from django.core.exceptions import ValidationError
 
 def generate_password():
     return 'CMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
@@ -43,6 +44,12 @@ class Company(TimeStampedModel):
     modules = models.JSONField(default=dict)  # e.g. {"attendance": True, "leave": True}
     number_of_employees = models.PositiveIntegerField(default=0, editable=False)
     default_password = models.CharField(max_length=50, editable=False)
+    logo = models.ImageField(
+        upload_to='company_logos/',
+        null=True,
+        blank=True,
+        help_text="Upload PNG logo only."
+    )
 
     def save(self, *args, **kwargs):
         if not self.company_id:
@@ -53,6 +60,14 @@ class Company(TimeStampedModel):
 
     def __str__(self):
         return f"{self.name} ({self.company_id})"
+    
+
+    def clean(self):
+        super().clean()
+        if self.logo:
+            if not self.logo.name.lower().endswith('.png'):
+                raise ValidationError("Only .png images are allowed for the logo.")
+
 
 
 class CompanySubscription(TimeStampedModel):
