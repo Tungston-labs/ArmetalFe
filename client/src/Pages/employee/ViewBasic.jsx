@@ -67,6 +67,7 @@ useEffect(() => {
 
     setFormData({
       ...employeeDetail,
+      id: employeeDetail.id, 
       department: deptId,
     });
   }
@@ -79,14 +80,15 @@ useEffect(() => {
   };
 
  const handleSubmit = async () => {
-  const payload = {
-    ...formData,
-    department_id: formData.department, // ✅ required for PATCH
-  };
+  // const payload = {
+  //   ...formData,
+  //   department_id: formData.department, // ✅ required for PATCH
+  // };
 
-  delete payload.department; // 🚫 remove read-only field if it exists
+  // delete payload.department; // 🚫 remove read-only field if it exists
+console.log("📤 Submitting employee", formData);
 
-  await dispatch(submitEmployee(payload));
+  await dispatch(submitEmployee(formData));
   await dispatch(getEmployeeById(id));
   setEditMode(false);
 };
@@ -120,9 +122,56 @@ useEffect(() => {
       <h3>Employee Details</h3>
 
       <FormWrapper>
-        <ImageColumn>
-          <ProfileImage src={formData.profile_pic || "/profile-placeholder.png"} alt="Profile" />
-        </ImageColumn>
+      <ImageColumn style={{ position: "relative", width: "150px" }}>
+  <ProfileImage
+    src={
+      formData.profile_pic instanceof File
+        ? URL.createObjectURL(formData.profile_pic)
+        : formData.profile_pic || "/profile-placeholder.png"
+    }
+    alt="Profile"
+    style={{ width: "150px", height: "150px", borderRadius: "50%" }}
+  />
+
+  {editMode && (
+    <>
+      <input
+        type="file"
+        name="profile_pic"
+        accept="image/*"
+        id="profilePicInput"
+        onChange={(e) =>
+          setFormData((prev) => ({
+            ...prev,
+            profile_pic: e.target.files[0],
+          }))
+        }
+        style={{ display: "none" }}
+      />
+      <label
+        htmlFor="profilePicInput"
+        style={{
+          position: "absolute",
+          bottom: "10px",
+          right: "10px",
+          backgroundColor: "#007bff",
+          color: "#fff",
+          borderRadius: "50%",
+          width: "30px",
+          height: "30px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "20px",
+          cursor: "pointer",
+        }}
+      >
+        +
+      </label>
+    </>
+  )}
+</ImageColumn>
+
 
         <Row>
           <LeftSection>

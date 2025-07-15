@@ -17,3 +17,6 @@ class DepartmentSerializer(serializers.ModelSerializer):
         model = Department
         fields = '__all__'
         read_only_fields = ['company']
+
+
+

@@ -60,7 +60,6 @@ function App() {
             <Route path="/payroll/:id" element={<Payroll />} />
             <Route path="/payrolldetails" element={<PayrollFinal />} />
             <Route path="/superadmin" element={<SuperAdmin />} />
-    
             <Route path="/add-company" element={<AddCompany />} />
             <Route path="/employee-visa" element={<Visa />} />
             <Route path="/daily-task" element={<DailyTask />} />

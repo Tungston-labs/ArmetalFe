@@ -26,7 +26,7 @@ class PublicHolidayCreateListView(generics.ListCreateAPIView):
 class PublicHolidayDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PublicHoliday.objects.all()
     serializer_class = PublicHolidaySerializer
-    permission_classes = [IsAuthenticated, IsHRAdmin]
+    permission_classes = [IsAuthenticated]
     lookup_field = 'pk'
 
 # Employee View

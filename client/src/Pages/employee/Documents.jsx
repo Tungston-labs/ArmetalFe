@@ -64,22 +64,22 @@ const [uploadErrors,setUploadErrors]= useState({});
 
   const handleSubmit = async () => {
     console.log("📤 Submit button clicked");
- const requiredFields = ['passport', 'workPermit', 'contract', 'insurance', 'certificate'];
-  const newErrors = {};
+//  const requiredFields = ['passport', 'workPermit', 'contract', 'insurance', 'certificate'];
+  // const newErrors = {};
 
-  for (const field of requiredFields) {
-    const hasLocal = selectedFiles[field]?.length > 0;
-    const hasUploaded = documentUrls[field]?.length > 0;
-    if (!hasLocal && !hasUploaded) {
-      newErrors[field] = `${field} is required`;
-    }
-  }
+  // for (const field of requiredFields) {
+  //   const hasLocal = selectedFiles[field]?.length > 0;
+  //   const hasUploaded = documentUrls[field]?.length > 0;
+  //   if (!hasLocal && !hasUploaded) {
+  //     newErrors[field] = `${field} is required`;
+  //   }
+  // }
 
-  if (Object.keys(newErrors).length > 0) {
-    setUploadErrors(newErrors);
-    console.warn("❌ Missing document fields:", newErrors);
-    return;
-  }
+  // if (Object.keys(newErrors).length > 0) {
+  //   setUploadErrors(newErrors);
+  //   console.warn("❌ Missing document fields:", newErrors);
+  //   return;
+  // }
 
   setUploadErrors({});
     try {

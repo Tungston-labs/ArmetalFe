@@ -59,3 +59,81 @@ class EmpDocumentSerializer(serializers.ModelSerializer):
             'certificate_urls'
         ]
         read_only_fields = ['employee']
+
+
+# for mobile app
+
+
+
+
+class DepartmentForProfileSerializer(serializers.ModelSerializer):
+    head = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Department
+        fields = ['name', 'head']
+
+    def get_head(self, obj):
+        return obj.department_head.name if obj.department_head else None
+
+
+from rest_framework import serializers
+from .models import Employee_db
+
+
+class EmployeeProfileSerializer(serializers.ModelSerializer):
+    department = DepartmentForProfileSerializer()
+
+    class Meta:
+        model = Employee_db
+        exclude = ['password']
+
+
+
+from rest_framework import serializers
+from employee.models import Employee_db, EmpDocument
+from rest_framework import serializers
+from .models import Employee_db
+
+class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
+    healthcard_number = serializers.CharField(source='insurance_number')
+    work_permit_urls = serializers.SerializerMethodField()
+    contract_urls = serializers.SerializerMethodField()
+    passport_number = serializers.CharField()
+    iqama_number = serializers.CharField()
+    visa_expiry_date = serializers.DateField()
+    insurance_image_url = serializers.SerializerMethodField()
+    employee_id = serializers.IntegerField(source='id')
+
+    class Meta:
+        model = Employee_db
+        fields = [
+            'employee_id',
+            'name',
+            'healthcard_number',
+            'passport_number',
+            'iqama_number',
+            'visa_expiry_date',
+            'work_permit_urls',
+            'contract_urls',
+            'insurance_image_url',
+        ]
+
+    def get_work_permit_urls(self, obj):
+        try:
+            return obj.documents.work_permit_urls  # Make sure this is actually a list of URLs
+        except:
+            return []
+
+
+    def get_contract_urls(self, obj):
+        try:
+            return obj.documents.contract_urls
+        except:
+            return []
+
+    def get_insurance_image_url(self, obj):
+        try:
+            return obj.documents.insurance_image_url
+        except:
+            return None

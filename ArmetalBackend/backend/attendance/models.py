@@ -19,7 +19,8 @@ class Attendance(TimeStampedModel):
         total = timedelta()
         for session in sessions:
             if session.time_in and session.time_out:
-                total += datetime.combine(self.date, session.time_out) - datetime.combine(self.date, session.time_in)
+                total += session.time_out - session.time_in
+
         self.total_hours = round(total.total_seconds() / 3600, 2)
         self.save()
 
@@ -29,8 +30,8 @@ class Attendance(TimeStampedModel):
 
 class AttendanceSession(models.Model):
     attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE, related_name='sessions')
-    time_in = models.TimeField(null=True, blank=True)
-    time_out = models.TimeField(null=True, blank=True)
+    time_in = models.DateTimeField(null=True, blank=True)
+    time_out = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.attendance.employee.name} - {self.attendance.date} [{self.time_in} - {self.time_out}]"

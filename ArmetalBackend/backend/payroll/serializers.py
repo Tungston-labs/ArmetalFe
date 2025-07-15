@@ -114,3 +114,20 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         })
 
         return data
+    
+
+
+class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
+    download_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EmployeePayrollRecord
+        fields = '__all__'  # or list explicitly
+        extra_fields = ['download_url']
+
+    def get_download_url(self, obj):
+        request = self.context.get('request')
+        if obj.payslip_file:
+            return request.build_absolute_uri(obj.payslip_file.url)
+        return None
+

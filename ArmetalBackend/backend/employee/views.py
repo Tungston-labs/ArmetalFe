@@ -414,3 +414,49 @@ class DashboardSummaryView(APIView):
 
 
 
+# for mobile app
+
+
+
+# employee/views.py
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .models import Employee_db
+from .serializers import EmployeeProfileSerializer
+from user.permissions import IsEmployee
+
+class EmployeeProfileView(APIView):
+    permission_classes = [IsAuthenticated, IsEmployee]
+
+    def get(self, request):
+        try:
+            employee = Employee_db.objects.get(user=request.user)
+            serializer = EmployeeProfileSerializer(employee)
+            return Response(serializer.data)
+        except Employee_db.DoesNotExist:
+            return Response({"detail": "Employee profile not found."}, status=404)
+        
+
+# views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from employee.models import Employee_db
+from .serializers import EmployeeDocumentSummarySerializer
+from rest_framework import status
+
+class EmployeeDocumentSummaryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            employee = Employee_db.objects.get(user=request.user)
+            serializer = EmployeeDocumentSummarySerializer(employee)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Employee_db.DoesNotExist:
+            return Response({'detail': 'Employee not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

@@ -22,27 +22,36 @@ export const submitEmployee = createAsyncThunk(
   'employee/submitEmployee',
   async (formData, thunkAPI) => {
     try {
+      console.log("📤 Submitting employee", formData);
+
       const form = new FormData();
 
-      // Convert formData to FormData object
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          form.append(key, value);
+          if (key === "profile_pic") {
+            if (value instanceof File) {
+              form.append("profile_pic", value);
+            }
+            // else: do NOT send it if it's a URL string
+          } else if (key === "department") {
+            form.append("department_id", value);
+          } else {
+            form.append(key, value);
+          }
         }
-      }); 
+      });
 
       if (formData.id) {
         return await updateEmployee(formData.id, form);
       } else {
-        return await createEmployee(formData); // if creation also expects multipart
+        return await createEmployee(form);
       }
     } catch (err) {
-      return thunkAPI.
-       rejectWithValue(err.response?.data || err.message);
-    
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
 
 
 // Delete Employee

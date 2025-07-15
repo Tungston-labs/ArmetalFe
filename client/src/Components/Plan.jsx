@@ -36,7 +36,9 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
     try {
       const token = localStorage.getItem("accessToken");
       const res = await axios.get(`http://178.248.112.16:8000/api/subscriptions/${id}/`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (Array.isArray(res.data)) {
