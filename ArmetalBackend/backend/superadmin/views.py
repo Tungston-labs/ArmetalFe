@@ -51,12 +51,18 @@ from superadmin.serializers import CompanySubscriptionSerializer
 from calendar import monthrange
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import UpdateAPIView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.utils.timezone import now
+from .models import Company, CompanySubscription
+from .serializers import CompanySubscriptionSerializer
 
 class CompanySubscriptionListCreateView(APIView):
     """
     GET: Return all 12 months for a company/year (generate missing).
     POST: Not used (autogenerate on GET).
     """
+
     def get(self, request, company_id, year=None):
         year = year or now().year
         company = Company.objects.get(id=company_id)
@@ -66,9 +72,10 @@ class CompanySubscriptionListCreateView(APIView):
             obj, created = CompanySubscription.objects.get_or_create(
                 company=company,
                 month=m,
-                year=year,
-                defaults={}
+                year=year
             )
+            if created:
+                obj.save()  # Ensure amount is calculated
             subs.append(obj)
 
         serializer = CompanySubscriptionSerializer(subs, many=True)
