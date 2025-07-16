@@ -40,9 +40,8 @@ export default function AddEmployeeForm() {
     visa_expiry_date: '',
     iqama_number: '',
     insurance_number: '',
-    profile_Pic: null,
+    profile_pic: null,
   });
-
   useEffect(() => {
     // if (reduxFormData?.basic) setFormData(reduxFormData.basic);
     if (departmentList.length === 0) dispatch(getDepartments());
@@ -221,9 +220,9 @@ const handleSubmit = () => {
 
       <InfoGrid>
         <div style={{ position: 'relative', display: 'inline-block' }}>
-          {formData.profile_Pic ? (
+          {formData.profile_pic ? (
     <ProfileImage
-      src={URL.createObjectURL(formData.profile_Pic)}
+      src={URL.createObjectURL(formData.profile_pic)}
       alt="Employee"
     />
   ) : (
@@ -243,7 +242,7 @@ const handleSubmit = () => {
             accept="image/*"
             onChange={(e) => setFormData((prev) => ({
               ...prev,
-              profile_Pic: e.target.files[0],
+              profile_pic: e.target.files[0],
             }))}
             style={{ display: 'none' }}
           />
