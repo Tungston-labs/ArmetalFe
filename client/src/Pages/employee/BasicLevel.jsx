@@ -284,7 +284,7 @@ const handleSubmit = () => {
                 style={{
                   width: '100%',
                   padding: '0.5rem',
-                  fontSize: '1rem',
+                  fontSize: '0.8rem',
                   borderRadius: '6px',
                   border: '1px solid #ccc',
                   background: 'white',
@@ -334,7 +334,7 @@ const handleSubmit = () => {
             value={formData.department}
              autoComplete="off"
             onChange={handleChange}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
+            style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc',background:"white",  color: '#999999', }}
           >
             <option value="">Select Department</option>
             {departmentList.map((dept) => (
@@ -352,7 +352,7 @@ const handleSubmit = () => {
             style={{
               width: '100%',
               padding: '0.5rem',
-              fontSize: '1rem',
+              fontSize: '0.8rem',
               borderRadius: '6px',
               border: '1px solid #ccc',
               background: 'white',

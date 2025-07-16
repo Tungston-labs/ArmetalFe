@@ -43,6 +43,7 @@ const PayrollTable = () => {
         year: selectedYear
       }));
     }
+    console.log("payroll data:",data)
   }, [dispatch, page, searchTerm, selectedMonth, selectedYear]);
 
   const handleSearch = (e) => {
@@ -215,7 +216,9 @@ const PayrollTable = () => {
             ) : error ? (
               <tr><Td colSpan="10">Error: {error}</Td></tr>
             ) : data?.length > 0 ? (
-              data.map((emp, index) => (
+              data.map((emp, index) => {
+                console.log("employee",emp)
+                return(
                 <tr key={emp.id}>
                   <Td>
                     <input
@@ -250,7 +253,9 @@ const PayrollTable = () => {
                     </Select>
                   </Td>
                 </tr>
-              ))
+                )
+              })
+            
             ) : (
               <tr><Td colSpan="10">No data found</Td></tr>
             )}

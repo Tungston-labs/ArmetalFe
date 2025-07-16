@@ -265,6 +265,9 @@ console.log("📤 Submitting employee", formData);
   value={formData.department}
   onChange={handleChange}
   disabled={!editMode}
+  style={{
+    backgroundColor:'white'
+  }}
 >
   <option value="">Select Department</option>
   {departmentList.map((dept) => (

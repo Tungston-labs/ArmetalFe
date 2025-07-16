@@ -117,35 +117,45 @@ isEditMode=false,
 
       <FormSection>
         <Row>
-          <FormGroup style={{ flex: '1 ',marginRight:'1rem' }}>
-            <ErrorMsg msg={errors.bankName} />
-            <Input placeholder="Bank name" value={bankName} onChange={(e) => setBankName(e.target.value)} />
-          </FormGroup>
-    <FormGroup style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
-  <label style={{ fontWeight: '500' }}>Upload Bank Passbook Image</label>
-  
-  {bankProofImage && (
-    <img
-      src={URL.createObjectURL(bankProofImage)}
-      alt="Bank Proof Preview"
-      style={{
-        marginTop: '0.75rem',
-        width: '160px',
-        borderRadius: '6px',
-        border: '1px solid #ccc',
-        display:"flex"
-      }}
+  <FormGroup style={{ flex: '1', marginRight: '1rem' }}>
+    <ErrorMsg msg={errors.bankName} />
+    <Input
+      placeholder="Bank name"
+      value={bankName}
+      onChange={(e) => setBankName(e.target.value)}
     />
-  )}
-  <input
-    type="file"
-    accept="image/*"
-    onChange={(e) => setBankProofImage(e.target.files[0])}
-    style={{ marginTop: '0.5rem',display:"flex" }}
-  />
-</FormGroup>
+  </FormGroup>
 
-        </Row>
+  <FormGroup style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
+    <label style={{ fontWeight: '500', marginBottom: '0.5rem', display: 'block' }}>
+      Upload Bank Passbook Image
+    </label>
+
+    {bankProofImage && (
+      <img
+        src={URL.createObjectURL(bankProofImage)}
+        alt="Bank Proof Preview"
+        style={{
+          marginTop: '0.75rem',
+          width: '160px',
+          borderRadius: '6px',
+          border: '1px solid #ccc'
+        }}
+      />
+    )}
+
+    <input
+      type="file"
+      accept="image/*"
+      onChange={(e) => setBankProofImage(e.target.files[0])}
+      style={{ marginTop: '0.5rem' }}
+    />
+    {errors.bankPassbookImage && (
+      <p style={{ color: 'red', marginTop: '0.25rem' }}>{errors.bankPassbookImage}</p>
+    )}
+  </FormGroup>
+</Row>
+
 
         <Row>
           <TwoColumnRows>

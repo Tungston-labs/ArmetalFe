@@ -28,7 +28,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   useEffect(() => {
     if (companyId) {
       fetchPaymentData(companyId);
-      fetchCompanyName(companyId); // ✅ Fetch company name
+      fetchCompanyName(companyId);
     }
   }, [companyId]);
 
@@ -48,7 +48,6 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
       console.error("Failed to fetch payment data:", error);
     }
   };
-
   const fetchCompanyName = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -63,6 +62,8 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
       console.error("Failed to fetch company name:", error);
     }
   };
+
+
 
   const handleStatusChange = async (subscriptionId, currentStatus) => {
     const newStatus = currentStatus === 'paid' ? 'unpaid' : 'paid';
@@ -80,38 +81,70 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
       console.error("Failed to update status:", error);
     }
   };
+const handleDownload = (entry) => {
 
-  const handleDownload = (entry) => {
-    const html = generateInvoiceHTML(entry, companyName); // ✅ pass actual company name
+      const html = generateInvoiceHTML(entry, companyName);
+  // const companyName = entry.name || "Your Company Name";
+  // const html = generateInvoiceHTML(entry,companyName);
+  // const companyName = entry.company_name || "Your Company Name";
+  // Open a new browser window
+  const printWindow = window.open('', '_blank', 'width=800,height=600');
 
-    const printWindow = window.open('', '_blank', 'width=800,height=600');
-    printWindow.document.open();
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Invoice - ${entry.month_display} ${entry.year}</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
-            h1 { text-align: center; color: #0546A0; }
-            table { width: 100%; border-collapse: collapse; margin-top: 30px; }
-            th, td { border: 1px solid #ccc; padding: 12px; text-align: left; }
-            th { background-color: #f2f2f2; }
-            .section-title { margin-top: 40px; font-size: 20px; font-weight: bold; color: #444; }
-          </style>
-        </head>
-        <body>
-          ${html}
-          <script>
-            window.onload = function () {
-              window.print();
-              setTimeout(() => window.close(), 100);
-            };
-          </script>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-  };
+  printWindow.document.open();
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Invoice - ${entry.month_display} ${entry.year}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            color: #333;
+          }
+          h1 {
+            text-align: center;
+            color: #0546A0;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+          }
+          th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+          }
+          th {
+            background-color: #f2f2f2;
+          }
+          .section-title {
+            margin-top: 40px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #444;
+          }
+        </style>
+      </head>
+      <body>
+        ${html}
+        <script>
+          window.onload = function () {
+            window.print();
+            setTimeout(() => window.close(), 100); // Auto-close after print
+          };
+        </script>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+};
+
+
+
+const handleSendEmail = async (entry) => {
+  try {
+    const token = localStorage.getItem("accessToken");
 
   const handleSendEmail = async (entry) => {
     try {

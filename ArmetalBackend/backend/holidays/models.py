@@ -19,7 +19,7 @@ class PublicHoliday(models.Model):
         on_delete=models.CASCADE,null=True,blank=True,
         related_name='holidays'
     )
-    date = models.DateField(unique=True)
+    date = models.DateField(unique=False)
     description = models.CharField(max_length=255)
     holiday_type = models.CharField(max_length=20, choices=HOLIDAY_TYPES,null=True,blank=True)
     

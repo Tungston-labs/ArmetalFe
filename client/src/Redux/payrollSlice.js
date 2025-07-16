@@ -3,7 +3,7 @@ import {
   fetchPayrollData,
   createOrUpdatePayroll,
   updateEmployeePayrollStatus,
-  getPayrollDetailById, // ✅ New service
+  getPayrollDetailById, 
 } from "../services/payrollService";
 
 // 1. Fetch payroll data with pagination and search

@@ -63,14 +63,14 @@ export const ProfileImage = styled.img`
   }
 `;
 export const Select = styled.select`
-    width:100%;
-                  padding: 0.5rem;
-                  fontSize: 1rem;
-                  borderRadius: 6px;
-                  border: 1px solid #ccc;
-                      background:white;
-                        color:#999999;
-    `;
+ width:100%;
+ padding: 0.5rem;
+ fontSize: 1rem;
+ borderRadius: 6px;
+ border: 1px solid #ccc;
+ background:white;
+ color:#999999;
+`;
 
 export const Input = styled.input`
   padding: 0.6rem 1rem;
@@ -199,25 +199,26 @@ export const InfoSection = styled.div`
 `;
 
 export const FullWidthInput = styled.input`
-  width: 96%;
+  width: 95%;
   padding: 0.6rem 1rem;
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
   height:40%;
+  color: #999999;
 `;
 
 export const TwoColumnRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
-  width:100%;
+  width:99%;
 `;
 export const TwoColumnRows= styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  width:100%;
+  gap: 3rem;
+  width:98%;
 `;
 
 export const Stepper = styled.div`

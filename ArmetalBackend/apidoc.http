@@ -152,8 +152,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "xnx_arm_kak_616",     
-  "password": "CMPWOCOFNFWNP"  
+  "username": "eef_arm_kak_680",     
+  "password": "password"  
 }
 
 
@@ -333,11 +333,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 GET http://127.0.0.1:8000/api/employees/bank-details/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNzE3MTAzLCJpYXQiOjE3NTE3MTM1MDMsImp0aSI6IjcwZDhlN2E3MGMyYTQyMTk4ZmQyYjJiZmNkMDM3MmViIiwidXNlcl9pZCI6MzgsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.0Gfe_uVpYn-qVof491gdlSp4E5PCoOKOjPlX9oN50BY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNDcxOTQzLCJpYXQiOjE3NTI0NjgzNDMsImp0aSI6IjA1MWExYjJjZDliNDQzN2Q4YWIwNzBmZDQ5ZTA5MDkxIiwidXNlcl9pZCI6MzgsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.K6RMAH1rvBfW38E901XMYuCrb6BaHin8LewSOE65MAs
 
 ### Get payroll records for a specific month and year
 GET http://localhost:8000/api/payroll/?month=7&year=2025&search=jesna
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjc4ODI3LCJpYXQiOjE3NTA2NzUyMjcsImp0aSI6ImRmNDA1MjAyNmNkNjQ3Y2ZhOTk1ZTcyYWQwMWIzOThhIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.W5wB52TxrrN0sUW1FOguubKPgXpPPlMiuT-BrdBzsLs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNDcxOTQzLCJpYXQiOjE3NTI0NjgzNDMsImp0aSI6IjA1MWExYjJjZDliNDQzN2Q4YWIwNzBmZDQ5ZTA5MDkxIiwidXNlcl9pZCI6MzgsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.K6RMAH1rvBfW38E901XMYuCrb6BaHin8LewSOE65MAs
 
 ### Create or update payroll records for selected employees
 POST http://localhost:8000/api/payroll/
@@ -514,12 +514,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Create Holiday
 POST http://127.0.0.1:8000/api/holidays/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNzAzMjEwLCJpYXQiOjE3NTE2OTk2MTAsImp0aSI6IjlhZjBiMjgzOGVlNTRkNzE4ZDUxYTMyNzE1MTg5MTYzIiwidXNlcl9pZCI6MzgsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.2a6ObnUTvRn8l2tjGSWJwtNOTV4Lb4L_QAqt7Fk6iik
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNDcxMjU5LCJpYXQiOjE3NTI0Njc2NTksImp0aSI6IjZlMTU3MTRiZjkxZTQxYzg5YjkxNDk2YjcwNzlmNGJiIiwidXNlcl9pZCI6OTcsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.NakR6laItRMqpP-aa1MiiMehdBTQOkVUcOvhX1yN634
 Content-Type: application/json
 
 {
-  "date": "2025-12-25",
-  "description": "XMAS",
+  "date": "2025-12-31",
+  "description": "new year celebration",
   "holiday_type":"public"
 }
 
@@ -595,9 +595,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ### List Holidays (Employee)
-GET http://127.0.0.1:8000/api/holidays/employee/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNzAyMTk2LCJpYXQiOjE3NTE2OTg1OTYsImp0aSI6ImM3OWU5ZWUwOWVmNDQxMjFhMjUyMjY0ODA1ODFiOWY2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.hPexAZkIQsI6OCSm9-ToXADkNoRODip-6CeuB2AjfhE
-
+GET http://127.0.0.1:8000/api/holidays/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNDY5NzAxLCJpYXQiOjE3NTI0NjYxMDEsImp0aSI6Ijc2MmUwY2EyMjlkZDQwMzA5YmM0NjczMmZlN2EzZTg2IiwidXNlcl9pZCI6NjksImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.DNYNmeFHa7Jw3YZ11Wa3FfznkZELLIXvE35yTC-jI84
 # api for applying leave.
 
 ### Create Leave (Employee)

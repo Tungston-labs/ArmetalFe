@@ -127,7 +127,8 @@ export const Rows = styled.div`
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
-  align-items: flex-start; /* ensures top alignment */
+  align-items: flex-start; 
+  background-color: #fff;
 `;
 
 export const Select = styled.select`
@@ -136,7 +137,7 @@ export const Select = styled.select`
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  background: white;
+  background-color: #fff;
 `;
 
 export const Column = styled.div`
