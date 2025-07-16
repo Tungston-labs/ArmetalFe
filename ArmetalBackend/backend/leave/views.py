@@ -106,6 +106,14 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
+from rest_framework import generics, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
+from leave.models import LeaveRequest
+from leave.serializers import LeaveRequestSerializer
+from shared.pagination import CustomPagination
+from user.permissions import IsHRAdmin
+
 class LeaveRequestAdminListView(generics.ListAPIView):
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
@@ -123,8 +131,11 @@ class LeaveRequestAdminListView(generics.ListAPIView):
             return LeaveRequest.objects.none()
 
         return LeaveRequest.objects.filter(
-            employee_department_company=company
+            employee__department__company=company
         ).order_by('-created_at')  # optional: sort newest first
+
+
+  
 
 
 class LeaveRequestAdminDetailView(generics.RetrieveUpdateDestroyAPIView):

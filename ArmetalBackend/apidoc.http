@@ -152,8 +152,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "eef_arm_kak_680",     
-  "password": "password"  
+  "username": "ydm_arm_aaa_746",     
+  "password": "CMPXM3PBGL801"  
 }
 
 
@@ -563,8 +563,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "XZYMAR8N3",     
-  "password": "password"
+  "username": "NISGRA5AA",     
+  "password": "EMP1RWPJAFK"
 }
 ### 
 GET http://127.0.0.1:8000/api/profile/
