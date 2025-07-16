@@ -155,7 +155,7 @@ const cancelDelete = () => {
               <Th>Holiday name</Th>
               <Th>Holiday type</Th>
               <Th>Date</Th>
-              <Th>Info</Th>
+              <Th></Th>
             </tr>
           </thead>
           <tbody>

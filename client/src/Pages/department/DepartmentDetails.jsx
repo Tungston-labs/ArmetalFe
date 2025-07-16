@@ -206,7 +206,15 @@ const DepartmentDetail = () => {
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>
-                <Avatar src={emp.profile_pic ? `http://localhost:8000${emp.profile_pic}` : 'https://i.pravatar.cc/40'} />
+                <Avatar
+  src={
+    emp.profile_pic
+      ? emp.profile_pic.startsWith('http')
+        ? emp.profile_pic
+        : `http://178.248.112.16:8000${emp.profile_pic.startsWith('/') ? emp.profile_pic : '/' + emp.profile_pic}`
+      : 'https://i.pravatar.cc/40'
+  }
+/>
 
                   {/* <Avatar src={emp.profile_pic || 'https://i.pravatar.cc/40'} alt="" /> */}
                   {emp.name}

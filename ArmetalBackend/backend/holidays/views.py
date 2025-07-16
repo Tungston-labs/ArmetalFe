@@ -13,7 +13,7 @@ from shared.pagination import CustomPagination
 
 class PublicHolidayCreateListView(generics.ListCreateAPIView):
     serializer_class = PublicHolidaySerializer
-    permission_classes = [IsAuthenticated, IsHRAdmin]
+    permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
     def get_queryset(self):
