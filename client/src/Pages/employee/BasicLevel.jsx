@@ -40,7 +40,7 @@ export default function AddEmployeeForm() {
     visa_expiry_date: '',
     iqama_number: '',
     insurance_number: '',
-    profilePic: null,
+    profile_Pic: null,
   });
 
   useEffect(() => {
@@ -221,9 +221,9 @@ const handleSubmit = () => {
 
       <InfoGrid>
         <div style={{ position: 'relative', display: 'inline-block' }}>
-          {formData.profilePic ? (
+          {formData.profile_Pic ? (
     <ProfileImage
-      src={URL.createObjectURL(formData.profilePic)}
+      src={URL.createObjectURL(formData.profile_Pic)}
       alt="Employee"
     />
   ) : (
@@ -243,7 +243,7 @@ const handleSubmit = () => {
             accept="image/*"
             onChange={(e) => setFormData((prev) => ({
               ...prev,
-              profilePic: e.target.files[0],
+              profile_Pic: e.target.files[0],
             }))}
             style={{ display: 'none' }}
           />
