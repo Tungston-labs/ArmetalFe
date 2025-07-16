@@ -73,10 +73,10 @@ class AttendanceSwipeView(APIView):
 
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
-from your_app.permissions import IsHRAdmin  # Adjust import based on your project
-from your_app.models import Attendance
-from your_app.serializers import AttendanceSerializer
-from your_app.pagination import CustomPagination
+from user.permissions import IsHRAdmin  # Adjust import based on your project
+from .models import Attendance
+from .serializers import AttendanceSerializer
+from shared.pagination import CustomPagination
 
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
