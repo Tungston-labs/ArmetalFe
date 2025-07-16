@@ -94,12 +94,12 @@ class LeaveRequestCancelView(generics.DestroyAPIView):
         try:
             leave = self.get_queryset().get(pk=kwargs['pk'])
             leave.delete()
-            # ✅ Return 204 with no content (important)
+  
             return Response(status=status.HTTP_204_NO_CONTENT)
         except LeaveRequest.DoesNotExist:
             return Response({"detail": "Pending leave not found."}, status=status.HTTP_404_NOT_FOUND)
 
-# HR:
+
 
 
 from rest_framework.filters import OrderingFilter
@@ -132,7 +132,7 @@ class LeaveRequestAdminListView(generics.ListAPIView):
 
         return LeaveRequest.objects.filter(
             employee__department__company=company
-        ).order_by('-created_at')  # optional: sort newest first
+        ).order_by('-created_at') 
 
 
   
