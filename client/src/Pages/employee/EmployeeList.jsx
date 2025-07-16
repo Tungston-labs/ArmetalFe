@@ -16,7 +16,7 @@ import {
   ActionArea,
   TitleSection
 } from "./EmployeeList.styles";
-
+import { PiUserCirclePlusThin } from "react-icons/pi";
 import SyncLoader from "react-spinners/SyncLoader"; // Spinner loader
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
@@ -74,7 +74,7 @@ console.log("loading",loading)
 
       <HeaderSection>
         <TitleSection>
-          <LuArrowLeft style={{ width: "30px", height: 30 }} />
+          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
           <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Employee</Title>
@@ -127,17 +127,25 @@ console.log("loading",loading)
           {loading ? ( 
             <tr>
               <td colSpan="8" style={{ textAlign: "center", padding: "2rem" }}>
-                <SyncLoader color="#003366" />
+                 <p>Loading...</p>
               </td>
             </tr>
           ) : Array.isArray(employeeList) && employeeList.length > 0 ? (
             employeeList.map((emp, index) => (
               <tr key={emp.id}>
                 <td>{index + 1 + (page - 1) * 7}</td>
-                <td>
-                  <ProfileImg src={emp.profile_pic || "/profile-placeholder.png"} alt="" />
-                  {emp.name}
-                </td>
+               <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+  {emp.profile_pic ? (
+    <img
+      src={emp.profile_pic}
+      alt={emp.name}
+      style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+    />
+  ) : (
+    <PiUserCirclePlusThin size={40} color="#999" />
+  )}
+  {emp.name}
+</td>
                 <td>{emp.employee_id}</td>
                 <td>{emp.email}</td>
                 <td>{emp.designation}</td>

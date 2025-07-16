@@ -16,6 +16,7 @@ import {
   fetchAllBankPaymentsThunk,
   setBankFormData
 } from '../../Redux/employeeSlice';
+import SyncLoader from '../../Components/Loder';
 
 export default function BankPaymentForm() {
   const dispatch = useDispatch();
@@ -41,7 +42,7 @@ export default function BankPaymentForm() {
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
 const [bankProofImage, setBankProofImage] = useState(null);
-
+const[loading, setLoading] = useState(false);
 
 
   const stepTitles = ['Basic Info', 'Bank Details', 'Document Upload'];
@@ -128,12 +129,15 @@ const [bankProofImage, setBankProofImage] = useState(null);
 };
 
     dispatch(setBankFormData(bankData)); // ✅ Save to Redux
-
+setLoading(true)
     try {
       await dispatch(submitBankPayment({ employeeId, data: bankData,bankProofImage, })).unwrap();
       navigate('/documents');
     } catch (err) {
       setError(err);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -186,6 +190,7 @@ const [bankProofImage, setBankProofImage] = useState(null);
         handleNext={handleNext}
         errors={fieldErrors}
       />
+          {loading && <SyncLoader/>}
     </Container>
   );
 }

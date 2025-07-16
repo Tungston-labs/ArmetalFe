@@ -6,7 +6,8 @@ import {
   Description, TimeBox, SearchInput, HRManager, Title, Subtitle, TitleSection, TextBlock
 } from './Daily.styles';
 import { getEmployees, getTasks } from '../../Redux/dailyTaskSlice';
-
+import SyncLoader from 'react-spinners/SyncLoader';
+import { PiUserCirclePlusThin } from "react-icons/pi"; 
 export default function DailyTask() {
   const dispatch = useDispatch();
   const { employees, tasks, loading } = useSelector(state => state.dailyTask);
@@ -94,14 +95,18 @@ export default function DailyTask() {
       <div style={{ display: 'flex', gap: '.5rem' }}>
         <EmployeesPanel>
           {filteredEmployees.map(emp => (
-            <EmployeeCard
-              key={emp.id}
-              onClick={() => handleEmployeeSelect(emp)}
-              active={emp.id === selectedEmployee?.id}
-            >
-              <img src={emp.profile_pic || '/images/default.png'} alt={emp.name} />
-              <span>{emp.name}</span>
-            </EmployeeCard>
+          <EmployeeCard
+  key={emp.id}
+  onClick={() => handleEmployeeSelect(emp)}
+  active={emp.id === selectedEmployee?.id}
+>
+  {emp.profile_pic ? (
+    <img src={emp.profile_pic} alt={emp.name} />
+  ) : (
+    <PiUserCirclePlusThin size={40} color="#999" />
+  )}
+  <span>{emp.name}</span>
+</EmployeeCard>
           ))}
         </EmployeesPanel>
 
@@ -113,7 +118,9 @@ export default function DailyTask() {
             </TaskHeader>
           )}
 
-          {loading ? <p>Loading tasks...</p> : tasks.length > 0 ? (
+          {loading ?( <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+    <SyncLoader/>
+  </div>) : tasks.length > 0 ? (
             tasks.map((task, idx) => (
               <TaskCard key={idx}>
                 <h4>Project &nbsp;<strong>{task.project}</strong></h4>

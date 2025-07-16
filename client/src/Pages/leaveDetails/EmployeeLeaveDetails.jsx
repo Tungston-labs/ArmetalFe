@@ -25,17 +25,19 @@ import {
   FlexRows,
   DateField
 } from "./EmployeeLeaveDetails.Styles";
-
+import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getLeaveDetails, patchLeaveStatus } from '../../Redux/leaveSlice';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { leaveDetails, loading } = useSelector(state => state.leave);
+const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
   const [actionType, setActionType] = useState('');
@@ -75,8 +77,13 @@ const EmployeeLeaveForm = () => {
       </TopBar>
 
       <TitleSection>
+         <LuArrowLeft
+  style={{ width: "30px", height: 30, cursor: "pointer" }}
+  onClick={() => navigate(-1)} // 👈 Go back to previous page
+/>
         <img src="/images/employee.png" alt=" Icon" style={{ height: "50px" }} />
         <div>
+     
           <Title>Employee</Title>
           <Subtitle>Manage your Employee.</Subtitle>
         </div>

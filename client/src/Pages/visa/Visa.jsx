@@ -20,9 +20,10 @@ import {
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-
+import { PiUserCirclePlusThin } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees,deleteEmployeeById } from "../../Redux/employeeSlice";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -77,7 +78,7 @@ const EmployeeList = () => {
 
       <HeaderSection>
         <TitleSection>
-          <LuArrowLeft style={{ width: "30px", height: 30 }} />
+          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
           <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Employee</Title>
@@ -128,16 +129,26 @@ const EmployeeList = () => {
         </thead>
         <tbody>
           {loading ? (
-            <tr><td colSpan="8">Loading...</td></tr>
+           <tr>
+  <td colSpan="8">
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+         <p>Loading...</p>
+    </div>
+  </td>
+</tr>
           ) : Array.isArray(employeeList) && employeeList.length > 0 ? (
 
             employeeList.map((emp, index) => (
               <tr key={emp.id}>
                 <td>{index + 1 + (page - 1) * 7}</td>
-                <td>
-                  <ProfileImg src={emp.profile_pic || "/profile-placeholder.png"} alt="profile" />
-                  {emp.name}
-                </td>
+               <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+  {emp.profile_pic ? (
+    <ProfileImg src={emp.profile_pic} alt="profile" />
+  ) : (
+    <PiUserCirclePlusThin size={40} color="#999" />
+  )}
+  {emp.name}
+</td>
                 <td>{emp.employee_id}</td>
                 <td>{emp.email}</td>
                 <td>{emp.visa_expiry_date}</td>

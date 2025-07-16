@@ -8,7 +8,7 @@ import {
   CheckboxLabel,
   ButtonGroup,
   Button,
-  Hr,
+  Hr,Select,
   FormField,
   Label,
   LogoUploadBox,
@@ -241,14 +241,15 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
 
             <FormField>
               <Label>Country</Label>
-              <select name="country" value={formData.country} onChange={handleChange}>
+              
+              <Select name="country" value={formData.country} onChange={handleChange}>
                 <option value="">Select country</option>
                 {COUNTRY_CHOICES.map((item) => (
                   <option key={item.code} value={item.code}>
                     {item.name}
                   </option>
                 ))}
-              </select>
+              </Select>
               {formErrors.country && <p style={{ color: 'blue' }}>{formErrors.country}</p>}
             </FormField>
           </div>

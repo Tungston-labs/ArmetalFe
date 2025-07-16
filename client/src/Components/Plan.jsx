@@ -142,9 +142,7 @@ const handleDownload = (entry) => {
 
 
 
-const handleSendEmail = async (entry) => {
-  try {
-    const token = localStorage.getItem("accessToken");
+
 
   const handleSendEmail = async (entry) => {
     try {

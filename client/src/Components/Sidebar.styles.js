@@ -41,8 +41,9 @@ export const TopSection = styled.div`
 
 export const Logo = styled.h1`
   margin: 50px 0 0 0;
+  margin-left:20px;
   white-space: nowrap;
-
+   width:30% 
   img {
     width: 150px; /* default size */
     transition: width 0.3s ease;

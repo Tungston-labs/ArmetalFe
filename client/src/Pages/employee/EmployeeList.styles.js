@@ -165,16 +165,16 @@ export const ActionIcons = styled.div`
 export const Pagination = styled.div`
   display: flex;
   justify-content: flex-start; /* changed from flex-end to flex-start */
-  gap: 0.5rem;
+  // gap: 0.rem;
   margin-top: 1.5rem;
-  padding: 0.5rem;
+  padding: 0.6rem;
 
   span {
-    padding: 0.4rem 0.8rem;
+    padding: 0.2rem 0.4rem;
     border-radius: 6px;
     border: 1px solid #ccc;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
   }
 
   .active {

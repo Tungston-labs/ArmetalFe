@@ -115,7 +115,7 @@ const LoginForm = () => {
     <Container>
       <LeftPanel>
         <LeftHeader>
-          <Logo src="/images/armetal.png" alt="ARMETAL Logo" />
+          <Logo src="/images/logos.png" alt="ARMETAL Logo" />
           <h2 style={{ fontSize: 42 }}>Welcome back</h2>
           <p>
             Manage your employees with ease.<br />

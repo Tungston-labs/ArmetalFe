@@ -245,18 +245,22 @@ export const Tab = styled.div`
 
 export const Pagination = styled.div`
   display: flex;
-  justify-content:flex-start;
-  gap: 0.5rem;
+  justify-content: flex-start; /* changed from flex-end to flex-start */
+  // gap: 0.rem;
+  margin-top: 1.5rem;
+  padding: 0.6rem;
 
   span {
-    padding: 0.4rem 0.8rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
     border: 1px solid #ccc;
     cursor: pointer;
-    border-radius: 4px;
+    font-size: 0.7rem;
+  }
 
-    &.active {
-      background-color: #2f4cac;
-      color: white;
-    }
+  .active {
+    background: #1e3a8a;
+    color: white;
+    border-color: #1e3a8a;
   }
 `;

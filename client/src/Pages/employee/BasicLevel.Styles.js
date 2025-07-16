@@ -69,7 +69,7 @@ export const Select = styled.select`
  borderRadius: 6px;
  border: 1px solid #ccc;
  background:white;
- color:#999999;
+ color:black;
 `;
 
 export const Input = styled.input`
@@ -78,7 +78,7 @@ export const Input = styled.input`
   border-radius: 6px;
   width: 96%;
   margin-bottom: 1rem;
-  color:#999999;
+  color:black;
   
 `;
 
@@ -90,6 +90,7 @@ export const TextArea = styled.textarea`
   border-radius: 6px;
   resize: vertical;
   margin-bottom: 2rem;
+  color:black;
 `;
 
 export const SectionTitle = styled.h4`
@@ -205,7 +206,7 @@ export const FullWidthInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   height:40%;
-  color: #999999;
+  color: black;
 `;
 
 export const TwoColumnRow = styled.div`
@@ -317,3 +318,14 @@ export const Button = styled.button`
 
 //   margin-top:-1px;
 // `;
+export const IconWrapper = styled.div`
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background-color: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+`;

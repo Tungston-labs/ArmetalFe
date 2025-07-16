@@ -77,7 +77,7 @@ export default function Sidebar() {
         <TopSection>
           <ToggleButton onClick={() => setCollapsed(!collapsed)}>☰</ToggleButton>
           <Logo className={collapsed ? 'hidden' : ''}>
-            <img src="/images/logo.png" alt="ARMETAL Logo" />
+            <img src="/images/logos.png" alt="ARMETAL Logo" />
           </Logo>
         </TopSection>
 

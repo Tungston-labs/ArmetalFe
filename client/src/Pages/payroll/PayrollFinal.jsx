@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Container, Header, TitleSection, Title, Subtitle, SearchInput,
+  Container, Header, TitleSection, Title, Subtitle, SearchInput,Pagination,
   TableWrapper, Table, Th, Td, Select, TopBar, HRManager
 } from './Final.Styles';
 import { LuArrowLeft } from "react-icons/lu";
@@ -12,6 +12,7 @@ import {
   submitPayrollRecords,
   updatePayrollStatus
 } from '../../Redux/payrollSlice';
+import SyncLoader from 'react-spinners/SyncLoader';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -119,7 +120,11 @@ const PayrollTable = () => {
       year: selectedYear,
     }));
   };
-
+const handlePageChange = (newPage) => {
+  if (newPage >= 1 && newPage <= totalPages) {
+    setPage(newPage);
+  }
+};
   return (
     <Container>
       <Header style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -212,7 +217,9 @@ const PayrollTable = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr><Td colSpan="10">Loading...</Td></tr>
+              <tr> <Td colSpan="10" style={{ textAlign: 'center', padding: '2rem' }}>
+        <p>Loading...</p>
+    </Td></tr>
             ) : error ? (
               <tr><Td colSpan="10">Error: {error}</Td></tr>
             ) : data?.length > 0 ? (
@@ -263,15 +270,41 @@ const PayrollTable = () => {
         </Table>
       </TableWrapper>
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
-        <button onClick={handlePrevPage} disabled={page === 1} style={{ marginRight: '10px' }}>
-          Previous
-        </button>
-        <span>Page {page} of {totalPages}</span>
-        <button onClick={handleNextPage} disabled={page === totalPages} style={{ marginLeft: '10px' }}>
-          Next
-        </button>
-      </div>
+     <Pagination>
+  <span
+    onClick={() => handlePageChange(page - 1)}
+    style={{
+      cursor: page > 1 ? 'pointer' : 'not-allowed',
+      opacity: page > 1 ? 1 : 0.5,
+    }}
+  >
+    &larr;
+  </span>
+
+  {[...Array(totalPages)].map((_, i) => {
+    const pageNum = i + 1;
+    return (
+      <span
+        key={pageNum}
+        onClick={() => handlePageChange(pageNum)}
+        className={pageNum === page ? "active" : ""}
+      >
+        {pageNum}
+      </span>
+    );
+  })}
+
+  <span
+    onClick={() => handlePageChange(page + 1)}
+    style={{
+      cursor: page < totalPages ? 'pointer' : 'not-allowed',
+      opacity: page < totalPages ? 1 : 0.5,
+    }}
+  >
+    &rarr;
+  </span>
+</Pagination>
+
     </Container>
   );
 };

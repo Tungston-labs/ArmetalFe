@@ -25,15 +25,17 @@ import {
   Subtitle,
   Rightside,
   HeaderWrapper,
-  TextGroup,
+  TextGroup,TitleSection,
   Column,
-  HRManager,
+  HRManager,FullPageLoaderWrapper,
 } from "./ViewBasic.Style";
-
+import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmployeeById, submitEmployee } from "../../Redux/employeeSlice";
-
+import { PiUserCirclePlusThin } from "react-icons/pi";
 import { NavLink, useLocation, useParams } from "react-router-dom";
+import SyncLoader from "react-spinners/SyncLoader";
+import { useNavigate } from 'react-router-dom';
 
 const ViewBasic = () => {
   const dispatch = useDispatch();
@@ -46,6 +48,7 @@ const ViewBasic = () => {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
 console.log("fff",formData)
+const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -93,19 +96,30 @@ console.log("📤 Submitting employee", formData);
   setEditMode(false);
 };
 
-  if (loading || !formData) return <p>Loading employee details...</p>;
+ if (loading || !formData || Object.keys(formData).length === 0) {
+  return (
+    <FullPageLoaderWrapper>
+      <SyncLoader size={12} />
+    </FullPageLoaderWrapper>
+  );
+}
 
   return (
     <Container>
       <Header>
-        <HeaderWrapper>
-          <div style={{ width: "10%" }}>
-            <img src="/images/employee.png" alt="Icon" style={{ height: "50px" }} />
-          </div>
-          <TextGroup>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </TextGroup>
+        <HeaderWrapper>      
+          <TitleSection>
+                   <LuArrowLeft
+            style={{ width: "30px", height: 30, cursor: "pointer" }}
+            onClick={() => navigate(-1)}
+            />
+                  <img src="/images/employee.png" alt=" Icon" style={{ height: "50px" }} />
+                  <div>
+               
+                    <Title>Employee</Title>
+                    <Subtitle>Manage your Employee.</Subtitle>
+                  </div>
+                </TitleSection>
         </HeaderWrapper>
         <Rightside>
           <HRManager>
@@ -122,16 +136,32 @@ console.log("📤 Submitting employee", formData);
       <h3>Employee Details</h3>
 
       <FormWrapper>
-      <ImageColumn style={{ position: "relative", width: "150px" }}>
-  <ProfileImage
-    src={
-      formData.profile_pic instanceof File
-        ? URL.createObjectURL(formData.profile_pic)
-        : formData.profile_pic || "/profile-placeholder.png"
-    }
-    alt="Profile"
-    style={{ width: "150px", height: "150px", borderRadius: "50%" }}
-  />
+<ImageColumn style={{ position: "relative", width: "150px", height: "150px" }}>
+  {formData.profile_pic instanceof File || typeof formData.profile_pic === "string" ? (
+    <ProfileImage
+      src={
+        formData.profile_pic instanceof File
+          ? URL.createObjectURL(formData.profile_pic)
+          : formData.profile_pic
+      }
+      alt="Profile"
+      style={{ width: "150px", height: "150px", borderRadius: "50%", objectFit: "cover" }}
+    />
+  ) : (
+    <div
+      style={{
+        width: "150px",
+        height: "150px",
+        borderRadius: "50%",
+        backgroundColor: "#f0f0f0",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <PiUserCirclePlusThin size={100} color="#ccc" />
+    </div>
+  )}
 
   {editMode && (
     <>

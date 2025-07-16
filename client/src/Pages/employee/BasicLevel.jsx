@@ -9,11 +9,12 @@ import { getDepartments } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import {
   Container, Header, RoleInfo, Title, Subtitle, Hr,
-  InfoGrid, FlexRow, ProfileImage, ApproveButton,
+  InfoGrid, FlexRow, ProfileImage, ApproveButton,IconWrapper,
   FullWidthInput, TwoColumn, TwoColumnRow, TwoColumnRows, SectionTitle, Input, InfoSection
 } from './BasicLevel.Styles';
 import Multistep from '../../Components/Multistep';
-
+import { PiUserCirclePlusThin } from "react-icons/pi";
+import SyncLoader from '../../Components/Loder';
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ export default function AddEmployeeForm() {
   });
 
   useEffect(() => {
-    if (reduxFormData?.basic) setFormData(reduxFormData.basic);
+    // if (reduxFormData?.basic) setFormData(reduxFormData.basic);
     if (departmentList.length === 0) dispatch(getDepartments());
   }, [reduxFormData, dispatch, departmentList]);
 
@@ -197,6 +198,7 @@ const handleSubmit = () => {
     <Container>
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          
           <img src="/images/employee.png" alt="Icon" style={{ height: '50px' }} />
           <div>
             <Title>Employee</Title>
@@ -219,10 +221,16 @@ const handleSubmit = () => {
 
       <InfoGrid>
         <div style={{ position: 'relative', display: 'inline-block' }}>
-          <ProfileImage
-            src={formData.profilePic ? URL.createObjectURL(formData.profilePic) : "https://i.pravatar.cc/100?img=5"}
-            alt="Employee"
-          />
+          {formData.profilePic ? (
+    <ProfileImage
+      src={URL.createObjectURL(formData.profilePic)}
+      alt="Employee"
+    />
+  ) : (
+    <IconWrapper>
+      <PiUserCirclePlusThin size={50} />
+    </IconWrapper>
+  )}
           <label htmlFor="profile-upload" style={{
             position: 'absolute',
             top: '-5px', right: '-5px', background: '#001F3F', color: 'white',
@@ -288,7 +296,7 @@ const handleSubmit = () => {
                   borderRadius: '6px',
                   border: '1px solid #ccc',
                   background: 'white',
-                  color: '#999999',
+                  color: 'black',
                 }}
               >
                 <option value="">Select Gender</option>
@@ -334,7 +342,7 @@ const handleSubmit = () => {
             value={formData.department}
              autoComplete="off"
             onChange={handleChange}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc',background:"white",  color: '#999999', }}
+            style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc',background:"white", }}
           >
             <option value="">Select Department</option>
             {departmentList.map((dept) => (
@@ -356,7 +364,7 @@ const handleSubmit = () => {
               borderRadius: '6px',
               border: '1px solid #ccc',
               background: 'white',
-              color: '#999999',
+              color: 'black',
             }}
           >
             <option value="">Select Employment Type</option>
@@ -408,7 +416,8 @@ const handleSubmit = () => {
         <ApproveButton onClick={handleSubmit}>Next</ApproveButton>
       </FlexRow>
 
-      {status === 'loading' && <p>Submitting...</p>}
+      {status === 'loading' && <SyncLoader/>}
+      {/* {status === 'loading' && <p>Submitting...</p>} */}
 
     </Container>
   );

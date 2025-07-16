@@ -117,7 +117,7 @@ export const LeftHeader = styled.div`
 `;
 
 export const Logo = styled.img`
-  width: auto;
+  width: 30%;
   height: auto;
   margin-bottom: 1rem;
 `;

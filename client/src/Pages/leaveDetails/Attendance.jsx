@@ -119,7 +119,7 @@ const TimesheetPage = () => {
                   ................................................. To ..................................................
                 </span>
               </TimeRange>
-              <TimeCell>{session.time_out?.slice(0, 5) || '--:--'}</TimeCell>
+              <TimeCell>{session.time_out?.slice(0, 5) || '---'}</TimeCell>
             </TableRow>
           ))}
         </tbody>

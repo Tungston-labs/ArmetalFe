@@ -15,6 +15,16 @@ import {
   getEmployeeDocumentsThunk,
   updateEmployeeDocumentsThunk
 } from "../../Redux/employeeSlice";
+import SyncLoader from "react-spinners/SyncLoader";
+import styled from "styled-components";
+
+// ✅ Loader Wrapper
+const FullPageLoaderWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+`;
 
 // ✅ Utility to get full image URL
 const getFullImageUrl = (url) => {
@@ -26,11 +36,12 @@ const ViewDocument = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { employeeDetail, employeeDocuments } = useSelector((state) => state.employees);
+  const { employeeDetail, employeeDocuments, loading } = useSelector((state) => state.employees);
 
   const [refreshKey, setRefreshKey] = useState(Date.now());
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+
   useEffect(() => {
     if (id) {
       dispatch(getEmployeeDocumentsThunk(id));
@@ -46,98 +57,107 @@ const ViewDocument = () => {
   };
 
   const renderImageList = (label, imageList = [], inputKeys = []) => (
-  <UploadSection>
-    <LabelRow>{label}</LabelRow>
-    <InlineUploadRow>
-      {editMode && inputKeys.map((key, index) => (
-        <UploadButton as="label" key={key}>
-          <LuCirclePlus /> Choose Image {index + 1}
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            onChange={(e) => handleImageChange(e, key)}
-          />
-        </UploadButton>
-      ))}
+    <UploadSection>
+      <LabelRow>{label}</LabelRow>
+      <InlineUploadRow>
+        {editMode && inputKeys.map((key, index) => (
+          <UploadButton as="label" key={key}>
+            <LuCirclePlus /> Choose Image {index + 1}
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => handleImageChange(e, key)}
+            />
+          </UploadButton>
+        ))}
 
-      <ImagePreviewRow>
-        {!editMode ? (
-          imageList.length > 0 ? (
-            imageList.map((url, idx) => (
-              <ImageBox key={idx}>
-                <img src={`${getFullImageUrl(url)}?v=${refreshKey}`} alt={`${label} ${idx + 1}`} />
-              </ImageBox>
-            ))
-          ) : (
-            <p style={{ marginLeft: "1rem", color: "#aaa" }}>No image uploaded</p>
-          )
-        ) : (
-          inputKeys.map((key, idx) =>
-            formData[key]?.[0] ? (
-              <ImageBox key={key}>
-                <img src={URL.createObjectURL(formData[key][0])} alt={`Preview ${idx + 1}`} />
-              </ImageBox>
-            ) : (
-              imageList[idx] && (
+        <ImagePreviewRow>
+          {!editMode ? (
+            imageList.length > 0 ? (
+              imageList.map((url, idx) => (
                 <ImageBox key={idx}>
-                  <img src={`${getFullImageUrl(imageList[idx])}?v=${refreshKey}`} alt={`Image ${idx + 1}`} />
+                  <img src={`${getFullImageUrl(url)}?v=${refreshKey}`} alt={`${label} ${idx + 1}`} />
                 </ImageBox>
+              ))
+            ) : (
+              <p style={{ marginLeft: "1rem", color: "#aaa" }}>No image uploaded</p>
+            )
+          ) : (
+            inputKeys.map((key, idx) =>
+              formData[key]?.[0] ? (
+                <ImageBox key={key}>
+                  <img src={URL.createObjectURL(formData[key][0])} alt={`Preview ${idx + 1}`} />
+                </ImageBox>
+              ) : (
+                imageList[idx] && (
+                  <ImageBox key={idx}>
+                    <img src={`${getFullImageUrl(imageList[idx])}?v=${refreshKey}`} alt={`Image ${idx + 1}`} />
+                  </ImageBox>
+                )
               )
             )
-          )
-        )}
-      </ImagePreviewRow>
-    </InlineUploadRow>
-  </UploadSection>
-);
+          )}
+        </ImagePreviewRow>
+      </InlineUploadRow>
+    </UploadSection>
+  );
 
+  const handleSubmit = async () => {
+    const form = new FormData();
 
-const handleSubmit = async () => {
-  const form = new FormData();
-
-  try {
-    // Single image fields
-    if (formData.passport_image1_url?.[0] instanceof File) {
-      const res = await dispatch(uploadImageThunk(formData.passport_image1_url[0])).unwrap();
-      form.append("passport_image1_url", res);
-    }
-
-    if (formData.passport_image2_url?.[0] instanceof File) {
-      const res = await dispatch(uploadImageThunk(formData.passport_image2_url[0])).unwrap();
-      form.append("passport_image2_url", res);
-    }
-
-    if (formData.insurance_image_url?.[0] instanceof File) {
-      const res = await dispatch(uploadImageThunk(formData.insurance_image_url[0])).unwrap();
-      form.append("insurance_image_url", res);
-    }
-
-    // Multi-image fields → Upload all and stringify array
-    const handleArrayUpload = async (key) => {
-      if (Array.isArray(formData[key])) {
-        const urls = await Promise.all(
-          formData[key].map((file) => dispatch(uploadImageThunk(file)).unwrap())
-        );
-        form.append(key, JSON.stringify(urls));  // JSON stringify for array fields
+    try {
+      // Single image fields
+      if (formData.passport_image1_url?.[0] instanceof File) {
+        const res = await dispatch(uploadImageThunk(formData.passport_image1_url[0])).unwrap();
+        form.append("passport_image1_url", res);
       }
-    };
 
-    await handleArrayUpload("work_permit_urls");
-    await handleArrayUpload("contract_urls");
-    await handleArrayUpload("certificate_urls");
+      if (formData.passport_image2_url?.[0] instanceof File) {
+        const res = await dispatch(uploadImageThunk(formData.passport_image2_url[0])).unwrap();
+        form.append("passport_image2_url", res);
+      }
 
-    // PATCH request to backend
-    await dispatch(updateEmployeeDocumentsThunk({ id, form }));
-    await dispatch(getEmployeeDocumentsThunk(id));
-    setFormData({});
-    setEditMode(false);
-    setRefreshKey(Date.now());
-    alert("Documents updated successfully!");
-  } catch (error) {
-    console.error("Error submitting:", error);
+      if (formData.insurance_image_url?.[0] instanceof File) {
+        const res = await dispatch(uploadImageThunk(formData.insurance_image_url[0])).unwrap();
+        form.append("insurance_image_url", res);
+      }
+
+      // Multi-image fields → Upload all and stringify array
+      const handleArrayUpload = async (key) => {
+        if (Array.isArray(formData[key])) {
+          const urls = await Promise.all(
+            formData[key].map((file) => dispatch(uploadImageThunk(file)).unwrap())
+          );
+          form.append(key, JSON.stringify(urls));  // JSON stringify for array fields
+        }
+      };
+
+      await handleArrayUpload("work_permit_urls");
+      await handleArrayUpload("contract_urls");
+      await handleArrayUpload("certificate_urls");
+
+      // PATCH request to backend
+      await dispatch(updateEmployeeDocumentsThunk({ id, form }));
+      await dispatch(getEmployeeDocumentsThunk(id));
+      setFormData({});
+      setEditMode(false);
+      setRefreshKey(Date.now());
+      alert("Documents updated successfully!");
+    } catch (error) {
+      console.error("Error submitting:", error);
+    }
+  };
+
+  // ✅ Loader before content
+  if (loading || !employeeDocuments) {
+    return (
+      <FullPageLoaderWrapper>
+        <SyncLoader color="#36d7b7" size={12} />
+      </FullPageLoaderWrapper>
+    );
   }
-};
+
   return (
     <Container>
       <Header>
@@ -167,11 +187,11 @@ const handleSubmit = async () => {
 
       <FormWrapper>
         <ImageColumn>
-                  <ProfileImage
-                    src={employeeDetail?.profile_pic || "https://i.pravatar.cc/100?img=5"}
-                    alt="Profile"
-                  />
-                </ImageColumn>
+          <ProfileImage
+            src={employeeDetail?.profile_pic || "https://i.pravatar.cc/100?img=5"}
+            alt="Profile"
+          />
+        </ImageColumn>
 
         <Row>
           <LeftSection>
@@ -204,12 +224,12 @@ const handleSubmit = async () => {
         {renderImageList("Passport", [
           employeeDocuments?.passport_image1_url,
           employeeDocuments?.passport_image2_url,
-        ].filter(Boolean),[ "passport_image1_url","passport_image2_url"])}
+        ].filter(Boolean), [ "passport_image1_url", "passport_image2_url" ])}
 
-        {renderImageList("Work Permit", employeeDocuments?.work_permit_urls || [],[ "work_permit_urls"])}
-        {renderImageList("Employment Contract", employeeDocuments?.contract_urls || [], ["contract_urls"])}
-        {renderImageList("Insurance", [employeeDocuments?.insurance_image_url].filter(Boolean), ["insurance_image_url"])}
-        {renderImageList("Certificate", employeeDocuments?.certificate_urls || [], ["certificate_urls"])}
+        {renderImageList("Work Permit", employeeDocuments?.work_permit_urls || [], [ "work_permit_urls" ])}
+        {renderImageList("Employment Contract", employeeDocuments?.contract_urls || [], [ "contract_urls" ])}
+        {renderImageList("Insurance", [employeeDocuments?.insurance_image_url].filter(Boolean), [ "insurance_image_url" ])}
+        {renderImageList("Certificate", employeeDocuments?.certificate_urls || [], [ "certificate_urls" ])}
 
         {editMode && (
           <ButtonGroup>

@@ -16,11 +16,13 @@ export const TopBar = styled.div`
 
 export const HRManager = styled.div`
   display: flex;
+  height:30px;
+ 
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 1rem;
+  // gap: 0.75rem;
+  padding: 0.3rem ;
   border: 1px solid #ccc;
-  border-radius: 12px;
+  border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
@@ -31,8 +33,8 @@ export const HRManager = styled.div`
   }
 
   img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -94,7 +96,7 @@ export const Table = styled.table`
 
   th, td {
     text-align: left;
-    padding: 0.75rem;
+    // padding: 0.75rem;
     white-space: nowrap;
     background-color: white;
     border: none; /* remove cell borders */
@@ -149,4 +151,22 @@ export const Select = styled.select`
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
+`;
+// styles.js or your styled-components file
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.5rem;
+
+  span {
+    padding: 0.2rem 0.5rem;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &.active {
+      background-color: #2f4cac;
+      color: white;
+    }
+  }
 `;

@@ -172,14 +172,21 @@ export const Label = styled.label`
   color: #333;
   font-weight: 500;
 `;
+ 
 
 export const Input = styled.input`
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 100%;
+  // width: 100%;
 `;
 
+export const Select = styled.select`
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+`;
 export const FormSection = styled.div`
   display: flex;
   gap: 270px;

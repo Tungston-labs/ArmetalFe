@@ -10,6 +10,7 @@ import { useLocation, NavLink,useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { LuArrowLeft } from "react-icons/lu";
+import SyncLoader from "react-spinners/SyncLoader";
 export default function EmployeeAttendance() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -51,7 +52,7 @@ export default function EmployeeAttendance() {
 
       <HeaderSection>
         <TitleSection>
-                    <LuArrowLeft style={{ width: "30px", height: 30 }} />
+                    {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
           <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Employee</Title>
@@ -99,7 +100,13 @@ export default function EmployeeAttendance() {
         </thead>
         <tbody>
           {loading ? (
-            <TableRow><TableCell colSpan="6">Loading...</TableCell></TableRow>
+       <TableRow>
+  <TableCell colSpan="6">
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+          <p>Loading...</p>
+    </div>
+  </TableCell>
+</TableRow>
           ) : attendanceList.length > 0 ? (
             attendanceList.map((row) => (
               <TableRow key={row.id}>

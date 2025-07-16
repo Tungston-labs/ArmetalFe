@@ -30,7 +30,8 @@ import {
   Subtitle,
   ActionArea
 } from './LeaveRequest.Styles';
-
+import { PiUserCirclePlusThin } from "react-icons/pi";
+import SyncLoader from 'react-spinners/SyncLoader';
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const { leaves, loading, pagination } = useSelector(state => state.leave);
@@ -92,7 +93,7 @@ export default function LeaveRequest() {
 
       <HeaderSection>
         <TitleSection>
-          <LuArrowLeft style={{ width: "30px", height: 30 }} />
+          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
           <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Employee</Title>
@@ -142,19 +143,27 @@ export default function LeaveRequest() {
         </thead>
         <tbody>
           {loading ? (
-            <TableRow><TableCell colSpan="7">Loading...</TableCell></TableRow>
+            <TableRow>  <TableCell colSpan="7">
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+    <p>Loading...</p>
+    </div>
+  </TableCell></TableRow>
           ) : filteredLeaves.length === 0 ? (
             <TableRow><TableCell colSpan="7">No matching leave requests found.</TableCell></TableRow>
           ) : (
             filteredLeaves.map((leave) => (
               <TableRow key={leave.id}>
-                <TableCell>
-                  <ProfileImage
-                    src={leave?.employee?.profile_pic || '/images/default.png'}
-                    alt="profile"
-                  />
-                  {leave?.employee?.name || 'N/A'}
-                </TableCell>
+                <TableCell style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+  {leave?.employee?.profile_pic ? (
+    <ProfileImage
+      src={leave.employee.profile_pic}
+      alt="profile"
+    />
+  ) : (
+    <PiUserCirclePlusThin size={40} color="#999" />
+  )}
+  {leave?.employee?.name || 'N/A'}
+</TableCell>
                 <TableCell>{leave.leave_type}</TableCell>
                 <TableCell>{leave.employee.email}</TableCell>
                 <TableCell>{leave.employee.phno}</TableCell>

@@ -264,3 +264,15 @@ export const Hr = styled.hr`
   border-top: 1px solid #ccc;
 
 `;
+
+export const FullPageLoaderWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+export const TitleSection = styled.div`
+  display: flex;
+  align-items: center;
+`;
