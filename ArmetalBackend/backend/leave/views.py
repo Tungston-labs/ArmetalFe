@@ -106,15 +106,34 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
+from rest_framework import generics, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
+from leave.models import LeaveRequest
+from leave.serializers import LeaveRequestSerializer
+from shared.pagination import CustomPagination
+from user.permissions import IsHRAdmin
+
 class LeaveRequestAdminListView(generics.ListAPIView):
-    queryset = LeaveRequest.objects.all()
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ['status']  # filter by status using ?status=pending
-    search_fields = ['employee__name']  # allow name search if needed
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['status']
+    search_fields = ['employee__name']
     ordering_fields = ['from_date', 'to_date']
-    pagination_class=CustomPagination
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        company = user.company
+
+        if not company:
+            return LeaveRequest.objects.none()
+
+        return LeaveRequest.objects.filter(
+            employee__department__company=company
+        ).order_by('-created_at')  # optional: sort newest first
+
 
 
 
