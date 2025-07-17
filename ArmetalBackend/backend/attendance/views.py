@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from datetime import datetime, time, timedelta
+from datetime import time
+
+from datetime import datetime,timedelta
 import pytz
 from django.utils import timezone
 from rest_framework.views import APIView
