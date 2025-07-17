@@ -60,7 +60,9 @@ class AttendanceSwipeView(APIView):
             print(f"DEBUG: time_in type: {type(latest_session.time_in)} | value: {latest_session.time_in} | tzinfo: {latest_session.time_in.tzinfo}")
             print(f"🔍 Checking type of time_in: {type(latest_session.time_in)}")
             # If you're using a timezone field stored in user/company model
-            user_timezone = request.user.company.timezone
+            # Example of extracting it from the request
+            user_timezone = request.data.get('timezone', 'Asia/Kolkata')  # default fallback
+
 
             if isinstance(latest_session.time_in, time):
                 today = timezone.localdate()  # or use latest_session.date if available
