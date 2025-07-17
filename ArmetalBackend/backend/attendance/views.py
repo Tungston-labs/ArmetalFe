@@ -1,14 +1,15 @@
 from django.shortcuts import render
+from datetime import datetime, time, timedelta
+from django.utils import timezone
+
 
 # views.py
-from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
 from user.permissions import IsEmployee,IsHRAdmin,IsHRorIsEmployee
-from django.utils import timezone
 from rest_framework import status
 from rest_framework import generics, filters
 from .serializers import AttendanceSerializer,AttendanceSessionSerializer,AttendanceDetailSerializer
@@ -19,11 +20,9 @@ import pytz
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
 from .utils.timezone_utils import get_company_timezone
 from attendance.models import Attendance, AttendanceSession
 from user.permissions import IsEmployee
-from datetime import datetime ,time
 
 
 class AttendanceSwipeView(APIView):
@@ -59,8 +58,11 @@ class AttendanceSwipeView(APIView):
             print(f"DEBUG: time_in type: {type(latest_session.time_in)} | value: {latest_session.time_in} | tzinfo: {latest_session.time_in.tzinfo}")
 
             if isinstance(latest_session.time_in, time):
-    # Safely convert time to full datetime with correct timezone
-                latest_session.time_in = timezone.make_aware(datetime.combine(now.date(), latest_session.time_in), now.tzinfo)
+                latest_session.time_in = timezone.make_aware(
+                    datetime.combine(now.date(), latest_session.time_in),
+                    timezone=now.tzinfo
+    )
+
 
             if now <= latest_session.time_in:
 
