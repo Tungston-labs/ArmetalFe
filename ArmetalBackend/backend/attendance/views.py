@@ -59,10 +59,12 @@ class AttendanceSwipeView(APIView):
             print(f"DEBUG: time_in type: {type(latest_session.time_in)} | value: {latest_session.time_in} | tzinfo: {latest_session.time_in.tzinfo}")
             print(f"🔍 Checking type of time_in: {type(latest_session.time_in)}")
             if isinstance(latest_session.time_in, time):
-                latest_session.time_in = timezone.make_aware(
-                    datetime.combine(now.date(), latest_session.time_in),
-                    timezone=now.tzinfo
-    )
+                today = timezone.localdate()  # or use latest_session.date if available
+                datetime_in = datetime.combine(today, latest_session.time_in)
+                datetime_in = timezone.make_aware(datetime_in, timezone=pytz.UTC)  # or your default
+                time_in_local = convert_to_company_timezone(datetime_in, user_timezone)
+
+                
 
 
             if now <= latest_session.time_in:
