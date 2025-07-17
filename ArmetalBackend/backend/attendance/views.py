@@ -26,20 +26,12 @@ from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
 import pytz
 
-logger = logging.getLogger(__name__)
-
 import logging
-from datetime import datetime, time
-from django.utils import timezone
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
 import pytz
 
 logger = logging.getLogger(__name__)
-
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
 
@@ -47,24 +39,19 @@ class AttendanceSwipeView(APIView):
         try:
             # 1. Initial Setup
             user = request.user
-            logger.info(f"Processing attendance swipe for user: {user.id}")
+            logger.info(f"Processing attendance for user {user.id}")
 
             # 2. Employee Verification
             try:
                 employee = user.employee_db
                 if not employee:
-                    logger.error("Employee profile not found")
-                    return Response({'error': 'Employee profile not found'}, status=404)
+                    logger.error("Employee record not found")
+                    return Response({'error': 'Employee not found'}, status=404)
                 
-                # Get company through department
-                if not employee.department:
-                    raise AttributeError("Employee has no department assigned")
-                
-                if not employee.department.company:
-                    raise AttributeError("Department has no company assigned")
-                
-                company_tz = pytz.timezone(employee.department.company.timezone or 'Asia/Kolkata')
+                # Get company timezone
+                company_tz = get_company_timezone(employee)
                 logger.debug(f"Using timezone: {company_tz.zone}")
+                
             except Exception as e:
                 logger.error(f"Employee verification failed: {str(e)}")
                 return Response({'error': 'Employee verification failed'}, status=400)
@@ -73,15 +60,24 @@ class AttendanceSwipeView(APIView):
             try:
                 timestamp_str = request.data.get('timestamp')
                 if timestamp_str:
+                    # Handle Zulu time (UTC)
                     if timestamp_str.endswith('Z'):
                         timestamp_str = timestamp_str[:-1] + '+00:00'
-                    now = timezone.make_aware(
-                        parse_datetime(timestamp_str),
-                        timezone=pytz.UTC
-                    ).astimezone(company_tz)
+                    
+                    now = parse_datetime(timestamp_str)
+                    if not now:
+                        raise ValueError("Invalid timestamp format")
+                    
+                    # Ensure timezone awareness
+                    if timezone.is_naive(now):
+                        now = timezone.make_aware(now, timezone=pytz.UTC)
+                    
+                    now = now.astimezone(company_tz)
                 else:
                     now = timezone.now().astimezone(company_tz)
-                logger.debug(f"Processing time: {now}")
+                    
+                logger.debug(f"Processed time: {now}")
+                
             except Exception as e:
                 logger.error(f"Timestamp processing failed: {str(e)}")
                 return Response({'error': 'Invalid timestamp format'}, status=400)
@@ -97,11 +93,11 @@ class AttendanceSwipeView(APIView):
                 latest_session = attendance.sessions.last()
             except Exception as e:
                 logger.error(f"Attendance record error: {str(e)}")
-                return Response({'error': 'Failed to access attendance records'}, status=500)
+                return Response({'error': 'Attendance system error'}, status=500)
 
             # 5. Punch In/Out Logic
             if not latest_session or latest_session.time_out:
-                # Punch In Case
+                # Punch In
                 try:
                     session = AttendanceSession.objects.create(
                         attendance=attendance,
@@ -112,7 +108,7 @@ class AttendanceSwipeView(APIView):
                     return Response({
                         'status': 'success',
                         'action': 'punch_in',
-                        'time': now.strftime("%H:%M:%S"),
+                        'time': now.strftime("%I:%M %p"),
                         'date': today.isoformat(),
                         'timezone': company_tz.zone
                     }, status=201)
@@ -120,18 +116,16 @@ class AttendanceSwipeView(APIView):
                     logger.error(f"Punch IN failed: {str(e)}")
                     return Response({'error': 'Failed to record punch in'}, status=500)
             else:
-                # Punch Out Case
+                # Punch Out
                 try:
                     time_in = latest_session.time_in
                     
                     # Handle both time and datetime objects
                     if isinstance(time_in, time):
-                        time_in = timezone.make_aware(
-                            datetime.combine(today, time_in),
-                            timezone=company_tz
-                        )
+                        time_in = datetime.combine(today, time_in)
+                        time_in = timezone.make_aware(time_in, company_tz)
                     elif timezone.is_naive(time_in):
-                        time_in = timezone.make_aware(time_in, timezone=company_tz)
+                        time_in = timezone.make_aware(time_in, company_tz)
                     else:
                         time_in = time_in.astimezone(company_tz)
 
@@ -140,8 +134,8 @@ class AttendanceSwipeView(APIView):
                         logger.warning("Invalid punch out time")
                         return Response({
                             'error': 'Punch out must be after punch in',
-                            'punch_in': time_in.strftime("%Y-%m-%d %H:%M:%S"),
-                            'attempted_punch_out': now.strftime("%Y-%m-%d %H:%M:%S")
+                            'punch_in': time_in.strftime("%Y-%m-%d %I:%M %p"),
+                            'attempted_out': now.strftime("%Y-%m-%d %I:%M %p")
                         }, status=400)
 
                     # Minimum session duration (1 minute)
@@ -158,7 +152,7 @@ class AttendanceSwipeView(APIView):
                     return Response({
                         'status': 'success',
                         'action': 'punch_out',
-                        'time': now.strftime("%H:%M:%S"),
+                        'time': now.strftime("%I:%M %p"),
                         'total_hours': float(attendance.total_hours),
                         'timezone': company_tz.zone
                     })
@@ -169,7 +163,6 @@ class AttendanceSwipeView(APIView):
         except Exception as e:
             logger.critical(f"Unhandled exception: {str(e)}", exc_info=True)
             return Response({'error': 'Internal server error'}, status=500)
-
 # HR - attendance view to list all employees attendance
 
 
