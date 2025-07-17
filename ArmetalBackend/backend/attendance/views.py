@@ -21,35 +21,33 @@ from user.permissions import IsEmployee
 from datetime import datetime
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from datetime import datetime
+import pytz
+
+from .models import Attendance, AttendanceSession
+from .permissions import IsEmployee
+from .utils import get_company_timezone, convert_to_company_timezone
+
+
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
 
     def post(self, request):
         user = request.user
         employee = getattr(user, 'employee_db', None)
-
         if not employee:
             return Response({'detail': 'Employee not found.'}, status=400)
 
-        # Parse incoming timestamp from frontend
-        raw_timestamp = request.data.get("timestamp")
-        if not raw_timestamp:
-            return Response({'error': 'Missing timestamp.'}, status=400)
-
-        try:
-            parsed_time = datetime.fromisoformat(raw_timestamp.replace("Z", "+00:00"))
-            if timezone.is_naive(parsed_time):
-                parsed_time = timezone.make_aware(parsed_time, timezone=pytz.UTC)
-        except Exception as e:
-            print("❌ Error parsing timestamp:", e)
-            return Response({'error': 'Invalid timestamp format.'}, status=400)
-
+        today = timezone.localdate()
         company_tz = get_company_timezone(employee)
-        now = parsed_time.astimezone(company_tz)
-        today = now.date()
+        now = timezone.now().astimezone(company_tz)
 
         print("🌐 Company Timezone:", company_tz)
-        print("🕒 Current Time from frontend:", now)
+        print("🕒 Current Time:", now)
 
         attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
         latest_session = attendance.sessions.last()
@@ -64,22 +62,36 @@ class AttendanceSwipeView(APIView):
 
         # Case 2: Ongoing session → Punch Out
         if latest_session.time_in and not latest_session.time_out:
-            user_timezone = request.data.get('timezone', str(company_tz))  # fallback
+            user_timezone = request.data.get('timezone', str(company_tz))
+
             datetime_in = latest_session.time_in
 
-            # Ensure time_in is timezone-aware
+            # 🔧 Ensure datetime_in is a datetime object
             if isinstance(datetime_in, str):
                 try:
+                    print(f"🧪 datetime_in type: {type(datetime_in)} | value: {datetime_in}")
                     datetime_in = datetime.fromisoformat(datetime_in)
                 except ValueError:
+                    print("❌ Invalid datetime_in format:", datetime_in)
                     return Response({"error": "Invalid time format"}, status=400)
 
+            # 🔧 If datetime_in is a time (wrong), combine with today’s date
+            if isinstance(datetime_in, datetime.time):
+                datetime_in = datetime.combine(today, datetime_in)
+
+            # Make timezone-aware if naive
             if timezone.is_naive(datetime_in):
                 datetime_in = timezone.make_aware(datetime_in, timezone=pytz.UTC)
 
-            time_in_local = convert_to_company_timezone(datetime_in, user_timezone)
+            try:
+                time_in_local = convert_to_company_timezone(datetime_in, user_timezone)
+            except Exception as e:
+                print("⛔ ERROR converting timezone:", str(e))
+                return Response({"error": "Failed to convert timezone"}, status=500)
 
-            if time_in_local and now <= time_in_local:
+            print(f"🧠 now: {now} | time_in_local: {time_in_local}")
+
+            if time_in_local is not None and now <= time_in_local:
                 return Response({
                     "message": "Invalid punch out time. Punch out must be after punch in.",
                     "time_in": time_in_local.strftime("%I:%M %p"),
@@ -96,6 +108,7 @@ class AttendanceSwipeView(APIView):
                     "time_out": now.strftime("%I:%M %p"),
                     "total_hours": attendance.total_hours
                 })
+
             except Exception as e:
                 print("❌ Error saving AttendanceSession:", str(e))
                 return Response({
