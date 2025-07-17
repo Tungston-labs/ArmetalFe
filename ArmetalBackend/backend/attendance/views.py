@@ -17,7 +17,7 @@ from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
 from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer
 from shared.pagination import CustomPagination
-from .utils.timezone_utils import get_company_timezone, convert_to_company_timezone
+from .utils.timezone_utils import get_company_timezone, ensure_timezone,safe_parse_datetime
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 import logging
 from datetime import datetime, time
@@ -26,10 +26,6 @@ from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
 import pytz
 
-import logging
-from .models import Attendance, AttendanceSession
-from employee.models import Employee_db
-import pytz
 
 logger = logging.getLogger(__name__)
 class AttendanceSwipeView(APIView):
@@ -39,60 +35,49 @@ class AttendanceSwipeView(APIView):
         try:
             # 1. Initial Setup
             user = request.user
-            logger.info(f"Processing attendance for user {user.id}")
+            logger.info(f"Processing swipe for user {user.id}")
 
             # 2. Employee Verification
             try:
                 employee = user.employee_db
                 if not employee:
-                    logger.error("Employee record not found")
                     return Response({'error': 'Employee not found'}, status=404)
                 
-                # Get company timezone
                 company_tz = get_company_timezone(employee)
                 logger.debug(f"Using timezone: {company_tz.zone}")
-                
             except Exception as e:
-                logger.error(f"Employee verification failed: {str(e)}")
+                logger.error(f"Employee setup failed: {e}")
                 return Response({'error': 'Employee verification failed'}, status=400)
 
             # 3. Timestamp Processing
             try:
-                timestamp_str = request.data.get('timestamp')
-                if timestamp_str:
-                    # Handle Zulu time (UTC)
-                    if timestamp_str.endswith('Z'):
-                        timestamp_str = timestamp_str[:-1] + '+00:00'
+                if 'timestamp' in request.data:
+                    timestamp = request.data['timestamp']
+                    if isinstance(timestamp, str):
+                        now = safe_parse_datetime(timestamp)
+                    else:
+                        now = datetime.fromtimestamp(timestamp)
                     
-                    now = parse_datetime(timestamp_str)
-                    if not now:
-                        raise ValueError("Invalid timestamp format")
-                    
-                    # Ensure timezone awareness
-                    if timezone.is_naive(now):
-                        now = timezone.make_aware(now, timezone=pytz.UTC)
-                    
-                    now = now.astimezone(company_tz)
+                    now = ensure_timezone(now, pytz.UTC).astimezone(company_tz)
                 else:
                     now = timezone.now().astimezone(company_tz)
-                    
-                logger.debug(f"Processed time: {now}")
                 
+                logger.debug(f"Processed time: {now}")
             except Exception as e:
-                logger.error(f"Timestamp processing failed: {str(e)}")
-                return Response({'error': 'Invalid timestamp format'}, status=400)
+                logger.error(f"Time processing failed: {e}")
+                return Response({'error': 'Invalid time format'}, status=400)
 
             today = now.date()
 
             # 4. Attendance Record Handling
             try:
-                attendance, created = Attendance.objects.get_or_create(
+                attendance, _ = Attendance.objects.get_or_create(
                     employee=employee,
                     date=today
                 )
                 latest_session = attendance.sessions.last()
             except Exception as e:
-                logger.error(f"Attendance record error: {str(e)}")
+                logger.error(f"Attendance access failed: {e}")
                 return Response({'error': 'Attendance system error'}, status=500)
 
             # 5. Punch In/Out Logic
@@ -104,64 +89,54 @@ class AttendanceSwipeView(APIView):
                         time_in=now,
                         timezone=company_tz.zone
                     )
-                    logger.info(f"Punch IN recorded at {now}")
                     return Response({
                         'status': 'success',
                         'action': 'punch_in',
-                        'time': now.strftime("%I:%M %p"),
-                        'date': today.isoformat(),
-                        'timezone': company_tz.zone
+                        'time': now.strftime("%H:%M:%S"),
+                        'date': today.isoformat()
                     }, status=201)
                 except Exception as e:
-                    logger.error(f"Punch IN failed: {str(e)}")
-                    return Response({'error': 'Failed to record punch in'}, status=500)
+                    logger.error(f"Punch in failed: {e}")
+                    return Response({'error': 'Punch in failed'}, status=500)
             else:
                 # Punch Out
                 try:
                     time_in = latest_session.time_in
                     
-                    # Handle both time and datetime objects
-                    if isinstance(time_in, time):
+                    # Handle all possible time_in formats
+                    if isinstance(time_in, str):
+                        time_in = safe_parse_datetime(time_in)
+                    elif isinstance(time_in, time):
                         time_in = datetime.combine(today, time_in)
-                        time_in = timezone.make_aware(time_in, company_tz)
-                    elif timezone.is_naive(time_in):
-                        time_in = timezone.make_aware(time_in, company_tz)
-                    else:
-                        time_in = time_in.astimezone(company_tz)
-
-                    # Validate punch out time
+                    
+                    time_in = ensure_timezone(time_in, company_tz)
+                    
+                    # Validate punch out
                     if now <= time_in:
-                        logger.warning("Invalid punch out time")
                         return Response({
                             'error': 'Punch out must be after punch in',
-                            'punch_in': time_in.strftime("%Y-%m-%d %I:%M %p"),
-                            'attempted_out': now.strftime("%Y-%m-%d %I:%M %p")
-                        }, status=400)
-
-                    # Minimum session duration (1 minute)
-                    if (now - time_in).total_seconds() < 60:
-                        return Response({
-                            'error': 'Minimum session duration is 1 minute'
+                            'details': {
+                                'punch_in': time_in.isoformat(),
+                                'attempted_out': now.isoformat()
+                            }
                         }, status=400)
 
                     latest_session.time_out = now
                     latest_session.save()
                     attendance.update_total_hours()
                     
-                    logger.info(f"Punch OUT recorded at {now}")
                     return Response({
                         'status': 'success',
                         'action': 'punch_out',
-                        'time': now.strftime("%I:%M %p"),
-                        'total_hours': float(attendance.total_hours),
-                        'timezone': company_tz.zone
+                        'time': now.strftime("%H:%M:%S"),
+                        'total_hours': float(attendance.total_hours)
                     })
                 except Exception as e:
-                    logger.error(f"Punch OUT failed: {str(e)}")
-                    return Response({'error': 'Failed to record punch out'}, status=500)
+                    logger.error(f"Punch out failed: {e}")
+                    return Response({'error': 'Punch out failed'}, status=500)
 
         except Exception as e:
-            logger.critical(f"Unhandled exception: {str(e)}", exc_info=True)
+            logger.critical(f"Unhandled error: {e}", exc_info=True)
             return Response({'error': 'Internal server error'}, status=500)
 # HR - attendance view to list all employees attendance
 
