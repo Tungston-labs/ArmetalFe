@@ -31,15 +31,14 @@ def get_company_timezone(employee):
     except Exception as e:
         print("❌ Error getting company timezone:", e)
         return pytz.UTC
-def convert_to_company_timezone(datetime_obj, employee):
+def convert_to_company_timezone(datetime_obj, employee, return_str=False):
     if not datetime_obj:
         return None
 
     try:
-        # ✅ Prevent .time input error
         if isinstance(datetime_obj, time):
             print("⛔ ERROR: Passed a time object instead of datetime to convert_to_company_timezone()")
-            return None  # or handle as needed
+            return None
 
         company_tz = get_company_timezone(employee)
 
@@ -48,15 +47,13 @@ def convert_to_company_timezone(datetime_obj, employee):
 
         localized = datetime_obj.astimezone(company_tz)
 
-        # 🚨 Warn if this is being used in the wrong place
         import inspect
         caller = inspect.stack()[1].function
         if caller != 'get_time_in' and caller != 'get_time_out':
             print("⚠️ WARNING: convert_to_company_timezone() used outside serializer:", caller)
 
-        return localized.strftime("%I:%M %p")
+        return localized.strftime("%I:%M %p") if return_str else localized
 
     except Exception as e:
         print("❌ Timezone conversion error:", str(e))
         return None
-

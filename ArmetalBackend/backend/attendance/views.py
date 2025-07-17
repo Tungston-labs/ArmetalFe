@@ -20,6 +20,7 @@ from .utils.timezone_utils import get_company_timezone,convert_to_company_timezo
 from attendance.models import Attendance, AttendanceSession
 from user.permissions import IsEmployee
 from datetime import datetime
+from django.utils.dateparse import parse_datetime
 
 
 class AttendanceSwipeView(APIView):
@@ -33,7 +34,21 @@ class AttendanceSwipeView(APIView):
 
         today = timezone.localdate()
         company_tz = get_company_timezone(employee)
-        now = timezone.now().astimezone(company_tz)
+        timestamp_str = request.data.get("timestamp")
+        if timestamp_str:
+            try:
+                now = parse_datetime(timestamp_str)
+                if now is None:
+                    raise ValueError("Could not parse timestamp")
+                if timezone.is_naive(now):
+                    now = timezone.make_aware(now, timezone.utc)
+                now = now.astimezone(company_tz)
+            except Exception as e:
+                print("❌ Invalid timestamp:", timestamp_str, "| Error:", str(e))
+                return Response({"error": "Invalid timestamp format"}, status=400)
+        else:
+            now = timezone.now().astimezone(company_tz)
+
 
         print("🌐 Company Timezone:", company_tz)
         print("🕒 Current Time:", now)
@@ -57,6 +72,7 @@ class AttendanceSwipeView(APIView):
 
             # 🔧 Ensure datetime_in is a datetime object
            # 🔧 If datetime_in is a time object, combine with today’s date
+           
             if isinstance(datetime_in, time):
                 print(f"🧪 Converting time to datetime: {datetime_in}")
                 datetime_in = datetime.combine(today, datetime_in)
