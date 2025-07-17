@@ -23,6 +23,7 @@ from django.utils import timezone
 from .utils.timezone_utils import get_company_timezone
 from attendance.models import Attendance, AttendanceSession
 from user.permissions import IsEmployee
+from datetime import datetime, date
 
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
@@ -56,6 +57,9 @@ class AttendanceSwipeView(APIView):
             print(f"DEBUG: now type: {type(now)} | value: {now} | tzinfo: {now.tzinfo}")
             print(f"DEBUG: time_in type: {type(latest_session.time_in)} | value: {latest_session.time_in} | tzinfo: {latest_session.time_in.tzinfo}")
 
+            if isinstance(latest_session.time_in, datetime.time):
+                # Convert time to full datetime by attaching today's date and timezone
+                latest_session.time_in = datetime.combine(now.date(), latest_session.time_in).astimezone(now.tzinfo)
             if now <= latest_session.time_in:
 
 
