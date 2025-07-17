@@ -11,6 +11,18 @@ COUNTRY_TIMEZONE_MAPPING = {
     "US": "America/New_York",
     # Add other countries as needed
 }
+def convert_to_company_timezone(dt, employee):
+    """Convert a datetime to the employee's company timezone."""
+    if dt is None:
+        return None
+    try:
+        tz = get_company_timezone(employee)
+        dt = ensure_timezone(dt, pytz.UTC)
+        return dt.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S')  # Optional: format string
+    except Exception as e:
+        logger.error(f"Failed to convert to company timezone: {e}")
+        return dt  # fallback as UTC
+
 
 def safe_parse_datetime(dt_str):
     """Safely parse datetime string with multiple format support"""
