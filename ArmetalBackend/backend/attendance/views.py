@@ -34,37 +34,51 @@ class AttendanceSwipeView(APIView):
             return Response({'detail': 'Employee not found.'}, status=400)
 
         today = timezone.localdate()
-
-        # 🔥 Get current time in company timezone
         company_tz = get_company_timezone(employee)
         now = timezone.now().astimezone(company_tz)
-        print("COMPANY TIMEZONE:", company_tz)
-        print("NOW:", now)
 
+        print("🌐 Company Timezone:", company_tz)
+        print("🕒 Current Time:", now)
 
         attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
         latest_session = attendance.sessions.last()
 
+        # Case 1: No session or last session completed → Punch In
         if not latest_session or (latest_session.time_in and latest_session.time_out):
             session = AttendanceSession.objects.create(attendance=attendance, time_in=now)
             return Response({
-    "message": "Punch In recorded",
-    "time_in": now.strftime("%I:%M %p")
-})
-
-
-        if latest_session.time_in and not latest_session.time_out:
-            latest_session.time_out = now
-            latest_session.save()
-            attendance.update_total_hours()
-            return Response({
-                "message": "Punch Out recorded",
-                "time_out": now.strftime("%I:%M %p"),
-                "total_hours": attendance.total_hours
+                "message": "Punch In recorded",
+                "time_in": now.strftime("%I:%M %p")
             })
 
-        return Response({"message": "Invalid session state."}, status=400)
+        # Case 2: Ongoing session → Punch Out
+        if latest_session.time_in and not latest_session.time_out:
+            if now <= latest_session.time_in:
+                return Response({
+                    "message": "Invalid punch out time. Punch out must be after punch in.",
+                    "time_in": latest_session.time_in.strftime("%I:%M %p"),
+                    "attempted_time_out": now.strftime("%I:%M %p")
+                }, status=400)
 
+            try:
+                latest_session.time_out = now
+                latest_session.save()
+                attendance.update_total_hours()
+
+                return Response({
+                    "message": "Punch Out recorded",
+                    "time_out": now.strftime("%I:%M %p"),
+                    "total_hours": attendance.total_hours
+                })
+
+            except Exception as e:
+                print("❌ Error saving AttendanceSession:", str(e))
+                return Response({
+                    "message": "Failed to record punch out",
+                    "error": str(e)
+                }, status=500)
+
+        return Response({"message": "Invalid session state."}, status=400)
 
 
 # HR - attendance view to list all employees attendance
