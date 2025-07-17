@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from datetime import time
+from datetime import time as dt_time
+
 
 from datetime import datetime,timedelta
 import pytz
@@ -55,7 +56,7 @@ class AttendanceSwipeView(APIView):
             datetime_in = latest_session.time_in
 
             # 🔧 Ensure datetime_in is a datetime object
-            if isinstance(datetime_in, str):
+            if isinstance(datetime_in,dt_time):
                 try:
                     print(f"🧪 datetime_in type: {type(datetime_in)} | value: {datetime_in}")
                     datetime_in = datetime.fromisoformat(datetime_in)
