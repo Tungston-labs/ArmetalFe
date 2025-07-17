@@ -53,7 +53,10 @@ class AttendanceSwipeView(APIView):
 
         # Case 2: Ongoing session → Punch Out
         if latest_session.time_in and not latest_session.time_out:
-            if now.time() <= latest_session.time_in.time():
+            print(f"DEBUG: now type: {type(now)} | value: {now} | tzinfo: {now.tzinfo}")
+            print(f"DEBUG: time_in type: {type(latest_session.time_in)} | value: {latest_session.time_in} | tzinfo: {latest_session.time_in.tzinfo}")
+
+            if now <= latest_session.time_in:
 
 
                 return Response({
