@@ -70,7 +70,9 @@ class AttendanceSwipeView(APIView):
 
             print(f"🧠 now: {now} | time_in_local: {time_in_local}")
 
-            if now <= time_in_local:
+            if time_in_local is not None and now <= time_in_local:
+    # your logic
+
                 return Response({
                     "message": "Invalid punch out time. Punch out must be after punch in.",
                     "time_in": time_in_local.strftime("%I:%M %p"),
