@@ -15,22 +15,26 @@ class Attendance(TimeStampedModel):
         unique_together = ['employee', 'date']
 
     def update_total_hours(self):
-        sessions = self.sessions.all()
         total = timedelta()
-
-        for session in sessions:
+        for session in self.sessions.all():
             if session.time_in and session.time_out:
-                # Ensure both are timezone-aware
+                # Handle any time objects that might exist
                 time_in = session.time_in
                 time_out = session.time_out
                 
+                if isinstance(time_in, time):
+                    time_in = datetime.combine(self.date, time_in)
+                if isinstance(time_out, time):
+                    time_out = datetime.combine(self.date, time_out)
+                
+                # Ensure timezone awareness
                 if timezone.is_naive(time_in):
                     time_in = timezone.make_aware(time_in)
                 if timezone.is_naive(time_out):
                     time_out = timezone.make_aware(time_out)
                 
-                total += time_out - time_in
-
+                total += (time_out - time_in)
+        
         self.total_hours = round(total.total_seconds() / 3600, 2)
         self.save()
 
@@ -44,6 +48,14 @@ class AttendanceSession(models.Model):
     time_in = models.DateTimeField(null=True, blank=True)
     time_out = models.DateTimeField(null=True, blank=True)
     timezone = models.CharField(max_length=50, default='UTC',null=True,blank=True)  # Store the timezone used
+
+    def save(self, *args, **kwargs):
+        # Ensure we're always saving timezone-aware datetimes
+        if self.time_in and timezone.is_naive(self.time_in):
+            self.time_in = timezone.make_aware(self.time_in)
+        if self.time_out and timezone.is_naive(self.time_out):
+            self.time_out = timezone.make_aware(self.time_out)
+        super().save(*args, **kwargs)
 
 
     def __str__(self):

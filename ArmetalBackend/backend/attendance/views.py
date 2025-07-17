@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_aware
 
-from datetime import datetime
+from datetime import datetime,time
 from datetime import timedelta
 import pytz
 
@@ -20,7 +20,6 @@ from shared.pagination import CustomPagination
 from .utils.timezone_utils import get_company_timezone, convert_to_company_timezone
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 
-
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
 
@@ -30,79 +29,86 @@ class AttendanceSwipeView(APIView):
         if not employee:
             return Response({'detail': 'Employee not found.'}, status=400)
 
-        company_tz = get_company_timezone(employee)
+        company_tz = pytz.timezone(get_company_timezone(employee))
         today = timezone.now().astimezone(company_tz).date()
 
-        # Parse timestamp or use current time
+        # Handle timestamp input
         timestamp_str = request.data.get("timestamp")
-        if timestamp_str:
-            try:
+        try:
+            if timestamp_str:
                 if timestamp_str.endswith('Z'):
-                    timestamp_str = timestamp_str.replace('Z', '+00:00')
+                    timestamp_str = timestamp_str[:-1] + '+00:00'
                 now = parse_datetime(timestamp_str)
-                if now is None:
+                if not now:
                     raise ValueError("Invalid timestamp format")
-                if timezone.is_naive(now):
-                    now = timezone.make_aware(now, timezone.utc)
-                now = now.astimezone(company_tz)
-            except Exception as e:
-                return Response({"error": f"Invalid timestamp: {str(e)}"}, status=400)
-        else:
-            now = timezone.now().astimezone(company_tz)
+            else:
+                now = timezone.now()
+            
+            # Ensure timezone awareness
+            if timezone.is_naive(now):
+                now = timezone.make_aware(now, timezone.utc)
+            now = now.astimezone(company_tz)
+        except Exception as e:
+            return Response({"error": f"Time processing error: {str(e)}"}, status=400)
 
+        # Get or create attendance record
         attendance, _ = Attendance.objects.get_or_create(
-            employee=employee, 
+            employee=employee,
             date=today
         )
         latest_session = attendance.sessions.last()
 
-        # Case 1: No session or last session completed → Punch In
-        if not latest_session or (latest_session.time_in and latest_session.time_out):
-            session = AttendanceSession.objects.create(
-                attendance=attendance,
-                time_in=now,
-                timezone=str(company_tz)
-            )
-            return Response({
-                "message": "Punch In recorded",
-                "time_in": now.astimezone(company_tz).strftime("%I:%M %p"),
-                "date": now.date().isoformat()
-            })
-
-        # Case 2: Ongoing session → Punch Out
-        if latest_session.time_in and not latest_session.time_out:
-            # Ensure we're comparing in the same timezone
-            time_in = latest_session.time_in.astimezone(company_tz)
-            now = now.astimezone(company_tz)
-
-            # Validate punch out time
-            if now <= time_in:
-                return Response({
-                    "message": "Invalid punch out time",
-                    "details": {
-                        "punch_in": time_in.strftime("%Y-%m-%d %I:%M %p"),
-                        "attempted_punch_out": now.strftime("%Y-%m-%d %I:%M %p")
-                    }
-                }, status=400)
-
+        # Case 1: New session (punch in)
+        if not latest_session or (latest_session.time_out is not None):
             try:
+                session = AttendanceSession.objects.create(
+                    attendance=attendance,
+                    time_in=now,
+                    timezone=str(company_tz)
+                )  # This parenthesis was missing
+                
+                return Response({
+                    "status": "success",
+                    "action": "punch_in",
+                    "time": now.strftime("%I:%M %p"),
+                    "date": now.date().isoformat()
+                }, status=201)
+            except Exception as e:
+                return Response({"error": str(e)}, status=500)
+
+        # Case 2: Existing session needs punch out
+        if latest_session.time_in and not latest_session.time_out:
+            try:
+                # Convert stored time_in to datetime for comparison
+                time_in = latest_session.time_in
+                
+                # Handle case where time_in might be stored as time object
+                if isinstance(time_in, time):
+                    time_in = datetime.combine(today, time_in)
+                    time_in = timezone.make_aware(time_in, company_tz)
+                
+                # Final validation
+                if now <= time_in:
+                    return Response({
+                        "error": "Punch out must be after punch in",
+                        "punch_in": time_in.astimezone(company_tz).strftime("%Y-%m-%d %I:%M %p"),
+                        "attempted_out": now.strftime("%Y-%m-%d %I:%M %p")
+                    }, status=400)
+
                 latest_session.time_out = now
                 latest_session.save()
                 attendance.update_total_hours()
                 
                 return Response({
-                    "message": "Punch Out recorded",
-                    "time_out": now.strftime("%I:%M %p"),
-                    "total_hours": attendance.total_hours,
-                    "date": now.date().isoformat()
+                    "status": "success",
+                    "action": "punch_out",
+                    "time": now.strftime("%I:%M %p"),
+                    "total_hours": float(attendance.total_hours)
                 })
             except Exception as e:
-                return Response({
-                    "message": "Failed to record punch out",
-                    "error": str(e)
-                }, status=500)
+                return Response({"error": str(e)}, status=500)
 
-        return Response({"message": "Invalid session state"}, status=400)
+        return Response({"error": "Invalid session state"}, status=400)
 
 # HR - attendance view to list all employees attendance
 
