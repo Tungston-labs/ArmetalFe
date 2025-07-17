@@ -50,9 +50,14 @@ class AttendanceSwipeView(APIView):
             user_timezone = request.data.get('timezone', str(company_tz))  # fallback
 
             # Normalize time_in to aware datetime
-            if isinstance(latest_session.time_in, time):
-                # Combine with today’s date
-                datetime_in = datetime.combine(today, latest_session.time_in)
+            if isinstance(time_in_local, str):
+                try:
+                    time_in_local = datetime.fromisoformat(time_in_local)
+                except ValueError:
+                    # handle improperly formatted datetime string
+                    print("❌ Invalid time_in_local format:", time_in_local)
+                    return Response({"error": "Invalid time format"}, status=400)
+
             else:
                 datetime_in = latest_session.time_in
 
