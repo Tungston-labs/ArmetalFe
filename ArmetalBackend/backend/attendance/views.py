@@ -21,7 +21,6 @@ from .utils.timezone_utils import get_company_timezone, convert_to_company_timez
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 
 
-
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
 
@@ -35,6 +34,7 @@ class AttendanceSwipeView(APIView):
         company_tz = get_company_timezone(employee)
 
         timestamp_str = request.data.get("timestamp")
+        print('from front end', request.data)
         if timestamp_str:
             try:
                 # ✅ Remove trailing 'Z' and replace with +00:00 to make it ISO compliant
@@ -56,9 +56,6 @@ class AttendanceSwipeView(APIView):
         else:
             now = timezone.now().astimezone(company_tz)
 
-
-
-
         print("🌐 Company Timezone:", company_tz)
         print("🕒 Current Time:", now)
 
@@ -75,57 +72,48 @@ class AttendanceSwipeView(APIView):
 
         # Case 2: Ongoing session → Punch Out
         if latest_session.time_in and not latest_session.time_out:
-            user_timezone = request.data.get('timezone', str(company_tz))
-
             datetime_in = latest_session.time_in
 
-            # 🔧 Ensure datetime_in is a datetime object
-           # 🔧 If datetime_in is a time object, combine with today’s date
-           
-          # Ensure datetime_in is a datetime object and timezone-aware
+            # Ensure datetime_in is a datetime object and timezone-aware
             if not isinstance(datetime_in, datetime):
                 return Response({"error": "Invalid time_in format"}, status=400)
 
             if timezone.is_naive(datetime_in):
                 datetime_in = timezone.make_aware(datetime_in, timezone=pytz.UTC)
 
+            try:
+                time_in_local = convert_to_company_timezone(datetime_in, employee)
+            except Exception as e:
+                print("⛔ ERROR converting timezone:", str(e))
+                return Response({"error": "Failed to convert timezone"}, status=500)
 
-                try:
-                    time_in_local = convert_to_company_timezone(datetime_in, employee)
+            print(f"🧠 now: {now} | time_in_local: {time_in_local}")
 
-                except Exception as e:
-                    print("⛔ ERROR converting timezone:", str(e))
-                    return Response({"error": "Failed to convert timezone"}, status=500)
+            if time_in_local is not None and now <= time_in_local:
+                return Response({
+                    "message": "Invalid punch out time. Punch out must be after punch in.",
+                    "time_in": time_in_local.strftime("%I:%M %p"),
+                    "attempted_time_out": now.strftime("%I:%M %p")
+                }, status=400)
 
-                print(f"🧠 now: {now} | time_in_local: {time_in_local}")
+            try:
+                latest_session.time_out = now
+                latest_session.save()
+                attendance.update_total_hours()
 
-                if time_in_local is not None and now <= time_in_local:
-                    return Response({
-                        "message": "Invalid punch out time. Punch out must be after punch in.",
-                        "time_in": time_in_local.strftime("%I:%M %p"),
-                        "attempted_time_out": now.strftime("%I:%M %p")
-                    }, status=400)
-
-                try:
-                    latest_session.time_out = now
-                    latest_session.save()
-                    attendance.update_total_hours()
-
-                    return Response({
-                        "message": "Punch Out recorded",
-                        "time_out": now.strftime("%I:%M %p"),
-                        "total_hours": attendance.total_hours
-                    })
-
-                except Exception as e:
-                    print("❌ Error saving AttendanceSession:", str(e))
-                    return Response({
-                        "message": "Failed to record punch out",
-                        "error": str(e)
-                    }, status=500)
+                return Response({
+                    "message": "Punch Out recorded",
+                    "time_out": now.strftime("%I:%M %p"),
+                    "total_hours": attendance.total_hours
+                })
+            except Exception as e:
+                print("❌ Error saving AttendanceSession:", str(e))
+                return Response({
+                    "message": "Failed to record punch out",
+                    "error": str(e)
+                }, status=500)
 
         return Response({"message": "Invalid session state."}, status=400)
-
 
 # HR - attendance view to list all employees attendance
 
