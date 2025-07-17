@@ -74,26 +74,21 @@ class AttendanceSwipeView(APIView):
         if latest_session.time_in and not latest_session.time_out:
             datetime_in = latest_session.time_in
 
-            # Ensure datetime_in is a datetime object and timezone-aware
-            if not isinstance(datetime_in, datetime):
-                return Response({"error": "Invalid time_in format"}, status=400)
-
+            # Ensure both datetimes are in the same timezone for comparison
             if timezone.is_naive(datetime_in):
                 datetime_in = timezone.make_aware(datetime_in, timezone=pytz.UTC)
+            
+            # Convert both times to company timezone for accurate comparison
+            time_in_company_tz = datetime_in.astimezone(company_tz)
+            now_company_tz = now.astimezone(company_tz)
 
-            try:
-                time_in_local = convert_to_company_timezone(datetime_in, employee)
-            except Exception as e:
-                print("⛔ ERROR converting timezone:", str(e))
-                return Response({"error": "Failed to convert timezone"}, status=500)
+            print(f"🔍 Comparison - Punch In: {time_in_company_tz} | Punch Out Attempt: {now_company_tz}")
 
-            print(f"🧠 now: {now} | time_in_local: {time_in_local}")
-
-            if time_in_local is not None and now <= time_in_local:
+            if now_company_tz <= time_in_company_tz:
                 return Response({
                     "message": "Invalid punch out time. Punch out must be after punch in.",
-                    "time_in": time_in_local.strftime("%I:%M %p"),
-                    "attempted_time_out": now.strftime("%I:%M %p")
+                    "time_in": time_in_company_tz.strftime("%I:%M %p"),
+                    "attempted_time_out": now_company_tz.strftime("%I:%M %p")
                 }, status=400)
 
             try:
@@ -103,7 +98,7 @@ class AttendanceSwipeView(APIView):
 
                 return Response({
                     "message": "Punch Out recorded",
-                    "time_out": now.strftime("%I:%M %p"),
+                    "time_out": now_company_tz.strftime("%I:%M %p"),
                     "total_hours": attendance.total_hours
                 })
             except Exception as e:
