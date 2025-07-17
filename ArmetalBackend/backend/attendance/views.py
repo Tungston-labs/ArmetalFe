@@ -21,18 +21,6 @@ from user.permissions import IsEmployee
 from datetime import datetime
 
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
-from datetime import datetime
-import pytz
-
-from .models import Attendance, AttendanceSession
-from .permissions import IsEmployee
-from .utils import get_company_timezone, convert_to_company_timezone
-
-
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
 
