@@ -35,6 +35,8 @@ class AttendanceSwipeView(APIView):
         today = timezone.localdate()
         company_tz = get_company_timezone(employee)
         timestamp_str = request.data.get("timestamp")
+        print("📥 Incoming request data:", request.data)
+
         if timestamp_str:
             try:
                 now = parse_datetime(timestamp_str)
@@ -48,6 +50,7 @@ class AttendanceSwipeView(APIView):
                 return Response({"error": "Invalid timestamp format"}, status=400)
         else:
             now = timezone.now().astimezone(company_tz)
+
 
 
         print("🌐 Company Timezone:", company_tz)
