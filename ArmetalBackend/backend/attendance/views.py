@@ -27,15 +27,29 @@ class AttendanceSwipeView(APIView):
     def post(self, request):
         user = request.user
         employee = getattr(user, 'employee_db', None)
+
         if not employee:
             return Response({'detail': 'Employee not found.'}, status=400)
 
-        today = timezone.localdate()
+        # Parse incoming timestamp from frontend
+        raw_timestamp = request.data.get("timestamp")
+        if not raw_timestamp:
+            return Response({'error': 'Missing timestamp.'}, status=400)
+
+        try:
+            parsed_time = datetime.fromisoformat(raw_timestamp.replace("Z", "+00:00"))
+            if timezone.is_naive(parsed_time):
+                parsed_time = timezone.make_aware(parsed_time, timezone=pytz.UTC)
+        except Exception as e:
+            print("❌ Error parsing timestamp:", e)
+            return Response({'error': 'Invalid timestamp format.'}, status=400)
+
         company_tz = get_company_timezone(employee)
-        now = timezone.now().astimezone(company_tz)
+        now = parsed_time.astimezone(company_tz)
+        today = now.date()
 
         print("🌐 Company Timezone:", company_tz)
-        print("🕒 Current Time:", now)
+        print("🕒 Current Time from frontend:", now)
 
         attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
         latest_session = attendance.sessions.last()
@@ -51,30 +65,21 @@ class AttendanceSwipeView(APIView):
         # Case 2: Ongoing session → Punch Out
         if latest_session.time_in and not latest_session.time_out:
             user_timezone = request.data.get('timezone', str(company_tz))  # fallback
-
             datetime_in = latest_session.time_in
 
-            # Handle case where time_in might be a string (e.g. during debugging or test cases)
+            # Ensure time_in is timezone-aware
             if isinstance(datetime_in, str):
                 try:
-                    print(f"🧪 datetime_in type: {type(datetime_in)} | value: {datetime_in}")
-
                     datetime_in = datetime.fromisoformat(datetime_in)
                 except ValueError:
-                    print("❌ Invalid datetime_in format:", datetime_in)
                     return Response({"error": "Invalid time format"}, status=400)
 
-            # Make timezone-aware if naive
             if timezone.is_naive(datetime_in):
                 datetime_in = timezone.make_aware(datetime_in, timezone=pytz.UTC)
 
             time_in_local = convert_to_company_timezone(datetime_in, user_timezone)
 
-            print(f"🧠 now: {now} | time_in_local: {time_in_local}")
-
-            if time_in_local is not None and now <= time_in_local:
-    # your logic
-
+            if time_in_local and now <= time_in_local:
                 return Response({
                     "message": "Invalid punch out time. Punch out must be after punch in.",
                     "time_in": time_in_local.strftime("%I:%M %p"),
@@ -91,7 +96,6 @@ class AttendanceSwipeView(APIView):
                     "time_out": now.strftime("%I:%M %p"),
                     "total_hours": attendance.total_hours
                 })
-
             except Exception as e:
                 print("❌ Error saving AttendanceSession:", str(e))
                 return Response({
@@ -100,7 +104,6 @@ class AttendanceSwipeView(APIView):
                 }, status=500)
 
         return Response({"message": "Invalid session state."}, status=400)
-
 
 
 # HR - attendance view to list all employees attendance
