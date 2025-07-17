@@ -1,26 +1,25 @@
 from django.shortcuts import render
-from datetime import time 
-
-
-from datetime import datetime,timedelta
-import pytz
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import make_aware
+
+import datetime
+from datetime import timedelta
+import pytz
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status, generics, filters
+from rest_framework.generics import RetrieveAPIView
+
 from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
-from user.permissions import IsEmployee,IsHRAdmin,IsHRorIsEmployee
-from rest_framework import status
-from rest_framework import generics, filters
-from .serializers import AttendanceSerializer,AttendanceSessionSerializer,AttendanceDetailSerializer
-from rest_framework.generics import RetrieveAPIView
+from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer
 from shared.pagination import CustomPagination
-from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone
-from attendance.models import Attendance, AttendanceSession
-from user.permissions import IsEmployee
-from datetime import datetime
-from django.utils.dateparse import parse_datetime
+from .utils.timezone_utils import get_company_timezone, convert_to_company_timezone
+from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
+
 
 
 class AttendanceSwipeView(APIView):
@@ -34,22 +33,29 @@ class AttendanceSwipeView(APIView):
 
         today = timezone.localdate()
         company_tz = get_company_timezone(employee)
-        timestamp_str = request.data.get("timestamp")
-        print("📥 Incoming request data:", request.data)
 
+        timestamp_str = request.data.get("timestamp")
         if timestamp_str:
             try:
+                # ✅ Remove trailing 'Z' and replace with +00:00 to make it ISO compliant
+                if timestamp_str.endswith('Z'):
+                    timestamp_str = timestamp_str.replace('Z', '+00:00')
+
                 now = parse_datetime(timestamp_str)
                 if now is None:
                     raise ValueError("Could not parse timestamp")
+
+                # Make timezone-aware if needed
                 if timezone.is_naive(now):
                     now = timezone.make_aware(now, timezone.utc)
+
                 now = now.astimezone(company_tz)
             except Exception as e:
                 print("❌ Invalid timestamp:", timestamp_str, "| Error:", str(e))
                 return Response({"error": "Invalid timestamp format"}, status=400)
         else:
             now = timezone.now().astimezone(company_tz)
+
 
 
 
