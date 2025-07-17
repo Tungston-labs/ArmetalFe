@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_aware
 
-from datetime import datetime,time
+from datetime import datetime,time  
 from datetime import timedelta
 import pytz
 
@@ -19,7 +19,6 @@ from .serializers import AttendanceSerializer, AttendanceSessionSerializer, Atte
 from shared.pagination import CustomPagination
 from .utils.timezone_utils import get_company_timezone, convert_to_company_timezone
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
-
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
 
@@ -29,7 +28,8 @@ class AttendanceSwipeView(APIView):
         if not employee:
             return Response({'detail': 'Employee not found.'}, status=400)
 
-        company_tz = pytz.timezone(get_company_timezone(employee))
+        # Get company timezone (already returns a timezone object)
+        company_tz = get_company_timezone(employee)
         today = timezone.now().astimezone(company_tz).date()
 
         # Handle timestamp input
@@ -65,7 +65,7 @@ class AttendanceSwipeView(APIView):
                     attendance=attendance,
                     time_in=now,
                     timezone=str(company_tz)
-                )  # This parenthesis was missing
+                )  # Fixed missing parenthesis here
                 
                 return Response({
                     "status": "success",
