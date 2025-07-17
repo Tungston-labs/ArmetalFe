@@ -3,7 +3,7 @@ from datetime import datetime
 from django.utils import timezone
 from employee.models import Employee_db
 from shared.models import TimeStampedModel
-from datetime import timedelta
+from datetime import timedelta,time
 
 class Attendance(TimeStampedModel):
     employee = models.ForeignKey(Employee_db, on_delete=models.CASCADE, related_name='attendances')
