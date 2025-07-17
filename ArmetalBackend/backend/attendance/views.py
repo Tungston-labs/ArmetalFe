@@ -18,9 +18,12 @@ from shared.pagination import CustomPagination
 from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone
 from attendance.models import Attendance, AttendanceSession
 from user.permissions import IsEmployee
+from datetime import datetime
+
 
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
+
     def post(self, request):
         user = request.user
         employee = getattr(user, 'employee_db', None)
@@ -49,19 +52,17 @@ class AttendanceSwipeView(APIView):
         if latest_session.time_in and not latest_session.time_out:
             user_timezone = request.data.get('timezone', str(company_tz))  # fallback
 
-            # Normalize time_in to aware datetime
-            if isinstance(time_in_local, str):
+            datetime_in = latest_session.time_in
+
+            # Handle case where time_in might be a string (e.g. during debugging or test cases)
+            if isinstance(datetime_in, str):
                 try:
-                    time_in_local = datetime.fromisoformat(time_in_local)
+                    datetime_in = datetime.fromisoformat(datetime_in)
                 except ValueError:
-                    # handle improperly formatted datetime string
-                    print("❌ Invalid time_in_local format:", time_in_local)
+                    print("❌ Invalid datetime_in format:", datetime_in)
                     return Response({"error": "Invalid time format"}, status=400)
 
-            else:
-                datetime_in = latest_session.time_in
-
-            # Make timezone-aware if needed
+            # Make timezone-aware if naive
             if timezone.is_naive(datetime_in):
                 datetime_in = timezone.make_aware(datetime_in, timezone=pytz.UTC)
 
