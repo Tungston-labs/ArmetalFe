@@ -82,7 +82,8 @@ class AttendanceSwipeView(APIView):
                 datetime_in = timezone.make_aware(datetime_in, timezone=pytz.UTC)
 
             try:
-                time_in_local = convert_to_company_timezone(datetime_in, user_timezone)
+                time_in_local = convert_to_company_timezone(datetime_in, employee)
+
             except Exception as e:
                 print("⛔ ERROR converting timezone:", str(e))
                 return Response({"error": "Failed to convert timezone"}, status=500)
