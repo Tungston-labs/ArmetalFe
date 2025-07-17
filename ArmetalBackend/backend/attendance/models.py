@@ -17,12 +17,24 @@ class Attendance(TimeStampedModel):
     def update_total_hours(self):
         sessions = self.sessions.all()
         total = timedelta()
+
         for session in sessions:
             if session.time_in and session.time_out:
-                total += session.time_out - session.time_in
+                time_in = session.time_in
+                time_out = session.time_out
+
+                # Convert to datetime if needed
+                if isinstance(time_in, time):
+                    time_in = timezone.make_aware(datetime.combine(self.date, time_in))
+
+                if isinstance(time_out, time):
+                    time_out = timezone.make_aware(datetime.combine(self.date, time_out))
+
+                total += time_out - time_in
 
         self.total_hours = round(total.total_seconds() / 3600, 2)
         self.save()
+
 
     def __str__(self):
         return f"{self.employee.name} - {self.date}"
