@@ -30,12 +30,16 @@ def get_company_timezone(employee):
     except Exception as e:
         print("❌ Error getting company timezone:", e)
         return pytz.UTC
-    
 def convert_to_company_timezone(datetime_obj, employee):
     if not datetime_obj:
         return None
 
     try:
+        # ✅ Prevent .time input error
+        if isinstance(datetime_obj, time):
+            print("⛔ ERROR: Passed a time object instead of datetime to convert_to_company_timezone()")
+            return None  # or handle as needed
+
         company_tz = get_company_timezone(employee)
 
         if datetime_obj.tzinfo is None:
@@ -54,4 +58,4 @@ def convert_to_company_timezone(datetime_obj, employee):
     except Exception as e:
         print("❌ Timezone conversion error:", str(e))
         return None
-   
+
