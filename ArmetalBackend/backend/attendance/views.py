@@ -57,6 +57,8 @@ class AttendanceSwipeView(APIView):
             # Handle case where time_in might be a string (e.g. during debugging or test cases)
             if isinstance(datetime_in, str):
                 try:
+                    print(f"🧪 datetime_in type: {type(datetime_in)} | value: {datetime_in}")
+
                     datetime_in = datetime.fromisoformat(datetime_in)
                 except ValueError:
                     print("❌ Invalid datetime_in format:", datetime_in)
