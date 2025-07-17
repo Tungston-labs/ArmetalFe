@@ -120,12 +120,12 @@ export default function EmployeeAttendance() {
                 <TableCell>{row.employee}</TableCell>
                 <TableCell>{row.date}</TableCell>
                 <TableCell>
-                  {row.sessions?.[0]?.time_in?.slice(0, 5) || '--:--'}
+                  {row.sessions?.[0]?.time_in?.slice(0, 5) || '----'}
                 </TableCell>
                 <TableCell>
                   {(() => {
                     const last = [...(row.sessions || [])].reverse().find(s => s.time_out);
-                    return last?.time_out?.slice(0, 5) || '--:--';
+                    return last?.time_out?.slice(0, 5) || '-------';
                   })()}
                 </TableCell>
                 <TableCell>

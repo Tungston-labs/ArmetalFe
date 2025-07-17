@@ -150,8 +150,8 @@ console.log("📤 Submitting employee", formData);
   ) : (
     <div
       style={{
-        width: "150px",
-        height: "150px",
+        width: "100px",
+        height: "100px",
         borderRadius: "50%",
         backgroundColor: "#f0f0f0",
         display: "flex",

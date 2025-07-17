@@ -71,6 +71,13 @@ class AttendanceSwipeView(APIView):
 
 
 
+from rest_framework import generics, filters
+from rest_framework.permissions import IsAuthenticated
+from user.permissions import IsHRAdmin  # Adjust import based on your project
+from .models import Attendance
+from .serializers import AttendanceSerializer
+from shared.pagination import CustomPagination
+
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
@@ -79,11 +86,17 @@ class AttendanceAdminListView(generics.ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        queryset = Attendance.objects.all().order_by('-date')
+        user_company = self.request.user.company
+        queryset = Attendance.objects.filter(
+            employee__department__company=user_company
+        ).order_by('-date')
+
         date = self.request.query_params.get('date')
         if date:
             queryset = queryset.filter(date=date)
+
         return queryset
+
     
 class TodayAttendanceDetailView(APIView):
     permission_classes = [IsAuthenticated,IsHRorIsEmployee]

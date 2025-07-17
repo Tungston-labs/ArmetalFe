@@ -159,7 +159,7 @@ const handlePageChange = (newPage) => {
 
       <Header>
         <TitleSection>
-          <LuArrowLeft style={{ width: "30px", height: 30 }} />
+          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
           <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
           <div>
             <Title>Payroll</Title>

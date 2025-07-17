@@ -251,9 +251,9 @@ export const ImageColumn = styled.div`
   flex: 0 0 auto;
 
   img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
     object-fit: cover;
   }
 `;

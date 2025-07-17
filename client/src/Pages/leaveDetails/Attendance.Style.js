@@ -151,7 +151,7 @@ export const TextArea = styled.textarea`
 export const SectionTitle = styled.h4`
   // margin-top: 2rem;
   margin-bottom: 0.5rem;
-  // color:#999999;
+  // color:black;
 
 `;
 
@@ -169,7 +169,7 @@ export const Input = styled.input`
   border-radius: 6px;
   width: 99%;
   margin-bottom: 1rem;
-  color:#999999;
+  color:black;
   
 `;
 

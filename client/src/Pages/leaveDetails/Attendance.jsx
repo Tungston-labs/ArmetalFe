@@ -24,12 +24,13 @@ import {
   DateNavCenter,
 } from './Attendance.Style';
 import { FaClock } from 'react-icons/fa';
-
+import { PiUserCirclePlusThin } from "react-icons/pi";
+import { LuArrowLeft } from "react-icons/lu";
 const TimesheetPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { attendanceDetail, detailLoading } = useSelector((state) => state.attendance);
-
+const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState('');
   
 
@@ -58,9 +59,19 @@ const TimesheetPage = () => {
     <Container>
       <HeaderSection>
         <InfoGrid>
+            <LuArrowLeft
+              style={{ width: "30px", height: 30, cursor: "pointer" }}
+              onClick={() => navigate(-1)} // 👈 Go back to previous page
+            />
+            
+                      
           <div style={{ width: '10%' }}>
-            <ProfileImage src={employee.profile_pic} alt="Employee" />
-          </div>
+  {employee.profile_pic ? (
+    <ProfileImage src={employee.profile_pic} alt="Employee" />
+  ) : (
+    <PiUserCirclePlusThin size={100} style={{ color: '#aaa' }} />
+  )}
+</div>
           <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between' }}>
             <TwoColumn>
               <Input value={employee.name || ''} readOnly />

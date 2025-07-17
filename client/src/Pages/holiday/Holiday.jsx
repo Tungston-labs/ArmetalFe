@@ -111,7 +111,7 @@ const cancelDelete = () => {
       <Header>
         <TopBar>
           <TitleSection>
-            <LuArrowLeft style={{ width: "36px", height: 36 }} />
+            {/* <LuArrowLeft style={{ width: "36px", height: 36 }} /> */}
             <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
             <div>
               <Title>Holiday</Title>
