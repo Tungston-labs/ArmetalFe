@@ -53,7 +53,8 @@ class AttendanceSwipeView(APIView):
 
         # Case 2: Ongoing session → Punch Out
         if latest_session.time_in and not latest_session.time_out:
-            if now <= latest_session.time_in:
+            if now.time() <= latest_session.time_in:
+
                 return Response({
                     "message": "Invalid punch out time. Punch out must be after punch in.",
                     "time_in": latest_session.time_in.strftime("%I:%M %p"),
