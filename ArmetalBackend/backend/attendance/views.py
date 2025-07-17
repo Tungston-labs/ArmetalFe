@@ -73,13 +73,13 @@ class AttendanceSwipeView(APIView):
             # 🔧 Ensure datetime_in is a datetime object
            # 🔧 If datetime_in is a time object, combine with today’s date
            
-            if isinstance(datetime_in, time):
-                print(f"🧪 Converting time to datetime: {datetime_in}")
-                datetime_in = datetime.combine(today, datetime_in)
+          # Ensure datetime_in is a datetime object and timezone-aware
+        if not isinstance(datetime_in, datetime):
+            return Response({"error": "Invalid time_in format"}, status=400)
 
-            # Make timezone-aware if naive
-            if timezone.is_naive(datetime_in):
-                datetime_in = timezone.make_aware(datetime_in, timezone=pytz.UTC)
+        if timezone.is_naive(datetime_in):
+            datetime_in = timezone.make_aware(datetime_in, timezone=pytz.UTC)
+
 
             try:
                 time_in_local = convert_to_company_timezone(datetime_in, employee)
