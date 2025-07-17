@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from datetime import time as dt_time
+from datetime import time 
 
 
 from datetime import datetime,timedelta
@@ -56,16 +56,9 @@ class AttendanceSwipeView(APIView):
             datetime_in = latest_session.time_in
 
             # 🔧 Ensure datetime_in is a datetime object
-            if isinstance(datetime_in,dt_time):
-                try:
-                    print(f"🧪 datetime_in type: {type(datetime_in)} | value: {datetime_in}")
-                    datetime_in = datetime.fromisoformat(datetime_in)
-                except ValueError:
-                    print("❌ Invalid datetime_in format:", datetime_in)
-                    return Response({"error": "Invalid time format"}, status=400)
-
-            # 🔧 If datetime_in is a time (wrong), combine with today’s date
-            if isinstance(datetime_in, datetime.time):
+           # 🔧 If datetime_in is a time object, combine with today’s date
+            if isinstance(datetime_in, time):
+                print(f"🧪 Converting time to datetime: {datetime_in}")
                 datetime_in = datetime.combine(today, datetime_in)
 
             # Make timezone-aware if naive
