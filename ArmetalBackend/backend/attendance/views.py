@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from datetime import datetime, time, timedelta
 from django.utils import timezone
-from datetime import time
 
 
 
@@ -58,7 +57,7 @@ class AttendanceSwipeView(APIView):
         if latest_session.time_in and not latest_session.time_out:
             print(f"DEBUG: now type: {type(now)} | value: {now} | tzinfo: {now.tzinfo}")
             print(f"DEBUG: time_in type: {type(latest_session.time_in)} | value: {latest_session.time_in} | tzinfo: {latest_session.time_in.tzinfo}")
-
+            print(f"🔍 Checking type of time_in: {type(latest_session.time_in)}")
             if isinstance(latest_session.time_in, time):
                 latest_session.time_in = timezone.make_aware(
                     datetime.combine(now.date(), latest_session.time_in),
