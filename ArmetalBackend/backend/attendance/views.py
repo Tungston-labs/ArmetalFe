@@ -69,15 +69,18 @@ class AttendanceSwipeView(APIView):
                 print(f"DEBUG time_in raw: {time_in} ({type(time_in)}), value: {repr(time_in)}")
 
 
-                if isinstance(latest_session.time_in, time):
-    # Use today's date with that time and company timezone
-                    time_in = datetime.combine(today, latest_session.time_in)
-                    time_in = company_tz.localize(time_in)
-                elif isinstance(latest_session.time_in, datetime):
-                    time_in = ensure_timezone(latest_session.time_in, company_tz)
-                else:
-                    logger.error("Invalid time_in format")
-                    return Response({'error': 'Invalid punch-in time'}, status=500)
+            time_in = latest_session.time_in
+
+            # 🛠️ Ensure time_in is a full datetime
+            if isinstance(time_in, time):
+                time_in = datetime.combine(today, time_in)
+                time_in = company_tz.localize(time_in)  # OR: timezone.make_aware() if using Django's utils
+            elif isinstance(time_in, datetime):
+                time_in = ensure_timezone(time_in, company_tz)
+            else:
+                logger.error("Invalid time_in format")
+                return Response({'error': 'Invalid punch-in time'}, status=500)
+
 
                 time_in = ensure_timezone(time_in, company_tz)
 
