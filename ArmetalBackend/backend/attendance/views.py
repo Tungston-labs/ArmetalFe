@@ -27,131 +27,75 @@ from employee.models import Employee_db
 import pytz
 
 
+
+
 logger = logging.getLogger(__name__)
+
 class AttendanceSwipeView(APIView):
-    permission_classes = [IsAuthenticated, IsEmployee]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
-            # 1. Initial Setup
             user = request.user
-            logger.info(f"Processing swipe for user {user.id}")
+            employee = getattr(user, 'employee_db', None)
 
-            # 2. Employee Verification
-            try:
-                employee = user.employee_db
-                if not employee:
-                    return Response({'error': 'Employee not found'}, status=404)
-                
-                company_tz = get_company_timezone(employee)
-                logger.debug(f"Using timezone: {company_tz.zone}")
-            except Exception as e:
-                logger.error(f"Employee setup failed: {e}")
-                return Response({'error': 'Employee verification failed'}, status=400)
+            if not employee:
+                return Response({'error': 'Employee not found'}, status=404)
 
-            # 3. Timestamp Processing
-            try:
-                if 'timestamp' in request.data:
-                    print('timestamp ',request.data)
-                    timestamp = request.data['timestamp']
-                    if isinstance(timestamp, str):
-                        now = safe_parse_datetime(timestamp)
-                    else:
-                        now = datetime.fromtimestamp(timestamp)
-                    
-                    now = ensure_timezone(now, pytz.UTC).astimezone(company_tz)
-                else:
-                    now = timezone.now().astimezone(company_tz)
-                
-                logger.debug(f"Processed time: {now}")
-            except Exception as e:
-                logger.error(f"Time processing failed: {e}")
-                return Response({'error': 'Invalid time format'}, status=400)
-
+            company_tz = get_company_timezone(employee)
+            now = timezone.now().astimezone(company_tz)
             today = now.date()
 
-            # 4. Attendance Record Handling
-            try:
-                attendance, _ = Attendance.objects.get_or_create(
-                    employee=employee,
-                    date=today
-                )
-                latest_session = attendance.sessions.last()
-            except Exception as e:
-                logger.error(f"Attendance access failed: {e}")
-                return Response({'error': 'Attendance system error'}, status=500)
+            attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
+            latest_session = attendance.sessions.last()
 
-            # 5. Punch In/Out Logic
+            # Punch In
             if not latest_session or latest_session.time_out:
-                # Punch In
-                try:
-                    session = AttendanceSession.objects.create(
-                        attendance=attendance,
-                        time_in=now,
-                        timezone=company_tz.zone
-                    )
-                    return Response({
-                        'status': 'success',
-                        'action': 'punch_in',
-                        'time': now.strftime("%H:%M:%S"),
-                        'date': today.isoformat()
-                    }, status=201)
-                except Exception as e:
-                    logger.error(f"Punch in failed: {e}")
-                    return Response({'error': 'Punch in failed'}, status=500)
+                session = AttendanceSession.objects.create(
+                    attendance=attendance,
+                    time_in=now,
+                    timezone=company_tz.zone
+                )
+                return Response({
+                    'status': 'success',
+                    'action': 'punch_in',
+                    'time': now.strftime("%H:%M:%S"),
+                    'date': today.isoformat()
+                }, status=201)
+
+            # Punch Out
             else:
-                # Punch Out
-                
-                try:
-                    time_in = latest_session.time_in
+                time_in = latest_session.time_in
+                if not isinstance(time_in, datetime):
+                    logger.error("Invalid time_in format")
+                    return Response({'error': 'Invalid punch-in time'}, status=500)
 
-                    try:
-                        if isinstance(time_in, str):
-                            time_in = safe_parse_datetime(time_in)
-                        elif isinstance(time_in, time):
-                            time_in = datetime.combine(today, time_in)
-                        elif isinstance(time_in, datetime):
-                            pass
-                        else:
-                            raise ValueError("Unrecognized time_in format")
+                time_in = ensure_timezone(time_in, company_tz)
 
-                        time_in = ensure_timezone(time_in, company_tz)
-
-                    except Exception as e:
-                        logger.error(f"Invalid time_in value: {e}")
-                        return Response({'error': 'Invalid punch-in time'}, status=500)
-
-                    # Validate punch out
-                    if now <= time_in:
-                        return Response({
-                            'error': 'Punch out must be after punch in',
-                            'details': {
-                                'punch_in': str(time_in),
-                                'attempted_out': str(now)
-                            }
-                        }, status=400)
-
-                    latest_session.time_out = now
-                    latest_session.save()
-                    attendance.update_total_hours()
-
+                if now <= time_in:
                     return Response({
-                        'status': 'success',
-                        'action': 'punch_out',
-                        'time': now.strftime("%H:%M:%S"),
-                        'total_hours': float(attendance.total_hours),
-                        'timezone': company_tz.zone
-                    })
+                        'error': 'Punch out must be after punch in',
+                        'details': {
+                            'punch_in': str(time_in),
+                            'attempted_out': str(now)
+                        }
+                    }, status=400)
 
-                except Exception as e:
-                    logger.error(f"Punch out failed: {e}")
-                    return Response({'error': 'Punch out failed'}, status=500)
+                latest_session.time_out = now
+                latest_session.save()
+                attendance.update_total_hours()
 
+                return Response({
+                    'status': 'success',
+                    'action': 'punch_out',
+                    'time': now.strftime("%H:%M:%S"),
+                    'total_hours': float(attendance.total_hours),
+                    'timezone': company_tz.zone
+                }, status=200)
 
         except Exception as e:
             logger.critical(f"Unhandled error: {e}", exc_info=True)
             return Response({'error': 'Internal server error'}, status=500)
-# HR - attendance view to list all employees attendance
 
 
 
