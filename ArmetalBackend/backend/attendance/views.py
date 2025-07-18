@@ -66,9 +66,16 @@ class AttendanceSwipeView(APIView):
             # Punch Out
             else:
                 time_in = latest_session.time_in
-                print(f"DEBUG time_in raw: {time_in} ({type(time_in)})")
+                print(f"DEBUG time_in raw: {time_in} ({type(time_in)}), value: {repr(time_in)}")
 
-                if not isinstance(time_in, datetime):
+
+                if isinstance(latest_session.time_in, time):
+    # Use today's date with that time and company timezone
+                    time_in = datetime.combine(today, latest_session.time_in)
+                    time_in = company_tz.localize(time_in)
+                elif isinstance(latest_session.time_in, datetime):
+                    time_in = ensure_timezone(latest_session.time_in, company_tz)
+                else:
                     logger.error("Invalid time_in format")
                     return Response({'error': 'Invalid punch-in time'}, status=500)
 
