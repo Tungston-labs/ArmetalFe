@@ -52,6 +52,7 @@ class AttendanceSwipeView(APIView):
             # 3. Timestamp Processing
             try:
                 if 'timestamp' in request.data:
+                    print('timestamp ',request.data)
                     timestamp = request.data['timestamp']
                     if isinstance(timestamp, str):
                         now = safe_parse_datetime(timestamp)
