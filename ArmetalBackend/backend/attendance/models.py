@@ -51,21 +51,38 @@ class AttendanceSession(models.Model):
     timezone = models.CharField(max_length=50, default='UTC',null=True,blank=True)  # Store the timezone used
 
 
+    # def save(self, *args, **kwargs):
+    #     # Ensure time_in is a datetime and timezone-aware
+    #     if isinstance(self.time_in, datetime):
+    #         if timezone.is_naive(self.time_in):
+    #             self.time_in = timezone.make_aware(self.time_in)
+    #     elif self.time_in is not None:
+    #         raise TypeError("time_in must be a datetime object")
+
+    #     # Ensure time_out is a datetime and timezone-aware
+    #     if isinstance(self.time_out, datetime):
+    #         print('time out',self.time_out)
+    #         if timezone.is_naive(self.time_out):
+    #             self.time_out = timezone.make_aware(self.time_out)
+    #     elif self.time_out is not None:
+    #         raise TypeError("time_out must be a datetime object")
+
+    #     super().save(*args, **kwargs)
+
     def save(self, *args, **kwargs):
-        # Ensure time_in is a datetime and timezone-aware
-        if isinstance(self.time_in, datetime):
+        # --- Handle time_in ---
+        if self.time_in is not None:
+            if not isinstance(self.time_in, datetime):
+                raise TypeError("time_in must be a datetime object")
             if timezone.is_naive(self.time_in):
                 self.time_in = timezone.make_aware(self.time_in)
-        elif self.time_in is not None:
-            raise TypeError("time_in must be a datetime object")
 
-        # Ensure time_out is a datetime and timezone-aware
-        if isinstance(self.time_out, datetime):
-            print('time out',self.time_out)
+        # --- Handle time_out ---
+        if self.time_out is not None:
+            if not isinstance(self.time_out, datetime):
+                raise TypeError("time_out must be a datetime object")
             if timezone.is_naive(self.time_out):
                 self.time_out = timezone.make_aware(self.time_out)
-        elif self.time_out is not None:
-            raise TypeError("time_out must be a datetime object")
 
         super().save(*args, **kwargs)
 
