@@ -30,7 +30,6 @@ import pytz
 
 
 logger = logging.getLogger(__name__)
-
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -51,7 +50,7 @@ class AttendanceSwipeView(APIView):
 
             # Punch In
             if not latest_session or latest_session.time_out:
-                session = AttendanceSession.objects.create(
+                AttendanceSession.objects.create(
                     attendance=attendance,
                     time_in=now,
                     timezone=company_tz.zone
@@ -64,50 +63,41 @@ class AttendanceSwipeView(APIView):
                 }, status=201)
 
             # Punch Out
-            else:
-                time_in = latest_session.time_in
-                print(f"DEBUG time_in raw: {time_in} ({type(time_in)}), value: {repr(time_in)}")
-
-
             time_in = latest_session.time_in
-
-            # 🛠️ Ensure time_in is a full datetime
             if isinstance(time_in, time):
                 time_in = datetime.combine(today, time_in)
-                time_in = company_tz.localize(time_in)  # OR: timezone.make_aware() if using Django's utils
+                time_in = company_tz.localize(time_in)
             elif isinstance(time_in, datetime):
                 time_in = ensure_timezone(time_in, company_tz)
             else:
                 logger.error("Invalid time_in format")
                 return Response({'error': 'Invalid punch-in time'}, status=500)
 
-
-                time_in = ensure_timezone(time_in, company_tz)
-
-                if now <= time_in:
-                    return Response({
-                        'error': 'Punch out must be after punch in',
-                        'details': {
-                            'punch_in': str(time_in),
-                            'attempted_out': str(now)
-                        }
-                    }, status=400)
-
-                latest_session.time_out = now
-                latest_session.save()
-                attendance.update_total_hours()
-
+            if now <= time_in:
                 return Response({
-                    'status': 'success',
-                    'action': 'punch_out',
-                    'time': now.strftime("%H:%M:%S"),
-                    'total_hours': float(attendance.total_hours),
-                    'timezone': company_tz.zone
-                }, status=200)
+                    'error': 'Punch out must be after punch in',
+                    'details': {
+                        'punch_in': str(time_in),
+                        'attempted_out': str(now)
+                    }
+                }, status=400)
+
+            latest_session.time_out = now
+            latest_session.save()
+            attendance.update_total_hours()
+
+            return Response({
+                'status': 'success',
+                'action': 'punch_out',
+                'time': now.strftime("%H:%M:%S"),
+                'total_hours': float(attendance.total_hours),
+                'timezone': company_tz.zone
+            }, status=200)
 
         except Exception as e:
             logger.critical(f"Unhandled error: {e}", exc_info=True)
             return Response({'error': 'Internal server error'}, status=500)
+
 
 
 
