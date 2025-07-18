@@ -66,6 +66,8 @@ class AttendanceSwipeView(APIView):
             # Punch Out
             else:
                 time_in = latest_session.time_in
+                print(f"DEBUG time_in raw: {time_in} ({type(time_in)})")
+
                 if not isinstance(time_in, datetime):
                     logger.error("Invalid time_in format")
                     return Response({'error': 'Invalid punch-in time'}, status=500)
