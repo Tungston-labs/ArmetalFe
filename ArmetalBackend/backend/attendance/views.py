@@ -100,40 +100,52 @@ class AttendanceSwipeView(APIView):
                     return Response({'error': 'Punch in failed'}, status=500)
             else:
                 # Punch Out
+                
                 try:
                     time_in = latest_session.time_in
-                    
-                    # Handle all possible time_in formats
-                    if isinstance(time_in, str):
-                        time_in = safe_parse_datetime(time_in)
-                    elif isinstance(time_in, time):
-                        time_in = datetime.combine(today, time_in)
-                    
-                    time_in = ensure_timezone(time_in, company_tz)
-                    
+
+                    try:
+                        if isinstance(time_in, str):
+                            time_in = safe_parse_datetime(time_in)
+                        elif isinstance(time_in, time):
+                            time_in = datetime.combine(today, time_in)
+                        elif isinstance(time_in, datetime):
+                            pass
+                        else:
+                            raise ValueError("Unrecognized time_in format")
+
+                        time_in = ensure_timezone(time_in, company_tz)
+
+                    except Exception as e:
+                        logger.error(f"Invalid time_in value: {e}")
+                        return Response({'error': 'Invalid punch-in time'}, status=500)
+
                     # Validate punch out
                     if now <= time_in:
                         return Response({
                             'error': 'Punch out must be after punch in',
                             'details': {
-                                'punch_in': time_in.isoformat(),
-                                'attempted_out': now.isoformat()
+                                'punch_in': str(time_in),
+                                'attempted_out': str(now)
                             }
                         }, status=400)
 
                     latest_session.time_out = now
                     latest_session.save()
                     attendance.update_total_hours()
-                    
+
                     return Response({
                         'status': 'success',
                         'action': 'punch_out',
                         'time': now.strftime("%H:%M:%S"),
-                        'total_hours': float(attendance.total_hours)
+                        'total_hours': float(attendance.total_hours),
+                        'timezone': company_tz.zone
                     })
+
                 except Exception as e:
                     logger.error(f"Punch out failed: {e}")
                     return Response({'error': 'Punch out failed'}, status=500)
+
 
         except Exception as e:
             logger.critical(f"Unhandled error: {e}", exc_info=True)

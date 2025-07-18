@@ -5,7 +5,7 @@ from employee.models import Employee_db
 # serializers.py
 from rest_framework import serializers
 from .models import Attendance, AttendanceSession
-
+from datetime import time,datetime
 from rest_framework import serializers
 from .models import Attendance, AttendanceSession
 from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone,safe_parse_datetime,ensure_timezone
@@ -21,10 +21,16 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
         fields = ['time_in', 'time_out']
 
     def get_time_in(self, obj):
-        return convert_to_company_timezone(obj.time_in, obj.attendance.employee)
+        return self._safe_convert(obj.time_in, obj)
 
     def get_time_out(self, obj):
-        return convert_to_company_timezone(obj.time_out, obj.attendance.employee)
+        return self._safe_convert(obj.time_out, obj)
+
+    def _safe_convert(self, dt, obj):
+        if isinstance(dt, time):
+            dt = datetime.combine(obj.attendance.date, dt)
+        return convert_to_company_timezone(dt, obj.attendance.employee)
+
 
 
 
