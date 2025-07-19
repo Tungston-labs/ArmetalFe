@@ -7,6 +7,7 @@ import {
   TableCell, EmployeeImg, TableTitle, Pagination, ActionArea,
   DateInput, Tab, Tabs
 } from "./OnLeave.Style";
+import { PiUserCirclePlusThin } from "react-icons/pi";
 
 import { IoEyeOutline } from "react-icons/io5";
 import { useLocation, NavLink, useNavigate } from 'react-router-dom';

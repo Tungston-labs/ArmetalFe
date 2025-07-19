@@ -77,8 +77,9 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 96%;
-  margin-bottom: 1rem;
+  // margin-bottom: 1rem;
   color:black;
+  margin-top:10px;
   
 `;
 

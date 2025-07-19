@@ -181,7 +181,15 @@ export const DeclineButton = styled.button`
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #dc2626; /* a darker red */
+    transform: scale(1.02);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
 `;
+
 
 export const ApproveButton = styled.button`
   background-color: #94a3b8;
@@ -190,7 +198,15 @@ export const ApproveButton = styled.button`
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #64748b; /* darker bluish-gray */
+    transform: scale(1.02);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
 `;
+
 export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;

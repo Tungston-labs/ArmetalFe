@@ -97,12 +97,25 @@ export const ActionButton = styled.button`
 export const ApproveButton = styled(ActionButton)`
   background-color: #6c7b8b;
   color: white;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color:rgb(52, 57, 65); /* slightly darker shade */
+    opacity: 0.9;
+  }
 `;
+
 
 export const DeclineButton = styled(ActionButton)`
   background-color: #f17070;
   color: white;
+
+  &:hover {
+    background-color:rgb(240, 47, 40); /* darker red */
+    opacity: 0.9;
+  }
 `;
+
 export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;

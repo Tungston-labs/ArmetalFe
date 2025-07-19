@@ -33,6 +33,7 @@ import { getLeaveDetails, patchLeaveStatus } from '../../Redux/leaveSlice';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
+
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -50,21 +51,25 @@ const navigate = useNavigate();
 
   const employee = leaveDetails?.employee || {};
 
-  const handleStatusUpdate = async () => {
-    if (!id || !actionType) return;
+const handleStatusUpdate = async () => {
+  if (!id || !actionType) return;
 
-    const status = actionType === 'approve' ? 'approved' : 'rejected';
+  const status = actionType === 'approve' ? 'approved' : 'rejected';
 
-    try {
-      await dispatch(patchLeaveStatus({ leaveId: id, status }));
-      dispatch(getLeaveDetails(id)); // refresh updated status
-    } catch (error) {
-      console.error("Error updating leave status:", error);
-    } finally {
-      setShowModal(false);
-      setActionType('');
-    }
-  };
+  try {
+    await dispatch(patchLeaveStatus({ leaveId: id, status }));
+    // Optionally refresh local state if staying on page
+    // dispatch(getLeaveDetails(id));
+    
+    navigate(-1); // 👈 Go back to the previous page after updating
+  } catch (error) {
+    console.error("Error updating leave status:", error);
+  } finally {
+    setShowModal(false);
+    setActionType('');
+  }
+};
+
 
   return (
     <Container>

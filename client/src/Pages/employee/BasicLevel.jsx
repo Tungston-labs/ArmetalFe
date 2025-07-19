@@ -311,27 +311,7 @@ const handleSubmit = () => {
       <Hr />
 
       <SectionTitle>Job Details</SectionTitle>
-      <TwoColumnRows>
-        <div>
-          {errors.designation && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.designation}</p>}
-          <Input name="designation" placeholder=" Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
-        </div>
-        <div>
-          {errors.joining_date && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.joining_date}</p>}
-          <Input
-  type="text"
-  name="joining_date"
-  value={formData.joining_date}
-  onChange={handleChange}
-   autoComplete="off"
-  placeholder="Joining Date"
-  onFocus={(e) => (e.target.type = 'date')}
-  onBlur={(e) => {
-    if (!e.target.value) e.target.type = 'text';
-  }}
-/>
-        </div>
-      </TwoColumnRows>
+   
 
       <TwoColumnRows>
         <div>
@@ -373,6 +353,42 @@ const handleSubmit = () => {
           </select>
         </div>
       </TwoColumnRows>
+   <TwoColumnRows>
+        <div>
+          {errors.designation && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.designation}</p>}
+          <Input name="designation" placeholder=" Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
+        </div>
+        <div>
+          {errors.joining_date && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.joining_date}</p>}
+          <Input
+  type="text"
+  name="joining_date"
+  value={formData.joining_date}
+  onChange={handleChange}
+   autoComplete="off"
+  placeholder="Joining Date"
+  onFocus={(e) => (e.target.type = 'date')}
+  onBlur={(e) => {
+    if (!e.target.value) e.target.type = 'text';
+  }}
+/>
+        </div>
+      </TwoColumnRows>
+<TwoColumnRows>
+  <div>
+    {errors.total_leaves && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.total_leaves}</p>}
+    <Input
+      name="total_leaves"
+      placeholder="Total Leaves"
+      value={formData.total_leaves}
+      onChange={handleChange}
+      autoComplete="off"
+      type="number"
+      min="0"
+    />
+  </div>
+  <div /> {/* empty div to preserve 2-column layout */}
+</TwoColumnRows>
 
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
       {[
