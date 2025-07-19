@@ -139,6 +139,9 @@ const TimesheetPage = () => {
                 <span>
                   ................................................. To ..................................................
                 </span>
+                <TimeIcon>
+                  <FaClock />
+                </TimeIcon>
               </TimeRange>
               <TimeCell>{formatTime(session.time_out)}</TimeCell>
             </TableRow>
