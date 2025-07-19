@@ -9,6 +9,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
+import SyncLoader from "react-spinners/SyncLoader";
 
 export default function EmployeeAttendance() {
   const location = useLocation();
@@ -31,18 +32,22 @@ export default function EmployeeAttendance() {
 
   const handleSearchChange = (e) => {
     setSearchText(e.target.value.toLowerCase());
-    setPage(1); // Reset to page 1
+    setPage(1);
   };
 
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
-    setPage(1); // Reset to page 1
+    setPage(1);
   };
 
-  const formatDateTime = (isoString) => {
-    if (!isoString) return '---';
-    const date = new Date(isoString);
-    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  const formatTime = (datetimeStr) => {
+    if (!datetimeStr) return '---';
+    const date = new Date(datetimeStr.replace(' ', 'T'));
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
   return (
@@ -107,19 +112,18 @@ export default function EmployeeAttendance() {
             <TableRow>
               <TableCell colSpan="6">
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-                  <p>Loading...</p>
+                  <SyncLoader color="#5F53A5" />
                 </div>
               </TableCell>
             </TableRow>
           ) : attendanceList.length > 0 ? (
             attendanceList.map((row) => {
-              const timeIn = row.sessions?.[0]?.time_in;
-              const timeOut = [...(row.sessions || [])].reverse().find(s => s.time_out)?.time_out;
+              const sessions = row.sessions || [];
+              const timeIn = sessions[0]?.time_in;
+              const timeOut = [...sessions].reverse().find(s => s.time_out)?.time_out;
 
-              // ✅ Console log with full format
-              console.log(
-                `Employee: ${row.employee_name}, Time In: ${formatDateTime(timeIn)}, Time Out: ${formatDateTime(timeOut)}`
-              );
+              // 👇 Console log full timestamp for debugging
+              console.log(`Employee: ${row.employee_name}, Time In: ${timeIn}, Time Out: ${timeOut}`);
 
               return (
                 <TableRow key={row.id}>
@@ -132,8 +136,8 @@ export default function EmployeeAttendance() {
                   </TableCell>
                   <TableCell>{row.employee}</TableCell>
                   <TableCell>{row.date}</TableCell>
-                  <TableCell>{formatDateTime(timeIn)}</TableCell>
-                  <TableCell>{formatDateTime(timeOut)}</TableCell>
+                  <TableCell>{formatTime(timeIn)}</TableCell>
+                  <TableCell>{formatTime(timeOut)}</TableCell>
                   <TableCell>
                     <button
                       onClick={() => navigate(`/attendance/detail/${row.id}`)}
@@ -146,9 +150,7 @@ export default function EmployeeAttendance() {
               );
             })
           ) : (
-            <TableRow>
-              <TableCell colSpan="6">No records found</TableCell>
-            </TableRow>
+            <TableRow><TableCell colSpan="6">No records found</TableCell></TableRow>
           )}
         </tbody>
       </Table>
@@ -163,7 +165,6 @@ export default function EmployeeAttendance() {
 
         {[1, 2].map((pageNumber) => {
           const isActive = pagination?.current_page === pageNumber;
-
           return (
             <span
               key={pageNumber}
