@@ -121,7 +121,7 @@ const navigate = useNavigate();
         <tbody>
           {sessions.map((session, index) => (
             <TableRow key={index}>
-              <TimeCell>{session.time_in?.slice(0, 5)}</TimeCell>
+              <TimeCell>{session.time_in?.slice(0, 20)}</TimeCell>
               <TimeRange>
                 <TimeIcon>
                   <FaClock />
@@ -130,7 +130,7 @@ const navigate = useNavigate();
                   ................................................. To ..................................................
                 </span>
               </TimeRange>
-              <TimeCell>{session.time_out?.slice(0, 5) || '---'}</TimeCell>
+              <TimeCell>{session.time_out?.slice(0, 20) || '---'}</TimeCell>
             </TableRow>
           ))}
         </tbody>
