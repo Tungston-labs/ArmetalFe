@@ -96,8 +96,12 @@ const PayrollDetails = () => {
             </thead>
             <tbody>
               <tr><TableData>Leave Taken</TableData><TableData>{leave_taken}</TableData></tr>
-              <tr><TableData>Casual Leave</TableData><TableData>{casual_leave}</TableData></tr>
-              <tr><TableData>Paid Leave</TableData><TableData>{paid_leave}</TableData></tr>
+              {/* <tr><TableData>Casual Leave</TableData><TableData>{casual_leave}</TableData></tr> */}
+              <tr><TableData>Loss of Pay</TableData><TableData>
+  {payrollDetail.lop_amount?.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) ?? '₹0.00'}
+  {payrollDetail.lop_days > 0 && ` (${payrollDetail.lop_days} day${payrollDetail.lop_days > 1 ? 's' : ''})`}
+</TableData>
+</tr>
             </tbody>
           </Table>
         </TableWrapper>
