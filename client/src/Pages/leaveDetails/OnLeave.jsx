@@ -1,3 +1,5 @@
+// EmployeeAttendance.jsx
+
 import React, { useEffect, useState } from "react";
 import {
   Container, Title, TitleSection, Subtitle, HeaderSection,
@@ -42,13 +44,6 @@ export default function EmployeeAttendance() {
   };
 
   const formatTime = (datetimeStr) => {
-    if (!datetimeStr) return '---';
-    const date = new Date(datetimeStr.replace(' ', 'T'));
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
     if (!datetimeStr || typeof datetimeStr !== 'string') return '---';
     try {
       const date = new Date(datetimeStr.replace(' ', 'T'));
@@ -75,7 +70,6 @@ export default function EmployeeAttendance() {
 
       <HeaderSection>
         <TitleSection>
-          <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <img src="/images/employee.png" alt="Employee Icon" style={{ height: "50px" }} />
           <div>
             <Title>Employee</Title>
@@ -133,9 +127,6 @@ export default function EmployeeAttendance() {
           ) : attendanceList.length > 0 ? (
             attendanceList.map((row) => {
               const sessions = row.sessions || [];
-
-              // 👇 Console log full timestamp for debugging
-              console.log(`Employee: ${row.employee_name}, Time In: ${timeIn}, Time Out: ${timeOut}`);
               const timeIn = sessions[0]?.time_in || '';
               const timeOut = [...sessions].reverse().find(s => s.time_out)?.time_out || '';
 
