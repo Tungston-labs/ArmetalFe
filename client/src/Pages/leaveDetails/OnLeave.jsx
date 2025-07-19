@@ -133,8 +133,6 @@ export default function EmployeeAttendance() {
           ) : attendanceList.length > 0 ? (
             attendanceList.map((row) => {
               const sessions = row.sessions || [];
-              const timeIn = sessions[0]?.time_in;
-              const timeOut = [...sessions].reverse().find(s => s.time_out)?.time_out;
 
               // 👇 Console log full timestamp for debugging
               console.log(`Employee: ${row.employee_name}, Time In: ${timeIn}, Time Out: ${timeOut}`);
