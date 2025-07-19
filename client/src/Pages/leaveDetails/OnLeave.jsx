@@ -6,11 +6,10 @@ import {
   DateInput, Tab, Tabs
 } from "./OnLeave.Style";
 import { IoEyeOutline } from "react-icons/io5";
-import { useLocation, NavLink,useNavigate } from 'react-router-dom';
+import { useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
-import { LuArrowLeft } from "react-icons/lu";
-import SyncLoader from "react-spinners/SyncLoader";
+
 export default function EmployeeAttendance() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -40,6 +39,12 @@ export default function EmployeeAttendance() {
     setPage(1); // Reset to page 1
   };
 
+  const formatDateTime = (isoString) => {
+    if (!isoString) return '---';
+    const date = new Date(isoString);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  };
+
   return (
     <Container>
       <TopBar>
@@ -52,7 +57,6 @@ export default function EmployeeAttendance() {
 
       <HeaderSection>
         <TitleSection>
-                    {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
           <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Employee</Title>
@@ -71,19 +75,19 @@ export default function EmployeeAttendance() {
       </HeaderSection>
 
       <Tabs>
-             <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-               <Tab active={location.pathname === '/employee'}>Employee list</Tab>
-             </NavLink>
-             <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
-               <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
-             </NavLink>
-             <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
-               <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
-             </NavLink>
-             <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
-               <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
-             </NavLink>
-           </Tabs>
+        <NavLink to="/employee" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee'}>Employee list</Tab>
+        </NavLink>
+        <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
+        </NavLink>
+        <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+        </NavLink>
+        <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+        </NavLink>
+      </Tabs>
 
       <TableTitle>{selectedDate || "All Dates"}</TableTitle>
 
@@ -100,89 +104,92 @@ export default function EmployeeAttendance() {
         </thead>
         <tbody>
           {loading ? (
-       <TableRow>
-  <TableCell colSpan="6">
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-          <p>Loading...</p>
-    </div>
-  </TableCell>
-</TableRow>
+            <TableRow>
+              <TableCell colSpan="6">
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+                  <p>Loading...</p>
+                </div>
+              </TableCell>
+            </TableRow>
           ) : attendanceList.length > 0 ? (
-            attendanceList.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>
-                  <EmployeeImg
-                    src={row.profile_pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(row.employee_name)}`}
-                    alt={row.employee_name}
-                  />
-                  {row.employee_name}
-                </TableCell>
-                <TableCell>{row.employee}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>
-                  {row.sessions?.[0]?.time_in?.slice(0, 20) || '----'}
-                </TableCell>
-                <TableCell>
-                  {(() => {
-                    const last = [...(row.sessions || [])].reverse().find(s => s.time_out);
-                    return last?.time_out?.slice(0, 20) || '-------';
-                  })()}
-                </TableCell>
-                <TableCell>
-                  <button
-                    onClick={() => navigate(`/attendance/detail/${row.id}`)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                  >
-                    <IoEyeOutline style={{ fontSize: '18px', color: '#5F53A5' }} />
-                  </button>
-                </TableCell>              </TableRow>
-            ))
+            attendanceList.map((row) => {
+              const timeIn = row.sessions?.[0]?.time_in;
+              const timeOut = [...(row.sessions || [])].reverse().find(s => s.time_out)?.time_out;
+
+              // ✅ Console log with full format
+              console.log(
+                `Employee: ${row.employee_name}, Time In: ${formatDateTime(timeIn)}, Time Out: ${formatDateTime(timeOut)}`
+              );
+
+              return (
+                <TableRow key={row.id}>
+                  <TableCell>
+                    <EmployeeImg
+                      src={row.profile_pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(row.employee_name)}`}
+                      alt={row.employee_name}
+                    />
+                    {row.employee_name}
+                  </TableCell>
+                  <TableCell>{row.employee}</TableCell>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{formatDateTime(timeIn)}</TableCell>
+                  <TableCell>{formatDateTime(timeOut)}</TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => navigate(`/attendance/detail/${row.id}`)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                    >
+                      <IoEyeOutline style={{ fontSize: '18px', color: '#5F53A5' }} />
+                    </button>
+                  </TableCell>
+                </TableRow>
+              );
+            })
           ) : (
-            <TableRow><TableCell colSpan="6">No records found</TableCell></TableRow>
+            <TableRow>
+              <TableCell colSpan="6">No records found</TableCell>
+            </TableRow>
           )}
         </tbody>
       </Table>
 
       <Pagination>
-  <span
-    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-    style={{ cursor: 'pointer', marginRight: '8px' }}
-  >
-    &larr;
-  </span>
+        <span
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          style={{ cursor: 'pointer', marginRight: '8px' }}
+        >
+          &larr;
+        </span>
 
-  {[1, 2].map((pageNumber) => {
-    const isActive = pagination?.current_page === pageNumber;
+        {[1, 2].map((pageNumber) => {
+          const isActive = pagination?.current_page === pageNumber;
 
-    return (
-      <span
-        key={pageNumber}
-        onClick={() => setPage(pageNumber)}
-        style={{
-          margin: '0 4px',
-          padding: '6px 12px',
-          borderRadius: '6px',
-          cursor: 'pointer',
-          backgroundColor: isActive ? '#003366' : '#e0e0e0',
-          color: isActive ? '#ffffff' : '#000000',
-          fontWeight: isActive ? 'bold' : 'normal',
-        }}
-      >
-        {pageNumber}
-      </span>
-    );
-  })}
+          return (
+            <span
+              key={pageNumber}
+              onClick={() => setPage(pageNumber)}
+              style={{
+                margin: '0 4px',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                backgroundColor: isActive ? '#003366' : '#e0e0e0',
+                color: isActive ? '#ffffff' : '#000000',
+                fontWeight: isActive ? 'bold' : 'normal',
+              }}
+            >
+              {pageNumber}
+            </span>
+          );
+        })}
 
-  <span
-    onClick={() =>
-      setPage((prev) => Math.min(prev + 1, 2))
-    }
-    style={{ cursor: 'pointer', marginLeft: '8px' }}
-  >
-    &rarr;
-  </span>
-</Pagination>
-
+        <span
+          onClick={() => setPage((prev) => Math.min(prev + 1, 2))}
+          style={{ cursor: 'pointer', marginLeft: '8px' }}
+        >
+          &rarr;
+        </span>
+      </Pagination>
     </Container>
   );
 }
