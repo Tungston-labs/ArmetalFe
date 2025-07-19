@@ -41,6 +41,7 @@ export default function AddEmployeeForm() {
     iqama_number: '',
     insurance_number: '',
     profile_pic: null,
+    total_leave: '',
   });
   useEffect(() => {
     // if (reduxFormData?.basic) setFormData(reduxFormData.basic);
@@ -70,6 +71,7 @@ export default function AddEmployeeForm() {
     'passport_number',
     'visa_expiry_date',
     'insurance_number',
+    'total_leave',
   ];
 
   requiredFields.forEach((field) => {
@@ -378,9 +380,9 @@ const handleSubmit = () => {
   <div>
     {errors.total_leaves && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.total_leaves}</p>}
     <Input
-      name="total_leaves"
+      name="total_leave"
       placeholder="Total Leaves"
-      value={formData.total_leaves}
+      value={formData.total_leave}
       onChange={handleChange}
       autoComplete="off"
       type="number"

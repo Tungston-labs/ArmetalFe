@@ -72,6 +72,7 @@ useEffect(() => {
       ...employeeDetail,
       id: employeeDetail.id, 
       department: deptId,
+      total_leave: employeeDetail.total_leave || ""
     });
   }
 }, [employeeDetail, departmentList]);
@@ -313,6 +314,16 @@ console.log("📤 Submitting employee", formData);
             readOnly={!editMode}
           />
         </Rowes>
+<Rowes>
+  <Input
+    type="number"
+    name="total_leave"
+    placeholder="Total Leaves"
+    value={formData.total_leave || ""}
+    onChange={handleChange}
+    readOnly={!editMode}
+  />
+</Rowes>
 
         <GroupLabel>Employee Legal & ID Information</GroupLabel>
         <Column>

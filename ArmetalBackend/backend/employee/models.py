@@ -38,6 +38,7 @@ class Employee_db(TimeStampedModel):
     iqama_number = models.CharField(max_length=50,blank=True, null=True)
     insurance_number = models.CharField(max_length=50)
     visa_expiry_date = models.DateField()
+    total_leave = models.IntegerField(max_length=10,null=True,blank=True)
 
     def save(self, *args, **kwargs):
         if not self.employee_id:
