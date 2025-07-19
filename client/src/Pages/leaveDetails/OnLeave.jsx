@@ -126,40 +126,35 @@ export default function EmployeeAttendance() {
               </TableCell>
             </TableRow>
           ) : attendanceList.length > 0 ? (
-            attendanceList.map((row) => (
-              <TableRow key={row.id}>
-               <TableCell style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-  {row.profile_pic ? (
-    <EmployeeImg
-      src={row.profile_pic}
-      alt={row.employee_name}
-    />
-  ) : (
-    <PiUserCirclePlusThin size={40} color="#999" />
-  )}
-  {row.employee_name || 'N/A'}
-</TableCell>
+            attendanceList.map((row) => {
+              const sessions = row.sessions || [];
+              const timeIn = sessions[0]?.time_in || '';
+              const timeOut = [...sessions].reverse().find(s => s.time_out)?.time_out || '';
 
-                <TableCell>{row.employee}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>
-                  {row.sessions?.[0]?.time_in?.slice(0, 5) || '----'}
-                </TableCell>
-                <TableCell>
-                  {(() => {
-                    const last = [...(row.sessions || [])].reverse().find(s => s.time_out);
-                    return last?.time_out?.slice(0, 5) || '-------';
-                  })()}
-                </TableCell>
-                <TableCell>
-                  <button
-                    onClick={() => navigate(`/attendance/detail/${row.id}`)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                  >
-                    <IoEyeOutline style={{ fontSize: '18px', color: '#5F53A5' }} />
-                  </button>
-                </TableCell>              </TableRow>
-            ))
+              return (
+                <TableRow key={row.id}>
+                  <TableCell>
+                    <EmployeeImg
+                      src={row.profile_pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(row.employee_name)}`}
+                      alt={row.employee_name}
+                    />
+                    {row.employee_name}
+                  </TableCell>
+                  <TableCell>{row.employee}</TableCell>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{formatTime(timeIn)}</TableCell>
+                  <TableCell>{formatTime(timeOut)}</TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => navigate(`/attendance/detail/${row.id}`)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                    >
+                      <IoEyeOutline style={{ fontSize: '18px', color: '#5F53A5' }} />
+                    </button>
+                  </TableCell>
+                </TableRow>
+              );
+            })
           ) : (
             <TableRow><TableCell colSpan="6">No records found</TableCell></TableRow>
           )}
