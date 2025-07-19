@@ -16,7 +16,6 @@ import {
   fetchAllBankPaymentsThunk,
   setBankFormData
 } from '../../Redux/employeeSlice';
-import SyncLoader from '../../Components/Loder';
 
 export default function BankPaymentForm() {
   const dispatch = useDispatch();
@@ -41,9 +40,6 @@ export default function BankPaymentForm() {
   const [transportation, setTransportation] = useState('');
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
-const [bankProofImage, setBankProofImage] = useState(null);
-const[loading, setLoading] = useState(false);
-
 
   const stepTitles = ['Basic Info', 'Bank Details', 'Document Upload'];
 
@@ -113,7 +109,6 @@ const[loading, setLoading] = useState(false);
 
   const bankData = {
   bank_name: bankName,
-
   swift_code: swiftCode,
   payment_mode: paymentMode,
   account_number: accountNumber,
@@ -129,15 +124,12 @@ const[loading, setLoading] = useState(false);
 };
 
     dispatch(setBankFormData(bankData)); // ✅ Save to Redux
-setLoading(true)
+
     try {
-      await dispatch(submitBankPayment({ employeeId, data: bankData,bankProofImage, })).unwrap();
+      await dispatch(submitBankPayment({ employeeId, data: bankData })).unwrap();
       navigate('/documents');
     } catch (err) {
       setError(err);
-    }
-    finally{
-      setLoading(false)
     }
   };
 
@@ -162,7 +154,7 @@ setLoading(true)
       </Header>
 
       <Hr />
-      <div style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '20px' }}>
+      <div style={{ width: '99%', justifyContent: 'center', display: 'flex', padding: '20px' }}>
         <div style={{ width: '50%' }}>
           <Multistep currentStep={1} /> {/* Step 2: Bank Details */}
         </div>
@@ -172,8 +164,6 @@ setLoading(true)
 
       <Table
         bankName={bankName} setBankName={setBankName}
-          bankProofImage={bankProofImage}
-  setBankProofImage={setBankProofImage}
         swiftCode={swiftCode} setSwiftCode={setSwiftCode}
         paymentMode={paymentMode} setPaymentMode={setPaymentMode}
         accountNumber={accountNumber} setAccountNumber={setAccountNumber}
@@ -190,7 +180,6 @@ setLoading(true)
         handleNext={handleNext}
         errors={fieldErrors}
       />
-          {loading && <SyncLoader/>}
     </Container>
   );
 }

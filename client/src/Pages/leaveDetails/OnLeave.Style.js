@@ -131,7 +131,7 @@ export const TableRow = styled.tr`
 `;
 
 export const TableHeader = styled.th`
-    text-align: left;
+  text-align: left;
   padding: 1rem;
   background: #d6dee9;
   color: #000;

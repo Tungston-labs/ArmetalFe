@@ -16,6 +16,8 @@ import {
   ViewMoreButton
 } from '../dashboard/Dashboard.styles';
 import { useNavigate } from 'react-router-dom';
+import { PiUserCirclePlusThin } from "react-icons/pi";
+
 const Dashboard = () => {
   const dispatch = useDispatch();
 const navigate = useNavigate();
@@ -80,18 +82,33 @@ const navigate = useNavigate();
             departments.slice(0, 3).map((dept) => (
               <DepartmentCard key={dept.id}>
                 <h3>{dept.name}</h3>
-                <HeadInfo>
-                  <div>
-                    <small>Department Head</small>
-                    <p>
-                      {typeof dept.department_head === 'object'
-                        ? dept.department_head?.name
-                        : dept.department_head || 'Not Assigned'}
-                    </p>
-                  </div>
-                  <Avatar src="https://i.pravatar.cc/40?img=3" alt="head" />
-                  <CardValue>{dept.employee_count || 0}</CardValue>
-                </HeadInfo>
+   
+
+<HeadInfo>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    {dept.department_head?.profile_pic ? (
+      <img
+        src={dept.department_head.profile_pic}
+        alt="head"
+        style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+      />
+    ) : (
+      <PiUserCirclePlusThin size={40} color="#999" />
+    )}
+    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10px' }}>
+      <small>Department Head</small>
+      <p>
+        {typeof dept.department_head === 'object'
+          ? dept.department_head?.name
+          : dept.department_head || 'Not Assigned'}
+      </p>
+    </div>
+  </div>
+
+  <CardValue>{dept.employee_count || 0}</CardValue>
+</HeadInfo>
+
+
               </DepartmentCard>
             ))
           )}

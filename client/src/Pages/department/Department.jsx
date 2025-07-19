@@ -36,6 +36,7 @@ import {
   BackArrow,
 } from './AddDepartment.Styles';
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
+import { PiUserCirclePlusThin } from "react-icons/pi";
 
 const Department = () => {
   const dispatch = useDispatch();
@@ -114,18 +115,31 @@ console.log(error)
           departments.map((dept) => (
             <DepartmentCard key={dept.id} onClick={() => handleCardClick(dept.id)}>
               <h3>{dept.name}</h3>
-              <HeadInfo>
-                <Avatar src="https://i.pravatar.cc/40?img=3" />
-                <div>
-                  <small>Department head</small>
-                  <p>
-                    {typeof dept.department_head === 'object'
-                      ? dept.department_head?.name
-                      : dept.department_head || 'Not Assigned'}
-                  </p>
-                </div>
-                <CardValue>{dept.employee_count || 0}</CardValue>
-              </HeadInfo>
+         <HeadInfo>
+  <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+    {typeof dept.department_head === 'object' && dept.department_head?.profile_pic ? (
+      <img
+        src={dept.department_head.profile_pic}
+        alt={dept.department_head?.name || 'Profile'}
+        style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+      />
+    ) : (
+      <PiUserCirclePlusThin size={40} color="#999" />
+    )}
+
+    <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.4' }}>
+      <small>Department head</small>
+      <p style={{ margin: 0 }}>
+        {typeof dept.department_head === 'object'
+          ? dept.department_head?.name
+          : dept.department_head || 'Not Assigned'}
+      </p>
+    </div>
+  </td>
+
+  <CardValue>{dept.employee_count || 0}</CardValue>
+</HeadInfo>
+
             </DepartmentCard>
           ))
         ) : (

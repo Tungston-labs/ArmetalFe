@@ -71,11 +71,13 @@ export const HeadInfo = styled.div`
   small {
     font-size: 0.75rem;
     color: #6b7280;
+    
   }
 
   p {
     margin: 0;
     font-weight: 500;
+    // margin-left:50px;
   }
 `;
 

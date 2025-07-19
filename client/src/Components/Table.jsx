@@ -24,7 +24,8 @@ isEditMode=false,
 
 
   bankName, setBankName,
-  bankProofImage, setBankProofImage,
+    bankProofImage,
+  setBankProofImage,
   swiftCode, setSwiftCode,
   paymentMode, setPaymentMode,
   accountNumber, setAccountNumber,
@@ -49,47 +50,23 @@ isEditMode=false,
         <Header><h2>Bank & Payment History</h2></Header>
         {records.map((record, index) => (
           <FormSection key={record.id || index} style={{ padding: '1rem', marginBottom: '2rem' }}>
-           <Row style={{ flexDirection: 'column' }}>
-  <FormGroup>
-    <Input value={record.bank_name} readOnly placeholder="Bank Name" />
-  </FormGroup>
-
-  {record.bank_proof_image && (
-    <FormGroup style={{ 
-      marginTop: '0.75rem', 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'flex-start' 
-    }}>
-      <label style={{ fontWeight: '500' }}>Bank Passbook Image</label>
-      <img
-        src={record.bank_proof_image}
-        alt="Bank Proof"
-        style={{
-          marginTop: '0.5rem',
-          width: '160px',
-          borderRadius: '6px',
-          border: '1px solid #ccc',
-        }}
-      />
-    </FormGroup>
-  )}
-</Row>
-
+            <Row>
+              <FormGroup><Input value={record.bank_name} readOnly placeholder="Bank Name" /></FormGroup>
+            </Row>
             <TwoColumnRows>
               <FormGroup><Input value={record.swift_code} readOnly placeholder="Swift Code" /></FormGroup>
               <FormGroup><Input value={record.payment_mode} readOnly placeholder="Payment Mode" /></FormGroup>
             </TwoColumnRows>
             <TwoColumnRows>
               <FormGroup><Input value={record.account_number} readOnly placeholder="Account Number" /></FormGroup>
-              <FormGroup><Input value={record.uan_epf_number} readOnly placeholder="UAN Number" /></FormGroup>
+              <FormGroup><Input value={record.uan_number} readOnly placeholder="UAN Number" /></FormGroup>
             </TwoColumnRows>
             <TwoColumnRows>
               <FormGroup><Input value={record.pan_number} readOnly placeholder="PAN Number" /></FormGroup>
               <FormGroup><Input value={record.tax_regime} readOnly placeholder="Tax Regime" /></FormGroup>
             </TwoColumnRows>
             <TwoColumnRows>
-              <FormGroup><Input value={record.tds_deduction_amount} readOnly placeholder="TDS %" /></FormGroup>
+              <FormGroup><Input value={record.tds_amount} readOnly placeholder="TDS %" /></FormGroup>
               <FormGroup><Input value={record.declaration_80c ? 'Yes' : 'No'} readOnly placeholder="80C Declaration" /></FormGroup>
             </TwoColumnRows>
 
@@ -117,45 +94,35 @@ isEditMode=false,
 
       <FormSection>
         <Row>
-  <FormGroup style={{ flex: '1', marginRight: '1rem' }}>
-    <ErrorMsg msg={errors.bankName} />
-    <Input
-      placeholder="Bank name"
-      value={bankName}
-      onChange={(e) => setBankName(e.target.value)}
+          <FormGroup style={{ flex: '1 1 100%' }}>
+            <ErrorMsg msg={errors.bankName} />
+            <Input placeholder="Bank name" value={bankName} onChange={(e) => setBankName(e.target.value)} />
+          </FormGroup>
+    <FormGroup style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
+  <label style={{ fontWeight: '500' }}>Upload Bank Passbook Image</label>
+  
+  {bankProofImage && (
+    <img
+      src={URL.createObjectURL(bankProofImage)}
+      alt="Bank Proof Preview"
+      style={{
+        marginTop: '0.75rem',
+        width: '160px',
+        borderRadius: '6px',
+        border: '1px solid #ccc',
+        display:"flex"
+      }}
     />
-  </FormGroup>
+  )}
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => setBankProofImage(e.target.files[0])}
+    style={{ marginTop: '0.5rem',display:"flex" }}
+  />
+</FormGroup>
 
-  <FormGroup style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
-    <label style={{ fontWeight: '500', marginBottom: '0.5rem', display: 'block' }}>
-      Upload Bank Passbook Image
-    </label>
-
-    {bankProofImage && (
-      <img
-        src={URL.createObjectURL(bankProofImage)}
-        alt="Bank Proof Preview"
-        style={{
-          marginTop: '0.75rem',
-          width: '160px',
-          borderRadius: '6px',
-          border: '1px solid #ccc'
-        }}
-      />
-    )}
-
-    <input
-      type="file"
-      accept="image/*"
-      onChange={(e) => setBankProofImage(e.target.files[0])}
-      style={{ marginTop: '0.5rem' }}
-    />
-    {errors.bankPassbookImage && (
-      <p style={{ color: 'red', marginTop: '0.25rem' }}>{errors.bankPassbookImage}</p>
-    )}
-  </FormGroup>
-</Row>
-
+        </Row>
 
         <Row>
           <TwoColumnRows>
