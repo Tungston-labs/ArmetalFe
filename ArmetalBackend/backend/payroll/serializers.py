@@ -18,127 +18,139 @@ class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
             'designation',
             'bank_details',
         ]
-
+from rest_framework import serializers
 from datetime import date, timedelta
 import calendar
 
 from .models import EmployeePayrollRecord
 from attendance.models import Attendance
 from leave.models import LeaveRequest
-from attendance.models import Attendance
-from payroll.models import EmployeePayrollRecord
+
+from datetime import date, timedelta
+import calendar
+from .models import EmployeePayrollRecord
 from holidays.models import PublicHoliday
-from django.utils import timezone
-from datetime import timedelta, date
+import calendar
+from datetime import date, timedelta
+
+from rest_framework import serializers
+from .models import EmployeePayrollRecord
+from leave.models import LeaveRequest
+from attendance.models import Attendance
+from holidays.models import PublicHoliday
 
 
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source='employee.name', read_only=True)
+    department = serializers.CharField(source='employee.department.name', read_only=True)
     employee_id = serializers.CharField(source='employee.employee_id', read_only=True)
-    department_name = serializers.CharField(source='employee.department.name', read_only=True)
-    role_name = serializers.CharField(source='employee.role.name', read_only=True)
-
-    leave_taken = serializers.SerializerMethodField()
-    loss_of_pay = serializers.SerializerMethodField()
+    designation = serializers.CharField(source='employee.designation', read_only=True)
+    email = serializers.EmailField(source='employee.email', read_only=True)
+    joining_date = serializers.DateField(source='employee.joining_date', read_only=True)
 
     class Meta:
         model = EmployeePayrollRecord
-        fields = [
-            'id',
-            'employee',
-            'employee_name',
-            'employee_id',
-            'department_name',
-            'role_name',
-            'month',
-            'year',
-            'gross_salary',
-            'net_salary',
-            'leave_taken',
-            'loss_of_pay',
-            'created_at',
-        ]
+        fields = '__all__'
 
-    def get_leave_taken(self, obj):
-        employee = obj.employee
-        year = obj.year
-        month = obj.month
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        employee = instance.employee
+        year = instance.year
+        month = instance.month
 
-        # Start and end of the payroll month
+        # Define month range
         first_day = date(year, month, 1)
-        if month == 12:
-            last_day = date(year + 1, 1, 1) - timedelta(days=1)
-        else:
-            last_day = date(year, month + 1, 1) - timedelta(days=1)
+        last_day = date(year, month, calendar.monthrange(year, month)[1])
 
-        # Get employee's company
-        company = getattr(employee.department, 'company', None)
-        if not company:
-            return None  # Or 0 if you prefer fallback
-
-        # Get working days in month excluding public holidays and weekends
-        holidays = set(PublicHoliday.objects.filter(
-            date__range=(first_day, last_day),
-            company=company
-        ).values_list('date', flat=True))
-
-        working_days = sum(
-            1 for single_date in (first_day + timedelta(days=n) for n in range((last_day - first_day).days + 1))
-            if single_date.weekday() < 6 and single_date not in holidays  # exclude Sundays and holidays
+        # Fetch all holidays within the month
+        holidays = set(
+            PublicHoliday.objects.filter(date__range=(first_day, last_day))
+            .values_list('date', flat=True)
         )
 
-        # Count attendance entries in the month
+        # Calculate working days (Mon-Sat, excluding holidays and Sundays)
+        working_days = sum(
+            1 for d in range((last_day - first_day).days + 1)
+            if (first_day + timedelta(days=d)).weekday() != 6
+            and (first_day + timedelta(days=d)) not in holidays
+        )
+
+        # Attendance days
         attendance_days = Attendance.objects.filter(
             employee=employee,
             date__range=(first_day, last_day)
         ).count()
 
-        # Leave taken = number of working days - number of days present
-        leave_taken = working_days - attendance_days
-        return max(leave_taken, 0)
-
-    def get_loss_of_pay(self, obj):
-        employee = obj.employee
-        year = obj.year
-        month = obj.month
-        gross_salary = obj.gross_salary or 0
-
-        # Start and end of the payroll month
-        first_day = date(year, month, 1)
-        if month == 12:
-            last_day = date(year + 1, 1, 1) - timedelta(days=1)
-        else:
-            last_day = date(year, month + 1, 1) - timedelta(days=1)
-
-        # Get employee's company
-        company = getattr(employee.department, 'company', None)
-        if not company or not gross_salary:
-            return 0
-
-        # Get working days in month excluding public holidays and weekends
-        holidays = set(PublicHoliday.objects.filter(
-            date__range=(first_day, last_day),
-            company=company
-        ).values_list('date', flat=True))
-
-        working_days = sum(
-            1 for single_date in (first_day + timedelta(days=n) for n in range((last_day - first_day).days + 1))
-            if single_date.weekday() < 6 and single_date not in holidays  # exclude Sundays and holidays
+        # Approved leaves in the month
+        leave_requests = LeaveRequest.objects.filter(
+            employee=employee,
+            status='approved',
+            from_date__lte=last_day,
+            to_date__gte=first_day
         )
 
-        attendance_days = Attendance.objects.filter(
-            employee=employee,
-            date__range=(first_day, last_day)
-        ).count()
+        total_leave_days = 0
+        casual_leave = 0
+        paid_leave = 0
 
-        lop_days = working_days - attendance_days
+        for leave in leave_requests:
+            leave_start = max(leave.from_date, first_day)
+            leave_end = min(leave.to_date, last_day)
+            days = (leave_end - leave_start).days + 1
+            total_leave_days += days
+
+            if leave.leave_type == 'casual':
+                casual_leave += days
+            elif leave.leave_type == 'earned':
+                paid_leave += days
+
+        # Salary & Earnings
+        basic_salary = float(instance.basic_salary or 0)
+        housing_allowance = float(instance.housing_allowance or 0)
+        transportation = float(instance.transportation or 0)
+        tds = float(instance.tds_deduction_amount or 0)
+        allowed_leaves = employee.total_leave or 0
+
+        gross_earnings = basic_salary + housing_allowance + transportation
+
+        # Loss of Pay Calculation
+        lop_days = max(0, total_leave_days - allowed_leaves)
         lop_amount = 0
-
         if working_days > 0 and lop_days > 0:
-            per_day_salary = gross_salary / working_days
-            lop_amount = per_day_salary * lop_days
+            daily_basic = basic_salary / working_days
+            lop_amount = round(daily_basic * lop_days, 2)
 
-        return round(lop_amount, 2)
+        adjusted_basic_salary = basic_salary - lop_amount
+        adjusted_gross = adjusted_basic_salary + housing_allowance + transportation
+        net_pay = adjusted_gross - tds
+
+        # Final computed values
+        data.update({
+            'working_days': working_days,
+            'days_present': attendance_days,
+            'leave_taken': total_leave_days,  # This is the count
+            'casual_leave': casual_leave,
+            'paid_leave': paid_leave,
+            'lop_days': lop_days,
+            'lop_amount': lop_amount,  # This is the amount
+            'gross_earnings': round(adjusted_gross, 2),
+            'total_deductions': round(tds + lop_amount, 2),
+            'net_pay': round(net_pay, 2),
+            'earnings': [
+                {'label': 'Basic Salary', 'days': 0, 'hours': 0, 'amount': round(adjusted_basic_salary, 2)},
+                {'label': 'Housing Allowance', 'days': 0, 'hours': 0, 'amount': round(housing_allowance, 2)},
+                {'label': 'Transportation', 'days': 0, 'hours': 0, 'amount': round(transportation, 2)},
+            ],
+            'deductions': [
+                {'label': 'TDS Deduction', 'value': round(tds, 2)},
+                {'label': 'Loss of Pay', 'value': round(lop_amount, 2)} if lop_amount > 0 else None,
+            ]
+        })
+
+        # Remove None values from deductions
+        data['deductions'] = [d for d in data['deductions'] if d is not None]
+
+        return data
 
     
 
