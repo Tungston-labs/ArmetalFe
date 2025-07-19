@@ -1,7 +1,6 @@
-// src/components/TimesheetPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getAttendanceDetail } from '../../Redux/attendanceSlice';
 import {
   Container,
@@ -26,13 +25,25 @@ import {
 import { FaClock } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { LuArrowLeft } from "react-icons/lu";
+
 const TimesheetPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { attendanceDetail, detailLoading } = useSelector((state) => state.attendance);
-const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState('');
-  
+
+  // 🔧 Time formatting function (12-hour format with AM/PM)
+  const formatTime = (datetimeStr) => {
+    if (!datetimeStr) return '---';
+    const date = new Date(datetimeStr.replace(' ', 'T'));
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
 
   useEffect(() => {
     if (id) {
@@ -59,19 +70,18 @@ const navigate = useNavigate();
     <Container>
       <HeaderSection>
         <InfoGrid>
-            <LuArrowLeft
-              style={{ width: "30px", height: 30, cursor: "pointer" }}
-              onClick={() => navigate(-1)} // 👈 Go back to previous page
-            />
-            
-                      
+          <LuArrowLeft
+            style={{ width: "30px", height: 30, cursor: "pointer" }}
+            onClick={() => navigate(-1)}
+          />
           <div style={{ width: '10%' }}>
-  {employee.profile_pic ? (
-    <ProfileImage src={employee.profile_pic} alt="Employee" />
-  ) : (
-    <PiUserCirclePlusThin size={100} style={{ color: '#aaa' }} />
-  )}
-</div>
+            {employee.profile_pic ? (
+              <ProfileImage src={employee.profile_pic} alt="Employee" />
+            ) : (
+              <PiUserCirclePlusThin size={100} style={{ color: '#aaa' }} />
+            )}
+          </div>
+
           <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between' }}>
             <TwoColumn>
               <Input value={employee.name || ''} readOnly />
@@ -121,7 +131,7 @@ const navigate = useNavigate();
         <tbody>
           {sessions.map((session, index) => (
             <TableRow key={index}>
-              <TimeCell>{session.time_in?.slice(0, 20)}</TimeCell>
+              <TimeCell>{formatTime(session.time_in)}</TimeCell>
               <TimeRange>
                 <TimeIcon>
                   <FaClock />
@@ -130,7 +140,7 @@ const navigate = useNavigate();
                   ................................................. To ..................................................
                 </span>
               </TimeRange>
-              <TimeCell>{session.time_out?.slice(0, 20) || '---'}</TimeCell>
+              <TimeCell>{formatTime(session.time_out)}</TimeCell>
             </TableRow>
           ))}
         </tbody>
