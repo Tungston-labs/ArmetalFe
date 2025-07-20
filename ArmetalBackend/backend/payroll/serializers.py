@@ -88,6 +88,13 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             from_date__lte=last_day,
             to_date__gte=first_day
         )
+        print(LeaveRequest.objects.filter(
+    employee=employee,
+    status='approved',
+    from_date__lte=last_day,
+    to_date__gte=first_day
+).values('from_date', 'to_date', 'leave_type'))
+
 
         total_leave_days = 0
         casual_leave = 0
