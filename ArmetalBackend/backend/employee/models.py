@@ -6,11 +6,11 @@ from user.models import User
 from departments.models import Department
 from shared.models import TimeStampedModel
 
-def generate_employee_id(company_name, department_name):
-    company_part = company_name[:3].upper()
-    department_part = department_name[:3].upper()
-    random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
-    return f"{company_part}{department_part}{random_part}"
+# def generate_employee_id(company_name, department_name):
+#     company_part = company_name[:3].upper()
+#     department_part = department_name[:3].upper()
+#     random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
+#     return f"{company_part}{department_part}{random_part}"
 
 def generate_password():
     return 'EMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
@@ -41,23 +41,23 @@ class Employee_db(TimeStampedModel):
     total_leave = models.IntegerField(null=True,blank=True)
 
     def save(self, *args, **kwargs):
-        if not self.employee_id:
-            company_name = self.department.company.name if self.department and self.department.company else "DEF"
-            department_name = self.department.name if self.department else "GEN"
-            self.employee_id = generate_employee_id(company_name, department_name)
+        if not self.employee_id and self.name and self.phno:
+            name_part = ''.join(filter(str.isalpha, self.name.replace(" ", "")))[:5].upper()
+            phone_part = self.phno[-4:]
+            base_id = f"{name_part}{phone_part}"
 
-        if not hasattr(self, 'user') or self.user is None:
-            password = generate_password()
-            self.password = password
-            self.user = User.objects.create_user(
-                username=self.employee_id,
-                email=self.email,
-                password=password,
-                is_employee=True,
-                company=self.department.company if self.department else None
-                
+            # Ensure uniqueness
+            unique_id = base_id
+            counter = 1
+            while Employee_db.objects.filter(employee_id=unique_id).exists():
+                unique_id = f"{base_id}{counter}"
+                counter += 1
 
-            )
+            self.employee_id = unique_id
+
+        if not self.password:
+            self.password = generate_password()
+
         super().save(*args, **kwargs)
 
     def __str__(self):
