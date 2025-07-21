@@ -168,7 +168,6 @@ class LeaveByStatusView(APIView):
         leaves = LeaveRequest.objects.filter(employee=employee, status=status)
         serializer = LeaveRequestSerializer(leaves, many=True)
         return Response(serializer.data)
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -184,15 +183,20 @@ class LeaveSummaryView(APIView):
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found."}, status=404)
 
-        pending_count = LeaveRequest.objects.filter(employee=employee, status='pending').count()
+        # Approved leave count
         approved_count = LeaveRequest.objects.filter(employee=employee, status='approved').count()
+
+        # Remaining leave (total_leave - approved)
+        remaining_leave = employee.total_leave - approved_count if employee.total_leave is not None else 0
 
         return Response({
             "employee_name": employee.name,
             "profile_pic": employee.profile_pic.url if employee.profile_pic else None,
-            "pending_count": pending_count,
-            "approved_count": approved_count
+            "pending_count": remaining_leave,  # Changed logic
+            "approved_count": approved_count,
+            "total_leave": employee.total_leave,
         })
+
 class LeaveRequestEmpDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = LeaveRequest.objects.all()
     serializer_class = LeaveRequestSerializer
