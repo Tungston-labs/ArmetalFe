@@ -12,6 +12,7 @@ from shared.pagination import CustomPagination
 from rest_framework import serializers
 from django.core.mail import send_mail
 from django.conf import settings
+from user.models import User
 # BASIC DETAILS
 
 
@@ -36,48 +37,69 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
 
 
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        employee = serializer.save()
+    from user.models import User
 
-        company = employee.department.company
-        company.number_of_employees = (company.number_of_employees or 0) + 1
-        company.save()
+def create(self, request, *args, **kwargs):
+    data = request.data.copy()  # Make a mutable copy
 
-        # ⚠️ Assuming employee.email and employee.password are available
-        try:
-            send_mail(
-                subject=f"Welcome to {company.name}",
-                message=f"""
-    Hello {employee.name},
+    # 1. Create a User object first
+    try:
+        user = User.objects.create_user(
+            name=data.get('name'),
+            email=data.get('email'),
+            phone=data.get('phno'),
+            password='EMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        )
+    except Exception as e:
+        return Response({"error": f"Failed to create user: {str(e)}"}, status=400)
 
-    You have been successfully registered as an employee at {company.name}.
+    # 2. Attach user ID to the data for Employee_db
+    data['user'] = user.id
 
-    Your login credentials are:
-    Username: {employee.employee_id}
-    Password: {employee.password}
+    # 3. Continue with serializer
+    serializer = self.get_serializer(data=data)
+    serializer.is_valid(raise_exception=True)
+    employee = serializer.save()
 
-    Please log in and change your password as soon as possible.
+    # 4. Update company's employee count
+    company = employee.department.company
+    company.number_of_employees = (company.number_of_employees or 0) + 1
+    company.save()
 
-    Regards,
-    {company.name} HR
-    """,
-                from_email=company.email,
-                recipient_list=[employee.email],
-                fail_silently=False,
-            )
-        except Exception as e:
-            print(f"❌ Failed to send email to {employee.email}: {str(e)}")
+    # 5. Send credentials via email
+    try:
+        send_mail(
+            subject=f"Welcome to {company.name}",
+            message=f"""
+Hello {employee.name},
 
-        return Response({
-            "message": "Employee created successfully.",
-            "employee": EmployeeSerializer(employee).data,
-            "login_credentials": {
-                "username": employee.employee_id,
-                "password": employee.password
-            }
-        }, status=status.HTTP_201_CREATED)
+You have been successfully registered as an employee at {company.name}.
+
+Your login credentials are:
+Username: {employee.employee_id}
+Password: {employee.password}
+
+Please log in and change your password as soon as possible.
+
+Regards,  
+{company.name} HR
+""",
+            from_email=company.email,
+            recipient_list=[employee.email],
+            fail_silently=False,
+        )
+    except Exception as e:
+        print(f"❌ Failed to send email: {str(e)}")
+
+    return Response({
+        "message": "Employee created successfully.",
+        "employee": EmployeeSerializer(employee).data,
+        "login_credentials": {
+            "username": employee.employee_id,
+            "password": employee.password
+        }
+    }, status=status.HTTP_201_CREATED)
+
 
 
 
