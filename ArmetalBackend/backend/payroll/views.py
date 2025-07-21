@@ -234,3 +234,19 @@ class PayslipDownloadView(APIView):
         response['Content-Disposition'] = f'attachment; filename="Payslip_{month}_{year}.pdf"'
         response.write(pdf_bytes)
         return response
+    
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import RetrieveAPIView
+from .models import EmployeePayrollRecord
+from .serializers import EmployeePayrollRecordSerializer
+
+class MyPayrollRecordView(RetrieveAPIView):
+    serializer_class = EmployeePayrollRecordSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        employee = self.request.user.employee
+        year = self.request.query_params.get('year')
+        month = self.request.query_params.get('month')
+
+        return EmployeePayrollRecord.objects.get(employee=employee, year=year, month=month)
