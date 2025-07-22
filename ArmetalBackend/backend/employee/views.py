@@ -339,7 +339,7 @@ class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
  
 
 class EmployeesInMyDepartmentView(APIView):
-    permission_classes = [IsAuthenticated,IsEmployee]
+    permission_classes = [IsAuthenticated, IsEmployee]
 
     def get(self, request):
         try:
@@ -352,8 +352,20 @@ class EmployeesInMyDepartmentView(APIView):
 
         employees = Employee_db.objects.filter(department=department)
         serializer = EmployeeSerializer(employees, many=True)
-        return Response(serializer.data)
-    
+
+        # Get department head info
+        head = department.department_head  # Assuming ForeignKey to Employee_db
+        head_info = {
+            "name": head.name if head else None,
+            "profile_pic": head.profile_pic.url if head and head.profile_pic else None,
+        }
+
+        return Response({
+            "department": department.name,
+            "head": head_info,
+            "members": serializer.data
+        })
+
 
 class EmployeeSelfView(APIView):
     permission_classes = [IsAuthenticated,IsEmployee]
