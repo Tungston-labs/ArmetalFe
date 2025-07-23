@@ -106,6 +106,7 @@ export const TwoColumn = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 5rem;
   width: 30%;
+  margin-top:-7px;
 `;
 
 export const ThreeColumn = styled.div`

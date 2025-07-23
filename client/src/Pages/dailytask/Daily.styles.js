@@ -161,10 +161,11 @@ export const TaskCard = styled.div`
   }
 `;
 
-export const Description = styled.p`
-  font-size: 0.9rem;
-  margin: 0.8rem 0;
-`;
+// export const Description = styled.p`
+
+//   font-size: 0.9rem;
+//   margin: 0.8rem 0;
+// `;
 
 export const TimeBox = styled.div`
   font-weight: bold;
@@ -220,4 +221,13 @@ export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
 
+`;
+export const Description = styled.p`
+  font-size: 0.9rem;
+  margin: 0.8rem 0;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+  white-space: pre-wrap;
 `;

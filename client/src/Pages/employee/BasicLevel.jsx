@@ -268,7 +268,7 @@ const handleSubmit = () => {
           </div>
 
           <TwoColumnRow>
-            <div>
+            <div style={{marginTop:"-9px"}}>
               {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
               <Input
   type="text"
