@@ -12,6 +12,7 @@ Content-Type: application/json
 }
 
 
+
 # common logout for super admin,hr comapny,employee
 
 ###
@@ -20,6 +21,14 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5Nzk1NTU0LCJpYXQiOjE3NDk3OTE5NTQsImp0aSI6IjI2YjNhZmE3ZDU1NTRiMDBiNTNmYTU1MmE2MmU4MzMyIiwidXNlcl9pZCI6MX0.nqiJ5M8wuC57RbmRKXJt1ckQXt8S1LdmzQ47JIK2smA
 {
   "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0ODk0MzcyNCwiaWF0IjoxNzQ4ODU3MzI0LCJqdGkiOiIzNTk1NDFkMjMzMzY0NGFjYmE1NWY4NTI5M2ZhNDM4ZiIsInVzZXJfaWQiOjJ9.XBDxkP19tY9Z_wBG4sRl4lYBWInp8H_B2qkafZFGIe8"
+}
+
+### Refresh Access Token
+POST http://127.0.0.1:8000/api/token/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1MzMzODQ2MiwiaWF0IjoxNzUzMjUyMDYyLCJqdGkiOiIyOWQxM2QxMDRkOWE0MGY3OTgxMjJhZTA1ZTg5MWRjZSIsInVzZXJfaWQiOjEsImlzX3N1cGVyYWRtaW4iOnRydWUsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.Ymgt13k3alK8nEm2--yexqCd2vf3i2rRfOeBfwGUqb0"
 }
 
 
