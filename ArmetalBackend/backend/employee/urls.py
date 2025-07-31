@@ -33,6 +33,10 @@ urlpatterns = [
     path('profile/', views.EmployeeProfileView.as_view(), name='employee-profile'),
 
     path('employee/document-summary/', views.EmployeeDocumentSummaryView.as_view()),
+
+    path("attendance/summary/", views.AttendanceSummaryView.as_view(), name="attendance-summary"),
+    path("reminders/", views.ReminderListCreateView.as_view(), name="reminder-list-create"),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from .models import ScheduleReminder
+
 from datetime import datetime
 from .models import (
     Employee_db, EmpBankPaymentModel, EmpDocument, TempUpload
@@ -137,3 +139,9 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
             return obj.documents.insurance_image_url
         except:
             return None
+
+class ScheduleReminderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScheduleReminder
+        fields = '__all__'
+        read_only_fields = ('employee', 'created_at', 'notified')

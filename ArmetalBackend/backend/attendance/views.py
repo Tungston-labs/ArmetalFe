@@ -171,6 +171,52 @@ class AttendanceSwipeView(APIView):
         except Exception as e:
             logger.critical(f"Unhandled error: {e}", exc_info=True)
             return Response({'error': 'Internal server error'}, status=500)
+        
+
+# to add a note to the corresponding punch out section
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.utils import timezone
+from attendance.models import AttendanceSession, Attendance
+from datetime import date
+import pytz
+
+class AddPunchOutNoteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        note = request.data.get('note', '').strip()
+        user = request.user
+        employee = getattr(user, 'employee_db', None)
+
+        if not employee:
+            return Response({'error': 'Employee not found'}, status=404)
+
+        today = timezone.localdate()
+
+        # Get today’s attendance
+        try:
+            attendance = Attendance.objects.get(employee=employee, date=today)
+        except Attendance.DoesNotExist:
+            return Response({'error': 'No attendance found for today.'}, status=404)
+
+        # Get the latest session with a punch-out
+        latest_session = attendance.sessions.filter(time_out__isnull=False).order_by('-time_out').first()
+
+        if not latest_session:
+            return Response({'error': 'No punch-out session found to add note.'}, status=400)
+
+        latest_session.note = note if note else None
+        latest_session.save()
+
+        return Response({
+            'status': 'success',
+            'message': 'Note added to the latest attendance session'
+        }, status=200)
+
+
 
 
 from rest_framework import generics, filters

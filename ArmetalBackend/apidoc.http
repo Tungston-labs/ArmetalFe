@@ -381,7 +381,7 @@ POST http://localhost:8000/api/forgot-password/send-otp/
 Content-Type: application/json
 
 {
-  "email": "nisna.u5@gmail.com"
+  "email": "dfhfhj@gmail.com"
 }
 # verify OPTIONS 
 ###
@@ -389,8 +389,8 @@ POST http://localhost:8000/api/forgot-password/verify-otp/
 Content-Type: application/json
 
 {
-  "email": "nisna.u5@gmail.com",
-  "otp": "098417"
+  "email": "dfhfhj@gmail.com",
+  "otp": "304528"
 }
 
 # reset password after otp verification
@@ -400,7 +400,7 @@ POST http://localhost:8000/api/forgot-password/reset/
 Content-Type: application/json
 
 {
-  "email": "nisna.u5@gmail.com",
+  "email": "dfhfhj@gmail.com",
   "new_password": "password123",
   "confirm_password": "password123"
 }
@@ -572,8 +572,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "XZYDEVB0P",     
-  "password": "EMPJXTS5E4F"
+  "username": "XZYMAR6UO",     
+  "password": "password123"
 }
 ### 
 GET http://127.0.0.1:8000/api/profile/
@@ -584,7 +584,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Swipe (Punch In/Out)
 POST http://127.0.0.1:8000/api/attendance/swipe/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyODE5MTA4LCJpYXQiOjE3NTI4MTU1MDgsImp0aSI6Ijg4YjRjOTQ1NWRhZjQyNjk4NjA1ZmZlYjI0MDQzYTRiIiwidXNlcl9pZCI6OTIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.ZPnDkEFbWxOpwdjUIj4JKGejtFBjD73TFyX-YcxUaKE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
 
 # list out employee attendance for admin
 ###
@@ -600,7 +600,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # api for listing employees of same department
 ###
 GET http://127.0.0.1:8000/api/employees/my-department/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMTY4MzE5LCJpYXQiOjE3NTMxNjQ3MTksImp0aSI6ImU3MzkxNTBhYzU4YTQ1NGRhMDdlMWZiYzBhOGU4NWQwIiwidXNlcl9pZCI6OTIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.5Rn6FaIVHu7NXvmgQhn6uhAWdFQBEmQGyMqduAabXmI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
 
 
 ### List Holidays (Employee)
@@ -679,3 +679,29 @@ Content-Type: application/json
 GET http://localhost:8000/api/employee/payslip/download/?month=07&year=2025
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyMjA4MDA1LCJpYXQiOjE3NTIyMDQ0MDUsImp0aSI6IjBlMmViNDM4NjlmMzQ5NmM4NTE4MWUxZTFmNWFhMzc3IiwidXNlcl9pZCI6NjksImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.JhiuxkwcWdIgiaMpqI-tuPvWZoQJeK3RbKGJ-1hAsi8
 
+
+#api for getting employees attendance details
+### 
+GET http://localhost:8000/api/attendance/summary/?month=2025-07
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODY1MzQ1LCJpYXQiOjE3NTM4NjE3NDUsImp0aSI6ImZkMGI2ZWQwMmYwNDRmMjM5YTNmNjExMjNlNjA0MzNjIiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.YI9aiNaDDaX_uz1XpPTGxfIYdPVkggdib5yRDZeR1qA
+
+###punchout note
+PATCH http://localhost:8000/api/attendance/add-note/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
+
+{
+  "note": "Left early due to a dentist appointment"
+}
+
+
+###schedule reminder
+POST http://localhost:8000/api/reminders/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
+
+{
+  "title": "Project Deadline",
+  "body": "Submit project report before end of day",
+  "scheduled_datetime": "2025-07-30T11:22:00Z"
+}

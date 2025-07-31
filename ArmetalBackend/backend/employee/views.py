@@ -351,6 +351,7 @@ class EmployeesInMyDepartmentView(APIView):
             return Response({"detail": "No department assigned."}, status=400)
 
         employees = Employee_db.objects.filter(department=department)
+        count = employees.count()
         serializer = EmployeeSerializer(employees, many=True)
 
         # Get department head info
@@ -363,7 +364,9 @@ class EmployeesInMyDepartmentView(APIView):
         return Response({
             "department": department.name,
             "head": head_info,
+            "count":count,
             "members": serializer.data
+
         })
 
 
@@ -471,4 +474,118 @@ class EmployeeDocumentSummaryView(APIView):
             return Response({'detail': 'Employee not found.'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+# mobile app home page with attendance details-------------------------
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+from django.utils import timezone
+from django.db.models import Sum
+from calendar import monthrange
+from datetime import timedelta, date, datetime
+
+from attendance.models import Attendance
+from holidays.models import PublicHoliday
+from employee.models import Employee_db
+
+
+class AttendanceSummaryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        try:
+            employee = Employee_db.objects.get(user=user)
+        except Employee_db.DoesNotExist:
+            return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Get ?month=YYYY-MM from query params
+        month_param = request.query_params.get("month")
+        try:
+            if month_param:
+                year, month = map(int, month_param.split("-"))
+                from_date = date(year, month, 1)
+            else:
+                from_date = timezone.now().date().replace(day=1)
+            last_day = monthrange(from_date.year, from_date.month)[1]
+            to_date = from_date.replace(day=last_day)
+        except ValueError:
+            return Response({"error": "Invalid month format. Use YYYY-MM."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # List of all dates in month
+        total_dates = [from_date + timedelta(days=i) for i in range((to_date - from_date).days + 1)]
+
+        # Mon–Fri only
+        working_days = [d for d in total_dates if d.weekday() < 5]
+
+        # Holidays
+        holidays = PublicHoliday.objects.filter(
+            company=employee.department.company,
+            date__range=(from_date, to_date)
+        ).values_list("date", flat=True)
+
+        actual_working_days = [d for d in working_days if d not in holidays]
+
+        # Attendance
+        attendances = Attendance.objects.filter(employee=employee, date__range=(from_date, to_date))
+
+        present_days = 0
+        half_days = 0
+        total_hours = 0.0
+        attended_dates = set()
+
+        for att in attendances:
+            if att.date:
+                attended_dates.add(att.date)
+
+            if att.total_hours is None:
+                continue
+
+            total_hours += float(att.total_hours)
+
+            if att.total_hours >= 8:
+                present_days += 1
+            elif att.total_hours < 5:
+                half_days += 1
+
+        absent_days = [d for d in actual_working_days if d not in attended_dates]
+        today = timezone.now().date()
+        remaining_days = [d for d in actual_working_days if d > today]
+
+        return Response({
+            "month": from_date.strftime("%B %Y"),
+            "present_days": present_days,
+            "half_days": half_days,
+            "absent_days": len(absent_days),
+            "holiday_days": len(holidays),
+            "working_days": len(actual_working_days),
+            "remaining_working_days": len(remaining_days),
+            "total_hours": round(total_hours, 2)
+        })
+    
+from .models import ScheduleReminder
+from .serializers import ScheduleReminderSerializer
+
+class ReminderListCreateView(generics.ListCreateAPIView):
+    serializer_class = ScheduleReminderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        employee = user.employee_db
+        date_str = self.request.query_params.get("date")  # optional ?date=YYYY-MM-DD
+        qs = ScheduleReminder.objects.filter(employee=employee)
+        if date_str:
+            qs = qs.filter(scheduled_datetime__date=date_str)
+        return qs
+
+    def perform_create(self, serializer):
+        employee = self.request.user.employee_db
+        serializer.save(employee=employee)
 

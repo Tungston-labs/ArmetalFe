@@ -203,3 +203,17 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Use your Redis URL
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+# Optional: Enable Celery beat
+INSTALLED_APPS += ['django_celery_beat']
+
+CELERY_BEAT_SCHEDULE = {
+    'check_reminders_every_minute': {
+        'task': 'employee.tasks.check_reminders',
+        'schedule': 60.0,  # every minute
+    },
+}
+

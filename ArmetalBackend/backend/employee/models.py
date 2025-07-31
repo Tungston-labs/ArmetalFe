@@ -126,4 +126,16 @@ class EmpDocument(models.Model):
 
 
 
+
+
+class ScheduleReminder(models.Model):
+    employee = models.ForeignKey(Employee_db, on_delete=models.CASCADE, related_name="reminders")
+    title = models.CharField(max_length=100)
+    body = models.TextField(blank=True)
+    scheduled_datetime = models.DateTimeField()  # Combine date and time
+    created_at = models.DateTimeField(auto_now_add=True)
+    notified = models.BooleanField(default=False)  # To avoid duplicate notifications
+
+    def __str__(self):
+        return f"{self.title} - {self.scheduled_datetime}"
         

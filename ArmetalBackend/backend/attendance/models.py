@@ -97,6 +97,7 @@ class AttendanceSession(models.Model):
     time_in = models.DateTimeField(null=True, blank=True)
     time_out = models.DateTimeField(null=True, blank=True)
     timezone = models.CharField(max_length=50, default='UTC', null=True, blank=True)
+    note = models.TextField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         now = timezone.now()
