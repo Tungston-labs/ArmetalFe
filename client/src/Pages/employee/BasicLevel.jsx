@@ -8,7 +8,7 @@ import {
 import { getDepartments } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container, Header, RoleInfo, Title, Subtitle, Hr,
+  Container, Header, RoleInfo, Title, Subtitle, Hr,ColumnRow,
   InfoGrid, FlexRow, ProfileImage, ApproveButton,IconWrapper,
   FullWidthInput, TwoColumn, TwoColumnRow, TwoColumnRows, SectionTitle, Input, InfoSection
 } from './BasicLevel.Styles';
@@ -247,7 +247,7 @@ const handleSubmit = () => {
               profile_pic: e.target.files[0],
             }))}
             style={{ display: 'none' }}
-          />
+          />   
         </div>
 
         <TwoColumn>
@@ -292,11 +292,11 @@ const handleSubmit = () => {
                  autoComplete="off"
                 style={{
                   width: '100%',
-                  padding: '0.5rem',
+                  padding: '0.7rem',
                   fontSize: '0.8rem',
-                  borderRadius: '6px',
-                  border: '1px solid #ccc',
-                  background: 'white',
+                  borderRadius: '7PX',
+                  border:" 1px solid #052DB4",
+                  background:" #FFF",
                   color: 'black',
                 }}
               >
@@ -323,7 +323,9 @@ const handleSubmit = () => {
             value={formData.department}
              autoComplete="off"
             onChange={handleChange}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc',background:"white", }}
+            style={{ width: '100%', padding: '0.7rem', borderRadius: '7PX',
+                  border:" 1px solid #052DB4",
+                  background:" #FFF", }}
           >
             <option value="">Select Department</option>
             {departmentList.map((dept) => (
@@ -340,11 +342,11 @@ const handleSubmit = () => {
              autoComplete="off"
             style={{
               width: '100%',
-              padding: '0.5rem',
+              padding: '0.7rem',
               fontSize: '0.8rem',
-              borderRadius: '6px',
-              border: '1px solid #ccc',
-              background: 'white',
+               borderRadius: '7PX',
+                  border:" 1px solid #052DB4",
+                  background:" #FFF",
               color: 'black',
             }}
           >
@@ -393,6 +395,7 @@ const handleSubmit = () => {
 </TwoColumnRows>
 
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
+      <ColumnRow>
       {[
   { key: 'phno', label: 'Phone number' },
   { key: 'passport_number', label: 'passport_number' },
@@ -427,7 +430,7 @@ const handleSubmit = () => {
     />
   </div>
 ))}
-
+      </ColumnRow>
 
       <FlexRow>
         <ApproveButton onClick={handleSubmit}>Next</ApproveButton>

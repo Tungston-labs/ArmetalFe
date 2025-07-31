@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const SidebarContainer = styled.div`
-  width: 250px;
+  width: 350px;
   min-width: 60px;
   height: 100vh;
   background: linear-gradient(181deg, rgba(23, 37, 84, 1) 20%, rgba(51, 82, 186, 1) 100%);

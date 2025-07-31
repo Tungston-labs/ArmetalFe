@@ -37,6 +37,7 @@ import ForgetPassword from "./Pages/login/ForgetPassword.jsx"
 import Verification from "./Pages/login/Verification.jsx"
 import NewPassword from "./Pages/login/NewPassword.jsx"
 import Loder from "./Components/Loder.jsx";
+
 function App() {
   return (
     <>
@@ -72,6 +73,9 @@ function App() {
             <Route path="/attendance/detail/:id" element={<Attendance />} />
             <Route path="/on-leave" element={<OnLeave />} />
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
+
+
+
 
             <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
             <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />

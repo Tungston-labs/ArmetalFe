@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: #FFFFFF;
   font-family: Satoshi;
 `;
 
@@ -70,17 +70,21 @@ export const Select = styled.select`
  border: 1px solid #ccc;
  background:white;
  color:black;
+
+ 
 `;
 
 export const Input = styled.input`
-  padding: 0.6rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  // border: 1px solid #ccc;
+  // border-radius: 6px;
   width: 96%;
   // margin-bottom: 1rem;
   color:black;
   margin-top:10px;
-  
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const TextArea = styled.textarea`
@@ -92,12 +96,19 @@ export const TextArea = styled.textarea`
   resize: vertical;
   margin-bottom: 2rem;
   color:black;
+  
 `;
 
 export const SectionTitle = styled.h4`
   // margin-top: 2rem;
   margin-bottom: 0.5rem;
   // color:#999999;
+  color: #000;
+font-family: Satoshi;
+font-size: 18px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
 
 `;
 
@@ -107,6 +118,7 @@ export const TwoColumn = styled.div`
   gap: 5rem;
   width: 30%;
   margin-top:-7px;
+  
 `;
 
 export const ThreeColumn = styled.div`
@@ -121,6 +133,7 @@ export const FlexRow = styled.div`
   display: flex;
   justify-content:center;
   gap: 1rem;
+  margin-top:3%;
 `;
 
 export const ActionButton = styled.button`
@@ -203,18 +216,22 @@ export const InfoSection = styled.div`
 
 export const FullWidthInput = styled.input`
   width: 95%;
-  padding: 0.6rem 1rem;
+  padding: 0.8rem 1rem;
   margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  // border: 1px solid #ccc;
+  // border-radius: 6px;
   height:40%;
   color: black;
+
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const TwoColumnRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: 2rem;
   width:99%;
 `;
 export const TwoColumnRows= styled.div`
@@ -331,3 +348,11 @@ export const IconWrapper = styled.div`
   justify-content: center;
   color: #888;
 `;
+export const ColumnRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  // gap: 50px;
+   column-gap: 3rem;
+  width:98%;
+`;
+
