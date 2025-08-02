@@ -28,7 +28,10 @@ import {
   Tabs,
   Title,
   Subtitle,
-  ActionArea
+  ActionArea,
+  FilterSection,
+  DepartmentSelect,
+  SearchWrapper
 } from './LeaveRequest.Styles';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import SyncLoader from 'react-spinners/SyncLoader';
@@ -40,6 +43,8 @@ export default function LeaveRequest() {
   const [showModal, setShowModal] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [page, setPage] = useState(1); // <-- Pagination state
+  const [departmentFilter, setDepartmentFilter] = useState("");
+
 
   const navigate = useNavigate();
 
@@ -120,6 +125,7 @@ export default function LeaveRequest() {
 
       </HeaderSection>
 
+
       <Tabs>
         <NavLink to="/employee" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
@@ -132,6 +138,9 @@ export default function LeaveRequest() {
         </NavLink>
         <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+        </NavLink>
+        <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
         </NavLink>
       </Tabs>
         <hr style={{marginTop:"-18px"}}></hr>
@@ -151,26 +160,26 @@ export default function LeaveRequest() {
         <tbody>
           {loading ? (
             <TableRow>  <TableCell colSpan="7">
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-    <p>Loading...</p>
-    </div>
-  </TableCell></TableRow>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+                <p>Loading...</p>
+              </div>
+            </TableCell></TableRow>
           ) : filteredLeaves.length === 0 ? (
             <TableRow><TableCell colSpan="7">No matching leave requests found.</TableCell></TableRow>
           ) : (
             filteredLeaves.map((leave) => (
               <TableRow key={leave.id}>
                 <TableCell style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-  {leave?.employee?.profile_pic ? (
-    <ProfileImage
-      src={leave.employee.profile_pic}
-      alt="profile"
-    />
-  ) : (
-    <PiUserCirclePlusThin size={40} color="#999" />
-  )}
-  {leave?.employee?.name || 'N/A'}
-</TableCell>
+                  {leave?.employee?.profile_pic ? (
+                    <ProfileImage
+                      src={leave.employee.profile_pic}
+                      alt="profile"
+                    />
+                  ) : (
+                    <PiUserCirclePlusThin size={40} color="#999" />
+                  )}
+                  {leave?.employee?.name || 'N/A'}
+                </TableCell>
                 <TableCell>{leave.leave_type}</TableCell>
                 <TableCell>{leave.employee.email}</TableCell>
                 <TableCell>{leave.employee.phno}</TableCell>
@@ -205,17 +214,17 @@ export default function LeaveRequest() {
         </tbody>
       </Table>
 
-            <Pagination>
+      <Pagination>
         <span
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
           style={{ cursor: 'pointer', marginRight: '8px' }}
         >
           &larr;
         </span>
-      
+
         {[1, 2].map((pageNumber) => {
           const isActive = pagination?.current_page === pageNumber;
-      
+
           return (
             <span
               key={pageNumber}
@@ -234,7 +243,7 @@ export default function LeaveRequest() {
             </span>
           );
         })}
-      
+
         <span
           onClick={() =>
             setPage((prev) => Math.min(prev + 1, 2))

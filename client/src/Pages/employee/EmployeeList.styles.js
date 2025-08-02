@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
+
 
 export const Container = styled.div`
   padding: 2rem;
@@ -6,47 +8,104 @@ export const Container = styled.div`
   background:white;
 `;
 
-export const Header = styled.div`
+export const HeaderSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  gap: 1rem;
+`;
 
-  .title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+export const TitleSection = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
-    h2 {
-      margin: 0;
-    }
+export const Title = styled.h2`
+  font-size: 22px;
+  margin: 0;
+  margin-left: 10px;
+  color: #1e3a8a;
+`;
 
-    p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: #555;
-    }
+export const Subtitle = styled.p`
+  font-size: 14px;
+  color: #555;
+  margin-left: 10px;
+  margin-top: -1px;
+  color: #1e3a8a;
 
-    img {
-      height: 40px;
-    }
+
+`;
+
+export const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+`;
+
+export const HRManager = styled.div`
+  display: flex;
+  height: 30px;
+  align-items: center;
+  padding: 0.3rem;
+  border: 1px solid black;
+  border-radius: 8px;
+  background-color:rgb(178, 196, 243);
+  font-size: 0.95rem;
+  color: #333;
+
+  span {
+    font-weight: 500;
   }
 
-  .right {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
+  img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
   }
 `;
 
-export const RightSection = styled.div`
-  // display: flex;
-  align-items: center;
-  justify-content: flex-end; /* aligns items to the right */
+export const Tabs = styled.div`
+  display: flex;
+  gap: 0rem;
+  margin: 1.5rem 0;
+`;
+
+export const Tab = styled.div`
+  padding: 0.5rem 1rem;
+  border-radius: 0px;
+  cursor: pointer;
+  background-color: ${({ active }) => (active ? "#1e3a8a" : "#fff")};
+  color: ${({ active }) => (active ? "white" : "#555")};
+  font-weight: ${({ active }) => (active ? "bold" : "normal")};
+`;
+
+export const ActionArea = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 1rem;
   gap: 1rem;
-  flex-wrap: wrap; /* allows wrapping on small screens */
+`;
+
+export const FilterSection = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+`;
+
+export const SearchIcon = styled(FiSearch)`
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1rem;
 `;
 
 export const AddButton = styled.button`
@@ -64,6 +123,14 @@ export const AddButton = styled.button`
   &:hover {
     background: #2744a3;
   }
+`;
+
+
+
+export const SearchWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
 `;
 
 export const SearchInput = styled.input`
@@ -94,10 +161,17 @@ export const Tab = styled.div`
 
 
 
+export const DepartmentSelect = styled.select`
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+`;
+
 export const Table = styled.table`
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 10px; 
+  border-spacing: 0 10px;
   margin-top: 1rem;
 
   td {
@@ -107,6 +181,11 @@ export const Table = styled.table`
     background-color: white;
     border: none;
   }
+    tbody tr {
+  outline: 0.100rem solid #d3d3d3;
+  border-radius: 0px;
+}
+
 
   th {
     background-color: #304EB0;
@@ -166,17 +245,17 @@ export const ActionIcons = styled.div`
 
 export const Pagination = styled.div`
   display: flex;
-  justify-content: flex-start; /* changed from flex-end to flex-start */
-  // gap: 0.rem;
+  justify-content: flex-start;
   margin-top: 1.5rem;
   padding: 0.6rem;
+  gap: 4px;
 
   span {
-    padding: 0.2rem 0.4rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 6px;
     border: 1px solid #ccc;
     cursor: pointer;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .active {
@@ -186,11 +265,10 @@ export const Pagination = styled.div`
   }
 `;
 
-export const TopBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
+export const ProfileImg = styled.img`
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
 `;
 
 export const HRManager = styled.div`

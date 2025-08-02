@@ -44,54 +44,6 @@ class Attendance(TimeStampedModel):
         return f"{self.employee.name} - {self.date}"
 
 
-# class AttendanceSession(models.Model):
-#     attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE, related_name='sessions')
-#     time_in = models.DateTimeField(null=True, blank=True)
-#     time_out = models.DateTimeField(null=True, blank=True)
-#     timezone = models.CharField(max_length=50, default='UTC',null=True,blank=True)  # Store the timezone used
-
-
-#     # def save(self, *args, **kwargs):
-#     #     # Ensure time_in is a datetime and timezone-aware
-#     #     if isinstance(self.time_in, datetime):
-#     #         if timezone.is_naive(self.time_in):
-#     #             self.time_in = timezone.make_aware(self.time_in)
-#     #     elif self.time_in is not None:
-#     #         raise TypeError("time_in must be a datetime object")
-
-#     #     # Ensure time_out is a datetime and timezone-aware
-#     #     if isinstance(self.time_out, datetime):
-#     #         print('time out',self.time_out)
-#     #         if timezone.is_naive(self.time_out):
-#     #             self.time_out = timezone.make_aware(self.time_out)
-#     #     elif self.time_out is not None:
-#     #         raise TypeError("time_out must be a datetime object")
-
-#     #     super().save(*args, **kwargs)
-
-#     def save(self, *args, **kwargs):
-#         # --- Handle time_in ---
-#         if self.time_in is not None:
-#             if not isinstance(self.time_in, datetime):
-#                 raise TypeError("time_in must be a datetime object")
-#             if timezone.is_naive(self.time_in):
-#                 self.time_in = timezone.make_aware(self.time_in)
-
-#         # --- Handle time_out ---
-#         if self.time_out is not None:
-#             if not isinstance(self.time_out, datetime):
-#                 raise TypeError("time_out must be a datetime object")
-#             if timezone.is_naive(self.time_out):
-#                 self.time_out = timezone.make_aware(self.time_out)
-
-#         super().save(*args, **kwargs)
-
-
-
-#     def __str__(self):
-#         return f"{self.attendance.employee.name} - {self.attendance.date} [{self.time_in} - {self.time_out}]"
-
-
 class AttendanceSession(models.Model):
     attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE, related_name='sessions')
     time_in = models.DateTimeField(null=True, blank=True)
@@ -102,23 +54,22 @@ class AttendanceSession(models.Model):
     def save(self, *args, **kwargs):
         now = timezone.now()
 
-        # --- Validate or correct time_in ---
-        if self.time_in is not None:
-            if not isinstance(self.time_in, datetime):
-                try:
-                    parsed_time_in = parse_datetime(str(self.time_in))
-                    if parsed_time_in:
-                        self.time_in = parsed_time_in
-                    else:
+        # --- Validate time_in only on first creation ---
+        if self._state.adding:  # this is a NEW object
+            if self.time_in is not None:
+                if not isinstance(self.time_in, datetime):
+                    try:
+                        parsed_time_in = parse_datetime(str(self.time_in))
+                        if parsed_time_in:
+                            self.time_in = parsed_time_in
+                        else:
+                            self.time_in = now
+                    except Exception:
                         self.time_in = now
-                except Exception:
-                    self.time_in = now
-            if timezone.is_naive(self.time_in):
-                self.time_in = timezone.make_aware(self.time_in)
-        else:
-            self.time_in = now
+            else:
+                self.time_in = now
 
-        # --- Validate or correct time_out ---
+        # --- time_out ---
         if self.time_out is not None:
             if not isinstance(self.time_out, datetime):
                 try:
@@ -129,10 +80,5 @@ class AttendanceSession(models.Model):
                         self.time_out = now
                 except Exception:
                     self.time_out = now
-            if timezone.is_naive(self.time_out):
-                self.time_out = timezone.make_aware(self.time_out)
-        # Optional: If you want to default to current time when missing
-        # else:
-        #     self.time_out = now
 
         super().save(*args, **kwargs)

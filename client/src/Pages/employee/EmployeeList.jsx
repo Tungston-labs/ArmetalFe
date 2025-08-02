@@ -14,12 +14,14 @@ import {
   HRManager,
   Subtitle,
   ActionArea,
-  TitleSection
+  TitleSection,
+  FilterSection,
+  DepartmentSelect,
+  SearchWrapper,
+  SearchIcon
 } from "./EmployeeList.styles";
 import { PiUserCirclePlusThin } from "react-icons/pi";
-import SyncLoader from "react-spinners/SyncLoader"; // Spinner loader
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
-import { LuArrowLeft } from "react-icons/lu";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
@@ -29,16 +31,16 @@ const EmployeeList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { employeeList, pagination, loading } = useSelector((state) => state.employees);
-console.log(employeeList)
-  const [searchText, setSearchText] = useState("");
-  const [page, setPage] = useState(pagination?.current_page || 1);
 
+  const [searchText, setSearchText] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("");
+  const [page, setPage] = useState(pagination?.current_page || 1);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    dispatch(getAllEmployees({ page, search: searchText }));
-  }, [dispatch, page, searchText]);
+    dispatch(getAllEmployees({ page, search: searchText, department: departmentFilter }));
+  }, [dispatch, page, searchText, departmentFilter]);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -52,7 +54,7 @@ console.log(employeeList)
 
   const confirmDelete = async () => {
     await dispatch(deleteEmployeeById(selectedEmployeeId));
-    dispatch(getAllEmployees({ page, search: searchText }));
+    dispatch(getAllEmployees({ page, search: searchText, department: departmentFilter }));
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
@@ -61,7 +63,7 @@ console.log(employeeList)
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-console.log("loading",loading)
+
   return (
     <Container>
       <TopBar>
@@ -74,7 +76,6 @@ console.log("loading",loading)
 
       <HeaderSection>
         <TitleSection>
-          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
           <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Employee</Title>
@@ -101,7 +102,36 @@ console.log("loading",loading)
         {/* Add more departments as needed */}
       </DepartmentSelect>
         </ActionArea>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: "1rem",
+            width: "100%"
+          }}
+        >
+          {/* Left side: label */}
+          <div style={{ fontWeight: "bold" }}>
+            Departments <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
+          </div>
+
+          {/* Right side: dropdown */}
+          <DepartmentSelect
+            value={departmentFilter}
+            onChange={(e) => setDepartmentFilter(e.target.value)}
+          >
+            <option value=""><strong>Departments</strong></option>
+            <option value="HR">HR</option>
+            <option value="IT">IT</option>
+            <option value="Finance">Finance</option>
+            <option value="Marketing">Marketing</option>
+          </DepartmentSelect>
+        </div>
+
       </HeaderSection>
+
 
       <Tabs>
         <NavLink to="/employee" style={{ textDecoration: 'none' }}>
@@ -136,28 +166,28 @@ console.log("loading",loading)
           </tr>
         </thead>
         <tbody>
-          {loading ? ( 
+          {loading ? (
             <tr>
               <td colSpan="8" style={{ textAlign: "center", padding: "2rem" }}>
-                 <p>Loading...</p>
+                Loading...
               </td>
             </tr>
           ) : Array.isArray(employeeList) && employeeList.length > 0 ? (
             employeeList.map((emp, index) => (
               <tr key={emp.id}>
                 <td>{index + 1 + (page - 1) * 7}</td>
-               <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-  {emp.profile_pic ? (
-    <img
-      src={emp.profile_pic}
-      alt={emp.name}
-      style={{ width: '40px', height: '40px', borderRadius: '50%' }}
-    />
-  ) : (
-    <PiUserCirclePlusThin size={40} color="#999" />
-  )}
-  {emp.name}
-</td>
+                <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  {emp.profile_pic ? (
+                    <img
+                      src={emp.profile_pic}
+                      alt={emp.name}
+                      style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+                    />
+                  ) : (
+                    <PiUserCirclePlusThin size={40} color="#999" />
+                  )}
+                  {emp.name}
+                </td>
                 <td>{emp.employee_id}</td>
                 <td>{emp.email}</td>
                 <td>{emp.designation}</td>
@@ -177,58 +207,22 @@ console.log("loading",loading)
           )}
         </tbody>
       </Table>
-<Pagination>
-  {/* ← Previous */}
-  <span
-    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-    style={{
-      cursor: page > 1 ? 'pointer' : 'not-allowed',
-      marginRight: '8px',
-      color: page > 1 ? '#000' : '#ccc',
-    }}
-  >
-    &larr;
-  </span>
 
-  {/* Page Numbers */}
-  {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map((pageNumber) => {
-    const isActive = pageNumber === page;
-    return (
-      <span
-        key={pageNumber}
-        onClick={() => setPage(pageNumber)}
-        style={{
-          margin: '0 4px',
-          padding: '6px 12px',
-          borderRadius: '6px',
-          cursor: 'pointer',
-          backgroundColor: isActive ? '#003366' : '#e0e0e0',
-          color: isActive ? '#ffffff' : '#000000',
-          fontWeight: isActive ? 'bold' : 'normal',
-        }}
-      >
-        {pageNumber}
-      </span>
-    );
-  })}
-
-  {/* → Next */}
-  <span
-    onClick={() => {
-      if (page < (pagination?.total_pages || 1)) {
-        setPage(page + 1);
-      }
-    }}
-    style={{
-      cursor: page < (pagination?.total_pages || 1) ? 'pointer' : 'not-allowed',
-      marginLeft: '8px',
-      color: page < (pagination?.total_pages || 1) ? '#000' : '#ccc',
-    }}
-  >
-    &rarr;
-  </span>
-</Pagination>
-
+      <Pagination>
+        <span onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>&larr;</span>
+        {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map((pageNumber) => (
+          <span
+            key={pageNumber}
+            onClick={() => setPage(pageNumber)}
+            className={page === pageNumber ? 'active' : ''}
+          >
+            {pageNumber}
+          </span>
+        ))}
+        <span onClick={() => {
+          if (page < (pagination?.total_pages || 1)) setPage(page + 1);
+        }}>&rarr;</span>
+      </Pagination>
 
       {showDeleteModal && (
         <div style={{
@@ -251,33 +245,14 @@ console.log("loading",loading)
             <h3>Confirm Deletion</h3>
             <p>Are you sure you want to delete this employee?</p>
             <div style={{ marginTop: "1rem" }}>
-              <button
-                onClick={confirmDelete}
-                style={{
-                  marginRight: "1rem",
-                  backgroundColor: "red",
-                  color: "white",
-                  border: "none",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "5px",
-                  cursor: "pointer"
-                }}
-              >
-                Delete
-              </button>
-              <button
-                onClick={cancelDelete}
-                style={{
-                  backgroundColor: "gray",
-                  color: "white",
-                  border: "none",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "5px",
-                  cursor: "pointer"
-                }}
-              >
-                Cancel
-              </button>
+              <button onClick={confirmDelete} style={{
+                marginRight: "1rem", backgroundColor: "red", color: "white",
+                border: "none", padding: "0.5rem 1rem", borderRadius: "5px", cursor: "pointer"
+              }}>Delete</button>
+              <button onClick={cancelDelete} style={{
+                backgroundColor: "gray", color: "white", border: "none",
+                padding: "0.5rem 1rem", borderRadius: "5px", cursor: "pointer"
+              }}>Cancel</button>
             </div>
           </div>
         </div>

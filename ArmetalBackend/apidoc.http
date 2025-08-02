@@ -572,8 +572,8 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "XZYMAR6UO",     
-  "password": "password123"
+  "username": "ABCSALE2S",     
+  "password": "EMPUHFJT13N"
 }
 ### 
 GET http://127.0.0.1:8000/api/profile/

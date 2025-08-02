@@ -21,12 +21,14 @@ import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
 import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
 import Attendance from "./Pages/leaveDetails/Attendance.jsx";
 import OnLeave from "./Pages/leaveDetails/OnLeave.jsx";
-import ViewBasic from "./Pages/employee/ViewBasic.jsx";
-import ViewBankpayment from "./Pages/employee/ViewBankpayment.jsx";
-import ViewDocument from "./Pages/employee/ViewDocument.jsx";
-import BasicFormEdit from "./Pages/editform/BasicFormEdit.jsx";
-import BankpaymentEdit from "./Pages/editform/BankpaymentEdit.jsx";
-import DocumentEdit from "./Pages/editform/DocumentEdit.jsx";
+import EmployeesOnLeave from "./Pages/leaveDetails/EmployeesOnLeave.jsx";
+
+import ViewBasic from "./Pages/employee/ViewBasic.jsx"
+import ViewBankpayment from "./Pages/employee/ViewBankpayment.jsx"
+import ViewDocument from "./Pages/employee/ViewDocument.jsx"
+import BasicFormEdit from "./Pages/editform/BasicFormEdit.jsx"
+import BankpaymentEdit from "./Pages/editform/BankpaymentEdit.jsx"
+import DocumentEdit from "./Pages/editform/DocumentEdit.jsx"
 import Succes from "./Components/Succes.jsx";
 import ConfirmLeaveModal from "./Components/ConfirmLeaveModal.jsx";
 import Payroll1 from "./Pages/payroll/Payroll1.jsx";
@@ -77,6 +79,12 @@ function App() {
             <Route path="/attendance/detail/:id" element={<Attendance />} />
             <Route path="/on-leave" element={<OnLeave />} />
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
+            <Route path="/emp-on-leave" element={<EmployeesOnLeave/>} />
+
+
+
+
+
             <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
             <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
             <Route path="/edit-basicform" element={<BasicFormEdit />} />

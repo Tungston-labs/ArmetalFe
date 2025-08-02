@@ -1,5 +1,7 @@
 // EmployeeAttendance.styles.js
 import styled from "styled-components";
+import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
+
 
 export const Container = styled.div`
   padding: 2rem;
@@ -146,18 +148,79 @@ export const EmployeeImg = styled.img`
   height: 32px;
   border-radius: 50%;
 `;
+
+
+export const SearchSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 1.5rem 0;
+`;
+
+
+
+export const DateInput = styled.input`
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  background-color: #fff;
+  width: 120px;
+`;
+
+export const Container = styled.div`
+  padding: 2rem;
+  font-family: Satoshi;
+`;
+
+export const HeaderSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+`;
+
+export const TitleSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+
+export const Title = styled.h2`
+  font-size: 22px;
+  margin: 0;
+  margin-left: 10px;
+  color: #1e3a8a;
+`;
+
+export const Subtitle = styled.p`
+  font-size: 14px;
+  color: #555;
+  margin-left: 10px;
+  margin-top: -1px;
+  color: #1e3a8a;
+
+
+`;
+
+export const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+`;
+
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
   align-items: center;
-  padding: 0.3rem ;
-  border: 1px solid #ccc;
+  padding: 0.3rem;
+  border: 1px solid black;
   border-radius: 8px;
-  background-color: #fff;
+  background-color:rgb(178, 196, 243);
   font-size: 0.95rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;
@@ -169,13 +232,6 @@ export const HRManager = styled.div`
     border-radius: 50%;
     object-fit: cover;
   }
-`;
-export const HeaderSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
 `;
 
 export const TitleSection = styled.div`
@@ -229,9 +285,8 @@ export const TopBar = styled.div`
 `;
 export const Tabs = styled.div`
   display: flex;
-  gap: 2rem;
+  gap: 0rem;
   margin: 1.5rem 0;
-  border-bottom: 2px solid #ddd;
 `;
 
 export const Tab = styled.div`
@@ -245,17 +300,17 @@ export const Tab = styled.div`
 
 export const Pagination = styled.div`
   display: flex;
-  justify-content: flex-start; /* changed from flex-end to flex-start */
-  // gap: 0.rem;
+  justify-content: flex-start;
   margin-top: 1.5rem;
   padding: 0.6rem;
+  gap: 4px;
 
   span {
-    padding: 0.2rem 0.4rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 6px;
     border: 1px solid #ccc;
     cursor: pointer;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .active {
