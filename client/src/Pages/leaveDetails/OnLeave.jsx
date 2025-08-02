@@ -5,7 +5,7 @@ import {
   Container, Title, TitleSection, Subtitle, HeaderSection,
   HRManager, TopBar, SearchInput, Table, TableHeader, TableRow,
   TableCell, EmployeeImg, TableTitle, Pagination, ActionArea,
-  DateInput, Tab, Tabs
+  DateInput, Tab, Tabs,LeftSide,DepartmentSelect,
 } from "./OnLeave.Style";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 
@@ -77,20 +77,38 @@ export default function EmployeeAttendance() {
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </TitleSection>
-        <ActionArea>
-          <DateInput type="date" onChange={handleDateChange} value={selectedDate} />
-          <SearchInput
-            type="text"
-            placeholder="Search by employee name"
-            value={searchText}
-            onChange={handleSearchChange}
-          />
-        </ActionArea>
+      <ActionArea>
+  {/* Left: Search + Department */}
+  <LeftSide>
+    <SearchInput
+      type="text"
+      placeholder="Search by employee name"
+      value={searchText}
+      onChange={handleSearchChange}
+    />
+    <DepartmentSelect>
+    {/* //  onChange={handleDepartmentChange}
+    //   value={selectedDepartment} */}
+      <option value="">All Departments</option>
+      <option value="hr">HR</option>
+      <option value="sales">Sales</option>
+      <option value="engineering">Engineering</option>
+    </DepartmentSelect>
+  </LeftSide>
+
+  {/* Right: Date */}
+  <DateInput
+    type="date"
+    onChange={handleDateChange}
+    value={selectedDate}
+  />
+</ActionArea>
+
       </HeaderSection>
 
       <Tabs>
         <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Employee list</Tab>
+          <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
         </NavLink>
         <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>

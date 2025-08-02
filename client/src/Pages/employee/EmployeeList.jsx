@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
+  Container,DepartmentSelect,
   HeaderSection,
   Tabs,
   Tab,
@@ -80,24 +80,32 @@ console.log("loading",loading)
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
+          
         </TitleSection>
-
-        <ActionArea>
-          <AddButton onClick={() => navigate('/basic-details')}>
-            <FaPlus /> Add Employee
-          </AddButton>
           <SearchInput
             type="text"
             placeholder="Search by employee name or ID"
             value={searchText}
             onChange={handleSearch}
           />
+       
+        <ActionArea>
+          <AddButton onClick={() => navigate('/basic-details')}>
+            <FaPlus /> Add Employee
+          </AddButton>
+            <DepartmentSelect>
+        <option value="">All Departments</option>
+        <option value="Design">Design</option>
+        <option value="Engineering">Engineering</option>
+        <option value="HR">HR</option>
+        {/* Add more departments as needed */}
+      </DepartmentSelect>
         </ActionArea>
       </HeaderSection>
 
       <Tabs>
         <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Employee list</Tab>
+          <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
         </NavLink>
         <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
@@ -108,8 +116,12 @@ console.log("loading",loading)
         <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
         </NavLink>
-      </Tabs>
-
+         <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-visa'}>Employee OnLeave</Tab>
+        </NavLink>
+        </Tabs>
+        <hr style={{marginTop:"-18px"}}></hr>
+        
       <Table>
         <thead>
           <tr>

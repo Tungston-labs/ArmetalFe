@@ -15,6 +15,7 @@ import {
   CustomLink,TopSection,
   ChangePasswordLink
 } from './Sidebar.styles';
+import API from '../services/api';
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -34,10 +35,10 @@ export default function Sidebar() {
 
       if (!refreshToken) return;
 
-      await axios.post(
+      await API.post(
         "http://178.248.112.16:8000/api/logout/",
         { refresh: refreshToken },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
+       
       );
 
       localStorage.clear();
@@ -50,10 +51,10 @@ export default function Sidebar() {
   const handlePasswordChange = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.post(
+      const res = await API.post(
         "http://178.248.112.16:8000/api/change-password/",
         { old_password: oldPassword, new_password: newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
+       
       );
       setMessage("Password changed successfully");
       setTimeout(() => {

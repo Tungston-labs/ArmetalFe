@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   padding: 2rem;
   font-family: 'Segoe UI', sans-serif;
-  background:#FBFEF3;
+  background:white;
    font-family: Satoshi;
 `;
 
@@ -88,7 +88,7 @@ export const Day = styled.div`
 
 export const EmployeesPanel = styled.div`
   width: 25%;
-   background:#FBFEF3;
+   background:white;
 
   padding: 1rem;
   border-radius: 12px;

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f9fdf8;
+  background-color: white;
   padding: 20px;
 `;
 

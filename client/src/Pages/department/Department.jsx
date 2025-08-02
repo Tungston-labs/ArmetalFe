@@ -2,47 +2,55 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartments, createNewDepartment } from '../../Redux/departmentSlice.js';
 import { useNavigate } from 'react-router-dom';
+import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
+
+
 import {
   DepartmentContainer,
   HeaderSection,
-  TitleGroup,
+  TitleSection,
+  Subtitle,
   ActionArea,
   AddButton,
   SearchInput,
+  SearchIcon,
   CardGrid,
   DepartmentCard,
   HeadInfo,
-  Avatar,
-  CardValue,
+  CardRight,
   TopBar,
   HRManager,
   ModalOverlay,
   CloseButton,
   ModalContent,
-  TitleSection,
-  Subtitle
+  InitialCircle,
+  SearchWrapper
+  
 } from '../department/DepartmentStyles';
+
 import {
   Container,
   TitleRow,
-  Title,
   Form,
   FormGroup,
   Label,
+  Title,
   Input,
   ButtonRow,
   CancelButton,
   SaveButton,
-  BackArrow,
+  BackArrow
 } from './AddDepartment.Styles';
+
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
+import { GoArrowUpRight } from "react-icons/go";
 
 const Department = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { list: departments, loading, error } = useSelector((state) => state.departments);
-console.log(error)
+
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
   const [formData, setFormData] = useState({
@@ -89,63 +97,88 @@ console.log(error)
 
       <HeaderSection>
         <TitleSection>
-          <img src="/images/department.png" alt="Icon" style={{ height: "74px" }} />
+        <div style={{
+  backgroundColor: "white",
+  padding: "10px",
+  borderRadius: "8px",
+  display: "inline-block",
+  color:"blue"
+}}>
+  <img src="/images/department.png" alt="Icon" style={{ height: "74px" }} />
+</div>
           <div>
             <Title>Department</Title>
             <Subtitle>Manage all departments within the organization.</Subtitle>
           </div>
         </TitleSection>
+
         <ActionArea>
-          <AddButton onClick={() => setShowModal(true)}><FaPlus /> Add Department</AddButton>
-          <SearchInput
-            type="text"
-            placeholder="Search by Department name"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <SearchWrapper>
+    <SearchIcon />
+    <SearchInput
+      type="text"
+      placeholder="Search by Department name"
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+    />
+  </SearchWrapper>
+          <AddButton onClick={() => setShowModal(true)}>
+            <FaPlus /> Add Department
+          </AddButton>
         </ActionArea>
       </HeaderSection>
 
       <CardGrid>
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p style={{ color: 'red' }}>Error: {error?.detail?.toString()}</p>
-        ) : Array.isArray(departments) && departments.length > 0 ? (
-          departments.map((dept) => (
-            <DepartmentCard key={dept.id} onClick={() => handleCardClick(dept.id)}>
-              <h3>{dept.name}</h3>
-         <HeadInfo>
-  <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-    {typeof dept.department_head === 'object' && dept.department_head?.profile_pic ? (
-      <img
-        src={dept.department_head.profile_pic}
-        alt={dept.department_head?.name || 'Profile'}
-        style={{ width: '40px', height: '40px', borderRadius: '50%' }}
-      />
-    ) : (
-      <PiUserCirclePlusThin size={40} color="#999" />
-    )}
-
-    <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.4' }}>
-      <small>Department head</small>
-      <p style={{ margin: 0 }}>
-        {typeof dept.department_head === 'object'
-          ? dept.department_head?.name
-          : dept.department_head || 'Not Assigned'}
-      </p>
+  {loading ? (
+    <p>Loading...</p>
+  ) : error ? (
+    <p style={{ color: 'red' }}>Error: {error?.detail?.toString()}</p>
+  ) : Array.isArray(departments) && departments.length > 0 ? (
+    departments.map((dept) => {
+      const initial = dept.name?.[0]?.toUpperCase() || '?';
+      return (
+        <DepartmentCard key={dept.id} onClick={() => handleCardClick(dept.id)}>
+  <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+    <InitialCircle className="initial-circle">{initial}</InitialCircle>
+    <div>
+      <h3 className="dept-name">{dept.name}</h3>
+      <HeadInfo>
+        <small className="subtitle">Department Head</small>
+        <div className="head-row">
+          {typeof dept.department_head === 'object' &&
+          dept.department_head?.profile_pic ? (
+            <img
+              src={dept.department_head.profile_pic}
+              alt={dept.department_head.name}
+            />
+          ) : (
+            <PiUserCirclePlusThin size={24} color="#999" />
+          )}
+          <p className="head-name">
+            {typeof dept.department_head === 'object'
+              ? dept.department_head?.name
+              : dept.department_head || 'Not Assigned'}
+          </p>
+        </div>
+      </HeadInfo>
     </div>
-  </td>
+  </div>
 
-  <CardValue>{dept.employee_count || 0}</CardValue>
-</HeadInfo>
+  <CardRight>
+    <div className="card-value">{dept.employee_count || 0}</div>
+    <div className="arrow-icon">
+      <GoArrowUpRight size={15} style={{ strokeWidth: 2 }} />
+    </div>
+  </CardRight>
+</DepartmentCard>
 
-            </DepartmentCard>
-          ))
-        ) : (
-          <p>No departments found.</p>
-        )}
-      </CardGrid>
+      );
+    })
+  ) : (
+    <p>No departments found.</p>
+  )}
+</CardGrid>
+
 
       {showModal && (
         <ModalOverlay>
@@ -186,17 +219,7 @@ console.log(error)
                   />
                 </FormGroup>
 
-                {/* <FormGroup fullWidth>
-                  <Label>Department head</Label>
-                  <Select name="head" value={formData.department_head} onChange={handleChange} required>
-                    <option value="">Choose an Employee</option>
-                    <option value="1">John Marshal</option>
-                    <option value="2">Jane Doe</option>
-                  </Select>
-                </FormGroup> */}
-
-                {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
-                {error?.detail && <p style={{ color: 'red' }}>{error?.detail||"wageges"}</p>}
+                {error?.detail && <p style={{ color: 'red' }}>{error?.detail}</p>}
                 {error && <p style={{ color: 'red' }}>{error}</p>}
 
                 <ButtonRow>

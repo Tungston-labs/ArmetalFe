@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
   font-family: Satoshi;
 `;
 
@@ -97,7 +97,7 @@ export const Avatar = styled.img`
 
 export const Section = styled.div`
 //   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
   font-family: sans-serif;
 `;
 

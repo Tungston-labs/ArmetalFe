@@ -78,7 +78,7 @@ export const Input = styled.input`
   padding: 0.8rem 1rem;
   // border: 1px solid #ccc;
   // border-radius: 6px;
-  width: 96%;
+  width: 94%;
   // margin-bottom: 1rem;
   color:black;
   margin-top:10px;

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   padding: 2rem;
   font-family: Arial, sans-serif;
-  background:#FBFEF3;
+  background:white;
 `;
 
 export const Header = styled.div`
@@ -57,16 +57,19 @@ export const Header = styled.div`
 export const Tabs = styled.div`
   display: flex;
   gap: 2rem;
-  margin: 1.5rem 0;
-  border-bottom: 2px solid #ddd;
+  margin: 1.7rem 0;
+  // border-bottom: 2px solid #ddd;
 `;
 
 export const Tab = styled.div`
-  padding-bottom: 0.5rem;
+  padding:5px  20px;
   cursor: pointer;
   font-weight: 500;
-  border-bottom: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
-  color: ${({ active }) => (active ? "#1e3a8a" : "#555")};
+  background:#304EB0;
+
+        background: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
+  color: ${({ active }) => (active ? "white" : "#555")};
+ 
 `;
 
 
@@ -98,51 +101,51 @@ export const AddButton = styled.button`
 `;
 
 export const Table = styled.table`
-width: 100%;
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
- 
 
-  th, td {
+  td {
     text-align: left;
     padding: 0.5rem;
     white-space: nowrap;
-  
     background-color: white;
-    border: none; /* remove cell borders */
+    border: none;
   }
 
   th {
-    background-color: #5F53A53B;
-    color: #333;
-      font-family:raleway;
-     padding: 0.75rem;
-
+    background-color: #304EB0;
+    color: white;
+    font-family: raleway;
+    padding: 0.8rem;
   }
 
-  /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
-box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-font-family:satoshi;
-
+    box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+    font-family: 'satoshi';
   }
 
-  /* Optional: radius for only first and last td of each row */
+  /* ✅ Background color for even rows */
+  tbody tr:nth-child(even) td {
+    background-color: #E6ECFF;
+  }
+
   tbody tr td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
 
   tbody tr td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   tbody tr:hover td {
     background-color: #f5f5f5;
   }
 `;
+
 export const TableHead = styled.th`
   text-align: left;
   padding: 1rem;
@@ -175,14 +178,16 @@ export const ActionButtons = styled.div`
 `;
 
 export const DeclineButton = styled.button`
-  background-color: #f87171;
+  // background-color: #f87171;
   color: white;
   padding: 0.4rem 0.8rem;
-  border: none;
+  // border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-
+border-radius: 7px;
+border: 1px solid #FF2304;
+background: rgba(255, 35, 4, 0.50);
   &:hover {
     background-color: #dc2626; /* a darker red */
     transform: scale(1.02);
@@ -192,14 +197,16 @@ export const DeclineButton = styled.button`
 
 
 export const ApproveButton = styled.button`
-  background-color: #94a3b8;
+  // background-color: #94a3b8;
   color: white;
   padding: 0.4rem 0.8rem;
-  border: none;
+  // border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-
+border-radius: 7px;
+border: 1px solid #172554;
+background: #304EB0;
   &:hover {
     background-color: #64748b; /* darker bluish-gray */
     transform: scale(1.02);
@@ -240,7 +247,7 @@ export const HRManager = styled.div`
 `;
 
 export const HeaderSection = styled.div`
-  display: flex;
+  // display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
@@ -259,9 +266,16 @@ export const Icon = styled.div`
 
 export const ActionArea = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: end;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.5rem 0;
+`;
+export const DepartmentSelect = styled.select`
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background: white;
 `;
 export const Title = styled.h2`
   font-size: 22px;

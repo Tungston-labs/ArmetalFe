@@ -103,7 +103,7 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 7px;
   width:40%;
-    background-color:#FBFEF3;
+    background-color:white;
 `;
 
 export const Select = styled.select`

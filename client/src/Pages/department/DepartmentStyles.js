@@ -1,28 +1,28 @@
 import styled from 'styled-components';
+import { FiSearch } from 'react-icons/fi';
+
 
 export const DepartmentContainer = styled.div`
   padding: 2rem;
-  background-color: #FBFEF3;
+  background-color: rgb(255, 255, 255);
 `;
 
 export const TopBar = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 1.5rem;
 `;
 
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
   align-items: center;
-  // gap: 0.75rem;
-  padding: 0.3rem ;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #333;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
@@ -37,27 +37,30 @@ export const HRManager = styled.div`
     object-fit: cover;
   }
 `;
+
 export const Subtitle = styled.p`
   font-size: 14px;
-  color: #666;
+  color:  #3e64ff;
   margin: 0;
   margin-left: 2px;
-  font-family:raleway;
+  font-family: Raleway;
 `;
+
 export const HeaderSection = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 1rem;
 `;
+
 export const TitleSection = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
 
   img {
-    height: 51px;
+    height: 74px;
   }
 
   div {
@@ -71,7 +74,7 @@ export const TitleGroup = styled.div`
   align-items: center;
   gap: 1rem;
 
-   h2 {
+  h2 {
     font-family: 'Satoshi';
     font-weight: 700;
     font-size: 22px;
@@ -81,29 +84,40 @@ export const TitleGroup = styled.div`
   p {
     margin: 0;
     font-size: 16px;
-      font-family: 'Raleway';
-  
+    font-family: 'Raleway';
   }
-`;
-
-export const Icon = styled.div`
-  font-size: 2rem;
-  color: #2a2a86;
 `;
 
 export const ActionArea = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: end;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
   gap: 1rem;
+`;
+
+export const InitialCircle = styled.div`
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: rgb(255, 255, 255);
+  color: rgb(228, 247, 246);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 100px;
+  font-family: Satoshi;
+  padding-right: 18px;
 `;
 
 export const AddButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family:satoshi;
-  background: linear-gradient(to right, #2a2a86, #3e64ff);
+  font-family: Satoshi;
+  background: linear-gradient(to right, rgb(72, 139, 222),rgb(44, 81, 229));
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -113,65 +127,130 @@ export const AddButton = styled.button`
 `;
 
 export const SearchInput = styled.input`
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem 0.5rem 2.2rem; // left padding for icon space
   border-radius: 6px;
   border: 1px solid #ccc;
   outline: none;
   font-size: 0.9rem;
+  width: 100%;
+`;
+export const SearchWrapper = styled.div`
+  position: relative;
   width: 220px;
+`;
+
+export const SearchIcon = styled(FiSearch)`
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1rem;
 `;
 
 export const CardGrid = styled.div`
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 `;
 
 export const DepartmentCard = styled.div`
-  background: #e5eaf0;
-  border-radius: 10px;
+  background: white;
   padding: 1.5rem;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  // 💡 Hover effect
+  &:hover {
+    .initial-circle {
+      background-color:rgb(255, 255, 255);
+      color:rgb(208, 208, 219);
+    }
+
+    .dept-name,
+    .head-name,
+    .subtitle,
+    .card-value {
+      color:rgb(62, 101, 200);
+    }
+
+    .arrow-icon {
+      background-color:rgb(51, 51, 192);
+      color: white;
+    }
+  }
 
   h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
     margin: 0;
-    font-size: 1.1rem;
+    color: #000;
+    font-family: 'Satoshi';
+  }
+
+  .head-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .head-name {
+      font-size: 0.85rem;
+      margin: 0;
+      font-weight: 500;
+      color: #000;
+    }
   }
 `;
+
 
 export const HeadInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  margin-top: 0.5rem;
 
   small {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     color: #888;
-  }
-
-  p {
-    margin: 0;
-    font-weight: 500;
+    display: block;
   }
 `;
 
-export const Avatar = styled.img`
-  width: 40px;
-  height: 40px;
+export const CardRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+
+  .card-value {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #000;
+  }
+
+  .arrow-icon {
+  background: rgb(255, 255, 255);
+  color: rgb(52, 52, 124);
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-`;
-
-export const CardValue = styled.div`
-  margin-left: auto;
-  font-weight: bold;
-  color: #2a2a86;
   font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 `;
 
-// ✅ Modal Components
+// Modal Styles
 export const ModalOverlay = styled.div`
   position: fixed;
   top: 0;

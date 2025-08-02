@@ -4,7 +4,7 @@ import { SlCalender } from "react-icons/sl";
 import { VscSend } from "react-icons/vsc";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { generateInvoiceHTML } from '../utlis/invoiceGenerator';
+import { generateInvoiceHTML } from '../services/utlis/invoiceGenerator';
 import {
   SectionTitle,
   PlanCard,
@@ -17,6 +17,7 @@ import {
   TableData,
   ScrollWrapper
 } from './Plan.Styles';
+import API from '../services/api';
 
 const PaymentOverview = ({ companyId: propCompanyId }) => {
   const { id: urlCompanyId } = useParams();
@@ -35,11 +36,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchPaymentData = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`http://178.248.112.16:8000/api/subscriptions/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await API.get(`http://178.248.112.16:8000/api/subscriptions/${id}/`);
 
       if (Array.isArray(res.data)) {
         setPaymentData(res.data);
@@ -51,9 +48,8 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchCompanyName = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`http://178.248.112.16:8000/api/companies/${id}/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await API.get(`http://178.248.112.16:8000/api/companies/${id}/`
+      );
 
       if (res.data?.name) {
         setCompanyName(res.data.name);
@@ -69,12 +65,10 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
     const newStatus = currentStatus === 'paid' ? 'unpaid' : 'paid';
     try {
       const token = localStorage.getItem("accessToken");
-      await axios.patch(
+      await API.patch(
         `http://178.248.112.16:8000/api/subscriptions/mark-paid/${subscriptionId}/`,
         { status: newStatus },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        
       );
       await fetchPaymentData(companyId);
     } catch (error) {

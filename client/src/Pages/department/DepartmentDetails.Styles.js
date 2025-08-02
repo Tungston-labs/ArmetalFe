@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { HiOutlinePencilSquare } from 'react-icons/hi2';
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
 
 `;
 
@@ -101,7 +101,7 @@ export const Input = styled.input`
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 1rem;
-    background: #FBFEF3;
+    background: white;
 `;
 
 export const TableWrapper = styled.div`

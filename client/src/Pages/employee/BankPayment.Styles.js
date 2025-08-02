@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
  font-family: Satoshi;
 `;
 
@@ -11,7 +11,6 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   h2 {
     margin: 0;
   }

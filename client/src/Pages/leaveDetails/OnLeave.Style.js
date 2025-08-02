@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
   font-family: 'Segoe UI', sans-serif;
 `;
 
@@ -80,45 +80,44 @@ export const TableTitle = styled.h3`
 `;
 
 export const Table = styled.table`
-width: 100%;
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
- 
 
-  th, td {
+  td {
     text-align: left;
-    padding: 0.2rem;
+    padding: 0.rem;
     white-space: nowrap;
-  
     background-color: white;
-    border: none; /* remove cell borders */
+    border: none;
   }
 
   th {
-    background-color: #5F53A53B;
-    color: #333;
-      font-family:raleway;
-     padding: 0.75rem;
-
+    background-color: #304EB0;
+    color: white;
+    font-family: raleway;
+    padding: 0.8rem;
   }
 
-  /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
-box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-font-family:satoshi;
-
+    box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+    font-family: 'satoshi';
   }
 
-  /* Optional: radius for only first and last td of each row */
+  /* ✅ Background color for even rows */
+  tbody tr:nth-child(even) td {
+    background-color: #E6ECFF;
+  }
+
   tbody tr td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
 
   tbody tr td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   tbody tr:hover td {
@@ -202,26 +201,26 @@ export const SearchSection = styled.div`
   margin: 1.5rem 0;
 `;
 
-export const SearchInput = styled.input`
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  width: 300px;
-`;
+// export const SearchInput = styled.input`
+//   padding: 0.6rem 1rem;
+//   border-radius: 6px;
+//   border: 1px solid #ccc;
+//   width: 300px;
+// `;
 
-export const DateInput = styled.input`
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 7px;
-  background-color: #fff;
-  width: 120px;
-`;
-export const ActionArea = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-  gap: 1rem;
-`;
+// export const DateInput = styled.input`
+//   padding: 8px 12px;
+//   border: 1px solid #ccc;
+//   border-radius: 7px;
+//   background-color: #fff;
+//   width: 120px;
+// `;
+// export const ActionArea = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: end;
+//   gap: 1rem;
+// `;
 export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;
@@ -236,11 +235,12 @@ export const Tabs = styled.div`
 `;
 
 export const Tab = styled.div`
-  padding-bottom: 0.5rem;
+  padding:5px  20px;
   cursor: pointer;
+  background:#304EB0;
   font-weight: 500;
-  border-bottom: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
-  color: ${({ active }) => (active ? "#1e3a8a" : "#555")};
+  background: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
+  color: ${({ active }) => (active ? "white" : "#555")};
 `;
 
 export const Pagination = styled.div`
@@ -263,4 +263,38 @@ export const Pagination = styled.div`
     color: white;
     border-color: #1e3a8a;
   }
+`;
+export const ActionArea = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+`;
+
+export const LeftSide = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+`;
+
+export const SearchInput = styled.input`
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 250px;
+`;
+
+export const DepartmentSelect = styled.select`
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 200px;
+`;
+
+export const DateInput = styled.input`
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 180px;
 `;
