@@ -54,23 +54,22 @@ class AttendanceSession(models.Model):
     def save(self, *args, **kwargs):
         now = timezone.now()
 
-        # --- Validate or correct time_in ---
-        if self.time_in is not None:
-            if not isinstance(self.time_in, datetime):
-                try:
-                    parsed_time_in = parse_datetime(str(self.time_in))
-                    if parsed_time_in:
-                        self.time_in = parsed_time_in
-                    else:
+        # --- Validate time_in only on first creation ---
+        if self._state.adding:  # this is a NEW object
+            if self.time_in is not None:
+                if not isinstance(self.time_in, datetime):
+                    try:
+                        parsed_time_in = parse_datetime(str(self.time_in))
+                        if parsed_time_in:
+                            self.time_in = parsed_time_in
+                        else:
+                            self.time_in = now
+                    except Exception:
                         self.time_in = now
-                except Exception:
-                    self.time_in = now
-            if timezone.is_naive(self.time_in):
-                self.time_in = timezone.make_aware(self.time_in)
-        else:
-            self.time_in = now
+            else:
+                self.time_in = now
 
-        # --- Validate or correct time_out ---
+        # --- time_out ---
         if self.time_out is not None:
             if not isinstance(self.time_out, datetime):
                 try:
@@ -81,10 +80,5 @@ class AttendanceSession(models.Model):
                         self.time_out = now
                 except Exception:
                     self.time_out = now
-            if timezone.is_naive(self.time_out):
-                self.time_out = timezone.make_aware(self.time_out)
-        # Optional: If you want to default to current time when missing
-        # else:
-        #     self.time_out = now
 
         super().save(*args, **kwargs)
