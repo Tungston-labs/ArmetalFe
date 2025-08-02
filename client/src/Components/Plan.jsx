@@ -35,7 +35,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchPaymentData = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`http://178.248.112.16:8000/api/subscriptions/${id}/`, {
+      const res = await axios.get(`http://178.248.112.16:8001/api/subscriptions/${id}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,7 +51,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchCompanyName = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`http://178.248.112.16:8000/api/companies/${id}/`, {
+      const res = await axios.get(`http://178.248.112.16:8001/api/companies/${id}/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -70,7 +70,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
     try {
       const token = localStorage.getItem("accessToken");
       await axios.patch(
-        `http://178.248.112.16:8000/api/subscriptions/mark-paid/${subscriptionId}/`,
+        `http://178.248.112.16:8001/api/subscriptions/mark-paid/${subscriptionId}/`,
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${token}` },

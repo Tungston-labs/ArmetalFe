@@ -35,7 +35,7 @@ export default function Sidebar() {
       if (!refreshToken) return;
 
       await axios.post(
-        "http://178.248.112.16:8000/api/logout/",
+        "http://178.248.112.16:8001/api/logout/",
         { refresh: refreshToken },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );

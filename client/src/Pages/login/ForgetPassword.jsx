@@ -31,7 +31,7 @@ const ForgotPasswordPage = () => {
     setMessage(null);
 
     try {
-      await axios.post("http://178.248.112.16:8000/api/forgot-password/send-otp/", {
+      await axios.post("http://178.248.112.16:8001/api/forgot-password/send-otp/", {
         email: formData.email,
       });
 

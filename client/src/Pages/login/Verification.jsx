@@ -62,7 +62,7 @@ const VerifyCodePage = () => {
     }
 
     try {
-      await axios.post('http://178.248.112.16:8000/api/forgot-password/verify-otp/', {
+      await axios.post('http://178.248.112.16:8001/api/forgot-password/verify-otp/', {
         email,
         otp: fullCode,
       });

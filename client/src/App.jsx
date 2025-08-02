@@ -21,6 +21,8 @@ import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
 import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
 import Attendance from "./Pages/leaveDetails/Attendance.jsx";
 import OnLeave from "./Pages/leaveDetails/OnLeave.jsx";
+import EmployeesOnLeave from "./Pages/leaveDetails/EmployeesOnLeave.jsx";
+
 import ViewBasic from "./Pages/employee/ViewBasic.jsx"
 import ViewBankpayment from "./Pages/employee/ViewBankpayment.jsx"
 import ViewDocument from "./Pages/employee/ViewDocument.jsx"
@@ -73,6 +75,8 @@ function App() {
             <Route path="/attendance/detail/:id" element={<Attendance />} />
             <Route path="/on-leave" element={<OnLeave />} />
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
+            <Route path="/emp-on-leave" element={<EmployeesOnLeave/>} />
+
 
 
 

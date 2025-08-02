@@ -25,6 +25,7 @@ export const Title = styled.h2`
   font-size: 22px;
   margin: 0;
   font-family:satoshi;
+  color:rgb(64, 101, 220);
 `;
 
 export const Form = styled.form`

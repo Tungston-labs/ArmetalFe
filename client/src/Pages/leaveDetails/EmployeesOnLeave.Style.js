@@ -1,3 +1,218 @@
+import styled from 'styled-components';
+import { FiSearch } from 'react-icons/fi';
+
+
+export const DepartmentContainer = styled.div`
+  padding: 2rem;
+  background-color: rgb(255, 255, 255);
+`;
+
+
+
+
+
+
+
+
+
+
+export const TitleGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  h2 {
+    font-family: 'Satoshi';
+    font-weight: 700;
+    font-size: 22px;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    font-family: 'Raleway';
+  }
+`;
+
+
+
+export const InitialCircle = styled.div`
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: rgb(255, 255, 255);
+  color: rgb(228, 247, 246);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 100px;
+  font-family: Satoshi;
+  padding-right: 18px;
+`;
+
+export const AddButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: Satoshi;
+  background: linear-gradient(to right, rgb(72, 139, 222),rgb(44, 81, 229));
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+`;
+
+
+
+export const SearchIcon = styled(FiSearch)`
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1rem;
+`;
+
+export const CardGrid = styled.div`
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+`;
+
+export const DepartmentCard = styled.div`
+  background: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  // 💡 Hover effect
+  &:hover {
+    .initial-circle {
+      background-color:rgb(255, 255, 255);
+      color:rgb(208, 208, 219);
+    }
+
+    .dept-name,
+    .head-name,
+    .subtitle,
+    .card-value {
+      color:rgb(62, 101, 200);
+    }
+
+    .arrow-icon {
+      background-color:rgb(51, 51, 192);
+      color: white;
+    }
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+    color: #000;
+    font-family: 'Satoshi';
+  }
+
+  .head-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .head-name {
+      font-size: 0.85rem;
+      margin: 0;
+      font-weight: 500;
+      color: #000;
+    }
+  }
+`;
+
+
+export const HeadInfo = styled.div`
+  margin-top: 0.5rem;
+
+  small {
+    font-size: 0.9rem;
+    color: #888;
+    display: block;
+  }
+`;
+
+export const CardRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+
+  .card-value {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #000;
+  }
+
+  .arrow-icon {
+  background: rgb(255, 255, 255);
+  color: rgb(52, 52, 124);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+`;
+
+// Modal Styles
+export const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+`;
+
+export const ModalContent = styled.div`
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  z-index: 1000;
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+`;
+
 // EmployeeAttendance.styles.js
 import styled from "styled-components";
 import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
@@ -218,22 +433,7 @@ export const FilterSection = styled.div`
 
 
 
-export const AddButton = styled.button`
-  background: #1e3a8a;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-  cursor: pointer;
 
-  &:hover {
-    background: #2744a3;
-  }
-`;
 
 
 
@@ -282,14 +482,7 @@ export const DepartmentSelect = styled.select`
 `;
 
 
-export const SearchIcon = styled(FiSearch)`
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  color: #888;
-  font-size: 1rem;
-`;
+
 
 export const Table = styled.table`
   width: 100%;

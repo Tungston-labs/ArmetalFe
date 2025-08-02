@@ -56,7 +56,7 @@ const ChangePasswordPage = () => {
     }
 
     try {
-      await axios.post('http://178.248.112.16:8000/api/forgot-password/reset/', {
+      await axios.post('http://178.248.112.16:8001/api/forgot-password/reset/', {
         email,
         new_password: newPassword,
         confirm_password: confirmPassword
