@@ -151,7 +151,7 @@ export const SearchIcon = styled(FiSearch)`
 export const CardGrid = styled.div`
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(4,1fr);
   gap: 1.5rem;
 `;
 

@@ -159,37 +159,6 @@ const cancelDelete = () => {
               <Th></Th>
             </tr>
           </thead>
-{/* <tbody>
-  {loading ? (
-    <tr>
-      <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-        <SyncLoader />
-      </Td>
-    </tr>
-  ) : holidays.length === 0 ? (
-    <tr>
-      <Td colSpan="5" style={{ textAlign: "center" }}>
-        No holidays found.
-      </Td>
-    </tr>
-  ) : (
-    holidays.map((item, index) => (
-      <tr key={item.id}>
-        <Td>{(currentPage - 1) * 7 + index + 1}</Td>
-        <Td>{item.description}</Td>
-        <Td>{item.holiday_type_display}</Td>
-        <Td>{item.date}</Td>
-        <Td>
-          <FaTrashAlt
-            style={{ color: "red", cursor: "pointer" }}
-            onClick={() => handleDeleteClick(item.id)}
-          />
-        </Td>
-      </tr>
-    ))
-  )}
-</tbody> */}
-
 <tbody>
   {loading ? (
     <tr>

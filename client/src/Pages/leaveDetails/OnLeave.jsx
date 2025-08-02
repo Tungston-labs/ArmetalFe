@@ -5,7 +5,9 @@ import {
   Container, Title, TitleSection, Subtitle, HeaderSection,
   HRManager, TopBar, SearchInput, Table, TableHeader, TableRow,
   TableCell, EmployeeImg, TableTitle, Pagination, ActionArea,
-  DateInput, Tab, Tabs,LeftSide,DepartmentSelect,
+  DateInput, Tab, Tabs,FilterSection,
+    DepartmentSelect,
+    SearchWrapper,AddButton
 } from "./OnLeave.Style";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 
@@ -82,56 +84,19 @@ export default function EmployeeAttendance() {
       </TopBar>
 
       <HeaderSection>
-        <TitleSection>
-          <img src="/images/employee.png" alt="Employee Icon" style={{ height: "50px" }} />
-          <div>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </div>
-        </TitleSection>
-      <ActionArea>
-  {/* Left: Search + Department */}
-  <LeftSide>
-    <SearchInput
-      type="text"
-      placeholder="Search by employee name"
-      value={searchText}
-      onChange={handleSearchChange}
-    />
-    <DepartmentSelect>
-    {/* //  onChange={handleDepartmentChange}
-    //   value={selectedDepartment} */}
-      <option value="">All Departments</option>
-      <option value="hr">HR</option>
-      <option value="sales">Sales</option>
-      <option value="engineering">Engineering</option>
-    </DepartmentSelect>
-  </LeftSide>
+  {/* Top Row: Title + Subtitle + Date */}
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+      <img src="/images/employee.png" alt="Employee Icon" style={{ height: "50px" }} />
+      <div>
+        <Title>Employee</Title>
+        <Subtitle>Manage your Employee.</Subtitle>
+      </div>
+    </div>
 
-  {/* Right: Date */}
-  <DateInput
-    type="date"
-    onChange={handleDateChange}
-    value={selectedDate}
-  />
-</ActionArea>
-
-      </HeaderSection>
-
-      <Tabs>
-        <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
-        </NavLink>
-        <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
-        </NavLink>
-        <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
-        </NavLink>
-        <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
-        </NavLink>
-      </Tabs>
+    {/* Date Picker */}
+    <DateInput type="date" onChange={handleDateChange} value={selectedDate} />
+  </div>
 
   {/* Second Row: Search + Department */}
   <div style={{
@@ -172,9 +137,9 @@ export default function EmployeeAttendance() {
     </div>
     
   </div>
-  <div style={{ fontWeight: "bold" }}>
+  {/* <div style={{ fontWeight: "bold" }}>
         Departments: <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
-      </div>
+      </div> */}
 </HeaderSection>
 
 
@@ -197,7 +162,7 @@ export default function EmployeeAttendance() {
                   <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
                 </NavLink>
               </Tabs>
-
+<hr style={{marginTop:"-18px"}}></hr>
       {/* <TableTitle>{selectedDate || "All Dates"}</TableTitle> */}
 
       <Table>

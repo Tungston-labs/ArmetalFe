@@ -137,9 +137,7 @@ export default function EmployeeAttendance() {
     </div>
     
   </div>
-  <div style={{ fontWeight: "bold" }}>
-        Departments: <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
-      </div>
+
 </HeaderSection>
 
 

@@ -103,8 +103,8 @@ export const Table = styled.table`
   }
 
   th {
-    background-color: #5F53A53B;
-    color: #333;
+    background-color: #3352BA;
+    color: white;
   }
 
   /* ✅ Apply box-shadow only to tbody rows */

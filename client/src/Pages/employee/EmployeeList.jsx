@@ -15,10 +15,9 @@ import {
   Subtitle,
   ActionArea,
   TitleSection,
-  FilterSection,
-  DepartmentSelect,
-  SearchWrapper,
-  SearchIcon
+  // FilterSection,
+  // SearchWrapper,
+  // SearchIcon
 } from "./EmployeeList.styles";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
@@ -103,7 +102,7 @@ const EmployeeList = () => {
       </DepartmentSelect>
         </ActionArea>
 
-        <div
+        {/* <div
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -111,14 +110,14 @@ const EmployeeList = () => {
             marginTop: "1rem",
             width: "100%"
           }}
-        >
+        > */}
           {/* Left side: label */}
-          <div style={{ fontWeight: "bold" }}>
+          {/* <div style={{ fontWeight: "bold" }}>
             Departments <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
-          </div>
+          </div> */}
 
           {/* Right side: dropdown */}
-          <DepartmentSelect
+          {/* <DepartmentSelect
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
           >
@@ -127,8 +126,8 @@ const EmployeeList = () => {
             <option value="IT">IT</option>
             <option value="Finance">Finance</option>
             <option value="Marketing">Marketing</option>
-          </DepartmentSelect>
-        </div>
+          </DepartmentSelect> */}
+        {/* </div> */}
 
       </HeaderSection>
 

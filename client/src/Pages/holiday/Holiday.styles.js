@@ -135,7 +135,7 @@ export const DateWrapper = styled.div`
 
 
 export const AddButton = styled.button`
-  background-color: #172554;
+  background-color: #3352BA;
   color: white;
   padding: 8px 16px;
   border: none;
@@ -165,12 +165,15 @@ width: 100%;
   }
 
   th {
-    background-color: #5F53A53B;
-    color: #333;
+    background-color: #3352BA;
+    color: white;
         padding: 0.75rem;
     font-family:raleway;
   }
-
+  /* ✅ Background color for even rows */
+  tbody tr:nth-child(even) td {
+    background-color: #E6ECFF;
+  }
   /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
 box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
