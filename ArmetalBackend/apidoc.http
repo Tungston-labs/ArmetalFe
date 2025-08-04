@@ -237,9 +237,9 @@ Content-Type: multipart/form-data; boundary=---011000010111000001101001
 # create employee
 
 
-###
-GET http://127.0.0.1:8000/api/employees/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMTQ1ODk3LCJpYXQiOjE3NTAxNDIyOTcsImp0aSI6ImUxYjFhODI0YWNkNjRhYThiZmIwZmJhOTU1OWIwY2JmIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.fGcs1226SVEpgB0_O-vgK4pWMsj2Db_zgVTz1LzcoCc
+###employee list according to department
+GET http://178.248.112.16:8001/api/employees/?department_id=16
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjk1NDc2LCJpYXQiOjE3NTQyOTE4NzYsImp0aSI6IjI3N2U5NmEzMjVjOTQwMzlhNGQ3NzhmMmYwZTcyYjFmIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.hExg9tTqNXl1oYLjJku_WJFIidGXggBHmYhy2gHvV7E
 
 
 # retrieve all employee
@@ -416,6 +416,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ### List All Leaves (HR Admin) according to status
 GET http://127.0.0.1:8000/api/leave/admin/?status=pending
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwODM3MjE4LCJpYXQiOjE3NTA4MzM2MTgsImp0aSI6IjM4ZDVhMWM3NzI2YzRiNzJhMGRkZGQxMWI0MjRhOTc5IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.xuQAcVUh5AjKZagoSCxsb8bhn47_7f71kyo3OtpyGMw
+
+### list employees on leave
+GET http://178.248.112.16:8001/api/departments/16/on-leave-employees/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjk4NDM3LCJpYXQiOjE3NTQyOTQ4MzcsImp0aSI6ImY0ODhkMTVjYmE2NzQzYTJhMDg2MTZhY2VkZDQxMTM2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.Ixu-E1YAZaK3zCZ_o3pO2i_76lLmbtnf2-YS_tb9GKc
+
 
 
 # =-------------------------API FOR TASK MANAGEMENT--------------------------
