@@ -183,13 +183,13 @@ font-family:satoshi;
 
   /* Optional: radius for only first and last td of each row */
   tbody tr td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
 
   tbody tr td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   tbody tr:hover td {
@@ -230,4 +230,9 @@ export const Pagination = styled.div`
       color: white;
     }
   }
+`;
+export const ErrorMessage = styled.p`
+  color: red;
+  margin-top: 8px;
+  font-size: 14px;
 `;

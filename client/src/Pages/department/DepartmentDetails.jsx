@@ -26,7 +26,8 @@ import { fetchDepartmentById, updateDepartment } from '../../services/department
 import { getEmployeesByDepartment } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import { deleteEmployeeById } from '../../Redux/employeeSlice';
-
+import Employee from "../../assets/employee.svg"; 
+import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your choice
 
 
 
@@ -108,25 +109,49 @@ const DepartmentDetail = () => {
       <TopBar>
         <div />
         <HRManager>
-          <img src="images/user.jpg" alt="HR Manager" />
+          <img src="images/user.jpg" alt="HR Manager" />  
+          
           <span>HR Manager</span>
         </HRManager>
       </TopBar>
 
       <HeaderSection>
-        <TitleSection>
-          <img src="/images/department.png" alt="Icon" style={{ height: "74px" }} />
-          <div>
-            <Title>Department</Title>
-            <Subtitle>Manage all departments within the organization.</Subtitle>
-          </div>
-        </TitleSection>
-        <ActionArea>
-          <AddButton onClick={() => setIsEditing(!isEditing)}>
-            <HiOutlinePencilSquare style={{ width: '18px', height: '18px' }} /> {isEditing ? 'Cancel' : 'Edit'}
-          </AddButton>
-        </ActionArea>
-      </HeaderSection>
+<TitleSection>
+  <HiArrowLeft
+    style={{ width: '24px', height: '24px', cursor: 'pointer',color:"#3250B5" }} 
+    onClick={() => window.history.back()}
+  />
+  <img src={Employee}  alt="employee icon" />
+  <div>
+    <Title>Department</Title>
+    <Subtitle>Manage all departments within the organization.</Subtitle>
+  </div>
+</TitleSection>
+
+
+
+  <ActionArea>
+    <AddButton
+      onClick={() => {
+        if (isEditing) {
+          handleUpdate(); // Save the changes
+        }
+        setIsEditing(!isEditing); // Toggle editing mode
+      }}
+    >
+      {isEditing ? (
+        <>
+          <HiOutlinePencilSquare style={{ width: '18px', height: '19px' }} /> Save
+        </>
+      ) : (
+        <>
+          <HiOutlinePencilSquare style={{ width: '18px', height: '18px' }} /> Edit
+        </>
+      )}
+    </AddButton>
+  </ActionArea>
+</HeaderSection>
+
 
       <FormSection>
         <InputGroup>
@@ -179,11 +204,11 @@ const DepartmentDetail = () => {
 
           )}
         </InputGroup>
-        {isEditing && (
+        {/* {isEditing && (
           <AddButton style={{ marginTop: '1rem' }} onClick={handleUpdate}>
             Save Changes
           </AddButton>
-        )}
+        )} */}
       </FormSection>
 
       <h3>Added employee list</h3>

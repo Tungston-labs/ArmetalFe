@@ -17,10 +17,7 @@ export const Header = styled.div`
     margin: 0;
   }
 
-  p {
-    font-size: 0.9rem;
-    color: gray;
-  }
+ 
 `;
 
 export const RoleInfo = styled.div`
@@ -36,7 +33,8 @@ export const DateSelector = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-font-size:22px;
+  font-size: 22px;
+
   input[type="date"] {
     padding: 0.5rem;
     border-radius: 6px;
@@ -46,17 +44,59 @@ font-size:22px;
   button {
     background: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     margin: 0 0.5rem;
     cursor: pointer;
   }
+
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .calendar-icon {
+    color: #3250b5;
+    font-size: 2rem;
+  }
+
+  .date-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .day {
+    font-size: 3rem;
+    font-weight: bold;
+  }
+
+  .month {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .weekday {
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
 `;
+
 
 export const SearchInput = styled.input`
   padding: 0.6rem;
   border-radius: 8px;
   border: 1px solid #ccc;
   min-width: 250px;
+  border-radius: 7px;
+border: 1px solid #172554;
+background: #FFF;
 `;
 
 export const Calendar = styled.div`
@@ -64,7 +104,7 @@ export const Calendar = styled.div`
   display: flex;
   justify-content: center; /* Horizontally center */
   align-items: center;     /* Vertically center (if needed) */
-  gap: 5rem;
+  gap: 4rem;
   width: 100%;
   height:84px;
   
@@ -96,6 +136,7 @@ export const EmployeesPanel = styled.div`
   overflow-y: auto;
   // box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   margin-top:20px;
+  
 `;
 
 export const EmployeeCard = styled.div`
@@ -105,8 +146,12 @@ export const EmployeeCard = styled.div`
   padding: 0.6rem;
   background: ${({ active }) => (active ? '#E0E3EE' : '#fff')};
   margin-bottom: 0.5rem;
-  border-radius: 8px;
+  // border-radius: 8px;
   cursor: pointer;
+  border-radius: 7px;
+border: 0.2px solid #000;
+// background: #FFF;
+box-shadow: 0 0 4.2px 0 rgba(0, 0, 0, 0.25);
 
   img {
     width: 35px;
@@ -124,7 +169,10 @@ export const TaskPanel = styled.div`
   overflow-y: auto;
   max-height: 60vh;
  margin-top:35px;
- 
+ border-radius: 9px;
+border: 0.2px solid #000;
+background: #FFF;
+box-shadow: 0 0 4.3px 0 rgba(0, 0, 0, 0.25);
 `;
 
 export const TaskHeader = styled.div`
@@ -196,14 +244,24 @@ export const HRManager = styled.div`
   }
 `;
 export const Title = styled.h2`
-  font-size: 24px;
+  font-size: 1.5rem;
   margin: 0;
+  color: #3352BA;
+font-family: Satoshi;
+// font-size: 22px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
 `;
 
 export const Subtitle = styled.p`
-  font-size: 14px;
-  color: #555;
-  margin: 4px 0 0;
+margin: 4px 0 0;
+color:#3352BA;
+font-family: Raleway;
+font-size: 1rem;
+font-style: normal;
+font-weight: 300;
+line-height: normal;
 `;
 
 export const TitleSection = styled.div`

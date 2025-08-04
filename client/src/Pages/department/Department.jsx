@@ -17,6 +17,8 @@ import {
   CardGrid,
   DepartmentCard,
   HeadInfo,
+  Title,
+
   CardRight,
   TopBar,
   HRManager,
@@ -34,14 +36,13 @@ import {
   Form,
   FormGroup,
   Label,
-  Title,
   Input,
   ButtonRow,
   CancelButton,
   SaveButton,
   BackArrow
 } from './AddDepartment.Styles';
-
+import Employee from "../../assets/employee.svg"; 
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
@@ -96,21 +97,23 @@ const Department = () => {
       </TopBar>
 
       <HeaderSection>
-        <TitleSection>
-        <div style={{
-  backgroundColor: "white",
-  padding: "10px",
-  borderRadius: "8px",
-  display: "inline-block",
-  color:"blue"
-}}>
-  <img src="/images/department.png" alt="Icon" style={{ height: "74px" }} />
-</div>
-          <div>
-            <Title>Department</Title>
-            <Subtitle>Manage all departments within the organization.</Subtitle>
-          </div>
-        </TitleSection>
+<TitleSection>
+  <div className="left-content">
+    <div className="icon-box">
+       <img src={Employee}  alt="employee icon" />
+    </div>
+    <div>
+      <Title>Department</Title>
+      <Subtitle>Manage all departments within the organization.</Subtitle>
+    </div>
+  </div>
+
+  <AddButton onClick={() => setShowModal(true)}>
+    <FaPlus /> Add Department
+  </AddButton>
+</TitleSection>
+
+
 
         <ActionArea>
         <SearchWrapper>
@@ -122,9 +125,7 @@ const Department = () => {
       onChange={(e) => setSearch(e.target.value)}
     />
   </SearchWrapper>
-          <AddButton onClick={() => setShowModal(true)}>
-            <FaPlus /> Add Department
-          </AddButton>
+          
         </ActionArea>
       </HeaderSection>
 

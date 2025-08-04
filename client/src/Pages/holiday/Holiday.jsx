@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Container,
   Header,
-
+ErrorMessage,
   Title,
   Subtitle,
   FormSection,
@@ -46,6 +46,7 @@ const HolidayManager = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const { list: holidays, loading, error,totalPages, currentPage } = useSelector(state => state.holidays);
+const [formError, setFormError] = useState("");
 
   const [formData, setFormData] = useState({ name: "", type: "", date: "" });
 
@@ -73,7 +74,7 @@ const HolidayManager = () => {
   
 
 
-  const handleAdd = () => {
+const handleAdd = () => {
   if (formData.name && formData.type && formData.date) {
     const formattedDate = formatDateToISO(formData.date);
 
@@ -84,8 +85,12 @@ const HolidayManager = () => {
     }));
 
     setFormData({ name: "", type: "", date: "" });
+    setFormError(""); // Clear error
+  } else {
+    setFormError("⚠️ Please fill in all fields before adding a holiday.");
   }
 };
+
 
 
 const handleDeleteClick = (id) => {
@@ -145,6 +150,7 @@ const cancelDelete = () => {
   <AddButton onClick={handleAdd}>Add</AddButton>
 </FormSection>
 
+{formError && <ErrorMessage>{formError}</ErrorMessage>}
 
       <Hr />
 

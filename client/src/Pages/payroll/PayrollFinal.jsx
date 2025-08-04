@@ -120,10 +120,29 @@ const PayrollTable = () => {
       year: selectedYear,
     }));
   };
+
+  const [verificationStatus, setVerificationStatus] = useState({});
+
+const handleCircleClick = (empId, type) => {
+  setVerificationStatus(prev => ({
+    ...prev,
+    [empId]: {
+      ...prev[empId],
+      [type]: !prev[empId]?.[type],
+    },
+  }));
+};
+
 const handlePageChange = (newPage) => {
   if (newPage >= 1 && newPage <= totalPages) {
     setPage(newPage);
   }
+
+
+
+
+
+
 };
   return (
     <Container>
@@ -133,8 +152,29 @@ const handlePageChange = (newPage) => {
           <span>HR Manager</span>
         </HRManager>
       </Header>
+      <Header>
+        <TitleSection>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
+    <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
+    <div>
+      <Title>Payroll</Title>
+      <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
+    </div>
+  </div>
 
-      <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px' }}>
+  {/* Department dropdown on the right */}
+  <select style={{ padding: '8px', borderRadius: '5px', fontSize: '14px' }}>
+    <option value="">Select Department</option>
+    <option value="hr">HR</option>
+    <option value="finance">Finance</option>
+    <option value="engineering">Engineering</option>
+    <option value="sales">Sales</option>
+  </select>
+</TitleSection>
+
+      </Header>
+      <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', }}>
         <SearchInput
           placeholder="Search by Employee name"
           value={searchTerm}
@@ -157,26 +197,17 @@ const handlePageChange = (newPage) => {
         </div>
       </Header>
 
-      <Header>
-        <TitleSection>
-          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
-          <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
-          <div>
-            <Title>Payroll</Title>
-            <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
-          </div>
-        </TitleSection>
-      </Header>
+
 
       <div style={{
-        background: '#0546A0',
+        background: '#3352BA',
         color: '#fff',
         padding: '10px 20px',
         margin: '20px 0 10px 0',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderRadius: '8px'
+        // borderRadius: '8px'
       }}>
         <div>
           <input
@@ -212,7 +243,9 @@ const handlePageChange = (newPage) => {
               <Th>Email ID</Th>
               <Th>Salary</Th>
               <Th>Info</Th>
+                <Th></Th>
               <Th>Status</Th>
+            
             </tr>
           </thead>
           <tbody>
@@ -246,6 +279,30 @@ const handlePageChange = (newPage) => {
                       <GoInfo style={{ cursor: 'pointer' }} />
                     </Link>
                   </Td>
+        <Td>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <div
+                    onClick={() => handleCircleClick(emp.id, 'first')}
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: '50%',
+                      backgroundColor: verificationStatus[emp.id]?.first ? '#4caf50' : '#ccc',
+                      cursor: 'pointer',
+                    }}
+                  />
+                  <div
+                    onClick={() => handleCircleClick(emp.id, 'second')}
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: '50%',
+                      backgroundColor: verificationStatus[emp.id]?.second ? '#4caf50' : '#ccc',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </div>
+              </Td>
 
                   <Td>
                     <Select
@@ -253,10 +310,10 @@ const handlePageChange = (newPage) => {
                       onChange={(e) => handleSingleStatusChange(emp.employee, e.target.value)}
                     >
                       <option value="">Select</option>
+                      <option value="In review">In review</option>
                       <option value="OnHold">OnHold</option>
-                      <option value="Cancelled">Cancelled</option>
-                      <option value="Pending">Pending</option>
-                      <option value="Paid">Paid</option>
+                      <option value="Verified">Verified</option>
+                     
                     </Select>
                   </Td>
                 </tr>
