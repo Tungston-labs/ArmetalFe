@@ -38,7 +38,20 @@ class Employee_db(TimeStampedModel):
     iqama_number = models.CharField(max_length=50,blank=True, null=True)
     insurance_number = models.CharField(max_length=50)
     visa_expiry_date = models.DateField()
+    contract_expiry_date = models.DateField(blank=True,null=True)
     total_leave = models.IntegerField(null=True,blank=True)
+    idcard = models.ImageField(upload_to='idcard_pics/', blank=True, null=True)
+    ROLE_CHOICES = (
+        ('employee', 'Employee'),
+        ('hr', 'HR'),
+        ('manager', 'Manager'),
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='employee'
+    )
+
 
     def save(self, *args, **kwargs):
         if not self.employee_id:
@@ -46,6 +59,7 @@ class Employee_db(TimeStampedModel):
             department_name = self.department.name if self.department else "GEN"
             self.employee_id = generate_employee_id(company_name, department_name)
 
+        # Create user if not already linked
         if not hasattr(self, 'user') or self.user is None:
             password = generate_password()
             self.password = password
@@ -54,11 +68,16 @@ class Employee_db(TimeStampedModel):
                 email=self.email,
                 password=password,
                 is_employee=True,
+                is_hr=self.role == 'hr', 
                 company=self.department.company if self.department else None
-                
-
             )
+        else:
+            # If user exists and role is changed to 'hr', update the flag
+            self.user.is_hr = self.role == 'hr'
+            self.user.save()
+
         super().save(*args, **kwargs)
+
 
     def __str__(self):
         
