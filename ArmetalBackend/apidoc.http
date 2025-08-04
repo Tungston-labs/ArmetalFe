@@ -157,12 +157,12 @@ Content-Type: application/json
 
 
 ###
-POST http://127.0.0.1:8000/api/token/
+POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "ydm_arm_aaa_746",     
-  "password": "CMPXM3PBGL801"  
+  "username": "snv_arm_kak_117",     
+  "password": "password123"  
 }
 
 
@@ -257,70 +257,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # update employee
 
 
-###
-PUT http://127.0.0.1:8000/api/employee/4/update/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4ODQxNTI0LCJpYXQiOjE3NDg4Mzc5MjQsImp0aSI6ImY4MDk3NTcwM2MxMjQ3NjE5MDVlYjkxMzg5ZmJhYzZhIiwidXNlcl9pZCI6M30.sE782ASoxMZwkoJ6OFuclpEgdF5GIGlMRZAe72TImoI
-Content-Type: multipart/form-data; boundary=---011000010111000001101001
-
------011000010111000001101001
-Content-Disposition: form-data; name="name"
-
-Izan
------011000010111000001101001
-Content-Disposition: form-data; name="email"
-
-izan@example.com
------011000010111000001101001
-Content-Disposition: form-data; name="address"
-
-Mannacheriyil house
------011000010111000001101001
-Content-Disposition: form-data; name="dob"
-
-1990-01-01
------011000010111000001101001
-Content-Disposition: form-data; name="gender"
-
-Male
------011000010111000001101001
-Content-Disposition: form-data; name="designation"
-
-hr assistant
------011000010111000001101001
-Content-Disposition: form-data; name="department"
-
-1
------011000010111000001101001
-Content-Disposition: form-data; name="joining_date"
-
-2025-01-01
------011000010111000001101001
-Content-Disposition: form-data; name="employment_type"
-
-Full-time
------011000010111000001101001
-Content-Disposition: form-data; name="passport_number"
-
-A1234567
------011000010111000001101001
-Content-Disposition: form-data; name="iqama_number"
-
-IQ12345
------011000010111000001101001
-Content-Disposition: form-data; name="insurance_number"
-
-IN12345
------011000010111000001101001
-Content-Disposition: form-data; name="visa_expiry_date"
-
-2026-01-01
------011000010111000001101001
-Content-Disposition: form-data; name="iqama_images"; filename="iqama.jpg"
-Content-Type: image/jpeg
-
-< ./path/to/iqama.jpg
------011000010111000001101001--
-
 # delete employee
 ###
 DELETE  http://127.0.0.1:8000/api/employees/1/
@@ -404,20 +340,38 @@ Content-Type: application/json
   "new_password": "password123",
   "confirm_password": "password123"
 }
+###
+POST http://178.248.112.16:8001/api/token/
+Content-Type: application/json
 
+{
+  "username": "snv_arm_kak_117",     
+  "password": "password123"  
+}
+
+### Get Employee Dashboard Details
+GET http://178.248.112.16:8001/api/dashboard/employee/53/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjkwMTkyLCJpYXQiOjE3NTQyODY1OTIsImp0aSI6IjkzMDI1N2ZjMTM5ZDQ0NmJhMWE0YmU2MTkwNzhmMWE1IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.K-oR5XOZxwWVj0vclO729SwzTcw4Mu5go1obIgQHB_U
 
 
 # ----------------------------------API FOR EMPLOYEE-----------------------
 
 
+###
+POST http://178.248.112.16:8001/api/token/
+Content-Type: application/json
 
+{
+  "username": "snv_arm_kak_117",     
+  "password": "password123"  
+}
 
 
 # dashboard Summary 
 
 ###
 GET http://127.0.0.1:8000/api/admin/dashboard-summary/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMjc0OTAwLCJpYXQiOjE3NTAyNzEzMDAsImp0aSI6Ijk3ODYxNDZkZDI4ZDRlNzM4NTU5Yjk1NWIwMzhjODllIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.5UWJo1qopqBR3ltAsqjMLInvJ4BA0PS5QoN6umGUzJo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjg5OTk1LCJpYXQiOjE3NTQyODYzOTUsImp0aSI6IjliY2FjYzIyOTBlZDRlMjE4ODA4NWVkOTk1YjcyNGI0IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.cUzwgkPl_YyXux7njPm9-P2SiP-XVrEL98tb3gyGMmQ
 
 
 
