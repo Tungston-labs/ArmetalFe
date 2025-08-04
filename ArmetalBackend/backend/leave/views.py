@@ -153,7 +153,7 @@ class EmployeesOnLeaveTodayByDepartmentView(APIView):
         today = timezone.now().date()
 
         leaves_qs = LeaveRequest.objects.filter(
-            status='Approved',
+            status='approved',
             from_date__lte=today,
             to_date__gte=today,
             employee__department_id=department_id
