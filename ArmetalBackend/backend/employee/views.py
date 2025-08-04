@@ -27,12 +27,20 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         company = user.company
+
         if not company:
             print(f"❌ No valid company found for user: {user.username}")
             return Employee_db.objects.none()
-        
-        print(f"✅ Returning employees for company: {company.name}")
-        return Employee_db.objects.filter(department__company=company).order_by('name')
+
+        department_id = self.request.query_params.get('department_id')  # <-- new
+        queryset = Employee_db.objects.filter(department__company=company)
+
+        if department_id:
+            queryset = queryset.filter(department_id=department_id)
+
+        print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
+        return queryset.order_by('name')
+
 
 
 

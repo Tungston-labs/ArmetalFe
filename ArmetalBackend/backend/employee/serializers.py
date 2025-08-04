@@ -179,7 +179,7 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
     def get_leave_summary(self, obj):
         total_leave = obj.total_leave or 0
         approved = LeaveRequest.objects.filter(employee=obj, status='approved').count()
-        pending = LeaveRequest.objects.filter(employee=obj, status='pending').count()
+        pending = total_leave - approved
         return {
             'total_leave': total_leave,
             'leave_taken': approved,
