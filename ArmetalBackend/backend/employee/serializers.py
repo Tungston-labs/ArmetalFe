@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import ScheduleReminder
+from django.db.models import Sum
 
 from datetime import datetime
 from .models import (
@@ -193,8 +194,8 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
         week_attendance = Attendance.objects.filter(employee=obj, date__gte=start_week, date__lte=today)
         month_attendance = Attendance.objects.filter(employee=obj, date__gte=start_month)
 
-        weekly_hours = week_attendance.aggregate(total=serializers.Sum('total_hours'))['total'] or 0
-        monthly_hours = month_attendance.aggregate(total=serializers.Sum('total_hours'))['total'] or 0
+        weekly_hours = week_attendance.aggregate(total=Sum('total_hours'))['total'] or 0
+        monthly_hours = month_attendance.aggregate(total=Sum('total_hours'))['total'] or 0
 
         return {
             'weekly_working_hours': float(weekly_hours),
