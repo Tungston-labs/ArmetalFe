@@ -351,7 +351,7 @@ Content-Type: application/json
 
 ### Get Employee Dashboard Details
 GET http://178.248.112.16:8001/api/dashboard/employee/53/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjkwMTkyLCJpYXQiOjE3NTQyODY1OTIsImp0aSI6IjkzMDI1N2ZjMTM5ZDQ0NmJhMWE0YmU2MTkwNzhmMWE1IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.K-oR5XOZxwWVj0vclO729SwzTcw4Mu5go1obIgQHB_U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjkwODg3LCJpYXQiOjE3NTQyODcyODcsImp0aSI6IjYyNTE4YjgyZDlmOTRlYTFiYmUxNzNkNjllZDllYmIzIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.tq-844hhqWEWkEnJJoWDPqgbr-O9BlQq4cP5wKSBQ-E
 
 
 # ----------------------------------API FOR EMPLOYEE-----------------------
