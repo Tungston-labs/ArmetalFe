@@ -239,11 +239,18 @@ class AttendanceAdminListView(generics.ListAPIView):
             employee__department__company=user_company
         ).order_by('-date')
 
+        # Optional date filter
         date = self.request.query_params.get('date')
         if date:
             queryset = queryset.filter(date=date)
 
+        # Optional department filter
+        department_id = self.request.query_params.get('department_id')
+        if department_id:
+            queryset = queryset.filter(employee__department_id=department_id)
+
         return queryset
+
 
     
 from rest_framework.views import APIView
