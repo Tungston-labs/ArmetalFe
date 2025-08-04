@@ -325,6 +325,27 @@ class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
 #         return EmpDocument.objects.filter(employee_id=employee_id)
 
 
+# employee dashboard in web application
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+from .models import Employee_db
+from .serializers import EmployeeDashboardSerializer
+
+class EmployeeDashboardAPIView(APIView):
+    permission_classes = [IsHRAdmin]
+
+    def get(self, request, id):
+        try:
+            employee = Employee_db.objects.get(id=id)
+        except Employee_db.DoesNotExist:
+            return Response({'detail': 'Employee not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = EmployeeDashboardSerializer(employee)
+        return Response(serializer.data)
 
 
 

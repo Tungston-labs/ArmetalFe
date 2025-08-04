@@ -139,6 +139,30 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
             return obj.documents.insurance_image_url
         except:
             return None
+class EmployeeDashboardSerializer(serializers.ModelSerializer):
+    bank_details = EmpBankPaymentSerializer(read_only=True)
+    company_days = serializers.SerializerMethodField()
+
+    dob = SafeDateField(required=False)
+    joining_date = SafeDateField(required=False)
+    visa_expiry_date = SafeDateField(required=False)
+
+    department_id = serializers.PrimaryKeyRelatedField(
+        source='department',
+        queryset=Department.objects.all(),
+        write_only=True
+    )
+    department = serializers.CharField(source='department.name', read_only=True)
+
+    class Meta:
+        model = Employee_db
+        exclude = ['user', 'password']
+
+    def get_company_days(self, obj):
+        from datetime import date
+        if obj.joining_date:
+            return (date.today() - obj.joining_date).days
+        return 0
 
 class ScheduleReminderSerializer(serializers.ModelSerializer):
     class Meta:
