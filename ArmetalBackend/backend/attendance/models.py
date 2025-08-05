@@ -54,34 +54,60 @@ class AttendanceSession(models.Model):
     note = models.TextField(blank=True, null=True)
 
 
-def save(self, *args, **kwargs):
-    now = timezone.now()
+# def save(self, *args, **kwargs):
+#     now = timezone.now()
 
-    # --- Handle time_in on creation only ---
-    if self._state.adding:
-        if self.time_in is not None:
-            if not isinstance(self.time_in, datetime):
-                if isinstance(self.time_in, str):
-                    parsed_time_in = parse_datetime(self.time_in)
-                    if parsed_time_in:
-                        self.time_in = parsed_time_in
-                    else:
-                        self.time_in = now
-                else:
-                    self.time_in = now
-        else:
-            self.time_in = now
+#     # --- Handle time_in on creation only ---
+#     if self._state.adding:
+#         if self.time_in is not None:
+#             if not isinstance(self.time_in, datetime):
+#                 if isinstance(self.time_in, str):
+#                     parsed_time_in = parse_datetime(self.time_in)
+#                     if parsed_time_in:
+#                         self.time_in = parsed_time_in
+#                     else:
+#                         self.time_in = now
+#                 else:
+#                     self.time_in = now
+#         else:
+#             self.time_in = now
 
-    # --- Handle time_out ---
-    if self.time_out is not None:
-        if not isinstance(self.time_out, datetime):
-            if isinstance(self.time_out, str):
-                parsed_time_out = parse_datetime(self.time_out)
-                if parsed_time_out:
-                    self.time_out = parsed_time_out
-                else:
-                    self.time_out = now
-            else:
-                self.time_out = now
+#     # --- Handle time_out ---
+#     if self.time_out is not None:
+#         if not isinstance(self.time_out, datetime):
+#             if isinstance(self.time_out, str):
+#                 parsed_time_out = parse_datetime(self.time_out)
+#                 if parsed_time_out:
+#                     self.time_out = parsed_time_out
+#                 else:
+#                     self.time_out = now
+#             else:
+#                 self.time_out = now
 
-    super().save(*args, **kwargs)
+#     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        now = timezone.now()
+
+        # --- Handle time_in (only on creation) ---
+        if self._state.adding:
+            self.time_in = self.parse_datetime_safe(self.time_in, default=now)
+
+        # --- Handle time_out ---
+        if self.time_out:
+            self.time_out = self.parse_datetime_safe(self.time_out, default=now)
+
+        super().save(*args, **kwargs)
+
+    def parse_datetime_safe(self, value, default=None):
+        """
+        Safely parse a datetime object from a string or return the datetime if already parsed.
+        """
+        if isinstance(value, datetime):
+            return value
+        if isinstance(value, str):
+            parsed = parse_datetime(value)
+            if parsed:
+                return parsed
+        return default or timezone.now()
+
+ 
