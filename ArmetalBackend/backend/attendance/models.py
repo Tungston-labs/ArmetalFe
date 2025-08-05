@@ -119,7 +119,7 @@ class AttendanceSession(models.Model):
                 if timezone.is_naive(self.time_out):
                     self.time_out = timezone.make_aware(self.time_out)
             # Optional: If you want to default to current time when missing
-                else:
-                    self.time_out = now
+            else:
+                self.time_out = now
 
             super().save(*args, **kwargs)
