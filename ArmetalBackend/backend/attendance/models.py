@@ -52,45 +52,70 @@ class AttendanceSession(models.Model):
     time_out = models.DateTimeField(null=True, blank=True)
     timezone = models.CharField(max_length=50, default='UTC', null=True, blank=True)
     note = models.TextField(blank=True, null=True)
-
     def save(self, *args, **kwargs):
         now = timezone.now()
 
-        # --- Validate or correct time_in ---
-        if self.time_in is not None:
-            if not isinstance(self.time_in, datetime):
-                try:
-                    parsed_time_in = parse_datetime(str(self.time_in))
-                    if parsed_time_in:
-                        self.time_in = parsed_time_in
-                    else:
-                        self.time_in = now
-                except Exception:
-                    self.time_in = now
-            if timezone.is_naive(self.time_in):
-                self.time_in = timezone.make_aware(self.time_in)
-        
-        # Only set default if time_in is None and time_out is also None (punch in case)
-        elif self.time_out is None:
+        # Only set time_in if not already set
+        if self.pk is None and not self.time_in:
             self.time_in = now
+        elif isinstance(self.time_in, str):
+            parsed_time_in = parse_datetime(self.time_in)
+            if parsed_time_in:
+                self.time_in = parsed_time_in
 
-        # --- Validate or correct time_out ---
-        if self.time_out is not None:
-            if not isinstance(self.time_out, datetime):
-                try:
-                    parsed_time_out = parse_datetime(str(self.time_out))
-                    if parsed_time_out:
-                        self.time_out = parsed_time_out
-                    else:
-                        self.time_out = now
-                except Exception:
-                    self.time_out = now
+        if self.time_in and timezone.is_naive(self.time_in):
+            self.time_in = timezone.make_aware(self.time_in)
+
+        # Only update time_out if it's provided
+        if self.time_out:
+            if isinstance(self.time_out, str):
+                parsed_time_out = parse_datetime(self.time_out)
+                if parsed_time_out:
+                    self.time_out = parsed_time_out
             if timezone.is_naive(self.time_out):
                 self.time_out = timezone.make_aware(self.time_out)
 
-        # Do NOT auto-set self.time_out when it's None – punch-out must set this manually
-
         super().save(*args, **kwargs)
+
+
+    # def save(self, *args, **kwargs):
+    #     now = timezone.now()
+
+    #     # --- Validate or correct time_in ---
+    #     if self.time_in is not None:
+    #         if not isinstance(self.time_in, datetime):
+    #             try:
+    #                 parsed_time_in = parse_datetime(str(self.time_in))
+    #                 if parsed_time_in:
+    #                     self.time_in = parsed_time_in
+    #                 else:
+    #                     self.time_in = now
+    #             except Exception:
+    #                 self.time_in = now
+    #         if timezone.is_naive(self.time_in):
+    #             self.time_in = timezone.make_aware(self.time_in)
+        
+    #     # Only set default if time_in is None and time_out is also None (punch in case)
+    #     elif self.time_out is None:
+    #         self.time_in = now
+
+    #     # --- Validate or correct time_out ---
+    #     if self.time_out is not None:
+    #         if not isinstance(self.time_out, datetime):
+    #             try:
+    #                 parsed_time_out = parse_datetime(str(self.time_out))
+    #                 if parsed_time_out:
+    #                     self.time_out = parsed_time_out
+    #                 else:
+    #                     self.time_out = now
+    #             except Exception:
+    #                 self.time_out = now
+    #         if timezone.is_naive(self.time_out):
+    #             self.time_out = timezone.make_aware(self.time_out)
+
+    #     # Do NOT auto-set self.time_out when it's None – punch-out must set this manually
+
+    #     super().save(*args, **kwargs)
 
 
     # def save(self, *args, **kwargs):
