@@ -4,6 +4,8 @@ from django.utils import timezone
 from employee.models import Employee_db
 from shared.models import TimeStampedModel
 from datetime import timedelta,time
+from django.utils.dateparse import parse_datetime  # ensure this is imported
+
 
 
 class Attendance(TimeStampedModel):
@@ -51,40 +53,35 @@ class AttendanceSession(models.Model):
     timezone = models.CharField(max_length=50, default='UTC', null=True, blank=True)
     note = models.TextField(blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        now = timezone.now()
 
-        # --- Validate time_in only on first creation ---
-        if self._state.adding:  # this is a NEW object
-            if self.time_in is not None:
-                if not isinstance(self.time_in, datetime):
-                    if isinstance(self.time_in, str):
-                        try:
-                            parsed_time_in = parse_datetime(self.time_in)
-                            if parsed_time_in:
-                                self.time_in = parsed_time_in
-                            else:
-                                self.time_in = now
-                        except Exception:
-                            self.time_in = now
+def save(self, *args, **kwargs):
+    now = timezone.now()
+
+    # --- Handle time_in on creation only ---
+    if self._state.adding:
+        if self.time_in is not None:
+            if not isinstance(self.time_in, datetime):
+                if isinstance(self.time_in, str):
+                    parsed_time_in = parse_datetime(self.time_in)
+                    if parsed_time_in:
+                        self.time_in = parsed_time_in
                     else:
                         self.time_in = now
-            else:
-                self.time_in = now
+                else:
+                    self.time_in = now
+        else:
+            self.time_in = now
 
-        # --- time_out ---
-        if self.time_out is not None:
-            if not isinstance(self.time_out, datetime):
-                if isinstance(self.time_out, str):
-                    try:
-                        parsed_time_out = parse_datetime(self.time_out)
-                        if parsed_time_out:
-                            self.time_out = parsed_time_out
-                        else:
-                            self.time_out = now
-                    except Exception:
-                        self.time_out = now
+    # --- Handle time_out ---
+    if self.time_out is not None:
+        if not isinstance(self.time_out, datetime):
+            if isinstance(self.time_out, str):
+                parsed_time_out = parse_datetime(self.time_out)
+                if parsed_time_out:
+                    self.time_out = parsed_time_out
                 else:
                     self.time_out = now
+            else:
+                self.time_out = now
 
-        super().save(*args, **kwargs)
+    super().save(*args, **kwargs)
