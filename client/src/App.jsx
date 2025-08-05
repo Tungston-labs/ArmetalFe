@@ -6,7 +6,7 @@ import Department from "./Pages/department/Department";
 import Dashboard from "./Pages/dashboard/Dashboard";
 import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
 import Table from "./Components/Table.jsx";
-import EmployeeList from "./Pages/employee/EmployeeList.jsx";
+import EmployeeList from "./Pages/leaveDetails/EmployeeList.jsx";
 import Holiday from "./Pages/holiday/Holiday.jsx";
 import Payroll from "./Pages/payroll/Payroll.jsx";
 import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx";
@@ -19,9 +19,9 @@ import Documents from "./Pages/employee/Documents.jsx";
 // import EditBasicLevel from "./Pages/employee/EditBasiclevel.jsx"
 import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
 import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
-import Attendance from "./Pages/leaveDetails/Attendance.jsx";
-import OnLeave from "./Pages/leaveDetails/OnLeave.jsx";
-import EmployeesOnLeave from "./Pages/leaveDetails/EmployeesOnLeave.jsx";
+import Attendance from "./Pages/attendance/Attendance.jsx";
+import OnLeave from "./Pages/attendance/OnLeave.jsx";
+import EmployeesOnLeave from "./Pages/onLeave/EmployeesOnLeave.jsx";
 
 import ViewBasic from "./Pages/employee/ViewBasic.jsx"
 import ViewBankpayment from "./Pages/employee/ViewBankpayment.jsx"
@@ -42,6 +42,8 @@ import Loder from "./Components/Loder.jsx";
 import Sample from"./Pages/employeDashboard/Sample.jsx";
 import Employeedashboard from "./Pages/employeDashboard/Employeedashboard.jsx"
 import FullDashboard from "./Pages/employeDashboard/FullDashboard.jsx";
+import EmployeAttendance from "./Pages/attendance/EmployeAttendance.jsx";
+import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
 function App() {
   return (
     <>
@@ -81,8 +83,9 @@ function App() {
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
             <Route path="/emp-on-leave" element={<EmployeesOnLeave/>} />
 
+<Route path="/employee-attendance" element={<EmployeAttendance/>}/>
 
-
+<Route path="/employee-on-leave" element={<DetailOnleave/>}/>
 
 
             <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />

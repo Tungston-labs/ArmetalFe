@@ -102,7 +102,7 @@ export const Table = styled.table`
 
   td {
     text-align: left;
-    // padding: 0.rem;
+    padding: 0.4rem;
     white-space: nowrap;
     background-color: white;
     border: none;
@@ -112,7 +112,7 @@ export const Table = styled.table`
     background-color: #304EB0;
     color: white;
     font-family: raleway;
-    padding: 0.8rem;
+    padding: 0.5rem;
   }
 
   tbody tr {
@@ -167,7 +167,7 @@ export const ActionIcons = styled.div`
 export const Pagination = styled.div`
   display: flex;
   justify-content: flex-start; /* changed from flex-end to flex-start */
-  // gap: 0.rem;
+  gap: 0.3rem;
   margin-top: 1.5rem;
   padding: 0.6rem;
 

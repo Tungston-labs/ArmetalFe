@@ -137,7 +137,6 @@ export default function EmployeeAttendance() {
     </div>
     
   </div>
-
 </HeaderSection>
 
 
@@ -160,9 +159,8 @@ export default function EmployeeAttendance() {
                   <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
                 </NavLink>
               </Tabs>
-
-      {/* <TableTitle>{selectedDate || "All Dates"}</TableTitle> */}
-
+            <hr style={{marginTop:"-18px"}}></hr>
+     
       <Table>
         <thead>
           <TableRow $header>

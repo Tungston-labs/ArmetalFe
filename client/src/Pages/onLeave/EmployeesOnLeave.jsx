@@ -16,7 +16,7 @@ import {
   ActionArea,
   TitleSection
 } from "../leaveDetails/EmployeeList.styles";
-
+import { CardContainer, Card, Initial, Count, DeptTitle, DeptSub, DeptHead, HeadImg, DeptInfo, CardGrid,CardRight } from './EmployeesOnLeave.Style'; 
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -24,6 +24,7 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees,deleteEmployeeById } from "../../Redux/employeeSlice";
 import SyncLoader from "react-spinners/SyncLoader";
+import { GoArrowUpRight } from "react-icons/go";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -152,57 +153,37 @@ const EmployeeList = () => {
                      </NavLink>
       </Tabs>
 <hr style={{marginTop:"-18px"}}></hr>
-      <Table>
-        <thead>
-          <tr>
-            <th>Sl No</th>
-            <th>Employee name</th>
-            <th>Employee ID</th>
-            <th>Email ID</th>
-            <th>Visa expiry</th>
-            <th>Info</th>
-            <th>Delete</th>
-          
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-           <tr>
-  <td colSpan="8">
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-         <p>Loading...</p>
-    </div>
-  </td>
-</tr>
-          ) : Array.isArray(employeeList) && employeeList.length > 0 ? (
+     <CardContainer>
+  <CardGrid>
+    {employeeList?.map((emp, index) => (
+      <Card key={emp.id}>
+        <Initial>{emp.department?.[0] || "D"}</Initial>
+        <DeptInfo>
+          <DeptTitle>{emp.department || "Department"}</DeptTitle>
+          <DeptSub>Department head</DeptSub>
+          <DeptHead>
+            {emp.profile_pic ? (
+              <HeadImg src={emp.profile_pic} alt="head" />
+            ) : (
+              <PiUserCirclePlusThin size={24} />
+            )}
+            <span>{emp.name}</span>
+          </DeptHead>
+        </DeptInfo>
+        {/* <Count>{emp.team_count || 12}</Count> */}
 
-            employeeList.map((emp, index) => (
-              <tr key={emp.id}>
-                <td>{index + 1 + (page - 1) * 7}</td>
-               <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-  {emp.profile_pic ? (
-    <ProfileImg src={emp.profile_pic} alt="profile" />
-  ) : (
-    <PiUserCirclePlusThin size={40} color="#999" />
-  )}
-  {emp.name}
-</td>
-                <td>{emp.employee_id}</td>
-                <td>{emp.email}</td>
-                <td>{emp.visa_expiry_date}</td>
-                
-                <td onClick={() => navigate(`/ViewBasic/${emp.id}`)}><FaInfoCircle /></td>
-                <td>
-  <FaTrash color="red" style={{ cursor: 'pointer' }} onClick={() => handleDeleteClick(emp.id)} />
-</td>
+        {/* ✅ Moved inside the loop so 'emp' is accessible */}
+        <CardRight>
+          <div className="card-value">{emp.employee_count || 0}</div>
+          <div className="arrow-icon">
+            <GoArrowUpRight size={15} style={{ strokeWidth: 2 }} />
+          </div>
+        </CardRight>
+      </Card>
+    ))}
+  </CardGrid>
+</CardContainer>
 
-              </tr>
-            ))
-          ) : (
-            <tr><td colSpan="8">No employees found.</td></tr>
-          )}
-        </tbody>
-      </Table>
 
       {pagination?.total_pages > 1 && (
   <Pagination>

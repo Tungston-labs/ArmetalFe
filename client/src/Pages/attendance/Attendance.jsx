@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getAttendanceDetail } from '../../Redux/attendanceSlice';
+import { GoChevronLeft, GoChevronRight } from "react-icons/go";
+import { CiCalendarDate } from "react-icons/ci";
 import {
   Container,
   HeaderSection,
@@ -21,6 +23,12 @@ import {
   InfoSection,
   Hr,
   DateNavCenter,
+    DateWrapper,
+  WorkingInfo,
+  DateDetails,
+  DayBoxes,
+  DayBox,
+  ActiveDayBox,
 } from './Attendance.Style';
 import { FaClock } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -65,7 +73,11 @@ const TimesheetPage = () => {
 
   const employee = attendanceDetail.employee || {};
   const sessions = attendanceDetail.sessions || [];
+//  const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+  const dates = [12, 13, 14, 15, 16, 17]; // Dynamic generation can be added
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return (
     <Container>
       <HeaderSection>
@@ -102,23 +114,53 @@ const TimesheetPage = () => {
 
       <Hr />
 
-      <DateNavigation>
-        <DateNavCenter>
-          <button>{'<'}</button>
-          <span>
-            {new Date(selectedDate).toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })}
-          </span>
-          <button>{'>'}</button>
-        </DateNavCenter>
+       <DateWrapper>
+      {/* Left Working Info */}
+      <WorkingInfo>
+        <div>
+          <strong>Monthly working hour :145 Hrs</strong>
+         
+        </div>
+        <div>
+          <strong>Total Monthly working hour:145 Hrs</strong>
+      
+        </div>
+        <div>
+          <strong>Weekly working hour:45 hrs</strong>
+        </div>
+      </WorkingInfo>
 
-        <DateBox>
-          <input type="date" value={selectedDate} onChange={handleDateChange} />
-        </DateBox>
-      </DateNavigation>
+      {/* Center Date with Calendar and Arrows */}
+      <DateDetails>
+
+  <div className="date-block">
+    <CiCalendarDate size={28} />
+    <h1>16</h1>
+    <div className="month-day">
+      <strong>November</strong>
+      <p>Monday</p>
+    </div>
+  </div>
+  <GoChevronLeft size={20} />
+  <GoChevronRight size={20} />
+</DateDetails>
+
+ </DateWrapper>
+      {/* Horizontal Day List */}
+      <DayBoxes>
+        {days.map((day, index) => {
+          const isActive = index === 0; // highlight Monday as active for now
+          const Component = isActive ? ActiveDayBox : DayBox;
+          return (
+            <Component key={index}>
+              <strong>{day}</strong>
+              <div>{dates[index]}</div>
+              <p>Mar</p>
+            </Component>
+          );
+        })}
+      </DayBoxes>
+   
 
       <Table>
         <thead>

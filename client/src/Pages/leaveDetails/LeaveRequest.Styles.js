@@ -294,13 +294,13 @@ export const Subtitle = styled.p`
 
 export const Pagination = styled.div`
   display: flex;
-  justify-content: flex-start; /* changed from flex-end to flex-start */
-  // gap: 0.rem;
+  justify-content: flex-start;
+  gap: 0.2rem;
   margin-top: 1.5rem;
-  padding: 0.6rem;
+  padding: 0.5rem;
 
   span {
-    padding: 0.2rem 0.4rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 6px;
     border: 1px solid #ccc;
     cursor: pointer;

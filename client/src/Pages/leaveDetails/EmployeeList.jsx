@@ -139,8 +139,8 @@ const EmployeeList = () => {
         <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
         </NavLink>
-        <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+        <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
         </NavLink>
         <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
@@ -214,6 +214,8 @@ const EmployeeList = () => {
             key={pageNumber}
             onClick={() => setPage(pageNumber)}
             className={page === pageNumber ? 'active' : ''}
+
+            
           >
             {pageNumber}
           </span>

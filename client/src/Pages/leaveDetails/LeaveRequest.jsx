@@ -6,7 +6,7 @@ import { IoEyeOutline } from 'react-icons/io5';
 import { FaPlus } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
-
+import ModalList from "./ModalList"
 import {
   Container,
   Table,DepartmentSelect,
@@ -194,8 +194,8 @@ export default function LeaveRequest() {
                       Decline
                     </DeclineButton>
                     <ApproveButton onClick={() => {
-                      setSelectedLeave(leave);
-                      setActionType('approve');
+                      // setSelectedLeave(leave);
+                      // setActionType('approve');
                       setShowModal(true);
                     }}>
                       Approve
@@ -248,13 +248,14 @@ export default function LeaveRequest() {
         </span>
       </Pagination>
 
-      {showModal && (
+      {/* {showModal && (
         <ConfirmLeaveModal
           onClose={() => setShowModal(false)}
           onConfirm={handleStatusUpdate}
           actionType={actionType}
         />
-      )}
+      )} */}
+        {showModal && <ModalList onClose={() => setShowModal(false)} />}
     </Container>
   );
 }
