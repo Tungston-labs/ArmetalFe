@@ -85,29 +85,41 @@ class AttendanceSession(models.Model):
 #                 self.time_out = now
 
 #     super().save(*args, **kwargs)
+
     def save(self, *args, **kwargs):
-        now = timezone.now()
+            now = timezone.now()
 
-        # --- Handle time_in (only on creation) ---
-        if self._state.adding:
-            self.time_in = self.parse_datetime_safe(self.time_in, default=now)
+            # --- Validate or correct time_in ---
+            if self.time_in is not None:
+                if not isinstance(self.time_in, datetime):
+                    try:
+                        parsed_time_in = parse_datetime(str(self.time_in))
+                        if parsed_time_in:
+                            self.time_in = parsed_time_in
+                        else:
+                            self.time_in = now
+                    except Exception:
+                        self.time_in = now
+                if timezone.is_naive(self.time_in):
+                    self.time_in = timezone.make_aware(self.time_in)
+            else:
+                self.time_in = now
 
-        # --- Handle time_out ---
-        if self.time_out:
-            self.time_out = self.parse_datetime_safe(self.time_out, default=now)
+            # --- Validate or correct time_out ---
+            if self.time_out is not None:
+                if not isinstance(self.time_out, datetime):
+                    try:
+                        parsed_time_out = parse_datetime(str(self.time_out))
+                        if parsed_time_out:
+                            self.time_out = parsed_time_out
+                        else:
+                            self.time_out = now
+                    except Exception:
+                        self.time_out = now
+                if timezone.is_naive(self.time_out):
+                    self.time_out = timezone.make_aware(self.time_out)
+            # Optional: If you want to default to current time when missing
+                else:
+                    self.time_out = now
 
-        super().save(*args, **kwargs)
-
-    def parse_datetime_safe(self, value, default=None):
-        """
-        Safely parse a datetime object from a string or return the datetime if already parsed.
-        """
-        if isinstance(value, datetime):
-            return value
-        if isinstance(value, str):
-            parsed = parse_datetime(value)
-            if parsed:
-                return parsed
-        return default or timezone.now()
-
- 
+            super().save(*args, **kwargs)
