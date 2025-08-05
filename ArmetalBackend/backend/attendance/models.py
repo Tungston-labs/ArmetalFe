@@ -7,7 +7,7 @@ from datetime import timedelta,time
 from django.utils.dateparse import parse_datetime  # ensure this is imported
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import is_naive, make_aware, now as tz_now
-
+import pytz
 
 
 class Attendance(TimeStampedModel):
