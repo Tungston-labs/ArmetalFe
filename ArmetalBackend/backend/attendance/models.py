@@ -58,13 +58,16 @@ class AttendanceSession(models.Model):
         if self._state.adding:  # this is a NEW object
             if self.time_in is not None:
                 if not isinstance(self.time_in, datetime):
-                    try:
-                        parsed_time_in = parse_datetime(str(self.time_in))
-                        if parsed_time_in:
-                            self.time_in = parsed_time_in
-                        else:
+                    if isinstance(self.time_in, str):
+                        try:
+                            parsed_time_in = parse_datetime(self.time_in)
+                            if parsed_time_in:
+                                self.time_in = parsed_time_in
+                            else:
+                                self.time_in = now
+                        except Exception:
                             self.time_in = now
-                    except Exception:
+                    else:
                         self.time_in = now
             else:
                 self.time_in = now
@@ -72,13 +75,16 @@ class AttendanceSession(models.Model):
         # --- time_out ---
         if self.time_out is not None:
             if not isinstance(self.time_out, datetime):
-                try:
-                    parsed_time_out = parse_datetime(str(self.time_out))
-                    if parsed_time_out:
-                        self.time_out = parsed_time_out
-                    else:
+                if isinstance(self.time_out, str):
+                    try:
+                        parsed_time_out = parse_datetime(self.time_out)
+                        if parsed_time_out:
+                            self.time_out = parsed_time_out
+                        else:
+                            self.time_out = now
+                    except Exception:
                         self.time_out = now
-                except Exception:
+                else:
                     self.time_out = now
 
         super().save(*args, **kwargs)
