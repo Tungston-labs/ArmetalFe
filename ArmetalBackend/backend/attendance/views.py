@@ -175,36 +175,59 @@ class AttendanceSwipeView(APIView):
     def _handle_punch_out(self, latest_session, now_company_tz, company_tz, attendance):
         """Handle punch out logic"""
         try:
-            # Get the punch in time
+            # Get the punch in time and ensure it's not modified
             time_in = latest_session.time_in
             
-            # Ensure time_in is a proper datetime object
+            # Log the current state for debugging
+            logger.info(f"Punch out - Original time_in: {time_in}, time_out: {latest_session.time_out}")
+            
+            # Ensure time_in is a proper datetime object for validation only
+            validation_time_in = time_in
             if isinstance(time_in, time):
-                # Convert time to datetime using attendance date
-                time_in = datetime.combine(attendance.date, time_in)
-                time_in = company_tz.localize(time_in)
+                # Convert time to datetime using attendance date for validation
+                validation_time_in = datetime.combine(attendance.date, time_in)
+                validation_time_in = company_tz.localize(validation_time_in)
             elif isinstance(time_in, datetime):
                 if timezone.is_naive(time_in):
-                    time_in = company_tz.localize(time_in)
+                    validation_time_in = company_tz.localize(time_in)
                 else:
-                    time_in = time_in.astimezone(company_tz)
+                    validation_time_in = time_in.astimezone(company_tz)
             else:
                 logger.error(f"Invalid time_in format: {type(time_in)}")
                 return Response({'error': 'Invalid punch-in time format'}, status=500)
 
             # Validate punch out time
-            if now_company_tz <= time_in:
+            if now_company_tz <= validation_time_in:
                 return Response({
                     'error': 'Punch out time must be after punch in time',
                     'details': {
-                        'punch_in': time_in.strftime("%Y-%m-%d %H:%M:%S"),
+                        'punch_in': validation_time_in.strftime("%Y-%m-%d %H:%M:%S"),
                         'attempted_punch_out': now_company_tz.strftime("%Y-%m-%d %H:%M:%S")
                     }
                 }, status=400)
 
-            # Set punch out time
+            # Store the original time_in to ensure it doesn't get modified
+            original_time_in = latest_session.time_in
+            
+            # Set punch out time only
             latest_session.time_out = now_company_tz
+            
+            # Log before saving
+            logger.info(f"Before save - time_in: {latest_session.time_in}, time_out: {latest_session.time_out}")
+            
+            # Save the session
             latest_session.save()
+            
+            # Verify time_in wasn't modified
+            latest_session.refresh_from_db()
+            if latest_session.time_in != original_time_in:
+                logger.error(f"time_in was modified during punch out! Original: {original_time_in}, Current: {latest_session.time_in}")
+                # Restore the original time_in
+                latest_session.time_in = original_time_in
+                latest_session.save()
+            
+            # Log after saving
+            logger.info(f"After save - time_in: {latest_session.time_in}, time_out: {latest_session.time_out}")
 
             # Calculate session duration
             session_duration = latest_session.get_duration()
@@ -221,7 +244,6 @@ class AttendanceSwipeView(APIView):
         except Exception as e:
             logger.error(f"Error during punch out: {e}")
             return Response({'error': 'Failed to punch out'}, status=500)
-        
 
         
 

@@ -57,13 +57,17 @@ class AttendanceSession(models.Model):
 
 
     def save(self, *args, **kwargs):
-        # Ensure time_in is properly formatted and timezone-aware
-        if self.time_in:
-            self.time_in = self._process_datetime(self.time_in)
+        # Store original values before processing
+        original_time_in = self.time_in
+        original_time_out = self.time_out
+        
+        # Process time_in only if it's being set/updated
+        if self.time_in is not None:
+            self.time_in = self._process_datetime(self.time_in, field_name='time_in')
             
-        # Ensure time_out is properly formatted and timezone-aware
-        if self.time_out:
-            self.time_out = self._process_datetime(self.time_out)
+        # Process time_out only if it's being set/updated
+        if self.time_out is not None:
+            self.time_out = self._process_datetime(self.time_out, field_name='time_out')
             
         super().save(*args, **kwargs)
         
@@ -71,7 +75,7 @@ class AttendanceSession(models.Model):
         if self.attendance:
             self.attendance.update_total_hours()
 
-    def _process_datetime(self, dt):
+    def _process_datetime(self, dt, field_name='unknown'):
         """Process datetime to ensure it's timezone-aware"""
         if dt is None:
             return None
@@ -91,10 +95,19 @@ class AttendanceSession(models.Model):
                     if timezone.is_naive(parsed):
                         parsed = timezone.make_aware(parsed, timezone=pytz.UTC)
                     return parsed
-            except Exception:
+            except Exception as e:
+                logger.error(f"Failed to parse {field_name} datetime string '{dt}': {e}")
                 pass
                 
-        # Fallback to current time
+        # If it's a time object, combine with attendance date
+        if isinstance(dt, time) and self.attendance:
+            dt = datetime.combine(self.attendance.date, dt)
+            if timezone.is_naive(dt):
+                dt = timezone.make_aware(dt, timezone=pytz.UTC)
+            return dt
+                
+        # Only fallback to current time if we can't process the input
+        logger.warning(f"Using current time as fallback for {field_name} with value: {dt}")
         return tz_now()
 
     def get_duration(self):
@@ -122,8 +135,6 @@ class AttendanceSession(models.Model):
             return dt_or_time
             
         return None
-
-
 
 
     # def save(self, *args, **kwargs):
