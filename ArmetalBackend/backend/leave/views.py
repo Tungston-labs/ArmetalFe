@@ -130,10 +130,39 @@ class LeaveRequestAdminListView(generics.ListAPIView):
         if not company:
             return LeaveRequest.objects.none()
 
-        return LeaveRequest.objects.filter(
+        queryset = LeaveRequest.objects.filter(
             employee__department__company=company
-        ).order_by('-created_at') 
+        )
 
+        department_id = self.request.query_params.get('department_id')
+        if department_id:
+            queryset = queryset.filter(employee__department_id=department_id)
+
+        return queryset.order_by('-created_at')
+
+
+from rest_framework.views import APIView
+from django.utils import timezone
+from employee.models import  Employee_db
+from employee.serializers import EmployeeSerializer  # Use the appropriate serializer
+
+class EmployeesOnLeaveTodayByDepartmentView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def get(self, request, department_id):
+        today = timezone.now().date()
+
+        leaves_qs = LeaveRequest.objects.filter(
+            status='approved',
+            from_date__lte=today,
+            to_date__gte=today,
+            employee__department_id=department_id
+        )
+
+        employees = Employee_db.objects.filter(id__in=leaves_qs.values_list('employee_id', flat=True))
+        serializer = EmployeeSerializer(employees, many=True)
+
+        return Response(serializer.data)
 
   
 

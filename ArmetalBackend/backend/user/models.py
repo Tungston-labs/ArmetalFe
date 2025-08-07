@@ -12,6 +12,7 @@ class User(AbstractUser):
     is_superadmin = models.BooleanField(default=False)
     is_hr_admin = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
+    is_hr = models.BooleanField(default=False)
 
     company = models.ForeignKey(
         'superadmin.Company',  # or your actual app label if different

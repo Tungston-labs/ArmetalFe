@@ -27,6 +27,8 @@ urlpatterns = [
 
     path('admin/dashboard-summary/', views.DashboardSummaryView.as_view(), name='dashboard-summary'),
 
+    path('dashboard/employee/<int:id>/', views.EmployeeDashboardAPIView.as_view(), name='employee-dashboard'),
+
 
     # mobile application
 

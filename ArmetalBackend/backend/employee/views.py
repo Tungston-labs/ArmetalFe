@@ -27,12 +27,20 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         company = user.company
+
         if not company:
             print(f"❌ No valid company found for user: {user.username}")
             return Employee_db.objects.none()
-        
-        print(f"✅ Returning employees for company: {company.name}")
-        return Employee_db.objects.filter(department__company=company).order_by('name')
+
+        department_id = self.request.query_params.get('department_id')  # <-- new
+        queryset = Employee_db.objects.filter(department__company=company)
+
+        if department_id:
+            queryset = queryset.filter(department_id=department_id)
+
+        print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
+        return queryset.order_by('name')
+
 
 
 
@@ -324,6 +332,28 @@ class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
 #         employee_id = self.kwargs['employee_id']
 #         return EmpDocument.objects.filter(employee_id=employee_id)
 
+
+# employee dashboard in web application
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+from .models import Employee_db
+from .serializers import EmployeeDashboardSerializer
+
+class EmployeeDashboardAPIView(APIView):
+    permission_classes = [IsHRAdmin]
+
+    def get(self, request, id):
+        try:
+            employee = Employee_db.objects.get(id=id)
+        except Employee_db.DoesNotExist:
+            return Response({'detail': 'Employee not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = EmployeeDashboardSerializer(employee)
+        return Response(serializer.data)
 
 
 

@@ -3,7 +3,7 @@ from .views import (
     LeaveRequestCreateListView,
     LeaveRequestCancelView,
     LeaveRequestAdminListView,
-    LeaveRequestAdminDetailView,LeaveByStatusView,LeaveSummaryView,LeaveRequestEmpDetailView
+    LeaveRequestAdminDetailView,LeaveByStatusView,LeaveSummaryView,LeaveRequestEmpDetailView,EmployeesOnLeaveTodayByDepartmentView
 )
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
     path('leave/by-status/', LeaveByStatusView.as_view(), name='leave-by-status'),
     path("leave/summary/", LeaveSummaryView.as_view(), name="leave-summary"),
     path('leave/emp/<int:pk>/', LeaveRequestEmpDetailView.as_view(), name='leave-emp-detail'),
+    path('departments/<int:department_id>/on-leave-employees/', EmployeesOnLeaveTodayByDepartmentView.as_view()),
 
     
     

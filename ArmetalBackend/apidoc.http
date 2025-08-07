@@ -157,12 +157,12 @@ Content-Type: application/json
 
 
 ###
-POST http://127.0.0.1:8000/api/token/
+POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "ydm_arm_aaa_746",     
-  "password": "CMPXM3PBGL801"  
+  "username": "snv_arm_kak_117",     
+  "password": "password123"  
 }
 
 
@@ -237,9 +237,9 @@ Content-Type: multipart/form-data; boundary=---011000010111000001101001
 # create employee
 
 
-###
-GET http://127.0.0.1:8000/api/employees/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMTQ1ODk3LCJpYXQiOjE3NTAxNDIyOTcsImp0aSI6ImUxYjFhODI0YWNkNjRhYThiZmIwZmJhOTU1OWIwY2JmIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.fGcs1226SVEpgB0_O-vgK4pWMsj2Db_zgVTz1LzcoCc
+###employee list according to department
+GET http://178.248.112.16:8001/api/employees/?department_id=16
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjk1NDc2LCJpYXQiOjE3NTQyOTE4NzYsImp0aSI6IjI3N2U5NmEzMjVjOTQwMzlhNGQ3NzhmMmYwZTcyYjFmIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.hExg9tTqNXl1oYLjJku_WJFIidGXggBHmYhy2gHvV7E
 
 
 # retrieve all employee
@@ -256,70 +256,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 # update employee
 
-
-###
-PUT http://127.0.0.1:8000/api/employee/4/update/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4ODQxNTI0LCJpYXQiOjE3NDg4Mzc5MjQsImp0aSI6ImY4MDk3NTcwM2MxMjQ3NjE5MDVlYjkxMzg5ZmJhYzZhIiwidXNlcl9pZCI6M30.sE782ASoxMZwkoJ6OFuclpEgdF5GIGlMRZAe72TImoI
-Content-Type: multipart/form-data; boundary=---011000010111000001101001
-
------011000010111000001101001
-Content-Disposition: form-data; name="name"
-
-Izan
------011000010111000001101001
-Content-Disposition: form-data; name="email"
-
-izan@example.com
------011000010111000001101001
-Content-Disposition: form-data; name="address"
-
-Mannacheriyil house
------011000010111000001101001
-Content-Disposition: form-data; name="dob"
-
-1990-01-01
------011000010111000001101001
-Content-Disposition: form-data; name="gender"
-
-Male
------011000010111000001101001
-Content-Disposition: form-data; name="designation"
-
-hr assistant
------011000010111000001101001
-Content-Disposition: form-data; name="department"
-
-1
------011000010111000001101001
-Content-Disposition: form-data; name="joining_date"
-
-2025-01-01
------011000010111000001101001
-Content-Disposition: form-data; name="employment_type"
-
-Full-time
------011000010111000001101001
-Content-Disposition: form-data; name="passport_number"
-
-A1234567
------011000010111000001101001
-Content-Disposition: form-data; name="iqama_number"
-
-IQ12345
------011000010111000001101001
-Content-Disposition: form-data; name="insurance_number"
-
-IN12345
------011000010111000001101001
-Content-Disposition: form-data; name="visa_expiry_date"
-
-2026-01-01
------011000010111000001101001
-Content-Disposition: form-data; name="iqama_images"; filename="iqama.jpg"
-Content-Type: image/jpeg
-
-< ./path/to/iqama.jpg
------011000010111000001101001--
 
 # delete employee
 ###
@@ -404,20 +340,38 @@ Content-Type: application/json
   "new_password": "password123",
   "confirm_password": "password123"
 }
+###
+POST http://178.248.112.16:8001/api/token/
+Content-Type: application/json
 
+{
+  "username": "snv_arm_kak_117",     
+  "password": "password123"  
+}
+
+### Get Employee Dashboard Details
+GET http://178.248.112.16:8001/api/dashboard/employee/53/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjkwODg3LCJpYXQiOjE3NTQyODcyODcsImp0aSI6IjYyNTE4YjgyZDlmOTRlYTFiYmUxNzNkNjllZDllYmIzIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.tq-844hhqWEWkEnJJoWDPqgbr-O9BlQq4cP5wKSBQ-E
 
 
 # ----------------------------------API FOR EMPLOYEE-----------------------
 
 
+###
+POST http://178.248.112.16:8001/api/token/
+Content-Type: application/json
 
+{
+  "username": "snv_arm_kak_117",     
+  "password": "password123"  
+}
 
 
 # dashboard Summary 
 
 ###
 GET http://127.0.0.1:8000/api/admin/dashboard-summary/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMjc0OTAwLCJpYXQiOjE3NTAyNzEzMDAsImp0aSI6Ijk3ODYxNDZkZDI4ZDRlNzM4NTU5Yjk1NWIwMzhjODllIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.5UWJo1qopqBR3ltAsqjMLInvJ4BA0PS5QoN6umGUzJo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjg5OTk1LCJpYXQiOjE3NTQyODYzOTUsImp0aSI6IjliY2FjYzIyOTBlZDRlMjE4ODA4NWVkOTk1YjcyNGI0IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.cUzwgkPl_YyXux7njPm9-P2SiP-XVrEL98tb3gyGMmQ
 
 
 
@@ -462,6 +416,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ### List All Leaves (HR Admin) according to status
 GET http://127.0.0.1:8000/api/leave/admin/?status=pending
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwODM3MjE4LCJpYXQiOjE3NTA4MzM2MTgsImp0aSI6IjM4ZDVhMWM3NzI2YzRiNzJhMGRkZGQxMWI0MjRhOTc5IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.xuQAcVUh5AjKZagoSCxsb8bhn47_7f71kyo3OtpyGMw
+
+### list employees on leave
+GET http://178.248.112.16:8001/api/departments/16/on-leave-employees/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjk4NDM3LCJpYXQiOjE3NTQyOTQ4MzcsImp0aSI6ImY0ODhkMTVjYmE2NzQzYTJhMDg2MTZhY2VkZDQxMTM2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.Ixu-E1YAZaK3zCZ_o3pO2i_76lLmbtnf2-YS_tb9GKc
+
 
 
 # =-------------------------API FOR TASK MANAGEMENT--------------------------
@@ -568,12 +527,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # api for creating token pair for employee
 
 ###
-POST http://127.0.0.1:8000/api/token/
+POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "ABCSALE2S",     
-  "password": "EMPUHFJT13N"
+  "username": "TUNGRAS82",     
+  "password": "athul"
 }
 ### 
 GET http://127.0.0.1:8000/api/profile/
@@ -583,9 +542,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ### Swipe (Punch In/Out)
-POST http://127.0.0.1:8000/api/attendance/swipe/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
-
+POST http://178.248.112.16:8001/api/attendance/swipe/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MzkyNzE3LCJpYXQiOjE3NTQzODkxMTcsImp0aSI6ImM2ZWIxZGU5ZDVhYjQ3MjI5Mzk0ZGM4YTlhYzM0YzUwIiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.8R6lw4d3jECsb-K_I7VA0gdjuSmYh7Se5nFMh99jMto
 # list out employee attendance for admin
 ###
 GET http://127.0.0.1:8000/api/admin/attendance/
