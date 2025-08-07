@@ -151,9 +151,9 @@ console.log("📤 Submitting employee", formData);
   ) : (
     <div
       style={{
-        width: "100px",
-        height: "100px",
-        borderRadius: "50%",
+        width: "10rem",
+        height: "10rem",
+        borderRadius: "10%",
         backgroundColor: "#f0f0f0",
         display: "flex",
         alignItems: "center",
@@ -341,13 +341,13 @@ console.log("📤 Submitting employee", formData);
             onChange={handleChange}
             readOnly={!editMode}
           />
-          {/* <Input
-            name="work_permit"
-            placeholder="Work Permit"
-            value={formData.work_permit || ""}
+          <Input
+            name="contract_expiry_date"
+            placeholder="contract_expiry_date"
+            value={formData.contract_expiry_date || ""}
             onChange={handleChange}
             readOnly={!editMode}
-          /> */}
+          />
           <Input
             name="visa_expiry_date"
             placeholder="Visa Expiry Date"

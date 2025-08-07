@@ -47,9 +47,9 @@ export const InfoGrid = styled.div`
 `;
 
 export const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 10%;
   object-fit: cover;
 
   @media (max-width: 768px) {
@@ -117,7 +117,7 @@ export const TwoColumn = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 5rem;
   width: 30%;
-  margin-top:-7px;
+  margin-top:20px;
   
 `;
 
@@ -212,12 +212,14 @@ export const InfoSection = styled.div`
   width: 60%;
   // padding: 1rem 0;
   margin-left:5%;
+  
 `;
 
 export const FullWidthInput = styled.input`
   width: 95%;
   padding: 0.8rem 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  margin-top:30px;
   // border: 1px solid #ccc;
   // border-radius: 6px;
   height:40%;
@@ -232,6 +234,7 @@ export const TwoColumnRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
+  margin-top:0px;
   width:99%;
 `;
 export const TwoColumnRows= styled.div`
@@ -338,9 +341,9 @@ export const Button = styled.button`
 //   margin-top:-1px;
 // `;
 export const IconWrapper = styled.div`
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 10%;
   border: 1px solid #ccc;
   background-color: #f2f2f2;
   display: flex;
@@ -351,7 +354,6 @@ export const IconWrapper = styled.div`
 export const ColumnRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  // gap: 50px;
    column-gap: 3rem;
   width:98%;
 `;

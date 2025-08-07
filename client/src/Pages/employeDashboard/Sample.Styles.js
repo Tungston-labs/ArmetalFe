@@ -3,32 +3,53 @@ import styled from "styled-components";
 
 
 export const ProfileCard = styled.div`
-//   background: #fff;
-// background:red;
   border-radius: 10px;
-  // overflow: hidden;
- 
-  img {
-    width: 100%;
-    height: 50%;
-    object-fit: cover;
+  overflow: hidden;
 
+  .image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 200px; /* or whatever height you want for the image */
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .edit-icon {
+      position: absolute;
+      bottom: 12px;
+      right: 10px;
+      background: #fff;
+      border-radius: 50%;
+      padding: 6px;
+      font-size: 1rem;
+      color: #3352BA;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
   }
+
   .details {
     padding: 20px;
+
     p {
-      margin-top:-20px;
+      margin-top: -10px;
       font-size: 14px;
       color: #333;
-       font-family: 'Satoshi', sans-serif;
+      font-family: 'Satoshi', sans-serif;
     }
+
     strong {
       font-weight: 600;
       display: block;
-       font-family: 'Satoshi', sans-serif;
+      font-family: 'Satoshi', sans-serif;
     }
   }
 `;
+
 
 export const InfoGrid = styled.div`
   display: grid;
@@ -209,7 +230,7 @@ export const LeftColumn = styled.div`
   display: flex;
   flex-direction: column;
   background:white;
-  height:100%;
+  height:94%;
   border-radius: 9px;
 border: 0.2px solid #000;
 background: #FFF;

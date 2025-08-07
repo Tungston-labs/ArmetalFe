@@ -92,6 +92,7 @@ export const Input = styled.input`
   padding: 0.6rem;
   border-radius: 8px;
   border: 1px solid #ccc;
+  
 `;
 
 export const Select = styled.select`

@@ -142,11 +142,11 @@ const EmployeeList = () => {
         <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
         </NavLink>
-        <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee Contract & Visa Expiry </Tab>
         </NavLink>
-         <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-visa'}>Employee OnLeave</Tab>
+         <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee OnLeave</Tab>
         </NavLink>
         </Tabs>
         <hr style={{marginTop:"-18px"}}></hr>

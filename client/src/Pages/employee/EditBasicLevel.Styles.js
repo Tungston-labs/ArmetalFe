@@ -68,6 +68,7 @@ export const Input = styled.input`
   border-radius: 6px;
   border: 1px solid #aaa;
   font-size: 0.9rem;
+  
 `;
 
 export const Select = styled.select`

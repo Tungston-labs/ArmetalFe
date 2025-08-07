@@ -19,6 +19,7 @@ import SalaryIcon from '../../assets/salary.svg';
 import PendingIcon from '../../assets/pending.svg';
 import LeaveIcon from '../../assets/leave.svg';
 import TimeIcon from "../../assets/time.svg"; 
+import { FaEdit } from 'react-icons/fa';
 // import Employeedashboard from "./Employeedashboard"
 const Dashboard = () => {
   return (
@@ -26,14 +27,21 @@ const Dashboard = () => {
     <Container>
       <TopSection>
         <LeftColumn>
-          <ProfileCard>
-            <img src="https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE=" alt="profile" />
-            <div className="details">
-              <p>Name<strong>Dummy</strong></p><br></br>
-              <p>Position<strong>UI/UX Designer</strong></p><br></br>
-              <p>Joined on<strong>12 June 2025</strong></p>
-            </div>
-          </ProfileCard>
+         <ProfileCard>
+  <div className="image-wrapper">
+    <img
+      src="https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE="
+      alt="profile"
+    />
+    <FaEdit className="edit-icon" />
+  </div>
+
+  <div className="details">
+    <p>Name <strong>Dummy</strong></p><br />
+    <p>Position <strong>UI/UX Designer</strong></p><br />
+    <p>Joined on <strong>12 June 2025</strong></p>
+  </div>
+</ProfileCard>
         </LeftColumn>
 
         <RightColumn>

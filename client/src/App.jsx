@@ -44,6 +44,7 @@ import Employeedashboard from "./Pages/employeDashboard/Employeedashboard.jsx"
 import FullDashboard from "./Pages/employeDashboard/FullDashboard.jsx";
 import EmployeAttendance from "./Pages/attendance/EmployeAttendance.jsx";
 import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
+import NewDashboard from "./Pages/dashboard/NewDashboard.jsx";
 function App() {
   return (
     <>
@@ -56,7 +57,7 @@ function App() {
         <Route path="/payrolls" element={<Payroll1 />} />
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<NewDashboard />} />
             <Route path="/department" element={<Department />} />
             <Route path="/departments/:id" element={<DepartmentDetails />} />
             <Route path="/employee" element={<EmployeeList />} />
@@ -67,7 +68,7 @@ function App() {
             <Route path="/payrolldetails" element={<PayrollFinal />} />
             <Route path="/superadmin" element={<SuperAdmin />} />
             <Route path="/add-company" element={<AddCompany />} />
-            <Route path="/employee-visa" element={<Visa />} />
+            <Route path="/employee-Contract-Visa-Expiry" element={<Visa />} />
             <Route path="/daily-task" element={<DailyTask />} />
             <Route path="/basic-details" element={<BasicLevel />} />
             <Route path="/bank-payment" element={<BankPayment />} />
@@ -82,6 +83,8 @@ function App() {
             <Route path="/on-leave" element={<OnLeave />} />
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
             <Route path="/emp-on-leave" element={<EmployeesOnLeave/>} />
+
+<Route path="/dashboard" element={<NewDashboard/>}/>
 
 <Route path="/employee-attendance" element={<EmployeAttendance/>}/>
 

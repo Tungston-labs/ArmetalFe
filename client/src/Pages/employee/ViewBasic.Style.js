@@ -74,7 +74,9 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 100%;
-
+border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const Textarea = styled.textarea`
@@ -84,6 +86,9 @@ export const Textarea = styled.textarea`
   width: 100%;
   resize: none;
   height: 70px;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const Avatar = styled.img`
@@ -138,6 +143,9 @@ export const Select = styled.select`
   border: 1px solid #ccc;
   border-radius: 6px;
   background-color: #fff;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const Column = styled.div`
@@ -173,6 +181,9 @@ export const Rowes = styled.div`
     border: 1px solid #ccc;
     border-radius: 6px;
     min-width: 0;
+    border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
   }
 `;
 export const HeaderWrapper = styled.div`
@@ -236,7 +247,7 @@ export const FormWrapper = styled.div`
 export const ProfileImage = styled.img`
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  border-radius: 10%;
   object-fit: cover;
 
   @media (max-width: 768px) {
@@ -255,7 +266,7 @@ export const ImageColumn = styled.div`
   img {
     width: 100px;
     height: 100px;
-    border-radius: 50px;
+    border-radius: 10px;
     object-fit: cover;
   }
 `;

@@ -137,7 +137,7 @@ const EmployeeList = () => {
            </HeaderSection>
       <Tabs>
         <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Employee list</Tab>
+          <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
         </NavLink>
         <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
@@ -145,8 +145,8 @@ const EmployeeList = () => {
         <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
         </NavLink>
-        <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}> Employee Contract & Visa Expiry</Tab>
         </NavLink>
        <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
                        <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
