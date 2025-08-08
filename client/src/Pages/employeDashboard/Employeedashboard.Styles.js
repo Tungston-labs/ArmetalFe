@@ -137,9 +137,12 @@ export const MemberList = styled.div`
 
   /* Laptop L and larger - show 5 employees */
   @media (min-width: 1440px) {
+    max-height: calc(3 * 60px); /* adjust 60px to match member row height */
+  }
+  /* Laptop L and larger - show 5 employees */
+  @media (min-width: 1940px) {
     max-height: calc(5 * 60px); /* adjust 60px to match member row height */
   }
-
   /* Optional custom scrollbar */
   &::-webkit-scrollbar {
     width: 6px;
