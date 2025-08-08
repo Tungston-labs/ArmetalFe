@@ -160,7 +160,7 @@ export const PresenceContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  margin-top: 1rem;
+  margin-top: 4rem;
   width:100%;
 
 `;
