@@ -73,12 +73,27 @@ const TimeLogDashboard = () => {
       name: 'Ajay kumar M.A',
       img: 'https://randomuser.me/api/portraits/men/65.jpg',
     },
+     {
+      name: 'Ajay kumar M.A',
+      img: 'https://randomuser.me/api/portraits/men/65.jpg',
+    },
+     {
+      name: 'Ajay kumar M.A',
+      img: 'https://randomuser.me/api/portraits/men/65.jpg',
+    },
+     {
+      name: 'Ajay kumar M.A',
+      img: 'https://randomuser.me/api/portraits/men/65.jpg',
+    },
   ];
 
   const logs = [
     { timeIn: '08:30 Am', timeOut: '11:30 Am' },
     { timeIn: '11:30 Am', timeOut: '02:30 pm' },
     { timeIn: '02:30 pm', timeOut: '05:30 pm' },
+       { timeIn: '02:30 pm', timeOut: '05:30 pm' },
+       { timeIn: '02:30 pm', timeOut: '05:30 pm' },
+        { timeIn: '02:30 pm', timeOut: '05:30 pm' },
      { timeIn: '02:30 pm', timeOut: '05:30 pm' },
       { timeIn: '02:30 pm', timeOut: '05:30 pm' },
        { timeIn: '02:30 pm', timeOut: '05:30 pm' },

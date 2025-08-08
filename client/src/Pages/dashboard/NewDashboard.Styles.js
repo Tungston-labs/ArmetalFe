@@ -7,6 +7,16 @@ export const Container = styled.div`
   max-width: 1200px;
   margin: auto;
   background: #F4F4F4;
+  min-height: 100vh;
+   @media (min-width: 1440px) {
+    max-width: 1500px;
+    padding: 2.5rem;
+  }
+
+  @media (min-width: 1920px) {
+    max-width: 1700px;
+    padding: 3rem;
+  }
 `;
 
 export const Card = styled.div`
@@ -68,9 +78,18 @@ export const CardList = styled.ul`
   }
 `;
 export const CardGrid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 1rem;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 export const Icon = styled.div`
   position: absolute;
@@ -88,23 +107,23 @@ export const Icon = styled.div`
 `;
 
 
-// export const Icon = styled.div`
-//   position: absolute;
-//   bottom: 1rem;
-//   right: 1rem;
-//   color: #003366;
-//   font-size: 1.2rem;
-//   cursor: pointer;
-// `;
 
+// DEPARTMENT GRID
 export const DepartmentGrid = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
   margin-top: 1rem;
+  width: 100%;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+
+  /* Optional: Custom horizontal scroll for overflow (for legacy flex fallback) */
   overflow-x: auto;
   padding-bottom: 1rem;
 
-  /* Optional: Hide scrollbar in a nice way */
   &::-webkit-scrollbar {
     height: 8px;
   }
@@ -120,50 +139,68 @@ export const DepartmentGrid = styled.div`
 `;
 
 
+// DEPARTMENT CARD
 export const DepartmentCard = styled.div`
-  flex: 1;
-  min-width: 280px;
   background: #fff;
   border: 1px solid #ddd;
-//   border-left: 10px solid #cce0ff;
   border-radius: 10px;
   padding: 1rem;
-  position: relative;
   display: flex;
   align-items: center;
   gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 
   h4 {
     margin: 0;
-    font-size:1.2rem;
-    font-family:"raleway"
+    font-size: 1.2rem;
+    font-family: "raleway";
+
+    @media (max-width: 480px) {
+      font-size: 1rem;
+    }
   }
 
   p {
     margin: 4px 0;
     font-size: 1rem;
-      font-family:"raleway"
+    font-family: "raleway";
+
+    @media (max-width: 480px) {
+      font-size: 0.9rem;
+    }
   }
 
   strong {
     font-size: 1rem;
     color: #003366;
-      font-family:"raleway"
+    font-family: "raleway";
+
+    @media (max-width: 480px) {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
   }
 `;
 
+// LABEL (Big Number Text)
 export const Label = styled.div`
-  font-size: 6rem;
+  font-size: clamp(3rem, 8vw, 6rem);
   font-weight: bold;
   color: #B5E2FF;
-  font-family:"raleway";
+  font-family: "raleway";
 `;
 
+
+// SECTION HEADING
 export const Heading = styled.h3`
-  // margin-top: 2rem;
   font-weight: bold;
-  font-size:1.6rem;
-  font-family:"satoshi";
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-family: "satoshi";
 `;
 
 export const PresenceContainer = styled.div`
@@ -171,34 +208,48 @@ export const PresenceContainer = styled.div`
   flex-wrap: wrap;
   gap: 2rem;
   margin-top: 1rem;
-`;
+  
 
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+`;
 export const ChartContainer = styled.div`
   flex: 1;
   min-width: 280px;
   background: white;
   border-radius: 10px;
-  padding: 1rem;
+  padding: 1.5rem;
   text-align: center;
+  box-sizing: border-box;
 
   h1 {
-    font-size: 3rem;
+    font-size: clamp(1.8rem, 4vw, 3rem);
     margin-bottom: 0.5rem;
-      font-family:"satoshi"
+    font-family: "satoshi";
   }
 
   p {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
     font-weight: bold;
-      font-family:"satoshi"
+    font-family: "satoshi";
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
   }
 `;
-
 export const SubText = styled.div`
   margin-top: 2rem;
-  font-size: 0.9rem;
-  font-family:"raleway"
+  font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+  font-family: "raleway";
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  text-align: center;
 `;
-
 export const ContractList = styled.div`
   flex: 2;
   min-width: 300px;
@@ -237,6 +288,9 @@ export const MainContent = styled.div`
 export const LeftContent = styled.div`
   flex: 2;
   min-width: 300px;
+    @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const RightPanel = styled.div`
@@ -245,6 +299,10 @@ export const RightPanel = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const VisaCard = styled(Card)`
@@ -260,25 +318,45 @@ export const VisaCard = styled(Card)`
 `;
 
 
+
 export const CalendarCard = styled(Card)`
   background: #F4F4F4;
-  
-// margin-top:1rem;
-//   h3 {
-//     font-size: 1.2rem;
-//     font-weight: 600;
-//   }
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
 
-//   strong {
-//     color: #003366;
-//   }
+  @media (max-width: 768px) {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 600px;
+  }
+
+  @media (min-width: 1920px) {
+    max-width: 700px;
+  }
 `;
 
 export const HolidayCard = styled(Card)`
   background: #f4f4f4;
-  margin-top: -10%;
-  flex-direction: column; /* 👈 Ensure items stack vertically */
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 1rem;
+  }
 `;
 
 export const HolidayItem = styled.div`
@@ -287,10 +365,10 @@ export const HolidayItem = styled.div`
   align-items: center;
   border: 1px solid #eee;
   border-radius: 8px;
-  padding: 0.4rem 1rem;
-//   margin-top: 0.5rem;
+  padding: 0.6rem 1rem;
   background: white;
-
+  transition: all 0.3s ease;
+margin-top:-0px;
   div {
     display: flex;
     flex-direction: column;
@@ -299,37 +377,136 @@ export const HolidayItem = styled.div`
   h4 {
     margin: 0;
     font-size: 1rem;
+    font-weight: 600;
+    font-family: "Satoshi", sans-serif;
   }
 
   p {
     margin: 0;
     font-size: 0.8rem;
     color: #777;
+    font-family: "Raleway", sans-serif;
   }
 
   span {
     font-size: 0.9rem;
     color: #333;
     white-space: nowrap;
+    font-family: "Satoshi", sans-serif;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.8rem;
+
+    span {
+      align-self: flex-end;
+      font-size: 0.85rem;
+    }
+
+    h4 {
+      font-size: 0.95rem;
+    }
+
+    p {
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    padding: 0.5rem;
+    width:90%;
+    h4 {
+      font-size: 1.1rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+
+    span {
+      font-size: 1rem;
+    }
   }
 `;
 
+
 export const StyledCalendar = styled(Calendar)`
   width: 100%;
-  
-//   border-radius: 10px;
-//   margin-top: 10px;
+  max-width: 100%;
+  font-family: 'Raleway', sans-serif;
 
-  /* Customize the calendar styles if you want */
+  .react-calendar {
+    width: 100%;
+    border: none;
+    background: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+  }
+
   .react-calendar__tile {
     border-radius: 6px;
+    padding: 10px 6px;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
   }
+
   .react-calendar__tile--active {
     background: #003366;
     color: white;
   }
-  /* Add any more styles you want here */
+
+  .react-calendar__tile:enabled:hover {
+    background: #e6f0ff;
+    cursor: pointer;
+  }
+
+  .react-calendar__navigation {
+    margin-bottom: 1rem;
+    button {
+      font-size: 1rem;
+      color: #003366;
+    }
+  }
+
+  /* Weekday & Day Headers */
+  .react-calendar__month-view__weekdays {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  /* Responsiveness */
+  @media (max-width: 768px) {
+    .react-calendar__tile {
+      padding: 8px 4px;
+      font-size: 0.75rem;
+    }
+
+    .react-calendar__navigation button {
+      font-size: 0.9rem;
+    }
+
+    .react-calendar {
+      padding: 0.5rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .react-calendar__tile {
+      padding: 12px 8px;
+      font-size: 1rem;
+    }
+
+    .react-calendar__navigation button {
+      font-size: 1.1rem;
+    }
+  }
 `;
+
 // export const CalendarWrapper = styled.div`
 //   width: 100%;
 //   border-radius: 10px;
@@ -375,32 +552,26 @@ export const CalendarWrapper = styled.div`
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 10px;
-    padding: 1px;
+    padding: 4px;
     background: #fff;
-    // color:#3352BA;
   }
 
   .rmdp-calendar {
     width: 100%;
+    font-size: 14px;
   }
 
   .rmdp-day {
     border-radius: 6px;
     margin: 2px;
-    padding: 3px;
-    font-size: 12px;
+    padding: 6px;
+    font-size: 0.8rem;
     transition: 0.3s ease;
   }
 
   .rmdp-day.rmdp-today {
-    // background-color: #cce0ff;
     color: #003366;
   }
-
-//   .rmdp-day.rmdp-selected {
-//     background-color: #003366;
-//     color: #fff;
-//   }
 
   .rmdp-week-day {
     font-weight: bold;
@@ -414,10 +585,43 @@ export const CalendarWrapper = styled.div`
     font-weight: bold;
     color: #3352BA;
     margin-bottom: 10px;
+    font-size: 1rem;
   }
 
   .rmdp-arrow {
     color: #003366;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .rmdp-calendar {
+      font-size: 12px;
+    }
+
+    .rmdp-day {
+      padding: 4px;
+      font-size: 0.7rem;
+    }
+
+    .rmdp-header {
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Large screen enhancements */
+  @media (min-width: 1440px) {
+    .rmdp-calendar {
+      font-size: 15px;
+    }
+
+    .rmdp-day {
+      font-size: 0.9rem;
+      padding: 7px;
+    }
+
+    .rmdp-header {
+      font-size: 1.1rem;
+    }
   }
 `;
 

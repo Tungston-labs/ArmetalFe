@@ -11,6 +11,9 @@ export const ProfileCard = styled.div`
     width: 100%;
     height: 200px; /* or whatever height you want for the image */
 
+   @media (max-width: 480px) {
+      height: 150px;
+    }
     img {
       width: 100%;
       height: 100%;
@@ -210,54 +213,66 @@ export const Container = styled.div`
   gap: 20px;
   background: #F4F4F4;
   // height: 100vh;
-  width:50%;
+  width:100%;
   box-sizing: border-box;
 `;
 
 export const TopSection = styled.div`
   display: flex;
-  // width:50%;
-  // flex: 1;
   gap: 20px;
-  flex-wrap: wrap;
-//   background:pink;
-  // height:10%;
+  flex-wrap: nowrap; /* prevent stacking unless on small screens */
+  align-items: stretch; /* equal height columns */
+
+  @media (max-width: 1024px) {
+    flex-direction: row;
+  }
 `;
 
 export const LeftColumn = styled.div`
-  flex: 1;
-  // width:50%;
+  flex: 1; /* take equal space with RightColumn */
   display: flex;
   flex-direction: column;
-  background:white;
-  height:94%;
+  background: white;
   border-radius: 9px;
-border: 0.2px solid #000;
-background: #FFF;
+  border: 0.2px solid #000;
+  background: #FFF;
 `;
-
 export const RightColumn = styled.div`
-  flex: 2;
-  // width: 50%;
+  flex: 1; /* take equal space with LeftColumn */
   display: flex;
   flex-direction: column;
   gap: 10px;
-//   background:blue;
 `;
 
 // Keep all other styles same (ProfileCard, InfoGrid, etc.)
 
 export const TaskSection = styled.div`
-  background: #F4F4F4;
-  // border-radius: 10px;
-  // padding: 12px;
-  margin-top: -30px;
- font-family: 'Satoshi', sans-serif;
-  max-height: 300px; 
-  overflow-y: auto;
-
   display: flex;
   flex-direction: column;
-  gap: 16px; /* Optional spacing between tasks */
-`;
+  overflow-y: auto;
+  gap: 12px; /* space between tasks */
 
+  /* Small screens - show all */
+  @media (max-width: 1023px) {
+    max-height: none;
+  }
+
+  /* Laptop - show 5 tasks */
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    max-height: calc(5 * 80px); /* adjust 80px to match TaskItem height */
+  }
+
+  /* Laptop L+ - show 8 tasks */
+  @media (min-width: 1440px) {
+    max-height: calc(8 * 80px); /* adjust 80px to match TaskItem height */
+  }
+
+  /* Custom scroll styling */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+  }
+`;

@@ -42,8 +42,12 @@ import 'react-multi-date-picker/styles/layouts/mobile.css';
 
 const employees = [
   { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-   { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-    { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
+ { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
+  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
+ { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" }, 
+  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
+  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
+               
   // Repeat more dummy data if needed
 ];
 const departments = [
@@ -174,36 +178,43 @@ const Dashboard = () => {
   </SubText>
 </ChartContainer>
 
-        <ContractList>
-          <div style={{ display: "flex", justifyContent: "space-between",fontFamily:"satoshi",fontSize:"1.3rem" }}>
-            <h4>Employee Contract Expiry</h4>
-   {/* <FiArrowUpRight style={{color:"#3352BA",fontSize:"25px"}} /> */}
- <FiArrowUpRight
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        style={{
-          color: isHovered ? '#1a2a7a' : '#3352BA',
-          fontSize: '25px',
-          cursor: 'pointer',
-          transform: isHovered ? 'scale(1.2)' : 'scale(1)',
-          transition: 'all 0.3s ease',
-        }}
-      />
-          </div>
+    <ContractList>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      fontFamily: "satoshi",
+      fontSize: "1.3rem",
+    }}
+  >
+    <h4>Employee Contract Expiry</h4>
+    <FiArrowUpRight
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        color: isHovered ? "#1a2a7a" : "#3352BA",
+        fontSize: "25px",
+        cursor: "pointer",
+        transform: isHovered ? "scale(1.2)" : "scale(1)",
+        transition: "all 0.3s ease",
+      }}
+    />
+  </div>
 
-          {employees.map((emp, i) => (
-            <ContractItem key={i}>
-              <Avatar>
-                <FaUserCircle />
-              </Avatar>
-              <div>
-                <p>{emp.name}</p>
-              </div>
-              <span>{emp.id}</span>
-              <span>{emp.email}</span>
-            </ContractItem>
-          ))}
-        </ContractList>
+  {employees.slice(0, 6).map((emp, i) => (
+    <ContractItem key={i}>
+      <Avatar>
+        <FaUserCircle />
+      </Avatar>
+      <div>
+        <p>{emp.name}</p>
+      </div>
+      <span>{emp.id}</span>
+      <span>{emp.email}</span>
+    </ContractItem>
+  ))}
+</ContractList>
+
       </PresenceContainer>
       </LeftContent>
        <RightPanel>
@@ -240,9 +251,7 @@ const Dashboard = () => {
 
     {/* Calendar */}
 <CalendarCard>
-{/* <h3 style={{ textAlign: "center", marginBottom: "8px" }}>
-  {monthName} {year}
-</h3> */}
+
   <CalendarWrapper style={{ direction: 'rtl' }}>
     <HijriCalendar
       calendar={arabic}
@@ -254,8 +263,8 @@ const Dashboard = () => {
 </CalendarCard>
     {/* Upcoming Holidays */}
     <HolidayCard>
-     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "-10px",fontFamily:"satoshi",fontSize:"1.3rem" }}>
-  <h3 style={{ margin: 0 }}>Upcoming Holidays</h3>
+     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",fontFamily:"satoshi",fontSize:"1.3rem",marginTop:"-20px" }}>
+  <h3 style={{ marginTop: "-50px" }}>Upcoming Holidays</h3>
     <FiArrowUpRight
         onMouseEnter={() => setHovers(true)}
         onMouseLeave={() => setHovers(false)}

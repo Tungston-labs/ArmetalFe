@@ -1,27 +1,34 @@
+// Employeedashboard.Styles.js
 import styled from 'styled-components';
-
 
 export const MainWrapper = styled.div`
   display: flex;
-  // justify-content: flex-end;
-  // width: 100vw;
-  // padding: 40px;
+  width: 100%;
   box-sizing: border-box;
+  flex-direction: column; /* Mobile-first: stack everything */
+
+  @media (min-width: 1024px) {
+    flex-direction: row; /* Side-by-side on large screens */
+  }
 `;
 
 export const Container = styled.div`
   padding: 10px;
   background-color: #f4f4f4;
-  font-family: 'Arial', sans-serif;
-  // width:50%;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
+/* Responsive card grid */
 export const CardGrid = styled.div`
   display: grid;
-  
-  grid-template-columns: repeat(4,1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
   margin-bottom: 12px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
 `;
 
 export const InfoCard = styled.div`
@@ -29,25 +36,26 @@ export const InfoCard = styled.div`
   padding: 12px;
   border-radius: 9px;
   border: 0.2px solid #000;
-  background: #FFF;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 75px; /* Set fixed height or min-height if needed */
+  min-height: 75px;
 `;
-
 
 export const CardTitle = styled.div`
   font-size: 16px;
   font-weight: bold;
-   font-family: 'Satoshi', sans-serif;
+  font-family: 'Satoshi', sans-serif;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 `;
 
 export const CardSubtitle = styled.div`
   font-size: 10px;
   color: #666;
-   font-family: 'Satoshi', sans-serif;
-  
+  font-family: 'Satoshi', sans-serif;
 `;
 
 export const CardLink = styled.div`
@@ -58,35 +66,38 @@ export const CardLink = styled.div`
   color: #2f49d1;
   font-weight: 500;
   font-size: 14px;
- font-family: 'Raleway', sans-serif;
+  font-family: 'Raleway', sans-serif;
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
-// Department box styles
+/* Department section responsive */
 export const DepartmentBox = styled.div`
   background: #F4F4F4;
-  // width:50%;
-  border-radius: 10px;
-  // padding: 20px;
-  position: relative;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   border-radius: 9px;
-border: 0.2px solid #000;
+  border: 0.2px solid #000;
+  margin-bottom: 24px;
+  position: relative;
 `;
 
 export const DepartmentTitleRow = styled.div`
   display: flex;
-  justify-content:flex-start;
-  align-items: center;
-  background:white;
-  gap:2rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: white;
 `;
 
 export const DepartmentTitle = styled.div`
   font-size: 20px;
   font-weight: 700;
-  background:white;
+  background: white;
 
+  @media (max-width: 480px) {
+    font-size: 16px;
+  }
 `;
 
 export const DepartmentCount = styled.div`
@@ -98,32 +109,53 @@ export const SubLabel = styled.div`
   font-size: 13px;
   color: #777;
   margin-top: 12px;
-  background:white;
-
+  background: white;
 `;
 
 export const DepartmentHead = styled.div`
   font-size: 16px;
   font-weight: 500;
   margin-top: 4px;
-  background:white;
-
+  background: white;
 `;
 
 export const MemberList = styled.div`
-  margin-top: 16px;
-  max-height: 140px;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
-   font-family: 'Satoshi', sans-serif;
+  margin-top: 10px;
+
+  /* Small screens - show all members */
+  @media (max-width: 1023px) {
+    max-height: none;
+  }
+
+  /* Laptop - show 3 employees */
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    max-height: calc(3 * 60px); /* adjust 60px to match member row height */
+  }
+
+  /* Laptop L and larger - show 5 employees */
+  @media (min-width: 1440px) {
+    max-height: calc(5 * 60px); /* adjust 60px to match member row height */
+  }
+
+  /* Optional custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+  }
 `;
 
 export const Member = styled.div`
   display: flex;
-  padding:5px;
+  padding: 5px;
   align-items: center;
   margin-bottom: 12px;
-  background:white;
-  
+  background: white;
 `;
 
 export const Avatar = styled.img`
@@ -141,7 +173,7 @@ export const MemberName = styled.div`
 
 export const ArrowIcon = styled.div`
   position: absolute;
-  top:2px;
+  top: 2px;
   right: 16px;
   background: #2f49d1;
   color: white;
@@ -150,22 +182,40 @@ export const ArrowIcon = styled.div`
   cursor: pointer;
 `;
 
-// Time log
+/* Time log responsive */
 export const TimeLogContainer = styled.div`
   background: #fff;
-  // border-radius: 10px;
-  // padding: 20px;
-  // max-width: 800px;
-  // width:50%;
-  // margin: auto;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    
-    
 `;
+
 export const ScrollableTableWrapper = styled.div`
-  max-height: 280px; /* Adjust depending on your row height */
   overflow-y: auto;
+
+  /* Small screens - no scroll limit */
+  @media (max-width: 1023px) {
+    max-height: none;
+  }
+
+  /* Laptop screens - show 5 rows */
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    max-height: calc(5 * 60px); /* Adjust row height */
+  }
+
+  /* Laptop L and larger - show 8 rows */
+  @media (min-width: 1440px) {
+    max-height: calc(7 * 60px); /* Adjust row height */
+  }
+
+  /* Optional nice scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+  }
 `;
+
 
 export const DateHeading = styled.div`
   font-size: 1.2rem;
@@ -175,8 +225,12 @@ export const DateHeading = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-  margin-top:-15px;
-   font-family: 'Satoshi', sans-serif;
+  margin-top: -15px;
+  font-family: 'Satoshi', sans-serif;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 `;
 
 export const ArrowButton = styled.button`
@@ -204,37 +258,42 @@ export const TableHeader = styled.th`
   padding: 10px;
   font-weight: bold;
   font-size: 14px;
-   font-family: 'Raleway', sans-serif;
+  font-family: 'Raleway', sans-serif;
   color: ${(props) => (props.green ? 'green' : props.red ? 'red' : '#333')};
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
 export const TableCell = styled.td`
   padding: 10px;
   font-size: 14px;
   color: #333;
-  // display: flex;
-  align-items: center;
-  gap: 6px;
-   font-family: 'Satoshi', sans-serif;
-  justify-content: ${(props) =>
-    props.align === 'right' ? 'flex-end' :
+  font-family: 'Satoshi', sans-serif;
+  text-align: ${(props) =>
+    props.align === 'right' ? 'right' :
     props.align === 'center' ? 'center' :
-    'flex-start'};
+    'left'};
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
 export const Icon = styled.span`
   color: #999;
   font-size: 16px;
 `;
+
 export const SvgIcon = styled.img`
   width: 14px;
   height: 14px;
-  
 `;
-export const Department =styled.div
-  `background:white;
-  padding:10px;
-  border-radius:9px;
-   font-family: 'Satoshi', sans-serif;
-  `;
 
+export const Department = styled.div`
+  background: white;
+  padding: 10px;
+  border-radius: 9px;
+  font-family: 'Satoshi', sans-serif;
+`;
