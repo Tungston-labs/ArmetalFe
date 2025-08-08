@@ -4,7 +4,7 @@ import Calendar from 'react-calendar';
 
 export const Container = styled.div`
   padding: 2rem;
-  max-width: 1200px;
+  // max-width: 1200px;
   margin: auto;
   background: #F4F4F4;
 `;
@@ -17,6 +17,7 @@ export const Card = styled.div`
   padding: 1rem;
   position: relative;
   gap: 1rem;
+  // flex: 0 0 auto; /* Prevent shrinking so cards keep their size */
 `;
 
 export const LeftIcon = styled.div`
@@ -69,8 +70,17 @@ export const CardList = styled.ul`
 `;
 export const CardGrid = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Don't wrap to new line */
   gap: 1rem;
+  overflow-x: auto; /* Scroll if they overflow */
+  padding-bottom: 0.5rem; /* Space for scrollbar */
+
+  /* Optional: Hide scrollbar for a cleaner look */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 `;
 export const Icon = styled.div`
   position: absolute;

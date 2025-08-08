@@ -45,6 +45,7 @@ import FullDashboard from "./Pages/employeDashboard/FullDashboard.jsx";
 import EmployeAttendance from "./Pages/attendance/EmployeAttendance.jsx";
 import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
 import NewDashboard from "./Pages/dashboard/NewDashboard.jsx";
+import DashboardNew from "./Pages/dashboard/DashboardNew.jsx"
 function App() {
   return (
     <>
@@ -101,6 +102,7 @@ function App() {
               <Route path="/employee-dashboard" element={<Employeedashboard />} />
               <Route path="/sample" element={<Sample />} />
               <Route path="/fulldashboard" element={<FullDashboard/>}/>
+               <Route path="/newdashboard" element={<DashboardNew />}/>
           </Route>
         </Route>
       </Routes>
