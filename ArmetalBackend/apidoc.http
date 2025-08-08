@@ -419,7 +419,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### list employees on leave
 GET http://178.248.112.16:8001/api/departments/16/on-leave-employees/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjk4NDM3LCJpYXQiOjE3NTQyOTQ4MzcsImp0aSI6ImY0ODhkMTVjYmE2NzQzYTJhMDg2MTZhY2VkZDQxMTM2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.Ixu-E1YAZaK3zCZ_o3pO2i_76lLmbtnf2-YS_tb9GKc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MzAyNDY5LCJpYXQiOjE3NTQyOTg4NjksImp0aSI6IjJmNWUzMzA4YzgyZDQ0YjY5MTE4YTAzOTkwZjQwNTgwIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.vvks49fbZS0ZPVBacen1yNNdsyr7Hc-N7arbyjr_vwI 
 
 
 
@@ -527,12 +527,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # api for creating token pair for employee
 
 ###
-POST http://127.0.0.1:8000/api/token/
+POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "ABCSALE2S",     
-  "password": "EMPUHFJT13N"
+  "username": "TUNGRAS82",     
+  "password": "athul"
 }
 ### 
 GET http://127.0.0.1:8000/api/profile/
@@ -542,8 +542,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ### Swipe (Punch In/Out)
-POST http://127.0.0.1:8000/api/attendance/swipe/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
+POST http://178.248.112.16:8001/api/attendance/swipe/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mzc5Nzc2LCJpYXQiOjE3NTQzNzYxNzYsImp0aSI6Ijg3MjBkMjg1ZTU3OTQwZTY4MDMwNjhkZTdjNGY1Nzc4IiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.wyr8YNbzlGpYEGHMnb_Cij7o7Twy05MaUMODpPofAB8
 
 # list out employee attendance for admin
 ###
@@ -655,9 +655,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ###schedule reminder
-POST http://localhost:8000/api/reminders/
+POST http://178.248.112.16:8001/api/reminders/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MzEwMDk1LCJpYXQiOjE3NTQzMDY0OTUsImp0aSI6ImNmYzE0MjkwMDY4MTQzOThhNjk2MWVkNTViYWEyYzY1IiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QhvQgBQgs_fMIND869G7KLOz0ZnQSwkFY83YN0Xr6Xo
 
 {
   "title": "Project Deadline",
