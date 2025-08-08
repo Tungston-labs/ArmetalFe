@@ -19,7 +19,7 @@ import { FaInfoCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
+import { getAllEmployees, deleteEmployeeById,getUpcomingExpiryEmployees } from "../../Redux/employeeSlice";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();

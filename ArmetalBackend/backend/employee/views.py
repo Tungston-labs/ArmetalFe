@@ -150,9 +150,17 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Employee_db
 from .serializers import EmployeeSerializer
 
+from rest_framework.pagination import PageNumberPagination
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 7
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class UpcomingExpiryEmployeeListView(generics.ListAPIView):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = StandardResultsSetPagination 
 
     def get_queryset(self):
         expiry_type = self.request.query_params.get("type")  # 'visa' or 'contract'
@@ -172,10 +180,11 @@ class UpcomingExpiryEmployeeListView(generics.ListAPIView):
                 contract_expiry_date__lte=one_month_later
             )
         else:
-            queryset = Employee_db.objects.none()  # return empty if no valid filter
+            queryset = Employee_db.objects.none()
 
-        return queryset.order_by("visa_expiry_date" if expiry_type == "visa" else "contract_expiry_date")
-
+        return queryset.order_by(
+            "visa_expiry_date" if expiry_type == "visa" else "contract_expiry_date"
+        )
 
 
 # views.py
