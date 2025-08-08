@@ -143,6 +143,38 @@ class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIVi
         return EmpBankPaymentModel.objects.filter(employee_id=employee_id)
 
 
+from datetime import timedelta
+from django.utils import timezone
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from .models import Employee_db
+from .serializers import EmployeeSerializer
+
+class UpcomingExpiryEmployeeListView(generics.ListAPIView):
+    serializer_class = EmployeeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        expiry_type = self.request.query_params.get("type")  # 'visa' or 'contract'
+        today = timezone.now().date()
+        one_month_later = today + timedelta(days=30)
+
+        queryset = Employee_db.objects.all()
+
+        if expiry_type == "visa":
+            queryset = queryset.filter(
+                visa_expiry_date__gte=today,
+                visa_expiry_date__lte=one_month_later
+            )
+        elif expiry_type == "contract":
+            queryset = queryset.filter(
+                contract_expiry_date__gte=today,
+                contract_expiry_date__lte=one_month_later
+            )
+        else:
+            queryset = Employee_db.objects.none()  # return empty if no valid filter
+
+        return queryset.order_by("visa_expiry_date" if expiry_type == "visa" else "contract_expiry_date")
 
 
 
