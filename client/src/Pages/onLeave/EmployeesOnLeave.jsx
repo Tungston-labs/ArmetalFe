@@ -94,45 +94,7 @@ const EmployeeList = () => {
                  onChange={handleSearch}
                />
             
-             {/* <ActionArea> */}
-               {/* <AddButton onClick={() => navigate('/basic-details')}>
-                 <FaPlus /> Add Employee
-               </AddButton> */}
-                 {/* <DepartmentSelect>
-             <option value="">All Departments</option>
-             <option value="Design">Design</option>
-             <option value="Engineering">Engineering</option>
-             <option value="HR">HR</option>
-            
-           </DepartmentSelect> */}
-             {/* </ActionArea> */}
-     
-             {/* <div
-               style={{
-                 display: "flex",
-                 justifyContent: "space-between",
-                 alignItems: "center",
-                 marginTop: "1rem",
-                 width: "100%"
-               }}
-             > */}
-               {/* Left side: label */}
-               {/* <div style={{ fontWeight: "bold" }}>
-                 Departments <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
-               </div> */}
-     
-               {/* Right side: dropdown */}
-               {/* <DepartmentSelect
-                 value={departmentFilter}
-                 onChange={(e) => setDepartmentFilter(e.target.value)}
-               >
-                 <option value=""><strong>Departments</strong></option>
-                 <option value="HR">HR</option>
-                 <option value="IT">IT</option>
-                 <option value="Finance">Finance</option>
-                 <option value="Marketing">Marketing</option>
-               </DepartmentSelect> */}
-             {/* </div> */}
+         
      
            </HeaderSection>
       <Tabs>

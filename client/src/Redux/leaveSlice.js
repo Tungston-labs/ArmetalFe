@@ -7,15 +7,16 @@ import {
 
 export const getLeaveRequests = createAsyncThunk(
   'leave/getLeaveRequests',
-  async (page = 1, thunkAPI) => {
+  async (filters = {}, thunkAPI) => {
     try {
-      const data = await fetchAllLeaveRequests(page);
-      return data;
+      return await fetchAllLeaveRequests(filters);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || 'Error fetching leave requests');
     }
   }
 );
+
+
 
 export const getLeaveDetails = createAsyncThunk(
   'leave/getLeaveDetails',

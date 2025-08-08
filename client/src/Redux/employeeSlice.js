@@ -123,14 +123,26 @@ export const getEmployeeById = createAsyncThunk(
 // Fetch All Employees
 export const getAllEmployees = createAsyncThunk(
   'employees/getAll',
-  async ({ page, search }, thunkAPI) => {
+  async ({ page, search, department_id }, thunkAPI) => {
     try {
-      return await fetchAllEmployees(page, search);
+      return await fetchAllEmployees(page, search, department_id);
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response?.data || 'Server error');
     }
   }
 );
+
+export const getUpcomingExpiryEmployees = createAsyncThunk(
+  'employees/getUpcomingExpiry',
+  async (expiryType, thunkAPI) => {
+    try {
+      return await fetchUpcomingExpiryEmployees(expiryType);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || 'Server error');
+    }
+  }
+);
+
 
 // Fetch All Bank Payments
 export const fetchAllBankPaymentsThunk = createAsyncThunk(

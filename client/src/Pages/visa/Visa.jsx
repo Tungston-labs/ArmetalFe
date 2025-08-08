@@ -32,11 +32,23 @@ const EmployeeList = () => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [sortBy, setSortBy] = useState(""); // visa_expiry_date or contract_expiry_date
+  const [expiryFilter, setExpiryFilter] = useState(""); // '' | 'visa' | 'contract'
+
 
   useEffect(() => {
-    dispatch(getAllEmployees({ page, search: searchText, sortBy }));
-  }, [dispatch, page, searchText, sortBy]);
-
+    if (expiryFilter) {
+      // Call upcoming expiry API
+      dispatch(getUpcomingExpiryEmployees({
+        expiryType: expiryFilter,
+        page,
+        search: searchText
+      }));
+    } else {
+      // Default call for all employees
+      dispatch(getAllEmployees({ page, search: searchText }));
+    }
+  }, [dispatch, page, searchText, expiryFilter]);
+  
   const handleSearch = (e) => {
     setSearchText(e.target.value);
     setPage(1);
@@ -90,20 +102,24 @@ const EmployeeList = () => {
             value={searchText}
             onChange={handleSearch}
           />
-          <select
-            value={sortBy}
-            onChange={handleSortChange}
-            style={{
-              padding: "8px 10px",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-              cursor: "pointer"
-            }}
-          >
-            <option value="">Sort by</option>
-            <option value="visa_expiry_date">Visa Expiry Date</option>
-            <option value="contract_expiry_date">Contract Expiry Date</option>
-          </select>
+         <select
+  value={expiryFilter}
+  onChange={(e) => {
+    setExpiryFilter(e.target.value);
+    setPage(1);
+  }}
+  style={{
+    padding: "8px 10px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    cursor: "pointer"
+  }}
+>
+  <option value="">All Employees</option>
+  <option value="visa">Visa Expiry (next 30 days)</option>
+  <option value="contract">Contract Expiry (next 30 days)</option>
+</select>
+
         </div>
       </HeaderSection>
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,DepartmentSelect,
+  Container,
+  DepartmentSelect,
   HeaderSection,
   Tabs,
   Tab,
@@ -15,21 +16,25 @@ import {
   Subtitle,
   ActionArea,
   TitleSection,
-  // FilterSection,
-  // SearchWrapper,
-  // SearchIcon
 } from "./EmployeeList.styles";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
+import { getDepartments } from "../../Redux/departmentSlice";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { employeeList, pagination, loading } = useSelector((state) => state.employees);
+
+  const { employeeList, pagination, loading } = useSelector(
+    (state) => state.employees
+  );
+  const { list: departmentList, loading: deptLoading } = useSelector(
+    (state) => state.departments
+  );
 
   const [searchText, setSearchText] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
@@ -38,8 +43,20 @@ const EmployeeList = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    dispatch(getAllEmployees({ page, search: searchText, department: departmentFilter }));
+    dispatch(
+      getAllEmployees({
+        page,
+        search: searchText,
+        department_id: departmentFilter // ✅ change from department to department_id
+      })
+    );
   }, [dispatch, page, searchText, departmentFilter]);
+  
+
+  useEffect(() => {
+    // Fetch departments for dropdown
+    dispatch(getDepartments());
+  }, [dispatch]);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -53,10 +70,18 @@ const EmployeeList = () => {
 
   const confirmDelete = async () => {
     await dispatch(deleteEmployeeById(selectedEmployeeId));
-    dispatch(getAllEmployees({ page, search: searchText, department: departmentFilter }));
+    dispatch(
+      getAllEmployees({
+        page,
+        search: searchText,
+        department_id: departmentFilter // ✅ change here too
+      })
+    );
+    
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
+  
 
   const cancelDelete = () => {
     setShowDeleteModal(false);
@@ -75,82 +100,78 @@ const EmployeeList = () => {
 
       <HeaderSection>
         <TitleSection>
-          <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
+          <img
+            src="/images/employee.png"
+            alt="Payroll Icon"
+            style={{ height: "50px" }}
+          />
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
-          
         </TitleSection>
-          <SearchInput
-            type="text"
-            placeholder="Search by employee name or ID"
-            value={searchText}
-            onChange={handleSearch}
-          />
-       
+        <SearchInput
+          type="text"
+          placeholder="Search by employee name or ID"
+          value={searchText}
+          onChange={handleSearch}
+        />
         <ActionArea>
-          <AddButton onClick={() => navigate('/basic-details')}>
+          <AddButton onClick={() => navigate("/basic-details")}>
             <FaPlus /> Add Employee
           </AddButton>
-            <DepartmentSelect>
-        <option value="">All Departments</option>
-        <option value="Design">Design</option>
-        <option value="Engineering">Engineering</option>
-        <option value="HR">HR</option>
-        {/* Add more departments as needed */}
-      </DepartmentSelect>
-        </ActionArea>
 
-        {/* <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "1rem",
-            width: "100%"
-          }}
-        > */}
-          {/* Left side: label */}
-          {/* <div style={{ fontWeight: "bold" }}>
-            Departments <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
-          </div> */}
-
-          {/* Right side: dropdown */}
-          {/* <DepartmentSelect
+          <DepartmentSelect
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
           >
-            <option value=""><strong>Departments</strong></option>
-            <option value="HR">HR</option>
-            <option value="IT">IT</option>
-            <option value="Finance">Finance</option>
-            <option value="Marketing">Marketing</option>
-          </DepartmentSelect> */}
-        {/* </div> */}
-
+            <option value="">All Departments</option>
+            {deptLoading ? (
+              <option>Loading...</option>
+            ) : (
+              departmentList.map((dept) => (
+                <option key={dept.id} value={dept.id}>
+                  {dept.name}
+                </option>
+              ))
+            )}
+          </DepartmentSelect>
+        </ActionArea>
       </HeaderSection>
 
-
       <Tabs>
-        <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
+        <NavLink to="/employee" style={{ textDecoration: "none" }}>
+          <Tab active={location.pathname === "/employee"}>Total Employee</Tab>
         </NavLink>
-        <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
+        <NavLink to="/leave-request" style={{ textDecoration: "none" }}>
+          <Tab active={location.pathname === "/leave-request"}>
+            Employee leave request
+          </Tab>
         </NavLink>
-        <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
+        <NavLink to="/employee-attendance" style={{ textDecoration: "none" }}>
+          <Tab active={location.pathname === "/employee-attendance"}>
+            Employee Attendance
+          </Tab>
         </NavLink>
-        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee Contract & Visa Expiry </Tab>
+        <NavLink
+          to="/employee-Contract-Visa-Expiry"
+          style={{ textDecoration: "none" }}
+        >
+          <Tab active={location.pathname === "/employee-Contract-Visa-Expiry"}>
+            Employee Contract & Visa Expiry
+          </Tab>
         </NavLink>
-         <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee OnLeave</Tab>
+        <NavLink
+          to="/employee-Contract-Visa-Expiry"
+          style={{ textDecoration: "none" }}
+        >
+          <Tab active={location.pathname === "/employee-Contract-Visa-Expiry"}>
+            Employee OnLeave
+          </Tab>
         </NavLink>
-        </Tabs>
-        <hr style={{marginTop:"-18px"}}></hr>
-        
+      </Tabs>
+      <hr style={{ marginTop: "-18px" }}></hr>
+
       <Table>
         <thead>
           <tr>
@@ -175,12 +196,22 @@ const EmployeeList = () => {
             employeeList.map((emp, index) => (
               <tr key={emp.id}>
                 <td>{index + 1 + (page - 1) * 7}</td>
-                <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <td
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
                   {emp.profile_pic ? (
                     <img
                       src={emp.profile_pic}
                       alt={emp.name}
-                      style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                      }}
                     />
                   ) : (
                     <PiUserCirclePlusThin size={40} color="#999" />
@@ -191,69 +222,110 @@ const EmployeeList = () => {
                 <td>{emp.email}</td>
                 <td>{emp.designation}</td>
                 <td>{emp.department}</td>
-                <td onClick={() => navigate(`/ViewBasic/${emp.id}`)} style={{ cursor: 'pointer' }}>
+                <td
+                  onClick={() => navigate(`/ViewBasic/${emp.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
                   <FaInfoCircle />
                 </td>
                 <td>
-                  <FaTrash color="red" style={{ cursor: 'pointer' }} onClick={() => handleDeleteClick(emp.id)} />
+                  <FaTrash
+                    color="red"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleDeleteClick(emp.id)}
+                  />
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="8" style={{ textAlign: "center" }}>No employees found.</td>
+              <td colSpan="8" style={{ textAlign: "center" }}>
+                No employees found.
+              </td>
             </tr>
           )}
         </tbody>
       </Table>
 
       <Pagination>
-        <span onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>&larr;</span>
-        {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map((pageNumber) => (
-          <span
-            key={pageNumber}
-            onClick={() => setPage(pageNumber)}
-            className={page === pageNumber ? 'active' : ''}
-
-            
-          >
-            {pageNumber}
-          </span>
-        ))}
-        <span onClick={() => {
-          if (page < (pagination?.total_pages || 1)) setPage(page + 1);
-        }}>&rarr;</span>
+        <span onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>
+          &larr;
+        </span>
+        {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
+          (pageNumber) => (
+            <span
+              key={pageNumber}
+              onClick={() => setPage(pageNumber)}
+              className={page === pageNumber ? "active" : ""}
+            >
+              {pageNumber}
+            </span>
+          )
+        )}
+        <span
+          onClick={() => {
+            if (page < (pagination?.total_pages || 1)) setPage(page + 1);
+          }}
+        >
+          &rarr;
+        </span>
       </Pagination>
 
       {showDeleteModal && (
-        <div style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 1000
-        }}>
-          <div style={{
-            background: "white",
-            padding: "2rem",
-            borderRadius: "10px",
-            textAlign: "center",
-            maxWidth: "400px",
-            width: "100%"
-          }}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "white",
+              padding: "2rem",
+              borderRadius: "10px",
+              textAlign: "center",
+              maxWidth: "400px",
+              width: "100%",
+            }}
+          >
             <h3>Confirm Deletion</h3>
             <p>Are you sure you want to delete this employee?</p>
             <div style={{ marginTop: "1rem" }}>
-              <button onClick={confirmDelete} style={{
-                marginRight: "1rem", backgroundColor: "red", color: "white",
-                border: "none", padding: "0.5rem 1rem", borderRadius: "5px", cursor: "pointer"
-              }}>Delete</button>
-              <button onClick={cancelDelete} style={{
-                backgroundColor: "gray", color: "white", border: "none",
-                padding: "0.5rem 1rem", borderRadius: "5px", cursor: "pointer"
-              }}>Cancel</button>
+              <button
+                onClick={confirmDelete}
+                style={{
+                  marginRight: "1rem",
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Delete
+              </button>
+              <button
+                onClick={cancelDelete}
+                style={{
+                  backgroundColor: "gray",
+                  color: "white",
+                  border: "none",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
