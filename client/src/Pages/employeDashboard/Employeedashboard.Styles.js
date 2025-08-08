@@ -22,14 +22,15 @@ export const Container = styled.div`
 /* Responsive card grid */
 export const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(2, 1fr); /* default: 2 per row for small screens */
   gap: 10px;
   margin-bottom: 12px;
 
   @media (min-width: 768px) {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(4, 1fr); /* 4 per row for tablets and up */
   }
 `;
+
 
 export const InfoCard = styled.div`
   background: white;
