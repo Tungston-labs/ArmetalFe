@@ -4,7 +4,7 @@ import Calendar from 'react-calendar';
 
 export const Container = styled.div`
   padding: 2rem;
-  max-width: 1200px;
+  // max-width: 1200px;
   margin: auto;
   background: #F4F4F4;
 `;
