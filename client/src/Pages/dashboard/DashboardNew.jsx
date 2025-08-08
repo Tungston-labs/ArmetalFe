@@ -166,7 +166,7 @@ const [hover, setHover] = useState(false);
             <Flex justify="space-between" align="center">
         <Heading mb={0}>Employee Presence & Upcoming Holidays</Heading>
 
-        <FiArrowUpRight
+        {/* <FiArrowUpRight
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           style={{
@@ -176,7 +176,7 @@ const [hover, setHover] = useState(false);
             transform: hover ? "scale(1.2)" : "scale(1)",
             transition: "all 0.3s ease",
           }}
-        />
+        /> */}
      {/* <hr />   */}
       </Flex>
       {/* <hr /> */}

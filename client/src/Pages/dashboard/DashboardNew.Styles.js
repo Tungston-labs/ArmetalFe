@@ -91,7 +91,8 @@ width:66%;
 
 export const DepartmentCard = styled.div`
   flex: 1;
-  min-width: 235px;
+  min-height:150px;
+  min-width: 250px;
   background: #fff;
   border: 1px solid #ddd;
 //   border-left: 10px solid #cce0ff;
@@ -102,6 +103,7 @@ export const DepartmentCard = styled.div`
   align-items: center;
   gap: 1rem;
 
+
   h4 {
     margin: 0;
     font-size:1rem;
@@ -110,7 +112,7 @@ export const DepartmentCard = styled.div`
 
   p {
     margin: 4px 0;
-    font-size: 0.9rem;
+    font-size: 1rem;
       font-family:"raleway"
   }
 
@@ -122,16 +124,16 @@ export const DepartmentCard = styled.div`
 `;
 
 export const Label = styled.div`
-  font-size: 3rem;
+  font-size: 4rem;
   font-weight: bold;
   color: #B5E2FF;
   font-family:"raleway";
 `;
 
 export const Heading = styled.h3`
-   margin-top: 2rem;
+   margin-top: 1rem;
   font-weight: bold;
-  font-size:1.6rem;
+  font-size:1.8rem;
   font-family:"satoshi";
 `;
 export const DepartmentCalendarWrapper = styled.div`
@@ -139,6 +141,7 @@ export const DepartmentCalendarWrapper = styled.div`
   gap: 2rem;
   margin-top: 1rem;
   align-items: flex-start;
+  margin-bottom:3%;
 `;
 
 // export const DepartmentGrid = styled.div`
@@ -160,7 +163,7 @@ export const PresenceContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  margin-top: 1rem;
+  margin-top: 3rem;
   width:100%;
 
 `;
@@ -216,8 +219,8 @@ export const Avatar = styled.div`
 `;
 export const HolidayCard = styled(Card)`
   background: #f4f4f4;
-//   margin-top: -10%;
-  flex-direction: column; /* 👈 Ensure items stack vertically */
+  margin-top: -1%;
+  flex-direction: column; 
   align-items: stretch;
   gap:10px;
 `;
