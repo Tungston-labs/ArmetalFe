@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Container,
   Header,
-
+ErrorMessage,
   Title,
   Subtitle,
   FormSection,
@@ -46,6 +46,7 @@ const HolidayManager = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const { list: holidays, loading, error,totalPages, currentPage } = useSelector(state => state.holidays);
+const [formError, setFormError] = useState("");
 
   const [formData, setFormData] = useState({ name: "", type: "", date: "" });
 
@@ -73,7 +74,7 @@ const HolidayManager = () => {
   
 
 
-  const handleAdd = () => {
+const handleAdd = () => {
   if (formData.name && formData.type && formData.date) {
     const formattedDate = formatDateToISO(formData.date);
 
@@ -84,8 +85,12 @@ const HolidayManager = () => {
     }));
 
     setFormData({ name: "", type: "", date: "" });
+    setFormError(""); // Clear error
+  } else {
+    setFormError("⚠️ Please fill in all fields before adding a holiday.");
   }
 };
+
 
 
 const handleDeleteClick = (id) => {
@@ -145,6 +150,7 @@ const cancelDelete = () => {
   <AddButton onClick={handleAdd}>Add</AddButton>
 </FormSection>
 
+{formError && <ErrorMessage>{formError}</ErrorMessage>}
 
       <Hr />
 
@@ -159,37 +165,6 @@ const cancelDelete = () => {
               <Th></Th>
             </tr>
           </thead>
-{/* <tbody>
-  {loading ? (
-    <tr>
-      <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-        <SyncLoader />
-      </Td>
-    </tr>
-  ) : holidays.length === 0 ? (
-    <tr>
-      <Td colSpan="5" style={{ textAlign: "center" }}>
-        No holidays found.
-      </Td>
-    </tr>
-  ) : (
-    holidays.map((item, index) => (
-      <tr key={item.id}>
-        <Td>{(currentPage - 1) * 7 + index + 1}</Td>
-        <Td>{item.description}</Td>
-        <Td>{item.holiday_type_display}</Td>
-        <Td>{item.date}</Td>
-        <Td>
-          <FaTrashAlt
-            style={{ color: "red", cursor: "pointer" }}
-            onClick={() => handleDeleteClick(item.id)}
-          />
-        </Td>
-      </tr>
-    ))
-  )}
-</tbody> */}
-
 <tbody>
   {loading ? (
     <tr>

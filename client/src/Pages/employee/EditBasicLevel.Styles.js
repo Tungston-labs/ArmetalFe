@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #fafdde;
+  background: white;
  font-family: Satoshi;
 `;
 
@@ -68,6 +68,7 @@ export const Input = styled.input`
   border-radius: 6px;
   border: 1px solid #aaa;
   font-size: 0.9rem;
+  
 `;
 
 export const Select = styled.select`

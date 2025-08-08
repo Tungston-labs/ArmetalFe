@@ -6,7 +6,7 @@ export const Container = styled.div`
   border-radius: 10px;
   max-width: 900px;
   margin: 0 auto;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
 
 export const TitleRow = styled.div`
@@ -19,6 +19,7 @@ export const TitleRow = styled.div`
 export const BackArrow = styled.div`
   font-size: 1.2rem;
   cursor: pointer;
+   color:rgb(64, 101, 220);
 `;
 
 export const Title = styled.h2`
@@ -83,7 +84,7 @@ export const CancelButton = styled.button`
 
 export const SaveButton = styled.button`
   padding: 0.7rem 1.5rem;
-  background-color: #6c7380;
+  background-color: #304EB0;
   border: none;
   border-radius: 6px;
   color: white;
@@ -91,6 +92,6 @@ export const SaveButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #4e545f;
+    background-color: #3f60cbff;
   }
 `;

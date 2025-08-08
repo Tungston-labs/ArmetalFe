@@ -103,7 +103,7 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 7px;
   width:40%;
-    background-color:#FBFEF3;
+    background-color:white;
 `;
 
 export const Select = styled.select`
@@ -135,7 +135,7 @@ export const DateWrapper = styled.div`
 
 
 export const AddButton = styled.button`
-  background-color: #172554;
+  background-color: #3352BA;
   color: white;
   padding: 8px 16px;
   border: none;
@@ -165,12 +165,15 @@ width: 100%;
   }
 
   th {
-    background-color: #5F53A53B;
-    color: #333;
+    background-color: #3352BA;
+    color: white;
         padding: 0.75rem;
     font-family:raleway;
   }
-
+  /* ✅ Background color for even rows */
+  tbody tr:nth-child(even) td {
+    background-color: #E6ECFF;
+  }
   /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
 box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
@@ -180,13 +183,13 @@ font-family:satoshi;
 
   /* Optional: radius for only first and last td of each row */
   tbody tr td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
 
   tbody tr td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   tbody tr:hover td {
@@ -227,4 +230,9 @@ export const Pagination = styled.div`
       color: white;
     }
   }
+`;
+export const ErrorMessage = styled.p`
+  color: red;
+  margin-top: 8px;
+  font-size: 14px;
 `;

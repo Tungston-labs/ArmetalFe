@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
  font-family: Satoshi;
 `;
 
@@ -73,6 +73,9 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 100%;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 
 `;
 
@@ -83,6 +86,9 @@ export const Textarea = styled.textarea`
   width: 100%;
   resize: none;
   height: 70px;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const Avatar = styled.img`
@@ -96,7 +102,7 @@ export const Avatar = styled.img`
 
 export const Section = styled.div`
 //   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
   font-family: sans-serif;
 `;
 
@@ -273,8 +279,9 @@ export const LabelRow = styled.div`
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 0.8rem;
-  background:white;
-  color:#999999;
+  background:#F1F1F1;
+  color:black;
+  padding:10px;
 `;
 
 export const UploadButton = styled.button`
@@ -315,6 +322,8 @@ export const InlineUploadRow = styled.div`
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap; /* makes it responsive */
+  background:#F1F1F1;
+  padding:10px;
 `;
 
 export const ButtonGroup = styled.div`

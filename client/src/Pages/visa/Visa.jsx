@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
+  Container, DepartmentSelect,
   HeaderSection,
   Tabs,
   Tab,
@@ -10,23 +10,16 @@ import {
   ProfileImg,
   Pagination,
   SearchInput,
-  AddButton,
   HRManager,
   Subtitle,
-  ActionArea,
-  TitleSection,
-  FilterSection,
-  DepartmentSelect,
-  SearchWrapper
-} from "../employee/EmployeeList.styles";
+  TitleSection
+} from "../leaveDetails/EmployeeList.styles";
 
-import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
-import { LuArrowLeft } from "react-icons/lu";
+import { FaInfoCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
-import SyncLoader from "react-spinners/SyncLoader";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -34,24 +27,26 @@ const EmployeeList = () => {
   const location = useLocation();
 
   const { employeeList, loading, pagination } = useSelector((state) => state.employees);
-  console.log("EmployeeList from Redux:", employeeList);
-
   const [searchText, setSearchText] = useState("");
   const [page, setPage] = useState(1);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [departmentFilter, setDepartmentFilter] = useState("");
-
-
+  const [sortBy, setSortBy] = useState(""); // visa_expiry_date or contract_expiry_date
 
   useEffect(() => {
-    dispatch(getAllEmployees({ page, search: searchText }));
-  }, [dispatch, page, searchText]);
+    dispatch(getAllEmployees({ page, search: searchText, sortBy }));
+  }, [dispatch, page, searchText, sortBy]);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
-    setPage(1); // Reset to page 1 on new search
+    setPage(1);
   };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    setPage(1);
+  };
+
   const handleDeleteClick = (id) => {
     setSelectedEmployeeId(id);
     setShowDeleteModal(true);
@@ -59,17 +54,15 @@ const EmployeeList = () => {
 
   const confirmDelete = async () => {
     await dispatch(deleteEmployeeById(selectedEmployeeId));
-    dispatch(getAllEmployees({ page, search: searchText })); // Refetch
+    dispatch(getAllEmployees({ page, search: searchText, sortBy }));
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-
 
   const cancelDelete = () => {
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-
 
   return (
     <Container>
@@ -83,7 +76,6 @@ const EmployeeList = () => {
 
       <HeaderSection>
         <TitleSection>
-          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
           <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Employee</Title>
@@ -91,72 +83,49 @@ const EmployeeList = () => {
           </div>
         </TitleSection>
 
-        {/* Row 1: Search + Add button */}
-        <ActionArea>
-          <FilterSection>
-            <SearchWrapper>
-              <SearchInput
-                type="text"
-                placeholder="Search by employee name or ID"
-                value={searchText}
-                onChange={handleSearch}
-              />
-            </SearchWrapper>
-          </FilterSection>
-
-          <AddButton onClick={() => navigate('/basic-details')}>
-            <FaPlus /> Add Employee
-          </AddButton>
-        </ActionArea>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "1rem",
-            width: "100%"
-          }}
-        >
-          {/* Left side: label */}
-          <div style={{ fontWeight: "bold" }}>
-            Departments: <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
-          </div>
-
-          {/* Right side: dropdown */}
-          <DepartmentSelect
-            value={departmentFilter}
-            onChange={(e) => setDepartmentFilter(e.target.value)}
+        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent:"space-between" }}>
+          <SearchInput
+            type="text"
+            placeholder="Search by employee name or ID"
+            value={searchText}
+            onChange={handleSearch}
+          />
+          <select
+            value={sortBy}
+            onChange={handleSortChange}
+            style={{
+              padding: "8px 10px",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+              cursor: "pointer"
+            }}
           >
-            <option value="">All Departments</option>
-            <option value="HR">HR</option>
-            <option value="IT">IT</option>
-            <option value="Finance">Finance</option>
-            <option value="Marketing">Marketing</option>
-          </DepartmentSelect>
+            <option value="">Sort by</option>
+            <option value="visa_expiry_date">Visa Expiry Date</option>
+            <option value="contract_expiry_date">Contract Expiry Date</option>
+          </select>
         </div>
-
-
       </HeaderSection>
-
 
       <Tabs>
         <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Total Employees</Tab>
+          <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
         </NavLink>
         <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
         </NavLink>
-        <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+        <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
         </NavLink>
-        <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee Contract & Visa Expiry</Tab>
         </NavLink>
         <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
         </NavLink>
       </Tabs>
+
+      <hr style={{ marginTop: "-18px" }} />
 
       <Table>
         <thead>
@@ -168,7 +137,6 @@ const EmployeeList = () => {
             <th>Visa expiry</th>
             <th>Info</th>
             <th>Delete</th>
-
           </tr>
         </thead>
         <tbody>
@@ -181,7 +149,6 @@ const EmployeeList = () => {
               </td>
             </tr>
           ) : Array.isArray(employeeList) && employeeList.length > 0 ? (
-
             employeeList.map((emp, index) => (
               <tr key={emp.id}>
                 <td>{index + 1 + (page - 1) * 7}</td>
@@ -196,12 +163,14 @@ const EmployeeList = () => {
                 <td>{emp.employee_id}</td>
                 <td>{emp.email}</td>
                 <td>{emp.visa_expiry_date}</td>
-
                 <td onClick={() => navigate(`/ViewBasic/${emp.id}`)}><FaInfoCircle /></td>
                 <td>
-                  <FaTrash color="red" style={{ cursor: 'pointer' }} onClick={() => handleDeleteClick(emp.id)} />
+                  <FaTrash
+                    color="red"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleDeleteClick(emp.id)}
+                  />
                 </td>
-
               </tr>
             ))
           ) : (
@@ -249,8 +218,6 @@ const EmployeeList = () => {
           </span>
         </Pagination>
       )}
-
-
 
       {showDeleteModal && (
         <div style={{
@@ -304,12 +271,8 @@ const EmployeeList = () => {
           </div>
         </div>
       )}
-
     </Container>
   );
 };
 
 export default EmployeeList;
-
-
-

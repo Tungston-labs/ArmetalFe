@@ -137,9 +137,6 @@ export default function EmployeeAttendance() {
     </div>
     
   </div>
-  <div style={{ fontWeight: "bold" }}>
-        Departments: <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
-      </div>
 </HeaderSection>
 
 
@@ -155,16 +152,15 @@ export default function EmployeeAttendance() {
                 <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
                   <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
                 </NavLink>
-                <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
-                  <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+                <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
+                  <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee Contract & Visa Expiry </Tab>
                 </NavLink>
                 <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
                   <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
                 </NavLink>
               </Tabs>
-
-      {/* <TableTitle>{selectedDate || "All Dates"}</TableTitle> */}
-
+            <hr style={{marginTop:"-18px"}}></hr>
+     
       <Table>
         <thead>
           <TableRow $header>

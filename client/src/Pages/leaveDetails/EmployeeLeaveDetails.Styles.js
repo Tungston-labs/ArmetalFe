@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #fbfef3;
+  background: white;
   font-family: "Segoe UI", sans-serif;
 `;
 
@@ -45,7 +45,9 @@ export const Input = styled.input`
   border-radius: 6px;
   width: 99%;
   margin-bottom: 1rem;
-  
+  border-radius: 7px;
+border: 1px solid #3253C1;
+background: #FFF;
 `;
 
 export const TextArea = styled.textarea`
@@ -56,6 +58,9 @@ export const TextArea = styled.textarea`
   border-radius: 6px;
   resize: vertical;
   margin-bottom: 2rem;
+  border-radius: 7px;
+border: 1px solid #3253C1;
+background: #FFF;
 `;
 
 export const SectionTitle = styled.h4`
@@ -185,6 +190,9 @@ export const FullWidthInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   height:40%;
+  border-radius: 7px;
+border: 1px solid #3253C1;
+background: #FFF;
 `;
 
 export const TwoColumnRow = styled.div`

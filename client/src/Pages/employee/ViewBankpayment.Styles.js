@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
   font-family: Satoshi;
 `;
 
@@ -49,6 +49,7 @@ export const Row = styled.div`
   width:100%;
   flex-wrap: wrap;
   align-items: flex-start;
+  
 `;
 
 export const LeftSection = styled.div`
@@ -73,6 +74,9 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 100%;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 
 `;
 
@@ -83,6 +87,9 @@ export const Textarea = styled.textarea`
   width: 100%;
   resize: none;
 height:70px;
+border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const Avatar = styled.img`
@@ -96,7 +103,7 @@ export const Avatar = styled.img`
 
 export const Section = styled.div`
 //   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
   font-family: sans-serif;
 `;
 
@@ -253,7 +260,7 @@ export const ImageColumn = styled.div`
   img {
     width: 150px;
     height: 150px;
-    border-radius: 50%;
+    border-radius: 10%;
     object-fit: cover;
   }
 `;

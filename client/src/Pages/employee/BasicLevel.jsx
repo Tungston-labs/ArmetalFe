@@ -15,6 +15,7 @@ import {
 import Multistep from '../../Components/Multistep';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import SyncLoader from '../../Components/Loder';
+import { FaPlus } from 'react-icons/fa';
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -390,47 +391,123 @@ const handleSubmit = () => {
       type="number"
       min="0"
     />
-  </div>
-  <div /> {/* empty div to preserve 2-column layout */}
+   </div>
+
+ 
+   <div style={{ marginTop: '10px' }}>
+  {errors.role && (
+    <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.role}</p>
+  )}
+  <select
+    name="role"
+    value={formData.role}
+    onChange={handleChange}
+    autoComplete="off"
+    style={{
+      width: '100%',
+      padding: '0.7rem',
+      fontSize: '0.8rem',
+      borderRadius: '7px',
+      border: '1px solid #052DB4',
+      background: '#FFF',
+      color: 'black',
+    }}
+  >
+    <option value="">Select Role</option>
+    <option value="HR">HR</option>
+    <option value="Employee">Employee</option>
+    <option value="Manager">Manager</option>
+  </select>
+</div>
+
+         
 </TwoColumnRows>
 
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
-      <ColumnRow>
-      {[
-  { key: 'phno', label: 'Phone number' },
-  { key: 'passport_number', label: 'passport_number' },
-  // { key: 'workPermit', label: 'Work Permit' },
-  { key: 'visa_expiry_date', label: 'visa_expiry_date', type: 'date' },
-  { key: 'iqama_number', label: 'iqama_number ' },
-  { key: 'insurance_number', label: 'insurance_number' },
-].map(({ key, label, type }) => (
-  <div key={key}>
-    {errors[key] && (
-      <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>
-    )}
-    <Input
-      name={key}
-      placeholder={label}
-      type={key === 'visa_expiry_date' ? 'text' : type || 'text'}
-      value={formData[key]}
+
+<ColumnRow>
+  {[
+    { key: 'phno', label: 'Phone number' },
+    { key: 'passport_number', label: 'Passport_number' },
+    { key: 'visa_expiry_date', label: 'Visa_expiry_date', type: 'date' },
+    { key: 'iqama_number', label: 'Iqama_number ' },
+    { key: 'insurance_number', label: 'Insurance_number' },
+    { key: 'contract_expiry_date', label: 'Contract_expiry_date' },
+    { key: 'idcard', label: 'ID Card' }, // renamed label for clarity
+  ].map(({ key, label, type }) => (
+    <div key={key}>
+      {errors[key] && (
+        <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>
+      )}
+
+     {key === 'idcard' ? (
+  <div
+    onClick={() => document.getElementById('idcard-upload').click()}
+    style={{
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      border: '1px solid #052DB4',
+      borderRadius: '7px',
+      padding: '0.7rem',
+      cursor: 'pointer',
+      backgroundColor: '#fff',
+      fontSize: '0.9rem',
+      marginTop:"10px"
+    }}
+  >
+    {/* Simulated placeholder or file name */}
+    <span
+      style={{
+        flex: 1,
+        color: formData.idcard ? '#000' : '#999',
+        fontSize: '0.8rem',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {formData.idcard?.name || 'ID Card'}
+    </span>
+
+    <FaPlus style={{ color: '#3352BA', fontSize: '1rem', marginLeft: '0.5rem' }} />
+
+    <input
+      id="idcard-upload"
+      type="file"
+      name="idcard"
+      accept="image/*"
       onChange={handleChange}
-       autoComplete="off"
-      onFocus={
-        key === 'visa_expiry_date'
-          ? (e) => (e.target.type = 'date')
-          : undefined
-      }
-      onBlur={
-        key === 'visa_expiry_date'
-          ? (e) => {
-              if (!e.target.value) e.target.type = 'text';
-            }
-          : undefined
-      }
+      style={{ display: 'none' }}
     />
   </div>
-))}
-      </ColumnRow>
+) : (
+  <Input
+    name={key}
+    placeholder={label}
+    type={key === 'visa_expiry_date' ? 'text' : type || 'text'}
+    value={formData[key]}
+    onChange={handleChange}
+    autoComplete="off"
+    onFocus={
+      key === 'visa_expiry_date'
+        ? (e) => (e.target.type = 'date')
+        : undefined
+    }
+    onBlur={
+      key === 'visa_expiry_date'
+        ? (e) => {
+            if (!e.target.value) e.target.type = 'text';
+          }
+        : undefined
+    }
+  />
+)}
+
+    </div>
+  ))}
+</ColumnRow>
+
 
       <FlexRow>
         <ApproveButton onClick={handleSubmit}>Next</ApproveButton>

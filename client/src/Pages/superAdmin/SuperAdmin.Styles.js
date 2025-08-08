@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   padding: 20px;
   font-family: 'Segoe UI', sans-serif;
-background: #FBFEF3;
+background: white;
   min-height: 100vh;
 `;
 export const HeaderSection = styled.div`

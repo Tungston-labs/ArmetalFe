@@ -1,6 +1,121 @@
+// EmployeeAttendance.styles.js
 import styled from "styled-components";
 import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
 
+
+
+export const Header = styled.div`
+ //  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    h2 {
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    img {
+      height: 40px;
+    }
+  }
+
+  .right {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+`;
+
+export const RoleBadge = styled.div`
+  background: white;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+`;
+
+export const TopRightBox = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  input[type="date"] {
+    padding: 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+`;
+
+export const TabBar = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  gap: 1rem;
+  flex-wrap: wrap;
+`;
+
+
+
+export const TableTitle = styled.h3`
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: #333;
+`;
+
+
+
+export const TableRow = styled.tr`
+  background-color: ${(props) => (props.$header ? '#f0f0f0' : 'white')};
+`;
+
+export const TableHeader = styled.th`
+  text-align: left;
+  padding: 1rem;
+  background: #d6dee9;
+  color: #000;
+`;
+
+export const TableCell = styled.td`
+ padding: 0.8rem;
+  vertical-align: middle;
+`;
+
+export const EmployeeImg = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+`;
+
+
+export const SearchSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 1.5rem 0;
+`;
+
+
+
+export const DateInput = styled.input`
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  background-color: #fff;
+  width: 120px;
+`;
 
 export const Container = styled.div`
   padding: 2rem;
@@ -17,8 +132,11 @@ export const HeaderSection = styled.div`
 
 export const TitleSection = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
 `;
+
 
 export const Title = styled.h2`
   font-size: 22px;
@@ -69,18 +187,21 @@ export const HRManager = styled.div`
 
 export const Tabs = styled.div`
   display: flex;
-  gap: 0rem;
-  margin: 1.5rem 0;
+  gap: 2rem;
+  margin: 1.7rem 0;
+  // border-bottom: 2px solid #ddd;
+  
 `;
 
 export const Tab = styled.div`
-  padding: 0.5rem 1rem;
-  border-radius: 0px;
+  padding:5px  20px;
   cursor: pointer;
-  background-color: ${({ active }) => (active ? "#1e3a8a" : "#fff")};
+  background:#304EB0;
+  font-weight: 500;
+  background: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
   color: ${({ active }) => (active ? "white" : "#555")};
-  font-weight: ${({ active }) => (active ? "bold" : "normal")};
 `;
+
 
 export const ActionArea = styled.div`
   display: flex;
@@ -98,14 +219,7 @@ export const FilterSection = styled.div`
   flex-wrap: wrap;
 `;
 
-export const SearchIcon = styled(FiSearch)`
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  color: #888;
-  font-size: 1rem;
-`;
+
 
 export const AddButton = styled.button`
   background: #1e3a8a;
@@ -142,10 +256,21 @@ export const SearchInput = styled.input`
 
 
 export const DepartmentSelect = styled.select`
-  padding: 0.5rem 1rem;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 5px;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  background: white;
+`;
 
+
+export const SearchIcon = styled(FiSearch)`
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1rem;
 `;
 
 export const Table = styled.table`

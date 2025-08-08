@@ -8,6 +8,9 @@ import {
 import { getEmployees, getTasks } from '../../Redux/dailyTaskSlice';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { PiUserCirclePlusThin } from "react-icons/pi"; 
+import { FaRegCalendarAlt } from "react-icons/fa";
+import TaskIcon from "../../assets/task.svg"; 
+
 export default function DailyTask() {
   const dispatch = useDispatch();
   const { employees, tasks, loading } = useSelector(state => state.dailyTask);
@@ -44,12 +47,25 @@ export default function DailyTask() {
   const filteredEmployees = employees.filter(emp =>
     emp.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+const handlePrevDate = () => {
+  const prev = new Date(selectedDate);
+  prev.setDate(prev.getDate() - 1);
+  setSelectedDate(prev.toISOString().split("T")[0]);
+};
+
+const handleNextDate = () => {
+  const next = new Date(selectedDate);
+  next.setDate(next.getDate() + 1);
+  setSelectedDate(next.toISOString().split("T")[0]);
+};
 
   return (
     <Container>
       <Header>
         <TitleSection>
-          <img src="/images/task.png" alt="icon" width="50" height="50" />
+          {/* <img src="/images/task.png" alt="icon" width="50" height="50" /> */}
+                 <img src={TaskIcon}  alt="Task icon" />
+          
           <TextBlock>
             <Title>Daily Task</Title>
             <Subtitle>Check daily task details for each employee</Subtitle>
@@ -67,11 +83,23 @@ export default function DailyTask() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <div>
-          <button>{"<"}</button>
-          <span>{selectedDate}</span>
-          <button>{">"}</button>
-        </div>
+        <div className="calendar-header">
+  <div className="left">
+    <FaRegCalendarAlt className="calendar-icon" />
+    <div className="date-info">
+      <div className="day">{new Date(selectedDate).getDate()}</div>
+      <div>
+        <div className="month">{new Date(selectedDate).toLocaleString('default', { month: 'long' })}</div>
+        <div className="weekday">{new Date(selectedDate).toLocaleString('default', { weekday: 'long' })}</div>
+      </div>
+    </div>
+  </div>
+  <div className="nav">
+    <button onClick={handlePrevDate}>{"<"}</button>
+    <button onClick={handleNextDate}>{">"}</button>
+  </div>
+</div>
+
         <input type="date" value={selectedDate} onChange={handleDateChange} />
       </DateSelector>
 

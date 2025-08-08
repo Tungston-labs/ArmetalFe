@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   // padding: 2rem;
-  background: #fbfef3;
+  background: white;
   font-family: 'Segoe UI', sans-serif;
 `;
 
@@ -41,11 +41,14 @@ export const FormGroup = styled.div`
 
 
 export const Input = styled.input`
-  width: 100%;
+  width: 97%;
   padding: 0.6rem;
   border-radius: 8px;
   border: 1px solid #ccc;
 gap:1rem;
+border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const Select = styled.select`
@@ -54,6 +57,9 @@ export const Select = styled.select`
   border-radius: 8px;
   border: 1px solid #ccc;
   background:white;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const ImageUpload = styled.div`
@@ -94,4 +100,5 @@ export const TwoColumnRows= styled.div`
   gap: 3rem;
   width:100%;
   margin-top:10px;
+  
 `;

@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  background: #fafcee;
+  background: white;
   padding: 2rem;
   min-height: 100vh;
   font-family: sans-serif;
@@ -93,9 +93,10 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 1rem;
   th {
-    background: #D7D7E1;
+    background: #304EB0;
     padding: 0.8rem;
     text-align: center;
+    color:white;
   }
 `;
 
@@ -107,23 +108,28 @@ export const TableRow = styled.tr`
 
 
  export const TimeCell = styled.td`
-  background: #ecffc8;
+
   padding: 0.8rem;
   text-align: center;
   width: 20%;
   font-weight: bold;
   font-size: 0.95rem;
- 
 
   &:first-child {
     border-top-left-radius: 1px;
+     background: #304EB0;
+ color:white;
+
     border-bottom-left-radius: 1px;
   }
 
   &:last-child {
     border-top-right-radius: 1px;
+      background: #FD907B;
+  
     border-bottom-right-radius: 1px;
   }
+
 `;
 
 
@@ -170,7 +176,9 @@ export const Input = styled.input`
   width: 99%;
   margin-bottom: 1rem;
   color:black;
-  
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const InfoSection = styled.div`
@@ -186,6 +194,9 @@ export const FullWidthInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   height:40%;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const TwoColumnRow = styled.div`
@@ -207,4 +218,93 @@ export const InfoGrid = styled.div`
   width:100%;
       // justify-content: space-between;
 
+`;
+export const DateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  // justify-content: space-between;
+  padding: 20px;
+  gap: 12rem;
+`;
+
+export const WorkingInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  strong {
+    font-weight: 600;
+    color: #333;
+  }
+  div {
+    font-size: 16px;
+    font-weight: bold;
+  }
+`;
+
+export const DateDetails = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  .date-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h1 {
+    font-size: 40px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .month-day {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    strong {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+    }
+  }
+`;
+
+export const DayBoxes = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+justify-content: center;
+`;
+
+export const DayBox = styled.div`
+  background-color: #f3f3f3;
+  padding: 10px;
+  width: 80px;
+  text-align: center;
+  border-radius: 6px;
+  strong {
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  div {
+    margin-top: 5px;
+    font-size: 16px;
+  }
+  p {
+    font-size: 12px;
+    color: #888;
+  }
+`;
+
+export const ActiveDayBox = styled(DayBox)`
+  background-color: #3f51b5;
+  color: white;
 `;

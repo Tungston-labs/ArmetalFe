@@ -8,7 +8,7 @@ import {
   TotalRow, Footer, RightHeader, LeftHeader
 } from './Payroll.styles';
 import { BsPrinter } from "react-icons/bs";
-import { printElement } from '../../utlis/printPayroll';
+import { printElement } from '../../services/utlis/printPayroll';
 
 
 const PayrollDetails = () => {

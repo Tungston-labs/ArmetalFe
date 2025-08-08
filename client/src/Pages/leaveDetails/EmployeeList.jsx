@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
+  Container,DepartmentSelect,
   HeaderSection,
   Tabs,
   Tab,
@@ -15,10 +15,9 @@ import {
   Subtitle,
   ActionArea,
   TitleSection,
-  FilterSection,
-  DepartmentSelect,
-  SearchWrapper,
-  SearchIcon
+  // FilterSection,
+  // SearchWrapper,
+  // SearchIcon
 } from "./EmployeeList.styles";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
@@ -81,28 +80,29 @@ const EmployeeList = () => {
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
+          
         </TitleSection>
-
-        {/* Row 1: Search + Add button */}
+          <SearchInput
+            type="text"
+            placeholder="Search by employee name or ID"
+            value={searchText}
+            onChange={handleSearch}
+          />
+       
         <ActionArea>
-          <FilterSection>
-            <SearchWrapper>
-              <SearchIcon />
-              <SearchInput
-                type="text"
-                placeholder="Search by employee name or ID"
-                value={searchText}
-                onChange={handleSearch}
-              />
-            </SearchWrapper>
-          </FilterSection>
-
           <AddButton onClick={() => navigate('/basic-details')}>
             <FaPlus /> Add Employee
           </AddButton>
+            <DepartmentSelect>
+        <option value="">All Departments</option>
+        <option value="Design">Design</option>
+        <option value="Engineering">Engineering</option>
+        <option value="HR">HR</option>
+        {/* Add more departments as needed */}
+      </DepartmentSelect>
         </ActionArea>
 
-        <div
+        {/* <div
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -110,14 +110,14 @@ const EmployeeList = () => {
             marginTop: "1rem",
             width: "100%"
           }}
-        >
+        > */}
           {/* Left side: label */}
-          <div style={{ fontWeight: "bold" }}>
+          {/* <div style={{ fontWeight: "bold" }}>
             Departments <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
-          </div>
+          </div> */}
 
           {/* Right side: dropdown */}
-          <DepartmentSelect
+          {/* <DepartmentSelect
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
           >
@@ -126,30 +126,31 @@ const EmployeeList = () => {
             <option value="IT">IT</option>
             <option value="Finance">Finance</option>
             <option value="Marketing">Marketing</option>
-          </DepartmentSelect>
-        </div>
+          </DepartmentSelect> */}
+        {/* </div> */}
 
       </HeaderSection>
 
 
       <Tabs>
         <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Total Employees</Tab>
+          <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
         </NavLink>
         <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
         </NavLink>
-        <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+        <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
         </NavLink>
-        <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee Contract & Visa Expiry </Tab>
         </NavLink>
-        <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
+         <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee OnLeave</Tab>
         </NavLink>
-      </Tabs>
-
+        </Tabs>
+        <hr style={{marginTop:"-18px"}}></hr>
+        
       <Table>
         <thead>
           <tr>
@@ -213,6 +214,8 @@ const EmployeeList = () => {
             key={pageNumber}
             onClick={() => setPage(pageNumber)}
             className={page === pageNumber ? 'active' : ''}
+
+            
           >
             {pageNumber}
           </span>

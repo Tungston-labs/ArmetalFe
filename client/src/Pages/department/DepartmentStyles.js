@@ -45,7 +45,12 @@ export const Subtitle = styled.p`
   margin-left: 2px;
   font-family: Raleway;
 `;
-
+export const Title = styled.h2`
+  font-size: 22px;
+  margin: 0;
+  font-family:satoshi;
+  color:rgb(64, 101, 220);
+`;
 export const HeaderSection = styled.div`
   display: flex;
   justify-content: space-between;
@@ -56,18 +61,29 @@ export const HeaderSection = styled.div`
 
 export const TitleSection = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  width: 100%;
+
+  .left-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .icon-box {
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    display: inline-block;
+    color: blue;
+  }
 
   img {
     height: 74px;
   }
-
-  div {
-    display: flex;
-    flex-direction: column;
-  }
 `;
+
 
 export const TitleGroup = styled.div`
   display: flex;
@@ -117,13 +133,16 @@ export const AddButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   font-family: Satoshi;
-  background: linear-gradient(to right, rgb(72, 139, 222),rgb(44, 81, 229));
+  background: #304EB0;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 2rem;
   border-radius: 8px;
   border: none;
   font-size: 0.9rem;
   cursor: pointer;
+   &:hover {
+    background-color: #3f60cbff;
+  }
 `;
 
 export const SearchInput = styled.input`
@@ -151,7 +170,7 @@ export const SearchIcon = styled(FiSearch)`
 export const CardGrid = styled.div`
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(4,1fr);
   gap: 1.5rem;
 `;
 

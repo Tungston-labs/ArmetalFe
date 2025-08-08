@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const TableWrapper = styled.div`
   width: 100%;
-  background: #fbfef3;
+  background: white;
   padding: 2rem;
   border-radius: 12px;
   font-family: 'Segoe UI', sans-serif;
