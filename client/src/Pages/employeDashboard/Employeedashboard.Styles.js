@@ -202,18 +202,18 @@ export const ScrollableTableWrapper = styled.div`
 
   /* Laptop screens - show 5 rows */
   @media (min-width: 1024px) and (max-width: 1440px) {
-    max-height: calc(2 * 60px); /* Adjust row height */ 
-    background:red;
+    max-height: calc(5 * 60px); /* Adjust row height */ 
+    // background:red;
   }
 
   /* Laptop L and larger - show 8 rows */
   @media (min-width: 1440px) {
     max-height: calc(4 * 60px); /* Adjust row height */
-    background:yellow;
+    // background:yellow;
   }
 @media (min-width: 1940px) {
     max-height: calc(7 * 60px); /* Adjust row height */
-    background:green;
+    // background:green;
   }
   /* Optional nice scrollbar */
   &::-webkit-scrollbar {
