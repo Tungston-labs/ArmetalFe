@@ -148,7 +148,7 @@ const Dashboard = () => {
 
    
      <Flex justify="space-between" align="center">
-  <Heading mb={0}>Employee Presence & Upcoming Holidays</Heading>
+  <Heading mb={0}>c</Heading>
   {/* <FiArrowUpRight  style={{color:"#3352BA",fontSize:"30px"}} />
    */}
     <FiArrowUpRight
