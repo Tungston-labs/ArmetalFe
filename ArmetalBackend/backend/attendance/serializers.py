@@ -12,27 +12,6 @@ import pytz
 from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone,safe_parse_datetime,ensure_timezone
 
 
-
-# class AttendanceSessionSerializer(serializers.ModelSerializer):
-#     time_in = serializers.SerializerMethodField()
-#     time_out = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = AttendanceSession
-#         fields = ['time_in', 'time_out']
-
-#     def get_time_in(self, obj):
-#         return self._safe_convert(obj.time_in, obj)
-
-#     def get_time_out(self, obj):
-#         return self._safe_convert(obj.time_out, obj)
-
-#     def _safe_convert(self, dt, obj):
-#         if isinstance(dt, time):
-#             dt = datetime.combine(obj.attendance.date, dt)
-#         return convert_to_company_timezone(dt, obj.attendance.employee)
-
-
 class AttendanceSessionSerializer(serializers.ModelSerializer):
     time_in = serializers.SerializerMethodField()
     time_out = serializers.SerializerMethodField()
@@ -49,28 +28,31 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
         return self._safe_convert(obj.time_out, obj)
 
     def get_duration(self, obj):
-        """Get session duration in hours"""
-        return obj.get_duration()
+        """Get session duration in hours."""
+        if obj.time_in and obj.time_out:
+            delta = obj.time_out - obj.time_in
+            return round(delta.total_seconds() / 3600, 2)
+        return None
 
     def _safe_convert(self, dt, obj):
         """Safely convert datetime to company timezone string"""
         if dt is None:
             return None
-            
+
         try:
             # Handle time objects
             if isinstance(dt, time):
                 # Combine with attendance date
                 dt = datetime.combine(obj.attendance.date, dt)
-            
+
             # Ensure it's a datetime object
             if not isinstance(dt, datetime):
                 return None
-                
+
             # Convert to company timezone
             return convert_to_company_timezone(dt, obj.attendance.employee)
-            
-        except Exception as e:
+
+        except Exception:
             # Fallback to UTC string
             if isinstance(dt, datetime):
                 if dt.tzinfo is None:
