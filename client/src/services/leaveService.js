@@ -26,3 +26,8 @@ export const updateLeaveStatus = async (leaveId, status) => {
   const response = await API.patch(`/leave/admin/${leaveId}/`, { status });
   return response.data;
 };
+
+export const fetchOnLeaveEmployees = async (departmentId) => {
+  const response = await API.get(`/${departmentId}/on-leave-employees/`);
+  return response.data;
+};

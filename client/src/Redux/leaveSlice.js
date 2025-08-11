@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   fetchAllLeaveRequests,
   fetchLeaveDetailsById,
-  updateLeaveStatus
+  updateLeaveStatus,fetchOnLeaveEmployees
 } from '../services/leaveService';
 
 export const getLeaveRequests = createAsyncThunk(
@@ -17,7 +17,16 @@ export const getLeaveRequests = createAsyncThunk(
 );
 
 
-
+export const getOnLeaveEmployees = createAsyncThunk(
+  "departments/getOnLeaveEmployees",
+  async (departmentId, { rejectWithValue }) => {
+    try {
+      return await fetchOnLeaveEmployees(departmentId);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 export const getLeaveDetails = createAsyncThunk(
   'leave/getLeaveDetails',
   async (id, { rejectWithValue }) => {
@@ -28,6 +37,8 @@ export const getLeaveDetails = createAsyncThunk(
     }
   }
 );
+
+
 
 export const patchLeaveStatus = createAsyncThunk(
   'leave/patchLeaveStatus',
@@ -44,6 +55,7 @@ const leaveSlice = createSlice({
   name: 'leave',
   initialState: {
     leaves: [],
+    onLeaveEmployees: [],
     leaveDetails: null,
     loading: false,
     error: null,
@@ -97,6 +109,18 @@ const leaveSlice = createSlice({
         if (index !== -1) {
           state.leaves[index] = updated;
         }
+      })
+      .addCase(getOnLeaveEmployees.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getOnLeaveEmployees.fulfilled, (state, action) => {
+        state.loading = false;
+        state.onLeaveEmployees = action.payload;
+      })
+      .addCase(getOnLeaveEmployees.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
