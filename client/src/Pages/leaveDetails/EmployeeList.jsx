@@ -125,14 +125,12 @@ const EmployeeList = () => {
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </TitleSection>
-
         <SearchInput
           type="text"
           placeholder="Search by employee name or ID"
           value={searchText}
           onChange={handleSearch}
         />
-
         <ActionArea>
           <AddButton onClick={() => navigate("/basic-details")}>
             <FaPlus /> Add Employee

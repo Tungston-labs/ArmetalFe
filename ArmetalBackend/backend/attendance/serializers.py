@@ -8,29 +8,8 @@ from .models import Attendance, AttendanceSession
 from datetime import time,datetime
 from rest_framework import serializers
 from .models import Attendance, AttendanceSession
-import pytz
 from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone,safe_parse_datetime,ensure_timezone
-
-
-
-# class AttendanceSessionSerializer(serializers.ModelSerializer):
-#     time_in = serializers.SerializerMethodField()
-#     time_out = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = AttendanceSession
-#         fields = ['time_in', 'time_out']
-
-#     def get_time_in(self, obj):
-#         return self._safe_convert(obj.time_in, obj)
-
-#     def get_time_out(self, obj):
-#         return self._safe_convert(obj.time_out, obj)
-
-#     def _safe_convert(self, dt, obj):
-#         if isinstance(dt, time):
-#             dt = datetime.combine(obj.attendance.date, dt)
-#         return convert_to_company_timezone(dt, obj.attendance.employee)
+import pytz
 
 
 class AttendanceSessionSerializer(serializers.ModelSerializer):
@@ -79,11 +58,11 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
             return None
 
 
-
 class AttendanceSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source='employee.name', read_only=True)
     profile_pic = serializers.ImageField(source='employee.profile_pic', read_only=True)
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
+    total_hours_formatted = serializers.SerializerMethodField()
 
     class Meta:
         model = Attendance
@@ -94,9 +73,19 @@ class AttendanceSerializer(serializers.ModelSerializer):
             'date',
             'profile_pic',
             'total_hours',
+            'total_hours_formatted',
             'remark',
             'sessions'
         ]
+
+    def get_total_hours_formatted(self, obj):
+        """Format total hours as HH:MM"""
+        if obj.total_hours is None:
+            return "00:00"
+        
+        hours = int(obj.total_hours)
+        minutes = int((obj.total_hours - hours) * 60)
+        return f"{hours:02d}:{minutes:02d}"
 
 
 class EmployeeInfoSerializer(serializers.ModelSerializer):
@@ -108,8 +97,18 @@ class EmployeeInfoSerializer(serializers.ModelSerializer):
 class AttendanceDetailSerializer(serializers.ModelSerializer):
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
     employee = EmployeeInfoSerializer(read_only=True)
+    total_hours_formatted = serializers.SerializerMethodField()
 
     class Meta:
         model = Attendance
-        fields = ['id', 'date', 'total_hours', 'remark', 'employee', 'sessions']
+        fields = ['id', 'date', 'total_hours', 'total_hours_formatted', 'remark', 'employee', 'sessions']
+
+    def get_total_hours_formatted(self, obj):
+        """Format total hours as HH:MM"""
+        if obj.total_hours is None:
+            return "00:00"
+        
+        hours = int(obj.total_hours)
+        minutes = int((obj.total_hours - hours) * 60)
+        return f"{hours:02d}:{minutes:02d}"
 
