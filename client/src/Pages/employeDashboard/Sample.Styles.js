@@ -79,7 +79,7 @@ export const InfoCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 75px; /* Add a fixed height if needed for alignment */
+
 
   h3 {
     font-size: 18px;
@@ -241,7 +241,7 @@ export const RightColumn = styled.div`
   flex: 1; /* take equal space with LeftColumn */
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 `;
 
 // Keep all other styles same (ProfileCard, InfoGrid, etc.)

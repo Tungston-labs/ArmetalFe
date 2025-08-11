@@ -233,10 +233,11 @@ const EmployeeList = () => {
                 <td>{emp.email}</td>
                 <td>{emp.designation}</td>
                 <td>{emp.department}</td>
-                <td
-                  onClick={() => navigate(`/ViewBasic/${emp.id}`)}
-                  style={{ cursor: "pointer" }}
-                >
+               <td
+  onClick={() => navigate(`/fulldashboard/${emp.id}`)}
+  style={{ cursor: "pointer" }}
+>
+ 
                   <FaInfoCircle />
                 </td>
                 <td>
