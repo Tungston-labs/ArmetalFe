@@ -643,6 +643,10 @@ class AttendanceSummaryView(APIView):
 from .models import ScheduleReminder
 from .serializers import ScheduleReminderSerializer
 
+from rest_framework import generics, permissions
+from .models import ScheduleReminder
+from .serializers import ScheduleReminderSerializer
+
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -650,11 +654,15 @@ class ReminderListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         employee = user.employee_db
-        date_str = self.request.query_params.get("date")  # optional ?date=YYYY-MM-DD
-        qs = ScheduleReminder.objects.filter(employee=employee)
+        date_str = self.request.query_params.get("date")
+
+        queryset = ScheduleReminder.objects.filter(employee=employee)
+
+        # Filter only if date param exists
         if date_str:
-            qs = qs.filter(scheduled_datetime__date=date_str)
-        return qs
+            queryset = queryset.filter(scheduled_datetime__date=date_str)
+
+        return queryset.order_by("scheduled_datetime")  # Sorted for nicer listing
 
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
