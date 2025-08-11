@@ -12,20 +12,23 @@ import {
   SearchInput,
   HRManager,
   Subtitle,
-  TitleSection
+  TitleSection,
+  DropdownMenu, DropdownWrapper
 } from "../leaveDetails/EmployeeList.styles";
 
 import { FaInfoCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllEmployees, deleteEmployeeById,getUpcomingExpiryEmployees } from "../../Redux/employeeSlice";
+import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
+import { IoIosArrowDown } from "react-icons/io";
+import { getUpcomingExpiryEmployees } from "../../Redux/employeeSlice";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [menuOpen, setMenuOpen] = useState(false);
   const { employeeList, loading, pagination } = useSelector((state) => state.employees);
   const [searchText, setSearchText] = useState("");
   const [page, setPage] = useState(1);
@@ -80,10 +83,19 @@ const EmployeeList = () => {
     <Container>
       <TopBar>
         <div />
-        <HRManager>
+         <DropdownWrapper>
+        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
           <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
+          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
         </HRManager>
+
+        {menuOpen && (
+          <DropdownMenu>
+            <div>Change Password</div>
+            <div>Logout</div>
+          </DropdownMenu>
+        )}
+      </DropdownWrapper>
       </TopBar>
 
       <HeaderSection>

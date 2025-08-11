@@ -16,7 +16,7 @@ import {
   DepartmentCalendarWrapper,
   CalendarWrapper,
     Flex,
-
+UserMenuWrapper, DropdownIcon, DropdownMenu,
   SubText,
   PresenceContainer,
   ChartContainer,
@@ -28,6 +28,7 @@ import {
 } from "./DashboardNew.Styles";
 import { FiArrowUpRight } from "react-icons/fi";
 import { Calendar, Badge } from "antd";
+import { IoIosArrowDown } from "react-icons/io";
 import "antd/dist/reset.css";
 import { FaUserCircle } from "react-icons/fa";
 import HalfDoughnutChart from "../../Components/HalfDoughnutChart";
@@ -46,6 +47,7 @@ const departments = [
 ];
 
 const CardsOnly = () => {
+      const [menuOpen, setMenuOpen] = useState(false);
   const [holidays, setHolidays] = useState([]);
 const [hover, setHover] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -96,6 +98,30 @@ const [hover, setHover] = useState(false);
 
   return (
     <Container>
+          <div style={{
+    position: "absolute",
+    top: "1px",
+    right: "20px",
+    cursor: "pointer",
+    fontSize: "28px",
+    color: "#14141fff"
+  }}>
+      <UserMenuWrapper onClick={() => setMenuOpen(!menuOpen)}>
+        <FaUserCircle size={28} />
+        <DropdownIcon>
+          <IoIosArrowDown />
+        </DropdownIcon>
+      </UserMenuWrapper>
+
+      {/* Dropdown Menu */}
+      {menuOpen && (
+        <DropdownMenu>
+          <div>Logout</div>
+        <div>Change Password</div>
+          {/* <div>Settings</div> */}
+        </DropdownMenu>
+      )}
+  </div>
       {/* Cards Row */}
       <CardGrid>
         {Array(3)

@@ -266,3 +266,42 @@ export const Flex = styled.div`
   align-items: center;
   margin-top:-7%;
 `;
+
+export const UserMenuWrapper = styled.div`
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #3352BA;
+`;
+
+export const DropdownIcon = styled.div`
+  font-size: 14px;
+  color: #3352BA;
+`;
+
+export const DropdownMenu = styled.div`
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  background: #fff;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  min-width: 150px;
+  z-index: 10;
+
+  div {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #f5f5f5;
+    }
+  }
+    `;

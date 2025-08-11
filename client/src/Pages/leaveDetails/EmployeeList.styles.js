@@ -67,7 +67,7 @@ export const AddButton = styled.button`
 `;
 
 export const SearchInput = styled.input`
-  padding: 0.5rem 1rem;
+  padding: 1rem 2rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   min-width: 250px;
@@ -199,19 +199,19 @@ export const HRManager = styled.div`
  
   align-items: center;
   padding: 0.3rem ;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  // border: 1px solid #ccc;
+  // border-radius: 8px;
   background-color: #fff;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;
   }
 
   img {
-    width: 30px;
+    width: 40px;
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
@@ -268,4 +268,28 @@ export const DepartmentSelect = styled.select`
   border-radius: 5px;
   border: 1px solid #ccc;
   background: white;
+`;
+export const DropdownWrapper = styled.div`
+  position: relative;
+`;
+
+export const DropdownMenu = styled.div`
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 100;
+
+  div {
+    padding: 10px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
 `;
