@@ -1,8 +1,8 @@
-alizers.py
+
 from rest_framework import serializers
 from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
-# serializers.py
+
 from rest_framework import serializers
 from .models import Attendance, AttendanceSession
 from datetime import time,datetime
