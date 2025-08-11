@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import SyncLoader from "react-spinners/SyncLoader";
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
+import { getDepartments } from "../../Redux/departmentSlice";
+
 
 
 export default function EmployeeAttendance() {
@@ -34,19 +36,25 @@ export default function EmployeeAttendance() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [page, setPage] = useState(1);
   const [departmentFilter, setDepartmentFilter] = useState("");
-  const departments = [
-    { name: "All", count: null },
-    { name: "UI/UX designer", count: 2 },
-    { name: "dummy", count: 2 },
-    { name: "dummy", count: 2 },
-    { name: "dummy", count: null },
-    { name: "dummy", count: null },
-  ];
+  const { list: departmentList = [] } = useSelector((state) => state.departments);
+
+ 
   
 
   useEffect(() => {
-    dispatch(getAttendanceList({ search: searchText, date: selectedDate, page }));
-  }, [searchText, selectedDate, page, dispatch]);
+    dispatch(getAttendanceList({
+      search: searchText,
+      date: selectedDate,
+      page,
+      department_id: departmentFilter || undefined
+    }));
+  }, [searchText, selectedDate, page, departmentFilter, dispatch]);
+  
+
+  useEffect(() => {
+    dispatch(getDepartments()); // fetch departments from API
+  }, [dispatch]);
+  
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -132,15 +140,19 @@ export default function EmployeeAttendance() {
       
     <DepartmentSelect
   value={departmentFilter}
-  onChange={(e) => setDepartmentFilter(e.target.value)}
+  onChange={(e) => {
+    setDepartmentFilter(e.target.value);
+    setPage(1); // reset pagination
+  }}
 >
-  {departments.map((dept, index) => (
-    <option key={index} value={dept.name}>
+  <option value="">All Departments</option>
+  {departmentList.map((dept) => (
+    <option key={dept.id} value={dept.id}>
       {dept.name}
-      {dept.count ? ` ${dept.count}` : ""}
     </option>
   ))}
 </DepartmentSelect>
+
 
       
     </div>

@@ -123,14 +123,29 @@ export const getEmployeeById = createAsyncThunk(
 // Fetch All Employees
 export const getAllEmployees = createAsyncThunk(
   'employees/getAll',
-  async ({ page, search }, thunkAPI) => {
+  async ({ page, search, department_id }, thunkAPI) => {
     try {
-      return await fetchAllEmployees(page, search);
+      return await fetchAllEmployees(page, search, department_id);
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response?.data || 'Server error');
     }
   }
 );
+
+export const getUpcomingExpiryEmployees = createAsyncThunk(
+  "employees/getUpcomingExpiry",
+  async ({ expiryType, page = 1, search = "" }, { rejectWithValue }) => {
+    try {
+      const res = await API.get(
+        `/employees/upcoming-expiry/?type=${expiryType}&page=${page}&search=${search}`
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 
 // Fetch All Bank Payments
 export const fetchAllBankPaymentsThunk = createAsyncThunk(
@@ -299,6 +314,22 @@ const employeeSlice = createSlice({
       .addCase(updateEmployeeDocumentThunk.rejected, (state, action) => {
         state.updateStatus = "failed";
         state.updateError = action.payload;
+      })
+       // getUpcomingExpiryEmployees
+       .addCase(getUpcomingExpiryEmployees.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUpcomingExpiryEmployees.fulfilled, (state, action) => {
+        state.loading = false;
+        state.employeeList = action.payload.results;
+        state.pagination = {
+          total_pages: action.payload.total_pages,
+          count: action.payload.count
+        };
+      })
+      .addCase(getUpcomingExpiryEmployees.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
 
           .addCase(submitBankPayment.fulfilled, (state, action) => {

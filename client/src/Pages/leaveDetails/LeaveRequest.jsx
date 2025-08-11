@@ -7,6 +7,8 @@ import { FaPlus } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
 import ModalList from "./ModalList"
+import { getDepartments } from "../../Redux/departmentSlice";
+
 import {
   Container,
   Table,DepartmentSelect,
@@ -48,15 +50,24 @@ export default function LeaveRequest() {
   const [page, setPage] = useState(1); // <-- Pagination state
 
   const navigate = useNavigate();
+  const [departmentFilter, setDepartmentFilter] = useState("");
 
   useEffect(() => {
-    dispatch(getLeaveRequests(page)); // <-- Pass page number
-  }, [dispatch, page]);
+    dispatch(getLeaveRequests({
+      page,
+      department_id: departmentFilter || undefined,
+      search: searchText || undefined
+    }));
+  }, [dispatch, page, departmentFilter, searchText]);
+  
   useEffect(() => {
     console.log("Pagination Info:", pagination);
   }, [pagination]);
 
   const leaveData = leaves || [];
+    const { list: departmentList, loading: deptLoading } = useSelector(
+      (state) => state.departments
+    );
 
   const filteredLeaves = leaveData.filter((leave) => {
     const name = leave?.employee?.name?.toLowerCase() || '';
@@ -81,7 +92,10 @@ export default function LeaveRequest() {
       setActionType('');
     }
   };
-
+  useEffect(() => {
+    // Fetch departments for dropdown
+    dispatch(getDepartments());
+  }, [dispatch]);
   const handleSearch = (e) => {
     setSearchText(e.target.value);
     setPage(1); // reset to first page on new search
@@ -124,13 +138,22 @@ export default function LeaveRequest() {
     onChange={handleSearch}
     
   />
- <DepartmentSelect>
-         <option value="">All Departments</option>
-         <option value="Design">Design</option>
-         <option value="Engineering">Engineering</option>
-         <option value="HR">HR</option>
-         {/* Add more departments as needed */}
-       </DepartmentSelect>
+<DepartmentSelect
+  value={departmentFilter}
+  onChange={(e) => {
+    setDepartmentFilter(e.target.value);
+    setPage(1);
+  }}
+>
+  <option value="">All Departments</option>
+  {departmentList.map((dept) => (
+    <option key={dept.id} value={dept.id}>
+      {dept.name}
+    </option>
+  ))}
+</DepartmentSelect>
+
+
 </ActionArea>
 
       </HeaderSection>

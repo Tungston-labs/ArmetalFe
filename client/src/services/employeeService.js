@@ -76,14 +76,27 @@ export const deleteEmployee = async (employeeId) => {
   return response.data;
 };
 
-export const fetchAllEmployees = async (page = 1, search = '') => {
-  const response = await API.get(`/employees/?page=${page}&search=${search}`);
+// Service
+export const fetchAllEmployees = async (page = 1, search = '', department_id = '') => {
+  let url = `/employees/?page=${page}&search=${search}`;
+  if (department_id) {
+    url += `&department_id=${department_id}`;
+  }
+  const response = await API.get(url);
   return response.data;
 };
+
+
+
 
 export const fetchEmployeeById = async (id) => {
   const res = await API.get(`/employees/${id}/`);
   return res.data;
+};
+
+export const fetchUpcomingExpiryEmployees = async (expiryType) => {
+  const response = await API.get(`/employees/upcoming-expiry/?type=${expiryType}`);
+  return response.data;
 };
 
 
