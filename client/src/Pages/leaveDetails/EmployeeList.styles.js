@@ -67,18 +67,19 @@ export const AddButton = styled.button`
 `;
 
 export const SearchInput = styled.input`
-  padding: 1rem 2rem;
+  padding: 1.2rem 2rem;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  min-width: 250px;
-  margin-top:10px;
+  border-radius: 6px;
+  min-width: 300px;
+  margin-top:30px;
+  margin-bottom:20px;
   height:20px;
   font-family:satoshi;
 `;
 export const Tabs = styled.div`
   display: flex;
   gap: 2rem;
-  margin: 1.7rem 0;
+  margin: 2.5rem 0;
   // border-bottom: 2px solid #ddd;
   
 `;
@@ -229,9 +230,10 @@ export const HeaderSection = styled.div`
 
 export const TitleSection = styled.div`
   display: flex;
+  
   align-items: center;
   // background:red;
-  margin-top:-2%;
+  // margin-top:3%;
 `;
 
 export const Icon = styled.div`
@@ -248,16 +250,15 @@ export const ActionArea = styled.div`
   margin-top:-8%;
 `;
 export const Title = styled.h2`
-  font-size: 22px;
+  font-size: 1.5rem;
   margin: 0;
-  margin-left:10px;
  font-family:satoshi;
+ margin-top:10px;
 `;
 
 export const Subtitle = styled.p`
-  font-size: 14px;
+  font-size: 1rem;
   color: #555;
-  margin-left:10px;
   margin-top:-1px;
   font-size:raleway;
 `;

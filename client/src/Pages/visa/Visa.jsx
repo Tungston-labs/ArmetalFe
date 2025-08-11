@@ -40,17 +40,17 @@ const EmployeeList = () => {
 
   useEffect(() => {
     if (expiryFilter) {
-      // Call upcoming expiry API
       dispatch(getUpcomingExpiryEmployees({
         expiryType: expiryFilter,
         page,
         search: searchText
       }));
-    } else {
-      // Default call for all employees
+    } else if (expiryFilter === "") {
+      // Call only if you want "All Employees" mode
       dispatch(getAllEmployees({ page, search: searchText }));
     }
   }, [dispatch, page, searchText, expiryFilter]);
+  
   
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -162,7 +162,7 @@ const EmployeeList = () => {
             <th>Employee name</th>
             <th>Employee ID</th>
             <th>Email ID</th>
-            <th>Visa expiry</th>
+            <th>Expiry Date</th>
             <th>Info</th>
             <th>Delete</th>
           </tr>

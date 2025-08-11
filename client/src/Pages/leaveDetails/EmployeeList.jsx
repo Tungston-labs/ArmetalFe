@@ -17,10 +17,7 @@ import {
   ActionArea,
   TitleSection,
   DropdownWrapper,
-   DropdownMenu, 
-  // FilterSection,
-  // SearchWrapper,
-  // SearchIcon
+  DropdownMenu,
 } from "./EmployeeList.styles";
 import { IoIosArrowDown } from "react-icons/io";
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -29,32 +26,44 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
+import EmployeeIcon from "../../assets/employeeicon.svg";
+
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { employeeList, pagination, loading } = useSelector((state) => state.employees);
-const [menuOpen, setMenuOpen] = useState(false);
+
+  // Employee state
+  const { employeeList, pagination, loading } = useSelector(
+    (state) => state.employees
+  );
+
+  // Department state (FIX)
+  const { departmentList, loading: deptLoading } = useSelector(
+    (state) => state.departments
+  );
+
+  const [menuOpen, setMenuOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [page, setPage] = useState(pagination?.current_page || 1);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  // Fetch employees
   useEffect(() => {
     dispatch(
       getAllEmployees({
         page,
         search: searchText,
-        department_id: departmentFilter // ✅ change from department to department_id
+        department_id: departmentFilter,
       })
     );
   }, [dispatch, page, searchText, departmentFilter]);
-  
 
+  // Fetch departments
   useEffect(() => {
-    // Fetch departments for dropdown
     dispatch(getDepartments());
   }, [dispatch]);
 
@@ -74,14 +83,12 @@ const [menuOpen, setMenuOpen] = useState(false);
       getAllEmployees({
         page,
         search: searchText,
-        department_id: departmentFilter // ✅ change here too
+        department_id: departmentFilter,
       })
     );
-    
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-  
 
   const cancelDelete = () => {
     setShowDeleteModal(false);
@@ -92,28 +99,27 @@ const [menuOpen, setMenuOpen] = useState(false);
     <Container>
       <TopBar>
         <div />
-         <DropdownWrapper>
-        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
-        </HRManager>
+        <DropdownWrapper>
+          <HRManager onClick={() => setMenuOpen(!menuOpen)}>
+            <img src="/images/user.jpg" alt="HR Manager" />
+            <IoIosArrowDown
+              size={18}
+              style={{ marginLeft: "5px", cursor: "pointer" }}
+            />
+          </HRManager>
 
-        {menuOpen && (
-          <DropdownMenu>
-            <div>Change Password</div>
-            <div>Logout</div>
-          </DropdownMenu>
-        )}
-      </DropdownWrapper>
+          {menuOpen && (
+            <DropdownMenu>
+              <div>Change Password</div>
+              <div>Logout</div>
+            </DropdownMenu>
+          )}
+        </DropdownWrapper>
       </TopBar>
 
       <HeaderSection>
         <TitleSection>
-          <img
-            src="/images/employee.png"
-            alt="Payroll Icon"
-            style={{ height: "50px" }}
-          />
+        <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
@@ -137,12 +143,14 @@ const [menuOpen, setMenuOpen] = useState(false);
             <option value="">All Departments</option>
             {deptLoading ? (
               <option>Loading...</option>
-            ) : (
+            ) : departmentList && departmentList.length > 0 ? (
               departmentList.map((dept) => (
                 <option key={dept.id} value={dept.id}>
                   {dept.name}
                 </option>
               ))
+            ) : (
+              <option>No departments found</option>
             )}
           </DepartmentSelect>
         </ActionArea>
@@ -179,7 +187,7 @@ const [menuOpen, setMenuOpen] = useState(false);
           </Tab>
         </NavLink>
       </Tabs>
-      <hr style={{ marginTop: "-18px" }}></hr>
+      <hr style={{ marginTop: "-18px" }} />
 
       <Table>
         <thead>
@@ -205,13 +213,7 @@ const [menuOpen, setMenuOpen] = useState(false);
             employeeList.map((emp, index) => (
               <tr key={emp.id}>
                 <td>{index + 1 + (page - 1) * 7}</td>
-                <td
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                  }}
-                >
+                <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   {emp.profile_pic ? (
                     <img
                       src={emp.profile_pic}
