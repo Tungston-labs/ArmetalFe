@@ -269,7 +269,7 @@ const handleSubmit = () => {
           </div>
 
           <TwoColumnRow>
-            <div style={{marginTop:"-9px"}}>
+            <div style={{marginTop:"-10px"}}>
               {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
               <Input
   type="text"
@@ -293,8 +293,8 @@ const handleSubmit = () => {
                  autoComplete="off"
                 style={{
                   width: '100%',
-                  padding: '0.7rem',
-                  fontSize: '0.8rem',
+                  padding: '0.8rem',
+                  fontSize: '0.9rem',
                   borderRadius: '7PX',
                   border:" 1px solid #052DB4",
                   background:" #FFF",

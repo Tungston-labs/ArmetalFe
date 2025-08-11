@@ -78,7 +78,7 @@ export const Input = styled.input`
   padding: 0.8rem 1rem;
   // border: 1px solid #ccc;
   // border-radius: 6px;
-  width: 94%;
+  width: 100%;
   // margin-bottom: 1rem;
   color:black;
   margin-top:10px;
@@ -100,7 +100,7 @@ export const TextArea = styled.textarea`
 `;
 
 export const SectionTitle = styled.h4`
-  // margin-top: 2rem;
+  margin-top: 1rem;
   margin-bottom: 0.5rem;
   // color:#999999;
   color: #000;
@@ -216,7 +216,7 @@ export const InfoSection = styled.div`
 `;
 
 export const FullWidthInput = styled.input`
-  width: 95%;
+  width: 99%;
   padding: 0.8rem 1rem;
   margin-bottom: 0.5rem;
   margin-top:30px;
@@ -242,6 +242,7 @@ export const TwoColumnRows= styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
   width:98%;
+  
 `;
 
 export const Stepper = styled.div`
