@@ -26,7 +26,8 @@ import {
   CloseButton,
   ModalContent,
   InitialCircle,
-  SearchWrapper
+  SearchWrapper,
+  DropdownMenu, DropdownWrapper
   
 } from '../department/DepartmentStyles';
 
@@ -40,18 +41,19 @@ import {
   ButtonRow,
   CancelButton,
   SaveButton,
-  BackArrow
+  BackArrow,
+  
 } from './AddDepartment.Styles';
 import Employee from "../../assets/employee.svg"; 
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
-
+import { IoIosArrowDown } from "react-icons/io";
 const Department = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { list: departments, loading, error } = useSelector((state) => state.departments);
-
+ const [menuOpen, setMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
   const [formData, setFormData] = useState({
@@ -90,10 +92,19 @@ const Department = () => {
     <DepartmentContainer>
       <TopBar>
         <div />
-        <HRManager>
+          <DropdownWrapper>
+        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
           <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
+          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
         </HRManager>
+
+        {menuOpen && (
+          <DropdownMenu>
+            <div>Change Password</div>
+            <div>Logout</div>
+          </DropdownMenu>
+        )}
+      </DropdownWrapper>
       </TopBar>
 
       <HeaderSection>

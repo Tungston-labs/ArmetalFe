@@ -167,9 +167,8 @@ export const HRManager = styled.div`
   height: 30px;
   align-items: center;
   padding: 0.3rem;
-  border: 1px solid black;
-  border-radius: 8px;
-  background-color:rgb(178, 196, 243);
+  // border: 1px solid black;
+  // border-radius: 8px;
   font-size: 0.95rem;
   color: #333;
 
@@ -178,7 +177,7 @@ export const HRManager = styled.div`
   }
 
   img {
-    width: 30px;
+    width: 40px;
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
@@ -350,4 +349,28 @@ export const ProfileImg = styled.img`
   width: 28px;
   height: 28px;
   border-radius: 50%;
+`;
+export const DropdownWrapper = styled.div`
+  position: relative;
+`;
+
+export const DropdownMenu = styled.div`
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 100;
+
+  div {
+    padding: 10px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
 `;

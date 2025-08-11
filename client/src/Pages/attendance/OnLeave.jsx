@@ -6,11 +6,11 @@ import {
   HRManager, TopBar, SearchInput, Table, TableHeader, TableRow,
   TableCell, EmployeeImg, TableTitle, Pagination, ActionArea,
   DateInput, Tab, Tabs,FilterSection,
-    DepartmentSelect,
+    DepartmentSelect,DropdownMenu, DropdownWrapper,
     SearchWrapper,AddButton
 } from "./OnLeave.Style";
 import { PiUserCirclePlusThin } from "react-icons/pi";
-
+import { IoIosArrowDown } from "react-icons/io";
 import { IoEyeOutline } from "react-icons/io5";
 import { useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +29,7 @@ export default function EmployeeAttendance() {
     loading = false,
     pagination = {}
   } = useSelector((state) => state.attendance);
-
+ const [menuOpen, setMenuOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [page, setPage] = useState(1);
@@ -77,10 +77,19 @@ export default function EmployeeAttendance() {
     <Container>
       <TopBar>
         <div />
-        <HRManager>
+        <DropdownWrapper>
+        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
           <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
+          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
         </HRManager>
+
+        {menuOpen && (
+          <DropdownMenu>
+            <div>Change Password</div>
+            <div>Logout</div>
+          </DropdownMenu>
+        )}
+      </DropdownWrapper>
       </TopBar>
 
       <HeaderSection>

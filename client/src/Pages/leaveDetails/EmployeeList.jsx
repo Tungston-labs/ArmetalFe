@@ -15,10 +15,13 @@ import {
   Subtitle,
   ActionArea,
   TitleSection,
+  DropdownWrapper,
+   DropdownMenu, 
   // FilterSection,
   // SearchWrapper,
   // SearchIcon
 } from "./EmployeeList.styles";
+import { IoIosArrowDown } from "react-icons/io";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -30,7 +33,7 @@ const EmployeeList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { employeeList, pagination, loading } = useSelector((state) => state.employees);
-
+const [menuOpen, setMenuOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [page, setPage] = useState(pagination?.current_page || 1);
@@ -67,10 +70,19 @@ const EmployeeList = () => {
     <Container>
       <TopBar>
         <div />
-        <HRManager>
+         <DropdownWrapper>
+        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
           <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
+          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
         </HRManager>
+
+        {menuOpen && (
+          <DropdownMenu>
+            <div>Change Password</div>
+            <div>Logout</div>
+          </DropdownMenu>
+        )}
+      </DropdownWrapper>
       </TopBar>
 
       <HeaderSection>

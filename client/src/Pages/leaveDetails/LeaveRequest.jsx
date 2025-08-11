@@ -28,12 +28,18 @@ import {
   Tabs,
   Title,
   Subtitle,
-  ActionArea
+  ActionArea,
+  DropdownWrapper,
+  DropdownMenu, 
 } from './LeaveRequest.Styles';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import SyncLoader from 'react-spinners/SyncLoader';
+import { IoIosArrowDown } from "react-icons/io";
+
 export default function LeaveRequest() {
   const dispatch = useDispatch();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const { leaves, loading, pagination } = useSelector(state => state.leave);
   const [actionType, setActionType] = useState('');
   const [searchText, setSearchText] = useState('');
@@ -85,10 +91,19 @@ export default function LeaveRequest() {
     <Container>
       <TopBar>
         <div />
-        <HRManager>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
-        </HRManager>
+         <DropdownWrapper>
+               <HRManager onClick={() => setMenuOpen(!menuOpen)}>
+                 <img src="/images/user.jpg" alt="HR Manager" />
+                 <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
+               </HRManager>
+       
+               {menuOpen && (
+                 <DropdownMenu>
+                   <div>Change Password</div>
+                   <div>Logout</div>
+                 </DropdownMenu>
+               )}
+             </DropdownWrapper>
       </TopBar>
 
       <HeaderSection>

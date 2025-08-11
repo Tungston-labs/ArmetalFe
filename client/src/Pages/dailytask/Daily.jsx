@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Container, Header, RoleInfo, DateSelector, Calendar, Day,
+  Container, Header, RoleInfo, DateSelector, Calendar, Day, DropdownMenu, DropdownWrapper,
   EmployeesPanel, EmployeeCard, TaskPanel, TaskCard, TaskHeader, Hr,
   Description, TimeBox, SearchInput, HRManager, Title, Subtitle, TitleSection, TextBlock
 } from './Daily.styles';
@@ -10,11 +10,11 @@ import SyncLoader from 'react-spinners/SyncLoader';
 import { PiUserCirclePlusThin } from "react-icons/pi"; 
 import { FaRegCalendarAlt } from "react-icons/fa";
 import TaskIcon from "../../assets/task.svg"; 
-
+import { IoIosArrowDown } from "react-icons/io";
 export default function DailyTask() {
   const dispatch = useDispatch();
   const { employees, tasks, loading } = useSelector(state => state.dailyTask);
-
+const [menuOpen, setMenuOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -71,10 +71,20 @@ const handleNextDate = () => {
             <Subtitle>Check daily task details for each employee</Subtitle>
           </TextBlock>
         </TitleSection>
-        <HRManager>
+        <DropdownWrapper>
+        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
           <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
+          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
         </HRManager>
+
+        {menuOpen && (
+          <DropdownMenu>
+            <div>Profile</div>
+            <div>Settings</div>
+            <div>Logout</div>
+          </DropdownMenu>
+        )}
+      </DropdownWrapper>
       </Header>
 
       <DateSelector>

@@ -19,6 +19,7 @@ import {
   HRManager,
   IconButton,
   TitleSection,
+  DropdownMenu, DropdownWrapper 
 } from '../department/DepartmentDetails.Styles';
 import { FaInfoCircle, FaTrash } from 'react-icons/fa';
 import { HiOutlinePencilSquare } from "react-icons/hi2";
@@ -28,7 +29,7 @@ import { useNavigate } from 'react-router-dom';
 import { deleteEmployeeById } from '../../Redux/employeeSlice';
 import Employee from "../../assets/employee.svg"; 
 import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your choice
-
+import { IoIosArrowDown } from "react-icons/io";
 
 
 const DepartmentDetail = () => {
@@ -37,7 +38,7 @@ const DepartmentDetail = () => {
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-
+  const [menuOpen, setMenuOpen] = useState(false);
 
 
   const { departmentEmployees } = useSelector((state) => state.departments);
@@ -108,11 +109,19 @@ const DepartmentDetail = () => {
     <Container>
       <TopBar>
         <div />
-        <HRManager>
-          <img src="images/user.jpg" alt="HR Manager" />  
-          
-          <span>HR Manager</span>
+        <DropdownWrapper>
+        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
+          <img src="/images/user.jpg" alt="HR Manager" />
+          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
         </HRManager>
+
+        {menuOpen && (
+          <DropdownMenu>
+            <div>Change Password</div>
+            <div>Logout</div>
+          </DropdownMenu>
+        )}
+      </DropdownWrapper>
       </TopBar>
 
       <HeaderSection>

@@ -227,19 +227,19 @@ export const HRManager = styled.div`
  
   align-items: center;
   padding: 0.3rem ;
-  border: 1px solid #ccc;
+  // border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;
   }
 
   img {
-    width: 30px;
+    width: 40px;
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
@@ -311,5 +311,29 @@ export const Pagination = styled.div`
     background: #1e3a8a;
     color: white;
     border-color: #1e3a8a;
+  }
+`;
+export const DropdownWrapper = styled.div`
+  position: relative;
+`;
+
+export const DropdownMenu = styled.div`
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 100;
+
+  div {
+    padding: 10px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
   }
 `;

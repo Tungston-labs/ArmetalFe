@@ -14,6 +14,7 @@ import {
   HRManager,
   Subtitle,
   ActionArea,
+   DropdownMenu, DropdownWrapper ,
   TitleSection
 } from "../leaveDetails/EmployeeList.styles";
 import { CardContainer, Card, Initial, Count, DeptTitle, DeptSub, DeptHead, HeadImg, DeptInfo, CardGrid,CardRight } from './EmployeesOnLeave.Style'; 
@@ -25,7 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees,deleteEmployeeById } from "../../Redux/employeeSlice";
 import SyncLoader from "react-spinners/SyncLoader";
 import { GoArrowUpRight } from "react-icons/go";
-
+import { IoIosArrowDown } from "react-icons/io";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const EmployeeList = () => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-
+const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     dispatch(getAllEmployees({ page, search: searchText }));
   }, [dispatch, page, searchText]);
@@ -71,10 +72,19 @@ const EmployeeList = () => {
     <Container>
       <TopBar>
         <div />
-        <HRManager>
+         <DropdownWrapper>
+        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
           <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
+          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
         </HRManager>
+
+        {menuOpen && (
+          <DropdownMenu>
+            <div>Change Password</div>
+            <div>Logout</div>
+          </DropdownMenu>
+        )}
+      </DropdownWrapper>
       </TopBar>
 
      
