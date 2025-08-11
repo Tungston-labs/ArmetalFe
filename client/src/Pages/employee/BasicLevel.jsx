@@ -16,12 +16,14 @@ import Multistep from '../../Components/Multistep';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import SyncLoader from '../../Components/Loder';
 import { FaPlus } from 'react-icons/fa';
+import { FiChevronDown } from "react-icons/fi";
+import { FaUserCircle } from "react-icons/fa";
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { status, error, formData: reduxFormData } = useSelector((state) => state.employee);
   const departmentList = useSelector((state) => state.departments.list);
-
+const [menuOpen, setMenuOpen] = useState(false);
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const stepTitles = ['Basic Info', 'Job Details', 'Legal Info'];
@@ -43,6 +45,9 @@ export default function AddEmployeeForm() {
     insurance_number: '',
     profile_pic: null,
     total_leave: '',
+    role: '', 
+    contract_expiry_date: '', 
+    idcard: null, 
   });
   useEffect(() => {
     // if (reduxFormData?.basic) setFormData(reduxFormData.basic);
@@ -70,9 +75,12 @@ export default function AddEmployeeForm() {
     'employment_type',
     'joining_date',
     'passport_number',
+
     'visa_expiry_date',
     'insurance_number',
     'total_leave',
+    'contract_expiry_date',
+      'role',
   ];
 
   requiredFields.forEach((field) => {
@@ -94,71 +102,6 @@ export default function AddEmployeeForm() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
-//   const handleSubmit = () => {
-//     if (!validateForm()) return;
-
-//     const formPayload = new FormData();
-//     const payload = {
-//       name: formData.name,
-//       email: formData.email,
-//       phno: formData.phno,
-//       address: formData.address,
-//       dob: new Date(formData.dob).toISOString().split("T")[0],
-//       gender: formData.gender,
-//       designation: formData.designation,
-//       joining_date: new Date(formData.joining_date).toISOString().split("T")[0],
-//       department_id: parseInt(formData.department),
-//       employment_type: formData.employment_type,
-//       passport_number: formData.passport_number,
-//       visa_expiry_date: new Date(formData.visa_expiry_date).toISOString().split("T")[0],
-//       iqama_number: formData.iqama_number,
-//       insurance_number: formData.insurance_number,
-//     };
-    
-//     for (const [key, value] of Object.entries(payload)) {
-//       if (value) formPayload.append(key, value);
-//     }
-
-//     if (formData.profilePic) {
-//       formPayload.append("profile_pic", formData.profilePic);
-//     }
-
-//     dispatch(submitEmployee(formData)).then((res) => {
-//       if (res.meta.requestStatus === 'fulfilled') {
-//         const id = res.payload?.id || res.payload?.employee?.id;
-//         if (id) {
-//           dispatch(setEmployeeId(id));
-//           dispatch(setBasicFormData(formData));
-//           navigate('/bank-payment');
-//         }
-//       } else {
-//   const backendErrors = res.payload;
-
-// if (backendErrors && typeof backendErrors === 'object') {
-//   const newErrors = { ...errors };
-
-//   for (const field in backendErrors) {
-//     let message = Array.isArray(backendErrors[field])
-//       ? backendErrors[field][0]
-//       : backendErrors[field];
-
-//     // ✅ Customize specific messages
-//     if (field === 'email' && message.includes('already exists')) {
-//       message = 'Email is already registered';
-//     } else if (field === 'phno' && message.includes('already exists')) {
-//       message = 'Phone number is already registered';
-//     }
-
-//     newErrors[field] = message;
-//   }
-
-//   setErrors(newErrors);
-// }
-//       }
-
-//     });
-//   };
 const handleSubmit = () => {
   if (!validateForm()) return;
 
@@ -207,10 +150,50 @@ const handleSubmit = () => {
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </div>
-        <RoleInfo>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
-        </RoleInfo>
+   <RoleInfo style={{ position: "relative" }}>
+  <div
+    style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+    onClick={() => setMenuOpen(!menuOpen)}
+  >
+    <FaUserCircle size={30} style={{ marginRight: "0.5rem" }} />
+        <FiChevronDown size={20} onClick={() => setMenuOpen(!menuOpen)} />
+  </div>
+
+  {menuOpen && (
+    <div
+      style={{
+        position: "absolute",
+        top: "50px",
+        right: 0,
+        background: "#fff",
+        boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
+        borderRadius: "5px",
+        zIndex: 1000,
+        minWidth: "150px",
+      }}
+    >
+      <div
+        // onClick={handleChangePassword}
+        style={{
+          padding: "10px",
+          cursor: "pointer",
+          borderBottom: "1px solid #ddd",
+        }}
+      >
+        Change Password
+      </div>
+      <div
+        // onClick={handleLogout}
+        style={{
+          padding: "10px",
+          cursor: "pointer",
+        }}
+      >
+        Logout
+      </div>
+    </div>
+  )}
+</RoleInfo>
       </Header>
 
       <Hr />
@@ -413,10 +396,10 @@ const handleSubmit = () => {
       color: 'black',
     }}
   >
-    <option value="">Select Role</option>
-    <option value="HR">HR</option>
-    <option value="Employee">Employee</option>
-    <option value="Manager">Manager</option>
+      <option value="">Select Role</option>
+  <option value="employee">Employee</option>
+  <option value="hr">HR</option>
+  <option value="manager">Manager</option>
   </select>
 </div>
 
@@ -432,7 +415,7 @@ const handleSubmit = () => {
     { key: 'visa_expiry_date', label: 'Visa_expiry_date', type: 'date' },
     { key: 'iqama_number', label: 'Iqama_number ' },
     { key: 'insurance_number', label: 'Insurance_number' },
-    { key: 'contract_expiry_date', label: 'Contract_expiry_date' },
+    { key: 'contract_expiry_date', label: 'Contract_expiry_date' , type: 'date'},
     { key: 'idcard', label: 'ID Card' }, // renamed label for clarity
   ].map(({ key, label, type }) => (
     <div key={key}>
@@ -477,7 +460,12 @@ const handleSubmit = () => {
       type="file"
       name="idcard"
       accept="image/*"
-      onChange={handleChange}
+   onChange={(e) =>
+    setFormData((prev) => ({
+      ...prev,
+      idcard: e.target.files[0], // store file object
+    }))
+  }
       style={{ display: 'none' }}
     />
   </div>

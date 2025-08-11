@@ -26,12 +26,12 @@ export const RoleInfo = styled.div`
    display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 12px;
+  // border: 1px solid #ccc;
+  // border-radius: 12px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;
@@ -67,11 +67,17 @@ export const SectionTitle = styled.h4`
   margin-bottom: 1rem;
   font-size:18px;
   // color: #333;
+  color: #030303;
+font-family: Satoshi;
+font-size: 1.2rem;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
 `;
 
 export const UploadSection = styled.div`
-  // margin-bottom: 1.5rem;
-  // background: #fff;
+  margin-bottom: 1.5rem;
+  background: #F1F1F1;
   padding: 1rem;
   border-radius: 8px;
 `;

@@ -36,7 +36,8 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import { NavLink, useLocation, useParams } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
 import { useNavigate } from 'react-router-dom';
-
+import { DropdownMenu, DropdownWrapper } from "../leaveDetails/EmployeeList.styles";
+import { IoIosArrowDown } from "react-icons/io";
 const ViewBasic = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -47,6 +48,7 @@ const ViewBasic = () => {
   console.log("departmentList",departmentList)
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+    const [menuOpen, setMenuOpen] = useState(false);
 console.log("fff",formData)
 const navigate = useNavigate();
 
@@ -72,7 +74,10 @@ useEffect(() => {
       ...employeeDetail,
       id: employeeDetail.id, 
       department: deptId,
-      total_leave: employeeDetail.total_leave || ""
+      total_leave: employeeDetail.total_leave || "",
+       contract_expiry_date: employeeDetail.contract_expiry_date || "",
+  role: employeeDetail.role || "",
+  idcard: employeeDetail.idcard || ""
     });
   }
 }, [employeeDetail, departmentList]);
@@ -96,6 +101,9 @@ console.log("📤 Submitting employee", formData);
   await dispatch(getEmployeeById(id));
   setEditMode(false);
 };
+useEffect(() => {
+  console.log("Role changed:", formData.role);
+}, [formData.role]);
 
  if (loading || !formData || Object.keys(formData).length === 0) {
   return (
@@ -123,10 +131,22 @@ console.log("📤 Submitting employee", formData);
                 </TitleSection>
         </HeaderWrapper>
         <Rightside>
-          <HRManager>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <span>HR Manager</span>
-          </HRManager>
+                  <DropdownWrapper>
+         <HRManager onClick={() => setMenuOpen(!menuOpen)}>
+                     <img src="/images/user.jpg" alt="HR Manager" />
+                     <IoIosArrowDown
+                       size={18}
+                       style={{ marginLeft: "5px", cursor: "pointer" }}
+                     />
+                   </HRManager>
+         
+                   {menuOpen && (
+                     <DropdownMenu>
+                       <div>Change Password</div>
+                       <div>Logout</div>
+                     </DropdownMenu>
+                   )}
+                 </DropdownWrapper>
           <EditButton onClick={() => setEditMode((prev) => !prev)}>
            {editMode ? "Cancel" : "Edit"}
           </EditButton>
@@ -146,7 +166,7 @@ console.log("📤 Submitting employee", formData);
           : formData.profile_pic
       }
       alt="Profile"
-      style={{ width: "150px", height: "150px", borderRadius: "50%", objectFit: "cover" }}
+      style={{ width: "150px", height: "150px", borderRadius: "10%", objectFit: "cover" }}
     />
   ) : (
     <div
@@ -341,13 +361,13 @@ console.log("📤 Submitting employee", formData);
             onChange={handleChange}
             readOnly={!editMode}
           />
-          <Input
+          {/* <Input
             name="contract_expiry_date"
             placeholder="contract_expiry_date"
             value={formData.contract_expiry_date || ""}
             onChange={handleChange}
             readOnly={!editMode}
-          />
+          /> */}
           <Input
             name="visa_expiry_date"
             placeholder="Visa Expiry Date"
@@ -362,13 +382,7 @@ console.log("📤 Submitting employee", formData);
             onChange={handleChange}
             readOnly={!editMode}
           />
-          {/* <Input
-            name="contract_id"
-            placeholder="Employment Contract"
-            value={formData.contract_id || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          /> */}
+         
           <Input
             name="insurance_number"
             placeholder="Insurance Number"
@@ -376,6 +390,59 @@ console.log("📤 Submitting employee", formData);
             onChange={handleChange}
             readOnly={!editMode}
           />
+
+        <select
+  name="role"
+  value={formData.role}
+  onChange={handleChange}
+  disabled={!editMode}
+  style={{
+    width: '100%',
+    padding: '0.7rem',
+    fontSize: '0.8rem',
+    borderRadius: '7px',
+    border: '1px solid #052DB4',
+    background: '#FFF',
+    color: 'black',
+  }}
+>
+  <option value="">Select Role</option>
+  <option value="employee">Employee</option>
+  <option value="hr">HR</option>
+  <option value="manager">Manager</option>
+</select>
+
+
+<Input
+  type={editMode ? "date" : "text"}
+  name="contract_expiry_date"
+  placeholder="Contract Expiry Date"
+  value={formData.contract_expiry_date || ""}
+  onChange={handleChange}
+  readOnly={!editMode}
+/>
+<div>
+  {formData.idcard && (
+    <img
+      src={formData.idcard}
+      alt="ID Card"
+      style={{ width: '120px', height: 'auto', marginBottom: '10px' }}
+    />
+  )}
+  {editMode && (
+    <input
+      type="file"
+      accept="image/*"
+      name="idcard"
+      onChange={(e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setFormData({ ...formData, idcard: file });
+        }
+      }}
+    />
+  )}
+</div>
         </Column>
 
        

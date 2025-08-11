@@ -18,7 +18,7 @@ export const CardContainer = styled.div`
 export const Initial = styled.div`
   font-size: 6rem;
   font-weight: 700;
-  color: #eaf2fc;
+  color: #B5E2FF;
   transition: all 0.3s ease;
 
   &:hover {
@@ -180,8 +180,8 @@ export const CardRight = styled.div`
 
 export const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3,1fr);
-//   gap: 1rem;
+  grid-template-columns: repeat(4,1fr);
+  gap: 1rem;
 
 `;
 export const DeptTitle = styled.div`

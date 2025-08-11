@@ -44,44 +44,69 @@ isEditMode=false,
   handleNext,
   errors = {}
 }) => {
+  console.log("tdsAmount",tdsAmount)
   if (!isEditMode && records.length > 0) {
     return (
-      <Container>
-        <Header><h2>Bank & Payment History</h2></Header>
-        {records.map((record, index) => (
-          <FormSection key={record.id || index} style={{ padding: '1rem', marginBottom: '2rem' }}>
-            <Row>
-              <FormGroup><Input value={record.bank_name} readOnly placeholder="Bank Name" /></FormGroup>
+  <Container>
+      <Header><h2>Bank & Payment History</h2></Header>
+      {records.map((record, index) => (
+        <FormSection key={record.id || index} style={{ padding: '1rem', marginBottom: '2rem' }}>
+            {/* Bank Proof Image */}
+          {record.bank_proof_image && (
+            <Row style={{ marginTop: '1rem' }}>
+              <FormGroup style={{ flex: '1 1 100%' }}>
+                <label style={{ fontWeight: '500' }}>Bank Proof</label>
+                <a
+                  href={record.bank_proof_image}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-block', marginTop: '0.5rem',marginLeft:"10px" }}
+                >
+                  <img
+                    src={record.bank_proof_image}
+                    alt="Bank Proof"
+                    style={{
+                      maxWidth: '200px',
+                      borderRadius: '6px',
+                      border: '1px solid #ccc',
+                      backgroundColor: '#fff',
+                      padding: '4px'
+                    }}
+                  />
+                </a>
+              </FormGroup>
             </Row>
-            <TwoColumnRows>
-              <FormGroup><Input value={record.swift_code} readOnly placeholder="Swift Code" /></FormGroup>
-              <FormGroup><Input value={record.payment_mode} readOnly placeholder="Payment Mode" /></FormGroup>
-            </TwoColumnRows>
-            <TwoColumnRows>
-              <FormGroup><Input value={record.account_number} readOnly placeholder="Account Number" /></FormGroup>
-              <FormGroup><Input value={record.uan_number} readOnly placeholder="UAN Number" /></FormGroup>
-            </TwoColumnRows>
-            <TwoColumnRows>
-              <FormGroup><Input value={record.pan_number} readOnly placeholder="PAN Number" /></FormGroup>
-              <FormGroup><Input value={record.tax_regime} readOnly placeholder="Tax Regime" /></FormGroup>
-            </TwoColumnRows>
-            <TwoColumnRows>
-              <FormGroup><Input value={record.tds_amount} readOnly placeholder="TDS %" /></FormGroup>
-              <FormGroup><Input value={record.declaration_80c ? 'Yes' : 'No'} readOnly placeholder="80C Declaration" /></FormGroup>
-            </TwoColumnRows>
+          )}
 
-            <SectionTitle>Salary</SectionTitle>
-            <TwoColumnRows>
-              <FormGroup><Input value={record.basic_salary} readOnly placeholder="Basic Salary" /></FormGroup>
-              <FormGroup><Input value={record.salary_increment} readOnly placeholder="Salary Increment" /></FormGroup>
-            </TwoColumnRows>
-            <TwoColumnRows>
-              <FormGroup><Input value={record.housing_allowance} readOnly placeholder="Housing Allowance" /></FormGroup>
-              <FormGroup><Input value={record.transportation} readOnly placeholder="Transportation" /></FormGroup>
-            </TwoColumnRows>
-          </FormSection>
-        ))}
-      </Container>
+          <TwoColumnRows>
+            <FormGroup><Input value={record.swift_code} readOnly placeholder="Swift Code" /></FormGroup>
+            <FormGroup><Input value={record.payment_mode} readOnly placeholder="Payment Mode" /></FormGroup>
+          </TwoColumnRows>
+          <TwoColumnRows>
+            <FormGroup><Input value={record.account_number} readOnly placeholder="Account Number" /></FormGroup>
+            <FormGroup><Input value={record.uan_epf_number} readOnly placeholder="UAN Number" /></FormGroup>
+          </TwoColumnRows>
+          <TwoColumnRows>
+            <FormGroup><Input value={record.pan_number} readOnly placeholder="PAN Number" /></FormGroup>
+            <FormGroup><Input value={record.tax_regime} readOnly placeholder="Tax Regime" /></FormGroup>
+          </TwoColumnRows>
+          <TwoColumnRows>
+            <FormGroup><Input value={record.tds_deduction_amount} readOnly placeholder="TDS %" /></FormGroup>
+            <FormGroup><Input value={record.declaration_80c ? 'Yes' : 'No'} readOnly placeholder="80C Declaration" /></FormGroup>
+          </TwoColumnRows>
+
+          <SectionTitle>Salary</SectionTitle>
+          <TwoColumnRows>
+            <FormGroup><Input value={record.basic_salary} readOnly placeholder="Basic Salary" /></FormGroup>
+            <FormGroup><Input value={record.salary_increment} readOnly placeholder="Salary Increment" /></FormGroup>
+          </TwoColumnRows>
+          <TwoColumnRows>
+            <FormGroup><Input value={record.housing_allowance} readOnly placeholder="Housing Allowance" /></FormGroup>
+            <FormGroup><Input value={record.transportation} readOnly placeholder="Transportation" /></FormGroup>
+          </TwoColumnRows>
+        </FormSection>
+      ))}
+    </Container>
     );
   }
 
@@ -175,9 +200,9 @@ isEditMode=false,
               <ErrorMsg msg={errors.tdsAmount} />
               <Select value={tdsAmount} onChange={(e) => setTdsAmount(e.target.value)}>
                 <option value="">TDS Deduction Amount</option>
-                <option value="10">10%</option>
-                <option value="20">20%</option>
-                <option value="30">30%</option>
+                <option value="10.00">10%</option>
+                <option value="20.00">20%</option>
+                <option value="30.00">30%</option>
               </Select>
             </div>
             <div>
