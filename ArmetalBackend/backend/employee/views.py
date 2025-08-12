@@ -460,9 +460,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from attendance.models import Attendance
 from holidays.models import PublicHoliday
-from employee.models import Employee_db, Department
+from employee.models import Employee_db
 from leave.models import LeaveRequest
-from superadmin.permissions import IsHRAdmin
 
 
 class DashboardSummaryView(APIView):
