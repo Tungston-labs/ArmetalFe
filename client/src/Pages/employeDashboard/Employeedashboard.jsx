@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Container,
   CardGrid,MainWrapper,
@@ -30,17 +30,35 @@ import InCompanyIcon from '../../assets/clock.svg';
 import { FaRegClock, FaArrowUpRightFromSquare } from "react-icons/fa6";
 import { BiTimeFive } from "react-icons/bi";
 import LeaveIcon from '../../assets/leave.svg';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchEmployeeDash } from '../../Redux/authSlice';
 
 const TimeLogDashboard = () => {
+
+    const { employeeId } = useParams();
+
+  const dispatch = useDispatch();
+  const { employeeDashData, loadingEmployeeDash, employeeDashError } =
+    useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (employeeId) {
+      dispatch(fetchEmployeeDash(employeeId));
+    }
+  }, [employeeId, dispatch]);
+
+  if (loadingEmployeeDash) return <p>Loading...</p>;
+  if (employeeDashError) return <p>Error: {employeeDashError}</p>;
  const infoCards = [
   {
-    title: '12 Jan 2025',
+    title: employeeDashData?.contract_expiry_date||"N/A",
     subtitle: 'Days',
     label: 'Contract Expiry',
     icon: InCompanyIcon,
   },
   {
-    title: '15 Jan 2025',
+    title: employeeDashData?.visa_expiry_date||"N/A",
     subtitle: 'Date',
     label: 'Visa Expiry',
     icon: InCompanyIcon,
@@ -52,10 +70,10 @@ const TimeLogDashboard = () => {
     icon: InCompanyIcon,
   },
   {
-    title: '35 hrs',
+    title: employeeDashData?.attendance_summary?.monthly_working_hours,
     subtitle: 'Weekly Logged Hours',
     label: 'Monthly working hour',
-    icon:LeaveIcon , // ✅ use different SVG here
+    icon:LeaveIcon ,
   },
 ];
 
@@ -126,7 +144,7 @@ const TimeLogDashboard = () => {
 
         <Department>
         <DepartmentTitleRow>
-          <DepartmentTitle>UI/UX Designer</DepartmentTitle>
+          <DepartmentTitle>{employeeDashData?.bank_details?.employee?.department}</DepartmentTitle>
           <DepartmentCount>48</DepartmentCount>
         </DepartmentTitleRow>
 <hr></hr>

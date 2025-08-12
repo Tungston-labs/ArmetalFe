@@ -3,12 +3,12 @@
 
 #api for generating token pair
 ###
-POST http://127.0.0.1:8000/api/token/
+POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "TlsLab",
-  "password": "123"
+  "username": "snv_arm_kak_117",
+  "password": "password123"
 }
 
 
@@ -355,7 +355,7 @@ Content-Type: application/json
 
 ### Get Employee Dashboard Details
 GET http://178.248.112.16:8001/api/dashboard/employee/53/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjkwODg3LCJpYXQiOjE3NTQyODcyODcsImp0aSI6IjYyNTE4YjgyZDlmOTRlYTFiYmUxNzNkNjllZDllYmIzIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.tq-844hhqWEWkEnJJoWDPqgbr-O9BlQq4cP5wKSBQ-E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0OTg3MzU2LCJpYXQiOjE3NTQ5ODM3NTYsImp0aSI6ImMyNDVhYzlmZWY5ZDQyZTZiNzYyMmQ2ZjQ0YmJlNmIzIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.vzwfYUKQFS_17Iy9NvkfoNiwlibHBd7cRFZIKoEv3o8
 
 
 # ----------------------------------API FOR EMPLOYEE-----------------------
