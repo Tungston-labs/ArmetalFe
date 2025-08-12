@@ -452,13 +452,18 @@ class EmployeeSelfView(APIView):
 
 # for dashboard details 
 
+from datetime import date, timedelta
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from employee.models import Employee_db
+
 from attendance.models import Attendance
+from holidays.models import PublicHoliday
+from employee.models import Employee_db, Department
 from leave.models import LeaveRequest
-from datetime import date, timedelta
+from superadmin.permissions import IsHRAdmin
+
 
 class DashboardSummaryView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
@@ -466,36 +471,126 @@ class DashboardSummaryView(APIView):
     def get(self, request):
         today = date.today()
         upcoming_range = today + timedelta(days=30)
-        company = request.user.company  # assuming the logged-in user is linked to a company
+        company = request.user.company  # HR admin's company
 
-        # Fixing all queries using department__company
-        total_employees = Employee_db.objects.filter(department__company=company).count()
+        # 1. Total employees list with department name
+        employees = Employee_db.objects.filter(department__company=company)
+        employee_list = [
+            {
+                "id": emp.id,
+                "name": emp.name,
+                "department": emp.department.name if emp.department else None,
+                "designation": emp.designation,
+            }
+            for emp in employees
+        ]
+        total_employees_count = employees.count()
 
-        today_attendance = Attendance.objects.filter(
+        # 2. Upcoming visa expiries
+        upcoming_visa_expiry_qs = employees.filter(
+            visa_expiry_date__range=[today, upcoming_range]
+        )
+        upcoming_visa_expiry = [
+            {
+                "id": emp.id,
+                "name": emp.name,
+                "department": emp.department.name if emp.department else None,
+                "visa_expiry_date": emp.visa_expiry_date,
+            }
+            for emp in upcoming_visa_expiry_qs
+        ]
+
+        # 3. Pending leave requests
+        pending_leaves_qs = LeaveRequest.objects.filter(
+            status="pending",
+            employee__department__company=company
+        )
+        pending_leaves = [
+            {
+                "id": leave.id,
+                "employee": leave.employee.name,
+                "department": leave.employee.department.name if leave.employee.department else None,
+                "leave_type": leave.leave_type,
+                "from_date": leave.from_date,
+                "to_date": leave.to_date,
+                "reason": leave.reason,
+            }
+            for leave in pending_leaves_qs
+        ]
+
+        # 4. Department list with employee count
+        department_list = [
+            {
+                "id": dept.id,
+                "name": dept.name,
+                "employee_count": dept.employees.count(),
+            }
+            for dept in Department.objects.filter(company=company)
+        ]
+
+        # 5. Upcoming holidays
+        upcoming_holidays_qs = PublicHoliday.objects.filter(
+            company=company,
+            date__gte=today
+        ).order_by("date")[:10]  # next 10 holidays
+        upcoming_holidays = [
+            {
+                "date": holiday.date,
+                "description": holiday.description,
+                "holiday_type": holiday.holiday_type,
+            }
+            for holiday in upcoming_holidays_qs
+        ]
+
+        # 6. Upcoming contract expiries
+        upcoming_contract_expiry_qs = employees.filter(
+            contract_expiry_date__range=[today, upcoming_range]
+        )
+        upcoming_contract_expiry = [
+            {
+                "id": emp.id,
+                "name": emp.name,
+                "department": emp.department.name if emp.department else None,
+                "contract_expiry_date": emp.contract_expiry_date,
+            }
+            for emp in upcoming_contract_expiry_qs
+        ]
+
+        # 7. Active employees today
+        active_today_count = Attendance.objects.filter(
             date=today,
             employee__department__company=company
         ).count()
 
-        today_leave = LeaveRequest.objects.filter(
+        # 8. On leave today
+        on_leave_today_count = LeaveRequest.objects.filter(
             from_date__lte=today,
             to_date__gte=today,
             employee__department__company=company
         ).count()
 
-        visa_expiring_soon = Employee_db.objects.filter(
-            department__company=company,
-            visa_expiry_date__range=[today, upcoming_range]
-        ).count()
-
         return Response({
-            "total_employees": total_employees,
-            "today_attendance": today_attendance,
-            "today_leave": today_leave,
-            "visa_expiring_soon": visa_expiring_soon
+            "total_employees": {
+                "count": total_employees_count,
+                "list": employee_list
+            },
+            "upcoming_visa_expiry": {
+                "count": upcoming_visa_expiry_qs.count(),
+                "list": upcoming_visa_expiry
+            },
+            "pending_leaves": {
+                "count": pending_leaves_qs.count(),
+                "list": pending_leaves
+            },
+            "departments": department_list,
+            "upcoming_holidays": upcoming_holidays,
+            "upcoming_contract_expiry": {
+                "count": upcoming_contract_expiry_qs.count(),
+                "list": upcoming_contract_expiry
+            },
+            "active_today_count": active_today_count,
+            "on_leave_today_count": on_leave_today_count
         })
-
-
-
 
 
 
