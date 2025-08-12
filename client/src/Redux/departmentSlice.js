@@ -11,16 +11,28 @@ import {
 // Get all departments
 
 
+// export const getDepartments = createAsyncThunk(
+//   "departments/getAll",
+//   async (search = '', { rejectWithValue }) => {
+//     try {
+//       return await fetchDepartments(search);
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || error.message);
+//     }
+//   }
+// );
+
 export const getDepartments = createAsyncThunk(
   "departments/getAll",
-  async (search = '', { rejectWithValue }) => {
+  async ({ page = 1, search = '' }, { rejectWithValue }) => {
     try {
-      return await fetchDepartments(search);
+      return await fetchDepartments({ page, search });
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
 
 
 // Get department by ID
@@ -93,7 +105,6 @@ export const getEmployeesByDepartment = createAsyncThunk(
   }
 );
 
-
 const departmentSlice = createSlice({
   name: "departments",
   initialState: {
@@ -102,6 +113,13 @@ const departmentSlice = createSlice({
     loading: false,
     departmentEmployees: [],
     error: null,
+    pagination: { // ✅ ensure it always exists
+      total_pages: 0,
+      current_page: 1,
+      next: null,
+      previous: null,
+      total_items: 0,
+    },
   },
   reducers: {
     clearCurrentDepartment(state) {
@@ -110,7 +128,6 @@ const departmentSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
       // Get All
       .addCase(getDepartments.pending, (state) => {
         state.loading = true;
@@ -118,9 +135,18 @@ const departmentSlice = createSlice({
       .addCase(getDepartments.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.list = [...action.payload].sort((a, b) =>
+        state.list = [...action.payload.results].sort((a, b) =>
           a.name.localeCompare(b.name)
         );
+
+        // ✅ assign pagination from API
+        state.pagination = {
+          total_pages: action.payload.total_pages,
+          current_page: action.payload.current_page,
+          next: action.payload.next,
+          previous: action.payload.previous,
+          total_items: action.payload.total_items,
+        };
       })
       .addCase(getDepartments.rejected, (state, action) => {
         state.loading = false;
@@ -185,6 +211,7 @@ const departmentSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
       // Get Employees by Department
       .addCase(getEmployeesByDepartment.pending, (state) => {
         state.loading = true;
@@ -197,9 +224,9 @@ const departmentSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
-
   },
 });
+
 
 export const { clearCurrentDepartment } = departmentSlice.actions;
 export default departmentSlice.reducer;

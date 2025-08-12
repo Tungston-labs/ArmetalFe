@@ -217,7 +217,8 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             {
                 'project': task.project,
                 'task': task.task,
-                'time_taken': float(task.time_taken)
+                'time_taken': float(task.time_taken),
+                'date':today
             } for task in tasks
         ]
 

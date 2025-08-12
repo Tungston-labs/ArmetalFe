@@ -452,13 +452,18 @@ class EmployeeSelfView(APIView):
 
 # for dashboard details 
 
+from datetime import date, timedelta
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from employee.models import Employee_db
+
 from attendance.models import Attendance
+from holidays.models import PublicHoliday
+from employee.models import Employee_db
+from departments.models import Department
 from leave.models import LeaveRequest
-from datetime import date, timedelta
+
 
 class DashboardSummaryView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
@@ -466,36 +471,126 @@ class DashboardSummaryView(APIView):
     def get(self, request):
         today = date.today()
         upcoming_range = today + timedelta(days=30)
-        company = request.user.company  # assuming the logged-in user is linked to a company
+        company = request.user.company  # HR admin's company
 
-        # Fixing all queries using department__company
-        total_employees = Employee_db.objects.filter(department__company=company).count()
+        # 1. Total employees list with department name
+        employees = Employee_db.objects.filter(department__company=company)
+        employee_list = [
+            {
+                "id": emp.id,
+                "name": emp.name,
+                "department": emp.department.name if emp.department else None,
+                "designation": emp.designation,
+            }
+            for emp in employees
+        ]
+        total_employees_count = employees.count()
 
-        today_attendance = Attendance.objects.filter(
+        # 2. Upcoming visa expiries
+        upcoming_visa_expiry_qs = employees.filter(
+            visa_expiry_date__range=[today, upcoming_range]
+        )
+        upcoming_visa_expiry = [
+            {
+                "id": emp.id,
+                "name": emp.name,
+                "department": emp.department.name if emp.department else None,
+                "visa_expiry_date": emp.visa_expiry_date,
+            }
+            for emp in upcoming_visa_expiry_qs
+        ]
+
+        # 3. Pending leave requests
+        pending_leaves_qs = LeaveRequest.objects.filter(
+            status="pending",
+            employee__department__company=company
+        )
+        pending_leaves = [
+            {
+                "id": leave.id,
+                "employee": leave.employee.name,
+                "department": leave.employee.department.name if leave.employee.department else None,
+                "leave_type": leave.leave_type,
+                "from_date": leave.from_date,
+                "to_date": leave.to_date,
+                "reason": leave.reason,
+            }
+            for leave in pending_leaves_qs
+        ]
+
+        # 4. Department list with employee count
+        department_list = [
+            {
+                "id": dept.id,
+                "name": dept.name,
+                "employee_count": dept.employees.count(),
+            }
+            for dept in Department.objects.filter(company=company)
+        ]
+
+        # 5. Upcoming holidays
+        upcoming_holidays_qs = PublicHoliday.objects.filter(
+            company=company,
+            date__gte=today
+        ).order_by("date")[:10]  # next 10 holidays
+        upcoming_holidays = [
+            {
+                "date": holiday.date,
+                "description": holiday.description,
+                "holiday_type": holiday.holiday_type,
+            }
+            for holiday in upcoming_holidays_qs
+        ]
+
+        # 6. Upcoming contract expiries
+        upcoming_contract_expiry_qs = employees.filter(
+            contract_expiry_date__range=[today, upcoming_range]
+        )
+        upcoming_contract_expiry = [
+            {
+                "id": emp.id,
+                "name": emp.name,
+                "department": emp.department.name if emp.department else None,
+                "contract_expiry_date": emp.contract_expiry_date,
+            }
+            for emp in upcoming_contract_expiry_qs
+        ]
+
+        # 7. Active employees today
+        active_today_count = Attendance.objects.filter(
             date=today,
             employee__department__company=company
         ).count()
 
-        today_leave = LeaveRequest.objects.filter(
+        # 8. On leave today
+        on_leave_today_count = LeaveRequest.objects.filter(
             from_date__lte=today,
             to_date__gte=today,
             employee__department__company=company
         ).count()
 
-        visa_expiring_soon = Employee_db.objects.filter(
-            department__company=company,
-            visa_expiry_date__range=[today, upcoming_range]
-        ).count()
-
         return Response({
-            "total_employees": total_employees,
-            "today_attendance": today_attendance,
-            "today_leave": today_leave,
-            "visa_expiring_soon": visa_expiring_soon
+            "total_employees": {
+                "count": total_employees_count,
+                "list": employee_list
+            },
+            "upcoming_visa_expiry": {
+                "count": upcoming_visa_expiry_qs.count(),
+                "list": upcoming_visa_expiry
+            },
+            "pending_leaves": {
+                "count": pending_leaves_qs.count(),
+                "list": pending_leaves
+            },
+            "departments": department_list,
+            "upcoming_holidays": upcoming_holidays,
+            "upcoming_contract_expiry": {
+                "count": upcoming_contract_expiry_qs.count(),
+                "list": upcoming_contract_expiry
+            },
+            "active_today_count": active_today_count,
+            "on_leave_today_count": on_leave_today_count
         })
-
-
-
 
 
 
@@ -642,10 +737,10 @@ class AttendanceSummaryView(APIView):
     
 from .models import ScheduleReminder
 from .serializers import ScheduleReminderSerializer
-
 from rest_framework import generics, permissions
-from .models import ScheduleReminder
-from .serializers import ScheduleReminderSerializer
+from datetime import datetime, time, timezone
+from django.utils.dateparse import parse_date
+from django.utils.timezone import make_aware
 
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
@@ -654,17 +749,100 @@ class ReminderListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         employee = user.employee_db
-        date_str = self.request.query_params.get("date")
-
-        queryset = ScheduleReminder.objects.filter(employee=employee)
-
-        # Filter only if date param exists
+        date_str = self.request.query_params.get("date")  
+        qs = ScheduleReminder.objects.filter(employee=employee)
         if date_str:
-            queryset = queryset.filter(scheduled_datetime__date=date_str)
-
-        return queryset.order_by("scheduled_datetime")  # Sorted for nicer listing
+            qs = qs.filter(scheduled_datetime__date=date_str)
+        return qs
 
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
         serializer.save(employee=employee)
 
+
+from datetime import date, timedelta
+import calendar
+from django.db.models import Sum
+from django.utils import timezone
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from attendance.models import Attendance
+from holidays.models import PublicHoliday 
+from employee.models import Employee_db
+
+
+class EmployeeMonthlySummaryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            # Get employee from the logged-in user
+            employee = request.user.employee_db  
+        except Employee_db.DoesNotExist:
+            return Response({"error": "Employee not found"}, status=404)
+
+        today = timezone.now().date()
+        year = today.year
+        month = today.month
+
+        # First and last day of the month
+        first_day = date(year, month, 1)
+        last_day = date(year, month, calendar.monthrange(year, month)[1])
+
+        # All days in month
+        all_days = [first_day + timedelta(days=i) for i in range((last_day - first_day).days + 1)]
+
+        # Sundays
+        sundays = [d for d in all_days if d.weekday() == 6]
+
+        # Company holidays for this month
+        holidays = PublicHoliday.objects.filter(
+            company=employee.department.company,
+            date__range=(first_day, last_day)
+        ).values_list("date", flat=True)
+
+        # Working days = all days - Sundays - Holidays
+        working_days = [d for d in all_days if d not in sundays and d not in holidays]
+
+        # Attendance records for this month
+        attendances = Attendance.objects.filter(
+            employee=employee,
+            date__range=(first_day, last_day)
+        )
+
+        # Total working hours
+        total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
+
+        # Half days (< 8 hours)
+        half_days = attendances.filter(total_hours__lt=8).values_list("date", flat=True)
+
+        # Present days (attendance exists)
+        present_days = attendances.values_list("date", flat=True)
+
+       # Absent days only until today
+        absent_days = [d for d in working_days if d <= today and d not in present_days]
+
+        # Remaining working days
+        remaining_working_days = [d for d in working_days if d > today]
+
+
+        data = {
+            "month": today.strftime("%B"),
+            "total_working_days": len(working_days),
+            "total_working_days_dates": working_days,
+            "total_working_hours": float(total_hours),
+            "half_days_count": len(half_days),
+            "half_days_dates": list(half_days),
+            "present_days_count": len(present_days),
+            "present_days_dates": list(present_days),
+            "absent_days_count": len(absent_days),
+            "absent_days_dates": absent_days,
+            "remaining_working_days_count": len(remaining_working_days),
+            "remaining_working_days_dates": remaining_working_days,
+            "holidays_count": len(holidays),
+            "holidays_dates": list(holidays)
+        }
+
+        return Response(data)

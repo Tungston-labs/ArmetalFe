@@ -2,9 +2,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   fetchAllLeaveRequests,
   fetchLeaveDetailsById,
-  updateLeaveStatus,fetchOnLeaveEmployees
+  updateLeaveStatus,
+  fetchOnLeaveEmployees
 } from '../services/leaveService';
 
+// Get all leave requests
 export const getLeaveRequests = createAsyncThunk(
   'leave/getLeaveRequests',
   async (filters = {}, thunkAPI) => {
@@ -16,9 +18,9 @@ export const getLeaveRequests = createAsyncThunk(
   }
 );
 
-
+// Get employees on leave by department
 export const getOnLeaveEmployees = createAsyncThunk(
-  "departments/getOnLeaveEmployees",
+  'leave/getOnLeaveEmployees',
   async (departmentId, { rejectWithValue }) => {
     try {
       return await fetchOnLeaveEmployees(departmentId);
@@ -27,6 +29,8 @@ export const getOnLeaveEmployees = createAsyncThunk(
     }
   }
 );
+
+// Get single leave details
 export const getLeaveDetails = createAsyncThunk(
   'leave/getLeaveDetails',
   async (id, { rejectWithValue }) => {
@@ -38,8 +42,7 @@ export const getLeaveDetails = createAsyncThunk(
   }
 );
 
-
-
+// Patch leave status
 export const patchLeaveStatus = createAsyncThunk(
   'leave/patchLeaveStatus',
   async ({ leaveId, status }, { rejectWithValue }) => {
@@ -70,6 +73,7 @@ const leaveSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Get Leave Requests
       .addCase(getLeaveRequests.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -90,6 +94,7 @@ const leaveSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Get Leave Details
       .addCase(getLeaveDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -103,6 +108,7 @@ const leaveSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Update Leave Status
       .addCase(patchLeaveStatus.fulfilled, (state, action) => {
         const updated = action.payload;
         const index = state.leaves.findIndex(l => l.id === updated.id);
@@ -110,6 +116,8 @@ const leaveSlice = createSlice({
           state.leaves[index] = updated;
         }
       })
+
+      // Get On-Leave Employees
       .addCase(getOnLeaveEmployees.pending, (state) => {
         state.loading = true;
         state.error = null;

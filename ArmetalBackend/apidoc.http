@@ -355,8 +355,7 @@ Content-Type: application/json
 
 ### Get Employee Dashboard Details
 GET http://178.248.112.16:8001/api/dashboard/employee/53/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjkwODg3LCJpYXQiOjE3NTQyODcyODcsImp0aSI6IjYyNTE4YjgyZDlmOTRlYTFiYmUxNzNkNjllZDllYmIzIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.tq-844hhqWEWkEnJJoWDPqgbr-O9BlQq4cP5wKSBQ-E
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0OTg1MzcwLCJpYXQiOjE3NTQ5ODE3NzAsImp0aSI6IjQ0NzEyZGVhY2YyNjQ0ZDBiYWExM2Y2Y2FlYmViMTNlIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.LywMRDfmEruvWaQD9M0s358KK8pDMPTvm34SmwgZ7o0
 
 # ----------------------------------API FOR EMPLOYEE-----------------------
 
@@ -374,8 +373,8 @@ Content-Type: application/json
 # dashboard Summary 
 
 ###
-GET http://127.0.0.1:8000/api/admin/dashboard-summary/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjg5OTk1LCJpYXQiOjE3NTQyODYzOTUsImp0aSI6IjliY2FjYzIyOTBlZDRlMjE4ODA4NWVkOTk1YjcyNGI0IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.cUzwgkPl_YyXux7njPm9-P2SiP-XVrEL98tb3gyGMmQ
+GET http://178.248.112.16:8001/api/admin/dashboard-summary/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0OTg1MzcwLCJpYXQiOjE3NTQ5ODE3NzAsImp0aSI6IjQ0NzEyZGVhY2YyNjQ0ZDBiYWExM2Y2Y2FlYmViMTNlIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.LywMRDfmEruvWaQD9M0s358KK8pDMPTvm34SmwgZ7o0
 
 
 
@@ -667,3 +666,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
   "body": "Submit project report before end of day",
   "scheduled_datetime": "2025-07-30T11:22:00Z"
 }
+
+### employee monthly summary for mobile app
+
+GET http://178.248.112.16:8001/api/employee-monthly-summary/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0OTg1Mjc5LCJpYXQiOjE3NTQ5ODE2NzksImp0aSI6Ijc3MTk3MzM2MDIwYTQ4ZTA5MjRkNDU3YmNjNThmZTliIiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.UeIcyT9X8SZ24qfWMnh015OsgF7sXw6TddtUtANWqw8
+Content-Type: application/json
