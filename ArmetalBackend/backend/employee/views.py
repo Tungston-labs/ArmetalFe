@@ -726,11 +726,12 @@ class EmployeeMonthlySummaryView(APIView):
         # Present days (attendance exists)
         present_days = attendances.values_list("date", flat=True)
 
-        # Absent days
-        absent_days = [d for d in working_days if d not in present_days]
+       # Absent days only until today
+        absent_days = [d for d in working_days if d <= today and d not in present_days]
 
         # Remaining working days
         remaining_working_days = [d for d in working_days if d > today]
+
 
         data = {
             "month": today.strftime("%B"),
