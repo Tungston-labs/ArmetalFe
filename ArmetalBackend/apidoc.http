@@ -355,8 +355,7 @@ Content-Type: application/json
 
 ### Get Employee Dashboard Details
 GET http://178.248.112.16:8001/api/dashboard/employee/53/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjkwODg3LCJpYXQiOjE3NTQyODcyODcsImp0aSI6IjYyNTE4YjgyZDlmOTRlYTFiYmUxNzNkNjllZDllYmIzIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.tq-844hhqWEWkEnJJoWDPqgbr-O9BlQq4cP5wKSBQ-E
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0OTc3MDM3LCJpYXQiOjE3NTQ5NzM0MzcsImp0aSI6Ijc1MGRkZWZkOWRlNjQwMWE4NmE1ZGU3ZWM0MjYwNzU4IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.46ffSn56CEO2IVC1K5YwR78Av-p6s8QV_vi070kkpcc
 
 # ----------------------------------API FOR EMPLOYEE-----------------------
 
@@ -667,3 +666,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
   "body": "Submit project report before end of day",
   "scheduled_datetime": "2025-07-30T11:22:00Z"
 }
+
+### employee monthly summary for mobile app
+
+GET http://178.248.112.16:8001/api/employee-monthly-summary/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0OTc5OTQzLCJpYXQiOjE3NTQ5NzYzNDMsImp0aSI6IjRjNDYyNjU3NzRhZjQ2MGFhNDA5NDNiM2YzYjU4YjdiIiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.zIowGCy7U_i6U0-De70SrJwe83eR5BeVwgaRpF73xHY
+Content-Type: application/json

@@ -668,3 +668,88 @@ class ReminderListCreateView(generics.ListCreateAPIView):
         employee = self.request.user.employee_db
         serializer.save(employee=employee)
 
+from datetime import date, timedelta
+import calendar
+from django.db.models import Sum
+from django.utils import timezone
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from attendance.models import Attendance
+from holidays.models import PublicHoliday 
+from employee.models import Employee_db
+
+
+class EmployeeMonthlySummaryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            # Get employee from the logged-in user
+            employee = request.user.employee_db  
+        except Employee_db.DoesNotExist:
+            return Response({"error": "Employee not found"}, status=404)
+
+        today = timezone.now().date()
+        year = today.year
+        month = today.month
+
+        # First and last day of the month
+        first_day = date(year, month, 1)
+        last_day = date(year, month, calendar.monthrange(year, month)[1])
+
+        # All days in month
+        all_days = [first_day + timedelta(days=i) for i in range((last_day - first_day).days + 1)]
+
+        # Sundays
+        sundays = [d for d in all_days if d.weekday() == 6]
+
+        # Company holidays for this month
+        holidays = PublicHoliday.objects.filter(
+            company=employee.company,
+            date__range=(first_day, last_day)
+        ).values_list("date", flat=True)
+
+        # Working days = all days - Sundays - Holidays
+        working_days = [d for d in all_days if d not in sundays and d not in holidays]
+
+        # Attendance records for this month
+        attendances = Attendance.objects.filter(
+            employee=employee,
+            date__range=(first_day, last_day)
+        )
+
+        # Total working hours
+        total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
+
+        # Half days (< 8 hours)
+        half_days = attendances.filter(total_hours__lt=8).values_list("date", flat=True)
+
+        # Present days (attendance exists)
+        present_days = attendances.values_list("date", flat=True)
+
+        # Absent days
+        absent_days = [d for d in working_days if d not in present_days]
+
+        # Remaining working days
+        remaining_working_days = [d for d in working_days if d > today]
+
+        data = {
+            "month": today.strftime("%B"),
+            "total_working_days": len(working_days),
+            "total_working_days_dates": working_days,
+            "total_working_hours": float(total_hours),
+            "half_days_count": len(half_days),
+            "half_days_dates": list(half_days),
+            "present_days_count": len(present_days),
+            "present_days_dates": list(present_days),
+            "absent_days_count": len(absent_days),
+            "absent_days_dates": absent_days,
+            "remaining_working_days_count": len(remaining_working_days),
+            "remaining_working_days_dates": remaining_working_days,
+            "holidays_count": len(holidays),
+            "holidays_dates": list(holidays)
+        }
+
+        return Response(data)
