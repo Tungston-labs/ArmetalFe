@@ -62,8 +62,9 @@ const Department = () => {
   });
 
   useEffect(() => {
-    dispatch(getDepartments(search));
+    dispatch(getDepartments({ page: 1, search }));
   }, [dispatch, search]);
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -75,7 +76,7 @@ const Department = () => {
       if (createNewDepartment.fulfilled.match(result)) {
         setShowModal(false);
         setFormData({ name: '', department_code: '' });
-        dispatch(getDepartments(search.trim()));
+        dispatch(getDepartments({ page: 1, search: search.trim() }));
       } else {
         console.error('Department creation failed:', result.payload);
       }

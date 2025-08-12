@@ -3,10 +3,14 @@ import API from "./api"; // Your Axios instance with baseURL & headers
 // GET: List all departments
 // services/departmentService.js
 
-export const fetchDepartments = async (search = '') => {
-  const query = search ? `?search=${encodeURIComponent(search)}` : '';
-  const response = await API.get(`/departments/${query}`);
-  return response.data.results;
+// services/departmentServices.js
+export const fetchDepartments = async ({ page = 1, search = '' }) => {
+  const queryParams = new URLSearchParams();
+  if (search) queryParams.append('search', search);
+  if (page) queryParams.append('page', page);
+
+  const response = await API.get(`/departments/?${queryParams.toString()}`);
+  return response.data; // ✅ should contain results + pagination
 };
 
 

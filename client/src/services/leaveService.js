@@ -1,7 +1,6 @@
-// src/services/leaveServices.js
 import API from './api';
 
-// fetchAllLeaveRequests.js
+// Fetch all leave requests with optional filters
 export const fetchAllLeaveRequests = async ({ page = 1, status, department_id, search }) => {
   const params = new URLSearchParams({ page });
 
@@ -13,21 +12,20 @@ export const fetchAllLeaveRequests = async ({ page = 1, status, department_id, s
   return response.data;
 };
 
-
-
-
+// Fetch leave details by ID
 export const fetchLeaveDetailsById = async (id) => {
   const response = await API.get(`/leave/admin/${id}/`);
   return response.data;
 };
 
-
+// Update leave status
 export const updateLeaveStatus = async (leaveId, status) => {
   const response = await API.patch(`/leave/admin/${leaveId}/`, { status });
   return response.data;
 };
 
+// ✅ Fixed: fetch on-leave employees by department
 export const fetchOnLeaveEmployees = async (departmentId) => {
-  const response = await API.get(`/${departmentId}/on-leave-employees/`);
+  const response = await API.get(`/departments/${departmentId}/on-leave-employees/`);
   return response.data;
 };

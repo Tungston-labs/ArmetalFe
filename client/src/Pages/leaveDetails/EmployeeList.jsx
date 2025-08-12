@@ -33,6 +33,8 @@ const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [departmentFilter, setDepartmentFilter] = useState("");
+  
 
   // Employee state
   const { employeeList, pagination, loading } = useSelector(
@@ -40,13 +42,13 @@ const EmployeeList = () => {
   );
 
   // Department state (FIX)
-  const { departmentList, loading: deptLoading } = useSelector(
+  const { list: departmentList, loading: deptLoading } = useSelector(
     (state) => state.departments
   );
+  
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [departmentFilter, setDepartmentFilter] = useState("");
   const [page, setPage] = useState(pagination?.current_page || 1);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
