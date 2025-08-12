@@ -29,11 +29,10 @@ import { useParams } from "react-router-dom";
 const Dashboard = () => {
   const { employeeId } = useParams();
   console.log("Employee ID from route:", employeeId);
-
   const dispatch = useDispatch();
   const { employeeDashData, loadingEmployeeDash, employeeDashError } =
     useSelector((state) => state.auth);
-
+  const BASE_URL="http://178.248.112.16:8001"
   useEffect(() => {
     if (employeeId) {
       dispatch(fetchEmployeeDash(employeeId));
@@ -49,13 +48,13 @@ const Dashboard = () => {
         <TopSection>
           <LeftColumn>
             <ProfileCard>
-              <div className="image-wrapper">
-                <img
-                  src="https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE="
-                  alt="profile"
-                />
-                <FaEdit className="edit-icon" />
-              </div>
+           <div className="image-wrapper">
+  <img
+    src={`${BASE_URL}${employeeDashData?.bank_details?.employee?.profile_pic}`}
+    alt="profile"
+  />
+  <FaEdit className="edit-icon" />
+</div>
 
               <div className="details">
                 <p>
@@ -148,7 +147,7 @@ const Dashboard = () => {
                   fontFamily: "Satoshi",
                 }}
               >
-                Monthly days: <strong>28</strong>
+                Monthly days: <strong>{employeeDashData?.attendance_summary?.monthly_working_hours}</strong>
               </p>
 
               <p style={{ display: "flex", justifyContent: "space-between" }}>

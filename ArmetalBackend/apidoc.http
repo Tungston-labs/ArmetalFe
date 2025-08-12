@@ -355,8 +355,7 @@ Content-Type: application/json
 
 ### Get Employee Dashboard Details
 GET http://178.248.112.16:8001/api/dashboard/employee/53/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0OTg3MzU2LCJpYXQiOjE3NTQ5ODM3NTYsImp0aSI6ImMyNDVhYzlmZWY5ZDQyZTZiNzYyMmQ2ZjQ0YmJlNmIzIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.vzwfYUKQFS_17Iy9NvkfoNiwlibHBd7cRFZIKoEv3o8
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDAzNTkzLCJpYXQiOjE3NTQ5OTk5OTMsImp0aSI6IjM5ZTQ4NzUzZjkwYzRhZDRiMTQ2OTc0MzcyMWI1YWI4IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.zSikGAlh98yEFZzWQZC3o09yzKV0T9IIR_KYDiMPkog
 
 # ----------------------------------API FOR EMPLOYEE-----------------------
 
