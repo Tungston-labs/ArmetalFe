@@ -642,10 +642,10 @@ class AttendanceSummaryView(APIView):
     
 from .models import ScheduleReminder
 from .serializers import ScheduleReminderSerializer
-
 from rest_framework import generics, permissions
-from .models import ScheduleReminder
-from .serializers import ScheduleReminderSerializer
+from datetime import datetime, time, timezone
+from django.utils.dateparse import parse_date
+from django.utils.timezone import make_aware
 
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
@@ -654,19 +654,16 @@ class ReminderListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         employee = user.employee_db
-        date_str = self.request.query_params.get("date")
-
-        queryset = ScheduleReminder.objects.filter(employee=employee)
-
-        # Filter only if date param exists
+        date_str = self.request.query_params.get("date")  
+        qs = ScheduleReminder.objects.filter(employee=employee)
         if date_str:
-            queryset = queryset.filter(scheduled_datetime__date=date_str)
-
-        return queryset.order_by("scheduled_datetime")  # Sorted for nicer listing
+            qs = qs.filter(scheduled_datetime__date=date_str)
+        return qs
 
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
         serializer.save(employee=employee)
+
 
 from datetime import date, timedelta
 import calendar
