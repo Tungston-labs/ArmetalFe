@@ -58,7 +58,7 @@ function App() {
         <Route path="/payrolls" element={<Payroll1 />} />
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />}>
-            <Route index element={<NewDashboard />} />
+            <Route index element={<DashboardNew />} />
             <Route path="/department" element={<Department />} />
             <Route path="/departments/:id" element={<DepartmentDetails />} />
             <Route path="/employee" element={<EmployeeList />} />
@@ -101,7 +101,8 @@ function App() {
             <Route path="/confirm" element={<ConfirmLeaveModal />} />
               <Route path="/employee-dashboard" element={<Employeedashboard />} />
               <Route path="/sample" element={<Sample />} />
-              <Route path="/fulldashboard" element={<FullDashboard/>}/>
+           <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
+
                <Route path="/newdashboard" element={<DashboardNew />}/>
           </Route>
         </Route>

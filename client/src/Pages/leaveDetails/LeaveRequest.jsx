@@ -165,8 +165,8 @@ export default function LeaveRequest() {
         <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
         </NavLink>
-        <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+        <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
         </NavLink>
         <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee Contract & Visa Expiry</Tab>

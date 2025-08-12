@@ -28,9 +28,9 @@ export const submitEmployee = createAsyncThunk(
 
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          if (key === "profile_pic") {
+          if (key === "profile_pic" || key === "idcard") {
             if (value instanceof File) {
-              form.append("profile_pic", value);
+              form.append(key, value);
             }
             // else: do NOT send it if it's a URL string
           } else if (key === "department") {
@@ -277,6 +277,10 @@ const employeeSlice = createSlice({
     setBankPaymentId: (state, action) => {
       state.bankPaymentId = action.payload;
     },
+     clearBankPayment: (state) => {
+      state.bankPayment = null;
+      state.formData.bank = null;
+    },
     addDocumentUrl: (state, action) => {
       const { type, url } = action.payload;
       state.documentUrls[type].push(url);
@@ -393,6 +397,7 @@ export const {
   addDocumentUrl,
   removeDocumentUrl,
   clearDocumentUrls,
+  clearBankPayment,
 } = employeeSlice.actions;
 
 export default employeeSlice.reducer;

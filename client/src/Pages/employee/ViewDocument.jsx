@@ -17,7 +17,8 @@ import {
 } from "../../Redux/employeeSlice";
 import SyncLoader from "react-spinners/SyncLoader";
 import styled from "styled-components";
-
+import { IoIosArrowDown } from "react-icons/io";
+import { DropdownMenu, DropdownWrapper } from "../leaveDetails/EmployeeList.styles";
 // ✅ Loader Wrapper
 const FullPageLoaderWrapper = styled.div`
   display: flex;
@@ -37,7 +38,7 @@ const ViewDocument = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { employeeDetail, employeeDocuments, loading } = useSelector((state) => state.employees);
-
+    const [menuOpen, setMenuOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(Date.now());
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
@@ -172,10 +173,22 @@ const ViewDocument = () => {
         </HeaderWrapper>
 
         <Rightside>
-          <HRManager>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <span>HR Manager</span>
-          </HRManager>
+           <DropdownWrapper>
+                  <HRManager onClick={() => setMenuOpen(!menuOpen)}>
+                              <img src="/images/user.jpg" alt="HR Manager" />
+                              <IoIosArrowDown
+                                size={18}
+                                style={{ marginLeft: "5px", cursor: "pointer" }}
+                              />
+                            </HRManager>
+                  
+                            {menuOpen && (
+                              <DropdownMenu>
+                                <div>Change Password</div>
+                                <div>Logout</div>
+                              </DropdownMenu>
+                            )}
+                          </DropdownWrapper>
           <EditButton onClick={() => setEditMode((prev) => !prev)}>
             {editMode ? "Cancel" : "Edit"}
           </EditButton>

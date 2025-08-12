@@ -16,11 +16,13 @@ import {
   fetchAllBankPaymentsThunk,
   setBankFormData
 } from '../../Redux/employeeSlice';
-
+import { clearBankPayment } from '../../Redux/employeeSlice';
+import { FiChevronDown } from "react-icons/fi";
+import { FaUserCircle } from "react-icons/fa";
 export default function BankPaymentForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+const [menuOpen, setMenuOpen] = useState(false);
   const employeeId = useSelector((state) => state.employee.employeeId);
   const bankPayment = useSelector((state) => state.employee.bankPayment);
   const savedBankForm = useSelector((state) => state.employee.formData.bank);
@@ -40,6 +42,7 @@ export default function BankPaymentForm() {
   const [transportation, setTransportation] = useState('');
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
+const [bankProofImage, setBankProofImage] = useState(null);
 
   const stepTitles = ['Basic Info', 'Bank Details', 'Document Upload'];
 
@@ -49,7 +52,7 @@ export default function BankPaymentForm() {
       setSwiftCode(savedBankForm.swift_code || '');
       setPaymentMode(savedBankForm.payment_mode || '');
       setAccountNumber(savedBankForm.account_number || '');
-      setUanNumber(savedBankForm.  uan_epf_number || '');
+      setUanNumber(savedBankForm.uan_epf_number || '');
       setPanNumber(savedBankForm.pan_number || '');
       setTaxRegime(savedBankForm.tax_regime || '');
       setTdsAmount(savedBankForm.tds_deduction_amount?.toString() || '');
@@ -72,12 +75,15 @@ export default function BankPaymentForm() {
       setUanNumber(bankPayment.uan_epf_number || '');
       setPanNumber(bankPayment.pan_number || '');
       setTaxRegime(bankPayment.tax_regime || '');
-      setTdsAmount(bankPayment.tds_deduction?.toString() || '');
+      setTdsAmount(bankPayment.tds_deduction_amount?.toString() || '');
       setDeclaration80C(bankPayment.declaration_80c || '');
       setBasicSalary(bankPayment.basic_salary?.toString() || '');
       setSalaryIncrement(bankPayment.salary_increment?.toString() || '');
       setHousingAllowance(bankPayment.housing_allowance?.toString() || '');
       setTransportation(bankPayment.transportation?.toString() || '');
+        if (bankPayment.bank_proof_image) {
+      setBankProofImage(`${process.env.REACT_APP_BASE_URL || 'http://localhost:8000'}${bankPayment.bank_proof_image}`);
+    }
     }
   }, [bankPayment]);
 
@@ -126,7 +132,8 @@ export default function BankPaymentForm() {
     dispatch(setBankFormData(bankData)); // ✅ Save to Redux
 
     try {
-      await dispatch(submitBankPayment({ employeeId, data: bankData })).unwrap();
+      await dispatch(submitBankPayment({ employeeId, data: bankData,bankProofImage })).unwrap();
+    dispatch(clearBankPayment());
       navigate('/documents');
     } catch (err) {
       setError(err);
@@ -147,10 +154,50 @@ export default function BankPaymentForm() {
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </div>
-        <RoleInfo>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
-        </RoleInfo>
+       <RoleInfo style={{ position: "relative" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        <FaUserCircle size={30} style={{ marginRight: "0.5rem" }} />
+            <FiChevronDown size={20} onClick={() => setMenuOpen(!menuOpen)} />
+      </div>
+    
+      {menuOpen && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50px",
+            right: 0,
+            background: "#fff",
+            boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
+            borderRadius: "5px",
+            zIndex: 1000,
+            minWidth: "150px",
+          }}
+        >
+          <div
+            // onClick={handleChangePassword}
+            style={{
+              padding: "10px",
+              cursor: "pointer",
+              borderBottom: "1px solid #ddd",
+            }}
+          >
+            Change Password
+          </div>
+          <div
+            // onClick={handleLogout}
+            style={{
+              padding: "10px",
+              cursor: "pointer",
+            }}
+          >
+            Logout
+          </div>
+        </div>
+      )}
+    </RoleInfo>
       </Header>
 
       <Hr />
@@ -179,6 +226,8 @@ export default function BankPaymentForm() {
         handlePrevious={handlePrevious}
         handleNext={handleNext}
         errors={fieldErrors}
+          bankProofImage={bankProofImage}
+  setBankProofImage={setBankProofImage}
       />
     </Container>
   );

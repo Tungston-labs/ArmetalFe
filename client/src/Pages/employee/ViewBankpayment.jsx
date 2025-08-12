@@ -35,7 +35,8 @@ import {
   submitBankPayment,
 } from "../../Redux/employeeSlice";
 import SyncLoader from "../../Components/Loder";
-
+import { DropdownMenu, DropdownWrapper } from "../leaveDetails/EmployeeList.styles";
+import { IoIosArrowDown } from "react-icons/io";
 const ViewBankPayment = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -65,7 +66,7 @@ const ViewBankPayment = () => {
   const [housingAllowance, setHousingAllowance] = useState("");
   const [transportation, setTransportation] = useState("");
   const [errors, setErrors] = useState({});
-
+    const [menuOpen, setMenuOpen] = useState(false);
   // Load data
   useEffect(() => {
     dispatch(getEmployeeById(id));
@@ -80,10 +81,10 @@ const ViewBankPayment = () => {
       setSwiftCode(latest.swift_code || "");
       setPaymentMode(latest.payment_mode || "");
       setAccountNumber(latest.account_number || "");
-      setUanNumber(latest.uan_number || "");
+      setUanNumber(latest.uan_epf_number || "");
       setPanNumber(latest.pan_number || "");
       setTaxRegime(latest.tax_regime || "");
-      setTdsAmount(latest.tds_amount || "");
+      setTdsAmount(latest.tds_deduction_amount || "");
       setDeclaration80C(String(latest.declaration_80c) || "");
       setBasicSalary(latest.basic_salary || "");
       setSalaryIncrement(latest.salary_increment || "");
@@ -142,7 +143,7 @@ const { loading } = useSelector((state) => state.employees);
         alert("❌ Error: " + (err.message || "Update failed"));
       });
   };
-
+console.log("employeeBankPayments",employeeBankPayments)
   return (
     <>
     {loading && <SyncLoader/>}
@@ -163,10 +164,22 @@ const { loading } = useSelector((state) => state.employees);
           </TextGroup>
         </HeaderWrapper>
         <Rightside>
-          <HRManager>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <span>HR Manager</span>
-          </HRManager>
+          <DropdownWrapper>
+                  <HRManager onClick={() => setMenuOpen(!menuOpen)}>
+                              <img src="/images/user.jpg" alt="HR Manager" />
+                              <IoIosArrowDown
+                                size={18}
+                                style={{ marginLeft: "5px", cursor: "pointer" }}
+                              />
+                            </HRManager>
+                  
+                            {menuOpen && (
+                              <DropdownMenu>
+                                <div>Change Password</div>
+                                <div>Logout</div>
+                              </DropdownMenu>
+                            )}
+                          </DropdownWrapper>
           <EditButton onClick={() => setIsEditable((prev) => !prev)}>
             {isEditable ? "Cancel" : "Edit"}
           </EditButton>
@@ -246,7 +259,7 @@ const { loading } = useSelector((state) => state.employees);
         
 
         <Table
-        
+        setBankProofImage={setBankProofImage}
           records={employeeBankPayments?.results || []}
           isEditMode={isEditable}
           bankName={bankName}
@@ -278,7 +291,9 @@ const { loading } = useSelector((state) => state.employees);
           errors={errors}
           handleSubmit={handleSubmit}
         />
+        
       </Section>
+      
     </Container>
         </>
   );

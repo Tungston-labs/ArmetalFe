@@ -32,7 +32,7 @@ export const EditButton = styled.button`
   background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
   border-radius: 8px;
-  width: 50%;
+  width: 100px;
   height: 42px;
   font-size: 0.9rem;
   cursor: pointer;
@@ -212,12 +212,12 @@ export const HRManager = styled.div`
  
   align-items: center;
   padding: 0.3rem ;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  // border: 1px solid #ccc;
+  // border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;

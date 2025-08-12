@@ -19,12 +19,12 @@ export const RoleInfo = styled.div`
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 12px;
+  // border: 1px solid #ccc;
+  // border-radius: 12px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;

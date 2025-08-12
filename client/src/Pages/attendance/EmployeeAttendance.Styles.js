@@ -13,16 +13,17 @@ export const CardContainer = styled.div`
   gap: 1rem;
 //   width: 300px;
   position: relative;
+  // background:red;
 `;
 
 export const Initial = styled.div`
   font-size: 6rem;
   font-weight: 700;
-  color: #eaf2fc;
+  color: #B5E2FF;
   transition: all 0.3s ease;
 
   &:hover {
-    color: #1a73e8; /* example hover color */
+    color:rgb(103, 148, 214); /* example hover color */
     transform: scale(1.1); /* optional: slightly enlarges on hover */
   }
 `;
@@ -152,7 +153,7 @@ export const CardRight = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.5rem;
+  gap: 0.6rem;
 
   .card-value {
     font-weight: 600;
@@ -180,9 +181,9 @@ export const CardRight = styled.div`
 
 export const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3,1fr);
-//   gap: 1rem;
-
+  grid-template-columns: repeat(4,1fr);
+  gap: 1rem;
+// background:black;
 `;
 export const DeptTitle = styled.div`
   font-weight: bold;
@@ -203,7 +204,7 @@ export const DeptHead = styled.div`
   }
 `;
 export const Card = styled.div`
-  background: white;
+  // background: yellow;
   border-radius: 12px;
   padding: 1rem;
   display: flex;
