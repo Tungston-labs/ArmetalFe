@@ -707,7 +707,7 @@ class EmployeeMonthlySummaryView(APIView):
 
         # Company holidays for this month
         holidays = PublicHoliday.objects.filter(
-            company=employee.company,
+            company=employee.department.company,
             date__range=(first_day, last_day)
         ).values_list("date", flat=True)
 
