@@ -36,6 +36,7 @@ import { FaUserCircle } from "react-icons/fa";
 import HalfDoughnutChart from "../../Components/HalfDoughnutChart";
 import { useDispatch, useSelector } from "react-redux";
 import { getDashboardSummary } from "../../Redux/dashboardSlice";
+import { useLogout } from "../../services/logout";
 
 const CardsOnly = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ const CardsOnly = () => {
   const [hover, setHover] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [hovers, setHovers] = useState(false);
+  const handleLogout = useLogout();
 
   useEffect(() => {
     dispatch(getDashboardSummary());
@@ -56,8 +58,11 @@ const CardsOnly = () => {
   const departmentsList = summary?.departments || [];
   const upcomingHolidays = summary?.upcoming_holidays || [];
   const contractExpiryList = summary?.upcoming_contract_expiry?.list || [];
+  const visaExpiryList = summary?.upcoming_visa_expiry?.list || [];
+  const leaveRequest = summary?.pending_leaves?.list || [];
   const activeToday = summary?.active_today_count || 0;
   const onLeaveToday = summary?.on_leave_today_count || 0;
+
 
   // Public holidays API (external)
   useEffect(() => {
@@ -116,8 +121,7 @@ const CardsOnly = () => {
         </UserMenuWrapper>
         {menuOpen && (
           <DropdownMenu>
-            <div>Logout</div>
-            <div>Change Password</div>
+<div onClick={handleLogout}>Logout</div>            <div>Change Password</div>
           </DropdownMenu>
         )}
       </div>
@@ -153,13 +157,13 @@ const CardsOnly = () => {
           <VerticalBar />
           <CardContent>
             <CardHeader>
-              <h3>Total Employees</h3>
-              <span>{summary?.total_employees?.count || 0}</span>
+              <h3>Employee Leave Request</h3>
+              <span>{summary?.pending_leaves?.count || 0}</span>
             </CardHeader>
             <CardList>
-              {employeesList.slice(0, 3).map((emp) => (
+              {leaveRequest.slice(0, 3).map((emp) => (
                 <li key={emp.id}>
-                  {emp.name} - {emp.department} - {emp.designation}
+                  {emp.employee} - {emp.department} - {emp.from_date} to {emp.to_date}
                 </li>
               ))}
             </CardList>
@@ -175,15 +179,17 @@ const CardsOnly = () => {
           <VerticalBar />
           <CardContent>
             <CardHeader>
-              <h3>Total Employees</h3>
-              <span>{summary?.total_employees?.count || 0}</span>
+              <h3>Employee Visa Expiry</h3>
+
+              <span>{summary?.upcoming_visa_expiry?.count || 0}</span>
             </CardHeader>
             <CardList>
-              {employeesList.slice(0, 3).map((emp) => (
+              {visaExpiryList.slice(0, 3).map((emp) => (
                 <li key={emp.id}>
-                  {emp.name} - {emp.department} - {emp.designation}
+                  {emp.name} - {emp.department} - {emp.visa_expiry_date}
                 </li>
               ))}
+             
             </CardList>
           </CardContent>
           <Icon>
@@ -202,8 +208,8 @@ const CardsOnly = () => {
               <div>
                 <h4>{dept.name}</h4>
                 <p>Department Head</p>
-                <strong>{dept.department_head}</strong>
-              </div>
+                <strong>{dept.head?.name}</strong>
+                </div>
               <Icon>
                 <FiArrowUpRight />
               </Icon>
@@ -258,7 +264,7 @@ const CardsOnly = () => {
               </Avatar>
               <div>
                 <p>{emp.name}</p>
-                <small>{emp.department}</small>
+                <small>{emp.employee_id}</small>
               </div>
               <span>{emp.contract_expiry_date}</span>
             </ContractItem>

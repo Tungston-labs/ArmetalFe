@@ -355,8 +355,7 @@ Content-Type: application/json
 
 ### Get Employee Dashboard Details
 GET http://178.248.112.16:8001/api/dashboard/employee/53/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDAzNTkzLCJpYXQiOjE3NTQ5OTk5OTMsImp0aSI6IjM5ZTQ4NzUzZjkwYzRhZDRiMTQ2OTc0MzcyMWI1YWI4IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.zSikGAlh98yEFZzWQZC3o09yzKV0T9IIR_KYDiMPkog
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDcwMDMwLCJpYXQiOjE3NTUwNjY0MzAsImp0aSI6ImY1NWYzMjA0NDJlNTQ3YmRhYjNlMDJkY2UyNDU3NGJmIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.1iKzTrp8Ns-kIeBs_w5pZAPWqPQe8hR2zxH3ZeC7BL4
 # ----------------------------------API FOR EMPLOYEE-----------------------
 
 
@@ -374,7 +373,7 @@ Content-Type: application/json
 
 ###
 GET http://178.248.112.16:8001/api/admin/dashboard-summary/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDYxNjEyLCJpYXQiOjE3NTUwNTgwMTIsImp0aSI6IjNlZDBmZmIwNmNhZDRkZjJiYTA0MDkxOTcxMjE2OGIyIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.03wAvG-vTrfapBqXFbC0y7yIl6o5M_yp3y5kPTL7s6U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDY2MDM0LCJpYXQiOjE3NTUwNjI0MzQsImp0aSI6IjIwYzMyYjM0YjMxYzQyODBiMDEyZmZlNmFjZDk4NTdiIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.97462hxxamn026Acg3yy91vVTbu0le1IZ2oqjfayidg
 
 
 
@@ -479,7 +478,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # attendance detail view(hr admin)
 
 ###
-GET http://127.0.0.1:8000/api/admin/attendance/2/
+GET http://178.278.112.16:8001/api/admin/attendance/53/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMjcxMDI4LCJpYXQiOjE3NTAyNjc0MjgsImp0aSI6IjJhNDVlNjVmZTVlODQzMjg4MTYxYjEwNzliYTQ4ZWY1IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.YHzU-ygYB7eCwZXSJwS30ibKO9-x9u0HrppS01Ad5h4
 # --------------PUBLIC HOLIDAY ----------------------------------
 
@@ -672,3 +671,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 GET http://178.248.112.16:8001/api/employee-monthly-summary/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDYxNjk0LCJpYXQiOjE3NTUwNTgwOTQsImp0aSI6IjM2YjViN2E4MDhkNjQzMTQ4YTQ2ODAyMTVlZDFlMGFiIiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.vFhQUJt1v4L5pDojod3VeHhDwPOdjf7kIx3hkQTKkjs
 Content-Type: application/json
+# attendance detail view(hr admin)
+
+###
+GET http://178.248.112.16:8001/api/admin/attendance/53/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDY5NDE5LCJpYXQiOjE3NTUwNjU4MTksImp0aSI6IjFmOTQ1MTI4MTljMTQxNGM4MGZhMzUyZGNkNmZlZmQ4IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.lfUVZax20FJm_OsHmNEI0SSZBalit5RwZ0bSWJuG7O8
