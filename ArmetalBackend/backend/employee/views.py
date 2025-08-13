@@ -521,14 +521,18 @@ class DashboardSummaryView(APIView):
 
         # 4. Department list with employee count
         department_list = [
-            {
-                "id": dept.id,
-                "name": dept.name,
-                "employee_count": dept.employees.count(),
-                "head":dept.department_head,
-            }
-            for dept in Department.objects.filter(company=company)
-        ]
+    {
+        "id": dept.id,
+        "name": dept.name,
+        "employee_count": dept.employees.count(),
+        "head": {
+            "id": dept.department_head.id,
+            "name": dept.department_head.name
+        } if dept.department_head else None
+    }
+    for dept in Department.objects.filter(company=company)
+]
+
 
         # 5. Upcoming holidays
         upcoming_holidays_qs = PublicHoliday.objects.filter(
