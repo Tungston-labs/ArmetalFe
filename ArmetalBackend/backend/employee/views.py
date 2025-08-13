@@ -481,6 +481,7 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "designation": emp.designation,
+                "employee_id":emp.employee_id
             }
             for emp in employees
         ]
@@ -520,13 +521,18 @@ class DashboardSummaryView(APIView):
 
         # 4. Department list with employee count
         department_list = [
-            {
-                "id": dept.id,
-                "name": dept.name,
-                "employee_count": dept.employees.count(),
-            }
-            for dept in Department.objects.filter(company=company)
-        ]
+    {
+        "id": dept.id,
+        "name": dept.name,
+        "employee_count": dept.employees.count(),
+        "head": {
+            "id": dept.department_head.id,
+            "name": dept.department_head.name
+        } if dept.department_head else None
+    }
+    for dept in Department.objects.filter(company=company)
+]
+
 
         # 5. Upcoming holidays
         upcoming_holidays_qs = PublicHoliday.objects.filter(
@@ -552,6 +558,7 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "contract_expiry_date": emp.contract_expiry_date,
+                "employee_id":emp.employee_id
             }
             for emp in upcoming_contract_expiry_qs
         ]

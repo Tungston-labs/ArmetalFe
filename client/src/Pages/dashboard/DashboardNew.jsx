@@ -15,8 +15,10 @@ import {
   Heading,
   DepartmentCalendarWrapper,
   CalendarWrapper,
-    Flex,
-UserMenuWrapper, DropdownIcon, DropdownMenu,
+  Flex,
+  UserMenuWrapper,
+  DropdownIcon,
+  DropdownMenu,
   SubText,
   PresenceContainer,
   ChartContainer,
@@ -32,59 +34,58 @@ import { IoIosArrowDown } from "react-icons/io";
 import "antd/dist/reset.css";
 import { FaUserCircle } from "react-icons/fa";
 import HalfDoughnutChart from "../../Components/HalfDoughnutChart";
-const employees = [
-  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-{ name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-];
-
-const departments = [
-  { name: "Human Resources", head: "John Doe", members: 12 },
-  { name: "Finance", head: "Jane Smith", members: 8 },
-  { name: "Engineering", head: "Michael Johnson", members: 15 },
-  { name: "Engineering", head: "Michael Johnson", members: 15 },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { getDashboardSummary } from "../../Redux/dashboardSlice";
+import { useLogout } from "../../services/logout";
 
 const CardsOnly = () => {
-      const [menuOpen, setMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { summary, loading, error } = useSelector((state) => state.dashboard);
+
+  const [menuOpen, setMenuOpen] = useState(false);
   const [holidays, setHolidays] = useState([]);
-const [hover, setHover] = useState(false);
+  const [hover, setHover] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [hovers, setHovers] = useState(false);
+  const handleLogout = useLogout();
+
+  useEffect(() => {
+    dispatch(getDashboardSummary());
+  }, [dispatch]);
+
+  // Extract data from API response
+  const employeesList = summary?.total_employees?.list || [];
+  const departmentsList = summary?.departments || [];
+  const upcomingHolidays = summary?.upcoming_holidays || [];
+  const contractExpiryList = summary?.upcoming_contract_expiry?.list || [];
+  const visaExpiryList = summary?.upcoming_visa_expiry?.list || [];
+  const leaveRequest = summary?.pending_leaves?.list || [];
+  const activeToday = summary?.active_today_count || 0;
+  const onLeaveToday = summary?.on_leave_today_count || 0;
+
+
+  // Public holidays API (external)
   useEffect(() => {
     async function fetchPublicHolidays() {
       try {
-        const res = await fetch(
-          `https://date.nager.at/api/v3/PublicHolidays/2025/IN` // Change country code as needed
-        );
+        const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/2025/IN`);
         const data = await res.json();
-
         const publicHolidays = data.map((holiday) => ({
           date: holiday.date,
           name: holiday.localName,
           type: "Public Holiday",
         }));
-
-        // Your company holidays
-        const customHolidays = [
-          { date: "2025-05-15", name: "Company Foundation Day", type: "Company Holiday" },
-          { date: "2025-09-01", name: "Team Retreat", type: "Company Event" },
-        ];
-
-        setHolidays([...publicHolidays, ...customHolidays]);
+        setHolidays(publicHolidays);
       } catch (error) {
         console.error("Error fetching holidays:", error);
       }
     }
-
     fetchPublicHolidays();
   }, []);
 
   const dateCellRender = (value) => {
     const dateStr = value.format("YYYY-MM-DD");
     const dayHolidays = holidays.filter((holiday) => holiday.date === dateStr);
-
     return (
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {dayHolidays.map((item, index) => (
@@ -96,121 +97,138 @@ const [hover, setHover] = useState(false);
     );
   };
 
+  if (loading) return <p>Loading dashboard...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+
   return (
     <Container>
-          <div style={{
-    position: "absolute",
-    top: "1px",
-    right: "20px",
-    cursor: "pointer",
-    fontSize: "28px",
-    color: "#14141fff"
-  }}>
-      <UserMenuWrapper onClick={() => setMenuOpen(!menuOpen)}>
-        <FaUserCircle size={28} />
-        <DropdownIcon>
-          <IoIosArrowDown />
-        </DropdownIcon>
-      </UserMenuWrapper>
+      {/* Top Right User Menu */}
+      <div
+        style={{
+          position: "absolute",
+          top: "1px",
+          right: "20px",
+          cursor: "pointer",
+          fontSize: "28px",
+          color: "#14141fff",
+        }}
+      >
+        <UserMenuWrapper onClick={() => setMenuOpen(!menuOpen)}>
+          <FaUserCircle size={28} />
+          <DropdownIcon>
+            <IoIosArrowDown />
+          </DropdownIcon>
+        </UserMenuWrapper>
+        {menuOpen && (
+          <DropdownMenu>
+<div onClick={handleLogout}>Logout</div>            <div>Change Password</div>
+          </DropdownMenu>
+        )}
+      </div>
 
-      {/* Dropdown Menu */}
-      {menuOpen && (
-        <DropdownMenu>
-          <div>Logout</div>
-        <div>Change Password</div>
-          {/* <div>Settings</div> */}
-        </DropdownMenu>
-      )}
-  </div>
       {/* Cards Row */}
       <CardGrid>
-        {Array(3)
-          .fill("")
-          .map((_, idx) => (
-            <Card key={idx}>
-              <LeftIcon>
-                <img
-                  src={`/src/assets/total${idx === 0 ? "" : "2"}.svg`}
-                  alt="User Icon"
-                  width={40}
-                  height={40}
-                />
-              </LeftIcon>
+        <Card>
+          <LeftIcon>
+            <img src={`/src/assets/total.svg`} alt="User Icon" width={40} height={40} />
+          </LeftIcon>
+          <VerticalBar />
+          <CardContent>
+            <CardHeader>
+              <h3>Total Employees</h3>
+              <span>{summary?.total_employees?.count || 0}</span>
+            </CardHeader>
+            <CardList>
+              {employeesList.slice(0, 3).map((emp) => (
+                <li key={emp.id}>
+                  {emp.name} - {emp.department} - {emp.designation}
+                </li>
+              ))}
+            </CardList>
+          </CardContent>
+          <Icon>
+            <FiArrowUpRight />
+          </Icon>
+        </Card>
+        <Card>
+          <LeftIcon>
+            <img src={`/src/assets/total.svg`} alt="User Icon" width={40} height={40} />
+          </LeftIcon>
+          <VerticalBar />
+          <CardContent>
+            <CardHeader>
+              <h3>Employee Leave Request</h3>
+              <span>{summary?.pending_leaves?.count || 0}</span>
+            </CardHeader>
+            <CardList>
+              {leaveRequest.slice(0, 3).map((emp) => (
+                <li key={emp.id}>
+                  {emp.employee} - {emp.department} - {emp.from_date} to {emp.to_date}
+                </li>
+              ))}
+            </CardList>
+          </CardContent>
+          <Icon>
+            <FiArrowUpRight />
+          </Icon>
+        </Card>
+        <Card>
+          <LeftIcon>
+            <img src={`/src/assets/total.svg`} alt="User Icon" width={40} height={40} />
+          </LeftIcon>
+          <VerticalBar />
+          <CardContent>
+            <CardHeader>
+              <h3>Employee Visa Expiry</h3>
 
-              <VerticalBar />
-
-              <CardContent>
-                <CardHeader>
-                  <h3>Total Employees</h3>
-                  <span>12</span>
-                </CardHeader>
-
-                <CardList>
-                  {employees.slice(0, 3).map((emp, i) => (
-                    <li key={i}>
-                      {emp.name} - {emp.id} - Department
-                    </li>
-                  ))}
-                </CardList>
-              </CardContent>
-
-              <Icon>
-                <FiArrowUpRight />
-              </Icon>
-            </Card>
-          ))}
+              <span>{summary?.upcoming_visa_expiry?.count || 0}</span>
+            </CardHeader>
+            <CardList>
+              {visaExpiryList.slice(0, 3).map((emp) => (
+                <li key={emp.id}>
+                  {emp.name} - {emp.department} - {emp.visa_expiry_date}
+                </li>
+              ))}
+             
+            </CardList>
+          </CardContent>
+          <Icon>
+            <FiArrowUpRight />
+          </Icon>
+        </Card>
       </CardGrid>
 
       {/* Department + Calendar Row */}
       <Heading>Department</Heading>
       <DepartmentCalendarWrapper>
-        {/* Left: Departments */}
         <DepartmentGrid>
-          {departments.map((dept, index) => (
-            <DepartmentCard key={index}>
+          {departmentsList.map((dept) => (
+            <DepartmentCard key={dept.id}>
               <Label>{dept.name.charAt(0)}</Label>
               <div>
                 <h4>{dept.name}</h4>
                 <p>Department Head</p>
-                <strong>{dept.head}</strong>
-              </div>
+                <strong>{dept.head?.name}</strong>
+                </div>
               <Icon>
                 <FiArrowUpRight />
               </Icon>
             </DepartmentCard>
           ))}
         </DepartmentGrid>
-
-        {/* Right: Calendar */}
         <CalendarWrapper>
           <Calendar fullscreen={false} dateCellRender={dateCellRender} />
         </CalendarWrapper>
-
-      
       </DepartmentCalendarWrapper>
-      
-            <Flex justify="space-between" align="center">
+
+      {/* Presence + Contract Expiry */}
+      <Flex justify="space-between" align="center">
         <Heading mb={0}>Employee Presence & Upcoming Holidays</Heading>
-
-        {/* <FiArrowUpRight
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          style={{
-            color: hover ? "darkblue" : "blue",
-            fontSize: "25px",
-            cursor: "pointer",
-            transform: hover ? "scale(1.2)" : "scale(1)",
-            transition: "all 0.3s ease",
-          }}
-        /> */}
-     {/* <hr />   */}
       </Flex>
-      {/* <hr /> */}
 
-      {/* Presence Chart + Contract Expiry */}
       <PresenceContainer>
         <ChartContainer>
-          <HalfDoughnutChart active={180} onLeave={71} />
+          <HalfDoughnutChart active={activeToday} onLeave={onLeaveToday} />
           <SubText>
             <span style={{ color: "#2f4ded" }}>■ Active Employees</span> &nbsp;
             <span style={{ color: "#ff6b5f" }}>■ On Leave Today</span>
@@ -239,87 +257,55 @@ const [hover, setHover] = useState(false);
               }}
             />
           </div>
-
-          {employees.map((emp, i) => (
-            <ContractItem key={i}>
+          {contractExpiryList.map((emp) => (
+            <ContractItem key={emp.id}>
               <Avatar>
                 <FaUserCircle />
               </Avatar>
               <div>
                 <p>{emp.name}</p>
+                <small>{emp.employee_id}</small>
               </div>
-              <span>{emp.id}</span>
-              <span>{emp.email}</span>
+              <span>{emp.contract_expiry_date}</span>
             </ContractItem>
           ))}
         </ContractList>
-     
 
-      {/* Upcoming Holidays */}
-      {/* <HolidayCard>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "-10px",
-            fontFamily: "satoshi",
-            fontSize: "1.3rem",
-          }}
-        >
-          <h3 style={{ margin: 0 }}>Upcoming Holidays</h3>
-          <FiArrowUpRight
-            onMouseEnter={() => setHovers(true)}
-            onMouseLeave={() => setHovers(false)}
+        {/* Upcoming Holidays */}
+        <HolidayCard>
+          <div
             style={{
-              color: hovers ? "#1a2a7a" : "blue",
-              fontSize: "25px",
-              cursor: "pointer",
-              transform: hovers ? "scale(1.2)" : "scale(1)",
-              transition: "all 0.3s ease",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              fontFamily: "satoshi",
+              fontSize: "1.3rem",
             }}
-          />
-        </div>
-
-        {[1, 2, 3].map((_, i) => (
-          <HolidayItem key={i}>
-            <div>
-              <h4>Dummy Holiday</h4>
-              <p>Dummy holiday description</p>
-            </div>
-            <span>24 October</span>
-          </HolidayItem>
-        ))}
-      </HolidayCard> */}
-         <HolidayCard>
-             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",fontFamily:"satoshi",fontSize:"1.3rem" }}>
-          <h3 style={{ margin: 0,marginBottom:"20px" }}>Upcoming Holidays</h3>
+          >
+            <h3 style={{ margin: 0, marginBottom: "20px" }}>Upcoming Holidays</h3>
             <FiArrowUpRight
-                onMouseEnter={() => setHovers(true)}
-                onMouseLeave={() => setHovers(false)}
-                style={{
-                  color: hovers ? '#1a2a7a' : 'blue',
-                  fontSize: '25px',
-                  cursor: 'pointer',
-                  transform: hovers ? 'scale(1.2)' : 'scale(1)',
-                  transition: 'all 0.3s ease',
-                }}
-              />
-          
-        </div>
-        
-              
-              {[1, 2, 3,4].map((_, i) => (
-                <HolidayItem key={i}>
-                  <div>
-                    <h4>Dummy Holiday</h4>
-                    <p>Dummy holiday</p>
-                  </div>
-                  <span>24 October</span>
-                </HolidayItem>
-              ))}
-            </HolidayCard>
-             </PresenceContainer>
+              onMouseEnter={() => setHovers(true)}
+              onMouseLeave={() => setHovers(false)}
+              style={{
+                color: hovers ? "#1a2a7a" : "blue",
+                fontSize: "25px",
+                cursor: "pointer",
+                transform: hovers ? "scale(1.2)" : "scale(1)",
+                transition: "all 0.3s ease",
+              }}
+            />
+          </div>
+          {upcomingHolidays.map((holiday, i) => (
+            <HolidayItem key={i}>
+              <div>
+                <h4>{holiday.description}</h4>
+                <p>{holiday.holiday_type}</p>
+              </div>
+              <span>{holiday.date}</span>
+            </HolidayItem>
+          ))}
+        </HolidayCard>
+      </PresenceContainer>
     </Container>
   );
 };

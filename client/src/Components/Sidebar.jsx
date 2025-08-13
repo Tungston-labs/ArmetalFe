@@ -36,7 +36,7 @@ export default function Sidebar() {
       if (!refreshToken) return;
 
       await API.post(
-        "http://178.248.112.16:8000/api/logout/",
+        "http://178.248.112.16:8001/api/logout/",
         { refresh: refreshToken },
        
       );
@@ -52,7 +52,7 @@ export default function Sidebar() {
     try {
       const token = localStorage.getItem("accessToken");
       const res = await API.post(
-        "http://178.248.112.16:8000/api/change-password/",
+        "http://178.248.112.16:8001/api/change-password/",
         { old_password: oldPassword, new_password: newPassword },
        
       );
