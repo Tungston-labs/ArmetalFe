@@ -1,7 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from django.contrib.auth import authenticate
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 
 User = get_user_model()
 
@@ -15,6 +14,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['is_superadmin'] = user.is_superadmin
         token['is_hr_admin'] = user.is_hr_admin
         token['is_employee'] = user.is_employee
+        token['is_hr'] = user.is_hr  # ✅ Add HR flag
         return token
 
     def validate(self, attrs):
@@ -28,12 +28,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         data = super().validate(attrs)
 
-        # Extract company module access if user belongs to a company
-        company_modules = {}
+        # ✅ Find company (works for both HR admins and HR employees)
+        company = None
         if user.company:
-            company_modules = user.company.modules
+            company = user.company
+        elif hasattr(user, "employee_db") and user.employee_db.department and user.employee_db.department.company:
+            company = user.employee_db.department.company
 
-        # Return structured user data
+        company_modules = company.modules if company else {}
+
+        # ✅ Return structured user data
         data['user'] = {
             'id': user.id,
             'username': user.username,
@@ -41,10 +45,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'is_superadmin': user.is_superadmin,
             'is_hr_admin': user.is_hr_admin,
             'is_employee': user.is_employee,
+            'is_hr': user.is_hr,  # ✅ Send to frontend
             'company_modules': company_modules,
         }
 
         return data
+
 
 from rest_framework import serializers
 from .models import OTP, User
