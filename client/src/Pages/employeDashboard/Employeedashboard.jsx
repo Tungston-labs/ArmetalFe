@@ -37,10 +37,11 @@ import LeaveIcon from "../../assets/leave.svg";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEmployeeDash } from "../../Redux/authSlice";
-
+import punchTime from "../../assets/puchtime.svg";
+import { useNavigate } from "react-router-dom";
 const TimeLogDashboard = () => {
   const { employeeId } = useParams();
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { employeeDashData, loadingEmployeeDash, employeeDashError } =
@@ -83,19 +84,45 @@ const TimeLogDashboard = () => {
     },
   ];
   const members = employeeDashData?.department_employees?.employees || [];
+const formatTime = (timeStr) => {
+  if (!timeStr) return "--";
+  const today = new Date().toISOString().split("T")[0]; // e.g. "2025-08-13"
+  return new Date(`${today}T${timeStr}`).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+const formatUTCToLocal = (utcTimeStr) => {
+  if (!utcTimeStr) return "--";
 
-  const logs = [
-    { timeIn: "08:30 Am", timeOut: "11:30 Am" },
-    { timeIn: "11:30 Am", timeOut: "02:30 pm" },
-    { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-    { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-    { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-    { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-    { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-    { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-    { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-    { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-  ];
+  // Get today's date in UTC (YYYY-MM-DD)
+  const nowUTC = new Date();
+  const utcYear = nowUTC.getUTCFullYear();
+  const utcMonth = String(nowUTC.getUTCMonth() + 1).padStart(2, "0");
+  const utcDay = String(nowUTC.getUTCDate()).padStart(2, "0");
+
+  // Build full UTC datetime string
+  const utcDateTimeStr = `${utcYear}-${utcMonth}-${utcDay}T${utcTimeStr}Z`;
+
+  // Parse and convert to local time
+  return new Date(utcDateTimeStr).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+  // const logs = [
+  //   { timeIn: "08:30 Am", timeOut: "11:30 Am" },
+  //   { timeIn: "11:30 Am", timeOut: "02:30 pm" },
+  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
+  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
+  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
+  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
+  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
+  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
+  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
+  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
+  // ];
 
   return (
     <MainWrapper>
@@ -115,11 +142,12 @@ const TimeLogDashboard = () => {
         </CardGrid>
 
         {/* Department Block */}
-        <DepartmentBox>
-          <ArrowIcon>
-            <FaArrowUpRightFromSquare />
-          </ArrowIcon>
+     <ArrowIcon onClick={() => navigate("/department")} style={{ cursor: "pointer" }}>
+      <FaArrowUpRightFromSquare />
+    </ArrowIcon>
 
+        <DepartmentBox>
+         
           <Department>
             <DepartmentTitleRow>
               <DepartmentTitle>
@@ -151,50 +179,65 @@ const TimeLogDashboard = () => {
 
         {/* Time Log Table */}
         <DateHeading>
-          21 January 2025
-          <ArrowButton>
-            <FaArrowUpRightFromSquare />
-          </ArrowButton>
-        </DateHeading>
+  {new Date().toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })}
+  <ArrowButton>
+    <FaArrowUpRightFromSquare />
+  </ArrowButton>
+</DateHeading>
 
-        <TimeLogContainer>
-          <ScrollableTableWrapper>
-            <Table>
-              <thead>
-                <TableRow>
-                  <TableHeader green style={{ textAlign: "left" }}>
-                    Time In
-                  </TableHeader>
-                  <TableHeader style={{ textAlign: "center" }}>To</TableHeader>
-                  <TableHeader red style={{ textAlign: "right" }}>
-                    Time Out
-                  </TableHeader>
-                </TableRow>
-              </thead>
-              <tbody>
-                {logs.map((log, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="left">
-                      <Icon>
-                        <BiTimeFive />
-                      </Icon>
-                      {log.timeIn}
-                    </TableCell>
-                    <TableCell align="center" className="separator">
-                      To
-                    </TableCell>
-                    <TableCell align="right">
-                      <Icon>
-                        <BiTimeFive />
-                      </Icon>
-                      {log.timeOut}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </tbody>
-            </Table>
-          </ScrollableTableWrapper>
-        </TimeLogContainer>
+     <TimeLogContainer>
+  <ScrollableTableWrapper>
+    {employeeDashData?.today_sessions?.length > 0 ? (
+      <Table>
+        <thead>
+          <TableRow>
+            <TableHeader green style={{ textAlign: "left" }}>
+              Time In
+            </TableHeader>
+            <TableHeader style={{ textAlign: "center" }}>To</TableHeader>
+            <TableHeader red style={{ textAlign: "right" }}>
+              Time Out
+            </TableHeader>
+          </TableRow>
+        </thead>
+        <tbody>
+          {employeeDashData.today_sessions.map((session, index) => (
+            <TableRow key={index}>
+           <TableCell align="left">
+  <Icon>
+    <BiTimeFive />
+  </Icon>
+  {formatUTCToLocal(session.time_in)}
+</TableCell>
+
+<TableCell align="center" className="separator">To</TableCell>
+
+<TableCell align="right">
+  <Icon>
+    <BiTimeFive />
+  </Icon>
+  {formatUTCToLocal(session.time_out)}
+</TableCell>
+            </TableRow>
+          ))}
+        </tbody>
+      </Table>
+    ) : (
+      <div style={{ textAlign: "center", padding: "20px" }}>
+        <img
+          src={punchTime}
+          alt="No logs"
+          style={{ width: "500px", height: "auto", opacity: 0.8 }}
+        />
+        <p style={{ marginTop: "10px", color: "#666" }}>No time logs found</p>
+      </div>
+    )}
+  </ScrollableTableWrapper>
+</TimeLogContainer>
       </Container>
     </MainWrapper>
   );

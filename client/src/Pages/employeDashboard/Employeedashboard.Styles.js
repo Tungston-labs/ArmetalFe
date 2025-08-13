@@ -81,6 +81,7 @@ export const DepartmentBox = styled.div`
   border: 0.2px solid #000;
   margin-bottom: 24px;
   position: relative;
+  margin-top:3rem;
 `;
 
 export const DepartmentTitleRow = styled.div`
@@ -177,11 +178,11 @@ export const MemberName = styled.div`
 
 export const ArrowIcon = styled.div`
   position: absolute;
-  top: 2px;
+
   right: 16px;
   background: #2f49d1;
   color: white;
-  padding: 10px;
+  padding: 7px;
   border-radius: 50%;
   cursor: pointer;
 `;

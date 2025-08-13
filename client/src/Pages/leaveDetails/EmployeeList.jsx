@@ -180,14 +180,9 @@ const EmployeeList = () => {
             Employee Contract & Visa Expiry
           </Tab>
         </NavLink>
-        <NavLink
-          to="/employee-Contract-Visa-Expiry"
-          style={{ textDecoration: "none" }}
-        >
-          <Tab active={location.pathname === "/employee-Contract-Visa-Expiry"}>
-            Employee OnLeave
-          </Tab>
-        </NavLink>
+        <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
+                                 <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
+                               </NavLink>
       </Tabs>
       <hr style={{ marginTop: "-18px" }} />
 

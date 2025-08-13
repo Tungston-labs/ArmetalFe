@@ -191,7 +191,12 @@ const EmployeeList = () => {
                 <td>{emp.employee_id}</td>
                 <td>{emp.email}</td>
                 <td>{emp.visa_expiry_date}</td>
-                <td onClick={() => navigate(`/ViewBasic/${emp.id}`)}><FaInfoCircle /></td>
+                 <td
+  onClick={() => navigate(`/fulldashboard/${emp.id}`)}
+  style={{ cursor: "pointer" }}
+>
+           <FaInfoCircle />
+  </td>
                 <td>
                   <FaTrash
                     color="red"

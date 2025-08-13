@@ -19,17 +19,20 @@ import {
 } from "./Sample.Styles";
 import InCompanyIcon from "../../assets/clock.svg";
 import SalaryIcon from "../../assets/salary.svg";
+import { useNavigate } from "react-router-dom";
 import PendingIcon from "../../assets/pending.svg";
 import LeaveIcon from "../../assets/leave.svg";
 import TimeIcon from "../../assets/time.svg";
 import { FaEdit } from "react-icons/fa";
 import { fetchEmployeeDash } from "../../Redux/authSlice";
 import { useParams } from "react-router-dom";
+import noTasks from "../../assets/daliy.svg"; 
 // import Employeedashboard from "./Employeedashboard"
 const Dashboard = () => {
   const { employeeId } = useParams();
   console.log("Employee ID from route:", employeeId);
   const dispatch = useDispatch();
+    const navigate = useNavigate();
   const { employeeDashData, loadingEmployeeDash, employeeDashError } =
     useSelector((state) => state.auth);
   const BASE_URL="http://178.248.112.16:8001"
@@ -53,7 +56,11 @@ const Dashboard = () => {
     src={`${BASE_URL}${employeeDashData?.bank_details?.employee?.profile_pic}`}
     alt="profile"
   />
-  <FaEdit className="edit-icon" />
+  <FaEdit
+      className="edit-icon"
+      style={{ cursor: "pointer" }}
+   onClick={() => navigate(`/ViewBasic/${employeeId}`)}
+    />
 </div>
 
               <div className="details">
@@ -181,7 +188,14 @@ const Dashboard = () => {
       </TaskItem>
     ))
   ) : (
-    <p>No tasks found</p>
+     <div style={{ textAlign: "center", padding: "20px",background:"white" }}>
+      <img
+        src={noTasks}
+        alt="No tasks found"
+        style={{ width: "300px", height: "auto",  }}
+      />
+      <p style={{ marginTop: "10px", color: "#3352BA",fontSize:"lato" }}>"Todays task list is empty"  </p>
+    </div>
   )}
 </TaskSection>
       </Container>

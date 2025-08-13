@@ -102,7 +102,7 @@ export const Table = styled.table`
   margin-top: 1rem;
 
   td {
-    text-align: left;
+    text-align: center;
     padding: 0.4rem;
     white-space: nowrap;
     background-color: white;

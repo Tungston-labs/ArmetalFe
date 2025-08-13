@@ -28,7 +28,7 @@ export const ProfileCard = styled.div`
       background: #fff;
       border-radius: 50%;
       padding: 6px;
-      font-size: 1rem;
+      font-size: 2rem;
       color: #3352BA;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -40,7 +40,7 @@ export const ProfileCard = styled.div`
 
     p {
       margin-top: -10px;
-      font-size: 14px;
+      font-size: 1.2rem;
       color: #333;
       font-family: 'Satoshi', sans-serif;
     }
@@ -49,6 +49,7 @@ export const ProfileCard = styled.div`
       font-weight: 600;
       display: block;
       font-family: 'Satoshi', sans-serif;
+      font-size:1rem;
     }
   }
 `;
@@ -152,6 +153,14 @@ export const TaskTitle = styled.h4`
   margin-bottom: 15px;
   margin-top:-1px;
   color: #3352BA;
+  font-family: Raleway;
+font-weight: 700;
+font-style: Bold;
+font-size: 20px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
   font-size: 1.2rem;
  font-family: 'Raleway', sans-serif;
 `;

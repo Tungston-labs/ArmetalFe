@@ -89,12 +89,12 @@ useEffect(() => {
   };
 
  const handleSubmit = async () => {
-  // const payload = {
-  //   ...formData,
-  //   department_id: formData.department, // ✅ required for PATCH
-  // };
+  const payload = {
+    ...formData,
+    department_id: formData.department, // ✅ required for PATCH
+  };
 
-  // delete payload.department; // 🚫 remove read-only field if it exists
+  delete payload.department; // 🚫 remove read-only field if it exists
 console.log("📤 Submitting employee", formData);
 
   await dispatch(submitEmployee(formData));
