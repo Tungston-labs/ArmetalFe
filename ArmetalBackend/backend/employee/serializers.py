@@ -207,7 +207,7 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
         employees = Employee_db.objects.filter(department=obj.department)
         return {
             'count': employees.count(),
-            'employees': [{'id': emp.id, 'name': emp.name, 'designation': emp.designation, 'profile_pic': emp.profile_pic.url if emp.profile_pic else None} for emp in employees]
+            'employees': [{'id': emp.id, 'name': emp.name, 'designation': emp.designation, 'profile_pic':emp.profile_pic} for emp in employees]
         }
 
     def get_daily_tasks(self, obj):
