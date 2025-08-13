@@ -481,6 +481,7 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "designation": emp.designation,
+                "employee_id":emp.employee_id
             }
             for emp in employees
         ]
@@ -524,6 +525,7 @@ class DashboardSummaryView(APIView):
                 "id": dept.id,
                 "name": dept.name,
                 "employee_count": dept.employees.count(),
+                "head":dept.department_head,
             }
             for dept in Department.objects.filter(company=company)
         ]
@@ -552,6 +554,7 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "contract_expiry_date": emp.contract_expiry_date,
+                "employee_id":emp.employee_id
             }
             for emp in upcoming_contract_expiry_qs
         ]
