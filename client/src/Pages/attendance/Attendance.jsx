@@ -23,7 +23,7 @@ import {
   InfoSection,
   Hr,
   DateNavCenter,
-    DateWrapper,
+  DateWrapper,
   WorkingInfo,
   DateDetails,
   DayBoxes,
@@ -42,7 +42,7 @@ const TimesheetPage = () => {
   const { attendanceDetail, detailLoading } = useSelector((state) => state.attendance);
   const [selectedDate, setSelectedDate] = useState('');
 
-  // 🔧 Time formatting function (12-hour format with AM/PM)
+  // Format time for table
   const formatTime = (datetimeStr) => {
     if (!datetimeStr) return '---';
     const date = new Date(datetimeStr.replace(' ', 'T'));
@@ -53,12 +53,14 @@ const TimesheetPage = () => {
     });
   };
 
+  // Fetch attendance detail
   useEffect(() => {
     if (id) {
       dispatch(getAttendanceDetail(id));
     }
   }, [id, dispatch]);
 
+  // Sync selectedDate with API
   useEffect(() => {
     if (attendanceDetail?.date) {
       setSelectedDate(attendanceDetail.date);
@@ -73,13 +75,31 @@ const TimesheetPage = () => {
 
   const employee = attendanceDetail.employee || {};
   const sessions = attendanceDetail.sessions || [];
-//  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
-  const dates = [12, 13, 14, 15, 16, 17]; // Dynamic generation can be added
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  // Helper: get week days around selectedDate
+  const getWeekDays = (dateStr) => {
+    const baseDate = new Date(dateStr);
+    const startOfWeek = new Date(baseDate);
+    const dayOfWeek = baseDate.getDay(); // Sunday=0
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    startOfWeek.setDate(baseDate.getDate() + mondayOffset);
+
+    return Array.from({ length: 6 }, (_, i) => {
+      const d = new Date(startOfWeek);
+      d.setDate(startOfWeek.getDate() + i);
+      return d;
+    });
+  };
+
+  const weekDays = getWeekDays(selectedDate);
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  const selectedDateObj = new Date(selectedDate);
+
   return (
     <Container>
+      {/* Header Section */}
       <HeaderSection>
         <InfoGrid>
           <LuArrowLeft
@@ -114,54 +134,48 @@ const TimesheetPage = () => {
 
       <Hr />
 
-       <DateWrapper>
-      {/* Left Working Info */}
-      <WorkingInfo>
-        <div>
-          <strong>Monthly working hour :145 Hrs</strong>
-         
-        </div>
-        <div>
-          <strong>Total Monthly working hour:145 Hrs</strong>
-      
-        </div>
-        <div>
-          <strong>Weekly working hour:45 hrs</strong>
-        </div>
-      </WorkingInfo>
+      {/* Date Wrapper with Monthly/Weekly info */}
+      <DateWrapper>
+        <WorkingInfo>
+          <div>
+            <strong>Monthly working hour: {attendanceDetail.monthly_hours_formatted || '0.00'} hrs</strong>
+          </div>
+          <div>
+            <strong>Weekly working hour: {attendanceDetail.weekly_hours_formatted || '0.00'} hrs</strong>
+          </div>
+        </WorkingInfo>
 
-      {/* Center Date with Calendar and Arrows */}
-      <DateDetails>
+        <DateDetails>
+          <div className="date-block">
+            <CiCalendarDate size={28} />
+            <h1>{selectedDateObj.getDate()}</h1>
+            <div className="month-day">
+              <strong>{monthNames[selectedDateObj.getMonth()]}</strong>
+              <p>{dayNames[selectedDateObj.getDay()]}</p>
+            </div>
+          </div>
+          <GoChevronLeft size={20} />
+          <GoChevronRight size={20} />
+        </DateDetails>
+      </DateWrapper>
 
-  <div className="date-block">
-    <CiCalendarDate size={28} />
-    <h1>16</h1>
-    <div className="month-day">
-      <strong>November</strong>
-      <p>Monday</p>
-    </div>
-  </div>
-  <GoChevronLeft size={20} />
-  <GoChevronRight size={20} />
-</DateDetails>
-
- </DateWrapper>
-      {/* Horizontal Day List */}
+      {/* Horizontal week day list */}
       <DayBoxes>
-        {days.map((day, index) => {
-          const isActive = index === 0; // highlight Monday as active for now
+        {weekDays.map((dayDate, index) => {
+          const iso = dayDate.toISOString().split("T")[0];
+          const isActive = iso === selectedDate;
           const Component = isActive ? ActiveDayBox : DayBox;
           return (
-            <Component key={index}>
-              <strong>{day}</strong>
-              <div>{dates[index]}</div>
-              <p>Mar</p>
+            <Component key={index} onClick={() => setSelectedDate(iso)}>
+              <strong>{dayNames[dayDate.getDay()].slice(0, 3)}</strong>
+              <div>{dayDate.getDate()}</div>
+              <p>{monthNames[dayDate.getMonth()]}</p>
             </Component>
           );
         })}
       </DayBoxes>
-   
 
+      {/* Time table */}
       <Table>
         <thead>
           <tr>
@@ -175,15 +189,11 @@ const TimesheetPage = () => {
             <TableRow key={index}>
               <TimeCell>{formatTime(session.time_in)}</TimeCell>
               <TimeRange>
-                <TimeIcon>
-                  <FaClock />
-                </TimeIcon>
+                <TimeIcon><FaClock /></TimeIcon>
                 <span>
                   ................................................. To ..................................................
                 </span>
-                <TimeIcon>
-                  <FaClock />
-                </TimeIcon>
+                <TimeIcon><FaClock /></TimeIcon>
               </TimeRange>
               <TimeCell>{formatTime(session.time_out)}</TimeCell>
             </TableRow>
@@ -192,7 +202,7 @@ const TimesheetPage = () => {
       </Table>
 
       <p style={{ marginTop: '20px' }}>
-        <strong>Total Hours Worked:</strong> {attendanceDetail.total_hours || '0.00'} hrs
+        <strong>Total Hours Worked:</strong> {attendanceDetail.total_hours_formatted || '0.00'} hrs
       </p>
     </Container>
   );

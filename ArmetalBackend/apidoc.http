@@ -423,6 +423,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 GET http://178.248.112.16:8001/api/departments/16/on-leave-employees/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MTU0MTE1LCJpYXQiOjE3NTUxNTA1MTUsImp0aSI6ImQ5MDg5YTlmOTMzNzQ3YmJiZGEyMjM1ZWM1YmYyYTMxIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.xUTauo3dU-UttK9xeeHTnXbeApDWsWcTH423zNSxf4c
 
+### list employees on same department who 
+GET http://178.248.112.16:8001/api/department/53/on-leaves/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MTY1MjE3LCJpYXQiOjE3NTUxNjE2MTcsImp0aSI6IjM3NzE0N2U2MTIzOTQxMzBhZjg1ZDVhMTNhNGNjODYwIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.I9Wj2qiL9dGA6DZhZivbLfYxN6iwGpkuDMlESm95i0c
 
 # =-------------------------API FOR TASK MANAGEMENT--------------------------
 
