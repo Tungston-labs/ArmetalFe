@@ -299,6 +299,9 @@ from user.permissions import IsHRAdmin  # Adjust import based on your project
 from .models import Attendance
 from .serializers import AttendanceSerializer
 from shared.pagination import CustomPagination
+from rest_framework.exceptions import ValidationError
+
+
 
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
@@ -308,9 +311,12 @@ class AttendanceAdminListView(generics.ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        user_company = self.request.user.company
+        department_id = self.request.query_params.get('department_id')
+        if not department_id:
+            raise ValidationError({"department_id": "This query parameter is required."})
+
         queryset = Attendance.objects.filter(
-            employee__department__company=user_company
+            employee__department_id=department_id
         ).order_by('-date')
 
         # Optional date filter
@@ -318,12 +324,8 @@ class AttendanceAdminListView(generics.ListAPIView):
         if date:
             queryset = queryset.filter(date=date)
 
-        # Optional department filter
-        department_id = self.request.query_params.get('department_id')
-        if department_id:
-            queryset = queryset.filter(employee__department_id=department_id)
-
         return queryset
+
 
 
     

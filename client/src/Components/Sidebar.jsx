@@ -6,13 +6,13 @@ import { HiMiniArrowRightEndOnRectangle } from "react-icons/hi2";
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  SidebarContainer, 
+  SidebarContainer,
   Logo,
   Nav,
   BottomSection,
   LogoutButton,
   ToggleButton,
-  CustomLink,TopSection,
+  CustomLink, TopSection,
   ChangePasswordLink
 } from './Sidebar.styles';
 import API from '../services/api';
@@ -38,7 +38,7 @@ export default function Sidebar() {
       await API.post(
         "http://178.248.112.16:8001/api/logout/",
         { refresh: refreshToken },
-       
+
       );
 
       localStorage.clear();
@@ -54,7 +54,7 @@ export default function Sidebar() {
       const res = await API.post(
         "http://178.248.112.16:8001/api/change-password/",
         { old_password: oldPassword, new_password: newPassword },
-       
+
       );
       setMessage("Password changed successfully");
       setTimeout(() => {
@@ -90,7 +90,7 @@ export default function Sidebar() {
               <span>Super Admin</span>
             </CustomLink>
           )}
-          {user?.is_hr_admin && user?.company_modules && (
+          {((user?.is_hr_admin || user?.is_hr) && Object.keys(modules).length > 0) && (
             <>
               {modules.dashboard && (
                 <CustomLink to="/" className={collapsed ? 'collapsed' : ''}>
@@ -124,6 +124,8 @@ export default function Sidebar() {
               )}
             </>
           )}
+
+
         </Nav>
 
         {/* Bottom Section */}
@@ -185,7 +187,7 @@ export default function Sidebar() {
             <button onClick={handlePasswordChange} style={{
               width: '100%', marginTop: '20px', padding: '10px',
               backgroundColor: 'blue'
-, color: 'white', border: 'none', borderRadius: '5px'
+              , color: 'white', border: 'none', borderRadius: '5px'
             }}>
               Change Password
             </button>
