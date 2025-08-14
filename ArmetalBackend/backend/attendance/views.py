@@ -371,5 +371,5 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
-    lookup_field = 'employee_id'     
+    lookup_field = 'id'     
 
