@@ -57,9 +57,10 @@ const EmployeeList = () => {
     setSearchText(e.target.value);
     setPage(1);
   };
-  const handleCardClick = (departmentId) => {
-    navigate(`/on-leave?department_id=${departmentId}`);
+  const handleCardClick = (deptId) => {
+    navigate(`/on-leave?department_id=${deptId}`);
   };
+
 
   return (
     <Container>
@@ -127,6 +128,7 @@ const EmployeeList = () => {
             <Card
               key={dept.id}
               onClick={() => handleCardClick(dept.id)}
+              
               style={{ cursor: "pointer" }}
             >
               <Initial>{dept.name?.[0] || "D"}</Initial>
