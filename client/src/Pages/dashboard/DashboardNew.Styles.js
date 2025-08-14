@@ -18,7 +18,7 @@ export const Card = styled.div`
   background: white;
   border-radius: 10px;
   display: flex;
-  align-items: flex-start;
+  // align-items: flex-start;
   padding: 1rem;
   position: relative;
 `;
@@ -28,8 +28,8 @@ export const LeftIcon = styled.div`
 `;
 
 export const VerticalBar = styled.div`
-  width: 2px;
-  background: #ddd;
+  width: 4px;
+  background: #3352BA;
   margin: 0 1rem;
 
 `;
@@ -48,8 +48,18 @@ export const CardList = styled.ul`
   list-style: none;
   padding: 10px;
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 1rem;
+
+  li {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Name | Department | Visa expiry date */
+    gap: 10px;
+    padding: 5px 0;
+    // border-bottom: 1px solid #eee;
+    align-items: center;
+  }
 `;
+
 
 export const Icon = styled.div`
   position: absolute;
@@ -203,17 +213,26 @@ export const ContractList = styled.div`
 `;
 
 export const ContractItem = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 40px 1fr 120px 150px; 
+  /* avatar | name | emp_id | date */
   align-items: center;
   gap: 1rem;
   padding: 0.1rem 0;
+  font-family: "satoshi";
   // border-bottom: 1px solid #eee;
-font-family:"satoshi";
-  span {
-    flex: 1;
+
+  p, small, span {
+    margin: 0;
+    white-space: nowrap; /* avoid text wrapping */
+  }
+
+  small {
     font-size: 0.85rem;
+    color: #666;
   }
 `;
+
 
 export const Avatar = styled.div`
   font-size: 1.5rem;

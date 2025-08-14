@@ -121,7 +121,7 @@ const CardsOnly = () => {
         </UserMenuWrapper>
         {menuOpen && (
           <DropdownMenu>
-<div onClick={handleLogout}>Logout</div>            <div>Change Password</div>
+<div onClick={handleLogout}>Logout</div>   <div>Change Password</div>
           </DropdownMenu>
         )}
       </div>
@@ -139,12 +139,15 @@ const CardsOnly = () => {
               <span>{summary?.total_employees?.count || 0}</span>
             </CardHeader>
             <CardList>
-              {employeesList.slice(0, 3).map((emp) => (
-                <li key={emp.id}>
-                  {emp.name} - {emp.department} - {emp.designation}
-                </li>
-              ))}
-            </CardList>
+  {employeesList.slice(0, 3).map((emp) => (
+    <li key={emp.id}>
+      <span>{emp.name}</span>
+      <span>{emp.department}</span>
+      <span>{emp.designation}</span>
+    </li>
+  ))}
+</CardList>
+
           </CardContent>
           <Icon>
             <FiArrowUpRight />
@@ -152,7 +155,7 @@ const CardsOnly = () => {
         </Card>
         <Card>
           <LeftIcon>
-            <img src={`/src/assets/total.svg`} alt="User Icon" width={40} height={40} />
+            <img src={`/src/assets/total2.svg`} alt="User Icon" width={40} height={40} />
           </LeftIcon>
           <VerticalBar />
           <CardContent>
@@ -160,13 +163,17 @@ const CardsOnly = () => {
               <h3>Employee Leave Request</h3>
               <span>{summary?.pending_leaves?.count || 0}</span>
             </CardHeader>
-            <CardList>
-              {leaveRequest.slice(0, 3).map((emp) => (
-                <li key={emp.id}>
-                  {emp.employee} - {emp.department} - {emp.from_date} to {emp.to_date}
-                </li>
-              ))}
-            </CardList>
+           <CardList>
+  {leaveRequest.slice(0, 3).map((emp) => (
+    <li key={emp.id}>
+      <span>{emp.employee}</span>
+      <span>{emp.department}</span>
+      <span>
+        {emp.from_date} – {emp.to_date}
+      </span>
+    </li>
+  ))}
+</CardList>
           </CardContent>
           <Icon>
             <FiArrowUpRight />
@@ -174,7 +181,7 @@ const CardsOnly = () => {
         </Card>
         <Card>
           <LeftIcon>
-            <img src={`/src/assets/total.svg`} alt="User Icon" width={40} height={40} />
+            <img src={`/src/assets/total3.svg`} alt="User Icon" width={40} height={40} />
           </LeftIcon>
           <VerticalBar />
           <CardContent>
@@ -183,14 +190,17 @@ const CardsOnly = () => {
 
               <span>{summary?.upcoming_visa_expiry?.count || 0}</span>
             </CardHeader>
-            <CardList>
-              {visaExpiryList.slice(0, 3).map((emp) => (
-                <li key={emp.id}>
-                  {emp.name} - {emp.department} - {emp.visa_expiry_date}
-                </li>
-              ))}
-             
-            </CardList>
+           <CardList>
+  {visaExpiryList.slice(0, 3).map((emp) => (
+    <li key={emp.id}>
+      <span>{emp.name}</span>
+      <span>{emp.department}</span>
+      <span>{emp.visa_expiry_date}</span>
+    </li>
+  ))}
+</CardList>
+
+
           </CardContent>
           <Icon>
             <FiArrowUpRight />
@@ -258,16 +268,14 @@ const CardsOnly = () => {
             />
           </div>
           {contractExpiryList.map((emp) => (
-            <ContractItem key={emp.id}>
-              <Avatar>
-                <FaUserCircle />
-              </Avatar>
-              <div>
-                <p>{emp.name}</p>
-                <small>{emp.employee_id}</small>
-              </div>
-              <span>{emp.contract_expiry_date}</span>
-            </ContractItem>
+          <ContractItem key={emp.id}>
+  <Avatar>
+    <FaUserCircle />
+  </Avatar>
+  <p>{emp.name}</p>
+  <small>{emp.employee_id}</small>
+  <span>{emp.contract_expiry_date}</span>
+</ContractItem>
           ))}
         </ContractList>
 
