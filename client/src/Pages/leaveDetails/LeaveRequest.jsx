@@ -236,10 +236,11 @@ export default function LeaveRequest() {
 <ApproveButton
   onClick={() => {
     const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-    console.log("Opening modal with:", leave.employee?.id, today);
+    console.log("Opening modal with:", leave.id, leave.employee?.id, today);
 
     setSelectedLeave({
-      employee_id: leave.employee?.id,  // 👈 use employee id
+      leave_id: leave.id,          // ✅ add leave ID
+      employee_id: leave.employee?.id,
       date: today
     });
 
@@ -248,6 +249,7 @@ export default function LeaveRequest() {
 >
   On Leaves
 </ApproveButton>
+
 
 
 
@@ -310,11 +312,13 @@ export default function LeaveRequest() {
       )} */}
 {showModal && (
   <OnLeaveModal
-    employeeId={selectedLeave?.employee_id} // 👈 employeeId instead of departmentId
+    leaveId={selectedLeave?.leave_id}    // ✅ leave id
+    employeeId={selectedLeave?.employee_id}
     date={selectedLeave?.date}
     onClose={() => setShowModal(false)}
   />
 )}
+
 
 
 

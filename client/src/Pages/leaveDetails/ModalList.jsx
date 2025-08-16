@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import API from "../../services/api"; 
+import ReactDOM from "react-dom";
+import API from "../../services/api";
 import {
   ModalOverlay,
   ModalContainer,
@@ -18,14 +19,23 @@ import ConfirmLeaveModal from "../../Components/ConfirmLeaveModal";
 import { useDispatch } from "react-redux";
 import { patchLeaveStatus } from "../../Redux/leaveSlice";
 
-const OnLeaveModal = ({ onClose, employeeId, date }) => {
+const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [employeesOnLeave, setEmployeesOnLeave] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [actionType, setActionType] = useState(""); // 👈 approve / reject
+  const [actionType, setActionType] = useState("");
+  const [selectedLeaveId, setSelectedLeaveId] = useState(null);
   const dispatch = useDispatch();
 
-  // Fetch leave details for employee + date
+  const openConfirmModal = (leaveId, type) => {
+    console.log("Opening confirm modal for leave ID:", leaveId, "action:", type);
+    setSelectedLeaveId(leaveId);
+    setActionType(type);
+    setShowConfirmModal(true);
+  };
+  
+
+  // Fetch leaves for this employee
   useEffect(() => {
     if (!employeeId || !date) return;
 
@@ -35,6 +45,7 @@ const OnLeaveModal = ({ onClose, employeeId, date }) => {
         const res = await API.get(
           `/department/${employeeId}/on-leaves/?date=${date}`
         );
+        console.log("API response:", res.data);
         setEmployeesOnLeave(res.data.on_leave || []);
       } catch (error) {
         console.error("Error fetching employees on leave:", error);
@@ -46,33 +57,27 @@ const OnLeaveModal = ({ onClose, employeeId, date }) => {
     fetchOnLeaves();
   }, [employeeId, date]);
 
-  // handle approve / reject
   const handleConfirm = async () => {
-    if (!employeesOnLeave.length) return;
-
-    const leaveId = employeesOnLeave[0]?.id; // 👈 assuming backend sends `id` for leave
-    if (!leaveId) {
-      console.error("Leave ID not found in response");
-      return;
-    }
+    if (!selectedLeaveId) return;
 
     const status = actionType === "approve" ? "approved" : "rejected";
 
     try {
-      await dispatch(patchLeaveStatus({ leaveId, status }));
-      onClose(); // close modal after success
+      await dispatch(patchLeaveStatus({ leaveId: selectedLeaveId, status }));
+      onClose();
     } catch (error) {
       console.error("Error updating leave status:", error);
     } finally {
       setShowConfirmModal(false);
       setActionType("");
+      setSelectedLeaveId(null);
     }
   };
 
-  return (
+  return ReactDOM.createPortal(
     <>
-      <ModalOverlay>
-        <ModalContainer>
+      <ModalOverlay zIndex={1000}>
+        <ModalContainer zIndex={1001}>
           <ModalHeader>
             <h2>Employee Leave Details</h2>
           </ModalHeader>
@@ -85,25 +90,25 @@ const OnLeaveModal = ({ onClose, employeeId, date }) => {
                 <th>Email ID</th>
                 <th>Contact number</th>
                 <th>Start date to end date</th>
+                <th>Actions</th>
               </tr>
             </TableHeader>
-
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="5" style={{ textAlign: "center" }}>
+                  <td colSpan="6" style={{ textAlign: "center" }}>
                     Loading...
                   </td>
                 </tr>
               ) : employeesOnLeave.length === 0 ? (
                 <tr>
-                  <td colSpan="5" style={{ textAlign: "center" }}>
-                    No leave record found for this employee.
+                  <td colSpan="6" style={{ textAlign: "center" }}>
+                    No leave record found.
                   </td>
                 </tr>
               ) : (
                 employeesOnLeave.map((emp, index) => (
-                  <TableRow key={index} highlighted={index % 2 !== 0}>
+                  <TableRow key={index} $highlighted={index % 2 !== 0}>
                     <TableData>
                       <ProfileImg src="/images/profile.png" alt="profile" />
                       {emp.employee_name}
@@ -114,6 +119,19 @@ const OnLeaveModal = ({ onClose, employeeId, date }) => {
                     <TableData>
                       {emp.from_date} to {emp.to_date}
                     </TableData>
+                    <TableData>
+                      <ApproveButton
+                        onClick={() => openConfirmModal(leaveId, "approve")}
+                      >
+                        Approve
+                      </ApproveButton>
+                      <DeclineButton
+                        onClick={() => openConfirmModal(leaveId, "reject")}
+                      >
+                        Reject
+                      </DeclineButton>
+                      
+                    </TableData>
                   </TableRow>
                 ))
               )}
@@ -121,35 +139,23 @@ const OnLeaveModal = ({ onClose, employeeId, date }) => {
           </TableContainer>
 
           <ActionButtons>
-            <DeclineButton
-              onClick={() => {
-                setActionType("reject");
-                setShowConfirmModal(true);
-              }}
-            >
-              Reject
-            </DeclineButton>
-
-            <ApproveButton
-              onClick={() => {
-                setActionType("approve");
-                setShowConfirmModal(true);
-              }}
-            >
-              Approve
-            </ApproveButton>
+            <DeclineButton onClick={onClose}>Close</DeclineButton>
           </ActionButtons>
         </ModalContainer>
       </ModalOverlay>
 
-      {showConfirmModal && (
+      {showConfirmModal && selectedLeaveId && (
         <ConfirmLeaveModal
+          leaveId={selectedLeaveId}
+          actionType={actionType}
           onClose={() => setShowConfirmModal(false)}
           onConfirm={handleConfirm}
-          actionType={actionType}
+          zIndex={2000}
         />
       )}
-    </>
+      
+    </>,
+    document.body
   );
 };
 

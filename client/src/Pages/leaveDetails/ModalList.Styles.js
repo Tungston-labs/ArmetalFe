@@ -2,15 +2,13 @@ import styled from "styled-components";
 
 export const ModalOverlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 999;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: ${({ zIndex }) => zIndex || 1000};
+  pointer-events: auto;
 `;
 
 export const ModalContainer = styled.div`
@@ -19,9 +17,14 @@ export const ModalContainer = styled.div`
   max-width: 1200px;
   padding: 30px;
   border-radius: 10px;
-  overflow-y: auto;
   max-height: 90%;
+  overflow-y: auto;
+  z-index: ${({ zIndex }) => zIndex || 1001};
+  pointer-events: auto;
 `;
+
+
+
 
 export const ModalHeader = styled.div`
   font-size: 20px;
@@ -67,7 +70,7 @@ export const TableHeader = styled.thead`
 `;
 
 export const TableRow = styled.tr`
-  background-color: ${({ highlighted }) => (highlighted ? "#f1f4ff" : "white")};
+  background-color: ${({ $highlighted }) => ($highlighted ? "#f1f4ff" : "white")};
 `;
 
 export const TableData = styled.td`
@@ -86,8 +89,9 @@ export const ProfileImg = styled.img`
 export const ActionButtons = styled.div`
   display: flex;
   justify-content: flex-end;
-  gap: 15px;
+  gap: 20px;   // space between buttons
   margin-top: 20px;
+  flex-wrap: wrap; // ensures buttons don't overflow on small screens
 `;
 
 export const ApproveButton = styled.button`
@@ -97,6 +101,7 @@ export const ApproveButton = styled.button`
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  min-width: 100px; // optional, for consistent sizing
 `;
 
 export const DeclineButton = styled.button`
@@ -106,4 +111,6 @@ export const DeclineButton = styled.button`
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  min-width: 100px;
 `;
+
