@@ -6,7 +6,7 @@ import { IoEyeOutline } from 'react-icons/io5';
 import { FaPlus } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
-import ModalList from "./ModalList"
+import OnLeaveModal from "./ModalList"
 import { getDepartments } from "../../Redux/departmentSlice";
 
 import {
@@ -61,10 +61,12 @@ export default function LeaveRequest() {
   }, [dispatch, page, departmentFilter, searchText]);
   
   useEffect(() => {
-    console.log("Pagination Info:", pagination);
+    // console.log("Pagination Info:", pagination);
   }, [pagination]);
 
   const leaveData = leaves || [];
+  console.log(leaveData);
+  
     const { list: departmentList, loading: deptLoading } = useSelector(
       (state) => state.departments
     );
@@ -224,20 +226,31 @@ export default function LeaveRequest() {
                 </TableCell>
                 <TableCell>
                   <ActionButtons>
-                    <DeclineButton onClick={() => {
+                    {/* <DeclineButton onClick={() => {
                       setSelectedLeave(leave);
                       setActionType('rejected');
                       setShowModal(true);
                     }}>
                       Decline
-                    </DeclineButton>
-                    <ApproveButton onClick={() => {
-                      // setSelectedLeave(leave);
-                      // setActionType('approve');
-                      setShowModal(true);
-                    }}>
-                      Approve
-                    </ApproveButton>
+                    </DeclineButton> */}
+<ApproveButton
+  onClick={() => {
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    console.log("Opening modal with:", leave.employee?.department, today);
+
+    setSelectedLeave({
+      department_id: leave.employee?.department, // 👈 pass the department string
+      date: today
+    });
+
+    setShowModal(true);
+  }}
+>
+  On Leaves
+</ApproveButton>
+
+
+
                   </ActionButtons>
                 </TableCell>
               </TableRow>
@@ -293,7 +306,15 @@ export default function LeaveRequest() {
           actionType={actionType}
         />
       )} */}
-        {showModal && <ModalList onClose={() => setShowModal(false)} />}
+{showModal && (
+  <OnLeaveModal
+    departmentId={selectedLeave?.department_id}
+    date={selectedLeave?.date}
+    onClose={() => setShowModal(false)}
+  />
+)}
+
+
     </Container>
   );
 }
