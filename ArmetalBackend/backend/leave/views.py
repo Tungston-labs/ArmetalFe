@@ -229,6 +229,7 @@ class DepartmentEmployeesOnLeaveView(APIView):
                 },
                 "on_leave": [
                     {
+                        "id": leave.id,  # ✅ add leave request ID
                         "employee_name": leave.employee.name,
                         "email": leave.employee.email,
                         "phone": leave.employee.phno,

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
+import API from "../../services/api"; 
 import {
   ModalOverlay,
   ModalContainer,
   ModalHeader,
-  FieldRow,
-  InputField,
   TableContainer,
   TableHeader,
   TableRow,
@@ -16,28 +15,27 @@ import {
 } from "./ModalList.Styles";
 
 import ConfirmLeaveModal from "../../Components/ConfirmLeaveModal";
+import { useDispatch } from "react-redux";
+import { patchLeaveStatus } from "../../Redux/leaveSlice";
 
-const OnLeaveModal = ({ onClose, departmentId, date }) => {
+const OnLeaveModal = ({ onClose, employeeId, date }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [department, setDepartment] = useState(null);
   const [employeesOnLeave, setEmployeesOnLeave] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionType, setActionType] = useState(""); // 👈 approve / reject
+  const dispatch = useDispatch();
 
-  // Fetch employees on leave
+  // Fetch leave details for employee + date
   useEffect(() => {
-    if (!departmentId || !date) return;
+    if (!employeeId || !date) return;
 
-    const fetchData = async () => {
+    const fetchOnLeaves = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const response = await fetch(
-          `http://178.248.112.16:8001/api/department/${departmentId}/on-leaves/?date=${date}`
+        const res = await API.get(
+          `/department/${employeeId}/on-leaves/?date=${date}`
         );
-        const data = await response.json();
-        console.log("API Response:", data);
-
-        setDepartment(data.department);
-        setEmployeesOnLeave(data.on_leave || []);
+        setEmployeesOnLeave(res.data.on_leave || []);
       } catch (error) {
         console.error("Error fetching employees on leave:", error);
       } finally {
@@ -45,46 +43,39 @@ const OnLeaveModal = ({ onClose, departmentId, date }) => {
       }
     };
 
-    fetchData();
-  }, [departmentId, date]);
+    fetchOnLeaves();
+  }, [employeeId, date]);
 
-  const handleApprove = () => setShowConfirmModal(true);
+  // handle approve / reject
+  const handleConfirm = async () => {
+    if (!employeesOnLeave.length) return;
 
-  const handleConfirm = () => {
-    // handle approval logic here
-    setShowConfirmModal(false);
-    onClose();
+    const leaveId = employeesOnLeave[0]?.id; // 👈 assuming backend sends `id` for leave
+    if (!leaveId) {
+      console.error("Leave ID not found in response");
+      return;
+    }
+
+    const status = actionType === "approve" ? "approved" : "rejected";
+
+    try {
+      await dispatch(patchLeaveStatus({ leaveId, status }));
+      onClose(); // close modal after success
+    } catch (error) {
+      console.error("Error updating leave status:", error);
+    } finally {
+      setShowConfirmModal(false);
+      setActionType("");
+    }
   };
-
-  const handleCancelConfirm = () => setShowConfirmModal(false);
 
   return (
     <>
       <ModalOverlay>
         <ModalContainer>
           <ModalHeader>
-            <h2>Employees on leave</h2>
+            <h2>Employee Leave Details</h2>
           </ModalHeader>
-
-          {department && (
-            <>
-              <FieldRow>
-                <InputField
-                  label="Department name"
-                  value={department.name}
-                  readOnly
-                />
-                <InputField
-                  label="Department Code Name"
-                  value={department.name?.slice(0, 3).toUpperCase()}
-                  readOnly
-                />
-              </FieldRow>
-              <FieldRow>
-                <InputField label="Department head" value="Ajay kumar" readOnly />
-              </FieldRow>
-            </>
-          )}
 
           <TableContainer>
             <TableHeader>
@@ -100,12 +91,14 @@ const OnLeaveModal = ({ onClose, departmentId, date }) => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="5" style={{ textAlign: "center" }}>Loading...</td>
+                  <td colSpan="5" style={{ textAlign: "center" }}>
+                    Loading...
+                  </td>
                 </tr>
               ) : employeesOnLeave.length === 0 ? (
                 <tr>
                   <td colSpan="5" style={{ textAlign: "center" }}>
-                    No employees on leave for this date.
+                    No leave record found for this employee.
                   </td>
                 </tr>
               ) : (
@@ -119,7 +112,7 @@ const OnLeaveModal = ({ onClose, departmentId, date }) => {
                     <TableData>{emp.email}</TableData>
                     <TableData>{emp.phone}</TableData>
                     <TableData>
-                      {emp.from_date} - {emp.to_date}
+                      {emp.from_date} to {emp.to_date}
                     </TableData>
                   </TableRow>
                 ))
@@ -127,19 +120,33 @@ const OnLeaveModal = ({ onClose, departmentId, date }) => {
             </tbody>
           </TableContainer>
 
-
           <ActionButtons>
-            <DeclineButton onClick={onClose}>Decline</DeclineButton>
-            <ApproveButton onClick={handleApprove}>Approve</ApproveButton>
+            <DeclineButton
+              onClick={() => {
+                setActionType("reject");
+                setShowConfirmModal(true);
+              }}
+            >
+              Reject
+            </DeclineButton>
+
+            <ApproveButton
+              onClick={() => {
+                setActionType("approve");
+                setShowConfirmModal(true);
+              }}
+            >
+              Approve
+            </ApproveButton>
           </ActionButtons>
         </ModalContainer>
       </ModalOverlay>
 
       {showConfirmModal && (
         <ConfirmLeaveModal
-          onClose={handleCancelConfirm}
+          onClose={() => setShowConfirmModal(false)}
           onConfirm={handleConfirm}
-          actionType="approve"
+          actionType={actionType}
         />
       )}
     </>
