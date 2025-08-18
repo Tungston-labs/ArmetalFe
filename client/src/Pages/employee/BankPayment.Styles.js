@@ -135,9 +135,9 @@ export const Button = styled.button`
   }
 `;
 export const Title = styled.h2`
-  font-size: 24px;
+  font-size: 1.8rem;
   margin: 0;
-  margin-left:10px;
+  // margin-left:10px;
 `;
 
 export const Subtitle = styled.p`

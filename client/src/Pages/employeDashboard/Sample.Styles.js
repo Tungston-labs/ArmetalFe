@@ -150,8 +150,8 @@ background: #FFF;
 // `;
 
 export const TaskTitle = styled.h4`
-  margin-bottom: 15px;
-  margin-top:-1px;
+  // margin-bottom: 15px;
+  // margin-top:30px;
   color: #3352BA;
   font-family: Raleway;
 font-weight: 700;
@@ -216,7 +216,7 @@ export const TaskText = styled.div`
 `;
 
 export const Container = styled.div`
-  display: flex;
+  // display: flex;
   flex-direction: column;
   padding: 10px;
   gap: 20px;
@@ -231,7 +231,7 @@ export const TopSection = styled.div`
   gap: 20px;
   flex-wrap: nowrap; /* prevent stacking unless on small screens */
   align-items: stretch; /* equal height columns */
-
+margin-bottom:30px;
   @media (max-width: 1024px) {
     flex-direction: row;
   }
@@ -257,24 +257,32 @@ export const RightColumn = styled.div`
 
 export const TaskSection = styled.div`
   display: flex;
+    margin-top:20px;
   flex-direction: column;
-  overflow-y: auto;
   gap: 12px; /* space between tasks */
+  overflow-y: auto;
+  padding-right: 4px; /* so scrollbar doesn’t overlap content */
 
-  /* Small screens - show all */
-  @media (max-width: 1023px) {
-    max-height: none;
+  /* Default (mobile first) – show all tasks */
+  max-height: none;
+
+  /* Tablet (≥768px) – show 4 tasks */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    max-height: calc(4 * 90px); /* adjust if TaskItem height differs */
   }
 
-  /* Laptop - show 5 tasks */
+  /* Laptop (≥1024px and ≤1439px) – show 5 tasks */
   @media (min-width: 1024px) and (max-width: 1439px) {
-    max-height: calc(5 * 80px); /* adjust 80px to match TaskItem height */
+    max-height: calc(5 * 90px);
   }
 
-  /* Laptop L+ - show 8 tasks */
+  /* Large screens (≥1440px) – show 8 tasks */
   @media (min-width: 1440px) {
-    max-height: calc(8 * 80px); /* adjust 80px to match TaskItem height */
+    max-height: calc(8 * 90px);
   }
+
+  /* Smooth scroll */
+  scroll-behavior: smooth;
 
   /* Custom scroll styling */
   &::-webkit-scrollbar {

@@ -37,7 +37,10 @@ import HalfDoughnutChart from "../../Components/HalfDoughnutChart";
 import { useDispatch, useSelector } from "react-redux";
 import { getDashboardSummary } from "../../Redux/dashboardSlice";
 import { useLogout } from "../../services/logout";
+import Navbar from "../../Components/Navbar"
+import { Spin } from "antd";
 
+import { Link } from "react-router-dom";
 const CardsOnly = () => {
   const dispatch = useDispatch();
   const { summary, loading, error } = useSelector((state) => state.dashboard);
@@ -97,34 +100,28 @@ const CardsOnly = () => {
     );
   };
 
-  if (loading) return <p>Loading dashboard...</p>;
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh", // full screen center
+          width: "100%",
+        }}
+      >
+        <Spin size="large" tip="Loading Dashboard..." />
+      </div>
+    );
+  }
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
+    <>
+    <Navbar />
     <Container>
-      {/* Top Right User Menu */}
-      <div
-        style={{
-          position: "absolute",
-          top: "1px",
-          right: "20px",
-          cursor: "pointer",
-          fontSize: "28px",
-          color: "#14141fff",
-        }}
-      >
-        <UserMenuWrapper onClick={() => setMenuOpen(!menuOpen)}>
-          <FaUserCircle size={28} />
-          <DropdownIcon>
-            <IoIosArrowDown />
-          </DropdownIcon>
-        </UserMenuWrapper>
-        {menuOpen && (
-          <DropdownMenu>
-<div onClick={handleLogout}>Logout</div>   <div>Change Password</div>
-          </DropdownMenu>
-        )}
-      </div>
+  
 
       {/* Cards Row */}
       <CardGrid>
@@ -150,7 +147,9 @@ const CardsOnly = () => {
 
           </CardContent>
           <Icon>
-            <FiArrowUpRight />
+          <Link to="/employee">
+  <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
+</Link>
           </Icon>
         </Card>
         <Card>
@@ -176,7 +175,9 @@ const CardsOnly = () => {
 </CardList>
           </CardContent>
           <Icon>
-            <FiArrowUpRight />
+          <Link to="/leave-request">
+  <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
+</Link>
           </Icon>
         </Card>
         <Card>
@@ -203,7 +204,9 @@ const CardsOnly = () => {
 
           </CardContent>
           <Icon>
-            <FiArrowUpRight />
+          <Link to="/employee-Contract-Visa-Expiry">
+  <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
+</Link>
           </Icon>
         </Card>
       </CardGrid>
@@ -221,7 +224,9 @@ const CardsOnly = () => {
                 <strong>{dept.head?.name}</strong>
                 </div>
               <Icon>
-                <FiArrowUpRight />
+              <Link to="/department">
+  <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
+</Link>
               </Icon>
             </DepartmentCard>
           ))}
@@ -255,17 +260,19 @@ const CardsOnly = () => {
             }}
           >
             <h4>Employee Contract Expiry</h4>
-            <FiArrowUpRight
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              style={{
-                color: isHovered ? "#1a2a7a" : "#3352BA",
-                fontSize: "25px",
-                cursor: "pointer",
-                transform: isHovered ? "scale(1.2)" : "scale(1)",
-                transition: "all 0.3s ease",
-              }}
-            />
+            <Link to="/employee-Contract-Visa-Expiry" style={{ textDecoration: "none" }}>
+  <FiArrowUpRight
+    onMouseEnter={() => setIsHovered(true)}
+    onMouseLeave={() => setIsHovered(false)}
+    style={{
+      color: isHovered ? "#1a2a7a" : "#3352BA",
+      fontSize: "25px",
+      cursor: "pointer",
+      transform: isHovered ? "scale(1.2)" : "scale(1)",
+      transition: "all 0.3s ease",
+    }}
+  />
+</Link>
           </div>
           {contractExpiryList.map((emp) => (
           <ContractItem key={emp.id}>
@@ -291,17 +298,19 @@ const CardsOnly = () => {
             }}
           >
             <h3 style={{ margin: 0, marginBottom: "20px" }}>Upcoming Holidays</h3>
-            <FiArrowUpRight
-              onMouseEnter={() => setHovers(true)}
-              onMouseLeave={() => setHovers(false)}
-              style={{
-                color: hovers ? "#1a2a7a" : "blue",
-                fontSize: "25px",
-                cursor: "pointer",
-                transform: hovers ? "scale(1.2)" : "scale(1)",
-                transition: "all 0.3s ease",
-              }}
-            />
+            <Link to="/holiday">
+  <FiArrowUpRight
+    onMouseEnter={() => setHovers(true)}
+    onMouseLeave={() => setHovers(false)}
+    style={{
+      color: hovers ? "#1a2a7a" : "blue",
+      fontSize: "25px",
+      cursor: "pointer",
+      transform: hovers ? "scale(1.2)" : "scale(1)",
+      transition: "all 0.3s ease",
+    }}
+  />
+</Link>
           </div>
           {upcomingHolidays.map((holiday, i) => (
             <HolidayItem key={i}>
@@ -315,6 +324,7 @@ const CardsOnly = () => {
         </HolidayCard>
       </PresenceContainer>
     </Container>
+    </>
   );
 };
 

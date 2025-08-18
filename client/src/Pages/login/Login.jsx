@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { login } from '../../Redux/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { FiEye, FiEyeOff } from "react-icons/fi"; // 👁️ Eye icons
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -30,6 +31,12 @@ const LoginForm = () => {
   });
   const [view, setView] = useState('login');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // ⏳ Spinner state
+
+  // Eye toggle states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,21 +49,19 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true); // ⏳ start spinner
     try {
       const response = await axios.post("http://178.248.112.16:8001/api/token/", {
-        //  const response = await axios.post("http://localhost:8000/api/token/", {
         username: formData.username,
         password: formData.password,
       });
 
       const { access, refresh, user } = response.data;
 
-      // Store tokens
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
       localStorage.setItem("user", JSON.stringify(user));
 
-      // Redux
       dispatch(
         login({
           userName: user.username,
@@ -71,7 +76,6 @@ const LoginForm = () => {
         })
       );
 
-      // Redirect
       if (user.is_superadmin) {
         navigate("/superadmin");
       } else {
@@ -80,17 +84,19 @@ const LoginForm = () => {
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.detail || "Login failed. Check credentials.");
+    } finally {
+      setLoading(false); // ⏹️ stop spinner
     }
   };
 
   const handleForgotPassword = () => {
     navigate('/forget-password');
   };
-  
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true); // ⏳ start spinner
     try {
       const token = localStorage.getItem("accessToken");
 
@@ -109,6 +115,8 @@ const LoginForm = () => {
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.detail || "Password change failed.");
+    } finally {
+      setLoading(false); // ⏹️ stop spinner
     }
   };
 
@@ -152,18 +160,35 @@ const LoginForm = () => {
                 onChange={handleChange}
                 required
               />
+
               <Label>Password</Label>
-              <Input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
+              <div style={{ position: "relative" }}>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  style={{ paddingRight: "40px" }}
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "40%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer"
+                  }}
+                >
+                  {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </span>
+              </div>
+
               <SmallLink onClick={handleForgotPassword} style={{ cursor: 'pointer' }}>
-  Forgot password?
-</SmallLink>
+                Forgot password?
+              </SmallLink>
 
               <CheckboxContainer>
                 <input
@@ -174,7 +199,10 @@ const LoginForm = () => {
                 />
                 Remember me
               </CheckboxContainer>
-              <Button type="submit">Log in</Button>
+
+              <Button type="submit" disabled={loading}>
+                {loading ? "Logging in..." : "Log in"}
+              </Button>
               {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
           </FormBox>
@@ -187,24 +215,58 @@ const LoginForm = () => {
             </p>
             <form onSubmit={handlePasswordChange}>
               <Label>Old password</Label>
-              <Input
-                type="password"
-                name="old_password"
-                placeholder="Old password"
-                value={formData.old_password}
-                onChange={handleChange}
-                required
-              />
+              <div style={{ position: "relative" }}>
+                <Input
+                  type={showOldPassword ? "text" : "password"}
+                  name="old_password"
+                  placeholder="Old password"
+                  value={formData.old_password}
+                  onChange={handleChange}
+                  required
+                  style={{ paddingRight: "40px" }}
+                />
+                <span
+                  onClick={() => setShowOldPassword(!showOldPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer"
+                  }}
+                >
+                  {showOldPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </span>
+              </div>
+
               <Label>New Password</Label>
-              <Input
-                type="password"
-                name="new_password"
-                placeholder="New Password"
-                value={formData.new_password}
-                onChange={handleChange}
-                required
-              />
-              <Button type="submit">Change Password</Button>
+              <div style={{ position: "relative" }}>
+                <Input
+                  type={showNewPassword ? "text" : "password"}
+                  name="new_password"
+                  placeholder="New Password"
+                  value={formData.new_password}
+                  onChange={handleChange}
+                  required
+                  style={{ paddingRight: "40px" }}
+                />
+                <span
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer"
+                  }}
+                >
+                  {showNewPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </span>
+              </div>
+
+              <Button type="submit" disabled={loading}>
+                {loading ? "Changing..." : "Change Password"}
+              </Button>
               {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
           </FormBox>

@@ -250,7 +250,7 @@ export const ActionArea = styled.div`
   margin-top:-8%;
 `;
 export const Title = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   margin: 0;
  font-family:satoshi;
  margin-top:10px;

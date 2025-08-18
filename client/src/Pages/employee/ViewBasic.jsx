@@ -38,6 +38,8 @@ import SyncLoader from "react-spinners/SyncLoader";
 import { useNavigate } from 'react-router-dom';
 import { DropdownMenu, DropdownWrapper } from "../leaveDetails/EmployeeList.styles";
 import { IoIosArrowDown } from "react-icons/io";
+import EmployeeIcon from "../../assets/employeeicon.svg";
+import { Spin } from "antd";
 const ViewBasic = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -105,15 +107,16 @@ useEffect(() => {
   console.log("Role changed:", formData.role);
 }, [formData.role]);
 
- if (loading || !formData || Object.keys(formData).length === 0) {
+if (loading || !formData || Object.keys(formData).length === 0) {
   return (
     <FullPageLoaderWrapper>
-      <SyncLoader size={12} />
+      <Spin size="large" tip="Loading..." />
     </FullPageLoaderWrapper>
   );
 }
 
   return (
+    
     <Container>
       <Header>
         <HeaderWrapper>      
@@ -122,7 +125,7 @@ useEffect(() => {
             style={{ width: "30px", height: 30, cursor: "pointer" }}
             onClick={() => navigate(-1)}
             />
-                  <img src="/images/employee.png" alt=" Icon" style={{ height: "50px" }} />
+        <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
                   <div>
                
                     <Title>Employee</Title>
@@ -131,22 +134,7 @@ useEffect(() => {
                 </TitleSection>
         </HeaderWrapper>
         <Rightside>
-                  <DropdownWrapper>
-         <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-                     <img src="/images/user.jpg" alt="HR Manager" />
-                     <IoIosArrowDown
-                       size={18}
-                       style={{ marginLeft: "5px", cursor: "pointer" }}
-                     />
-                   </HRManager>
-         
-                   {menuOpen && (
-                     <DropdownMenu>
-                       <div>Change Password</div>
-                       <div>Logout</div>
-                     </DropdownMenu>
-                   )}
-                 </DropdownWrapper>
+                 
           <EditButton onClick={() => setEditMode((prev) => !prev)}>
            {editMode ? "Cancel" : "Edit"}
           </EditButton>

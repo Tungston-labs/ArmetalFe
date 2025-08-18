@@ -10,9 +10,22 @@ export const Container = styled.div`
 
 export const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Always 3 cards */
   gap: 1.5rem;
+
+  /* Default (desktop) */
+  grid-template-columns: repeat(3, 1fr);
+
+  /* Tablet */
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
+
 
 export const Card = styled.div`
   background: white;
@@ -21,6 +34,7 @@ export const Card = styled.div`
   // align-items: flex-start;
   padding: 1rem;
   position: relative;
+    font-family:"satoshi";
 `;
 
 export const LeftIcon = styled.div`
@@ -41,7 +55,7 @@ export const CardContent = styled.div`
 export const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  
+
 `;
 
 export const CardList = styled.ul`
@@ -208,30 +222,62 @@ export const SubText = styled.div`
 export const ContractList = styled.div`
   flex: 2;
   min-width: 300px;
-  background:white;
-  padding:10px;
+  background: white;
+  padding: 10px;
+
+  /* Tablet */
+  @media (max-width: 1024px) {
+    flex: 1;
+    min-width: 250px;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    flex: 1 1 100%; /* takes full width */
+    min-width: 100%;
+  }
 `;
+
 
 export const ContractItem = styled.div`
   display: grid;
-  grid-template-columns: 40px 1fr 120px 150px; 
-  /* avatar | name | emp_id | date */
+  grid-template-columns: 40px 1fr 1fr 1fr; /* avatar | name | emp_id | date */
   align-items: center;
-  gap: 1rem;
-  padding: 0.1rem 0;
+  padding: 0.3rem 0;
   font-family: "satoshi";
-  // border-bottom: 1px solid #eee;
 
   p, small, span {
     margin: 0;
-    white-space: nowrap; /* avoid text wrapping */
+    white-space: nowrap; /* prevent awkward wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   small {
     font-size: 0.85rem;
     color: #666;
+    font-family: "satoshi";
+  }
+
+  /* Tablet screens */
+  @media (max-width: 1024px) {
+    grid-template-columns: 40px 1fr 1fr; /* Hide date */
+    
+    span:last-child {
+      display: none; /* Hide date column */
+    }
+  }
+
+  /* Mobile screens */
+  @media (max-width: 768px) {
+    grid-template-columns: 40px 1fr; /* Only avatar + name */
+
+    small, span {
+      display: none; /* Hide emp_id and date */
+    }
   }
 `;
+
 
 
 export const Avatar = styled.div`

@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDepartments } from "../../Redux/departmentSlice";
 import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
+import EmployeeIcon from "../../assets/employeeicon.svg";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -80,10 +81,11 @@ const EmployeeList = () => {
       {/* Header */}
       <HeaderSection>
         <TitleSection>
-          <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
+                 <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         
           <div>
-            <Title>Departments</Title>
-            <Subtitle>Manage your departments.</Subtitle>
+            <Title>Employees on Leave</Title>
+            <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </TitleSection>
         <SearchInput

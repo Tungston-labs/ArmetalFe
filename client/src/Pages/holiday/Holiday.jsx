@@ -30,7 +30,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getHolidays, addHoliday, removeHoliday } from '../../Redux/holidaySlice';
 import { fetchHolidayTypes } from '../../services/holidayService';
 import SyncLoader from 'react-spinners/SyncLoader';
-
+import Navbar from '../../Components/Navbar';
+import { Spin } from "antd"; 
 
 
 const formatDateToISO = (dateStr) => {
@@ -112,11 +113,14 @@ const cancelDelete = () => {
 
 
   return (
+    <>
+       <Navbar/>
     <Container>
-      <Header>
+   
+      {/* <Header>
         <TopBar>
           <TitleSection>
-            {/* <LuArrowLeft style={{ width: "36px", height: 36 }} /> */}
+
             <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
             <div>
               <Title>Holiday</Title>
@@ -128,7 +132,7 @@ const cancelDelete = () => {
             <span>HR Manager</span>
           </HRManager>
         </TopBar>
-      </Header>
+      </Header> */}
 
       <FormSection>
   <Input name="name" placeholder="Holiday name" value={formData.name} onChange={handleChange} />
@@ -167,11 +171,11 @@ const cancelDelete = () => {
           </thead>
 <tbody>
   {loading ? (
-    <tr>
-      <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-       <p>Loading...</p>
-      </Td>
-    </tr>
+     <tr>
+     <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
+       <Spin size="large" tip="Loading holidays..." /> {/* ✅ Spinner here */}
+     </Td>
+   </tr>
   ) : holidays.length === 0 ? (
     <tr>
       <Td colSpan="5" style={{ textAlign: "center" }}>
@@ -285,6 +289,7 @@ const cancelDelete = () => {
 
 
     </Container>
+    </>
   );
 };
 

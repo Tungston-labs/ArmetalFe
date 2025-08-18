@@ -39,6 +39,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEmployeeDash } from "../../Redux/authSlice";
 import punchTime from "../../assets/puchtime.svg";
 import { useNavigate } from "react-router-dom";
+import { Spin } from "antd";
 const TimeLogDashboard = () => {
   const { employeeId } = useParams();
   const navigate = useNavigate();
@@ -55,7 +56,20 @@ const TimeLogDashboard = () => {
 
   const baseUrl = "http://178.248.112.16:8001";
 
-  if (loadingEmployeeDash) return <p>Loading...</p>;
+  // if (loadingEmployeeDash) return <p>Loading...</p>;
+
+  if (loadingEmployeeDash) {
+    return (
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        height: "100vh" 
+      }}>
+        <Spin size="large" tip="Loading Dashboard..." />
+      </div>
+    );
+  }
   if (employeeDashError) return <p>Error: {employeeDashError}</p>;
   const infoCards = [
     {
@@ -125,8 +139,9 @@ const formatUTCToLocal = (utcTimeStr) => {
   // ];
 
   return (
+    <Container>
     <MainWrapper>
-      <Container>
+
         {/* Top Info Cards */}
         <CardGrid>
           {infoCards.map((card, index) => (
@@ -142,9 +157,7 @@ const formatUTCToLocal = (utcTimeStr) => {
         </CardGrid>
 
         {/* Department Block */}
-     <ArrowIcon onClick={() => navigate("/department")} style={{ cursor: "pointer" }}>
-      <FaArrowUpRightFromSquare />
-    </ArrowIcon>
+    
 
         <DepartmentBox>
          
@@ -153,7 +166,9 @@ const formatUTCToLocal = (utcTimeStr) => {
               <DepartmentTitle>
                 {employeeDashData?.bank_details?.employee?.department}
               </DepartmentTitle>
-              <DepartmentCount>48</DepartmentCount>
+              {/* <ArrowIcon onClick={() => navigate("/department")} style={{ cursor: "pointer" }}>
+      <FaArrowUpRightFromSquare />
+    </ArrowIcon> */}
             </DepartmentTitleRow>
             <hr></hr>
             <SubLabel>Department head</SubLabel>
@@ -184,9 +199,9 @@ const formatUTCToLocal = (utcTimeStr) => {
     month: "long",
     year: "numeric",
   })}
-  <ArrowButton>
+  {/* <ArrowButton>
     <FaArrowUpRightFromSquare />
-  </ArrowButton>
+  </ArrowButton> */}
 </DateHeading>
 
      <TimeLogContainer>
@@ -231,15 +246,16 @@ const formatUTCToLocal = (utcTimeStr) => {
         <img
           src={punchTime}
           alt="No logs"
-          style={{ width: "500px", height: "auto", opacity: 0.8 }}
+          style={{ width: "450px", height: "auto", opacity: 0.8 }}
         />
         <p style={{ marginTop: "10px", color: "#666" }}>No time logs found</p>
       </div>
     )}
   </ScrollableTableWrapper>
 </TimeLogContainer>
-      </Container>
+
     </MainWrapper>
+    </Container>
   );
 };
 

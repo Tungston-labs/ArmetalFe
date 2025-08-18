@@ -32,7 +32,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getLeaveDetails, patchLeaveStatus } from '../../Redux/leaveSlice';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
+import EmployeeIcon from "../../assets/employeeicon.svg";
 
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
@@ -73,20 +73,20 @@ const handleStatusUpdate = async () => {
 
   return (
     <Container>
-      <TopBar>
+      {/* <TopBar>
         <div />
         <HRManager>
           <img src="/images/user.jpg" alt="HR Manager" />
           <span>HR Manager</span>
         </HRManager>
-      </TopBar>
+      </TopBar> */}
 
       <TitleSection>
          <LuArrowLeft
   style={{ width: "30px", height: 30, cursor: "pointer" }}
   onClick={() => navigate(-1)} // 👈 Go back to previous page
 />
-        <img src="/images/employee.png" alt=" Icon" style={{ height: "50px" }} />
+        <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
         <div>
      
           <Title>Employee</Title>

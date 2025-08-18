@@ -24,7 +24,7 @@ import {
   TextGroup,
   HRManager,
 } from "./ViewBankpayment.Styles";
-
+import EmployeeIcon from "../../assets/employeeicon.svg";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import Table from "../../Components/Table";
 import { useParams, NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -152,18 +152,14 @@ console.log("employeeBankPayments",employeeBankPayments)
       <Header>
         <HeaderWrapper>
           <div style={{ width: "10%" }}>
-            <img
-              src="/images/employee.png"
-              alt="Icon"
-              style={{ height: "50px" }}
-            />
+              <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           </div>
           <TextGroup>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
           </TextGroup>
         </HeaderWrapper>
-        <Rightside>
+        {/* <Rightside>
           <DropdownWrapper>
                   <HRManager onClick={() => setMenuOpen(!menuOpen)}>
                               <img src="/images/user.jpg" alt="HR Manager" />
@@ -183,7 +179,7 @@ console.log("employeeBankPayments",employeeBankPayments)
           <EditButton onClick={() => setIsEditable((prev) => !prev)}>
             {isEditable ? "Cancel" : "Edit"}
           </EditButton>
-        </Rightside>
+        </Rightside> */}
       </Header>
 
       <Hr />

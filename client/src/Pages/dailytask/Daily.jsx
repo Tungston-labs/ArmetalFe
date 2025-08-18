@@ -11,6 +11,9 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import TaskIcon from "../../assets/task.svg"; 
 import { IoIosArrowDown } from "react-icons/io";
+import Navbar from '../../Components/Navbar';
+import { Spin } from "antd";
+
 export default function DailyTask() {
   const dispatch = useDispatch();
   const { employees, tasks, loading } = useSelector(state => state.dailyTask);
@@ -60,6 +63,8 @@ const handleNextDate = () => {
 };
 
   return (
+    <>
+    <Navbar/>
     <Container>
       <Header>
         <TitleSection>
@@ -71,7 +76,7 @@ const handleNextDate = () => {
             <Subtitle>Check daily task details for each employee</Subtitle>
           </TextBlock>
         </TitleSection>
-        <DropdownWrapper>
+        {/* <DropdownWrapper>
         <HRManager onClick={() => setMenuOpen(!menuOpen)}>
           <img src="/images/user.jpg" alt="HR Manager" />
           <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
@@ -84,12 +89,12 @@ const handleNextDate = () => {
             <div>Logout</div>
           </DropdownMenu>
         )}
-      </DropdownWrapper>
+      </DropdownWrapper> */}
       </Header>
 
       <DateSelector>
         <SearchInput
-          placeholder="Search by Employee name"
+          placeholder="Enter Employee name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -157,7 +162,7 @@ const handleNextDate = () => {
           )}
 
           {loading ?( <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-    <SyncLoader/>
+            <Spin size="large" tip="Loading..." />
   </div>) : tasks.length > 0 ? (
             tasks.map((task, idx) => (
               <TaskCard key={idx}>
@@ -183,5 +188,6 @@ const handleNextDate = () => {
         </TaskPanel>
       </div>
     </Container>
+    </>
   );
 }

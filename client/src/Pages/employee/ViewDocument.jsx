@@ -20,6 +20,7 @@ import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import { DropdownMenu, DropdownWrapper } from "../leaveDetails/EmployeeList.styles";
 // ✅ Loader Wrapper
+import EmployeeIcon from "../../assets/employeeicon.svg";
 const FullPageLoaderWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -164,7 +165,7 @@ const ViewDocument = () => {
       <Header>
         <HeaderWrapper>
           <div style={{ width: "10%" }}>
-            <img src="/images/employee.png" alt="Icon" style={{ height: "50px" }} />
+            <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           </div>
           <TextGroup>
             <Title>Employee</Title>
@@ -172,7 +173,7 @@ const ViewDocument = () => {
           </TextGroup>
         </HeaderWrapper>
 
-        <Rightside>
+        {/* <Rightside>
            <DropdownWrapper>
                   <HRManager onClick={() => setMenuOpen(!menuOpen)}>
                               <img src="/images/user.jpg" alt="HR Manager" />
@@ -192,7 +193,7 @@ const ViewDocument = () => {
           <EditButton onClick={() => setEditMode((prev) => !prev)}>
             {editMode ? "Cancel" : "Edit"}
           </EditButton>
-        </Rightside>
+        </Rightside> */}
       </Header>
 
       <Hr />

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getDepartments, createNewDepartment } from '../../Redux/departmentSlice.js';
 import { useNavigate } from 'react-router-dom';
 import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
-
+import EmployeeIcon from "../../assets/employeeicon.svg";
 
 import {
   DepartmentContainer,
@@ -44,11 +44,14 @@ import {
   BackArrow,
   
 } from './AddDepartment.Styles';
+import { Spin } from "antd";
+
 import Employee from "../../assets/employee.svg"; 
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
+import Navbar from '../../Components/Navbar.jsx';
 const Department = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -89,9 +92,31 @@ const Department = () => {
     navigate(`/departments/${id}`);
   };
 
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            width: "100%",
+          }}
+        >
+          <Spin size="large" tip="Loading departments..." />
+        </div>
+      </>
+    );
+  }
+  
+
   return (
+    <>
+    <Navbar/>
     <DepartmentContainer>
-      <TopBar>
+      {/* <TopBar>
         <div />
           <DropdownWrapper>
         <HRManager onClick={() => setMenuOpen(!menuOpen)}>
@@ -106,13 +131,13 @@ const Department = () => {
           </DropdownMenu>
         )}
       </DropdownWrapper>
-      </TopBar>
+      </TopBar> */}
 
       <HeaderSection>
 <TitleSection>
   <div className="left-content">
     <div className="icon-box">
-       <img src={Employee}  alt="employee icon" />
+   <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
     </div>
     <div>
       <Title>Department</Title>
@@ -247,6 +272,7 @@ const Department = () => {
         </ModalOverlay>
       )}
     </DepartmentContainer>
+    </>
   );
 };
 

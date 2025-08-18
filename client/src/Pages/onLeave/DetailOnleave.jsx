@@ -22,7 +22,7 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getOnLeaveEmployees } from "../../Redux/leaveSlice";
-
+import EmployeeIcon from "../../assets/employeeicon.svg";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -88,14 +88,14 @@ const EmployeeList = () => {
       <TopBar>
         <div />
         <HRManager>
-          <img src="/images/user.jpg" alt="HR Manager" />
+    <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <span>HR Manager</span>
         </HRManager>
       </TopBar>
 
       <HeaderSection>
         <TitleSection>
-          <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
+           <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <div>
             <Title>Employee</Title>
             <Subtitle>
@@ -123,8 +123,8 @@ const EmployeeList = () => {
         <NavLink to="/employee-attendance" style={{ textDecoration: "none" }}>
           <Tab active={location.pathname === "/employee-attendance"}>Employee Attendance</Tab>
         </NavLink>
-        <NavLink to="/employee-visa" style={{ textDecoration: "none" }}>
-          <Tab active={location.pathname === "/employee-visa"}>Employee Visa</Tab>
+        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: "none" }}>
+          <Tab active={location.pathname === "/employee-Contract-Visa-Expiry"}>Employee Contract & Visa Expiry</Tab>
         </NavLink>
         <NavLink to="/emp-on-leave" style={{ textDecoration: "none" }}>
           <Tab active={location.pathname === "/emp-on-leave"}>Employees on Leave</Tab>

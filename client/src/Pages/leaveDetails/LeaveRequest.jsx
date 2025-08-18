@@ -8,7 +8,7 @@ import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
 import OnLeaveModal from "./ModalList"
 import { getDepartments } from "../../Redux/departmentSlice";
-
+import EmployeeIcon from "../../assets/employeeicon.svg";
 import {
   Container,
   Table,DepartmentSelect,
@@ -37,6 +37,7 @@ import {
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import SyncLoader from 'react-spinners/SyncLoader';
 import { IoIosArrowDown } from "react-icons/io";
+import Navbar from '../../Components/Navbar';
 
 export default function LeaveRequest() {
   const dispatch = useDispatch();
@@ -104,8 +105,10 @@ export default function LeaveRequest() {
   };
 
   return (
+    <>
+    <Navbar/>
     <Container>
-      <TopBar>
+      {/* <TopBar>
         <div />
          <DropdownWrapper>
                <HRManager onClick={() => setMenuOpen(!menuOpen)}>
@@ -120,12 +123,12 @@ export default function LeaveRequest() {
                  </DropdownMenu>
                )}
              </DropdownWrapper>
-      </TopBar>
+      </TopBar> */}
 
       <HeaderSection>
         <TitleSection>
           {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
-          <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
+          <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
@@ -203,7 +206,7 @@ export default function LeaveRequest() {
           ) : (
             filteredLeaves.map((leave) => (
               <TableRow key={leave.id}>
-                <TableCell style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <TableCell style={{  alignItems: 'center', gap: '10px' }}>
   {leave?.employee?.profile_pic ? (
     <ProfileImage
       src={leave.employee.profile_pic}
@@ -323,5 +326,6 @@ export default function LeaveRequest() {
 
 
     </Container>
+    </>
   );
 }

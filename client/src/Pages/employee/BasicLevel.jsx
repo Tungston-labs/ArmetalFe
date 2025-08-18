@@ -18,6 +18,9 @@ import SyncLoader from '../../Components/Loder';
 import { FaPlus } from 'react-icons/fa';
 import { FiChevronDown } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
+import Navbar from '../../Components/Navbar';
+import { Spin } from "antd";
+import EmployeeIcon from "../../assets/employeeicon.svg";
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -140,17 +143,19 @@ const handleSubmit = () => {
 };
 
   return (
+    <>
+
     <Container>
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           
-          <img src="/images/employee.png" alt="Icon" style={{ height: '50px' }} />
+        <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </div>
-   <RoleInfo style={{ position: "relative" }}>
+   {/* <RoleInfo style={{ position: "relative" }}>
   <div
     style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
     onClick={() => setMenuOpen(!menuOpen)}
@@ -193,7 +198,7 @@ const handleSubmit = () => {
       </div>
     </div>
   )}
-</RoleInfo>
+</RoleInfo> */}
       </Header>
 
       <Hr />
@@ -471,25 +476,26 @@ const handleSubmit = () => {
   </div>
 ) : (
   <Input
-    name={key}
-    placeholder={label}
-    type={key === 'visa_expiry_date' ? 'text' : type || 'text'}
-    value={formData[key]}
-    onChange={handleChange}
-    autoComplete="off"
-    onFocus={
-      key === 'visa_expiry_date'
-        ? (e) => (e.target.type = 'date')
-        : undefined
-    }
-    onBlur={
-      key === 'visa_expiry_date'
-        ? (e) => {
-            if (!e.target.value) e.target.type = 'text';
-          }
-        : undefined
-    }
-  />
+  name={key}
+  placeholder={label}
+  type={key === 'visa_expiry_date' || key === 'contract_expiry_date' ? 'text' : type || 'text'}
+  value={formData[key]}
+  onChange={handleChange}
+  autoComplete="off"
+  onFocus={
+    key === 'visa_expiry_date' || key === 'contract_expiry_date'
+      ? (e) => (e.target.type = 'date')
+      : undefined
+  }
+  onBlur={
+    key === 'visa_expiry_date' || key === 'contract_expiry_date'
+      ? (e) => {
+          if (!e.target.value) e.target.type = 'text';
+        }
+      : undefined
+  }
+/>
+
 )}
 
     </div>
@@ -501,9 +507,10 @@ const handleSubmit = () => {
         <ApproveButton onClick={handleSubmit}>Next</ApproveButton>
       </FlexRow>
 
-      {status === 'loading' && <SyncLoader/>}
+      {status === "loading" && <Spin size="large" tip="Loading..." />}
       {/* {status === 'loading' && <p>Submitting...</p>} */}
 
     </Container>
+    </>
   );
 }

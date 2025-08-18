@@ -15,7 +15,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import SyncLoader from "react-spinners/SyncLoader";
 import { getDepartments } from "../../Redux/departmentSlice";
-
+import Navbar from "../../Components/Navbar";
+import EmployeeIcon from "../../assets/employeeicon.svg";
 export default function EmployeeAttendance() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -98,8 +99,10 @@ export default function EmployeeAttendance() {
   };
 
   return (
+    <>
+    <Navbar/>
     <Container>
-      <TopBar>
+      {/* <TopBar>
         <div />
         <DropdownWrapper>
           <HRManager onClick={() => setMenuOpen(!menuOpen)}>
@@ -114,13 +117,13 @@ export default function EmployeeAttendance() {
             </DropdownMenu>
           )}
         </DropdownWrapper>
-      </TopBar>
+      </TopBar> */}
 
       <HeaderSection>
         {/* Title & Date */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <img src="/images/employee.png" alt="Employee Icon" style={{ height: "50px" }} />
+  <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
             <div>
               <Title>Employee</Title>
               <Subtitle>Manage your Employee.</Subtitle>
@@ -278,5 +281,6 @@ export default function EmployeeAttendance() {
         </span>
       </Pagination>
     </Container>
+    </>
   );
 }

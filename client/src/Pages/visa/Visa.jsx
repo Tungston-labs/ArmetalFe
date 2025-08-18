@@ -15,7 +15,7 @@ import {
   TitleSection,
   DropdownMenu, DropdownWrapper
 } from "../leaveDetails/EmployeeList.styles";
-
+import EmployeeIcon from "../../assets/employeeicon.svg";
 import { FaInfoCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { IoIosArrowDown } from "react-icons/io";
 import { getUpcomingExpiryEmployees } from "../../Redux/employeeSlice";
+import Navbar from "../../Components/Navbar";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -80,8 +81,11 @@ const EmployeeList = () => {
   };
 
   return (
+    <>
+    <Navbar />
+   
     <Container>
-      <TopBar>
+      {/* <TopBar>
         <div />
          <DropdownWrapper>
         <HRManager onClick={() => setMenuOpen(!menuOpen)}>
@@ -96,13 +100,13 @@ const EmployeeList = () => {
           </DropdownMenu>
         )}
       </DropdownWrapper>
-      </TopBar>
+      </TopBar> */}
 
       <HeaderSection>
         <TitleSection>
-          <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
+ <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <div>
-            <Title>Employee</Title>
+            <Title>Employee Contract & Visa Expiry</Title>
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </TitleSection>
@@ -305,6 +309,7 @@ const EmployeeList = () => {
         </div>
       )}
     </Container>
+    </>
   );
 };
 

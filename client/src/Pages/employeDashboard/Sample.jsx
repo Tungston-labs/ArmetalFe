@@ -27,6 +27,7 @@ import { FaEdit } from "react-icons/fa";
 import { fetchEmployeeDash } from "../../Redux/authSlice";
 import { useParams } from "react-router-dom";
 import noTasks from "../../assets/daliy.svg"; 
+import { Spin } from "antd";
 // import Employeedashboard from "./Employeedashboard"
 const Dashboard = () => {
   const { employeeId } = useParams();
@@ -43,7 +44,13 @@ const Dashboard = () => {
     }
   }, [employeeId, dispatch]);
 
-  if (loadingEmployeeDash) return <p>Loading...</p>;
+  if (loadingEmployeeDash) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <Spin size="large" tip="Loading Dashboard..." />
+      </div>
+    );
+  }
   if (employeeDashError) return <p>Error: {employeeDashError}</p>;
   return (
     <>

@@ -15,6 +15,7 @@ import {
   addDocumentUrl,
   uploadImageThunk
 } from '../../Redux/employeeSlice';
+import EmployeeIcon from "../../assets/employeeicon.svg";
 import { FiChevronDown } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
 export default function DocumentUploadForm() {
@@ -199,13 +200,14 @@ const [uploadErrors,setUploadErrors]= useState({});
     <Container>
       <Header>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <img src="/images/employee.png" alt="Icon" style={{ height: "50px" }} />
+      <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </div>
-         <RoleInfo style={{ position: "relative" }}>
+         {/* <RoleInfo style={{ position: "relative" }}>
          <div
            style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
            onClick={() => setMenuOpen(!menuOpen)}
@@ -248,7 +250,7 @@ const [uploadErrors,setUploadErrors]= useState({});
              </div>
            </div>
          )}
-       </RoleInfo>
+       </RoleInfo> */}
       </Header>
 
       <Hr />

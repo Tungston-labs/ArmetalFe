@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import Navbar from "../../Components/Navbar";
 
 
 const EmployeeList = () => {
@@ -98,8 +99,10 @@ const EmployeeList = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <Container>
-      <TopBar>
+      {/* <TopBar>
         <div />
         <DropdownWrapper>
           <HRManager onClick={() => setMenuOpen(!menuOpen)}>
@@ -117,7 +120,7 @@ const EmployeeList = () => {
             </DropdownMenu>
           )}
         </DropdownWrapper>
-      </TopBar>
+      </TopBar> */}
 
       <HeaderSection>
         <TitleSection>
@@ -340,6 +343,7 @@ const EmployeeList = () => {
         </div>
       )}
     </Container>
+    </>
   );
 };
 

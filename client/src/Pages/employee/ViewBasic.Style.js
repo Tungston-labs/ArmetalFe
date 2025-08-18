@@ -189,7 +189,7 @@ background: #FFF;
 export const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 2rem; /* space between image and text */
+  gap: 2rem; 
 `;
 
 export const TextGroup = styled.div`

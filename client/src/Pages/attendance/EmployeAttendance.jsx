@@ -32,7 +32,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDepartments } from "../../Redux/departmentSlice";
 import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
-
+import Navbar from "../../Components/Navbar";
+import EmployeeIcon from "../../assets/employeeicon.svg";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -63,9 +64,11 @@ const EmployeeList = () => {
 
 
   return (
+    <>
+    <Navbar />
     <Container>
       {/* Top Bar */}
-      <TopBar>
+      {/* <TopBar>
         <div />
         <DropdownWrapper>
           <HRManager onClick={() => setMenuOpen(!menuOpen)}>
@@ -79,15 +82,15 @@ const EmployeeList = () => {
             </DropdownMenu>
           )}
         </DropdownWrapper>
-      </TopBar>
+      </TopBar> */}
 
       {/* Header */}
       <HeaderSection>
         <TitleSection>
-          <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
+          <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <div>
-            <Title>Departments</Title>
-            <Subtitle>Manage your departments.</Subtitle>
+            <Title>Employee Attendance</Title>
+            <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </TitleSection>
         <SearchInput
@@ -196,6 +199,7 @@ const EmployeeList = () => {
         </Pagination>
       )}
     </Container>
+    </>
   );
 };
 

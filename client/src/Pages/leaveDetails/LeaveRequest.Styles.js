@@ -278,7 +278,7 @@ export const DepartmentSelect = styled.select`
   background: white;
 `;
 export const Title = styled.h2`
-  font-size: 22px;
+  font-size: 1.8rem;
   margin: 0;
   margin-left:10px;
  font-family:satoshi;

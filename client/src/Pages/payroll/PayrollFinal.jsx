@@ -13,6 +13,8 @@ import {
   updatePayrollStatus
 } from '../../Redux/payrollSlice';
 import SyncLoader from 'react-spinners/SyncLoader';
+import Navbar from '../../Components/Navbar';
+import { Spin } from "antd";
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -145,13 +147,15 @@ const handlePageChange = (newPage) => {
 
 };
   return (
+    <>
+    <Navbar/>
     <Container>
-      <Header style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      {/* <Header style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <HRManager>
           <img src="/images/user.jpg" alt="HR Manager" />
           <span>HR Manager</span>
         </HRManager>
-      </Header>
+      </Header> */}
       <Header>
         <TitleSection>
   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -250,9 +254,11 @@ const handlePageChange = (newPage) => {
           </thead>
           <tbody>
             {loading ? (
-              <tr> <Td colSpan="10" style={{ textAlign: 'center', padding: '2rem' }}>
-        <p>Loading...</p>
-    </Td></tr>
+             <tr>
+             <td colSpan="10" style={{ textAlign: "center", padding: "2rem" }}>
+               <Spin size="large" tip="Loading..." />
+             </td>
+           </tr>
             ) : error ? (
               <tr><Td colSpan="10">Error: {error}</Td></tr>
             ) : data?.length > 0 ? (
@@ -363,6 +369,7 @@ const handlePageChange = (newPage) => {
 </Pagination>
 
     </Container>
+    </>
   );
 };
 

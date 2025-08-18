@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 
 export const MainWrapper = styled.div`
-  display: flex;
+
   width: 100%;
   box-sizing: border-box;
   flex-direction: column; /* Mobile-first: stack everything */
@@ -14,6 +14,7 @@ export const MainWrapper = styled.div`
 
 export const Container = styled.div`
   padding: 10px;
+    display: flex;
   background-color: #f4f4f4;
   width: 100%;
   box-sizing: border-box;
@@ -178,53 +179,70 @@ export const MemberName = styled.div`
 
 export const ArrowIcon = styled.div`
   position: absolute;
-
   right: 16px;
   background: #2f49d1;
   color: white;
   padding: 7px;
   border-radius: 50%;
   cursor: pointer;
+  margin-top:-10px;
 `;
 
 /* Time log responsive */
 export const TimeLogContainer = styled.div`
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  // border-radius: 8px;
+  padding: 12px;
+
+  /* Mobile padding fix */
+  @media (max-width: 480px) {
+    padding: 8px;
+  }
 `;
 
 export const ScrollableTableWrapper = styled.div`
-  overflow-y:auto;
+  overflow-y: auto;
+  overflow-x: auto; /* make sure wide tables scroll horizontally */
+  padding-right: 4px;
 
-  /* Small screens - no scroll limit */
-  @media (max-width: 1023px) {
-    max-height: none;
+  /* Mobile (default) - show all rows */
+  max-height: none;
+
+  /* Tablet (≥768px and ≤1023px) - show up to 4 rows */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    max-height: calc(4 * 70px);
   }
 
-  /* Laptop screens - show 5 rows */
-  @media (min-width: 1024px) and (max-width: 1440px) {
-    max-height: calc(5 * 60px); /* Adjust row height */ 
-    // background:red;
+  /* Laptop (≥1024px and ≤1439px) - show up to 5 rows */
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    max-height: calc(5 * 70px);
   }
 
-  /* Laptop L and larger - show 8 rows */
-  @media (min-width: 1440px) {
-    max-height: calc(8 * 60px); /* Adjust row height */
-    // background:yellow;
+  /* Large laptop / desktop (≥1440px and ≤1919px) - show up to 8 rows */
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    max-height: calc(8 * 70px);
   }
-@media (min-width: 1940px) {
-    max-height: calc(7 * 60px); /* Adjust row height */
-    // background:green;
+
+  /* Ultra-wide screens (≥1920px) - show up to 10 rows */
+  @media (min-width: 1920px) {
+    max-height: calc(10 * 70px);
   }
-  /* Optional nice scrollbar */
+
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+
+  /* Custom scrollbar */
   &::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
   &::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.2);
     border-radius: 4px;
   }
 `;
+
 
 
 export const DateHeading = styled.div`
@@ -306,4 +324,36 @@ export const Department = styled.div`
   padding: 10px;
   border-radius: 9px;
   font-family: 'Satoshi', sans-serif;
+`;
+export const NoLogsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* Allow scrolling if content exceeds screen height */
+  max-height: 70vh;
+  overflow-y: auto;
+
+  padding: 20px;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    max-height: 60vh; /* Prevents image from overflowing */
+    height: auto;
+    object-fit: contain;
+  }
+
+  p {
+    margin-top: 10px;
+    color: #666;
+  }
+
+  /* Small devices */
+  @media (max-height: 600px) {
+    img {
+      max-height: 40vh;
+    }
+  }
 `;

@@ -102,6 +102,7 @@ export const SmallLink = styled.p`
   float: right;
   text-decoration: none;
   cursor: pointer;
+  margin-top:-5%;
 `;
 
 export const LeftHeader = styled.div`

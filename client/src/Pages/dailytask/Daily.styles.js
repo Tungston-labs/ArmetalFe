@@ -39,6 +39,7 @@ export const DateSelector = styled.div`
     padding: 0.5rem;
     border-radius: 6px;
     border: 1px solid #ccc;
+    font-size:0.9rem;
   }
 
   button {
@@ -91,6 +92,7 @@ export const DateSelector = styled.div`
 
 export const SearchInput = styled.input`
   padding: 0.6rem;
+  font-size:0.9rem;
   border-radius: 8px;
   border: 1px solid #ccc;
   min-width: 250px;
@@ -180,7 +182,7 @@ export const TaskHeader = styled.div`
   align-items: center;
   gap: 1rem;
   background: #E1E8EC;
-  padding: 1rem;
+  padding: 2rem;
   border-radius: 11px;
 height:30px;
   img {
