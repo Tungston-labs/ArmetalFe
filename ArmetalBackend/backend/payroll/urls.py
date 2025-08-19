@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import EmployeeBankDetailListView,EmployeePayrollRecordListCreateView,PayrollStatusUpdateView,PayrollRecordDetailView,EmployeePayslipView,PayslipDownloadView
+from .views import EmployeeBankDetailListView,EmployeePayrollRecordListCreateView,PayrollStatusUpdateView,PayrollVerifyView,PayrollRecordDetailView,EmployeePayslipView,PayslipDownloadView
 urlpatterns = [
     
     # bank + basic details of all employee
@@ -12,6 +12,7 @@ urlpatterns = [
     path('payroll/<int:employee_id>/status/update/', PayrollStatusUpdateView.as_view(), name='update-payroll-status'),
 
     path('payroll/record/<int:id>/', PayrollRecordDetailView.as_view(), name='payroll-record-detail'),
+    path('payroll/<int:employee_id>/verify/', PayrollVerifyView.as_view(), name='payroll-verify'),
 
 # urls.py
 

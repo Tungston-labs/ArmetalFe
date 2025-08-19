@@ -12,6 +12,8 @@ from .serializers import EmployeePayrollRecordSerializer
 from django.db import transaction
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from django.utils.timezone import now
+
 
 
 # Create your views here.
@@ -126,21 +128,12 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         serializer = self.get_serializer(updated_records, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class PayrollVerifyView(APIView):
+    permission_classes = [IsAuthenticated]
 
-
-class PayrollStatusUpdateView(APIView):
-    permission_classes = [IsAuthenticated, IsHRAdmin]
-
-    def patch(self, request, employee_id):
-        month = request.data.get('month')
-        year = request.data.get('year')
-        new_status = request.data.get('status')
-
-        if not all([month, year, new_status]):
-            return Response({"error": "Month, year, and status are required."}, status=400)
-
-        if new_status not in dict(EmployeePayrollRecord.STATUS_CHOICES):
-            return Response({"error": "Invalid status"}, status=400)
+    def post(self, request, employee_id):
+        month = request.data.get("month")
+        year = request.data.get("year")
 
         record = get_object_or_404(
             EmployeePayrollRecord,
@@ -149,11 +142,94 @@ class PayrollStatusUpdateView(APIView):
             year=year
         )
 
+        user = request.user
+
+        # ✅ Only HR (admin or normal HR) from the same company can verify
+        if not (user.is_hr_admin or user.is_hr):
+            return Response({"error": "You are not allowed to verify payroll."}, status=403)
+
+        if user.company != record.employee.department.company:
+            return Response({"error": "You are not part of this company."}, status=403)
+
+        # ✅ Assign verification slots
+        if record.hr1_verified_by is None:
+            record.hr1_verified_by = user
+            record.hr1_verified_at = now()
+        elif record.hr2_verified_by is None and record.hr1_verified_by != user:
+            record.hr2_verified_by = user
+            record.hr2_verified_at = now()
+        else:
+            return Response({"error": "Already verified or duplicate HR"}, status=400)
+
+        record.save()
+
+        return Response({
+            "message": "Verification successful",
+            "hr1_verified": record.hr1_verified_by is not None,
+            "hr2_verified": record.hr2_verified_by is not None,
+            "fully_verified": record.is_fully_verified(),
+            "verified_by": {
+                "hr1": record.hr1_verified_by.username if record.hr1_verified_by else None,
+                "hr2": record.hr2_verified_by.username if record.hr2_verified_by else None,
+            }
+        })
+
+
+# class PayrollStatusUpdateView(APIView):
+#     permission_classes = [IsAuthenticated, IsHRAdmin]
+
+#     def patch(self, request, employee_id):
+#         month = request.data.get('month')
+#         year = request.data.get('year')
+#         new_status = request.data.get('status')
+
+#         if not all([month, year, new_status]):
+#             return Response({"error": "Month, year, and status are required."}, status=400)
+
+#         if new_status not in dict(EmployeePayrollRecord.STATUS_CHOICES):
+#             return Response({"error": "Invalid status"}, status=400)
+
+#         record = get_object_or_404(
+#             EmployeePayrollRecord,
+#             employee__id=employee_id,
+#             month=month,
+#             year=year
+#         )
+
+#         record.status = new_status
+#         record.save()
+
+#         serializer = EmployeePayrollRecordSerializer(record)
+#         return Response(serializer.data)
+
+class PayrollStatusUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, employee_id):
+        month = request.data.get("month")
+        year = request.data.get("year")
+        new_status = request.data.get("status")
+
+        record = get_object_or_404(
+            EmployeePayrollRecord,
+            employee__id=employee_id,
+            month=month,
+            year=year
+        )
+
+        # ✅ Block update unless fully verified
+        if not record.is_fully_verified():
+            return Response({"error": "Both HRs must verify before updating status."}, status=400)
+
+        if new_status not in dict(EmployeePayrollRecord.STATUS_CHOICES):
+            return Response({"error": "Invalid status"}, status=400)
+
         record.status = new_status
         record.save()
 
         serializer = EmployeePayrollRecordSerializer(record)
         return Response(serializer.data)
+
     
 
     # payroll (payslip) view
