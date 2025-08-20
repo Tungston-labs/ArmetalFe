@@ -42,8 +42,12 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         company = self.request.user.company
         year = self.request.query_params.get('year')
         month = self.request.query_params.get('month')
+        department_id = self.request.query_params.get('department')  # 👈 NEW
 
         employees = Employee_db.objects.filter(department__company=company)
+
+        if department_id:
+            employees = employees.filter(department_id=department_id)  # 👈 Filter by department if given
 
         if year and month:
             queryset = EmployeePayrollRecord.objects.filter(
@@ -53,7 +57,9 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
             queryset = EmployeePayrollRecord.objects.filter(
                 employee__in=employees
             )
+
         return queryset
+
 
     def get(self, request):
         year = request.query_params.get('year')
