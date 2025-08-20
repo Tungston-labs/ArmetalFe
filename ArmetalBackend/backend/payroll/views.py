@@ -75,7 +75,7 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         for emp in missing_emps:
             bank = getattr(emp, 'bank_details', None)
             if bank:
-                EmployeePayrollRecord.objects.create(
+                EmployeePayrollRecord.objects.get_or_create(
                     employee=emp,
                     year=year,
                     month=month,

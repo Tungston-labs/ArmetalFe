@@ -8,11 +8,12 @@ import {
 } from "../services/payrollService";
 
 // 1. Fetch payroll data with pagination and search
+
 export const getPayrollData = createAsyncThunk(
   "payroll/getPayrollData",
-  async ({ month, year, search = "", page = 1 }, { rejectWithValue }) => {
+  async ({ month, year, search = "", page = 1, department = "" }, { rejectWithValue }) => {
     try {
-      const data = await fetchPayrollData(month, year, search, page);
+      const data = await fetchPayrollData(month, year, search, page, department); 
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch payroll data");
