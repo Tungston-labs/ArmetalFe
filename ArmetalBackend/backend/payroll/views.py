@@ -47,7 +47,7 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         employees = Employee_db.objects.filter(department__company=company)
 
         if department_id:
-            employees = employees.filter(department_id=department_id)  # 👈 Filter by department if given
+            employees = employees.filter(department__id=department_id)  # 👈 Filter by department if given
 
         if year and month:
             queryset = EmployeePayrollRecord.objects.filter(
@@ -75,20 +75,23 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         for emp in missing_emps:
             bank = getattr(emp, 'bank_details', None)
             if bank:
+                
                 EmployeePayrollRecord.objects.get_or_create(
                     employee=emp,
                     year=year,
                     month=month,
-                    basic_salary=bank.basic_salary,
-                    salary_increment=bank.salary_increment,
-                    housing_allowance=bank.housing_allowance,
-                    transportation=bank.transportation,
-                    tds_deduction_amount=bank.tds_deduction_amount,
-                    payment_mode=bank.payment_mode,
-                    tax_regime=bank.tax_regime,
-                    pan_number=bank.pan_number,
-                    account_number=bank.account_number,
-                    status='OnHold'
+                    defaults={
+                        "basic_salary": bank.basic_salary,
+                        "salary_increment": bank.salary_increment,
+                        "housing_allowance": bank.housing_allowance,
+                        "transportation": bank.transportation,
+                        "tds_deduction_amount": bank.tds_deduction_amount,
+                        "payment_mode": bank.payment_mode,
+                        "tax_regime": bank.tax_regime,
+                        "pan_number": bank.pan_number,
+                        "account_number": bank.account_number,
+                        "status": "OnHold"
+                    }
                 )
 
         queryset = self.filter_queryset(self.get_queryset())  # 👈 this applies search

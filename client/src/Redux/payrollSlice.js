@@ -9,11 +9,24 @@ import {
 
 // 1. Fetch payroll data with pagination and search
 
+// export const getPayrollData = createAsyncThunk(
+//   "payroll/getPayrollData",
+//   async ({ month, year, search = "", page = 1, department = "" }, { rejectWithValue }) => {
+//     try {
+//       const data = await fetchPayrollData(month, year, search, page, department); 
+//       return data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || "Failed to fetch payroll data");
+//     }
+//   }
+// );
 export const getPayrollData = createAsyncThunk(
   "payroll/getPayrollData",
   async ({ month, year, search = "", page = 1, department = "" }, { rejectWithValue }) => {
     try {
-      const data = await fetchPayrollData(month, year, search, page, department); 
+      // normalize department ID if it comes like "17:1"
+      const deptId = department ? String(department).split(":")[0] : "";
+      const data = await fetchPayrollData(month, year, search, page, deptId);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch payroll data");

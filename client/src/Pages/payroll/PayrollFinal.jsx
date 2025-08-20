@@ -33,7 +33,7 @@ const PayrollTable = () => {
   const { data, loading, error, totalPages } = useSelector((state) => state.payroll);
   const departmentList = useSelector(state => state.departments.list || []);
   console.log(departmentList);
-  
+
 
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -162,9 +162,12 @@ const PayrollTable = () => {
             <Select value={selectedDepartment} onChange={handleDepartmentChange}>
               <option value="">Select Department</option>
               {departmentList.map(dept => (
-                <option key={dept.id} value={dept.id}>{dept.name}</option>
+                <option key={dept.id} value={String(dept.id).split(":")[0]}>
+                  {dept.name}
+                </option>
               ))}
             </Select>
+
           </TitleSection>
         </Header>
 
