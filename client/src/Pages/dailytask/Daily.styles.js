@@ -140,6 +140,20 @@ export const EmployeesPanel = styled.div`
   margin-top:20px;
   
 `;
+export const DepartmentDropdown = styled.select`
+  padding: 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 7px;
+  border: 1px solid #172554;
+  background: #fff;
+  min-width: 250px;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: #3352BA;
+  }
+`;
 
 
 export const EmployeeCard = styled.div`
