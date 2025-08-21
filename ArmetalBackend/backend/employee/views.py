@@ -88,6 +88,35 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
+# list employees without pagination
+
+
+class EmployeeListView(generics.ListAPIView):
+    """
+    List all employees of the user's company, optionally filtered by department.
+    """
+    serializer_class = EmployeeSerializer
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'employee_id']
+    pagination_class = None  # Return full list without pagination
+
+    def get_queryset(self):
+        user = self.request.user
+        company = getattr(user, 'company', None)
+
+        if not company:
+            print(f"❌ No valid company found for user: {user.username}")
+            return Employee_db.objects.none()
+
+        department_id = self.request.query_params.get('department_id')
+        queryset = Employee_db.objects.filter(department__company=company)
+
+        if department_id:
+            queryset = queryset.filter(department_id=department_id)
+
+        print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
+        return queryset.order_by('name')
 
 # 2. Retrieve, Update, Delete
 class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):

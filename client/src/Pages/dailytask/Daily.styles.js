@@ -141,6 +141,7 @@ export const EmployeesPanel = styled.div`
   
 `;
 
+
 export const EmployeeCard = styled.div`
   display: flex;
   align-items: center;

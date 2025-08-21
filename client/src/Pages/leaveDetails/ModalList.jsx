@@ -33,7 +33,7 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
     setActionType(type);
     setShowConfirmModal(true);
   };
-  
+
 
   // Fetch leaves for this employee
   useEffect(() => {
@@ -121,16 +121,17 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
                     </TableData>
                     <TableData>
                       <ApproveButton
-                        onClick={() => openConfirmModal(leaveId, "approve")}
+                        onClick={() => openConfirmModal(emp.id, "approve")}
                       >
                         Approve
                       </ApproveButton>
                       <DeclineButton
-                        onClick={() => openConfirmModal(leaveId, "reject")}
+                        onClick={() => openConfirmModal(emp.id, "reject")}
                       >
                         Reject
                       </DeclineButton>
-                      
+
+
                     </TableData>
                   </TableRow>
                 ))
@@ -153,7 +154,7 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
           zIndex={2000}
         />
       )}
-      
+
     </>,
     document.body
   );

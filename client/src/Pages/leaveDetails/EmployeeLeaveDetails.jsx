@@ -166,13 +166,16 @@ const handleStatusUpdate = async () => {
         }}>Approve</ApproveButton>
       </FlexRow>
 
-      {showModal && (
-        <ConfirmLeaveModal
-          onClose={() => setShowModal(false)}
-          onConfirm={handleStatusUpdate}
-          actionType={actionType}
-        />
-      )}
+    
+        {showModal && (
+          <ConfirmLeaveModal
+            onClose={() => setShowModal(false)}
+            actionType={actionType}
+            leaveId={id}   // ✅ pass leave id here
+          />
+        )}
+        
+      
     </Container>
   );
 };

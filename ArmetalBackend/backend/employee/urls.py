@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('employees/', views.EmployeeListCreateView.as_view(), name='employee-list-create'),
+    path('employeelist/', views.EmployeeListView.as_view(), name='employee-list'),
+
     path('employees/<int:pk>/', views.EmployeeRetrieveUpdateDestroyView.as_view(), name='employee-detail'),
 
     # bank payment views

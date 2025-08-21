@@ -245,10 +245,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # retrieve all employee
 
 ###
-GET http://127.0.0.1:8000/api/employees/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwODM0MzE5LCJpYXQiOjE3NTA4MzA3MTksImp0aSI6IjAwOGE4M2UxY2IxYjQ5MGM5YmNjOWY0NmFmMWE4MGI3IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.tlA-Xh-OJFF-7rxwXoZ_dsQMNo3KAuscAGMxgfdaD64
-
-
+GET http://178.248.112.16:8001/api/employees/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NzUzMjk3LCJpYXQiOjE3NTU3NDk2OTcsImp0aSI6IjRkNjUwMDVjZTU3YjQ4MmFiYzVhYzE5YWEzZjBjZDQyIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.3TsQu6OMF_SNk3AAOjGzqGJZZex5vX5gzFlCYn3C3Mg
 # retrieve one employee with id
 ###
 GET http://127.0.0.1:8000/api/employee/4/
@@ -448,8 +446,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 GET http://178.248.112.16:8001/api/departments/16/on-leave-employees/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzQ0MTM5LCJpYXQiOjE3NTUzNDA1MzksImp0aSI6ImQyNWU2YTlhNzJmNjQyYzZhY2Y0ZjZkOTgwYjU1MTc2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.hiQfQo3Q3xyoDo1WZkmt8nlTriYbR7zXqbLWUGT4hzw
 ### list employees on same department who 
-GET http://178.248.112.16:8001/api/department/53/on-leaves/?date=2025-08-16
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzQ0MTM5LCJpYXQiOjE3NTUzNDA1MzksImp0aSI6ImQyNWU2YTlhNzJmNjQyYzZhY2Y0ZjZkOTgwYjU1MTc2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.hiQfQo3Q3xyoDo1WZkmt8nlTriYbR7zXqbLWUGT4hzw
+GET http://178.248.112.16:8001/api/department/53/on-leaves/?date=2025-08-21
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1Njg5MzY2LCJpYXQiOjE3NTU2ODU3NjYsImp0aSI6IjFkNGUwOGFjYzMzMjRjMTY5M2Y1YjVmM2VlYTEzN2Y1IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.Io9G8KvAvTgsC-LlgtfDARGR3JU1D7Q-N69DL-eBUPI
 
 # =-------------------------API FOR TASK MANAGEMENT--------------------------
 
@@ -504,8 +502,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # attendance detail view(hr admin)
 
 ###
-GET http://178.248.112.16:8001/api/admin/attendance/28/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MTU4NTA4LCJpYXQiOjE3NTUxNTQ5MDgsImp0aSI6IjcyOTAzYTQyYzAzNDQ3ZGRhOTU2ZTgwNzlmOGYzMWM1IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.x7WErjG9sB327B1xR7_OIxyU42Qq694IFGM8oZshdns
+GET http://178.248.112.16:8001/api/admin/attendance/31/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1Njk0Njg5LCJpYXQiOjE3NTU2OTEwODksImp0aSI6ImQyNzAzZTg1ZmQ0NjRlNDlhMmViNmFmYzM5NjVmN2EyIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.Jaj-6CLHis1GLtjfHuKdbWkUwYCdf1hTWXmDL_xbJgE
 # --------------PUBLIC HOLIDAY ----------------------------------
 
 ### Create Holiday

@@ -2,11 +2,11 @@
 import API from "./api"; // Your Axios instance with baseURL & headers
 
 
-// Fetch all employees
-export const fetchEmployees = async () => {
-    const response = await API.get('/employees/');
-    return response.data.results || [];
-  };
+// Fetch all employees with optional params
+export const fetchEmployees = async (params = {}) => {
+  const response = await API.get('/employees/', { params });
+  return response.data.results || [];
+};
   
 
 // Fetch tasks for a specific employee and date
