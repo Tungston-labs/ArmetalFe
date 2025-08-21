@@ -1,8 +1,6 @@
 from django.db import models
 from cryptography.fernet import Fernet
 from django.conf import settings
-from cryptography.fernet import InvalidToken
-
 
 fernet = Fernet(settings.FERNET_KEY)
 
@@ -53,14 +51,15 @@ class EncryptedIntegerField(EncryptedMixin, models.PositiveIntegerField):
             return fernet.encrypt(str(int(value)).encode()).decode()
         return value
 
-
+    
+    
     def from_db_value(self, value, expression, connection):
         if value is None:
             return value
         try:
             return fernet.decrypt(value.encode()).decode()
         except InvalidToken:
-            # fallback if not encrypted
+            # Value might be plain text (legacy data) -> just return it
             return value
 
 
