@@ -6,6 +6,7 @@ from django.utils.timezone import now
 from calendar import month_name
 from user.models import User
 from django.core.exceptions import ValidationError
+from fernet_fields import EncryptedCharField, EncryptedTextField, EncryptedEmailField
 
 def generate_password():
     return 'CMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
@@ -35,7 +36,7 @@ COUNTRY_CHOICES = [
 
 class Company(TimeStampedModel):
     company_id = models.CharField(max_length=20, unique=True, editable=False)
-    name = models.CharField(max_length=255)
+    name = EncryptedCharField(max_length=255)
     address = models.TextField()
     location = models.CharField(max_length=100)
     country = models.CharField(max_length=3, choices=COUNTRY_CHOICES, blank=True, null=True)
