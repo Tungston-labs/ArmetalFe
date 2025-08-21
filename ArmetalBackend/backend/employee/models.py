@@ -23,7 +23,7 @@ class Employee_db(TimeStampedModel):
     password = models.CharField(max_length=200,unique=True,null=True,blank=True)
     name = EncryptedCharField(max_length=500)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    email = EncryptedEmailField(unique=True)
+    email = models.EmailField(unique=True)
     phno = EncryptedCharField(max_length=500,unique=True,null=True,blank=True)
     address = EncryptedTextField()
     dob = models.DateField()

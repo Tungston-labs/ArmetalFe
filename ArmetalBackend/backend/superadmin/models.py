@@ -41,7 +41,7 @@ class Company(TimeStampedModel):
     location = models.CharField(max_length=100)
     country = models.CharField(max_length=300, choices=COUNTRY_CHOICES, blank=True, null=True)
     contact_number = EncryptedCharField(max_length=300)
-    email = EncryptedEmailField(unique=True)
+    email = models.EmailField(unique=True)
     modules = models.JSONField(default=dict)  # e.g. {"attendance": True, "leave": True}
     number_of_employees = models.PositiveIntegerField(default=0, editable=False)
     default_password = models.CharField(max_length=200, editable=False)
