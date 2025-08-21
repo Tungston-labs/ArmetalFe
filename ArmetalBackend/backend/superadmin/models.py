@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from calendar import month_name
 from user.models import User
 from django.core.exceptions import ValidationError
-from shared.dataencrpt import EncryptedCharField
+from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
 
 def generate_password():
     return 'CMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
@@ -35,16 +35,16 @@ COUNTRY_CHOICES = [
 
 
 class Company(TimeStampedModel):
-    company_id = models.CharField(max_length=20, unique=True, editable=False)
+    company_id = EncryptedCharField(max_length=20, unique=True, editable=False)
     name = EncryptedCharField(max_length=255)
-    address = models.TextField()
+    address = EncryptedTextField()
     location = models.CharField(max_length=100)
     country = models.CharField(max_length=3, choices=COUNTRY_CHOICES, blank=True, null=True)
-    contact_number = models.CharField(max_length=20)
-    email = models.EmailField(unique=True)
+    contact_number = EncryptedCharField(max_length=20)
+    email = EncryptedEmailField(unique=True)
     modules = models.JSONField(default=dict)  # e.g. {"attendance": True, "leave": True}
     number_of_employees = models.PositiveIntegerField(default=0, editable=False)
-    default_password = models.CharField(max_length=50, editable=False)
+    default_password = EncryptedCharField(max_length=50, editable=False)
     logo = models.ImageField(
         upload_to='company_logos/',
         null=True,
