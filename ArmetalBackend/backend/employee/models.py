@@ -19,8 +19,8 @@ def generate_password():
 
 class Employee_db(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    employee_id = EncryptedCharField(max_length=500, unique=True, editable=False)
-    password = EncryptedCharField(max_length=500,unique=True,null=True,blank=True)
+    employee_id = models.CharField(max_length=200, unique=True, editable=False)
+    password = models.CharField(max_length=200,unique=True,null=True,blank=True)
     name = EncryptedCharField(max_length=500)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     email = EncryptedEmailField(unique=True)

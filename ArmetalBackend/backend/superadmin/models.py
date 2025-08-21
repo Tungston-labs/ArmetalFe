@@ -35,7 +35,7 @@ COUNTRY_CHOICES = [
 
 
 class Company(TimeStampedModel):
-    company_id = EncryptedCharField(max_length=300, unique=True, editable=False)
+    company_id = models.CharField(max_length=200, unique=True, editable=False)
     name = EncryptedCharField(max_length=255)
     address = EncryptedTextField()
     location = models.CharField(max_length=100)
@@ -44,7 +44,7 @@ class Company(TimeStampedModel):
     email = EncryptedEmailField(unique=True)
     modules = models.JSONField(default=dict)  # e.g. {"attendance": True, "leave": True}
     number_of_employees = models.PositiveIntegerField(default=0, editable=False)
-    default_password = EncryptedCharField(max_length=300, editable=False)
+    default_password = models.CharField(max_length=200, editable=False)
     logo = models.ImageField(
         upload_to='company_logos/',
         null=True,
