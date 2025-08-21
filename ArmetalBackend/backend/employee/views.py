@@ -770,7 +770,7 @@ class AttendanceSummaryView(APIView):
             "remaining_working_days": len(remaining_days),
             "total_hours": round(total_hours, 2)
         })
-    
+from user.firebase import send_push_notification
 from .models import ScheduleReminder
 from .serializers import ScheduleReminderSerializer
 from rest_framework import generics, permissions
@@ -793,7 +793,20 @@ class ReminderListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
-        serializer.save(employee=employee)
+        reminder = serializer.save(employee=employee)
+        
+        # Send FCM notification if token exists
+        fcm_token = self.request.user.fcm_token
+        if fcm_token:
+            send_push_notification(
+                fcm_token,
+                title="New Reminder Scheduled",
+                body=f"Reminder '{reminder.title}' is scheduled for {reminder.scheduled_datetime.strftime('%Y-%m-%d %H:%M')}"
+            )
+
+
+
+
 
 
 from datetime import date, timedelta
