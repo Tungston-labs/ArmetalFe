@@ -8,7 +8,7 @@ import {
   CheckboxLabel,
   ButtonGroup,
   Button,
-  Hr,Select,
+  Hr, Select,
   FormField,
   Label,
   LogoUploadBox,
@@ -49,7 +49,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     { code: 'AU', name: 'Australia' },
     { code: 'CA', name: 'Canada' },
   ];
-  
+
 
   const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday"];
 
@@ -62,6 +62,8 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     country_code: '+971',
     contact_number: '',
     modules: [],
+    latitude: '',
+    longitude: '',
     logo: null,
   });
 
@@ -84,6 +86,8 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
         contact_number: match ? match[2] : '',
         modules: modulesChecked,
         logo: null,
+        latitude: selectedCompany.latitude || '',
+        longitude: selectedCompany.longitude || '',
       });
 
       if (selectedCompany.logo) {
@@ -131,6 +135,13 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Valid email is required.";
     if (!formData.location.trim()) errors.location = "Location is required.";
     if (!formData.country) errors.country = "Country is required.";
+    if (!formData.latitude || formData.latitude < -90 || formData.latitude > 90) {
+      errors.latitude = "Latitude must be between -90 and 90.";
+    }
+    if (!formData.longitude || formData.longitude < -180 || formData.longitude > 180) {
+      errors.longitude = "Longitude must be between -180 and 180.";
+    }
+
 
     const phoneRegex = /^\d{7,12}$/;
     if (!formData.contact_number.trim() || !phoneRegex.test(formData.contact_number)) {
@@ -153,6 +164,9 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     payload.append("email", formData.email);
     payload.append("location", formData.location);
     payload.append("country", formData.country);
+    payload.append("latitude", formData.latitude);
+    payload.append("longitude", formData.longitude);
+
 
     const fullPhone = `${formData.country_code}${formData.contact_number}`;
     payload.append("contact_number", fullPhone);
@@ -239,9 +253,11 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
               )}
             </FormField>
 
+
+
             <FormField>
               <Label>Country</Label>
-              
+
               <Select name="country" value={formData.country} onChange={handleChange}>
                 <option value="">Select country</option>
                 {COUNTRY_CHOICES.map((item) => (
@@ -251,6 +267,29 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
                 ))}
               </Select>
               {formErrors.country && <p style={{ color: 'blue' }}>{formErrors.country}</p>}
+            </FormField>
+            <FormField>
+              <Label>Latitude</Label>
+              <Input
+                name="latitude"
+                type="number"
+                step="any"
+                value={formData.latitude}
+                onChange={handleChange}
+                placeholder="Enter company latitude"
+              />
+            </FormField>
+
+            <FormField>
+              <Label>Longitude</Label>
+              <Input
+                name="longitude"
+                type="number"
+                step="any"
+                value={formData.longitude}
+                onChange={handleChange}
+                placeholder="Enter company longitude"
+              />
             </FormField>
           </div>
         </FormSection>

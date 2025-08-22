@@ -10,7 +10,6 @@ from user.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 
-
 class CompanyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
@@ -25,6 +24,8 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             'logo',
             'email',
             'modules',
+            'latitude',
+            'longitude',
             'number_of_employees',
             'default_password',
             'created_at',
@@ -43,6 +44,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        # ✅ latitude & longitude are already in validated_data, so no need to ignore
         company = Company.objects.create(**validated_data)
 
         # Create HR admin user linked to the company
@@ -54,7 +56,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             company=company
         )
 
-        # Send credentials via email to the company
+        # Send credentials via email
         try:
             send_mail(
                 subject=f"Welcome to Armetal - Your Company Credentials",
@@ -81,35 +83,22 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 
         return company
 
+    def update(self, instance, validated_data):
+        old_email = instance.email
+        new_email = validated_data.get('email', old_email)
 
-        def update(self, instance, validated_data):
-            old_email = instance.email
-            new_email = validated_data.get('email', old_email)
+        instance = super().update(instance, validated_data)
 
-            instance = super().update(instance, validated_data)
+        # If company email was updated, sync to HR admin user
+        if new_email != old_email:
+            hr_user = User.objects.filter(company=instance, is_hr_admin=True).first()
+            if hr_user:
+                hr_user.email = new_email
+                hr_user.save()
 
-            # If company email was updated, sync to user email
-            if new_email != old_email:
-                hr_user = User.objects.filter(company=instance, is_hr_admin=True).first()
-                if hr_user:
-                    hr_user.email = new_email
-                    hr_user.save()
-
-            return instance
+        return instance
 
     def validate_modules(self, value):
         if not isinstance(value, dict):
             raise serializers.ValidationError("Modules must be a dictionary")
         return value
-
-
-class CompanySubscriptionSerializer(serializers.ModelSerializer):
-    month_display = serializers.SerializerMethodField()
-
-    class Meta:
-        model = CompanySubscription
-        fields = ['id', 'company', 'month', 'month_display', 'year', 'paid_date', 'amount', 'currency', 'status']
-
-    def get_month_display(self, obj):
-        return month_name[obj.month]    
-    
