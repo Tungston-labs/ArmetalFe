@@ -39,6 +39,8 @@ class Company(TimeStampedModel):
     name = EncryptedCharField(max_length=255)
     address = EncryptedTextField()
     location = models.CharField(max_length=100)
+    latitude = models.FloatField(help_text="Latitude of the company location",null=True,blank=True)
+    longitude = models.FloatField(help_text="Longitude of the company location",null=True,blank=True)
     country = models.CharField(max_length=300, choices=COUNTRY_CHOICES, blank=True, null=True)
     contact_number = EncryptedCharField(max_length=300)
     email = models.EmailField(unique=True)
