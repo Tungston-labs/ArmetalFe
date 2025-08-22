@@ -26,9 +26,6 @@ from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
 import pytz
 
-
-
-
 # logger = logging.getLogger(__name__)
 # class AttendanceSwipeView(APIView):
 #     permission_classes = [IsAuthenticated]
@@ -41,70 +38,147 @@ import pytz
 #             if not employee:
 #                 return Response({'error': 'Employee not found'}, status=404)
 
+#             # Get company timezone and current time in that timezone
 #             company_tz = get_company_timezone(employee)
-#             now = timezone.now().astimezone(company_tz)
-#             today = now.date()
+#             now_utc = timezone.now()
+#             now_company_tz = now_utc.astimezone(company_tz)
+#             today = now_company_tz.date()
 
+#             # Get or create attendance for today
 #             attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
 #             latest_session = attendance.sessions.last()
 
-#             # Punch In
-#             if not latest_session or latest_session.time_out:
-#                 AttendanceSession.objects.create(
-#                     attendance=attendance,
-#                     time_in=now,
-#                     timezone=company_tz.zone
-#                 )
-#                 return Response({
-#                     'status': 'success',
-#                     'action': 'punch_in',
-#                     'time': now.strftime("%H:%M:%S"),
-#                     'date': today.isoformat()
-#                 }, status=201)
+#             # Check if we should punch in or punch out
+#             should_punch_in = self._should_punch_in(latest_session)
+            
+#             if should_punch_in:
+#                 return self._handle_punch_in(attendance, now_company_tz, company_tz)
+#             else:
+#                 return self._handle_punch_out(latest_session, now_company_tz, company_tz, attendance)
 
-#             # Punch Out
+#         except Exception as e:
+#             logger.critical(f"Unhandled error in AttendanceSwipeView: {e}", exc_info=True)
+#             return Response({'error': 'Internal server error'}, status=500)
+
+#     def _should_punch_in(self, latest_session):
+#         """Determine if user should punch in or punch out"""
+#         if not latest_session:
+#             return True
+        
+#         # If latest session has no punch out, user should punch out
+#         if not latest_session.time_out:
+#             return False
+            
+#         # If latest session has punch out, user should punch in
+#         return True
+
+#     def _handle_punch_in(self, attendance, now_company_tz, company_tz):
+#         """Handle punch in logic"""
+#         try:
+#             # Create new session with punch in
+#             session = AttendanceSession.objects.create(
+#                 attendance=attendance,
+#                 time_in=now_company_tz,
+#                 timezone=company_tz.zone
+#             )
+            
+#             return Response({
+#                 'status': 'success',
+#                 'action': 'punch_in',
+#                 'time': now_company_tz.strftime("%H:%M:%S"),
+#                 'date': now_company_tz.date().isoformat(),
+#                 'session_id': session.id
+#             }, status=201)
+            
+#         except Exception as e:
+#             logger.error(f"Error during punch in: {e}")
+#             return Response({'error': 'Failed to punch in'}, status=500)
+
+#     def _handle_punch_out(self, latest_session, now_company_tz, company_tz, attendance):
+#         """Handle punch out logic"""
+#         try:
+#             # Get the punch in time and ensure it's not modified
 #             time_in = latest_session.time_in
-
-#             # ✅ SAFELY HANDLE time_in TYPES
+            
+#             # Log the current state for debugging
+#             logger.info(f"Punch out - Original time_in: {time_in}, time_out: {latest_session.time_out}")
+            
+#             # Ensure time_in is a proper datetime object for validation only
+#             validation_time_in = time_in
 #             if isinstance(time_in, time):
-#                 # Convert to datetime
-#                 time_in = datetime.combine(today, time_in)
-#                 time_in = company_tz.localize(time_in)
+#                 # Convert time to datetime using attendance date for validation
+#                 validation_time_in = datetime.combine(attendance.date, time_in)
+#                 validation_time_in = company_tz.localize(validation_time_in)
 #             elif isinstance(time_in, datetime):
 #                 if timezone.is_naive(time_in):
-#                     time_in = company_tz.localize(time_in)
+#                     validation_time_in = company_tz.localize(time_in)
 #                 else:
-#                     time_in = time_in.astimezone(company_tz)
+#                     validation_time_in = time_in.astimezone(company_tz)
 #             else:
-#                 logger.error("Invalid time_in format")
-#                 return Response({'error': 'Invalid punch-in time'}, status=500)
+#                 logger.error(f"Invalid time_in format: {type(time_in)}")
+#                 return Response({'error': 'Invalid punch-in time format'}, status=500)
 
-#             if now <= time_in:
+#             # Validate punch out time
+#             if now_company_tz <= validation_time_in:
 #                 return Response({
-#                     'error': 'Punch out must be after punch in',
+#                     'error': 'Punch out time must be after punch in time',
 #                     'details': {
-#                         'punch_in': str(time_in),
-#                         'attempted_out': str(now)
+#                         'punch_in': validation_time_in.strftime("%Y-%m-%d %H:%M:%S"),
+#                         'attempted_punch_out': now_company_tz.strftime("%Y-%m-%d %H:%M:%S")
 #                     }
 #                 }, status=400)
 
-#             latest_session.time_out = now
+#             # Store the original time_in to ensure it doesn't get modified
+#             original_time_in = latest_session.time_in
+            
+#             # Set punch out time only
+#             latest_session.time_out = now_company_tz
+            
+#             # Log before saving
+#             logger.info(f"Before save - time_in: {latest_session.time_in}, time_out: {latest_session.time_out}")
+            
+#             # Save the session
 #             latest_session.save()
-#             attendance.update_total_hours()
+            
+#             # Verify time_in wasn't modified
+#             latest_session.refresh_from_db()
+#             if latest_session.time_in != original_time_in:
+#                 logger.error(f"time_in was modified during punch out! Original: {original_time_in}, Current: {latest_session.time_in}")
+#                 # Restore the original time_in
+#                 latest_session.time_in = original_time_in
+#                 latest_session.save()
+            
+#             # Log after saving
+#             logger.info(f"After save - time_in: {latest_session.time_in}, time_out: {latest_session.time_out}")
 
+#             # Calculate session duration
+#             session_duration = latest_session.get_duration()
+            
 #             return Response({
 #                 'status': 'success',
 #                 'action': 'punch_out',
-#                 'time': now.strftime("%H:%M:%S"),
-#                 'total_hours': float(attendance.total_hours),
+#                 'time': now_company_tz.strftime("%H:%M:%S"),
+#                 'session_duration': session_duration,
+#                 'total_hours': float(attendance.total_hours or 0),
 #                 'timezone': company_tz.zone
 #             }, status=200)
-
+            
 #         except Exception as e:
-#             logger.critical(f"Unhandled error: {e}", exc_info=True)
-#             return Response({'error': 'Internal server error'}, status=500)
+#             logger.error(f"Error during punch out: {e}")
+#             return Response({'error': 'Failed to punch out'}, status=500)
+from geopy.distance import geodesic
+import logging
+from datetime import datetime, time
+from django.utils import timezone
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import Attendance, AttendanceSession
+from .utils import get_company_timezone  # assuming you already have this util
 
 logger = logging.getLogger(__name__)
+
+
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -116,7 +190,41 @@ class AttendanceSwipeView(APIView):
             if not employee:
                 return Response({'error': 'Employee not found'}, status=404)
 
-            # Get company timezone and current time in that timezone
+            company = employee.department.company
+
+            # ✅ 1. Get employee current location from request
+            emp_lat = request.data.get("latitude")
+            emp_lon = request.data.get("longitude")
+
+            if emp_lat is None or emp_lon is None:
+                return Response(
+                    {"error": "Latitude and longitude are required."},
+                    status=400
+                )
+
+            try:
+                emp_lat, emp_lon = float(emp_lat), float(emp_lon)
+            except ValueError:
+                return Response({"error": "Invalid latitude/longitude"}, status=400)
+
+            if not company.latitude or not company.longitude:
+                return Response(
+                    {"error": "Company location not set. Contact admin."},
+                    status=400
+                )
+
+            company_location = (company.latitude, company.longitude)
+            employee_location = (emp_lat, emp_lon)
+
+            # ✅ 2. Distance check
+            distance = geodesic(employee_location, company_location).meters
+            if distance > 50:
+                return Response(
+                    {"error": f"You are too far from company location ({int(distance)}m). Must be within 50m."},
+                    status=400
+                )
+
+            # ✅ 3. Continue with your existing logic
             company_tz = get_company_timezone(employee)
             now_utc = timezone.now()
             now_company_tz = now_utc.astimezone(company_tz)
@@ -126,9 +234,8 @@ class AttendanceSwipeView(APIView):
             attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
             latest_session = attendance.sessions.last()
 
-            # Check if we should punch in or punch out
             should_punch_in = self._should_punch_in(latest_session)
-            
+
             if should_punch_in:
                 return self._handle_punch_in(attendance, now_company_tz, company_tz)
             else:
@@ -139,27 +246,19 @@ class AttendanceSwipeView(APIView):
             return Response({'error': 'Internal server error'}, status=500)
 
     def _should_punch_in(self, latest_session):
-        """Determine if user should punch in or punch out"""
         if not latest_session:
             return True
-        
-        # If latest session has no punch out, user should punch out
         if not latest_session.time_out:
             return False
-            
-        # If latest session has punch out, user should punch in
         return True
 
     def _handle_punch_in(self, attendance, now_company_tz, company_tz):
-        """Handle punch in logic"""
         try:
-            # Create new session with punch in
             session = AttendanceSession.objects.create(
                 attendance=attendance,
                 time_in=now_company_tz,
                 timezone=company_tz.zone
             )
-            
             return Response({
                 'status': 'success',
                 'action': 'punch_in',
@@ -167,24 +266,15 @@ class AttendanceSwipeView(APIView):
                 'date': now_company_tz.date().isoformat(),
                 'session_id': session.id
             }, status=201)
-            
         except Exception as e:
             logger.error(f"Error during punch in: {e}")
             return Response({'error': 'Failed to punch in'}, status=500)
 
     def _handle_punch_out(self, latest_session, now_company_tz, company_tz, attendance):
-        """Handle punch out logic"""
         try:
-            # Get the punch in time and ensure it's not modified
             time_in = latest_session.time_in
-            
-            # Log the current state for debugging
-            logger.info(f"Punch out - Original time_in: {time_in}, time_out: {latest_session.time_out}")
-            
-            # Ensure time_in is a proper datetime object for validation only
             validation_time_in = time_in
             if isinstance(time_in, time):
-                # Convert time to datetime using attendance date for validation
                 validation_time_in = datetime.combine(attendance.date, time_in)
                 validation_time_in = company_tz.localize(validation_time_in)
             elif isinstance(time_in, datetime):
@@ -192,11 +282,7 @@ class AttendanceSwipeView(APIView):
                     validation_time_in = company_tz.localize(time_in)
                 else:
                     validation_time_in = time_in.astimezone(company_tz)
-            else:
-                logger.error(f"Invalid time_in format: {type(time_in)}")
-                return Response({'error': 'Invalid punch-in time format'}, status=500)
 
-            # Validate punch out time
             if now_company_tz <= validation_time_in:
                 return Response({
                     'error': 'Punch out time must be after punch in time',
@@ -206,32 +292,17 @@ class AttendanceSwipeView(APIView):
                     }
                 }, status=400)
 
-            # Store the original time_in to ensure it doesn't get modified
             original_time_in = latest_session.time_in
-            
-            # Set punch out time only
             latest_session.time_out = now_company_tz
-            
-            # Log before saving
-            logger.info(f"Before save - time_in: {latest_session.time_in}, time_out: {latest_session.time_out}")
-            
-            # Save the session
             latest_session.save()
-            
-            # Verify time_in wasn't modified
+
             latest_session.refresh_from_db()
             if latest_session.time_in != original_time_in:
-                logger.error(f"time_in was modified during punch out! Original: {original_time_in}, Current: {latest_session.time_in}")
-                # Restore the original time_in
                 latest_session.time_in = original_time_in
                 latest_session.save()
-            
-            # Log after saving
-            logger.info(f"After save - time_in: {latest_session.time_in}, time_out: {latest_session.time_out}")
 
-            # Calculate session duration
             session_duration = latest_session.get_duration()
-            
+
             return Response({
                 'status': 'success',
                 'action': 'punch_out',
@@ -240,7 +311,7 @@ class AttendanceSwipeView(APIView):
                 'total_hours': float(attendance.total_hours or 0),
                 'timezone': company_tz.zone
             }, status=200)
-            
+
         except Exception as e:
             logger.error(f"Error during punch out: {e}")
             return Response({'error': 'Failed to punch out'}, status=500)
