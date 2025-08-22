@@ -10,6 +10,7 @@ from user.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 class CompanyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
@@ -102,3 +103,16 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
         if not isinstance(value, dict):
             raise serializers.ValidationError("Modules must be a dictionary")
         return value
+
+
+
+class CompanySubscriptionSerializer(serializers.ModelSerializer):
+    month_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CompanySubscription
+        fields = ['id', 'company', 'month', 'month_display', 'year', 'paid_date', 'amount', 'currency', 'status']
+
+    def get_month_display(self, obj):
+        return month_name[obj.month]    
+    
