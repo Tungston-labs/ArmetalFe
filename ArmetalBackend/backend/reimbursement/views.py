@@ -19,7 +19,7 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
         return ReimbursementDetailSerializer
 
     def perform_create(self, serializer):
-        serializer.save(employee=self.request.user.employee)
+        serializer.save(employee=self.request.user.employee_db)
 
 
 # --- Retrieve, Update, Delete single reimbursement ---

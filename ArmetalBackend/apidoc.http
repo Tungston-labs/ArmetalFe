@@ -710,8 +710,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # -----REIMBURSMENT MODULE------
 
 ###add 
-POST http://localhost:8000/api/reimbursements/
-Authorization: Token {{user_token}}
+POST http://178.248.112.16:8001/api/reimbursements/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTM3NTI0LCJpYXQiOjE3NTU5MzM5MjQsImp0aSI6IjIzM2YzYjQ4ODgwNDRkOGFiYWI1OWZmNjU5NTY0NmQ2IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.ib5BAbyjtBs2zhxHJvXwauLIoRObe42u9Yae6hDwVc4
 Content-Type: multipart/form-data
 
 {
@@ -722,6 +722,7 @@ Content-Type: multipart/form-data
   "amount": "100.50",
   "uploaded_images": ["<file1>", "<file2>"]
 }
+
 ###list
 GET http://localhost:8000/api/reimbursements/
 Authorization: Token {{user_token}}
