@@ -27,11 +27,16 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReimbursementDetailSerializer
 
     def get_queryset(self):
+        # HR/Admins should see all reimbursements
         user = self.request.user
-        # Adjust these checks to match your actual User model fields
         if getattr(user, "is_hr_admin", False) or getattr(user, "is_superadmin", False):
             return Reimbursement.objects.all()
         return Reimbursement.objects.filter(employee__user=user)
+
+    def patch(self, request, *args, **kwargs):
+        kwargs['partial'] = True  # allow partial update
+        return self.update(request, *args, **kwargs)
+
 
 
 
