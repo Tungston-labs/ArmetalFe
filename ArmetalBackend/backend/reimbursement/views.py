@@ -28,11 +28,11 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        # If HR/Admin → can access all reimbursements
-        if user.is_company_admin or user.is_super_admin:
+        # Adjust these checks to match your actual User model fields
+        if getattr(user, "is_hr_admin", False) or getattr(user, "is_superadmin", False):
             return Reimbursement.objects.all()
-        # If Employee → only their reimbursements
         return Reimbursement.objects.filter(employee__user=user)
+
 
 
 
