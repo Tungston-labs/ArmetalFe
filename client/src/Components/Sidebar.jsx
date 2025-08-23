@@ -123,6 +123,11 @@ export default function Sidebar() {
                   <FaTasks /><span>Holiday</span>
                 </CustomLink>
               )}
+               {modules.reimbursement && (
+                <CustomLink to="/reimbursement" className={collapsed ? 'collapsed' : ''}>
+                  <FaTasks /><span>Reimbursement</span>
+                </CustomLink>
+              )}
               
             </>
           )}

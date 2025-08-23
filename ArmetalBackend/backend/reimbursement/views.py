@@ -50,3 +50,32 @@ class DepartmentReimbursementListView(generics.ListAPIView):
     def get_queryset(self):
         department_id = self.kwargs.get("department_id")
         return Reimbursement.objects.filter(employee__department_id=department_id).order_by("-created_at")
+
+
+from collections import defaultdict
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .models import Reimbursement
+from .serializers import  ReimbursementGroupedSerializer
+
+
+class ReimbursementGroupedByDateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        reimbursements = Reimbursement.objects.all().order_by("date")
+
+        grouped_data = defaultdict(list)
+        for r in reimbursements:
+            grouped_data[r.date].append(r)
+
+        result = []
+        for date, items in grouped_data.items():
+            result.append({
+                "date": date,
+                "reimbursements": ReimbursementListSerializer(items, many=True).data
+            })
+
+        serializer = ReimbursementGroupedSerializer(result, many=True)
+        return Response(serializer.data)

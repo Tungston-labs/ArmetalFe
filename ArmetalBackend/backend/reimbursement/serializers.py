@@ -87,3 +87,7 @@ class ReimbursementDetailSerializer(serializers.ModelSerializer):
         for img in uploaded_images:
             ReimbursementImage.objects.create(reimbursement=instance, image=img)
         return instance
+    
+class ReimbursementGroupedSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    reimbursements = ReimbursementListSerializer(many=True)

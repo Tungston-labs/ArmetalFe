@@ -749,3 +749,7 @@ Content-Type: application/json
 {
   "status": "Approve"
 }
+
+### Get reimbursements grouped by date
+GET http://127.0.0.1:8000/api/reimbursements/grouped/
+Authorization: Bearer <your_token>
