@@ -10,5 +10,5 @@ urlpatterns = [
     path("", ReimbursementListCreateView.as_view(), name="reimbursement-list-create"),
     path("<int:pk>/", ReimbursementDetailView.as_view(), name="reimbursement-detail"),
     path("department/<int:department_id>/", DepartmentReimbursementListView.as_view(), name="reimbursement-by-department"),
-    path("reimbursements/grouped/", ReimbursementGroupedByDateView.as_view(), name="reimbursement-grouped"),
+    path("grouped/", ReimbursementGroupedByDateView.as_view(), name="reimbursement-grouped"),
 ]
