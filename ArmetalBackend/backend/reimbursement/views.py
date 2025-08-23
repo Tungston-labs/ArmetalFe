@@ -21,15 +21,19 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(employee=self.request.user.employee_db)
 
-
 # --- Retrieve, Update, Delete single reimbursement ---
 class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsHRorIsEmployee]
+    serializer_class = ReimbursementDetailSerializer
 
     def get_queryset(self):
-        return Reimbursement.objects.filter(employee__user=self.request.user)
+        user = self.request.user
+        # If HR/Admin → can access all reimbursements
+        if user.is_company_admin or user.is_super_admin:
+            return Reimbursement.objects.all()
+        # If Employee → only their reimbursements
+        return Reimbursement.objects.filter(employee__user=user)
 
-    serializer_class = ReimbursementDetailSerializer
 
 
 # --- List reimbursements by department ---
