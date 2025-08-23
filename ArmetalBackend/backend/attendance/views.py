@@ -174,7 +174,6 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Attendance, AttendanceSession
-from .utils import get_company_timezone  # assuming you already have this util
 
 logger = logging.getLogger(__name__)
 
