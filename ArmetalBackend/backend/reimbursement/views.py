@@ -57,7 +57,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Reimbursement
-from .serializers import  ReimbursementGroupedSerializer
+from .serializers import ReimbursementListSerializer
 
 
 class ReimbursementGroupedByDateView(APIView):
@@ -68,7 +68,7 @@ class ReimbursementGroupedByDateView(APIView):
 
         grouped_data = defaultdict(list)
         for r in reimbursements:
-            grouped_data[r.date].append(r)
+            grouped_data[str(r.date)].append(r)  # str() makes it JSON serializable
 
         result = []
         for date, items in grouped_data.items():
@@ -77,5 +77,4 @@ class ReimbursementGroupedByDateView(APIView):
                 "reimbursements": ReimbursementListSerializer(items, many=True).data
             })
 
-        serializer = ReimbursementGroupedSerializer(result, many=True)
-        return Response(serializer.data)
+        return Response(result)
