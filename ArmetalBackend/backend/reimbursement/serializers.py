@@ -10,12 +10,12 @@ class ReimbursementImageSerializer(serializers.ModelSerializer):
         fields = ["id", "image"]
 
 
-# --- LIST Serializer (for high-level list) ---
+# --- LIST Serializer (for grouped API) ---
 class ReimbursementListSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source="employee.name", read_only=True)
     employee_id = serializers.CharField(source="employee.employee_id", read_only=True)
     job_position = serializers.CharField(source="employee.job_position", read_only=True)
-    department = serializers.CharField(source="employee.department.name", read_only=True)
+    department = serializers.SerializerMethodField()
 
     class Meta:
         model = Reimbursement
@@ -28,6 +28,17 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
             "amount",
             "status",
         ]
+
+    def get_department(self, obj):
+        dept = obj.employee.department
+        if dept:
+            return {
+                "id": dept.id,
+                "name": dept.name,
+                "hr_name": dept.department_head.name if dept.department_head else None,
+            }
+        return None
+
 
 
 # --- DETAIL Serializer (for single reimbursement details) ---

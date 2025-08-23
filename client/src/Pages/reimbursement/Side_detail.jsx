@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ModalOverlay,
   ModalContent,
@@ -15,53 +15,29 @@ import {
   RightSection,
   Amount,
 } from "./Side_detail.Styles";
-
-const reimbursements = [
-  {
-    date: "21 Aug 2024",
-    data: [
-      {
-        id: 1,
-        name: "Maria Curtis",
-        position: "UI/UX Designer",
-        department: "UI/UX Designer",
-        amount: "₹ 2,500",
-        image: "https://randomuser.me/api/portraits/women/1.jpg",
-      },
-      {
-        id: 2,
-        name: "Maria Curtis",
-        position: "UI/UX Designer",
-        department: "UI/UX Designer",
-        amount: "₹ 2,500",
-        image: "https://randomuser.me/api/portraits/men/1.jpg",
-      },
-      {
-        id: 3,
-        name: "Maria Curtis",
-        position: "UI/UX Designer",
-        department: "UI/UX Designer",
-        amount: "₹ 2,500",
-        image: "https://randomuser.me/api/portraits/men/11.jpg",
-      },
-    ],
-  },
-  {
-    date: "21 Aug 2024",
-    data: [
-      {
-        id: 4,
-        name: "Maria Curtis",
-        position: "UI/UX Designer",
-        department: "UI/UX Designer",
-        amount: "₹ 2,500",
-        image: "https://randomuser.me/api/portraits/women/2.jpg",
-      },
-    ],
-  },
-];
+import { getGroupedReimbursements } from "../../services/reimbursement"; // adjust path if needed
 
 const ReimbursementHistory = ({ onClose }) => {
+  const [reimbursements, setReimbursements] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReimbursements = async () => {
+      try {
+        const data = await getGroupedReimbursements();
+        setReimbursements(data);
+      } catch (error) {
+        console.error("❌ Failed to fetch reimbursements:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReimbursements();
+  }, []);
+
+  if (loading) return <div>Loading reimbursements...</div>;
+
   return (
     <ModalOverlay>
       <ModalContent>
@@ -71,33 +47,40 @@ const ReimbursementHistory = ({ onClose }) => {
             <CloseButton onClick={onClose}>Close</CloseButton>
           </Header>
 
-          {reimbursements.map((section, idx) => (
-            <div key={idx}>
-              <DateHeading>{section.date}</DateHeading>
-              {section.data.map((item) => (
-                <Card key={item.id}>
-                  <ProfileImage src={item.image} alt={item.name} />
-                  <Info>
-                    <div>
-                      <Label>Name</Label>
-                      <Value>{item.name}</Value>
-                    </div>
-                    <div>
-                      <Label>Department</Label>
-                      <Value>{item.department}</Value>
-                    </div>
-                  </Info>
-                  <RightSection>
-                    <div>
-                      <Label>Position</Label>
-                      <Value>{item.position}</Value>
-                    </div>
-                    <Amount>{item.amount}</Amount>
-                  </RightSection>
-                </Card>
-              ))}
-            </div>
-          ))}
+          {reimbursements.length === 0 ? (
+            <p>No reimbursements found.</p>
+          ) : (
+            reimbursements.map((section, idx) => (
+              <div key={idx}>
+                <DateHeading>{section.date}</DateHeading>
+                {section.reimbursements.map((item) => (
+                  <Card key={item.id}>
+                    <ProfileImage
+                      src={item.employee_image || "https://via.placeholder.com/50"}
+                      alt={item.employee_name || "Employee"}
+                    />
+                    <Info>
+                      <div>
+                        <Label>Name</Label>
+                        <Value>{item.employee_name || "N/A"}</Value>
+                      </div>
+                      <div>
+                        <Label>Status</Label>
+                        <Value>{item.status}</Value>
+                      </div>
+                    </Info>
+                    <RightSection>
+                      <div>
+                        <Label>Amount</Label>
+                        <Value>{item.amount}</Value>
+                      </div>
+                      <Amount>₹ {item.amount}</Amount>
+                    </RightSection>
+                  </Card>
+                ))}
+              </div>
+            ))
+          )}
         </PageWrapper>
       </ModalContent>
     </ModalOverlay>
