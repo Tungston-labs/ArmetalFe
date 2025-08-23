@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getDepartments, createNewDepartment } from '../../Redux/departmentSlice.js';
 import { useNavigate } from 'react-router-dom';
 import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
-import EmployeeIcon from "../../assets/employeeicon.svg";
-
+import Side_detail from "./Side_detail.jsx"
 import {
   DepartmentContainer,
   HeaderSection,
@@ -29,29 +28,26 @@ import {
   SearchWrapper,
   DropdownMenu, DropdownWrapper
   
-} from '../department/DepartmentStyles';
+} from './Reimb_Department.Styles.js';
 
-import {
-  Container,
-  TitleRow,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  ButtonRow,
-  CancelButton,
-  SaveButton,
-  BackArrow,
+// import {
+//   Container,
+//   TitleRow,
+//   Form,
+//   FormGroup,
+//   Label,
+//   Input,
+//   ButtonRow,
+//   CancelButton,
+//   SaveButton,
+//   BackArrow,
   
-} from './AddDepartment.Styles';
-import { Spin } from "antd";
-
-import Employee from "../../assets/employee.svg"; 
+// } from './AddDepartment.Styles';
+import Employee from "../../assets/remi.svg"; 
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
-import Navbar from '../../Components/Navbar.jsx';
 const Department = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -89,49 +85,42 @@ const Department = () => {
   };
 
   const handleCardClick = (id) => {
-    navigate(`/departments/${id}`);
+    navigate(`/reimb2page/${id}`);
   };
 
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            width: "100%",
-          }}
-        >
-          <Spin size="large" tip="Loading departments..." />
-        </div>
-      </>
-    );
-  }
-  
-
   return (
-    <>
-    <Navbar/>
     <DepartmentContainer>
-  
+      <TopBar>
+        <div />
+          <DropdownWrapper>
+        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
+          <img src="/images/user.jpg" alt="HR Manager" />
+          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
+        </HRManager>
+
+        {menuOpen && (
+          <DropdownMenu>
+            <div>Change Password</div>
+            <div>Logout</div>
+          </DropdownMenu>
+        )}
+      </DropdownWrapper>
+      </TopBar>
 
       <HeaderSection>
 <TitleSection>
   <div className="left-content">
     <div className="icon-box">
-   <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+       <img src={Employee}  alt="employee icon" />
     </div>
     <div>
-      <Title>Department</Title>
+      <Title>Reimbursement</Title>
       <Subtitle>Manage all departments within the organization.</Subtitle>
     </div>
   </div>
 
   <AddButton onClick={() => setShowModal(true)}>
-    <FaPlus /> Add Department
+  History
   </AddButton>
 </TitleSection>
 
@@ -203,61 +192,8 @@ const Department = () => {
 </CardGrid>
 
 
-      {showModal && (
-        <ModalOverlay>
-          <ModalContent>
-            <Container style={{ position: 'relative', maxWidth: '600px' }}>
-              <CloseButton onClick={() => setShowModal(false)} title="Close modal" aria-label="Close modal">
-                <FaTimes />
-              </CloseButton>
-              <TitleRow>
-                <BackArrow onClick={() => setShowModal(false)} title="Back" aria-label="Back">
-                  <FaArrowLeft />
-                </BackArrow>
-                <Title>Add Department</Title>
-              </TitleRow>
-
-              <Form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-                <FormGroup>
-                  <Label>Department name</Label>
-                  <Input
-                    type="text"
-                    name="name"
-                    placeholder="Department name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </FormGroup>
-
-                <FormGroup>
-                  <Label>Department Code Name</Label>
-                  <Input
-                    type="text"
-                    name="department_code"
-                    placeholder="Eg HR"
-                    value={formData.department_code}
-                    onChange={handleChange}
-                    required
-                  />
-                </FormGroup>
-
-                {error?.detail && <p style={{ color: 'red' }}>{error?.detail}</p>}
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-
-                <ButtonRow>
-                  <CancelButton type="button" onClick={() => setShowModal(false)}>Cancel</CancelButton>
-                  <SaveButton type="submit" disabled={loading}>
-                    {loading ? 'Saving...' : 'Save'}
-                  </SaveButton>
-                </ButtonRow>
-              </Form>
-            </Container>
-          </ModalContent>
-        </ModalOverlay>
-      )}
+       {showModal && <Side_detail onClose={() => setShowModal(false)} />}
     </DepartmentContainer>
-    </>
   );
 };
 

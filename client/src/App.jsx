@@ -45,7 +45,10 @@ import FullDashboard from "./Pages/employeDashboard/FullDashboard.jsx";
 import EmployeAttendance from "./Pages/attendance/EmployeAttendance.jsx";
 import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
 import NewDashboard from "./Pages/dashboard/NewDashboard.jsx";
-import DashboardNew from "./Pages/dashboard/DashboardNew.jsx"
+import DashboardNew from "./Pages/dashboard/DashboardNew.jsx";
+import Reimbursement from "./Pages/reimbursement/Reimb_Department.jsx"
+import Reimb2page from "./Pages/reimbursement/Reimb2Page.jsx"
+import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
 function App() {
   return (
     <>
@@ -103,7 +106,9 @@ function App() {
               <Route path="/sample" element={<Sample />} />
            <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
 
-               <Route path="/newdashboard" element={<DashboardNew />}/>
+               <Route path="/reimbursement" element={<Reimbursement />}/>
+                <Route path="/reimb2page/:id" element={<Reimb2page />} />
+                    <Route path="/reimb_info/:id" element={<Reimb_info />} />
           </Route>
         </Route>
       </Routes>

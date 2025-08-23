@@ -112,6 +112,7 @@ export default function Sidebar() {
                   <FaTasks /><span>Daily Task</span>
                 </CustomLink>
               )}
+             
               {modules.payroll && (
                 <CustomLink to="/payrolldetails" className={collapsed ? 'collapsed' : ''}>
                   <FaTasks /><span>Payroll</span>
@@ -122,89 +123,15 @@ export default function Sidebar() {
                   <FaTasks /><span>Holiday</span>
                 </CustomLink>
               )}
+              
             </>
           )}
 
 
         </Nav>
-
-        {/* Bottom Section */}
-        {/* <BottomSection>
-          <LogoutButton>
-            <HiMiniArrowRightEndOnRectangle style={{ marginRight: "30px" }} onClick={handleLogout} />
-            {!collapsed && (
-              <button
-                onClick={() => setShowChangeModal(true)}
-                style={{
-                  backgroundColor: '#003366',
-                  color: 'white',
-                  padding: '8px 12px',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  width: '100%',
-                  textAlign: 'left'
-                }}
-              >
-                Change Password
-              </button>
-            )}
-          </LogoutButton>
-        </BottomSection> */}
       </SidebarContainer>
 
-      {/* Modal */}
-      {/* {showChangeModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 9999
-        }}>
-          <div style={{
-            backgroundColor: 'white', padding: '30px', borderRadius: '10px',
-            width: '400px', boxShadow: '0 2px 10px rgba(0,0,0,0.3)', position: 'relative'
-          }}>
-            <button onClick={() => setShowChangeModal(false)} style={{
-              position: 'absolute', top: '10px', right: '10px',
-              border: 'none', background: 'transparent', fontSize: '18px', cursor: 'pointer'
-            }}>✖</button>
-
-            <h2>Change Password</h2>
-            <input
-              type="password"
-              placeholder="Old Password"
-              value={oldPassword}
-              onChange={e => setOldPassword(e.target.value)}
-              style={{ width: '100%', padding: '10px', marginTop: '15px', borderRadius: '5px' }}
-            />
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={e => setNewPassword(e.target.value)}
-              style={{ width: '100%', padding: '10px', marginTop: '15px', borderRadius: '5px' }}
-            />
-            <button onClick={handlePasswordChange} style={{
-              width: '100%', marginTop: '20px', padding: '10px',
-              backgroundColor: 'blue'
-              , color: 'white', border: 'none', borderRadius: '5px'
-            }}>
-              Change Password
-            </button>
-            {message && (
-              <p
-                style={{
-                  marginTop: '10px',
-                  color: message.toLowerCase().includes("success") ? 'green' : 'red',
-                  fontWeight: 'bold'
-                }}
-              >
-                {message}
-              </p>
-            )}
-          </div>
-        </div>
-      )} */}
+    
     </>
   );
 }
