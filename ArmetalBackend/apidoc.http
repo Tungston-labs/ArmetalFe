@@ -703,3 +703,49 @@ Content-Type: application/json
 ###
 GET http://178.248.112.16:8001/api/admin/attendance/53/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDY5NDE5LCJpYXQiOjE3NTUwNjU4MTksImp0aSI6IjFmOTQ1MTI4MTljMTQxNGM4MGZhMzUyZGNkNmZlZmQ4IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.lfUVZax20FJm_OsHmNEI0SSZBalit5RwZ0bSWJuG7O8
+
+
+
+
+# -----REIMBURSMENT MODULE------
+
+###add 
+POST http://178.248.112.16:8001/api/reimbursements/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTM3NTI0LCJpYXQiOjE3NTU5MzM5MjQsImp0aSI6IjIzM2YzYjQ4ODgwNDRkOGFiYWI1OWZmNjU5NTY0NmQ2IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.ib5BAbyjtBs2zhxHJvXwauLIoRObe42u9Yae6hDwVc4
+Content-Type: multipart/form-data
+
+{
+  "expense_category": "TRAVEL",
+  "to_mail": "manager@example.com",
+  "note": "Taxi fare",
+  "date": "2025-08-23",
+  "amount": "100.50",
+  "uploaded_images": ["<file1>", "<file2>"]
+}
+
+###list
+GET http://178.248.112.16:8001/api/reimbursements/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTM3NTI0LCJpYXQiOjE3NTU5MzM5MjQsImp0aSI6IjIzM2YzYjQ4ODgwNDRkOGFiYWI1OWZmNjU5NTY0NmQ2IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.ib5BAbyjtBs2zhxHJvXwauLIoRObe42u9Yae6hDwVc4
+Content-Type: application/json
+
+
+###retrieve single record
+GET http://178.248.112.16:8001/api/reimbursements/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTM3NTI0LCJpYXQiOjE3NTU5MzM5MjQsImp0aSI6IjIzM2YzYjQ4ODgwNDRkOGFiYWI1OWZmNjU5NTY0NmQ2IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.ib5BAbyjtBs2zhxHJvXwauLIoRObe42u9Yae6hDwVc4
+Content-Type: application/json
+
+
+###list by department
+GET http://178.248.112.16:8001/api/reimbursements/department/16/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTM3NTI0LCJpYXQiOjE3NTU5MzM5MjQsImp0aSI6IjIzM2YzYjQ4ODgwNDRkOGFiYWI1OWZmNjU5NTY0NmQ2IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.ib5BAbyjtBs2zhxHJvXwauLIoRObe42u9Yae6hDwVc4
+Content-Type: application/json
+
+
+### update status by admin
+PATCH http://178.248.112.16:8001/api/reimbursements/1/   
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTQ3MzIzLCJpYXQiOjE3NTU5NDM3MjMsImp0aSI6ImY2MWI1ZGRiMzNmNjRkNmQ4YWZiNzQ4MzgyM2ZhOWMxIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.v9J6EIDOlBGNdWhowz-efW1hyglW03_wbwRyDRlrWSE
+Content-Type: application/json
+
+{
+  "status": "Approved"
+}

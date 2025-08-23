@@ -29,6 +29,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCompanies, removeCompany } from '../../Redux/superAdminSlice';
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+import Navbar from "../../Components/Navbar"
+
 
 const CompanyTable = () => {
   const dispatch = useDispatch();
@@ -86,10 +88,7 @@ const CompanyTable = () => {
     <Container>
       <TopBar>
         <div />
-        <HRManager>
-          <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
-          <span>HR Manager</span>
-        </HRManager>
+        <Navbar/>
       </TopBar>
 
       <HeaderSection>
