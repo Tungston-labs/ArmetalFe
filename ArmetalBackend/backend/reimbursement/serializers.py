@@ -14,7 +14,7 @@ class ReimbursementImageSerializer(serializers.ModelSerializer):
 class ReimbursementListSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source="employee.name", read_only=True)
     employee_id = serializers.CharField(source="employee.employee_id", read_only=True)
-    job_position = serializers.CharField(source="employee.job_position", read_only=True)
+    designation = serializers.CharField(source="employee.designation", read_only=True)
     department = serializers.SerializerMethodField()
 
     class Meta:
@@ -23,7 +23,7 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
             "id",
             "employee_name",
             "employee_id",
-            "job_position",
+            "designation",
             "department",
             "amount",
             "status",
