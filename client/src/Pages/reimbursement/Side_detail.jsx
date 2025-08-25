@@ -15,7 +15,7 @@ import {
   RightSection,
   Amount,
 } from "./Side_detail.Styles";
-import { getGroupedReimbursements } from "../../services/reimbursement"; // adjust path if needed
+import { getGroupedReimbursements } from "../../services/reimbursement"; // import service
 
 const ReimbursementHistory = ({ onClose }) => {
   const [reimbursements, setReimbursements] = useState([]);
@@ -36,7 +36,9 @@ const ReimbursementHistory = ({ onClose }) => {
     fetchReimbursements();
   }, []);
 
-  if (loading) return <div>Loading reimbursements...</div>;
+  if (loading) return <p>Loading reimbursements...</p>;
+
+  if (!reimbursements.length) return <p>No reimbursements found.</p>;
 
   return (
     <ModalOverlay>
@@ -47,40 +49,36 @@ const ReimbursementHistory = ({ onClose }) => {
             <CloseButton onClick={onClose}>Close</CloseButton>
           </Header>
 
-          {reimbursements.length === 0 ? (
-            <p>No reimbursements found.</p>
-          ) : (
-            reimbursements.map((section, idx) => (
-              <div key={idx}>
-                <DateHeading>{section.date}</DateHeading>
-                {section.reimbursements.map((item) => (
-                  <Card key={item.id}>
-                    <ProfileImage
-                      src={item.employee_image || "https://via.placeholder.com/50"}
-                      alt={item.employee_name || "Employee"}
-                    />
-                    <Info>
-                      <div>
-                        <Label>Name</Label>
-                        <Value>{item.employee_name || "N/A"}</Value>
-                      </div>
-                      <div>
-                        <Label>Status</Label>
-                        <Value>{item.status}</Value>
-                      </div>
-                    </Info>
-                    <RightSection>
-                      <div>
-                        <Label>Amount</Label>
-                        <Value>{item.amount}</Value>
-                      </div>
-                      <Amount>₹ {item.amount}</Amount>
-                    </RightSection>
-                  </Card>
-                ))}
-              </div>
-            ))
-          )}
+          {reimbursements.map((section, idx) => (
+            <div key={idx}>
+              <DateHeading>{section.date}</DateHeading>
+              {section.reimbursements.map((item) => (
+                <Card key={item.id}>
+                  <ProfileImage
+                    src={item.employee_image || "https://via.placeholder.com/50"}
+                    alt={item.employee_name}
+                  />
+                  <Info>
+                    <div>
+                      <Label>Name</Label>
+                      <Value>{item.employee_name}</Value>
+                    </div>
+                    <div>
+                      <Label>Department</Label>
+                      <Value>{item.department?.name || "N/A"}</Value>
+                    </div>
+                  </Info>
+                  <RightSection>
+                    <div>
+                      <Label>Position</Label>
+                      <Value>{item.job_position || "N/A"}</Value>
+                    </div>
+                    <Amount>₹ {item.amount}</Amount>
+                  </RightSection>
+                </Card>
+              ))}
+            </div>
+          ))}
         </PageWrapper>
       </ModalContent>
     </ModalOverlay>
