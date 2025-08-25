@@ -36,6 +36,7 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
                 "id": dept.id,
                 "name": dept.name,
                 "hr_name": dept.department_head.name if dept.department_head else None,
+                "department_code":dept.department_code if dept.department_code else None,
             }
         return None
 
@@ -82,6 +83,8 @@ class ReimbursementDetailSerializer(serializers.ModelSerializer):
                 "id": dept.id,
                 "name": dept.name,
                 "hr_name": dept.department_head.name if dept.department_head else None,
+                "department_code":dept.department_code if dept.department_code else None,
+
             }
         return None
 

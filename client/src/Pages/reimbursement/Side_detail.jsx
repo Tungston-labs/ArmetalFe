@@ -71,7 +71,7 @@ const ReimbursementHistory = ({ onClose }) => {
                   <RightSection>
                     <div>
                       <Label>Position</Label>
-                      <Value>{item.job_position || "N/A"}</Value>
+                      <Value>{item.designation || "N/A"}</Value>
                     </div>
                     <Amount>₹ {item.amount}</Amount>
                   </RightSection>

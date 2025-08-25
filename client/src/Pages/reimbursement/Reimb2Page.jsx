@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
   HeaderSection,
   TopBar,
   Title,
-  ActionArea,
   Subtitle,
   FormSection,
   InputGroup,
@@ -15,221 +13,179 @@ import {
   TableWrapper,
   StyledTable,
   Avatar,
-  AddButton,
   HRManager,
   IconButton,
   TitleSection,
-  DropdownMenu, DropdownWrapper 
+  DropdownMenu,
+  DropdownWrapper,
 } from '../reimbursement/Reimb2page.Styles';
-import { FaInfoCircle, FaTrash } from 'react-icons/fa';
-import { HiOutlinePencilSquare } from "react-icons/hi2";
-import { fetchDepartmentById, updateDepartment } from '../../services/departmentServices';
-import { getEmployeesByDepartment } from '../../Redux/departmentSlice';
-import { useNavigate } from 'react-router-dom';
-import { deleteEmployeeById } from '../../Redux/employeeSlice';
-import Employee from "../../assets/employee.svg"; 
-import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your choice
+import { FaInfoCircle } from 'react-icons/fa';
+import { HiArrowLeft } from "react-icons/hi2";
 import { IoIosArrowDown } from "react-icons/io";
 import RemiIcon from "../../assets/remi.svg";
+import { fetchReimbursementsByDepartment } from '../../services/reimbursement'; // <-- your service
 
 const DepartmentDetail = () => {
   const { id } = useParams();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [menuOpen, setMenuOpen] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-
-  const { departmentEmployees } = useSelector((state) => state.departments);
 
   const [department, setDepartment] = useState(null);
+  const [employees, setEmployees] = useState([]);
+
   const [formData, setFormData] = useState({
-    name: '',
-    department_code: '',
-    department_head_id: ''
+    name: "",
+    department_code: "",
+    department_head_id: "",
   });
+
   const [isEditing, setIsEditing] = useState(false);
-  const handleConfirmDelete = async () => {
-    await dispatch(deleteEmployeeById(selectedEmployeeId));
-    await dispatch(getEmployeesByDepartment(id));  // Refetch employee list
-    setShowDeleteModal(false);
-    setSelectedEmployeeId(null);
-  };
-  
-  const handleStatusChange = (id, newStatus) => {
-  setEmployees((prev) =>
-    prev.map((emp) =>
-      emp.id === id ? { ...emp, status: newStatus } : emp
-    )
-  );
-};
 
-
+  // 🔹 Fetch reimbursements for department
   useEffect(() => {
-    const getDepartment = async () => {
+    const loadReimbursements = async () => {
       try {
-        const data = await fetchDepartmentById(id);
-        setDepartment(data);
-        setFormData({
-          name: data.name || '',
-          department_code: data.department_code || '',
-          department_head_id: data.department_head?.id || ''
-        });
-      } catch (err) {
-        console.error('Error fetching department:', err);
+        const data = await fetchReimbursementsByDepartment(id);
+
+        if (data.results.length > 0) {
+          // department info from first employee
+          const deptInfo = data.results[0].department;
+
+          setDepartment(deptInfo);
+          setFormData({
+            name: deptInfo?.name || "",
+            department_code: deptInfo?.department_code || "",
+            department_head_id: deptInfo?.hr_name || "",
+          });
+
+          setEmployees(data.results);
+        }
+      } catch (error) {
+        console.error("Error fetching reimbursements:", error);
       }
     };
-    getDepartment();
+
+    loadReimbursements();
   }, [id]);
 
-  useEffect(() => {
-    if (id) {
-      dispatch(getEmployeesByDepartment(id));
-    }
-  }, [dispatch, id]);
+  const handleStatusChange = (empId, newStatus) => {
+    setEmployees((prev) =>
+      prev.map((emp) =>
+        emp.id === empId ? { ...emp, status: newStatus } : emp
+      )
+    );
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleUpdate = async () => {
-    try {
-      await updateDepartment(id, formData);
-      const data = await fetchDepartmentById(id);  // Re-fetch full data
-      setDepartment(data);
-      setFormData({
-        name: data.name || '',
-        department_code: data.department_code || '',
-        department_head: data.department_head?.id || ''
-      });
-      setIsEditing(false);
-    } catch (err) {
-      console.error('Update failed:', err);
-    }
+  const handleUpdate = () => {
+    setDepartment({
+      ...department,
+      name: formData.name,
+      department_code: formData.department_code,
+      hr_name: formData.department_head_id,
+    });
+    setIsEditing(false);
   };
 
-
-  if (!department) return <p>Loading...</p>;
+  const handleConfirmDelete = () => {
+    setEmployees((prev) => prev.filter((emp) => emp.id !== selectedEmployeeId));
+    setShowDeleteModal(false);
+    setSelectedEmployeeId(null);
+  };
 
   return (
     <Container>
+      {/* Top Bar */}
       <TopBar>
         <div />
         <DropdownWrapper>
-        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
-        </HRManager>
-
-        {menuOpen && (
-          <DropdownMenu>
-            <div>Change Password</div>
-            <div>Logout</div>
-          </DropdownMenu>
-        )}
-      </DropdownWrapper>
+          <HRManager onClick={() => setMenuOpen(!menuOpen)}>
+            <img src="/images/user.jpg" alt="HR Manager" />
+            <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
+          </HRManager>
+          {menuOpen && (
+            <DropdownMenu>
+              <div>Change Password</div>
+              <div>Logout</div>
+            </DropdownMenu>
+          )}
+        </DropdownWrapper>
       </TopBar>
 
+      {/* Header */}
       <HeaderSection>
-<TitleSection>
-  <HiArrowLeft
-    style={{ width: '24px', height: '24px', cursor: 'pointer',color:"#3250B5" }} 
-    onClick={() => window.history.back()}
-  />
-
-            <img src={RemiIcon} alt="employeeIcon" style={{ height: "60px" }} />
-        
-  <div>
-    <Title>Reimbursement</Title>
-    <Subtitle>Manage all departments within the organization.</Subtitle>
-  </div>
-</TitleSection>
-
-
-
-  <ActionArea>
-    <AddButton
-      onClick={() => {
-        if (isEditing) {
-          handleUpdate(); // Save the changes
-        }
-        setIsEditing(!isEditing); // Toggle editing mode
-      }}
-    >
-      {isEditing ? (
-        <>
-          <HiOutlinePencilSquare style={{ width: '18px', height: '19px' }} /> Save
-        </>
-      ) : (
-        <>
-          <HiOutlinePencilSquare style={{ width: '18px', height: '18px' }} /> Edit
-        </>
-      )}
-    </AddButton>
-  </ActionArea>
-</HeaderSection>
-
-
-      <FormSection>
-        <InputGroup>
-          <Label>Department name</Label>
-          <Input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            disabled={!isEditing}
+        <TitleSection>
+          <HiArrowLeft
+            style={{ width: '24px', height: '24px', cursor: 'pointer', color: "#3250B5" }}
+            onClick={() => window.history.back()}
           />
-        </InputGroup>
-        <InputGroup>
-          <Label>Department Code Name</Label>
-          <Input
-            name="department_code"
-            value={formData.department_code}
-            onChange={handleChange}
-            disabled={!isEditing}
-          />
-        </InputGroup>
-        <InputGroup>
-          <Label>Department head</Label>
-          {isEditing ? (
-            <select
-              name="department_head_id"
-              value={formData.department_head_id}
-              onChange={handleChange}
-              style={{
-                padding: '10px',
-                borderRadius: '8px',
-                border: '1px solid #ccc',
-                fontSize: '16px'
-              }}
-            >
-              <option value="">-- Select Department Head --</option>
-              {departmentEmployees.map((emp) => (
-                <option key={emp.id} value={emp.id}>
-                  {emp.name}
-                </option>
-              ))}
-            </select>
-          ) : (
+          <img src={RemiIcon} alt="employeeIcon" style={{ height: "60px" }} />
+          <div>
+            <Title>Reimbursement</Title>
+            <Subtitle>Manage all departments within the organization.</Subtitle>
+          </div>
+        </TitleSection>
+      </HeaderSection>
 
+      {/* Form */}
+      {department && (
+        <FormSection>
+          <InputGroup>
+            <Label>Department name</Label>
             <Input
-              name="department_head"
-              value={department.department_head?.name || 'Not Assigned'}
-              disabled
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              disabled={!isEditing}
             />
+          </InputGroup>
+          <InputGroup>
+            <Label>Department Code Name</Label>
+            <Input
+              name="department_code"
+              value={formData.department_code}
+              onChange={handleChange}
+              disabled={!isEditing}
+            />
+          </InputGroup>
+          <InputGroup>
+            <Label>Department head</Label>
+            {isEditing ? (
+              <select
+                name="department_head_id"
+                value={formData.department_head_id}
+                onChange={handleChange}
+                style={{
+                  padding: '10px',
+                  borderRadius: '8px',
+                  border: '1px solid #ccc',
+                  fontSize: '16px',
+                }}
+              >
+                <option value="">-- Select Department Head --</option>
+                <option value="MUNEERA">MUNEERA</option>
+                <option value="ARUN">ARUN</option>
+                <option value="SNEHA">SNEHA</option>
+              </select>
+            ) : (
+              <Input
+                name="department_head"
+                value={department.hr_name || 'Not Assigned'}
+                disabled
+              />
+            )}
+          </InputGroup>
+        </FormSection>
+      )}
 
-
-          )}
-        </InputGroup>
-        {/* {isEditing && (
-          <AddButton style={{ marginTop: '1rem' }} onClick={handleUpdate}>
-            Save Changes
-          </AddButton>
-        )} */}
-      </FormSection>
-
-      <h3>Added employee list</h3>
+      {/* Employee Table */}
+      <h3>Employee Reimbursements</h3>
       <TableWrapper>
         <StyledTable>
           <thead>
@@ -237,95 +193,81 @@ const DepartmentDetail = () => {
               <th>Sl No</th>
               <th>Employee name</th>
               <th>Employee ID</th>
-              {/* <th>Email ID</th> */}
               <th>Job Position</th>
               <th>Department</th>
+              <th>Amount</th>
+              <th>Status</th>
               <th>Info</th>
-              <th></th>
-               
             </tr>
           </thead>
           <tbody>
-            {departmentEmployees.map((emp, index) => (
-              <tr key={index}>
+            {employees.map((emp, index) => (
+              <tr key={emp.id}>
                 <td>{index + 1}</td>
                 <td>
-                <Avatar src={emp.profile_pic ? `http://178.248.112.16:8000${emp.profile_pic}` : 'https://i.pravatar.cc/40'} />
-
-                  {/* <Avatar src={emp.profile_pic || 'https://i.pravatar.cc/40'} alt="" /> */}
-                  {emp.name}
+                  <Avatar src={emp.profile_pic || 'https://i.pravatar.cc/40'} />
+                  {emp.employee_name}
                 </td>
                 <td>{emp.employee_id}</td>
-                {/* <td>{emp.email}</td> */}
                 <td>{emp.designation}</td>
-                <td>{department.name}</td>
+                <td>{emp.department?.name}</td>
+                <td>{emp.amount}</td>
+                <td>
+                  <select
+                    value={emp.status || ""}
+                    onChange={(e) => handleStatusChange(emp.id, e.target.value)}
+                    className="border rounded px-2 py-1 text-sm"
+                  >
+                    <option value="">Select</option>
+                    <option value="Approve">Approve</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Hold">Hold</option>
+                    <option value="Review">Review</option>
+                  </select>
+                </td>
                 <td>
                   <IconButton onClick={() => navigate(`/reimb_info/${emp.id}`)}>
                     <FaInfoCircle />
                   </IconButton>
-
                 </td>
-               <td className="flex items-center gap-2">
-  {/* Status Dropdown */}
-  <select
-    value={emp.status || ""}
-    onChange={(e) => handleStatusChange(emp.id, e.target.value)}
-    className="border rounded px-2 py-1 text-sm"
-  >
-    <option value="">Select</option>
-    <option value="verified">Verified</option>
-    <option value="hold">Hold</option>
-    <option value="review">In Review</option>
-  </select>
-
-  {/* Delete Icon */}
-  
-</td>
-
               </tr>
             ))}
           </tbody>
         </StyledTable>
       </TableWrapper>
+
+      {/* Delete Modal */}
       {showDeleteModal && (
-  <div style={{
-    position: 'fixed',
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    zIndex: 999
-  }}>
-    <div style={{
-      background: '#fff',
-      padding: '2rem',
-      borderRadius: '8px',
-      minWidth: '300px',
-      textAlign: 'center'
-    }}>
-      <h3>Confirm Delete</h3>
-      <p>
-  Are you sure you want to delete employee{' '}
-  <strong>
-    {
-      departmentEmployees.find((e) => e.id === selectedEmployeeId)?.name ||
-      'this employee'
-    }
-  </strong>
-  ?
-</p>
-
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
-        <button onClick={() => setShowDeleteModal(false)} style={{ padding: '8px 16px' }}>
-          Cancel
-        </button>
-        <button onClick={handleConfirmDelete} style={{ padding: '8px 16px', background: 'red', color: '#fff' }}>
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 999,
+        }}>
+          <div style={{
+            background: '#fff',
+            padding: '2rem',
+            borderRadius: '8px',
+            minWidth: '300px',
+            textAlign: 'center',
+          }}>
+            <h3>Confirm Delete</h3>
+            <p>
+              Are you sure you want to delete employee{' '}
+              <strong>{employees.find((e) => e.id === selectedEmployeeId)?.employee_name || 'this employee'}</strong>?
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
+              <button onClick={() => setShowDeleteModal(false)} style={{ padding: '8px 16px' }}>
+                Cancel
+              </button>
+              <button onClick={handleConfirmDelete} style={{ padding: '8px 16px', background: 'red', color: '#fff' }}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Container>
   );
 };
