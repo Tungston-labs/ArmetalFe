@@ -777,6 +777,17 @@ from rest_framework import generics, permissions
 from datetime import datetime, time, timezone
 from django.utils.dateparse import parse_date
 from django.utils.timezone import make_aware
+from rest_framework import generics, permissions
+from .models import ScheduleReminder
+from .serializers import ScheduleReminderSerializer
+from .tasks import send_reminder
+
+from rest_framework import generics, permissions
+from .models import ScheduleReminder
+from .serializers import ScheduleReminderSerializer
+from .tasks import send_reminder
+from django.utils.timezone import make_aware, utc
+from datetime import datetime, date
 
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
@@ -785,7 +796,7 @@ class ReminderListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         employee = user.employee_db
-        date_str = self.request.query_params.get("date")  
+        date_str = self.request.query_params.get("date")
         qs = ScheduleReminder.objects.filter(employee=employee)
         if date_str:
             qs = qs.filter(scheduled_datetime__date=date_str)
@@ -793,16 +804,40 @@ class ReminderListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
-        reminder = serializer.save(employee=employee)
-        
-        # Send FCM notification if token exists
+
+        # Get time input from frontend (HH:MM)
+        time_input = self.request.data.get("scheduled_time")  # e.g., "16:12"
+        if not time_input:
+            raise ValueError("scheduled_time is required in HH:MM format")
+
+        # Convert to UTC-aware datetime
+        today = date.today()
+        dt_str = f"{today} {time_input}"
+        naive_dt = datetime.strptime(dt_str, "%Y-%m-%d %H:%M")
+        scheduled_datetime_utc = make_aware(naive_dt, timezone=utc)
+
+        # Save reminder with UTC datetime
+        reminder = serializer.save(employee=employee, scheduled_datetime=scheduled_datetime_utc)
+
+        # Schedule Celery task at UTC time
+        send_reminder.apply_async(
+            args=[reminder.id],
+            eta=scheduled_datetime_utc
+        )
+
+        # Optionally, send immediate notification about creation
         fcm_token = self.request.user.fcm_token
         if fcm_token:
+            from employee.utils import send_push_notification
             send_push_notification(
-                fcm_token,
+                self.request.user,
                 title="New Reminder Scheduled",
-                body=f"Reminder '{reminder.title}' is scheduled for {reminder.scheduled_datetime.strftime('%Y-%m-%d %H:%M')}"
+                message=f"Reminder '{reminder.title}' is scheduled for {time_input}"
             )
+
+
+
+            
 
 
 
