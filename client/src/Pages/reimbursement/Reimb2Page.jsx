@@ -23,7 +23,8 @@ import { FaInfoCircle } from 'react-icons/fa';
 import { HiArrowLeft } from "react-icons/hi2";
 import { IoIosArrowDown } from "react-icons/io";
 import RemiIcon from "../../assets/remi.svg";
-import { fetchReimbursementsByDepartment } from '../../services/reimbursement'; // <-- your service
+import { fetchReimbursementsByDepartment,updateReimbursementStatus } from '../../services/reimbursement'; // <-- your service
+
 
 const DepartmentDetail = () => {
   const { id } = useParams();
@@ -71,13 +72,29 @@ const DepartmentDetail = () => {
     loadReimbursements();
   }, [id]);
 
-  const handleStatusChange = (empId, newStatus) => {
-    setEmployees((prev) =>
-      prev.map((emp) =>
-        emp.id === empId ? { ...emp, status: newStatus } : emp
-      )
-    );
+  const handleStatusChange = async (empId, newStatus) => {
+    const prevEmployees = [...employees];
+    try {
+      // Optimistic update
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp.id === empId ? { ...emp, status: newStatus } : emp
+        )
+      );
+  
+      // API call
+      const res = await updateReimbursementStatus(empId, newStatus);
+      console.log("✅ Backend response:", res);
+  
+    } catch (error) {
+      console.error("❌ Failed to update status:", error);
+      setEmployees(prevEmployees); // rollback
+    }
   };
+  
+
+
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -220,9 +237,8 @@ const DepartmentDetail = () => {
                   >
                     <option value="">Select</option>
                     <option value="Approve">Approve</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Hold">Hold</option>
-                    <option value="Review">Review</option>
+                    <option value="On Hold">On Hold</option>
+                    <option value="In Verification">In Verification</option>                    
                   </select>
                 </td>
                 <td>

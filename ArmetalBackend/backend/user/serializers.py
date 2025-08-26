@@ -20,11 +20,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         username = attrs.get("username")
         password = attrs.get("password")
+        fcm_token = self.context['request'].data.get("fcm_token")
 
         user = authenticate(username=username, password=password)
 
         if user is None:
             raise serializers.ValidationError("Invalid username or password")
+        if fcm_token:
+            user.fcm_token = fcm_token
+            user.save(update_fields=["fcm_token"])
 
         data = super().validate(attrs)
 
@@ -47,6 +51,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'is_employee': user.is_employee,
             'is_hr': user.is_hr,  # ✅ Send to frontend
             'company_modules': company_modules,
+            'fcm_token': user.fcm_token,
         }
 
         return data

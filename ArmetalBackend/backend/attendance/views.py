@@ -185,6 +185,8 @@ class AttendanceSwipeView(APIView):
         try:
             user = request.user
             employee = getattr(user, 'employee_db', None)
+            logger.info(f"AttendanceSwipeView request.data={request.data}")
+
 
             if not employee:
                 return Response({'error': 'Employee not found'}, status=404)
@@ -217,6 +219,11 @@ class AttendanceSwipeView(APIView):
 
             # ✅ 2. Distance check
             distance = geodesic(employee_location, company_location).meters
+
+            print("Company lat/lon from DB:", company.latitude, company.longitude)
+            print("Employee lat/lon from request:", emp_lat, emp_lon)
+            print("Calculated distance (m):", distance)
+
             if distance > 50:
                 return Response(
                     {"error": f"You are too far from company location ({int(distance)}m). Must be within 50m."},
