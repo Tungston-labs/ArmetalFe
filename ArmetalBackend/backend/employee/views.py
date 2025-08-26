@@ -770,24 +770,13 @@ class AttendanceSummaryView(APIView):
             "remaining_working_days": len(remaining_days),
             "total_hours": round(total_hours, 2)
         })
-from user.firebase import send_push_notification
+    
+from rest_framework import generics, permissions
 from .models import ScheduleReminder
 from .serializers import ScheduleReminderSerializer
-from rest_framework import generics, permissions
-from datetime import datetime, time, timezone
-from django.utils.dateparse import parse_date
+from .tasks import send_reminder
 from django.utils.timezone import make_aware
-from rest_framework import generics, permissions
-from .models import ScheduleReminder
-from .serializers import ScheduleReminderSerializer
-from .tasks import send_reminder
-
-from rest_framework import generics, permissions
-from .models import ScheduleReminder
-from .serializers import ScheduleReminderSerializer
-from .tasks import send_reminder
-from django.utils.timezone import make_aware, utc
-from datetime import datetime, date
+from datetime import datetime, date, timezone  # use standard Python timezone
 
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
@@ -814,7 +803,7 @@ class ReminderListCreateView(generics.ListCreateAPIView):
         today = date.today()
         dt_str = f"{today} {time_input}"
         naive_dt = datetime.strptime(dt_str, "%Y-%m-%d %H:%M")
-        scheduled_datetime_utc = make_aware(naive_dt, timezone=utc)
+        scheduled_datetime_utc = make_aware(naive_dt, timezone=timezone.utc)
 
         # Save reminder with UTC datetime
         reminder = serializer.save(employee=employee, scheduled_datetime=scheduled_datetime_utc)
@@ -825,7 +814,7 @@ class ReminderListCreateView(generics.ListCreateAPIView):
             eta=scheduled_datetime_utc
         )
 
-        # Optionally, send immediate notification about creation
+        # Optional: immediate notification about creation
         fcm_token = self.request.user.fcm_token
         if fcm_token:
             from employee.utils import send_push_notification
