@@ -685,12 +685,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ###schedule reminder
 POST http://178.248.112.16:8001/api/reminders/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MzEwMDk1LCJpYXQiOjE3NTQzMDY0OTUsImp0aSI6ImNmYzE0MjkwMDY4MTQzOThhNjk2MWVkNTViYWEyYzY1IiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QhvQgBQgs_fMIND869G7KLOz0ZnQSwkFY83YN0Xr6Xo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MjcxMzkyLCJpYXQiOjE3NTYyNjc3OTIsImp0aSI6ImRhZTY0ODg5YjUwMTQ3Yzk4ZTc4NWVkNTY4MmJlOWQ4IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.T2IXH7yIygORpxAkomagGEfZHjT3M9yuRsgv3EsDf_s
 
 {
   "title": "Project Deadline",
   "body": "Submit project report before end of day",
-  "scheduled_datetime": "2025-07-30T11:22:00Z"
+  "scheduled_datetime": "09:45"
 }
 
 ### employee monthly summary for mobile app
