@@ -156,6 +156,7 @@ class ScheduleReminder(models.Model):
     scheduled_datetime = models.DateTimeField()  # Combine date and time
     created_at = models.DateTimeField(auto_now_add=True)
     notified = models.BooleanField(default=False)  # To avoid duplicate notifications
+    is_expired = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title} - {self.scheduled_datetime}"

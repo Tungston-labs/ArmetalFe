@@ -25,9 +25,8 @@ def send_reminder(reminder_id):
     except ScheduleReminder.DoesNotExist:
         pass
 
-
 @shared_task
-def delete_expired_reminders():
+def soft_delete_expired_reminders():
     now = datetime.now()
-    deleted_count, _ = ScheduleReminder.objects.filter(scheduled_datetime__lt=now).delete()
-    print(f"Deleted {deleted_count} expired reminders")
+    ScheduleReminder.objects.filter(scheduled_datetime__lt=now, is_expired=False).update(is_expired=True)
+

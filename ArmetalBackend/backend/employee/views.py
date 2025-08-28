@@ -786,10 +786,11 @@ class ReminderListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         employee = user.employee_db
         date_str = self.request.query_params.get("date")
-        qs = ScheduleReminder.objects.filter(employee=employee)
+        qs = ScheduleReminder.objects.filter(employee=employee, is_expired=False)
         if date_str:
             qs = qs.filter(scheduled_datetime__date=date_str)
         return qs
+
     
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
