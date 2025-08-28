@@ -753,3 +753,25 @@ Content-Type: application/json
 ### Get reimbursements grouped by date
 GET http://178.248.112.16:8001/api/reimbursements/grouped/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MDk5OTI1LCJpYXQiOjE3NTYwOTYzMjUsImp0aSI6ImVlZWE5MzE4YmI4NDQzZTdhNjYzZGQ5ZmI2OTJhYThlIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.0kBTS1wWLMJS2dAypCpqj7B1_yGMgjDIF_Yy8Xd9KaM
+
+
+
+
+### 1️⃣ List logged-in employee reimbursements
+GET http://178.248.112.16:8001/api/reimbursements/my-reimbursements/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MzgzOTYxLCJpYXQiOjE3NTYzODAzNjEsImp0aSI6ImU1ZTg1ZGI4NTdhMzQyYzg4NGI4ODA4M2ZlN2Y1ZDMxIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.OsyrBCizOWZrIkWZurycQSMeiRNbLPBVbojcfS_4kP8
+Content-Type: application/json
+
+###
+
+### 2️⃣ Retrieve a single reimbursement by ID
+GET http://178.248.112.16:8001/api/reimbursements/my-reimbursements/1/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###
+
+### 3️⃣ Delete a single reimbursement by ID
+DELETE http://178.248.112.16:8001/api/reimbursements/my-reimbursements/1/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json

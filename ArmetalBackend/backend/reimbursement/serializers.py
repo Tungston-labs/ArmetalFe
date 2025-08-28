@@ -27,6 +27,8 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
             "department",
             "amount",
             "status",
+            "note",
+            "expense_category"
         ]
 
     def get_department(self, obj):
