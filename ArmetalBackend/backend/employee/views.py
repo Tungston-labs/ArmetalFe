@@ -790,31 +790,50 @@ class ReminderListCreateView(generics.ListCreateAPIView):
         if date_str:
             qs = qs.filter(scheduled_datetime__date=date_str)
         return qs
-
+    
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
-
-        # Save reminder with employee automatically
+        # Just save reminder with employee automatically
         reminder = serializer.save(employee=employee)
-
-        # Optional: schedule Celery task if datetime is in the future
-        if reminder.scheduled_datetime > timezone_now():
-            send_reminder.apply_async(
-                args=[reminder.id],
-                eta=reminder.scheduled_datetime
-            )
-
-        # Optional: immediate push notification about creation
-        fcm_token = self.request.user.fcm_token
-        if fcm_token:
-            send_push_notification(
-                self.request.user,
-                title="New Reminder Scheduled",
-                message=f"Reminder '{reminder.title}' is scheduled for {reminder.scheduled_datetime.strftime('%H:%M')}"
-            )
+        return reminder
 
 
+    # def perform_create(self, serializer):
+    #     employee = self.request.user.employee_db
 
+    #     # Save reminder with employee automatically
+    #     reminder = serializer.save(employee=employee)
+
+    #     # Optional: schedule Celery task if datetime is in the future
+    #     if reminder.scheduled_datetime > timezone_now():
+    #         send_reminder.apply_async(
+    #             args=[reminder.id],
+    #             eta=reminder.scheduled_datetime
+    #         )
+
+    #     # Optional: immediate push notification about creation
+    #     fcm_token = self.request.user.fcm_token
+    #     if fcm_token:
+    #         send_push_notification(
+    #             self.request.user,
+    #             title="New Reminder Scheduled",
+    #             message=f"Reminder '{reminder.title}' is scheduled for {reminder.scheduled_datetime.strftime('%H:%M')}"
+            # )
+
+
+
+
+
+class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ScheduleReminder.objects.all()
+    serializer_class = ScheduleReminderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # restrict to logged-in user's reminders
+        user = self.request.user
+        employee = user.employee_db
+        return ScheduleReminder.objects.filter(employee=employee)
 
 
 
