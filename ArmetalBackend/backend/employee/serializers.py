@@ -111,6 +111,7 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
     iqama_number = serializers.CharField()
     visa_expiry_date = serializers.DateField()
     insurance_image_url = serializers.SerializerMethodField()
+    id_card_image_url = serializers.SerializerMethodField()  # ✅ Add this
     employee_id = serializers.IntegerField(source='id')
 
     class Meta:
@@ -125,14 +126,14 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
             'work_permit_urls',
             'contract_urls',
             'insurance_image_url',
+            'id_card_image_url',  # ✅ Include in response
         ]
 
     def get_work_permit_urls(self, obj):
         try:
-            return obj.documents.work_permit_urls  # Make sure this is actually a list of URLs
+            return obj.documents.work_permit_urls
         except:
             return []
-
 
     def get_contract_urls(self, obj):
         try:
@@ -143,6 +144,15 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
     def get_insurance_image_url(self, obj):
         try:
             return obj.documents.insurance_image_url
+        except:
+            return None
+
+    def get_id_card_image_url(self, obj):
+        try:
+            if obj.idcard:
+                request = self.context.get('request')
+                return request.build_absolute_uri(obj.idcard.url) if request else obj.idcard.url
+            return None
         except:
             return None
 
