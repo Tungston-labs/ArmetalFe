@@ -36,6 +36,22 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
     def patch(self, request, *args, **kwargs):
         kwargs['partial'] = True  # allow partial update
         return self.update(request, *args, **kwargs)
+# --- Retrieve, Update, Delete single reimbursement for logged-in employee ---
+from rest_framework import generics, permissions
+from .models import Reimbursement
+from .serializers import ReimbursementDetailSerializer
+
+class MyReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]  # only logged-in users
+    serializer_class = ReimbursementDetailSerializer
+
+    def get_queryset(self):
+        # Only reimbursements belonging to the logged-in employee
+        return Reimbursement.objects.filter(employee__user=self.request.user)
+
+    def patch(self, request, *args, **kwargs):
+        kwargs['partial'] = True  # allow partial update
+        return self.update(request, *args, **kwargs)
 
 
 
@@ -78,3 +94,20 @@ class ReimbursementGroupedByDateView(APIView):
             })
 
         return Response(result)
+    
+
+
+# --- List reimbursements for logged-in employee ---
+from rest_framework import generics, permissions
+from .models import Reimbursement
+from .serializers import ReimbursementListSerializer
+from shared.pagination import CustomPagination
+
+class MyReimbursementListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]  # only logged-in users
+    pagination_class = CustomPagination
+    serializer_class = ReimbursementListSerializer
+
+    def get_queryset(self):
+        # Filter reimbursements for the logged-in employee
+        return Reimbursement.objects.filter(employee__user=self.request.user).order_by("-created_at")
