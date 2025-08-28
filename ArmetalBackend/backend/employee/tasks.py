@@ -1,5 +1,6 @@
 # employee/tasks.py
 from celery import shared_task
+from datetime import datetime
 from .models import ScheduleReminder
 from employee.utils import send_push_notification  # your FCM helper
 
@@ -25,17 +26,8 @@ def send_reminder(reminder_id):
         pass
 
 
-# @shared_task
-# def send_reminder(reminder_id):
-#     try:
-#         reminder = ScheduleReminder.objects.get(id=reminder_id)
-#         token = reminder.employee.user.fcm_token
-#         if token:
-#             send_push_notification(
-#                 token,
-#                 title="Reminder Alert",
-#                 body=f"Reminder '{reminder.title}' scheduled for {reminder.scheduled_datetime.strftime('%Y-%m-%d %H:%M')}"
-#             )
-#     except ScheduleReminder.DoesNotExist:
-#         pass
-
+@shared_task
+def delete_expired_reminders():
+    now = datetime.now()
+    deleted_count, _ = ScheduleReminder.objects.filter(scheduled_datetime__lt=now).delete()
+    print(f"Deleted {deleted_count} expired reminders")
