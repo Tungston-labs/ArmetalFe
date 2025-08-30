@@ -418,7 +418,7 @@ const handleSubmit = () => {
     { key: 'phno', label: 'Phone number' },
     { key: 'passport_number', label: 'Passport_number' },
     { key: 'visa_expiry_date', label: 'Visa_expiry_date', type: 'date' },
-    { key: 'iqama_number', label: 'Iqama_number ' },
+    { key: 'iqama_number', label: 'Iqama/Aadhar' },
     { key: 'insurance_number', label: 'Insurance_number' },
     { key: 'contract_expiry_date', label: 'Contract_expiry_date' , type: 'date'},
     { key: 'idcard', label: 'ID Card' }, // renamed label for clarity

@@ -26,13 +26,14 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         if user is None:
             raise serializers.ValidationError("Invalid username or password")
+
         if fcm_token:
             user.fcm_token = fcm_token
             user.save(update_fields=["fcm_token"])
 
         data = super().validate(attrs)
 
-        # ✅ Find company (works for both HR admins and HR employees)
+        # ✅ Find company
         company = None
         if user.company:
             company = user.company
@@ -41,7 +42,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         company_modules = company.modules if company else {}
 
-        # ✅ Return structured user data
+        # ✅ Return structured user data + company info
         data['user'] = {
             'id': user.id,
             'username': user.username,
@@ -49,9 +50,14 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'is_superadmin': user.is_superadmin,
             'is_hr_admin': user.is_hr_admin,
             'is_employee': user.is_employee,
-            'is_hr': user.is_hr,  # ✅ Send to frontend
+            'is_hr': user.is_hr,
             'company_modules': company_modules,
             'fcm_token': user.fcm_token,
+            "company": {
+                "id": company.id if company else None,
+                "name": company.name if company else None,
+                "location": company.location if company else None,   # ✅ Send location here
+            }
         }
 
         return data
