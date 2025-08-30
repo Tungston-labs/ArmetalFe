@@ -46,6 +46,7 @@ API.interceptors.response.use(
         const newAccessToken = res.data.access;
         localStorage.setItem("accessToken", newAccessToken);
 
+
         // Update and retry the original request
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return API(originalRequest);

@@ -30,7 +30,9 @@ const [menuOpen, setMenuOpen] = useState(false);
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const stepTitles = ['Basic Info', 'Job Details', 'Legal Info'];
-
+  const user = JSON.parse(localStorage.getItem("user"));
+  const country = user?.company?.country;
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -56,6 +58,10 @@ const [menuOpen, setMenuOpen] = useState(false);
     // if (reduxFormData?.basic) setFormData(reduxFormData.basic);
     if (departmentList.length === 0) dispatch(getDepartments());
   }, [reduxFormData, dispatch, departmentList]);
+  console.log(localStorage.getItem("user"));
+
+  console.log("country is",country);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -411,96 +417,100 @@ const handleSubmit = () => {
          
 </TwoColumnRows>
 
-      <SectionTitle>Employee Legal & ID Information</SectionTitle>
+<SectionTitle>Employee Legal & ID Information</SectionTitle>
 
 <ColumnRow>
   {[
     { key: 'phno', label: 'Phone number' },
-    { key: 'passport_number', label: 'Passport_number' },
-    { key: 'visa_expiry_date', label: 'Visa_expiry_date', type: 'date' },
+    { key: 'passport_number', label: 'Passport Number' },
+    { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date' },
     { key: 'iqama_number', label: 'Iqama/Aadhar' },
-    { key: 'insurance_number', label: 'Insurance_number' },
-    { key: 'contract_expiry_date', label: 'Contract_expiry_date' , type: 'date'},
-    { key: 'idcard', label: 'ID Card' }, // renamed label for clarity
-  ].map(({ key, label, type }) => (
-    <div key={key}>
-      {errors[key] && (
-        <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>
-      )}
+    { key: 'insurance_number', label: 'Insurance Number' },
+    { key: 'contract_expiry_date', label: 'Contract Expiry Date', type: 'date' },
+    { key: 'idcard', label: 'ID Card' },
+  ]
+    // 🚨 Filter fields if country is IN
+    .filter(
+      ({ key }) =>
+        !(country === "IN" && (key === "visa_expiry_date" || key === "insurance_number"))
+    )
+    .map(({ key, label, type }) => (
+      <div key={key}>
+        {errors[key] && (
+          <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>
+        )}
 
-     {key === 'idcard' ? (
-  <div
-    onClick={() => document.getElementById('idcard-upload').click()}
-    style={{
-      position: 'relative',
-      display: 'flex',
-      alignItems: 'center',
-      border: '1px solid #052DB4',
-      borderRadius: '7px',
-      padding: '0.7rem',
-      cursor: 'pointer',
-      backgroundColor: '#fff',
-      fontSize: '0.9rem',
-      marginTop:"10px"
-    }}
-  >
-    {/* Simulated placeholder or file name */}
-    <span
-      style={{
-        flex: 1,
-        color: formData.idcard ? '#000' : '#999',
-        fontSize: '0.8rem',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-      }}
-    >
-      {formData.idcard?.name || 'ID Card'}
-    </span>
+        {key === 'idcard' ? (
+          <div
+            onClick={() => document.getElementById('idcard-upload').click()}
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #052DB4',
+              borderRadius: '7px',
+              padding: '0.7rem',
+              cursor: 'pointer',
+              backgroundColor: '#fff',
+              fontSize: '0.9rem',
+              marginTop: "10px"
+            }}
+          >
+            <span
+              style={{
+                flex: 1,
+                color: formData.idcard ? '#000' : '#999',
+                fontSize: '0.8rem',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {formData.idcard?.name || 'ID Card'}
+            </span>
 
-    <FaPlus style={{ color: '#3352BA', fontSize: '1rem', marginLeft: '0.5rem' }} />
+            <FaPlus style={{ color: '#3352BA', fontSize: '1rem', marginLeft: '0.5rem' }} />
 
-    <input
-      id="idcard-upload"
-      type="file"
-      name="idcard"
-      accept="image/*"
-   onChange={(e) =>
-    setFormData((prev) => ({
-      ...prev,
-      idcard: e.target.files[0], // store file object
-    }))
-  }
-      style={{ display: 'none' }}
-    />
-  </div>
-) : (
-  <Input
-  name={key}
-  placeholder={label}
-  type={key === 'visa_expiry_date' || key === 'contract_expiry_date' ? 'text' : type || 'text'}
-  value={formData[key]}
-  onChange={handleChange}
-  autoComplete="off"
-  onFocus={
-    key === 'visa_expiry_date' || key === 'contract_expiry_date'
-      ? (e) => (e.target.type = 'date')
-      : undefined
-  }
-  onBlur={
-    key === 'visa_expiry_date' || key === 'contract_expiry_date'
-      ? (e) => {
-          if (!e.target.value) e.target.type = 'text';
-        }
-      : undefined
-  }
-/>
-
-)}
-
-    </div>
-  ))}
+            <input
+              id="idcard-upload"
+              type="file"
+              name="idcard"
+              accept="image/*"
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  idcard: e.target.files[0],
+                }))
+              }
+              style={{ display: 'none' }}
+            />
+          </div>
+        ) : (
+          <Input
+            name={key}
+            placeholder={label}
+            type={key === 'visa_expiry_date' || key === 'contract_expiry_date' ? 'text' : type || 'text'}
+            value={formData[key]}
+            onChange={handleChange}
+            autoComplete="off"
+            onFocus={
+              key === 'visa_expiry_date' || key === 'contract_expiry_date'
+                ? (e) => (e.target.type = 'date')
+                : undefined
+            }
+            onBlur={
+              key === 'visa_expiry_date' || key === 'contract_expiry_date'
+                ? (e) => {
+                    if (!e.target.value) e.target.type = 'text';
+                  }
+                : undefined
+            }
+          />
+        )}
+      </div>
+    ))}
 </ColumnRow>
+
 
 
       <FlexRow>
