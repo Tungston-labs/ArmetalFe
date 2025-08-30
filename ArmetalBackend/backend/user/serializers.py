@@ -56,7 +56,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             "company": {
                 "id": company.id if company else None,
                 "name": company.name if company else None,
-                "location": company.location if company else None,   # ✅ Send location here
+                "location": company.location if company else None,
+                "country":company.country if company else None,  
             }
         }
 
