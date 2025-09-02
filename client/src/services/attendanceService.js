@@ -8,6 +8,7 @@ export const fetchAttendanceList = async (params = {}) => {
 };
 
 export const fetchAttendanceDetail = async (id) => {
+  console.log("idds===>",id)
   const response = await API.get(`/admin/attendance/${id}/`);
   return response.data;
 };

@@ -51,24 +51,22 @@ const navigate = useNavigate();
 
   const employee = leaveDetails?.employee || {};
 
-const handleStatusUpdate = async () => {
-  if (!id || !actionType) return;
-
-  const status = actionType === 'approve' ? 'approved' : 'rejected';
-
-  try {
-    await dispatch(patchLeaveStatus({ leaveId: id, status }));
-    // Optionally refresh local state if staying on page
-    // dispatch(getLeaveDetails(id));
-    
-    navigate(-1); // 👈 Go back to the previous page after updating
-  } catch (error) {
-    console.error("Error updating leave status:", error);
-  } finally {
-    setShowModal(false);
-    setActionType('');
-  }
-};
+  const handleStatusUpdate = async () => {
+    if (!id || !actionType) return;
+  
+    const status = actionType === 'approve' ? 'approved' : 'rejected';
+  
+    try {
+      await dispatch(patchLeaveStatus({ leaveId: id, status }));
+      navigate("/leave-request");   // ✅ go back to leave-request page
+    } catch (error) {
+      console.error("Error updating leave status:", error);
+    } finally {
+      setShowModal(false);
+      setActionType('');
+    }
+  };
+  
 
 
   return (
@@ -167,13 +165,15 @@ const handleStatusUpdate = async () => {
       </FlexRow>
 
     
-        {showModal && (
-          <ConfirmLeaveModal
-            onClose={() => setShowModal(false)}
-            actionType={actionType}
-            leaveId={id}   // ✅ pass leave id here
-          />
-        )}
+      {showModal && (
+  <ConfirmLeaveModal
+    onClose={() => setShowModal(false)}
+    actionType={actionType}
+    leaveId={id}
+    onConfirm={handleStatusUpdate}   // ✅ pass handler
+  />
+)}
+
         
       
     </Container>

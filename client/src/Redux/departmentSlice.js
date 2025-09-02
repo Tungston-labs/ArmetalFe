@@ -95,7 +95,7 @@ export const updateDepartmentById = createAsyncThunk(
       const payload = {
         name: data.name,
         department_code: data.department_code,
-        department_head: data.department_head?.id || data.department_head,
+        department_head_id: data.department_head_id || null,  // ✅ correct field
       };
       return await updateDepartment(id, payload);
     } catch (error) {
@@ -103,6 +103,7 @@ export const updateDepartmentById = createAsyncThunk(
     }
   }
 );
+
 
 
 // Get employees by department ID

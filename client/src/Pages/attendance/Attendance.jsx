@@ -9,7 +9,6 @@ import {
   HeaderSection,
   ProfileImage,
   Input,
-  DateBox,
   Table,
   TableRow,
   TimeCell,
@@ -18,7 +17,6 @@ import {
   InfoGrid,
   TwoColumn,
   TwoColumnRow,
-  FullWidthInput,
   InfoSection,
   Hr,
   DateWrapper,
@@ -36,10 +34,13 @@ const TimesheetPage = () => {
   const { id } = useParams(); // <-- attendance id
   const dispatch = useDispatch();
   const navigate = useNavigate();
+console.log("id====>",id)
+  const { attendanceDetail, detailLoading } = useSelector(
+    (state) => state.attendance
+  );
 
-  const { attendanceDetail, detailLoading, error } = useSelector((state) => state.attendance);
   const [selectedDate, setSelectedDate] = useState('');
-
+  //dispatch(getAttendanceDetail(id))
   // format times
   const formatTime = (datetimeStr) => {
     if (!datetimeStr) return '---';
@@ -47,31 +48,33 @@ const TimesheetPage = () => {
     return date.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true
+      hour12: true,
     });
   };
 
-  useEffect(() => {
-    if (id) {
-      dispatch(getAttendanceDetail(id));
-    }
-  }, [id, dispatch]);
+useEffect(()=>{
+  console.log("here i'm")
+  dispatch(getAttendanceDetail(id))
+},[])
 
   useEffect(() => {
+    
     if (attendanceDetail?.date) {
       setSelectedDate(attendanceDetail.date);
     }
   }, [attendanceDetail]);
 
   if (detailLoading) return <p>Loading attendance details...</p>;
-  if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
+ // if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
   if (!attendanceDetail) return <p>No data found</p>;
 
-  const employee = attendanceDetail.employee || {};
-  const sessions = attendanceDetail.sessions || [];
+  // Safely destructure with fallback
+  const employee = attendanceDetail?.employee ?? {};
+  const sessions = attendanceDetail?.sessions ?? [];
 
   // helpers for week days
   const getWeekDays = (dateStr) => {
+    if (!dateStr) return [];
     const baseDate = new Date(dateStr);
     const startOfWeek = new Date(baseDate);
     const dow = baseDate.getDay();
@@ -86,8 +89,29 @@ const TimesheetPage = () => {
   };
 
   const weekDays = selectedDate ? getWeekDays(selectedDate) : [];
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const dayNames = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
 
   return (
@@ -96,29 +120,36 @@ const TimesheetPage = () => {
       <HeaderSection>
         <InfoGrid>
           <LuArrowLeft
-            style={{ width: "30px", height: 30, cursor: "pointer" }}
+            style={{ width: '30px', height: 30, cursor: 'pointer' }}
             onClick={() => navigate(-1)}
           />
+
           <div style={{ width: '10%' }}>
-            {employee.profile_pic ? (
-              <ProfileImage src={employee.profile_pic} alt="Employee" />
+            {employee?.profile_pic ? (
+              <ProfileImage src={employee?.profile_pic} alt="Employee" />
             ) : (
               <PiUserCirclePlusThin size={100} style={{ color: '#aaa' }} />
             )}
           </div>
 
-          <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              display: 'flex',
+              width: '90%',
+              justifyContent: 'space-between',
+            }}
+          >
             <TwoColumn>
-              <Input value={employee.name || ''} readOnly />
-              <Input value={employee.employee_id || ''} readOnly />
-              <Input value={employee.email || ''} readOnly />
+              <Input value={employee?.name ?? ''} readOnly />
             </TwoColumn>
 
             <InfoSection>
-              <FullWidthInput value={employee.department?.name || ''} readOnly />
               <TwoColumnRow>
-                <Input value={employee.designation || ''} readOnly />
-                <Input value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} type="date" />
+                <Input
+                  value={selectedDate ?? ''}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  type="date"
+                />
               </TwoColumnRow>
             </InfoSection>
           </div>
@@ -130,8 +161,16 @@ const TimesheetPage = () => {
       {/* Date Wrapper */}
       <DateWrapper>
         <WorkingInfo>
-          <div><strong>Monthly: {attendanceDetail.monthly_hours_formatted || '00:00'} hrs</strong></div>
-          <div><strong>Weekly: {attendanceDetail.weekly_hours_formatted || '00:00'} hrs</strong></div>
+          <div>
+            <strong>
+              Monthly: {attendanceDetail?.monthly_hours_formatted ?? '00:00'} hrs
+            </strong>
+          </div>
+          <div>
+            <strong>
+              Weekly: {attendanceDetail?.weekly_hours_formatted ?? '00:00'} hrs
+            </strong>
+          </div>
         </WorkingInfo>
 
         <DateDetails>
@@ -151,7 +190,7 @@ const TimesheetPage = () => {
       {/* Weekday Boxes */}
       <DayBoxes>
         {weekDays.map((dayDate, i) => {
-          const iso = dayDate.toISOString().split("T")[0];
+          const iso = dayDate.toISOString().split('T')[0];
           const isActive = iso === selectedDate;
           const Component = isActive ? ActiveDayBox : DayBox;
           return (
@@ -177,25 +216,35 @@ const TimesheetPage = () => {
           {sessions.length > 0 ? (
             sessions.map((s, idx) => (
               <TableRow key={idx}>
-                <TimeCell>{formatTime(s.time_in)}</TimeCell>
+                <TimeCell>{formatTime(s?.time_in)}</TimeCell>
                 <TimeRange>
-                  <TimeIcon><FaClock /></TimeIcon>
-                  <span>..................................... To .....................................</span>
-                  <TimeIcon><FaClock /></TimeIcon>
+                  <TimeIcon>
+                    <FaClock />
+                  </TimeIcon>
+                  <span>
+                    ..................................... To
+                    .....................................
+                  </span>
+                  <TimeIcon>
+                    <FaClock />
+                  </TimeIcon>
                 </TimeRange>
-                <TimeCell>{formatTime(s.time_out)}</TimeCell>
+                <TimeCell>{formatTime(s?.time_out)}</TimeCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <td colSpan={3} style={{ textAlign: "center" }}>No sessions</td>
+              <td colSpan={3} style={{ textAlign: 'center' }}>
+                No sessions
+              </td>
             </TableRow>
           )}
         </tbody>
       </Table>
 
       <p style={{ marginTop: '20px' }}>
-        <strong>Total Hours Worked:</strong> {attendanceDetail.total_hours_formatted || '00:00'} hrs
+        <strong>Total Hours Worked:</strong>{' '}
+        {attendanceDetail?.total_hours_formatted ?? '00:00'} hrs
       </p>
     </Container>
   );
