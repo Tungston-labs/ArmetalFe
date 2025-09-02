@@ -72,9 +72,11 @@ const LoginForm = () => {
             is_superadmin: user.is_superadmin,
             is_hr_admin: user.is_hr_admin,
             is_employee: user.is_employee,
+            company: user.company,   // <-- add this
           },
         })
       );
+      
 
       if (user.is_superadmin) {
         navigate("/superadmin");

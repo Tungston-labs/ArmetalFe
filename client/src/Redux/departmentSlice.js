@@ -50,19 +50,42 @@ export const getDepartmentById = createAsyncThunk(
 // Create department
 export const createNewDepartment = createAsyncThunk(
   "departments/create",
-  async (data, { rejectWithValue }) => {
+  async (data, { rejectWithValue, dispatch }) => {
     try {
       const payload = {
         name: data.name,
         department_code: data.department_code,
         department_head: data.department_head,
       };
-      return await createDepartment(payload);
+      const result = await createDepartment(payload);
+      // ✅ refresh after success
+      dispatch(getDepartments({ page: 1, search: '' }));
+      return result;
     } catch (error) {
+      // ❌ refresh after failure too
+      dispatch(getDepartments({ page: 1, search: '' }));
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
+// Delete department
+export const deleteDepartmentById = createAsyncThunk(
+  "departments/delete",
+  async (id, { rejectWithValue, dispatch }) => {
+    try {
+      await deleteDepartment(id);
+      // ✅ refresh after success
+      dispatch(getDepartments({ page: 1, search: '' }));
+      return id;
+    } catch (error) {
+      // ❌ refresh after failure too
+      dispatch(getDepartments({ page: 1, search: '' }));
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 
 // Update department
 export const updateDepartmentById = createAsyncThunk(
@@ -81,18 +104,7 @@ export const updateDepartmentById = createAsyncThunk(
   }
 );
 
-// Delete employee
-export const deleteDepartmentById = createAsyncThunk(
-  "departments/delete",
-  async (id, { rejectWithValue }) => {
-    try {
-      await deleteDepartment(id);
-      return id;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
+
 // Get employees by department ID
 export const getEmployeesByDepartment = createAsyncThunk(
   "departments/getEmployeesByDepartment",

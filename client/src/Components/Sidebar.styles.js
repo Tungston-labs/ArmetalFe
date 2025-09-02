@@ -146,6 +146,7 @@ export const CustomLink = styled(Link)`
   font-family: Satoshi, sans-serif;
   transition: all 0.3s ease;
   cursor: pointer;
+  position: relative;  /* 👈 needed for underline */
 
   svg {
     margin-right: 12px;
@@ -164,6 +165,22 @@ export const CustomLink = styled(Link)`
     svg {
       color: #172554;
     }
+  }
+
+  /* Active link underline + highlight */
+  &.active {
+    color:rgb(255, 255, 255); /* golden text for active */
+  }
+
+  &.active::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;   /* just above padding */
+    left: 10%;
+    width: 80%;
+    height: 3px;
+    background:rgb(255, 255, 255);  /* golden underline */
+    border-radius: 2px;
   }
 
   /* Sidebar collapsed (on large screens) */

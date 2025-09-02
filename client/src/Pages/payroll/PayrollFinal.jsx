@@ -110,21 +110,54 @@ const PayrollTable = () => {
     }));
     dispatch(getPayrollData({ page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment }));
   };
+  
 
   const handleCircleClick = async (e, employee, type) => {
     e.preventDefault();
+  
+    const user = JSON.parse(localStorage.getItem("user")); // current logged-in HR
+    if (!user) return;
+  
+    const empStatus = verificationStatus[employee.id];
+  
+    // 🚫 Case 1: Circle already verified
+    if (empStatus?.[type]) {
+      Swal.fire({
+        icon: "info",
+        title: "Already Verified",
+        text: "This verification was already completed.",
+      });
+      return;
+    }
+  
+    // 🚫 Case 2: Same HR trying to verify both circles
+    if (
+      (type === "first" && empStatus?.second) ||
+      (type === "second" && empStatus?.first)
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Not Allowed",
+        text: "One admin can only verify once.",
+      });
+      return;
+    }
+  
+    // ✅ If valid, call API
     try {
-      await dispatch(verifyEmployeePayroll({
-        employeeId: employee.employee,
-        month: selectedMonth,
-        year: selectedYear,
-      })).unwrap();
-
+      await dispatch(
+        verifyEmployeePayroll({
+          employeeId: employee.employee,
+          month: selectedMonth,
+          year: selectedYear,
+        })
+      ).unwrap();
+  
       setVerificationStatus(prev => ({
         ...prev,
         [employee.id]: { ...prev[employee.id], [type]: true },
       }));
-
+  
       Swal.fire({
         icon: "success",
         title: "Verified",
@@ -132,17 +165,17 @@ const PayrollTable = () => {
         timer: 1500,
         showConfirmButton: false,
       });
-
     } catch (err) {
       let msg = "Something went wrong!";
       if (err?.payload?.error) msg = err.payload.error;
       else if (err?.response?.data?.error) msg = err.response.data.error;
       else if (typeof err === "string") msg = err;
-
-      Swal.fire({ icon: "warning", title: "Verification Failed", text: msg })
-        .then(() => dispatch(getPayrollData({ page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment })));
+  
+      Swal.fire({ icon: "error", title: "Verification Failed", text: msg });
     }
   };
+  
+  
 
   const handlePageChange = (newPage) => { if (newPage >= 1 && newPage <= totalPages) setPage(newPage); };
 
