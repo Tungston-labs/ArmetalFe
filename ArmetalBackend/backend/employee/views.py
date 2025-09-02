@@ -770,13 +770,13 @@ class AttendanceSummaryView(APIView):
             "remaining_working_days": len(remaining_days),
             "total_hours": round(total_hours, 2)
         })
-from user.firebase import send_push_notification
+from rest_framework import generics, permissions
+from rest_framework.exceptions import ValidationError
 from .models import ScheduleReminder
 from .serializers import ScheduleReminderSerializer
-from rest_framework import generics, permissions
-from datetime import datetime, time, timezone
-from django.utils.dateparse import parse_date
-from django.utils.timezone import make_aware
+from .tasks import send_reminder
+from django.utils.timezone import now as timezone_now
+from employee.utils import send_push_notification
 
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
@@ -785,25 +785,56 @@ class ReminderListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         employee = user.employee_db
-        date_str = self.request.query_params.get("date")  
-        qs = ScheduleReminder.objects.filter(employee=employee)
+        date_str = self.request.query_params.get("date")
+        qs = ScheduleReminder.objects.filter(employee=employee, is_expired=False)
         if date_str:
             qs = qs.filter(scheduled_datetime__date=date_str)
         return qs
 
+    
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
+        # Just save reminder with employee automatically
         reminder = serializer.save(employee=employee)
-        
-        # Send FCM notification if token exists
-        fcm_token = self.request.user.fcm_token
-        if fcm_token:
-            send_push_notification(
-                fcm_token,
-                title="New Reminder Scheduled",
-                body=f"Reminder '{reminder.title}' is scheduled for {reminder.scheduled_datetime.strftime('%Y-%m-%d %H:%M')}"
-            )
+        return reminder
 
+
+    # def perform_create(self, serializer):
+    #     employee = self.request.user.employee_db
+
+    #     # Save reminder with employee automatically
+    #     reminder = serializer.save(employee=employee)
+
+    #     # Optional: schedule Celery task if datetime is in the future
+    #     if reminder.scheduled_datetime > timezone_now():
+    #         send_reminder.apply_async(
+    #             args=[reminder.id],
+    #             eta=reminder.scheduled_datetime
+    #         )
+
+    #     # Optional: immediate push notification about creation
+    #     fcm_token = self.request.user.fcm_token
+    #     if fcm_token:
+    #         send_push_notification(
+    #             self.request.user,
+    #             title="New Reminder Scheduled",
+    #             message=f"Reminder '{reminder.title}' is scheduled for {reminder.scheduled_datetime.strftime('%H:%M')}"
+            # )
+
+
+
+
+
+class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ScheduleReminder.objects.all()
+    serializer_class = ScheduleReminderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # restrict to logged-in user's reminders
+        user = self.request.user
+        employee = user.employee_db
+        return ScheduleReminder.objects.filter(employee=employee)
 
 
 

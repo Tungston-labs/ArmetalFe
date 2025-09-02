@@ -127,6 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -209,6 +210,7 @@ FERNET_KEY = config("FERNET_KEY")
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Use your Redis URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
 
 
 
@@ -217,9 +219,10 @@ CELERY_TASK_SERIALIZER = 'json'
 INSTALLED_APPS += ['django_celery_beat']
 
 CELERY_BEAT_SCHEDULE = {
-    'check_reminders_every_minute': {
-        'task': 'employee.tasks.check_reminders',
-        'schedule': 60.0,  # every minute
+    'soft_delete_expired_reminders_every_minute': {
+        'task': 'employee.tasks.soft_delete_expired_reminders',
+        'schedule': 60.0,
     },
 }
+
 

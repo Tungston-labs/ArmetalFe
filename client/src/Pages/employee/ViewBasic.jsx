@@ -39,6 +39,8 @@ import { useNavigate } from 'react-router-dom';
 import { DropdownMenu, DropdownWrapper } from "../leaveDetails/EmployeeList.styles";
 import { IoIosArrowDown } from "react-icons/io";
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import { getDepartments } from "../../Redux/departmentSlice";
+
 import { Spin } from "antd";
 const ViewBasic = () => {
   const dispatch = useDispatch();
@@ -51,6 +53,14 @@ const ViewBasic = () => {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
     const [menuOpen, setMenuOpen] = useState(false);
+
+// 👇 Fetch departments on mount
+useEffect(() => {
+  dispatch(getDepartments({ page: 1, search: "" }));
+}, [dispatch]);
+
+
+
 console.log("fff",formData)
 const navigate = useNavigate();
 

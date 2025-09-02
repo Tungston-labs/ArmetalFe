@@ -4,6 +4,8 @@ import { FaUsers, FaSitemap, FaTasks } from "react-icons/fa";
 import { MdOutlineLaptopChromebook } from "react-icons/md";
 import { HiMiniArrowRightEndOnRectangle } from "react-icons/hi2";
 import axios from 'axios';
+import { FaMoneyCheckAlt, FaUmbrellaBeach, FaReceipt } from "react-icons/fa";
+
 import { useNavigate, Link } from 'react-router-dom';
 import {
   SidebarContainer,
@@ -112,18 +114,27 @@ export default function Sidebar() {
                   <FaTasks /><span>Daily Task</span>
                 </CustomLink>
               )}
-             
+
+
               {modules.payroll && (
                 <CustomLink to="/payrolldetails" className={collapsed ? 'collapsed' : ''}>
-                  <FaTasks /><span>Payroll</span>
+                  <FaMoneyCheckAlt /><span>Payroll</span>
                 </CustomLink>
               )}
+
               {modules.holiday && (
                 <CustomLink to="/holiday" className={collapsed ? 'collapsed' : ''}>
-                  <FaTasks /><span>Holiday</span>
+                  <FaUmbrellaBeach /><span>Holiday</span>
                 </CustomLink>
               )}
-              
+
+              {modules.reimbursement && (
+                <CustomLink to="/reimbursement" className={collapsed ? 'collapsed' : ''}>
+                  <FaReceipt /><span>Reimbursement</span>
+                </CustomLink>
+              )}
+
+
             </>
           )}
 
@@ -131,7 +142,7 @@ export default function Sidebar() {
         </Nav>
       </SidebarContainer>
 
-    
+
     </>
   );
 }
