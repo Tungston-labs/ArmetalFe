@@ -3,7 +3,7 @@ import "./index.css";
 import LoginForm from "./Pages/login/Login";
 import Layout from "./Components/Layout";
 import Department from "./Pages/department/Department";
-import Dashboard from "./Pages/dashboard/Dashboard";
+// import Dashboard from "./Pages/dashboard/Dashboard";
 import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
 import Table from "./Components/Table.jsx";
 import EmployeeList from "./Pages/leaveDetails/EmployeeList.jsx";
@@ -29,8 +29,8 @@ import ViewDocument from "./Pages/employee/ViewDocument.jsx"
 import BasicFormEdit from "./Pages/editform/BasicFormEdit.jsx"
 import BankpaymentEdit from "./Pages/editform/BankpaymentEdit.jsx"
 import DocumentEdit from "./Pages/editform/DocumentEdit.jsx"
-import Succes from "./Components/Succes.jsx";
-import ConfirmLeaveModal from "./Components/ConfirmLeaveModal.jsx";
+// import Succes from "./Components/Succes.jsx";
+// import ConfirmLeaveModal from "./Components/ConfirmLeaveModal.jsx";
 import Payroll1 from "./Pages/payroll/Payroll1.jsx";
 import RequireAuth from "./Components/RequireAuth.jsx";
 import Viewpage from "./Pages/superAdmin/Viewpage.jsx";
@@ -50,6 +50,7 @@ import Reimbursement from "./Pages/reimbursement/Reimb_Department.jsx"
 import Reimb2page from "./Pages/reimbursement/Reimb2Page.jsx"
 import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
 import FinancePage from "./Pages/finance/FinancePage.jsx"
+import Dashboard from "./Pages/employeDashboard/Sample.jsx";
 function App() {
   return (
     <>
@@ -101,8 +102,8 @@ function App() {
             <Route path="/edit-basicform" element={<BasicFormEdit />} />
             <Route path="/edit-bankpayment" element={<BankpaymentEdit />} />
             <Route path="/edit-document" element={<DocumentEdit />} />
-            <Route path="/succes" element={<Succes />} />
-            <Route path="/confirm" element={<ConfirmLeaveModal />} />
+            {/* <Route path="/succes" element={<Succes />} /> */}
+            {/* <Route path="/confirm" element={<ConfirmLeaveModal />} /> */}
             <Route path="/employee-dashboard" element={<Employeedashboard />} />
             <Route path="/sample" element={<Sample />} />
             <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
@@ -111,6 +112,8 @@ function App() {
             <Route path="/reimb2page/:id" element={<Reimb2page />} />
             <Route path="/reimb_info/:id" element={<Reimb_info />} />
               <Route path="/finance" element={<FinancePage />} />
+
+                <Route path="/card" element={<Dashboard />} />
           </Route>
         </Route>
       </Routes>

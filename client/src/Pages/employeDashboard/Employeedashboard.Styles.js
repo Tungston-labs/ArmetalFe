@@ -37,7 +37,7 @@ export const InfoCard = styled.div`
   background: white;
   padding: 12px;
   border-radius: 9px;
-  border: 0.2px solid #000;
+  // border: 0.2px solid gray;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -78,11 +78,12 @@ export const CardLink = styled.div`
 /* Department section responsive */
 export const DepartmentBox = styled.div`
   background: #F4F4F4;
-  border-radius: 9px;
-  border: 0.2px solid #000;
+  // border-radius: 9px;
+  // border: 0.2px solid gray;
   margin-bottom: 24px;
   position: relative;
-  margin-top:3rem;
+  margin-top:-2px;
+  min-height:300px;
 `;
 
 export const DepartmentTitleRow = styled.div`
@@ -126,7 +127,7 @@ export const MemberList = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  margin-top: 10px;
+  margin-top: 12px;
 
   /* Small screens - show all members */
   @media (max-width: 1023px) {
@@ -158,9 +159,8 @@ export const MemberList = styled.div`
 
 export const Member = styled.div`
   display: flex;
-  padding: 5px;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   background: white;
 `;
 
@@ -194,6 +194,7 @@ export const TimeLogContainer = styled.div`
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   // border-radius: 8px;
   padding: 12px;
+  margin-top:10px;
 
   /* Mobile padding fix */
   @media (max-width: 480px) {
@@ -211,7 +212,7 @@ export const ScrollableTableWrapper = styled.div`
 
   /* Tablet (≥768px and ≤1023px) - show up to 4 rows */
   @media (min-width: 768px) and (max-width: 1023px) {
-    max-height: calc(4 * 70px);
+    max-height: calc(3 * 70px);
   }
 
   /* Laptop (≥1024px and ≤1439px) - show up to 5 rows */
@@ -321,7 +322,7 @@ export const SvgIcon = styled.img`
 
 export const Department = styled.div`
   background: white;
-  padding: 10px;
+  padding: 18px;
   border-radius: 9px;
   font-family: 'Satoshi', sans-serif;
 `;

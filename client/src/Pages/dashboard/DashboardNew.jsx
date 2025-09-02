@@ -39,8 +39,9 @@ import { getDashboardSummary } from "../../Redux/dashboardSlice";
 import { useLogout } from "../../services/logout";
 import Navbar from "../../Components/Navbar"
 import { Spin } from "antd";
-
+import Cards from "../../Components/Cards"
 import { Link } from "react-router-dom";
+import colors from "react-multi-date-picker/plugins/colors";
 const CardsOnly = () => {
   const dispatch = useDispatch();
   const { summary, loading, error } = useSelector((state) => state.dashboard);
@@ -120,14 +121,15 @@ const CardsOnly = () => {
   return (
     <>
     <Navbar />
+    
     <Container>
-  
+  <Cards/>
 
       {/* Cards Row */}
-      <CardGrid>
+      {/* <CardGrid>
         <Card>
           <LeftIcon>
-            <img src={`/src/assets/total.svg`} alt="User Icon" width={40} height={40} />
+            <img src={`../assets/total.svg`} alt="User Icon" width={40} height={40} />
           </LeftIcon>
           <VerticalBar />
           <CardContent>
@@ -154,7 +156,7 @@ const CardsOnly = () => {
         </Card>
         <Card>
           <LeftIcon>
-            <img src={`/src/assets/total2.svg`} alt="User Icon" width={40} height={40} />
+            <img src={`../assets/total2.svg`} alt="User Icon" width={40} height={40} />
           </LeftIcon>
           <VerticalBar />
           <CardContent>
@@ -182,7 +184,7 @@ const CardsOnly = () => {
         </Card>
         <Card>
           <LeftIcon>
-            <img src={`/src/assets/total3.svg`} alt="User Icon" width={40} height={40} />
+            <img src={`../assets/total3.svg`} alt="User Icon" width={40} height={40} />
           </LeftIcon>
           <VerticalBar />
           <CardContent>
@@ -209,10 +211,18 @@ const CardsOnly = () => {
 </Link>
           </Icon>
         </Card>
-      </CardGrid>
+      </CardGrid> */}
 
       {/* Department + Calendar Row */}
       <Heading>Department</Heading>
+  <hr
+  style={{
+    border: "none",
+    borderTop: "2px solid #3352BA",
+    margin: "1rem 0",
+  }}
+/>
+
       <DepartmentCalendarWrapper>
         <DepartmentGrid>
           {departmentsList.map((dept) => (
@@ -238,9 +248,25 @@ const CardsOnly = () => {
 
       {/* Presence + Contract Expiry */}
       <Flex justify="space-between" align="center">
-        <Heading mb={0}>Employee Presence & Upcoming Holidays</Heading>
-      </Flex>
+     <Heading
+  mb={0}
+  // style={{
+  //   borderBottom: "2px solid #3352BA",
+  //   display: "inline-block",
+  //   paddingBottom: "8px",
+  // }}
+>
+  Employee Presence & Upcoming Holidays
+</Heading>
 
+      </Flex>
+    <hr
+  style={{
+    border: "none",
+    borderTop: "2px solid #3352BA",
+    margin: "1rem 0",
+  }}
+/>
       <PresenceContainer>
         <ChartContainer>
           <HalfDoughnutChart active={activeToday} onLeave={onLeaveToday} />
@@ -294,10 +320,10 @@ const CardsOnly = () => {
               justifyContent: "space-between",
               alignItems: "center",
               fontFamily: "satoshi",
-              fontSize: "1.3rem",
+              fontSize: "1.2rem",
             }}
           >
-            <h3 style={{ margin: 0, marginBottom: "20px" }}>Upcoming Holidays</h3>
+            <h3 style={{ margin: 0, marginBottom: "10px" }}>Upcoming Holidays</h3>
             <Link to="/holiday">
   <FiArrowUpRight
     onMouseEnter={() => setHovers(true)}

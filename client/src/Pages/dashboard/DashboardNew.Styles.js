@@ -10,7 +10,7 @@ export const Container = styled.div`
 
 export const CardGrid = styled.div`
   display: grid;
-  gap: 1.5rem;
+  gap: 1rem;
 
   /* Default (desktop) */
   grid-template-columns: repeat(3, 1fr);
@@ -42,11 +42,24 @@ export const LeftIcon = styled.div`
 `;
 
 export const VerticalBar = styled.div`
-  width: 4px;
+  width: clamp(2px, 0.5vw, 6px); /* auto-scales between 2px–6px */
   background: #3352BA;
-  margin: 0 1rem;
+  margin: 0 clamp(0.5rem, 2vw, 1.5rem);
 
+  /* Adjust height if it's meant to fill parent */
+  height: 100%;
+
+  @media (max-width: 768px) {
+    width: clamp(2px, 1vw, 4px);
+    margin: 0 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 2px;
+    margin: 0 0.3rem;
+  }
 `;
+
 
 export const CardContent = styled.div`
   flex: 1;
@@ -57,22 +70,38 @@ export const CardHeader = styled.div`
   justify-content: space-between;
 
 `;
-
 export const CardList = styled.ul`
   list-style: none;
-  padding: 10px;
+  padding: 8px;
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
 
   li {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Name | Department | Visa expiry date */
-    gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr; /* Desktop: 3 columns */
     padding: 5px 0;
-    // border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #eee;
     align-items: center;
+    text-align: left;
+  }
+
+  /* Tablet: 2 columns */
+  @media (max-width: 1024px) {
+    li {
+      grid-template-columns: 1fr 1fr;
+      grid-row-gap: 8px;
+    }
+  }
+
+  /* Mobile: 1 column */
+  @media (max-width: 600px) {
+    li {
+      grid-template-columns: 1fr;
+      grid-row-gap: 6px;
+    }
   }
 `;
+
 
 
 export const Icon = styled.div`
@@ -157,7 +186,7 @@ export const Label = styled.div`
 `;
 
 export const Heading = styled.h3`
-   margin-top: 1rem;
+   margin-top: -1rem;
   font-weight: bold;
   font-size:1.8rem;
   font-family:"satoshi";
@@ -184,6 +213,7 @@ export const CalendarWrapper = styled.div`
   padding: 1rem;
   min-width: 300px;
   margin-top:-50px;
+  // min-height:300px;
 `;
 export const PresenceContainer = styled.div`
   display: flex;
@@ -286,10 +316,10 @@ export const Avatar = styled.div`
 `;
 export const HolidayCard = styled(Card)`
   background: #f4f4f4;
-  margin-top: -1%;
+  margin-top: -2%;
   flex-direction: column; 
   align-items: stretch;
-  gap:10px;
+  gap:5px;
 `;
 
 export const HolidayItem = styled.div`

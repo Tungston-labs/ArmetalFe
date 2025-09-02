@@ -246,7 +246,7 @@ const formatUTCToLocal = (utcTimeStr) => {
         <img
           src={punchTime}
           alt="No logs"
-          style={{ width: "450px", height: "auto", opacity: 0.8 }}
+          style={{ width: "430px", height: "auto", opacity: 0.8 }}
         />
         <p style={{ marginTop: "10px", color: "#666" }}>No time logs found</p>
       </div>
