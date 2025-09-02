@@ -39,7 +39,7 @@ import ForgetPassword from "./Pages/login/ForgetPassword.jsx";
 import Verification from "./Pages/login/Verification.jsx";
 import NewPassword from "./Pages/login/NewPassword.jsx";
 import Loder from "./Components/Loder.jsx";
-import Sample from"./Pages/employeDashboard/Sample.jsx";
+import Sample from "./Pages/employeDashboard/Sample.jsx";
 import Employeedashboard from "./Pages/employeDashboard/Employeedashboard.jsx"
 import FullDashboard from "./Pages/employeDashboard/FullDashboard.jsx";
 import EmployeAttendance from "./Pages/attendance/EmployeAttendance.jsx";
@@ -49,6 +49,7 @@ import DashboardNew from "./Pages/dashboard/DashboardNew.jsx";
 import Reimbursement from "./Pages/reimbursement/Reimb_Department.jsx"
 import Reimb2page from "./Pages/reimbursement/Reimb2Page.jsx"
 import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
+import FinancePage from "./Pages/finance/FinancePage.jsx"
 function App() {
   return (
     <>
@@ -86,13 +87,13 @@ function App() {
             <Route path="/attendance/detail/:id" element={<Attendance />} />
             <Route path="/on-leave" element={<OnLeave />} />
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
-            <Route path="/emp-on-leave" element={<EmployeesOnLeave/>} />
+            <Route path="/emp-on-leave" element={<EmployeesOnLeave />} />
 
-<Route path="/dashboard" element={<NewDashboard/>}/>
+            <Route path="/dashboard" element={<NewDashboard />} />
 
-<Route path="/employee-attendance" element={<EmployeAttendance/>}/>
+            <Route path="/employee-attendance" element={<EmployeAttendance />} />
 
-<Route path="/employee-on-leave" element={<DetailOnleave/>}/>
+            <Route path="/employee-on-leave" element={<DetailOnleave />} />
 
 
             <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
@@ -102,13 +103,14 @@ function App() {
             <Route path="/edit-document" element={<DocumentEdit />} />
             <Route path="/succes" element={<Succes />} />
             <Route path="/confirm" element={<ConfirmLeaveModal />} />
-              <Route path="/employee-dashboard" element={<Employeedashboard />} />
-              <Route path="/sample" element={<Sample />} />
-           <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
+            <Route path="/employee-dashboard" element={<Employeedashboard />} />
+            <Route path="/sample" element={<Sample />} />
+            <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
 
-               <Route path="/reimbursement" element={<Reimbursement />}/>
-                <Route path="/reimb2page/:id" element={<Reimb2page />} />
-                    <Route path="/reimb_info/:id" element={<Reimb_info />} />
+            <Route path="/reimbursement" element={<Reimbursement />} />
+            <Route path="/reimb2page/:id" element={<Reimb2page />} />
+            <Route path="/reimb_info/:id" element={<Reimb_info />} />
+              <Route path="/finance" element={<FinancePage />} />
           </Route>
         </Route>
       </Routes>
