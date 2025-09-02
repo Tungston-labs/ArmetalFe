@@ -86,22 +86,25 @@ const DepartmentDetail = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
   const handleUpdate = async () => {
     try {
-      await updateDepartment(id, formData);
-      const data = await fetchDepartmentById(id);  // Re-fetch full data
-      setDepartment(data);
-      setFormData({
-        name: data.name || '',
-        department_code: data.department_code || '',
-        department_head: data.department_head?.id || ''
-      });
-      setIsEditing(false);
-    } catch (err) {
-      console.error('Update failed:', err);
+      await dispatch(updateDepartment({
+        id: departmentId,
+        data: {
+          name: departmentName,              // ✅ required
+          department_code: departmentCode,   // ✅ required
+          department_head_id: departmentHead // ✅ required
+        }
+      })).unwrap();
+  
+      console.log("Update successful");
+    } catch (error) {
+      console.error("Update failed:", error);
     }
   };
+  
+  
+  
 
 
   if (!department) return <p>Loading...</p>;

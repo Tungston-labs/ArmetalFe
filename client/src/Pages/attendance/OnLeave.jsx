@@ -51,12 +51,15 @@ export default function EmployeeAttendance() {
   useEffect(() => {
     dispatch(getDepartments());
   }, [dispatch]);
+
+
   useEffect(() => {
     if (initialDeptId) {
-      setDepartmentFilter(initialDeptId);
+      setDepartmentFilter(initialDeptId);  // already a string, fine
       setPage(1);
     }
   }, [initialDeptId]);
+  
   
 
   const handleSearch = (e) => {

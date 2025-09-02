@@ -266,7 +266,7 @@ const handleSubmit = () => {
             <div style={{marginTop:"-10px"}}>
               {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
               <Input
-  type="text"
+  type="date"
   name="dob"
   value={formData.dob}
   onChange={handleChange}
@@ -274,7 +274,7 @@ const handleSubmit = () => {
   placeholder="Date of Birth"
   onFocus={(e) => (e.target.type = 'date')}
   onBlur={(e) => {
-    if (!e.target.value) e.target.type = 'text';
+    if (!e.target.value) e.target.type = 'date';
   }}
 />
             </div>

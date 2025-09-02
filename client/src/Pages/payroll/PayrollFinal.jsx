@@ -85,31 +85,69 @@ const PayrollTable = () => {
   const handleSelectAll = () => {
     setSelectedEmployees(selectedEmployees.length === data.length ? [] : data.map(emp => emp.employee));
   };
-
-  const handleBulkStatusChange = async (e) => {
-    const newStatus = e.target.value;
-    if (!newStatus || selectedEmployees.length === 0) return;
-
-    await dispatch(submitPayrollRecords({
-      month: selectedMonth,
-      year: selectedYear,
-      employee_ids: selectedEmployees,
-      status: newStatus,
-    }));
-
-    e.target.selectedIndex = 0;
-    dispatch(getPayrollData({ page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment }));
-  };
-
   const handleSingleStatusChange = async (empId, newStatus) => {
+    // find this employee
+    const emp = data.find(e => e.employee === empId);
+    const empStatus = verificationStatus[emp?.id];
+  
+    // 🚫 If not verified by both admins
+    if (!empStatus?.first || !empStatus?.second) {
+      Swal.fire({
+        icon: "warning",
+        title: "Verification Pending",
+        text: "Payroll cannot be updated until both admins verify.",
+      });
+      return;
+    }
+  
+    // ✅ If verified by both, proceed
     await dispatch(updatePayrollStatus({
       employeeId: empId,
       month: selectedMonth,
       year: selectedYear,
       status: newStatus,
     }));
-    dispatch(getPayrollData({ page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment }));
+  
+    dispatch(getPayrollData({
+      page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment
+    }));
   };
+  
+  const handleBulkStatusChange = async (e) => {
+    const newStatus = e.target.value;
+    if (!newStatus || selectedEmployees.length === 0) return;
+  
+    // 🚫 Check if every selected employee has both verifications
+    const unverified = data.filter(emp =>
+      selectedEmployees.includes(emp.employee) &&
+      (!verificationStatus[emp.id]?.first || !verificationStatus[emp.id]?.second)
+    );
+  
+    if (unverified.length > 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Verification Pending",
+        text: "Some selected employees are not verified by both admins.",
+      });
+      e.target.selectedIndex = 0; // reset select
+      return;
+    }
+  
+    // ✅ Proceed if all verified
+    await dispatch(submitPayrollRecords({
+      month: selectedMonth,
+      year: selectedYear,
+      employee_ids: selectedEmployees,
+      status: newStatus,
+    }));
+  
+    e.target.selectedIndex = 0;
+    dispatch(getPayrollData({
+      page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment
+    }));
+  };
+  
+
   
 
   const handleCircleClick = async (e, employee, type) => {

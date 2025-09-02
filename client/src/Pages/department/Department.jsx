@@ -62,8 +62,18 @@ const Department = () => {
   }, [dispatch, search]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+  
+    let updatedValue = value;
+  
+    // force uppercase for department name and code
+    if (name === "name" || name === "department_code") {
+      updatedValue = value.toUpperCase();
+    }
+  
+    setFormData({ ...formData, [name]: updatedValue });
   };
+  
 
   const handleSave = async () => {
     try {

@@ -34,10 +34,12 @@ export const fetchEmployeesByDepartment = async (departmentId) => {
 };
 
 // PUT: Update department by ID
+
 export const updateDepartment = async (id, data) => {
-  const response = await API.put(`/departments/${id}/`, data);
+  const response = await API.patch(`/departments/${id}/`, data); // ✅ partial update
   return response.data;
 };
+
 
 // DELETE: Delete department by ID
 export const deleteDepartment = async (id) => {
