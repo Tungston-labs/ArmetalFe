@@ -94,36 +94,38 @@ const TimesheetPage = () => {
     <Container>
       {/* Header Section */}
       <HeaderSection>
-        <InfoGrid>
-          <LuArrowLeft
-            style={{ width: "30px", height: 30, cursor: "pointer" }}
-            onClick={() => navigate(-1)}
+  <InfoGrid>
+    <LuArrowLeft
+      style={{ width: "30px", height: 30, cursor: "pointer" }}
+      onClick={() => navigate(-1)}
+    />
+
+    <div style={{ width: '10%' }}>
+      {employee?.profile_pic ? (
+        <ProfileImage src={employee.profile_pic} alt="Employee" />
+      ) : (
+        <PiUserCirclePlusThin size={100} style={{ color: '#aaa' }} />
+      )}
+    </div>
+
+    <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between' }}>
+      <TwoColumn>
+        <Input value={employee?.employee_name || ''} readOnly />
+      </TwoColumn>
+
+      <InfoSection>
+        <TwoColumnRow>
+          <Input
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            type="date"
           />
-          <div style={{ width: '10%' }}>
-            {employee.profile_pic ? (
-              <ProfileImage src={employee.profile_pic} alt="Employee" />
-            ) : (
-              <PiUserCirclePlusThin size={100} style={{ color: '#aaa' }} />
-            )}
-          </div>
+        </TwoColumnRow>
+      </InfoSection>
+    </div>
+  </InfoGrid>
+</HeaderSection>
 
-          <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between' }}>
-            <TwoColumn>
-              <Input value={employee.name || ''} readOnly />
-              <Input value={employee.employee_id || ''} readOnly />
-              <Input value={employee.email || ''} readOnly />
-            </TwoColumn>
-
-            <InfoSection>
-              <FullWidthInput value={employee.department?.name || ''} readOnly />
-              <TwoColumnRow>
-                <Input value={employee.designation || ''} readOnly />
-                <Input value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} type="date" />
-              </TwoColumnRow>
-            </InfoSection>
-          </div>
-        </InfoGrid>
-      </HeaderSection>
 
       <Hr />
 
