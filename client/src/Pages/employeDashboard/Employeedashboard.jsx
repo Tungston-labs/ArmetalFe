@@ -71,36 +71,43 @@ const TimeLogDashboard = () => {
     );
   }
   if (employeeDashError) return <p>Error: {employeeDashError}</p>;
-  const infoCards = [
-    {
-      title: employeeDashData?.contract_expiry_date || "N/A",
-      subtitle: "Days",
-      label: "Contract Expiry",
-      icon: InCompanyIcon,
-    },
-    {
-      title: employeeDashData?.visa_expiry_date || "N/A",
-      subtitle: "Date",
-      label: "Visa Expiry",
-      icon: InCompanyIcon,
-    },
-    {
-      title: "January",
-      subtitle: "Month",
-      label: "Pay slip",
-      icon: InCompanyIcon,
-    },
-    {
-      title: employeeDashData?.attendance_summary?.monthly_working_hours,
-      subtitle: "Weekly Logged Hours",
-      label: "Monthly working hour",
-      icon: LeaveIcon,
-    },
-  ];
+  const getPreviousMonthName = () => {
+  const date = new Date();
+  // Get previous month (0 = January)
+  date.setMonth(date.getMonth() - 1);
+  return date.toLocaleString('default', { month: 'long' });
+};
+
+const infoCards = [
+  {
+    title: employeeDashData?.contract_expiry_date || "N/A",
+    subtitle: "Days",
+    label: "Contract Expiry",
+    icon: InCompanyIcon,
+  },
+  {
+    title: employeeDashData?.visa_expiry_date || "N/A",
+    subtitle: "Date",
+    label: "Visa Expiry",
+    icon: InCompanyIcon,
+  },
+  {
+    title: getPreviousMonthName(), 
+    subtitle: "Month",
+    label: "Pay slip",
+    icon: InCompanyIcon,
+  },
+  {
+    title: employeeDashData?.attendance_summary?.monthly_working_hours,
+    subtitle: "Weekly Logged Hours",
+    label: "Monthly working hour",
+    icon: LeaveIcon,
+  },
+];
   const members = employeeDashData?.department_employees?.employees || [];
 const formatTime = (timeStr) => {
   if (!timeStr) return "--";
-  const today = new Date().toISOString().split("T")[0]; // e.g. "2025-08-13"
+  const today = new Date().toISOString().split("T")[0]; 
   return new Date(`${today}T${timeStr}`).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -125,18 +132,6 @@ const formatUTCToLocal = (utcTimeStr) => {
   });
 };
 
-  // const logs = [
-  //   { timeIn: "08:30 Am", timeOut: "11:30 Am" },
-  //   { timeIn: "11:30 Am", timeOut: "02:30 pm" },
-  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-  //   { timeIn: "02:30 pm", timeOut: "05:30 pm" },
-  // ];
 
   return (
     <Container>
@@ -171,8 +166,8 @@ const formatUTCToLocal = (utcTimeStr) => {
     </ArrowIcon> */}
             </DepartmentTitleRow>
             <hr></hr>
-            <SubLabel>Department head</SubLabel>
-            <DepartmentHead>Ajay kumar M.A</DepartmentHead>
+            {/* <SubLabel>Department head</SubLabel>
+            <DepartmentHead>Ajay kumar M.A</DepartmentHead> */}
           </Department>
           <MemberList>
             {members.map((member, index) => (

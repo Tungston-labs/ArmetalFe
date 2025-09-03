@@ -224,11 +224,7 @@ const DepartmentDetail = () => {
 
           )}
         </InputGroup>
-        {/* {isEditing && (
-          <AddButton style={{ marginTop: '1rem' }} onClick={handleUpdate}>
-            Save Changes
-          </AddButton>
-        )} */}
+       
       </FormSection>
 
       <h3>Added employee list</h3>
