@@ -9,10 +9,10 @@ export const ProfileCard = styled.div`
   .image-wrapper {
     position: relative;
     width: 100%;
-    height: 200px; /* or whatever height you want for the image */
+    height: 200px; 
 
    @media (max-width: 480px) {
-      height: 150px;
+      height: 100px;
     }
     img {
       width: 100%;
@@ -36,7 +36,7 @@ export const ProfileCard = styled.div`
   }
 
   .details {
-    padding: 20px;
+    padding: 10px;
 
     p {
       margin-top: -10px;
@@ -75,8 +75,8 @@ export const SvgImage = styled.img`
 export const InfoCard = styled.div`
   background: #fff;
   border-radius: 9px;
-  padding: 0.8rem;
-  border: 0.2px solid #000;
+  padding: 0.9rem;
+  // border: 0px solid #000;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -120,8 +120,9 @@ export const TimeTrackingCard = styled.div`
   font-size: 14px;
   color: #333;
   border-radius: 9px;
-border: 0.2px solid #000;
+// border: 0.2px solid #000;
 background: #FFF;
+min-height:200px;
   h4 {
     color: #3352BA;
     margin-bottom: 10px;
@@ -151,7 +152,7 @@ background: #FFF;
 
 export const TaskTitle = styled.h4`
   // margin-bottom: 15px;
-  // margin-top:30px;
+  margin-top:-20px;
   color: #3352BA;
   font-family: Raleway;
 font-weight: 700;
@@ -187,7 +188,7 @@ export const TaskMeta = styled.div`
   min-width: 60px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* optional: center text horizontally */
+  align-items: center;
 
   span {
     font-size: 13px;
@@ -243,7 +244,7 @@ export const LeftColumn = styled.div`
   flex-direction: column;
   background: white;
   border-radius: 9px;
-  border: 0.2px solid #000;
+  // border: 0.1px solid #000;
   background: #FFF;
 `;
 export const RightColumn = styled.div`
@@ -273,7 +274,7 @@ export const TaskSection = styled.div`
 
   /* Laptop (≥1024px and ≤1439px) – show 5 tasks */
   @media (min-width: 1024px) and (max-width: 1439px) {
-    max-height: calc(5 * 90px);
+    max-height: calc(6 * 90px);
   }
 
   /* Large screens (≥1440px) – show 8 tasks */
