@@ -31,7 +31,7 @@ import Employee from "../../assets/employee.svg";
 import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your choice
 import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar';
-
+import Swal from "sweetalert2";
 
 
 const DepartmentDetail = () => {
@@ -94,23 +94,34 @@ const DepartmentDetail = () => {
         department_head_id: formData.department_head_id ? parseInt(formData.department_head_id) : null,
       };
   
-      if (!payload.department_head_id) {
-        console.error("❌ Please select a department head before saving");
-        return;
-      }
-  
-      await dispatch(updateDepartmentById({
-        id,
-        data: payload,
-      })).unwrap();
-  
-      console.log("✅ Update successful");
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Update failed:", error);
+     if (!payload.department_head_id) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Department Head",
+        text: "Please select a department head before saving.",
+        confirmButtonColor: "#3352BA",
+      });
+      return;
     }
-  };
-  
+
+    await dispatch(updateDepartmentById({ id, data: payload })).unwrap();
+
+    Swal.fire({
+      icon: "success",
+      title: "Updated!",
+      text: "Department updated successfully.",
+      confirmButtonColor: "#3352BA",
+    });
+
+    setIsEditing(false);
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Update Failed",
+      text: "Something went wrong while updating department.",
+    });
+  }
+};
   
   
   

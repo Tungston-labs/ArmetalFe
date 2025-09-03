@@ -124,50 +124,33 @@ export default function AddEmployeeForm() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const handleSubmit = () => {
-    if (!validateForm()) return;
-  
-    const payload = new FormData();
-  
-    // map frontend field names to backend
-    const fieldMap = {
-      department_id: 'department',
-      phno: 'phone_number',
-      aadar_number: 'aadhaar_number',
-      iqama_number: 'iqama_number',
-      idcard: 'id_card',
-      profile_pic: 'profile_pic',
-      total_leave: 'total_leave',
-      employment_type: 'employment_type',
-      designation: 'designation',
-      role: 'role',
-      name: 'name',
-      email: 'email',
-      address: 'address',
-      dob: 'dob',
-      joining_date: 'joining_date',
-      passport_number: 'passport_number',
-      visa_expiry_date: 'visa_expiry_date',
-      insurance_number: 'insurance_number',
-      contract_expiry_date: 'contract_expiry_date',
-    };
-  
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value === '' || value === null || value === undefined) return; // skip empty
-  
-      const backendKey = fieldMap[key] || key;
-  
-      if (key === 'profile_pic' || key === 'idcard') {
-        payload.append(backendKey, value, value.name);
+const handleSubmit = () => {
+  if (!validateForm()) return;
+
+  dispatch(submitEmployee({ basic: formData }))
+    .then((res) => {
+      if (res.meta.requestStatus === 'fulfilled') {
+        const id = res.payload?.employee?.id || res.payload?.id;
+        if (id) {
+          dispatch(setEmployeeId(id));
+          dispatch(setBasicFormData(formData));
+          navigate('/bank-payment');
+        }
       } else {
-        payload.append(backendKey, value);
+        const backendErrors = res.payload;
+        if (backendErrors && typeof backendErrors === 'object') {
+          const newErrors = {};
+          for (const field in backendErrors) {
+            newErrors[field] = Array.isArray(backendErrors[field])
+              ? backendErrors[field][0]
+              : backendErrors[field];
+          }
+          setErrors(newErrors);
+        }
       }
     });
-  
-    dispatch(submitEmployee(payload));
-  };
-  
-  
+};
+
 
   return (
     <Container>

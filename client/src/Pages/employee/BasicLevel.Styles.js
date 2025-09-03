@@ -358,4 +358,3 @@ export const ColumnRow = styled.div`
    column-gap: 3rem;
   width:98%;
 `;
-

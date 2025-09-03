@@ -1,3 +1,4 @@
+// Cards.jsx
 import React from "react";
 import {
   CardContainer,
@@ -18,40 +19,57 @@ import {
 } from "./Card.Styles";
 import { FiArrowUpRight } from "react-icons/fi";
 import { FaUsers, FaUserClock, FaPassport } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import totalIcon from "../assets/total.svg";
+import totalIcons from "../assets/total2.svg";
+import totalIconses from "../assets/total3.svg";
+const Cards = () => {
+  const { summary } = useSelector((state) => state.dashboard);
 
-const employees = [
-  { name: "Desirae Westervelt", id: "1254125", dept: "Department" },
-  { name: "Desirae Westervelt", id: "1254125", dept: "Department" },
-  { name: "Desirae Westervelt", id: "1254125", dept: "Department" },
- 
-];
+  // Extract API lists
+  const employeesList = summary?.total_employees?.list || [];
+  const leaveRequest = summary?.pending_leaves?.list || [];
+  const visaExpiryList = summary?.upcoming_visa_expiry?.list || [];
 
-const DashboardCards = () => {
   return (
     <CardContainer>
       {/* Total Employees */}
       <Card>
         <CardHeader>
-          <IconSection>
-            <FaUsers size={28} color="#3352BA" />
-          </IconSection>
+         <IconSection>
+  <img src={totalIcon} alt="Total Employees" width={38} height={38} />
+</IconSection>
           <Divider />
           <CardContent>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
               <CardTitle>Total Employees</CardTitle>
-              <CardCount>12</CardCount>
+              <CardCount>{summary?.total_employees?.count || 0}</CardCount>
             </div>
             <CardList>
-              {employees.map((emp, idx) => (
-                <CardListItem key={idx}>
-                  <EmployeeAvatar />
-                  <EmployeeName>{emp.name}</EmployeeName>
-                  <EmployeeId>{emp.id}</EmployeeId>
-                  <EmployeeDept>{emp.dept}</EmployeeDept>
-                </CardListItem>
+              {employeesList.slice(0, 3).map((emp) => (
+                <CardListItem key={emp.id}>
+  <img
+    src={emp.profilePic || "https://via.placeholder.com/40"} 
+    alt={emp.name}
+    style={{
+      width: "30px",
+      height: "30px",
+      borderRadius: "50%",
+      objectFit: "cover",
+      marginRight: "10px"
+    }}
+  />
+  <EmployeeName>{emp.name}</EmployeeName>
+  <EmployeeId>{emp.employee_id}</EmployeeId>
+  <EmployeeDept>{emp.department}</EmployeeDept>
+</CardListItem>
+
               ))}
               <IconWrapper>
-                <FiArrowUpRight size={18} />
+                <Link to="/employee">
+                  <FiArrowUpRight size={18} />
+                </Link>
               </IconWrapper>
             </CardList>
           </CardContent>
@@ -61,26 +79,40 @@ const DashboardCards = () => {
       {/* Employee Leave Request */}
       <Card>
         <CardHeader>
-          <IconSection>
-            <FaUserClock size={28} color="#3352BA" />
-          </IconSection>
+         <IconSection>
+  <img src={totalIcons} alt="Total Employees" width={38} height={38} />
+</IconSection>
           <Divider />
           <CardContent>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
               <CardTitle>Employee Leave Request</CardTitle>
-              <CardCount>12</CardCount>
+              <CardCount>{summary?.pending_leaves?.count || 0}</CardCount>
             </div>
             <CardList>
-              {employees.map((emp, idx) => (
-                <CardListItem key={idx}>
-                  <EmployeeAvatar />
-                  <EmployeeName>{emp.name}</EmployeeName>
-                  <EmployeeId>{emp.id}</EmployeeId>
-                  <EmployeeDept>{emp.dept}</EmployeeDept>
+              {leaveRequest.slice(0, 3).map((emp) => (
+                <CardListItem key={emp.id}>
+                 <img
+    src={emp.profilePic || "https://via.placeholder.com/40"} 
+    alt={emp.name}
+    style={{
+      width: "30px",
+      height: "30px",
+      borderRadius: "50%",
+      objectFit: "cover",
+      marginRight: "10px"
+    }}
+  />
+                  <EmployeeName>{emp.employee}</EmployeeName>
+                  <EmployeeDept>{emp.department}</EmployeeDept>
+                  <EmployeeId>
+                    {emp.from_date} – {emp.to_date}
+                  </EmployeeId>
                 </CardListItem>
               ))}
               <IconWrapper>
-                <FiArrowUpRight size={18} />
+                <Link to="/leave-request">
+                  <FiArrowUpRight size={18} />
+                </Link>
               </IconWrapper>
             </CardList>
           </CardContent>
@@ -91,25 +123,37 @@ const DashboardCards = () => {
       <Card>
         <CardHeader>
           <IconSection>
-            <FaPassport size={28} color="#3352BA" />
-          </IconSection>
+  <img src={totalIconses} alt="Total Employees" width={38} height={38} />
+</IconSection>
           <Divider />
           <CardContent>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
               <CardTitle>Employee Visa Expiry</CardTitle>
-              <CardCount>12</CardCount>
+              <CardCount>{summary?.upcoming_visa_expiry?.count || 0}</CardCount>
             </div>
             <CardList>
-              {employees.map((emp, idx) => (
-                <CardListItem key={idx}>
-                  <EmployeeAvatar />
+              {visaExpiryList.slice(0, 3).map((emp) => (
+                <CardListItem key={emp.id}>
+                  <img
+    src={emp.profilePic || "https://via.placeholder.com/40"} 
+    alt={emp.name}
+    style={{
+      width: "30px",
+      height: "30px",
+      borderRadius: "50%",
+      objectFit: "cover",
+      marginRight: "10px"
+    }}
+  />
                   <EmployeeName>{emp.name}</EmployeeName>
-                  <EmployeeId>{emp.id}</EmployeeId>
-                  <EmployeeDept>{emp.dept}</EmployeeDept>
+                  <EmployeeDept>{emp.department}</EmployeeDept>
+                  <EmployeeId>{emp.visa_expiry_date}</EmployeeId>
                 </CardListItem>
               ))}
               <IconWrapper>
-                <FiArrowUpRight size={18} />
+                <Link to="/employee-Contract-Visa-Expiry">
+                  <FiArrowUpRight size={18} />
+                </Link>
               </IconWrapper>
             </CardList>
           </CardContent>
@@ -119,4 +163,4 @@ const DashboardCards = () => {
   );
 };
 
-export default DashboardCards;
+export default Cards;
