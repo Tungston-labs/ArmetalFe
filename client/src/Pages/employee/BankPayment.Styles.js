@@ -50,7 +50,7 @@ export const Stepper = styled.div`
   margin: 2rem 0;
   max-width: 600px;
 `;
-
+//Step
 export const Step = styled.div`
   text-align: center;
   flex: 1;
