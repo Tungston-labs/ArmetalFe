@@ -3,7 +3,12 @@ import API from "./api";
 
 // 1. Create employee
 export const createEmployee = async (formData) => {
-  console.log("submitting data", formData);
+  // console.log("submitting data", formData);
+  console.log("📦 FormData being sent:");
+for (let [key, value] of formData.entries()) {
+  console.log(`${key}: ${value}`);
+}
+
 
   try {
     const res = await API.post("/employees/", formData, {
@@ -21,27 +26,7 @@ export const createEmployee = async (formData) => {
   }
 };
 
-// 2. Create bank payment
-// export const createBankPayment = async (employeeId, data) => {
-//   try {
-//     const res = await API.post(`/employees/${employeeId}/bank-payments/`, data);
-//     return res.data;
-//   } catch (error) {
-//     console.error("❌ Error creating bank payment:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
 
-// ✅ 2B. Update bank payment
-// export const updateBankPayment = async (employeeId, bankPaymentId, data) => {
-//   try {
-//     const res = await API.patch(`/bank-payments/${bankPaymentId}/`, data);
-//     return res.data;
-//   } catch (error) {
-//     console.error("❌ Error updating bank payment:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
 
 // 4. Get employees in my department
 export const getMyDepartmentEmployees = async () => {
@@ -49,11 +34,6 @@ export const getMyDepartmentEmployees = async () => {
   return res.data;
 };
 
-// 5. Fetch bank payment list
-// export const getBankPayment = async (employeeId) => {
-//   const res = await API.get(`/employees/${employeeId}/bank-payments/`);
-//   return res.data;
-// };
 
 // 6. Update employee
 export const updateEmployee = async (employeeId, data) => {

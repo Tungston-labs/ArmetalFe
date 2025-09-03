@@ -24,13 +24,14 @@ import {
 import { FaInfoCircle, FaTrash } from 'react-icons/fa';
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { fetchDepartmentById, updateDepartment } from '../../services/departmentServices';
-import { getEmployeesByDepartment } from '../../Redux/departmentSlice';
+import { getEmployeesByDepartment,updateDepartmentById } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import { deleteEmployeeById } from '../../Redux/employeeSlice';
 import Employee from "../../assets/employee.svg"; 
 import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your choice
 import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar';
+import Swal from "sweetalert2";
 
 
 const DepartmentDetail = () => {
@@ -88,20 +89,40 @@ const DepartmentDetail = () => {
   };
   const handleUpdate = async () => {
     try {
-      await dispatch(updateDepartment({
-        id: departmentId,
-        data: {
-          name: departmentName,              // ✅ required
-          department_code: departmentCode,   // ✅ required
-          department_head_id: departmentHead // ✅ required
-        }
-      })).unwrap();
+      const payload = {
+        ...formData,
+        department_head_id: formData.department_head_id ? parseInt(formData.department_head_id) : null,
+      };
   
-      console.log("Update successful");
-    } catch (error) {
-      console.error("Update failed:", error);
+     if (!payload.department_head_id) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Department Head",
+        text: "Please select a department head before saving.",
+        confirmButtonColor: "#3352BA",
+      });
+      return;
     }
-  };
+
+    await dispatch(updateDepartmentById({ id, data: payload })).unwrap();
+
+    Swal.fire({
+      icon: "success",
+      title: "Updated!",
+      text: "Department updated successfully.",
+      confirmButtonColor: "#3352BA",
+    });
+
+    setIsEditing(false);
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Update Failed",
+      text: "Something went wrong while updating department.",
+    });
+  }
+};
+  
   
   
   

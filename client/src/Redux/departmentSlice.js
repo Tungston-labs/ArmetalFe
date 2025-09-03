@@ -148,9 +148,10 @@ const departmentSlice = createSlice({
       .addCase(getDepartments.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.list = [...action.payload.results].sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
+        state.list = Array.isArray(action.payload)
+  ? [...action.payload].sort((a, b) => a.name.localeCompare(b.name))
+  : [...action.payload.results].sort((a, b) => a.name.localeCompare(b.name));
+
 
         // ✅ assign pagination from API
         state.pagination = {
@@ -193,6 +194,7 @@ const departmentSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      
 
       // Update
       .addCase(updateDepartmentById.pending, (state) => {

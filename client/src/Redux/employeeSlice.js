@@ -17,29 +17,36 @@ import {
 } from '../services/employeeService';
 import API from '../services/api';
 
-// Submit Employee
 export const submitEmployee = createAsyncThunk(
-  'employee/submitEmployee',
+  "employee/submitEmployee",
   async (formData, thunkAPI) => {
     try {
-      console.log("📤 Submitting employee", formData);
-
       const form = new FormData();
 
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (key === "profile_pic" || key === "idcard") {
-            if (value instanceof File) {
+      const flatten = (obj) => {
+        Object.entries(obj || {}).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            if (key === "profile_pic" || key === "idcard") {
+              if (value instanceof File) {
+                form.append(key, value);
+              }
+            } else if (key === "department") {
+              form.append("department_id", value);
+            } else {
               form.append(key, value);
             }
-            // else: do NOT send it if it's a URL string
-          } else if (key === "department") {
-            form.append("department_id", value);
-          } else {
-            form.append(key, value);
           }
-        }
-      });
+        });
+      };
+
+      // flatten both sections
+      flatten(formData.basic);
+      flatten(formData.bank);
+
+      console.log("📦 Final FormData before sending:");
+      for (let pair of form.entries()) {
+        console.log(pair[0], pair[1]);
+      }
 
       if (formData.id) {
         return await updateEmployee(formData.id, form);
@@ -51,6 +58,7 @@ export const submitEmployee = createAsyncThunk(
     }
   }
 );
+
 
 
 

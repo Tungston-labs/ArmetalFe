@@ -41,8 +41,15 @@ export const CardContent = styled.div`
 `;
 
 export const CardTitle = styled.h3`
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const CardCount = styled.span`

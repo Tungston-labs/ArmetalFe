@@ -186,7 +186,7 @@ export const Label = styled.div`
 `;
 
 export const Heading = styled.h3`
-   margin-top: -1rem;
+  //  margin-top: -1rem;
   font-weight: bold;
   font-size:1.8rem;
   font-family:"satoshi";
