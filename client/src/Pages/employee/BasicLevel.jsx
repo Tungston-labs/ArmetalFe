@@ -34,6 +34,7 @@ import { FaPlus } from 'react-icons/fa';
 import Navbar from '../../Components/Navbar';
 import { Spin } from "antd";
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import ColumnGroup from 'antd/es/table/ColumnGroup';
 
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
@@ -86,30 +87,19 @@ export default function AddEmployeeForm() {
     const newErrors = {};
 
     const requiredFields = [
-      'name',
-      'address',
-      'email',
-      'dob',
-      'phno',
-      'gender',
-      'designation',
-      'department_id',
-      'employment_type',
-      'joining_date',
-      'passport_number',
-      'visa_expiry_date',
-      'insurance_number',
-      'total_leave',
-      'contract_expiry_date',
-      'role',
+      'name', 'address', 'email', 'dob', 'phno', 'gender', 'designation',
+      'department_id', 'employment_type', 'joining_date', 'passport_number',
+      'total_leave', 'contract_expiry_date', 'role',
     ];
-
+  
+    if (country !== "IN") requiredFields.push('visa_expiry_date', 'insurance_number', 'iqama_number');
+    if (country === "IN") requiredFields.push('aadar_number');
+  
     requiredFields.forEach((field) => {
       if (!formData[field] || !formData[field].toString().trim()) {
         newErrors[field] = 'This field is required';
       }
     });
-
     const phoneRegex = /^[0-9]{10}$/;
     if (formData.phno && !phoneRegex.test(formData.phno.trim())) {
       newErrors.phno = 'Enter a valid 10-digit phone number';
@@ -134,59 +124,47 @@ export default function AddEmployeeForm() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleSubmit = () => {
     if (!validateForm()) return;
   
     const payload = new FormData();
   
+    // map frontend field names to backend
+    const fieldMap = {
+      department_id: 'department',
+      phno: 'phone_number',
+      aadar_number: 'aadhaar_number',
+      iqama_number: 'iqama_number',
+      idcard: 'id_card',
+      profile_pic: 'profile_pic',
+      total_leave: 'total_leave',
+      employment_type: 'employment_type',
+      designation: 'designation',
+      role: 'role',
+      name: 'name',
+      email: 'email',
+      address: 'address',
+      dob: 'dob',
+      joining_date: 'joining_date',
+      passport_number: 'passport_number',
+      visa_expiry_date: 'visa_expiry_date',
+      insurance_number: 'insurance_number',
+      contract_expiry_date: 'contract_expiry_date',
+    };
+  
     Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value.toString().trim() !== '') {
-        // Convert department_id and total_leave to numbers
-        if (key === 'department_id' || key === 'total_leave') {
-          payload.append(key, Number(value));
-        }
-        // Files
-        else if (key === 'profile_pic' || key === 'idcard') {
-          payload.append(key, value, value.name);
-        }
-        // Dates
-        else if (
-          key === 'dob' ||
-          key === 'joining_date' ||
-          key === 'visa_expiry_date' ||
-          key === 'contract_expiry_date'
-        ) {
-          payload.append(key, value); // input type="date" is already YYYY-MM-DD
-        }
-        // All other fields
-        else {
-          payload.append(key, value.toString().trim());
-        }
+      if (value === '' || value === null || value === undefined) return; // skip empty
+  
+      const backendKey = fieldMap[key] || key;
+  
+      if (key === 'profile_pic' || key === 'idcard') {
+        payload.append(backendKey, value, value.name);
+      } else {
+        payload.append(backendKey, value);
       }
     });
   
-    dispatch(submitEmployee(payload)).then((res) => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        const id = res.payload?.employee?.id || res.payload?.id;
-        if (id) {
-          dispatch(setEmployeeId(id));
-          dispatch(setBasicFormData(formData));
-          navigate('/bank-payment');
-        }
-      } else {
-        const backendErrors = res.payload;
-        if (backendErrors && typeof backendErrors === 'object') {
-          const newErrors = {};
-          for (const field in backendErrors) {
-            newErrors[field] = Array.isArray(backendErrors[field])
-              ? backendErrors[field][0]
-              : backendErrors[field];
-          }
-          setErrors(newErrors);
-        }
-      }
-    });
+    dispatch(submitEmployee(payload));
   };
   
   
