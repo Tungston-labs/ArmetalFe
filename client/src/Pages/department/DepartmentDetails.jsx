@@ -24,13 +24,14 @@ import {
 import { FaInfoCircle, FaTrash } from 'react-icons/fa';
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { fetchDepartmentById, updateDepartment } from '../../services/departmentServices';
-import { getEmployeesByDepartment } from '../../Redux/departmentSlice';
+import { getEmployeesByDepartment,updateDepartmentById } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import { deleteEmployeeById } from '../../Redux/employeeSlice';
 import Employee from "../../assets/employee.svg"; 
 import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your choice
 import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar';
+
 
 
 const DepartmentDetail = () => {
@@ -88,20 +89,29 @@ const DepartmentDetail = () => {
   };
   const handleUpdate = async () => {
     try {
-      await dispatch(updateDepartment({
-        id: departmentId,
-        data: {
-          name: departmentName,              // ✅ required
-          department_code: departmentCode,   // ✅ required
-          department_head_id: departmentHead // ✅ required
-        }
+      const payload = {
+        ...formData,
+        department_head_id: formData.department_head_id ? parseInt(formData.department_head_id) : null,
+      };
+  
+      if (!payload.department_head_id) {
+        console.error("❌ Please select a department head before saving");
+        return;
+      }
+  
+      await dispatch(updateDepartmentById({
+        id,
+        data: payload,
       })).unwrap();
   
-      console.log("Update successful");
+      console.log("✅ Update successful");
+      setIsEditing(false);
     } catch (error) {
       console.error("Update failed:", error);
     }
   };
+  
+  
   
   
   
