@@ -79,9 +79,9 @@ export const Input = styled.input`
   // border: 1px solid #ccc;
   // border-radius: 6px;
   width: 100%;
-  // margin-bottom: 1rem;
+  margin-bottom: 0rem;
   color:black;
-  margin-top:10px;
+  // margin-top:10px;
   border-radius: 7px;
 border: 1px solid #052DB4;
 background: #FFF;
@@ -90,7 +90,7 @@ background: #FFF;
 export const TextArea = styled.textarea`
   width: 99%;
   min-height: 120px;
-  padding: 0.8rem;
+  padding: 0.7rem;
   border: 1px solid #ccc;
   border-radius: 6px;
   resize: vertical;
@@ -209,17 +209,17 @@ export const Hr = styled.hr`
 
 
 export const InfoSection = styled.div`
-  width: 60%;
+  width: 50%;
   // padding: 1rem 0;
   margin-left:5%;
-  
+  margin-top:20px;
 `;
 
 export const FullWidthInput = styled.input`
   width: 99%;
-  padding: 0.8rem 1rem;
+  padding: 0.6rem 0.6rem;
   margin-bottom: 0.5rem;
-  margin-top:30px;
+  // margin-top:-30px;
   // border: 1px solid #ccc;
   // border-radius: 6px;
   height:40%;
@@ -242,6 +242,7 @@ export const TwoColumnRows= styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
   width:98%;
+  margin-bottom:10px;
   
 `;
 

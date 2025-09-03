@@ -8,8 +8,8 @@ import {
 import { getDepartments } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container, Header, RoleInfo, Title, Subtitle, Hr,ColumnRow,
-  InfoGrid, FlexRow, ProfileImage, ApproveButton,IconWrapper,
+  Container, Header, RoleInfo, Title, Subtitle, Hr, ColumnRow,
+  InfoGrid, FlexRow, ProfileImage, ApproveButton, IconWrapper,
   FullWidthInput, TwoColumn, TwoColumnRow, TwoColumnRows, SectionTitle, Input, InfoSection
 } from './BasicLevel.Styles';
 import Multistep from '../../Components/Multistep';
@@ -26,13 +26,13 @@ export default function AddEmployeeForm() {
   const navigate = useNavigate();
   const { status, error, formData: reduxFormData } = useSelector((state) => state.employee);
   const departmentList = useSelector((state) => state.departments.list);
-const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const stepTitles = ['Basic Info', 'Job Details', 'Legal Info'];
   const user = JSON.parse(localStorage.getItem("user"));
   const country = user?.company?.country;
-  
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -50,9 +50,9 @@ const [menuOpen, setMenuOpen] = useState(false);
     insurance_number: '',
     profile_pic: null,
     total_leave: '',
-    role: '', 
-    contract_expiry_date: '', 
-    idcard: null, 
+    role: '',
+    contract_expiry_date: '',
+    idcard: null,
   });
   useEffect(() => {
     // if (reduxFormData?.basic) setFormData(reduxFormData.basic);
@@ -60,40 +60,72 @@ const [menuOpen, setMenuOpen] = useState(false);
   }, [reduxFormData, dispatch, departmentList]);
   console.log(localStorage.getItem("user"));
 
-  console.log("country is",country);
-  
+  console.log("country is", country);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+
+ const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  let newValue = value;
+
+  // ✅ Force passport_number to uppercase
+  if (name === "passport_number") {
+    newValue = value.toUpperCase();
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: newValue,
+  }));
+
+  // ✅ Optional: validation logic for passport
+  if (name === "passport_number") {
+    if (!/^[A-Z0-9]*$/.test(newValue)) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "Passport number must contain only uppercase letters and numbers",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  }
+};
+
 
   const validateForm = () => {
     const newErrors = {};
 
-     // Required fields
-  const requiredFields = [
-    'name',
-    'address',
-    'email',
-    'dob',
-    'phno',
-    'gender',
-    'designation',
-    'department',
-    'employment_type',
-    'joining_date',
-    'passport_number',
+    // Required fields
+    const requiredFields = [
+      'name',
+      'address',
+      'email',
+      'dob',
+      'phno',
+      'gender',
+      'designation',
+      'department',
+      'employment_type',
+      'joining_date',
+      'passport_number',
 
-    'visa_expiry_date',
-    'insurance_number',
-    'total_leave',
-    'contract_expiry_date',
+      'visa_expiry_date',
+      'insurance_number',
+      'total_leave',
+      'contract_expiry_date',
       'role',
-  ];
+    ];
 
-  requiredFields.forEach((field) => {
-    if (!formData[field] || !formData[field].toString().trim()) {
+if (country !== 'IN') {
+    requiredFields.push('visa_expiry_date', 'insurance_number');
+  }
+
+    requiredFields.forEach((field) => {
+    const val = formData[field];
+    if (val === null || val === undefined || (typeof val === 'string' && !val.trim())) {
       newErrors[field] = 'This field is required';
     }
   });
@@ -106,340 +138,681 @@ const [menuOpen, setMenuOpen] = useState(false);
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (formData.email && !emailRegex.test(formData.email.trim())) {
       newErrors.email = alert('Enter a valid email address')
-    } 
+    }
+
+    // Example validation inside handleSubmit or a separate validateForm()
+if (!formData.passport_number) {
+  newErrors.passport_number = "Passport number is required";
+} else if (!/^[A-ZA-Z0-9]{6,9}$/.test(formData.passport_number)) {
+  newErrors.passport_number = "Enter a valid passport number (6–9 alphanumeric)";
+}
 
     setErrors(newErrors);
+      console.log('validateForm -> errors:', newErrors);
     return Object.keys(newErrors).length === 0;
   };
-const handleSubmit = () => {
-  if (!validateForm()) return;
 
-  dispatch(submitEmployee(formData)).then((res) => {
-    if (res.meta.requestStatus === 'fulfilled') {
-      const id = res.payload?.id || res.payload?.employee?.id;
-      if (id) {
-        dispatch(setEmployeeId(id));
-        dispatch(setBasicFormData(formData));
-        navigate('/bank-payment');
-      }
-    } else {
-      const backendErrors = res.payload;
+  const handleSubmit = () => {
+    console.log('handleSubmit -> validation failed', errors);
+    if (!validateForm()) return;
 
-      if (backendErrors && typeof backendErrors === 'object') {
-        const newErrors = {};
+    dispatch(submitEmployee(formData)).then((res) => {
+      if (res.meta.requestStatus === 'fulfilled') {
+        const id = res.payload?.id || res.payload?.employee?.id;
+        if (id) {
+          dispatch(setEmployeeId(id));
+          dispatch(setBasicFormData(formData));
+          navigate('/bank-payment');
+        }
+      } else {
+        const backendErrors = res.payload;
 
-        for (const field in backendErrors) {
-          let message = Array.isArray(backendErrors[field])
-            ? backendErrors[field][0]
-            : backendErrors[field];
+        if (backendErrors && typeof backendErrors === 'object') {
+          const newErrors = {};
 
-          if (field === 'email' && message.includes('already exists')) {
-            message = 'Email is already registered';
-          } else if (field === 'phno' && message.includes('already exists')) {
-            message = 'Phone number is already registered';
+          for (const field in backendErrors) {
+            let message = Array.isArray(backendErrors[field])
+              ? backendErrors[field][0]
+              : backendErrors[field];
+
+            if (field === 'email' && message.includes('already exists')) {
+              message = 'Email is already registered';
+            } else if (field === 'phno' && message.includes('already exists')) {
+              message = 'Phone number is already registered';
+            }
+
+            newErrors[field] = message;
           }
 
-          newErrors[field] = message;
+          setErrors(newErrors);
         }
-
-        setErrors(newErrors);
       }
-    }
-  });
-};
+    });
+  };
 
   return (
     <>
 
-    <Container>
-      <Header>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          
-        <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          <div>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
+      <Container>
+        <Header>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+
+            <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+            <div>
+              <Title>Employee</Title>
+              <Subtitle>Manage your Employee.</Subtitle>
+            </div>
+          </div>
+        </Header>
+
+        <Hr />
+
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ width: '50%' }}>
+            <Multistep currentStep={currentStep} steps={stepTitles} />
           </div>
         </div>
-   {/* <RoleInfo style={{ position: "relative" }}>
-  <div
-    style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-    onClick={() => setMenuOpen(!menuOpen)}
-  >
-    <FaUserCircle size={30} style={{ marginRight: "0.5rem" }} />
-        <FiChevronDown size={20} onClick={() => setMenuOpen(!menuOpen)} />
-  </div>
 
-  {menuOpen && (
-    <div
+        <InfoGrid>
+     <div style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
+  {/* ✅ Wrap everything inside the label */}
+  <label
+    htmlFor="profile-upload"
+    style={{ display: "inline-block", position: "relative", cursor: "pointer" }}
+  >
+    {formData.profile_pic ? (
+      <ProfileImage
+        src={URL.createObjectURL(formData.profile_pic)}
+        alt="Employee"
+      />
+    ) : (
+      <IconWrapper>
+        <PiUserCirclePlusThin size={50} />
+      </IconWrapper>
+    )}
+
+    {/* ✅ Plus icon stays inside label */}
+    <span
       style={{
-        position: "absolute",
-        top: "50px",
-        right: 0,
-        background: "#fff",
-        boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
-        borderRadius: "5px",
-        zIndex: 1000,
-        minWidth: "150px",
+        position: 'absolute',
+        top: '-5px',
+        right: '-5px',
+        background: '#001F3F',
+        color: 'white',
+        borderRadius: '50%',
+        width: '24px',
+        height: '24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '16px',
+        cursor: 'pointer',
       }}
     >
-      <div
-        // onClick={handleChangePassword}
-        style={{
-          padding: "10px",
-          cursor: "pointer",
-          borderBottom: "1px solid #ddd",
-        }}
-      >
-        Change Password
-      </div>
-      <div
-        // onClick={handleLogout}
-        style={{
-          padding: "10px",
-          cursor: "pointer",
-        }}
-      >
-        Logout
-      </div>
-    </div>
+      +
+    </span>
+  </label>
+
+  {/* ✅ Hidden file input */}
+  <input
+    id="profile-upload"
+    type="file"
+    accept="image/*"
+    onChange={(e) =>
+      setFormData((prev) => ({
+        ...prev,
+        profile_pic: e.target.files[0],
+      }))
+    }
+    style={{ display: 'none' }}
+  />
+</div>
+
+
+          <TwoColumn>
+         <div>
+  <label
+    htmlFor="name"
+    style={{
+      display: "block",
+      marginBottom: "2px", // keeps label close to the input
+      fontSize: "0.9rem",
+      fontWeight: "500",
+      color: "#333",
+    }}
+  >
+    Name
+  </label>
+
+  {errors.name && (
+    <p
+      style={{
+        color: "red",
+        fontSize: "0.8rem",
+        margin: "0 0 2px 0",
+      }}
+    >
+      {errors.name}
+    </p>
   )}
-</RoleInfo> */}
-      </Header>
 
-      <Hr />
+  <Input
+    id="name"
+    name="name"
+    placeholder="Name"
+    value={formData.name}
+    onChange={handleChange}
+    autoComplete="off"
+  />
+</div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-        <div style={{ width: '50%' }}>
-          <Multistep currentStep={currentStep} steps={stepTitles} />
-        </div>
-      </div>
+           <div>
+  <label
+    htmlFor="email"
+    style={{
+      display: "block",
+      marginBottom: "2px", // keeps label close to the input
+      fontSize: "0.9rem",
+      fontWeight: "500",
+      color: "#333",
+    }}
+  >
+    Email ID
+  </label>
 
-      <InfoGrid>
-        <div style={{ position: 'relative', display: 'inline-block' }}>
-          {formData.profile_pic ? (
-    <ProfileImage
-      src={URL.createObjectURL(formData.profile_pic)}
-      alt="Employee"
-    />
-  ) : (
-    <IconWrapper>
-      <PiUserCirclePlusThin size={50} />
-    </IconWrapper>
+  {errors.email && (
+    <p
+      style={{
+        color: "red",
+        fontSize: "0.8rem",
+        margin: "0 0 2px 0",
+      }}
+    >
+      {errors.email}
+    </p>
   )}
-          <label htmlFor="profile-upload" style={{
-            position: 'absolute',
-            top: '-5px', right: '-5px', background: '#001F3F', color: 'white',
-            borderRadius: '50%', width: '24px', height: '24px', display: 'flex',
-            alignItems: 'center', justifyContent: 'center', fontSize: '16px', cursor: 'pointer'
-          }}>+</label>
-          <input
-            id="profile-upload"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFormData((prev) => ({
-              ...prev,
-              profile_pic: e.target.files[0],
-            }))}
-            style={{ display: 'none' }}
-          />   
-        </div>
 
-        <TwoColumn>
+  <Input
+    id="email"
+    name="email"
+    placeholder="Email ID"
+    value={formData.email}
+    onChange={handleChange}
+    autoComplete="off"
+  />
+</div>
+
+          </TwoColumn>
+
+          <InfoSection>
           <div>
-            {errors.name && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name}</p>}
-            <Input name="name" placeholder="Name" value={formData.name} onChange={handleChange} autoComplete="off" />
-          </div>
-          <div>
-            {errors.email && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.email}</p>}
-            <Input name="email" placeholder="Email ID" value={formData.email} onChange={handleChange} autoComplete="off" />
-          </div>
-        </TwoColumn>
+  <label
+    htmlFor="address"
+    style={{
+      display: "block",
+     
+      fontWeight: "500",
+      color: "#333",
+    }}
+  >
+    Address
+  </label>
 
-        <InfoSection>
-          <div>
-            {errors.address && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.address}</p>}
-            <FullWidthInput name="address" placeholder="Address" value={formData.address} onChange={handleChange} autoComplete="off"/>
-          </div>
-
-          <TwoColumnRow>
-            <div style={{marginTop:"-10px"}}>
-              {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
-              <Input
-  type="date"
-  name="dob"
-  value={formData.dob}
-  onChange={handleChange}
-  autoComplete="off"
-  placeholder="Date of Birth"
-  onFocus={(e) => (e.target.type = 'date')}
-  onBlur={(e) => {
-    if (!e.target.value) e.target.type = 'date';
-  }}
-/>
-            </div>
-            <div>
-              {errors.gender && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.gender}</p>}
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                 autoComplete="off"
-                style={{
-                  width: '100%',
-                  padding: '0.8rem',
-                  fontSize: '0.9rem',
-                  borderRadius: '7PX',
-                  border:" 1px solid #052DB4",
-                  background:" #FFF",
-                  color: 'black',
-                }}
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          </TwoColumnRow>
-        </InfoSection>
-      </InfoGrid>
-
-      <Hr />
-
-      <SectionTitle>Job Details</SectionTitle>
-   
-
-      <TwoColumnRows>
-        <div>
-          {errors.department && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.department}</p>}
-          <select
-            name="department"
-            value={formData.department}
-             autoComplete="off"
-            onChange={handleChange}
-            style={{ width: '100%', padding: '0.7rem', borderRadius: '7PX',
-                  border:" 1px solid #052DB4",
-                  background:" #FFF", }}
-          >
-            <option value="">Select Department</option>
-            {departmentList.map((dept) => (
-              <option key={dept.id} value={dept.id}>{dept.name}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          {errors.employment_type && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.employment_type}</p>}
-          <select
-            name="employment_type"
-            value={formData.employment_type}
-            onChange={handleChange}
-             autoComplete="off"
-            style={{
-              width: '100%',
-              padding: '0.7rem',
-              fontSize: '0.8rem',
-               borderRadius: '7PX',
-                  border:" 1px solid #052DB4",
-                  background:" #FFF",
-              color: 'black',
-            }}
-          >
-            <option value="">Select Employment Type</option>
-            <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
-            <option value="Contract">Contract</option>
-          </select>
-        </div>
-      </TwoColumnRows>
-   <TwoColumnRows>
-        <div>
-          {errors.designation && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.designation}</p>}
-          <Input name="designation" placeholder=" Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
-        </div>
-        <div>
-          {errors.joining_date && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.joining_date}</p>}
-          <Input
-  type="text"
-  name="joining_date"
-  value={formData.joining_date}
-  onChange={handleChange}
-   autoComplete="off"
-  placeholder="Joining Date"
-  onFocus={(e) => (e.target.type = 'date')}
-  onBlur={(e) => {
-    if (!e.target.value) e.target.type = 'text';
-  }}
-/>
-        </div>
-      </TwoColumnRows>
-<TwoColumnRows>
-  <div>
-    {errors.total_leaves && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.total_leaves}</p>}
-    <Input
-      name="total_leave"
-      placeholder="Total Leaves"
-      value={formData.total_leave}
-      onChange={handleChange}
-      autoComplete="off"
-      type="number"
-      min="0"
-    />
-   </div>
-
- 
-   <div style={{ marginTop: '10px' }}>
-  {errors.role && (
-    <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.role}</p>
+  {errors.address && (
+    <p
+      style={{
+        color: "red",
+        fontSize: "0.8rem",
+        margin: "0 0 2px 0",
+      }}
+    >
+      {errors.address}
+    </p>
   )}
+
+  <FullWidthInput
+    id="address"
+    name="address"
+    placeholder="Address"
+    value={formData.address}
+    onChange={handleChange}
+    autoComplete="off"
+  />
+</div>
+
+
+            <TwoColumnRow>
+             <div style={{marginTop:"-5px"}}>
+  <label
+    htmlFor="dob"
+    style={{
+      display: "block",
+      marginBottom: "2px", // tight spacing
+      fontSize: "0.9rem",
+      fontWeight: "500",
+      color: "#333",
+    }}
+  >
+    Date of Birth
+  </label>
+
+  {errors.dob && (
+    <p
+      style={{
+        color: "red",
+        fontSize: "0.8rem",
+        margin: "0 0 2px 0",
+      }}
+    >
+      {errors.dob}
+    </p>
+  )}
+
+  <Input
+    id="dob"
+    type="date"
+    name="dob"
+    value={formData.dob}
+    onChange={handleChange}
+    autoComplete="off"
+    placeholder="Date of Birth"
+    onFocus={(e) => (e.target.type = "date")}
+    onBlur={(e) => {
+      if (!e.target.value) e.target.type = "date";
+    }}
+  />
+</div>
+
+            <div style={{marginTop:"-5px"}}>
+  <label
+    htmlFor="gender"
+    style={{
+      display: "block",
+      marginBottom: "2px", // keeps label close to select
+      fontSize: "0.9rem",
+      fontWeight: "500",
+      color: "#333",
+    }}
+  >
+    Gender
+  </label>
+
+  {errors.gender && (
+    <p
+      style={{
+        color: "red",
+        fontSize: "0.8rem",
+        margin: "0 0 2px 0",
+      }}
+    >
+      {errors.gender}
+    </p>
+  )}
+
   <select
-    name="role"
-    value={formData.role}
+    id="gender"
+    name="gender"
+    value={formData.gender}
     onChange={handleChange}
     autoComplete="off"
     style={{
-      width: '100%',
-      padding: '0.7rem',
-      fontSize: '0.8rem',
-      borderRadius: '7px',
-      border: '1px solid #052DB4',
-      background: '#FFF',
-      color: 'black',
+      width: "100%",
+      padding: "0.8rem",
+      fontSize: "0.9rem",
+      borderRadius: "7px",
+      border: "1px solid #052DB4",
+      background: "#FFF",
+      color: "black",
     }}
   >
-      <option value="">Select Role</option>
-  <option value="employee">Employee</option>
-  <option value="hr">HR</option>
-  <option value="manager">Manager</option>
+    <option value="">Select Gender</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Other">Other</option>
   </select>
 </div>
 
-         
-</TwoColumnRows>
+            </TwoColumnRow>
+          </InfoSection>
+        </InfoGrid>
 
-<SectionTitle>Employee Legal & ID Information</SectionTitle>
+        <Hr />
 
-<ColumnRow>
+        <SectionTitle>Job Details</SectionTitle>
+
+
+        <TwoColumnRows>
+          <div>
+            <label
+              htmlFor="department"
+              style={{
+                display: "block",
+                marginBottom: "2px", // keeps label close to the select
+                fontSize: "0.9rem",
+                fontWeight: "500",
+                color: "#333",
+              }}
+            >
+              Department
+            </label>
+
+            {errors.department && (
+              <p
+                style={{
+                  color: "red",
+                  fontSize: "0.8rem",
+                  margin: "0 0 2px 0",
+                }}
+              >
+                {errors.department}
+              </p>
+            )}
+
+            <select
+              id="department"
+              name="department"
+              value={formData.department}
+              autoComplete="off"
+              onChange={handleChange}
+              style={{
+                width: "100%",
+                padding: "0.7rem",
+                borderRadius: "7px",
+                border: "1px solid #052DB4",
+                background: "#FFF",
+              }}
+            >
+              <option value="">Select Department</option>
+              {departmentList.map((dept) => (
+                <option key={dept.id} value={dept.id}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="employment_type"
+              style={{
+                display: "block",
+                marginBottom: "2px", // keeps it close to the select
+                fontSize: "0.9rem",
+                fontWeight: "500",
+                color: "#333",
+              }}
+            >
+              Employment Type
+            </label>
+
+            {errors.employment_type && (
+              <p
+                style={{
+                  color: "red",
+                  fontSize: "0.8rem",
+                  margin: "0 0 2px 0",
+                }}
+              >
+                {errors.employment_type}
+              </p>
+            )}
+
+            <select
+              id="employment_type"
+              name="employment_type"
+              value={formData.employment_type}
+              onChange={handleChange}
+              autoComplete="off"
+              style={{
+                width: "100%",
+                padding: "0.7rem",
+                fontSize: "0.9rem",
+                borderRadius: "7px",
+                border: "1px solid #052DB4",
+                background: "#FFF",
+                color: "black",
+              }}
+            >
+              <option value="">Select Employment Type</option>
+              <option value="Full-time">Full-time</option>
+              <option value="Part-time">Part-time</option>
+              <option value="Contract">Contract</option>
+            </select>
+          </div>
+
+        </TwoColumnRows>
+        <TwoColumnRows>
+          <div>
+            <label
+              htmlFor="designation"
+              style={{
+                display: "block",
+                marginBottom: "0px", // keeps it close to the input
+                fontSize: "0.9rem",
+                fontWeight: "500",
+                color: "#333",
+              }}
+            >
+              Designation
+            </label>
+
+            {errors.designation && (
+              <p
+                style={{
+                  color: "red",
+                  fontSize: "0.8rem",
+                  margin: "0 0 2px 0",
+                }}
+              >
+                {errors.designation}
+              </p>
+            )}
+
+            <Input
+              id="designation"
+              name="designation"
+              placeholder="Enter Designation"
+              value={formData.designation}
+              onChange={handleChange}
+              autoComplete="off"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="joining_date"
+              style={{
+                display: "block",
+                marginBottom: "px", // very small gap so it "touches" the input
+                fontSize: "0.9rem",
+                fontWeight: "500",
+                color: "#333",
+              }}
+            >
+              Joining Date
+            </label>
+
+            {errors.joining_date && (
+              <p
+                style={{
+                  color: "red",
+                  fontSize: "0.8rem",
+                  margin: "0 0 2px 0", // small margin so error is close too
+                }}
+              >
+                {errors.joining_date}
+              </p>
+            )}
+
+            <Input
+              id="joining_date"
+              type="date"
+              name="joining_date"
+              value={formData.joining_date}
+              onChange={handleChange}
+              autoComplete="off"
+              placeholder="Joining Date"
+              onFocus={(e) => (e.target.type = "date")}
+              onBlur={(e) => {
+                if (!e.target.value) e.target.type = "date";
+              }}
+            />
+          </div>
+
+        </TwoColumnRows>
+
+        <TwoColumnRows>
+          <div>
+            <label
+              htmlFor="total_leave"
+              style={{
+                display: "block",
+                marginBottom: "0px", // keeps it close to the input
+                fontSize: "0.9rem",
+                fontWeight: "500",
+                color: "#333",
+              }}
+            >
+              Total Leaves
+            </label>
+
+            {errors.total_leaves && (
+              <p
+                style={{
+                  color: "red",
+                  fontSize: "0.8rem",
+                  margin: "0 0 2px 0",
+                }}
+              >
+                {errors.total_leaves}
+              </p>
+            )}
+
+            <Input
+              id="total_leave"
+              name="total_leave"
+              placeholder="Total Leaves"
+              value={formData.total_leave}
+              onChange={handleChange}
+              autoComplete="off"
+              type="number"
+              min="0"
+            />
+          </div>
+
+
+          <div>
+            <label
+              htmlFor="role"
+              style={{
+                display: "block",
+                marginBottom: "2px", // keeps label close to select
+                fontSize: "0.9rem",
+                fontWeight: "500",
+                color: "#333",
+              }}
+            >
+              Role
+            </label>
+
+            {errors.role && (
+              <p
+                style={{
+                  color: 'red',
+                  fontSize: '0.8rem',
+                  margin: '0 0 2px 0',
+                }}
+              >
+                {errors.role}
+              </p>
+            )}
+
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              autoComplete="off"
+              style={{
+                width: '100%',
+                padding: '0.7rem',
+                fontSize: '0.9rem',
+                borderRadius: '7px',
+                border: '1px solid #052DB4',
+                background: '#FFF',
+                color: 'black',
+              }}
+            >
+              <option value="">Select Role</option>
+              <option value="employee">Employee</option>
+              <option value="hr">HR</option>
+              <option value="manager">Manager</option>
+            </select>
+          </div>
+
+
+
+        </TwoColumnRows>
+
+        <SectionTitle>Employee Legal & ID Information</SectionTitle>
+
+    <ColumnRow>
   {[
-    { key: 'phno', label: 'Phone number' },
-    { key: 'passport_number', label: 'Passport Number' },
-    { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date' },
-    { key: 'iqama_number', label: 'Iqama/Aadhar' },
-    { key: 'insurance_number', label: 'Insurance Number' },
-    { key: 'contract_expiry_date', label: 'Contract Expiry Date', type: 'date' },
-    { key: 'idcard', label: 'ID Card' },
+    { key: 'phno', label: 'Phone Number', placeholder: 'Enter phone number' },
+ {
+  key: 'passport_number',
+  label: 'Passport Number',
+  placeholder: 'Enter passport number',
+  type: 'text',
+  validate: (value) => {
+    if (!/^[A-Z0-9]*$/.test(value)) {
+      return "Passport number must contain only uppercase letters and numbers";
+    }
+    return "";
+  },
+  transform: (value) => value.toUpperCase(), // ✅ auto-convert to uppercase
+}
+,
+    { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date', placeholder: 'Select visa expiry date' },
+    { key: 'iqama_number', label: 'Iqama/Aadhar', placeholder: 'Enter Iqama/Aadhar' },
+    { key: 'insurance_number', label: 'Insurance Number', placeholder: 'Enter insurance number' },
+    { key: 'contract_expiry_date', label: 'Contract Expiry Date', type: 'date', placeholder: 'Select contract expiry date' },
+    { key: 'idcard', label: 'ID Card', placeholder: 'Upload ID Card' },
   ]
-    // 🚨 Filter fields if country is IN
     .filter(
       ({ key }) =>
         !(country === "IN" && (key === "visa_expiry_date" || key === "insurance_number"))
     )
-    .map(({ key, label, type }) => (
-      <div key={key}>
+    .map(({ key, label, type, placeholder }) => (
+      <div key={key} style={{ marginBottom: "1rem" }}>
+        {/* ✅ Label above input */}
+        <label
+          htmlFor={key}
+          style={{
+            display: "block",
+            marginBottom: "2px",
+            fontSize: "0.9rem",
+            fontWeight: "500",
+            color: "#333",
+          }}
+        >
+          {label}
+        </label>
+
+        {/* ❌ Error right under label */}
         {errors[key] && (
-          <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>
+          <p
+            style={{
+              color: "red",
+              fontSize: "0.8rem",
+              margin: "0 0 2px 0",
+            }}
+          >
+            {errors[key]}
+          </p>
         )}
 
+        {/* 📄 Input OR File Upload */}
         {key === 'idcard' ? (
           <div
             onClick={() => document.getElementById('idcard-upload').click()}
@@ -453,7 +826,6 @@ const handleSubmit = () => {
               cursor: 'pointer',
               backgroundColor: '#fff',
               fontSize: '0.9rem',
-              marginTop: "10px"
             }}
           >
             <span
@@ -466,7 +838,7 @@ const handleSubmit = () => {
                 whiteSpace: 'nowrap',
               }}
             >
-              {formData.idcard?.name || 'ID Card'}
+              {formData.idcard?.name || placeholder}
             </span>
 
             <FaPlus style={{ color: '#3352BA', fontSize: '1rem', marginLeft: '0.5rem' }} />
@@ -487,9 +859,10 @@ const handleSubmit = () => {
           </div>
         ) : (
           <Input
+            id={key}
             name={key}
-            placeholder={label}
             type={key === 'visa_expiry_date' || key === 'contract_expiry_date' ? 'text' : type || 'text'}
+            placeholder={placeholder}  
             value={formData[key]}
             onChange={handleChange}
             autoComplete="off"
@@ -513,14 +886,16 @@ const handleSubmit = () => {
 
 
 
-      <FlexRow>
-        <ApproveButton onClick={handleSubmit}>Next</ApproveButton>
-      </FlexRow>
 
-      {status === "loading" && <Spin size="large" tip="Loading..." />}
-      {/* {status === 'loading' && <p>Submitting...</p>} */}
 
-    </Container>
+        <FlexRow>
+          <ApproveButton onClick={handleSubmit}>Next</ApproveButton>
+        </FlexRow>
+
+        {status === "loading" && <Spin size="large" tip="Loading..." />}
+        {/* {status === 'loading' && <p>Submitting...</p>} */}
+
+      </Container>
     </>
   );
 }
