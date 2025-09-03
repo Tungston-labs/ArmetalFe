@@ -116,9 +116,11 @@ export default function AddEmployeeForm() {
         newErrors.aadar_number = "Enter a valid 12-digit Aadhaar number";
       }
     } else {
-      if (!formData.iqama_number || !twelveDigitRegex.test(formData.iqama_number.trim())) {
-        newErrors.iqama_number = "Enter a valid 12-digit Iqama number";
-      }
+     const iqama = formData.iqama_number?.replace(/\D/g, ""); // remove spaces & non-digits
+if (!iqama || iqama.length !== 12) {
+  newErrors.iqama_number = "Enter a valid 12-digit Iqama number";
+}
+
     }
 
     setErrors(newErrors);
@@ -150,9 +152,6 @@ const handleSubmit = () => {
       }
     });
 };
-
-  
-
   return (
     <Container>
       <Header>

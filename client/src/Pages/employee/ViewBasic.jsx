@@ -100,19 +100,65 @@ useEffect(() => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
- const handleSubmit = async () => {
-  // const payload = {
-  //   ...formData,
-  //   department_id: formData.department,
-  // };
+const handleSubmit = async () => {
+  let payload = { ...formData };
 
-  // delete payload.department;
-console.log("📤 Submitting employee", formData);
+  // 🧹 Step 1: remove empty or null fields first
+  Object.keys(payload).forEach((key) => {
+    if (
+      payload[key] === "" ||
+      payload[key] === null ||
+      payload[key] === undefined
+    ) {
+      delete payload[key];
+    }
+  });
 
-  await dispatch(submitEmployee(formData));
+  // 🧹 Step 2: enforce country-specific validation
+  if (employeeDetail?.company?.country === "IN") {
+    // Aadhaar required
+    delete payload.iqama_number;
+    delete payload.insurance_number;
+    delete payload.visa_expiry_date;
+
+    if (!payload.aadar_number?.trim()) {
+      alert("Aadhaar number is required for India");
+      return;
+    }
+    if (payload.aadar_number.length !== 12) {
+      alert("Aadhaar number must be 12 digits");
+      return;
+    }
+  } else {
+    // Iqama required
+    delete payload.aadar_number;
+
+    if (!payload.iqama_number?.trim()) {
+      alert("Iqama number is required");
+      return;
+    }
+    if (payload.iqama_number.length !== 12) {
+      alert("Iqama number must be 12 digits");
+      return;
+    }
+  }
+
+  // 🧹 Step 3: trim iqama if present
+  if (payload.iqama_number) {
+    payload.iqama_number = payload.iqama_number.toString().trim();
+  }
+
+  console.log("🚀 Final payload:", payload);
+
+  await dispatch(submitEmployee(payload));
   await dispatch(getEmployeeById(id));
   setEditMode(false);
 };
+
+
+
+
+
 useEffect(() => {
   console.log("Role changed:", formData.role);
 }, [formData.role]);
@@ -359,14 +405,44 @@ if (loading || !formData || Object.keys(formData).length === 0) {
             onChange={handleChange}
             readOnly={!editMode}
           />
+        
+
+          {/* 👇 Country-based conditional fields */}
+  {employeeDetail?.company?.country === "IN" ? (
+    <Input
+      name="aadar_number"
+      placeholder="Aadhaar Number"
+      value={formData.aadar_number || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+    />
+  ) : (
+    <>
+      <Input
+        name="visa_expiry_date"
+        placeholder="Visa Expiry Date"
+        value={formData.visa_expiry_date || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+      <Input
+        name="iqama_number"
+        placeholder="Iqama Number"
+        value={formData.iqama_number || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+      <Input
+        name="insurance_number"
+        placeholder="Insurance Number"
+        value={formData.insurance_number || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+    </>
+  )}
+
           {/* <Input
-            name="contract_expiry_date"
-            placeholder="contract_expiry_date"
-            value={formData.contract_expiry_date || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          /> */}
-          <Input
             name="visa_expiry_date"
             placeholder="Visa Expiry Date"
             value={formData.visa_expiry_date || ""}
@@ -387,7 +463,7 @@ if (loading || !formData || Object.keys(formData).length === 0) {
             value={formData.insurance_number || ""}
             onChange={handleChange}
             readOnly={!editMode}
-          />
+          /> */}
 
         <select
   name="role"
