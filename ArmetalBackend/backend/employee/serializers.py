@@ -22,12 +22,32 @@ class SafeDateField(serializers.DateField):
 
 
 
+# class EmployeeSerializer(serializers.ModelSerializer):
+#     dob = SafeDateField(required=False)
+#     joining_date = SafeDateField(required=False)
+#     visa_expiry_date = SafeDateField(required=False)
+  
+ 
+
+#     department_id = serializers.PrimaryKeyRelatedField(
+#         source='department',
+#         queryset=Department.objects.all(),
+#         write_only=True
+#     )
+#     department = serializers.CharField(source='department.name', read_only=True)
+
+#     class Meta:
+#         model = Employee_db
+#         exclude = ['user', 'password']
+
+
 class EmployeeSerializer(serializers.ModelSerializer):
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
     visa_expiry_date = SafeDateField(required=False)
-  
- 
+    iqama_number = serializers.CharField(required=False, allow_blank=True)
+    aadar_number = serializers.CharField(required=False, allow_blank=True)
+    insurance_number = serializers.CharField(required=False, allow_blank=True)
 
     department_id = serializers.PrimaryKeyRelatedField(
         source='department',
@@ -39,6 +59,27 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee_db
         exclude = ['user', 'password']
+
+    def validate(self, data):
+        country = self.context['request'].user.company.country
+
+        # India-specific validation
+        if country == "IN":
+            if not data.get('aadar_number'):
+                raise serializers.ValidationError({"aadar_number": "Aadhaar number is required for India"})
+        else:
+            # Non-India
+            if not data.get('iqama_number'):
+                raise serializers.ValidationError({"iqama_number": "Iqama number is required for this country"})
+            if not data.get('visa_expiry_date'):
+                raise serializers.ValidationError({"visa_expiry_date": "Visa expiry date is required"})
+
+        # Insurance can be optional or required depending on your business rules
+        if country != "IN" and not data.get('insurance_number'):
+            raise serializers.ValidationError({"insurance_number": "Insurance number is required for non-India"})
+
+        return data
+
 
 class EmpBankPaymentSerializer(serializers.ModelSerializer):
     employee = EmployeeSerializer(read_only=True)
