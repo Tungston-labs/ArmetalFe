@@ -47,6 +47,7 @@ const [menuOpen, setMenuOpen] = useState(false);
     passport_number: '',
     visa_expiry_date: '',
     iqama_number: '',
+    aadar_number: '',
     insurance_number: '',
     profile_pic: null,
     total_leave: '',
@@ -108,6 +109,19 @@ const [menuOpen, setMenuOpen] = useState(false);
       newErrors.email = alert('Enter a valid email address')
     } 
 
+    const twelveDigitRegex = /^[0-9]{12}$/;
+
+if (country === "IN") {
+  if (!formData.aadar_number || !twelveDigitRegex.test(formData.aadar_number.trim())) {
+    newErrors.aadar_number = "Enter a valid 12-digit Aadhaar number";
+  }
+} else {
+  if (!formData.iqama_number || !twelveDigitRegex.test(formData.iqama_number.trim())) {
+    newErrors.iqama_number = "Enter a valid 12-digit Iqama number";
+  }
+}
+
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -161,50 +175,7 @@ const handleSubmit = () => {
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </div>
-   {/* <RoleInfo style={{ position: "relative" }}>
-  <div
-    style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-    onClick={() => setMenuOpen(!menuOpen)}
-  >
-    <FaUserCircle size={30} style={{ marginRight: "0.5rem" }} />
-        <FiChevronDown size={20} onClick={() => setMenuOpen(!menuOpen)} />
-  </div>
-
-  {menuOpen && (
-    <div
-      style={{
-        position: "absolute",
-        top: "50px",
-        right: 0,
-        background: "#fff",
-        boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
-        borderRadius: "5px",
-        zIndex: 1000,
-        minWidth: "150px",
-      }}
-    >
-      <div
-        // onClick={handleChangePassword}
-        style={{
-          padding: "10px",
-          cursor: "pointer",
-          borderBottom: "1px solid #ddd",
-        }}
-      >
-        Change Password
-      </div>
-      <div
-        // onClick={handleLogout}
-        style={{
-          padding: "10px",
-          cursor: "pointer",
-        }}
-      >
-        Logout
-      </div>
-    </div>
-  )}
-</RoleInfo> */}
+   
       </Header>
 
       <Hr />
@@ -424,12 +395,14 @@ const handleSubmit = () => {
     { key: 'phno', label: 'Phone number' },
     { key: 'passport_number', label: 'Passport Number' },
     { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date' },
-    { key: 'iqama_number', label: 'Iqama/Aadhar' },
+    // 👇 Conditionally show Aadhaar OR Iqama
+    ...(country === "IN"
+      ? [{ key: 'aadar_number', label: 'Aadhaar Number' }]
+      : [{ key: 'iqama_number', label: 'Iqama Number' }]),
     { key: 'insurance_number', label: 'Insurance Number' },
     { key: 'contract_expiry_date', label: 'Contract Expiry Date', type: 'date' },
     { key: 'idcard', label: 'ID Card' },
   ]
-    // 🚨 Filter fields if country is IN
     .filter(
       ({ key }) =>
         !(country === "IN" && (key === "visa_expiry_date" || key === "insurance_number"))
@@ -468,9 +441,7 @@ const handleSubmit = () => {
             >
               {formData.idcard?.name || 'ID Card'}
             </span>
-
             <FaPlus style={{ color: '#3352BA', fontSize: '1rem', marginLeft: '0.5rem' }} />
-
             <input
               id="idcard-upload"
               type="file"
@@ -510,6 +481,7 @@ const handleSubmit = () => {
       </div>
     ))}
 </ColumnRow>
+
 
 
 
