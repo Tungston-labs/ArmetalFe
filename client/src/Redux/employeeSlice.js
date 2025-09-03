@@ -259,6 +259,7 @@ const employeeSlice = createSlice({
     employeeId: null,
     bankPaymentId: null,
     formData: {},
+    isDirty: false,
     documentUrls: {
       passport: [],
       workPermit: [],
@@ -278,9 +279,11 @@ const employeeSlice = createSlice({
     },
     setBankFormData: (state, action) => {
       state.formData.bank = action.payload;
+      state.isDirty = true;
     },
     setBasicFormData: (state, action) => {
       state.formData.basic = action.payload;
+      state.isDirty = true;
     },
     setBankPaymentId: (state, action) => {
       state.bankPaymentId = action.payload;
@@ -300,6 +303,12 @@ const employeeSlice = createSlice({
     clearDocumentUrls: (state) => {
       Object.keys(state.documentUrls).forEach(key => state.documentUrls[key] = []);
     },
+    resetEmployeeForm: (state) => {
+      state.formData = {};
+      state.employeeId = null;
+      state.isDirty = false; // reset after saving or cancelling
+    },
+    
   },
   extraReducers: (builder) => {
     builder
@@ -308,6 +317,7 @@ const employeeSlice = createSlice({
         state.status = 'succeeded';
         state.employeeId = action.payload?.id || action.payload?.employee?.id;
         state.employeeCreated = true;
+        state.isDirty = false;
       })
       .addCase(submitEmployee.rejected, (state, action) => {
         state.status = 'failed'; state.error = action.payload;

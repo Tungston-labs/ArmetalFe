@@ -7,10 +7,11 @@ import {
 } from '../../Redux/employeeSlice';
 import { getDepartments } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
+import UnsavedChangesGuard from "../../Components/UnsavedChangesGuard";
+
 import {
   Container,
   Header,
-  RoleInfo,
   Title,
   Subtitle,
   Hr,
@@ -28,13 +29,12 @@ import {
   Input,
   InfoSection,
 } from './BasicLevel.Styles';
+
 import Multistep from '../../Components/Multistep';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaPlus } from 'react-icons/fa';
-import Navbar from '../../Components/Navbar';
 import { Spin } from "antd";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import ColumnGroup from 'antd/es/table/ColumnGroup';
 
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
@@ -44,6 +44,7 @@ export default function AddEmployeeForm() {
 
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
+  const [isFormDirty, setIsFormDirty] = useState(false);
   const stepTitles = ['Basic Info', 'Job Details', 'Legal Info'];
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -72,20 +73,24 @@ export default function AddEmployeeForm() {
     idcard: null, 
   });
 
+  // Load department list
   useEffect(() => {
     if (departmentList.length === 0) {
       dispatch(getDepartments({ page: 1, search: '' }));
     }
   }, [reduxFormData, dispatch, departmentList]);
 
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    dispatch(setBasicFormData({ ...formData, [name]: value }));
+    setIsFormDirty(true);
   };
 
+  // Validate before submit
   const validateForm = () => {
     const newErrors = {};
-
     const requiredFields = [
       'name', 'address', 'email', 'dob', 'phno', 'gender', 'designation',
       'department_id', 'employment_type', 'joining_date', 'passport_number',
@@ -100,6 +105,7 @@ export default function AddEmployeeForm() {
         newErrors[field] = 'This field is required';
       }
     });
+
     const phoneRegex = /^[0-9]{10}$/;
     if (formData.phno && !phoneRegex.test(formData.phno.trim())) {
       newErrors.phno = 'Enter a valid 10-digit phone number';
@@ -124,36 +130,41 @@ export default function AddEmployeeForm() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-const handleSubmit = () => {
-  if (!validateForm()) return;
 
-  dispatch(submitEmployee({ basic: formData }))
-    .then((res) => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        const id = res.payload?.employee?.id || res.payload?.id;
-        if (id) {
-          dispatch(setEmployeeId(id));
-          dispatch(setBasicFormData(formData));
-          navigate('/bank-payment');
-        }
-      } else {
-        const backendErrors = res.payload;
-        if (backendErrors && typeof backendErrors === 'object') {
-          const newErrors = {};
-          for (const field in backendErrors) {
-            newErrors[field] = Array.isArray(backendErrors[field])
-              ? backendErrors[field][0]
-              : backendErrors[field];
+  // Submit form
+  const handleSubmit = () => {
+    if (!validateForm()) return;
+
+    dispatch(submitEmployee({ basic: formData }))
+      .then((res) => {
+        if (res.meta.requestStatus === 'fulfilled') {
+          const id = res.payload?.employee?.id || res.payload?.id;
+          if (id) {
+            dispatch(setEmployeeId(id));
+            dispatch(setBasicFormData(formData));
+            setIsFormDirty(false);
+            navigate('/bank-payment');
           }
-          setErrors(newErrors);
+        } else {
+          const backendErrors = res.payload;
+          if (backendErrors && typeof backendErrors === 'object') {
+            const newErrors = {};
+            for (const field in backendErrors) {
+              newErrors[field] = Array.isArray(backendErrors[field])
+                ? backendErrors[field][0]
+                : backendErrors[field];
+            }
+            setErrors(newErrors);
+          }
         }
-      }
-    });
-};
-
+      });
+  };
 
   return (
     <Container>
+      {/* Unsaved changes guard */}
+      <UnsavedChangesGuard isDirty={isFormDirty} />
+
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
@@ -166,13 +177,16 @@ const handleSubmit = () => {
 
       <Hr />
 
+      {/* Multistep progress bar */}
       <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
         <div style={{ width: '50%' }}>
           <Multistep currentStep={currentStep} steps={stepTitles} />
         </div>
       </div>
 
+      {/* Basic Info Section */}
       <InfoGrid>
+        {/* Profile Picture Upload */}
         <div style={{ position: 'relative', display: 'inline-block' }}>
           {formData.profile_pic ? (
             <ProfileImage src={URL.createObjectURL(formData.profile_pic)} alt="Employee" />
@@ -191,14 +205,15 @@ const handleSubmit = () => {
             id="profile-upload"
             type="file"
             accept="image/*"
-            onChange={(e) => setFormData((prev) => ({
-              ...prev,
-              profile_pic: e.target.files[0],
-            }))}
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, profile_pic: e.target.files[0] }));
+              setIsFormDirty(true);
+            }}
             style={{ display: 'none' }}
           />
         </div>
 
+        {/* Name & Email */}
         <TwoColumn>
           <div>
             {errors.name && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name}</p>}
@@ -210,6 +225,7 @@ const handleSubmit = () => {
           </div>
         </TwoColumn>
 
+        {/* Address, DOB, Gender */}
         <InfoSection>
           <div>
             {errors.address && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.address}</p>}
@@ -238,9 +254,9 @@ const handleSubmit = () => {
                   width: '100%',
                   padding: '0.8rem',
                   fontSize: '0.9rem',
-                  borderRadius: '7PX',
-                  border:" 1px solid #052DB4",
-                  background:" #FFF",
+                  borderRadius: '7px',
+                  border:"1px solid #052DB4",
+                  background:"#FFF",
                   color: 'black',
                 }}
               >
@@ -256,6 +272,7 @@ const handleSubmit = () => {
 
       <Hr />
 
+      {/* Job Details */}
       <SectionTitle>Job Details</SectionTitle>
 
       <TwoColumnRows>
@@ -291,9 +308,9 @@ const handleSubmit = () => {
               width: '100%',
               padding: '0.7rem',
               fontSize: '0.8rem',
-              borderRadius: '7PX',
-              border:" 1px solid #052DB4",
-              background:" #FFF",
+              borderRadius: '7px',
+              border:"1px solid #052DB4",
+              background:"#FFF",
               color: 'black',
             }}
           >
@@ -360,6 +377,7 @@ const handleSubmit = () => {
         </div>
       </TwoColumnRows>
 
+      {/* Legal & ID Info */}
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
 
       <ColumnRow>
@@ -411,12 +429,10 @@ const handleSubmit = () => {
                   type="file"
                   name="idcard"
                   accept="image/*"
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      idcard: e.target.files[0],
-                    }))
-                  }
+                  onChange={(e) => {
+                    setFormData((prev) => ({ ...prev, idcard: e.target.files[0] }));
+                    setIsFormDirty(true);
+                  }}
                   style={{ display: 'none' }}
                 />
               </div>
@@ -433,6 +449,7 @@ const handleSubmit = () => {
         ))}
       </ColumnRow>
 
+      {/* Next button */}
       <FlexRow>
         <ApproveButton onClick={handleSubmit}>Next</ApproveButton>
       </FlexRow>
