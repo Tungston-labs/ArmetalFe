@@ -25,7 +25,7 @@ export const submitEmployee = createAsyncThunk(
 
       const flatten = (obj) => {
         Object.entries(obj || {}).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
+          if (value !== undefined && value !== null && value !== "") {
             if (key === "profile_pic" || key === "idcard") {
               if (value instanceof File) {
                 form.append(key, value);
@@ -39,9 +39,14 @@ export const submitEmployee = createAsyncThunk(
         });
       };
 
-      // flatten both sections
-      flatten(formData.basic);
-      flatten(formData.bank);
+      if (formData.basic || formData.bank) {
+        // ✅ handle nested structure
+        flatten(formData.basic);
+        flatten(formData.bank);
+      } else {
+        // ✅ handle flat structure
+        flatten(formData);
+      }
 
       console.log("📦 Final FormData before sending:");
       for (let pair of form.entries()) {
@@ -58,6 +63,7 @@ export const submitEmployee = createAsyncThunk(
     }
   }
 );
+
 
 
 
