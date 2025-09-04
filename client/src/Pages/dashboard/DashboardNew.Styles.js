@@ -146,37 +146,63 @@ width:66%;
 
 export const DepartmentCard = styled.div`
   flex: 1;
-  min-height:150px;
+  min-height: 150px;
   min-width: 250px;
+  max-width: 100%;
   background: #fff;
   border: 1px solid #ddd;
-//   border-left: 10px solid #cce0ff;
   border-radius: 10px;
   padding: 1rem;
   position: relative;
   display: flex;
   align-items: center;
   gap: 1rem;
-
+  flex-wrap: wrap; /* ✅ allows wrapping on smaller screens */
+  box-sizing: border-box;
 
   h4 {
     margin: 0;
-    font-size:1rem;
-    font-family:"raleway"
+    font-size: 1rem;
+    font-family: "Raleway", sans-serif;
+    word-break: break-word;
   }
 
   p {
     margin: 4px 0;
     font-size: 1rem;
-      font-family:"raleway"
+    font-family: "Raleway", sans-serif;
+    word-break: break-word;
   }
 
   strong {
     font-size: 1rem;
     color: #003366;
-      font-family:"raleway"
+    font-family: "Raleway", sans-serif;
+  }
+
+  /* ✅ Responsive behavior */
+  @media (max-width: 1024px) {
+    min-width: 200px;
+    padding: 0.8rem;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 100%;
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    h4,
+    p,
+    strong {
+      font-size: 0.9rem;
+    }
   }
 `;
+
 
 export const Label = styled.div`
   font-size: 4rem;

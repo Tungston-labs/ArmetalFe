@@ -11,6 +11,8 @@ from user.permissions import IsHRAdmin  # Adjust import path as needed
 # Create + List View
 from django.db.models import Count
 
+from django.db.models import Count
+
 class DepartmentCreateListView(generics.ListCreateAPIView):
     serializer_class = DepartmentSerializer
     permission_classes = [IsHRAdmin]
@@ -23,12 +25,15 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
             .filter(company=self.request.user.company)
             .annotate(
                 employee_count=Count('employees', distinct=True),
-                reimbursement_employee_count=Count('employees__reimbursements__employee', distinct=True)
+                reimbursement_employee_count=Count('employees__reimbursements__employee', distinct=True),
+                attendance_employee_count=Count('employees__attendances__id', distinct=True),  # ✅ attendance count
+                leave_request_count=Count('employees__leave_requests__id', distinct=True),    # ✅ leave request count
             )
         )
 
     def perform_create(self, serializer):
         serializer.save(company=self.request.user.company)
+
 
 
 

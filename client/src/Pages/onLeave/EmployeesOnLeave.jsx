@@ -142,7 +142,7 @@ const EmployeeList = () => {
                 </DeptHead>
               </DeptInfo>
               <CardRight>
-                <div className="card-value">{dept.employee_count || 0}</div>
+                <div className="card-value">{dept.leave_request_count || 0}</div>
                 <div className="arrow-icon">
                   <GoArrowUpRight size={15} style={{ strokeWidth: 2 }} />
                 </div>

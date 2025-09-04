@@ -74,10 +74,20 @@ const [formError, setFormError] = useState("");
   };
   
 
-
 const handleAdd = () => {
   if (formData.name && formData.type && formData.date) {
     const formattedDate = formatDateToISO(formData.date);
+    const selectedDate = new Date(formData.date);
+    const today = new Date();
+
+    // Clear time from both dates for comparison
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      setFormError("⚠️ Holiday date cannot be in the past.");
+      return;
+    }
 
     dispatch(addHoliday({
       description: formData.name,
@@ -91,6 +101,7 @@ const handleAdd = () => {
     setFormError("⚠️ Please fill in all fields before adding a holiday.");
   }
 };
+
 
 
 
@@ -116,23 +127,6 @@ const cancelDelete = () => {
     <>
        <Navbar/>
     <Container>
-   
-      {/* <Header>
-        <TopBar>
-          <TitleSection>
-
-            <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
-            <div>
-              <Title>Holiday</Title>
-              <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
-            </div>
-          </TitleSection>
-          <HRManager>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <span>HR Manager</span>
-          </HRManager>
-        </TopBar>
-      </Header> */}
 
       <FormSection>
   <Input name="name" placeholder="Holiday name" value={formData.name} onChange={handleChange} />
