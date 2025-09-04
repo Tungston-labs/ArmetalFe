@@ -14,16 +14,15 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
 
-        if hasattr(user, "company"):  
-            # HR/Admin: return reimbursements of employees in their company
+        if user.is_hr or user.is_admin:   # ✅ check HR/Admin role properly
             return Reimbursement.objects.filter(
                 employee__department__company=user.company
             ).order_by("-created_at")
-        else:
-            # Normal Employee: return only their own reimbursements
-            return Reimbursement.objects.filter(
-                employee__user=user
-            ).order_by("-created_at")
+
+        # ✅ Employee case: only their reimbursements
+        return Reimbursement.objects.filter(
+            employee__user=user
+        ).order_by("-created_at")
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -32,9 +31,7 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         reimbursement = serializer.save(employee=self.request.user.employee_db)
-        # 🚀 Send email after creating reimbursement
         send_reimbursement_email(reimbursement)
-
 
 
 # --- Retrieve, Update, Delete single reimbursement ---
