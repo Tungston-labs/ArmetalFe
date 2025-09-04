@@ -280,7 +280,7 @@ export const LabelRow = styled.div`
   font-weight: 500;
   margin-bottom: 0.8rem;
   background:#F1F1F1;
-  color:black;
+    color: #3352BA;
   padding:10px;
 `;
 

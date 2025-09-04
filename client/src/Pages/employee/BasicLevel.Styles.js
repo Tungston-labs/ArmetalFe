@@ -81,10 +81,17 @@ export const Input = styled.input`
   width: 100%;
   // margin-bottom: 1rem;
   color:black;
-  margin-top:10px;
+  // margin-top:10px;
   border-radius: 7px;
 border: 1px solid #052DB4;
 background: #FFF;
+`;
+
+export const Label = styled.label`
+  color: #3352BA;
+   marginBottom: 0.4rem;
+   fontSize: 0.85rem;
+   font-weight:500;
 `;
 
 export const TextArea = styled.textarea`
@@ -219,7 +226,7 @@ export const FullWidthInput = styled.input`
   width: 99%;
   padding: 0.8rem 1rem;
   margin-bottom: 0.5rem;
-  margin-top:30px;
+  // margin-top:30px;
   // border: 1px solid #ccc;
   // border-radius: 6px;
   height:40%;
@@ -242,6 +249,7 @@ export const TwoColumnRows= styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
   width:98%;
+  margin-top:10px;
   
 `;
 

@@ -50,7 +50,7 @@ const Cards = () => {
               {employeesList.slice(0, 3).map((emp) => (
                 <CardListItem key={emp.id}>
   <img
-    src={emp.profilePic || "https://via.placeholder.com/40"} 
+    src={emp.profile_pic || "https://via.placeholder.com/40"} 
     alt={emp.name}
     style={{
       width: "30px",
@@ -92,7 +92,7 @@ const Cards = () => {
               {leaveRequest.slice(0, 3).map((emp) => (
                 <CardListItem key={emp.id}>
                  <img
-    src={emp.profilePic || "https://via.placeholder.com/40"} 
+    src={emp.profile_pic || "https://via.placeholder.com/40"} 
     alt={emp.name}
     style={{
       width: "30px",
@@ -135,7 +135,7 @@ const Cards = () => {
               {visaExpiryList.slice(0, 3).map((emp) => (
                 <CardListItem key={emp.id}>
                   <img
-    src={emp.profilePic || "https://via.placeholder.com/40"} 
+    src={emp.profile_pic|| "https://via.placeholder.com/40"} 
     alt={emp.name}
     style={{
       width: "30px",

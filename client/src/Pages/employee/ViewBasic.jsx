@@ -28,6 +28,7 @@ import {
   TextGroup,TitleSection,
   Column,
   HRManager,FullPageLoaderWrapper,
+  FieldGroup,
 } from "./ViewBasic.Style";
 import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,6 +43,7 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import { getDepartments } from "../../Redux/departmentSlice";
 
 import { Spin } from "antd";
+import { Label } from "./BasicLevel.Styles";
 const ViewBasic = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -270,6 +272,7 @@ if (loading || !formData || Object.keys(formData).length === 0) {
 
         <Row>
           <LeftSection>
+           
             <Input
               name="name"
               type="text"
@@ -339,185 +342,215 @@ if (loading || !formData || Object.keys(formData).length === 0) {
         </Tabs>
 
         <GroupLabel>Job Details</GroupLabel>
-        <Rowes>
-          <Input
-            name="designation"
-            value={formData.designation || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-          <Input
-            name="joining_date"
-            value={formData.joining_date || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-        </Rowes>
-
-        <Rowes>
-        <select
-  name="department"
-  value={formData.department}
-  onChange={handleChange}
-  disabled={!editMode}
-  style={{
-    backgroundColor:'white'
-  }}
->
-  <option value="">Select Department</option>
-  {departmentList.map((dept) => (
-    <option key={dept.id} value={dept.id}>
-      {dept.name}
-    </option>
-  ))}
-</select>
-          <Input
-            name="employment_type"
-            value={formData.employment_type || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-        </Rowes>
-<Rowes>
-  <Input
-    type="number"
-    name="total_leave"
-    placeholder="Total Leaves"
-    value={formData.total_leave || ""}
-    onChange={handleChange}
-    readOnly={!editMode}
-  />
-</Rowes>
-
-        <GroupLabel>Employee Legal & ID Information</GroupLabel>
-        <Column>
-          <Input
-            name="phno"
-            placeholder="Phone Number"
-            value={formData.phno || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-          <Input
-            name="passport_number"
-            placeholder="Passport Number"
-            value={formData.passport_number || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
         
-
-          {/* 👇 Country-based conditional fields */}
-  {employeeDetail?.company?.country === "IN" ? (
+       <Rowes>
+  <div style={{ flex: 1, marginRight: "1rem" }}>
+    <Label>Designation</Label>
     <Input
-      name="aadar_number"
-      placeholder="Aadhaar Number"
-      value={formData.aadar_number || ""}
+      name="designation"
+      value={formData.designation || ""}
       onChange={handleChange}
       readOnly={!editMode}
     />
+  </div>
+
+  <div style={{ flex: 1 }}>
+    <Label>Joining Date</Label>
+    <Input
+      name="joining_date"
+      value={formData.joining_date || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+    />
+  </div>
+</Rowes>
+
+
+       <Rowes>
+  <FieldGroup>
+    <Label>Department</Label>
+    <select
+      name="department"
+      value={formData.department}
+      onChange={handleChange}
+      disabled={!editMode}
+      style={{
+        backgroundColor: "white",
+        padding: "0.7rem",
+        fontSize: "0.9rem",
+        borderRadius: "7px",
+        border: "1px solid #052DB4",
+        width: "100%",
+      }}
+    >
+      <option value="">Select Department</option>
+      {departmentList.map((dept) => (
+        <option key={dept.id} value={dept.id}>
+          {dept.name}
+        </option>
+      ))}
+    </select>
+  </FieldGroup>
+
+  <FieldGroup>
+    <Label>Employment Type</Label>
+    <Input
+      name="employment_type"
+      value={formData.employment_type || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+      placeholder="Employment Type"
+    />
+  </FieldGroup>
+</Rowes>
+
+<Rowes>
+  <FieldGroup>
+    <Label>Total Leaves</Label>
+    <Input
+      type="number"
+      name="total_leave"
+      placeholder="Enter total leaves"
+      value={formData.total_leave || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+    />
+  </FieldGroup>
+</Rowes>
+
+
+        <GroupLabel>Employee Legal & ID Information</GroupLabel>
+      <Column>
+  <FieldGroup>
+    <Label>Phone Number</Label>
+    <Input
+      name="phno"
+      placeholder="Phone Number"
+      value={formData.phno || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+    />
+  </FieldGroup>
+
+  <FieldGroup>
+    <Label>Passport Number</Label>
+    <Input
+      name="passport_number"
+      placeholder="Passport Number"
+      value={formData.passport_number || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+    />
+  </FieldGroup>
+
+  {/* 👇 Country-based conditional fields */}
+  {employeeDetail?.company?.country === "IN" ? (
+    <FieldGroup>
+      <Label>Aadhaar Number</Label>
+      <Input
+        name="aadar_number"
+        placeholder="Aadhaar Number"
+        value={formData.aadar_number || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+    </FieldGroup>
   ) : (
     <>
-      <Input
-        name="visa_expiry_date"
-        placeholder="Visa Expiry Date"
-        value={formData.visa_expiry_date || ""}
-        onChange={handleChange}
-        readOnly={!editMode}
-      />
-      <Input
-        name="iqama_number"
-        placeholder="Iqama Number"
-        value={formData.iqama_number || ""}
-        onChange={handleChange}
-        readOnly={!editMode}
-      />
-      <Input
-        name="insurance_number"
-        placeholder="Insurance Number"
-        value={formData.insurance_number || ""}
-        onChange={handleChange}
-        readOnly={!editMode}
-      />
+      <FieldGroup>
+        <Label>Visa Expiry Date</Label>
+        <Input
+          type={editMode ? "date" : "text"}
+          name="visa_expiry_date"
+          placeholder="Visa Expiry Date"
+          value={formData.visa_expiry_date || ""}
+          onChange={handleChange}
+          readOnly={!editMode}
+        />
+      </FieldGroup>
+
+      <FieldGroup>
+        <Label>Iqama Number</Label>
+        <Input
+          name="iqama_number"
+          placeholder="Iqama Number"
+          value={formData.iqama_number || ""}
+          onChange={handleChange}
+          readOnly={!editMode}
+        />
+      </FieldGroup>
+
+      <FieldGroup>
+        <Label>Insurance Number</Label>
+        <Input
+          name="insurance_number"
+          placeholder="Insurance Number"
+          value={formData.insurance_number || ""}
+          onChange={handleChange}
+          readOnly={!editMode}
+        />
+      </FieldGroup>
     </>
   )}
 
-          {/* <Input
-            name="visa_expiry_date"
-            placeholder="Visa Expiry Date"
-            value={formData.visa_expiry_date || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-          <Input
-            name="iqama_number"
-            placeholder="Iqama Number"
-            value={formData.iqama_number || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-         
-          <Input
-            name="insurance_number"
-            placeholder="Insurance Number"
-            value={formData.insurance_number || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          /> */}
+  <FieldGroup>
+    <Label>Role</Label>
+    <Select
+      name="role"
+      value={formData.role}
+      onChange={handleChange}
+      disabled={!editMode}
+    >
+      <option value="">Select Role</option>
+      <option value="employee">Employee</option>
+      <option value="hr">HR</option>
+      <option value="manager">Manager</option>
+    </Select>
+  </FieldGroup>
 
-        <select
-  name="role"
-  value={formData.role}
-  onChange={handleChange}
-  disabled={!editMode}
-  style={{
-    width: '100%',
-    padding: '0.7rem',
-    fontSize: '0.8rem',
-    borderRadius: '7px',
-    border: '1px solid #052DB4',
-    background: '#FFF',
-    color: 'black',
-  }}
->
-  <option value="">Select Role</option>
-  <option value="employee">Employee</option>
-  <option value="hr">HR</option>
-  <option value="manager">Manager</option>
-</select>
-
-
-<Input
-  type={editMode ? "date" : "text"}
-  name="contract_expiry_date"
-  placeholder="Contract Expiry Date"
-  value={formData.contract_expiry_date || ""}
-  onChange={handleChange}
-  readOnly={!editMode}
-/>
-<div>
-  {formData.idcard && (
-    <img
-      src={formData.idcard}
-      alt="ID Card"
-      style={{ width: '120px', height: 'auto', marginBottom: '10px' }}
+  <FieldGroup>
+    <Label>Contract Expiry Date</Label>
+    <Input
+      type={editMode ? "date" : "text"}
+      name="contract_expiry_date"
+      placeholder="Contract Expiry Date"
+      value={formData.contract_expiry_date || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
     />
-  )}
-  {editMode && (
-    <input
-      type="file"
-      accept="image/*"
-      name="idcard"
-      onChange={(e) => {
-        const file = e.target.files[0];
-        if (file) {
-          setFormData({ ...formData, idcard: file });
-        }
-      }}
-    />
-  )}
-</div>
-        </Column>
+  </FieldGroup>
+
+  <FieldGroup>
+    <Label>ID Card</Label>
+    <div>
+      {formData.idcard && (
+        <img
+          src={
+            formData.idcard instanceof File
+              ? URL.createObjectURL(formData.idcard)
+              : formData.idcard
+          }
+          alt="ID Card"
+          style={{ width: "120px", height: "auto", marginBottom: "10px" }}
+        />
+      )}
+      {editMode && (
+        <input
+          type="file"
+          accept="image/*"
+          name="idcard"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              setFormData({ ...formData, idcard: file });
+            }
+          }}
+        />
+      )}
+    </div>
+  </FieldGroup>
+</Column>
+
 
        
         {editMode && (

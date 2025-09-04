@@ -124,95 +124,6 @@ const CardsOnly = () => {
     
     <Container>
   <Cards/>
-
-      {/* Cards Row */}
-      {/* <CardGrid>
-        <Card>
-          <LeftIcon>
-            <img src={`../assets/total.svg`} alt="User Icon" width={40} height={40} />
-          </LeftIcon>
-          <VerticalBar />
-          <CardContent>
-            <CardHeader>
-              <h3>Total Employees</h3>
-              <span>{summary?.total_employees?.count || 0}</span>
-            </CardHeader>
-            <CardList>
-  {employeesList.slice(0, 3).map((emp) => (
-    <li key={emp.id}>
-      <span>{emp.name}</span>
-      <span>{emp.department}</span>
-      <span>{emp.designation}</span>
-    </li>
-  ))}
-</CardList>
-
-          </CardContent>
-          <Icon>
-          <Link to="/employee">
-  <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
-</Link>
-          </Icon>
-        </Card>
-        <Card>
-          <LeftIcon>
-            <img src={`../assets/total2.svg`} alt="User Icon" width={40} height={40} />
-          </LeftIcon>
-          <VerticalBar />
-          <CardContent>
-            <CardHeader>
-              <h3>Employee Leave Request</h3>
-              <span>{summary?.pending_leaves?.count || 0}</span>
-            </CardHeader>
-           <CardList>
-  {leaveRequest.slice(0, 3).map((emp) => (
-    <li key={emp.id}>
-      <span>{emp.employee}</span>
-      <span>{emp.department}</span>
-      <span>
-        {emp.from_date} – {emp.to_date}
-      </span>
-    </li>
-  ))}
-</CardList>
-          </CardContent>
-          <Icon>
-          <Link to="/leave-request">
-  <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
-</Link>
-          </Icon>
-        </Card>
-        <Card>
-          <LeftIcon>
-            <img src={`../assets/total3.svg`} alt="User Icon" width={40} height={40} />
-          </LeftIcon>
-          <VerticalBar />
-          <CardContent>
-            <CardHeader>
-              <h3>Employee Visa Expiry</h3>
-
-              <span>{summary?.upcoming_visa_expiry?.count || 0}</span>
-            </CardHeader>
-           <CardList>
-  {visaExpiryList.slice(0, 3).map((emp) => (
-    <li key={emp.id}>
-      <span>{emp.name}</span>
-      <span>{emp.department}</span>
-      <span>{emp.visa_expiry_date}</span>
-    </li>
-  ))}
-</CardList>
-
-
-          </CardContent>
-          <Icon>
-          <Link to="/employee-Contract-Visa-Expiry">
-  <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
-</Link>
-          </Icon>
-        </Card>
-      </CardGrid> */}
-
       {/* Department + Calendar Row */}
       <Heading>Department</Heading>
   <hr
@@ -250,11 +161,7 @@ const CardsOnly = () => {
       <Flex justify="space-between" align="center">
      <Heading
   mb={0}
-  // style={{
-  //   borderBottom: "2px solid #3352BA",
-  //   display: "inline-block",
-  //   paddingBottom: "8px",
-  // }}
+ 
 >
   Employee Presence & Upcoming Holidays
 </Heading>

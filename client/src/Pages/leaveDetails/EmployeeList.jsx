@@ -102,26 +102,6 @@ const EmployeeList = () => {
     <>
     <Navbar />
     <Container>
-      {/* <TopBar>
-        <div />
-        <DropdownWrapper>
-          <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <IoIosArrowDown
-              size={18}
-              style={{ marginLeft: "5px", cursor: "pointer" }}
-            />
-          </HRManager>
-
-          {menuOpen && (
-            <DropdownMenu>
-              <div>Change Password</div>
-              <div>Logout</div>
-            </DropdownMenu>
-          )}
-        </DropdownWrapper>
-      </TopBar> */}
-
       <HeaderSection>
         <TitleSection>
         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
@@ -184,8 +164,8 @@ const EmployeeList = () => {
           </Tab>
         </NavLink>
         <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
-                                 <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
-                               </NavLink>
+<Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
+</NavLink>
       </Tabs>
       <hr style={{ marginTop: "-18px" }} />
 

@@ -28,6 +28,7 @@ import {
   SectionTitle,
   Input,
   InfoSection,
+  Label,
 } from './BasicLevel.Styles';
 
 import Multistep from '../../Components/Multistep';
@@ -189,40 +190,66 @@ if (!iqama || iqama.length !== 12) {
       {/* Basic Info Section */}
       <InfoGrid>
         {/* Profile Picture Upload */}
-        <div style={{ position: 'relative', display: 'inline-block' }}>
-          {formData.profile_pic ? (
-            <ProfileImage src={URL.createObjectURL(formData.profile_pic)} alt="Employee" />
-          ) : (
-            <IconWrapper>
-              <PiUserCirclePlusThin size={50} />
-            </IconWrapper>
-          )}
-          <label htmlFor="profile-upload" style={{
-            position: 'absolute',
-            top: '-5px', right: '-5px', background: '#001F3F', color: 'white',
-            borderRadius: '50%', width: '24px', height: '24px', display: 'flex',
-            alignItems: 'center', justifyContent: 'center', fontSize: '16px', cursor: 'pointer'
-          }}>+</label>
-          <input
-            id="profile-upload"
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              setFormData((prev) => ({ ...prev, profile_pic: e.target.files[0] }));
-              setIsFormDirty(true);
-            }}
-            style={{ display: 'none' }}
-          />
-        </div>
+        <div style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
+  <label htmlFor="profile-upload" style={{ cursor: 'pointer' }}>
+    {formData.profile_pic ? (
+      <ProfileImage
+        src={URL.createObjectURL(formData.profile_pic)}
+        alt="Employee"
+      />
+    ) : (
+      <IconWrapper>
+        <PiUserCirclePlusThin size={50} />
+      </IconWrapper>
+    )}
+  </label>
+
+  {/* Small "+" button (optional, keep if you want it visible) */}
+  <label
+    htmlFor="profile-upload"
+    style={{
+      position: 'absolute',
+      top: '-5px',
+      right: '-5px',
+      background: '#001F3F',
+      color: 'white',
+      borderRadius: '50%',
+      width: '24px',
+      height: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '16px',
+      cursor: 'pointer',
+    }}
+  >
+    +
+  </label>
+
+  {/* Hidden file input */}
+  <input
+    id="profile-upload"
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      setFormData((prev) => ({ ...prev, profile_pic: e.target.files[0] }));
+      setIsFormDirty(true);
+    }}
+    style={{ display: 'none' }}
+  />
+</div>
+
 
         {/* Name & Email */}
         <TwoColumn>
-          <div>
+          <div style={{marginTop:"-10px"}}> 
             {errors.name && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name}</p>}
+            <Label>Name</Label>
             <Input name="name" placeholder="Name" value={formData.name} onChange={handleChange} autoComplete="off" />
           </div>
-          <div>
+          <div style={{marginTop:"5px"}}>
             {errors.email && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.email}</p>}
+            <Label>Email</Label>
             <Input name="email" placeholder="Email ID" value={formData.email} onChange={handleChange} autoComplete="off" />
           </div>
         </TwoColumn>
@@ -231,12 +258,14 @@ if (!iqama || iqama.length !== 12) {
         <InfoSection>
           <div>
             {errors.address && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.address}</p>}
+              <Label>Address</Label>
             <FullWidthInput name="address" placeholder="Address" value={formData.address} onChange={handleChange} autoComplete="off"/>
           </div>
 
           <TwoColumnRow>
-            <div style={{marginTop:"-10px"}}>
+            <div >
               {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
+                <Label>Date of Birth</Label>
               <Input
                 type="date"
                 name="dob"
@@ -247,6 +276,7 @@ if (!iqama || iqama.length !== 12) {
             </div>
             <div>
               {errors.gender && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.gender}</p>}
+                <Label>Gender</Label>
               <select
                 name="gender"
                 value={formData.gender}
@@ -280,6 +310,7 @@ if (!iqama || iqama.length !== 12) {
       <TwoColumnRows>
         <div>
           {errors.department_id && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.department_id}</p>}
+            <Label>Department</Label>
           <select
             name="department_id"
             value={formData.department_id}
@@ -301,6 +332,7 @@ if (!iqama || iqama.length !== 12) {
         </div>
         <div>
           {errors.employment_type && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.employment_type}</p>}
+            <Label>Employee Type</Label>
           <select
             name="employment_type"
             value={formData.employment_type}
@@ -324,13 +356,15 @@ if (!iqama || iqama.length !== 12) {
         </div>
       </TwoColumnRows>
 
-      <TwoColumnRows>
+      <TwoColumnRows >
         <div>
           {errors.designation && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.designation}</p>}
+          <Label>Designation</Label>
           <Input name="designation" placeholder="Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
         </div>
         <div>
           {errors.joining_date && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.joining_date}</p>}
+            <Label>Joining Date</Label>
           <Input
             type="date"
             name="joining_date"
@@ -344,6 +378,7 @@ if (!iqama || iqama.length !== 12) {
       <TwoColumnRows>
         <div>
           {errors.total_leave && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.total_leave}</p>}
+            <Label>Total Leaves</Label>
           <Input
             name="total_leave"
             placeholder="Total Leaves"
@@ -354,8 +389,9 @@ if (!iqama || iqama.length !== 12) {
             min="0"
           />
         </div>
-        <div style={{ marginTop: '10px' }}>
+        <div >
           {errors.role && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.role}</p>}
+            <Label>Roles</Label>
           <select
             name="role"
             value={formData.role}
@@ -382,74 +418,94 @@ if (!iqama || iqama.length !== 12) {
       {/* Legal & ID Info */}
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
 
-      <ColumnRow>
-        {[
-          { key: 'phno', label: 'Phone number' },
-          { key: 'passport_number', label: 'Passport Number' },
-          { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date' },
-          ...(country === "IN"
-            ? [{ key: 'aadar_number', label: 'Aadhaar Number' }]
-            : [{ key: 'iqama_number', label: 'Iqama Number' }]),
-          { key: 'insurance_number', label: 'Insurance Number' },
-          { key: 'contract_expiry_date', label: 'Contract Expiry Date', type: 'date' },
-          { key: 'idcard', label: 'ID Card' },
-        ].map(({ key, label, type }) => (
-          <div key={key}>
-            {errors[key] && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[key]}</p>}
+     <ColumnRow>
+  {[
+    { key: 'phno', label: 'Phone Number' },
+    { key: 'passport_number', label: 'Passport Number' },
+    { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date' },
+    ...(country === "IN"
+      ? [{ key: 'aadar_number', label: 'Aadhaar Number' }]
+      : [{ key: 'iqama_number', label: 'Iqama Number' }]),
+    { key: 'insurance_number', label: 'Insurance Number' },
+    { key: 'contract_expiry_date', label: 'Contract Expiry Date', type: 'date' },
+    { key: 'idcard', label: 'ID Card' },
+  ].map(({ key, label, type }) => (
+    <div key={key} style={{ marginBottom: '1rem' }}>
+      {/* Label above field */}
+      <label
+        htmlFor={key}
+        style={{
+          display: 'block',
+          marginBottom: '0.4rem',
+          fontSize: '0.9rem',
+          fontWeight: '500',
+          color: '#3352BA'
+        }}
+      >
+        {label}
+      </label>
 
-            {key === 'idcard' ? (
-              <div
-                onClick={() => document.getElementById('idcard-upload').click()}
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  border: '1px solid #052DB4',
-                  borderRadius: '7px',
-                  padding: '0.7rem',
-                  cursor: 'pointer',
-                  backgroundColor: '#fff',
-                  fontSize: '0.9rem',
-                  marginTop: "10px"
-                }}
-              >
-                <span
-                  style={{
-                    flex: 1,
-                    color: formData.idcard ? '#000' : '#999',
-                    fontSize: '0.8rem',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {formData.idcard?.name || 'ID Card'}
-                </span>
-                <FaPlus style={{ color: '#3352BA', fontSize: '1rem', marginLeft: '0.5rem' }} />
-                <input
-                  id="idcard-upload"
-                  type="file"
-                  name="idcard"
-                  accept="image/*"
-                  onChange={(e) => {
-                    setFormData((prev) => ({ ...prev, idcard: e.target.files[0] }));
-                    setIsFormDirty(true);
-                  }}
-                  style={{ display: 'none' }}
-                />
-              </div>
-            ) : (
-              <Input
-                name={key}
-                placeholder={label}
-                type={type || 'text'}
-                value={formData[key]}
-                onChange={handleChange}
-              />
-            )}
-          </div>
-        ))}
-      </ColumnRow>
+      {/* Inline error */}
+      {errors[key] && (
+        <p style={{ color: 'red', fontSize: '0.75rem', marginBottom: '0.3rem' }}>
+          {errors[key]}
+        </p>
+      )}
+
+      {key === 'idcard' ? (
+        <div
+          onClick={() => document.getElementById('idcard-upload').click()}
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            border: '1px solid #052DB4',
+            borderRadius: '7px',
+            padding: '0.7rem',
+            cursor: 'pointer',
+            backgroundColor: '#fff',
+            fontSize: '0.9rem',
+          }}
+        >
+          <span
+            style={{
+              flex: 1,
+              color: formData.idcard ? '#000' : '#999',
+              fontSize: '0.8rem',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {formData.idcard?.name || 'Choose file'}
+          </span>
+          <FaPlus style={{ color: '#3352BA', fontSize: '1rem', marginLeft: '0.5rem' }} />
+          <input
+            id="idcard-upload"
+            type="file"
+            name="idcard"
+            accept="image/*"
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, idcard: e.target.files[0] }));
+              setIsFormDirty(true);
+            }}
+            style={{ display: 'none' }}
+          />
+        </div>
+      ) : (
+        <Input
+          id={key}
+          name={key}
+          placeholder={label}
+          type={type || 'text'}
+          value={formData[key]}
+          onChange={handleChange}
+        />
+      )}
+    </div>
+  ))}
+</ColumnRow>
+
 
       {/* Next button */}
       <FlexRow>

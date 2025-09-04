@@ -287,3 +287,8 @@ export const TitleSection = styled.div`
   display: flex;
   align-items: center;
 `;
+export const FieldGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;

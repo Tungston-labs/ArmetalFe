@@ -510,7 +510,8 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "designation": emp.designation,
-                "employee_id":emp.employee_id
+                "employee_id":emp.employee_id,
+                "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
             for emp in employees
         ]
@@ -526,6 +527,7 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "visa_expiry_date": emp.visa_expiry_date,
+                "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
             for emp in upcoming_visa_expiry_qs
         ]
@@ -540,7 +542,7 @@ class DashboardSummaryView(APIView):
                 "id": leave.id,
                 "employee": leave.employee.name,
                 "department": leave.employee.department.name if leave.employee.department else None,
-                "leave_type": leave.leave_type,
+                "profile_pic": request.build_absolute_uri(leave.employee.profile_pic.url) if leave.employee.profile_pic else None,          "leave_type": leave.leave_type,
                 "from_date": leave.from_date,
                 "to_date": leave.to_date,
                 "reason": leave.reason,

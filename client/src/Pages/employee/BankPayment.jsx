@@ -155,50 +155,7 @@ const [bankProofImage, setBankProofImage] = useState(null);
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </div>
-       {/* <RoleInfo style={{ position: "relative" }}>
-      <div
-        style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-        onClick={() => setMenuOpen(!menuOpen)}
-      >
-        <FaUserCircle size={30} style={{ marginRight: "0.5rem" }} />
-            <FiChevronDown size={20} onClick={() => setMenuOpen(!menuOpen)} />
-      </div>
-    
-      {menuOpen && (
-        <div
-          style={{
-            position: "absolute",
-            top: "50px",
-            right: 0,
-            background: "#fff",
-            boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
-            borderRadius: "5px",
-            zIndex: 1000,
-            minWidth: "150px",
-          }}
-        >
-          <div
-            // onClick={handleChangePassword}
-            style={{
-              padding: "10px",
-              cursor: "pointer",
-              borderBottom: "1px solid #ddd",
-            }}
-          >
-            Change Password
-          </div>
-          <div
-            // onClick={handleLogout}
-            style={{
-              padding: "10px",
-              cursor: "pointer",
-            }}
-          >
-            Logout
-          </div>
-        </div>
-      )}
-    </RoleInfo> */}
+     
       </Header>
 
       <Hr />
