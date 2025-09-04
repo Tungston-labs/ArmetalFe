@@ -93,11 +93,22 @@ class ReimbursementGroupedByDateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        reimbursements = Reimbursement.objects.all().order_by("date")
+        user = request.user
+
+        # ✅ HR/Admin: reimbursements of all employees in their company
+        if hasattr(user, "company"):  
+            reimbursements = Reimbursement.objects.filter(
+                employee__department__company=user.company
+            ).order_by("date")
+        else:
+            # ✅ Employee: only their own reimbursements
+            reimbursements = Reimbursement.objects.filter(
+                employee__user=user
+            ).order_by("date")
 
         grouped_data = defaultdict(list)
         for r in reimbursements:
-            grouped_data[str(r.date)].append(r)  # str() makes it JSON serializable
+            grouped_data[str(r.date)].append(r)
 
         result = []
         for date, items in grouped_data.items():
@@ -107,6 +118,7 @@ class ReimbursementGroupedByDateView(APIView):
             })
 
         return Response(result)
+
     
 
 
