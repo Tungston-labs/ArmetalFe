@@ -15,6 +15,7 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source="employee.name", read_only=True)
     employee_id = serializers.CharField(source="employee.employee_id", read_only=True)
     designation = serializers.CharField(source="employee.designation", read_only=True)
+    profile_pic = serializers.ImageField(source="employee.profile_pic", read_only=True)  # 👈 added
     department = serializers.SerializerMethodField()
 
     class Meta:
@@ -24,6 +25,7 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
             "employee_name",
             "employee_id",
             "designation",
+            "profile_pic",   # 👈 include in API response
             "department",
             "amount",
             "status",
@@ -38,9 +40,10 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
                 "id": dept.id,
                 "name": dept.name,
                 "hr_name": dept.department_head.name if dept.department_head else None,
-                "department_code":dept.department_code if dept.department_code else None,
+                "department_code": dept.department_code if dept.department_code else None,
             }
         return None
+
 
 
 

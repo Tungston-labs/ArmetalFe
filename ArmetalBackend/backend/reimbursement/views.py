@@ -7,13 +7,23 @@ from shared.pagination import CustomPagination
 
 # --- List & Create for Employee ---
 from .utils import send_reimbursement_email
-
 class ReimbursementListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsHRorIsEmployee]
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        return Reimbursement.objects.filter(employee__user=self.request.user).order_by("-created_at")
+        user = self.request.user
+
+        if hasattr(user, "company"):  
+            # HR/Admin: return reimbursements of employees in their company
+            return Reimbursement.objects.filter(
+                employee__department__company=user.company
+            ).order_by("-created_at")
+        else:
+            # Normal Employee: return only their own reimbursements
+            return Reimbursement.objects.filter(
+                employee__user=user
+            ).order_by("-created_at")
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -24,6 +34,7 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
         reimbursement = serializer.save(employee=self.request.user.employee_db)
         # 🚀 Send email after creating reimbursement
         send_reimbursement_email(reimbursement)
+
 
 
 # --- Retrieve, Update, Delete single reimbursement ---
