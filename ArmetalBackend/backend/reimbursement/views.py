@@ -6,6 +6,8 @@ from user.permissions import IsHRorIsEmployee
 from shared.pagination import CustomPagination
 
 # --- List & Create for Employee ---
+from .utils import send_reimbursement_email
+
 class ReimbursementListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsHRorIsEmployee]
     pagination_class = CustomPagination
@@ -19,7 +21,10 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
         return ReimbursementDetailSerializer
 
     def perform_create(self, serializer):
-        serializer.save(employee=self.request.user.employee_db)
+        reimbursement = serializer.save(employee=self.request.user.employee_db)
+        # 🚀 Send email after creating reimbursement
+        send_reimbursement_email(reimbursement)
+
 
 # --- Retrieve, Update, Delete single reimbursement ---
 class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
