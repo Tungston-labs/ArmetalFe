@@ -114,10 +114,13 @@ class ReimbursementGroupedByDateView(APIView):
         for date, items in grouped_data.items():
             result.append({
                 "date": date,
-                "reimbursements": ReimbursementListSerializer(items, many=True).data
+                "reimbursements": ReimbursementListSerializer(
+                    items, many=True, context={"request": request}  # 👈 FIXED
+                ).data
             })
 
         return Response(result)
+
 
     
 
