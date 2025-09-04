@@ -15,7 +15,9 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source="employee.name", read_only=True)
     employee_id = serializers.CharField(source="employee.employee_id", read_only=True)
     designation = serializers.CharField(source="employee.designation", read_only=True)
-    profile_pic = serializers.ImageField(source="employee.profile_pic", read_only=True)  # 👈 added
+    profile_pic = serializers.SerializerMethodField()
+
+
     department = serializers.SerializerMethodField()
 
     class Meta:
@@ -42,6 +44,12 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
                 "hr_name": dept.department_head.name if dept.department_head else None,
                 "department_code": dept.department_code if dept.department_code else None,
             }
+        return None
+    
+    def get_profile_pic(self, obj):
+        request = self.context.get("request")
+        if obj.employee.profile_pic and request:
+            return request.build_absolute_uri(obj.employee.profile_pic.url)
         return None
 
 

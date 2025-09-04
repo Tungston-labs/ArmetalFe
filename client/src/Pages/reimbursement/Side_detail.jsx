@@ -55,7 +55,7 @@ const ReimbursementHistory = ({ onClose }) => {
               {section.reimbursements.map((item) => (
                 <Card key={item.id}>
                   <ProfileImage
-                    src={item.employee_image || "https://via.placeholder.com/50"}
+                    src={item.profile_pic || "https://via.placeholder.com/50"}
                     alt={item.employee_name}
                   />
                   <Info>
