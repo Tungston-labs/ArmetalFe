@@ -9,6 +9,8 @@ from .serializers import DepartmentSerializer
 from user.permissions import IsHRAdmin  # Adjust import path as needed
 
 # Create + List View
+from django.db.models import Count
+
 class DepartmentCreateListView(generics.ListCreateAPIView):
     serializer_class = DepartmentSerializer
     permission_classes = [IsHRAdmin]
@@ -16,10 +18,19 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
     search_fields = ['name']
 
     def get_queryset(self):
-        return Department.objects.filter(company=self.request.user.company).annotate(employee_count=Count('employees'))
+        return (
+            Department.objects
+            .filter(company=self.request.user.company)
+            .annotate(
+                employee_count=Count('employees', distinct=True),
+                reimbursement_employee_count=Count('employees__reimbursements__employee', distinct=True)
+            )
+        )
 
     def perform_create(self, serializer):
         serializer.save(company=self.request.user.company)
+
+
 
 # Retrieve + Update + Delete View
 class DepartmentRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):

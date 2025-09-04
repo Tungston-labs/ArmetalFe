@@ -23,7 +23,7 @@ const months = [
 ];
 
 const today = new Date();
-const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1);
+const nextMonthDate = new Date(today.getFullYear(), today.getMonth() - 1);
 const defaultMonth = nextMonthDate.getMonth() + 1;
 const defaultYear = nextMonthDate.getFullYear();
 const years = Array.from({ length: 10 }, (_, i) => defaultYear - 2 + i);
