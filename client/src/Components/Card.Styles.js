@@ -10,6 +10,7 @@ export const CardContainer = styled.div`
 `;
 
 export const Card = styled.div`
+  position: relative;              // ✅ so Divider can be positioned
   background: #fff;
   border-radius: 12px;
   padding: 1rem;
@@ -23,21 +24,32 @@ export const CardHeader = styled.div`
 
 export const IconSection = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
+  // align-items: center;
+  // justify-content: center;
   min-width: 40px;
 `;
 
+// export const Divider = styled.div`
+//   width: 4px;
+//   background: #3352ba;
+//   border-radius: 4px;
+//   align-self: stretch;   
+//   margin: 0 1rem;
+// `;
+
 export const Divider = styled.div`
+  position: absolute;             
+  top: 0;
+  bottom: 0;
+  left: 50px;                    
   width: 4px;
   background: #3352ba;
   border-radius: 4px;
-  height: auto;
-  margin: 0 1rem;
-`;
 
+`;
 export const CardContent = styled.div`
   flex: 1;
+  padding:10px;
 `;
 
 export const CardTitle = styled.h3`

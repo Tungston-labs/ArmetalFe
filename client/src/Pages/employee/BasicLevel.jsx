@@ -34,7 +34,7 @@ import {
 import Multistep from '../../Components/Multistep';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaPlus } from 'react-icons/fa';
-import { Spin } from "antd";
+import Loader from "../../Components/Loader"
 import EmployeeIcon from "../../assets/employeeicon.svg";
 
 export default function AddEmployeeForm() {
@@ -512,7 +512,7 @@ if (!iqama || iqama.length !== 12) {
         <ApproveButton onClick={handleSubmit}>Next</ApproveButton>
       </FlexRow>
 
-      {status === "loading" && <Spin size="large" tip="Loading..." />}
+      {status === "loading" && <Loader size="large" tip="Loading..." />}
     </Container>
   );
 }

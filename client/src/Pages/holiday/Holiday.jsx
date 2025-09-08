@@ -29,9 +29,9 @@ import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { getHolidays, addHoliday, removeHoliday } from '../../Redux/holidaySlice';
 import { fetchHolidayTypes } from '../../services/holidayService';
-import SyncLoader from 'react-spinners/SyncLoader';
+// import SyncLoader from 'react-spinners/SyncLoader';
 import Navbar from '../../Components/Navbar';
-import { Spin } from "antd"; 
+import Loader from "../../Components/Loader"
 
 
 const formatDateToISO = (dateStr) => {
@@ -167,7 +167,7 @@ const cancelDelete = () => {
   {loading ? (
      <tr>
      <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-       <Spin size="large" tip="Loading holidays..." /> {/* ✅ Spinner here */}
+       <Loader size="large" /> {/* ✅ Spinner here */}
      </Td>
    </tr>
   ) : holidays.length === 0 ? (

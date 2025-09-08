@@ -35,14 +35,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getEmployeeById, submitEmployee } from "../../Redux/employeeSlice";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { NavLink, useLocation, useParams } from "react-router-dom";
-import SyncLoader from "react-spinners/SyncLoader";
 import { useNavigate } from 'react-router-dom';
-import { DropdownMenu, DropdownWrapper } from "../leaveDetails/EmployeeList.styles";
-import { IoIosArrowDown } from "react-icons/io";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { getDepartments } from "../../Redux/departmentSlice";
-
-import { Spin } from "antd";
+import Loader from "../../Components/Loader"
 import { Label } from "./BasicLevel.Styles";
 const ViewBasic = () => {
   const dispatch = useDispatch();
@@ -168,7 +164,7 @@ useEffect(() => {
 if (loading || !formData || Object.keys(formData).length === 0) {
   return (
     <FullPageLoaderWrapper>
-      <Spin size="large" tip="Loading..." />
+      <Loader size="large" tip="Loading..." />
     </FullPageLoaderWrapper>
   );
 }
@@ -203,7 +199,8 @@ if (loading || !formData || Object.keys(formData).length === 0) {
       <h3>Employee Details</h3>
 
       <FormWrapper>
-<ImageColumn style={{ position: "relative", width: "150px", height: "150px" }}>
+<ImageColumn
+ style={{ position: "relative", width: "150px", height: "150px" }}>
   {formData.profile_pic instanceof File || typeof formData.profile_pic === "string" ? (
     <ProfileImage
       src={

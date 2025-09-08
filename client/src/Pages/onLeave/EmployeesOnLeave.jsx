@@ -33,7 +33,7 @@ import { getDepartments } from "../../Redux/departmentSlice";
 import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-
+import Loader from "../../Components/Loader"
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -61,7 +61,12 @@ const EmployeeList = () => {
 
   return (
     <Container>
-      {/* Top Bar */}
+      {loading && (
+
+        <Loader />
+
+    )}
+
       <TopBar>
         <div />
         <DropdownWrapper>

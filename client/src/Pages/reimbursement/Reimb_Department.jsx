@@ -48,6 +48,8 @@ import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
+import Navbar from '../../Components/Navbar.jsx';
+import Loader from "../../Components/Loader.jsx"
 const Department = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -90,22 +92,7 @@ const Department = () => {
 
   return (
     <DepartmentContainer>
-      <TopBar>
-        <div />
-          <DropdownWrapper>
-        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
-        </HRManager>
-
-        {menuOpen && (
-          <DropdownMenu>
-            <div>Change Password</div>
-            <div>Logout</div>
-          </DropdownMenu>
-        )}
-      </DropdownWrapper>
-      </TopBar>
+     <Navbar />
 
       <HeaderSection>
 <TitleSection>
@@ -142,7 +129,7 @@ const Department = () => {
 
       <CardGrid>
   {loading ? (
-    <p>Loading...</p>
+  <Loader />
   ) : error ? (
     <p style={{ color: 'red' }}>Error: {error?.detail?.toString()}</p>
   ) : Array.isArray(departments) && departments.length > 0 ? (

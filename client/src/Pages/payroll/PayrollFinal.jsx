@@ -14,7 +14,7 @@ import {
 } from '../../Redux/payrollSlice';
 import { getDepartments } from '../../Redux/departmentSlice';
 import Navbar from '../../Components/Navbar';
-import { Spin } from "antd";
+import Loader from "../../Components/Loader"
 import Swal from "sweetalert2";
 
 const months = [
@@ -289,7 +289,7 @@ const PayrollTable = () => {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="11" style={{ textAlign: "center", padding: "2rem" }}><Spin size="large" tip="Loading..." /></td></tr>
+                <tr><td colSpan="11" style={{ textAlign: "center", padding: "2rem" }}><Loader size="large" tip="Loading..." /></td></tr>
               ) : error ? (
                 <tr><Td colSpan="11">Error: {error}</Td></tr>
               ) : data?.length > 0 ? (

@@ -14,7 +14,7 @@ import {
   HRManager,
   Subtitle,
   TitleSection
-} from "../leaveDetails/EmployeeList.styles";
+} from "./DetailOnleaveStyles";
 
 import { FaInfoCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getOnLeaveEmployees } from "../../Redux/leaveSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import Loader from "../../Components/Loader"
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -82,16 +83,13 @@ const EmployeeList = () => {
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-
+console.log(location.pathname.startsWith('/emp-on-leave') ||
+      location.pathname.startsWith('/employee-on-leave'))
   return (
+    <>
+ {isDataLoading && <Loader />}   
     <Container>
-      <TopBar>
-        <div />
-        <HRManager>
-    <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          <span>HR Manager</span>
-        </HRManager>
-      </TopBar>
+  \
 
       <HeaderSection>
         <TitleSection>
@@ -127,7 +125,8 @@ const EmployeeList = () => {
           <Tab active={location.pathname === "/employee-Contract-Visa-Expiry"}>Employee Contract & Visa Expiry</Tab>
         </NavLink>
         <NavLink to="/emp-on-leave" style={{ textDecoration: "none" }}>
-          <Tab active={location.pathname === "/emp-on-leave"}>Employees on Leave</Tab>
+          <Tab active={      location.pathname.startsWith('/employee-on-leave')
+}>Employees on Leave</Tab>
         </NavLink>
       </Tabs>
       <hr style={{ marginTop: "-18px" }} />
@@ -242,6 +241,7 @@ const EmployeeList = () => {
         </div>
       )}
     </Container>
+    </>
   );
 };
 

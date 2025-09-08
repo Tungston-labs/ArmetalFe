@@ -32,7 +32,7 @@ import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your c
 import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar';
 import Swal from "sweetalert2";
-
+import Loader from "../../Components/Loader"
 
 const DepartmentDetail = () => {
   const { id } = useParams();
@@ -128,7 +128,7 @@ const DepartmentDetail = () => {
   
 
 
-  if (!department) return <p>Loading...</p>;
+if (!department) return <Loader />;
 
   return (
     <>

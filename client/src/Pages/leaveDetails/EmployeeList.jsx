@@ -28,7 +28,7 @@ import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Navbar from "../../Components/Navbar";
-
+import Loader from "../../Components/Loader"
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -100,6 +100,7 @@ const EmployeeList = () => {
 
   return (
     <>
+        {loading && <Loader />} {/* <-- full-page loader */}
     <Navbar />
     <Container>
       <HeaderSection>
@@ -110,12 +111,13 @@ const EmployeeList = () => {
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </TitleSection>
-        <SearchInput
-          type="text"
-          placeholder="Search by employee name or ID"
-          value={searchText}
-          onChange={handleSearch}
-        />
+       <SearchInput
+  type="text"
+  placeholder="Search by employee name or ID"
+  value={searchText}
+  onChange={handleSearch}
+/>
+
         <ActionArea>
           <AddButton onClick={() => navigate("/basic-details")}>
             <FaPlus /> Add Employee

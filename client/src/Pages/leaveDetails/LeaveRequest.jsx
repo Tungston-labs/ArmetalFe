@@ -3,9 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getLeaveRequests, patchLeaveStatus } from '../../Redux/leaveSlice';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { IoEyeOutline } from 'react-icons/io5';
-import { FaPlus } from "react-icons/fa";
-import { LuArrowLeft } from "react-icons/lu";
-import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
 import OnLeaveModal from "./ModalList"
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
@@ -17,7 +14,6 @@ import {
   TableCell,
   ProfileImage,
   ActionButtons,
-  DeclineButton,
   ApproveButton,
   Tab,
   SearchInput,
@@ -38,7 +34,7 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import SyncLoader from 'react-spinners/SyncLoader';
 import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar';
-
+import Loader  from "../../Components/Loader"
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -71,6 +67,7 @@ export default function LeaveRequest() {
     const { list: departmentList, loading: deptLoading } = useSelector(
       (state) => state.departments
     );
+const isLoading = loading || deptLoading;
 
   const filteredLeaves = leaveData.filter((leave) => {
     const name = leave?.employee?.name?.toLowerCase() || '';
@@ -108,23 +105,24 @@ export default function LeaveRequest() {
     <>
     <Navbar/>
     <Container>
-      {/* <TopBar>
-        <div />
-         <DropdownWrapper>
-               <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-                 <img src="/images/user.jpg" alt="HR Manager" />
-                 <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
-               </HRManager>
-       
-               {menuOpen && (
-                 <DropdownMenu>
-                   <div>Change Password</div>
-                   <div>Logout</div>
-                 </DropdownMenu>
-               )}
-             </DropdownWrapper>
-      </TopBar> */}
-
+        {isLoading && (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        backgroundColor: "rgba(255,255,255,0.7)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 9999,
+      }}
+    >
+      <Loader color="#3352BA" />
+    </div>
+  )}
       <HeaderSection>
         <TitleSection>
           {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
@@ -197,9 +195,9 @@ export default function LeaveRequest() {
         <tbody>
           {loading ? (
             <TableRow>  <TableCell colSpan="7">
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+    {/* <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
     <p>Loading...</p>
-    </div>
+    </div> */}
   </TableCell></TableRow>
           ) : filteredLeaves.length === 0 ? (
             <TableRow><TableCell colSpan="7">No matching leave requests found.</TableCell></TableRow>
@@ -229,13 +227,7 @@ export default function LeaveRequest() {
                 </TableCell>
                 <TableCell>
                   <ActionButtons>
-                    {/* <DeclineButton onClick={() => {
-                      setSelectedLeave(leave);
-                      setActionType('rejected');
-                      setShowModal(true);
-                    }}>
-                      Decline
-                    </DeclineButton> */}
+                
 <ApproveButton
   onClick={() => {
     const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD

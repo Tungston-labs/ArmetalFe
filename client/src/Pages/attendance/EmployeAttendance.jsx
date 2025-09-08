@@ -31,9 +31,9 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartments } from "../../Redux/departmentSlice";
 import { GoArrowUpRight } from "react-icons/go";
-import { IoIosArrowDown } from "react-icons/io";
 import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import Loader from "../../Components/Loader"
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -65,26 +65,13 @@ const EmployeeList = () => {
 
   return (
     <>
+     {loading && (
+      
+          <Loader />
+  
+      )}
     <Navbar />
     <Container>
-      {/* Top Bar */}
-      {/* <TopBar>
-        <div />
-        <DropdownWrapper>
-          <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
-          </HRManager>
-          {menuOpen && (
-            <DropdownMenu>
-              <div>Change Password</div>
-              <div>Logout</div>
-            </DropdownMenu>
-          )}
-        </DropdownWrapper>
-      </TopBar> */}
-
-      {/* Header */}
       <HeaderSection>
         <TitleSection>
           <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />

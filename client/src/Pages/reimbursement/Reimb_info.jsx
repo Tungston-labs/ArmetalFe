@@ -27,7 +27,7 @@ import {
   fetchReimbursementDetail,
   updateReimbursementStatus,
 } from "../../services/reimbursement";
-
+import Loader from "../../Components/Loader"
 const ReimbursementDetail = () => {
   const { id } = useParams(); // get :id from URL
   const navigate = useNavigate();
@@ -62,8 +62,13 @@ const ReimbursementDetail = () => {
       console.error("Failed to update status:", error);
     }
   };
+ if (loading) {
+    return (
+   
+        <Loader  />
 
-  if (loading) return <p>Loading...</p>;
+    );
+  }
   if (!reimbursement) return <p>No reimbursement found.</p>;
 
   return (
@@ -108,9 +113,9 @@ const ReimbursementDetail = () => {
 />
 
 
-{!reimbursement.profile_pic && (
+{/* {!reimbursement.profile_pic && (
   <FaUserCircle className="w-12 h-12 text-gray-400" />
-)}
+)} */}
 
 
 

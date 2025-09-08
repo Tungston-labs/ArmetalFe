@@ -21,7 +21,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
-import { IoIosArrowDown } from "react-icons/io";
+import Loader from "../../Components/Loader"
 import { getUpcomingExpiryEmployees } from "../../Redux/employeeSlice";
 import Navbar from "../../Components/Navbar";
 
@@ -83,24 +83,14 @@ const EmployeeList = () => {
   return (
     <>
     <Navbar />
+   {loading && (
+      <LoaderOverlay>
+        <Loader />
+      </LoaderOverlay>
+    )}
    
     <Container>
-      {/* <TopBar>
-        <div />
-         <DropdownWrapper>
-        <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
-        </HRManager>
-
-        {menuOpen && (
-          <DropdownMenu>
-            <div>Change Password</div>
-            <div>Logout</div>
-          </DropdownMenu>
-        )}
-      </DropdownWrapper>
-      </TopBar> */}
+      
 
       <HeaderSection>
         <TitleSection>

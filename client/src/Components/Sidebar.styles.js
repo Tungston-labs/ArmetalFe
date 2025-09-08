@@ -181,6 +181,7 @@ export const CustomLink = styled(Link)`
     height: 3px;
     background:rgb(255, 255, 255);  /* golden underline */
     border-radius: 2px;
+    
   }
 
   /* Sidebar collapsed (on large screens) */

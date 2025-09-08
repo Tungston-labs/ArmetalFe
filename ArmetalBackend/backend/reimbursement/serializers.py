@@ -27,7 +27,7 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
             "employee_name",
             "employee_id",
             "designation",
-            "profile_pic",   # 👈 include in API response
+            "profile_pic",  
             "department",
             "amount",
             "status",

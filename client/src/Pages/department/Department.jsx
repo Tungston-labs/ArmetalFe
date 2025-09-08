@@ -43,7 +43,7 @@ import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
 import Navbar from '../../Components/Navbar.jsx';
-
+import Loader from "../../Components/Loader.jsx"
 const Department = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -101,16 +101,24 @@ const Department = () => {
     navigate(`/departments/${id}`);
   };
 
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", width: "100%" }}>
-          <Spin size="large" tip="Loading departments..." />
-        </div>
-      </>
-    );
-  }
+ if (loading) {
+  return (
+    <>
+      <Navbar />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          width: "100%",
+        }}
+      >
+        <Loader />
+      </div>
+    </>
+  );
+}
 
   return (
     <>

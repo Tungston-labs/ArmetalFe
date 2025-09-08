@@ -11,7 +11,7 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import TaskIcon from "../../assets/task.svg";
 import Navbar from '../../Components/Navbar';
-import { Spin } from "antd";
+import Loader from "../../Components/Loader"
 
 export default function DailyTask() {
   const dispatch = useDispatch();
@@ -174,7 +174,7 @@ export default function DailyTask() {
 
             {loading ? (
               <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-                <Spin size="large" tip="Loading..." />
+                <Loader size="large" tip="Loading..." />
               </div>
             ) : tasks.length > 0 ? (
               tasks.map((task, idx) => (

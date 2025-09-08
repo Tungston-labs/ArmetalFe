@@ -24,7 +24,8 @@ import { HiArrowLeft } from "react-icons/hi2";
 import { IoIosArrowDown } from "react-icons/io";
 import RemiIcon from "../../assets/remi.svg";
 import { fetchReimbursementsByDepartment,updateReimbursementStatus } from '../../services/reimbursement'; // <-- your service
-
+import Navbar from '../../Components/Navbar';
+import Loader from "../../Components/Loader"
 
 const DepartmentDetail = () => {
   const { id } = useParams();
@@ -46,31 +47,31 @@ const DepartmentDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   // 🔹 Fetch reimbursements for department
-  useEffect(() => {
-    const loadReimbursements = async () => {
-      try {
-        const data = await fetchReimbursementsByDepartment(id);
+ const [loading, setLoading] = useState(true);
 
-        if (data.results.length > 0) {
-          // department info from first employee
-          const deptInfo = data.results[0].department;
-
-          setDepartment(deptInfo);
-          setFormData({
-            name: deptInfo?.name || "",
-            department_code: deptInfo?.department_code || "",
-            department_head_id: deptInfo?.hr_name || "",
-          });
-
-          setEmployees(data.results);
-        }
-      } catch (error) {
-        console.error("Error fetching reimbursements:", error);
+useEffect(() => {
+  const loadReimbursements = async () => {
+    try {
+      const data = await fetchReimbursementsByDepartment(id);
+      if (data.results.length > 0) {
+        const deptInfo = data.results[0].department;
+        setDepartment(deptInfo);
+        setFormData({
+          name: deptInfo?.name || "",
+          department_code: deptInfo?.department_code || "",
+          department_head_id: deptInfo?.hr_name || "",
+        });
+        setEmployees(data.results);
       }
-    };
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  loadReimbursements();
+}, [id]);
 
-    loadReimbursements();
-  }, [id]);
 
   const handleStatusChange = async (empId, newStatus) => {
     const prevEmployees = [...employees];
@@ -117,23 +118,12 @@ const DepartmentDetail = () => {
   };
 
   return (
+    <>
+    {loading && <Loader text="Loading Department..." />}
+    {!loading && (
     <Container>
       {/* Top Bar */}
-      <TopBar>
-        <div />
-        <DropdownWrapper>
-          <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
-          </HRManager>
-          {menuOpen && (
-            <DropdownMenu>
-              <div>Change Password</div>
-              <div>Logout</div>
-            </DropdownMenu>
-          )}
-        </DropdownWrapper>
-      </TopBar>
+   <Navbar/>
 
       {/* Header */}
       <HeaderSection>
@@ -285,6 +275,8 @@ const DepartmentDetail = () => {
         </div>
       )}
     </Container>
+    )}
+    </>
   );
 };
 

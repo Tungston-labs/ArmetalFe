@@ -33,7 +33,7 @@ import { getLeaveDetails, patchLeaveStatus } from '../../Redux/leaveSlice';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import EmployeeIcon from "../../assets/employeeicon.svg";
-
+import Loader from "../../Components/Loader"
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -67,17 +67,18 @@ const navigate = useNavigate();
     }
   };
   
+if (loading) {
+  return (
+    <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'100vh' }}>
+      <Loader color="#003366" size={15} />
+    </div>
+  );
+}
 
 
   return (
     <Container>
-      {/* <TopBar>
-        <div />
-        <HRManager>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
-        </HRManager>
-      </TopBar> */}
+      
 
       <TitleSection>
          <LuArrowLeft

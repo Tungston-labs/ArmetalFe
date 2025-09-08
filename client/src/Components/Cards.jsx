@@ -38,7 +38,7 @@ const Cards = () => {
       <Card>
         <CardHeader>
          <IconSection>
-  <img src={totalIcon} alt="Total Employees" width={38} height={38} />
+  <img src={totalIcon} alt="Total Employees" width={30} height={30} />
 </IconSection>
           <Divider />
           <CardContent>
@@ -80,7 +80,7 @@ const Cards = () => {
       <Card>
         <CardHeader>
          <IconSection>
-  <img src={totalIcons} alt="Total Employees" width={38} height={38} />
+  <img src={totalIcons} alt="Total Employees" width={30} height={30} />
 </IconSection>
           <Divider />
           <CardContent>
@@ -123,11 +123,11 @@ const Cards = () => {
       <Card>
         <CardHeader>
           <IconSection>
-  <img src={totalIconses} alt="Total Employees" width={38} height={38} />
+  <img src={totalIconses} alt="Total Employees" width={30} height={30} />
 </IconSection>
           <Divider />
           <CardContent>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", justifyContent: "space-between"}}>
               <CardTitle>Employee Visa Expiry</CardTitle>
               <CardCount>{summary?.upcoming_visa_expiry?.count || 0}</CardCount>
             </div>

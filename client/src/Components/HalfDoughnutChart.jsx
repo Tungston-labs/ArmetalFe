@@ -2,12 +2,12 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
-
+import { useNavigate } from "react-router-dom";
 ChartJS.register(ArcElement, Tooltip);
 
 const HalfDoughnutChart = ({ active, onLeave }) => {
   const total = active + onLeave;
-
+  const navigate = useNavigate();
   const data = {
     labels: ["Active Employees", "On Leave Today"],
     datasets: [
@@ -30,6 +30,16 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
     plugins: {
       legend: { display: false },
       tooltip: { enabled: false },
+    },
+    onClick: (evt, elements) => {
+      if (elements.length > 0) {
+        const index = elements[0].index;
+        if (index === 0) {
+          navigate("/employee-attendance");
+        } else if (index === 1) {
+          navigate("/emp-on-leave");
+        }
+      }
     },
   };
 

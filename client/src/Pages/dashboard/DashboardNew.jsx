@@ -38,7 +38,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDashboardSummary } from "../../Redux/dashboardSlice";
 import { useLogout } from "../../services/logout";
 import Navbar from "../../Components/Navbar"
-import { Spin } from "antd";
+import Loader from "../../Components/Loader"
 import Cards from "../../Components/Cards"
 import { Link } from "react-router-dom";
 import colors from "react-multi-date-picker/plugins/colors";
@@ -112,7 +112,7 @@ const CardsOnly = () => {
           width: "100%",
         }}
       >
-        <Spin size="large" tip="Loading Dashboard..." />
+        <Loader size="large"  />
       </div>
     );
   }
@@ -134,28 +134,30 @@ const CardsOnly = () => {
   }}
 />
 
-      <DepartmentCalendarWrapper>
-        <DepartmentGrid>
-          {departmentsList.map((dept) => (
-            <DepartmentCard key={dept.id}>
-              <Label>{dept.name.charAt(0)}</Label>
-              <div>
-                <h4>{dept.name}</h4>
-                <p>Department Head</p>
-                <strong>{dept.head?.name}</strong>
-                </div>
-              <Icon>
-              <Link to="/department">
-  <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
-</Link>
-              </Icon>
-            </DepartmentCard>
-          ))}
-        </DepartmentGrid>
-        <CalendarWrapper>
-          <Calendar fullscreen={false} dateCellRender={dateCellRender} />
-        </CalendarWrapper>
-      </DepartmentCalendarWrapper>
+     <DepartmentCalendarWrapper>
+  <DepartmentGrid>
+    {departmentsList.map((dept) => (
+      <DepartmentCard key={dept.id}>
+        <Label>{dept.name.charAt(0)}</Label>
+        <div>
+          <h4>{dept.name}</h4>
+          <p>Department Head</p>
+          <strong>{dept.head?.name}</strong>
+        </div>
+        <Icon>
+          <Link to={`/departments/${dept.id}`}>
+            <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
+          </Link>
+        </Icon>
+      </DepartmentCard>
+    ))}
+  </DepartmentGrid>
+
+  <CalendarWrapper>
+    <Calendar fullscreen={false} dateCellRender={dateCellRender} />
+  </CalendarWrapper>
+</DepartmentCalendarWrapper>
+
 
       {/* Presence + Contract Expiry */}
       <Flex justify="space-between" align="center">

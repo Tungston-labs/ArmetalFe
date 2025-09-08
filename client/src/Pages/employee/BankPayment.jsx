@@ -17,12 +17,15 @@ import {
   setBankFormData
 } from '../../Redux/employeeSlice';
 import { clearBankPayment } from '../../Redux/employeeSlice';
-import { FiChevronDown } from "react-icons/fi";
-import { FaUserCircle } from "react-icons/fa";
+// import { FiChevronDown } from "react-icons/fi";
+// import { FaUserCircle } from "react-icons/fa";
+import Loader from "../../Components/Loader"
 import EmployeeIcon from "../../assets/employeeicon.svg";
 export default function BankPaymentForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
 const [menuOpen, setMenuOpen] = useState(false);
   const employeeId = useSelector((state) => state.employee.employeeId);
   const bankPayment = useSelector((state) => state.employee.bankPayment);
@@ -131,7 +134,7 @@ const [bankProofImage, setBankProofImage] = useState(null);
 };
 
     dispatch(setBankFormData(bankData)); // ✅ Save to Redux
-
+ setLoading(true); 
     try {
       await dispatch(submitBankPayment({ employeeId, data: bankData,bankProofImage })).unwrap();
     dispatch(clearBankPayment());
@@ -146,6 +149,8 @@ const [bankProofImage, setBankProofImage] = useState(null);
   };
 
   return (
+     <>
+    {loading && <Loader  />}
     <Container>
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -188,5 +193,6 @@ const [bankProofImage, setBankProofImage] = useState(null);
   setBankProofImage={setBankProofImage}
       />
     </Container>
+    </>
   );
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sample from "./Sample"; // Left Side
 import Employeedashboard from "./Employeedashboard"; // Right Side
 import styled from "styled-components";
-import { Spin } from "antd";
+import Loader from "../../Components/Loader"
 
 const Wrapper = styled.div`
   background: #f4f4f4;
@@ -37,7 +37,7 @@ const FullDashboard = () => {
   if (loading) {
     return (
       <LoaderWrapper>
-        <Spin size="large" tip="Loading Dashboard..." />
+        <Loader size="large" tip="Loading Dashboard..." />
       </LoaderWrapper>
     );
   }

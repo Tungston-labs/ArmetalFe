@@ -59,16 +59,16 @@ const TimeLogDashboard = () => {
   // if (loadingEmployeeDash) return <p>Loading...</p>;
 
   if (loadingEmployeeDash) {
-    return (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        height: "100vh" 
-      }}>
-        <Spin size="large" tip="Loading Dashboard..." />
-      </div>
-    );
+    // return (
+    //   <div style={{ 
+    //     display: "flex", 
+    //     justifyContent: "center", 
+    //     alignItems: "center", 
+    //     height: "100vh" 
+    //   }}>
+    //     <Spin size="large" tip="Loading Dashboard..." />
+    //   </div>
+    // );
   }
   if (employeeDashError) return <p>Error: {employeeDashError}</p>;
   const getPreviousMonthName = () => {

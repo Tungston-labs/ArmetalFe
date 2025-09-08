@@ -16,12 +16,14 @@ import {
   uploadImageThunk
 } from '../../Redux/employeeSlice';
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import { FiChevronDown } from "react-icons/fi";
-import { FaUserCircle } from "react-icons/fa";
+import Loader from "../../Components/Loader"
+
 export default function DocumentUploadForm() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const employeeId = useSelector((state) => state.employee.employeeId);
   const documentUrls = useSelector((state) => state.employee.documentUrls);
@@ -65,75 +67,54 @@ const [uploadErrors,setUploadErrors]= useState({});
     });
   };
 
-  const handleSubmit = async () => {
-    console.log("📤 Submit button clicked");
-//  const requiredFields = ['passport', 'workPermit', 'contract', 'insurance', 'certificate'];
-  // const newErrors = {};
-
-  // for (const field of requiredFields) {
-  //   const hasLocal = selectedFiles[field]?.length > 0;
-  //   const hasUploaded = documentUrls[field]?.length > 0;
-  //   if (!hasLocal && !hasUploaded) {
-  //     newErrors[field] = `${field} is required`;
-  //   }
-  // }
-
-  // if (Object.keys(newErrors).length > 0) {
-  //   setUploadErrors(newErrors);
-  //   console.warn("❌ Missing document fields:", newErrors);
-  //   return;
-  // }
-
+const handleSubmit = async () => {
   setUploadErrors({});
-    try {
-      const uploadAndGetUrls = async (type) => {
-        const files = selectedFiles[type] || [];
-        if (files.length === 0) return documentUrls[type] || [];
+  setLoading(true);
+  try {
+    const uploadAndGetUrls = async (type) => {
+      const files = selectedFiles[type] || [];
+      if (files.length === 0) return documentUrls[type] || [];
 
-        const uploadedUrls = await Promise.all(
-          files.map(file => dispatch(uploadImageThunk(file)).unwrap())
-        );
+      const uploadedUrls = await Promise.all(
+        files.map(file => dispatch(uploadImageThunk(file)).unwrap())
+      );
 
-        uploadedUrls.forEach(url => {
-          dispatch(addDocumentUrl({ type, url }));
-        });
+      // Clear local files for this type immediately
+      setSelectedFiles(prev => ({ ...prev, [type]: [] }));
 
-        return [...(documentUrls[type] || []), ...uploadedUrls];
-      };
-
-      const passportUrls = await uploadAndGetUrls('passport');
-      const insuranceUrls = await uploadAndGetUrls('insurance');
-      const workPermitUrls = await uploadAndGetUrls('workPermit');
-      const contractUrls = await uploadAndGetUrls('contract');
-      const certificateUrls = await uploadAndGetUrls('certificate');
-
-      const payload = {
-        passport_image1_url: passportUrls[0] || "",
-        passport_image2_url: passportUrls[1] || "",
-        insurance_image_url: insuranceUrls[0] || "",
-        work_permit_urls: workPermitUrls,
-        contract_urls: contractUrls,
-        certificate_urls: certificateUrls
-      };
-
-      console.log("Sending documents payload:", payload);
-
-      await dispatch(submitDocumentsThunk({ employeeId, documents: payload })).unwrap();
-      setShowSuccessModal(true);
-
-      // Clear local selected files
-      setSelectedFiles({
-        passport: [],
-        insurance: [],
-        workPermit: [],
-        contract: [],
-        certificate: [],
+      // Add uploaded URLs to Redux
+      uploadedUrls.forEach(url => {
+        dispatch(addDocumentUrl({ type, url }));
       });
-    } catch (err) {
-      console.error("❌ Document submission failed:", err);
-      alert("Final submission failed: " + err.message);
-    }
-  };
+
+      return [...(documentUrls[type] || []), ...uploadedUrls];
+    };
+
+    const passportUrls = await uploadAndGetUrls('passport');
+    const insuranceUrls = await uploadAndGetUrls('insurance');
+    const workPermitUrls = await uploadAndGetUrls('workPermit');
+    const contractUrls = await uploadAndGetUrls('contract');
+    const certificateUrls = await uploadAndGetUrls('certificate');
+
+    const payload = {
+      passport_image1_url: passportUrls[0] || "",
+      passport_image2_url: passportUrls[1] || "",
+      insurance_image_url: insuranceUrls[0] || "",
+      work_permit_urls: workPermitUrls,
+      contract_urls: contractUrls,
+      certificate_urls: certificateUrls
+    };
+
+    await dispatch(submitDocumentsThunk({ employeeId, documents: payload })).unwrap();
+    setShowSuccessModal(true);
+  } catch (err) {
+    console.error("❌ Document submission failed:", err);
+    alert("Final submission failed: " + err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const renderPreviewImages = (type) => {
     const localFiles = selectedFiles[type].map((file, index) => (
@@ -197,6 +178,8 @@ const [uploadErrors,setUploadErrors]= useState({});
 );
 
   return (
+     <>
+    {loading && <Loader  />}
     <Container>
       <Header>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
@@ -207,50 +190,6 @@ const [uploadErrors,setUploadErrors]= useState({});
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </div>
-         {/* <RoleInfo style={{ position: "relative" }}>
-         <div
-           style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-           onClick={() => setMenuOpen(!menuOpen)}
-         >
-           <FaUserCircle size={30} style={{ marginRight: "0.5rem" }} />
-               <FiChevronDown size={20} onClick={() => setMenuOpen(!menuOpen)} />
-         </div>
-       
-         {menuOpen && (
-           <div
-             style={{
-               position: "absolute",
-               top: "50px",
-               right: 0,
-               background: "#fff",
-               boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
-               borderRadius: "5px",
-               zIndex: 1000,
-               minWidth: "150px",
-             }}
-           >
-             <div
-               // onClick={handleChangePassword}
-               style={{
-                 padding: "10px",
-                 cursor: "pointer",
-                 borderBottom: "1px solid #ddd",
-               }}
-             >
-               Change Password
-             </div>
-             <div
-               // onClick={handleLogout}
-               style={{
-                 padding: "10px",
-                 cursor: "pointer",
-               }}
-             >
-               Logout
-             </div>
-           </div>
-         )}
-       </RoleInfo> */}
       </Header>
 
       <Hr />
@@ -282,5 +221,6 @@ const [uploadErrors,setUploadErrors]= useState({});
 )}
 
     </Container>
+    </>
   );
 }
