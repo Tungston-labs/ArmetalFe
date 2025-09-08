@@ -188,7 +188,7 @@ const Department = () => {
               );
             })
           ) : (
-            <p>No departments found.</p>
+            <p>No departments found</p>
           )}
         </CardGrid>
 
