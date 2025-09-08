@@ -21,7 +21,7 @@ class Employee_db(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     employee_id = models.CharField(max_length=200, unique=True, editable=False)
     password = models.CharField(max_length=200,unique=True,null=True,blank=True)
-    name = models.CharField(max_length=500)
+    name = EncryptedCharField(max_length=500)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     email = models.EmailField(unique=True)
     phno = EncryptedCharField(max_length=500,unique=True,null=True,blank=True)
