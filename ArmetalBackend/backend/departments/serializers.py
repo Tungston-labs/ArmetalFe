@@ -11,7 +11,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
         required=False
     )
     employee_count = serializers.IntegerField(read_only=True)
-    reimbursement_employee_count = serializers.IntegerField(read_only=True)
+    reimbursement_request_count = serializers.IntegerField(read_only=True)
     attendance_employee_count = serializers.IntegerField(read_only=True)  # ✅ new
     leave_request_count = serializers.IntegerField(read_only=True)       # ✅ new
 
