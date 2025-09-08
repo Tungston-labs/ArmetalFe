@@ -28,7 +28,6 @@ from django.utils import timezone
 from rest_framework import generics, filters
 from .models import Department
 from .serializers import DepartmentSerializer
-from .permissions import IsHRAdmin
 
 
 
