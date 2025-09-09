@@ -173,7 +173,7 @@ const EmployeeList = () => {
           ) : Array.isArray(employeeList) && employeeList.length > 0 ? (
             employeeList.map((emp, index) => (
               <tr key={emp.id}>
-                <td>{index + 1 + (page - 1) * 7}</td>
+                <td>{index + 1 + (page - 1) * 20}</td>
                 <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   {emp.profile_pic ? (
                     <ProfileImg src={emp.profile_pic} alt="profile" />
