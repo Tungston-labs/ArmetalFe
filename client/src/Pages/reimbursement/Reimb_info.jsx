@@ -104,13 +104,14 @@ const ReimbursementDetail = () => {
       <ProfileImage
   src={
     reimbursement.profile_pic
-      ? `http://127.0.0.1:8000${reimbursement.profile_pic}`  // adjust your backend URL
+      ? reimbursement.profile_pic // use as-is
       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
           reimbursement.employee_name || "User"
         )}&background=random`
   }
   alt="profile"
 />
+
 
 
 
