@@ -26,10 +26,13 @@ import RemiIcon from "../../assets/remi.svg";
 import { fetchReimbursementsByDepartment,updateReimbursementStatus } from '../../services/reimbursement'; // <-- your service
 import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
+import { Pagination } from '../leaveDetails/EmployeeList.styles';
 
 const DepartmentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+const [page, setPage] = useState(1);
+const [pagination, setPagination] = useState(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -52,7 +55,7 @@ const DepartmentDetail = () => {
 useEffect(() => {
   const loadReimbursements = async () => {
     try {
-      const data = await fetchReimbursementsByDepartment(id);
+      const data = await fetchReimbursementsByDepartment(id,page);
       if (data.results.length > 0) {
         const deptInfo = data.results[0].department;
         setDepartment(deptInfo);
@@ -62,6 +65,9 @@ useEffect(() => {
           department_head_id: deptInfo?.hr_name || "",
         });
         setEmployees(data.results);
+        setPagination({
+          total_pages: Math.ceil(data.count / 10), // <-- adjust based on API page size
+        });
       }
     } catch (error) {
       console.error(error);
@@ -241,6 +247,29 @@ useEffect(() => {
           </tbody>
         </StyledTable>
       </TableWrapper>
+ <Pagination>
+        <span onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>
+          &larr;
+        </span>
+        {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
+          (pageNumber) => (
+            <span
+              key={pageNumber}
+              onClick={() => setPage(pageNumber)}
+              className={page === pageNumber ? "active" : ""}
+            >
+              {pageNumber}
+            </span>
+          )
+        )}
+        <span
+          onClick={() => {
+            if (page < (pagination?.total_pages || 1)) setPage(page + 1);
+          }}
+        >
+          &rarr;
+        </span>
+      </Pagination>
 
       {/* Delete Modal */}
       {showDeleteModal && (

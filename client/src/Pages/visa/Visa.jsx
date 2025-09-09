@@ -104,7 +104,7 @@ const EmployeeList = () => {
         <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent:"space-between" }}>
           <SearchInput
             type="text"
-            placeholder="Search by employee name or ID"
+            placeholder="Search by employee ID"
             value={searchText}
             onChange={handleSearch}
           />
