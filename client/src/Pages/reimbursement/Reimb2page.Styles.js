@@ -233,6 +233,28 @@ export const DropdownWrapper = styled.div`
   position: relative;
 `;
 
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: flex-start; /* changed from flex-end to flex-start */
+  gap: 0.3rem;
+  margin-top: 1.5rem;
+  padding: 0.6rem;
+
+  span {
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 0.7rem;
+  }
+
+  .active {
+    background: #1e3a8a;
+    color: white;
+    border-color: #1e3a8a;
+  }
+`;
+
 export const DropdownMenu = styled.div`
   position: absolute;
   top: 40px;

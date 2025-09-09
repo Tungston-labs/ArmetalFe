@@ -113,7 +113,7 @@ const EmployeeList = () => {
         </TitleSection>
        <SearchInput
   type="text"
-  placeholder="Search by employee name or ID"
+  placeholder="Search by employee ID"
   value={searchText}
   onChange={handleSearch}
 />
