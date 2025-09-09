@@ -75,32 +75,46 @@ const [formError, setFormError] = useState("");
   
 
 const handleAdd = () => {
-  if (formData.name && formData.type && formData.date) {
-    const formattedDate = formatDateToISO(formData.date);
-    const selectedDate = new Date(formData.date);
-    const today = new Date();
+  const { name, type, date } = formData;
+  const trimmedName = name.trim();
 
-    // Clear time from both dates for comparison
-    today.setHours(0, 0, 0, 0);
-    selectedDate.setHours(0, 0, 0, 0);
-
-    if (selectedDate < today) {
-      setFormError("⚠️ Holiday date cannot be in the past.");
-      return;
-    }
-
-    dispatch(addHoliday({
-      description: formData.name,
-      holiday_type: formData.type,
-      date: formattedDate
-    }));
-
-    setFormData({ name: "", type: "", date: "" });
-    setFormError(""); // Clear error
-  } else {
+  // Validation: All fields must be filled
+  if (!trimmedName || !type || !date) {
     setFormError("⚠️ Please fill in all fields before adding a holiday.");
+    return;
   }
+
+  // Validation: Maximum 250 characters for holiday name
+  if (trimmedName.length > 250) {
+    setFormError("⚠️ Holiday name cannot exceed 250 characters.");
+    return;
+  }
+
+  const formattedDate = formatDateToISO(date);
+  const selectedDate = new Date(date);
+  const today = new Date();
+
+  // Clear time from both dates for comparison
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
+
+  // Validation: Date should not be in the past
+  if (selectedDate < today) {
+    setFormError("⚠️ Holiday date cannot be in the past.");
+    return;
+  }
+
+  // ✅ All validations passed, dispatch action
+  dispatch(addHoliday({
+    description: trimmedName,
+    holiday_type: type,
+    date: formattedDate
+  }));
+
+  setFormData({ name: "", type: "", date: "" });
+  setFormError(""); 
 };
+
 
 
 
@@ -129,7 +143,15 @@ const cancelDelete = () => {
     <Container>
 
       <FormSection>
-  <Input name="name" placeholder="Holiday name" value={formData.name} onChange={handleChange} />
+<Input
+  name="name"
+  placeholder="Holiday name"
+  value={formData.name}
+  onChange={(e) =>
+    setFormData({ ...formData, name: e.target.value.slice(0, 250) })
+  }
+/>
+
   
   <Select name="type" value={formData.type} onChange={handleChange}>
     <option value="">Select</option>
@@ -180,7 +202,7 @@ const cancelDelete = () => {
     holidays.map((item, index) => (
       <tr key={item.id}>
         <Td>{(currentPage - 1) * 7 + index + 1}</Td>
-        <Td>{item.description}</Td>
+     <Td title={item.description}>{item.description}</Td>
         <Td>{item.holiday_type_display}</Td>
         <Td>{item.date}</Td>
         <Td>

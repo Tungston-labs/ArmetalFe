@@ -22,6 +22,7 @@ export default function DailyTask() {
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState(null);
+const selected = new Date(selectedDate); // convert string to Date
 
 
   // Fetch departments on mount
@@ -111,6 +112,7 @@ export default function DailyTask() {
           {/* Date selector */}
           <div className="calendar-header">
             <div className="left">
+                <button onClick={handlePrevDate}>{"<"}</button>
               <FaRegCalendarAlt className="calendar-icon" />
               <div className="date-info">
                 <div className="day">{new Date(selectedDate).getDate()}</div>
@@ -121,30 +123,42 @@ export default function DailyTask() {
               </div>
             </div>
             <div className="nav">
-              <button onClick={handlePrevDate}>{"<"}</button>
+              {/* <button onClick={handlePrevDate}>{"<"}</button> */}
               <button onClick={handleNextDate}>{">"}</button>
             </div>
           </div>
 
-          <input type="date" value={selectedDate} onChange={handleDateChange} />
+          {/* <input type="date" value={selectedDate} onChange={handleDateChange} /> */}
         </DateSelector>
 
-        <Calendar>
-          {[...Array(6)].map((_, i) => {
-            const baseDate = new Date(selectedDate);
-            const newDate = new Date(baseDate);
-            newDate.setDate(baseDate.getDate() + i);
-            const isActive = newDate.toDateString() === new Date(selectedDate).toDateString();
-            const dayName = newDate.toLocaleString('default', { weekday: 'short' });
-            return (
-              <Day key={i} active={isActive}>
-                <strong>{dayName}</strong>
-                <Hr />
-                <span>{newDate.getDate()} {newDate.toLocaleString('default', { month: 'short' })}</span>
-              </Day>
-            );
-          })}
-        </Calendar>
+ <Calendar>
+  {[...Array(6)].map((_, i) => {
+    const baseDate = new Date(selectedDate); // string → Date
+    const newDate = new Date(baseDate);
+    newDate.setDate(baseDate.getDate() + i);
+
+    // Compare as Dates
+    const isActive = newDate.toDateString() === baseDate.toDateString();
+
+    const dayName = newDate.toLocaleString('default', { weekday: 'short' });
+
+    return (
+      <Day
+        key={i}
+        active={isActive}
+        onClick={() => setSelectedDate(newDate.toISOString().split("T")[0])} // keep string in state
+      >
+        <strong>{dayName}</strong>
+        <Hr />
+        <span>
+          {newDate.getDate()} {newDate.toLocaleString('default', { month: 'short' })}
+        </span>
+      </Day>
+    );
+  })}
+</Calendar>
+
+
 
         <div style={{ display: 'flex', gap: '.5rem' }}>
           <EmployeesPanel>

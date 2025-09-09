@@ -205,9 +205,23 @@ export const Th = styled.th`
 
 export const Td = styled.td`
   padding: 10px;
-  // border-bottom: 1px solid #eee;
-    background: #fff;
+  background: #fff;
+  max-width: 250px; /* adjust column width */
+  white-space: nowrap;       /* keep text in one line */
+  overflow: hidden;          /* hide overflow */
+  text-overflow: ellipsis;   /* show "..." if text is too long */
+  cursor: default;
+  
+  // &:hover {
+  //   overflow: visible;       /* show full content on hover */
+  //   white-space: normal;
+  //   background-color: #f5f5f5;
+  //   position: relative;
+  //   z-index: 1;
+  }
 `;
+
+
 export const Tr = styled.tr`
   overflow: hidden;
 `;

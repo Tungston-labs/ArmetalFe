@@ -83,6 +83,15 @@ export const DescriptionBox = styled.div`
   border-radius: 7px;
   line-height: 1.4;
   margin-bottom: 1.5rem;
+
+  /* Ensure text wraps and respects line breaks */
+  white-space: pre-wrap;      /* preserves line breaks */
+  word-wrap: break-word;      /* wraps long words */
+  overflow-wrap: break-word;  /* ensures no overflow */
+
+  /* Optional: make scrollable if too long */
+  max-height: 300px;          /* adjust as needed */
+  overflow-y: auto;
 `;
 
 export const BillsSection = styled.div`

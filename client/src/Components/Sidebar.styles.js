@@ -146,16 +146,16 @@ export const CustomLink = styled(Link)`
   font-family: Satoshi, sans-serif;
   transition: all 0.3s ease;
   cursor: pointer;
-  position: relative;  /* 👈 needed for underline */
+  position: relative;
 
   svg {
     margin-right: 12px;
-    transition: margin 0.3s ease;
+    transition: margin 0.3s ease, color 0.3s ease;
   }
 
   span {
     white-space: nowrap;
-    transition: opacity 0.3s ease, width 0.3s ease;
+    transition: opacity 0.3s ease, width 0.3s ease, color 0.3s ease;
   }
 
   &:hover {
@@ -167,24 +167,28 @@ export const CustomLink = styled(Link)`
     }
   }
 
-  /* Active link underline + highlight */
+  /* Active link style (same as hover) */
   &.active {
-    // color:rgb(255, 255, 255);
+    background: white;
+    color: #172554;
+
+    svg {
+      color: #172554;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      left: 10%;
+      width: 80%;
+      height: 3px;
+      background: rgb(255, 255, 255);
+      border-radius: 2px;
+    }
   }
 
-  &.active::after {
-    content: "";
-    position: absolute;
-    bottom: 4px;   /* just above padding */
-    left: 10%;
-    width: 80%;
-    height: 3px;
-    background:rgb(255, 255, 255);  /* golden underline */
-    border-radius: 2px;
-    
-  }
-
-  /* Sidebar collapsed (on large screens) */
+  /* Sidebar collapsed */
   &.collapsed {
     justify-content: center;
 
@@ -197,7 +201,6 @@ export const CustomLink = styled(Link)`
     }
   }
 
-  /* Small screen behavior: Always hide text */
   @media (max-width: 768px) {
     justify-content: center;
 
@@ -210,4 +213,5 @@ export const CustomLink = styled(Link)`
     }
   }
 `;
+
 

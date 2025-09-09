@@ -37,7 +37,7 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
         if (index === 0) {
           navigate("/employee-attendance");
         } else if (index === 1) {
-          navigate("/emp-on-leave");
+          navigate("/employee-on-leave");
         }
       }
     },

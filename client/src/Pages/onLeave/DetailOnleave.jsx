@@ -83,13 +83,13 @@ const EmployeeList = () => {
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-console.log(location.pathname.startsWith('/emp-on-leave') ||
-      location.pathname.startsWith('/employee-on-leave'))
+console.log(location.pathname.startsWith('/employee-on-leave') ||
+      location.pathname.startsWith('/employee-leave'))
   return (
     <>
  {isDataLoading && <Loader />}   
     <Container>
-  \
+  
 
       <HeaderSection>
         <TitleSection>
@@ -97,7 +97,7 @@ console.log(location.pathname.startsWith('/emp-on-leave') ||
           <div>
             <Title>Employee</Title>
             <Subtitle>
-              {departmentId ? "Employees On Leave" : "Manage your Employee."}
+           {departmentId ? "Employees On Leave" : "Manage your Employee."}
             </Subtitle>
           </div>
         </TitleSection>
@@ -115,8 +115,8 @@ console.log(location.pathname.startsWith('/emp-on-leave') ||
         <NavLink to="/employee" style={{ textDecoration: "none" }}>
           <Tab active={location.pathname === "/employee"}>Employee list</Tab>
         </NavLink>
-        <NavLink to="/leave-request" style={{ textDecoration: "none" }}>
-          <Tab active={location.pathname === "/leave-request"}>Employee leave request</Tab>
+        <NavLink to="/lemployee-leave-request" style={{ textDecoration: "none" }}>
+          <Tab active={location.pathname === "/employee-leave-request"}>Employee leave request</Tab>
         </NavLink>
         <NavLink to="/employee-attendance" style={{ textDecoration: "none" }}>
           <Tab active={location.pathname === "/employee-attendance"}>Employee Attendance</Tab>
@@ -124,8 +124,8 @@ console.log(location.pathname.startsWith('/emp-on-leave') ||
         <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: "none" }}>
           <Tab active={location.pathname === "/employee-Contract-Visa-Expiry"}>Employee Contract & Visa Expiry</Tab>
         </NavLink>
-        <NavLink to="/emp-on-leave" style={{ textDecoration: "none" }}>
-          <Tab active={      location.pathname.startsWith('/employee-on-leave')
+        <NavLink to="/employee-on-leave" style={{ textDecoration: "none" }}>
+          <Tab active={location.pathname.startsWith('/employ-on-leave')
 }>Employees on Leave</Tab>
         </NavLink>
       </Tabs>

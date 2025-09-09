@@ -117,6 +117,21 @@ export default function AddEmployeeForm() {
       newErrors.email = 'Enter a valid email address';
     }
 
+     // --- Date Validations ---
+  const today = new Date().toISOString().split("T")[0];
+  if (dob && dob >= today) {
+    newErrors.dob = "Date of birth must be in the past";
+  }
+  if (joining_date && joining_date > today) {
+    newErrors.joining_date = "Joining date cannot be in the future";
+  }
+  if (contract_expiry_date && contract_expiry_date <= today) {
+    newErrors.contract_expiry_date = "Contract expiry must be in the future";
+  }
+  if (visa_expiry_date && visa_expiry_date <= today) {
+    newErrors.visa_expiry_date = "Visa expiry must be in the future";
+  }
+
     const twelveDigitRegex = /^[0-9]{12}$/;
     if (country === "IN") {
       if (!formData.aadar_number || !twelveDigitRegex.test(formData.aadar_number.trim())) {
@@ -129,6 +144,15 @@ if (!iqama || iqama.length !== 12) {
 }
 
     }
+
+if (passport_number && !/^[A-Za-z0-9]{6,9}$/.test(passport_number.trim())) {
+    newErrors.passport_number = "Enter a valid passport number (6–9 chars)";
+  }
+
+  if (insurance_number && insurance_number.trim().length < 5) {
+    newErrors.insurance_number = "Insurance number must be at least 5 characters";
+  }
+
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

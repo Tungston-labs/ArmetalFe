@@ -1,23 +1,22 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import API from "../services/api"; // make sure API instance is imported
+import { useNavigate } from "react-router-dom"; // ✅ import useNavigate
 import {
   ModalOverlay,
   ModalContainer,
   Message,
-  BoldText,
   ButtonRow,
   ModalButton,
 } from "./ConfirmLeaveModal.Styles";
 
 const ConfirmLeaveModal = ({
-  onClose,
-  onConfirm,   // ✅ new callback from parent
+  onConfirm,   // ✅ parent callback
   actionType = "approve",
   leaveId,
   zIndex = 2000,
 }) => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // ✅ initialize navigate
 
   if (!leaveId) {
     console.error("Leave ID not provided to ConfirmLeaveModal!");
@@ -28,18 +27,22 @@ const ConfirmLeaveModal = ({
 
   const handleConfirm = async () => {
     setLoading(true);
-    await onConfirm();   // ✅ use parent’s Redux + navigation logic
+    await onConfirm();   // ✅ call parent logic
     setLoading(false);
+  };
+
+  const handleCancel = () => {
+    navigate(-1); // ✅ go back to the previous page
   };
 
   return ReactDOM.createPortal(
     <ModalOverlay style={{ zIndex }}>
       <ModalContainer style={{ zIndex: zIndex + 1 }}>
         <Message>
-          Are you sure ??? <br />
+          Are you sure you want to {actionText}?
         </Message>
         <ButtonRow>
-          <ModalButton variant="cancel" onClick={onClose} disabled={loading}>
+          <ModalButton variant="cancel" onClick={handleCancel} disabled={loading}>
             Cancel
           </ModalButton>
           <ModalButton variant="confirm" onClick={handleConfirm} disabled={loading}>
@@ -51,6 +54,5 @@ const ConfirmLeaveModal = ({
     document.body
   );
 };
-
 
 export default ConfirmLeaveModal;

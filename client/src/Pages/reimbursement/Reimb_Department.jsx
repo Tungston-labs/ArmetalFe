@@ -87,7 +87,7 @@ const Department = () => {
   };
 
   const handleCardClick = (id) => {
-    navigate(`/reimb2page/${id}`);
+    navigate(`/reimbursement_detail/${id}`);
   };
 
   return (

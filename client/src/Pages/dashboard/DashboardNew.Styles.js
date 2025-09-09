@@ -350,24 +350,39 @@ export const HolidayCard = styled(Card)`
 
 export const HolidayItem = styled.div`
   display: flex;
-  width:20rem;
+  width: 20rem;
   justify-content: space-between;
   align-items: center;
   border: 1px solid #eee;
-//   border-radius: 8px;
   padding: 0.5rem 1rem;
-//   margin-top: 0.5rem;
   background: white;
 
   div {
     display: flex;
     flex-direction: column;
+    max-width: 70%; /* limit width for text truncation */
   }
 
   h4 {
     margin: 0;
     font-size: 1rem;
+    white-space: nowrap;       /* single line */
+    overflow: hidden;          /* hide overflow */
+    text-overflow: ellipsis;   /* show "..." for long text */
+    cursor: default;
   }
+
+  /* Show full name on hover */
+  // h4:hover {
+  //   overflow: visible;
+  //   white-space: normal;
+  //   position: absolute;
+  //   background: #fff;
+  //   padding: 4px 8px;
+  //   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  //   z-index: 10;
+  //   max-width: 300px; /* optional: limit hover width */
+  // }
 
   p {
     margin: 0;
@@ -381,6 +396,7 @@ export const HolidayItem = styled.div`
     white-space: nowrap;
   }
 `;
+
 export const Flex = styled.div`
   display: flex;
   justify-content: space-between;

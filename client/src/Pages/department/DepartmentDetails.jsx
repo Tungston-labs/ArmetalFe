@@ -248,8 +248,6 @@ if (!department) return <Loader />;
                 <td>{index + 1}</td>
                 <td>
                 <Avatar src={emp.profile_pic ? `http://178.248.112.16:8000${emp.profile_pic}` : 'https://i.pravatar.cc/40'} />
-
-                  {/* <Avatar src={emp.profile_pic || 'https://i.pravatar.cc/40'} alt="" /> */}
                   {emp.name}
                 </td>
                 <td>{emp.employee_id}</td>

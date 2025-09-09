@@ -94,10 +94,7 @@ if (loading) {
       </TitleSection>
 
       <Hr />
-      <Breadcrumb>
-        Employee &gt; Leave request &gt; Employee leave details
-      </Breadcrumb>
-
+    
       <InfoGrid>
         <div style={{ width: "10%" }}>
           <ProfileImage

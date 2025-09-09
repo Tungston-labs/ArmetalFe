@@ -250,7 +250,8 @@ const CardsOnly = () => {
           {upcomingHolidays.map((holiday, i) => (
             <HolidayItem key={i}>
               <div>
-                <h4>{holiday.description}</h4>
+             <h4 title={holiday.description}>{holiday.description}</h4>
+
                 <p>{holiday.holiday_type}</p>
               </div>
               <span>{holiday.date}</span>

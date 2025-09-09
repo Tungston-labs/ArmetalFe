@@ -70,7 +70,7 @@ function App() {
             <Route path="/view/:id" element={<Viewpage />} />
             <Route path="/table" element={<Table />} />
             <Route path="/holiday" element={<Holiday />} />
-            <Route path="/payroll/:id" element={<Payroll />} />
+            <Route path="/payrolldetails/:id" element={<Payroll />} />
             <Route path="/payrolldetails" element={<PayrollFinal />} />
             <Route path="/superadmin" element={<SuperAdmin />} />
             <Route path="/add-company" element={<AddCompany />} />
@@ -80,7 +80,7 @@ function App() {
             <Route path="/bank-payment" element={<BankPayment />} />
             <Route path="/documents" element={<Documents />} />
             {/* <Route path="/edit-basic-level " element={<EditBasicLevel />} /> */}
-            <Route path="/leave-request" element={<LeaveRequest />} />
+            <Route path="/employee-leave-request" element={<LeaveRequest />} />
             <Route
               path="/leave-details/:id"
               element={<EmployeeLeaveDetails />}
@@ -88,13 +88,13 @@ function App() {
             <Route path="/attendance/detail/:id" element={<Attendance />} />
             <Route path="/on-leave" element={<OnLeave />} />
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
-            <Route path="/emp-on-leave" element={<EmployeesOnLeave />} />
+            <Route path="/employee-on-leave" element={<EmployeesOnLeave />} />
 
             <Route path="/dashboard" element={<NewDashboard />} />
 
             <Route path="/employee-attendance" element={<EmployeAttendance />} />
 
-            <Route path="/employee-on-leave" element={<DetailOnleave />} />
+            <Route path="/employee-leave" element={<DetailOnleave />} />
 
 
             <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
@@ -109,8 +109,8 @@ function App() {
             <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
 
             <Route path="/reimbursement" element={<Reimbursement />} />
-            <Route path="/reimb2page/:id" element={<Reimb2page />} />
-            <Route path="/reimb_info/:id" element={<Reimb_info />} />
+            <Route path="/reimbursement_detail/:id" element={<Reimb2page />} />
+            <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
               <Route path="/finance" element={<FinancePage />} />
 
                 <Route path="/card" element={<Dashboard />} />

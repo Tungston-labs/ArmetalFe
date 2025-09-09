@@ -36,8 +36,12 @@ export default function Sidebar() {
     }
   };
 
-  // Utility to add active class
-  const isActive = (path) => location.pathname === path ? "active" : "";
+// Highlight parent module even if a child route is active
+const isActive = (path) => {
+  if (path === "/") return location.pathname === "/";
+  return location.pathname.startsWith(path) ? "active" : "";
+};
+
 
   return (
     <SidebarContainer className={collapsed ? 'collapsed' : ''}>
@@ -66,9 +70,13 @@ export default function Sidebar() {
               </CustomLink>
             )}
             {modules.employee && (
-              <CustomLink to="/employee" className={`${collapsed ? 'collapsed' : ''} ${isActive("/employee")}`}>
-                <FaUsers /><span>Employee</span>
-              </CustomLink>
+             <CustomLink
+  to="/employee"
+  className={`${collapsed ? 'collapsed' : ''} ${isActive("/employee")}`}
+>
+  <FaUsers /><span>Employee</span>
+</CustomLink>
+
             )}
             {modules.department && (
               <CustomLink to="/department" className={`${collapsed ? 'collapsed' : ''} ${isActive("/department")}`}>

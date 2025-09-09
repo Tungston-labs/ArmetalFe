@@ -106,8 +106,8 @@ const EmployeeList = () => {
         <NavLink to="/employee" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/employee'}>Total Employee</Tab>
         </NavLink>
-        <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
+        <NavLink to="/employee-leave-request" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-leave-request'}>Employee leave request</Tab>
         </NavLink>
         <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
           <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
@@ -117,8 +117,8 @@ const EmployeeList = () => {
             Employee Contract & Visa Expiry
           </Tab>
         </NavLink>
-        <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
+        <NavLink to="/employee-on-leave" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-on-leave'}>Employees on Leave</Tab>
         </NavLink>
       </Tabs>
 
@@ -130,7 +130,7 @@ const EmployeeList = () => {
           {departmentList?.map((dept) => (
             <Card
               key={dept.id}
-              onClick={() => navigate(`/employee-on-leave?departmentId=${dept.id}`)}
+              onClick={() => navigate(`/employee-leave?departmentId=${dept.id}`)}
               style={{ cursor: "pointer" }}
             >
               <Initial>{dept.name?.[0] || "D"}</Initial>

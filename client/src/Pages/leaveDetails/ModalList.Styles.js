@@ -76,6 +76,7 @@ export const TableRow = styled.tr`
 export const TableData = styled.td`
   padding: 12px;
   vertical-align: middle;
+  
 `;
 
 export const ProfileImg = styled.img`
@@ -102,7 +103,14 @@ export const ApproveButton = styled.button`
   border: none;
   cursor: pointer;
   min-width: 100px; // optional, for consistent sizing
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #1e2a90; // slightly darker blue on hover
+    transform: scale(1.05); // subtle zoom effect
+  }
 `;
+
 
 export const DeclineButton = styled.button`
   background-color: #ff6f61;
@@ -112,5 +120,13 @@ export const DeclineButton = styled.button`
   border: none;
   cursor: pointer;
   min-width: 100px;
+  margin-left: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #ff4a3a; /* slightly darker/redder on hover */
+    transform: scale(1.05); /* subtle zoom effect */
+  }
 `;
+
 

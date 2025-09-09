@@ -303,7 +303,7 @@ const PayrollTable = () => {
                     <Td>{emp.joining_date}</Td>
                     <Td>{emp.email}</Td>
                     <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
-                    <Td><Link to={`/payroll/${emp.id}`}><GoInfo style={{ cursor: 'pointer' }} /></Link></Td>
+                    <Td><Link to={`/payrolldetails/${emp.id}`}><GoInfo style={{ cursor: 'pointer' }} /></Link></Td>
                     <Td>
                       <div style={{ display: 'flex', gap: '8px' }}>
                         <div

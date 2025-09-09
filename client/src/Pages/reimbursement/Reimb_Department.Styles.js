@@ -159,7 +159,7 @@ export const SearchInput = styled.input`
   border: 1px solid #ccc;
   outline: none;
   font-size: 0.9rem;
-  width: 100%;
+  min-width: 100%;
 `;
 export const SearchWrapper = styled.div`
   position: relative;

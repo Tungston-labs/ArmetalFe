@@ -31,7 +31,7 @@ export const DateSelector = styled.div`
   margin-top: 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  // justify-content: space-between;
   flex-wrap: wrap;
   font-size: 22px;
 
@@ -52,8 +52,10 @@ export const DateSelector = styled.div`
 
   .calendar-header {
     display: flex;
-    align-items: center;
+     justify-content: center; 
+  align-items: center; 
     gap: 1.5rem;
+    margin-left:20%;
   }
 
   .left {
@@ -104,8 +106,8 @@ background: #FFF;
 export const Calendar = styled.div`
   margin-top: 1.5rem;
   display: flex;
-  justify-content: center; /* Horizontally center */
-  align-items: center;     /* Vertically center (if needed) */
+  justify-content: center; 
+  align-items: center; 
   gap: 4rem;
   width: 100%;
   height:84px;

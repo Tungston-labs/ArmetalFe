@@ -244,7 +244,7 @@ useEffect(() => {
                   </select>
                 </td>
                 <td>
-                  <IconButton onClick={() => navigate(`/reimb_info/${emp.id}`)}>
+                  <IconButton onClick={() => navigate(`/reimbursement_info/${emp.id}`)}>
                     <FaInfoCircle />
                   </IconButton>
                 </td>
