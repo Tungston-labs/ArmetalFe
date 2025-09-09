@@ -169,7 +169,7 @@ export const CustomLink = styled(Link)`
 
   /* Active link underline + highlight */
   &.active {
-    color:rgb(255, 255, 255); /* golden text for active */
+    // color:rgb(255, 255, 255);
   }
 
   &.active::after {
