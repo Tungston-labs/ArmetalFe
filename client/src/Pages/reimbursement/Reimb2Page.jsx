@@ -67,7 +67,7 @@ useEffect(() => {
         setEmployees(data.results);
            if (data.count) {
           setPagination({
-            total_pages: Math.ceil(data.count / 10), // 👈 10 = page size
+            total_pages: Math.ceil(data.count / 20), // 👈 10 = page size
           });
         }
       } else {
@@ -221,7 +221,7 @@ useEffect(() => {
           <tbody>
             {employees.map((emp, index) => (
               <tr key={emp.id}>
-          <td>{(page - 1) * 10 + (index + 1)}</td>
+          <td>{(page - 1) * 20 + (index + 1)}</td>
 
                 <td>
                   <Avatar src={emp.profile_pic || 'https://i.pravatar.cc/40'} />

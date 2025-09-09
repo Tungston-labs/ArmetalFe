@@ -9,13 +9,20 @@ export const getGroupedReimbursements = async () => {
 
 
 // Fetch reimbursements of a department by its ID
-export const fetchReimbursementsByDepartment = async (departmentId, page = 1, pageSize = 10) => {
-  const offset = (page - 1) * pageSize;
+
+// services/reimbursement.js
+export const fetchReimbursementsByDepartment = async (
+  departmentId,
+  page = 1,
+  pageSize = 20
+) => {
   const response = await API.get(
-    `/reimbursements/department/${departmentId}/?offset=${offset}&limit=${pageSize}`
+    `/reimbursements/department/${departmentId}/?page=${page}&page_size=${pageSize}`
   );
   return response.data;
 };
+
+
 
 
 
