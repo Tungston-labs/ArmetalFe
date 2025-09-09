@@ -191,7 +191,7 @@ const Dashboard = () => {
           <h5>{task.project}</h5>
           <p>{task.task}</p>
         </TaskText>
-        <a href="/">↗</a>
+        <a href="/daily-task">↗</a>
       </TaskItem>
     ))
   ) : (
