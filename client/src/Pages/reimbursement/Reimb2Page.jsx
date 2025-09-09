@@ -65,10 +65,15 @@ useEffect(() => {
           department_head_id: deptInfo?.hr_name || "",
         });
         setEmployees(data.results);
-        setPagination({
-          total_pages: Math.ceil(data.count / 10), // <-- adjust based on API page size
-        });
+           if (data.count) {
+          setPagination({
+            total_pages: Math.ceil(data.count / 10), // 👈 10 = page size
+          });
+        }
+      } else {
+        setEmployees([]);
       }
+   
     } catch (error) {
       console.error(error);
     } finally {
@@ -76,7 +81,7 @@ useEffect(() => {
     }
   };
   loadReimbursements();
-}, [id]);
+}, [id,page]);
 
 
   const handleStatusChange = async (empId, newStatus) => {
@@ -216,7 +221,8 @@ useEffect(() => {
           <tbody>
             {employees.map((emp, index) => (
               <tr key={emp.id}>
-                <td>{index + 1}</td>
+          <td>{(page - 1) * 10 + (index + 1)}</td>
+
                 <td>
                   <Avatar src={emp.profile_pic || 'https://i.pravatar.cc/40'} />
                   {emp.employee_name}
