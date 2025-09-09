@@ -46,9 +46,18 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Reimbursement.objects.all()
         return Reimbursement.objects.filter(employee__user=user)
 
+    def get_serializer(self, *args, **kwargs):
+        # ✅ Ensure 'request' is passed to serializer context
+        kwargs['context'] = self.get_serializer_context()
+        return super().get_serializer(*args, **kwargs)
+
     def patch(self, request, *args, **kwargs):
         kwargs['partial'] = True  # allow partial update
         return self.update(request, *args, **kwargs)
+
+
+
+
 # --- Retrieve, Update, Delete single reimbursement for logged-in employee ---
 from rest_framework import generics, permissions
 from .models import Reimbursement

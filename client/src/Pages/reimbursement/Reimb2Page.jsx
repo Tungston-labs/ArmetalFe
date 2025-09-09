@@ -213,7 +213,7 @@ useEffect(() => {
               <th>Employee ID</th>
               <th>Job Position</th>
               <th>Department</th>
-              <th>Amount</th>
+              <th>Amount(AED)</th>
               <th>Status</th>
               <th>Info</th>
             </tr>
