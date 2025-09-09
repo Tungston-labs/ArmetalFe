@@ -10,6 +10,9 @@ from user.permissions import IsEmployee, IsHRAdmin  # Your custom permissions
 #  Employee: Create + List Own Tasks
 from django.utils.dateparse import parse_date
 
+from rest_framework.exceptions import ValidationError
+from django.utils.timezone import now
+
 class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
     serializer_class = DailyTaskSerializer
     permission_classes = [permissions.IsAuthenticated, IsEmployee]
@@ -24,13 +27,31 @@ class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
                 date = parse_date(date_str)
                 if date:
                     queryset = queryset.filter(updated_at__date=date)
-            except Exception as e:
-                pass  # optional: log error or raise
+            except Exception:
+                pass  # optional: log error
 
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(employee=self.request.user.employee_db)
+        employee = self.request.user.employee_db
+        today = now().date()
+
+        # Get total hours already logged today
+        existing_hours = DailyTask.objects.filter(
+            employee=employee,
+            updated_at__date=today
+        ).aggregate(total=models.Sum("time_taken"))["total"] or 0
+
+        new_hours = serializer.validated_data.get("time_taken", 0)
+        total_hours = existing_hours + new_hours
+
+        if total_hours > 24:
+            raise ValidationError(
+                {"time_taken": f"Daily total cannot exceed 24 hours. You already logged {existing_hours} hours."}
+            )
+
+        serializer.save(employee=employee)
+
 
 
 #  Employee: Retrieve/Update/Delete Own Task
