@@ -27,7 +27,7 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
             "employee_name",
             "employee_id",
             "designation",
-            "profile_pic",  
+            "profile_pic",   # 👈 include in API response
             "department",
             "amount",
             "status",
@@ -61,7 +61,9 @@ class ReimbursementDetailSerializer(serializers.ModelSerializer):
     employee_id = serializers.CharField(source="employee.employee_id", read_only=True)
     job_position = serializers.CharField(source="employee.job_position", read_only=True)
     department = serializers.SerializerMethodField()
+    profile_pic = serializers.SerializerMethodField()  # ✅ change to SerializerMethodField
     images = ReimbursementImageSerializer(many=True, read_only=True)
+
     uploaded_images = serializers.ListField(
         child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
         write_only=True,
@@ -76,6 +78,7 @@ class ReimbursementDetailSerializer(serializers.ModelSerializer):
             "employee_id",
             "job_position",
             "department",
+            "profile_pic",   # ✅ include here
             "expense_category",
             "to_mail",
             "note",
@@ -96,9 +99,15 @@ class ReimbursementDetailSerializer(serializers.ModelSerializer):
                 "id": dept.id,
                 "name": dept.name,
                 "hr_name": dept.department_head.name if dept.department_head else None,
-                "department_code":dept.department_code if dept.department_code else None,
-
+                "department_code": dept.department_code if dept.department_code else None,
             }
+        return None
+
+    # ✅ New method for profile_pic
+    def get_profile_pic(self, obj):
+        request = self.context.get("request")
+        if obj.employee.profile_pic and request:
+            return request.build_absolute_uri(obj.employee.profile_pic.url)
         return None
 
     def create(self, validated_data):
@@ -114,6 +123,8 @@ class ReimbursementDetailSerializer(serializers.ModelSerializer):
         for img in uploaded_images:
             ReimbursementImage.objects.create(reimbursement=instance, image=img)
         return instance
+
+
     
 class ReimbursementGroupedSerializer(serializers.Serializer):
     date = serializers.DateField()
