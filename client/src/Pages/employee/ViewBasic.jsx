@@ -40,6 +40,7 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import { getDepartments } from "../../Redux/departmentSlice";
 import Loader from "../../Components/Loader"
 import { Label } from "./BasicLevel.Styles";
+
 const ViewBasic = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -51,6 +52,7 @@ const ViewBasic = () => {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
     const [menuOpen, setMenuOpen] = useState(false);
+const { user } = useSelector((state) => state.auth);
 
 // 👇 Fetch departments on mount
 useEffect(() => {
@@ -87,7 +89,8 @@ useEffect(() => {
       total_leave: employeeDetail.total_leave || "",
        contract_expiry_date: employeeDetail.contract_expiry_date || "",
   role: employeeDetail.role || "",
-  idcard: employeeDetail.idcard || ""
+  idcard: employeeDetail.idcard || "",
+    company: employeeDetail.company
     });
   }
 }, [employeeDetail, departmentList]);
@@ -441,54 +444,55 @@ if (loading || !formData || Object.keys(formData).length === 0) {
   </FieldGroup>
 
   {/* 👇 Country-based conditional fields */}
-  {employeeDetail?.company?.country === "IN" ? (
+{/* Show Aadhaar if it exists, otherwise show Iqama/Visa/Insurance */}
+{formData?.aadar_number ? (
+  <FieldGroup>
+    <Label>Aadhaar Number</Label>
+    <Input
+      name="aadar_number"
+      placeholder="Aadhaar Number"
+      value={formData.aadar_number || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+    />
+  </FieldGroup>
+) : (
+  <>
     <FieldGroup>
-      <Label>Aadhaar Number</Label>
+      <Label>Visa Expiry Date</Label>
       <Input
-        name="aadar_number"
-        placeholder="Aadhaar Number"
-        value={formData.aadar_number || ""}
+        type={editMode ? "date" : "text"}
+        name="visa_expiry_date"
+        placeholder="Visa Expiry Date"
+        value={formData.visa_expiry_date || ""}
         onChange={handleChange}
         readOnly={!editMode}
       />
     </FieldGroup>
-  ) : (
-    <>
-      <FieldGroup>
-        <Label>Visa Expiry Date</Label>
-        <Input
-          type={editMode ? "date" : "text"}
-          name="visa_expiry_date"
-          placeholder="Visa Expiry Date"
-          value={formData.visa_expiry_date || ""}
-          onChange={handleChange}
-          readOnly={!editMode}
-        />
-      </FieldGroup>
 
-      <FieldGroup>
-        <Label>Iqama Number</Label>
-        <Input
-          name="iqama_number"
-          placeholder="Iqama Number"
-          value={formData.iqama_number || ""}
-          onChange={handleChange}
-          readOnly={!editMode}
-        />
-      </FieldGroup>
+    <FieldGroup>
+      <Label>Iqama Number</Label>
+      <Input
+        name="iqama_number"
+        placeholder="Iqama Number"
+        value={formData.iqama_number || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+    </FieldGroup>
 
-      <FieldGroup>
-        <Label>Insurance Number</Label>
-        <Input
-          name="insurance_number"
-          placeholder="Insurance Number"
-          value={formData.insurance_number || ""}
-          onChange={handleChange}
-          readOnly={!editMode}
-        />
-      </FieldGroup>
-    </>
-  )}
+    <FieldGroup>
+      <Label>Insurance Number</Label>
+      <Input
+        name="insurance_number"
+        placeholder="Insurance Number"
+        value={formData.insurance_number || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+    </FieldGroup>
+  </>
+)}
 
   <FieldGroup>
     <Label>Role</Label>
