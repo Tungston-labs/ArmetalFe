@@ -11,7 +11,14 @@ Content-Type: application/json
   "password": "password123"
 }
 
+###
+POST http://178.248.112.16:8001/api/token/
+Content-Type: application/json
 
+{
+  "username": "TUNGRAS82",
+  "password": "password123"
+}
 
 # common logout for super admin,hr comapny,employee
 
@@ -347,7 +354,7 @@ POST http://178.248.112.16:8001/api/forgot-password/send-otp/
 Content-Type: application/json
 
 {
-  "email": "tls@gmail.com"
+  "email": "athuluiux@gmail.com"
 }
 # verify OPTIONS 
 ###
