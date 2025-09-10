@@ -173,7 +173,7 @@ const CardsOnly = () => {
   style={{
     border: "none",
     borderTop: "2px solid #3352BA",
-    margin: "1rem 0",
+  marginTop:"-5px"
   }}
 />
       <PresenceContainer>
