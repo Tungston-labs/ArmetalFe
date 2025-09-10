@@ -119,6 +119,28 @@ export const CardListItem = styled.div`
   align-items: center;
   font-size: 0.85rem;
   padding: 0.3rem 0;
+  gap: 0.5rem;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 40px 1fr 1fr; // Hide one column if needed
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 40px 1fr;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 30px 1fr;
+    font-size: 0.75rem;
+    gap: 0.3rem;
+
+    img {
+      width: 25px !important;
+      height: 25px !important;
+      margin-right: 5px !important;
+    }
+  }
 `;
 
 export const EmployeeAvatar = styled.div`
@@ -134,7 +156,22 @@ export const EmployeeName = styled.span`
 
 export const EmployeeId = styled.span`
   color: #555;
+
+  &.leave-date,
+    &.visa-date,
+     &.below-name {
+    @media (min-width: 1024px) {
+      grid-column: 2 / 3;   /* span the second column (with the name) */
+      grid-row: 2 / 3;      /* move below the name */
+      margin-top: 2px;
+      font-size: 0.8rem;    /* optional smaller font */
+      white-space: nowrap;   /* keep from_date – to_date in the same line */
+    }
+  }
 `;
+
+
+
 
 export const EmployeeDept = styled.span`
   color: #777;
@@ -142,12 +179,20 @@ export const EmployeeDept = styled.span`
 
 export const IconWrapper = styled.div`
   position: absolute;
-  right: 0;
-  bottom: 0;
-  color: #3352ba;
+  right: 10px;          // add some spacing from the right edge
+  bottom: -10px;         // move it slightly below the card
+ color: blue;
   cursor: pointer;
   transition: transform 0.3s ease;
-  &:hover {
-    transform: translateY(-2px);
+
+    &:hover {
+    transform: scale(1.3); /* Zoom in */
+    color: darkblue; /* Optional color change */
+  }
+
+  @media (max-width: 480px) {
+    bottom: -3px;       // adjust for smaller screens
+    right: 8px;
   }
 `;
+
