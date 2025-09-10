@@ -121,4 +121,25 @@ class EmployeeByDepartmentView(APIView):
         return Response(serializer.data)
 
 
+class MyDepartmentHeadEmailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        employee = getattr(user, 'employee_db', None)
+
+        if not employee:
+            return Response({"error": "Employee record not found"}, status=404)
+
+        department = getattr(employee, 'department', None)  # Assuming Employee_db has FK to Department
+        if not department or not department.department_head:
+            return Response({"error": "Department head not assigned"}, status=404)
+
+        head = department.department_head
+
+        return Response({
+            "department": department.name,
+            "head_name": head.name,
+            "email": head.email
+        })
 
