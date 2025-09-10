@@ -2,20 +2,56 @@ import styled from "styled-components";
 
 export const CardContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(3, 1fr);  /* ✅ exactly 3 per row */
   gap: 1rem;
   margin: 1rem 0;
-//   padding:20px;
-    background: #f4f4f4;
+  background: #f4f4f4;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr); /* ✅ 2 per row on tablets */
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr; /* ✅ 1 per row on mobile */
+  }
 `;
 
+
 export const Card = styled.div`
-  position: relative;              // ✅ so Divider can be positioned
+  position: relative; /* ✅ so Divider or absolute elements can sit inside */
   background: #fff;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  /* Smooth scaling */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  /* ✅ Responsive padding & font size */
+  @media (max-width: 1024px) {
+    padding: 0.8rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.7rem;
+    border-radius: 10px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.6rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
 `;
+
 
 export const CardHeader = styled.div`
   display: flex;

@@ -22,7 +22,7 @@ export const Initial = styled.div`
   transition: all 0.3s ease;
 
   &:hover {
-    color: #1a73e8; /* example hover color */
+    color: #1a73e8; 
     transform: scale(1.1); /* optional: slightly enlarges on hover */
   }
 `;

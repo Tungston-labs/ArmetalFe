@@ -238,9 +238,38 @@ export const CalendarWrapper = styled.div`
   border-radius: 10px;
   padding: 1rem;
   min-width: 300px;
-  margin-top:-50px;
-  // min-height:300px;
+  margin-top: -50px;
+  box-sizing: border-box;
+
+  /* Ensure proper height scaling */
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+
+  /* Responsive adjustments */
+  @media (max-width: 1200px) {
+    padding: 0.9rem;
+    margin-top: -40px;
+  }
+
+  @media (max-width: 992px) {
+    padding: 0.8rem;
+    margin-top: -30px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.7rem;
+    margin-top: -20px;
+    min-width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    margin-top: -10px;
+    min-width: 100%;
+  }
 `;
+
 export const PresenceContainer = styled.div`
   display: flex;
   flex-wrap: wrap;

@@ -86,7 +86,7 @@ function App() {
               element={<EmployeeLeaveDetails />}
             />
             <Route path="/attendance/detail/:id" element={<Attendance />} />
-            <Route path="/on-leave" element={<OnLeave />} />
+            <Route path="/employee-on-present" element={<OnLeave />} />
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
             <Route path="/employee-on-leave" element={<EmployeesOnLeave />} />
 
