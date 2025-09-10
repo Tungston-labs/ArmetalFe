@@ -150,7 +150,7 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
     contract_urls = serializers.SerializerMethodField()
     passport_number = serializers.CharField()
     iqama_number = serializers.CharField()
-    adhar_number = serializers.CharField()
+    adaar_number = serializers.CharField()
     visa_expiry_date = serializers.DateField()
     contract_expiry_date = serializers.DateField()
 
@@ -166,7 +166,7 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
             'healthcard_number',
             'passport_number',
             'iqama_number',
-            "adhar_number",
+            "adaar_number",
             "contract_expiry_date",
             'visa_expiry_date',
             'work_permit_urls',
