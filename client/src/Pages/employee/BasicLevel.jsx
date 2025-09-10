@@ -123,9 +123,23 @@ const validateForm = () => {
 
   // Phone
   const phoneRegex = /^[0-9]{10}$/;
-  if (formData.phno && !phoneRegex.test(formData.phno.trim())) {
-    newErrors.phno = "Enter a valid 10-digit phone number";
+// --- Phone Validation ---
+if (formData.phno) {
+  if (country === "IN") {
+    // ✅ India: strict 10-digit numbers
+    const indiaRegex = /^[0-9]{10}$/;
+    if (!indiaRegex.test(formData.phno.trim())) {
+      newErrors.phno = "Enter a valid 10-digit phone number";
+    }
+  } else {
+    // 🌍 Other countries: E.164 international format
+    const intlRegex = /^\+?[1-9]\d{7,14}$/;
+    if (!intlRegex.test(formData.phno.trim())) {
+      newErrors.phno = "Enter a valid phone number with country code (e.g. +966512345678)";
+    }
   }
+}
+
 
   // Email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -460,20 +474,23 @@ const validateForm = () => {
       {/* Legal & ID Info */}
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
 
-     <ColumnRow>
+<ColumnRow>
   {[
     { key: 'phno', label: 'Phone Number' },
     { key: 'passport_number', label: 'Passport Number' },
-    { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date' },
     ...(country === "IN"
-      ? [{ key: 'aadar_number', label: 'Aadhaar Number' }]
-      : [{ key: 'iqama_number', label: 'Iqama Number' }]),
-    { key: 'insurance_number', label: 'Insurance Number' },
+      ? [
+          { key: 'aadar_number', label: 'Aadhaar Number' }
+        ]
+      : [
+          { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date' },
+          { key: 'iqama_number', label: 'Iqama Number' },
+          { key: 'insurance_number', label: 'Insurance Number' },
+        ]),
     { key: 'contract_expiry_date', label: 'Contract Expiry Date', type: 'date' },
     { key: 'idcard', label: 'ID Card' },
   ].map(({ key, label, type }) => (
     <div key={key} style={{ marginBottom: '1rem' }}>
-      {/* Label above field */}
       <label
         htmlFor={key}
         style={{
@@ -487,7 +504,6 @@ const validateForm = () => {
         {label}
       </label>
 
-      {/* Inline error */}
       {errors[key] && (
         <p style={{ color: 'red', fontSize: '0.75rem', marginBottom: '0.3rem' }}>
           {errors[key]}
@@ -547,6 +563,7 @@ const validateForm = () => {
     </div>
   ))}
 </ColumnRow>
+
 
 
       {/* Next button */}
