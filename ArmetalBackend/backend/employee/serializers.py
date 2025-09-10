@@ -145,17 +145,16 @@ from rest_framework import serializers
 from .models import Employee_db
 
 class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
-    healthcard_number = serializers.CharField(source='insurance_number')
+    healthcard_number = serializers.CharField(source='insurance_number', allow_null=True)
     work_permit_urls = serializers.SerializerMethodField()
     contract_urls = serializers.SerializerMethodField()
-    passport_number = serializers.CharField()
-    iqama_number = serializers.CharField()
-    adaar_number = serializers.CharField()
-    visa_expiry_date = serializers.DateField()
-    contract_expiry_date = serializers.DateField()
-
+    passport_number = serializers.CharField(allow_null=True)
+    iqama_number = serializers.CharField(allow_null=True)
+    aadar_number = serializers.CharField(allow_null=True)
+    visa_expiry_date = serializers.DateField(allow_null=True)
+    contract_expiry_date = serializers.DateField(allow_null=True)
     insurance_image_url = serializers.SerializerMethodField()
-    id_card_image_url = serializers.SerializerMethodField()  # ✅ Add this
+    id_card_image_url = serializers.SerializerMethodField()
     employee_id = serializers.IntegerField(source='id')
 
     class Meta:
@@ -166,41 +165,30 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
             'healthcard_number',
             'passport_number',
             'iqama_number',
-            "adaar_number",
-            "contract_expiry_date",
+            'aadar_number',
+            'contract_expiry_date',
             'visa_expiry_date',
             'work_permit_urls',
             'contract_urls',
             'insurance_image_url',
-            'id_card_image_url',  # ✅ Include in response
+            'id_card_image_url',
         ]
 
     def get_work_permit_urls(self, obj):
-        try:
-            return obj.documents.work_permit_urls
-        except:
-            return []
+        return getattr(getattr(obj, 'documents', None), 'work_permit_urls', [])
 
     def get_contract_urls(self, obj):
-        try:
-            return obj.documents.contract_urls
-        except:
-            return []
+        return getattr(getattr(obj, 'documents', None), 'contract_urls', [])
 
     def get_insurance_image_url(self, obj):
-        try:
-            return obj.documents.insurance_image_url
-        except:
-            return None
+        return getattr(getattr(obj, 'documents', None), 'insurance_image_url', None)
 
     def get_id_card_image_url(self, obj):
-        try:
-            if obj.idcard:
-                request = self.context.get('request')
-                return request.build_absolute_uri(obj.idcard.url) if request else obj.idcard.url
-            return None
-        except:
-            return None
+        if obj.idcard:
+            request = self.context.get('request')
+            return request.build_absolute_uri(obj.idcard.url) if request else obj.idcard.url
+        return None
+
 
     
 

@@ -672,7 +672,7 @@ class EmployeeDocumentSummaryView(APIView):
     def get(self, request, *args, **kwargs):
         try:
             employee = Employee_db.objects.get(user=request.user)
-            serializer = EmployeeDocumentSummarySerializer(employee)
+            serializer = EmployeeDocumentSummarySerializer(employee, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Employee_db.DoesNotExist:
             return Response({'detail': 'Employee not found.'}, status=status.HTTP_404_NOT_FOUND)
