@@ -83,16 +83,16 @@ export const Subtitle = styled.p`
 export const SearchInput = styled.input`
   padding: 8px;
   border-radius: 4px;
-  // border: 1px solid #ccc;
+  border: 1px solid #ccc;
   border-radius: 7px;
-border: 1px solid #5F53A5;
+// border: 1px solid #5F53A5;
 background: #FFF;
-color: rgba(0, 0, 0, 0.50);
+// color: rgba(0, 0, 0, 0.50);
 font-family: Satoshi;
 font-size: 17px;
-font-style: italic;
-font-weight: 300;
-line-height: normal;
+// font-style: italic;
+// font-weight: 300;
+// line-height: normal;
 `;
 
 export const TableWrapper = styled.div`

@@ -59,7 +59,7 @@ const EmployeeList = () => {
     setPage(1);
   };
   const handleCardClick = (deptId) => {
-    navigate(`/on-leave?department_id=${deptId}`);
+    navigate(`/employee-on-present?department_id=${deptId}`);
   };
 
 

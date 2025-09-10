@@ -111,24 +111,41 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
         )}
       </HeaderSection>
 
-      <Tabs>
-        <NavLink to="/employee" style={{ textDecoration: "none" }}>
-          <Tab active={location.pathname === "/employee"}>Employee list</Tab>
-        </NavLink>
-        <NavLink to="/lemployee-leave-request" style={{ textDecoration: "none" }}>
-          <Tab active={location.pathname === "/employee-leave-request"}>Employee leave request</Tab>
-        </NavLink>
-        <NavLink to="/employee-attendance" style={{ textDecoration: "none" }}>
-          <Tab active={location.pathname === "/employee-attendance"}>Employee Attendance</Tab>
-        </NavLink>
-        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: "none" }}>
-          <Tab active={location.pathname === "/employee-Contract-Visa-Expiry"}>Employee Contract & Visa Expiry</Tab>
-        </NavLink>
-        <NavLink to="/employee-on-leave" style={{ textDecoration: "none" }}>
-          <Tab active={location.pathname.startsWith('/employ-on-leave')
-}>Employees on Leave</Tab>
-        </NavLink>
-      </Tabs>
+    <Tabs>
+  <NavLink to="/employee" style={{ textDecoration: "none" }}>
+    <Tab active={location.pathname === "/employee"}>Employee list</Tab>
+  </NavLink>
+
+  <NavLink to="/employee-leave-request" style={{ textDecoration: "none" }}>
+    <Tab active={location.pathname.startsWith("/employee-leave-request")}>
+      Employee leave request
+    </Tab>
+  </NavLink>
+
+  <NavLink to="/employee-attendance" style={{ textDecoration: "none" }}>
+    <Tab active={location.pathname.startsWith("/employee-attendance")}>
+      Employee Attendance
+    </Tab>
+  </NavLink>
+
+  <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: "none" }}>
+    <Tab active={location.pathname.startsWith("/employee-Contract-Visa-Expiry")}>
+      Employee Contract & Visa Expiry
+    </Tab>
+  </NavLink>
+
+  <NavLink to="/employee-on-leave" style={{ textDecoration: "none" }}>
+    <Tab
+      active={
+        location.pathname.startsWith("/employee-on-leave") ||
+        location.pathname.startsWith("/employee-leave")
+      }
+    >
+      Employees on Leave
+    </Tab>
+  </NavLink>
+</Tabs>
+
       <hr style={{ marginTop: "-18px" }} />
 
       <Table>

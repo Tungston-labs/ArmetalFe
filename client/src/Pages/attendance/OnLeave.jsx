@@ -105,22 +105,6 @@ export default function EmployeeAttendance() {
     <>
     <Navbar/>
     <Container>
-      {/* <TopBar>
-        <div />
-        <DropdownWrapper>
-          <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <IoIosArrowDown size={18} style={{ marginLeft: "5px", cursor: "pointer" }} />
-          </HRManager>
-
-          {menuOpen && (
-            <DropdownMenu>
-              <div>Change Password</div>
-              <div>Logout</div>
-            </DropdownMenu>
-          )}
-        </DropdownWrapper>
-      </TopBar> */}
 
       <HeaderSection>
         {/* Title & Date */}
@@ -153,41 +137,36 @@ export default function EmployeeAttendance() {
               onChange={handleSearch}
             />
           </SearchWrapper>
-
-          {/* <DepartmentSelect
-            value={departmentFilter}
-            onChange={(e) => {
-              setDepartmentFilter(e.target.value);
-              setPage(1);
-            }}
-          >
-            <option value="">All Departments</option>
-            {departmentList.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.name}
-              </option>
-            ))}
-          </DepartmentSelect> */}
         </div>
       </HeaderSection>
 
-      <Tabs>
-        <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Total Employees</Tab>
-        </NavLink>
-        <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
-        </NavLink>
-        <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
-        </NavLink>
-        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee Contract & Visa Expiry</Tab>
-        </NavLink>
-        <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
-        </NavLink>
-      </Tabs>
+     <Tabs>
+             <NavLink to="/employee" style={{ textDecoration: 'none' }}>
+               <Tab active={location.pathname === '/employee'}>Total Employee</Tab>
+             </NavLink>
+             <NavLink to="/employee-leave-request" style={{ textDecoration: 'none' }}>
+               <Tab active={location.pathname === '/employee-leave-request'}>Employee leave request</Tab>
+             </NavLink>
+             <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
+                 <Tab
+                   active={
+                     location.pathname.startsWith("/employee-attendance") ||
+                     location.pathname.startsWith("/employee-on-present")
+                   }
+                 >
+           Employee Attendance
+                 </Tab>
+               </NavLink>
+
+             <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
+               <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>
+                 Employee Contract & Visa Expiry
+               </Tab>
+             </NavLink>
+             <NavLink to="/employee-on-leave" style={{ textDecoration: 'none' }}>
+               <Tab active={location.pathname === '/employee-on-leave'}>Employees on Leave</Tab>
+             </NavLink>
+           </Tabs>
       <hr style={{ marginTop: "-18px" }} />
 
       <Table>
@@ -206,7 +185,7 @@ export default function EmployeeAttendance() {
             <TableRow>
               <TableCell colSpan="6">
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-                  <SyncLoader color="#5F53A5" />
+                
                 </div>
               </TableCell>
             </TableRow>

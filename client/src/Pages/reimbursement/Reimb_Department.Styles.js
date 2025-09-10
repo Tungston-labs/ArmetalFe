@@ -118,7 +118,7 @@ export const InitialCircle = styled.div`
   height: 45px;
   border-radius: 50%;
   background-color: rgb(255, 255, 255);
-  color: rgb(228, 247, 246);
+   color: #B5E2FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,7 +195,7 @@ export const DepartmentCard = styled.div`
   &:hover {
     .initial-circle {
       background-color:rgb(255, 255, 255);
-      color:rgb(208, 208, 219);
+    color: #1a73e8;
     }
 
     .dept-name,
