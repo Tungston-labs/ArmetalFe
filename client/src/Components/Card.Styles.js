@@ -160,7 +160,7 @@ export const EmployeeId = styled.span`
   &.leave-date,
     &.visa-date,
      &.below-name {
-    @media (max-width: 1440px) {
+    @media (min-width: 1440px) {
       grid-column: 2 / 3;   /* span the second column (with the name) */
       grid-row: 2 / 3;      /* move below the name */
       margin-top: 2px;
