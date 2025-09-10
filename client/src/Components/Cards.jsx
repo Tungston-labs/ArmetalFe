@@ -61,8 +61,8 @@ const Cards = () => {
     }}
   />
   <EmployeeName>{emp.name}</EmployeeName>
-  <EmployeeId>{emp.employee_id}</EmployeeId>
   <EmployeeDept>{emp.department}</EmployeeDept>
+   <EmployeeId className="below-name">{emp.employee_id}</EmployeeId>
 </CardListItem>
 
               ))}
@@ -148,7 +148,7 @@ const Cards = () => {
   />
                   <EmployeeName>{emp.name}</EmployeeName>
                   <EmployeeDept>{emp.department}</EmployeeDept>
-                  <EmployeeId>{emp.visa_expiry_date}</EmployeeId>
+                  <EmployeeId className="visa-date">{emp.visa_expiry_date}</EmployeeId>
                 </CardListItem>
               ))}
               <IconWrapper>

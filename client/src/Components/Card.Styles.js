@@ -157,8 +157,10 @@ export const EmployeeName = styled.span`
 export const EmployeeId = styled.span`
   color: #555;
 
-  &.leave-date {
-    @media (max-width: 1040px) {
+  &.leave-date,
+    &.visa-date,
+     &.below-name {
+    @media (max-width: 1440px) {
       grid-column: 2 / 3;   /* span the second column (with the name) */
       grid-row: 2 / 3;      /* move below the name */
       margin-top: 2px;
@@ -167,6 +169,7 @@ export const EmployeeId = styled.span`
     }
   }
 `;
+
 
 
 
