@@ -19,7 +19,6 @@ from django.utils import timezone
 from rest_framework import generics, permissions, serializers
 from .models import DailyTask
 from .serializers import DailyTaskSerializer
-from .permissions import IsEmployee
 
 class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
     serializer_class = DailyTaskSerializer
