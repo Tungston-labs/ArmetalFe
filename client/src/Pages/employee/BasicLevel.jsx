@@ -90,34 +90,50 @@ export default function AddEmployeeForm() {
   };
 
   // Validate before submit
-  const validateForm = () => {
-    const newErrors = {};
-    const requiredFields = [
-      'name', 'address', 'email', 'dob', 'phno', 'gender', 'designation',
-      'department_id', 'employment_type', 'joining_date', 'passport_number',
-      'total_leave', 'contract_expiry_date', 'role',
-    ];
-  
-    if (country !== "IN") requiredFields.push('visa_expiry_date', 'insurance_number', 'iqama_number');
-    if (country === "IN") requiredFields.push('aadar_number');
-  
-    requiredFields.forEach((field) => {
-      if (!formData[field] || !formData[field].toString().trim()) {
-        newErrors[field] = 'This field is required';
-      }
-    });
+ // Validate before submit
+const validateForm = () => {
+  const newErrors = {};
 
-    const phoneRegex = /^[0-9]{10}$/;
-    if (formData.phno && !phoneRegex.test(formData.phno.trim())) {
-      newErrors.phno = 'Enter a valid 10-digit phone number';
+  const {
+    dob,
+    joining_date,
+    contract_expiry_date,
+    visa_expiry_date,
+    passport_number,
+    insurance_number,
+    aadar_number,
+    iqama_number,
+  } = formData;
+
+  const requiredFields = [
+    "name", "address", "email", "dob", "phno", "gender", "designation",
+    "department_id", "employment_type", "joining_date", "passport_number",
+    "total_leave", "contract_expiry_date", "role",
+  ];
+
+  if (country !== "IN")
+    requiredFields.push("visa_expiry_date", "insurance_number", "iqama_number");
+  if (country === "IN") requiredFields.push("aadar_number");
+
+  requiredFields.forEach((field) => {
+    if (!formData[field] || !formData[field].toString().trim()) {
+      newErrors[field] = "This field is required";
     }
+  });
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (formData.email && !emailRegex.test(formData.email.trim())) {
-      newErrors.email = 'Enter a valid email address';
-    }
+  // Phone
+  const phoneRegex = /^[0-9]{10}$/;
+  if (formData.phno && !phoneRegex.test(formData.phno.trim())) {
+    newErrors.phno = "Enter a valid 10-digit phone number";
+  }
 
-     // --- Date Validations ---
+  // Email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (formData.email && !emailRegex.test(formData.email.trim())) {
+    newErrors.email = "Enter a valid email address";
+  }
+
+  // --- Date Validations ---
   const today = new Date().toISOString().split("T")[0];
   if (dob && dob >= today) {
     newErrors.dob = "Date of birth must be in the past";
@@ -132,31 +148,33 @@ export default function AddEmployeeForm() {
     newErrors.visa_expiry_date = "Visa expiry must be in the future";
   }
 
-    const twelveDigitRegex = /^[0-9]{12}$/;
-    if (country === "IN") {
-      if (!formData.aadar_number || !twelveDigitRegex.test(formData.aadar_number.trim())) {
-        newErrors.aadar_number = "Enter a valid 12-digit Aadhaar number";
-      }
-    } else {
-     const iqama = formData.iqama_number?.replace(/\D/g, ""); // remove spaces & non-digits
-if (!iqama || iqama.length !== 12) {
-  newErrors.iqama_number = "Enter a valid 12-digit Iqama number";
-}
-
+  // Aadhaar
+  const twelveDigitRegex = /^[0-9]{12}$/;
+  if (country === "IN") {
+    if (!aadar_number || !twelveDigitRegex.test(aadar_number.trim())) {
+      newErrors.aadar_number = "Enter a valid 12-digit Aadhaar number";
     }
+  } else {
+    const iqama = iqama_number?.replace(/\D/g, "");
+    if (!iqama || iqama.length !== 12) {
+      newErrors.iqama_number = "Enter a valid 12-digit Iqama number";
+    }
+  }
 
-if (passport_number && !/^[A-Za-z0-9]{6,9}$/.test(passport_number.trim())) {
+  // Passport
+  if (passport_number && !/^[A-Za-z0-9]{6,9}$/.test(passport_number.trim())) {
     newErrors.passport_number = "Enter a valid passport number (6–9 chars)";
   }
 
+  // Insurance
   if (insurance_number && insurance_number.trim().length < 5) {
     newErrors.insurance_number = "Insurance number must be at least 5 characters";
   }
 
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
   // Submit form
   const handleSubmit = () => {
