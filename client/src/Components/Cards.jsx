@@ -90,8 +90,8 @@ const Cards = () => {
             </div>
             <CardList>
               {leaveRequest.slice(0, 3).map((emp) => (
-                <CardListItem key={emp.id}>
-                 <img
+         <CardListItem key={emp.id}>
+  <img
     src={emp.profile_pic || "https://via.placeholder.com/40"} 
     alt={emp.name}
     style={{
@@ -102,16 +102,17 @@ const Cards = () => {
       marginRight: "10px"
     }}
   />
-                  <EmployeeName>{emp.employee}</EmployeeName>
-                  <EmployeeDept>{emp.department}</EmployeeDept>
-                  <EmployeeId>
-                    {emp.from_date} – {emp.to_date}
-                  </EmployeeId>
-                </CardListItem>
+  <EmployeeName>{emp.employee}</EmployeeName>
+  <EmployeeDept>{emp.department}</EmployeeDept>
+  <EmployeeId className="leave-date">
+    {emp.from_date} – {emp.to_date}
+  </EmployeeId>
+</CardListItem>
+
               ))}
               <IconWrapper>
                 <Link to="/leave-request">
-                  <FiArrowUpRight size={18} />
+                  <FiArrowUpRight style={{color:"blue"}} size={18} />
                 </Link>
               </IconWrapper>
             </CardList>
@@ -152,7 +153,7 @@ const Cards = () => {
               ))}
               <IconWrapper>
                 <Link to="/employee-Contract-Visa-Expiry">
-                  <FiArrowUpRight size={18} />
+                  <FiArrowUpRight style={{color:"blue"}} size={18} />
                 </Link>
               </IconWrapper>
             </CardList>
