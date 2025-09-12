@@ -6,7 +6,7 @@ import {
   Tab,
   Title,
   TopBar,
-  SearchInput,
+  // SearchInput,
   HRManager,
   Subtitle,
   DropdownMenu,
@@ -24,7 +24,10 @@ import {
   HeadImg,
   DeptInfo,
   CardGrid,
-  CardRight
+  CardRight,
+  SearchInput,
+  SearchIcon,
+  SearchWrapper
 } from './EmployeesOnLeave.Style';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -35,6 +38,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
 import Navbar from "../../Components/Navbar";
+import { FiSearch } from "react-icons/fi";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -78,12 +82,18 @@ const EmployeeList = () => {
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </TitleSection>
-        <SearchInput
-          type="text"
-          placeholder="Search by department name"
-          value={searchText}
-          onChange={handleSearch}
-        />
+      <SearchWrapper>
+  <SearchIcon>
+    <FiSearch />
+  </SearchIcon>
+  <SearchInput
+    type="text"
+    placeholder="Search by Department Name"
+    value={searchText}
+    onChange={handleSearch}
+  />
+</SearchWrapper>
+
       </HeaderSection>
 
       {/* Tabs */}

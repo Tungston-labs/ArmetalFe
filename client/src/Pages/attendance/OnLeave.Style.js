@@ -114,7 +114,6 @@ export const DateInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 7px;
   background-color: #fff;
-  width: 120px;
 `;
 
 export const Container = styled.div`
@@ -139,18 +138,29 @@ export const TitleSection = styled.div`
 
 
 export const Title = styled.h2`
-  font-size: 22px;
+  font-size: 1.4rem;
   margin: 0;
-  margin-left: 10px;
-  color: #1e3a8a;
+  color: #3250B5;
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+margin-top:10px;
+margin-bottom:5px;
 `;
 
 export const Subtitle = styled.p`
-  font-size: 14px;
-  color: #555;
-  margin-left: 10px;
-  margin-top: -1px;
-  color: #1e3a8a;
+  font-size: 1rem;
+  color: #3250B5;
+font-family: Raleway;
+font-weight: 300;
+font-style: Light;
+font-size: 16px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
 
 
 `;
@@ -243,13 +253,15 @@ export const SearchWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   margin-bottom: 1rem;
+  width:100%;
+
 `;
 
 export const SearchInput = styled.input`
   padding: 0.5rem 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-  min-width: 250px;
+  width: 20%;
 `;
 
 

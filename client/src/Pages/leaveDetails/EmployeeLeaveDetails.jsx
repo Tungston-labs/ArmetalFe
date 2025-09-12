@@ -58,7 +58,7 @@ const navigate = useNavigate();
   
     try {
       await dispatch(patchLeaveStatus({ leaveId: id, status }));
-      navigate("/leave-request");   // ✅ go back to leave-request page
+      navigate("/employee-leave-request");   // ✅ go back to leave-request page
     } catch (error) {
       console.error("Error updating leave status:", error);
     } finally {

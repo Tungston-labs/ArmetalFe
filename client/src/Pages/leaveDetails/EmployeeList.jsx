@@ -20,6 +20,8 @@ import {
   DropdownMenu,
   SearchWrapper,
   SearchIcon,
+  TopRow,
+  BottomRow,
 } from "./EmployeeList.styles";
 import { IoIosArrowDown } from "react-icons/io";
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -106,51 +108,54 @@ const EmployeeList = () => {
     {loading && <Loader />} {/* Full-page loader */}
     <Navbar />
     <Container>
-      <HeaderSection>
-        <TitleSection>
-          <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          <div>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </div>
-        </TitleSection>
+     <HeaderSection>
+  {/* Top row: Title + Add Button */}
+  <TopRow>
+    <TitleSection>
+      <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+      <div>
+        <Title>Employee</Title>
+        <Subtitle>Manage your Employee.</Subtitle>
+      </div>
+    </TitleSection>
 
-<SearchWrapper>
-  <SearchIcon />
-  <SearchInput
-    type="text"
-    placeholder="Search by employee ID or Name"
-    value={searchText}
-    onChange={handleSearch}
-  />
-</SearchWrapper>
+    <AddButton onClick={() => navigate("/basic-details")}>
+      <FaPlus /> Add Employee
+    </AddButton>
+  </TopRow>
 
+  {/* Bottom row: Search + Department */}
+  <BottomRow>
+    <SearchWrapper>
+      <SearchIcon />
+      <SearchInput
+        type="text"
+        placeholder="Search by employee ID or Name"
+        value={searchText}
+        onChange={handleSearch}
+      />
+    </SearchWrapper>
 
+    <DepartmentSelect
+      value={departmentFilter}
+      onChange={(e) => setDepartmentFilter(e.target.value)}
+    >
+      <option value="">All Departments</option>
+      {deptLoading ? (
+        <option>Loading...</option>
+      ) : departmentList && departmentList.length > 0 ? (
+        departmentList.map((dept) => (
+          <option key={dept.id} value={dept.id}>
+            {dept.name}
+          </option>
+        ))
+      ) : (
+        <option>No departments found</option>
+      )}
+    </DepartmentSelect>
+  </BottomRow>
+</HeaderSection>
 
-        <ActionArea>
-          <AddButton onClick={() => navigate("/basic-details")}>
-            <FaPlus /> Add Employee
-          </AddButton>
-
-          <DepartmentSelect
-            value={departmentFilter}
-            onChange={(e) => setDepartmentFilter(e.target.value)}
-          >
-            <option value="">All Departments</option>
-            {deptLoading ? (
-              <option>Loading...</option>
-            ) : departmentList && departmentList.length > 0 ? (
-              departmentList.map((dept) => (
-                <option key={dept.id} value={dept.id}>
-                  {dept.name}
-                </option>
-              ))
-            ) : (
-              <option>No departments found</option>
-            )}
-          </DepartmentSelect>
-        </ActionArea>
-      </HeaderSection>
 
       <Tabs>
         <NavLink to="/employee" style={{ textDecoration: "none" }}>

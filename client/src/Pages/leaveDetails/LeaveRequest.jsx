@@ -31,10 +31,9 @@ import {
   DropdownMenu, 
 } from './LeaveRequest.Styles';
 import { PiUserCirclePlusThin } from "react-icons/pi";
-import SyncLoader from 'react-spinners/SyncLoader';
-import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar';
 import Loader  from "../../Components/Loader"
+import { SearchIcon, SearchWrapper } from './EmployeeList.styles';
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -134,13 +133,16 @@ const isLoading = loading || deptLoading;
         </TitleSection>
 
       <ActionArea>
-  <SearchInput
-    type="text"
-    placeholder="Search by employee ID"
-    value={searchText}
-    onChange={handleSearch}
-    
-  />
+  <SearchWrapper>
+        <SearchIcon />
+        <SearchInput
+          type="text"
+          placeholder="Search by employee ID or Name"
+          value={searchText}
+          onChange={handleSearch}
+        />
+      </SearchWrapper>
+  
 <DepartmentSelect
   value={departmentFilter}
   onChange={(e) => {

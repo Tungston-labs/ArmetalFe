@@ -434,6 +434,7 @@ export const SearchIcon = styled(FiSearch)`
   pointer-events: none;
 `;
 
+
 export const DepartmentSelect = styled.select`
   padding: 8px 12px;
   font-size: 14px;

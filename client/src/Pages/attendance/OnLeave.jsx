@@ -13,7 +13,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { useLocation, NavLink, useNavigate,useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
-import SyncLoader from "react-spinners/SyncLoader";
+import { HiArrowLeft } from "react-icons/hi";
 import { getDepartments } from "../../Redux/departmentSlice";
 import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
@@ -109,12 +109,20 @@ export default function EmployeeAttendance() {
       <HeaderSection>
         {/* Title & Date */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-  <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-            <div>
-              <Title>Employee</Title>
-              <Subtitle>Manage your Employee.</Subtitle>
-            </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "0rem" }}>
+
+           <div style={{ display: "flex", alignItems: "center", gap: "10px",color:"#3250B5" }}>
+  <HiArrowLeft 
+    size={34} 
+    style={{ cursor: "pointer" }} 
+    onClick={() => navigate(-1)} 
+  />
+    <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+  <div>
+    <Title>Employee</Title>
+    <Subtitle>Manage your Employee.</Subtitle>
+  </div>
+</div>
           </div>
           <DateInput type="date" onChange={handleDateChange} value={selectedDate} />
         </div>

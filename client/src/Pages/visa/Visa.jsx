@@ -13,8 +13,10 @@ import {
   HRManager,
   Subtitle,
   TitleSection,
-  DropdownMenu, DropdownWrapper
-} from "../leaveDetails/EmployeeList.styles";
+  DropdownMenu, DropdownWrapper,
+  SearchWrapper,
+  SearchIcon
+} from "./Visa.Styles";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { FaInfoCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -102,12 +104,15 @@ const EmployeeList = () => {
         </TitleSection>
 
         <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent:"space-between" }}>
-          <SearchInput
-            type="text"
-            placeholder="Search by employee ID"
-            value={searchText}
-            onChange={handleSearch}
-          />
+            <SearchWrapper>
+                <SearchIcon />
+                <SearchInput
+                  type="text"
+                  placeholder="Search by employee ID or Name"
+                  value={searchText}
+                  onChange={handleSearch}
+                />
+              </SearchWrapper>
          <select
   value={expiryFilter}
   onChange={(e) => {

@@ -90,7 +90,7 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
                 <th>Email ID</th>
                 <th>Contact number</th>
                 <th>Start date to end date</th>
-                <th>Actions</th>
+                <th></th>
               </tr>
             </TableHeader>
             <tbody>
@@ -110,7 +110,7 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
                 employeesOnLeave.map((emp, index) => (
                   <TableRow key={index} $highlighted={index % 2 !== 0}>
                     <TableData>
-                      <ProfileImg src="/images/profile.png" alt="profile" />
+                      {/* <ProfileImg src="/images/profile.png" alt="profile" /> */}
                       {emp.employee_name}
                     </TableData>
                     <TableData>{emp.leave_type}</TableData>
@@ -120,7 +120,7 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
                       {emp.from_date} to {emp.to_date}
                     </TableData>
                     <TableData>
-                      <ApproveButton
+                      {/* <ApproveButton
                         onClick={() => openConfirmModal(emp.id, "approve")}
                       >
                         Approve
@@ -129,7 +129,7 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
                         onClick={() => openConfirmModal(emp.id, "reject")}
                       >
                         Reject
-                      </DeclineButton>
+                      </DeclineButton> */}
 
 
                     </TableData>

@@ -1,5 +1,6 @@
 // LeaveRequest.styles.js
 import styled from 'styled-components';
+import { FiSearch } from 'react-icons/fi';
 
 export const Container = styled.div`
   padding: 2rem;
@@ -58,6 +59,15 @@ export const Tabs = styled.div`
   display: flex;
   gap: 2rem;
   margin: 1.7rem 0;
+  font-family: Raleway;
+font-weight: 700;
+font-style: Bold;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+text-align: center;
+
   // border-bottom: 2px solid #ddd;
 `;
 
@@ -73,17 +83,31 @@ export const Tab = styled.div`
 `;
 
 
-export const SearchSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 1.5rem 0;
+export const SearchWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 400px;
 `;
 
 export const SearchInput = styled.input`
-  padding: 0.6rem 1rem;
+  padding: 1.2rem 1rem 1.2rem 2.5rem; /* left padding for icon */
+  border: 1px solid #172554;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  width: 300px;
+  width: 100%;
+  font-family: satoshi;
+  height: 40px;
+  font-size: 0.95rem;
+`;
+
+export const SearchIcon = styled(FiSearch)`
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1.2rem;
+  pointer-events: none;
 `;
 
 export const AddButton = styled.button`
@@ -278,18 +302,22 @@ export const DepartmentSelect = styled.select`
   background: white;
 `;
 export const Title = styled.h2`
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   margin: 0;
-  margin-left:10px;
- font-family:satoshi;
+  margin-top: 10px;
+  color: #3250b5;
+  font-family: "Satoshi";
+  font-weight: 700;
+  line-height: 100%;
 `;
 
 export const Subtitle = styled.p`
-  font-size: 14px;
-  color: #555;
-  margin-left:10px;
-  margin-top:-1px;
-  font-size:raleway;
+  font-size: 1rem;
+  color: #3250b5;
+  margin-top: 5px;
+  font-family: Raleway;
+  font-weight: 300;
+  line-height: 100%;
 `;
 
 export const Pagination = styled.div`

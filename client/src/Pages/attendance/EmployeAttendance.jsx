@@ -12,8 +12,10 @@ import {
   DropdownMenu,
   DropdownWrapper,
   TitleSection,
-  Pagination
-} from "../leaveDetails/EmployeeList.styles";
+  Pagination,
+  SearchWrapper,
+  SearchIcon
+} from "./EmployeeAttendance.Styles";
 import {
   CardContainer,
   Card,
@@ -80,12 +82,15 @@ const EmployeeList = () => {
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </TitleSection>
-        <SearchInput
-          type="text"
-          placeholder="Search by department name"
-          value={searchText}
-          onChange={handleSearch}
-        />
+        <SearchWrapper>
+             <SearchIcon />
+             <SearchInput
+               type="text"
+               placeholder="Search by employee ID or Name"
+               value={searchText}
+               onChange={handleSearch}
+             />
+           </SearchWrapper>
       </HeaderSection>
 
       {/* Tabs */}
