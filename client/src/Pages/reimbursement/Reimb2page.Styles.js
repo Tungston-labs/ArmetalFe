@@ -65,7 +65,7 @@ line-height: normal;
 export const FormSection = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem 2rem; /* vertical and horizontal spacing */
+  gap: 1.5rem 17rem; 
   margin-bottom: 2rem;
 `;
 
@@ -76,7 +76,7 @@ export const ActionArea = styled.div`
   gap: 1rem;
 `;
 export const InputGroup = styled.div`
-  width: calc(50% - 1rem);
+  width: calc(40% - 1rem);
   display: flex;
   flex-direction: column;
 `;
@@ -135,14 +135,22 @@ export const StyledTable = styled.table`
     padding: 0.3rem;
     white-space: nowrap;
     background-color: white;
-    border: none; /* remove cell borders */
+    border: none;
+font-family: Satoshi;
+font-weight: 400;
+font-style: Regular;
+font-size: 0.9rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
   }
 
   th {
     text-align: left;
 
     background-color: #304EB0;
-    color: white;\
+    color: white;
     padding: 0.75rem;
     
   }

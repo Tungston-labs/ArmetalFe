@@ -21,6 +21,7 @@ ErrorMessage,
   HRManager,
   DateWrapper,
 Pagination,
+Heading,
 
 } from './Holiday.styles';
 import { MdDateRange } from "react-icons/md";
@@ -32,7 +33,7 @@ import { fetchHolidayTypes } from '../../services/holidayService';
 // import SyncLoader from 'react-spinners/SyncLoader';
 import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
-
+import HolidayHeading from "../../Components/HolidayHeading"
 
 const formatDateToISO = (dateStr) => {
   const date = new Date(dateStr);
@@ -142,6 +143,8 @@ const cancelDelete = () => {
        <Navbar/>
     <Container>
 
+<HolidayHeading/>
+
       <FormSection>
 <Input
   name="name"
@@ -175,6 +178,8 @@ const cancelDelete = () => {
       <Hr />
 
       <TableWrapper>
+  <Heading>Holiday List</Heading>   
+
         <Table>
           <thead>
             <tr>

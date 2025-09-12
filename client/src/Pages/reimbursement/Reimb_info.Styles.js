@@ -40,7 +40,7 @@ export const ProfileSection = styled.div`
   display: flex;
   gap: 1.5rem;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  // margin-bottom: 1.5rem;
 `;
 
 export const ProfileImage = styled.img`
@@ -62,10 +62,17 @@ export const Row = styled.div`
 `;
 
 export const Label = styled.div`
-  font-size: 0.9rem;
-  color: gray;
+  font-size: 1rem;
+  color: #3352BA; 
   min-width: 100px;
 margin-bottom:5px;
+font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Value = styled.div`
@@ -78,7 +85,7 @@ export const DateSection = styled.div`
 `;
 
 export const DescriptionBox = styled.div`
-  border: 1px solid #ddd;
+  border: 1px solid ;
   padding: 1rem;
   border-radius: 7px;
   line-height: 1.4;
@@ -119,4 +126,9 @@ export const SelectBox = styled.select`
   border-radius: 6px;
   font-size: 0.9rem;
   cursor: pointer;
+`;
+export const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid #ddd;
+  // margin: 1.5rem 0;
 `;

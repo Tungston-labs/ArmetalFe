@@ -65,7 +65,7 @@ line-height: normal;
 export const FormSection = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem 2rem; /* vertical and horizontal spacing */
+  gap: 1.5rem 20rem;
   margin-bottom: 2rem;
 `;
 
@@ -76,7 +76,7 @@ export const ActionArea = styled.div`
   gap: 1rem;
 `;
 export const InputGroup = styled.div`
-  width: calc(50% - 1rem);
+  width: calc(40% - 1rem);
   display: flex;
   flex-direction: column;
 `;
@@ -129,7 +129,7 @@ export const StyledTable = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
-
+    text-align: left;
  td {
     text-align: left;
     padding: 0.3rem;

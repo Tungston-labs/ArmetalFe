@@ -16,7 +16,7 @@ import { getDepartments } from '../../Redux/departmentSlice';
 import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
 import Swal from "sweetalert2";
-
+import { FaCheck } from "react-icons/fa";
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -37,7 +37,9 @@ const PayrollTable = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-  const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
+const today = new Date();
+const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // getMonth() returns 0-11
+
   const [selectedYear, setSelectedYear] = useState(defaultYear);
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
@@ -74,7 +76,10 @@ const PayrollTable = () => {
   }, [data]);
 
   const handleSearch = (e) => { setSearchTerm(e.target.value); setPage(1); };
-  const handleMonthChange = (e) => { setSelectedMonth(Number(e.target.value)); setPage(1); };
+const handleMonthChange = (e) => {
+  setSelectedMonth(Number(e.target.value)); // convert string to number
+};
+
   const handleYearChange = (e) => { setSelectedYear(Number(e.target.value)); setPage(1); };
   const handleDepartmentChange = (e) => { setSelectedDepartment(e.target.value); setPage(1); };
 
@@ -246,9 +251,14 @@ const PayrollTable = () => {
           <SearchInput placeholder="Search by employee ID" value={searchTerm} onChange={handleSearch} style={{ width: '250px' }} />
           <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
-              <option value="">Month</option>
-              {months.map((month, index) => <option key={month} value={index + 1}>{month}</option>)}
-            </Select>
+  <option value="">Month</option>
+  {months.map((month, index) => (
+    <option key={month} value={index + 1}>
+      {month}
+    </option>
+  ))}
+</Select>
+
             <Select value={selectedYear} onChange={handleYearChange}>
               <option value="">Year</option>
               {years.map(year => <option key={year} value={year}>{year}</option>)}
@@ -303,31 +313,46 @@ const PayrollTable = () => {
                     <Td>{emp.joining_date}</Td>
                     <Td>{emp.email}</Td>
                     <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
-                    <Td><Link to={`/payrolldetails/${emp.id}`}><GoInfo style={{ cursor: 'pointer' }} /></Link></Td>
-                    <Td>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <div
-                          onClick={(e) => handleCircleClick(e, emp, 'first')}
-                          style={{
-                            width: '16px',
-                            height: '16px',
-                            borderRadius: '50%',
-                            backgroundColor: verificationStatus[emp.id]?.first ? '#4caf50' : '#ccc',
-                            cursor: verificationStatus[emp.id]?.first ? 'not-allowed' : 'pointer'
-                          }}
-                        />
-                        <div
-                          onClick={(e) => handleCircleClick(e, emp, 'second')}
-                          style={{
-                            width: '16px',
-                            height: '16px',
-                            borderRadius: '50%',
-                            backgroundColor: verificationStatus[emp.id]?.second ? '#4caf50' : '#ccc',
-                            cursor: verificationStatus[emp.id]?.second ? 'not-allowed' : 'pointer'
-                          }}
-                        />
-                      </div>
-                    </Td>
+                    <Td><Link to={`/payrolldetails/${emp.id}`}><GoInfo style={{ cursor: 'pointer',color:"black" }} /></Link></Td>
+                   <Td>
+  <div style={{ display: 'flex', gap: '8px' }}>
+    <div
+      onClick={(e) => handleCircleClick(e, emp, 'first')}
+      style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        border: '2px solid #ccc',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: verificationStatus[emp.id]?.first ? 'not-allowed' : 'pointer'
+      }}
+    >
+      {verificationStatus[emp.id]?.first && (
+        <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
+      )}
+    </div>
+
+    <div
+      onClick={(e) => handleCircleClick(e, emp, 'second')}
+      style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        border: '2px solid #ccc',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: verificationStatus[emp.id]?.second ? 'not-allowed' : 'pointer'
+      }}
+    >
+      {verificationStatus[emp.id]?.second && (
+        <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
+      )}
+    </div>
+  </div>
+</Td>
                     <Td>
                       <Select value={emp.status || ''} onChange={(e) => handleSingleStatusChange(emp.employee, e.target.value)}>
                         <option value="">Select</option>

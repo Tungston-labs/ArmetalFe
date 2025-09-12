@@ -20,6 +20,8 @@ import { useDispatch } from 'react-redux';
 import { login } from '../../Redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { FiEye, FiEyeOff } from "react-icons/fi"; // 👁️ Eye icons
+import { Link } from "react-router-dom";
+
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -188,9 +190,26 @@ const LoginForm = () => {
                 </span>
               </div>
 
-              <SmallLink onClick={handleForgotPassword} style={{ cursor: 'pointer' }}>
-                Forgot password?
-              </SmallLink>
+
+
+<SmallLink
+  as="button"
+  type="button"
+  onClick={handleForgotPassword}
+  style={{
+    cursor: "pointer",
+    background: "none",
+    border: "none",
+    color: "#007BFF", // make it look like a link
+    textDecoration: "underline",
+    fontSize: "14px",
+    marginTop: "8px"
+  }}
+>
+  Forgot password?
+</SmallLink>
+
+
 
               <CheckboxContainer>
                 <input

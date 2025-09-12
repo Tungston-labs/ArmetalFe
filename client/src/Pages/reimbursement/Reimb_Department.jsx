@@ -50,6 +50,7 @@ import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar.jsx';
 import Loader from "../../Components/Loader.jsx"
+import HistoryIcon from "../../assets/history.svg";
 const Department = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -106,15 +107,20 @@ const Department = () => {
     </div>
   </div>
 
-  <AddButton onClick={() => setShowModal(true)}>
+<AddButton onClick={() => setShowModal(true)}>
   History
-  </AddButton>
+  <img
+    src={HistoryIcon}
+    alt="history icon"
+    style={{ width: "18px", height: "18px", marginLeft: "6px" }}
+  />
+</AddButton>
 </TitleSection>
 
 
 
         <ActionArea>
-        <SearchWrapper>
+        {/* <SearchWrapper>
     <SearchIcon />
     <SearchInput
       type="text"
@@ -123,7 +129,7 @@ const Department = () => {
       onChange={(e) => setSearch(e.target.value)}
     />
   </SearchWrapper>
-          
+           */}
         </ActionArea>
       </HeaderSection>
 

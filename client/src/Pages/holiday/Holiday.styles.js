@@ -94,7 +94,7 @@ export const SearchInput = styled.input`
 export const FormSection = styled.div`
   display: flex;
   gap: 27px;
-  margin-bottom: 30px;
+  // margin-bottom: 30px;
 
 `;
 
@@ -123,13 +123,13 @@ export const DateInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 7px;
   background-color: #fff;
-  width: 120px;
+  width: 100%;
 `;
 
 export const DateWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap:10px;
 `;
 
 
@@ -147,14 +147,27 @@ export const AddButton = styled.button`
 
 export const TableWrapper = styled.div`
   // overflow-x: auto;
-  margin-top:10px;
+  margin-top:20px;
+`;
+export const Heading = styled.h2`
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  // color: #3352BA; /* blue shade */
+  font-family: Raleway;
+font-weight: 600;
+font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Table = styled.table`
 width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px; 
-  margin-top: 1rem;
+  margin-top: -1rem;
 
   th, td {
     text-align: left;

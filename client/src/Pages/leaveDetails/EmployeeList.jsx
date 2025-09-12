@@ -18,6 +18,8 @@ import {
   TitleSection,
   DropdownWrapper,
   DropdownMenu,
+  SearchWrapper,
+  SearchIcon,
 } from "./EmployeeList.styles";
 import { IoIosArrowDown } from "react-icons/io";
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -29,7 +31,8 @@ import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader"
-
+import { FiSearch } from "react-icons/fi";
+import { GoInfo } from "react-icons/go";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -99,24 +102,30 @@ const EmployeeList = () => {
   };
 
   return (
-    <>
-        {loading && <Loader />} {/* <-- full-page loader */}
+  <>
+    {loading && <Loader />} {/* Full-page loader */}
     <Navbar />
     <Container>
       <HeaderSection>
         <TitleSection>
-        <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+          <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
           </div>
         </TitleSection>
-       <SearchInput
-  type="text"
-  placeholder="Search by employee ID"
-  value={searchText}
-  onChange={handleSearch}
-/>
+
+<SearchWrapper>
+  <SearchIcon />
+  <SearchInput
+    type="text"
+    placeholder="Search by employee ID or Name"
+    value={searchText}
+    onChange={handleSearch}
+  />
+</SearchWrapper>
+
+
 
         <ActionArea>
           <AddButton onClick={() => navigate("/basic-details")}>
@@ -165,105 +174,105 @@ const EmployeeList = () => {
             Employee Contract & Visa Expiry
           </Tab>
         </NavLink>
-        <NavLink to="/employee-on-leave" style={{ textDecoration: 'none' }}>
-<Tab active={location.pathname === '/employee-on-leave'}>Employees on Leave</Tab>
-</NavLink>
+        <NavLink to="/employee-on-leave" style={{ textDecoration: "none" }}>
+          <Tab active={location.pathname === "/employee-on-leave"}>
+            Employees on Leave
+          </Tab>
+        </NavLink>
       </Tabs>
       <hr style={{ marginTop: "-18px" }} />
 
-      <Table>
-        <thead>
-          <tr>
-            <th>Sl No</th>
-            <th>Employee name</th>
-            <th>Employee ID</th>
-            <th>Email ID</th>
-            <th>Job Position</th>
-            <th>Department</th>
-            <th>Info</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <tr>
-              <td colSpan="8" style={{ textAlign: "center", padding: "2rem" }}>
-                Loading...
-              </td>
-            </tr>
-          ) : Array.isArray(employeeList) && employeeList.length > 0 ? (
-            employeeList.map((emp, index) => (
-              <tr key={emp.id}>
-                <td>{index + 1 + (page - 1) * 20}</td>
-                <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  {emp.profile_pic ? (
-                    <img
-                      src={emp.profile_pic}
-                      alt={emp.name}
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  ) : (
-                    <PiUserCirclePlusThin size={40} color="#999" />
-                  )}
-                  {emp.name}
-                </td>
-                <td>{emp.employee_id}</td>
-                <td>{emp.email}</td>
-                <td>{emp.designation}</td>
-                <td>{emp.department}</td>
-               <td
-  onClick={() => navigate(`/fulldashboard/${emp.id}`)}
-  style={{ cursor: "pointer" }}
->
- 
-                  <FaInfoCircle />
-                </td>
-                <td>
-                  <FaTrash
-                    color="red"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleDeleteClick(emp.id)}
-                  />
-                </td>
+      {/* ✅ Show table only when NOT loading */}
+      {!loading && (
+        <>
+          <Table>
+            <thead>
+              <tr>
+                <th>Sl No</th>
+                <th>Employee name</th>
+                <th>Employee ID</th>
+                <th>Email ID</th>
+                <th>Job Position</th>
+                <th>Department</th>
+                <th>Info</th>
+                <th>Delete</th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="8" style={{ textAlign: "center" }}>
-                No employees found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+            </thead>
+            <tbody>
+              {Array.isArray(employeeList) && employeeList.length > 0 ? (
+                employeeList.map((emp, index) => (
+                  <tr key={emp.id}>
+                    <td>{index + 1 + (page - 1) * 20}</td>
+                    <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      {emp.profile_pic ? (
+                        <img
+                          src={emp.profile_pic}
+                          alt={emp.name}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                          }}
+                        />
+                      ) : (
+                        <PiUserCirclePlusThin size={40} color="#999" />
+                      )}
+                      {emp.name}
+                    </td>
+                    <td>{emp.employee_id}</td>
+                    <td>{emp.email}</td>
+                    <td>{emp.designation}</td>
+                    <td>{emp.department}</td>
+                    <td
+                      onClick={() => navigate(`/fulldashboard/${emp.id}`)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <GoInfo />
+                    </td>
+                    <td>
+                      <FaTrash
+                        color="red"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleDeleteClick(emp.id)}
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center" }}>
+                    No employees found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
 
-      <Pagination>
-        <span onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>
-          &larr;
-        </span>
-        {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
-          (pageNumber) => (
-            <span
-              key={pageNumber}
-              onClick={() => setPage(pageNumber)}
-              className={page === pageNumber ? "active" : ""}
-            >
-              {pageNumber}
+          <Pagination>
+            <span onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>
+              &larr;
             </span>
-          )
-        )}
-        <span
-          onClick={() => {
-            if (page < (pagination?.total_pages || 1)) setPage(page + 1);
-          }}
-        >
-          &rarr;
-        </span>
-      </Pagination>
+            {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
+              (pageNumber) => (
+                <span
+                  key={pageNumber}
+                  onClick={() => setPage(pageNumber)}
+                  className={page === pageNumber ? "active" : ""}
+                >
+                  {pageNumber}
+                </span>
+              )
+            )}
+            <span
+              onClick={() => {
+                if (page < (pagination?.total_pages || 1)) setPage(page + 1);
+              }}
+            >
+              &rarr;
+            </span>
+          </Pagination>
+        </>
+      )}
 
       {showDeleteModal && (
         <div
@@ -325,8 +334,9 @@ const EmployeeList = () => {
         </div>
       )}
     </Container>
-    </>
-  );
+  </>
+);
+
 };
 
 export default EmployeeList;

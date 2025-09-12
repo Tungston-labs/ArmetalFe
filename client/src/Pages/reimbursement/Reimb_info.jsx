@@ -21,6 +21,7 @@ import {
   BillsGrid,
   BillImage,
   SelectBox,
+  Divider,
 } from "./Reimb_info.Styles";
 import RemiIcon from "../../assets/remi.svg";
 import {
@@ -110,18 +111,7 @@ const ReimbursementDetail = () => {
         )}&background=random`
   }
   alt="profile"
-/>
-
-
-
-
-{/* {!reimbursement.profile_pic && (
-  <FaUserCircle className="w-12 h-12 text-gray-400" />
-)} */}
-
-
-
-        
+/>        
         <ProfileInfo>
           <Row>
             <Label>Name</Label>
@@ -136,21 +126,24 @@ const ReimbursementDetail = () => {
             <Value>{reimbursement.department?.name}</Value>
           </Row>
         </ProfileInfo>
+        
       </ProfileSection>
 
+<Divider />
       {/* Date */}
       <DateSection>
-        <Label>Date</Label>
+        <Label style={{color:"#6C6C6C",fontSize:"14px"}}>Date</Label>
         <Value>{reimbursement.date}</Value>
       </DateSection>
 
       {/* Note */}
-      <h3>Note</h3>
+      <h6 style={{color:"#6C6C6C"}}>Note</h6>
       <DescriptionBox>{reimbursement.note}</DescriptionBox>
 
       {/* Bills */}
       <BillsSection>
   <Label>📑 Bills uploaded</Label>
+  <Divider />
   <BillsGrid>
     {reimbursement.images?.map((bill) => (
       <a key={bill.id} href={bill.image} target="_blank" rel="noopener noreferrer">

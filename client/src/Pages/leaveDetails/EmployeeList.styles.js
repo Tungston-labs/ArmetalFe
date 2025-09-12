@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { FiSearch } from 'react-icons/fi';
 
 export const Container = styled.div`
   padding: 2rem;
@@ -65,30 +66,56 @@ export const AddButton = styled.button`
     background: #2744a3;
   }
 `;
+export const SearchWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+`;
 
 export const SearchInput = styled.input`
-  padding: 1.2rem 2rem;
+  padding: 1.2rem 1rem 1.2rem 2.5rem; /* extra left padding for icon */
   border: 1px solid #ccc;
   border-radius: 6px;
-  min-width: 300px;
-  margin-top:30px;
-  margin-bottom:20px;
-  height:20px;
-  font-family:satoshi;
+  width: 100%;
+  font-family: satoshi;
+  height: 40px;
+  font-size: 0.95rem;
 `;
+
+export const SearchIcon = styled(FiSearch)`
+  position: absolute;
+  left: 1rem;   /* move icon to the start (left) */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1.2rem;
+  pointer-events: none; /* ensures input is clickable */
+`;
+
 export const Tabs = styled.div`
   display: flex;
   gap: 2rem;
-  margin: 2.5rem 0;
+  
+  margin: 1.5rem 0;
   // border-bottom: 2px solid #ddd;
   
 `;
 
 export const Tab = styled.div`
-  padding:5px  20px;
+  padding:8px  25px;
   cursor: pointer;
   background:#304EB0;
-  font-weight: 500;
+  font-family: Raleway;
+font-weight: 500;
+font-style: Bold;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+text-align: center;
   background: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
   color: ${({ active }) => (active ? "white" : "#555")};
 `;
@@ -100,9 +127,9 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
-
+ text-align: left;
   td {
-    text-align: center;
+    text-align: left;
     padding: 0.4rem;
     white-space: nowrap;
     background-color: white;
@@ -250,17 +277,32 @@ export const ActionArea = styled.div`
   margin-top:-8%;
 `;
 export const Title = styled.h2`
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   margin: 0;
- font-family:satoshi;
+//  font-family:satoshi;
  margin-top:10px;
+ color:#3250B5;
+ font-family: "Satoshi";
+font-weight: 700;
+// font-style: Bold;
+// font-size: 22px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Subtitle = styled.p`
   font-size: 1rem;
-  color: #555;
-  margin-top:-1px;
+   color:#3250B5;
+   margin-top:5px;
   font-size:raleway;
+  font-family: Raleway;
+font-style: Light;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const DepartmentSelect = styled.select`
@@ -269,6 +311,7 @@ export const DepartmentSelect = styled.select`
   border-radius: 5px;
   border: 1px solid #ccc;
   background: white;
+  margin-top:20px;
 `;
 export const DropdownWrapper = styled.div`
   position: relative;

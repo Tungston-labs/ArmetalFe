@@ -1,3 +1,4 @@
+// src/pages/VerifyCodePage.jsx
 import React, { useRef, useState, useEffect } from 'react';
 import {
   Container,
@@ -14,6 +15,7 @@ import {
 
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import PunchLoader from '../../Components/Loader'; // ✅ adjust path if needed
 
 const VerifyCodePage = () => {
   const location = useLocation();
@@ -23,6 +25,7 @@ const VerifyCodePage = () => {
   const [code, setCode] = useState(['', '', '', '', '', '']); // 6 digits
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false); // ⏳ loader state
 
   const inputsRef = useRef([]);
 
@@ -61,6 +64,7 @@ const VerifyCodePage = () => {
       return;
     }
 
+    setLoading(true); // show loader
     try {
       await axios.post('http://178.248.112.16:8001/api/forgot-password/verify-otp/', {
         email,
@@ -73,50 +77,56 @@ const VerifyCodePage = () => {
       }, 1000);
     } catch (err) {
       setError(err.response?.data?.detail || 'Invalid or expired OTP.');
+    } finally {
+      setLoading(false); // hide loader
     }
   };
 
   return (
-    <Container>
-      <LeftPanel>
-        <LeftHeader>
-          <Logo src="/images/armetal.png" alt="ARMETAL Logo" />
-          <h2 style={{ fontSize: 42 }}>Welcome back</h2>
-          <p>
-            Manage your employees with ease.<br />
-            Reset your password to access your HR dashboard.
-          </p>
-        </LeftHeader>
-      </LeftPanel>
+    <>
+      {loading && <PunchLoader text="Verifying OTP..." />} {/* ✅ Loader on top */}
 
-      <RightPanel>
-        <FormBox>
-          <h2 style={{ fontSize: 41, fontFamily: 'Satoshi' }}>Verification</h2>
-          <p style={{ fontSize: 20, fontFamily: 'Raleway', color: '#686868', marginTop: '-25px' }}>
-            We sent a code to <strong>{email}</strong>
-          </p>
+      <Container>
+        <LeftPanel>
+          <LeftHeader>
+            <Logo src="/images/armetal.png" alt="ARMETAL Logo" />
+            <h2 style={{ fontSize: 42 }}>Welcome back</h2>
+            <p>
+              Manage your employees with ease.<br />
+              Reset your password to access your HR dashboard.
+            </p>
+          </LeftHeader>
+        </LeftPanel>
 
-          <form onSubmit={handleSubmit}>
-            <CodeInputWrapper>
-              {code.map((digit, idx) => (
-                <CodeInputBox
-                  key={idx}
-                  maxLength={1}
-                  value={digit}
-                  onChange={(e) => handleChange(idx, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(idx, e)}
-                  ref={(el) => (inputsRef.current[idx] = el)}
-                />
-              ))}
-            </CodeInputWrapper>
+        <RightPanel>
+          <FormBox>
+            <h2 style={{ fontSize: 41, fontFamily: 'Satoshi' }}>Verification</h2>
+            <p style={{ fontSize: 20, fontFamily: 'Raleway', color: '#686868', marginTop: '-25px' }}>
+              We sent a code to <strong>{email}</strong>
+            </p>
 
-            <Button type="submit">Continue</Button>
-            {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
-            {message && <p style={{ color: 'green', marginTop: 10 }}>{message}</p>}
-          </form>
-        </FormBox>
-      </RightPanel>
-    </Container>
+            <form onSubmit={handleSubmit}>
+              <CodeInputWrapper>
+                {code.map((digit, idx) => (
+                  <CodeInputBox
+                    key={idx}
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleChange(idx, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(idx, e)}
+                    ref={(el) => (inputsRef.current[idx] = el)}
+                  />
+                ))}
+              </CodeInputWrapper>
+
+              <Button type="submit">Continue</Button>
+              {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
+              {message && <p style={{ color: 'green', marginTop: 10 }}>{message}</p>}
+            </form>
+          </FormBox>
+        </RightPanel>
+      </Container>
+    </>
   );
 };
 

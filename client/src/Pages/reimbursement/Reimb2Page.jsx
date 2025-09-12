@@ -203,7 +203,7 @@ useEffect(() => {
       )}
 
       {/* Employee Table */}
-      <h3>Employee Reimbursements</h3>
+      <h3 style={{fontFamily:"satoshi",fontWeight:700}}>Employee Reimbursements</h3>
       <TableWrapper>
         <StyledTable>
           <thead>
