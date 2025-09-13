@@ -24,32 +24,32 @@ export const Header = styled.div`
 `;
 
 export const EditButton = styled.button`
-  display: flex; /* enable inline icon + text */
+  display: flex;
   align-items: center;
-    justify-content: center; /* ✅ Center content horizontally */
-  gap: 0.4rem; /* space between icon and text */
-  padding: 0.4rem;
+  justify-content: center; /* ✅ Center content horizontally */
+  padding: 0.5rem;
   border: none;
-   background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
+  background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
   border-radius: 8px;
-  width:100px;
-  height:42px;
+  width: 100px;
+  height: 42px;
   font-size: 0.9rem;
   cursor: pointer;
+  gap: 0.5rem; /* ✅ Add space between icon and text */
 
   svg {
     font-size: 1rem;
   }
-
 `;
+
+
 export const Row = styled.div`
   display: flex;
-  gap:2.5rem;
+  gap: 2.5rem;
   width:100%;
   flex-wrap: wrap;
   align-items: flex-start;
-  
 `;
 
 export const LeftSection = styled.div`
@@ -64,7 +64,7 @@ export const RightSection = styled.div`
   flex: 2;
   display: flex;
   flex-direction: column;
-  gap: rem;
+ 
   min-width: 300px;
 `;
 
@@ -74,10 +74,9 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 100%;
-  border-radius: 7px;
+border-radius: 7px;
 border: 1px solid #052DB4;
 background: #FFF;
-
 `;
 
 export const Textarea = styled.textarea`
@@ -86,8 +85,8 @@ export const Textarea = styled.textarea`
   border-radius: 6px;
   width: 100%;
   resize: none;
-height:70px;
-border-radius: 7px;
+  height: 95px;
+  border-radius: 7px;
 border: 1px solid #052DB4;
 background: #FFF;
 `;
@@ -133,7 +132,8 @@ export const Rows = styled.div`
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
-  align-items: flex-start; /* ensures top alignment */
+  align-items: flex-start; 
+  background-color: #fff;
 `;
 
 export const Select = styled.select`
@@ -142,7 +142,10 @@ export const Select = styled.select`
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  background: white;
+  background-color: #fff;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const Column = styled.div`
@@ -178,6 +181,9 @@ export const Rowes = styled.div`
     border: 1px solid #ccc;
     border-radius: 6px;
     min-width: 0;
+    border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
   }
 `;
 export const HeaderWrapper = styled.div`
@@ -192,13 +198,29 @@ export const TextGroup = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   margin: 0;
+  color:#304EB0;
+  font-family: Satoshi;
+font-weight: 700;
+// font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Subtitle = styled.p`
-  color: #555;
+  // color:#304EB0;
   margin: 0;
+  font-family: Raleway;
+font-weight: 300;
+font-style: Light;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 export const HRManager = styled.div`
   display: flex;
@@ -241,7 +263,7 @@ export const FormWrapper = styled.div`
 export const ProfileImage = styled.img`
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  border-radius: 10%;
   object-fit: cover;
 
   @media (max-width: 768px) {
@@ -260,7 +282,7 @@ export const ImageColumn = styled.div`
   img {
     width: 150px;
     height: 150px;
-    border-radius: 10%;
+    border-radius: 10px;
     object-fit: cover;
   }
 `;
@@ -268,4 +290,16 @@ export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
 
-`; 
+`;
+
+export const FullPageLoaderWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+export const TitleSection = styled.div`
+  display: flex;
+  align-items: center;
+`;

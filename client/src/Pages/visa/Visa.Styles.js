@@ -410,7 +410,7 @@ export const AddButton = styled.button`
 export const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
-  width: 100%;
+  width: 23%;
   max-width: 400px;
 `;
 
@@ -443,4 +443,16 @@ export const DepartmentSelect = styled.select`
   background: white;
   height: 40px;
   min-width: 200px;
+`;
+export const LoaderOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 `;

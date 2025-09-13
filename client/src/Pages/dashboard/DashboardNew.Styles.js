@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   // width: 100%;
-  min-height: 100vh; /* Always at least the full viewport height */
+  // min-height: 100vh; 
   padding: 3rem;
   box-sizing: border-box;
   background: #f4f4f4;
@@ -212,10 +212,18 @@ export const Label = styled.div`
 `;
 
 export const Heading = styled.h3`
-  //  margin-top: -1rem;
+   margin-top:1.5rem;
   font-weight: bold;
   font-size:1.8rem;
   font-family:"satoshi";
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 26px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 export const DepartmentCalendarWrapper = styled.div`
   display: flex;
@@ -281,7 +289,7 @@ export const PresenceContainer = styled.div`
 
 export const ChartContainer = styled.div`
   flex: 1;
-  min-width: 280px;
+  min-width: 200px;
   background: white;
   border-radius: 10px;
   padding: 1rem;
@@ -306,7 +314,7 @@ export const SubText = styled.div`
 
 export const ContractList = styled.div`
   flex: 2;
-  min-width: 300px;
+  min-width: 200px;
   background: white;
   padding: 10px;
 
@@ -326,7 +334,7 @@ export const ContractList = styled.div`
 
 export const ContractItem = styled.div`
   display: grid;
-  grid-template-columns: 40px 1fr 1fr 1fr; /* avatar | name | emp_id | date */
+  grid-template-columns: 30px 1fr 1fr 1fr; /* avatar | name | emp_id | date */
   align-items: center;
   padding: 0.3rem 0;
   font-family: "satoshi";

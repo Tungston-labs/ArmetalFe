@@ -15,7 +15,8 @@ import {
   TitleSection,
   DropdownMenu, DropdownWrapper,
   SearchWrapper,
-  SearchIcon
+  SearchIcon,
+  LoaderOverlay
 } from "./Visa.Styles";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { FaInfoCircle, FaTrash } from "react-icons/fa";
@@ -108,7 +109,7 @@ const EmployeeList = () => {
                 <SearchIcon />
                 <SearchInput
                   type="text"
-                  placeholder="Search by employee ID or Name"
+                  placeholder="Employee ID or Name"
                   value={searchText}
                   onChange={handleSearch}
                 />
@@ -120,9 +121,9 @@ const EmployeeList = () => {
     setPage(1);
   }}
   style={{
-    padding: "8px 10px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
+    padding: "5px",
+    borderRadius: "3px",
+    // border: "1px solid #ccc",
     cursor: "pointer"
   }}
 >

@@ -179,14 +179,14 @@ if (loading || !formData || Object.keys(formData).length === 0) {
         <HeaderWrapper>      
           <TitleSection>
                    <LuArrowLeft
-            style={{ width: "30px", height: 30, cursor: "pointer" }}
+            style={{ width: "30px", height: 30, cursor: "pointer",color:"#304EB0" }}
             onClick={() => navigate(-1)}
             />
         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
                   <div>
                
                     <Title>Employee</Title>
-                    <Subtitle>Manage your Employee.</Subtitle>
+                    <Subtitle style={{color:"#304EB0"}}>Manage your Employee.</Subtitle>
                   </div>
                 </TitleSection>
         </HeaderWrapper>
@@ -344,7 +344,7 @@ if (loading || !formData || Object.keys(formData).length === 0) {
         <GroupLabel>Job Details</GroupLabel>
         
        <Rowes>
-  <div style={{ flex: 1, marginRight: "1rem" }}>
+  <div style={{ flex: 1,}}>
     <Label>Designation</Label>
     <Input
       name="designation"

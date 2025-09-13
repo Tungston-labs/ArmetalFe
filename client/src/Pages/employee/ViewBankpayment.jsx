@@ -23,8 +23,9 @@ import {
   HeaderWrapper,
   TextGroup,
   HRManager,
+  TitleSection,
 } from "./ViewBankpayment.Styles";
-import EmployeeIcon from "../../assets/employeeicon.svg";
+import { LuArrowLeft } from "react-icons/lu";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import Table from "../../Components/Table";
 import { useParams, NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -35,8 +36,7 @@ import {
   submitBankPayment,
 } from "../../Redux/employeeSlice";
 import SyncLoader from "../../Components/Loder";
-import { DropdownMenu, DropdownWrapper } from "../leaveDetails/EmployeeList.styles";
-import { IoIosArrowDown } from "react-icons/io";
+import EmployeeIcon from "../../assets/employeeicon.svg";
 const ViewBankPayment = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -150,17 +150,22 @@ console.log("employeeBankPayments",employeeBankPayments)
 
     <Container>
       <Header>
-        <HeaderWrapper>
-          <div style={{ width: "10%" }}>
-              <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          </div>
-          <TextGroup>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </TextGroup>
-        </HeaderWrapper>
-        {/* <Rightside>
-          <DropdownWrapper>
+        <HeaderWrapper>      
+                 <TitleSection>
+                          <LuArrowLeft
+                   style={{ width: "30px", height: 30, cursor: "pointer",color:"#304EB0" }}
+                   onClick={() => navigate("/employee")}
+                   />
+               <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+                         <div>
+                      
+                           <Title>Employee</Title>
+                           <Subtitle style={{color:"#304EB0"}}>Manage your Employee.</Subtitle>
+                         </div>
+                       </TitleSection>
+               </HeaderWrapper>
+        <Rightside>
+          {/* <DropdownWrapper>
                   <HRManager onClick={() => setMenuOpen(!menuOpen)}>
                               <img src="/images/user.jpg" alt="HR Manager" />
                               <IoIosArrowDown
@@ -175,11 +180,11 @@ console.log("employeeBankPayments",employeeBankPayments)
                                 <div>Logout</div>
                               </DropdownMenu>
                             )}
-                          </DropdownWrapper>
+                          </DropdownWrapper> */}
           <EditButton onClick={() => setIsEditable((prev) => !prev)}>
             {isEditable ? "Cancel" : "Edit"}
           </EditButton>
-        </Rightside> */}
+        </Rightside>
       </Header>
 
       <Hr />

@@ -411,14 +411,14 @@ export const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
   width: 100%;
-  max-width: 400px;
+  // max-width: 400px;
 `;
 
 export const SearchInput = styled.input`
   padding: 1.2rem 1rem 1.2rem 2.5rem; /* left padding for icon */
   border: 1px solid #172554;
   border-radius: 6px;
-  width: 27%;
+  width: 23%;
   font-family: satoshi;
   height: 40px;
   font-size: 0.95rem;
