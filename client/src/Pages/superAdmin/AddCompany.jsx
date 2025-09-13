@@ -51,7 +51,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
   ];
 
 
-  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday","reimbursement"];
+  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement"];
 
   const [formData, setFormData] = useState({
     name: '',
@@ -112,13 +112,16 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.type === "image/png") {
+    if (!file) return;
+
+    if (file.type === "image/png" || file.type === "image/svg+xml") {
       setFormData(prev => ({ ...prev, logo: file }));
       setLogoPreview(URL.createObjectURL(file));
     } else {
-      alert("Only PNG files are allowed.");
+      alert("Only PNG or SVG files are allowed.");
     }
   };
+
 
   const removeLogo = () => {
     setFormData(prev => ({ ...prev, logo: null }));
@@ -201,19 +204,19 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
             <FormField>
               <Label>Company Name</Label>
               <Input name="name" value={formData.name} onChange={handleChange} placeholder="Company name" />
-              {formErrors.name && <p style={{ color: 'blue' }}>{formErrors.name}</p>}
+              {formErrors.name && <p style={{ color: 'red' }}>{formErrors.name}</p>}
             </FormField>
 
             <FormField>
               <Label>Address</Label>
               <Input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" />
-              {formErrors.address && <p style={{ color: 'blue' }}>{formErrors.address}</p>}
+              {formErrors.address && <p style={{ color: 'red' }}>{formErrors.address}</p>}
             </FormField>
 
             <FormField>
               <Label>Email</Label>
               <Input name="email" value={formData.email} onChange={handleChange} placeholder="Company E-mail" />
-              {formErrors.email && <p style={{ color: 'blue' }}>{formErrors.email}</p>}
+              {formErrors.email && <p style={{ color: 'red' }}>{formErrors.email}</p>}
             </FormField>
           </div>
 
@@ -221,7 +224,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
             <FormField>
               <Label>Location</Label>
               <Input name="location" value={formData.location} onChange={handleChange} placeholder="Location" />
-              {formErrors.location && <p style={{ color: 'blue' }}>{formErrors.location}</p>}
+              {formErrors.location && <p style={{ color: 'red' }}>{formErrors.location}</p>}
             </FormField>
 
             <FormField>
@@ -242,14 +245,16 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
 
                 <Input
                   name="contact_number"
+                  inputMode="numeric"
                   value={formData.contact_number}
                   onChange={handleChange}
                   placeholder="Phone number"
                   style={{ width: '65%' }}
                 />
+
               </div>
               {formErrors.contact_number && (
-                <p style={{ color: 'blue' }}>{formErrors.contact_number}</p>
+                <p style={{ color: 'red' }}>{formErrors.contact_number}</p>
               )}
             </FormField>
 
@@ -266,7 +271,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
                   </option>
                 ))}
               </Select>
-              {formErrors.country && <p style={{ color: 'blue' }}>{formErrors.country}</p>}
+              {formErrors.country && <p style={{ color: 'red' }}>{formErrors.country}</p>}
             </FormField>
             <FormField>
               <Label>Latitude</Label>
@@ -294,27 +299,35 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
           </div>
         </FormSection>
 
-        {/* <Label>Upload logo</Label>
+        <Label>Upload logo</Label>
         <LogoUploadBox onClick={() => fileInputRef.current.click()}>
           <FiUpload size={24} />
-          <p>Click to upload or Drag and Drop<br />Max 00 mb File size Only png file</p>
+          <p>
+            Click to upload or Drag and Drop <br />
+            Max 2 MB file size (PNG or SVG only)
+          </p>
           <input
             type="file"
-            accept=".png"
+            accept=".png,.svg"
             ref={fileInputRef}
             onChange={handleLogoChange}
             style={{ display: "none" }}
           />
-        </LogoUploadBox> */}
+        </LogoUploadBox>
 
-        {/* {logoPreview && (
+        {logoPreview && (
           <LogoPreview>
-            <img src={logoPreview} alt="Logo" />
+            {formData.logo?.type === "image/svg+xml" ? (
+              <object data={logoPreview} type="image/svg+xml" width="50" height="50" />
+            ) : (
+              <img src={logoPreview} alt="Logo" />
+            )}
             <button onClick={removeLogo} type="button">
               <AiOutlineClose />
             </button>
           </LogoPreview>
-        )} */}
+        )}
+
 
         <h4>Privileges</h4>
         <CheckboxGroup>

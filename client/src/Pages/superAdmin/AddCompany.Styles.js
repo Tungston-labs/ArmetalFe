@@ -62,26 +62,6 @@ export const FormWrapper = styled.div`
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 `;
 
-// export const FormSection = styled.div`
-//   display: flex;
-//   gap: 40px;
-//   flex-wrap: wrap;
-//   margin-bottom: 20px;
-
-//   & > div {
-//     flex: 1;
-//     min-width: 250px;
-//   }
-// `;
-
-// export const Input = styled.input`
-//   display: block;
-//   margin-bottom: 15px;
-//   padding: 10px;
-//   width: 100%;
-//   border-radius: 4px;
-//   border: 1px solid #ccc;
-// `;
 
 export const CheckboxGroup = styled.div`
   display: flex;
@@ -189,11 +169,12 @@ export const Select = styled.select`
 `;
 export const FormSection = styled.div`
   display: flex;
-  gap: 270px;
+  gap: 40px;
   margin-bottom: 30px;
 
   > div {
     width: 50%;
+    flex:1;
   }
 `;
 
@@ -201,10 +182,11 @@ export const FormSection = styled.div`
 export const LogoUploadBox = styled.div`
   border: 2px dashed #a1a1a1;
   background-color: #f5f8fd;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   border-radius: 10px;
   margin-bottom: 15px;
+  margin-top: -35px;
   color: #666;
   font-size: 13px;
   cursor: pointer;

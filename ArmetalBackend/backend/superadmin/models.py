@@ -47,12 +47,13 @@ class Company(TimeStampedModel):
     modules = models.JSONField(default=dict)  # e.g. {"attendance": True, "leave": True}
     number_of_employees = models.PositiveIntegerField(default=0, editable=False)
     default_password = models.CharField(max_length=200, editable=False)
-    logo = models.ImageField(
-        upload_to='company_logos/',
-        null=True,
-        blank=True,
-        help_text="Upload PNG logo only."
-    )
+    logo = models.FileField(
+                upload_to='company_logos/',
+                null=True,
+                blank=True,
+                help_text="Upload PNG or SVG logo."
+            )
+
 
     def save(self, *args, **kwargs):
         if not self.company_id:
@@ -68,8 +69,10 @@ class Company(TimeStampedModel):
     def clean(self):
         super().clean()
         if self.logo:
-            if not self.logo.name.lower().endswith('.png'):
-                raise ValidationError("Only .png images are allowed for the logo.")
+            ext = self.logo.name.lower().split('.')[-1]
+            if ext not in ['png', 'svg']:
+                raise ValidationError("Only .png or .svg files are allowed for the logo.")
+
 
 
 
