@@ -23,8 +23,10 @@ const ConfirmLeaveModal = ({
     return null;
   }
 
-  const actionText = actionType === "reject" ? "Reject leave" : "Approve leave";
-
+   const actionText = (actionType === "reject" || actionType === "rejected")
+     ? "Reject leave"
+     : "Approve leave";
+  
   const handleConfirm = async () => {
     setLoading(true);
     await onConfirm();   // ✅ call parent logic

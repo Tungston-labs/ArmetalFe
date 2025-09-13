@@ -129,13 +129,22 @@ class DepartmentForProfileSerializer(serializers.ModelSerializer):
 from rest_framework import serializers
 from .models import Employee_db
 
-
 class EmployeeProfileSerializer(serializers.ModelSerializer):
     department = DepartmentForProfileSerializer()
+    company_logo = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee_db
         exclude = ['password']
+
+    def get_company_logo(self, obj):
+        # Option 1: via employee -> user -> company
+        company = obj.user.company
+        if company and company.logo:
+            request = self.context.get("request")
+            return request.build_absolute_uri(company.logo.url) if request else company.logo.url
+        return None
+
 
 
 

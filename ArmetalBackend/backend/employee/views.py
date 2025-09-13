@@ -326,62 +326,6 @@ class EmployeeDocumentsView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    # def patch(self, request, employee_id):
-    #     employee = get_object_or_404(Employee_db, id=employee_id)
-
-    #     try:
-    #         emp_doc = EmpDocument.objects.get(employee=employee)
-    #     except EmpDocument.DoesNotExist:
-    #         return Response({"detail": "Document not found for PATCH."}, status=status.HTTP_404_NOT_FOUND)
-
-    #     # Combine form data and files
-    #     data = request.data.copy()
-    #     for key in request.FILES:
-    #         data.setlist(key, request.FILES.getlist(key))
-
-    #     serializer = EmpDocumentSerializer(emp_doc, data=data, partial=True)
-
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class EmployeeDocumentsView(APIView):
-#     permission_classes = [permissions.IsAuthenticated]
-#     parser_classes = (MultiPartParser, FormParser)
-
-   
-    # def patch(self, request, employee_id):
-    #     employee = get_object_or_404(Employee_db, id=employee_id)
-
-    #     try:
-    #         emp_doc = EmpDocument.objects.get(employee=employee)
-    #     except EmpDocument.DoesNotExist:
-    #         return Response({"detail": "Document not found for PATCH."}, status=status.HTTP_404_NOT_FOUND)
-
-    #     # Merge request.data and request.FILES
-    #     data = request.data.copy()
-    #     for key in request.FILES:
-    #         data.setlist(key, request.FILES.getlist(key))
-
-    #     # Prepare to delete old files if new ones are replacing them
-    #     for field in request.FILES:
-    #         old_file = getattr(emp_doc, field, None)
-    #         if old_file and default_storage.exists(old_file):  # ✅ FIXED: removed .name
-    #             default_storage.delete(old_file)
-
-    #     serializer = EmpDocumentSerializer(emp_doc, data=data, partial=True)
-
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = EmpDocument.objects.all()
-#     serializer_class = EmpDocumentSerializer
-#     permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
 
 
 from rest_framework import generics, permissions
@@ -394,13 +338,7 @@ class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated,IsHRAdmin]
     lookup_field = 'employee_id' 
 
-# class EmployeeDocumentListView(generics.ListAPIView):
-#     serializer_class = EmpDocumentSerializer
-#     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
 
-#     def get_queryset(self):
-#         employee_id = self.kwargs['employee_id']
-#         return EmpDocument.objects.filter(employee_id=employee_id)
 
 
 # employee dashboard in web application
@@ -652,13 +590,13 @@ class EmployeeProfileView(APIView):
     def get(self, request):
         try:
             employee = Employee_db.objects.get(user=request.user)
-            serializer = EmployeeProfileSerializer(employee)
+            serializer = EmployeeProfileSerializer(employee, context={"request": request})
             return Response(serializer.data)
         except Employee_db.DoesNotExist:
             return Response({"detail": "Employee profile not found."}, status=404)
+
         
 
-# views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -800,28 +738,6 @@ class ReminderListCreateView(generics.ListCreateAPIView):
         reminder = serializer.save(employee=employee)
         return reminder
 
-
-    # def perform_create(self, serializer):
-    #     employee = self.request.user.employee_db
-
-    #     # Save reminder with employee automatically
-    #     reminder = serializer.save(employee=employee)
-
-    #     # Optional: schedule Celery task if datetime is in the future
-    #     if reminder.scheduled_datetime > timezone_now():
-    #         send_reminder.apply_async(
-    #             args=[reminder.id],
-    #             eta=reminder.scheduled_datetime
-    #         )
-
-    #     # Optional: immediate push notification about creation
-    #     fcm_token = self.request.user.fcm_token
-    #     if fcm_token:
-    #         send_push_notification(
-    #             self.request.user,
-    #             title="New Reminder Scheduled",
-    #             message=f"Reminder '{reminder.title}' is scheduled for {reminder.scheduled_datetime.strftime('%H:%M')}"
-            # )
 
 
 

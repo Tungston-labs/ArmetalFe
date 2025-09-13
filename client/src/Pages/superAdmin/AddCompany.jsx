@@ -294,7 +294,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
           </div>
         </FormSection>
 
-        {/* <Label>Upload logo</Label>
+        <Label>Upload logo</Label>
         <LogoUploadBox onClick={() => fileInputRef.current.click()}>
           <FiUpload size={24} />
           <p>Click to upload or Drag and Drop<br />Max 00 mb File size Only png file</p>
@@ -305,16 +305,16 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
             onChange={handleLogoChange}
             style={{ display: "none" }}
           />
-        </LogoUploadBox> */}
+        </LogoUploadBox> 
 
-        {/* {logoPreview && (
+         {logoPreview && (
           <LogoPreview>
             <img src={logoPreview} alt="Logo" />
             <button onClick={removeLogo} type="button">
               <AiOutlineClose />
             </button>
           </LogoPreview>
-        )} */}
+        )}
 
         <h4>Privileges</h4>
         <CheckboxGroup>
