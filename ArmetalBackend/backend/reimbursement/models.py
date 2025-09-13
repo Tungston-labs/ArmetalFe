@@ -23,7 +23,7 @@ class Reimbursement(models.Model):
 
     employee = models.ForeignKey(Employee_db, on_delete=models.CASCADE, related_name="reimbursements")
     expense_category = models.CharField(max_length=50, choices=EXPENSE_CATEGORIES)
-    to_mail = models.EmailField()
+    to_mail = models.EmailField(null=True,blank=True)
     note = models.TextField(blank=True, null=True)
     date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)

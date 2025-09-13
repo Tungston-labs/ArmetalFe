@@ -36,11 +36,11 @@ export default function Sidebar() {
     }
   };
 
-// Highlight parent module even if a child route is active
-const isActive = (path) => {
-  if (path === "/") return location.pathname === "/";
-  return location.pathname.startsWith(path) ? "active" : "";
-};
+  // Highlight parent module even if a child route is active
+  const isActive = (path) => {
+    if (path === "/") return location.pathname === "/";
+    return location.pathname.startsWith(path) ? "active" : "";
+  };
 
 
   return (
@@ -48,9 +48,15 @@ const isActive = (path) => {
       {/* Top */}
       <TopSection>
         <ToggleButton onClick={() => setCollapsed(!collapsed)}>☰</ToggleButton>
-        <Logo className={collapsed ? 'hidden' : ''}>
-          <img src="/images/logos.png" alt="ARMETAL Logo" />
-        </Logo>
+<Logo className={collapsed ? 'hidden' : ''}>
+  {user?.company?.logo ? (
+    <img src={user.company.logo} alt="Company Logo" />
+  ) : (
+    <img src="/images/logos.png" alt="Default Logo" className="default-logo" />
+  )}
+</Logo>
+
+
       </TopSection>
 
       {/* Navigation */}
@@ -70,12 +76,12 @@ const isActive = (path) => {
               </CustomLink>
             )}
             {modules.employee && (
-             <CustomLink
-  to="/employee"
-  className={`${collapsed ? 'collapsed' : ''} ${isActive("/employee")}`}
->
-  <FaUsers /><span>Employee</span>
-</CustomLink>
+              <CustomLink
+                to="/employee"
+                className={`${collapsed ? 'collapsed' : ''} ${isActive("/employee")}`}
+              >
+                <FaUsers /><span>Employee</span>
+              </CustomLink>
 
             )}
             {modules.department && (
@@ -109,4 +115,3 @@ const isActive = (path) => {
     </SidebarContainer>
   );
 }
- 

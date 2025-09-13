@@ -39,32 +39,44 @@ export const TopSection = styled.div`
   text-align: center;
 `;
 
-export const Logo = styled.h1`
-  margin: 50px 0 0 0;
-  margin-left:20px;
-  white-space: nowrap;
-   width:30% 
+export const Logo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0;
+  width: 100%;
+
   img {
-    width: 150px; /* default size */
+    width: 180px;       /* logo size */
+    max-height: 110px;
+    object-fit: contain;
     transition: width 0.3s ease;
   }
 
-  @media (max-width: 1024px) {
-    margin: 30px 0 0 0;
+  img.default-logo {
+    width: 300px;       /* larger default icon */
+    max-height: 110px;
+  }
 
+  @media (max-width: 1024px) {
     img {
-      width: 100px; /* smaller on laptop/tablet */
+      width: 120px;
+    }
+    img.default-logo {
+      width: 150px;
     }
   }
 
   @media (max-width: 768px) {
-    display: none; /* hide the whole logo on mobile */
+    display: none;
   }
 
   &.hidden {
     display: none;
   }
 `;
+
+
 
 
 
