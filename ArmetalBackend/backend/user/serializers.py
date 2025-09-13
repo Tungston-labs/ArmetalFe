@@ -57,7 +57,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 "id": company.id if company else None,
                 "name": company.name if company else None,
                 "location": company.location if company else None,
-                "country":company.country if company else None,  
+                "country":company.country if company else None,
+                "logo": self.context['request'].build_absolute_uri(company.logo.url) if company and company.logo else None  
             }
         }
 
