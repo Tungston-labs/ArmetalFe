@@ -29,11 +29,12 @@ import {
   ActionArea,
   DropdownWrapper,
   DropdownMenu, 
+  SearchWrapper,
+  SearchIcon
 } from './LeaveRequest.Styles';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Navbar from '../../Components/Navbar';
 import Loader  from "../../Components/Loader"
-import { SearchIcon, SearchWrapper } from './EmployeeList.styles';
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -137,7 +138,7 @@ const isLoading = loading || deptLoading;
         <SearchIcon />
         <SearchInput
           type="text"
-          placeholder="Search by employee ID or Name"
+          placeholder="Employee ID or Name"
           value={searchText}
           onChange={handleSearch}
         />

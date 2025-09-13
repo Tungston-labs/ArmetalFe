@@ -86,7 +86,7 @@ export const Tab = styled.div`
 export const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
-  width: 100%;
+  width: 23%;
   max-width: 400px;
 `;
 

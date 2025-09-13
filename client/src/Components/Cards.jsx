@@ -38,7 +38,7 @@ const Cards = () => {
       <Card>
         <CardHeader>
          <IconSection>
-  <img src={totalIcon} alt="Total Employees" width={30} height={30} />
+  <img src={totalIcon} alt="Total Employees" width={35} height={35} />
 </IconSection>
           <Divider />
           <CardContent>
@@ -53,8 +53,8 @@ const Cards = () => {
     src={emp.profile_pic || "https://via.placeholder.com/40"} 
     alt={emp.name}
     style={{
-      width: "30px",
-      height: "30px",
+      width: "25px",
+      height: "25px",
       borderRadius: "50%",
       objectFit: "cover",
       marginRight: "10px"
@@ -68,7 +68,7 @@ const Cards = () => {
               ))}
               <IconWrapper>
                 <Link to="/employee">
-                  <FiArrowUpRight size={18} />
+                  <FiArrowUpRight style={{color:"blue"}}  size={20} />
                 </Link>
               </IconWrapper>
             </CardList>
@@ -80,7 +80,7 @@ const Cards = () => {
       <Card>
         <CardHeader>
          <IconSection>
-  <img src={totalIcons} alt="Total Employees" width={30} height={30} />
+  <img src={totalIcons} alt="Total Employees" width={35} height={35} />
 </IconSection>
           <Divider />
           <CardContent>
@@ -95,8 +95,8 @@ const Cards = () => {
     src={emp.profile_pic || "https://via.placeholder.com/40"} 
     alt={emp.name}
     style={{
-      width: "30px",
-      height: "30px",
+      width: "25px",
+      height: "25px",
       borderRadius: "50%",
       objectFit: "cover",
       marginRight: "10px"
@@ -104,15 +104,18 @@ const Cards = () => {
   />
   <EmployeeName>{emp.employee}</EmployeeName>
   <EmployeeDept>{emp.department}</EmployeeDept>
-  <EmployeeId className="leave-date">
-    {emp.from_date} – {emp.to_date}
-  </EmployeeId>
+ <EmployeeId className="leave-date">
+  <span className="from-date">{emp.from_date}</span>
+  <span className="to-date"> – {emp.to_date}</span>
+  <span className="continue-sign"> →</span>
+</EmployeeId>
+
 </CardListItem>
 
               ))}
               <IconWrapper>
                 <Link to="/leave-request">
-                  <FiArrowUpRight style={{color:"blue"}} size={18} />
+                  <FiArrowUpRight style={{color:"blue"}} size={20} />
                 </Link>
               </IconWrapper>
             </CardList>
@@ -124,7 +127,7 @@ const Cards = () => {
       <Card>
         <CardHeader>
           <IconSection>
-  <img src={totalIconses} alt="Total Employees" width={30} height={30} />
+  <img src={totalIconses} alt="Total Employees" width={35} height={35} />
 </IconSection>
           <Divider />
           <CardContent>
@@ -139,8 +142,8 @@ const Cards = () => {
     src={emp.profile_pic|| "https://via.placeholder.com/40"} 
     alt={emp.name}
     style={{
-      width: "30px",
-      height: "30px",
+      width: "25px",
+      height: "25px",
       borderRadius: "50%",
       objectFit: "cover",
       marginRight: "10px"
@@ -153,7 +156,7 @@ const Cards = () => {
               ))}
               <IconWrapper>
                 <Link to="/employee-Contract-Visa-Expiry">
-                  <FiArrowUpRight style={{color:"blue"}} size={18} />
+                  <FiArrowUpRight style={{color:"blue"}} size={20} />
                 </Link>
               </IconWrapper>
             </CardList>

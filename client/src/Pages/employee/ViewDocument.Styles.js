@@ -85,7 +85,7 @@ export const Textarea = styled.textarea`
   border-radius: 6px;
   width: 100%;
   resize: none;
-  height: 70px;
+  height: 95px;
   border-radius: 7px;
 border: 1px solid #052DB4;
 background: #FFF;
@@ -191,13 +191,34 @@ export const TextGroup = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   margin: 0;
+  color:#304EB0;
+  font-family: Satoshi;
+font-weight: 700;
+// font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Subtitle = styled.p`
-  color: #555;
+  // color:#304EB0;
   margin: 0;
+  font-family: Raleway;
+font-weight: 300;
+font-style: Light;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
+`;
+
+export const TitleSection = styled.div`
+  display: flex;
+  align-items: center;
 `;
 export const HRManager = styled.div`
   display: flex;
@@ -282,6 +303,14 @@ export const LabelRow = styled.div`
   background:#F1F1F1;
     color: #3352BA;
   padding:10px;
+  font-family: Satoshi;
+font-weight: 500;
+font-style: Medium;
+font-size: 17px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const UploadButton = styled.button`
@@ -351,6 +380,14 @@ export const SectionTitle = styled.h4`
   // margin-top: 2rem;
   margin-bottom: 1rem;
   font-size:18px;
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 18px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
   // color: #333;
 `;
 export const ImagePreviewRow = styled.div`

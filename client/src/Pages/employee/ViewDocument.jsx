@@ -5,7 +5,8 @@ import {
   LabelRow, Tab, SectionTitle, Section, ButtonGroup, Rows,
   ImagePreviewRow, Input, UploadButton, Hr, Button,
   ProfileImage, ImageColumn, Title, FormWrapper,
-  Subtitle, Rightside, HeaderWrapper, TextGroup, HRManager
+  Subtitle, Rightside, HeaderWrapper, TextGroup, HRManager,
+  TitleSection
 } from "./ViewDocument.Styles";
 import { uploadImageThunk } from "../../Redux/employeeSlice";
 import { LuCirclePlus } from "react-icons/lu";
@@ -17,8 +18,8 @@ import {
 } from "../../Redux/employeeSlice";
 import SyncLoader from "react-spinners/SyncLoader";
 import styled from "styled-components";
-import { IoIosArrowDown } from "react-icons/io";
-import { DropdownMenu, DropdownWrapper } from "../leaveDetails/EmployeeList.styles";
+import { useNavigate } from "react-router-dom";
+import { LuArrowLeft } from "react-icons/lu";
 // ✅ Loader Wrapper
 import EmployeeIcon from "../../assets/employeeicon.svg";
 const FullPageLoaderWrapper = styled.div`
@@ -38,6 +39,7 @@ const ViewDocument = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
+const navigate = useNavigate();
   const { employeeDetail, employeeDocuments, loading } = useSelector((state) => state.employees);
     const [menuOpen, setMenuOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(Date.now());
@@ -163,18 +165,23 @@ const ViewDocument = () => {
   return (
     <Container>
       <Header>
-        <HeaderWrapper>
-          <div style={{ width: "10%" }}>
-            <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          </div>
-          <TextGroup>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </TextGroup>
-        </HeaderWrapper>
+        <HeaderWrapper>      
+                 <TitleSection>
+                          <LuArrowLeft
+                   style={{ width: "30px", height: 30, cursor: "pointer",color:"#304EB0" }}
+                   onClick={() => navigate("/employee")}
+                   />
+               <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+                         <div>
+                      
+                           <Title>Employee</Title>
+                           <Subtitle style={{color:"#304EB0"}}>Manage your Employee.</Subtitle>
+                         </div>
+                       </TitleSection>
+               </HeaderWrapper>
 
-        {/* <Rightside>
-           <DropdownWrapper>
+        <Rightside>
+           {/* <DropdownWrapper>
                   <HRManager onClick={() => setMenuOpen(!menuOpen)}>
                               <img src="/images/user.jpg" alt="HR Manager" />
                               <IoIosArrowDown
@@ -189,11 +196,11 @@ const ViewDocument = () => {
                                 <div>Logout</div>
                               </DropdownMenu>
                             )}
-                          </DropdownWrapper>
+                          </DropdownWrapper> */}
           <EditButton onClick={() => setEditMode((prev) => !prev)}>
             {editMode ? "Cancel" : "Edit"}
           </EditButton>
-        </Rightside> */}
+        </Rightside>
       </Header>
 
       <Hr />

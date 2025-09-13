@@ -30,7 +30,7 @@ import {
 } from "./DashboardNew.Styles";
 import { FiArrowUpRight } from "react-icons/fi";
 import { Calendar, Badge } from "antd";
-import { IoIosArrowDown } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 import "antd/dist/reset.css";
 import { FaUserCircle } from "react-icons/fa";
 import HalfDoughnutChart from "../../Components/HalfDoughnutChart";
@@ -41,11 +41,10 @@ import Navbar from "../../Components/Navbar"
 import Loader from "../../Components/Loader"
 import Cards from "../../Components/Cards"
 import { Link } from "react-router-dom";
-import colors from "react-multi-date-picker/plugins/colors";
 const CardsOnly = () => {
   const dispatch = useDispatch();
   const { summary, loading, error } = useSelector((state) => state.dashboard);
-
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [holidays, setHolidays] = useState([]);
   const [hover, setHover] = useState(false);
@@ -126,13 +125,31 @@ const CardsOnly = () => {
   <Cards/>
       {/* Department + Calendar Row */}
       <Heading>Department</Heading>
-  <hr
-  style={{
-    border: "none",
-    borderTop: "2px solid #3352BA",
-   marginTop:"-10px"
-  }}
-/>
+
+<div style={{ position: "relative", width: "66%" }}>
+      <hr
+        style={{
+          borderTop: "2px solid #3352BA",
+          width: "100%",
+          margin: 0,
+        }}
+      />
+      <FiArrowUpRight
+        size={24}
+        style={{
+          position: "absolute",
+          right: "0px", // stick to the line end
+          top: "-20px", // adjust vertically to sit above line
+          color: "#3352BA",
+          cursor: "pointer", // makes it clickable
+          transition: "transform 0.3s ease, color 0.3s ease",
+        }}
+        onClick={() => navigate("/department")} // 👈 replace with your route
+      />
+    </div>
+
+
+
 
      <DepartmentCalendarWrapper>
   <DepartmentGrid>
@@ -160,22 +177,41 @@ const CardsOnly = () => {
 
 
       {/* Presence + Contract Expiry */}
-      <Flex justify="space-between" align="center">
-     <Heading
-  mb={0}
- 
->
-  Employee Presence & Upcoming Holidays
-</Heading>
-
+    <Flex justify="space-between" align="center">
+        <Heading style={{ marginTop: "-10px" }}>
+          Employee Presence & Upcoming Holidays
+        </Heading>
       </Flex>
-    <hr
-  style={{
-    border: "none",
-    borderTop: "2px solid #3352BA",
-  marginTop:"-8px"
-  }}
-/>
+
+      <div style={{ position: "relative", width: "66%" }}>
+        <hr
+          style={{
+            borderTop: "2px solid #3352BA",
+            width: "100%",
+            margin: 0,
+          }}
+        />
+        <FiArrowUpRight
+          size={22}
+          style={{
+            position: "absolute",
+            right: "0px", // place at end of line
+            top: "-20px", // adjust to sit above line
+            color: "#3352BA",
+            cursor: "pointer",
+            transition: "transform 0.3s ease, color 0.3s ease",
+          }}
+          onClick={() => navigate("/holidays")} // 👈 replace with your target page
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "scale(1.3)";
+            e.currentTarget.style.color = "#3352BA";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "scale(1)";
+            e.currentTarget.style.color = "#3352BA";
+          }}
+        />
+      </div>
       <PresenceContainer>
         <ChartContainer>
           <HalfDoughnutChart active={activeToday} onLeave={onLeaveToday} />
@@ -200,7 +236,7 @@ const CardsOnly = () => {
     onMouseEnter={() => setIsHovered(true)}
     onMouseLeave={() => setIsHovered(false)}
     style={{
-      color: isHovered ? "#1a2a7a" : "#3352BA",
+      color: isHovered ? "#3352BA" : "#3352BA",
       fontSize: "25px",
       cursor: "pointer",
       transform: isHovered ? "scale(1.2)" : "scale(1)",

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { FiSearch } from "react-icons/fa";
+import { FiSearch } from 'react-icons/fi';
+
 export const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -97,36 +98,32 @@ export const Tab = styled.div`
   background: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
   color: ${({ active }) => (active ? "white" : "#555")};
 `;
-// export const SearchWrapper = styled.div`
-//   display: flex;
-//   justify-content: flex-start;
-//   margin-bottom: 1rem;
-// `;
+export const SearchWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  // max-width: 400px;
+`;
 
 export const SearchInput = styled.input`
   padding: 1.2rem 1rem 1.2rem 2.5rem; /* left padding for icon */
   border: 1px solid #172554;
   border-radius: 6px;
-  width: 27%;
+  width: 23%;
   font-family: satoshi;
   height: 40px;
   font-size: 0.95rem;
 `;
 
-export const SearchWrapper = styled.div`
-  position: relative;
-  display: inline-block;
-`;
-
-export const SearchIcon = styled.span`
+export const SearchIcon = styled(FiSearch)`
   position: absolute;
+  left: 1rem;
   top: 50%;
-  left: 10px;
   transform: translateY(-50%);
-  color: gray;
-  font-size: 1rem;
+  color: #888;
+  font-size: 1.2rem;
+  pointer-events: none;
 `;
-
 export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;

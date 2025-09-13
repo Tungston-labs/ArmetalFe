@@ -88,7 +88,7 @@ const EmployeeList = () => {
   </SearchIcon>
   <SearchInput
     type="text"
-    placeholder="Search by Department Name"
+    placeholder="Department Name"
     value={searchText}
     onChange={handleSearch}
   />

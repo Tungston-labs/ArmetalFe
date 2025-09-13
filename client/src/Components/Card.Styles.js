@@ -3,8 +3,8 @@ import styled from "styled-components";
 export const CardContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);  /* ✅ exactly 3 per row */
-  gap: 1rem;
-  margin: 1rem 0;
+  gap: 0.9rem;
+  margin: 0.2rem ;
   background: #f4f4f4;
 
   @media (max-width: 1024px) {
@@ -21,7 +21,7 @@ export const Card = styled.div`
   position: relative; /* ✅ so Divider or absolute elements can sit inside */
   background: #fff;
   border-radius: 12px;
-  padding: 1rem;
+  // padding: 1rem;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
@@ -61,8 +61,9 @@ export const CardHeader = styled.div`
 export const IconSection = styled.div`
   display: flex;
   // align-items: center;
-  // justify-content: center;
-  min-width: 40px;
+  justify-content: center;
+  min-width: 35px;
+  margin-left:10px;
 `;
 
 // export const Divider = styled.div`
@@ -78,14 +79,14 @@ export const Divider = styled.div`
   top: 0;
   bottom: 0;
   left: 50px;                    
-  width: 4px;
+  width: 3px;
   background: #3352ba;
   border-radius: 4px;
 
 `;
 export const CardContent = styled.div`
   flex: 1;
-  padding:10px;
+  padding:1rem;
 `;
 
 export const CardTitle = styled.h3`
@@ -97,7 +98,7 @@ font-style: Bold;
 leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
-
+margin-left:10px;
 `;
 
 export const CardCount = styled.span`
@@ -109,16 +110,16 @@ export const CardList = styled.div`
   margin-top: 0.8rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  // gap: 0.4rem;
   position: relative;
 `;
 
 export const CardListItem = styled.div`
   display: grid;
-  grid-template-columns: 40px 1fr 1fr 1fr;
+  grid-template-columns: 20px 0.5fr 1fr 1fr;
   align-items: center;
-  font-size: 0.85rem;
-  padding: 0.3rem 0;
+  font-size: 0.7rem;
+  padding: 0.2rem 10px;
   gap: 0.5rem;
 
   @media (max-width: 992px) {
@@ -154,18 +155,26 @@ export const EmployeeName = styled.span`
   font-weight: 500;
 `;
 
-export const EmployeeId = styled.span`
-  color: #555;
+export const EmployeeId = styled.div`
+  font-size: 0.85rem;
+  color: #666;
 
-  &.leave-date,
-    &.visa-date,
-     &.below-name {
-    @media (min-width: 1024px) {
-      grid-column: 2 / 3;   /* span the second column (with the name) */
-      grid-row: 2 / 3;      /* move below the name */
-      margin-top: 2px;
-      font-size: 0.8rem;    /* optional smaller font */
-      white-space: nowrap;   /* keep from_date – to_date in the same line */
+  /* Default: show both dates */
+  .from-date,
+  .to-date {
+    display: inline;
+  }
+  .continue-sign {
+    display: none;
+  }
+
+  /* ✅ Between 1024px–1440px: show only from-date + continue sign */
+  @media (min-width: 1024px) and (max-width: 1440px) {
+    .to-date {
+      display: none;
+    }
+    .continue-sign {
+      display: inline;
     }
   }
 `;
@@ -179,8 +188,8 @@ export const EmployeeDept = styled.span`
 
 export const IconWrapper = styled.div`
   position: absolute;
-  right: 10px;          // add some spacing from the right edge
-  bottom: -10px;         // move it slightly below the card
+  right:0px;          // add some spacing from the right edge
+  bottom: -0px;         // move it slightly below the card
  color: blue;
   cursor: pointer;
   transition: transform 0.3s ease;
