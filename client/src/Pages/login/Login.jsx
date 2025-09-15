@@ -200,7 +200,7 @@ const LoginForm = () => {
     cursor: "pointer",
     background: "none",
     border: "none",
-    color: "#007BFF", // make it look like a link
+    color: "black", // make it look like a link
     textDecoration: "underline",
     fontSize: "14px",
     marginTop: "8px"
