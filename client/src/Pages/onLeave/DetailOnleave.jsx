@@ -15,6 +15,8 @@ import {
   Subtitle,
   TitleSection
 } from "./DetailOnleaveStyles";
+import { HiArrowLeft } from "react-icons/hi";
+
 
 import { FaInfoCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -93,6 +95,11 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
 
       <HeaderSection>
         <TitleSection>
+            <HiArrowLeft 
+              size={34} 
+              style={{ cursor: "pointer",color:"#3250B5" }} 
+              onClick={() => navigate(-1)} 
+            />
            <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <div>
             <Title>Employee</Title>

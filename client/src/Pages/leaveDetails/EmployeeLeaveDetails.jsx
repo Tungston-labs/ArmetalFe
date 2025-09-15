@@ -80,16 +80,17 @@ if (loading) {
     <Container>
       
 
-      <TitleSection>
+      <TitleSection style={{color:"#3250B5"}}>
          <LuArrowLeft
-  style={{ width: "30px", height: 30, cursor: "pointer" }}
+  style={{ width: "30px", height: 30, cursor: "pointer",color:"#3250B5" }}
   onClick={() => navigate(-1)} // 👈 Go back to previous page
 />
+
         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
         <div>
      
           <Title>Employee</Title>
-          <Subtitle>Manage your Employee.</Subtitle>
+          <Subtitle style={{color:"#3250B5"}}>Manage your Employee.</Subtitle>
         </div>
       </TitleSection>
 

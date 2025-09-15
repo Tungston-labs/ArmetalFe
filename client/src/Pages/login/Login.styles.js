@@ -59,19 +59,21 @@ export const FormBox = styled.div`
 
 export const Label = styled.label`
   font-weight: 400;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   display: block;
   font-size: 17px;
   font-family: 'Raleway';
+  margin-top: 5px;
+
 `;
 
 export const Input = styled.input`
   width: 100%;
   padding: 10px;
-  margin-bottom: ${(props) => props.marginBottom || '25px'};
+  margin-bottom: ${(props) => props.marginBottom || '10px'};
   border: none;
   background: #efefef;
-  border-radius: 4px;
+  border-radius: 8px;
 `;
 
 export const CheckboxContainer = styled.div`
@@ -92,7 +94,7 @@ export const Button = styled.button`
   background: linear-gradient(to right, #172554, #3352BA);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius:6px;
   cursor: pointer;
   font-family: 'Raleway';
 `;
@@ -130,7 +132,7 @@ export const CustomLink = styled.p`
 `;
 export const CodeInputWrapper = styled.div`
   display: flex;
-  gap: 30px;
+  gap: 20px;
   margin: 20px 0;
 `;
 
@@ -148,3 +150,4 @@ export const CodeInputBox = styled.input`
     box-shadow: 0 0 2px #007bff;
   }
 `;
+

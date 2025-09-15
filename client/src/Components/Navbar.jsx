@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -12,15 +12,32 @@ function Navbar() {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false); // 👈 spinner state
+  const [loading, setLoading] = useState(false);
+
+  const dropdownRef = useRef(null); // 👈 reference for outside click
+
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = "/login";
+    setMenuOpen(false); // close after logout
   };
 
   const handlePasswordChange = async () => {
-    setLoading(true); // show spinner
+    setLoading(true);
     try {
       await API.post("http://178.248.112.16:8001/api/change-password/", {
         old_password: oldPassword,
@@ -38,7 +55,7 @@ function Navbar() {
       setMessage(err.response?.data?.detail || "Password change failed ❌");
       setTimeout(() => setMessage(""), 3000);
     } finally {
-      setLoading(false); // hide spinner
+      setLoading(false);
     }
   };
 
@@ -46,7 +63,7 @@ function Navbar() {
     <div>
       <TopBar>
         <div />
-        <DropdownWrapper>
+        <DropdownWrapper ref={dropdownRef}>
           <HRManager onClick={() => setMenuOpen(!menuOpen)}>
             <img src="/images/user.jpg" alt="HR Manager" />
             <IoIosArrowDown
@@ -57,7 +74,14 @@ function Navbar() {
 
           {menuOpen && (
             <DropdownMenu>
-              <div onClick={() => setShowChangeModal(true)}>Change Password</div>
+              <div
+                onClick={() => {
+                  setShowChangeModal(true);
+                  setMenuOpen(false); // close after click
+                }}
+              >
+                Change Password
+              </div>
               <div onClick={handleLogout}>Logout</div>
             </DropdownMenu>
           )}
@@ -66,19 +90,44 @@ function Navbar() {
 
       {/* Password Change Modal */}
       {showChangeModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 9999
-        }}>
-          <div style={{
-            backgroundColor: 'white', padding: '30px', borderRadius: '10px',
-            width: '400px', boxShadow: '0 2px 10px rgba(0,0,0,0.3)', position: 'relative'
-          }}>
-            <button onClick={() => setShowChangeModal(false)} style={{
-              position: 'absolute', top: '10px', right: '10px',
-              border: 'none', background: 'transparent', fontSize: '18px', cursor: 'pointer'
-            }}>✖</button>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              padding: "30px",
+              borderRadius: "10px",
+              width: "400px",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+              position: "relative",
+            }}
+          >
+            <button
+              onClick={() => setShowChangeModal(false)}
+              style={{
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                border: "none",
+                background: "transparent",
+                fontSize: "18px",
+                cursor: "pointer",
+              }}
+            >
+              ✖
+            </button>
 
             <h2>Change Password</h2>
 
@@ -88,8 +137,13 @@ function Navbar() {
                 type={showOldPassword ? "text" : "password"}
                 placeholder="Old Password"
                 value={oldPassword}
-                onChange={e => setOldPassword(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '5px', paddingRight: '40px' }}
+                onChange={(e) => setOldPassword(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  paddingRight: "40px",
+                }}
               />
               <span
                 onClick={() => setShowOldPassword(!showOldPassword)}
@@ -99,10 +153,14 @@ function Navbar() {
                   top: "50%",
                   transform: "translateY(-50%)",
                   cursor: "pointer",
-                  color: "#666"
+                  color: "#666",
                 }}
               >
-                {showOldPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                {showOldPassword ? (
+                  <FiEyeOff size={20} />
+                ) : (
+                  <FiEye size={20} />
+                )}
               </span>
             </div>
 
@@ -112,8 +170,13 @@ function Navbar() {
                 type={showNewPassword ? "text" : "password"}
                 placeholder="New Password"
                 value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '5px', paddingRight: '40px' }}
+                onChange={(e) => setNewPassword(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  paddingRight: "40px",
+                }}
               />
               <span
                 onClick={() => setShowNewPassword(!showNewPassword)}
@@ -123,33 +186,52 @@ function Navbar() {
                   top: "50%",
                   transform: "translateY(-50%)",
                   cursor: "pointer",
-                  color: "#666"
+                  color: "#666",
                 }}
               >
-                {showNewPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                {showNewPassword ? (
+                  <FiEyeOff size={20} />
+                ) : (
+                  <FiEye size={20} />
+                )}
               </span>
             </div>
 
             {/* Submit Button with Spinner */}
             <button
               onClick={handlePasswordChange}
-              disabled={loading} // prevent double clicks
+              disabled={loading}
               style={{
-                width: '100%', marginTop: '20px', padding: '10px',
-                backgroundColor: loading ? 'gray' : 'blue',
-                color: 'white', border: 'none', borderRadius: '5px',
-                cursor: loading ? 'not-allowed' : 'pointer'
+                width: "100%",
+                marginTop: "20px",
+                padding: "10px",
+                backgroundColor: loading ? "gray" : "blue",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: loading ? "not-allowed" : "pointer",
               }}
             >
               {loading ? (
-                <div style={{
-                  display: "flex", justifyContent: "center", alignItems: "center", gap: "10px"
-                }}>
-                  <div className="spinner" style={{
-                    width: "18px", height: "18px", border: "2px solid #fff",
-                    borderTop: "2px solid transparent",
-                    borderRadius: "50%", animation: "spin 1s linear infinite"
-                  }}></div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <div
+                    className="spinner"
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      border: "2px solid #fff",
+                      borderTop: "2px solid transparent",
+                      borderRadius: "50%",
+                      animation: "spin 1s linear infinite",
+                    }}
+                  ></div>
                   Changing...
                 </div>
               ) : (
@@ -160,9 +242,11 @@ function Navbar() {
             {message && (
               <p
                 style={{
-                  marginTop: '10px',
-                  color: message.toLowerCase().includes("success") ? 'green' : 'red',
-                  fontWeight: 'bold'
+                  marginTop: "10px",
+                  color: message.toLowerCase().includes("success")
+                    ? "green"
+                    : "red",
+                  fontWeight: "bold",
                 }}
               >
                 {message}
