@@ -12,6 +12,7 @@ import {
   CodeInputWrapper,
   CodeInputBox,
 } from '../login/Login.styles';
+import { IoIosArrowBack } from "react-icons/io";
 
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -89,7 +90,7 @@ const VerifyCodePage = () => {
       <Container>
         <LeftPanel>
           <LeftHeader>
-            <Logo src="/images/armetal.png" alt="ARMETAL Logo" />
+          <Logo src="/images/logos.png" alt="ARMETAL Logo" />
             <h2 style={{ fontSize: 42 }}>Welcome back</h2>
             <p>
               Manage your employees with ease.<br />
@@ -99,31 +100,62 @@ const VerifyCodePage = () => {
         </LeftPanel>
 
         <RightPanel>
-          <FormBox>
-            <h2 style={{ fontSize: 41, fontFamily: 'Satoshi' }}>Verification</h2>
-            <p style={{ fontSize: 20, fontFamily: 'Raleway', color: '#686868', marginTop: '-25px' }}>
-              We sent a code to <strong>{email}</strong>
-            </p>
+        <FormBox>
+  {/* Back arrow and title */}
+  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', cursor: 'pointer' }} onClick={() => navigate(-1)}>
+    <IoIosArrowBack size={28} /> {/* Back arrow */}
+    <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', margin: 0 }}>Verification</h2>
+  </div>
 
-            <form onSubmit={handleSubmit}>
-              <CodeInputWrapper>
-                {code.map((digit, idx) => (
-                  <CodeInputBox
-                    key={idx}
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleChange(idx, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(idx, e)}
-                    ref={(el) => (inputsRef.current[idx] = el)}
-                  />
-                ))}
-              </CodeInputWrapper>
+  <p style={{ fontSize: 20, fontFamily: 'Raleway', color: '#686868', marginTop: '-10px' }}>
+    We sent a code to <strong>{email}</strong>
+  </p>
 
-              <Button type="submit">Continue</Button>
-              {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
-              {message && <p style={{ color: 'green', marginTop: 10 }}>{message}</p>}
-            </form>
-          </FormBox>
+  <form onSubmit={handleSubmit}>
+    <CodeInputWrapper>
+      {code.map((digit, idx) => (
+        <CodeInputBox
+          key={idx}
+          maxLength={1}
+          value={digit}
+          onChange={(e) => handleChange(idx, e.target.value)}
+          onKeyDown={(e) => handleKeyDown(idx, e)}
+          ref={(el) => (inputsRef.current[idx] = el)}
+        />
+      ))}
+    </CodeInputWrapper>
+
+    <Button type="submit">Continue</Button>
+    {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
+    {message && <p style={{ color: 'green', marginTop: 10 }}>{message}</p>}
+  </form>
+
+  {/* Resend OTP link */}
+  <p
+    style={{
+      marginTop: '60px',
+      fontSize: '16px',
+      color: '#3250B5',
+      cursor: 'pointer',
+    }}
+    onClick={async () => {
+      try {
+        setLoading(true); // optional: show loader
+        await axios.post("http://178.248.112.16:8001/api/forgot-password/send-otp/", { email });
+        setMessage('A new OTP has been sent!');
+        setError(null);
+      } catch (err) {
+        setError(err.response?.data?.detail || 'Failed to resend OTP.');
+        setMessage(null);
+      } finally {
+        setLoading(false);
+      }
+    }}
+  >
+    Resend OTP
+  </p>
+</FormBox>
+
         </RightPanel>
       </Container>
     </>

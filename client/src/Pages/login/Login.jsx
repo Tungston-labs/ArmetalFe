@@ -21,6 +21,27 @@ import { login } from '../../Redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { FiEye, FiEyeOff } from "react-icons/fi"; // 👁️ Eye icons
 import { Link } from "react-router-dom";
+import "@fontsource/anek-malayalam/400.css"; // Regular
+import "@fontsource/anek-malayalam/700.css"; // Bold
+
+const PoweredBy = ({ company = "REKORY" }) => (
+  <p
+    style={{
+      marginTop: "220px",
+      textAlign: "center",
+      fontSize: "14px",
+      color: "#3250B5",
+      lineHeight: 1.4,
+    }}
+  >
+    <span style={{ fontFamily: "Satoshi, sans-serif", fontWeight: 400 }}>
+      Powered by {" "}
+    </span>
+    <span style={{ fontFamily: "Anek Malayalam, sans-serif", fontWeight: 700 }}>
+      {company}
+    </span>
+  </p>
+);
 
 
 const LoginForm = () => {
@@ -47,6 +68,8 @@ const LoginForm = () => {
     const { name, value, checked, type } = e.target;
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,7 +101,7 @@ const LoginForm = () => {
           },
         })
       );
-      
+
 
       if (user.is_superadmin) {
         navigate("/superadmin");
@@ -138,7 +161,7 @@ const LoginForm = () => {
             onClick={() => setView('login')}
             style={{ cursor: 'pointer', textDecoration: 'none', fontFamily: 'Raleway', fontSize: 22 }}
           >
-            Get started →
+          
           </p>
         </LeftHeader>
         <CustomLink onClick={() => setView('changePassword')}>
@@ -192,22 +215,22 @@ const LoginForm = () => {
 
 
 
-<SmallLink
-  as="button"
-  type="button"
-  onClick={handleForgotPassword}
-  style={{
-    cursor: "pointer",
-    background: "none",
-    border: "none",
-    color: "black", // make it look like a link
-    textDecoration: "underline",
-    fontSize: "14px",
-    marginTop: "8px"
-  }}
->
-  Forgot password?
-</SmallLink>
+              <SmallLink
+                as="button"
+                type="button"
+                onClick={handleForgotPassword}
+                style={{
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  color: "black", // make it look like a link
+                  textDecoration: "underline",
+                  fontSize: "14px",
+                  marginTop: "8px"
+                }}
+              >
+                Forgot password?
+              </SmallLink>
 
 
 
@@ -225,6 +248,10 @@ const LoginForm = () => {
                 {loading ? "Logging in..." : "Log in"}
               </Button>
               {error && <p style={{ color: 'red' }}>{error}</p>}
+
+
+<PoweredBy text="REKORY" />
+
             </form>
           </FormBox>
         ) : (

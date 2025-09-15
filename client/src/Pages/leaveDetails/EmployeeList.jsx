@@ -102,6 +102,18 @@ const EmployeeList = () => {
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
+  const handlePageChange = (newPage) => {
+    dispatch(
+      getAllEmployees({
+        page: newPage,
+        search: searchText,
+        department_id: departmentFilter,
+      })
+    ).then(() => {
+      setPage(newPage); // update only after data loads
+    });
+  };
+  
 
   return (
   <>
@@ -254,28 +266,29 @@ const EmployeeList = () => {
           </Table>
 
           <Pagination>
-            <span onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>
-              &larr;
-            </span>
-            {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
-              (pageNumber) => (
-                <span
-                  key={pageNumber}
-                  onClick={() => setPage(pageNumber)}
-                  className={page === pageNumber ? "active" : ""}
-                >
-                  {pageNumber}
-                </span>
-              )
-            )}
-            <span
-              onClick={() => {
-                if (page < (pagination?.total_pages || 1)) setPage(page + 1);
-              }}
-            >
-              &rarr;
-            </span>
-          </Pagination>
+  <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>&larr;</span>
+  {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
+    (pageNumber) => (
+      <span
+        key={pageNumber}
+        onClick={() => handlePageChange(pageNumber)}
+        className={page === pageNumber ? "active" : ""}
+      >
+        {pageNumber}
+      </span>
+    )
+  )}
+  <span
+    onClick={() => {
+      if (page < (pagination?.total_pages || 1)) {
+        handlePageChange(page + 1);
+      }
+    }}
+  >
+    &rarr;
+  </span>
+</Pagination>
+
         </>
       )}
 
