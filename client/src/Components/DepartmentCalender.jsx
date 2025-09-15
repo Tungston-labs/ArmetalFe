@@ -1,5 +1,11 @@
-import React, { useState } from "react";
+// DepartmentCalendar.jsx
+import React, { useEffect, useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
+import API from "../services/api"; // <-- use your configured axios
+import { NavLink } from "react-router-dom";
+
+
+
 import {
   Container,
   LeftSection,
@@ -17,8 +23,7 @@ import {
   CalendarGrid,
   CalendarDay,
   PresenceWrapper,
-  DonutChart,
-  PresenceText,
+  ChartConatiner,
   EmployeeExpiryWrapper,
   EmployeeRow,
   Avatar,
@@ -31,46 +36,48 @@ import {
   HolidayInfo,
   HolidayTitle,
   HolidayDate,
-  ChartConatiner,
-  CardIcon,
 } from "./DepartmentCalender.Styles";
 import HalfDoughnutChart from "./HalfDoughnutChart";
-import {useSelector } from "react-redux";
 import HolidaySvg from "../assets/holiday.svg";
-const departments = [
-  { initial: "D", name: "Developers", count: 12, head: "Ajay Raj" },
-  { initial: "G", name: "Graphic designer", count: 12, head: "Dummy" },
-  { initial: "U", name: "UI/UX Designer", count: 8, head: "Duummmee" },
-];
-
-const employees = [
-  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
-];
-
-const holidays = [
-  { title: "Dummy holiday", desc: "Dummy holiday", date: "24 October" },
-  { title: "Dummy holiday", desc: "Dummy holiday", date: "24 October" },
-];
 
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
 const DepartmentCalendar = () => {
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [month, setMonth] = useState(9); // October
   const [year, setYear] = useState(2025);
- const { summary } = useSelector((state) => state.dashboard);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const response = await API.get("/admin/dashboard-summary/");
+        setSummary(response.data);
+      } catch (error) {
+        console.error("Error fetching summary:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSummary();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (!summary) return <p>Failed to fetch data.</p>;
+
   const today = new Date();
   const currentDay = today.getDate();
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
- const onLeaveToday = summary?.on_leave_today_count || 0;
+
+  const onLeaveToday = summary.on_leave_today_count || 0;
+  const activeToday = summary.active_today_count || 0;
+
+  // Prepare calendar dates
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const activeToday = summary?.active_today_count || 0;
   const dates = [];
-  const startOffset = (firstDay + 6) % 7;
+  const startOffset = (firstDay + 6) % 7; // align with Mon-Sun start
   for (let i = 0; i < startOffset; i++) dates.push("");
   for (let i = 1; i <= daysInMonth; i++) dates.push(i);
   while (dates.length % 7 !== 0) dates.push("");
@@ -90,53 +97,60 @@ const DepartmentCalendar = () => {
   };
 
   const monthNames = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
+
+  const departments = summary.departments || [];
+  const upcomingHolidays = summary.upcoming_holidays || [];
+  const contractExpiry = summary.upcoming_contract_expiry?.list || [];
 
   return (
     <Container>
       {/* LEFT SIDE */}
       <LeftSection>
         {/* Departments */}
-        <SectionTitle>
-          Department <FiArrowUpRight />
-        </SectionTitle>
+        <NavLink to="/department" style={{ textDecoration: "none", color: "inherit" }}>
+          <SectionTitle>
+            Department <FiArrowUpRight />
+          </SectionTitle>
+        </NavLink>
         <DepartmentWrapper>
-          
-          {departments.map((dept, index) => (
-            <DepartmentCard key={index}>
-                <DeptCount>{dept.count}</DeptCount>
-              <InitialCircle>{dept.initial}</InitialCircle>
+          {departments.map((dept) => (
+            <DepartmentCard key={dept.id}>
+              <InitialCircle>{dept.name.charAt(0)}</InitialCircle>
               <DeptInfo>
                 
                 <h3>{dept.name}</h3>
-                <DeptHead>Department head: {dept.head}</DeptHead>
+                <DeptHead>Department head: {dept.head?.name || "N/A"}</DeptHead>
               </DeptInfo>
-              <CardIcon>
-    <FiArrowUpRight />
-  </CardIcon>
+              <DeptCount>{dept.employee_count}</DeptCount>
             </DepartmentCard>
           ))}
         </DepartmentWrapper>
 
         {/* Employee Presence */}
+        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: "none", color: "inherit" }}>
         <SectionTitle>
           Employee Presence & Upcoming Holidays <FiArrowUpRight />
         </SectionTitle>
+        </NavLink>
+       
+
         <PresenceWrapper>
           <ChartConatiner>
-             <HalfDoughnutChart active={activeToday} onLeave={onLeaveToday} />
-</ChartConatiner>
-          {/* Employee Expiry */}
+            <HalfDoughnutChart active={activeToday} onLeave={onLeaveToday} />
+          </ChartConatiner>
+
+          {/* Employee Contract Expiry */}
           <EmployeeExpiryWrapper>
             <h3>Employee Contract Expiry</h3>
-            {employees.map((emp, i) => (
-              <EmployeeRow key={i}>
+            {contractExpiry.slice(0, 5).map((emp) => (
+              <EmployeeRow key={emp.id}>
                 <Avatar src="https://via.placeholder.com/30" />
                 <EmpName>{emp.name}</EmpName>
-                <EmpId>{emp.id}</EmpId>
-                <EmpEmail>{emp.email}</EmpEmail>
+                <EmpId>{emp.employee_id}</EmpId>
+                <EmpEmail>{emp.department}</EmpEmail>
               </EmployeeRow>
             ))}
           </EmployeeExpiryWrapper>
@@ -162,7 +176,6 @@ const DepartmentCalendar = () => {
               const isToday =
                 date === currentDay && month === currentMonth && year === currentYear;
               const isSunday = (i + 1) % 7 === 0;
-
               return (
                 <CalendarDay key={i} isToday={isToday} isSunday={isSunday}>
                   {date}
@@ -173,20 +186,23 @@ const DepartmentCalendar = () => {
         </CalendarWrapper>
 
         {/* Upcoming Holidays */}
+       
+        <NavLink to="/holiday" style={{ textDecoration: "none", color: "inherit" }}>
         <SectionTitle>
-          Upcoming Holidays <FiArrowUpRight />
+        Upcoming Holidays <FiArrowUpRight />
         </SectionTitle>
+        </NavLink>
         <HolidayList>
-          {holidays.map((h, i) => (
+          {upcomingHolidays.map((h, i) => (
             <HolidayItem key={i}>
               <HolidayIcon>
-                    <img src={HolidaySvg} alt="holiday icon" />
+                <img src={HolidaySvg} alt="holiday icon" />
               </HolidayIcon>
               <HolidayInfo>
-                <HolidayTitle>{h.title}</HolidayTitle>
-                <p>{h.desc}</p>
+                <HolidayTitle>{h.description}</HolidayTitle>
+                <p>{h.holiday_type}</p>
               </HolidayInfo>
-              <HolidayDate>{h.date}</HolidayDate>
+              <HolidayDate>{new Date(h.date).toLocaleDateString()}</HolidayDate>
             </HolidayItem>
           ))}
         </HolidayList>

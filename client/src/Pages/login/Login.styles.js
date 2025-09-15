@@ -84,10 +84,12 @@ export const Label = styled.label`
 export const Input = styled.input`
   width: 100%;
   padding: 10px;
-  margin-bottom: ${(props) => props.marginBottom || '10px'};
+  margin-bottom: ${(props) => props.marginBottom || '23px'};
   border: none;
   background: #efefef;
   border-radius: 8px;
+  fontFamily: 'Raleway';
+  
 `;
 
 export const CheckboxContainer = styled.div`
@@ -96,11 +98,35 @@ export const CheckboxContainer = styled.div`
   margin-bottom: 20px;
   margin-top: 30px;
   font-size: 17px;
+  font-family: 'Raleway';
+  margin-left: 3px;
 
-  input {
-    margin-right: 8px;
+  input[type="checkbox"] {
+    appearance: none; /* Remove default checkbox */
+    width: 20px;
+    height: 20px;
+    background-color: black; /* checkbox background */
+    border-radius: 2px;
+    border: 2px solid #000;
+    margin-right: 16px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 5px;
+    height: 10px;
+    border: solid white; /* tick color */
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
   }
 `;
+
+
 
 export const Button = styled.button`
   width: 100%;
@@ -108,10 +134,12 @@ export const Button = styled.button`
   background: linear-gradient(to right, #172554, #3352BA);
   color: white;
   border: none;
-  border-radius:6px;
+  border-radius: 6px;
   cursor: pointer;
   font-family: 'Raleway';
+  font-weight: bold;
 `;
+
 
 export const SmallLink = styled.p`
   font-size: 12px;
@@ -134,9 +162,10 @@ export const LeftHeader = styled.div`
 `;
 
 export const Logo = styled.img`
-  width: 30%;
+  width: 40%;
   height: auto;
   margin-bottom: 1rem;
+  margin-left:4rem
 `;
 
 export const CustomLink = styled.p`

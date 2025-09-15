@@ -172,8 +172,8 @@ const LoginForm = () => {
       <RightPanel>
         {view === 'login' ? (
           <FormBox>
-            <h2 style={{ fontSize: 41, fontFamily: 'Satoshi' }}>Log in</h2>
-            <p style={{ fontSize: 20, fontFamily: 'Raleway' }}>
+    <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', fontWeight: 'bold' }}>Log in</h2>
+    <p style={{ fontSize: 20, fontFamily: 'Raleway' }}>
               Welcome back!<br />
               Please log in to your account
             </p>
@@ -224,6 +224,9 @@ const LoginForm = () => {
                   background: "none",
                   border: "none",
                   color: "black", // make it look like a link
+                  fontSize: "14px",
+                  marginTop: "8px",
+                  fontFamily: 'Raleway',
                   textDecoration: "none",
                   fontSize: "14px",
                   marginTop: "-10px"
@@ -247,7 +250,16 @@ const LoginForm = () => {
               <Button type="submit" disabled={loading}>
                 {loading ? "Logging in..." : "Log in"}
               </Button>
-              {error && <p style={{ color: 'red' }}>{error}</p>}
+              {error && (
+  <p style={{ 
+    color: 'red', 
+    textAlign: 'center', 
+    fontFamily: 'Raleway', 
+    marginTop: '10px' 
+  }}>
+    {error}
+  </p>
+)}
 
 
 <PoweredBy text="REKORY" />
@@ -315,7 +327,16 @@ const LoginForm = () => {
               <Button type="submit" disabled={loading}>
                 {loading ? "Changing..." : "Change Password"}
               </Button>
-              {error && <p style={{ color: 'red' }}>{error}</p>}
+              {error && (
+  <p style={{ 
+    color: 'red', 
+    textAlign: 'center', 
+    fontFamily: 'Raleway', 
+    marginTop: '30px' 
+  }}>
+    {error}
+  </p>
+)}
             </form>
           </FormBox>
         )}

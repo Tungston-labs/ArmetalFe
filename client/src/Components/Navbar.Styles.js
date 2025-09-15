@@ -13,7 +13,7 @@ export const HRManager = styled.div`
   padding: 0.3rem ;
   // border: 1px solid #ccc;
   // border-radius: 8px;
-  background-color: #fff;
+  background-color: #f4f4f4;;
   font-size: 1rem;
   color: #333;
   // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
