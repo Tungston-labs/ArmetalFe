@@ -36,7 +36,8 @@ import Loader from "../../Components/Loader"
 import Cards from "../../Components/Cards"
 import { Link } from "react-router-dom";
 import HolidaySvg from "../../assets/holiday.svg";
-
+import DepartmentCalender from "../../Components/DepartmentCalender"
+import DepartmentCalendar from "../../Components/DepartmentCalender";
 const CardsOnly = () => {
   const dispatch = useDispatch();
   const { summary, loading, error } = useSelector((state) => state.dashboard);
@@ -118,6 +119,7 @@ const CardsOnly = () => {
     
     <Container>
   <Cards/>
+<DepartmentCalendar/>
       {/* Department + Calendar Row */}
       <Heading>Department</Heading>
      <ResponsiveHr />
