@@ -1,12 +1,17 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  // width: 100%;
-  // min-height: 100vh; 
   padding: 3rem;
   box-sizing: border-box;
   background: #f4f4f4;
+
+  /* Allow scrolling if content overflows */
+  min-height: 100vh;  
+  width: 100%;
+  overflow-x: auto; /* horizontal scroll if needed */
+  overflow-y: auto; /* vertical scroll */
 `;
+
 
 export const CardGrid = styled.div`
   display: grid;
@@ -212,19 +217,17 @@ export const Label = styled.div`
 `;
 
 export const Heading = styled.h3`
-   margin-top:1.5rem;
-  font-weight: bold;
-  font-size:1.8rem;
-  font-family:"satoshi";
-  font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 26px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  margin-top: 1.5rem;
+  font-weight: 700;
+  font-family: "Satoshi", sans-serif;
+  line-height: 1.2;
+  letter-spacing: 0;
 
+  /* Responsive font size: min 18px, preferred 4vw, max 26px */
+  font-size: clamp(15px, 3vw, 24px);
 `;
+
+
 export const DepartmentCalendarWrapper = styled.div`
   display: flex;
   gap: 2rem;
@@ -256,7 +259,7 @@ export const CalendarWrapper = styled.div`
 
   /* Responsive adjustments */
   @media (max-width: 1200px) {
-    padding: 0.9rem;
+    padding: 0.7rem;
     margin-top: -40px;
   }
 
@@ -280,7 +283,7 @@ export const CalendarWrapper = styled.div`
 
 export const PresenceContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
   gap: 2rem;
   margin-top: 3rem;
   width:100%;
@@ -288,7 +291,7 @@ export const PresenceContainer = styled.div`
 `;
 
 export const ChartContainer = styled.div`
-  flex: 1;
+  // flex: 1;
   min-width: 200px;
   background: white;
   border-radius: 10px;
@@ -313,7 +316,7 @@ export const SubText = styled.div`
 `;
 
 export const ContractList = styled.div`
-  flex: 2;
+  flex: 1;
   min-width: 200px;
   background: white;
   padding: 10px;
@@ -321,7 +324,7 @@ export const ContractList = styled.div`
   /* Tablet */
   @media (max-width: 1024px) {
     flex: 1;
-    min-width: 250px;
+    min-width: 200px;
   }
 
   /* Mobile */
@@ -334,43 +337,58 @@ export const ContractList = styled.div`
 
 export const ContractItem = styled.div`
   display: grid;
-  grid-template-columns: 30px 1fr 1fr 1fr; /* avatar | name | emp_id | date */
+  grid-template-columns: 35px minmax(120px, 1fr) 80px 120px; 
   align-items: center;
-  padding: 0.3rem 0;
+  padding: 0.4rem 0;
   font-family: "satoshi";
+  column-gap: 2px;
 
   p, small, span {
     margin: 0;
-    white-space: nowrap; /* prevent awkward wrapping */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
+  p {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
   small {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #666;
-    font-family: "satoshi";
+    text-align: center;
+  }
+
+  span {
+    font-size: 0.85rem;
+    color: #333;
+    text-align: right;
   }
 
   /* Tablet screens */
   @media (max-width: 1024px) {
-    grid-template-columns: 40px 1fr 1fr; /* Hide date */
-    
+    grid-template-columns: 35px minmax(120px, 1fr) 80px; 
+    /* hide date */
     span:last-child {
-      display: none; /* Hide date column */
+      display: none;
     }
   }
 
   /* Mobile screens */
   @media (max-width: 768px) {
-    grid-template-columns: 40px 1fr; /* Only avatar + name */
-
+    grid-template-columns: 35px minmax(120px, 1fr); 
+    /* avatar + name only */
     small, span {
-      display: none; /* Hide emp_id and date */
+      display: none;
     }
   }
 `;
 
+export const LeftSection = styled.div`
+width:65%;
+`;
 
 
 export const Avatar = styled.div`
@@ -379,7 +397,7 @@ export const Avatar = styled.div`
 `;
 export const HolidayCard = styled(Card)`
   background: #f4f4f4;
-  margin-top: -2%;
+  // margin-top: -2%;
   flex-direction: column; 
   align-items: stretch;
   gap:5px;
@@ -397,7 +415,7 @@ export const HolidayItem = styled.div`
   div {
     display: flex;
     flex-direction: column;
-    max-width: 70%; /* limit width for text truncation */
+    max-width: 50%; /* limit width for text truncation */
   }
 
   h4 {
@@ -431,6 +449,18 @@ export const HolidayItem = styled.div`
     font-size: 0.9rem;
     color: #333;
     white-space: nowrap;
+  }
+`;
+
+export const SvgIcon = styled.div`
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; 
+
+  img, svg {
+    width: 30px;
+    height: 30px;
   }
 `;
 
@@ -479,3 +509,60 @@ export const DropdownMenu = styled.div`
     }
   }
     `;
+
+  export const ResponsiveHr = styled.hr`
+  border-top: 2px solid #3352ba;
+  width: 66%;
+  margin: 0;
+
+  /* Tablet */
+  @media (max-width: 1024px) {
+    width: 50%;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;  
+export const LineWithIcon = styled.div`
+  position: relative;
+  width: 66%;
+
+  hr {
+    border-top: clamp(1px, 0.3vw, 3px) solid #3352ba; /* responsive thickness */
+    width: 100%;
+    margin: 0;
+  }
+  svg {
+    position: absolute;
+    right: 0;
+    top: -30px;
+    color: #3352ba;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  svg:hover {
+    transform: scale(1.2);
+    color: #1e3a8a; /* darker blue */
+  }
+
+  /* 📱 Tablet */
+  @media (max-width: 1024px) {
+    width: 80%;
+
+     svg {
+      display: none; /* 👈 hide icon on mobile */
+    }
+  }
+
+  /* 📱 Mobile */
+  @media (max-width: 768px) {
+    width: 100%;
+
+    svg {
+      display: none; /* 👈 hide icon on mobile */
+    }
+  }
+`;

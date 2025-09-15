@@ -61,7 +61,7 @@ export const CardHeader = styled.div`
 export const IconSection = styled.div`
   display: flex;
   // align-items: center;
-  justify-content: center;
+  // justify-content: center;
   min-width: 35px;
   margin-left:10px;
 `;
@@ -78,7 +78,7 @@ export const Divider = styled.div`
   position: absolute;             
   top: 0;
   bottom: 0;
-  left: 50px;                    
+  left: 60px;                    
   width: 3px;
   background: #3352ba;
   border-radius: 4px;

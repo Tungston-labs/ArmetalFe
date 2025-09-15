@@ -254,13 +254,29 @@ export const Title = styled.h2`
   margin: 0;
  font-family:satoshi;
  margin-top:10px;
+ font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 22px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+  color: #3250B5;
 `;
 
 export const Subtitle = styled.p`
   font-size: 1rem;
-  color: #555;
+  color: #3250B5;
   margin-top:-1px;
   font-size:raleway;
+  font-family: Raleway;
+font-weight: 300;
+font-style: Light;
+font-size: 16px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const DepartmentSelect = styled.select`
