@@ -56,6 +56,7 @@ export const DateSelector = styled.div`
   align-items: center; 
     gap: 1.5rem;
     margin-left:20%;
+    margin-top:8rem;
   }
 
   .left {
@@ -134,7 +135,7 @@ export const EmployeesPanel = styled.div`
   width: 25%;
    background:white;
 
-  padding: 1rem;
+  padding: 0.1rem;
   border-radius: 12px;
   max-height: 60vh;
   overflow-y: auto;
@@ -165,18 +166,29 @@ export const EmployeeCard = styled.div`
   padding: 0.6rem;
   background: ${({ active }) => (active ? '#E0E3EE' : '#fff')};
   margin-bottom: 0.5rem;
-  // border-radius: 8px;
   cursor: pointer;
   border-radius: 7px;
-border: 0.2px solid #000;
-// background: #FFF;
-box-shadow: 0 0 4.2px 0 rgba(0, 0, 0, 0.25);
+border: 0.2px ;
+// box-shadow: 0 0 4.2px 0 rgba(0, 0, 0, 0.25);
+box-shadow: 0px 0px 4.2px 0px rgba(0, 0, 0, 0.25);
 
   img {
     width: 35px;
     height: 35px;
     border-radius: 50%;
   }
+`;
+export const Head = styled.h2`
+  font-size: 1.4rem;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+  font-family: Raleway;
+font-weight: 700;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
 `;
 
 export const TaskPanel = styled.div`
@@ -187,11 +199,12 @@ export const TaskPanel = styled.div`
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   overflow-y: auto;
   max-height: 60vh;
- margin-top:35px;
+ margin-top:-1rem;
  border-radius: 9px;
 border: 0.2px solid #000;
 background: #FFF;
 box-shadow: 0 0 4.3px 0 rgba(0, 0, 0, 0.25);
+
 `;
 
 export const TaskHeader = styled.div`
@@ -212,21 +225,36 @@ height:30px;
 export const TaskCard = styled.div`
   background: #F2F5ED;
   margin-top: 1rem;
-  padding: .50rem;
-  border:1px solid;
+  padding: 1rem;
+  border: 1px solid #ccc;
   border-radius: 10px;
-
-  // height:50px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 
   h4 {
-    margin-bottom: 0.4rem;
-      margin-top:0px
+    margin: 0;
+    font-family: 'Satoshi';
+    font-weight: 700;
+    font-size: 14px;
+    color: #333;
+  }
+
+  p {
+    margin: 0;
+    font-family: 'Satoshi';
+    font-weight: 600;
+    font-size: 13px;
+    color: #444;
   }
 
   small {
     color: gray;
+    font-size: 12px;
+    font-family: 'Satoshi';
   }
 `;
+
 
 // export const Description = styled.p`
 
@@ -331,4 +359,14 @@ export const DropdownMenu = styled.div`
       background-color: #f0f0f0;
     }
   }
+`;
+export const Heading = styled.h2`
+font-family: Raleway;
+font-weight: 700;
+font-style: Bold;
+font-size: 19px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;

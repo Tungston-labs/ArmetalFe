@@ -120,6 +120,7 @@ const DepartmentCalendar = () => {
             <DepartmentCard key={dept.id}>
               <InitialCircle>{dept.name.charAt(0)}</InitialCircle>
               <DeptInfo>
+                
                 <h3>{dept.name}</h3>
                 <DeptHead>Department head: {dept.head?.name || "N/A"}</DeptHead>
               </DeptInfo>

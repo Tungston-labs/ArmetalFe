@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Container, Header, DateSelector, Calendar, Day, EmployeesPanel,
   EmployeeCard, TaskPanel, TaskCard, TaskHeader, Hr, Description,
-  TimeBox, SearchInput, Title, Subtitle, TitleSection, TextBlock, DropdownWrapper, DepartmentDropdown
+  TimeBox, SearchInput, Title, Subtitle, TitleSection, TextBlock, DropdownWrapper, DepartmentDropdown,
+  Heading,
+  Head
 } from './Daily.styles';
 import { getEmployees, getTasks } from '../../Redux/dailyTaskSlice';
 import { getDepartments } from '../../Redux/departmentSlice';
@@ -162,6 +164,7 @@ const selected = new Date(selectedDate); // convert string to Date
 
         <div style={{ display: 'flex', gap: '.5rem' }}>
           <EmployeesPanel>
+            <Heading>Employees</Heading>
             {(filteredEmployees || []).map(emp => (
               <EmployeeCard
                 key={emp.id}
@@ -177,7 +180,8 @@ const selected = new Date(selectedDate); // convert string to Date
               </EmployeeCard>
             ))}
           </EmployeesPanel>
-
+ <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+  <Head>Daily Task</Head>
           <TaskPanel>
             {selectedEmployee && (
               <TaskHeader>
@@ -209,10 +213,11 @@ const selected = new Date(selectedDate); // convert string to Date
                   alt="No tasks"
                   style={{ width: '400px', height: '350px', marginBottom: '', opacity: 0.8 }}
                 />
-                <p>No tasks available for this date.</p>
+        
               </div>
             )}
           </TaskPanel>
+          </div>
         </div>
       </Container>
     </>

@@ -135,9 +135,9 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
- text-align: left;
+ text-align: center;
   td {
-    text-align: left;
+    text-align: center;
     padding: 0.4rem;
     white-space: nowrap;
     background-color: white;
@@ -145,6 +145,7 @@ export const Table = styled.table`
   }
 
   th {
+   text-align: center;
     background-color: #304EB0;
     color: white;
     font-family: raleway;
@@ -152,6 +153,7 @@ export const Table = styled.table`
   }
 
   tbody tr {
+   text-align: center;
     box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
     font-family: 'satoshi';
   }
@@ -205,7 +207,7 @@ export const Pagination = styled.div`
   justify-content: flex-start; /* changed from flex-end to flex-start */
   gap: 0.3rem;
   margin-top: 1.5rem;
-  padding: 0.6rem;
+  // padding: 0.6rem;
 
   span {
     padding: 0.2rem 0.4rem;
@@ -364,6 +366,12 @@ export const BottomRow = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+export const TextBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
+`;
 
 export const TitleSection = styled.div`
   display: flex;
@@ -374,21 +382,23 @@ export const TitleSection = styled.div`
 export const Title = styled.h2`
   font-size: 1.4rem;
   margin: 0;
-  margin-top: 10px;
+  margin-bottom: 5px;
   color: #3250b5;
   font-family: "Satoshi";
   font-weight: 700;
   line-height: 100%;
+ 
 `;
 
 export const Subtitle = styled.p`
   font-size: 1rem;
   color: #3250b5;
-  margin-top: 5px;
+  margin: 0;
   font-family: Raleway;
   font-weight: 300;
   line-height: 100%;
 `;
+
 
 export const AddButton = styled.button`
   background: #1e3a8a;

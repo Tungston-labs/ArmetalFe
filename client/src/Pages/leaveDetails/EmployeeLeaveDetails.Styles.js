@@ -22,9 +22,9 @@ export const InfoGrid = styled.div`
 `;
 
 export const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  border-radius: 10%;
   object-fit: cover;
 
   @media (max-width: 768px) {
@@ -100,13 +100,12 @@ export const ActionButton = styled.button`
 `;
 
 export const ApproveButton = styled(ActionButton)`
-  background-color: #6c7b8b;
+  background-color: rgba(51, 82, 186, 1);
   color: white;
   transition: all 0.3s ease;
 
   &:hover {
-    background-color:rgb(52, 57, 65); /* slightly darker shade */
-    opacity: 0.9;
+    background-color:blue;
   }
 `;
 

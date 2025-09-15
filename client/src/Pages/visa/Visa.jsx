@@ -27,6 +27,7 @@ import {
 } from "../../Redux/employeeSlice";
 import Loader from "../../Components/Loader";
 import Navbar from "../../Components/Navbar";
+import { TextBlock } from "../leaveDetails/EmployeeList.styles";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -112,24 +113,15 @@ const EmployeeList = () => {
         </LoaderOverlay>
       )}
 
-      <Container>
-        <HeaderSection>
-          <TitleSection>
-            <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-            <div>
-              <Title>Employee Contract & Visa Expiry</Title>
-              <Subtitle>Manage your Employee.</Subtitle>
-            </div>
-          </TitleSection>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+      <HeaderSection>
+         <TitleSection>
+         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         <TextBlock>
+           <Title>Employee</Title>
+           <Subtitle>Manage your Employee.</Subtitle>
+         </TextBlock>
+       </TitleSection>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent:"space-between" }}>
             <SearchWrapper>
               <SearchIcon />
               <SearchInput
@@ -350,7 +342,7 @@ const EmployeeList = () => {
             </div>
           </div>
         )}
-      </Container>
+      
     </>
   );
 };

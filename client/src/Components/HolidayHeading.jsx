@@ -12,7 +12,7 @@ import {
 } from "./HolidayHeading.styles";
 
 import { FiArrowLeft, FiSearch } from "react-icons/fi";
-import HolidayIcon from "../assets/payroll.svg"; // your holiday svg
+import HolidayIcon from "../assets/payroll.svg"; 
 
 const Header = () => {
   return (

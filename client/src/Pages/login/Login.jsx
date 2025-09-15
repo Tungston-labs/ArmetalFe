@@ -227,6 +227,9 @@ const LoginForm = () => {
                   fontSize: "14px",
                   marginTop: "8px",
                   fontFamily: 'Raleway',
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  marginTop: "-10px"
                 }}
               >
                 Forgot password?

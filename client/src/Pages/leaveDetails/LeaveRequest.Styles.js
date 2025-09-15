@@ -42,18 +42,13 @@ export const Header = styled.div`
     flex-wrap: wrap;
   }
 `;
-// export const RoleTag = styled.div`
-//   background: #fff;
-//   padding: 0.6rem 1rem;
-//   border-radius: 6px;
-//   box-shadow: 0 0 4px rgba(0,0,0,0.1);
-// `;
+export const TextBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
+`;
 
-// export const TabMenu = styled.div`
-//   display: flex;
-//   border-bottom: 2px solid #ccc;
-//   margin-top: 1.5rem;
-// `;
 
 export const Tabs = styled.div`
   display: flex;
@@ -72,7 +67,7 @@ text-align: center;
 `;
 
 export const Tab = styled.div`
-  padding:5px  20px;
+  padding:7px  20px;
   cursor: pointer;
   font-weight: 500;
   background:#304EB0;
@@ -88,6 +83,7 @@ export const SearchWrapper = styled.div`
   display: inline-block;
   width: 23%;
   max-width: 400px;
+  margin-top:-18px;
 `;
 
 export const SearchInput = styled.input`
@@ -129,9 +125,9 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
-
+  text-align: center;
   td {
-    text-align: left;
+    text-align: center;
     padding: 0.5rem;
     white-space: nowrap;
     background-color: white;
@@ -143,6 +139,7 @@ export const Table = styled.table`
     color: white;
     font-family: raleway;
     padding: 0.8rem;
+      text-align: center;
   }
 
   tbody tr {
@@ -171,7 +168,7 @@ export const Table = styled.table`
 `;
 
 export const TableHead = styled.th`
-  text-align: left;
+  text-align: center;
   padding: 1rem;
   background: #d6dee9;
   color: #000;
@@ -189,8 +186,8 @@ export const TableCell = styled.td`
 `;
 
 export const ProfileImage = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   margin-right: 0.6rem;
   vertical-align: middle;
@@ -242,8 +239,7 @@ export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-`;
+  margin-bottom: 0.5rem;`;
 
 export const HRManager = styled.div`
   display: flex;

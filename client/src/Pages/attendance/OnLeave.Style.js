@@ -250,19 +250,29 @@ export const AddButton = styled.button`
 
 
 export const SearchWrapper = styled.div`
-  display: flex;
-  justify-content: flex-start;
+  position: relative; /* Required for the icon to position absolutely */
   margin-bottom: 1rem;
-  width:100%;
-
+  width: 100%;
+  max-width: 300px; /* optional, prevents the input from being too short */
 `;
+
 
 export const SearchInput = styled.input`
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem 0.5rem 2.5rem; /* left padding for icon */
   border: 1px solid #ccc;
   border-radius: 8px;
-  width: 20%;
+  width: 100%;
+  font-size: 0.9rem;
+  font-family: 'Satoshi';
+  background-color: #fff;
+
+  &:focus {
+    outline: none;
+    border-color: #304EB0;
+    box-shadow: 0 0 0 2px rgba(48, 78, 176, 0.1);
+  }
 `;
+
 
 
 
@@ -282,7 +292,9 @@ export const SearchIcon = styled(FiSearch)`
   transform: translateY(-50%);
   color: #888;
   font-size: 1rem;
+  pointer-events: none; /* so it doesn’t block typing */
 `;
+
 
 export const Table = styled.table`
   width: 100%;

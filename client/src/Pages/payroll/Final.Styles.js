@@ -70,18 +70,32 @@ export const TitleSection = styled.div`
 
 
 export const Title = styled.h2`
-  margin-left: 10px;
-  font-size: 22px;
+  font-size: 1.4rem;
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+color:#3352BA;
 `;
 
 export const Subtitle = styled.p`
-  font-size: 16px;
-  margin-top: -10px;
-  margin-left:10px;
+  margin-top: -5px;
+ 
+  font-family: Raleway;
+font-weight: 300;
+font-style: Light;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+color:#3352BA;
 `;
 
 export const SearchInput = styled.input`
   padding: 8px;
+  margin-top:15px;
   border-radius: 4px;
   border: 1px solid #ccc;
   border-radius: 7px;
@@ -105,9 +119,9 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
-
+   text-align: center;
    td {
-    text-align: left;
+    text-align: center;
     // padding: 0.7rem;
     white-space: nowrap;
     background-color: white;
@@ -115,9 +129,18 @@ export const Table = styled.table`
   }
 
   th {
+     text-align: center;
     background-color: #3352BA;
     color: white;
     padding: 0.7rem;
+    font-family: Raleway;
+font-weight: 700;
+font-style: Bold;
+font-size: 17px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 
   }
 /* ✅ Background color for even rows */
@@ -177,16 +200,14 @@ export const Select = styled.select`
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
-//   border-radius: 7px;
-// border: 1px solid #5F53A5;
-// background: #FFF;
-// color: rgba(0, 0, 0, 0.50);
-// font-family: Satoshi;
-// font-size: 17px;
-// font-style: italic;
-// font-weight: 300;
-// line-height: normal;
-// text-align: center;
+font-family: Satoshi;
+font-weight: 300;
+font-style: Light Italic;
+font-size: 17px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 
 `;
 // styles.js or your styled-components file
@@ -206,4 +227,8 @@ export const Pagination = styled.div`
       color: white;
     }
   }
+`;
+export const Icon = styled.img`
+  width: 52px;
+  height: 52px;
 `;

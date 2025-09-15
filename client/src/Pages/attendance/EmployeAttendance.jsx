@@ -36,6 +36,7 @@ import { GoArrowUpRight } from "react-icons/go";
 import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
+import { TextBlock } from "../leaveDetails/EmployeeList.styles";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -75,13 +76,13 @@ const EmployeeList = () => {
     <Navbar />
     <Container>
       <HeaderSection>
-        <TitleSection>
-          <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          <div>
-            <Title>Employee Attendance</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </div>
-        </TitleSection>
+         <TitleSection>
+         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         <TextBlock>
+           <Title>Employee</Title>
+           <Subtitle>Manage your Employee.</Subtitle>
+         </TextBlock>
+       </TitleSection>
         <SearchWrapper>
              <SearchIcon />
              <SearchInput

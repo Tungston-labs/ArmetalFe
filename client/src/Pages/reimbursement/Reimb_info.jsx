@@ -78,7 +78,7 @@ const ReimbursementDetail = () => {
       <Header>
         <HeaderLeft>
           <HiArrowLeft
-            size={22}
+                 size={34} 
             style={{ cursor: "pointer", color: "#3250B5", marginRight: "10px" }}
             onClick={() => navigate(-1)}
           />
