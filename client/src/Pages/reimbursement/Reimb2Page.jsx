@@ -20,14 +20,14 @@ import {
   DropdownWrapper,
 } from '../reimbursement/Reimb2page.Styles';
 import { FaInfoCircle } from 'react-icons/fa';
-import { HiArrowLeft } from "react-icons/hi2";
+import { FaArrowLeft } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import RemiIcon from "../../assets/remi.svg";
 import { fetchReimbursementsByDepartment,updateReimbursementStatus } from '../../services/reimbursement'; // <-- your service
 import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
 import { Pagination } from '../leaveDetails/EmployeeList.styles';
-
+import { IoInformationCircleOutline } from "react-icons/io5";
 const DepartmentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -139,10 +139,11 @@ useEffect(() => {
       {/* Header */}
       <HeaderSection>
         <TitleSection>
-          <HiArrowLeft
-            style={{ width: '24px', height: '24px', cursor: 'pointer', color: "#3250B5" }}
-            onClick={() => window.history.back()}
-          />
+          <FaArrowLeft 
+  style={{ width: '24px', height: '24px', cursor: 'pointer', color: "#3250B5" }}
+  onClick={() => window.history.back()}
+/>
+
           <img src={RemiIcon} alt="employeeIcon" style={{ height: "60px" }} />
           <div>
             <Title>Reimbursement</Title>
@@ -245,7 +246,7 @@ useEffect(() => {
                 </td>
                 <td>
                   <IconButton onClick={() => navigate(`/reimbursement_info/${emp.id}`)}>
-                    <FaInfoCircle />
+                    <IoInformationCircleOutline /> 
                   </IconButton>
                 </td>
               </tr>

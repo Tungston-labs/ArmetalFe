@@ -131,6 +131,8 @@ export const InitialCircle = styled.div`
   &:hover {
     color: #CAD2ED; 
   }
+
+
 `;
 
 export const AddButton = styled.button`
@@ -222,6 +224,7 @@ export const DepartmentCard = styled.div`
     margin: 0;
     color: #000;
     font-family: 'Satoshi';
+    
   }
 
   .head-row {
@@ -253,26 +256,50 @@ export const HeadInfo = styled.div`
     font-size: 0.9rem;
     color: #888;
     display: block;
-    // font-family: Raleway;
-// font-weight: 700;
-// font-style: Bold;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+    line-height: 100%;
+    letter-spacing: 0%;
+  }
 
+  .head-row {
+    display: flex;
+    align-items: center; /* vertically centers content by default */
+    margin-top: 0.5rem; /* pushes the row a little down from the small text */
+    
+    img {
+      width: 36px; /* adjust size if needed */
+      height: 36px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      object-fit: cover;
+    }
+
+    .head-name {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #333;
+    }
   }
 `;
+
 
 export const CardRight = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 0.5rem;
 
   .card-value {
     font-weight: 600;
     font-size: 1.5rem;
     color: #000;
+    font-family: Satoshi;
+// font-weight: 700;
+// font-style: Bold;
+// font-size: 20px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
   }
 
   .arrow-icon {
@@ -285,7 +312,8 @@ export const CardRight = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-}
+  // margin-left:5px;
+  }
 
 `;
 

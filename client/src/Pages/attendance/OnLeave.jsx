@@ -6,7 +6,8 @@ import {
   HRManager, TopBar, SearchInput, Table, TableHeader, TableRow,
   TableCell, EmployeeImg, Pagination, DateInput, Tab, Tabs,
   DepartmentSelect, DropdownMenu, DropdownWrapper,
-  SearchWrapper
+  SearchWrapper,
+  SearchIcon
 } from "./OnLeave.Style";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoEyeOutline } from "react-icons/io5";
@@ -17,6 +18,7 @@ import { HiArrowLeft } from "react-icons/hi";
 import { getDepartments } from "../../Redux/departmentSlice";
 import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import { FiSearch } from 'react-icons/fi';
 export default function EmployeeAttendance() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -137,14 +139,16 @@ export default function EmployeeAttendance() {
           width: "100%",
           gap: "1rem"
         }}>
-          <SearchWrapper>
-            <SearchInput
-              type="text"
-              placeholder="Search by employee name or ID"
-              value={searchText}
-              onChange={handleSearch}
-            />
-          </SearchWrapper>
+         <SearchWrapper>
+  <SearchIcon />
+  <SearchInput
+    type="text"
+    placeholder="Search by employee name or ID"
+    value={searchText}
+    onChange={handleSearch}
+  />
+</SearchWrapper>
+
         </div>
       </HeaderSection>
 

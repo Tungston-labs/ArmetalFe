@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container, Header, TitleSection, Title, Subtitle, SearchInput, Pagination,
-  TableWrapper, Table, Th, Td, Select
+  TableWrapper, Table, Th, Td, Select,
+  Icon
 } from './Final.Styles';
 import { Link } from 'react-router-dom';
 import { GoInfo } from "react-icons/go";
@@ -17,6 +18,7 @@ import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
 import Swal from "sweetalert2";
 import { FaCheck } from "react-icons/fa";
+import HolidayIcon from "../../assets/payroll.svg"; 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -229,7 +231,7 @@ const handleMonthChange = (e) => {
         <Header>
           <TitleSection>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
+                      <Icon src={HolidayIcon} alt="holiday" />
               <div>
                 <Title>Payroll</Title>
                 <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
@@ -251,7 +253,7 @@ const handleMonthChange = (e) => {
           <SearchInput placeholder="Search by employee ID" value={searchTerm} onChange={handleSearch} style={{ width: '250px' }} />
           <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
-  <option value="">Month</option>
+  <option value="">Select</option>
   {months.map((month, index) => (
     <option key={month} value={index + 1}>
       {month}

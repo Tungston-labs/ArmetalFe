@@ -22,6 +22,7 @@ import {
   SearchIcon,
   TopRow,
   BottomRow,
+  TextBlock,
 } from "./EmployeeList.styles";
 import { IoIosArrowDown } from "react-icons/io";
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -123,13 +124,14 @@ const EmployeeList = () => {
      <HeaderSection>
   {/* Top row: Title + Add Button */}
   <TopRow>
-    <TitleSection>
-      <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-      <div>
-        <Title>Employee</Title>
-        <Subtitle>Manage your Employee.</Subtitle>
-      </div>
-    </TitleSection>
+   <TitleSection>
+  <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+  <TextBlock>
+    <Title>Employee</Title>
+    <Subtitle>Manage your Employee.</Subtitle>
+  </TextBlock>
+</TitleSection>
+
 
     <AddButton onClick={() => navigate("/basic-details")}>
       <FaPlus /> Add Employee
@@ -226,8 +228,8 @@ const EmployeeList = () => {
                           src={emp.profile_pic}
                           alt={emp.name}
                           style={{
-                            width: "40px",
-                            height: "40px",
+                            width: "25px",
+                            height: "25px",
                             borderRadius: "50%",
                           }}
                         />

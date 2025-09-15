@@ -12,7 +12,8 @@ import {
   DropdownMenu,
   DropdownWrapper,
   TitleSection,
-  Pagination
+  Pagination,
+  TextBlock
 } from "../leaveDetails/EmployeeList.styles";
 import {
   CardContainer,
@@ -74,14 +75,13 @@ const EmployeeList = () => {
     <Navbar/>
       {/* Header */}
       <HeaderSection>
-        <TitleSection>
-                 <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-         
-          <div>
-            <Title>Employees on Leave</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </div>
-        </TitleSection>
+         <TitleSection>
+         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         <TextBlock>
+           <Title>Employee</Title>
+           <Subtitle>Manage your Employee.</Subtitle>
+         </TextBlock>
+       </TitleSection>
       <SearchWrapper>
   <SearchIcon>
     <FiSearch />

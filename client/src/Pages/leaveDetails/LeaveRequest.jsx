@@ -35,6 +35,7 @@ import {
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Navbar from '../../Components/Navbar';
 import Loader  from "../../Components/Loader"
+import { TextBlock } from './EmployeeList.styles';
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -124,14 +125,13 @@ const isLoading = loading || deptLoading;
     </div>
   )}
       <HeaderSection>
-        <TitleSection>
-          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
-          <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          <div>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </div>
-        </TitleSection>
+       <TitleSection>
+         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         <TextBlock>
+           <Title>Employee</Title>
+           <Subtitle>Manage your Employee.</Subtitle>
+         </TextBlock>
+       </TitleSection>
 
       <ActionArea>
   <SearchWrapper>

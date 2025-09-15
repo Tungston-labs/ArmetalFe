@@ -27,6 +27,7 @@ import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import Loader from "../../Components/Loader"
 import { getUpcomingExpiryEmployees } from "../../Redux/employeeSlice";
 import Navbar from "../../Components/Navbar";
+import { TextBlock } from "../leaveDetails/EmployeeList.styles";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -96,14 +97,13 @@ const EmployeeList = () => {
       
 
       <HeaderSection>
-        <TitleSection>
- <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          <div>
-            <Title>Employee Contract & Visa Expiry</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </div>
-        </TitleSection>
-
+         <TitleSection>
+         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         <TextBlock>
+           <Title>Employee</Title>
+           <Subtitle>Manage your Employee.</Subtitle>
+         </TextBlock>
+       </TitleSection>
         <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent:"space-between" }}>
             <SearchWrapper>
                 <SearchIcon />

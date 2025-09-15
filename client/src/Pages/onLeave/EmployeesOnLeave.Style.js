@@ -166,7 +166,7 @@ export const Subtitle = styled.p`
 export const CardRight = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 0.5rem;
 
   .card-value {
@@ -202,16 +202,30 @@ export const CardGrid = styled.div`
 export const DeptTitle = styled.div`
   font-weight: bold;
   font-size: 1.2rem;
+  font-family: Raleway;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 export const DeptSub = styled.div`
   font-size: 0.9rem;
   color: #666;
+  font-family: Raleway;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 export const DeptHead = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.25rem;
+font-family: Raleway;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
 
   span {
     font-size: 0.95rem;

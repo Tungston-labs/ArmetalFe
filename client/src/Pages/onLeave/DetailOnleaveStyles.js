@@ -251,7 +251,9 @@ export const ActionArea = styled.div`
 `;
 export const Title = styled.h2`
   font-size: 1.8rem;
-  margin: 0;
+  margin:0;
+  margin-bottom:5px;
+  margin-left: 5px;
  font-family:satoshi;
  margin-top:10px;
  font-family: Satoshi;
@@ -267,6 +269,7 @@ letter-spacing: 0%;
 export const Subtitle = styled.p`
   font-size: 1rem;
   color: #3250B5;
+    margin-left: 5px;
   margin-top:-1px;
   font-size:raleway;
   font-family: Raleway;

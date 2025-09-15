@@ -135,9 +135,9 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
- text-align: left;
+  text-align: center;
   td {
-    text-align: left;
+    text-align: center;
     padding: 0.4rem;
     white-space: nowrap;
     background-color: white;
@@ -177,21 +177,10 @@ export const Table = styled.table`
 `;
 
 
-// export const Row = styled.tr``;
-
-// export const Cell = styled.td`
-//   display: flex;
-//   align-items: center;
-//   gap: 0.6rem;
-
-//   svg {
-//     cursor: pointer;
-//   }
-// `;
 
 export const ProfileImg = styled.img`
-  width: 28px;
-  height: 28px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
 `;
 

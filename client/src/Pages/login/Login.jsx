@@ -224,9 +224,9 @@ const LoginForm = () => {
                   background: "none",
                   border: "none",
                   color: "black", // make it look like a link
-                  textDecoration: "underline",
+                  textDecoration: "none",
                   fontSize: "14px",
-                  marginTop: "8px"
+                  marginTop: "-10px"
                 }}
               >
                 Forgot password?
