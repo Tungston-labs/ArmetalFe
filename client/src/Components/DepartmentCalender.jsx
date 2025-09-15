@@ -32,6 +32,7 @@ import {
   HolidayTitle,
   HolidayDate,
   ChartConatiner,
+  CardIcon,
 } from "./DepartmentCalender.Styles";
 import HalfDoughnutChart from "./HalfDoughnutChart";
 import {useSelector } from "react-redux";
@@ -102,14 +103,19 @@ const DepartmentCalendar = () => {
           Department <FiArrowUpRight />
         </SectionTitle>
         <DepartmentWrapper>
+          
           {departments.map((dept, index) => (
             <DepartmentCard key={index}>
+                <DeptCount>{dept.count}</DeptCount>
               <InitialCircle>{dept.initial}</InitialCircle>
               <DeptInfo>
+                
                 <h3>{dept.name}</h3>
                 <DeptHead>Department head: {dept.head}</DeptHead>
               </DeptInfo>
-              <DeptCount>{dept.count}</DeptCount>
+              <CardIcon>
+    <FiArrowUpRight />
+  </CardIcon>
             </DepartmentCard>
           ))}
         </DepartmentWrapper>

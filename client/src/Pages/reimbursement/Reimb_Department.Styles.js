@@ -39,17 +39,17 @@ export const HRManager = styled.div`
 `;
 
 export const Subtitle = styled.p`
-  font-size: 14px;
-  color:  #3e64ff;
+  font-size: 1rem;
+  color:  #3250B5;
   margin: 0;
   margin-left: 2px;
   font-family: Raleway;
 `;
 export const Title = styled.h2`
-  font-size: 22px;
+  font-size: 1.4rem;
   margin: 0;
   font-family:satoshi;
-  color:rgb(64, 101, 220);
+  color:#3250B5;
 `;
 export const HeaderSection = styled.div`
   display: flex;
@@ -117,8 +117,8 @@ export const InitialCircle = styled.div`
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: rgb(255, 255, 255);
-   color: #B5E2FF;
+  background-color: rgba(255, 255, 255, 1);
+  color: #ECF8FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,6 +126,11 @@ export const InitialCircle = styled.div`
   font-size: 100px;
   font-family: Satoshi;
   padding-right: 18px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    color: #CAD2ED; 
+  }
 `;
 
 export const AddButton = styled.button`
@@ -195,7 +200,7 @@ export const DepartmentCard = styled.div`
   &:hover {
     .initial-circle {
       background-color:rgb(255, 255, 255);
-    color: #1a73e8;
+    // color: #1a73e8;
     }
 
     .dept-name,
@@ -248,6 +253,13 @@ export const HeadInfo = styled.div`
     font-size: 0.9rem;
     color: #888;
     display: block;
+    // font-family: Raleway;
+// font-weight: 700;
+// font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
   }
 `;
 

@@ -23,11 +23,18 @@ export const RightSection = styled.div`
 
 
 export const SectionTitle = styled.h2`
-  font-size: clamp(1rem, 1.5vw, 2rem);
+  font-size: clamp(1rem, 1.2vw, 2rem);
   margin: 1.5rem 0 1rem;
   font-weight: bold;
   border-bottom: 1px solid blue;
   padding-bottom: 0.3rem;
+font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+// font-size: 26px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
 
   display: flex;             
   align-items: center;
@@ -75,10 +82,18 @@ export const DepartmentCard = styled.div`
 `;
 
 export const InitialCircle = styled.div`
-  font-size: clamp(1.5rem, 3vw, 4rem);
+  font-size: clamp(2rem, 5vw, 7rem);
   font-weight: bold;
   color: #B5E2FF;
   margin-right: 1rem;
+  font-family: Raleway;
+font-weight: 700;
+font-style: Bold;
+// font-size: 110px;
+leading-trim: CAP_HEIGHT;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const DeptInfo = styled.div`
@@ -92,8 +107,27 @@ export const DeptHead = styled.p`
 `;
 
 export const DeptCount = styled.div`
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
   font-size: clamp(1rem, 1.5vw, 1.5rem);
   font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+`;
+
+
+export const CardIcon = styled.div`
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  font-size: 1.25rem; // adjust icon size
+  color: #3352ba;     // or any color you like
+  cursor: pointer;
+
+  &:hover {
+    color: #1d3aa8; // optional hover effect
+  }
 `;
 
 export const CalendarWrapper = styled.div`
@@ -197,7 +231,7 @@ export const PresenceText = styled.div`
 export const EmployeeExpiryWrapper = styled.div`
   flex: 2;
   background: #fff;
-  border-radius: 12px;
+  border-radius: 7px;
   padding: 1rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 `;
