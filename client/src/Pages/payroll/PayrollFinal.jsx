@@ -251,7 +251,7 @@ const handleMonthChange = (e) => {
           <SearchInput placeholder="Search by employee ID" value={searchTerm} onChange={handleSearch} style={{ width: '250px' }} />
           <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
-  <option value="">Month</option>
+  {/* <option value=""></option> */}
   {months.map((month, index) => (
     <option key={month} value={index + 1}>
       {month}
@@ -260,7 +260,7 @@ const handleMonthChange = (e) => {
 </Select>
 
             <Select value={selectedYear} onChange={handleYearChange}>
-              <option value="">Year</option>
+              {/* <option value=""></option> */}
               {years.map(year => <option key={year} value={year}>{year}</option>)}
             </Select>
           </div>

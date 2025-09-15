@@ -349,12 +349,16 @@ const employeeSlice = createSlice({
       })
       .addCase(getUpcomingExpiryEmployees.fulfilled, (state, action) => {
         state.loading = false;
-        state.employeeList = action.payload.results;
+        state.employeeList = action.payload.results || [];
         state.pagination = {
-          total_pages: action.payload.total_pages,
-          count: action.payload.count
+          count: action.payload.count || 0,
+          total_pages: action.payload.total_pages || 1,
+          current_page: action.payload.current_page || 1,
+          next: action.payload.next || null,
+          previous: action.payload.previous || null,
         };
       })
+      
       .addCase(getUpcomingExpiryEmployees.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

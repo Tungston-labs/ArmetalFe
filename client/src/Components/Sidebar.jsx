@@ -38,9 +38,13 @@ export default function Sidebar() {
 
   // Highlight parent module even if a child route is active
   const isActive = (path) => {
-    if (path === "/") return location.pathname === "/";
+    if (path === "/") {
+      // Highlight Dashboard for "/" or nested index route
+      return location.pathname === "/" ? "active" : "";
+    }
     return location.pathname.startsWith(path) ? "active" : "";
   };
+  
 
 
   return (
@@ -72,8 +76,9 @@ export default function Sidebar() {
           <>
             {modules.dashboard && (
               <CustomLink to="/" className={`${collapsed ? 'collapsed' : ''} ${isActive("/")}`}>
-                <RiHome5Line /><span>Dashboard</span>
-              </CustomLink>
+              <RiHome5Line /><span>Dashboard</span>
+            </CustomLink>
+            
             )}
             {modules.employee && (
               <CustomLink
