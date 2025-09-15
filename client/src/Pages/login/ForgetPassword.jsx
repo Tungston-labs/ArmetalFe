@@ -13,8 +13,7 @@ import {
 } from '../login/Login.styles';
 
 import { HiArrowLeft } from "react-icons/hi"; // for the back arrow
-
-
+import { FaChevronLeft } from "react-icons/fa6";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import PunchLoader from '../../Components/Loader'; // ✅ adjust path if needed
@@ -79,30 +78,37 @@ const ForgotPasswordPage = () => {
 
 <FormBox>
   {/* Title with back arrow */}
-  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-    <HiArrowLeft 
+ <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px",marginLeft:"-40px" }}>
+    <FaChevronLeft 
       size={30} 
       style={{ cursor: "pointer" }} 
       onClick={() => navigate(-1)} 
     />
-    <h2 style={{ fontSize: 40, fontFamily: 'Satoshi', margin: 0 }}>
+    <h2 
+      style={{ 
+        fontSize: 40, 
+        fontFamily: 'Satoshi', 
+        margin: 0,
+        textAlign: "left"   // ✅ left align heading
+      }}
+    >
       Forgot Password?
     </h2>
   </div>
 
-  {/* Subtext */}
-  <p
-  style={{
-    fontSize: 20,
-    fontFamily: 'Raleway',
-    color: "#686868",
-    marginBottom: "20px",
-    whiteSpace: "nowrap" // keep all text in a single line
-  }}
->
-  No worries, we’ll send you reset instructions.
-</p>
 
+  {/* Subtext */}
+   <p
+    style={{
+      fontSize: 20,
+      fontFamily: 'Raleway',
+      color: "#686868",
+      marginBottom: "20px",
+      textAlign: "left",   // ✅ left align subtext
+    }}
+  >
+    No worries, we’ll send you reset instructions.
+  </p>
 
   <form onSubmit={handleSubmit}>
     <Label>Enter Email ID</Label>
@@ -123,7 +129,7 @@ const ForgotPasswordPage = () => {
 
     {/* Powered by in one line */}
     <p style={{ 
-      marginTop: 280, 
+      marginTop: 200, 
       textAlign: "center", 
       fontFamily: "Satoshi, Anek Malayalam", 
       fontWeight: 400, 
