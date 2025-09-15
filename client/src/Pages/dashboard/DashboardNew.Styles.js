@@ -285,7 +285,6 @@ export const PresenceContainer = styled.div`
   display: flex;
   // flex-wrap: wrap;
   gap: 2rem;
-  margin-top: 3rem;
   width:100%;
 
 `;
@@ -317,7 +316,7 @@ export const SubText = styled.div`
 
 export const ContractList = styled.div`
   flex: 1;
-  min-width: 200px;
+  min-width: 250px;
   background: white;
   padding: 10px;
 
@@ -337,7 +336,7 @@ export const ContractList = styled.div`
 
 export const ContractItem = styled.div`
   display: grid;
-  grid-template-columns: 35px minmax(120px, 1fr) 80px 120px; 
+  grid-template-columns: 35px minmax(100px, 1fr) 80px 120px; 
   align-items: center;
   padding: 0.4rem 0;
   font-family: "satoshi";
@@ -397,47 +396,35 @@ export const Avatar = styled.div`
 `;
 export const HolidayCard = styled(Card)`
   background: #f4f4f4;
-  // margin-top: -2%;
   flex-direction: column; 
   align-items: stretch;
-  gap:5px;
+  gap: 5px;
+  padding: 1rem;
 `;
 
 export const HolidayItem = styled.div`
   display: flex;
-  width: 20rem;
-  justify-content: space-between;
-  align-items: center;
+  width: 100%;           
+  max-width: 20rem;      /* default for normal screens */
   border: 1px solid #eee;
   padding: 0.5rem 1rem;
   background: white;
+  border-radius: 8px;
 
   div {
     display: flex;
     flex-direction: column;
-    max-width: 50%; /* limit width for text truncation */
+    max-width: 50%;
   }
 
   h4 {
     margin: 0;
     font-size: 1rem;
-    white-space: nowrap;       /* single line */
-    overflow: hidden;          /* hide overflow */
-    text-overflow: ellipsis;   /* show "..." for long text */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     cursor: default;
   }
-
-  /* Show full name on hover */
-  // h4:hover {
-  //   overflow: visible;
-  //   white-space: normal;
-  //   position: absolute;
-  //   background: #fff;
-  //   padding: 4px 8px;
-  //   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  //   z-index: 10;
-  //   max-width: 300px; /* optional: limit hover width */
-  // }
 
   p {
     margin: 0;
@@ -450,7 +437,27 @@ export const HolidayItem = styled.div`
     color: #333;
     white-space: nowrap;
   }
+
+  /* 📱 Mobile screens */
+  @media (max-width: 768px) {
+    max-width: 100%;     
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  /* 💻 QHD / 2K screens */
+  @media (min-width: 1440px) and (max-width: 2023px) {
+    max-width: 40rem;   /* scale wider for 2K monitors */
+  }
+
+  /* 🖥️ Ultra-wide 4K+ screens */
+  @media (min-width: 2024px) {
+    max-width: 100%;    
+  }
 `;
+
+
 
 export const SvgIcon = styled.div`
   margin-right: 10px;

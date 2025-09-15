@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { FiArrowUpRight } from "react-icons/fi";
 import {
   Container,
   LeftSection,
@@ -12,32 +13,94 @@ import {
   DeptCount,
   CalendarWrapper,
   CalendarHeader,
+  NavArrow,
   CalendarGrid,
   CalendarDay,
+  PresenceWrapper,
+  DonutChart,
+  PresenceText,
+  EmployeeExpiryWrapper,
+  EmployeeRow,
+  Avatar,
+  EmpName,
+  EmpId,
+  EmpEmail,
+  HolidayList,
+  HolidayItem,
+  HolidayIcon,
+  HolidayInfo,
+  HolidayTitle,
+  HolidayDate,
+  ChartConatiner,
 } from "./DepartmentCalender.Styles";
-
+import HalfDoughnutChart from "./HalfDoughnutChart";
+import {useSelector } from "react-redux";
+import HolidaySvg from "../assets/holiday.svg";
 const departments = [
   { initial: "D", name: "Developers", count: 12, head: "Ajay Raj" },
   { initial: "G", name: "Graphic designer", count: 12, head: "Dummy" },
   { initial: "U", name: "UI/UX Designer", count: 8, head: "Duummmee" },
 ];
 
-const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
-
-const dates = [
-  "", "", 1, 2, 3, 4, 5,
-  6, 7, 8, 9, 10, 11, 12,
-  13, 14, 15, 16, 17, 18, 19,
-  20, 21, 22, 23, 24, 25, 26,
-  27, 28, 29, 30, 31, "", "",
+const employees = [
+  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
+  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
+  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
+  { name: "Desirae Westervelt", id: "1254125", email: "Ajaykumar@gmail.com" },
 ];
 
+const holidays = [
+  { title: "Dummy holiday", desc: "Dummy holiday", date: "24 October" },
+  { title: "Dummy holiday", desc: "Dummy holiday", date: "24 October" },
+];
+
+const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+
 const DepartmentCalendar = () => {
+  const [month, setMonth] = useState(9); // October
+  const [year, setYear] = useState(2025);
+ const { summary } = useSelector((state) => state.dashboard);
+  const today = new Date();
+  const currentDay = today.getDate();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+ const onLeaveToday = summary?.on_leave_today_count || 0;
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const activeToday = summary?.active_today_count || 0;
+  const dates = [];
+  const startOffset = (firstDay + 6) % 7;
+  for (let i = 0; i < startOffset; i++) dates.push("");
+  for (let i = 1; i <= daysInMonth; i++) dates.push(i);
+  while (dates.length % 7 !== 0) dates.push("");
+
+  const prevMonth = () => {
+    if (month === 0) {
+      setMonth(11);
+      setYear(year - 1);
+    } else setMonth(month - 1);
+  };
+
+  const nextMonth = () => {
+    if (month === 11) {
+      setMonth(0);
+      setYear(year + 1);
+    } else setMonth(month + 1);
+  };
+
+  const monthNames = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+  ];
+
   return (
     <Container>
-      {/* LEFT SIDE: Departments */}
+      {/* LEFT SIDE */}
       <LeftSection>
-        <SectionTitle>Department</SectionTitle>
+        {/* Departments */}
+        <SectionTitle>
+          Department <FiArrowUpRight />
+        </SectionTitle>
         <DepartmentWrapper>
           {departments.map((dept, index) => (
             <DepartmentCard key={index}>
@@ -51,33 +114,76 @@ const DepartmentCalendar = () => {
           ))}
         </DepartmentWrapper>
 
-        {/* Employee presence section */}
-        <SectionTitle>Employee Presence & Upcoming Holidays</SectionTitle>
+        {/* Employee Presence */}
+        <SectionTitle>
+          Employee Presence & Upcoming Holidays <FiArrowUpRight />
+        </SectionTitle>
+        <PresenceWrapper>
+          <ChartConatiner>
+             <HalfDoughnutChart active={activeToday} onLeave={onLeaveToday} />
+</ChartConatiner>
+          {/* Employee Expiry */}
+          <EmployeeExpiryWrapper>
+            <h3>Employee Contract Expiry</h3>
+            {employees.map((emp, i) => (
+              <EmployeeRow key={i}>
+                <Avatar src="https://via.placeholder.com/30" />
+                <EmpName>{emp.name}</EmpName>
+                <EmpId>{emp.id}</EmpId>
+                <EmpEmail>{emp.email}</EmpEmail>
+              </EmployeeRow>
+            ))}
+          </EmployeeExpiryWrapper>
+        </PresenceWrapper>
       </LeftSection>
 
-      {/* RIGHT SIDE: Calendar */}
+      {/* RIGHT SIDE */}
       <RightSection>
+        {/* Calendar */}
         <CalendarWrapper>
           <CalendarHeader>
-            <h3>October <span>2025</span></h3>
+            <NavArrow onClick={prevMonth}>&lt;</NavArrow>
+            <h3>
+              {monthNames[month]} <span>{year}</span>
+            </h3>
+            <NavArrow onClick={nextMonth}>&gt;</NavArrow>
           </CalendarHeader>
           <CalendarGrid>
             {days.map((d, i) => (
-              <CalendarDay key={i} isHeader>
-                {d}
-              </CalendarDay>
+              <CalendarDay key={i} isHeader>{d}</CalendarDay>
             ))}
-            {dates.map((date, i) => (
-              <CalendarDay
-                key={i}
-                isToday={date === 16}
-                isHoliday={[5, 12, 19, 26, 2].includes(date)}
-              >
-                {date}
-              </CalendarDay>
-            ))}
+            {dates.map((date, i) => {
+              const isToday =
+                date === currentDay && month === currentMonth && year === currentYear;
+              const isSunday = (i + 1) % 7 === 0;
+
+              return (
+                <CalendarDay key={i} isToday={isToday} isSunday={isSunday}>
+                  {date}
+                </CalendarDay>
+              );
+            })}
           </CalendarGrid>
         </CalendarWrapper>
+
+        {/* Upcoming Holidays */}
+        <SectionTitle>
+          Upcoming Holidays <FiArrowUpRight />
+        </SectionTitle>
+        <HolidayList>
+          {holidays.map((h, i) => (
+            <HolidayItem key={i}>
+              <HolidayIcon>
+                    <img src={HolidaySvg} alt="holiday icon" />
+              </HolidayIcon>
+              <HolidayInfo>
+                <HolidayTitle>{h.title}</HolidayTitle>
+                <p>{h.desc}</p>
+              </HolidayInfo>
+              <HolidayDate>{h.date}</HolidayDate>
+            </HolidayItem>
+          ))}
+        </HolidayList>
       </RightSection>
     </Container>
   );

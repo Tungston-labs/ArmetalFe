@@ -36,7 +36,7 @@ import Loader from "../../Components/Loader"
 import Cards from "../../Components/Cards"
 import { Link } from "react-router-dom";
 import HolidaySvg from "../../assets/holiday.svg";
-import DepartmentCalender from "../../Components/DepartmentCalender"
+// import EmployeeContract from "../../Components/EmployeeContract"
 import DepartmentCalendar from "../../Components/DepartmentCalender";
 const CardsOnly = () => {
   const dispatch = useDispatch();
@@ -120,19 +120,20 @@ const CardsOnly = () => {
     <Container>
   <Cards/>
 <DepartmentCalendar/>
+{/* <EmployeeContract/> */}
       {/* Department + Calendar Row */}
-      <Heading>Department</Heading>
-     <ResponsiveHr />
-<LineWithIcon>
+      {/* <Heading>Department</Heading>
+     <ResponsiveHr /> */}
+{/* <LineWithIcon>
       <FiArrowUpRight
         size={24}
         onClick={() => navigate("/department")}
       />
-    </LineWithIcon>
+    </LineWithIcon> */}
 
 
 
-     <DepartmentCalendarWrapper>
+     {/* <DepartmentCalendarWrapper>
   <DepartmentGrid>
     {departmentsList.map((dept) => (
       <DepartmentCard key={dept.id}>
@@ -154,23 +155,23 @@ const CardsOnly = () => {
   <CalendarWrapper>
     <Calendar fullscreen={false} dateCellRender={dateCellRender} />
   </CalendarWrapper>
-</DepartmentCalendarWrapper>
+</DepartmentCalendarWrapper> */}
 
 
       {/* Presence + Contract Expiry */}
-    <Flex justify="space-between" align="center">
+    {/* <Flex justify="space-between" align="center">
         <Heading style={{ marginTop: "-10px" }}>
           Employee Presence & Upcoming Holidays
         </Heading>
-      </Flex>
-     <ResponsiveHr />
-<LineWithIcon>
-      <FiArrowUpRight
+      </Flex> */}
+     {/* <ResponsiveHr />
+<LineWithIcon> */}
+      {/* <FiArrowUpRight
         size={24}
         onClick={() => navigate("/department")}
       />
-    </LineWithIcon>
-      <PresenceContainer>
+    </LineWithIcon> */}
+      {/* <PresenceContainer>
    <LeftSection>
   <div
     style={{
@@ -179,18 +180,18 @@ const CardsOnly = () => {
       alignItems: "flex-start",
       gap: "20px", // space between chart & list
     }}
-  >
+  > */}
     {/* Chart */}
-    <ChartContainer style={{ flex: "0 0 40%" }}>
+    {/* <ChartContainer style={{ flex: "0 0 40%" }}>
       <HalfDoughnutChart active={activeToday} onLeave={onLeaveToday} />
       <SubText>
         <span style={{ color: "#2f4ded" }}>■ Active Employees</span> &nbsp;
         <span style={{ color: "#ff6b5f" }}>■ On Leave Today</span>
       </SubText>
-    </ChartContainer>
+    </ChartContainer> */}
 
     {/* Contract List */}
-    <ContractList style={{ flex: "0 0 60%" }}>
+    {/* <ContractList style={{ flex: "0 0 60%" }}>
       <div
         style={{
           display: "flex",
@@ -231,7 +232,7 @@ const CardsOnly = () => {
 </LeftSection>
 
         {/* Upcoming Holidays */}
-        <HolidayCard>
+        {/* <HolidayCard>
           <div
             style={{
               display: "flex",
@@ -240,9 +241,9 @@ const CardsOnly = () => {
               fontFamily: "satoshi",
               fontSize: "1.2rem",
             }}
-          >
+          > */} 
             {/* <h3 style={{ margin: 0, marginBottom: "10px" }}>Upcoming Holidays</h3> */}
-               <Heading style={{marginTop:"-10px"}}>Upcoming Holidays</Heading>
+               {/* <Heading style={{marginTop:"-10px"}}>Upcoming Holidays</Heading>
             <Link to="/holiday">
   <FiArrowUpRight
     onMouseEnter={() => setHovers(true)}
@@ -259,9 +260,9 @@ const CardsOnly = () => {
           </div>
           {upcomingHolidays.map((holiday, i) => (
           <HolidayItem key={i}>
-  <SvgIcon>
+  <SvgIcon> */}
     {/* Replace this with your SVG (inline or <img src="..." />) */}
-    <img src={HolidaySvg} alt="holiday icon" />
+    {/* <img src={HolidaySvg} alt="holiday icon" />
   </SvgIcon>
 
   <div>
@@ -274,7 +275,7 @@ const CardsOnly = () => {
 
           ))}
         </HolidayCard>
-      </PresenceContainer>
+      </PresenceContainer> */}
     </Container>
     </>
   );
