@@ -4,7 +4,7 @@ import { SlCalender } from "react-icons/sl";
 import { VscSend } from "react-icons/vsc";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { generateInvoiceHTML } from '../utlis/invoiceGenerator';
+import { generateInvoiceHTML } from '../services/utlis/invoiceGenerator';
 import {
   SectionTitle,
   PlanCard,
@@ -15,8 +15,10 @@ import {
   TableHead,
   TableRow,
   TableData,
-  ScrollWrapper
+  ScrollWrapper,
+  PlanIconWrapper
 } from './Plan.Styles';
+import API from '../services/api';
 
 const PaymentOverview = ({ companyId: propCompanyId }) => {
   const { id: urlCompanyId } = useParams();
@@ -35,11 +37,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchPaymentData = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`http://178.248.112.16:8001/api/subscriptions/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await API.get(`http://178.248.112.16:8001/api/subscriptions/${id}/`);
 
       if (Array.isArray(res.data)) {
         setPaymentData(res.data);
@@ -51,9 +49,8 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchCompanyName = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`http://178.248.112.16:8001/api/companies/${id}/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await API.get(`http://178.248.112.16:8001/api/companies/${id}/`
+      );
 
       if (res.data?.name) {
         setCompanyName(res.data.name);
@@ -69,12 +66,10 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
     const newStatus = currentStatus === 'paid' ? 'unpaid' : 'paid';
     try {
       const token = localStorage.getItem("accessToken");
-      await axios.patch(
-        `http://178.248.112.16:8001/api/subscriptions/mark-paid/${subscriptionId}/`,
+      await API.patch(
+        `http://178.248.112.16:8000/api/subscriptions/mark-paid/${subscriptionId}/`,
         { status: newStatus },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        
       );
       await fetchPaymentData(companyId);
     } catch (error) {
@@ -165,31 +160,24 @@ const handleDownload = (entry) => {
     <>
       <SectionTitle>Payment Overview</SectionTitle>
 
-      <PlanCard>
-        <div style={{
-          background: "#182657",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "70px",
-          borderRadius: "10px",
-          height: "75px"
-        }}>
-          <PlanIcon>
-            <img src="/images/plan.png" alt="Plan Icon" />
-          </PlanIcon>
-        </div>
+    <PlanCard>
+  <PlanIconWrapper>
+    <PlanIcon>
+      <img src="/images/plan.png" alt="Plan Icon" />
+    </PlanIcon>
+  </PlanIconWrapper>
 
-        <PlanDetails>
-          <h3>Enterprise plan</h3>
-          <p>
-            Pay a fixed $5 per employee.<br />
-            Simple, transparent, and ideal for managing individual payroll with ease.
-          </p>
-        </PlanDetails>
+  <PlanDetails>
+    <h3>Enterprise plan</h3>
+    <p>
+      Pay a fixed $5 per employee.<br />
+      Simple, transparent, and ideal for managing individual payroll with ease.
+    </p>
+  </PlanDetails>
 
-        <PlanPrice>$5</PlanPrice>
-      </PlanCard>
+  <PlanPrice>$5</PlanPrice>
+</PlanCard>
+
 
       <ScrollWrapper>
         <PaymentTable>
@@ -231,7 +219,7 @@ const handleDownload = (entry) => {
                       {entry.status}
                     </button>
                   </TableData>
-                  <TableData style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                  <TableData style={{  gap: '10px', justifyContent: 'center' }}>
                     <button onClick={() => handleDownload(entry)} title="Download" style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
                       <MdOutlineFileDownload />
                     </button>

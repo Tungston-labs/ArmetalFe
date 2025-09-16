@@ -3,21 +3,38 @@ import {
   fetchPayrollData,
   createOrUpdatePayroll,
   updateEmployeePayrollStatus,
-  getPayrollDetailById, 
+  getPayrollDetailById,
+  verifyPayroll,
 } from "../services/payrollService";
 
 // 1. Fetch payroll data with pagination and search
+
+// export const getPayrollData = createAsyncThunk(
+//   "payroll/getPayrollData",
+//   async ({ month, year, search = "", page = 1, department = "" }, { rejectWithValue }) => {
+//     try {
+//       const data = await fetchPayrollData(month, year, search, page, department); 
+//       return data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || "Failed to fetch payroll data");
+//     }
+//   }
+// );
 export const getPayrollData = createAsyncThunk(
   "payroll/getPayrollData",
-  async ({ month, year, search = "", page = 1 }, { rejectWithValue }) => {
+  async ({ month, year, search = "", page = 1, department = "" }, { rejectWithValue }) => {
     try {
-      const data = await fetchPayrollData(month, year, search, page);
+      // normalize department ID if it comes like "17:1"
+      const deptId = department ? String(department).split(":")[0] : "";
+      const data = await fetchPayrollData(month, year, search, page, deptId);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch payroll data");
     }
   }
 );
+
+
 
 // 2. Create or update payroll for selected employees
 export const submitPayrollRecords = createAsyncThunk(
@@ -57,6 +74,19 @@ export const getPayrollDetail = createAsyncThunk(
     }
   }
 );
+// ✅ 5. Verify payroll for employee
+export const verifyEmployeePayroll = createAsyncThunk(
+  "payroll/verifyEmployeePayroll",
+  async ({ employeeId, month, year }, { rejectWithValue }) => {
+    try {
+      const data = await verifyPayroll({ employeeId, month, year });
+      return { employeeId, data };
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to verify payroll");
+    }
+  }
+);
+
 
 const payrollSlice = createSlice({
   name: "payroll",
@@ -67,6 +97,7 @@ const payrollSlice = createSlice({
     totalPages: 1,
     submitSuccess: false,
     updateStatusSuccess: false,
+    verifySuccess: false,
     payrollDetail: null, // ✅ New state
   },
   reducers: {
@@ -77,7 +108,17 @@ const payrollSlice = createSlice({
       state.totalPages = 1;
       state.submitSuccess = false;
       state.updateStatusSuccess = false;
+      state.verifySuccess = false;
       state.payrollDetail = null;
+    },
+    resetSubmitSuccess: (state) => {
+      state.submitSuccess = false;
+    },
+    resetUpdateStatusSuccess: (state) => {
+      state.updateStatusSuccess = false;
+    },
+    resetVerifySuccess: (state) => {
+      state.verifySuccess = false;
     },
   },
   extraReducers: (builder) => {
@@ -149,10 +190,35 @@ const payrollSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.payrollDetail = null;
+      })
+     
+      // ✅ Verify Payroll
+      .addCase(verifyEmployeePayroll.pending, (state) => {
+        state.loading = true;
+        state.verifySuccess = false;
+      })
+      .addCase(verifyEmployeePayroll.fulfilled, (state, action) => {
+        state.loading = false;
+        state.verifySuccess = true;
+        state.data = state.data.map((emp) =>
+          emp.id === action.payload.employeeId
+            ? { ...emp, ...action.payload.data } // merge backend response
+            : emp
+        );
+      })
+      .addCase(verifyEmployeePayroll.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.verifySuccess = false;
       });
+
+
   },
 });
 
-export const { resetPayrollState } = payrollSlice.actions;
+export const { resetPayrollState, 
+  resetSubmitSuccess, 
+  resetUpdateStatusSuccess, 
+  resetVerifySuccess  } = payrollSlice.actions;
 
 export default payrollSlice.reducer;

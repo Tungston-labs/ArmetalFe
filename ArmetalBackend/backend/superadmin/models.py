@@ -6,6 +6,7 @@ from django.utils.timezone import now
 from calendar import month_name
 from user.models import User
 from django.core.exceptions import ValidationError
+from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
 
 def generate_password():
     return 'CMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
@@ -34,22 +35,25 @@ COUNTRY_CHOICES = [
 
 
 class Company(TimeStampedModel):
-    company_id = models.CharField(max_length=20, unique=True, editable=False)
-    name = models.CharField(max_length=255)
-    address = models.TextField()
+    company_id = models.CharField(max_length=200, unique=True, editable=False)
+    name = EncryptedCharField(max_length=255)
+    address = EncryptedTextField()
     location = models.CharField(max_length=100)
-    country = models.CharField(max_length=3, choices=COUNTRY_CHOICES, blank=True, null=True)
-    contact_number = models.CharField(max_length=20)
+    latitude = models.FloatField(help_text="Latitude of the company location",null=True,blank=True)
+    longitude = models.FloatField(help_text="Longitude of the company location",null=True,blank=True)
+    country = models.CharField(max_length=300, choices=COUNTRY_CHOICES, blank=True, null=True)
+    contact_number = EncryptedCharField(max_length=300)
     email = models.EmailField(unique=True)
     modules = models.JSONField(default=dict)  # e.g. {"attendance": True, "leave": True}
     number_of_employees = models.PositiveIntegerField(default=0, editable=False)
-    default_password = models.CharField(max_length=50, editable=False)
-    logo = models.ImageField(
-        upload_to='company_logos/',
-        null=True,
-        blank=True,
-        help_text="Upload PNG logo only."
-    )
+    default_password = models.CharField(max_length=200, editable=False)
+    logo = models.FileField(
+                upload_to='company_logos/',
+                null=True,
+                blank=True,
+                help_text="Upload PNG or SVG logo."
+            )
+
 
     def save(self, *args, **kwargs):
         if not self.company_id:
@@ -65,8 +69,10 @@ class Company(TimeStampedModel):
     def clean(self):
         super().clean()
         if self.logo:
-            if not self.logo.name.lower().endswith('.png'):
-                raise ValidationError("Only .png images are allowed for the logo.")
+            ext = self.logo.name.lower().split('.')[-1]
+            if ext not in ['png', 'svg']:
+                raise ValidationError("Only .png or .svg files are allowed for the logo.")
+
 
 
 

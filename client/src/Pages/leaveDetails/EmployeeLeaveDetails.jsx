@@ -32,8 +32,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getLeaveDetails, patchLeaveStatus } from '../../Redux/leaveSlice';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
-
+import EmployeeIcon from "../../assets/employeeicon.svg";
+import Loader from "../../Components/Loader"
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -51,54 +51,51 @@ const navigate = useNavigate();
 
   const employee = leaveDetails?.employee || {};
 
-const handleStatusUpdate = async () => {
-  if (!id || !actionType) return;
-
-  const status = actionType === 'approve' ? 'approved' : 'rejected';
-
-  try {
-    await dispatch(patchLeaveStatus({ leaveId: id, status }));
-    // Optionally refresh local state if staying on page
-    // dispatch(getLeaveDetails(id));
-    
-    navigate(-1); // 👈 Go back to the previous page after updating
-  } catch (error) {
-    console.error("Error updating leave status:", error);
-  } finally {
-    setShowModal(false);
-    setActionType('');
-  }
-};
+  const handleStatusUpdate = async () => {
+    if (!id || !actionType) return;
+  
+    const status = actionType === 'approve' ? 'approved' : 'rejected';
+  
+    try {
+      await dispatch(patchLeaveStatus({ leaveId: id, status }));
+      navigate("/employee-leave-request");   // ✅ go back to leave-request page
+    } catch (error) {
+      console.error("Error updating leave status:", error);
+    } finally {
+      setShowModal(false);
+      setActionType('');
+    }
+  };
+  
+if (loading) {
+  return (
+    <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'100vh' }}>
+      <Loader color="#003366" size={15} />
+    </div>
+  );
+}
 
 
   return (
     <Container>
-      <TopBar>
-        <div />
-        <HRManager>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
-        </HRManager>
-      </TopBar>
+      
 
-      <TitleSection>
+      <TitleSection style={{color:"#3250B5"}}>
          <LuArrowLeft
-  style={{ width: "30px", height: 30, cursor: "pointer" }}
+  style={{ width: "30px", height: 30, cursor: "pointer",color:"#3250B5" }}
   onClick={() => navigate(-1)} // 👈 Go back to previous page
 />
-        <img src="/images/employee.png" alt=" Icon" style={{ height: "50px" }} />
+
+        <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
         <div>
      
           <Title>Employee</Title>
-          <Subtitle>Manage your Employee.</Subtitle>
+          <Subtitle style={{color:"#3250B5"}}>Manage your Employee.</Subtitle>
         </div>
       </TitleSection>
 
       <Hr />
-      <Breadcrumb>
-        Employee &gt; Leave request &gt; Employee leave details
-      </Breadcrumb>
-
+    
       <InfoGrid>
         <div style={{ width: "10%" }}>
           <ProfileImage
@@ -166,13 +163,18 @@ const handleStatusUpdate = async () => {
         }}>Approve</ApproveButton>
       </FlexRow>
 
+    
       {showModal && (
-        <ConfirmLeaveModal
-          onClose={() => setShowModal(false)}
-          onConfirm={handleStatusUpdate}
-          actionType={actionType}
-        />
-      )}
+  <ConfirmLeaveModal
+    onClose={() => setShowModal(false)}
+    actionType={actionType}
+    leaveId={id}
+    onConfirm={handleStatusUpdate}   // ✅ pass handler
+  />
+)}
+
+        
+      
     </Container>
   );
 };

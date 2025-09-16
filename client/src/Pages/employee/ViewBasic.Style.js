@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
   font-family: Satoshi;
 `;
 
@@ -32,7 +32,7 @@ export const EditButton = styled.button`
   background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
   border-radius: 8px;
-  width: 50%;
+  width: 100px;
   height: 42px;
   font-size: 0.9rem;
   cursor: pointer;
@@ -55,7 +55,7 @@ export const Row = styled.div`
 export const LeftSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  // gap: 1rem;
   flex: 1;
   min-width: 250px;
 `;
@@ -64,7 +64,6 @@ export const RightSection = styled.div`
   flex: 2;
   display: flex;
   flex-direction: column;
- 
   min-width: 300px;
 `;
 
@@ -74,7 +73,9 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 100%;
-
+border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const Textarea = styled.textarea`
@@ -83,7 +84,25 @@ export const Textarea = styled.textarea`
   border-radius: 6px;
   width: 100%;
   resize: none;
-  height: 70px;
+  height: 95px;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
+`;
+export const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+`;
+export const FieldWrappers = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+`;
+export const Label = styled.label`
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: #052DB4;
 `;
 
 export const Avatar = styled.img`
@@ -97,7 +116,7 @@ export const Avatar = styled.img`
 
 export const Section = styled.div`
 //   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
   font-family: sans-serif;
 `;
 
@@ -121,6 +140,14 @@ export const Tab = styled.button`
 
 export const GroupLabel = styled.h4`
   margin-bottom: 1rem;
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 18px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Rows = styled.div`
@@ -138,6 +165,9 @@ export const Select = styled.select`
   border: 1px solid #ccc;
   border-radius: 6px;
   background-color: #fff;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 `;
 
 export const Column = styled.div`
@@ -173,12 +203,15 @@ export const Rowes = styled.div`
     border: 1px solid #ccc;
     border-radius: 6px;
     min-width: 0;
+    border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
   }
 `;
 export const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 2rem; /* space between image and text */
+  gap: 2rem; 
 `;
 
 export const TextGroup = styled.div`
@@ -187,13 +220,29 @@ export const TextGroup = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   margin: 0;
+  color:#304EB0;
+  font-family: Satoshi;
+font-weight: 700;
+// font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Subtitle = styled.p`
-  color: #555;
+  // color:#304EB0;
   margin: 0;
+  font-family: Raleway;
+font-weight: 300;
+font-style: Light;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 export const HRManager = styled.div`
   display: flex;
@@ -201,12 +250,12 @@ export const HRManager = styled.div`
  
   align-items: center;
   padding: 0.3rem ;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  // border: 1px solid #ccc;
+  // border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;
@@ -236,7 +285,7 @@ export const FormWrapper = styled.div`
 export const ProfileImage = styled.img`
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  border-radius: 10%;
   object-fit: cover;
 
   @media (max-width: 768px) {
@@ -255,7 +304,7 @@ export const ImageColumn = styled.div`
   img {
     width: 100px;
     height: 100px;
-    border-radius: 50px;
+    border-radius: 10px;
     object-fit: cover;
   }
 `;
@@ -275,4 +324,9 @@ export const FullPageLoaderWrapper = styled.div`
 export const TitleSection = styled.div`
   display: flex;
   align-items: center;
+`;
+export const FieldGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 `;

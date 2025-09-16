@@ -25,110 +25,167 @@ import {
   Subtitle,
   Rightside,
   HeaderWrapper,
-  TextGroup,TitleSection,
+  TitleSection,
   Column,
-  HRManager,FullPageLoaderWrapper,
+  FullPageLoaderWrapper,
+  FieldGroup,
+  FieldWrapper,
+  FieldWrappers,
 } from "./ViewBasic.Style";
 import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmployeeById, submitEmployee } from "../../Redux/employeeSlice";
 import { PiUserCirclePlusThin } from "react-icons/pi";
-import { NavLink, useLocation, useParams } from "react-router-dom";
-import SyncLoader from "react-spinners/SyncLoader";
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useParams, useNavigate } from "react-router-dom";
+import EmployeeIcon from "../../assets/employeeicon.svg";
+import { getDepartments } from "../../Redux/departmentSlice";
+import Loader from "../../Components/Loader";
+import { Label } from "./BasicLevel.Styles";
 
 const ViewBasic = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
   const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const { employeeDetail, loading } = useSelector((state) => state.employees);
   const departmentList = useSelector((state) => state.departments.list);
-  console.log("employeeDetail",employeeDetail)
-  console.log("departmentList",departmentList)
+
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
-console.log("fff",formData)
-const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
 
+
+  // Fetch departments
+  useEffect(() => {
+    if (departmentList.length === 0) {
+      dispatch(getDepartments({ page: 1, search: "" }));
+    }
+  }, [dispatch, departmentList.length]);
+
+  // Fetch employee details
   useEffect(() => {
     if (id) {
       dispatch(getEmployeeById(id));
     }
   }, [dispatch, id]);
 
+  // inside your component, before the return statement
+
+console.log("Employee Detail:", employeeDetail);
+console.log("Form Data:", formData);
+console.log("Company Object:", formData.company);
+console.log("Company Country:", formData?.company?.country);
+
+
 useEffect(() => {
-  if (employeeDetail) {
+  if (employeeDetail && Object.keys(formData).length === 0) {
     let deptId = "";
     if (typeof employeeDetail.department === "string") {
-      // department is a name → convert it to an ID
       const match = departmentList.find((d) => d.name === employeeDetail.department);
       deptId = match ? match.id : "";
     } else if (typeof employeeDetail.department === "number") {
-      // department is already an ID
       deptId = employeeDetail.department;
     }
 
+    const company =
+      employeeDetail.company && typeof employeeDetail.company === "object"
+        ? employeeDetail.company
+        : user?.company || { country: "" };
+
     setFormData({
       ...employeeDetail,
-      id: employeeDetail.id, 
       department: deptId,
-      total_leave: employeeDetail.total_leave || ""
+      total_leave: employeeDetail.total_leave || "",
+      contract_expiry_date: employeeDetail.contract_expiry_date || "",
+      role: employeeDetail.role || "",
+      idcard: employeeDetail.idcard || "",
+      company,
+      aadar_number: employeeDetail.aadar_number || employeeDetail.aadhaar_number || "",
     });
   }
-}, [employeeDetail, departmentList]);
+}, [employeeDetail, departmentList, user]);
 
 
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
- const handleSubmit = async () => {
-  // const payload = {
-  //   ...formData,
-  //   department_id: formData.department, // ✅ required for PATCH
-  // };
+  // Handle form submit
+  const handleSubmit = async () => {
+    let payload = { ...formData };
 
-  // delete payload.department; // 🚫 remove read-only field if it exists
-console.log("📤 Submitting employee", formData);
+    // Remove empty fields
+    Object.keys(payload).forEach((key) => {
+      if (payload[key] === "" || payload[key] === null || payload[key] === undefined) {
+        delete payload[key];
+      }
+    });
 
-  await dispatch(submitEmployee(formData));
-  await dispatch(getEmployeeById(id));
-  setEditMode(false);
-};
+    const country = formData?.company?.country;
 
- if (loading || !formData || Object.keys(formData).length === 0) {
-  return (
-    <FullPageLoaderWrapper>
-      <SyncLoader size={12} />
-    </FullPageLoaderWrapper>
-  );
-}
+    // Country-specific validations
+    if (country === "IN") {
+      delete payload.iqama_number;
+      delete payload.insurance_number;
+      delete payload.visa_expiry_date;
+
+      if (!payload.aadar_number?.trim()) {
+        alert("Aadhaar number is required for India");
+        return;
+      }
+      if (payload.aadar_number.length !== 12) {
+        alert("Aadhaar number must be 12 digits");
+        return;
+      }
+    } else {
+      delete payload.aadar_number;
+
+      if (!payload.iqama_number?.trim()) {
+        alert("Iqama number is required");
+        return;
+      }
+      if (payload.iqama_number.length !== 12) {
+        alert("Iqama number must be 12 digits");
+        return;
+      }
+    }
+
+    await dispatch(submitEmployee(payload));
+    await dispatch(getEmployeeById(id));
+    setEditMode(false);
+  };
+
+  if (loading || !formData || Object.keys(formData).length === 0) {
+    return (
+      <FullPageLoaderWrapper>
+        <Loader size="large" tip="Loading..." />
+      </FullPageLoaderWrapper>
+    );
+  }
 
   return (
     <Container>
+      {/* Header */}
       <Header>
-        <HeaderWrapper>      
+        <HeaderWrapper>
           <TitleSection>
-                   <LuArrowLeft
-            style={{ width: "30px", height: 30, cursor: "pointer" }}
-            onClick={() => navigate(-1)}
+            <LuArrowLeft
+              style={{ width: 30, height: 30, cursor: "pointer", color: "#304EB0" }}
+              onClick={() => navigate(-1)}
             />
-                  <img src="/images/employee.png" alt=" Icon" style={{ height: "50px" }} />
-                  <div>
-               
-                    <Title>Employee</Title>
-                    <Subtitle>Manage your Employee.</Subtitle>
-                  </div>
-                </TitleSection>
+            <img src={EmployeeIcon} alt="employeeIcon" style={{ height: 60 }} />
+            <div>
+              <Title>Employee</Title>
+              <Subtitle style={{ color: "#304EB0" }}>Manage your Employee.</Subtitle>
+            </div>
+          </TitleSection>
         </HeaderWrapper>
         <Rightside>
-          <HRManager>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <span>HR Manager</span>
-          </HRManager>
           <EditButton onClick={() => setEditMode((prev) => !prev)}>
-           {editMode ? "Cancel" : "Edit"}
+            {editMode ? "Cancel" : "Edit"}
           </EditButton>
         </Rightside>
       </Header>
@@ -136,139 +193,136 @@ console.log("📤 Submitting employee", formData);
       <Hr />
       <h3>Employee Details</h3>
 
+      {/* Form */}
       <FormWrapper>
-<ImageColumn style={{ position: "relative", width: "150px", height: "150px" }}>
-  {formData.profile_pic instanceof File || typeof formData.profile_pic === "string" ? (
-    <ProfileImage
-      src={
-        formData.profile_pic instanceof File
-          ? URL.createObjectURL(formData.profile_pic)
-          : formData.profile_pic
-      }
-      alt="Profile"
-      style={{ width: "150px", height: "150px", borderRadius: "50%", objectFit: "cover" }}
+        <ImageColumn style={{ position: "relative", width: "150px", height: "150px" }}>
+          {formData.profile_pic ? (
+            <ProfileImage
+              src={
+                formData.profile_pic instanceof File
+                  ? URL.createObjectURL(formData.profile_pic)
+                  : formData.profile_pic
+              }
+              alt="Profile"
+              style={{ width: 150, height: 150, borderRadius: "10%", objectFit: "cover" }}
+            />
+          ) : (
+            <div
+              style={{
+                width: "10rem",
+                height: "10rem",
+                borderRadius: "10%",
+                backgroundColor: "#f0f0f0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PiUserCirclePlusThin size={100} color="#ccc" />
+            </div>
+          )}
+
+          {editMode && (
+            <>
+              <input
+                type="file"
+                name="profile_pic"
+                accept="image/*"
+                id="profilePicInput"
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, profile_pic: e.target.files[0] }))
+                }
+                style={{ display: "none" }}
+              />
+              <label
+                htmlFor="profilePicInput"
+                style={{
+                  position: "absolute",
+                  bottom: 10,
+                  right: 10,
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  borderRadius: "50%",
+                  width: 20,
+                  height: 20,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 20,
+                  cursor: "pointer",
+                }}
+              >
+                +
+              </label>
+            </>
+          )}
+        </ImageColumn>
+
+        {/* Basic Info */}
+  <Row>
+  <LeftSection>
+    <FieldWrapper>
+      <Label>Name</Label>
+      <Input name="name" value={formData.name || ""} onChange={handleChange} readOnly={!editMode} />
+    </FieldWrapper>
+
+    <FieldWrapper>
+      <Label>Employee ID</Label>
+      <Input name="employee_id" value={formData.employee_id || ""} readOnly />
+    </FieldWrapper>
+
+    <FieldWrapper>
+      <Label>Email</Label>
+      <Input name="email" value={formData.email || ""} onChange={handleChange} readOnly={!editMode} />
+    </FieldWrapper>
+  </LeftSection>
+
+  <RightSection>
+    <FieldWrapper>
+      <Label>Address</Label>
+      <Textarea name="address" value={formData.address || ""} onChange={handleChange} readOnly={!editMode} />
+    </FieldWrapper>
+
+    <Rows style={{ marginTop: "1rem" }}>
+     <FieldWrappers>
+  <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
+    <Label>Date of Birth</Label>
+    <Input
+      name="dob"
+      value={formData.dob || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
     />
-  ) : (
-    <div
-      style={{
-        width: "100px",
-        height: "100px",
-        borderRadius: "50%",
-        backgroundColor: "#f0f0f0",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <PiUserCirclePlusThin size={100} color="#ccc" />
-    </div>
-  )}
+  </FieldWrapper>
 
-  {editMode && (
-    <>
-      <input
-        type="file"
-        name="profile_pic"
-        accept="image/*"
-        id="profilePicInput"
-        onChange={(e) =>
-          setFormData((prev) => ({
-            ...prev,
-            profile_pic: e.target.files[0],
-          }))
-        }
-        style={{ display: "none" }}
-      />
-      <label
-        htmlFor="profilePicInput"
-        style={{
-          position: "absolute",
-          bottom: "10px",
-          right: "10px",
-          backgroundColor: "#007bff",
-          color: "#fff",
-          borderRadius: "50%",
-          width: "30px",
-          height: "30px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "20px",
-          cursor: "pointer",
-        }}
-      >
-        +
-      </label>
-    </>
-  )}
-</ImageColumn>
+  <FieldWrapper style={{ flex: 1 }}>
+    <Label>Gender</Label>
+    <Input
+      name="gender"
+      value={formData.gender || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+    />
+  </FieldWrapper>
+</FieldWrappers>
 
+    </Rows>
+  </RightSection>
+</Row>
 
-        <Row>
-          <LeftSection>
-            <Input
-              name="name"
-              type="text"
-              value={formData.name || ""}
-              onChange={handleChange}
-              readOnly={!editMode}
-            />
-          <Input
-  name="employee_id"
-  type="text"
-  value={formData.employee_id || ""}
-  readOnly={true}
-/>
-            <Input
-              name="email"
-              type="email"
-              value={formData.email || ""}
-              onChange={handleChange}
-              readOnly={!editMode}
-            />
-          </LeftSection>
-
-          <RightSection>
-            <Textarea
-              name="address"
-              value={formData.address || ""}
-              onChange={handleChange}
-              readOnly={!editMode}
-            />
-            <Rows style={{ marginTop: "1rem" }}>
-              <Input
-                name="dob"
-                type="text"
-                value={formData.dob || ""}
-                onChange={handleChange}
-                readOnly={!editMode}
-              />
-              <Input
-                name="gender"
-                type="text"
-                value={formData.gender || ""}
-                onChange={handleChange}
-                readOnly={!editMode}
-              />
-            </Rows>
-          </RightSection>
-        </Row>
       </FormWrapper>
 
       <Hr />
 
+      {/* Job & Legal Info */}
       <Section>
         <Tabs>
           <NavLink to={`/ViewBasic/${id}`} style={{ textDecoration: "none" }}>
             <Tab active={location.pathname === `/ViewBasic/${id}`}>Basic Details</Tab>
           </NavLink>
-
           <NavLink to={`/ViewBasic/${id}/bank`} style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === `/ViewBasic/${id}/bank`}>
-              Bank and payment details
-            </Tab>
+            <Tab active={location.pathname === `/ViewBasic/${id}/bank`}>Bank and payment details</Tab>
           </NavLink>
-
           <NavLink to={`/ViewBasic/${id}/documents`} style={{ textDecoration: "none" }}>
             <Tab active={location.pathname === `/ViewBasic/${id}/documents`}>Documents</Tab>
           </NavLink>
@@ -276,113 +330,151 @@ console.log("📤 Submitting employee", formData);
 
         <GroupLabel>Job Details</GroupLabel>
         <Rowes>
-          <Input
-            name="designation"
-            value={formData.designation || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-          <Input
-            name="joining_date"
-            value={formData.joining_date || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
+          <FieldGroup>
+            <Label>Designation</Label>
+            <Input name="designation" value={formData.designation || ""} onChange={handleChange} readOnly={!editMode} />
+          </FieldGroup>
+          <FieldGroup>
+            <Label>Joining Date</Label>
+            <Input name="joining_date" value={formData.joining_date || ""} onChange={handleChange} readOnly={!editMode} />
+          </FieldGroup>
         </Rowes>
 
         <Rowes>
-        <select
-  name="department"
-  value={formData.department}
-  onChange={handleChange}
-  disabled={!editMode}
-  style={{
-    backgroundColor:'white'
-  }}
->
-  <option value="">Select Department</option>
-  {departmentList.map((dept) => (
-    <option key={dept.id} value={dept.id}>
-      {dept.name}
-    </option>
-  ))}
-</select>
-          <Input
-            name="employment_type"
-            value={formData.employment_type || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
+          <FieldGroup>
+            <Label>Department</Label>
+            <select
+              name="department"
+              value={formData.department || ""}
+              onChange={handleChange}
+              disabled={!editMode}
+              style={{
+                backgroundColor: "white",
+                padding: "0.7rem",
+                fontSize: "0.9rem",
+                borderRadius: "7px",
+                border: "1px solid #052DB4",
+                width: "100%",
+              }}
+            >
+              <option value="">Select Department</option>
+              {departmentList.map((dept) => (
+                <option key={dept.id} value={dept.id}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
+          </FieldGroup>
+
+          <FieldGroup>
+            <Label>Employment Type</Label>
+            <Input name="employment_type" value={formData.employment_type || ""} onChange={handleChange} readOnly={!editMode} />
+          </FieldGroup>
         </Rowes>
-<Rowes>
-  <Input
-    type="number"
-    name="total_leave"
-    placeholder="Total Leaves"
-    value={formData.total_leave || ""}
-    onChange={handleChange}
-    readOnly={!editMode}
-  />
-</Rowes>
+
+        <Rowes>
+          <FieldGroup>
+            <Label>Total Leaves</Label>
+            <Input type="number" name="total_leave" value={formData.total_leave || ""} onChange={handleChange} readOnly={!editMode} />
+          </FieldGroup>
+        </Rowes>
 
         <GroupLabel>Employee Legal & ID Information</GroupLabel>
         <Column>
-          <Input
-            name="phno"
-            placeholder="Phone Number"
-            value={formData.phno || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-          <Input
-            name="passport_number"
-            placeholder="Passport Number"
-            value={formData.passport_number || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-          {/* <Input
-            name="work_permit"
-            placeholder="Work Permit"
-            value={formData.work_permit || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          /> */}
-          <Input
-            name="visa_expiry_date"
-            placeholder="Visa Expiry Date"
-            value={formData.visa_expiry_date || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-          <Input
-            name="iqama_number"
-            placeholder="Iqama Number"
-            value={formData.iqama_number || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
-          {/* <Input
-            name="contract_id"
-            placeholder="Employment Contract"
-            value={formData.contract_id || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          /> */}
-          <Input
-            name="insurance_number"
-            placeholder="Insurance Number"
-            value={formData.insurance_number || ""}
-            onChange={handleChange}
-            readOnly={!editMode}
-          />
+          <FieldGroup>
+            <Label>Phone Number</Label>
+            <Input name="phno" value={formData.phno || ""} onChange={handleChange} readOnly={!editMode} />
+          </FieldGroup>
+
+          <FieldGroup>
+            <Label>Passport Number</Label>
+            <Input name="passport_number" value={formData.passport_number || ""} onChange={handleChange} readOnly={!editMode} />
+          </FieldGroup>
+
+          {/* Country-based conditional fields */}
+      {/* Country-based conditional fields */}
+{formData?.company?.country === "IN" ? (
+  <>
+    {console.log("Rendering Aadhaar Field, country:", formData.company.country)}
+    <FieldGroup>
+      <Label>Aadhaar Number</Label>
+      <Input
+        name="aadar_number"
+        placeholder="Aadhaar Number"
+        value={formData.aadar_number || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+    </FieldGroup>
+  </>
+) : (
+  <>
+    {console.log("Rendering Iqama/Insurance/Visa Fields, country:", formData?.company?.country)}
+    <FieldGroup>
+      <Label>Visa Expiry Date</Label>
+      <Input
+        type={editMode ? "date" : "text"}
+        name="visa_expiry_date"
+        value={formData.visa_expiry_date || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+    </FieldGroup>
+    <FieldGroup>
+      <Label>Iqama Number</Label>
+      <Input
+        name="iqama_number"
+        value={formData.iqama_number || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+    </FieldGroup>
+    <FieldGroup>
+      <Label>Insurance Number</Label>
+      <Input
+        name="insurance_number"
+        value={formData.insurance_number || ""}
+        onChange={handleChange}
+        readOnly={!editMode}
+      />
+    </FieldGroup>
+  </>
+)}
+
+
+          <FieldGroup>
+            <Label>Role</Label>
+            <Select name="role" value={formData.role || ""} onChange={handleChange} disabled={!editMode}>
+              <option value="">Select Role</option>
+              <option value="employee">Employee</option>
+              <option value="hr">HR</option>
+              <option value="manager">Manager</option>
+            </Select>
+          </FieldGroup>
+
+          <FieldGroup>
+            <Label>Contract Expiry Date</Label>
+            <Input type={editMode ? "date" : "text"} name="contract_expiry_date" value={formData.contract_expiry_date || ""} onChange={handleChange} readOnly={!editMode} />
+          </FieldGroup>
+
+          <FieldGroup>
+            <Label>ID Card</Label>
+            <div>
+              {formData.idcard && (
+                <img
+                  src={formData.idcard instanceof File ? URL.createObjectURL(formData.idcard) : formData.idcard}
+                  alt="ID Card"
+                  style={{ width: 120, height: "auto", marginBottom: 10 }}
+                />
+              )}
+              {editMode && (
+                <input type="file" accept="image/*" name="idcard" onChange={(e) => setFormData({ ...formData, idcard: e.target.files[0] })} />
+              )}
+            </div>
+          </FieldGroup>
         </Column>
 
-       
-        {editMode && (
-  <Button onClick={handleSubmit}>Submit</Button>
-)}
-        
+        {editMode && <Button onClick={handleSubmit}>Submit</Button>}
       </Section>
     </Container>
   );

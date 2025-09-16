@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'employee',
     'holidays',
     'payroll',
+    'reimbursement',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
@@ -74,18 +75,20 @@ ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],   # 👈 very important
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
@@ -126,6 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -164,8 +168,8 @@ from datetime import timedelta
 
 SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=60),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
@@ -201,19 +205,26 @@ EMAIL_PORT = config("EMAIL_PORT", cast=int)
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+FERNET_KEY = config("FERNET_KEY")
+
 
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Use your Redis URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+
+
+
 
 # Optional: Enable Celery beat
 INSTALLED_APPS += ['django_celery_beat']
 
 CELERY_BEAT_SCHEDULE = {
-    'check_reminders_every_minute': {
-        'task': 'employee.tasks.check_reminders',
-        'schedule': 60.0,  # every minute
+    'soft_delete_expired_reminders_every_minute': {
+        'task': 'employee.tasks.soft_delete_expired_reminders',
+        'schedule': 60.0,
     },
 }
+
 

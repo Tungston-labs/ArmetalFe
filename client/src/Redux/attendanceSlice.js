@@ -19,6 +19,7 @@ export const getAttendanceDetail = createAsyncThunk(
   'attendance/getDetail',
   async (id, thunkAPI) => {
     try {
+      console.log("here")
       const data = await fetchAttendanceDetail(id);
       return data;
     } catch (error) {

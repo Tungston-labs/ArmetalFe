@@ -19,16 +19,21 @@ import {
   HRManager,
   IconButton,
   TitleSection,
+  DropdownMenu, DropdownWrapper 
 } from '../department/DepartmentDetails.Styles';
 import { FaInfoCircle, FaTrash } from 'react-icons/fa';
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { fetchDepartmentById, updateDepartment } from '../../services/departmentServices';
-import { getEmployeesByDepartment } from '../../Redux/departmentSlice';
+import { getEmployeesByDepartment,updateDepartmentById } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import { deleteEmployeeById } from '../../Redux/employeeSlice';
-
-
-
+import Employee from "../../assets/employee.svg"; 
+import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your choice
+import { IoIosArrowDown } from "react-icons/io";
+import Navbar from '../../Components/Navbar';
+import Swal from "sweetalert2";
+import Loader from "../../Components/Loader"
+import { GoInfo } from 'react-icons/go';
 
 const DepartmentDetail = () => {
   const { id } = useParams();
@@ -36,7 +41,7 @@ const DepartmentDetail = () => {
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-
+  const [menuOpen, setMenuOpen] = useState(false);
 
 
   const { departmentEmployees } = useSelector((state) => state.departments);
@@ -83,50 +88,91 @@ const DepartmentDetail = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
   const handleUpdate = async () => {
     try {
-      await updateDepartment(id, formData);
-      const data = await fetchDepartmentById(id);  // Re-fetch full data
-      setDepartment(data);
-      setFormData({
-        name: data.name || '',
-        department_code: data.department_code || '',
-        department_head: data.department_head?.id || ''
+      const payload = {
+        ...formData,
+        department_head_id: formData.department_head_id ? parseInt(formData.department_head_id) : null,
+      };
+  
+     if (!payload.department_head_id) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Department Head",
+        text: "Please select a department head before saving.",
+        confirmButtonColor: "#3352BA",
       });
-      setIsEditing(false);
-    } catch (err) {
-      console.error('Update failed:', err);
+      return;
     }
-  };
+
+    await dispatch(updateDepartmentById({ id, data: payload })).unwrap();
+
+    Swal.fire({
+      icon: "success",
+      title: "Updated!",
+      text: "Department updated successfully.",
+      confirmButtonColor: "#3352BA",
+    });
+
+    setIsEditing(false);
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Update Failed",
+      text: "Something went wrong while updating department.",
+    });
+  }
+};
+  
+  
+  
+  
 
 
-  if (!department) return <p>Loading...</p>;
+if (!department) return <Loader />;
 
   return (
+    <>
+    <Navbar/>
     <Container>
-      <TopBar>
-        <div />
-        <HRManager>
-          <img src="images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
-        </HRManager>
-      </TopBar>
 
       <HeaderSection>
-        <TitleSection>
-          <img src="/images/department.png" alt="Icon" style={{ height: "74px" }} />
-          <div>
-            <Title>Department</Title>
-            <Subtitle>Manage all departments within the organization.</Subtitle>
-          </div>
-        </TitleSection>
-        <ActionArea>
-          <AddButton onClick={() => setIsEditing(!isEditing)}>
-            <HiOutlinePencilSquare style={{ width: '18px', height: '18px' }} /> {isEditing ? 'Cancel' : 'Edit'}
-          </AddButton>
-        </ActionArea>
-      </HeaderSection>
+<TitleSection>
+  <HiArrowLeft
+    style={{ width: '24px', height: '24px', cursor: 'pointer',color:"#3250B5" }} 
+    onClick={() => window.history.back()}
+  />
+  <img src={Employee}  alt="employee icon" />
+  <div>
+    <Title>Department</Title>
+    <Subtitle>Manage all departments within the organization.</Subtitle>
+  </div>
+</TitleSection>
+
+
+
+  <ActionArea>
+    <AddButton
+      onClick={() => {
+        if (isEditing) {
+          handleUpdate(); // Save the changes
+        }
+        setIsEditing(!isEditing); // Toggle editing mode
+      }}
+    >
+      {isEditing ? (
+        <>
+          <HiOutlinePencilSquare style={{ width: '18px', height: '19px' }} /> Save
+        </>
+      ) : (
+        <>
+          <HiOutlinePencilSquare style={{ width: '18px', height: '18px' }} /> Edit
+        </>
+      )}
+    </AddButton>
+  </ActionArea>
+</HeaderSection>
+
 
       <FormSection>
         <InputGroup>
@@ -179,11 +225,7 @@ const DepartmentDetail = () => {
 
           )}
         </InputGroup>
-        {isEditing && (
-          <AddButton style={{ marginTop: '1rem' }} onClick={handleUpdate}>
-            Save Changes
-          </AddButton>
-        )}
+       
       </FormSection>
 
       <h3>Added employee list</h3>
@@ -207,8 +249,6 @@ const DepartmentDetail = () => {
                 <td>{index + 1}</td>
                 <td>
                 <Avatar src={emp.profile_pic ? `http://178.248.112.16:8000${emp.profile_pic}` : 'https://i.pravatar.cc/40'} />
-
-                  {/* <Avatar src={emp.profile_pic || 'https://i.pravatar.cc/40'} alt="" /> */}
                   {emp.name}
                 </td>
                 <td>{emp.employee_id}</td>
@@ -217,7 +257,7 @@ const DepartmentDetail = () => {
                 <td>{department.name}</td>
                 <td>
                   <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`)}>
-                    <FaInfoCircle />
+                    <GoInfo />
                   </IconButton>
 
                 </td>
@@ -275,6 +315,7 @@ const DepartmentDetail = () => {
 )}
 
     </Container>
+    </>
   );
 };
 

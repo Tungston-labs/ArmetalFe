@@ -151,3 +151,15 @@ class ResetPasswordView(APIView):
 
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=404)
+
+
+class UpdateFCMTokenView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        fcm_token = request.data.get('fcm_token')
+        if fcm_token:
+            request.user.fcm_token = fcm_token
+            request.user.save()
+            return Response({"message": "FCM token updated"})
+        return Response({"error": "fcm_token is required"}, status=400)

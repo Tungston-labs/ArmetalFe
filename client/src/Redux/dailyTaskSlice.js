@@ -2,13 +2,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchEmployees, fetchTasksByEmployeeAndDate } from '../services/dailyTaskServices';
 
-export const getEmployees = createAsyncThunk('dailyTask/getEmployees', async (_, thunkAPI) => {
-  try {
-    return await fetchEmployees();
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data);
+
+export const getEmployees = createAsyncThunk(
+  'dailyTask/getEmployees',
+  async (params = {}, thunkAPI) => {
+    try {
+      // params can include { department_id: 1 } or any other query params
+      return await fetchEmployees(params);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
   }
-});
+);
 
 export const getTasks = createAsyncThunk('dailyTask/getTasks', async ({ employeeId, date }, thunkAPI) => {
   try {

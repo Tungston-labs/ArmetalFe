@@ -3,9 +3,9 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 export const Container = styled.div`
   font-family: 'Segoe UI', sans-serif;
-  background-color: #FBFEF3;
-  padding: 20px;
-`;
+  background-color: white;
+  padding: 25px;
+`
 
 export const TopBar = styled.div`
   display: flex;
@@ -64,23 +64,49 @@ const BackIcon = styled(FaArrowLeft)`
 export const TitleSection = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between; /* Push left & right sides apart */
+  width: 100%;
 `;
 
+
 export const Title = styled.h2`
-  margin-left: 10px;
-  font-size: 22px;
+  font-size: 1.4rem;
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+color:#3352BA;
 `;
 
 export const Subtitle = styled.p`
-  font-size: 16px;
-  margin-top: -10px;
-  margin-left:10px;
+  margin-top: -5px;
+ 
+  font-family: Raleway;
+font-weight: 300;
+font-style: Light;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+color:#3352BA;
 `;
 
 export const SearchInput = styled.input`
   padding: 8px;
+  margin-top:15px;
   border-radius: 4px;
   border: 1px solid #ccc;
+  border-radius: 7px;
+// border: 1px solid #5F53A5;
+background: #FFF;
+// color: rgba(0, 0, 0, 0.50);
+font-family: Satoshi;
+font-size: 17px;
+// font-style: italic;
+// font-weight: 300;
+// line-height: normal;
 `;
 
 export const TableWrapper = styled.div`
@@ -93,34 +119,50 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
-
-  th, td {
-    text-align: left;
-    // padding: 0.75rem;
+   text-align: center;
+   td {
+    text-align: center;
+    // padding: 0.7rem;
     white-space: nowrap;
     background-color: white;
     border: none; /* remove cell borders */
   }
 
   th {
-    background-color: #5F53A53B;
-    color: #333;
-  }
+     text-align: center;
+    background-color: #3352BA;
+    color: white;
+    padding: 0.7rem;
+    font-family: Raleway;
+font-weight: 700;
+font-style: Bold;
+font-size: 17px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
 
+
+  }
+/* ✅ Background color for even rows */
+  tbody tr:nth-child(even) td {
+    background-color: #E6ECFF;
+  }
   /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
-    box-shadow: 0 0 0 1px #00000047;
+  box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+font-family:satoshi;
+    
   }
 
   /* Optional: radius for only first and last td of each row */
   tbody tr td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
 
   tbody tr td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   tbody tr:hover td {
@@ -130,14 +172,21 @@ export const Table = styled.table`
 
 export const Th = styled.th`
   background-color: #E1E8EC;
-  padding: 10px;
+  // padding: 10px;
   text-align: left;
   font-weight: 600;
 `;
 
 export const Td = styled.td`
-  padding: 10px;
+  padding: 0.3rem;
   background: #fff;
+  color: #000;
+text-align: center;
+font-family: Satoshi;
+font-size: 0.9rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 `;
 
 export const Tr = styled.tr`
@@ -148,10 +197,22 @@ export const Tr = styled.tr`
 `;
 
 export const Select = styled.select`
-  padding: 5px;
+  padding: 5px 25px 5px 8px; /* extra right padding for space after arrow */
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-family: Satoshi;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 100%;
+  letter-spacing: 0%;
+
+  appearance: none; /* removes default browser arrow */
+  background: url("data:image/svg+xml;utf8,<svg fill='black' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 8px center;
+  background-color: white;
+  background-size: 16px;
 `;
+
 // styles.js or your styled-components file
 export const Pagination = styled.div`
   display: flex;
@@ -169,4 +230,8 @@ export const Pagination = styled.div`
       color: white;
     }
   }
+`;
+export const Icon = styled.img`
+  width: 52px;
+  height: 52px;
 `;

@@ -19,19 +19,19 @@ export const HRManager = styled.div`
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  // border: 1px solid #ccc;
+  // border-radius: 8px;
   background-color: #fff;
   font-size: 0.9rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;
   }
 
   img {
-    width: 30px;
+    width: 40px;
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
@@ -45,7 +45,12 @@ export const Subtitle = styled.p`
   margin-left: 2px;
   font-family: Raleway;
 `;
-
+export const Title = styled.h2`
+  font-size: 22px;
+  margin: 0;
+  font-family:satoshi;
+  color:rgb(64, 101, 220);
+`;
 export const HeaderSection = styled.div`
   display: flex;
   justify-content: space-between;
@@ -56,18 +61,29 @@ export const HeaderSection = styled.div`
 
 export const TitleSection = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  width: 100%;
+
+  .left-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .icon-box {
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    display: inline-block;
+    color: blue;
+  }
 
   img {
     height: 74px;
   }
-
-  div {
-    display: flex;
-    flex-direction: column;
-  }
 `;
+
 
 export const TitleGroup = styled.div`
   display: flex;
@@ -101,8 +117,8 @@ export const InitialCircle = styled.div`
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: rgb(255, 255, 255);
-  color: rgb(228, 247, 246);
+  background-color: rgba(255, 255, 255, 1);
+  color: #ECF8FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,6 +126,13 @@ export const InitialCircle = styled.div`
   font-size: 100px;
   font-family: Satoshi;
   padding-right: 18px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    color: #CAD2ED; 
+  }
+
+
 `;
 
 export const AddButton = styled.button`
@@ -117,13 +140,16 @@ export const AddButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   font-family: Satoshi;
-  background: linear-gradient(to right, rgb(72, 139, 222),rgb(44, 81, 229));
+  background: #304EB0;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 2rem;
   border-radius: 8px;
   border: none;
   font-size: 0.9rem;
   cursor: pointer;
+   &:hover {
+    background-color: #3f60cbff;
+  }
 `;
 
 export const SearchInput = styled.input`
@@ -132,7 +158,7 @@ export const SearchInput = styled.input`
   border: 1px solid #ccc;
   outline: none;
   font-size: 0.9rem;
-  width: 100%;
+ min-width: 100%;
 `;
 export const SearchWrapper = styled.div`
   position: relative;
@@ -151,7 +177,7 @@ export const SearchIcon = styled(FiSearch)`
 export const CardGrid = styled.div`
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(4,1fr);
   gap: 1.5rem;
 `;
 
@@ -168,7 +194,7 @@ export const DepartmentCard = styled.div`
   &:hover {
     .initial-circle {
       background-color:rgb(255, 255, 255);
-      color:rgb(208, 208, 219);
+       color: #1a73e8;
     }
 
     .dept-name,
@@ -282,4 +308,28 @@ export const CloseButton = styled.button`
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
+`;
+export const DropdownWrapper = styled.div`
+  position: relative;
+`;
+
+export const DropdownMenu = styled.div`
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 100;
+
+  div {
+    padding: 10px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
 `;

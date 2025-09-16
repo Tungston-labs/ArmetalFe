@@ -3,19 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getLeaveRequests, patchLeaveStatus } from '../../Redux/leaveSlice';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { IoEyeOutline } from 'react-icons/io5';
-import { FaPlus } from "react-icons/fa";
-import { LuArrowLeft } from "react-icons/lu";
-import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
-
+import OnLeaveModal from "./ModalList"
+import { getDepartments } from "../../Redux/departmentSlice";
+import EmployeeIcon from "../../assets/employeeicon.svg";
 import {
   Container,
-  Table,
+  Table,DepartmentSelect,
   TableRow,
   TableHead,
   TableCell,
   ProfileImage,
   ActionButtons,
-  DeclineButton,
   ApproveButton,
   Tab,
   SearchInput,
@@ -29,33 +27,48 @@ import {
   Title,
   Subtitle,
   ActionArea,
-  FilterSection,
-  DepartmentSelect,
-  SearchWrapper
+  DropdownWrapper,
+  DropdownMenu, 
+  SearchWrapper,
+  SearchIcon
 } from './LeaveRequest.Styles';
 import { PiUserCirclePlusThin } from "react-icons/pi";
-import SyncLoader from 'react-spinners/SyncLoader';
+import Navbar from '../../Components/Navbar';
+import Loader  from "../../Components/Loader"
+import { TextBlock } from './EmployeeList.styles';
 export default function LeaveRequest() {
   const dispatch = useDispatch();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const { leaves, loading, pagination } = useSelector(state => state.leave);
   const [actionType, setActionType] = useState('');
   const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [page, setPage] = useState(1); // <-- Pagination state
-  const [departmentFilter, setDepartmentFilter] = useState("");
-
 
   const navigate = useNavigate();
+  const [departmentFilter, setDepartmentFilter] = useState("");
 
   useEffect(() => {
-    dispatch(getLeaveRequests(page)); // <-- Pass page number
-  }, [dispatch, page]);
+    dispatch(getLeaveRequests({
+      page,
+      department_id: departmentFilter || undefined,
+      search: searchText || undefined
+    }));
+  }, [dispatch, page, departmentFilter, searchText]);
+  
   useEffect(() => {
-    console.log("Pagination Info:", pagination);
+    // console.log("Pagination Info:", pagination);
   }, [pagination]);
 
   const leaveData = leaves || [];
+  console.log(leaveData);
+  
+    const { list: departmentList, loading: deptLoading } = useSelector(
+      (state) => state.departments
+    );
+const isLoading = loading || deptLoading;
 
   const filteredLeaves = leaveData.filter((leave) => {
     const name = leave?.employee?.name?.toLowerCase() || '';
@@ -80,96 +93,95 @@ export default function LeaveRequest() {
       setActionType('');
     }
   };
-
+  useEffect(() => {
+    // Fetch departments for dropdown
+    dispatch(getDepartments());
+  }, [dispatch]);
   const handleSearch = (e) => {
     setSearchText(e.target.value);
     setPage(1); // reset to first page on new search
   };
 
   return (
+    <>
+    <Navbar/>
     <Container>
-      <TopBar>
-        <div />
-        <HRManager>
-          <img src="/images/user.jpg" alt="HR Manager" />
-          <span>HR Manager</span>
-        </HRManager>
-      </TopBar>
-
+        {isLoading && (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        backgroundColor: "rgba(255,255,255,0.7)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 9999,
+      }}
+    >
+      <Loader color="#3352BA" />
+    </div>
+  )}
       <HeaderSection>
-        <TitleSection>
-          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
-          <img src="/images/employee.png" alt="Payroll Icon" style={{ height: "50px" }} />
-          <div>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </div>
-        </TitleSection>
+       <TitleSection>
+         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         <TextBlock>
+           <Title>Employee</Title>
+           <Subtitle>Manage your Employee.</Subtitle>
+         </TextBlock>
+       </TitleSection>
 
-        <ActionArea>
-          <FilterSection>
-            <SearchWrapper>
-              <SearchInput
-                type="text"
-                placeholder="Search by employee name or ID"
-                value={searchText}
-                onChange={handleSearch}
-              />
-            </SearchWrapper>
-          </FilterSection>
+      <ActionArea>
+  <SearchWrapper>
+        <SearchIcon />
+        <SearchInput
+          type="text"
+          placeholder="Employee ID or Name"
+          value={searchText}
+          onChange={handleSearch}
+        />
+      </SearchWrapper>
+  
+<DepartmentSelect
+  value={departmentFilter}
+  onChange={(e) => {
+    setDepartmentFilter(e.target.value);
+    setPage(1);
+  }}
+>
+  <option value="">All Departments</option>
+  {departmentList.map((dept) => (
+    <option key={dept.id} value={dept.id}>
+      {dept.name}
+    </option>
+  ))}
+</DepartmentSelect>
 
-          <AddButton onClick={() => navigate('/basic-details')}>
-            <FaPlus /> Add Employee
-          </AddButton>
-        </ActionArea>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "1rem",
-            width: "100%"
-          }}
-        >
-          {/* Left side: label */}
-          <div style={{ fontWeight: "bold" }}>
-            Departments: <span style={{ color: "#555", fontWeight: 400 }}>{departmentFilter || "All"}</span>
-          </div>
-
-          {/* Right side: dropdown */}
-          <DepartmentSelect
-            value={departmentFilter}
-            onChange={(e) => setDepartmentFilter(e.target.value)}
-          >
-            <option value="">All Departments</option>
-            <option value="HR">HR</option>
-            <option value="IT">IT</option>
-            <option value="Finance">Finance</option>
-            <option value="Marketing">Marketing</option>
-          </DepartmentSelect>
-        </div>
+</ActionArea>
 
       </HeaderSection>
 
-
       <Tabs>
         <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Total Employees</Tab>
+          <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
         </NavLink>
-        <NavLink to="/leave-request" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/leave-request'}>Employee leave request</Tab>
+        <NavLink to="/employee-leave-request" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-leave-request'}>Employee leave request</Tab>
         </NavLink>
-        <NavLink to="/on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/on-leave'}>Employee Attendance</Tab>
+        <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
         </NavLink>
-        <NavLink to="/employee-visa" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-visa'}>Employee Visa</Tab>
+        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
+          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee Contract & Visa Expiry</Tab>
         </NavLink>
-        <NavLink to="/emp-on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/emp-on-leave'}>Employees on Leave</Tab>
-        </NavLink>
+          <NavLink to="/employee-on-leave" style={{ textDecoration: 'none' }}>
+                          <Tab active={location.pathname === '/employee-on-leave'}>Employees on Leave</Tab>
+                        </NavLink>
       </Tabs>
+        <hr style={{marginTop:"-18px"}}></hr>
 
       <Table>
         <thead>
@@ -178,7 +190,7 @@ export default function LeaveRequest() {
             <TableHead>Leave type</TableHead>
             <TableHead>Email ID</TableHead>
             <TableHead>Contact number</TableHead>
-            <TableHead>StartDate and EndDate</TableHead>
+            <TableHead>Start date to End date</TableHead>
             <TableHead></TableHead>
             <TableHead></TableHead>
           </TableRow>
@@ -186,26 +198,26 @@ export default function LeaveRequest() {
         <tbody>
           {loading ? (
             <TableRow>  <TableCell colSpan="7">
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-                <p>Loading...</p>
-              </div>
-            </TableCell></TableRow>
+    {/* <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+    <p>Loading...</p>
+    </div> */}
+  </TableCell></TableRow>
           ) : filteredLeaves.length === 0 ? (
             <TableRow><TableCell colSpan="7">No matching leave requests found.</TableCell></TableRow>
           ) : (
             filteredLeaves.map((leave) => (
               <TableRow key={leave.id}>
-                <TableCell style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  {leave?.employee?.profile_pic ? (
-                    <ProfileImage
-                      src={leave.employee.profile_pic}
-                      alt="profile"
-                    />
-                  ) : (
-                    <PiUserCirclePlusThin size={40} color="#999" />
-                  )}
-                  {leave?.employee?.name || 'N/A'}
-                </TableCell>
+                <TableCell style={{  alignItems: 'center', gap: '10px' }}>
+  {leave?.employee?.profile_pic ? (
+    <ProfileImage
+      src={leave.employee.profile_pic}
+      alt="profile"
+    />
+  ) : (
+    <PiUserCirclePlusThin size={40} color="#999" />
+  )}
+  {leave?.employee?.name || 'N/A'}
+</TableCell>
                 <TableCell>{leave.leave_type}</TableCell>
                 <TableCell>{leave.employee.email}</TableCell>
                 <TableCell>{leave.employee.phno}</TableCell>
@@ -218,20 +230,29 @@ export default function LeaveRequest() {
                 </TableCell>
                 <TableCell>
                   <ActionButtons>
-                    <DeclineButton onClick={() => {
-                      setSelectedLeave(leave);
-                      setActionType('rejected');
-                      setShowModal(true);
-                    }}>
-                      Decline
-                    </DeclineButton>
-                    <ApproveButton onClick={() => {
-                      setSelectedLeave(leave);
-                      setActionType('approve');
-                      setShowModal(true);
-                    }}>
-                      Approve
-                    </ApproveButton>
+                
+<ApproveButton
+  onClick={() => {
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    console.log("Opening modal with:", leave.id, leave.employee?.id, today);
+
+    setSelectedLeave({
+      leave_id: leave.id,          // ✅ add leave ID
+      employee_id: leave.employee?.id,
+      date: today
+    });
+
+    setShowModal(true);
+  }}
+>
+  On Leaves
+</ApproveButton>
+
+
+
+
+
+
                   </ActionButtons>
                 </TableCell>
               </TableRow>
@@ -240,17 +261,17 @@ export default function LeaveRequest() {
         </tbody>
       </Table>
 
-      <Pagination>
+            <Pagination>
         <span
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
           style={{ cursor: 'pointer', marginRight: '8px' }}
         >
           &larr;
         </span>
-
+      
         {[1, 2].map((pageNumber) => {
           const isActive = pagination?.current_page === pageNumber;
-
+      
           return (
             <span
               key={pageNumber}
@@ -269,7 +290,7 @@ export default function LeaveRequest() {
             </span>
           );
         })}
-
+      
         <span
           onClick={() =>
             setPage((prev) => Math.min(prev + 1, 2))
@@ -280,13 +301,26 @@ export default function LeaveRequest() {
         </span>
       </Pagination>
 
-      {showModal && (
+      {/* {showModal && (
         <ConfirmLeaveModal
           onClose={() => setShowModal(false)}
           onConfirm={handleStatusUpdate}
           actionType={actionType}
         />
-      )}
+      )} */}
+{showModal && (
+  <OnLeaveModal
+    leaveId={selectedLeave?.leave_id}    // ✅ leave id
+    employeeId={selectedLeave?.employee_id}
+    date={selectedLeave?.date}
+    onClose={() => setShowModal(false)}
+  />
+)}
+
+
+
+
     </Container>
+    </>
   );
 }

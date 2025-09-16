@@ -3,15 +3,22 @@
 
 #api for generating token pair
 ###
-POST http://127.0.0.1:8000/api/token/
+POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "TlsLab",
-  "password": "123"
+  "username": "snv_arm_kak_117",
+  "password": "password123"
 }
 
+###
+POST http://178.248.112.16:8001/api/token/
+Content-Type: application/json
 
+{
+  "username": "TUNGRAS82",
+  "password": "password123"
+}
 
 # common logout for super admin,hr comapny,employee
 
@@ -24,11 +31,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 }
 
 ### Refresh Access Token
-POST http://127.0.0.1:8000/api/token/refresh/
+POST http://178.248.112.16:8001/api/token/refresh/
 Content-Type: application/json
 
 {
-  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1MzMzODQ2MiwiaWF0IjoxNzUzMjUyMDYyLCJqdGkiOiIyOWQxM2QxMDRkOWE0MGY3OTgxMjJhZTA1ZTg5MWRjZSIsInVzZXJfaWQiOjEsImlzX3N1cGVyYWRtaW4iOnRydWUsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.Ymgt13k3alK8nEm2--yexqCd2vf3i2rRfOeBfwGUqb0"
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2MzE4MDUxOSwiaWF0IjoxNzU3OTk2NTE5LCJqdGkiOiJhOThhZjE5Y2M0YTM0N2ZkOGI3Nzk3NjdmYmNlNmFlNyIsInVzZXJfaWQiOiI3MiIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.P0o2GRnBLvHxriRFr8UDEagUrIYWuimnYCCDbDzPG7Y"
 }
 
 
@@ -184,8 +191,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # list departments
 
 ###
-GET http://127.0.0.1:8000/api/departments/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMTQ3ODMzLCJpYXQiOjE3NTAxNDQyMzMsImp0aSI6IjA3ZjgxOTVmZDVkZjRlOTY5ZDA5OTlmNzQyMTc5ZDlhIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.Ravw7OppgukLgys_FLCqbaYAtC4TFCn_ib19FxrmR20
+GET http://178.248.112.16:8001/api/departments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MzI3MTc2LCJpYXQiOjE3NTczMjM1NzYsImp0aSI6IjY5MDM4YTM4ZTY0ZDRhMzM5YTQxYWRlYzlmNWRjMjcyIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.FTyLqlinrS0NUTW9EyKaamL-myFwa9Qk4Lt5KZKyXCU
 
 
 # retrieve single department
@@ -245,10 +252,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # retrieve all employee
 
 ###
-GET http://127.0.0.1:8000/api/employees/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwODM0MzE5LCJpYXQiOjE3NTA4MzA3MTksImp0aSI6IjAwOGE4M2UxY2IxYjQ5MGM5YmNjOWY0NmFmMWE4MGI3IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.tlA-Xh-OJFF-7rxwXoZ_dsQMNo3KAuscAGMxgfdaD64
-
-
+GET http://178.248.112.16:8001/api/employees/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NzUzMjk3LCJpYXQiOjE3NTU3NDk2OTcsImp0aSI6IjRkNjUwMDVjZTU3YjQ4MmFiYzVhYzE5YWEzZjBjZDQyIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.3TsQu6OMF_SNk3AAOjGzqGJZZex5vX5gzFlCYn3C3Mg
+### employee list without pagination
+GET http://178.248.112.16:8001/api/employeelist/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NzUzMjk3LCJpYXQiOjE3NTU3NDk2OTcsImp0aSI6IjRkNjUwMDVjZTU3YjQ4MmFiYzVhYzE5YWEzZjBjZDQyIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.3TsQu6OMF_SNk3AAOjGzqGJZZex5vX5gzFlCYn3C3Mg
 # retrieve one employee with id
 ###
 GET http://127.0.0.1:8000/api/employee/4/
@@ -262,6 +270,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 DELETE  http://127.0.0.1:8000/api/employees/1/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMTQ3ODMzLCJpYXQiOjE3NTAxNDQyMzMsImp0aSI6IjA3ZjgxOTVmZDVkZjRlOTY5ZDA5OTlmNzQyMTc5ZDlhIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.Ravw7OppgukLgys_FLCqbaYAtC4TFCn_ib19FxrmR20
 
+### Get employees visa expiry
+GET http://178.248.112.16:8001/api/employees/upcoming-expiry/?type=visa
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0NjU1MTYyLCJpYXQiOjE3NTQ2NTE1NjIsImp0aSI6IjgwNWRmN2Y1NWMxMDRmOTA4YWY1NWRkNjMwNWVjODEyIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.kHZf8YXjYwknqfFobCAczGG70C7V-xlctkta8URERIE
+Accept: application/json
 
 
 # search employee by name or ID
@@ -285,23 +297,48 @@ GET http://localhost:8000/api/payroll/?month=7&year=2025&search=jesna
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNDcxOTQzLCJpYXQiOjE3NTI0NjgzNDMsImp0aSI6IjA1MWExYjJjZDliNDQzN2Q4YWIwNzBmZDQ5ZTA5MDkxIiwidXNlcl9pZCI6MzgsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.K6RMAH1rvBfW38E901XMYuCrb6BaHin8LewSOE65MAs
 
 ### Create or update payroll records for selected employees
-POST http://localhost:8000/api/payroll/
+POST http://178.248.112.16:8001/api/payroll/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNzE3MTAzLCJpYXQiOjE3NTE3MTM1MDMsImp0aSI6IjcwZDhlN2E3MGMyYTQyMTk4ZmQyYjJiZmNkMDM3MmViIiwidXNlcl9pZCI6MzgsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.0Gfe_uVpYn-qVof491gdlSp4E5PCoOKOjPlX9oN50BY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NTgxMTQ4LCJpYXQiOjE3NTU1Nzc1NDgsImp0aSI6Ijk3NDgwMTRiYzU0MTRmNmQ5ZTE1MjM2NGI1OGVmZTUyIiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6dHJ1ZX0.bOKexdPiiwTI3oqo_qP3TF3pB0sCdGh8bhp9gTLljNM
 
 {
   "month": 7,
   "year": 2025,
-  "employee_ids": [33, 36],
+  "employee_ids": [53],
   "status": "Paid"
 }
 
-### Update payroll status for a single employee (HR selects month/year)
-PATCH http://localhost:8000/api/payroll/36/status/update/
+
+
+###
+POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxOTY0ODc4LCJpYXQiOjE3NTE5NjEyNzgsImp0aSI6IjdkY2ZlNTc2ZDM3NTQzNjdiZGJjNTZlNzUwMGZmZTY3IiwidXNlcl9pZCI6MzgsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.GhTWHkpdyhI98TQbp3o_z1pFzxdWjLTAyVepACDHgO0
+
 {
-  "month": 6,
+  "username": "TUNNIL2OV",     
+  "password": "EMPA9445373"  
+}
+
+
+
+### ✅ Verify Payroll for Employee
+POST http://178.248.112.16:8001/api/payroll/53/verify/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NTg4MDE5LCJpYXQiOjE3NTU1ODQ0MTksImp0aSI6IjIyNTdlMjQ4M2ViMzQ0NzE4ODA0MjZiMTY5N2VlYWRmIiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6dHJ1ZX0.L6LplMx3qL20Z_3INGnV3XRzyp2JGS3ySNvxORsRRBY
+Content-Type: application/json
+
+{
+  "month": 8,
+  "year": 2025
+}
+
+
+### Update payroll status for a single employee (HR selects month/year)
+PATCH http://178.248.112.16:8001/api/payroll/53/status/update/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NTgxMTQ4LCJpYXQiOjE3NTU1Nzc1NDgsImp0aSI6Ijk3NDgwMTRiYzU0MTRmNmQ5ZTE1MjM2NGI1OGVmZTUyIiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6dHJ1ZX0.bOKexdPiiwTI3oqo_qP3TF3pB0sCdGh8bhp9gTLljNM
+
+{
+  "month": 7,
   "year": 2025,
   "status": "Pending"
 }
@@ -313,30 +350,30 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 # forgot password
 ###
-POST http://localhost:8000/api/forgot-password/send-otp/
+POST http://178.248.112.16:8001/api/forgot-password/send-otp/
 Content-Type: application/json
 
 {
-  "email": "dfhfhj@gmail.com"
+  "email": "athuluiux@gmail.com"
 }
 # verify OPTIONS 
 ###
-POST http://localhost:8000/api/forgot-password/verify-otp/
+POST http://178.248.112.16:8001/api/forgot-password/verify-otp/
 Content-Type: application/json
 
 {
-  "email": "dfhfhj@gmail.com",
-  "otp": "304528"
+  "email": "tls@gmail.com",
+  "otp": "441526"
 }
 
 # reset password after otp verification
 ###
 
-POST http://localhost:8000/api/forgot-password/reset/
+POST http://178.248.112.16:8001/api/forgot-password/reset/
 Content-Type: application/json
 
 {
-  "email": "dfhfhj@gmail.com",
+  "email": "tls@gmail.com",
   "new_password": "password123",
   "confirm_password": "password123"
 }
@@ -351,9 +388,7 @@ Content-Type: application/json
 
 ### Get Employee Dashboard Details
 GET http://178.248.112.16:8001/api/dashboard/employee/53/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjkwODg3LCJpYXQiOjE3NTQyODcyODcsImp0aSI6IjYyNTE4YjgyZDlmOTRlYTFiYmUxNzNkNjllZDllYmIzIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.tq-844hhqWEWkEnJJoWDPqgbr-O9BlQq4cP5wKSBQ-E
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4MDAyNjU0LCJpYXQiOjE3NTgwMDA4NTQsImp0aSI6IjUxNzY1YTI4MjczMzRjZGRiNTlkMDA1YmU3NTkyMDAxIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.bZ2uqm0qHb31zit1hxBB4KwKpDl2hDbu_VtPfGxGL4M
 # ----------------------------------API FOR EMPLOYEE-----------------------
 
 
@@ -370,8 +405,8 @@ Content-Type: application/json
 # dashboard Summary 
 
 ###
-GET http://127.0.0.1:8000/api/admin/dashboard-summary/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjg5OTk1LCJpYXQiOjE3NTQyODYzOTUsImp0aSI6IjliY2FjYzIyOTBlZDRlMjE4ODA4NWVkOTk1YjcyNGI0IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.cUzwgkPl_YyXux7njPm9-P2SiP-XVrEL98tb3gyGMmQ
+GET http://178.248.112.16:8001/api/admin/dashboard-summary/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3OTM2MTcwLCJpYXQiOjE3NTc5MzQzNzAsImp0aSI6ImU0ZGE3YjVjYTJiNjRkMGM5MTMxMjViNjc3NDM3OGZmIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.H3wMnqNPAWQjnmh5qncJKL1H70saBhmTWOYSk83vPV4
 
 
 
@@ -414,14 +449,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ### List All Leaves (HR Admin) according to status
-GET http://127.0.0.1:8000/api/leave/admin/?status=pending
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwODM3MjE4LCJpYXQiOjE3NTA4MzM2MTgsImp0aSI6IjM4ZDVhMWM3NzI2YzRiNzJhMGRkZGQxMWI0MjRhOTc5IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.xuQAcVUh5AjKZagoSCxsb8bhn47_7f71kyo3OtpyGMw
+GET http://178.248.112.16:8001/api/leave/admin/?status=pending
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzQ0MTM5LCJpYXQiOjE3NTUzNDA1MzksImp0aSI6ImQyNWU2YTlhNzJmNjQyYzZhY2Y0ZjZkOTgwYjU1MTc2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.hiQfQo3Q3xyoDo1WZkmt8nlTriYbR7zXqbLWUGT4hzw
 
 ### list employees on leave
 GET http://178.248.112.16:8001/api/departments/16/on-leave-employees/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjk4NDM3LCJpYXQiOjE3NTQyOTQ4MzcsImp0aSI6ImY0ODhkMTVjYmE2NzQzYTJhMDg2MTZhY2VkZDQxMTM2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.Ixu-E1YAZaK3zCZ_o3pO2i_76lLmbtnf2-YS_tb9GKc
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzQ0MTM5LCJpYXQiOjE3NTUzNDA1MzksImp0aSI6ImQyNWU2YTlhNzJmNjQyYzZhY2Y0ZjZkOTgwYjU1MTc2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.hiQfQo3Q3xyoDo1WZkmt8nlTriYbR7zXqbLWUGT4hzw
+### list employees on same department who 
+GET http://178.248.112.16:8001/api/department/53/on-leaves/?date=2025-08-21
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1Njg5MzY2LCJpYXQiOjE3NTU2ODU3NjYsImp0aSI6IjFkNGUwOGFjYzMzMjRjMTY5M2Y1YjVmM2VlYTEzN2Y1IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.Io9G8KvAvTgsC-LlgtfDARGR3JU1D7Q-N69DL-eBUPI
 
 # =-------------------------API FOR TASK MANAGEMENT--------------------------
 
@@ -451,7 +487,7 @@ GET http://127.0.0.1:8000/api/admin/tasks/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4ODU5OTEyLCJpYXQiOjE3NDg4NTYzMTIsImp0aSI6ImNmYTViNGEyZDg4YzQxZTJiNzM2ODMyNzM5ZWIzNzdmIiwidXNlcl9pZCI6M30.fUCQkANJ3_SYvBIB8djOGCrNaH1HvGqvcc5l98wKZoU
 
 ### HR Admin: List Tasks by Employee ID
-GET http://127.0.0.1:8000/api/admin/tasks/employee/10/
+GET http://178.248.112.16:8001/api/admin/tasks/employee/10/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMTQ3MDE0LCJpYXQiOjE3NTAxNDM0MTQsImp0aSI6IjJlZTc2N2ZlYzkyMjRlNzg4Y2VmN2Y4NDg1YWQzZTdlIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.LGltLB6FrNheMhXJ8CUmWSlwPnB-MNEtp4rvn8Kt4t4
 
 # -------------employee attendance------------------
@@ -464,8 +500,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 # list out employee attendance for admin
 ###
-GET http://127.0.0.1:8000/api/admin/attendance/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMjQxOTQ1LCJpYXQiOjE3NTAyMzgzNDUsImp0aSI6IjI4MWQ5ODZjNjZhZTQyZWY5ODUyYzNkOGUyNWM4ZjM3IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.BTsFlZA1_afrz9BSRQliKToGjCpLKMnhKw8127TDsS0
+GET http://178.248.112.16:8001/api/admin/attendance/?department_id=16
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MTU0NjY1LCJpYXQiOjE3NTUxNTEwNjUsImp0aSI6IjUwMGY2ZGQ3MDQ4NTQzNmJhZmRhODhlMDA3ZWYwOGEwIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.Imu8QcW2Zz_BXBGbHxCUIMtnK8u7tpezZSfIpse1adY
 
 # lst todays punch in punch outs
 ###
@@ -476,8 +512,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # attendance detail view(hr admin)
 
 ###
-GET http://127.0.0.1:8000/api/admin/attendance/2/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMjcxMDI4LCJpYXQiOjE3NTAyNjc0MjgsImp0aSI6IjJhNDVlNjVmZTVlODQzMjg4MTYxYjEwNzliYTQ4ZWY1IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.YHzU-ygYB7eCwZXSJwS30ibKO9-x9u0HrppS01Ad5h4
+GET http://178.248.112.16:8001/api/admin/attendance/31/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1Njk0Njg5LCJpYXQiOjE3NTU2OTEwODksImp0aSI6ImQyNzAzZTg1ZmQ0NjRlNDlhMmViNmFmYzM5NjVmN2EyIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.Jaj-6CLHis1GLtjfHuKdbWkUwYCdf1hTWXmDL_xbJgE
 # --------------PUBLIC HOLIDAY ----------------------------------
 
 ### Create Holiday
@@ -527,12 +563,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # api for creating token pair for employee
 
 ###
-POST http://127.0.0.1:8000/api/token/
+POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "ABCSALE2S",     
-  "password": "EMPUHFJT13N"
+  "username": "TUNGRAS82",     
+  "password": "athul"
 }
 ### 
 GET http://127.0.0.1:8000/api/profile/
@@ -542,19 +578,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ### Swipe (Punch In/Out)
-POST http://127.0.0.1:8000/api/attendance/swipe/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
+POST http://178.248.112.16:8001/api/attendance/swipe/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mzc5Nzc2LCJpYXQiOjE3NTQzNzYxNzYsImp0aSI6Ijg3MjBkMjg1ZTU3OTQwZTY4MDMwNjhkZTdjNGY1Nzc4IiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.wyr8YNbzlGpYEGHMnb_Cij7o7Twy05MaUMODpPofAB8
 
 # list out employee attendance for admin
 ###
 GET http://127.0.0.1:8000/api/admin/attendance/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMjQxOTQ1LCJpYXQiOjE3NTAyMzgzNDUsImp0aSI6IjI4MWQ5ODZjNjZhZTQyZWY5ODUyYzNkOGUyNWM4ZjM3IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.BTsFlZA1_afrz9BSRQliKToGjCpLKMnhKw8127TDsS0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MTU0MTE1LCJpYXQiOjE3NTUxNTA1MTUsImp0aSI6ImQ5MDg5YTlmOTMzNzQ3YmJiZGEyMjM1ZWM1YmYyYTMxIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.xUTauo3dU-UttK9xeeHTnXbeApDWsWcTH423zNSxf4c
 
 # lst todays punch in punch outs
 ###
-GET http://127.0.0.1:8000/api/attendance/today/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNzAyMTk2LCJpYXQiOjE3NTE2OTg1OTYsImp0aSI6ImM3OWU5ZWUwOWVmNDQxMjFhMjUyMjY0ODA1ODFiOWY2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.hPexAZkIQsI6OCSm9-ToXADkNoRODip-6CeuB2AjfhE
-
+GET http://178.248.112.16:8001/api/attendance/today/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0ODk4MzE1LCJpYXQiOjE3NTQ4OTQ3MTUsImp0aSI6ImNmZWFjNmJiNTRmOTRmODg4NmM4YjJiYzIwZjZiZGUwIiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.RgcG8gjGcZF_bnv2OQNxlZu27n9FtO8OlBRpSoQ8g0I
 
 # api for listing employees of same department
 ###
@@ -655,12 +690,95 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ###schedule reminder
-POST http://localhost:8000/api/reminders/
+POST http://178.248.112.16:8001/api/reminders/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MjcxMzkyLCJpYXQiOjE3NTYyNjc3OTIsImp0aSI6ImRhZTY0ODg5YjUwMTQ3Yzk4ZTc4NWVkNTY4MmJlOWQ4IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.T2IXH7yIygORpxAkomagGEfZHjT3M9yuRsgv3EsDf_s
 
 {
   "title": "Project Deadline",
   "body": "Submit project report before end of day",
-  "scheduled_datetime": "2025-07-30T11:22:00Z"
+  "scheduled_datetime": "09:45"
 }
+
+### employee monthly summary for mobile app
+
+GET http://178.248.112.16:8001/api/employee-monthly-summary/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDYxNjk0LCJpYXQiOjE3NTUwNTgwOTQsImp0aSI6IjM2YjViN2E4MDhkNjQzMTQ4YTQ2ODAyMTVlZDFlMGFiIiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.vFhQUJt1v4L5pDojod3VeHhDwPOdjf7kIx3hkQTKkjs
+Content-Type: application/json
+# attendance detail view(hr admin)
+
+###
+GET http://178.248.112.16:8001/api/admin/attendance/53/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDY5NDE5LCJpYXQiOjE3NTUwNjU4MTksImp0aSI6IjFmOTQ1MTI4MTljMTQxNGM4MGZhMzUyZGNkNmZlZmQ4IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.lfUVZax20FJm_OsHmNEI0SSZBalit5RwZ0bSWJuG7O8
+
+
+
+
+# -----REIMBURSMENT MODULE------
+
+###add 
+POST http://178.248.112.16:8001/api/reimbursements/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTM3NTI0LCJpYXQiOjE3NTU5MzM5MjQsImp0aSI6IjIzM2YzYjQ4ODgwNDRkOGFiYWI1OWZmNjU5NTY0NmQ2IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.ib5BAbyjtBs2zhxHJvXwauLIoRObe42u9Yae6hDwVc4
+Content-Type: multipart/form-data
+
+{
+  "expense_category": "TRAVEL",
+  "to_mail": "manager@example.com",
+  "note": "Taxi fare",
+  "date": "2025-08-23",
+  "amount": "100.50",
+  "uploaded_images": ["<file1>", "<file2>"]
+}
+
+###list
+GET http://178.248.112.16:8001/api/reimbursements/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTM3NTI0LCJpYXQiOjE3NTU5MzM5MjQsImp0aSI6IjIzM2YzYjQ4ODgwNDRkOGFiYWI1OWZmNjU5NTY0NmQ2IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.ib5BAbyjtBs2zhxHJvXwauLIoRObe42u9Yae6hDwVc4
+Content-Type: application/json
+
+
+###retrieve single record
+GET http://178.248.112.16:8001/api/reimbursements/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NDA2Mjk2LCJpYXQiOjE3NTc0MDI2OTYsImp0aSI6IjVjOWI1Njg1NzA3OTQ5MTU4YWQwNWUyNzEzNzE2ZjliIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.LK2uyEiGX0ZFHBzxy58JUOKQ2QdqFqLwVwgEKdB17UE
+Content-Type: application/json
+
+
+###list by department
+GET http://178.248.112.16:8001/api/reimbursements/department/16/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MTAzOTg5LCJpYXQiOjE3NTYxMDAzODksImp0aSI6IjEwYTM3N2U1NGZlMDRiM2NhOWRlZDg0YzUwMzBjMGM1IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.Qz_3MCiQu1yvYmV6Q3z4lBk6mdHyjZKVoW87MVXhOt8
+Content-Type: application/json
+
+
+### update status by admin
+PATCH http://178.248.112.16:8001/api/reimbursements/1/   
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTQ3MzIzLCJpYXQiOjE3NTU5NDM3MjMsImp0aSI6ImY2MWI1ZGRiMzNmNjRkNmQ4YWZiNzQ4MzgyM2ZhOWMxIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.v9J6EIDOlBGNdWhowz-efW1hyglW03_wbwRyDRlrWSE
+Content-Type: application/json
+
+{
+  "status": "Approve"
+}
+
+### Get reimbursements grouped by date
+GET http://178.248.112.16:8001/api/reimbursements/grouped/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MDk5OTI1LCJpYXQiOjE3NTYwOTYzMjUsImp0aSI6ImVlZWE5MzE4YmI4NDQzZTdhNjYzZGQ5ZmI2OTJhYThlIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.0kBTS1wWLMJS2dAypCpqj7B1_yGMgjDIF_Yy8Xd9KaM
+
+
+
+
+### 1️⃣ List logged-in employee reimbursements
+GET http://178.248.112.16:8001/api/reimbursements/my-reimbursements/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MzgzOTYxLCJpYXQiOjE3NTYzODAzNjEsImp0aSI6ImU1ZTg1ZGI4NTdhMzQyYzg4NGI4ODA4M2ZlN2Y1ZDMxIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.OsyrBCizOWZrIkWZurycQSMeiRNbLPBVbojcfS_4kP8
+Content-Type: application/json
+
+###
+
+### 2️⃣ Retrieve a single reimbursement by ID
+GET http://178.248.112.16:8001/api/reimbursements/my-reimbursements/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MzgzOTYxLCJpYXQiOjE3NTYzODAzNjEsImp0aSI6ImU1ZTg1ZGI4NTdhMzQyYzg4NGI4ODA4M2ZlN2Y1ZDMxIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.OsyrBCizOWZrIkWZurycQSMeiRNbLPBVbojcfS_4kP8
+Content-Type: application/json
+
+###
+
+### 3️⃣ Delete a single reimbursement by ID
+DELETE http://178.248.112.16:8001/api/reimbursements/my-reimbursements/1/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json

@@ -56,7 +56,7 @@ export const ModalButton = styled.button`
   height: 40px;
 
   border-radius: 7px;
-  font-size: 20px;
+  font-size: 1rem;
   cursor: pointer;
   font-weight: 700;
   font-family: satoshi;

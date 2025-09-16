@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
  font-family: Satoshi;
 `;
 
@@ -11,7 +11,6 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   h2 {
     margin: 0;
   }
@@ -26,12 +25,12 @@ export const RoleInfo = styled.div`
    display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  background-color: #fff;
+  // border: 1px solid #ccc;
+  // border-radius: 12px;
+  // background-color: #fff;
   font-size: 0.95rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;
@@ -51,7 +50,7 @@ export const Stepper = styled.div`
   margin: 2rem 0;
   max-width: 600px;
 `;
-
+//Step
 export const Step = styled.div`
   text-align: center;
   flex: 1;
@@ -93,6 +92,7 @@ export const Input = styled.input`
   padding: 0.6rem;
   border-radius: 8px;
   border: 1px solid #ccc;
+  
 `;
 
 export const Select = styled.select`
@@ -135,9 +135,9 @@ export const Button = styled.button`
   }
 `;
 export const Title = styled.h2`
-  font-size: 24px;
+  font-size: 1.8rem;
   margin: 0;
-  margin-left:10px;
+  // margin-left:10px;
 `;
 
 export const Subtitle = styled.p`

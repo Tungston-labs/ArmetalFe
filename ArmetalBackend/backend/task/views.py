@@ -10,6 +10,16 @@ from user.permissions import IsEmployee, IsHRAdmin  # Your custom permissions
 #  Employee: Create + List Own Tasks
 from django.utils.dateparse import parse_date
 
+from rest_framework.exceptions import ValidationError
+from django.utils.timezone import now
+
+from decimal import Decimal, InvalidOperation
+from django.db.models import Sum
+from django.utils import timezone
+from rest_framework import generics, permissions, serializers
+from .models import DailyTask
+from .serializers import DailyTaskSerializer
+
 class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
     serializer_class = DailyTaskSerializer
     permission_classes = [permissions.IsAuthenticated, IsEmployee]
@@ -20,17 +30,42 @@ class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
 
         date_str = self.request.query_params.get('date')
         if date_str:
-            try:
-                date = parse_date(date_str)
-                if date:
-                    queryset = queryset.filter(updated_at__date=date)
-            except Exception as e:
-                pass  # optional: log error or raise
-
+            from django.utils.dateparse import parse_date
+            date = parse_date(date_str)
+            if date:
+                queryset = queryset.filter(created_at__date=date)  # 👈 use created_at
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(employee=self.request.user.employee_db)
+        employee = self.request.user.employee_db
+        today = timezone.localdate()  # 👈 timezone aware "today"
+
+        # Aggregate today's total hours based on created_at
+        agg = DailyTask.objects.filter(
+            employee=employee,
+            created_at__date=today
+        ).aggregate(total=Sum("time_taken"))
+
+        existing_hours = agg["total"] or Decimal("0")
+
+        # Make sure we handle decimals safely
+        try:
+            new_hours = Decimal(str(serializer.validated_data.get("time_taken", 0)))
+        except (InvalidOperation, TypeError):
+            raise serializers.ValidationError({"time_taken": ["Invalid time value"]})
+
+        total_hours = existing_hours + new_hours
+
+        if total_hours > Decimal("24"):
+            raise serializers.ValidationError({
+                "time_taken": [
+                    f"Daily total cannot exceed 24 hours. You already logged {existing_hours} hours today."
+                ]
+            })
+
+        serializer.save(employee=employee)
+
+
 
 
 #  Employee: Retrieve/Update/Delete Own Task

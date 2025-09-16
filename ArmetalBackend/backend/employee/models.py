@@ -5,6 +5,8 @@ from django.utils import timezone
 from user.models import User
 from departments.models import Department
 from shared.models import TimeStampedModel
+from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
+
 
 def generate_employee_id(company_name, department_name):
     company_part = company_name[:3].upper()
@@ -17,13 +19,13 @@ def generate_password():
 
 class Employee_db(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    employee_id = models.CharField(max_length=20, unique=True, editable=False)
-    password = models.CharField(max_length=20,unique=True,null=True,blank=True)
-    name = models.CharField(max_length=255)
+    employee_id = models.CharField(max_length=200, unique=True, editable=False)
+    password = models.CharField(max_length=200,unique=True,null=True,blank=True)
+    name = EncryptedCharField(max_length=500)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     email = models.EmailField(unique=True)
-    phno = models.CharField(max_length=15,unique=True,null=True,blank=True)
-    address = models.TextField()
+    phno = EncryptedCharField(max_length=500,unique=True,null=True,blank=True)
+    address = EncryptedTextField()
     dob = models.DateField()
     gender = models.CharField(max_length=10, choices=[
         ('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')
@@ -34,9 +36,10 @@ class Employee_db(TimeStampedModel):
     employment_type = models.CharField(max_length=20, choices=[
         ('Full-time', 'Full-time'), ('Part-time', 'Part-time'), ('Contract', 'Contract')
     ])
-    passport_number = models.CharField(max_length=50)
-    iqama_number = models.CharField(max_length=50,blank=True, null=True)
-    insurance_number = models.CharField(max_length=50)
+    passport_number = EncryptedCharField(max_length=500)
+    iqama_number = EncryptedCharField(max_length=500,blank=True, null=True,unique=True)
+    aadar_number = EncryptedCharField(max_length=500,blank=True, null=True,unique=True)
+    insurance_number = EncryptedCharField(max_length=500)
     visa_expiry_date = models.DateField()
     contract_expiry_date = models.DateField(blank=True,null=True)
     total_leave = models.IntegerField(null=True,blank=True)
@@ -98,11 +101,11 @@ class EmpBankPaymentModel(models.Model):
 
     employee = models.OneToOneField(Employee_db, on_delete=models.CASCADE, related_name='bank_details')
     bank_name = models.CharField(max_length=100)
-    swift_code = models.CharField(max_length=20, blank=True, null=True)
+    swift_code = EncryptedCharField(max_length=500, blank=True, null=True)
     payment_mode = models.CharField(max_length=10, choices=PAYMENT_MODES)
-    account_number = models.CharField(max_length=30)
-    uan_epf_number = models.CharField(max_length=30, blank=True, null=True)
-    pan_number = models.CharField(max_length=15)
+    account_number = EncryptedCharField(max_length=500)
+    uan_epf_number = EncryptedCharField(max_length=500, blank=True, null=True)
+    pan_number = EncryptedCharField(max_length=500)
     tax_regime = models.CharField(max_length=10, choices=TAX_REGIMES)
     tds_deduction_amount = models.DecimalField(max_digits=10, decimal_places=2)
     declaration_80c = models.BooleanField(default=False)
@@ -154,6 +157,7 @@ class ScheduleReminder(models.Model):
     scheduled_datetime = models.DateTimeField()  # Combine date and time
     created_at = models.DateTimeField(auto_now_add=True)
     notified = models.BooleanField(default=False)  # To avoid duplicate notifications
+    is_expired = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title} - {self.scheduled_datetime}"

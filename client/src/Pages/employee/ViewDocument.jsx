@@ -5,7 +5,10 @@ import {
   LabelRow, Tab, SectionTitle, Section, ButtonGroup, Rows,
   ImagePreviewRow, Input, UploadButton, Hr, Button,
   ProfileImage, ImageColumn, Title, FormWrapper,
-  Subtitle, Rightside, HeaderWrapper, TextGroup, HRManager
+  Subtitle, Rightside, HeaderWrapper, TextGroup, HRManager,
+  TitleSection,
+  FieldWrapper,
+  Label
 } from "./ViewDocument.Styles";
 import { uploadImageThunk } from "../../Redux/employeeSlice";
 import { LuCirclePlus } from "react-icons/lu";
@@ -17,8 +20,10 @@ import {
 } from "../../Redux/employeeSlice";
 import SyncLoader from "react-spinners/SyncLoader";
 import styled from "styled-components";
-
+import { useNavigate } from "react-router-dom";
+import { LuArrowLeft } from "react-icons/lu";
 // ✅ Loader Wrapper
+import EmployeeIcon from "../../assets/employeeicon.svg";
 const FullPageLoaderWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -36,8 +41,9 @@ const ViewDocument = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
+const navigate = useNavigate();
   const { employeeDetail, employeeDocuments, loading } = useSelector((state) => state.employees);
-
+    const [menuOpen, setMenuOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(Date.now());
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
@@ -161,21 +167,23 @@ const ViewDocument = () => {
   return (
     <Container>
       <Header>
-        <HeaderWrapper>
-          <div style={{ width: "10%" }}>
-            <img src="/images/employee.png" alt="Icon" style={{ height: "50px" }} />
-          </div>
-          <TextGroup>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </TextGroup>
-        </HeaderWrapper>
+        <HeaderWrapper>      
+                 <TitleSection>
+                          <LuArrowLeft
+                   style={{ width: "30px", height: 30, cursor: "pointer",color:"#304EB0" }}
+                   onClick={() => navigate("/employee")}
+                   />
+               <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+                         <div>
+                      
+                           <Title>Employee</Title>
+                           <Subtitle style={{color:"#304EB0"}}>Manage your Employee.</Subtitle>
+                         </div>
+                       </TitleSection>
+               </HeaderWrapper>
 
         <Rightside>
-          <HRManager>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <span>HR Manager</span>
-          </HRManager>
+          
           <EditButton onClick={() => setEditMode((prev) => !prev)}>
             {editMode ? "Cancel" : "Edit"}
           </EditButton>
@@ -193,21 +201,44 @@ const ViewDocument = () => {
           />
         </ImageColumn>
 
-        <Row>
-          <LeftSection>
-            <Input type="text" value={employeeDetail?.name || ""} readOnly />
-            <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
-            <Input type="email" value={employeeDetail?.email || ""} readOnly />
-          </LeftSection>
+       <Row>
+  <LeftSection>
+    <FieldWrapper>
+      <Label>Name</Label>
+      <Input type="text" value={employeeDetail?.name || ""} readOnly />
+    </FieldWrapper>
 
-          <RightSection>
-            <Textarea value={employeeDetail?.address || ""} readOnly />
-            <Rows style={{ marginTop: "1rem" }}>
-              <Input type="text" value={employeeDetail?.dob || ""} readOnly />
-              <Input type="text" value={employeeDetail?.gender || ""} readOnly />
-            </Rows>
-          </RightSection>
-        </Row>
+    <FieldWrapper>
+      <Label>Employee ID</Label>
+      <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
+    </FieldWrapper>
+
+    <FieldWrapper>
+      <Label>Email</Label>
+      <Input type="email" value={employeeDetail?.email || ""} readOnly />
+    </FieldWrapper>
+  </LeftSection>
+
+  <RightSection>
+    <FieldWrapper>
+      <Label>Address</Label>
+      <Textarea value={employeeDetail?.address || ""} readOnly />
+    </FieldWrapper>
+
+    <Rows style={{ marginTop: "2rem" }}>
+      <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
+        <Label>Date of Birth</Label>
+        <Input type="text" value={employeeDetail?.dob || ""} readOnly />
+      </FieldWrapper>
+
+      <FieldWrapper style={{ flex: 1 }}>
+        <Label>Gender</Label>
+        <Input type="text" value={employeeDetail?.gender || ""} readOnly />
+      </FieldWrapper>
+    </Rows>
+  </RightSection>
+</Row>
+
       </FormWrapper>
 
       <Hr />

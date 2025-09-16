@@ -9,16 +9,17 @@ from datetime import time,datetime
 from rest_framework import serializers
 from .models import Attendance, AttendanceSession
 from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone,safe_parse_datetime,ensure_timezone
-
+import pytz
 
 
 class AttendanceSessionSerializer(serializers.ModelSerializer):
     time_in = serializers.SerializerMethodField()
     time_out = serializers.SerializerMethodField()
+    duration = serializers.SerializerMethodField()
 
     class Meta:
         model = AttendanceSession
-        fields = ['time_in', 'time_out']
+        fields = ['id', 'time_in', 'time_out', 'duration', 'note']
 
     def get_time_in(self, obj):
         return self._safe_convert(obj.time_in, obj)
@@ -26,19 +27,42 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
     def get_time_out(self, obj):
         return self._safe_convert(obj.time_out, obj)
 
+    def get_duration(self, obj):
+        """Get session duration in hours"""
+        return obj.get_duration()
+
     def _safe_convert(self, dt, obj):
-        if isinstance(dt, time):
-            dt = datetime.combine(obj.attendance.date, dt)
-        return convert_to_company_timezone(dt, obj.attendance.employee)
-
-
-
+        """Safely convert datetime to company timezone string"""
+        if dt is None:
+            return None
+            
+        try:
+            # Handle time objects
+            if isinstance(dt, time):
+                # Combine with attendance date
+                dt = datetime.combine(obj.attendance.date, dt)
+            
+            # Ensure it's a datetime object
+            if not isinstance(dt, datetime):
+                return None
+                
+            # Convert to company timezone
+            return convert_to_company_timezone(dt, obj.attendance.employee)
+            
+        except Exception as e:
+            # Fallback to UTC string
+            if isinstance(dt, datetime):
+                if dt.tzinfo is None:
+                    dt = pytz.UTC.localize(dt)
+                return dt.strftime('%Y-%m-%d %H:%M:%S')
+            return None
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source='employee.name', read_only=True)
     profile_pic = serializers.ImageField(source='employee.profile_pic', read_only=True)
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
+    total_hours_formatted = serializers.SerializerMethodField()
 
     class Meta:
         model = Attendance
@@ -49,9 +73,19 @@ class AttendanceSerializer(serializers.ModelSerializer):
             'date',
             'profile_pic',
             'total_hours',
+            'total_hours_formatted',
             'remark',
             'sessions'
         ]
+
+    def get_total_hours_formatted(self, obj):
+        """Format total hours as HH:MM"""
+        if obj.total_hours is None:
+            return "00:00"
+        
+        hours = int(obj.total_hours)
+        minutes = int((obj.total_hours - hours) * 60)
+        return f"{hours:02d}:{minutes:02d}"
 
 
 class EmployeeInfoSerializer(serializers.ModelSerializer):
@@ -60,11 +94,63 @@ class EmployeeInfoSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'email', 'employee_id', 'profile_pic', 'department', 'designation']
         depth = 1  # if department/designation are foreign keys
 
+from django.db.models import Sum
+from datetime import timedelta
+
 class AttendanceDetailSerializer(serializers.ModelSerializer):
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
     employee = EmployeeInfoSerializer(read_only=True)
+    total_hours_formatted = serializers.SerializerMethodField()
+    weekly_hours_formatted = serializers.SerializerMethodField()
+    monthly_hours_formatted = serializers.SerializerMethodField()
 
     class Meta:
         model = Attendance
-        fields = ['id', 'date', 'total_hours', 'remark', 'employee', 'sessions']
+        fields = [
+            'id', 'date', 'total_hours', 'total_hours_formatted',
+            'weekly_hours_formatted', 'monthly_hours_formatted',
+            'remark', 'employee', 'sessions'
+        ]
+
+    def get_total_hours_formatted(self, obj):
+        """Format total hours as HH:MM"""
+        return self.format_hours(obj.total_hours)
+
+    def get_weekly_hours_formatted(self, obj):
+        """Sum hours for the week of obj.date for that employee"""
+        week_start = obj.date - timedelta(days=obj.date.weekday())  # Monday
+        week_end = week_start + timedelta(days=6)
+
+        total = Attendance.objects.filter(
+            employee=obj.employee,
+            date__range=[week_start, week_end]
+        ).aggregate(total=Sum('total_hours'))['total'] or 0
+
+        return self.format_hours(total)
+
+    def get_monthly_hours_formatted(self, obj):
+        """Sum hours for the month of obj.date for that employee"""
+        month_start = obj.date.replace(day=1)
+        # Get next month's first day, subtract a day to get last of current month
+        if month_start.month == 12:
+            next_month_start = month_start.replace(year=month_start.year + 1, month=1, day=1)
+        else:
+            next_month_start = month_start.replace(month=month_start.month + 1, day=1)
+        month_end = next_month_start - timedelta(days=1)
+
+        total = Attendance.objects.filter(
+            employee=obj.employee,
+            date__range=[month_start, month_end]
+        ).aggregate(total=Sum('total_hours'))['total'] or 0
+
+        return self.format_hours(total)
+
+    def format_hours(self, hours):
+        """Helper to format decimal hours into HH:MM"""
+        if not hours:
+            return "00:00"
+        h = int(hours)
+        m = int(round((hours - h) * 60))
+        return f"{h:02d}:{m:02d}"
+
 

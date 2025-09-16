@@ -175,6 +175,83 @@ class LeaveRequestAdminDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+from django.utils.dateparse import parse_date
+from .models import LeaveRequest
+from employee.models import Employee_db
+
+class DepartmentEmployeesOnLeaveView(APIView):
+    def get(self, request, employee_id):
+        date_str = request.query_params.get('date')  # Expecting ?date=YYYY-MM-DD
+        if not date_str:
+            return Response(
+                {"error": "Please provide a date in YYYY-MM-DD format as a query parameter."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        leave_date = parse_date(date_str)
+        if not leave_date:
+            return Response(
+                {"error": "Invalid date format. Please use YYYY-MM-DD."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Get the clicked employee
+            employee = Employee_db.objects.get(id=employee_id)
+
+            if not employee.department:
+                return Response(
+                    {"error": "This employee has no department assigned."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Get department details
+            department = employee.department
+
+            # Get all employees in the same department
+            department_employees = Employee_db.objects.filter(department=department)
+
+            # Get approved leave requests for employees in this department for the given date
+            on_leave_employees = LeaveRequest.objects.filter(
+                employee__in=department_employees,
+                status='approved',
+                from_date__lte=leave_date,
+                to_date__gte=leave_date
+            ).select_related('employee')
+
+            # Prepare response data
+            data = {
+                "department": {
+                    "id": department.id,
+                    "name": department.name,
+                    "description": getattr(department, 'description', ''),
+                },
+                "on_leave": [
+                    {
+                        "id": leave.id,  # ✅ add leave request ID
+                        "employee_name": leave.employee.name,
+                        "email": leave.employee.email,
+                        "phone": leave.employee.phno,
+                        "leave_type": leave.leave_type,
+                        "from_date": leave.from_date,
+                        "to_date": leave.to_date,
+                    }
+                    for leave in on_leave_employees
+                ]
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+
+        except Employee_db.DoesNotExist:
+            return Response(
+                {"error": "Employee not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from employee.models import Employee_db
 from .models import LeaveRequest

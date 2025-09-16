@@ -11,8 +11,13 @@ class EmployeeBasicSerializer(serializers.ModelSerializer):
 
 class LeaveRequestSerializer(serializers.ModelSerializer):
     employee = EmployeeBasicSerializer(read_only=True)
+    department_id = serializers.SerializerMethodField()
 
     class Meta:
         model = LeaveRequest
-        fields = '__all__'
+        fields = '__all__'  # keep everything
         read_only_fields = ['employee']
+
+    def get_department_id(self, obj):
+        return obj.employee.department.id if obj.employee and obj.employee.department else None
+

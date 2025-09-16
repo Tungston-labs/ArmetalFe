@@ -23,8 +23,11 @@ import {
   HeaderWrapper,
   TextGroup,
   HRManager,
+  TitleSection,
+  FieldWrapper,
+  Label,
 } from "./ViewBankpayment.Styles";
-
+import { LuArrowLeft } from "react-icons/lu";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import Table from "../../Components/Table";
 import { useParams, NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -35,7 +38,7 @@ import {
   submitBankPayment,
 } from "../../Redux/employeeSlice";
 import SyncLoader from "../../Components/Loder";
-
+import EmployeeIcon from "../../assets/employeeicon.svg";
 const ViewBankPayment = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -65,7 +68,7 @@ const ViewBankPayment = () => {
   const [housingAllowance, setHousingAllowance] = useState("");
   const [transportation, setTransportation] = useState("");
   const [errors, setErrors] = useState({});
-
+    const [menuOpen, setMenuOpen] = useState(false);
   // Load data
   useEffect(() => {
     dispatch(getEmployeeById(id));
@@ -80,10 +83,10 @@ const ViewBankPayment = () => {
       setSwiftCode(latest.swift_code || "");
       setPaymentMode(latest.payment_mode || "");
       setAccountNumber(latest.account_number || "");
-      setUanNumber(latest.uan_number || "");
+      setUanNumber(latest.uan_epf_number || "");
       setPanNumber(latest.pan_number || "");
       setTaxRegime(latest.tax_regime || "");
-      setTdsAmount(latest.tds_amount || "");
+      setTdsAmount(latest.tds_deduction_amount || "");
       setDeclaration80C(String(latest.declaration_80c) || "");
       setBasicSalary(latest.basic_salary || "");
       setSalaryIncrement(latest.salary_increment || "");
@@ -142,31 +145,28 @@ const { loading } = useSelector((state) => state.employees);
         alert("❌ Error: " + (err.message || "Update failed"));
       });
   };
-
+console.log("employeeBankPayments",employeeBankPayments)
   return (
     <>
     {loading && <SyncLoader/>}
 
     <Container>
       <Header>
-        <HeaderWrapper>
-          <div style={{ width: "10%" }}>
-            <img
-              src="/images/employee.png"
-              alt="Icon"
-              style={{ height: "50px" }}
-            />
-          </div>
-          <TextGroup>
-            <Title>Employee</Title>
-            <Subtitle>Manage your Employee.</Subtitle>
-          </TextGroup>
-        </HeaderWrapper>
+        <HeaderWrapper>      
+                 <TitleSection>
+                          <LuArrowLeft
+                   style={{ width: "30px", height: 30, cursor: "pointer",color:"#304EB0" }}
+                   onClick={() => navigate("/employee")}
+                   />
+               <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+                         <div>
+                      
+                           <Title>Employee</Title>
+                           <Subtitle style={{color:"#304EB0"}}>Manage your Employee.</Subtitle>
+                         </div>
+                       </TitleSection>
+               </HeaderWrapper>
         <Rightside>
-          <HRManager>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <span>HR Manager</span>
-          </HRManager>
           <EditButton onClick={() => setIsEditable((prev) => !prev)}>
             {isEditable ? "Cancel" : "Edit"}
           </EditButton>
@@ -187,33 +187,44 @@ const { loading } = useSelector((state) => state.employees);
           />
         </ImageColumn>
 
-        <Row>
-          <LeftSection>
-            <Input type="text" value={employeeDetail?.name || ""} readOnly />
-            <Input
-              type="text"
-              value={employeeDetail?.employee_id || ""}
-              readOnly
-            />
-            <Input
-              type="email"
-              value={employeeDetail?.email || ""}
-              readOnly
-            />
-          </LeftSection>
+      <Row>
+  <LeftSection>
+    <FieldWrapper>
+      <Label>Name</Label>
+      <Input type="text" value={employeeDetail?.name || ""} readOnly />
+    </FieldWrapper>
 
-          <RightSection>
-            <Textarea value={employeeDetail?.address || ""} readOnly />
-            <Rows style={{ marginTop: "1rem" }}>
-              <Input type="text" value={employeeDetail?.dob || ""} readOnly />
-              <Input
-                type="text"
-                value={employeeDetail?.gender || ""}
-                readOnly
-              />
-            </Rows>
-          </RightSection>
-        </Row>
+    <FieldWrapper>
+      <Label>Employee ID</Label>
+      <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
+    </FieldWrapper>
+
+    <FieldWrapper>
+      <Label>Email</Label>
+      <Input type="email" value={employeeDetail?.email || ""} readOnly />
+    </FieldWrapper>
+  </LeftSection>
+
+  <RightSection>
+    <FieldWrapper>
+      <Label>Address</Label>
+      <Textarea value={employeeDetail?.address || ""} readOnly />
+    </FieldWrapper>
+
+    <Rows style={{ marginTop: "2.3rem", display: "flex", gap: "1rem" }}>
+      <FieldWrapper style={{ flex: 1 }}>
+        <Label>Date of Birth</Label>
+        <Input type="text" value={employeeDetail?.dob || ""} readOnly />
+      </FieldWrapper>
+
+      <FieldWrapper style={{ flex: 1 }}>
+        <Label>Gender</Label>
+        <Input type="text" value={employeeDetail?.gender || ""} readOnly />
+      </FieldWrapper>
+    </Rows>
+  </RightSection>
+</Row>
+
       </FormWrapper>
 
       <Hr />
@@ -246,7 +257,7 @@ const { loading } = useSelector((state) => state.employees);
         
 
         <Table
-        
+        setBankProofImage={setBankProofImage}
           records={employeeBankPayments?.results || []}
           isEditMode={isEditable}
           bankName={bankName}
@@ -278,7 +289,9 @@ const { loading } = useSelector((state) => state.employees);
           errors={errors}
           handleSubmit={handleSubmit}
         />
+        
       </Section>
+      
     </Container>
         </>
   );

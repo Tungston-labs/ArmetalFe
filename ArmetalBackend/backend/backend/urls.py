@@ -30,7 +30,10 @@ urlpatterns = [
     path('api/',include('task.urls')),
     path('api/',include('attendance.urls')),
     path('api/',include('holidays.urls')),
-    path('api/',include('payroll.urls'))
+    path('api/',include('payroll.urls')),
+    path('api/reimbursements/',include('reimbursement.urls'))
+
+    
 
 
 

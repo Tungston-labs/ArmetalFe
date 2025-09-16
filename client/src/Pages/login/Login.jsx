@@ -19,6 +19,30 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { login } from '../../Redux/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { FiEye, FiEyeOff } from "react-icons/fi"; // 👁️ Eye icons
+import { Link } from "react-router-dom";
+import "@fontsource/anek-malayalam/400.css"; // Regular
+import "@fontsource/anek-malayalam/700.css"; // Bold
+
+const PoweredBy = ({ company = "REKORY" }) => (
+  <p
+    style={{
+      marginTop: "220px",
+      textAlign: "center",
+      fontSize: "14px",
+      color: "#3250B5",
+      lineHeight: 1.4,
+    }}
+  >
+    <span style={{ fontFamily: "Satoshi, sans-serif", fontWeight: 400 }}>
+      Powered by {" "}
+    </span>
+    <span style={{ fontFamily: "Anek Malayalam, sans-serif", fontWeight: 700 }}>
+      {company}
+    </span>
+  </p>
+);
+
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -30,6 +54,12 @@ const LoginForm = () => {
   });
   const [view, setView] = useState('login');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // ⏳ Spinner state
+
+  // Eye toggle states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,24 +69,24 @@ const LoginForm = () => {
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true); // ⏳ start spinner
     try {
       const response = await axios.post("http://178.248.112.16:8001/api/token/", {
-        //  const response = await axios.post("http://localhost:8000/api/token/", {
         username: formData.username,
         password: formData.password,
       });
 
       const { access, refresh, user } = response.data;
 
-      // Store tokens
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
       localStorage.setItem("user", JSON.stringify(user));
 
-      // Redux
       dispatch(
         login({
           userName: user.username,
@@ -67,11 +97,12 @@ const LoginForm = () => {
             is_superadmin: user.is_superadmin,
             is_hr_admin: user.is_hr_admin,
             is_employee: user.is_employee,
+            company: user.company,   // <-- add this
           },
         })
       );
 
-      // Redirect
+
       if (user.is_superadmin) {
         navigate("/superadmin");
       } else {
@@ -80,17 +111,19 @@ const LoginForm = () => {
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.detail || "Login failed. Check credentials.");
+    } finally {
+      setLoading(false); // ⏹️ stop spinner
     }
   };
 
   const handleForgotPassword = () => {
     navigate('/forget-password');
   };
-  
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true); // ⏳ start spinner
     try {
       const token = localStorage.getItem("accessToken");
 
@@ -109,6 +142,8 @@ const LoginForm = () => {
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.detail || "Password change failed.");
+    } finally {
+      setLoading(false); // ⏹️ stop spinner
     }
   };
 
@@ -126,7 +161,7 @@ const LoginForm = () => {
             onClick={() => setView('login')}
             style={{ cursor: 'pointer', textDecoration: 'none', fontFamily: 'Raleway', fontSize: 22 }}
           >
-            Get started →
+          
           </p>
         </LeftHeader>
         <CustomLink onClick={() => setView('changePassword')}>
@@ -137,8 +172,8 @@ const LoginForm = () => {
       <RightPanel>
         {view === 'login' ? (
           <FormBox>
-            <h2 style={{ fontSize: 41, fontFamily: 'Satoshi' }}>Log in</h2>
-            <p style={{ fontSize: 20, fontFamily: 'Raleway' }}>
+    <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', fontWeight: 'bold',}}>Log in</h2>
+    <p style={{ fontSize: 20, fontFamily: 'Raleway' }}>
               Welcome back!<br />
               Please log in to your account
             </p>
@@ -152,18 +187,55 @@ const LoginForm = () => {
                 onChange={handleChange}
                 required
               />
+
               <Label>Password</Label>
-              <Input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-              <SmallLink onClick={handleForgotPassword} style={{ cursor: 'pointer' }}>
-  Forgot password?
-</SmallLink>
+              <div style={{ position: "relative" }}>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  style={{ paddingRight: "40px" }}
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "40%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer"
+                  }}
+                >
+                  {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </span>
+              </div>
+
+
+
+              <SmallLink
+                as="button"
+                type="button"
+                onClick={handleForgotPassword}
+                style={{
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  color: "black", // make it look like a link
+                  fontSize: "14px",
+                  marginTop: "8px",
+                  fontFamily: 'Raleway',
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  marginTop: "-10px"
+                }}
+              >
+                Forgot password?
+              </SmallLink>
+
+
 
               <CheckboxContainer>
                 <input
@@ -174,8 +246,24 @@ const LoginForm = () => {
                 />
                 Remember me
               </CheckboxContainer>
-              <Button type="submit">Log in</Button>
-              {error && <p style={{ color: 'red' }}>{error}</p>}
+
+              <Button type="submit" disabled={loading}>
+                {loading ? "Logging in..." : "Log in"}
+              </Button>
+              {error && (
+  <p style={{ 
+    color: 'red', 
+    textAlign: 'center', 
+    fontFamily: 'Raleway', 
+    marginTop: '10px' 
+  }}>
+    {error}
+  </p>
+)}
+
+
+<PoweredBy text="REKORY" />
+
             </form>
           </FormBox>
         ) : (
@@ -187,25 +275,68 @@ const LoginForm = () => {
             </p>
             <form onSubmit={handlePasswordChange}>
               <Label>Old password</Label>
-              <Input
-                type="password"
-                name="old_password"
-                placeholder="Old password"
-                value={formData.old_password}
-                onChange={handleChange}
-                required
-              />
+              <div style={{ position: "relative" }}>
+                <Input
+                  type={showOldPassword ? "text" : "password"}
+                  name="old_password"
+                  placeholder="Old password"
+                  value={formData.old_password}
+                  onChange={handleChange}
+                  required
+                  style={{ paddingRight: "40px" }}
+                />
+                <span
+                  onClick={() => setShowOldPassword(!showOldPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer"
+                  }}
+                >
+                  {showOldPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </span>
+              </div>
+
               <Label>New Password</Label>
-              <Input
-                type="password"
-                name="new_password"
-                placeholder="New Password"
-                value={formData.new_password}
-                onChange={handleChange}
-                required
-              />
-              <Button type="submit">Change Password</Button>
-              {error && <p style={{ color: 'red' }}>{error}</p>}
+              <div style={{ position: "relative" }}>
+                <Input
+                  type={showNewPassword ? "text" : "password"}
+                  name="new_password"
+                  placeholder="New Password"
+                  value={formData.new_password}
+                  onChange={handleChange}
+                  required
+                  style={{ paddingRight: "40px" }}
+                />
+                <span
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer"
+                  }}
+                >
+                  {showNewPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </span>
+              </div>
+
+              <Button type="submit" disabled={loading}>
+                {loading ? "Changing..." : "Change Password"}
+              </Button>
+              {error && (
+  <p style={{ 
+    color: 'red', 
+    textAlign: 'center', 
+    fontFamily: 'Raleway', 
+    marginTop: '30px' 
+  }}>
+    {error}
+  </p>
+)}
             </form>
           </FormBox>
         )}

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 export const SidebarContainer = styled.div`
   width: 350px;
   min-width: 60px;
-  height: 100vh;
+  // height: 100vh;
   background: linear-gradient(181deg, rgba(23, 37, 84, 1) 20%, rgba(51, 82, 186, 1) 100%);
   color: white;
   // display: flex;
@@ -39,32 +39,44 @@ export const TopSection = styled.div`
   text-align: center;
 `;
 
-export const Logo = styled.h1`
-  margin: 50px 0 0 0;
-  margin-left:20px;
-  white-space: nowrap;
-   width:30% 
+export const Logo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0;
+  width: 100%;
+
   img {
-    width: 150px; /* default size */
+    width: 180px;       /* logo size */
+    max-height: 110px;
+    object-fit: contain;
     transition: width 0.3s ease;
   }
 
-  @media (max-width: 1024px) {
-    margin: 30px 0 0 0;
+  img.default-logo {
+    width: 300px;       /* larger default icon */
+    max-height: 110px;
+  }
 
+  @media (max-width: 1024px) {
     img {
-      width: 100px; /* smaller on laptop/tablet */
+      width: 120px;
+    }
+    img.default-logo {
+      width: 150px;
     }
   }
 
   @media (max-width: 768px) {
-    display: none; /* hide the whole logo on mobile */
+    display: none;
   }
 
   &.hidden {
     display: none;
   }
 `;
+
+
 
 
 
@@ -146,15 +158,16 @@ export const CustomLink = styled(Link)`
   font-family: Satoshi, sans-serif;
   transition: all 0.3s ease;
   cursor: pointer;
+  position: relative;
 
   svg {
     margin-right: 12px;
-    transition: margin 0.3s ease;
+    transition: margin 0.3s ease, color 0.3s ease;
   }
 
   span {
     white-space: nowrap;
-    transition: opacity 0.3s ease, width 0.3s ease;
+    transition: opacity 0.3s ease, width 0.3s ease, color 0.3s ease;
   }
 
   &:hover {
@@ -166,7 +179,28 @@ export const CustomLink = styled(Link)`
     }
   }
 
-  /* Sidebar collapsed (on large screens) */
+  /* Active link style (same as hover) */
+  &.active {
+    background: white;
+    color: #172554;
+
+    svg {
+      color: #172554;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      left: 10%;
+      width: 80%;
+      height: 3px;
+      background: rgb(255, 255, 255);
+      border-radius: 2px;
+    }
+  }
+
+  /* Sidebar collapsed */
   &.collapsed {
     justify-content: center;
 
@@ -179,7 +213,6 @@ export const CustomLink = styled(Link)`
     }
   }
 
-  /* Small screen behavior: Always hide text */
   @media (max-width: 768px) {
     justify-content: center;
 
@@ -192,4 +225,5 @@ export const CustomLink = styled(Link)`
     }
   }
 `;
+
 

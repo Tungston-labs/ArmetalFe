@@ -19,8 +19,10 @@ import {
   TitleSection,
   Icon,
   ActionArea,
-  HRManager
+  HRManager,SearchIcon,SearchWrapper
 } from './SuperAdmin.Styles';
+import { FiSearch } from "react-icons/fi";
+
 
 import { LuArrowLeft } from "react-icons/lu";
 import { FaTrashAlt, FaPlus } from 'react-icons/fa';
@@ -29,6 +31,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCompanies, removeCompany } from '../../Redux/superAdminSlice';
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+import Navbar from "../../Components/Navbar"
+
 
 const CompanyTable = () => {
   const dispatch = useDispatch();
@@ -86,16 +90,13 @@ const CompanyTable = () => {
     <Container>
       <TopBar>
         <div />
-        <HRManager>
-          <img src="https://i.pravatar.cc/40?img=5" alt="HR Manager" />
-          <span>HR Manager</span>
-        </HRManager>
+        <Navbar/>
       </TopBar>
 
       <HeaderSection>
         <TitleSection>
           <LuArrowLeft style={{ width: "30px", height: 30 }} />
-          <img src="/images/superadmin.png" alt="Payroll Icon" style={{ height: "50px" }} />
+          <img src="/images/superadminlogo.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Super admin</Title>
             <Subtitle>Manage all departments within the organization.</Subtitle>
@@ -106,15 +107,18 @@ const CompanyTable = () => {
             <FaPlus /> Add Company
           </AddButton>
 
-          <SearchInput
-            type="text"
-            placeholder="Search by Company name"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-          />
+          <SearchWrapper>
+  <SearchIcon />
+  <SearchInput
+    type="text"
+    placeholder="Search by Company name"
+    value={search}
+    onChange={(e) => {
+      setSearch(e.target.value);
+      setPage(1);
+    }}
+  />
+</SearchWrapper>
         </ActionArea>
       </HeaderSection>
 
@@ -146,7 +150,7 @@ const CompanyTable = () => {
                   <Td>{item.number_of_employees}</Td>
 
                   {/* ✅ Navigate with company_id */}
-                  <Td onClick={() => navigate(`/view/${item.id}`)} style={{ cursor: 'pointer' }}>
+                  <Td onClick={() => navigate(`/superadmin/view/${item.id}`)} style={{ cursor: 'pointer' }}>
   <IoInformationCircleOutline />
 </Td>
 
@@ -261,28 +265,30 @@ const CompanyTable = () => {
       )}
 
       {/* Pagination */}
-      <Pagination>
-        <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
-          {'←'}
-        </button>
 
-        {[...Array(pagination.total_pages)].map((_, i) => {
-          const pageNum = i + 1;
-          return (
-            <button
-              key={pageNum}
-              className={page === pageNum ? 'active' : ''}
-              onClick={() => handlePageChange(pageNum)}
-            >
-              {pageNum}
-            </button>
-          );
-        })}
-
-        <button onClick={() => handlePageChange(page + 1)} disabled={page === pagination.total_pages}>
-          {'→'}
-        </button>
-      </Pagination>
+          <Pagination>
+  <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>&larr;</span>
+  {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
+    (pageNumber) => (
+      <span
+        key={pageNumber}
+        onClick={() => handlePageChange(pageNumber)}
+        className={page === pageNumber ? "active" : ""}
+      >
+        {pageNumber}
+      </span>
+    )
+  )}
+  <span
+    onClick={() => {
+      if (page < (pagination?.total_pages || 1)) {
+        handlePageChange(page + 1);
+      }
+    }}
+  >
+    &rarr;
+  </span>
+</Pagination>
     </Container>
   );
 };

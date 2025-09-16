@@ -151,7 +151,14 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             'deductions': [
                 {'label': 'TDS Deduction', 'value': round(tds, 2)},
                 {'label': 'Loss of Pay', 'value': round(lop_amount, 2)} if lop_amount > 0 else None,
-            ]
+            ],
+            "hr1_verified": instance.hr1_verified_by is not None,
+            "hr2_verified": instance.hr2_verified_by is not None,
+            "fully_verified": instance.is_fully_verified(),
+            "verified_by": {
+                "hr1": instance.hr1_verified_by.username if instance.hr1_verified_by else None,
+                "hr2": instance.hr2_verified_by.username if instance.hr2_verified_by else None,
+    }
         })
 
         # Remove None values from deductions

@@ -17,29 +17,41 @@ import {
 } from '../services/employeeService';
 import API from '../services/api';
 
-// Submit Employee
 export const submitEmployee = createAsyncThunk(
-  'employee/submitEmployee',
+  "employee/submitEmployee",
   async (formData, thunkAPI) => {
     try {
-      console.log("📤 Submitting employee", formData);
-
       const form = new FormData();
 
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (key === "profile_pic") {
-            if (value instanceof File) {
-              form.append("profile_pic", value);
+      const flatten = (obj) => {
+        Object.entries(obj || {}).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== "") {
+            if (key === "profile_pic" || key === "idcard") {
+              if (value instanceof File) {
+                form.append(key, value);
+              }
+            } else if (key === "department") {
+              form.append("department_id", value);
+            } else {
+              form.append(key, value);
             }
-            // else: do NOT send it if it's a URL string
-          } else if (key === "department") {
-            form.append("department_id", value);
-          } else {
-            form.append(key, value);
           }
-        }
-      });
+        });
+      };
+
+      if (formData.basic || formData.bank) {
+        // ✅ handle nested structure
+        flatten(formData.basic);
+        flatten(formData.bank);
+      } else {
+        // ✅ handle flat structure
+        flatten(formData);
+      }
+
+      console.log("📦 Final FormData before sending:");
+      for (let pair of form.entries()) {
+        console.log(pair[0], pair[1]);
+      }
 
       if (formData.id) {
         return await updateEmployee(formData.id, form);
@@ -51,6 +63,8 @@ export const submitEmployee = createAsyncThunk(
     }
   }
 );
+
+
 
 
 
@@ -123,14 +137,29 @@ export const getEmployeeById = createAsyncThunk(
 // Fetch All Employees
 export const getAllEmployees = createAsyncThunk(
   'employees/getAll',
-  async ({ page, search }, thunkAPI) => {
+  async ({ page, search, department_id }, thunkAPI) => {
     try {
-      return await fetchAllEmployees(page, search);
+      return await fetchAllEmployees(page, search, department_id);
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response?.data || 'Server error');
     }
   }
 );
+
+export const getUpcomingExpiryEmployees = createAsyncThunk(
+  "employees/getUpcomingExpiry",
+  async ({ expiryType, page = 1, search = "" }, { rejectWithValue }) => {
+    try {
+      const res = await API.get(
+        `/employees/upcoming-expiry/?type=${expiryType}&page=${page}&search=${search}`
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 
 // Fetch All Bank Payments
 export const fetchAllBankPaymentsThunk = createAsyncThunk(
@@ -236,6 +265,7 @@ const employeeSlice = createSlice({
     employeeId: null,
     bankPaymentId: null,
     formData: {},
+    isDirty: false,
     documentUrls: {
       passport: [],
       workPermit: [],
@@ -255,12 +285,18 @@ const employeeSlice = createSlice({
     },
     setBankFormData: (state, action) => {
       state.formData.bank = action.payload;
+      state.isDirty = true;
     },
     setBasicFormData: (state, action) => {
       state.formData.basic = action.payload;
+      state.isDirty = true;
     },
     setBankPaymentId: (state, action) => {
       state.bankPaymentId = action.payload;
+    },
+     clearBankPayment: (state) => {
+      state.bankPayment = null;
+      state.formData.bank = null;
     },
     addDocumentUrl: (state, action) => {
       const { type, url } = action.payload;
@@ -273,6 +309,12 @@ const employeeSlice = createSlice({
     clearDocumentUrls: (state) => {
       Object.keys(state.documentUrls).forEach(key => state.documentUrls[key] = []);
     },
+    resetEmployeeForm: (state) => {
+      state.formData = {};
+      state.employeeId = null;
+      state.isDirty = false; // reset after saving or cancelling
+    },
+    
   },
   extraReducers: (builder) => {
     builder
@@ -281,6 +323,7 @@ const employeeSlice = createSlice({
         state.status = 'succeeded';
         state.employeeId = action.payload?.id || action.payload?.employee?.id;
         state.employeeCreated = true;
+        state.isDirty = false;
       })
       .addCase(submitEmployee.rejected, (state, action) => {
         state.status = 'failed'; state.error = action.payload;
@@ -299,6 +342,26 @@ const employeeSlice = createSlice({
       .addCase(updateEmployeeDocumentThunk.rejected, (state, action) => {
         state.updateStatus = "failed";
         state.updateError = action.payload;
+      })
+       // getUpcomingExpiryEmployees
+       .addCase(getUpcomingExpiryEmployees.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUpcomingExpiryEmployees.fulfilled, (state, action) => {
+        state.loading = false;
+        state.employeeList = action.payload.results || [];
+        state.pagination = {
+          count: action.payload.count || 0,
+          total_pages: action.payload.total_pages || 1,
+          current_page: action.payload.current_page || 1,
+          next: action.payload.next || null,
+          previous: action.payload.previous || null,
+        };
+      })
+      
+      .addCase(getUpcomingExpiryEmployees.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
 
           .addCase(submitBankPayment.fulfilled, (state, action) => {
@@ -362,6 +425,7 @@ export const {
   addDocumentUrl,
   removeDocumentUrl,
   clearDocumentUrls,
+  clearBankPayment,
 } = employeeSlice.actions;
 
 export default employeeSlice.reducer;

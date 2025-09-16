@@ -1,22 +1,32 @@
+# employee/tasks.py
 from celery import shared_task
-from django.utils import timezone
+from datetime import datetime
 from .models import ScheduleReminder
-from employee.utils import send_push_notification  # Adjust path if needed
+from employee.utils import send_push_notification  # your FCM helper
 
 @shared_task
-def check_reminders():
-    now = timezone.now()
-    reminders = ScheduleReminder.objects.filter(
-        scheduled_datetime__lte=now,
-        notified=False
-    )
-
-    for reminder in reminders:
+def send_reminder(reminder_id):
+    try:
+        reminder = ScheduleReminder.objects.get(id=reminder_id)
         user = reminder.employee.user
-        send_push_notification(
-            user=user,
-            title=reminder.title,
-            message=reminder.body
-        )
+        token = user.fcm_token
+
+        if token:
+            send_push_notification(
+                user=user,
+                title=f"Reminder: {reminder.title}",
+                message=reminder.body
+            )
+
+        # Mark reminder as notified
         reminder.notified = True
         reminder.save()
+
+    except ScheduleReminder.DoesNotExist:
+        pass
+
+@shared_task
+def soft_delete_expired_reminders():
+    now = datetime.now()
+    ScheduleReminder.objects.filter(scheduled_datetime__lt=now, is_expired=False).update(is_expired=True)
+

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f9fdf8;
+  background-color: white;
   padding: 20px;
 `;
 
@@ -62,26 +62,6 @@ export const FormWrapper = styled.div`
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 `;
 
-// export const FormSection = styled.div`
-//   display: flex;
-//   gap: 40px;
-//   flex-wrap: wrap;
-//   margin-bottom: 20px;
-
-//   & > div {
-//     flex: 1;
-//     min-width: 250px;
-//   }
-// `;
-
-// export const Input = styled.input`
-//   display: block;
-//   margin-bottom: 15px;
-//   padding: 10px;
-//   width: 100%;
-//   border-radius: 4px;
-//   border: 1px solid #ccc;
-// `;
 
 export const CheckboxGroup = styled.div`
   display: flex;
@@ -110,16 +90,18 @@ export const ButtonGroup = styled.div`
 export const Button = styled.button`
   padding: 10px 25px;
   border: none;
+  border: 2px solid ${props => (props.cancel ? '#FF2304' : '#172554')}; /* border added */
   border-radius: 6px;
   font-weight: 500;
   color: #fff;
   cursor: pointer;
-  background-color: ${props => props.cancel ? '#FF230480' : '#5c5c8a'};
+  background-color: ${props => props.cancel ? '#FF230480' : '#A2A8BB'};
 
   &:hover {
     opacity: 0.9;
   }
 `;
+
 export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;
@@ -171,6 +153,13 @@ export const Label = styled.label`
   font-size: 14px;
   color: #333;
   font-weight: 500;
+  font-family: Satoshi;
+font-weight: 400;
+font-style: Regular;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
  
 
@@ -189,11 +178,12 @@ export const Select = styled.select`
 `;
 export const FormSection = styled.div`
   display: flex;
-  gap: 270px;
+  gap: 40px;
   margin-bottom: 30px;
 
   > div {
     width: 50%;
+    flex:1;
   }
 `;
 
@@ -201,10 +191,11 @@ export const FormSection = styled.div`
 export const LogoUploadBox = styled.div`
   border: 2px dashed #a1a1a1;
   background-color: #f5f8fd;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   border-radius: 10px;
   margin-bottom: 15px;
+  // margin-top: -35px;
   color: #666;
   font-size: 13px;
   cursor: pointer;

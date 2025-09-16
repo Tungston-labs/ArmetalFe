@@ -50,28 +50,49 @@ export const RightPanel = styled.div`
   justify-content: center;
   align-items: center;
   
+  h2{
+  margin-left:-18rem;
+  }
 `;
 
 export const FormBox = styled.div`
   max-width: 400px;
   width: 100%;
+  margin-top:100px;
+  
+  h2{
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 41px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+text-align: center;
+}
+
+
 `;
 
 export const Label = styled.label`
   font-weight: 400;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   display: block;
   font-size: 17px;
   font-family: 'Raleway';
+  margin-top: 5px;
+
 `;
 
 export const Input = styled.input`
   width: 100%;
   padding: 10px;
-  margin-bottom: ${(props) => props.marginBottom || '25px'};
+  margin-bottom: ${(props) => props.marginBottom || '23px'};
   border: none;
   background: #efefef;
-  border-radius: 4px;
+  border-radius: 8px;
+  fontFamily: 'Raleway';
+  
 `;
 
 export const CheckboxContainer = styled.div`
@@ -80,11 +101,35 @@ export const CheckboxContainer = styled.div`
   margin-bottom: 20px;
   margin-top: 30px;
   font-size: 17px;
+  font-family: 'Raleway';
+  margin-left: 3px;
 
-  input {
-    margin-right: 8px;
+  input[type="checkbox"] {
+    appearance: none; /* Remove default checkbox */
+    width: 20px;
+    height: 20px;
+    background-color: black; /* checkbox background */
+    border-radius: 2px;
+    border: 2px solid #000;
+    margin-right: 16px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 5px;
+    height: 10px;
+    border: solid white; /* tick color */
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
   }
 `;
+
+
 
 export const Button = styled.button`
   width: 100%;
@@ -92,16 +137,19 @@ export const Button = styled.button`
   background: linear-gradient(to right, #172554, #3352BA);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-family: 'Raleway';
+  font-weight: bold;
 `;
+
 
 export const SmallLink = styled.p`
   font-size: 12px;
   float: right;
   text-decoration: none;
   cursor: pointer;
+  margin-top:-5%;
 `;
 
 export const LeftHeader = styled.div`
@@ -117,9 +165,10 @@ export const LeftHeader = styled.div`
 `;
 
 export const Logo = styled.img`
-  width: 30%;
+  width: 40%;
   height: auto;
   margin-bottom: 1rem;
+  margin-left:4rem
 `;
 
 export const CustomLink = styled.p`
@@ -129,7 +178,7 @@ export const CustomLink = styled.p`
 `;
 export const CodeInputWrapper = styled.div`
   display: flex;
-  gap: 30px;
+  gap: 20px;
   margin: 20px 0;
 `;
 
@@ -147,3 +196,4 @@ export const CodeInputBox = styled.input`
     box-shadow: 0 0 2px #007bff;
   }
 `;
+

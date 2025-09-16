@@ -2,25 +2,24 @@ import styled from 'styled-components';
 
 export const ModalOverlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 2000; /* higher than OnLeaveModal */
 `;
 
 export const ModalContainer = styled.div`
   background: white;
-  padding: 2.5rem;
-  width: 90%;
-  max-width: 500px;
-  border-radius: 15px;
-  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+  max-height: 80%;
+  overflow-y: auto;
+  z-index: 2001; /* must be higher than overlay */
+  pointer-events: auto;
 `;
+
 
 export const Message = styled.p`
   font-size: 24px;

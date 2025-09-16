@@ -22,12 +22,32 @@ class SafeDateField(serializers.DateField):
 
 
 
+# class EmployeeSerializer(serializers.ModelSerializer):
+#     dob = SafeDateField(required=False)
+#     joining_date = SafeDateField(required=False)
+#     visa_expiry_date = SafeDateField(required=False)
+  
+ 
+
+#     department_id = serializers.PrimaryKeyRelatedField(
+#         source='department',
+#         queryset=Department.objects.all(),
+#         write_only=True
+#     )
+#     department = serializers.CharField(source='department.name', read_only=True)
+
+#     class Meta:
+#         model = Employee_db
+#         exclude = ['user', 'password']
+
+
 class EmployeeSerializer(serializers.ModelSerializer):
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
     visa_expiry_date = SafeDateField(required=False)
-  
- 
+    iqama_number = serializers.CharField(required=False, allow_blank=True)
+    aadar_number = serializers.CharField(required=False, allow_blank=True)
+    insurance_number = serializers.CharField(required=False, allow_blank=True)
 
     department_id = serializers.PrimaryKeyRelatedField(
         source='department',
@@ -39,6 +59,27 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee_db
         exclude = ['user', 'password']
+
+    def validate(self, data):
+        country = self.context['request'].user.company.country
+
+        # India-specific validation
+        if country == "IN":
+            if not data.get('aadar_number'):
+                raise serializers.ValidationError({"aadar_number": "Aadhaar number is required for India"})
+        else:
+            # Non-India
+            if not data.get('iqama_number'):
+                raise serializers.ValidationError({"iqama_number": "Iqama number is required for this country"})
+            if not data.get('visa_expiry_date'):
+                raise serializers.ValidationError({"visa_expiry_date": "Visa expiry date is required"})
+
+        # Insurance can be optional or required depending on your business rules
+        if country != "IN" and not data.get('insurance_number'):
+            raise serializers.ValidationError({"insurance_number": "Insurance number is required for non-India"})
+
+        return data
+
 
 class EmpBankPaymentSerializer(serializers.ModelSerializer):
     employee = EmployeeSerializer(read_only=True)
@@ -88,13 +129,22 @@ class DepartmentForProfileSerializer(serializers.ModelSerializer):
 from rest_framework import serializers
 from .models import Employee_db
 
-
 class EmployeeProfileSerializer(serializers.ModelSerializer):
     department = DepartmentForProfileSerializer()
+    company_logo = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee_db
         exclude = ['password']
+
+    def get_company_logo(self, obj):
+        # Option 1: via employee -> user -> company
+        company = obj.user.company
+        if company and company.logo:
+            request = self.context.get("request")
+            return request.build_absolute_uri(company.logo.url) if request else company.logo.url
+        return None
+
 
 
 
@@ -104,13 +154,16 @@ from rest_framework import serializers
 from .models import Employee_db
 
 class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
-    healthcard_number = serializers.CharField(source='insurance_number')
+    healthcard_number = serializers.CharField(source='insurance_number', allow_null=True)
     work_permit_urls = serializers.SerializerMethodField()
     contract_urls = serializers.SerializerMethodField()
-    passport_number = serializers.CharField()
-    iqama_number = serializers.CharField()
-    visa_expiry_date = serializers.DateField()
+    passport_number = serializers.CharField(allow_null=True)
+    iqama_number = serializers.CharField(allow_null=True)
+    aadar_number = serializers.CharField(allow_null=True)
+    visa_expiry_date = serializers.DateField(allow_null=True)
+    contract_expiry_date = serializers.DateField(allow_null=True)
     insurance_image_url = serializers.SerializerMethodField()
+    id_card_image_url = serializers.SerializerMethodField()
     employee_id = serializers.IntegerField(source='id')
 
     class Meta:
@@ -121,30 +174,30 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
             'healthcard_number',
             'passport_number',
             'iqama_number',
+            'aadar_number',
+            'contract_expiry_date',
             'visa_expiry_date',
             'work_permit_urls',
             'contract_urls',
             'insurance_image_url',
+            'id_card_image_url',
         ]
 
     def get_work_permit_urls(self, obj):
-        try:
-            return obj.documents.work_permit_urls  # Make sure this is actually a list of URLs
-        except:
-            return []
-
+        return getattr(getattr(obj, 'documents', None), 'work_permit_urls', [])
 
     def get_contract_urls(self, obj):
-        try:
-            return obj.documents.contract_urls
-        except:
-            return []
+        return getattr(getattr(obj, 'documents', None), 'contract_urls', [])
 
     def get_insurance_image_url(self, obj):
-        try:
-            return obj.documents.insurance_image_url
-        except:
-            return None
+        return getattr(getattr(obj, 'documents', None), 'insurance_image_url', None)
+
+    def get_id_card_image_url(self, obj):
+        if obj.idcard:
+            request = self.context.get('request')
+            return request.build_absolute_uri(obj.idcard.url) if request else obj.idcard.url
+        return None
+
 
     
 
@@ -207,7 +260,8 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
         employees = Employee_db.objects.filter(department=obj.department)
         return {
             'count': employees.count(),
-            'employees': [{'id': emp.id, 'name': emp.name, 'designation': emp.designation} for emp in employees]
+            'employees': [{'id': emp.id, 'name': emp.name, 'designation': emp.designation, 'profile_pic': emp.profile_pic.url if emp.profile_pic else None
+             } for emp in employees]
         }
 
     def get_daily_tasks(self, obj):
@@ -217,7 +271,8 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             {
                 'project': task.project,
                 'task': task.task,
-                'time_taken': float(task.time_taken)
+                'time_taken': float(task.time_taken),
+                'date':today
             } for task in tasks
         ]
 

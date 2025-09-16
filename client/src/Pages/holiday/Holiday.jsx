@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Container,
   Header,
-
+ErrorMessage,
   Title,
   Subtitle,
   FormSection,
@@ -21,6 +21,9 @@ import {
   HRManager,
   DateWrapper,
 Pagination,
+Heading,
+FieldWrapper,
+Label,
 
 } from './Holiday.styles';
 import { MdDateRange } from "react-icons/md";
@@ -29,9 +32,10 @@ import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { getHolidays, addHoliday, removeHoliday } from '../../Redux/holidaySlice';
 import { fetchHolidayTypes } from '../../services/holidayService';
-import SyncLoader from 'react-spinners/SyncLoader';
-
-
+// import SyncLoader from 'react-spinners/SyncLoader';
+import Navbar from '../../Components/Navbar';
+import Loader from "../../Components/Loader"
+import HolidayHeading from "../../Components/HolidayHeading"
 
 const formatDateToISO = (dateStr) => {
   const date = new Date(dateStr);
@@ -46,6 +50,7 @@ const HolidayManager = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const { list: holidays, loading, error,totalPages, currentPage } = useSelector(state => state.holidays);
+const [formError, setFormError] = useState("");
 
   const [formData, setFormData] = useState({ name: "", type: "", date: "" });
 
@@ -72,20 +77,49 @@ const HolidayManager = () => {
   };
   
 
+const handleAdd = () => {
+  const { name, type, date } = formData;
+  const trimmedName = name.trim();
 
-  const handleAdd = () => {
-  if (formData.name && formData.type && formData.date) {
-    const formattedDate = formatDateToISO(formData.date);
-
-    dispatch(addHoliday({
-      description: formData.name,
-      holiday_type: formData.type,
-      date: formattedDate
-    }));
-
-    setFormData({ name: "", type: "", date: "" });
+  // Validation: All fields must be filled
+  if (!trimmedName || !type || !date) {
+    setFormError("⚠️ Please fill in all fields before adding a holiday.");
+    return;
   }
+
+  // Validation: Maximum 250 characters for holiday name
+  if (trimmedName.length > 250) {
+    setFormError("⚠️ Holiday name cannot exceed 250 characters.");
+    return;
+  }
+
+  const formattedDate = formatDateToISO(date);
+  const selectedDate = new Date(date);
+  const today = new Date();
+
+  // Clear time from both dates for comparison
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
+
+  // Validation: Date should not be in the past
+  if (selectedDate < today) {
+    setFormError("⚠️ Holiday date cannot be in the past.");
+    return;
+  }
+
+  // ✅ All validations passed, dispatch action
+  dispatch(addHoliday({
+    description: trimmedName,
+    holiday_type: type,
+    date: formattedDate
+  }));
+
+  setFormData({ name: "", type: "", date: "" });
+  setFormError(""); 
 };
+
+
+
 
 
 const handleDeleteClick = (id) => {
@@ -107,48 +141,61 @@ const cancelDelete = () => {
 
 
   return (
+    <>
+       <Navbar/>
     <Container>
-      <Header>
-        <TopBar>
-          <TitleSection>
-            {/* <LuArrowLeft style={{ width: "36px", height: 36 }} /> */}
-            <img src="/images/payroll.png" alt="Payroll Icon" style={{ height: "51px" }} />
-            <div>
-              <Title>Holiday</Title>
-              <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
-            </div>
-          </TitleSection>
-          <HRManager>
-            <img src="/images/user.jpg" alt="HR Manager" />
-            <span>HR Manager</span>
-          </HRManager>
-        </TopBar>
-      </Header>
 
-      <FormSection>
-  <Input name="name" placeholder="Holiday name" value={formData.name} onChange={handleChange} />
-  
-  <Select name="type" value={formData.type} onChange={handleChange}>
-    <option value="">Select</option>
-    {typeOptions.map(({ key, label }) => (
-      <option key={key} value={key}>
-        {label}
-      </option>
-    ))}
-  </Select>
+<HolidayHeading/>
 
-  <DateWrapper>
-    <MdDateRange />
-    <DateInput type="date" name="date" value={formData.date} onChange={handleChange} />
-  </DateWrapper>
-  
+   <FormSection>
+  <FieldWrapper>
+    <Label>Holiday Name</Label>
+    <Input
+      name="name"
+      autoComplete='off'
+      placeholder="Holiday name"
+      value={formData.name}
+      onChange={(e) =>
+        setFormData({ ...formData, name: e.target.value.slice(0, 250) })
+      }
+    />
+  </FieldWrapper>
+
+  <FieldWrapper>
+    <Label>Type</Label>
+    <Select name="type" value={formData.type} onChange={handleChange}>
+      <option value="">Select</option>
+      {typeOptions.map(({ key, label }) => (
+        <option key={key} value={key}>
+          {label}
+        </option>
+      ))}
+    </Select>
+  </FieldWrapper>
+
+  <FieldWrapper>
+    <Label>Date</Label>
+    <DateWrapper>
+      {/* <MdDateRange /> */}
+      <DateInput
+        type="date"
+        name="date"
+        value={formData.date}
+        onChange={handleChange}
+      />
+    </DateWrapper>
+  </FieldWrapper>
+
   <AddButton onClick={handleAdd}>Add</AddButton>
 </FormSection>
 
+{formError && <ErrorMessage>{formError}</ErrorMessage>}
 
       <Hr />
 
       <TableWrapper>
+  <Heading>Holiday List</Heading>   
+
         <Table>
           <thead>
             <tr>
@@ -159,44 +206,13 @@ const cancelDelete = () => {
               <Th></Th>
             </tr>
           </thead>
-{/* <tbody>
-  {loading ? (
-    <tr>
-      <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-        <SyncLoader />
-      </Td>
-    </tr>
-  ) : holidays.length === 0 ? (
-    <tr>
-      <Td colSpan="5" style={{ textAlign: "center" }}>
-        No holidays found.
-      </Td>
-    </tr>
-  ) : (
-    holidays.map((item, index) => (
-      <tr key={item.id}>
-        <Td>{(currentPage - 1) * 7 + index + 1}</Td>
-        <Td>{item.description}</Td>
-        <Td>{item.holiday_type_display}</Td>
-        <Td>{item.date}</Td>
-        <Td>
-          <FaTrashAlt
-            style={{ color: "red", cursor: "pointer" }}
-            onClick={() => handleDeleteClick(item.id)}
-          />
-        </Td>
-      </tr>
-    ))
-  )}
-</tbody> */}
-
 <tbody>
   {loading ? (
-    <tr>
-      <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-       <p>Loading...</p>
-      </Td>
-    </tr>
+     <tr>
+     <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
+       <Loader size="large" /> {/* ✅ Spinner here */}
+     </Td>
+   </tr>
   ) : holidays.length === 0 ? (
     <tr>
       <Td colSpan="5" style={{ textAlign: "center" }}>
@@ -207,7 +223,7 @@ const cancelDelete = () => {
     holidays.map((item, index) => (
       <tr key={item.id}>
         <Td>{(currentPage - 1) * 7 + index + 1}</Td>
-        <Td>{item.description}</Td>
+     <Td title={item.description}>{item.description}</Td>
         <Td>{item.holiday_type_display}</Td>
         <Td>{item.date}</Td>
         <Td>
@@ -310,6 +326,7 @@ const cancelDelete = () => {
 
 
     </Container>
+    </>
   );
 };
 

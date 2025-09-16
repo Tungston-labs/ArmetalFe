@@ -1,83 +1,75 @@
-import { data } from 'react-router-dom';
-import API from './api';
+import { data } from "react-router-dom";
+import API from "./api";
 
 // 1. Create employee
 export const createEmployee = async (formData) => {
-  console.log('submitting data',formData);
-  
+  // console.log("submitting data", formData);
+  console.log("📦 FormData being sent:");
+for (let [key, value] of formData.entries()) {
+  console.log(`${key}: ${value}`);
+}
+
+
   try {
     const res = await API.post("/employees/", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-      }
+        "Content-Type": "multipart/form-data",
+      },
     });
     return res.data;
   } catch (error) {
-    console.error("❌ Error creating employee:", error.response?.data || error.message);
+    console.error(
+      "❌ Error creating employee:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
 
 
 
-// 2. Create bank payment
-// export const createBankPayment = async (employeeId, data) => {
-//   try {
-//     const res = await API.post(`/employees/${employeeId}/bank-payments/`, data);
-//     return res.data;
-//   } catch (error) {
-//     console.error("❌ Error creating bank payment:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-
-// ✅ 2B. Update bank payment
-// export const updateBankPayment = async (employeeId, bankPaymentId, data) => {
-//   try {
-//     const res = await API.patch(`/bank-payments/${bankPaymentId}/`, data);
-//     return res.data;
-//   } catch (error) {
-//     console.error("❌ Error updating bank payment:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-
 // 4. Get employees in my department
 export const getMyDepartmentEmployees = async () => {
-  const res = await API.get('/employees/my-department/');
+  const res = await API.get("/employees/my-department/");
   return res.data;
 };
 
-// 5. Fetch bank payment list
-// export const getBankPayment = async (employeeId) => {
-//   const res = await API.get(`/employees/${employeeId}/bank-payments/`);
-//   return res.data;
-// };
 
 // 6. Update employee
 export const updateEmployee = async (employeeId, data) => {
   try {
     const res = await API.patch(`/employees/${employeeId}/`, data, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-      }
+        "Content-Type": "multipart/form-data",
+      },
     });
     return res.data;
   } catch (error) {
-    console.error("❌ Error updating employee:", error.response?.data || error.message);
+    console.error(
+      "❌ Error updating employee:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
 // services/employeeServices.js
-
 
 export const deleteEmployee = async (employeeId) => {
   const response = await API.delete(`/employees/${employeeId}/`);
   return response.data;
 };
 
-export const fetchAllEmployees = async (page = 1, search = '') => {
-  const response = await API.get(`/employees/?page=${page}&search=${search}`);
+// Service
+export const fetchAllEmployees = async (
+  page = 1,
+  search = "",
+  department_id = ""
+) => {
+  let url = `/employees/?page=${page}&search=${search}`;
+  if (department_id) {
+    url += `&department_id=${department_id}`;
+  }
+  const response = await API.get(url);
   return response.data;
 };
 
@@ -86,6 +78,12 @@ export const fetchEmployeeById = async (id) => {
   return res.data;
 };
 
+export const fetchUpcomingExpiryEmployees = async (expiryType) => {
+  const response = await API.get(
+    `/employees/upcoming-expiry/?type=${expiryType}`
+  );
+  return response.data;
+};
 
 // ✅ Fetch all bank payments by employee ID
 // export const fetchAllBankPaymentsByEmployee = async (employeeId) => {
@@ -99,7 +97,10 @@ export const fetchBankPaymentsByEmployee = async (employeeId) => {
     const res = await API.get(`/employees/${employeeId}/bank-payments/`);
     return res.data;
   } catch (error) {
-    console.error("❌ Error fetching bank payments:", error.response?.data || error.message);
+    console.error(
+      "❌ Error fetching bank payments:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
@@ -113,25 +114,33 @@ export const createBankPayment = async (employeeId, data) => {
       `/employees/${employeeId}/bank-payments/`,
       data,
       {
-        headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+        headers: isFormData ? { "Content-Type": "multipart/form-data" } : {},
       }
     );
 
     return res.data;
   } catch (error) {
-    console.error("❌ Error creating bank payment:", error.response?.data || error.message);
+    console.error(
+      "❌ Error creating bank payment:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
 
 // 3. Update a specific bank payment under a specific employee
-export const updateBankPayment = async (employeeId, paymentId, formData, hasImage) => {
+export const updateBankPayment = async (
+  employeeId,
+  paymentId,
+  formData,
+  hasImage
+) => {
   return await API.put(
     `/employees/${employeeId}/bank-payments/${paymentId}/`,
-    formData ,
+    formData,
     {
       headers: {
-        "Content-Type":   "multipart/form-data" 
+        "Content-Type": "multipart/form-data",
       },
       // headers: {
       //   "Content-Type": hasImage ? "multipart/form-data" : "application/json",
@@ -143,10 +152,15 @@ export const updateBankPayment = async (employeeId, paymentId, formData, hasImag
 // 4. Delete a specific bank payment under a specific employee
 export const deleteBankPayment = async (employeeId, paymentId) => {
   try {
-    const res = await API.delete(`/employees/${employeeId}/bank-payments/${paymentId}/`);
+    const res = await API.delete(
+      `/employees/${employeeId}/bank-payments/${paymentId}/`
+    );
     return res.data;
   } catch (error) {
-    console.error("❌ Error deleting bank payment:", error.response?.data || error.message);
+    console.error(
+      "❌ Error deleting bank payment:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
@@ -158,9 +172,9 @@ export const fetchAllBankPaymentsByEmployee = async (employeeId) => {
 
 export const uploadTempImage = async (file) => {
   const formData = new FormData();
-  formData.append('file', file);
-  const res = await API.post('/upload-image/', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+  formData.append("file", file);
+  const res = await API.post("/upload-image/", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data; // { url: 'http://.../media/file.jpg' }
 };
@@ -168,7 +182,7 @@ export const uploadTempImage = async (file) => {
 // 2. Save employee document URLs
 export const saveEmployeeDocuments = async (employeeId, data) => {
   const res = await API.post(`/employees/${employeeId}/documents/`, data);
-  console.log("object",res)
+  console.log("object", res);
   return res.data;
 };
 
@@ -189,9 +203,13 @@ export const updateEmployeeDocument = async (docId, data) => {
   const res = await API.put(`/documents/${docId}/`, data);
   return res.data;
 };
- export const updateEmployeeDocuments = async (id, formData) => {
+export const updateEmployeeDocuments = async (id, formData) => {
   const response = await API.patch(`/employees/${id}/documents/`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: { "Content-Type": "multipart/form-data" },
   });
+  return response.data;
+};
+export const listEmployeeDash = async (id) => {
+  const response = await API.get(`/dashboard/employee/${id}/`);
   return response.data;
 };

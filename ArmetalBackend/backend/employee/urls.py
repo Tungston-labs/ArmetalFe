@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('employees/', views.EmployeeListCreateView.as_view(), name='employee-list-create'),
+    path('employeelist/', views.EmployeeListView.as_view(), name='employee-list'),
+
     path('employees/<int:pk>/', views.EmployeeRetrieveUpdateDestroyView.as_view(), name='employee-detail'),
 
     # bank payment views
@@ -28,6 +30,7 @@ urlpatterns = [
     path('admin/dashboard-summary/', views.DashboardSummaryView.as_view(), name='dashboard-summary'),
 
     path('dashboard/employee/<int:id>/', views.EmployeeDashboardAPIView.as_view(), name='employee-dashboard'),
+    path("employees/upcoming-expiry/", views.UpcomingExpiryEmployeeListView.as_view(), name="upcoming-expiry"),
 
 
     # mobile application
@@ -38,6 +41,8 @@ urlpatterns = [
 
     path("attendance/summary/", views.AttendanceSummaryView.as_view(), name="attendance-summary"),
     path("reminders/", views.ReminderListCreateView.as_view(), name="reminder-list-create"),
+    path("reminders/<int:pk>/", views.ReminderRetrieveUpdateDestroyView.as_view(), name="reminder-detail"),
+    path('employee-monthly-summary/', views.EmployeeMonthlySummaryView.as_view(), name='employee-monthly-summary'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

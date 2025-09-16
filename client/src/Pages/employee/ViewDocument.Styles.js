@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
  font-family: Satoshi;
 `;
 
@@ -33,7 +33,7 @@ export const EditButton = styled.button`
    background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
   border-radius: 8px;
-  width:50%;
+  width:100px;
   height:42px;
   font-size: 0.9rem;
   cursor: pointer;
@@ -73,6 +73,9 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 100%;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
 
 `;
 
@@ -82,7 +85,23 @@ export const Textarea = styled.textarea`
   border-radius: 6px;
   width: 100%;
   resize: none;
-  height: 70px;
+  height: 95px;
+  border-radius: 7px;
+border: 1px solid #052DB4;
+background: #FFF;
+`;
+
+export const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  // margin-bottom: 1rem;
+`;
+
+export const Label = styled.label`
+  font-size: 0.9rem;
+  font-weight: 500;
+  // margin-bottom: 0.3rem;
+  color: #052DB4;
 `;
 
 export const Avatar = styled.img`
@@ -96,7 +115,7 @@ export const Avatar = styled.img`
 
 export const Section = styled.div`
 //   padding: 2rem;
-  background: #FBFEF3;
+  background: white;
   font-family: sans-serif;
 `;
 
@@ -185,13 +204,34 @@ export const TextGroup = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   margin: 0;
+  color:#304EB0;
+  font-family: Satoshi;
+font-weight: 700;
+// font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Subtitle = styled.p`
-  color: #555;
+  // color:#304EB0;
   margin: 0;
+  font-family: Raleway;
+font-weight: 300;
+font-style: Light;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
+`;
+
+export const TitleSection = styled.div`
+  display: flex;
+  align-items: center;
 `;
 export const HRManager = styled.div`
   display: flex;
@@ -199,12 +239,12 @@ export const HRManager = styled.div`
  
   align-items: center;
   padding: 0.3rem ;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  // border: 1px solid #ccc;
+  // border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 
   span {
     font-weight: 500;
@@ -234,7 +274,7 @@ export const FormWrapper = styled.div`
 export const ProfileImage = styled.img`
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  border-radius: 10%;
   object-fit: cover;
 
   @media (max-width: 768px) {
@@ -253,7 +293,7 @@ export const ImageColumn = styled.div`
   img {
     width: 150px;
     height: 150px;
-    border-radius: 50%;
+    border-radius: 10%;
     object-fit: cover;
   }
 `;
@@ -273,8 +313,17 @@ export const LabelRow = styled.div`
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 0.8rem;
-  background:white;
-  color:#999999;
+  background:#F1F1F1;
+    color: #3352BA;
+  padding:10px;
+  font-family: Satoshi;
+font-weight: 500;
+font-style: Medium;
+font-size: 17px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const UploadButton = styled.button`
@@ -315,6 +364,8 @@ export const InlineUploadRow = styled.div`
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap; /* makes it responsive */
+  background:#F1F1F1;
+  padding:10px;
 `;
 
 export const ButtonGroup = styled.div`
@@ -342,6 +393,14 @@ export const SectionTitle = styled.h4`
   // margin-top: 2rem;
   margin-bottom: 1rem;
   font-size:18px;
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 18px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
   // color: #333;
 `;
 export const ImagePreviewRow = styled.div`

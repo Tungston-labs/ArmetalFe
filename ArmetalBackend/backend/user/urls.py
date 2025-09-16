@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CustomTokenObtainPairView,LogoutView,ChangePasswordView,SendOTPView,VerifyOTPView,ResetPasswordView
+from .views import CustomTokenObtainPairView,LogoutView,ChangePasswordView,SendOTPView,VerifyOTPView,ResetPasswordView,UpdateFCMTokenView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -10,5 +10,6 @@ urlpatterns = [
     path('forgot-password/send-otp/', SendOTPView.as_view()),
     path('forgot-password/verify-otp/', VerifyOTPView.as_view()),
     path('forgot-password/reset/', ResetPasswordView.as_view()),
+    path('update-fcm-token/', UpdateFCMTokenView.as_view(), name='update-fcm-token'),
 
 ]

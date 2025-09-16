@@ -3,10 +3,14 @@ import API from "./api"; // Your Axios instance with baseURL & headers
 // GET: List all departments
 // services/departmentService.js
 
-export const fetchDepartments = async (search = '') => {
-  const query = search ? `?search=${encodeURIComponent(search)}` : '';
-  const response = await API.get(`/departments/${query}`);
-  return response.data.results;
+// services/departmentServices.js
+export const fetchDepartments = async ({ page = 1, search = '' }) => {
+  const queryParams = new URLSearchParams();
+  if (search) queryParams.append('search', search);
+  if (page) queryParams.append('page', page);
+
+  const response = await API.get(`/departments/?${queryParams.toString()}`);
+  return response.data; // ✅ should contain results + pagination
 };
 
 
@@ -30,10 +34,12 @@ export const fetchEmployeesByDepartment = async (departmentId) => {
 };
 
 // PUT: Update department by ID
+
 export const updateDepartment = async (id, data) => {
-  const response = await API.put(`/departments/${id}/`, data);
+  const response = await API.patch(`/departments/${id}/`, data); // ✅ partial update
   return response.data;
 };
+
 
 // DELETE: Delete department by ID
 export const deleteDepartment = async (id) => {

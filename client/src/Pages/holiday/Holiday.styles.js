@@ -91,28 +91,89 @@ export const SearchInput = styled.input`
   border-radius: 4px;
 `;
 
+// export const FormSection = styled.div`
+//   display: flex;
+//   gap: 27px;
+//   // margin-bottom: 30px;
+
+// `;
+
+// export const Input = styled.input`
+//   padding: 8px 12px;
+//   border: 1px solid #ccc;
+//   border-radius: 7px;
+//   width:40%;
+//     background-color:white;
+// `;
+
+// export const Select = styled.select`
+//   padding: 8px 12px;
+//   border: 1px solid #ccc;
+//   border-radius: 7px;
+//   width:25%;
+//     background-color:white;
+// `;
+
+export const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;   /* consistent width */
+  flex: 1;            /* grow evenly */
+`;
+
+export const Label = styled.label`
+  font-size: 0.9rem;
+  font-weight: 600;
+  // color: #333;
+  font-family: Satoshi;
+font-weight: 400;
+font-style: Regular;
+// font-size: 18px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
+`;
+
 export const FormSection = styled.div`
   display: flex;
   gap: 27px;
-  margin-bottom: 30px;
-
+  flex-wrap: wrap; // wrap on small screens
 `;
 
 export const Input = styled.input`
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 7px;
-  width:40%;
-    background-color:#FBFEF3;
+  width: 100%;
+  background-color: white;
 `;
 
 export const Select = styled.select`
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 7px;
-  width:25%;
-    background-color:white;
+  width: 100%;
+  background-color: white;
 `;
+
+// export const DateWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+//   gap: 8px;
+//   border: 1px solid #ccc;
+//   border-radius: 7px;
+//   padding: 4px 8px;
+//   background-color: white;
+// `;
+
+// export const DateInput = styled.input`
+//   border: none;
+//   outline: none;
+//   flex: 1;
+// `;
+
 export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
@@ -123,38 +184,53 @@ export const DateInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 7px;
   background-color: #fff;
-  width: 120px;
+  width: 100%;
 `;
 
 export const DateWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap:10px;
 `;
 
 
 
 export const AddButton = styled.button`
-  background-color: #172554;
+  background-color: #3352BA;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 16px;
   border: none;
   border-radius: 7px;
   cursor: pointer;
-  width:10%;
-  font-size:18px
+  font-size: 16px;
+  height: 42px;
+  align-self: flex-end; 
+  margin-left: auto;   
 `;
 
 export const TableWrapper = styled.div`
   // overflow-x: auto;
-  margin-top:10px;
+  margin-top:20px;
+`;
+export const Heading = styled.h2`
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  // color: #3352BA; /* blue shade */
+  font-family: Raleway;
+font-weight: 600;
+font-style: Bold;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Table = styled.table`
 width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px; 
-  margin-top: 1rem;
+  margin-top: -1rem;
 
   th, td {
     text-align: left;
@@ -165,12 +241,15 @@ width: 100%;
   }
 
   th {
-    background-color: #5F53A53B;
-    color: #333;
+    background-color: #3352BA;
+    color: white;
         padding: 0.75rem;
     font-family:raleway;
   }
-
+  /* ✅ Background color for even rows */
+  tbody tr:nth-child(even) td {
+    background-color: #E6ECFF;
+  }
   /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
 box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
@@ -180,13 +259,13 @@ font-family:satoshi;
 
   /* Optional: radius for only first and last td of each row */
   tbody tr td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
 
   tbody tr td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   tbody tr:hover td {
@@ -202,9 +281,23 @@ export const Th = styled.th`
 
 export const Td = styled.td`
   padding: 10px;
-  // border-bottom: 1px solid #eee;
-    background: #fff;
+  background: #fff;
+  max-width: 250px; /* adjust column width */
+  white-space: nowrap;       /* keep text in one line */
+  overflow: hidden;          /* hide overflow */
+  text-overflow: ellipsis;   /* show "..." if text is too long */
+  cursor: default;
+  
+  // &:hover {
+  //   overflow: visible;       /* show full content on hover */
+  //   white-space: normal;
+  //   background-color: #f5f5f5;
+  //   position: relative;
+  //   z-index: 1;
+  }
 `;
+
+
 export const Tr = styled.tr`
   overflow: hidden;
 `;
@@ -227,4 +320,9 @@ export const Pagination = styled.div`
       color: white;
     }
   }
+`;
+export const ErrorMessage = styled.p`
+  color: red;
+  margin-top: 8px;
+  font-size: 14px;
 `;
