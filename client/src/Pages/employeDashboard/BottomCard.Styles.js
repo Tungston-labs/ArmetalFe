@@ -5,13 +5,13 @@ export const Container = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   // background: #f8f9fc;
-  padding: 20px;
+  // padding: 20px;
 `;
 
 export const Section = styled.div`
   // background: #fff;
   border-radius: 12px;
-  padding: 20px;
+  padding: 10px;
   // box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 `;
 
