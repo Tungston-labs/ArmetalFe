@@ -36,7 +36,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchPaymentData = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await API.get(`http://178.248.112.16:8000/api/subscriptions/${id}/`);
+      const res = await API.get(`http://178.248.112.16:8001/api/subscriptions/${id}/`);
 
       if (Array.isArray(res.data)) {
         setPaymentData(res.data);
@@ -48,7 +48,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchCompanyName = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await API.get(`http://178.248.112.16:8000/api/companies/${id}/`
+      const res = await API.get(`http://178.248.112.16:8001/api/companies/${id}/`
       );
 
       if (res.data?.name) {

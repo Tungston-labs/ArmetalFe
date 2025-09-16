@@ -19,8 +19,10 @@ import {
   TitleSection,
   Icon,
   ActionArea,
-  HRManager
+  HRManager,SearchIcon,SearchWrapper
 } from './SuperAdmin.Styles';
+import { FiSearch } from "react-icons/fi";
+
 
 import { LuArrowLeft } from "react-icons/lu";
 import { FaTrashAlt, FaPlus } from 'react-icons/fa';
@@ -94,7 +96,7 @@ const CompanyTable = () => {
       <HeaderSection>
         <TitleSection>
           <LuArrowLeft style={{ width: "30px", height: 30 }} />
-          <img src="/images/superadmin.png" alt="Payroll Icon" style={{ height: "50px" }} />
+          <img src="/images/laptop_chromebook.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Super admin</Title>
             <Subtitle>Manage all departments within the organization.</Subtitle>
@@ -105,15 +107,18 @@ const CompanyTable = () => {
             <FaPlus /> Add Company
           </AddButton>
 
-          <SearchInput
-            type="text"
-            placeholder="Search by Company name"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-          />
+          <SearchWrapper>
+  <SearchIcon />
+  <SearchInput
+    type="text"
+    placeholder="Search by Company name"
+    value={search}
+    onChange={(e) => {
+      setSearch(e.target.value);
+      setPage(1);
+    }}
+  />
+</SearchWrapper>
         </ActionArea>
       </HeaderSection>
 
@@ -260,28 +265,30 @@ const CompanyTable = () => {
       )}
 
       {/* Pagination */}
-      <Pagination>
-        <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
-          {'←'}
-        </button>
 
-        {[...Array(pagination.total_pages)].map((_, i) => {
-          const pageNum = i + 1;
-          return (
-            <button
-              key={pageNum}
-              className={page === pageNum ? 'active' : ''}
-              onClick={() => handlePageChange(pageNum)}
-            >
-              {pageNum}
-            </button>
-          );
-        })}
-
-        <button onClick={() => handlePageChange(page + 1)} disabled={page === pagination.total_pages}>
-          {'→'}
-        </button>
-      </Pagination>
+          <Pagination>
+  <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>&larr;</span>
+  {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
+    (pageNumber) => (
+      <span
+        key={pageNumber}
+        onClick={() => handlePageChange(pageNumber)}
+        className={page === pageNumber ? "active" : ""}
+      >
+        {pageNumber}
+      </span>
+    )
+  )}
+  <span
+    onClick={() => {
+      if (page < (pagination?.total_pages || 1)) {
+        handlePageChange(page + 1);
+      }
+    }}
+  >
+    &rarr;
+  </span>
+</Pagination>
     </Container>
   );
 };

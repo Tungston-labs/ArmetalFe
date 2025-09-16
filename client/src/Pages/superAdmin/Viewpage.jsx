@@ -45,7 +45,8 @@ const CompanyViewPage = () => {
     <FormWrapper>
       <BackHeader>
         <GoArrowLeft onClick={() => navigate(-1)} style={{ cursor: "pointer" }} />
-        <span>Company Details</span>
+          
+        <span>Super admin</span>
       </BackHeader>
 
       <FormSection>

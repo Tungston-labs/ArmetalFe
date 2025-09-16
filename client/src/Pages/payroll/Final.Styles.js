@@ -4,8 +4,8 @@ import { FaArrowLeft } from "react-icons/fa6";
 export const Container = styled.div`
   font-family: 'Segoe UI', sans-serif;
   background-color: white;
-  padding: 20px;
-`;
+  padding: 25px;
+`
 
 export const TopBar = styled.div`
   display: flex;
@@ -197,19 +197,22 @@ export const Tr = styled.tr`
 `;
 
 export const Select = styled.select`
-  padding: 5px;
+  padding: 5px 25px 5px 8px; /* extra right padding for space after arrow */
   border: 1px solid #ccc;
   border-radius: 4px;
-font-family: Satoshi;
-font-weight: 300;
-font-style: Light Italic;
-font-size: 17px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-family: Satoshi;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 100%;
+  letter-spacing: 0%;
 
-
+  appearance: none; /* removes default browser arrow */
+  background: url("data:image/svg+xml;utf8,<svg fill='black' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 8px center;
+  background-color: white;
+  background-size: 16px;
 `;
+
 // styles.js or your styled-components file
 export const Pagination = styled.div`
   display: flex;

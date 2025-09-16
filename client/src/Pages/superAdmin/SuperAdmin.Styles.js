@@ -1,5 +1,7 @@
 // src/Components/CompanyTable.styles.js
 import styled from 'styled-components';
+import { FiSearch } from "react-icons/fi";
+
 
 export const Container = styled.div`
   padding: 20px;
@@ -90,15 +92,20 @@ export const HRManager = styled.div`
 export const Title = styled.h2`
   font-size: 24px;
   margin: 0;
-  margin-left:10px;
+  margin-left: 10px;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700; /* 700 = Bold */
 `;
 
 export const Subtitle = styled.p`
   font-size: 14px;
   color: #555;
-  margin-left:10px;
-  margin-top:-1px;
+  margin-left: 10px;
+  margin-top: -1px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300; /* normal weight */
 `;
+
 export const TitleSection = styled.div`
   display: flex;
   align-items: center;
@@ -115,7 +122,7 @@ export const AddButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(to right, #2a2a86, #3e64ff);
+  background: linear-gradient(to right, #2a2a86,rgb(55, 90, 227));
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -124,12 +131,30 @@ export const AddButton = styled.button`
   cursor: pointer;
 `;
 
+
+// Wrapper for input + icon
+export const SearchWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 300px;
+  flex: 1;
+`;
+
 export const SearchInput = styled.input`
-  padding: 10px 12px;
+  padding: 10px 12px 10px 40px; /* extra left padding for icon */
   border: 1px solid #ccc;
   border-radius: 6px;
-  flex: 1;
-  max-width: 300px;
+  width: 100%;
+`;
+
+export const SearchIcon = styled(FiSearch)`
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #888;
 `;
 
 export const TableWrapper = styled.div`
@@ -143,6 +168,8 @@ width: 100%;
   border-spacing: 0 10px; 
   margin-top: 1rem;
   font-size:19px;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 500; /* 700 = Bold */
 
   th, td {
     text-align: left;
@@ -153,8 +180,8 @@ width: 100%;
   }
 
   th {
-    background-color: #5F53A53B;
-    color: #333;
+    background-color:#3352BA;
+  color: white;             /* white text */
     font-family:raleway;
       padding: 0.7+rem;
   }
@@ -182,14 +209,16 @@ width: 100%;
 
 
 export const Th = styled.th`
-  text-align: left;
-  padding: 12px;
-  background: #e7eaf6;
-  color: #111;
-  font-size: 14px;
-  text-align: center;       // ← horizontally center the text
+  text-align: center;       /* horizontally center */
   vertical-align: middle;
+  padding: 12px;
+  background-color: #3352BA; /* dark blue */
+  color: white;             /* white text */
+  font-size: 14px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 600;         /* optional: bold */
 `;
+
 
 export const Td = styled.td`
   padding: 12px;
@@ -229,26 +258,24 @@ export const ImpersonateButton = styled.button`
 `;
 
 export const Pagination = styled.div`
-  margin-top: 20px;
   display: flex;
-  gap: 10px;
-  justify-content: flex-start; /* Aligns items to the left */
+  justify-content: flex-start; /* changed from flex-end to flex-start */
+  gap: 0.3rem;
+  margin-top: 1.5rem;
+  // padding: 0.6rem;
 
-  button {
-    padding: 8px 12px;
+  span {
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
     border: 1px solid #ccc;
-    background: white;
-    border-radius: 4px;
     cursor: pointer;
+    font-size: 0.7rem;
+  }
 
-    &.active {
-      background: #172554;
-      color: white;
-    }
-
-    &:hover {
-      background: #e2e8f0;
-    }
+  .active {
+    background: #1e3a8a;
+    color: white;
+    border-color: #1e3a8a;
   }
 `;
 
