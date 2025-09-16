@@ -3,6 +3,10 @@ import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import API from "../services/api";
+import { useLogout } from "../services/logout"; // adjust path
+import { useDispatch } from "react-redux";
+import { logout as logoutAction } from "../Redux/authSlice";
+
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,11 +34,15 @@ function Navbar() {
     };
   }, []);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/login";
-    setMenuOpen(false); // close after logout
-  };
+const dispatch = useDispatch();
+const logout = useLogout();
+
+const handleLogoutClick = async () => {
+  await logout(); // call API logout if refresh token exists
+  dispatch(logoutAction()); // clear Redux state
+  setMenuOpen(false);
+};
+
 
   const handlePasswordChange = async () => {
     setLoading(true);
@@ -82,8 +90,8 @@ function Navbar() {
               >
                 Change Password
               </div>
-              <div onClick={handleLogout}>Logout</div>
-            </DropdownMenu>
+              <div onClick={handleLogoutClick}>Logout</div>
+              </DropdownMenu>
           )}
         </DropdownWrapper>
       </TopBar>

@@ -46,7 +46,21 @@ const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // get
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState({});
-
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'Paid':
+        return 'green';
+      case 'OnHold':
+        return 'orange';
+      case 'Pending':
+        return 'yellow';
+      case 'Cancelled':
+        return 'red';
+      default:
+        return '#000'; // default black
+    }
+  };
+  
   // Fetch departments on mount
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: '' }));
@@ -165,7 +179,7 @@ const handleMonthChange = (e) => {
   
     const empStatus = verificationStatus[employee.id];
   
-    // 🚫 Case 1: Circle already verified
+    // 🚫 Already verified in this slot
     if (empStatus?.[type]) {
       Swal.fire({
         icon: "info",
@@ -175,10 +189,10 @@ const handleMonthChange = (e) => {
       return;
     }
   
-    // 🚫 Case 2: Same HR trying to verify both circles
+    // 🚫 Same HR trying to verify twice (check backend data: hr1_verified_by, hr2_verified_by)
     if (
-      (type === "first" && empStatus?.second) ||
-      (type === "second" && empStatus?.first)
+      employee.hr1_verified_by === user.username ||
+      employee.hr2_verified_by === user.username
     ) {
       Swal.fire({
         icon: "warning",
@@ -198,9 +212,12 @@ const handleMonthChange = (e) => {
         })
       ).unwrap();
   
-      setVerificationStatus(prev => ({
-        ...prev,
-        [employee.id]: { ...prev[employee.id], [type]: true },
+      await dispatch(getPayrollData({
+        page,
+        search: searchTerm,
+        month: selectedMonth,
+        year: selectedYear,
+        department: selectedDepartment,
       }));
   
       Swal.fire({
@@ -219,6 +236,7 @@ const handleMonthChange = (e) => {
       Swal.fire({ icon: "error", title: "Verification Failed", text: msg });
     }
   };
+  
   
   
 
@@ -331,7 +349,7 @@ const handleMonthChange = (e) => {
       }}
     >
       {verificationStatus[emp.id]?.first && (
-        <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
+        <FaCheck style={{ color: emp.hr1_verified ? 'blue' : 'gray', fontSize: '10px' }} />
       )}
     </div>
 
@@ -355,13 +373,21 @@ const handleMonthChange = (e) => {
   </div>
 </Td>
                     <Td>
-                      <Select value={emp.status || ''} onChange={(e) => handleSingleStatusChange(emp.employee, e.target.value)}>
-                        <option value="">Select</option>
-                        <option value="OnHold">OnHold</option>
-                        <option value="Cancelled">Cancelled</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Paid">Paid</option>
-                      </Select>
+                    <Select
+  value={emp.status || ''}
+  onChange={(e) => handleSingleStatusChange(emp.employee, e.target.value)}
+  style={{
+    backgroundColor: getStatusColor(emp.status),
+    color: emp.status === 'Pending' ? 'black' : 'white', // yellow text is black
+  }}
+>
+  <option value="">Select</option>
+  <option value="OnHold">OnHold</option>
+  <option value="Cancelled">Cancelled</option>
+  <option value="Pending">Pending</option>
+  <option value="Paid">Paid</option>
+</Select>
+
                     </Td>
                   </tr>
                 ))

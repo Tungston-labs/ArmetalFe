@@ -51,7 +51,32 @@ import Reimb2page from "./Pages/reimbursement/Reimb2Page.jsx"
 import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
 import FinancePage from "./Pages/finance/FinancePage.jsx"
 import Dashboard from "./Pages/employeDashboard/Sample.jsx";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "./Redux/authSlice";
+
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Check localStorage first, then sessionStorage
+    const user =
+      JSON.parse(localStorage.getItem("user")) ||
+      JSON.parse(sessionStorage.getItem("user"));
+
+    const accessToken =
+      localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+
+    if (user && accessToken) {
+      dispatch(
+        login({
+          userName: user.username,
+          accessToken,
+          user,
+        })
+      );
+    }
+  }, [dispatch]);
   return (
     <>
       <Routes>

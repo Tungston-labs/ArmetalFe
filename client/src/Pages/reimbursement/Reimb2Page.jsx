@@ -40,7 +40,21 @@ const [pagination, setPagination] = useState(null);
 
   const [department, setDepartment] = useState(null);
   const [employees, setEmployees] = useState([]);
-
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'Approve':
+        return { backgroundColor: 'green', color: 'white' };
+      case 'On Hold':
+        return { backgroundColor: 'orange', color: 'white' };
+      case 'In Verification':
+        return { backgroundColor: 'yellow', color: 'black' };
+      default:
+        return { backgroundColor: '#fff', color: '#000' };
+    }
+  };
+  
+  
+  
   const [formData, setFormData] = useState({
     name: "",
     department_code: "",
@@ -233,17 +247,51 @@ useEffect(() => {
                 <td>{emp.department?.name}</td>
                 <td>{emp.amount}</td>
                 <td>
-                  <select
-                    value={emp.status || ""}
-                    onChange={(e) => handleStatusChange(emp.id, e.target.value)}
-                    className="border rounded px-2 py-1 text-sm"
-                  >
-                    <option value="">Select</option>
-                    <option value="Approve">Approved</option>
-                    <option value="On Hold">On Hold</option>
-                    <option value="In Verification">In Verification</option>                    
-                  </select>
-                </td>
+  <select
+    value={emp.status || ""} // placeholder empty string
+    onChange={async (e) => {
+      const newStatus = e.target.value;
+
+      // Optimistic UI update
+      setEmployees(prev =>
+        prev.map(empItem =>
+          empItem.id === emp.id ? { ...empItem, status: newStatus } : empItem
+        )
+      );
+
+      try {
+        await updateReimbursementStatus(emp.id, newStatus);
+      } catch (err) {
+        console.error(err);
+        // rollback if API fails
+        setEmployees(prev =>
+          prev.map(empItem =>
+            empItem.id === emp.id ? { ...empItem, status: emp.status } : empItem
+          )
+        );
+      }
+    }}
+    style={{
+      ...getStatusStyle(emp.status),
+      appearance: 'none',
+      WebkitAppearance: 'none',
+      MozAppearance: 'none',
+      padding: '5px 10px',
+      borderRadius: '6px',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+    }}
+  >
+    <option value="" disabled>Select</option>
+    <option value="Approve">Approved</option>
+    <option value="On Hold">On Hold</option>
+    <option value="In Verification">In Verification</option>
+  </select>
+</td>
+
+
+
+
                 <td>
                   <IconButton onClick={() => navigate(`/reimbursement_info/${emp.id}`)}>
                     <IoInformationCircleOutline /> 

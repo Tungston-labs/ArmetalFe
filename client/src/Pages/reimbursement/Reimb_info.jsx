@@ -29,6 +29,23 @@ import {
   updateReimbursementStatus,
 } from "../../services/reimbursement";
 import Loader from "../../Components/Loader"
+// Add this function at the top of your component
+const getStatusStyle = (status) => {
+  switch (status) {
+    case "Approve":
+    case "Approve":
+      return { backgroundColor: "green", color: "white" };
+    case "On Hold":
+      return { backgroundColor: "orange", color: "white" };
+    case "In Verification":
+      return { backgroundColor: "yellow", color: "black" };
+    default:
+      return { backgroundColor: "#fff", color: "#000" };
+  }
+};
+
+
+
 const ReimbursementDetail = () => {
   const { id } = useParams(); // get :id from URL
   const navigate = useNavigate();
@@ -92,12 +109,38 @@ const ReimbursementDetail = () => {
             </HeaderSubtitle>
           </div>
         </HeaderLeft>
-        <SelectBox value={reimbursement.status} onChange={handleStatusChange}>
-          <option value="">Select</option>
-          <option value="Approve">Approved</option>
-          <option value="On Hold">On Hold</option>
-          <option value="In Verification">In Verification</option>
-        </SelectBox>
+<SelectBox
+  value={reimbursement.status || ""}
+  onChange={async (e) => {
+    const newStatus = e.target.value;
+
+    try {
+      // Optimistic update
+      setReimbursement((prev) => ({ ...prev, status: newStatus }));
+
+      // Wait for API to persist
+      await updateReimbursementStatus(id, newStatus);
+    } catch (error) {
+      console.error("Failed to update status:", error);
+      // rollback in case of failure
+      setReimbursement((prev) => ({ ...prev, status: reimbursement.status }));
+    }
+  }}
+  style={{
+    ...getStatusStyle(reimbursement.status),
+    fontWeight: "bold",
+    borderRadius: "6px",
+    padding: "5px 10px",
+    cursor: "pointer",
+  }}
+>
+  <option value="" disabled>
+    Select
+  </option>
+  <option value="Approve">Approved</option>
+  <option value="On Hold">On Hold</option>
+  <option value="In Verification">In Verification</option>
+</SelectBox>
       </Header>
 
       {/* Profile */}
@@ -131,14 +174,22 @@ const ReimbursementDetail = () => {
 
 <Divider />
       {/* Date */}
-      <DateSection>
-        <Label style={{color:"#6C6C6C",fontSize:"14px"}}>Date</Label>
-        <Value>{reimbursement.date}</Value>
-      </DateSection>
+      <DateSection style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+  <div>
+    <Label style={{ color: "#6C6C6C", fontSize: "14px" }}>Date</Label>
+    <Value>{reimbursement.date}</Value>
+  </div>
 
-      {/* Note */}
-      <h6 style={{color:"#6C6C6C"}}>Note</h6>
-      <DescriptionBox>{reimbursement.note}</DescriptionBox>
+  <div>
+    <Label style={{ color: "#6C6C6C", fontSize: "14px",paddingRight:"500px", }}>Amount</Label>
+    <Value style={{ fontWeight: "bold" }}>{reimbursement.amount} AED</Value>
+  </div>
+</DateSection>
+
+{/* Note */}
+<h6 style={{ color: "#6C6C6C", marginTop: "1rem" }}>Note</h6>
+<DescriptionBox>{reimbursement.note}</DescriptionBox>
+
 
       {/* Bills */}
       <BillsSection>

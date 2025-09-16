@@ -183,34 +183,6 @@ class PayrollVerifyView(APIView):
             }
         })
 
-
-# class PayrollStatusUpdateView(APIView):
-#     permission_classes = [IsAuthenticated, IsHRAdmin]
-
-#     def patch(self, request, employee_id):
-#         month = request.data.get('month')
-#         year = request.data.get('year')
-#         new_status = request.data.get('status')
-
-#         if not all([month, year, new_status]):
-#             return Response({"error": "Month, year, and status are required."}, status=400)
-
-#         if new_status not in dict(EmployeePayrollRecord.STATUS_CHOICES):
-#             return Response({"error": "Invalid status"}, status=400)
-
-#         record = get_object_or_404(
-#             EmployeePayrollRecord,
-#             employee__id=employee_id,
-#             month=month,
-#             year=year
-#         )
-
-#         record.status = new_status
-#         record.save()
-
-#         serializer = EmployeePayrollRecordSerializer(record)
-#         return Response(serializer.data)
-
 class PayrollStatusUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
