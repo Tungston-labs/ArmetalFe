@@ -31,11 +31,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 }
 
 ### Refresh Access Token
-POST http://127.0.0.1:8000/api/token/refresh/
+POST http://178.248.112.16:8001/api/token/refresh/
 Content-Type: application/json
 
 {
-  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1MzMzODQ2MiwiaWF0IjoxNzUzMjUyMDYyLCJqdGkiOiIyOWQxM2QxMDRkOWE0MGY3OTgxMjJhZTA1ZTg5MWRjZSIsInVzZXJfaWQiOjEsImlzX3N1cGVyYWRtaW4iOnRydWUsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.Ymgt13k3alK8nEm2--yexqCd2vf3i2rRfOeBfwGUqb0"
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2MzE4MDUxOSwiaWF0IjoxNzU3OTk2NTE5LCJqdGkiOiJhOThhZjE5Y2M0YTM0N2ZkOGI3Nzk3NjdmYmNlNmFlNyIsInVzZXJfaWQiOiI3MiIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.P0o2GRnBLvHxriRFr8UDEagUrIYWuimnYCCDbDzPG7Y"
 }
 
 

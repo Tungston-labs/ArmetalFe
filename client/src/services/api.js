@@ -23,12 +23,12 @@ API.interceptors.request.use(
 );
 
 // Response Interceptor: Refresh token on 401
+// Response Interceptor: Refresh token on 401
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Token expired and not already retried
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
@@ -44,16 +44,21 @@ API.interceptors.response.use(
         });
 
         const newAccessToken = res.data.access;
+        const newRefreshToken = res.data.refresh; // 👈 important
+
+        // Store both tokens
         localStorage.setItem("accessToken", newAccessToken);
+        if (newRefreshToken) {
+          localStorage.setItem("refreshToken", newRefreshToken); // 👈 overwrite old refresh token
+        }
 
-
-        // Update and retry the original request
+        // Retry the original request
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return API(originalRequest);
       } catch (refreshErr) {
         console.error("Refresh token failed:", refreshErr);
-        localStorage.clear(); // Clear all tokens
-        window.location.href = "/login"; // Or use navigate("/login")
+        localStorage.clear();
+        window.location.href = "/login";
         return Promise.reject(refreshErr);
       }
     }
@@ -61,5 +66,6 @@ API.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default API;

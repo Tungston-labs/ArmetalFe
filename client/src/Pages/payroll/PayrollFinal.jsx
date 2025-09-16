@@ -285,7 +285,7 @@ const handleMonthChange = (e) => {
           <Table>
             <thead>
               <tr>
-                <Th></Th>
+                <Th><input type="checkbox"></input></Th>
                 <Th>Sl No</Th>
                 <Th>Employee ID</Th>
                 <Th>Employee name</Th>

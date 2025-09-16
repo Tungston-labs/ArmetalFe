@@ -291,12 +291,21 @@ export const ActionArea = styled.div`
   margin: 1.5rem 0;
 `;
 export const DepartmentSelect = styled.select`
-  padding: 8px 12px;
+  padding: 8px 30px 8px 12px; /* room for arrow */
   font-size: 14px;
   border-radius: 5px;
   border: 1px solid #ccc;
   background: white;
+  height: 40px;
+  min-width: 200px;
+
+  appearance: none;
+  background: url("data:image/svg+xml;utf8,<svg fill='black' height='14' viewBox='0 0 24 24' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
+    no-repeat right 10px center;
+  background-color: white;
+  background-size: 14px;
 `;
+
 export const Title = styled.h2`
   font-size: 1.4rem;
   margin: 0;
