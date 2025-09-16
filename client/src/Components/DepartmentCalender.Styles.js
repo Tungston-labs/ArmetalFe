@@ -309,8 +309,12 @@ export const HolidayInfo = styled.div`
 export const HolidayTitle = styled.div`
   font-weight: 600;
   font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+  cursor: pointer;
 `;
-
 export const HolidayDate = styled.div`
   font-size: 0.8rem;
   font-weight: 500;

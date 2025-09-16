@@ -64,6 +64,7 @@ export const IconSection = styled.div`
   // justify-content: center;
   min-width: 35px;
   margin-left:10px;
+  margin-top:10px;
 `;
 
 // export const Divider = styled.div`

@@ -199,7 +199,11 @@ const DepartmentCalendar = () => {
                 <img src={HolidaySvg} alt="holiday icon" />
               </HolidayIcon>
               <HolidayInfo>
-                <HolidayTitle>{h.description}</HolidayTitle>
+         <HolidayTitle title={h.description}>
+  {h.description}
+</HolidayTitle>
+
+
                 <p>{h.holiday_type}</p>
               </HolidayInfo>
               <HolidayDate>{new Date(h.date).toLocaleDateString()}</HolidayDate>
