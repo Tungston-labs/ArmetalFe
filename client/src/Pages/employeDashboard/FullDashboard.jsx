@@ -3,11 +3,11 @@ import Sample from "./Sample"; // Left Side
 import Employeedashboard from "./Employeedashboard"; // Right Side
 import styled from "styled-components";
 import Loader from "../../Components/Loader"
-
+import BottomCard from "./BottomCard"
 const Wrapper = styled.div`
   background: #f4f4f4;
-  display: flex;
-  flex-direction: row;
+  // display: flex;
+  // flex-direction: row;
   min-height: 100vh;
   height: auto;
 padding:20px;
@@ -44,8 +44,11 @@ const FullDashboard = () => {
 
   return (
     <Wrapper>
+      <div style={{display:"flex", width:"100%",height:"100%"}}>
       <Sample />
       <Employeedashboard />
+      </div>
+<BottomCard/>
     </Wrapper>
   );
 };

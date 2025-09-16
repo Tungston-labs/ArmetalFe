@@ -55,6 +55,20 @@ export const RightPanel = styled.div`
 export const FormBox = styled.div`
   max-width: 400px;
   width: 100%;
+  margin-top:100px;
+  
+  h2{
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 41px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+text-align: center;
+}
+
+
 `;
 
 export const Label = styled.label`

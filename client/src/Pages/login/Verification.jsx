@@ -17,7 +17,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PunchLoader from '../../Components/Loader'; // ✅ adjust path if needed
-
+import { FaChevronLeft } from "react-icons/fa6";
 const VerifyCodePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -102,8 +102,8 @@ const VerifyCodePage = () => {
         <RightPanel>
         <FormBox>
   {/* Back arrow and title */}
-  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', cursor: 'pointer' }} onClick={() => navigate(-1)}>
-    <IoIosArrowBack size={28} /> {/* Back arrow */}
+  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', cursor: 'pointer',marginLeft:"-40px" }} onClick={() => navigate(-1)}>
+    <FaChevronLeft size={28} /> {/* Back arrow */}
     <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', margin: 0 }}>Verification</h2>
   </div>
 
@@ -131,12 +131,14 @@ const VerifyCodePage = () => {
   </form>
 
   {/* Resend OTP link */}
+   {/* Resend OTP link */}
   <p
     style={{
       marginTop: '60px',
       fontSize: '16px',
       color: '#3250B5',
       cursor: 'pointer',
+      textAlign: 'center',   // ✅ centers the text
     }}
     onClick={async () => {
       try {
@@ -154,6 +156,16 @@ const VerifyCodePage = () => {
   >
     Resend OTP
   </p>
+  <p style={{ 
+      marginTop: 200, 
+      textAlign: "center", 
+      fontFamily: "Satoshi, Anek Malayalam", 
+      fontWeight: 400, 
+      color: "#3250B5" 
+    }}>
+      <span style={{ fontFamily: "Satoshi", fontWeight: 400 }}>Powered by </span>
+      <span style={{ fontFamily: "Anek Malayalam", fontWeight: 700 }}>REKORY</span>
+    </p>
 </FormBox>
 
         </RightPanel>

@@ -36,10 +36,11 @@ import {
   HolidayInfo,
   HolidayTitle,
   HolidayDate,
+  ArrowIcon,
 } from "./DepartmentCalender.Styles";
 import HalfDoughnutChart from "./HalfDoughnutChart";
 import HolidaySvg from "../assets/holiday.svg";
-
+import { Link } from "react-router-dom";
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
 const DepartmentCalendar = () => {
@@ -115,19 +116,29 @@ const DepartmentCalendar = () => {
             Department <FiArrowUpRight />
           </SectionTitle>
         </NavLink>
-        <DepartmentWrapper>
-          {departments.map((dept) => (
-            <DepartmentCard key={dept.id}>
-              <InitialCircle>{dept.name.charAt(0)}</InitialCircle>
-              <DeptInfo>
-                
-                <h3>{dept.name}</h3>
-                <DeptHead>Department head: {dept.head?.name || "N/A"}</DeptHead>
-              </DeptInfo>
-              <DeptCount>{dept.employee_count}</DeptCount>
-            </DepartmentCard>
-          ))}
-        </DepartmentWrapper>
+      <DepartmentWrapper>
+  {departments.map((dept) => (
+    <DepartmentCard key={dept.id}>
+      <InitialCircle>{dept.name.charAt(0)}</InitialCircle>
+
+      <DeptInfo>
+        <h3>{dept.name}</h3>
+        <DeptHead>Department head: 
+       <p>  {dept.head?.name || "N/A"}</p> 
+          </DeptHead>
+      </DeptInfo>
+
+      <DeptCount>{dept.employee_count}
+       <ArrowIcon>
+       <Link to={`/departments/${dept.id}`}>
+            <FiArrowUpRight size={20} style={{ cursor: "pointer" }} />
+          </Link>
+      </ArrowIcon>
+      </DeptCount>
+    </DepartmentCard>
+  ))}
+</DepartmentWrapper>
+
 
         {/* Employee Presence */}
         <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: "none", color: "inherit" }}>

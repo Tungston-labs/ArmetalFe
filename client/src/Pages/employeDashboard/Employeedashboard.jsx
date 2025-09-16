@@ -188,18 +188,16 @@ const formatUTCToLocal = (utcTimeStr) => {
         </DepartmentBox>
 
         {/* Time Log Table */}
-        <DateHeading>
+        {/* <DateHeading>
   {new Date().toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
   })}
-  {/* <ArrowButton>
-    <FaArrowUpRightFromSquare />
-  </ArrowButton> */}
-</DateHeading>
 
-     <TimeLogContainer>
+</DateHeading> */}
+
+     {/* <TimeLogContainer>
   <ScrollableTableWrapper>
     {employeeDashData?.today_sessions?.length > 0 ? (
       <Table>
@@ -247,7 +245,7 @@ const formatUTCToLocal = (utcTimeStr) => {
       </div>
     )}
   </ScrollableTableWrapper>
-</TimeLogContainer>
+</TimeLogContainer> */}
 
     </MainWrapper>
     </Container>
