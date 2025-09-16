@@ -28,7 +28,7 @@ import { fetchEmployeeDash } from "../../Redux/authSlice";
 import { useParams } from "react-router-dom";
 import noTasks from "../../assets/daliy.svg"; 
 import { Spin } from "antd";
-
+import { FaArrowLeft } from "react-icons/fa";
 // import Employeedashboard from "./Employeedashboard"
 const Dashboard = () => {
   const { employeeId } = useParams();
@@ -57,18 +57,25 @@ const Dashboard = () => {
     <>
       <Container>
         <TopSection>
+          
           <LeftColumn>
+            
             <ProfileCard>
-           <div className="image-wrapper">
+              
+          <div className="image-wrapper">
+  {/* Back arrow */}
+ 
+
   <img
     src={`${BASE_URL}${employeeDashData?.bank_details?.employee?.profile_pic}`}
     alt="profile"
   />
+
   <FaEdit
-      className="edit-icon"
-      style={{ cursor: "pointer" }}
-   onClick={() => navigate(`/ViewBasic/${employeeId}`)}
-    />
+    className="edit-icon"
+    style={{ cursor: "pointer" }}
+    onClick={() => navigate(`/ViewBasic/${employeeId}`)}
+  />
 </div>
 
               <div className="details">
@@ -173,42 +180,8 @@ const Dashboard = () => {
             </TimeTrackingCard>
           </RightColumn>
         </TopSection>
-
-        {/* <TaskTitle>Daily Task List</TaskTitle>
-
-        <TaskSection>
-  {loadingEmployeeDash ? (
-    <p>Loading tasks...</p>
-  ) : employeeDashData?.daily_tasks?.length > 0 ? (
-    employeeDashData.daily_tasks.map((task, idx) => (
-      <TaskItem key={idx}>
-        <TaskMeta>
-          <span>{new Date(task.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}</span>
-          <strong>
-            {task.time_taken} hrs
-          </strong>
-        </TaskMeta>
-        <TaskText>
-          <h5>{task.project}</h5>
-          <p>{task.task}</p>
-        </TaskText>
-        <a href="/daily-task">↗</a>
-      </TaskItem>
-    ))
-  ) : (
-     <div style={{ textAlign: "center", padding: "20px",background:"white" }}>
-      <img
-        src={noTasks}
-        alt="No tasks found"
-        style={{ width: "300px", height: "auto",  }}
-      />
-      <p style={{ marginTop: "10px", color: "#3352BA",fontSize:"lato" }}>"Todays task list is empty"  </p>
-    </div>
-  )}
-</TaskSection> */}
-
       </Container>
-      {/* <Employeedashboard /> */}
+
     </>
   );
 };

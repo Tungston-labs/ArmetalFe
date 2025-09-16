@@ -16,7 +16,7 @@ import {
   LoaderOverlay,
 } from "./Visa.Styles";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import { FaInfoCircle, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,6 +28,7 @@ import {
 import Loader from "../../Components/Loader";
 import Navbar from "../../Components/Navbar";
 import { TextBlock } from "../leaveDetails/EmployeeList.styles";
+import { GoInfo } from "react-icons/go";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -223,7 +224,7 @@ const EmployeeList = () => {
                     onClick={() => navigate(`/fulldashboard/${emp.id}`)}
                     style={{ cursor: "pointer" }}
                   >
-                    <FaInfoCircle />
+                    <GoInfo />
                   </td>
                   <td>
                     <FaTrash

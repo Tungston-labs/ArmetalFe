@@ -33,6 +33,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar';
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader"
+import { GoInfo } from 'react-icons/go';
 
 const DepartmentDetail = () => {
   const { id } = useParams();
@@ -256,7 +257,7 @@ if (!department) return <Loader />;
                 <td>{department.name}</td>
                 <td>
                   <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`)}>
-                    <FaInfoCircle />
+                    <GoInfo />
                   </IconButton>
 
                 </td>

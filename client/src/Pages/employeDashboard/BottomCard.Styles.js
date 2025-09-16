@@ -28,13 +28,14 @@ export const Title = styled.h3`
   font-size: 16px;
   font-weight: 600;
   color: #3352BA;
-  font-family: Raleway;
+ font-family: Satoshi;
 font-weight: 700;
 font-style: Bold;
 font-size: 20px;
 leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
+
 
 `;
 
