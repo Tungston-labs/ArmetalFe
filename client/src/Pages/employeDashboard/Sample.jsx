@@ -28,6 +28,7 @@ import { fetchEmployeeDash } from "../../Redux/authSlice";
 import { useParams } from "react-router-dom";
 import noTasks from "../../assets/daliy.svg"; 
 import { Spin } from "antd";
+
 // import Employeedashboard from "./Employeedashboard"
 const Dashboard = () => {
   const { employeeId } = useParams();
@@ -173,7 +174,7 @@ const Dashboard = () => {
           </RightColumn>
         </TopSection>
 
-        <TaskTitle>Daily Task List</TaskTitle>
+        {/* <TaskTitle>Daily Task List</TaskTitle>
 
         <TaskSection>
   {loadingEmployeeDash ? (
@@ -204,7 +205,8 @@ const Dashboard = () => {
       <p style={{ marginTop: "10px", color: "#3352BA",fontSize:"lato" }}>"Todays task list is empty"  </p>
     </div>
   )}
-</TaskSection>
+</TaskSection> */}
+
       </Container>
       {/* <Employeedashboard /> */}
     </>

@@ -71,11 +71,11 @@ export const DepartmentWrapper = styled.div`
 export const DepartmentCard = styled.div`
   flex: 0 0 auto;
   background: #fff;
-  // border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   padding: 1rem;
-  display: flex;
+  display: flex;            /* 👈 row layout */
   align-items: center;
+  justify-content: space-between;
   min-width: 250px;
   min-height: 150px;
   position: relative;
@@ -87,36 +87,71 @@ export const InitialCircle = styled.div`
   color: #B5E2FF;
   margin-right: 1rem;
   font-family: Raleway;
+  font-style: Bold;
+  line-height: 100%;
+`;
+export const DeptInfo = styled.div`
+  flex: 1;                 
+  display: flex;
+  flex-direction: column;   
+  justify-content: flex-start;
+  margin-top:2rem;
+
+  h3{
+  font-family: Raleway;
 font-weight: 700;
 font-style: Bold;
-// font-size: 110px;
-leading-trim: CAP_HEIGHT;
+font-size: 20px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
+  }
+
+  p{
+  font-family: Raleway;
+font-weight: 400;
+font-style: Regular;
+font-size: 15px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
+  }
+`;
+export const DeptHead = styled.p`
+  // margin-top: 0.5rem;     
+  font-size: clamp(0.7rem, 1vw, 1rem);
+  color: #666;
+`;
+export const DeptCount = styled.div`
+  font-size: clamp(1rem, 1.5vw, 1.5rem);
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  align-self: flex-start; 
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 20px;
+leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
 
 `;
 
-export const DeptInfo = styled.div`
-  flex: 1;
-`;
-
-export const DeptHead = styled.p`
-  margin: 0;
-  font-size: clamp(0.7rem, 1vw, 1rem);
-  color: #666;
-`;
-
-export const DeptCount = styled.div`
+export const ArrowIcon = styled.div`
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  font-size: clamp(1rem, 1.5vw, 1.5rem);
-  font-weight: bold;
-  padding: 0.25rem 0.5rem;
-  border-radius: 8px;
+  bottom: 0.5rem;
+  right: 0.9rem;
+  font-size: 1.2rem;
+  color: #3352BA;
+  cursor: pointer;
+
+  &:hover {
+    color: blue;
+  }
 `;
-
-
 export const CardIcon = styled.div`
   position: absolute;
   bottom: 0.5rem;
@@ -234,15 +269,27 @@ export const EmployeeExpiryWrapper = styled.div`
   border-radius: 7px;
   padding: 1rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+
+  h3{
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 21px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
+  }
 `;
 
 export const EmployeeRow = styled.div`
   display: grid;
-  grid-template-columns: 40px 1fr 80px 1.5fr;
+  grid-template-columns: 40px 1fr 1fr 1.5fr;
   gap: 0.5rem;
-  align-items: center;
+  align-items: left;
   padding: 6px 0;
-  border-bottom: 1px solid #eee;
+  // border-bottom: 1px solid #eee;
+  
   &:last-child { border-bottom: none; }
 `;
 
@@ -322,4 +369,6 @@ export const HolidayDate = styled.div`
 `;
 export const ChartConatiner = styled.div`
 background:#fff;
+
 `;
+

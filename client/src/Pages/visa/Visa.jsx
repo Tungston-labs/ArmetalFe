@@ -106,6 +106,7 @@ const EmployeeList = () => {
 
   return (
     <>
+        <Container>
       <Navbar />
       {loading && (
         <LoaderOverlay>
@@ -342,7 +343,7 @@ const EmployeeList = () => {
             </div>
           </div>
         )}
-      
+      </Container>
     </>
   );
 };
