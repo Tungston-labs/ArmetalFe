@@ -96,7 +96,7 @@ const CompanyTable = () => {
       <HeaderSection>
         <TitleSection>
           <LuArrowLeft style={{ width: "30px", height: 30 }} />
-          <img src="/images/laptop_chromebook.png" alt="Payroll Icon" style={{ height: "50px" }} />
+          <img src="/images/superadminlogo.png" alt="Payroll Icon" style={{ height: "50px" }} />
           <div>
             <Title>Super admin</Title>
             <Subtitle>Manage all departments within the organization.</Subtitle>
@@ -150,7 +150,7 @@ const CompanyTable = () => {
                   <Td>{item.number_of_employees}</Td>
 
                   {/* ✅ Navigate with company_id */}
-                  <Td onClick={() => navigate(`/view/${item.id}`)} style={{ cursor: 'pointer' }}>
+                  <Td onClick={() => navigate(`/superadmin/view/${item.id}`)} style={{ cursor: 'pointer' }}>
   <IoInformationCircleOutline />
 </Td>
 

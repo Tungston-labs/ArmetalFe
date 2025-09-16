@@ -218,11 +218,42 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
               <Input name="email" value={formData.email} onChange={handleChange} placeholder="Company E-mail" />
               {formErrors.email && <p style={{ color: 'red' }}>{formErrors.email}</p>}
             </FormField>
+
+    <FormField>
+              <Label>Upload logo</Label>
+        <LogoUploadBox onClick={() => fileInputRef.current.click()}>
+          <FiUpload size={24} />
+          <p>
+            Click to upload or Drag and Drop <br />
+            Max 2 MB file size (PNG or SVG only)
+          </p>
+          <input
+            type="file"
+            accept=".png,.svg"
+            ref={fileInputRef}
+            onChange={handleLogoChange}
+            style={{ display: "none" }}
+          />
+        </LogoUploadBox>
+
+        {logoPreview && (
+          <LogoPreview>
+            {formData.logo?.type === "image/svg+xml" ? (
+              <object data={logoPreview} type="image/svg+xml" width="50" height="50" />
+            ) : (
+              <img src={logoPreview} alt="Logo" />
+            )}
+            <button onClick={removeLogo} type="button">
+              <AiOutlineClose />
+            </button>
+          </LogoPreview>
+        )}
+        </FormField>
           </div>
 
           <div>
             <FormField>
-              <Label>Location</Label>
+              <Label>Company location</Label>
               <Input name="location" value={formData.location} onChange={handleChange} placeholder="Location" />
               {formErrors.location && <p style={{ color: 'red' }}>{formErrors.location}</p>}
             </FormField>
@@ -299,7 +330,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
           </div>
         </FormSection>
 
-        <Label>Upload logo</Label>
+        {/* <Label>Upload logo</Label>
         <LogoUploadBox onClick={() => fileInputRef.current.click()}>
           <FiUpload size={24} />
           <p>
@@ -326,7 +357,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
               <AiOutlineClose />
             </button>
           </LogoPreview>
-        )}
+        )} */}
 
 
         <h4>Privileges</h4>

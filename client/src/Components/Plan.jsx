@@ -15,7 +15,8 @@ import {
   TableHead,
   TableRow,
   TableData,
-  ScrollWrapper
+  ScrollWrapper,
+  PlanIconWrapper
 } from './Plan.Styles';
 import API from '../services/api';
 
@@ -159,31 +160,24 @@ const handleDownload = (entry) => {
     <>
       <SectionTitle>Payment Overview</SectionTitle>
 
-      <PlanCard>
-        <div style={{
-          background: "#182657",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "70px",
-          borderRadius: "10px",
-          height: "75px"
-        }}>
-          <PlanIcon>
-            <img src="/images/plan.png" alt="Plan Icon" />
-          </PlanIcon>
-        </div>
+    <PlanCard>
+  <PlanIconWrapper>
+    <PlanIcon>
+      <img src="/images/plan.png" alt="Plan Icon" />
+    </PlanIcon>
+  </PlanIconWrapper>
 
-        <PlanDetails>
-          <h3>Enterprise plan</h3>
-          <p>
-            Pay a fixed $5 per employee.<br />
-            Simple, transparent, and ideal for managing individual payroll with ease.
-          </p>
-        </PlanDetails>
+  <PlanDetails>
+    <h3>Enterprise plan</h3>
+    <p>
+      Pay a fixed $5 per employee.<br />
+      Simple, transparent, and ideal for managing individual payroll with ease.
+    </p>
+  </PlanDetails>
 
-        <PlanPrice>$5</PlanPrice>
-      </PlanCard>
+  <PlanPrice>$5</PlanPrice>
+</PlanCard>
+
 
       <ScrollWrapper>
         <PaymentTable>
@@ -225,7 +219,7 @@ const handleDownload = (entry) => {
                       {entry.status}
                     </button>
                   </TableData>
-                  <TableData style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                  <TableData style={{  gap: '10px', justifyContent: 'center' }}>
                     <button onClick={() => handleDownload(entry)} title="Download" style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
                       <MdOutlineFileDownload />
                     </button>
