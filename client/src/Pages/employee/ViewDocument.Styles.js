@@ -91,6 +91,19 @@ border: 1px solid #052DB4;
 background: #FFF;
 `;
 
+export const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  // margin-bottom: 1rem;
+`;
+
+export const Label = styled.label`
+  font-size: 0.9rem;
+  font-weight: 500;
+  // margin-bottom: 0.3rem;
+  color: #052DB4;
+`;
+
 export const Avatar = styled.img`
   width: 100px;
   height: 100px;

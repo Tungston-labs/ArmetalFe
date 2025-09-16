@@ -91,28 +91,89 @@ export const SearchInput = styled.input`
   border-radius: 4px;
 `;
 
+// export const FormSection = styled.div`
+//   display: flex;
+//   gap: 27px;
+//   // margin-bottom: 30px;
+
+// `;
+
+// export const Input = styled.input`
+//   padding: 8px 12px;
+//   border: 1px solid #ccc;
+//   border-radius: 7px;
+//   width:40%;
+//     background-color:white;
+// `;
+
+// export const Select = styled.select`
+//   padding: 8px 12px;
+//   border: 1px solid #ccc;
+//   border-radius: 7px;
+//   width:25%;
+//     background-color:white;
+// `;
+
+export const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;   /* consistent width */
+  flex: 1;            /* grow evenly */
+`;
+
+export const Label = styled.label`
+  font-size: 0.9rem;
+  font-weight: 600;
+  // color: #333;
+  font-family: Satoshi;
+font-weight: 400;
+font-style: Regular;
+// font-size: 18px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
+`;
+
 export const FormSection = styled.div`
   display: flex;
   gap: 27px;
-  // margin-bottom: 30px;
-
+  flex-wrap: wrap; // wrap on small screens
 `;
 
 export const Input = styled.input`
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 7px;
-  width:40%;
-    background-color:white;
+  width: 100%;
+  background-color: white;
 `;
 
 export const Select = styled.select`
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 7px;
-  width:25%;
-    background-color:white;
+  width: 100%;
+  background-color: white;
 `;
+
+// export const DateWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+//   gap: 8px;
+//   border: 1px solid #ccc;
+//   border-radius: 7px;
+//   padding: 4px 8px;
+//   background-color: white;
+// `;
+
+// export const DateInput = styled.input`
+//   border: none;
+//   outline: none;
+//   flex: 1;
+// `;
+
 export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
@@ -137,12 +198,14 @@ export const DateWrapper = styled.div`
 export const AddButton = styled.button`
   background-color: #3352BA;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 16px;
   border: none;
   border-radius: 7px;
   cursor: pointer;
-  width:10%;
-  font-size:18px
+  font-size: 16px;
+  height: 42px;
+  align-self: flex-end; 
+  margin-left: auto;   
 `;
 
 export const TableWrapper = styled.div`

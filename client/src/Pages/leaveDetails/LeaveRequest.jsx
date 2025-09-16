@@ -190,7 +190,7 @@ const isLoading = loading || deptLoading;
             <TableHead>Leave type</TableHead>
             <TableHead>Email ID</TableHead>
             <TableHead>Contact number</TableHead>
-            <TableHead>StartDate and EndDate</TableHead>
+            <TableHead>Start date to End date</TableHead>
             <TableHead></TableHead>
             <TableHead></TableHead>
           </TableRow>

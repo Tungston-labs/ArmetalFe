@@ -98,6 +98,18 @@ export const Avatar = styled.img`
   object-fit: cover;
 `;
 
+export const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  // margin-bottom: 1rem;
+`;
+
+export const Label = styled.label`
+  font-size: 0.9rem;
+  font-weight: 500;
+  // margin-bottom: 0.3rem;
+  color: #052DB4;
+`;
 
 
 export const Section = styled.div`

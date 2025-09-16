@@ -22,6 +22,8 @@ ErrorMessage,
   DateWrapper,
 Pagination,
 Heading,
+FieldWrapper,
+Label,
 
 } from './Holiday.styles';
 import { MdDateRange } from "react-icons/md";
@@ -145,31 +147,44 @@ const cancelDelete = () => {
 
 <HolidayHeading/>
 
-      <FormSection>
-<Input
-  name="name"
-  placeholder="Holiday name"
-  value={formData.name}
-  onChange={(e) =>
-    setFormData({ ...formData, name: e.target.value.slice(0, 250) })
-  }
-/>
+   <FormSection>
+  <FieldWrapper>
+    <Label>Holiday Name</Label>
+    <Input
+      name="name"
+      placeholder="Holiday name"
+      value={formData.name}
+      onChange={(e) =>
+        setFormData({ ...formData, name: e.target.value.slice(0, 250) })
+      }
+    />
+  </FieldWrapper>
 
-  
-  <Select name="type" value={formData.type} onChange={handleChange}>
-    <option value="">Select</option>
-    {typeOptions.map(({ key, label }) => (
-      <option key={key} value={key}>
-        {label}
-      </option>
-    ))}
-  </Select>
+  <FieldWrapper>
+    <Label>Type</Label>
+    <Select name="type" value={formData.type} onChange={handleChange}>
+      <option value="">Select</option>
+      {typeOptions.map(({ key, label }) => (
+        <option key={key} value={key}>
+          {label}
+        </option>
+      ))}
+    </Select>
+  </FieldWrapper>
 
-  <DateWrapper>
-    <MdDateRange />
-    <DateInput type="date" name="date" value={formData.date} onChange={handleChange} />
-  </DateWrapper>
-  
+  <FieldWrapper>
+    <Label>Date</Label>
+    <DateWrapper>
+      {/* <MdDateRange /> */}
+      <DateInput
+        type="date"
+        name="date"
+        value={formData.date}
+        onChange={handleChange}
+      />
+    </DateWrapper>
+  </FieldWrapper>
+
   <AddButton onClick={handleAdd}>Add</AddButton>
 </FormSection>
 

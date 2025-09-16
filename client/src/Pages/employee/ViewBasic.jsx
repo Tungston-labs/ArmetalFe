@@ -29,6 +29,8 @@ import {
   Column,
   FullPageLoaderWrapper,
   FieldGroup,
+  FieldWrapper,
+  FieldWrappers,
 } from "./ViewBasic.Style";
 import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
@@ -257,21 +259,57 @@ useEffect(() => {
         </ImageColumn>
 
         {/* Basic Info */}
-        <Row>
-          <LeftSection>
-            <Input name="name" value={formData.name || ""} onChange={handleChange} readOnly={!editMode} />
-            <Input name="employee_id" value={formData.employee_id || ""} readOnly />
-            <Input name="email" value={formData.email || ""} onChange={handleChange} readOnly={!editMode} />
-          </LeftSection>
+  <Row>
+  <LeftSection>
+    <FieldWrapper>
+      <Label>Name</Label>
+      <Input name="name" value={formData.name || ""} onChange={handleChange} readOnly={!editMode} />
+    </FieldWrapper>
 
-          <RightSection>
-            <Textarea name="address" value={formData.address || ""} onChange={handleChange} readOnly={!editMode} />
-            <Rows style={{ marginTop: "1rem" }}>
-              <Input name="dob" value={formData.dob || ""} onChange={handleChange} readOnly={!editMode} />
-              <Input name="gender" value={formData.gender || ""} onChange={handleChange} readOnly={!editMode} />
-            </Rows>
-          </RightSection>
-        </Row>
+    <FieldWrapper>
+      <Label>Employee ID</Label>
+      <Input name="employee_id" value={formData.employee_id || ""} readOnly />
+    </FieldWrapper>
+
+    <FieldWrapper>
+      <Label>Email</Label>
+      <Input name="email" value={formData.email || ""} onChange={handleChange} readOnly={!editMode} />
+    </FieldWrapper>
+  </LeftSection>
+
+  <RightSection>
+    <FieldWrapper>
+      <Label>Address</Label>
+      <Textarea name="address" value={formData.address || ""} onChange={handleChange} readOnly={!editMode} />
+    </FieldWrapper>
+
+    <Rows style={{ marginTop: "1rem" }}>
+     <FieldWrappers>
+  <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
+    <Label>Date of Birth</Label>
+    <Input
+      name="dob"
+      value={formData.dob || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+    />
+  </FieldWrapper>
+
+  <FieldWrapper style={{ flex: 1 }}>
+    <Label>Gender</Label>
+    <Input
+      name="gender"
+      value={formData.gender || ""}
+      onChange={handleChange}
+      readOnly={!editMode}
+    />
+  </FieldWrapper>
+</FieldWrappers>
+
+    </Rows>
+  </RightSection>
+</Row>
+
       </FormWrapper>
 
       <Hr />

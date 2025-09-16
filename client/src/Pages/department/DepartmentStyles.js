@@ -117,8 +117,8 @@ export const InitialCircle = styled.div`
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: rgb(255, 255, 255);
-  color: #B5E2FF;
+  background-color: rgba(255, 255, 255, 1);
+  color: #ECF8FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,6 +126,13 @@ export const InitialCircle = styled.div`
   font-size: 100px;
   font-family: Satoshi;
   padding-right: 18px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    color: #CAD2ED; 
+  }
+
+
 `;
 
 export const AddButton = styled.button`

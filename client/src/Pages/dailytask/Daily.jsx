@@ -197,13 +197,14 @@ const selected = new Date(selectedDate); // convert string to Date
             ) : tasks.length > 0 ? (
               tasks.map((task, idx) => (
                 <TaskCard key={idx}>
-                  <h4>Project &nbsp;<strong>{task.project}</strong></h4>
-                  <p>Description</p>
+                  <h4>Project: &nbsp;<strong>{task.project}</strong></h4>
+                  <h5><strong>Task</strong></h5>
+                  <p><strong>Description: </strong></p>
                   <Description>{task.task}</Description>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <TimeBox>{task.time_taken} Hrs</TimeBox>
                     <small>{new Date(task.updated_at).toLocaleString()}</small>
-                  </div>
+                  </div> 
                 </TaskCard>
               ))
             ) : (

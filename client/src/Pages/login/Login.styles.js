@@ -50,6 +50,9 @@ export const RightPanel = styled.div`
   justify-content: center;
   align-items: center;
   
+  h2{
+  margin-left:-18rem;
+  }
 `;
 
 export const FormBox = styled.div`

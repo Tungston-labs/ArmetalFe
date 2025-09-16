@@ -179,11 +179,11 @@ box-shadow: 0px 0px 4.2px 0px rgba(0, 0, 0, 0.25);
   }
 `;
 export const Head = styled.h2`
-  font-size: 1.4rem;
+  font-size: 19px;
   font-family: 'Satoshi', sans-serif;
   font-weight: 700;
   margin-bottom: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   font-family: Raleway;
 font-weight: 700;
 leading-trim: NONE;
@@ -239,11 +239,17 @@ export const TaskCard = styled.div`
     font-size: 14px;
     color: #333;
   }
-
+h5{
+   margin: 0;
+    font-family: 'Satoshi';
+    font-weight: 700;
+    font-size: 14px;
+    color: #333;
+}
   p {
     margin: 0;
     font-family: 'Satoshi';
-    font-weight: 600;
+    font-weight: 700;
     font-size: 13px;
     color: #444;
   }

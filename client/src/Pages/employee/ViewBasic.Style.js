@@ -55,7 +55,7 @@ export const Row = styled.div`
 export const LeftSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  // gap: 1rem;
   flex: 1;
   min-width: 250px;
 `;
@@ -64,7 +64,6 @@ export const RightSection = styled.div`
   flex: 2;
   display: flex;
   flex-direction: column;
- 
   min-width: 300px;
 `;
 
@@ -89,6 +88,21 @@ export const Textarea = styled.textarea`
   border-radius: 7px;
 border: 1px solid #052DB4;
 background: #FFF;
+`;
+export const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+`;
+export const FieldWrappers = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+`;
+export const Label = styled.label`
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: #052DB4;
 `;
 
 export const Avatar = styled.img`

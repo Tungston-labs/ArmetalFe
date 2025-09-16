@@ -6,9 +6,9 @@ export const Container = styled.div`
   justify-content: space-between;
   gap: 2rem;
   width: 100%;
-  max-width: 3840px;
+  // max-width: 3840px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.8rem;
 `;
 
 export const LeftSection = styled.div`
@@ -17,8 +17,8 @@ export const LeftSection = styled.div`
 `;
 
 export const RightSection = styled.div`
-  flex: 1 1 35%;
-  min-width: 300px;
+  flex: 1 1 27%;
+  min-width: 350px;
 `;
 
 
@@ -26,7 +26,7 @@ export const SectionTitle = styled.h2`
   font-size: clamp(1rem, 1.2vw, 2rem);
   margin: 1.5rem 0 1rem;
   font-weight: bold;
-  border-bottom: 1px solid blue;
+  border-bottom: 1px solid #3352BA;
   padding-bottom: 0.3rem;
 font-family: Satoshi;
 font-weight: 700;
@@ -148,9 +148,7 @@ export const ArrowIcon = styled.div`
   color: #3352BA;
   cursor: pointer;
 
-  &:hover {
-    color: blue;
-  }
+ 
 `;
 export const CardIcon = styled.div`
   position: absolute;
@@ -181,13 +179,15 @@ export const CalendarHeader = styled.div`
   h3 {
     font-size: clamp(1rem, 1.5vw, 1.5rem);
     font-weight: bold;
+    color: #3352BA; /* ✅ same color for month + year */
   }
 
   span {
-    color: #3352BA;
     margin-left: 0.3rem;
+    color: inherit; /* ✅ inherits h3 color */
   }
 `;
+
 
 export const NavArrow = styled.button`
   background: transparent;
@@ -204,22 +204,30 @@ export const CalendarGrid = styled.div`
   gap: 0.3rem;
 `;
 
-export const CalendarDay = styled.div`
-  text-align: center;
-  padding: 0.5rem;
-  border-radius: 6px;
-  font-size: clamp(0.7rem, 1vw, 1rem);
-  background: ${({ isToday }) => (isToday ? "#3352BA" : "transparent")};
-  color: ${({ isToday, isSunday }) =>
-    isToday ? "#fff" : isSunday ? "red" : "#000"};
-  font-weight: ${({ isToday }) => (isToday ? "bold" : "normal")};
-  cursor: ${({ isHeader }) => (isHeader ? "default" : "pointer")};
-  border: ${({ isSunday }) => (isSunday ? "1px solid red" : "none")};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-`;
+// export const CalendarDay = styled.div`
+//   text-align: center;
+//   padding: 0.5rem;
+//   border-radius: 6px;
+//   font-size: clamp(0.7rem, 1vw, 1rem);
+
+//   background: ${({ isToday, isSunday }) =>
+//     isToday ? "#3352BA" : isSunday ? "#ffcccc" : "transparent"}; /* light red for Sunday */
+
+//   color: ${({ isToday, isSunday }) =>
+//     isToday ? "#fff" : isSunday ? "#FF2304" : "#000"}; /* dark red text on Sunday */
+
+//   font-weight: ${({ isToday }) => (isToday ? "bold" : "normal")};
+//   cursor: ${({ isHeader }) => (isHeader ? "default" : "pointer")};
+
+//   border: ${({ isSunday, isToday }) =>
+//     isToday ? "none" : isSunday ? "1px solid #FF2304" : "none"}; /* dark red border for Sunday, none for today */
+
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   min-height: 40px;
+// `;
+
 // Employee presence donut + contract expiry
 export const PresenceWrapper = styled.div`
   display: flex;
@@ -369,6 +377,31 @@ export const HolidayDate = styled.div`
 `;
 export const ChartConatiner = styled.div`
 background:#fff;
-
+  border-radius: 12px;
+`;
+export const CalendarDay = styled.div`
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: clamp(0.7rem, 1vw, 1rem);
+  background: ${({ isToday, isSunday, isSelected }) =>
+    isSelected
+      ? "#3352BA"
+      : isToday
+      ? "#3352BA"
+      : isSunday
+      ? "#ffcccc"
+      : "transparent"};
+  color: ${({ isToday, isSunday, isSelected }) =>
+    isSelected || isToday ? "#fff" : isSunday ? "red" : "#000"};
+  border: ${({ isSunday, isSelected }) =>
+    isSelected ? "2px solid #1e3a8a" : isSunday ? "1px solid red" : "none"};
+  font-weight: ${({ isToday, isSelected }) =>
+    isToday || isSelected ? "bold" : "normal"};
+  cursor: ${({ isHeader }) => (isHeader ? "default" : "pointer")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
 `;
 

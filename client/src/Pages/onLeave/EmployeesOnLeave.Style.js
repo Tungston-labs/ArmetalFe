@@ -17,15 +17,24 @@ export const CardContainer = styled.div`
 `;
 
 export const Initial = styled.div`
-  font-size: 6rem;
-  font-weight: 700;
-  color: #B5E2FF;
-  transition: all 0.3s ease;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 1);
+  color: #ECF8FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 100px;
+  font-family: Satoshi;
+  padding-right: 18px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
-    color: #1a73e8; 
-    transform: scale(1.1); /* optional: slightly enlarges on hover */
+    color: #CAD2ED; 
   }
+
 `;
 
 export const InfoSection = styled.div`

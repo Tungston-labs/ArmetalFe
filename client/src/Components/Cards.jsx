@@ -84,7 +84,7 @@ const Cards = () => {
               ))}
               <IconWrapper>
                 <Link to="/employee">
-                  <FiArrowUpRight style={{ color: "blue" }} size={20} />
+                  <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
               </IconWrapper>
             </CardList>
@@ -129,7 +129,7 @@ const Cards = () => {
               ))}
               <IconWrapper>
                 <Link to="/leave-request">
-                  <FiArrowUpRight style={{ color: "blue" }} size={20} />
+                  <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
               </IconWrapper>
             </CardList>
@@ -170,7 +170,7 @@ const Cards = () => {
               ))}
               <IconWrapper>
                 <Link to="/employee-Contract-Visa-Expiry">
-                  <FiArrowUpRight style={{ color: "blue" }} size={20} />
+                  <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
               </IconWrapper>
             </CardList>

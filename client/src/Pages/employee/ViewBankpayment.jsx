@@ -24,6 +24,8 @@ import {
   TextGroup,
   HRManager,
   TitleSection,
+  FieldWrapper,
+  Label,
 } from "./ViewBankpayment.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import { HiOutlinePencilAlt } from "react-icons/hi";
@@ -165,22 +167,6 @@ console.log("employeeBankPayments",employeeBankPayments)
                        </TitleSection>
                </HeaderWrapper>
         <Rightside>
-          {/* <DropdownWrapper>
-                  <HRManager onClick={() => setMenuOpen(!menuOpen)}>
-                              <img src="/images/user.jpg" alt="HR Manager" />
-                              <IoIosArrowDown
-                                size={18}
-                                style={{ marginLeft: "5px", cursor: "pointer" }}
-                              />
-                            </HRManager>
-                  
-                            {menuOpen && (
-                              <DropdownMenu>
-                                <div>Change Password</div>
-                                <div>Logout</div>
-                              </DropdownMenu>
-                            )}
-                          </DropdownWrapper> */}
           <EditButton onClick={() => setIsEditable((prev) => !prev)}>
             {isEditable ? "Cancel" : "Edit"}
           </EditButton>
@@ -201,33 +187,44 @@ console.log("employeeBankPayments",employeeBankPayments)
           />
         </ImageColumn>
 
-        <Row>
-          <LeftSection>
-            <Input type="text" value={employeeDetail?.name || ""} readOnly />
-            <Input
-              type="text"
-              value={employeeDetail?.employee_id || ""}
-              readOnly
-            />
-            <Input
-              type="email"
-              value={employeeDetail?.email || ""}
-              readOnly
-            />
-          </LeftSection>
+      <Row>
+  <LeftSection>
+    <FieldWrapper>
+      <Label>Name</Label>
+      <Input type="text" value={employeeDetail?.name || ""} readOnly />
+    </FieldWrapper>
 
-          <RightSection>
-            <Textarea value={employeeDetail?.address || ""} readOnly />
-            <Rows style={{ marginTop: "1rem" }}>
-              <Input type="text" value={employeeDetail?.dob || ""} readOnly />
-              <Input
-                type="text"
-                value={employeeDetail?.gender || ""}
-                readOnly
-              />
-            </Rows>
-          </RightSection>
-        </Row>
+    <FieldWrapper>
+      <Label>Employee ID</Label>
+      <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
+    </FieldWrapper>
+
+    <FieldWrapper>
+      <Label>Email</Label>
+      <Input type="email" value={employeeDetail?.email || ""} readOnly />
+    </FieldWrapper>
+  </LeftSection>
+
+  <RightSection>
+    <FieldWrapper>
+      <Label>Address</Label>
+      <Textarea value={employeeDetail?.address || ""} readOnly />
+    </FieldWrapper>
+
+    <Rows style={{ marginTop: "2.3rem", display: "flex", gap: "1rem" }}>
+      <FieldWrapper style={{ flex: 1 }}>
+        <Label>Date of Birth</Label>
+        <Input type="text" value={employeeDetail?.dob || ""} readOnly />
+      </FieldWrapper>
+
+      <FieldWrapper style={{ flex: 1 }}>
+        <Label>Gender</Label>
+        <Input type="text" value={employeeDetail?.gender || ""} readOnly />
+      </FieldWrapper>
+    </Rows>
+  </RightSection>
+</Row>
+
       </FormWrapper>
 
       <Hr />

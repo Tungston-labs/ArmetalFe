@@ -65,6 +65,7 @@ export const IconSection = styled.div`
   min-width: 35px;
   margin-left:10px;
   margin-top:10px;
+  color:#304EB0;
 `;
 
 // export const Divider = styled.div`
@@ -120,7 +121,7 @@ export const CardListItem = styled.div`
   grid-template-columns: 20px 0.5fr 1fr 1fr;
   align-items: center;
   font-size: 0.7rem;
-  padding: 0.2rem 10px;
+  padding: 0.2rem 15px;
   gap: 0.5rem;
 
   @media (max-width: 992px) {
@@ -191,13 +192,13 @@ export const IconWrapper = styled.div`
   position: absolute;
   right:0px;          // add some spacing from the right edge
   bottom: -0px;         // move it slightly below the card
- color: blue;
+ color: #3352BA;
   cursor: pointer;
   transition: transform 0.3s ease;
 
     &:hover {
     transform: scale(1.3); /* Zoom in */
-    color: darkblue; /* Optional color change */
+    color: #3352BA; /* Optional color change */
   }
 
   @media (max-width: 480px) {

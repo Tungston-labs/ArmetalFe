@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import { FiSearch } from "react-icons/fi";
 export const Container = styled.div`
   padding: 2rem;
  font-family: Satoshi;
@@ -79,20 +79,36 @@ export const SearchInput = styled.input`
 export const Tabs = styled.div`
   display: flex;
   gap: 2rem;
-  margin: 2.5rem 0;
+  font-family: Raleway;
+font-weight: 700;
+font-style: Bold;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+text-align: center;
+margin-bottom:10px;
+
+  margin: 1.8rem 0;
   // border-bottom: 2px solid #ddd;
   
 `;
 
 export const Tab = styled.div`
-  padding:5px  20px;
+  padding:8px  25px;
   cursor: pointer;
   background:#304EB0;
-  font-weight: 500;
+  font-family: Raleway;
+font-weight: 500;
+font-style: Bold;
+font-size: 1rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+text-align: center;
   background: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
   color: ${({ active }) => (active ? "white" : "#555")};
 `;
-
 
 
 export const Table = styled.table`
@@ -100,7 +116,7 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
-
+    text-align: center;
   td {
     text-align: center;
     padding: 0.4rem;
@@ -114,9 +130,11 @@ export const Table = styled.table`
     color: white;
     font-family: raleway;
     padding: 0.5rem;
+        text-align: center;
   }
 
   tbody tr {
+      text-align: center;
     box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
     font-family: 'satoshi';
   }
@@ -312,4 +330,45 @@ export const DropdownMenu = styled.div`
       background-color: #f0f0f0;
     }
   }
+`;
+
+// Inside DetailOnleaveStyles.js
+
+export const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between; /* left = search, right = calendar */
+  align-items: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+`;
+
+export const SearchWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 400px;
+`;
+
+export const SearchIcon = styled(FiSearch)`
+  position: absolute;
+  left: 10px;
+  color: #888;
+  font-size: 1.2rem;
+  pointer-events: none;
+  margin-top:10px;
+`;
+
+export const CalendarWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+export const DeptTitle = styled.div`
+ font-family: Satoshi;
+font-weight: 400;
+font-style: Regular;
+font-size: 1.4rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
 `;

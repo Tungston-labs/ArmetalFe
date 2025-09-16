@@ -11,9 +11,13 @@ import {
   ProfileImg,
   Pagination,
   SearchInput,
-  HRManager,
+DeptTitle,
   Subtitle,
-  TitleSection
+  TitleSection,
+  HeaderRow,
+  SearchWrapper,
+  SearchIcon,
+  CalendarWrapper
 } from "./DetailOnleaveStyles";
 import { HiArrowLeft } from "react-icons/hi";
 
@@ -26,11 +30,13 @@ import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getOnLeaveEmployees } from "../../Redux/leaveSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
+import { GoInfo } from "react-icons/go";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+const [selectedDept, setSelectedDept] = useState(null);
 
   const departmentId = searchParams.get("departmentId");
 
@@ -50,7 +56,15 @@ const EmployeeList = () => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  
+  const { list: departmentList } = useSelector(state => state.departments);
+
+useEffect(() => {
+  if (departmentId && departmentList) {
+    const dept = departmentList.find(d => d.id === parseInt(departmentId));
+    setSelectedDept(dept || null);
+  }
+}, [departmentId, departmentList]);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const departmentId = params.get("departmentId");
@@ -93,34 +107,48 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
     <Container>
   
 
-      <HeaderSection>
-        <TitleSection>
-            <HiArrowLeft 
-              size={34} 
-              style={{ cursor: "pointer",color:"#3250B5" }} 
-              onClick={() => navigate(-1)} 
-            />
-           <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          <div>
-            <Title>Employee</Title>
-            <Subtitle>
-           {departmentId ? "Employees On Leave" : "Manage your Employee."}
-            </Subtitle>
-          </div>
-        </TitleSection>
-        {!departmentId && (
-          <SearchInput
-            type="text"
-            placeholder="Search by employee name or ID"
-            value={searchText}
-            onChange={handleSearch}
-          />
-        )}
-      </HeaderSection>
+    <HeaderSection>
+  <TitleSection>
+    <HiArrowLeft 
+      size={34} 
+      style={{ cursor: "pointer", color:"#3250B5" }} 
+      onClick={() => navigate(-1)} 
+    />
+    <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+    <div>
+      <Title>Employee</Title>
+      <Subtitle>
+        {departmentId ? "Employees On Leave" : "Manage your Employee."}
+      </Subtitle>
+    </div>
+  </TitleSection>
+
+  {/* New Row: Search + Calendar */}
+  <HeaderRow>
+    <SearchWrapper>
+      <SearchIcon />
+      <SearchInput
+        type="text"
+        placeholder="Search by employee name or ID"
+        value={searchText}
+        onChange={handleSearch}
+        style={{ paddingLeft: "2.5rem" }} // make space for icon
+      />
+    </SearchWrapper>
+
+    <CalendarWrapper>
+      <input 
+        type="date" 
+        style={{ padding: "0.6rem", borderRadius: "6px", border: "1px solid #ccc" }} 
+      />
+    </CalendarWrapper>
+  </HeaderRow>
+</HeaderSection>
+
 
     <Tabs>
   <NavLink to="/employee" style={{ textDecoration: "none" }}>
-    <Tab active={location.pathname === "/employee"}>Employee list</Tab>
+    <Tab active={location.pathname === "/employee"}>Total Employee </Tab>
   </NavLink>
 
   <NavLink to="/employee-leave-request" style={{ textDecoration: "none" }}>
@@ -154,6 +182,7 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
 </Tabs>
 
       <hr style={{ marginTop: "-18px" }} />
+<DeptTitle>Department:{selectedDept?.name || "Department"}</DeptTitle>
 
       <Table>
         <thead>
@@ -178,19 +207,19 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
             dataToRender.map((emp, index) => (
               <tr key={emp.id}>
                 <td>{index + 1 + (page - 1) * 7}</td>
-                <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  {emp.profile_pic ? (
+                <td >
+                  {/* {emp.profile_pic ? (
                     <ProfileImg src={emp.profile_pic} alt="profile" />
                   ) : (
                     <PiUserCirclePlusThin size={40} color="#999" />
-                  )}
+                  )} */}
                   {emp.name}
                 </td>
                 <td>{emp.employee_id}</td>
                 <td>{emp.email}</td>
                 <td>{emp.visa_expiry_date}</td>
                 <td onClick={() => navigate(`/ViewBasic/${emp.id}`)}>
-                  <FaInfoCircle />
+                  <GoInfo />
                 </td>
                 <td>
                   <FaTrash

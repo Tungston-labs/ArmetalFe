@@ -4,7 +4,7 @@ export const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  padding: 12px 0px;
   background: #fff;
   // border-bottom: 1px solid #eee;
 `;
@@ -48,7 +48,7 @@ font-size: 22px;
 leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
-
+margin-bottom:4px;
 `;
 
 export const Subtitle = styled.p`

@@ -17,8 +17,8 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
         data: [active, onLeave],
         backgroundColor: ["#2f4ded", "#ff6b5f"],
         borderColor: "#f7f9fc",
-        borderWidth: 4,
-        borderRadius: 12,
+        borderWidth: 6,
+        borderRadius: 18,
         cutout: "68%",
         circumference: 180,
         rotation: -90,
@@ -47,7 +47,7 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
       style={{
         width: "100%",
         maxWidth: "400px",
-        height: "250px",
+        height: "200px",
         margin: "0 auto",
         position: "relative",
       }}
@@ -87,48 +87,61 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
       </div>
 
       {/* Custom Legend */}
-      <div
-        style={{
-          marginTop: "-30px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "6px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span
-            style={{
-              width: "14px",
-              height: "14px",
-              backgroundColor: "#2f4ded",
-              display: "inline-block",
-              borderRadius: "2px",
-             fontFamily: "Satoshi",  
-            }}
-          ></span>
-          <span style={{
-            fontFamily: "Satoshi",  
-          }}
-          >Active Employees</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span
-            style={{
-              width: "14px",
-              height: "14px",
-              backgroundColor: "#ff6b5f",
-              display: "inline-block",
-              borderRadius: "2px",
-              fontFamily: "Satoshi",  
-            }}
-          ></span>
-          <span style={{
-            fontFamily: "Satoshi",  
-          }}
-          >On Leave Today</span>
-        </div>
-      </div>
+      {/* Custom Legend */}
+<div
+  style={{
+    marginTop: "-30px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "8px",
+  }}
+>
+  {/* Active Employees */}
+  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+    <span
+      style={{
+        width: "14px",
+        height: "14px",
+        backgroundColor: "#2f4ded",
+        display: "inline-block",
+        borderRadius: "2px",
+      }}
+    ></span>
+    <span
+      style={{
+        fontFamily: "Satoshi",
+        fontSize: "0.9rem",
+        fontWeight: 500,
+      }}
+    >
+      Active Employees
+    </span>
+  </div>
+
+  {/* On Leave Today */}
+  <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
+    <span
+      style={{
+        width: "14px",
+        height: "14px",
+        backgroundColor: "#ff6b5f",
+        display: "inline-block",
+        borderRadius: "2px",
+      }}
+    ></span>
+    <span
+      style={{
+        fontFamily: "Satoshi",
+        fontSize: "0.9rem",
+        fontWeight: 500,
+      }}
+    >
+      On Leave Today
+    </span>
+  </div>
+</div>
+
     </div>
   );
 };
