@@ -90,16 +90,18 @@ export const ButtonGroup = styled.div`
 export const Button = styled.button`
   padding: 10px 25px;
   border: none;
+  border: 2px solid ${props => (props.cancel ? '#FF2304' : '#172554')}; /* border added */
   border-radius: 6px;
   font-weight: 500;
   color: #fff;
   cursor: pointer;
-  background-color: ${props => props.cancel ? '#FF230480' : '#5c5c8a'};
+  background-color: ${props => props.cancel ? '#FF230480' : '#A2A8BB'};
 
   &:hover {
     opacity: 0.9;
   }
 `;
+
 export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;
@@ -151,6 +153,13 @@ export const Label = styled.label`
   font-size: 14px;
   color: #333;
   font-weight: 500;
+  font-family: Satoshi;
+font-weight: 400;
+font-style: Regular;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
  
 
@@ -186,7 +195,7 @@ export const LogoUploadBox = styled.div`
   text-align: center;
   border-radius: 10px;
   margin-bottom: 15px;
-  margin-top: -35px;
+  // margin-top: -35px;
   color: #666;
   font-size: 13px;
   cursor: pointer;

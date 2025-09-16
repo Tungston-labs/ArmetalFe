@@ -60,6 +60,17 @@ export const FormWrapper = styled.div`
   border-radius: 10px;
   // margin-top: 30px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  h4{
+  font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 22px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
+  }
 `;
 
 // export const FormSection = styled.div`
@@ -169,21 +180,21 @@ export const FormField = styled.div`
 export const Label = styled.label`
   margin-bottom: 6px;
   font-size: 14px;
-  color: #333;
   font-weight: 500;
+  
 `;
 
 export const Input = styled.input`
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 100%;
+  width: 80%;
 `;
 
 export const FormSection = styled.div`
   display: flex;
   gap: 100px;
-  margin-bottom: 30px;
+  margin-top: 2rem;
 
   > div {
     width: 50%;

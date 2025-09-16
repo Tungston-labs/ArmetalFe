@@ -7,13 +7,26 @@ export const SectionTitle = styled.h3`
 
 export const PlanCard = styled.div`
   display: flex;
-  align-items: center;
+  align-items: center;   /* ensures vertical alignment */
+  justify-content: space-between; /* keeps price on right */
   border: 2px solid #1e3a8a;
   border-radius: 8px;
-  padding: 0.75rem;
+  padding: 0.5rem 1rem;
   margin-bottom: 1.5rem;
   width: 40%;
-  height: 75px;
+  height: auto;
+  gap: 1rem;  /* spacing between logo/details */
+`;
+
+export const PlanIconWrapper = styled.div`
+  background: #182657;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  flex-shrink: 0; /* prevent shrinking */
 `;
 
 export const PlanIcon = styled.div`
@@ -29,24 +42,41 @@ export const PlanIcon = styled.div`
 
 export const PlanDetails = styled.div`
   flex-grow: 1;
-  font-size: 0.9rem;
-  padding: 10px;
+
 
   h3 {
     font-size: 1rem;
-    margin: 0;
+    margin: 0 0 4px 0;
+    font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 1.4rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+color:#3352BA;
   }
 
   p {
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.4;
+    font-family: Satoshi;
+font-weight: 400;
+font-style: Regular;
+font-size: 0.9rem;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+color:#3352BA;
   }
 `;
 
 export const PlanPrice = styled.div`
   font-size: 1.5rem;
   font-weight: bold;
+  white-space: nowrap; /* prevent wrapping */
 `;
+
 
 export const PaymentTable = styled.table`
   width: 100%;
@@ -61,7 +91,7 @@ export const TableHead = styled.th`
   border: 1px solid #ccc;
   padding: 0.6rem;
   text-align: center;
-  background-color: #FBFFF9;
+  // background-color: #FBFFF9;
 `;
 
 export const TableRow = styled.tr`
@@ -76,6 +106,7 @@ export const TableData = styled.td`
   border: 1px solid #ccc;
   padding: 0.6rem;
   text-align: center;
+  background-color: white;
 `;
 
 export const TableWrapper = styled.div`
