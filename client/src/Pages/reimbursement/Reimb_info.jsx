@@ -94,7 +94,7 @@ const ReimbursementDetail = () => {
         </HeaderLeft>
         <SelectBox value={reimbursement.status} onChange={handleStatusChange}>
           <option value="">Select</option>
-          <option value="Approve">Approve</option>
+          <option value="Approve">Approved</option>
           <option value="On Hold">On Hold</option>
           <option value="In Verification">In Verification</option>
         </SelectBox>

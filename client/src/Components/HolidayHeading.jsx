@@ -19,9 +19,7 @@ const Header = () => {
     <HeaderContainer>
       {/* Left Section */}
       <LeftSection>
-        <BackButton>
-          <FiArrowLeft size={30} />
-        </BackButton>
+       
         <TitleContainer>
           <Icon src={HolidayIcon} alt="holiday" />
           <div>

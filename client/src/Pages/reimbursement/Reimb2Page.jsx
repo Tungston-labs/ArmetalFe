@@ -239,7 +239,7 @@ useEffect(() => {
                     className="border rounded px-2 py-1 text-sm"
                   >
                     <option value="">Select</option>
-                    <option value="Approve">Approve</option>
+                    <option value="Approve">Approved</option>
                     <option value="On Hold">On Hold</option>
                     <option value="In Verification">In Verification</option>                    
                   </select>

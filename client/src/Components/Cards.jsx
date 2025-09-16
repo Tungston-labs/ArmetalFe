@@ -128,7 +128,7 @@ const Cards = () => {
                 </CardListItem>
               ))}
               <IconWrapper>
-                <Link to="/leave-request">
+                <Link to="/employee-leave-request">
                   <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
               </IconWrapper>

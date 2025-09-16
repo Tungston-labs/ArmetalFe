@@ -152,6 +152,7 @@ const cancelDelete = () => {
     <Label>Holiday Name</Label>
     <Input
       name="name"
+      autoComplete='off'
       placeholder="Holiday name"
       value={formData.name}
       onChange={(e) =>

@@ -132,7 +132,7 @@ export const StyledTable = styled.table`
   // margin-top: 1rem;
  text-align: center;
  td {
-    text-align: center;
+ text-align: left;
     padding: 0.3rem;
     white-space: nowrap;
     background-color: white;
@@ -148,7 +148,7 @@ letter-spacing: 0%;
   }
 
   th {
- text-align: center;
+ text-align: left;
 
     background-color: #304EB0;
     color: white;

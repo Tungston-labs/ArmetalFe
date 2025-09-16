@@ -2,32 +2,55 @@ import styled from "styled-components";
 
 export const CardContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);  /* ✅ exactly 3 per row */
-  gap: 0.9rem;
-  margin: 0.2rem ;
+  grid-template-columns: repeat(3, 1fr);  /* default for desktops */
+  gap: 1rem;
+  margin: 0.5rem;
   background: #f4f4f4;
 
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr); /* ✅ 2 per row on tablets */
+  /* Small devices */
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
   }
 
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr; /* ✅ 1 per row on mobile */
+  /* Tablets */
+  @media (min-width: 601px) and (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Standard desktops (HD & Full HD) */
+  @media (min-width: 1025px) and (max-width: 1920px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* QHD (2K - 2560px) */
+  @media (min-width: 1921px) and (max-width: 2560px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;  /* extra spacing */
+  }
+
+  /* 4K screens (3840px wide) */
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  /* 8K screens (7680px wide) */
+  @media (min-width: 3841px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
   }
 `;
 
 
+
 export const Card = styled.div`
-  position: relative; /* ✅ so Divider or absolute elements can sit inside */
+  position: relative;
   background: #fff;
   border-radius: 12px;
-  // padding: 1rem;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  /* Smooth scaling */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
@@ -35,7 +58,9 @@ export const Card = styled.div`
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.12);
   }
 
-  /* ✅ Responsive padding & font size */
+  /* Responsive padding */
+  padding: 1rem;
+
   @media (max-width: 1024px) {
     padding: 0.8rem;
   }
@@ -49,6 +74,16 @@ export const Card = styled.div`
     padding: 0.6rem;
     border-radius: 8px;
     font-size: 0.9rem;
+  }
+
+  /* Large screens (2K and above) */
+  @media (min-width: 1921px) {
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 3841px) {
+    padding: 2rem;
+    border-radius: 16px;
   }
 `;
 
@@ -92,20 +127,25 @@ export const CardContent = styled.div`
 `;
 
 export const CardTitle = styled.h3`
-  font-size: 1.2rem;
-  font-weight: 600;
-  font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-margin-left:10px;
+  font-size: clamp(1rem, 1.2vw, 2.5rem);
+  font-weight: 700;
+  font-family: Satoshi, sans-serif;
+  margin-left: 10px;
+
+  /* Extra bump for 4K/8K */
+  @media (min-width: 2561px) {
+    font-size: 2.8rem;
+  }
 `;
 
+
 export const CardCount = styled.span`
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 1.5vw, 2.5rem);
   font-weight: bold;
+
+  @media (min-width: 2561px) {
+    font-size: 3rem;
+  }
 `;
 
 export const CardList = styled.div`
@@ -155,10 +195,15 @@ export const EmployeeAvatar = styled.div`
 
 export const EmployeeName = styled.span`
   font-weight: 500;
+  font-size: clamp(0.75rem, 0.9vw, 1.3rem);
+
+  @media (min-width: 2561px) {
+    font-size: 1.5rem;
+  }
 `;
 
 export const EmployeeId = styled.div`
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 0.9vw, 1.3rem);
   color: #666;
 
   /* Default: show both dates */
@@ -186,6 +231,7 @@ export const EmployeeId = styled.div`
 
 export const EmployeeDept = styled.span`
   color: #777;
+    font-size: clamp(0.75rem, 0.9vw, 1.3rem);
 `;
 
 export const IconWrapper = styled.div`
