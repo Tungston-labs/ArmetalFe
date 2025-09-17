@@ -4,6 +4,7 @@ import { FaUsers, FaSitemap, FaTasks } from "react-icons/fa";
 import { MdOutlineLaptopChromebook } from "react-icons/md";
 import { FaMoneyCheckAlt, FaUmbrellaBeach, FaReceipt } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   SidebarContainer,
   Logo,
@@ -16,10 +17,13 @@ import API from '../services/api';
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
-  const location = useLocation(); // 👈 get current route
-  const user = JSON.parse(localStorage.getItem("user"));
+  const location = useLocation();
+
+  // ✅ First try Redux, fallback to localStorage
+  const reduxUser = useSelector((state) => state.auth.user);
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const user = reduxUser || storedUser; 
   const modules = user?.company_modules || {};
 
   const handleLogout = async () => {
@@ -27,43 +31,36 @@ export default function Sidebar() {
       const refreshToken = localStorage.getItem("refreshToken");
       if (!refreshToken) return;
 
-      await API.post("http://178.248.112.16:8001/api/logout/", { refresh: refreshToken });
+      await API.post("/logout/", { refresh: refreshToken });
 
       localStorage.clear();
+      sessionStorage.clear();
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error.response?.data || error.message);
     }
   };
 
-  // Highlight parent module even if a child route is active
   const isActive = (path) => {
-    if (path === "/") {
-      // Highlight Dashboard for "/" or nested index route
-      return location.pathname === "/" ? "active" : "";
-    }
+    if (path === "/") return location.pathname === "/" ? "active" : "";
     return location.pathname.startsWith(path) ? "active" : "";
   };
-  
 
+  if (!user) return null;
 
   return (
     <SidebarContainer className={collapsed ? 'collapsed' : ''}>
-      {/* Top */}
       <TopSection>
         <ToggleButton onClick={() => setCollapsed(!collapsed)}>☰</ToggleButton>
-<Logo className={collapsed ? 'hidden' : ''}>
-  {user?.company?.logo ? (
-    <img src={user.company.logo} alt="Company Logo" />
-  ) : (
-    <img src="/images/logos.png" alt="Default Logo" className="default-logo" />
-  )}
-</Logo>
-
-
+        <Logo className={collapsed ? 'hidden' : ''}>
+          {user?.company?.logo ? (
+            <img src={user.company.logo} alt="Company Logo" />
+          ) : (
+            <img src="/images/logos.png" alt="Default Logo" className="default-logo" />
+          )}
+        </Logo>
       </TopSection>
 
-      {/* Navigation */}
       <Nav>
         {user?.is_superadmin && (
           <CustomLink to="/superadmin" className={`${collapsed ? 'collapsed' : ''} ${isActive("/superadmin")}`}>
@@ -76,18 +73,13 @@ export default function Sidebar() {
           <>
             {modules.dashboard && (
               <CustomLink to="/" className={`${collapsed ? 'collapsed' : ''} ${isActive("/")}`}>
-              <RiHome5Line /><span>Dashboard</span>
-            </CustomLink>
-            
+                <RiHome5Line /><span>Dashboard</span>
+              </CustomLink>
             )}
             {modules.employee && (
-              <CustomLink
-                to="/employee"
-                className={`${collapsed ? 'collapsed' : ''} ${isActive("/employee")}`}
-              >
+              <CustomLink to="/employee" className={`${collapsed ? 'collapsed' : ''} ${isActive("/employee")}`}>
                 <FaUsers /><span>Employee</span>
               </CustomLink>
-
             )}
             {modules.department && (
               <CustomLink to="/department" className={`${collapsed ? 'collapsed' : ''} ${isActive("/department")}`}>

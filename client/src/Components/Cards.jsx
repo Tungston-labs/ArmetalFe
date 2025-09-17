@@ -1,6 +1,6 @@
 // Cards.jsx
 import React, { useEffect, useState } from "react";
-import API from "../services/api"; // <-- import your configured axios
+import API from "../services/api"; // Your configured Axios instance
 import {
   CardContainer,
   Card,
@@ -26,14 +26,16 @@ import totalIconses from "../assets/total3.svg";
 const Cards = () => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSummary = async () => {
       try {
         const response = await API.get("/admin/dashboard-summary/");
         setSummary(response.data);
-      } catch (error) {
-        console.error("Error fetching dashboard summary:", error);
+      } catch (err) {
+        console.error("Failed to fetch summary:", err);
+        setError("Failed to fetch dashboard summary.");
       } finally {
         setLoading(false);
       }
@@ -43,7 +45,8 @@ const Cards = () => {
   }, []);
 
   if (loading) return <p>Loading...</p>;
-  if (!summary) return <p>Failed to fetch data.</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (!summary) return <p>No data available.</p>;
 
   const employeesList = summary.total_employees?.list || [];
   const leaveRequest = summary.pending_leaves?.list || [];
@@ -79,7 +82,7 @@ const Cards = () => {
                   />
                   <EmployeeName>{emp.name}</EmployeeName>
                   <EmployeeDept>{emp.department}</EmployeeDept>
-                  <EmployeeId className="below-name">{emp.employee_id}</EmployeeId>
+                  <EmployeeId>{emp.employee_id}</EmployeeId>
                 </CardListItem>
               ))}
               <IconWrapper>
@@ -92,7 +95,7 @@ const Cards = () => {
         </CardHeader>
       </Card>
 
-      {/* Employee Leave Request */}
+      {/* Employee Leave Requests */}
       <Card>
         <CardHeader>
           <IconSection>
@@ -120,10 +123,8 @@ const Cards = () => {
                   />
                   <EmployeeName>{emp.employee}</EmployeeName>
                   <EmployeeDept>{emp.department}</EmployeeDept>
-                  <EmployeeId className="leave-date">
-                    <span className="from-date">{emp.from_date}</span>
-                    <span className="to-date"> – {emp.to_date}</span>
-                    <span className="continue-sign"> →</span>
+                  <EmployeeId>
+                    <span>{emp.from_date}</span> – <span>{emp.to_date}</span>
                   </EmployeeId>
                 </CardListItem>
               ))}
@@ -165,7 +166,7 @@ const Cards = () => {
                   />
                   <EmployeeName>{emp.name}</EmployeeName>
                   <EmployeeDept>{emp.department}</EmployeeDept>
-                  <EmployeeId className="visa-date">{emp.visa_expiry_date}</EmployeeId>
+                  <EmployeeId>{emp.visa_expiry_date}</EmployeeId>
                 </CardListItem>
               ))}
               <IconWrapper>

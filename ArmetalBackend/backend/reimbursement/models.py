@@ -13,6 +13,7 @@ class Reimbursement(models.Model):
         ("BILLS", "Internet & Phone Bills"),
         ("HEALTHCARE", "Healthcare"),
         ("MISC", "General / Miscellaneous"),
+        ("OTHERS", "Others"),
     ]
     STATUS_CATEGORIES = [
         ("On Hold", " On Hold"),
