@@ -140,10 +140,10 @@ export default function EmployeeAttendance() {
           gap: "1rem"
         }}>
          <SearchWrapper>
-  <SearchIcon />
+  {/* <SearchIcon /> */}
   <SearchInput
     type="text"
-    placeholder="Search by employee name or ID"
+    placeholder="Enter employee name or ID"
     value={searchText}
     onChange={handleSearch}
   />

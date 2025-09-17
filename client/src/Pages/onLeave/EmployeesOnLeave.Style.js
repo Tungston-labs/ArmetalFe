@@ -17,8 +17,8 @@ export const CardContainer = styled.div`
 `;
 
 export const Initial = styled.div`
-  width: 45px;
-  height: 45px;
+  width: clamp(35px, 3vw, 90px);
+  height: clamp(35px, 3vw, 90px);
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 1);
   color: #ECF8FF;
@@ -26,16 +26,32 @@ export const Initial = styled.div`
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 100px;
   font-family: Satoshi;
-  padding-right: 18px;
+  font-size: clamp(5rem, 3vw, 9rem); /* responsive font */
+  padding-right: clamp(5px, 1vw, 18px);
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
     color: #CAD2ED; 
   }
 
+  /* Extra-large screens (2K TVs) */
+  @media (min-width: 2560px) {
+    width: 120px;
+    height: 120px;
+    font-size: 10rem;
+    padding-right: 25px;
+  }
+
+  /* 4K screens */
+  @media (min-width: 3840px) {
+    width: 150px;
+    height: 150px;
+    font-size: 15rem;
+    padding-right: 30px;
+  }
 `;
+
 
 export const InfoSection = styled.div`
   flex-grow: 1;
@@ -180,80 +196,158 @@ export const CardRight = styled.div`
 
   .card-value {
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
     color: #000;
   }
 
   .arrow-icon {
-  background: rgb(255, 255, 255);
-  color: rgb(52, 52, 124);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+    background: #fff;
+    color: #34347c;
+    width: clamp(28px, 4vw, 36px);
+    height: clamp(28px, 4vw, 36px);
+    border-radius: 50%;
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
-
-// export const CardContainer = styled.div`
-//   padding: 2rem;
-// `;
 
 export const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4,1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
+  margin: 0.5rem;
 
+  @media (min-width: 1600px) {
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 2560px) { /* QHD/2K large monitors */
+    gap: 2rem;
+  }
+
+  @media (min-width: 3840px) { /* 4K screens */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+  }
 `;
 export const DeptTitle = styled.div`
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 1.8vw, 2.5rem);
   font-family: Raleway;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  line-height: 1.2;
+  letter-spacing: 0%;
 
+  /* Small devices */
+  @media (max-width: 600px) {
+    font-size: 0.9rem;
+  }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 601px) and (max-width: 1024px) {
+    font-size: 1.05rem;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 1.15rem;
+  }
+
+  /* Extra-large / QHD */
+  @media (min-width: 1601px) and (max-width: 2560px) {
+    font-size: 2.5rem;
+  }
+
+  /* 4K screens */
+  @media (min-width: 3840px) {
+    font-size: 3rem;
+  }
 `;
+
+
 export const DeptSub = styled.div`
-  font-size: 0.9rem;
+  font-size: clamp(0.75rem, 1.2vw, 2rem);
   color: #666;
   font-family: Raleway;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  line-height: 1.2;
 
+  /* Small devices */
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
+  }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 601px) and (max-width: 1024px) {
+    font-size: 0.8rem;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 1rem;
+  }
+
+  /* Extra-large / QHD */
+  @media (min-width: 1601px) and (max-width: 2560px) {
+    font-size: 2rem;
+  }
+
+  /* 4K screens */
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
+
+
 export const DeptHead = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.25rem;
-font-family: Raleway;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-family: Raleway;
 
   span {
-    font-size: 0.95rem;
+    font-size: clamp(0.75rem, 1.2vw, 0.95rem);
+
+    /* Small devices */
+    @media (max-width: 600px) {
+      font-size: 0.7rem;
+    }
+
+    /* Medium devices (tablets) */
+    @media (min-width: 601px) and (max-width: 1024px) {
+      font-size: 0.8rem;
+    }
+
+    /* Large desktops */
+    @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 0.9rem;
+    }
+
+    /* Extra-large / QHD */
+    @media (min-width: 1601px) and (max-width: 2560px) {
+      font-size: 0.95rem;
+    }
+
+    /* 4K screens */
+    @media (min-width: 3840px) {
+      font-size: 1.2rem;
+    }
   }
 `;
+
+
 export const Card = styled.div`
   background: white;
   border-radius: 12px;
-  padding: 1rem;
+  padding: clamp(0.8rem, 1.5vw, 1rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
   transition: all 0.3s ease;
   cursor: pointer;
-//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
   &:hover {
-    // background-color: rgba(213, 210, 210, 1);
-
     ${DeptTitle},
     ${DeptSub},
     ${DeptHead} span,
@@ -273,7 +367,7 @@ export const Card = styled.div`
   }
 
   h3 {
-    font-size: 1.05rem;
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem);
     font-weight: 600;
     margin: 0;
     color: #000;
@@ -286,43 +380,47 @@ export const Card = styled.div`
     gap: 0.4rem;
 
     img {
-      width: 24px;
-      height: 24px;
+      width: clamp(20px, 2.5vw, 24px);
+      height: clamp(20px, 2.5vw, 24px);
       border-radius: 50%;
       object-fit: cover;
     }
 
     .head-name {
-      font-size: 0.85rem;
+      font-size: clamp(0.7rem, 1.5vw, 0.85rem);
       margin: 0;
       font-weight: 500;
       color: #000;
     }
   }
+
+  @media (min-width: 3840px) { /* 4K */
+    padding: 2rem;
+    h3 {
+      font-size: 2rem;
+    }
+    .head-row img {
+      width: 48px;
+      height: 48px;
+    }
+    .head-row .head-name {
+      font-size: 1.2rem;
+    }
+  }
 `;
-
-
-// export const Initial = styled.div`
-//   font-size: 64px;
-//   font-weight: bold;
-//   color: #e3f0fc;
-// `;
 
 export const DeptInfo = styled.div`
   flex: 1;
-  margin: 0 1rem;
+  margin: 0 clamp(0.5rem, 1vw, 1rem);
 `;
-
 
 export const HeadImg = styled.img`
-  width: 28px;
-  height: 28px;
+  width: clamp(24px, 3vw, 28px);
+  height: clamp(24px, 3vw, 28px);
   border-radius: 50%;
+
+  @media (min-width: 3840px) {
+    width: 48px;
+    height: 48px;
+  }
 `;
-
-// export const Count = styled.div`
-
-
-//   font-size: 1.25rem;
-//   font-weight: bold;
-// `;

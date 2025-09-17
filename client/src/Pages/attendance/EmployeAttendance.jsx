@@ -84,10 +84,10 @@ const EmployeeList = () => {
          </TextBlock>
        </TitleSection>
         <SearchWrapper>
-             <SearchIcon />
+             {/* <SearchIcon /> */}
              <SearchInput
                type="text"
-               placeholder="Employee ID or Name"
+               placeholder="Enter Employee ID or Name"
                value={searchText}
                onChange={handleSearch}
              />

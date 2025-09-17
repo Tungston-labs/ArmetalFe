@@ -136,33 +136,70 @@ export const TitleSection = styled.div`
   width: 100%;
 `;
 
-
 export const Title = styled.h2`
   font-size: 1.4rem;
-  margin: 0;
-  color: #3250B5;
-  font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-margin-top:10px;
-margin-bottom:5px;
+  margin: 0 0 5px 0;
+  color: #3250b5;
+  font-family: "Satoshi";
+  font-weight: 700;
+  line-height: 1.2;
+
+  @media (min-width: 480px) { /* small tablet */
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 768px) { /* tablet */
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) { /* desktop */
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 1440px) { /* large desktop / 2K */
+    font-size: 2rem;
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 3em;
+  }
+
+  @media (min-width: 3840px) { /* 8K */
+    font-size: 4rem;
+  }
 `;
 
 export const Subtitle = styled.p`
-  font-size: 1rem;
-  color: #3250B5;
-font-family: Raleway;
-font-weight: 300;
-font-style: Light;
-font-size: 16px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  // font-size: 1rem;
+  color: #3250b5;
+  margin: 0;
+  font-family: Raleway;
+  font-weight: 300;
+  line-height: 1.2;
 
+  @media (min-width: 480px) {
+    font-size: 0.5rem;
+  }
 
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
 
 export const TopBar = styled.div`
@@ -196,21 +233,58 @@ export const HRManager = styled.div`
 
 export const Tabs = styled.div`
   display: flex;
-  gap: 2rem;
-  margin: 1.7rem 0;
-  // border-bottom: 2px solid #ddd;
-  
+  gap: clamp(1rem, 2vw, 5rem); /* responsive gap for all screens */
+  font-family: Raleway;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.2vw, 5rem); /* font scales from mobile to ultra-large screens */
+  line-height: 100%;
+  text-align: center;
+  margin: 1.5rem 0;
+  flex-wrap: wrap; /* wrap on smaller screens */
+
+  @media (max-width: 1024px) {
+    gap: clamp(0.8rem, 2vw, 2rem);
+    font-size: clamp(0.9rem, 1vw, 2rem);
+  }
+
+  @media (max-width: 768px) {
+    justify-content: center;
+    gap: clamp(0.5rem, 1.5vw, 1.5rem);
+    font-size: clamp(0.8rem, 1vw, 1.5rem);
+  }
 `;
 
 export const Tab = styled.div`
-  padding:5px  20px;
+  padding: clamp(8px, 0.5vw, 20px) clamp(16px, 1vw, 40px); /* responsive padding */
   cursor: pointer;
-  background:#304EB0;
+  font-family: Raleway;
   font-weight: 500;
-  background: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
+  font-size: clamp(1rem, 1vw, 2.5rem); /* fully responsive font */
+  line-height: 100%;
+  text-align: center;
+  border-bottom: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
   color: ${({ active }) => (active ? "white" : "#555")};
-`;
+  background: ${({ active }) => (active ? "#304EB0" : "transparent")};
+  border-radius: 6px;
 
+  @media (max-width: 1024px) {
+    padding: clamp(6px, 0.5vw, 16px) clamp(12px, 1vw, 30px);
+    font-size: clamp(0.9rem, 0.9vw, 2rem);
+  }
+
+  @media (max-width: 768px) {
+    padding: clamp(4px, 0.5vw, 12px) clamp(8px, 1vw, 20px);
+    font-size: clamp(0.8rem, 0.8vw, 1.5rem);
+  }
+
+  @media (min-width: 2560px) { /* 2K / 4K screens */
+    font-size: clamp(1.5rem, 1.5vw, 2rem);
+  }
+
+  @media (min-width: 3840px) { /* 4K / 8K ultra-wide screens */
+    font-size: clamp(2rem, 2vw, 3rem);
+  }
+`;
 
 export const ActionArea = styled.div`
   display: flex;
@@ -250,27 +324,45 @@ export const AddButton = styled.button`
 
 
 export const SearchWrapper = styled.div`
-  position: relative; /* Required for the icon to position absolutely */
-  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
   width: 100%;
-  max-width: 300px; /* optional, prevents the input from being too short */
+  max-width: 450px; /* optional max width */
 `;
 
-
 export const SearchInput = styled.input`
-  padding: 0.5rem 1rem 0.5rem 2.5rem; /* left padding for icon */
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 1.2rem 1.5rem 1.2rem 2.5rem; /* left padding for icon */
+  border: 1px solid #172554;
+  border-radius: 6px;
   width: 100%;
-  font-size: 0.9rem;
   font-family: 'Satoshi';
-  background-color: #fff;
+  height: clamp(35px, 3vw, 50px);
+  font-size: clamp(0.9rem, 1vw, 1.5rem);
 
-  &:focus {
-    outline: none;
-    border-color: #304EB0;
-    box-shadow: 0 0 0 2px rgba(48, 78, 176, 0.1);
+  @media (min-width: 1440px) {
+    font-size: clamp(1.2rem, 0.8vw, 1.5rem);
+    height: clamp(45px, 2vw, 60px);
   }
+
+  @media (min-width: 2560px) {
+    font-size: 1.8rem;
+    height: 70px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    height: 90px;
+  }
+`;
+
+export const SearchIcon = styled(FiSearch)`
+  position: absolute;
+  left: clamp(10px, 1vw, 25px);
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: clamp(1.2rem, 1.5vw, 1.5rem);
+  pointer-events: none;
 `;
 
 
@@ -285,15 +377,7 @@ export const DepartmentSelect = styled.select`
 `;
 
 
-export const SearchIcon = styled(FiSearch)`
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  color: #888;
-  font-size: 1rem;
-  pointer-events: none; /* so it doesn’t block typing */
-`;
+
 
 
 export const Table = styled.table`
@@ -301,35 +385,39 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px;
   margin-top: 1rem;
-  
+ text-align: left;
+  font-family: 'Satoshi';
 
-  th, td {
+  /* Scroll on small screens */
+  // display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  td {
     text-align: left;
-    padding: 0.5rem;
+    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
     white-space: nowrap;
-    
+    background-color: white;
+    border: none;
+    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
   }
-    tbody tr {
-  outline: 0.100rem solid #d3d3d3;
-  border-radius: 0px;
-}
-
 
   th {
-    background-color:rgb(18, 50, 158);
-    font-family: raleway;
-    color:white;
-    padding: 0.75rem;
-    
+ text-align: left;
+    background-color: #304EB0;
+    color: white;
+    font-family: Raleway;
+    padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
+    font-size: clamp(0.9rem, 1vw, 1.8rem); /* responsive font */
   }
 
-  tbody tr:nth-child(even) {
-    background-color: #e6f0ff;
-    
+  tbody tr {
+    box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
   }
 
-  tbody tr:nth-child(odd) {
-    background-color: #ffffff;
+  /* Background color for even rows */
+  tbody tr:nth-child(even) td {
+    background-color: #E6ECFF;
   }
 
   tbody tr td:first-child {
@@ -344,6 +432,20 @@ export const Table = styled.table`
 
   tbody tr:hover td {
     background-color: #f5f5f5;
+  }
+
+  @media (min-width: 2560px) {
+    td, th {
+      font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
+      padding: clamp(8px, 1vw, 24px);
+    }
+  }
+
+  @media (min-width: 3840px) {
+    td, th {
+      font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
+      padding: clamp(10px, 2vw, 32px);
+    }
   }
 `;
 
