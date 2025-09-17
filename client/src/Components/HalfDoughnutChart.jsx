@@ -47,7 +47,7 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
       style={{
         width: "100%",
         maxWidth: "400px",
-        height: "200px",
+        height: "400px",
         margin: "0 auto",
         position: "relative",
       }}
@@ -90,7 +90,7 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
       {/* Custom Legend */}
 <div
   style={{
-    marginTop: "-30px",
+    marginTop: "-6rem",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

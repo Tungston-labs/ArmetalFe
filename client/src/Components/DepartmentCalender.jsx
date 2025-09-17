@@ -45,6 +45,7 @@ const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
 const DepartmentCalendar = () => {
   const [summary, setSummary] = useState(null);
+  console.log({summary})
   const [loading, setLoading] = useState(true);
  const today = new Date();
 const [month, setMonth] = useState(today.getMonth());
@@ -160,7 +161,7 @@ const handleDateClick = (date) => {
           </ChartConatiner>
 
           {/* Employee Contract Expiry */}
-          <EmployeeExpiryWrapper>
+         <EmployeeExpiryWrapper>
             <h3>Employee Contract Expiry</h3>
             {contractExpiry.slice(0, 5).map((emp) => (
               <EmployeeRow key={emp.id}>

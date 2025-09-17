@@ -38,19 +38,33 @@ export const HRManager = styled.div`
   }
 `;
 
+// Typography (Title, Subtitle)
+export const Title = styled.h2`
+  font-size: clamp(18px, 2vw, 1.5rem);
+  margin: 0;
+  font-family: 'Satoshi';
+  color: rgb(64, 101, 220);
+
+  /* Extra-large screens (2K/4K TVs) */
+  @media (min-width: 2560px) {
+    font-size: 4rem; /* fixed or larger max for TVs */
+  }
+`;
+
 export const Subtitle = styled.p`
-  font-size: 14px;
-  color:  #3e64ff;
+  font-size: clamp(12px, 1vw, 1rem);
+  color: #3e64ff;
   margin: 0;
   margin-left: 2px;
-  font-family: Raleway;
+  font-family: 'Raleway';
+
+  /* Extra-large screens (2K/4K TVs) */
+  @media (min-width: 2560px) {
+    font-size: 2.5rem;
+  }
 `;
-export const Title = styled.h2`
-  font-size: 22px;
-  margin: 0;
-  font-family:satoshi;
-  color:rgb(64, 101, 220);
-`;
+
+
 export const HeaderSection = styled.div`
   display: flex;
   justify-content: space-between;
@@ -114,8 +128,8 @@ export const ActionArea = styled.div`
 `;
 
 export const InitialCircle = styled.div`
-  width: 45px;
-  height: 45px;
+  width: clamp(35px, 3vw, 90px);
+  height: clamp(35px, 3vw, 90px);
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 1);
   color: #ECF8FF;
@@ -123,17 +137,33 @@ export const InitialCircle = styled.div`
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 100px;
   font-family: Satoshi;
-  padding-right: 18px;
+  font-size: clamp(5rem, 3vw, 9rem); /* responsive font */
+  padding-right: clamp(5px, 1vw, 18px);
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
     color: #CAD2ED; 
   }
 
+  /* Extra-large screens (2K TVs) */
+  @media (min-width: 2560px) {
+    width: 120px;
+    height: 120px;
+    font-size: 10rem;
+    padding-right: 25px;
+  }
 
+  /* 4K screens */
+  @media (min-width: 3840px) {
+    width: 150px;
+    height: 150px;
+    font-size: 15rem;
+    padding-right: 30px;
+  }
 `;
+
+
 
 export const AddButton = styled.button`
   display: flex;
@@ -142,45 +172,65 @@ export const AddButton = styled.button`
   font-family: Satoshi;
   background: #304EB0;
   color: white;
-  padding: 0.5rem 2rem;
+  padding: clamp(0.4rem, 0.8vw, 0.8rem) clamp(1rem, 2vw, 2rem); /* vertical | horizontal */
   border-radius: 8px;
   border: none;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font size */
   cursor: pointer;
-   &:hover {
+  transition: all 0.3s ease;
+
+  &:hover {
     background-color: #3f60cbff;
   }
 `;
 
+
+// Search Input
 export const SearchInput = styled.input`
-  padding: 0.5rem 1rem 0.5rem 2.2rem; // left padding for icon space
+  padding: 0.5rem 1rem 0.5rem 2.2rem;
   border-radius: 6px;
   border: 1px solid #ccc;
   outline: none;
-  font-size: 0.9rem;
- min-width: 100%;
+  font-size: clamp(0.8rem, 1vw, 2.5rem);
+  min-width: 100%;
 `;
+
 export const SearchWrapper = styled.div`
   position: relative;
-  width: 220px;
+  width: clamp(150px, 20%, 350px); /* scales between 150px and 300px depending on screen */
 `;
 
 export const SearchIcon = styled(FiSearch)`
   position: absolute;
   top: 50%;
-  left: 12px;
+  left: clamp(8px, 1vw, 16px); /* responsive horizontal spacing */
   transform: translateY(-50%);
   color: #888;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1.5vw, 1.5rem); /* responsive font size */
 `;
 
+
+// Card Grid
 export const CardGrid = styled.div`
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(4,1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
-`;
 
+  @media (max-width: 1440px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+`;
 export const DepartmentCard = styled.div`
   background: white;
   padding: 1.5rem;
@@ -190,28 +240,27 @@ export const DepartmentCard = styled.div`
   cursor: pointer;
   transition: all 0.3s ease;
 
-  // 💡 Hover effect
   &:hover {
     .initial-circle {
-      background-color:rgb(255, 255, 255);
-       color: #1a73e8;
+      background-color: rgb(255, 255, 255);
+      color: #1a73e8;
     }
 
     .dept-name,
     .head-name,
     .subtitle,
     .card-value {
-      color:rgb(62, 101, 200);
+      color: rgb(62, 101, 200);
     }
 
     .arrow-icon {
-      background-color:rgb(51, 51, 192);
+      background-color: rgb(51, 51, 192);
       color: white;
     }
   }
 
   h3 {
-    font-size: 1.05rem;
+    font-size: clamp(1rem, 1.2vw, 2rem); /* responsive */
     font-weight: 600;
     margin: 0;
     color: #000;
@@ -224,14 +273,14 @@ export const DepartmentCard = styled.div`
     gap: 0.4rem;
 
     img {
-      width: 24px;
-      height: 24px;
+      width: clamp(24px, 1.2vw, 30px);
+      height: clamp(24px, 1.2vw, 30px);
       border-radius: 50%;
       object-fit: cover;
     }
 
     .head-name {
-      font-size: 0.85rem;
+      font-size: clamp(0.8rem, 0.9vw, 2rem);
       margin: 0;
       font-weight: 500;
       color: #000;
@@ -240,11 +289,12 @@ export const DepartmentCard = styled.div`
 `;
 
 
+
 export const HeadInfo = styled.div`
   margin-top: 0.5rem;
 
   small {
-    font-size: 0.9rem;
+    font-size: clamp(0.75rem, 1vw, 2rem); /* responsive */
     color: #888;
     display: block;
   }
@@ -258,22 +308,21 @@ export const CardRight = styled.div`
 
   .card-value {
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 1.5vw, 1.5rem); /* responsive */
     color: #000;
   }
 
   .arrow-icon {
-  background: rgb(255, 255, 255);
-  color: rgb(52, 52, 124);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+    background: rgb(255, 255, 255);
+    color: rgb(52, 52, 124);
+    width: clamp(36px, 2vw, 40px);
+    height: clamp(36px, 2vw, 40px);
+    border-radius: 50%;
+    font-size: clamp(0.8rem, 1vw, 1rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 // Modal Styles

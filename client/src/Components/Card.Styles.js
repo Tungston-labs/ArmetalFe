@@ -1,5 +1,12 @@
 import styled from "styled-components";
-
+const breakpoints = {
+  mobile: "480px",
+  tablet: "768px",
+  laptop: "1024px",
+  desktop: "1440px",
+  tv: "2560px",     // 2K / QHD screens
+  largeTv: "3840px" // 4K UHD screens
+};
 export const CardContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);  /* default for desktops */
@@ -7,37 +14,35 @@ export const CardContainer = styled.div`
   margin: 0.5rem;
   background: #f4f4f4;
 
-  /* Small devices */
-  @media (max-width: 600px) {
+  /* 📱 Mobile */
+  @media (max-width: ${breakpoints.mobile}) {
     grid-template-columns: 1fr;
   }
 
-  /* Tablets */
-  @media (min-width: 601px) and (max-width: 1024px) {
+  /* 📱 Tablets */
+  @media (min-width: ${breakpoints.mobile}) and (max-width: ${breakpoints.laptop}) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Standard desktops (HD & Full HD) */
-  @media (min-width: 1025px) and (max-width: 1920px) {
+  /* 💻 Standard desktops */
+  @media (min-width: ${breakpoints.laptop}) and (max-width: ${breakpoints.desktop}) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  /* QHD (2K - 2560px) */
-  @media (min-width: 1921px) and (max-width: 2560px) {
+  /* 🖥️ 2K / QHD screens */
+  @media (min-width: ${breakpoints.tv}) and (max-width: ${breakpoints.largeTv}) {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;  /* extra spacing */
+    gap: 1.5rem;
+    max-width: 90%;
+    margin: 0 auto;
   }
 
-  /* 4K screens (3840px wide) */
-  @media (min-width: 2561px) and (max-width: 3840px) {
+  /* 🖥️ 4K screens */
+  @media (min-width: ${breakpoints.largeTv}) {
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-  }
-
-  /* 8K screens (7680px wide) */
-  @media (min-width: 3841px) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem;
+    max-width: 80%;
+    margin: 0 auto;
   }
 `;
 
@@ -52,36 +57,32 @@ export const Card = styled.div`
   flex-direction: column;
   justify-content: space-between;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 1rem;
 
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.12);
   }
 
-  /* Responsive padding */
-  padding: 1rem;
-
-  @media (max-width: 1024px) {
+  /* 📱 Tablets */
+  @media (max-width: ${breakpoints.laptop}) {
     padding: 0.8rem;
   }
 
-  @media (max-width: 768px) {
-    padding: 0.7rem;
-    border-radius: 10px;
-  }
-
-  @media (max-width: 480px) {
+  /* 📱 Mobile */
+  @media (max-width: ${breakpoints.mobile}) {
     padding: 0.6rem;
     border-radius: 8px;
     font-size: 0.9rem;
   }
 
-  /* Large screens (2K and above) */
-  @media (min-width: 1921px) {
+  /* 🖥️ 2K and above */
+  @media (min-width: ${breakpoints.tv}) {
     padding: 1.5rem;
   }
 
-  @media (min-width: 3841px) {
+  /* 🖥️ 4K */
+  @media (min-width: ${breakpoints.largeTv}) {
     padding: 2rem;
     border-radius: 16px;
   }
@@ -90,26 +91,28 @@ export const Card = styled.div`
 
 export const CardHeader = styled.div`
   display: flex;
-  // align-items: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  @media (max-width: ${breakpoints.tablet}) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 export const IconSection = styled.div`
   display: flex;
-  // align-items: center;
-  // justify-content: center;
   min-width: 35px;
-  margin-left:10px;
-  margin-top:10px;
-  color:#304EB0;
-`;
+  margin-left: 10px;
+  margin-top: 10px;
+  color: #304EB0;
 
-// export const Divider = styled.div`
-//   width: 4px;
-//   background: #3352ba;
-//   border-radius: 4px;
-//   align-self: stretch;   
-//   margin: 0 1rem;
-// `;
+  @media (max-width: ${breakpoints.mobile}) {
+    margin-left: 5px;
+    margin-top: 5px;
+    min-width: 25px;
+  }
+`;
 
 export const Divider = styled.div`
   position: absolute;             
@@ -120,10 +123,36 @@ export const Divider = styled.div`
   background: #3352ba;
   border-radius: 4px;
 
+  /* ❌ Hide divider up to 1654px */
+  @media (max-width: 1654px) {
+    display: none;
+  }
+
+  /* ✅ Show and style again from 1655px+ */
+  @media (min-width: 1655px) and (max-width: ${breakpoints.largeTv}) {
+    display: block;
+
+    width: 4px;
+    left: 70px;
+  }
+
+  /* 🖥️ 4K screens */
+  @media (min-width: ${breakpoints.largeTv}) {
+    display: block;
+    margin-left: 10px;
+    width: 5px;
+    left: 80px;
+  }
 `;
+
+
 export const CardContent = styled.div`
   flex: 1;
-  padding:1rem;
+  padding: 1rem;
+
+  @media (max-width: ${breakpoints.mobile}) {
+    padding: 0.5rem;
+  }
 `;
 
 export const CardTitle = styled.h3`
@@ -132,18 +161,24 @@ export const CardTitle = styled.h3`
   font-family: Satoshi, sans-serif;
   margin-left: 10px;
 
-  /* Extra bump for 4K/8K */
-  @media (min-width: 2561px) {
+  @media (max-width: ${breakpoints.tablet}) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: ${breakpoints.large}) {
     font-size: 2.8rem;
   }
 `;
-
 
 export const CardCount = styled.span`
   font-size: clamp(1rem, 1.5vw, 2.5rem);
   font-weight: bold;
 
-  @media (min-width: 2561px) {
+  @media (max-width: ${breakpoints.tablet}) {
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: ${breakpoints.large}) {
     font-size: 3rem;
   }
 `;
@@ -152,7 +187,6 @@ export const CardList = styled.div`
   margin-top: 0.8rem;
   display: flex;
   flex-direction: column;
-  // gap: 0.4rem;
   position: relative;
 `;
 
@@ -164,16 +198,16 @@ export const CardListItem = styled.div`
   padding: 0.2rem 15px;
   gap: 0.5rem;
 
-  @media (max-width: 992px) {
-    grid-template-columns: 40px 1fr 1fr; // Hide one column if needed
+  @media (max-width: ${breakpoints.laptop}) {
+    grid-template-columns: 40px 1fr 1fr;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${breakpoints.tablet}) {
     grid-template-columns: 40px 1fr;
     font-size: 0.8rem;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: ${breakpoints.mobile}) {
     grid-template-columns: 30px 1fr;
     font-size: 0.75rem;
     gap: 0.3rem;
@@ -191,22 +225,26 @@ export const EmployeeAvatar = styled.div`
   height: 32px;
   border-radius: 50%;
   background: #ccc;
+
+  @media (max-width: ${breakpoints.mobile}) {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
 export const EmployeeName = styled.span`
   font-weight: 500;
-  font-size: clamp(0.75rem, 0.9vw, 1.3rem);
+  font-size: clamp(0.75rem, 0.5vw, 1.8rem);
 
-  @media (min-width: 2561px) {
+  @media (min-width: ${breakpoints.large}) {
     font-size: 1.5rem;
   }
 `;
 
 export const EmployeeId = styled.div`
-  font-size: clamp(0.75rem, 0.9vw, 1.3rem);
+  font-size: clamp(0.75rem, 0.5vw, 1.8rem);
   color: #666;
 
-  /* Default: show both dates */
   .from-date,
   .to-date {
     display: inline;
@@ -215,8 +253,7 @@ export const EmployeeId = styled.div`
     display: none;
   }
 
-  /* ✅ Between 1024px–1440px: show only from-date + continue sign */
-  @media (min-width: 1024px) and (max-width: 1440px) {
+  @media (min-width: ${breakpoints.laptop}) and (max-width: ${breakpoints.desktop}) {
     .to-date {
       display: none;
     }
@@ -226,30 +263,49 @@ export const EmployeeId = styled.div`
   }
 `;
 
-
-
-
 export const EmployeeDept = styled.span`
   color: #777;
-    font-size: clamp(0.75rem, 0.9vw, 1.3rem);
+  font-size: clamp(0.75rem, 0.5vw, 1.8rem);
 `;
 
 export const IconWrapper = styled.div`
   position: absolute;
-  right:0px;          // add some spacing from the right edge
-  bottom: -0px;         // move it slightly below the card
- color: #3352BA;
+  right: 10px;
+  bottom: 10px;
+  color: #3352BA;
   cursor: pointer;
   transition: transform 0.3s ease;
 
-    &:hover {
-    transform: scale(1.3); /* Zoom in */
-    color: #3352BA; /* Optional color change */
+  &:hover {
+    transform: scale(1.3);
+    color: #3352BA;
   }
 
-  @media (max-width: 480px) {
-    bottom: -3px;       // adjust for smaller screens
+  /* 📱 Mobile */
+  @media (max-width: ${breakpoints.mobile}) {
+    bottom: 5px;
+    right: 5px;
+    font-size: 0.8rem; /* shrink icon */
+  }
+
+  /* 📱 Tablet */
+  @media (max-width: ${breakpoints.tablet}) {
+    bottom: 8px;
     right: 8px;
+    font-size: 1rem;
+  }
+
+  /* 🖥️ 2K */
+  @media (min-width: ${breakpoints.tv}) {
+    right: 15px;
+    bottom: 15px;
+    font-size: 1.5rem; /* bigger icon */
+  }
+
+  /* 🖥️ 4K */
+  @media (min-width: ${breakpoints.largeTv}) {
+    right: 20px;
+    bottom: 20px;
+    font-size: 2rem;
   }
 `;
-

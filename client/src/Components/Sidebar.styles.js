@@ -47,17 +47,18 @@ export const Logo = styled.div`
   width: 100%;
 
   img {
-    width: 180px;       /* logo size */
+    width: 180px;
     max-height: 110px;
     object-fit: contain;
     transition: width 0.3s ease;
   }
 
   img.default-logo {
-    width: 300px;       /* larger default icon */
+    width: 300px;
     max-height: 110px;
   }
 
+  /* Adjust logo for smaller screens */
   @media (max-width: 1024px) {
     img {
       width: 120px;
@@ -67,6 +68,7 @@ export const Logo = styled.div`
     }
   }
 
+  /* Hide logo on very small screens */
   @media (max-width: 768px) {
     display: none;
   }
@@ -151,7 +153,7 @@ export const CustomLink = styled(Link)`
   align-items: center;
   padding: 12px;
   border-radius: 8px;
-  font-size: 18px;
+ font-size: clamp(1rem, 1vw, 1.5rem); /* Responsive font size */
   color: white;
   font-weight: 600;
   text-decoration: none;

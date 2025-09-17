@@ -1,15 +1,41 @@
 import styled from "styled-components";
 
+const breakpoints = {
+  mobile: "480px",
+  tablet: "768px",
+  laptop: "1024px",
+  desktop: "1440px",
+  tv: "2560px",     // 2K / QHD screens
+  largeTv: "3840px" // 4K UHD screens
+};
+
 export const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 2rem;
   width: 100%;
-  // max-width: 3840px;
   margin: 0 auto;
   padding: 0.8rem;
+
+  /* 📱 Mobile (stack) */
+  @media (max-width: ${breakpoints.tablet}) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* 🖥️ TV screens (center and max-width control) */
+  @media (min-width: ${breakpoints.tv}) {
+    max-width: 90%;   /* prevent content from stretching edge-to-edge */
+    gap: 3rem;
+  }
+
+  @media (min-width: ${breakpoints.largeTv}) {
+    max-width: 80%;   /* tighter for 4K */
+    gap: 4rem;
+  }
 `;
+
 
 export const LeftSection = styled.div`
   flex: 1 1 60%;
@@ -25,31 +51,21 @@ export const RightSection = styled.div`
 export const SectionTitle = styled.h2`
   font-size: clamp(1rem, 1.2vw, 2rem);
   margin: 1.5rem 0 1rem;
-  font-weight: bold;
+  font-weight: 700;
   border-bottom: 1px solid #3352BA;
   padding-bottom: 0.3rem;
-font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-// font-size: 26px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-family: Satoshi;
 
-  display: flex;             
+  display: flex;
   align-items: center;
   justify-content: space-between;
 
-  svg {
-    color: #3352ba;   /* default color */
-    transition: color 0.3s ease;
-    cursor: pointer;
-  }
-
-  svg:hover {
-    color: blue;   
+  /* Scale up on very large displays */
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: clamp(1.5rem, 2vw, 3rem);
   }
 `;
+
 
 
 export const DepartmentWrapper = styled.div`
@@ -73,16 +89,29 @@ export const DepartmentCard = styled.div`
   background: #fff;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   padding: 1rem;
-  display: flex;            /* 👈 row layout */
+  display: flex;
   align-items: center;
   justify-content: space-between;
   min-width: 250px;
   min-height: 150px;
   position: relative;
+
+  @media (max-width: ${breakpoints.mobile}) {
+    min-width: 200px;
+    min-height: 120px;
+    padding: 0.8rem;
+  }
+
+  @media (min-width: ${breakpoints.tv}) {
+    min-width: 400px;
+    min-height: 200px;
+    padding: 2rem;
+  }
 `;
 
+
 export const InitialCircle = styled.div`
-  font-size: clamp(2rem, 5vw, 7rem);
+  font-size: clamp(2rem, 5vw, 10rem);
   font-weight: bold;
   color: #B5E2FF;
   margin-right: 1rem;
@@ -101,10 +130,10 @@ export const DeptInfo = styled.div`
   font-family: Raleway;
 font-weight: 700;
 font-style: Bold;
-font-size: 20px;
 leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
+    font-size: clamp(1rem, 1.2vw, 2rem);
 
   }
 
@@ -112,7 +141,7 @@ letter-spacing: 0%;
   font-family: Raleway;
 font-weight: 400;
 font-style: Regular;
-font-size: 15px;
+    font-size: clamp(0.8rem, 1vw, 1.5rem);
 leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
@@ -125,20 +154,18 @@ export const DeptHead = styled.p`
   color: #666;
 `;
 export const DeptCount = styled.div`
-  font-size: clamp(1rem, 1.5vw, 1.5rem);
+  font-size: clamp(1rem, 1.5vw, 1.8rem);
   font-weight: bold;
   padding: 0.25rem 0.5rem;
   border-radius: 8px;
   align-self: flex-start; 
   font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 20px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-
+  font-weight: 700;
+  font-style: Bold;
+  line-height: 100%;
+  letter-spacing: 0%;
 `;
+
 
 export const ArrowIcon = styled.div`
   position: absolute;
@@ -177,7 +204,7 @@ export const CalendarHeader = styled.div`
   margin-bottom: 1rem;
 
   h3 {
-    font-size: clamp(1rem, 1.5vw, 1.5rem);
+    font-size: clamp(1rem, 1.5vw, 2.5rem);
     font-weight: bold;
     color: #3352BA; /* ✅ same color for month + year */
   }
@@ -202,7 +229,12 @@ export const CalendarGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 0.3rem;
+
+  @media (min-width: ${breakpoints.tv}) {
+    gap: 1rem;
+  }
 `;
+
 
 // export const CalendarDay = styled.div`
 //   text-align: center;
@@ -234,6 +266,11 @@ export const PresenceWrapper = styled.div`
   gap: 1.5rem;
   margin-top: 1rem;
   flex-wrap: wrap;
+
+  @media (max-width: ${breakpoints.tablet}) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
 
 export const DonutChart = styled.div`
@@ -246,8 +283,8 @@ export const DonutChart = styled.div`
   text-align: center;
 
   .circle {
-    width: 120px;
-    height: 120px;
+    width: clamp(80px, 10vw, 140px);
+    height: clamp(80px, 10vw, 140px);
     margin: 0 auto;
     border-radius: 50%;
     background: conic-gradient(
@@ -261,64 +298,67 @@ export const PresenceText = styled.div`
   margin-top: 1rem;
   h2 {
     margin: 0;
-    font-size: 2rem;
+    font-size: clamp(1.2rem, 2vw, 2.5rem);
     font-weight: bold;
   }
   p {
     margin: 4px 0;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 1vw, 1rem);
   }
 `;
 
-// Employee contract expiry
 export const EmployeeExpiryWrapper = styled.div`
   flex: 2;
   background: #fff;
   border-radius: 7px;
   padding: 1rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-
-  h3{
-  font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 21px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-
+  // max-height: 300px;  
+  overflow-y: auto;  
+  h3 {
+    font-family: Satoshi;
+    font-weight: 700;
+    font-size: clamp(1rem, 1.3vw, 2rem);
+    line-height: 120%;
   }
 `;
+
 
 export const EmployeeRow = styled.div`
   display: grid;
   grid-template-columns: 40px 1fr 1fr 1.5fr;
   gap: 0.5rem;
-  align-items: left;
+  align-items: center;
   padding: 6px 0;
-  // border-bottom: 1px solid #eee;
-  
-  &:last-child { border-bottom: none; }
+
+  @media (max-width: ${breakpoints.tablet}) {
+    grid-template-columns: 40px 1fr;
+    gap: 0.3rem;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 export const Avatar = styled.img`
-  width: 30px;
-  height: 30px;
+  width: clamp(25px, 4vw, 40px);
+  height: clamp(25px, 4vw, 40px);
   border-radius: 50%;
 `;
 
 export const EmpName = styled.div`
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1vw, 1.8rem);
   font-weight: 500;
 `;
 
 export const EmpId = styled.div`
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 0.9vw, 1.8rem);
   color: #666;
 `;
 
 export const EmpEmail = styled.div`
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 0.9vw, 1.8rem);
   color: #555;
 `;
 
@@ -331,7 +371,7 @@ export const HolidayItem = styled.div`
   display: flex;
   align-items: center;
   background: #fff;
-  padding: 10px;
+  padding: clamp(8px, 1vw, 12px);
   border-radius: 8px;
   margin-bottom: 10px;
 `;
@@ -346,16 +386,15 @@ export const HolidayIcon = styled.div`
   margin-right: 10px;
 
   img {
-    width: 26px;  // Adjust size as needed
-    height: 26px;
+    width: clamp(20px, 2vw, 8rem);
+    height: clamp(20px, 2vw, 8rem);
   }
 `;
-
 
 export const HolidayInfo = styled.div`
   flex: 1;
   p {
-    font-size: 0.75rem;
+    font-size: clamp(0.7rem, 1vw, 2rem);
     color: #666;
     margin: 0;
   }
@@ -363,27 +402,33 @@ export const HolidayInfo = styled.div`
 
 export const HolidayTitle = styled.div`
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1vw, 2.5rem);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 250px;
   cursor: pointer;
 `;
+
 export const HolidayDate = styled.div`
-  font-size: 0.8rem;
+  font-size: clamp(0.8rem, 1vw, 1.8rem);
   font-weight: 500;
   color: #333;
 `;
+
 export const ChartConatiner = styled.div`
-background:#fff;
+  background:#fff;
   border-radius: 12px;
 `;
+
+// Calendar Day
 export const CalendarDay = styled.div`
   text-align: center;
-  padding: 0.5rem;
+  padding: clamp(0.4rem, 0.8vw, 0.8rem);
   border-radius: 6px;
   font-size: clamp(0.7rem, 1vw, 1rem);
+  min-height: clamp(35px, 4vw, 50px);
+
   background: ${({ isToday, isSunday, isSelected }) =>
     isSelected
       ? "#3352BA"
@@ -392,16 +437,19 @@ export const CalendarDay = styled.div`
       : isSunday
       ? "#ffcccc"
       : "transparent"};
+
   color: ${({ isToday, isSunday, isSelected }) =>
     isSelected || isToday ? "#fff" : isSunday ? "red" : "#000"};
+
   border: ${({ isSunday, isSelected }) =>
     isSelected ? "2px solid #1e3a8a" : isSunday ? "1px solid red" : "none"};
+
   font-weight: ${({ isToday, isSelected }) =>
     isToday || isSelected ? "bold" : "normal"};
+
   cursor: ${({ isHeader }) => (isHeader ? "default" : "pointer")};
+
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
 `;
-

@@ -31,7 +31,7 @@ export const DateSelector = styled.div`
   margin-top: 1.5rem;
   display: flex;
   align-items: center;
-  // justify-content: space-between;
+  justify-content: space-between; /* distribute search and date */
   flex-wrap: wrap;
   font-size: 22px;
 
@@ -39,7 +39,7 @@ export const DateSelector = styled.div`
     padding: 0.5rem;
     border-radius: 6px;
     border: 1px solid #ccc;
-    font-size:0.9rem;
+    font-size: 0.9rem;
   }
 
   button {
@@ -50,13 +50,21 @@ export const DateSelector = styled.div`
     cursor: pointer;
   }
 
+  /* Left search + department wrapper */
+  .search-department {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 250px;
+  }
+
   .calendar-header {
     display: flex;
-     justify-content: center; 
-  align-items: center; 
+    justify-content: center; 
+    align-items: center; 
     gap: 1.5rem;
-    margin-left:20%;
-    margin-top:8rem;
+    flex: 2; /* center portion */
   }
 
   .left {
@@ -90,7 +98,40 @@ export const DateSelector = styled.div`
     font-size: 1.2rem;
     font-weight: 400;
   }
+
+  @media (max-width: 1024px) {
+    justify-content: center;
+    gap: 2rem;
+
+    .search-department {
+      order: 2;
+      width: 100%;
+      flex-direction: row;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .calendar-header {
+      order: 1;
+      width: 100%;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+
+    .search-department,
+    .calendar-header {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+  }
 `;
+
 
 
 export const SearchInput = styled.input`
@@ -297,25 +338,30 @@ export const HRManager = styled.div`
   }
 `;
 export const Title = styled.h2`
-  font-size: 1.5rem;
+  font-size: clamp(18px, 2vw, 1.5rem);
   margin: 0;
-  color: #3352BA;
-font-family: Satoshi;
-// font-size: 22px;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
+  font-family: 'Satoshi';
+  color: rgb(64, 101, 220);
+
+  /* Extra-large screens (2K/4K TVs) */
+  @media (min-width: 2560px) {
+    font-size: 4rem; /* fixed or larger max for TVs */
+  }
 `;
 
 export const Subtitle = styled.p`
-margin: 4px 0 0;
-color:#3352BA;
-font-family: Raleway;
-font-size: 1rem;
-font-style: normal;
-font-weight: 300;
-line-height: normal;
+  font-size: clamp(12px, 1vw, 1rem);
+  color: #3e64ff;
+  margin: 0;
+  margin-left: 2px;
+  font-family: 'Raleway';
+
+  /* Extra-large screens (2K/4K TVs) */
+  @media (min-width: 2560px) {
+    font-size: 2.5rem;
+  }
 `;
+
 
 export const TitleSection = styled.div`
   display: flex;
