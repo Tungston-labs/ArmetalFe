@@ -59,24 +59,18 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Check localStorage first, then sessionStorage
-    const user =
-      JSON.parse(localStorage.getItem("user")) ||
-      JSON.parse(sessionStorage.getItem("user"));
-
-    const accessToken =
-      localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
-
+    const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
+    const accessToken = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+  
     if (user && accessToken) {
-      dispatch(
-        login({
-          userName: user.username,
-          accessToken,
-          user,
-        })
-      );
+      dispatch(login({
+        userName: user.username,
+        accessToken,
+        user,
+      }));
     }
   }, [dispatch]);
+  
   return (
     <>
       <Routes>
