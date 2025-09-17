@@ -74,19 +74,24 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    setLoading(true); // ⏳ start spinner
+    setLoading(true);
+  
     try {
       const response = await axios.post("http://178.248.112.16:8001/api/token/", {
         username: formData.username,
         password: formData.password,
       });
-
+  
       const { access, refresh, user } = response.data;
-
-      localStorage.setItem("accessToken", access);
-      localStorage.setItem("refreshToken", refresh);
-      localStorage.setItem("user", JSON.stringify(user));
-
+  
+      // If "Remember me" checked -> use localStorage
+      // Else -> use sessionStorage (clears on browser close)
+      const storage = formData.remember ? localStorage : sessionStorage;
+  
+      storage.setItem("accessToken", access);
+      storage.setItem("refreshToken", refresh);
+      storage.setItem("user", JSON.stringify(user));
+  
       dispatch(
         login({
           userName: user.username,
@@ -97,25 +102,21 @@ const LoginForm = () => {
             is_superadmin: user.is_superadmin,
             is_hr_admin: user.is_hr_admin,
             is_employee: user.is_employee,
-            company: user.company,   // <-- add this
+            company: user.company,
           },
         })
       );
-
-
-      if (user.is_superadmin) {
-        navigate("/superadmin");
-      } else {
-        navigate("/");
-      }
+  
+      if (user.is_superadmin) navigate("/superadmin");
+      else navigate("/");
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.detail || "Login failed. Check credentials.");
     } finally {
-      setLoading(false); // ⏹️ stop spinner
+      setLoading(false);
     }
   };
-
+  
   const handleForgotPassword = () => {
     navigate('/forget-password');
   };
