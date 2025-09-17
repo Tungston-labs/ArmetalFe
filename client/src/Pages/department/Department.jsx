@@ -143,10 +143,10 @@ const Department = () => {
 
           <ActionArea>
             <SearchWrapper>
-              <SearchIcon />
+              {/* <SearchIcon /> */}
               <SearchInput
                 type="text"
-                placeholder="Search by Department name"
+                placeholder="Enter Department name"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
