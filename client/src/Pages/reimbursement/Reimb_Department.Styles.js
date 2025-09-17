@@ -37,19 +37,70 @@ export const HRManager = styled.div`
     object-fit: cover;
   }
 `;
-
-export const Subtitle = styled.p`
-  font-size: 1rem;
-  color:  #3250B5;
-  margin: 0;
-  margin-left: 2px;
-  font-family: Raleway;
-`;
 export const Title = styled.h2`
   font-size: 1.4rem;
+  margin: 0 0 5px 0;
+  color: #3250b5;
+  font-family: "Satoshi";
+  font-weight: 700;
+  line-height: 1.2;
+
+  @media (min-width: 480px) { /* small tablet */
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 768px) { /* tablet */
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) { /* desktop */
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 1440px) { /* large desktop / 2K */
+    font-size: 2rem;
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 3em;
+  }
+
+  @media (min-width: 3840px) { /* 8K */
+    font-size: 4rem;
+  }
+`;
+
+export const Subtitle = styled.p`
+  // font-size: 1rem;
+  color: #3250b5;
   margin: 0;
-  font-family:satoshi;
-  color:#3250B5;
+  font-family: Raleway;
+  font-weight: 300;
+  line-height: 1.2;
+
+  @media (min-width: 480px) {
+    font-size: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
 export const HeaderSection = styled.div`
   display: flex;
@@ -114,8 +165,8 @@ export const ActionArea = styled.div`
 `;
 
 export const InitialCircle = styled.div`
-  width: 45px;
-  height: 45px;
+width: clamp(35px, 3vw, 90px);
+  height: clamp(35px, 3vw, 90px);
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 1);
   color: #ECF8FF;
@@ -123,16 +174,30 @@ export const InitialCircle = styled.div`
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 100px;
   font-family: Satoshi;
-  padding-right: 18px;
+  font-size: clamp(5rem, 3vw, 9rem); /* responsive font */
+  padding-right: clamp(5px, 1vw, 18px);
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
     color: #CAD2ED; 
   }
 
+  /* Extra-large screens (2K TVs) */
+  @media (min-width: 2560px) {
+    width: 120px;
+    height: 120px;
+    font-size: 10rem;
+    padding-right: 25px;
+  }
 
+  /* 4K screens */
+  @media (min-width: 3840px) {
+    width: 150px;
+    height: 150px;
+    font-size: 15rem;
+    padding-right: 30px;
+  }
 `;
 
 export const AddButton = styled.button`
@@ -253,33 +318,56 @@ export const HeadInfo = styled.div`
   margin-top: 0.5rem;
 
   small {
-    font-size: 0.9rem;
+    font-size: clamp(0.75rem, 0.9vw, 1rem); /* scales 12px → 18px */
     color: #888;
     display: block;
-    line-height: 100%;
-    letter-spacing: 0%;
+    line-height: 1.4;
+    letter-spacing: 0;
   }
 
   .head-row {
     display: flex;
-    align-items: center; /* vertically centers content by default */
-    margin-top: 0.5rem; /* pushes the row a little down from the small text */
-    
+    align-items: center;
+    margin-top: 0.5rem;
+
     img {
-      width: 36px; /* adjust size if needed */
-      height: 36px;
+      width: clamp(28px, 2vw, 56px);  /* scales avatar size for mobile → 4K */
+      height: clamp(28px, 2vw, 56px);
       border-radius: 50%;
-      margin-right: 0.5rem;
+      margin-right: clamp(0.4rem, 0.8vw, 1rem);
       object-fit: cover;
     }
 
     .head-name {
       font-weight: 600;
-      font-size: 1rem;
+      font-size: clamp(0.9rem, 1.2vw, 1.6rem); /* scales smoothly */
       color: #333;
+      line-height: 1.3;
+    }
+  }
+
+  /* ✅ Extra fine-tuning with breakpoints */
+  @media (max-width: 480px) {
+    .head-row {
+      flex-direction: column; /* stack avatar + name on tiny screens */
+      align-items: flex-start;
+
+      img {
+        margin-bottom: 0.4rem;
+      }
+    }
+  }
+
+  @media (min-width: 2560px) {
+    .head-name {
+      font-size: 1.8rem; /* a bit bigger for 4K+ screens */
+    }
+    small {
+      font-size: 1.2rem;
     }
   }
 `;
+
 
 
 export const CardRight = styled.div`

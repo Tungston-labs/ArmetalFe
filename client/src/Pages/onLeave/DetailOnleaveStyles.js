@@ -67,79 +67,123 @@ export const AddButton = styled.button`
 `;
 
 export const SearchInput = styled.input`
-  padding: 1.2rem 2rem;
-  border: 1px solid #ccc;
+  padding: 1.2rem 1.5rem 1.2rem 2.5rem; /* left padding for icon */
+  border: 1px solid #172554;
   border-radius: 6px;
-  min-width: 300px;
-  margin-top:30px;
-  margin-bottom:20px;
-  height:20px;
-  font-family:satoshi;
+  width: 100%;
+  font-family: 'Satoshi';
+  height: clamp(35px, 3vw, 50px);
+  font-size: clamp(0.9rem, 1vw, 1.5rem);
+
+  @media (min-width: 1440px) {
+    font-size: clamp(1.2rem, 0.8vw, 1.5rem);
+    height: clamp(45px, 2vw, 60px);
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.8rem;
+    height: 70px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    height: 90px;
+  }
 `;
 export const Tabs = styled.div`
   display: flex;
-  gap: 2rem;
+  gap: clamp() 0.1vw, 5rem);
   font-family: Raleway;
-font-weight: 700;
-font-style: Bold;
-font-size: 1rem;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-text-align: center;
-margin-bottom:10px;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.2vw, 5rem); /* font scales from mobile to ultra-large screens */
+  line-height: 100%;
+  text-align: center;
+  margin: 1.5rem 0;
+  flex-wrap: wrap; /* wrap on smaller screens */
 
-  margin: 1.8rem 0;
-  // border-bottom: 2px solid #ddd;
-  
+  @media (max-width: 1024px) {
+    gap: clamp(0.8rem, 2vw, 2rem);
+    font-size: clamp(0.9rem, 1vw, 2rem);
+  }
+
+  @media (max-width: 768px) {
+    justify-content: center;
+    gap: clamp(0.5rem, 1.5vw, 1.5rem);
+    font-size: clamp(0.8rem, 1vw, 1.5rem);
+  }
 `;
-
 export const Tab = styled.div`
-  padding:8px  25px;
+  padding: clamp(8px, 0.5vw, 20px) clamp(16px, 1vw, 40px); /* responsive padding */
   cursor: pointer;
-  background:#304EB0;
   font-family: Raleway;
-font-weight: 500;
-font-style: Bold;
-font-size: 1rem;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-text-align: center;
-  background: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
+  font-weight: 500;
+  font-size: clamp(1rem, 1vw, 2.5rem); /* fully responsive font */
+  line-height: 100%;
+  text-align: center;
+  border-bottom: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
   color: ${({ active }) => (active ? "white" : "#555")};
+  background: ${({ active }) => (active ? "#304EB0" : "transparent")};
+  border-radius: 6px;
+
+  @media (max-width: 1024px) {
+    padding: clamp(6px, 0.5vw, 16px) clamp(12px, 1vw, 30px);
+    font-size: clamp(0.9rem, 0.9vw, 2rem);
+  }
+
+  @media (max-width: 768px) {
+    padding: clamp(4px, 0.5vw, 12px) clamp(8px, 1vw, 20px);
+    font-size: clamp(0.8rem, 0.8vw, 1.5rem);
+  }
+
+  @media (min-width: 2560px) { /* 2K / 4K screens */
+    font-size: clamp(1.5rem, 1.5vw, 2rem);
+  }
+
+  @media (min-width: 3840px) { /* 4K / 8K ultra-wide screens */
+    font-size: clamp(2rem, 2vw, 3rem);
+  }
 `;
+
+
+
 
 
 export const Table = styled.table`
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 10px; 
+  border-spacing: 0 10px;
   margin-top: 1rem;
-    text-align: center;
+ text-align: left;
+  font-family: 'Satoshi';
+
+  /* Scroll on small screens */
+  // display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
   td {
-    text-align: center;
-    padding: 0.4rem;
+    text-align: left;
+    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
     white-space: nowrap;
     background-color: white;
     border: none;
+    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
   }
 
   th {
+ text-align: left;
     background-color: #304EB0;
     color: white;
-    font-family: raleway;
-    padding: 0.5rem;
-        text-align: center;
+    font-family: Raleway;
+    padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
+    font-size: clamp(0.9rem, 1vw, 1.8rem); /* responsive font */
   }
 
   tbody tr {
-      text-align: center;
     box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-    font-family: 'satoshi';
   }
 
-  /* ✅ Background color for even rows */
+  /* Background color for even rows */
   tbody tr:nth-child(even) td {
     background-color: #E6ECFF;
   }
@@ -156,6 +200,20 @@ export const Table = styled.table`
 
   tbody tr:hover td {
     background-color: #f5f5f5;
+  }
+
+  @media (min-width: 2560px) {
+    td, th {
+      font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
+      padding: clamp(8px, 1vw, 24px);
+    }
+  }
+
+  @media (min-width: 3840px) {
+    td, th {
+      font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
+      padding: clamp(10px, 2vw, 32px);
+    }
   }
 `;
 
@@ -267,37 +325,71 @@ export const ActionArea = styled.div`
   // background:black;
   margin-top:-8%;
 `;
+
 export const Title = styled.h2`
-  font-size: 1.8rem;
-  margin:0;
-  margin-bottom:5px;
-  margin-left: 5px;
- font-family:satoshi;
- margin-top:10px;
- font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 22px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-  color: #3250B5;
+  font-size: 1.4rem;
+  margin: 0 0 5px 0;
+  color: #3250b5;
+  font-family: "Satoshi";
+  font-weight: 700;
+  line-height: 1.2;
+
+  @media (min-width: 480px) { /* small tablet */
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 768px) { /* tablet */
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) { /* desktop */
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 1440px) { /* large desktop / 2K */
+    font-size: 2rem;
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 3em;
+  }
+
+  @media (min-width: 3840px) { /* 8K */
+    font-size: 4rem;
+  }
 `;
 
 export const Subtitle = styled.p`
-  font-size: 1rem;
-  color: #3250B5;
-    margin-left: 5px;
-  margin-top:-1px;
-  font-size:raleway;
+  // font-size: 1rem;
+  color: #3250b5;
+  margin: 0;
   font-family: Raleway;
-font-weight: 300;
-font-style: Light;
-font-size: 16px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-weight: 300;
+  line-height: 1.2;
 
+  @media (min-width: 480px) {
+    font-size: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
 
 export const DepartmentSelect = styled.select`
@@ -344,10 +436,9 @@ export const HeaderRow = styled.div`
 
 export const SearchWrapper = styled.div`
   position: relative;
-  display: flex;
-  align-items: center;
-  flex: 1;
-  max-width: 400px;
+  display: inline-block;
+  width: 100%;
+  max-width: 450px; /* optional max width */
 `;
 
 export const SearchIcon = styled(FiSearch)`

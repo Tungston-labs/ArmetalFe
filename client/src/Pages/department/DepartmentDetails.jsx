@@ -133,7 +133,7 @@ if (!department) return <Loader />;
 
   return (
     <>
-    <Navbar/>
+    {/* <Navbar/> */}
     <Container>
 
       <HeaderSection>

@@ -23,7 +23,7 @@ const Header = () => {
         <TitleContainer>
           <Icon src={HolidayIcon} alt="holiday" />
           <div>
-            <Title>holiday</Title>
+            <Title>Holiday</Title>
             <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
           </div>
         </TitleContainer>

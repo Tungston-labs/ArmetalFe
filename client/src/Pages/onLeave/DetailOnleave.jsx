@@ -126,10 +126,10 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
   {/* New Row: Search + Calendar */}
   <HeaderRow>
     <SearchWrapper>
-      <SearchIcon />
+      {/* <SearchIcon /> */}
       <SearchInput
         type="text"
-        placeholder="Search by employee name or ID"
+        placeholder="Enter employee name or ID"
         value={searchText}
         onChange={handleSearch}
         style={{ paddingLeft: "2.5rem" }} // make space for icon

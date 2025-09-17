@@ -268,7 +268,7 @@ const handleMonthChange = (e) => {
         </Header>
 
         <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <SearchInput placeholder="Search by employee ID" value={searchTerm} onChange={handleSearch} style={{ width: '250px' }} />
+          <SearchInput placeholder=" Enter employee ID" value={searchTerm} onChange={handleSearch} style={{ width: '250px' }} />
           <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
   {months.map((month, index) => (

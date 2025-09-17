@@ -36,22 +36,52 @@ export const Form = styled.form`
 `;
 
 export const FormGroup = styled.div`
-  flex: ${({ fullWidth }) => (fullWidth ? '1 1 100%' : '1 1 45%')};
+  flex: ${({ fullWidth }) => (fullWidth ? "1 1 100%" : "1 1 45%")};
   display: flex;
   flex-direction: column;
+  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    flex: 1 1 100%; /* stack fields on small screens */
+  }
 `;
 
 export const Label = styled.label`
   margin-bottom: 0.5rem;
   font-weight: 500;
+  font-size: clamp(0.85rem, 0.9vw, 1rem); /* scales across screens */
+  color: #333;
 `;
 
 export const Input = styled.input`
-  padding: 0.8rem;
+  padding: clamp(0.6rem, 0.8vw, 1rem); /* responsive padding */
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    border-color: #304eb0;
+    box-shadow: 0 0 0 2px rgba(48, 78, 176, 0.15);
+  }
+
+  @media (min-width: 1920px) {
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+
+  @media (min-width: 2560px) {
+    padding: 1.2rem;
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: 3840px) {
+    padding: 1.4rem;
+    font-size: 1.3rem;
+  }
 `;
+
 
 export const Select = styled.select`
   padding: 0.8rem;

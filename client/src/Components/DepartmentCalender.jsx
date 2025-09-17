@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import API from "../services/api"; // <-- use your configured axios
 import { NavLink } from "react-router-dom";
-
+import Loader from "../Components/Loader"
 
 
 import {
@@ -70,7 +70,7 @@ const currentYear = today.getFullYear();
     fetchSummary();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  // if (loading) return <p>Loading...</p>;
   if (!summary) return <p>Failed to fetch data.</p>;
 
 
@@ -115,6 +115,11 @@ const handleDateClick = (date) => {
 
   return (
     <Container>
+       {loading && (
+
+        <Loader />
+
+    )}
       {/* LEFT SIDE */}
       <LeftSection>
         {/* Departments */}

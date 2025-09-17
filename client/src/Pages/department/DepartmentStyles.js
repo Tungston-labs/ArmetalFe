@@ -40,26 +40,67 @@ export const HRManager = styled.div`
 
 // Typography (Title, Subtitle)
 export const Title = styled.h2`
-  font-size: clamp(18px, 2vw, 1.5rem);
-  margin: 0;
-  font-family: 'Satoshi';
-  color: rgb(64, 101, 220);
+  font-size: 1.4rem;
+  margin: 0 0 5px 0;
+  color: #3250b5;
+  font-family: "Satoshi";
+  font-weight: 700;
+  line-height: 1.2;
 
-  /* Extra-large screens (2K/4K TVs) */
-  @media (min-width: 2560px) {
-    font-size: 4rem; /* fixed or larger max for TVs */
+  @media (min-width: 480px) { /* small tablet */
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 768px) { /* tablet */
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) { /* desktop */
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 1440px) { /* large desktop / 2K */
+    font-size: 2rem;
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 3em;
+  }
+
+  @media (min-width: 3840px) { /* 8K */
+    font-size: 4rem;
   }
 `;
 
 export const Subtitle = styled.p`
-  font-size: clamp(12px, 1vw, 1rem);
-  color: #3e64ff;
+  // font-size: 1rem;
+  color: #3250b5;
   margin: 0;
-  margin-left: 2px;
-  font-family: 'Raleway';
+  font-family: Raleway;
+  font-weight: 300;
+  line-height: 1.2;
 
-  /* Extra-large screens (2K/4K TVs) */
+  @media (min-width: 480px) {
+    font-size: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.9rem;
+  }
+
   @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
     font-size: 2.5rem;
   }
 `;
@@ -337,16 +378,37 @@ export const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 999;
+  padding: 1rem; /* ensures space on very small screens */
 `;
 
 export const ModalContent = styled.div`
   background-color: white;
-  padding: 2rem;
+  padding: clamp(1rem, 2vw, 2.5rem); /* responsive padding */
   border-radius: 10px;
   max-width: 600px;
   width: 100%;
   position: relative;
   z-index: 1000;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+
+  /* ✅ Responsive scaling */
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+
+  @media (max-width: 768px) {
+    max-width: 95%; /* take almost full width on tablets */
+  }
+
+  @media (min-width: 1920px) {
+    max-width: 800px; /* wider modal for Full HD */
+  }
+
+  @media (min-width: 2560px) {
+    max-width: 1000px; /* 2K screens */
+  }
+
+  @media (min-width: 3840px) {
+    max-width: 1200px; /* 4K screens */
+  }
 `;
 
 export const CloseButton = styled.button`
@@ -355,9 +417,15 @@ export const CloseButton = styled.button`
   right: 1rem;
   background: transparent;
   border: none;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 1.5vw, 1.8rem);
   cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #304eb0;
+  }
 `;
+
 export const DropdownWrapper = styled.div`
   position: relative;
 `;

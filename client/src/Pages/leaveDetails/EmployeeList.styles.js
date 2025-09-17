@@ -53,7 +53,7 @@ export const RightSection = styled.div`
 
 export const Tabs = styled.div`
   display: flex;
-  gap: clamp(1rem, 2vw, 5rem); /* responsive gap for all screens */
+  gap: clamp() 0.1vw, 5rem);
   font-family: Raleway;
   font-weight: 700;
   font-size: clamp(1rem, 1.2vw, 5rem); /* font scales from mobile to ultra-large screens */

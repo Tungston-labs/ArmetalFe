@@ -338,26 +338,67 @@ export const HRManager = styled.div`
   }
 `;
 export const Title = styled.h2`
-  font-size: clamp(18px, 2vw, 1.5rem);
-  margin: 0;
-  font-family: 'Satoshi';
-  color: rgb(64, 101, 220);
+  font-size: 1.4rem;
+  margin: 0 0 5px 0;
+  color: #3250b5;
+  font-family: "Satoshi";
+  font-weight: 700;
+  line-height: 1.2;
 
-  /* Extra-large screens (2K/4K TVs) */
-  @media (min-width: 2560px) {
-    font-size: 4rem; /* fixed or larger max for TVs */
+  @media (min-width: 480px) { /* small tablet */
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 768px) { /* tablet */
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) { /* desktop */
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 1440px) { /* large desktop / 2K */
+    font-size: 2rem;
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 3em;
+  }
+
+  @media (min-width: 3840px) { /* 8K */
+    font-size: 4rem;
   }
 `;
 
 export const Subtitle = styled.p`
-  font-size: clamp(12px, 1vw, 1rem);
-  color: #3e64ff;
+  // font-size: 1rem;
+  color: #3250b5;
   margin: 0;
-  margin-left: 2px;
-  font-family: 'Raleway';
+  font-family: Raleway;
+  font-weight: 300;
+  line-height: 1.2;
 
-  /* Extra-large screens (2K/4K TVs) */
+  @media (min-width: 480px) {
+    font-size: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.9rem;
+  }
+
   @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
     font-size: 2.5rem;
   }
 `;

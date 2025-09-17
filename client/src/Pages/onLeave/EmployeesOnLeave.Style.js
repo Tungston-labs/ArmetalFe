@@ -234,7 +234,7 @@ export const CardGrid = styled.div`
 `;
 export const DeptTitle = styled.div`
   font-weight: bold;
-  font-size: clamp(1rem, 1.8vw, 2.5rem);
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
   font-family: Raleway;
   line-height: 1.2;
   letter-spacing: 0%;
@@ -256,7 +256,7 @@ export const DeptTitle = styled.div`
 
   /* Extra-large / QHD */
   @media (min-width: 1601px) and (max-width: 2560px) {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
   }
 
   /* 4K screens */
@@ -289,12 +289,12 @@ export const DeptSub = styled.div`
 
   /* Extra-large / QHD */
   @media (min-width: 1601px) and (max-width: 2560px) {
-    font-size: 2rem;
+    font-size: 1rem;
   }
 
   /* 4K screens */
   @media (min-width: 3840px) {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 `;
 

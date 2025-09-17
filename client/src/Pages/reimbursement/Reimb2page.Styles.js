@@ -36,26 +36,69 @@ export const TitleSection = styled.div`
 `;
 
 export const Title = styled.h2`
-  margin: 0;
-  font-family:satoshi;
-  color: #3250B5;
-font-size: 1.5rem;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
+  font-size: 1.4rem;
+  margin: 0 0 5px 0;
+  color: #3250b5;
+  font-family: "Satoshi";
+  font-weight: 700;
+  line-height: 1.2;
+
+  @media (min-width: 480px) { /* small tablet */
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 768px) { /* tablet */
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) { /* desktop */
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 1440px) { /* large desktop / 2K */
+    font-size: 2rem;
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 3em;
+  }
+
+  @media (min-width: 3840px) { /* 8K */
+    font-size: 4rem;
+  }
 `;
+
 export const Subtitle = styled.p`
-  font-size: 1rem;
-  color: #666;
+  // font-size: 1rem;
+  color: #3250b5;
   margin: 0;
-  margin-left: 2px;
-  font-family:raleway;
-  color: #3250B5;
-font-family: Raleway;
-// font-size: 16px;
-font-style: normal;
-font-weight: 300;
-line-height: normal;
+  font-family: Raleway;
+  font-weight: 300;
+  line-height: 1.2;
+
+  @media (min-width: 480px) {
+    font-size: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
 // export const SubTitle = styled.p`
 //   font-size: 0.9rem;
@@ -128,69 +171,65 @@ export const TableWrapper = styled.div`
 export const StyledTable = styled.table`
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 10px; 
-  // margin-top: 1rem;
- text-align: center;
- td {
- text-align: left;
-    padding: 0.3rem;
+  border-spacing: 0 10px;
+  text-align: center;
+
+  td {
+    text-align: left;
+    padding: clamp(0.3rem, 0.6vw, 1rem);
     white-space: nowrap;
     background-color: white;
     border: none;
-font-family: Satoshi;
-font-weight: 400;
-font-style: Regular;
-font-size: 0.9rem;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-
+    font-family: Satoshi, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+    line-height: 1.4;
+    letter-spacing: 0;
   }
 
   th {
- text-align: left;
-
+    text-align: left;
     background-color: #304EB0;
     color: white;
-    padding: 0.75rem;
-    font-family: Raleway;
-font-weight: 700;
-font-style: Bold;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-
-    
+    padding: clamp(0.5rem, 0.9vw, 1.2rem);
+    font-family: Raleway, sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.9rem, 1vw, 1.3rem);
+    line-height: 1.4;
+    letter-spacing: 0;
   }
+
   /* ✅ Background color for even rows */
   tbody tr:nth-child(even) td {
     background-color: #E6ECFF;
   }
+
   /* ✅ Apply box-shadow only to tbody rows */
   tbody tr {
- box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+    box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
   }
 
-  /* Optional: radius for only first and last td of each row */
+  /* Optional: rounded corners */
   tbody tr td:first-child {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
   }
 
   tbody tr td:last-child {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
   }
 
   tbody tr:hover td {
     background-color: #f5f5f5;
   }
-     select {
+
+  select {
     background-color: #fff;
     border: 0.2px solid #D3D3D3;
-    border-radius: 2px;
-    padding: 6px 10px;
-    font-size: 0.85rem;
+    border-radius: 4px;
+    padding: clamp(0.4rem, 0.6vw, 0.8rem) clamp(0.6rem, 1vw, 1rem);
+    font-size: clamp(0.75rem, 0.9vw, 1rem);
     font-family: 'Satoshi', sans-serif;
     color: #333;
     outline: none;
@@ -212,7 +251,37 @@ letter-spacing: 0%;
       font-family: 'Satoshi', sans-serif;
     }
   }
+
+  /* ✅ Mobile screens */
+  @media (max-width: 768px) {
+    display: block;
+    overflow-x: auto; /* horizontal scroll for small devices */
+    white-space: nowrap;
+
+    td,
+    th {
+      font-size: 0.8rem;
+      padding: 0.4rem;
+    }
+  }
+
+  /* ✅ 4K screens */
+  @media (min-width: 2560px) {
+    td {
+      font-size: 1.2rem;
+      padding: 1rem 1.2rem;
+    }
+    th {
+      font-size: 1.4rem;
+      padding: 1.2rem 1.5rem;
+    }
+    select {
+      font-size: 1.1rem;
+      padding: 0.8rem 1rem;
+    }
+  }
 `;
+
 
 export const Avatar = styled.img`
   width: 32px;

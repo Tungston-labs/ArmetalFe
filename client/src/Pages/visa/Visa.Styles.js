@@ -97,7 +97,7 @@ export const RightSection = styled.div`
 
 export const Tabs = styled.div`
   display: flex;
-  gap: clamp(1rem, 2vw, 5rem); /* responsive gap for all screens */
+  gap: clamp() 0.1vw, 5rem);
   font-family: Raleway;
   font-weight: 700;
   font-size: clamp(1rem, 1.2vw, 5rem); /* font scales from mobile to ultra-large screens */
@@ -117,7 +117,6 @@ export const Tabs = styled.div`
     font-size: clamp(0.8rem, 1vw, 1.5rem);
   }
 `;
-
 export const Tab = styled.div`
   padding: clamp(8px, 0.5vw, 20px) clamp(16px, 1vw, 40px); /* responsive padding */
   cursor: pointer;
