@@ -125,10 +125,10 @@ const EmployeeList = () => {
        </TitleSection>
         <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent:"space-between" }}>
             <SearchWrapper>
-              <SearchIcon />
+              {/* <SearchIcon /> */}
               <SearchInput
                 type="text"
-                placeholder="Employee ID or Name"
+                placeholder="Enter Employee ID or Name"
                 value={searchText}
                 onChange={handleSearch}
               />
