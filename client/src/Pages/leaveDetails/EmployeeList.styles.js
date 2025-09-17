@@ -452,18 +452,37 @@ export const AddButton = styled.button`
   background: #1e3a8a;
   color: white;
   border: none;
-  padding: 0.6rem 1.2rem;
+  padding: clamp(0.5rem, 1vw, 1rem) clamp(1rem, 2vw, 2rem);
   border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
+  gap: clamp(0.3rem, 0.5vw, 1rem);
+  font-size: clamp(0.9rem, 1vw, 1rem);
   cursor: pointer;
+  transition: background 0.3s ease;
 
   &:hover {
     background: #2744a3;
   }
+
+  @media (min-width: 1440px) {
+    font-size: clamp(0.9rem, 0.8vw, 1rem);
+    padding: clamp(0.8rem, 1vw, 1rem) clamp(1.5rem, 2vw, 2rem);
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+    padding: 1rem 3rem;
+    gap: 1rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    padding: 1.2rem 4rem;
+    gap: 1.2rem;
+  }
 `;
+
 
 export const SearchWrapper = styled.div`
   position: relative;
@@ -503,23 +522,42 @@ export const SearchIcon = styled(FiSearch)`
   top: 50%;
   transform: translateY(-50%);
   color: #888;
-  font-size: clamp(1.2rem, 1.5vw, 2rem);
+  font-size: clamp(1.2rem, 1.5vw, 1.5rem);
   pointer-events: none;
 `;
 
 export const DepartmentSelect = styled.select`
-  padding: 8px 30px 8px 12px; /* room for arrow */
-  font-size: 14px;
-  border-radius: 5px;
+  padding: clamp(0.4rem, 0.8vw, 0.8rem) clamp(1rem, 2vw, 2rem) clamp(0.4rem, 0.8vw, 0.8rem) clamp(0.8rem, 1.5vw, 1.5rem);
+  font-size: clamp(0.875rem, 1vw, 1.25rem);
+  border-radius: clamp(4px, 0.5vw, 8px);
   border: 1px solid #ccc;
   background: white;
-  height: 40px;
-  min-width: 200px;
+  height: clamp(35px, 3vw, 50px);
+  min-width: clamp(150px, 20vw, 300px);
 
   appearance: none;
   background: url("data:image/svg+xml;utf8,<svg fill='black' height='14' viewBox='0 0 24 24' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
-    no-repeat right 10px center;
+    no-repeat right clamp(8px, 1vw, 15px) center;
   background-color: white;
-  background-size: 14px;
+  background-size: clamp(12px, 1vw, 18px);
+
+  @media (min-width: 1440px) {
+    font-size: clamp(1rem, 0.8vw, 1.5rem);
+    min-width: 250px;
+    height: 45px;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.8rem;
+    min-width: 350px;
+    height: 55px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+    min-width: 450px;
+    height: 65px;
+  }
 `;
+
 
