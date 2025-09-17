@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RiHome5Line } from "react-icons/ri";
 import { FaUsers, FaSitemap, FaTasks } from "react-icons/fa";
 import { MdOutlineLaptopChromebook } from "react-icons/md";
@@ -15,16 +15,24 @@ import {
 } from './Sidebar.styles';
 import API from '../services/api';
 
+
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ First try Redux, fallback to localStorage
+  // ✅ Subscribe to Redux user state
   const reduxUser = useSelector((state) => state.auth.user);
-  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  // ✅ Fallback to localStorage in case of refresh
+  
+  const storedUser = useSelector((state) => state.auth.user);
   const user = reduxUser || storedUser; 
   const modules = user?.company_modules || {};
+
+  useEffect(() => {
+    console.log("Sidebar user updated:", user);
+  }, [user]);
 
   const handleLogout = async () => {
     try {
@@ -46,6 +54,7 @@ export default function Sidebar() {
     return location.pathname.startsWith(path) ? "active" : "";
   };
 
+  // ❌ Don’t render if no user yet
   if (!user) return null;
 
   return (
@@ -62,6 +71,7 @@ export default function Sidebar() {
       </TopSection>
 
       <Nav>
+
         {user?.is_superadmin && (
           <CustomLink to="/superadmin" className={`${collapsed ? 'collapsed' : ''} ${isActive("/superadmin")}`}>
             <MdOutlineLaptopChromebook />
