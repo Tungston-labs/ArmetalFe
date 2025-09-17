@@ -40,7 +40,7 @@ class Employee_db(TimeStampedModel):
     iqama_number = EncryptedCharField(max_length=500,blank=True, null=True,unique=True)
     aadar_number = EncryptedCharField(max_length=500,blank=True, null=True,unique=True)
     insurance_number = EncryptedCharField(max_length=500)
-    visa_expiry_date = models.DateField()
+    visa_expiry_date = models.DateField(blank=True, null=True)
     contract_expiry_date = models.DateField(blank=True,null=True)
     total_leave = models.IntegerField(null=True,blank=True)
     idcard = models.ImageField(upload_to='idcard_pics/', blank=True, null=True)
