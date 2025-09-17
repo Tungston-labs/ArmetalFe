@@ -174,11 +174,33 @@ const LoginForm = () => {
       <RightPanel>
         {view === 'login' ? (
           <FormBox>
-    <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', fontWeight: 'bold',}}>Log in</h2>
+    {/* <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', fontWeight: 'bold',}}>Log in</h2>
     <p style={{ fontSize: 20, fontFamily: 'Raleway' }}>
               Welcome back!<br />
               Please log in to your account
-            </p>
+            </p> */}
+             <div style={{ textAlign: "left" }}>
+    <h2
+      style={{
+        fontSize: 41,
+        fontFamily: "Satoshi",
+        fontWeight: "bold",
+        margin: 0,              // remove default margin
+      }}
+    >
+      Log in
+    </h2>
+    <p
+      style={{
+        fontSize: 20,
+        fontFamily: "Raleway",
+        marginTop: "8px",      // small spacing between h2 and p
+      }}
+    >
+      Welcome back! <br />
+      Please log in to your account
+    </p>
+  </div>
             <form onSubmit={handleSubmit}>
               <Label>Username</Label>
               <Input
@@ -230,7 +252,7 @@ const LoginForm = () => {
                   marginTop: "8px",
                   fontFamily: 'Raleway',
                   textDecoration: "none",
-                  fontSize: "14px",
+                  // fontSize: "14px",
                   marginTop: "-10px"
                 }}
               >

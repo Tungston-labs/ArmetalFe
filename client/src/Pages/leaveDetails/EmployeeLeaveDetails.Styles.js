@@ -1,24 +1,43 @@
 import styled from "styled-components";
 
+// Breakpoints for responsiveness
+const breakpoints = {
+  xs: "480px",   // mobile
+  sm: "768px",   // tablet
+  md: "1024px",  // laptop
+  lg: "1440px",  // large laptop
+  xl: "2560px",  // 2K
+  xxl: "3840px", // 4K
+};
+
 export const Container = styled.div`
   padding: 2rem;
   background: white;
   font-family: "Segoe UI", sans-serif;
+
+  @media (max-width: ${breakpoints.sm}) {
+    padding: 1rem;
+  }
 `;
 
 export const Breadcrumb = styled.p`
   font-size: 0.95rem;
   margin: 1rem 0 2rem;
   color: #444;
+
+  @media (max-width: ${breakpoints.sm}) {
+    font-size: 0.85rem;
+  }
 `;
 
 export const InfoGrid = styled.div`
   display: flex;
   gap: 2rem;
-  // margin-bottom: 2rem;
-  width:100%;
-      // justify-content: space-between;
+  width: 100%;
 
+  @media (max-width: ${breakpoints.md}) {
+    flex-direction: column;
+  }
 `;
 
 export const ProfileImage = styled.img`
@@ -27,54 +46,69 @@ export const ProfileImage = styled.img`
   border-radius: 10%;
   object-fit: cover;
 
-  @media (max-width: 768px) {
-    width: 50px;
+  @media (max-width: ${breakpoints.lg}) {
+    width: 120px;
+    height: 120px;
+  }
+
+  @media (max-width: ${breakpoints.md}) {
+    width: 80px;
+    height: 80px;
+  }
+
+  @media (max-width: ${breakpoints.sm}) {
+    width: 60px;
     height: 60px;
   }
-
-  @media (max-width: 480px) {
-    width: 20px;
-    height: 30px;
-  }
 `;
-
 
 export const Input = styled.input`
   padding: 0.6rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 99%;
+  width: 100%;
   margin-bottom: 1rem;
   border-radius: 7px;
-border: 1px solid #3253C1;
-background: #FFF;
+  border: 1px solid #3253C1;
+  background: #fff;
+
+  @media (max-width: ${breakpoints.sm}) {
+    padding: 0.5rem;
+  }
 `;
 
 export const TextArea = styled.textarea`
-  width: 99%;
+  width: 100%;
   min-height: 120px;
   padding: 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 7px;
+  border: 1px solid #3253C1;
+  background: #fff;
   resize: vertical;
   margin-bottom: 2rem;
-  border-radius: 7px;
-border: 1px solid #3253C1;
-background: #FFF;
+
+  @media (max-width: ${breakpoints.sm}) {
+    min-height: 80px;
+  }
 `;
 
 export const SectionTitle = styled.h4`
-  // margin-top: 2rem;
   margin-bottom: 0.5rem;
   color: #333;
+  font-size: 1rem;
 
+  @media (max-width: ${breakpoints.sm}) {
+    font-size: 0.9rem;
+  }
 `;
 
 export const TwoColumn = styled.div`
-  // display: grid;
+  display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5rem;
-  width: 30%;
+  gap: 2rem;
+  width: 100%;
+
+  @media (max-width: ${breakpoints.md}) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const ThreeColumn = styled.div`
@@ -82,12 +116,21 @@ export const ThreeColumn = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   gap: 2rem;
   width: 100%;
+
+  @media (max-width: ${breakpoints.lg}) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: ${breakpoints.md}) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const FlexRow = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+  flex-wrap: wrap;
 `;
 
 export const ActionButton = styled.button`
@@ -97,6 +140,11 @@ export const ActionButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   font-size: 1rem;
+
+  @media (max-width: ${breakpoints.sm}) {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
 `;
 
 export const ApproveButton = styled(ActionButton)`
@@ -105,17 +153,16 @@ export const ApproveButton = styled(ActionButton)`
   transition: all 0.3s ease;
 
   &:hover {
-    background-color:blue;
+    background-color: blue;
   }
 `;
-
 
 export const DeclineButton = styled(ActionButton)`
   background-color: #f17070;
   color: white;
 
   &:hover {
-    background-color:rgb(240, 47, 40); /* darker red */
+    background-color: rgb(240, 47, 40);
     opacity: 0.9;
   }
 `;
@@ -124,21 +171,20 @@ export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 `;
 
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
   align-items: center;
-  padding: 0.3rem ;
+  padding: 0.3rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
   font-size: 0.95rem;
   color: #333;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  gap: 0.5rem;
 
   span {
     font-weight: 500;
@@ -150,75 +196,60 @@ export const HRManager = styled.div`
     border-radius: 50%;
     object-fit: cover;
   }
+
+  @media (max-width: ${breakpoints.sm}) {
+    font-size: 0.85rem;
+    gap: 0.3rem;
+
+    img {
+      width: 25px;
+      height: 25px;
+    }
+  }
+`;
+
+export const TitleSection = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 `;
 
 export const Title = styled.h2`
   font-size: 24px;
   margin: 0;
-  margin-left:10px;
+  margin-left: 10px;
+
+  @media (max-width: ${breakpoints.sm}) {
+    font-size: 20px;
+  }
 `;
 
 export const Subtitle = styled.p`
   font-size: 14px;
   color: #555;
-  margin-left:10px;
-  margin-top:-1px;
-`;
-export const TitleSection = styled.div`
-  display: flex;
-  align-items: center;
-`;
-export const Hr = styled.hr`
-  border: none;
-  border-top: 1px solid #ccc;
+  margin-left: 10px;
+  margin-top: -1px;
 
+  @media (max-width: ${breakpoints.sm}) {
+    font-size: 12px;
+  }
 `;
-
-
 
 export const InfoSection = styled.div`
   width: 55%;
-  // padding: 1rem 0;
-  // margin-left:10%;
+
+  @media (max-width: ${breakpoints.md}) {
+    width: 100%;
+    margin-top: 1rem;
+  }
 `;
 
-export const FullWidthInput = styled.input`
-  width: 97%;
-  padding: 0.6rem 1rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  height:40%;
-  border-radius: 7px;
-border: 1px solid #3253C1;
-background: #FFF;
-`;
-
-export const TwoColumnRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  width:97%;
-`;
-export const TwoColumnRows= styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  width:99%;
-`;
-// export const Input = styled.input`
-//   width: 100%;
-//   padding: 0.6rem 1rem;
-//   border: 1px solid #ccc;
-//   border-radius: 6px;
-// `; make this as responsvie
 export const FlexRows = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
-  width: 100%;
 `;
 
 export const LeftSide = styled.div`
@@ -226,6 +257,10 @@ export const LeftSide = styled.div`
   min-width: 150px;
 
   input {
+    width: 100%;
+  }
+
+  @media (max-width: ${breakpoints.md}) {
     width: 100%;
   }
 `;
@@ -236,13 +271,23 @@ export const RightSide = styled.div`
   gap: 3rem;
   width: 20%;
   min-width: 150px;
-  
 
   input {
-    width: 40%; /* Split the 20% area between two inputs */
+    width: 40%;
     min-width: 70px;
   }
+
+  @media (max-width: ${breakpoints.md}) {
+    width: 100%;
+    flex-direction: column;
+    gap: 1rem;
+
+    input {
+      width: 100%;
+    }
+  }
 `;
+
 export const DateField = styled.div`
   display: flex;
   flex-direction: column;
@@ -256,5 +301,13 @@ export const DateField = styled.div`
 
   input {
     width: 90%;
+  }
+
+  @media (max-width: ${breakpoints.sm}) {
+    font-size: 0.75rem;
+
+    input {
+      width: 100%;
+    }
   }
 `;

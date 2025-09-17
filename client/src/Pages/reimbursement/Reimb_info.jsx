@@ -33,7 +33,6 @@ import Loader from "../../Components/Loader"
 const getStatusStyle = (status) => {
   switch (status) {
     case "Approve":
-    case "Approve":
       return { backgroundColor: "green", color: "white" };
     case "On Hold":
       return { backgroundColor: "orange", color: "white" };
