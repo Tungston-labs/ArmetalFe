@@ -30,6 +30,35 @@ import { FiArrowUpRight } from "react-icons/fi";
 import { fetchEmployeeDash } from "../../Redux/authSlice";
 import { useParams } from "react-router-dom";
 
+const formatTime = (timeStr) => {
+  if (!timeStr) return "-";
+  try {
+    // Convert "05:35:10.246872" → "05:35 PM"
+    const date = new Date(`1970-01-01T${timeStr}Z`);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  } catch (e) {
+    return timeStr; // fallback if parsing fails
+  }
+};
+const formatDate = (dateStr) => {
+  if (!dateStr) return "-";
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    });
+  } catch (e) {
+    return dateStr; // fallback
+  }
+};
+const formatHours = (hours) => {
+  if (!hours && hours !== 0) return "-"; 
+  const num = Number(hours);
+  return `${num.toString().padStart(2, "0")}.00 Hr`;
+};
+
+
 const DailyTaskList = () => {
   const dispatch = useDispatch();
   const { employeeId } = useParams();
@@ -67,9 +96,8 @@ const DailyTaskList = () => {
     tasks.map((task, index) => (
       <TaskCard key={index}>
         <TaskLeft>
-          <TaskDate>{task.date || "N/A"}</TaskDate>
-          <TaskTime>{task.time_taken || "N/A"}</TaskTime>
-        </TaskLeft>
+        <TaskDate>{formatDate(task.date)}</TaskDate>
+        <TaskTime>{formatHours(task.time_taken)}</TaskTime>        </TaskLeft>
         <Divider />
         <TaskContent>
           <TaskRole>{task.project || "N/A"}</TaskRole>
@@ -117,20 +145,21 @@ const DailyTaskList = () => {
   {attendance.length > 0 ? (
     attendance.map((row, index) => (
       <TableRow key={index}>
-        <TableCell>
-          <span style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
-            {row.time_in || "-"}
-            <img src="/images/daily.png" alt="clock" style={{ width: "14px", height: "14px" }} />
-          </span>
-        </TableCell>
-        <TableCell style={{ textAlign: "center", fontWeight: "600" }}>To</TableCell>
-        <TableCell>
-          <span style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
-            <img src="/images/daily.png" alt="clock" style={{ width: "14px", height: "14px" }} />
-            {row.time_out || "-"}
-          </span>
-        </TableCell>
-      </TableRow>
+      <TableCell>
+        <span style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
+          {formatTime(row.time_in)}
+          <img src="/images/daily.png" alt="clock" style={{ width: "14px", height: "14px" }} />
+        </span>
+      </TableCell>
+      <TableCell style={{ textAlign: "center", fontWeight: "600" }}>To</TableCell>
+      <TableCell>
+        <span style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
+          <img src="/images/daily.png" alt="clock" style={{ width: "14px", height: "14px" }} />
+          {formatTime(row.time_out)}
+        </span>
+      </TableCell>
+    </TableRow>
+    
     ))
   ) : (
     <TableRow>
