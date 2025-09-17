@@ -209,7 +209,7 @@ export const Table = styled.table`
   /* 4K Screens (Ultra HD) */
   @media (min-width: 2560px) {
     th, td {
-      font-size: 22px;
+      font-size: 3rem;
       padding: 1.2rem;
     }
   }

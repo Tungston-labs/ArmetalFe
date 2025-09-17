@@ -368,6 +368,7 @@ if (formData.phno) {
           {errors.department_id && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.department_id}</p>}
             <Label>Department</Label>
           <select
+          
             name="department_id"
             value={formData.department_id}
             onChange={handleChange}
@@ -378,6 +379,7 @@ if (formData.phno) {
               borderRadius: '7px',
               border: '1px solid #052DB4',
               background: '#FFF',
+              marginTop:"5px"
             }}
           >
             <option value="">Select Department</option>
@@ -402,6 +404,7 @@ if (formData.phno) {
               border:"1px solid #052DB4",
               background:"#FFF",
               color: 'black',
+               marginTop:"5px"
             }}
           >
             <option value="">Select Employment Type</option>
@@ -416,12 +419,13 @@ if (formData.phno) {
         <div>
           {errors.designation && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.designation}</p>}
           <Label>Designation</Label>
-          <Input name="designation" placeholder="Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
+          <Input      
+           style={{marginTop:"5px"}} name="designation" placeholder="Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
         </div>
         <div>
           {errors.joining_date && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.joining_date}</p>}
             <Label>Joining Date</Label>
-          <Input
+          <Input style={{marginTop:"5px"}}
             type="date"
             name="joining_date"
             value={formData.joining_date}
@@ -436,6 +440,7 @@ if (formData.phno) {
           {errors.total_leave && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.total_leave}</p>}
             <Label>Total Leaves</Label>
           <Input
+          style={{marginTop:"5px"}}
             name="total_leave"
             placeholder="Total Leaves"
             value={formData.total_leave}

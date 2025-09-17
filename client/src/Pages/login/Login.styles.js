@@ -1,6 +1,6 @@
 // src/styles/LoginForm.styles.js
 import styled from 'styled-components';
-
+import loginpageimage from "../../assets/loginpage.svg"
 export const Container = styled.div`
   display: flex;
   height: 100vh;
@@ -30,7 +30,7 @@ export const LeftPanel = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/images/side.png');
+    background-image: url(${loginpageimage});
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center bottom;
@@ -50,9 +50,9 @@ export const RightPanel = styled.div`
   justify-content: center;
   align-items: center;
   
-  h2{
-  margin-left:-18rem;
-  }
+  // h2{
+  // margin-left:-18rem;
+  // }
 `;
 
 export const FormBox = styled.div`
@@ -68,7 +68,7 @@ font-size: 41px;
 leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
-text-align: center;
+text-align: left;
 }
 
 
