@@ -162,17 +162,17 @@ export const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px;
   margin-top: 1rem;
-  text-align: center;
+  text-align: left;
 
   td {
-    text-align: center;
+    text-align: left;
     white-space: nowrap;
     background-color: white;
     border: none;
   }
 
   th {
-    text-align: center;
+    text-align: left;
     background-color: #3352ba;
     color: white;
     padding: 0.7rem;
@@ -226,7 +226,7 @@ export const Table = styled.table`
   @media (min-width: 1024px) and (max-width: 1919px) {
     th, td {
       font-size: 16px;
-      padding: 0.7rem;
+      padding: 0.4rem;
     }
   }
 
@@ -234,7 +234,7 @@ export const Table = styled.table`
   @media (min-width: 768px) and (max-width: 1023px) {
     th, td {
       font-size: 14px;
-      padding: 0.5rem;
+      padding: 0.2rem;
     }
     border-spacing: 0 6px;
   }

@@ -306,7 +306,7 @@ const handleMonthChange = (e) => {
                 <Th><input type="checkbox"></input></Th>
                 <Th>Sl No</Th>
                 <Th>Employee ID</Th>
-                <Th>Employee name</Th>
+                {/* <Th>Employee name</Th> */}
                 <Th>Job Position</Th>
                 <Th>Joining Date</Th>
                 <Th>Email ID</Th>
@@ -327,10 +327,15 @@ const handleMonthChange = (e) => {
                     <Td><input type="checkbox" checked={selectedEmployees.includes(emp.employee)} onChange={() => toggleEmployeeSelect(emp.employee)} /></Td>
                     <Td>{(page - 1) * 10 + index + 1}</Td>
                     <Td>{emp.employee_id}</Td>
-                    <Td>{emp.employee_name}</Td>
-                    <Td>{emp.designation}</Td>
+                    {/* <Td>{emp.employee_name}</Td> */}
+                  <Td title={emp.designation}>
+  {emp.designation.length > 7 ? emp.designation.slice(0, 7) + "..." : emp.designation}
+</Td>
+
                     <Td>{emp.joining_date}</Td>
-                    <Td>{emp.email}</Td>
+                   <Td title={emp.email}>
+  {emp.email.length > 7 ? emp.email.slice(0, 7) + "..." : emp.email}
+</Td>
                     <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
                     <Td><Link to={`/payrolldetails/${emp.id}`}><GoInfo style={{ cursor: 'pointer',color:"black" }} /></Link></Td>
                    <Td>
