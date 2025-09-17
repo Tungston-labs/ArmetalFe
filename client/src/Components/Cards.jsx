@@ -44,8 +44,8 @@ const Cards = () => {
     fetchSummary();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (!summary) return <p>No data available.</p>;
 
   const employeesList = summary.total_employees?.list || [];

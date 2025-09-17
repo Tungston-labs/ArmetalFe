@@ -96,14 +96,15 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'db_armetal',         
-        'USER': 'tungstonlabs',
+        'USER': 'postgres',
         'PASSWORD': 'password@123',
         'HOST': 'localhost',
-        'PORT': '5433',                
+        'PORT': '5432',                
     }
 }
 
