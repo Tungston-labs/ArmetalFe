@@ -161,13 +161,13 @@ const formatUTCToLocal = (utcTimeStr) => {
               <DepartmentTitle>
                 {employeeDashData?.bank_details?.employee?.department}
               </DepartmentTitle>
-              {/* <ArrowIcon onClick={() => navigate("/department")} style={{ cursor: "pointer" }}>
+              <ArrowIcon onClick={() => navigate("/department")} style={{ cursor: "pointer" }}>
       <FaArrowUpRightFromSquare />
-    </ArrowIcon> */}
+    </ArrowIcon>
             </DepartmentTitleRow>
             <hr></hr>
-            {/* <SubLabel>Department head</SubLabel>
-            <DepartmentHead>Ajay kumar M.A</DepartmentHead> */}
+            <SubLabel>Department head</SubLabel>
+            <DepartmentHead>Ajay kumar M.A</DepartmentHead>
           </Department>
           <MemberList>
             {members.map((member, index) => (

@@ -1,10 +1,27 @@
 import styled from 'styled-components';
 import { HiOutlinePencilSquare } from 'react-icons/hi2';
+
 export const Container = styled.div`
-  padding: 2rem;
   background: white;
 
+  /* ✅ Responsive padding */
+  padding: clamp(1rem, 2vw, 2rem);
+
+  /* ✅ On very large screens (like 4K) give more space */
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    padding: 3rem;
+  }
+
+  @media (min-width: 2560px) {
+    padding: 4rem;
+  }
+
+  /* ✅ On small screens reduce padding */
+  @media (max-width: 767px) {
+    padding: 1rem;
+  }
 `;
+
 
 export const HeaderSection = styled.div`
   margin-bottom: 2rem;
@@ -24,9 +41,9 @@ export const TitleSection = styled.div`
   align-items: center;
   gap: 12px;
 
-  img {
-    height: 51px;
-  }
+  // img {
+  //   height: 51px;
+  // }
 
   // Prevent every div from becoming a column (remove this block ↓)
   // div {
@@ -36,27 +53,71 @@ export const TitleSection = styled.div`
 `;
 
 export const Title = styled.h2`
-  margin: 0;
-  font-family:satoshi;
-  color: #3250B5;
-font-size: 1.5rem;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
+  font-size: 1.4rem;
+  margin: 0 0 5px 0;
+  color: #3250b5;
+  font-family: "Satoshi";
+  font-weight: 700;
+  line-height: 1.2;
+
+  @media (min-width: 480px) { /* small tablet */
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 768px) { /* tablet */
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) { /* desktop */
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 1440px) { /* large desktop / 2K */
+    font-size: 2rem;
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 3em;
+  }
+
+  @media (min-width: 3840px) { /* 8K */
+    font-size: 4rem;
+  }
 `;
+
 export const Subtitle = styled.p`
-  font-size: 1rem;
-  color: #666;
+  // font-size: 1rem;
+  color: #3250b5;
   margin: 0;
-  margin-left: 2px;
-  font-family:raleway;
-  color: #3250B5;
-font-family: Raleway;
-// font-size: 16px;
-font-style: normal;
-font-weight: 300;
-line-height: normal;
+  font-family: Raleway;
+  font-weight: 300;
+  line-height: 1.2;
+
+  @media (min-width: 480px) {
+    font-size: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
+
 // export const SubTitle = styled.p`
 //   font-size: 0.9rem;
 //   color: #666;
@@ -104,19 +165,42 @@ export const SearchInput = styled.input`
   width: 220px;
 `;
 export const Label = styled.label`
-  font-size: 1.2rem;
+  color: gray;
   margin-bottom: 0.5rem;
-  color:gray;
+
+  /* ✅ Responsive font size */
+  font-size: clamp(0.85rem, 1vw, 1.2rem);
+
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    font-size: 1.3rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
 `;
 
 export const Input = styled.input`
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-    background: white;
-    border-radius: 4px;
-border: 1px solid #052DB4;
+  background: white;
+  border: 1px solid #052DB4;
+  border-radius: 4px;
+  width: 100%;
 
+  /* ✅ Responsive padding & font */
+  padding: clamp(0.4rem, 0.8vw, 0.75rem) clamp(0.6rem, 1vw, 1rem);
+  font-size: clamp(0.85rem, 1vw, 1.1rem);
+
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    font-size: 1.2rem;
+    padding: 0.75rem 1.25rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.4rem;
+    padding: 1rem 1.5rem;
+  }
 `;
+
 
 export const TableWrapper = styled.div`
 //   overflow-x: auto;
@@ -125,50 +209,73 @@ export const TableWrapper = styled.div`
 `;
 
 export const StyledTable = styled.table`
-  width: 100%;
+   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 10px; 
+  border-spacing: 0 10px;
   margin-top: 1rem;
+ text-align: left;
+  font-family: 'Satoshi';
+
+  /* Scroll on small screens */
+  // display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  td {
     text-align: left;
- td {
-    text-align: left;
-    padding: 0.3rem;
+    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
     white-space: nowrap;
     background-color: white;
-    border: none; /* remove cell borders */
+    border: none;
+    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
   }
 
   th {
+ text-align: left;
     background-color: #304EB0;
-    color: white;\
-    padding: 0.75rem;
-    
+    color: white;
+    font-family: Raleway;
+    padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
+    font-size: clamp(0.9rem, 1vw, 1.8rem); /* responsive font */
   }
-  /* ✅ Background color for even rows */
+
+  tbody tr {
+    box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+  }
+
+  /* Background color for even rows */
   tbody tr:nth-child(even) td {
     background-color: #E6ECFF;
   }
-  /* ✅ Apply box-shadow only to tbody rows */
-  tbody tr {
- box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-  }
 
-  /* Optional: radius for only first and last td of each row */
   tbody tr td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
 
   tbody tr td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   tbody tr:hover td {
     background-color: #f5f5f5;
   }
-`;
 
+  @media (min-width: 2560px) {
+    td, th {
+      font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
+      padding: clamp(8px, 1vw, 24px);
+    }
+  }
+
+  @media (min-width: 3840px) {
+    td, th {
+      font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
+      padding: clamp(10px, 2vw, 32px);
+    }
+  }
+`;
 export const Avatar = styled.img`
   width: 32px;
   height: 32px;
@@ -250,4 +357,35 @@ export const DropdownMenu = styled.div`
       background-color: #f0f0f0;
     }
   }
+`;
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(70px, 6vw, 150px);
+  }
+
+  @media (min-width: 1024px) {
+    height: clamp(80px, 5vw, 180px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(100px, 4vw, 220px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(150px, 3vw, 300px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(200px, 2vw, 400px);
+  }
+`;
+
+export const TextBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
 `;

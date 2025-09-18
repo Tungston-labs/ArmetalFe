@@ -13,7 +13,8 @@ import {
   DropdownWrapper,
   TitleSection,
   Pagination,
-  TextBlock
+  TextBlock,
+  EmployeeImage
 } from "../leaveDetails/EmployeeList.styles";
 import {
   CardContainer,
@@ -76,7 +77,7 @@ const EmployeeList = () => {
       {/* Header */}
       <HeaderSection>
          <TitleSection>
-         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
          <TextBlock>
            <Title>Employee</Title>
            <Subtitle>Manage your Employee.</Subtitle>

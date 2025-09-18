@@ -53,6 +53,7 @@ export const Initial = styled.div`
 `;
 
 
+
 export const InfoSection = styled.div`
   flex-grow: 1;
 `;
@@ -127,19 +128,34 @@ export const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
   width: 100%;
-  // max-width: 400px;
+  max-width: 450px; /* optional max width */
 `;
 
 export const SearchInput = styled.input`
-  padding: 1.2rem 1rem 1.2rem 2.5rem; /* left padding for icon */
+  padding: clamp(0.6rem, 1vw, 1.2rem) clamp(1rem, 2vw, 2rem) clamp(0.6rem, 1vw, 1.2rem) clamp(2rem, 4vw, 2.5rem); /* top, right, bottom, left */
   border: 1px solid #172554;
   border-radius: 6px;
-  width: 23%;
-  font-family: satoshi;
-  height: 40px;
-  font-size: 0.95rem;
-`;
+  width: 100%;
+  font-family: 'Satoshi';
+  height: clamp(30px, 3vw, 60px);
+  font-size: clamp(0.8rem, 1vw, 1.5rem);
 
+  @media (min-width: 1440px) {
+    font-size: clamp(1rem, 0.8vw, 1.6rem);
+    height: clamp(45px, 2vw, 65px);
+   
+  }
+
+  @media (min-width: 2560px) { /* 2K/4K screens */
+    font-size: clamp(1.2rem, 0.6vw, 1.8rem);
+    height: clamp(55px, 1.5vw, 75px);
+  }
+
+  @media (min-width: 3840px) { /* 4K/8K ultra-wide screens */
+    font-size: clamp(1.5rem, 0.5vw, 2rem);
+    height: clamp(70px, 1vw, 90px);
+  }
+`;
 export const SearchIcon = styled(FiSearch)`
   position: absolute;
   left: 1rem;
@@ -191,27 +207,38 @@ export const Subtitle = styled.p`
 export const CardRight = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between; /* pushes count up & arrow down */
+  align-items: flex-end; 
+  height: 100%; /* make it stretch full card height */
+  padding: 0.3rem 0; /* small spacing so they don’t stick to edges */
 
-  .card-value {
-    font-weight: 600;
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-    color: #000;
+ .card-value {
+  font-weight: 700;
+  font-size: clamp(1.2rem, 3vw, 1.5rem); /* fluid scaling: mobile → desktop → large screens */
+  color: #000;
+
+  /* Ultra-large / 4K screens */
+  @media (min-width: 3840px) {
+    font-size: 3.5rem; /* very large screens */
   }
+}
 
   .arrow-icon {
-    background: #fff;
-    color: #34347c;
-    width: clamp(28px, 4vw, 36px);
-    height: clamp(28px, 4vw, 36px);
-    border-radius: 50%;
-    font-size: clamp(0.8rem, 1.5vw, 1rem);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  background: #fff;
+  color: #34347c;
+  width: clamp(32px, 4vw, 60px);  /* bigger max for large screens */
+  height: clamp(32px, 4vw, 60px);
+  border-radius: 50%;
+  font-size: clamp(1rem, 1.8vw, 2rem); /* larger on big screens */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+}
+
 `;
+
 
 export const CardGrid = styled.div`
   display: grid;
@@ -284,7 +311,7 @@ export const DeptSub = styled.div`
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 1rem;
+    font-size: 0.6rem;
   }
 
   /* Extra-large / QHD */

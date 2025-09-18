@@ -14,7 +14,8 @@ import {
   TitleSection,
   Pagination,
   SearchWrapper,
-  SearchIcon
+  SearchIcon,
+  EmployeeImage
 } from "./EmployeeAttendance.Styles";
 import {
   CardContainer,
@@ -76,13 +77,13 @@ const EmployeeList = () => {
     <Navbar />
     <Container>
       <HeaderSection>
-         <TitleSection>
-         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-         <TextBlock>
-           <Title>Employee</Title>
-           <Subtitle>Manage your Employee.</Subtitle>
-         </TextBlock>
-       </TitleSection>
+        <TitleSection>
+          <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
+          <TextBlock>
+            <Title>Employee</Title>
+            <Subtitle>Manage your Employee.</Subtitle>
+          </TextBlock>
+        </TitleSection>
         <SearchWrapper>
              {/* <SearchIcon /> */}
              <SearchInput

@@ -19,6 +19,7 @@ import { getDepartments } from "../../Redux/departmentSlice";
 import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { FiSearch } from 'react-icons/fi';
+import { EmployeeImage } from "../leaveDetails/EmployeeList.styles";
 export default function EmployeeAttendance() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -114,12 +115,16 @@ export default function EmployeeAttendance() {
           <div style={{ display: "flex", alignItems: "center", gap: "0rem" }}>
 
            <div style={{ display: "flex", alignItems: "center", gap: "10px",color:"#3250B5" }}>
-  <HiArrowLeft 
-    size={34} 
-    style={{ cursor: "pointer" }} 
-    onClick={() => navigate(-1)} 
-  />
-    <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+           <HiArrowLeft
+  onClick={() => navigate(-1)}
+  style={{
+    cursor: "pointer",
+    width: "clamp(24px, 3vw, 50px)",
+    height: "clamp(24px, 3vw, 50px)"
+  }}
+/>
+
+  <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
   <div>
     <Title>Employee</Title>
     <Subtitle>Manage your Employee.</Subtitle>

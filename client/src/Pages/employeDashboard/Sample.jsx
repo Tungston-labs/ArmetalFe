@@ -11,11 +11,7 @@ import {
   InfoGrid,
   InfoCard,
   TimeTrackingCard,
-  TaskSection,
-  TaskTitle,
-  TaskItem,
-  TaskMeta,
-  TaskText,
+ 
 } from "./Sample.Styles";
 import InCompanyIcon from "../../assets/clock.svg";
 import SalaryIcon from "../../assets/salary.svg";

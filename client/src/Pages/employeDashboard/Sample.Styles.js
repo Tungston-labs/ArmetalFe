@@ -37,20 +37,61 @@ export const ProfileCard = styled.div`
 
   .details {
     padding: 10px;
+p {
+  margin-top: -10px;
+  font-size: 1.2rem; /* default for medium screens */
+  color: #333;
+  font-family: 'Satoshi', sans-serif;
 
-    p {
-      margin-top: -10px;
-      font-size: 1.2rem;
-      color: #333;
-      font-family: 'Satoshi', sans-serif;
-    }
+  /* Small devices (mobile) */
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 
-    strong {
-      font-weight: 600;
-      display: block;
-      font-family: 'Satoshi', sans-serif;
-      font-size:1rem;
-    }
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 1.1rem;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 1.3rem;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 1.8rem;
+  }
+}
+
+
+   strong {
+  font-weight: 600;
+  display: block;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 1rem; /* default */
+
+  /* Small devices (mobile) */
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 1.1rem;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 1.5rem;
+  }
+}
+
   }
 `;
 
@@ -76,40 +117,100 @@ export const InfoCard = styled.div`
   background: #fff;
   border-radius: 9px;
   padding: 0.9rem;
-  // border: 0px solid #000;
+  /border: 0px solid #000;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
 
   h3 {
-    font-size: 18px;
-    margin: 0;
-     font-family: 'Satoshi', sans-serif;
+  font-size: 18px; /* default */
+  margin: 0;
+  font-family: 'Satoshi', sans-serif;
+
+  /* Small devices (mobile) */
+  @media (max-width: 480px) {
+    font-size: 16px;
   }
 
-  p {
-    margin: 5px 0 10px;
-    font-size: 13px;
-    color: #555;
-    display: flex;
-    justify-content: space-between;
-     font-family: 'Satoshi', sans-serif;
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 17px;
   }
 
-  button {
-    background: white;
-    border: none;
-    border-radius: 6px;
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 19px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 30px;
+  }
+}
+
+ p {
+  margin: 5px 0 10px;
+  font-size: 13px; /* default for small/medium screens */
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Satoshi', sans-serif;
+
+  /* Small devices (mobile) */
+  @media (max-width: 480px) {
     font-size: 12px;
-    color: #3f51b5;
-    cursor: pointer;
- font-family: 'Raleway', sans-serif;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: auto; /* Ensures it stays at the bottom */
   }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 13px;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 14px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 20px;
+  }
+}
+
+button {
+  background: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px; /* default */
+  color: #3f51b5;
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto; /* stays at the bottom */
+
+  /* Small devices (mobile) */
+  @media (max-width: 480px) {
+    font-size: 11px;
+  }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 12px;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 13px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 16px;
+  }
+}
 `;
 
 
@@ -119,27 +220,66 @@ export const TimeTrackingCard = styled.div`
   padding: 10px 20px;
   font-size: 14px;
   color: #333;
-  border-radius: 9px;
-// border: 0.2px solid #000;
-background: #FFF;
-min-height:200px;
+  min-height: 200px;
+
   h4 {
     color: #3352BA;
     margin-bottom: 10px;
-    margin-top:-5px;
-    font-size:1.2rem;
+    margin-top: -5px;
+    font-size: 1.2rem;
+
+    @media (max-width: 480px) {
+      font-size: 1rem;
+    }
+    @media (min-width: 481px) and (max-width: 1024px) {
+      font-size: 1.1rem;
+    }
+    @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 1.3rem;
+    }
+    @media (min-width: 1601px) {
+      font-size: 2rem;
+    }
   }
+
   p {
     margin: 15px 0;
-    font-siz:0.9rem;
+    font-size: 0.9rem;
+
+    @media (max-width: 480px) {
+      font-size: 0.8rem;
+    }
+    @media (min-width: 481px) and (max-width: 1024px) {
+      font-size: 0.85rem;
+    }
+    @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 0.95rem;
+    }
+    @media (min-width: 1601px) {
+      font-size: 1.5rem;
+    }
   }
+
   a {
     display: inline-block;
     margin-top: 10px;
     color: #3f51b5;
     font-weight: 600;
-    font-size:1rem;
+    font-size: 1rem;
     text-decoration: none;
+
+    @media (max-width: 480px) {
+      font-size: 0.9rem;
+    }
+    @media (min-width: 481px) and (max-width: 1024px) {
+      font-size: 0.95rem;
+    }
+    @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 1.05rem;
+    }
+    @media (min-width: 1601px) {
+      font-size: 1.8rem;
+    }
   }
 `;
 

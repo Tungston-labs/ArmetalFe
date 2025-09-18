@@ -153,12 +153,17 @@ useEffect(() => {
       {/* Header */}
       <HeaderSection>
         <TitleSection>
-          <FaArrowLeft 
-  style={{ width: '24px', height: '24px', cursor: 'pointer', color: "#3250B5" }}
+        <FaArrowLeft
   onClick={() => window.history.back()}
+  style={{
+    cursor: "pointer",
+    color: "#3250B5",
+    width: "clamp(20px, 3vw, 40px)",
+    height: "clamp(20px, 3vw, 40px)"
+  }}
 />
 
-          <img src={RemiIcon} alt="employeeIcon" style={{ height: "60px" }} />
+          <img src={RemiIcon} alt="employeeIcon" style={{ height: "70px" }} />
           <div>
             <Title>Reimbursement</Title>
             <Subtitle>Manage all departments within the organization.</Subtitle>

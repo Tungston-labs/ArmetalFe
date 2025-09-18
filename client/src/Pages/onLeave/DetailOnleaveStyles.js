@@ -92,32 +92,33 @@ export const SearchInput = styled.input`
 `;
 export const Tabs = styled.div`
   display: flex;
-  gap: clamp() 0.1vw, 5rem);
+  // gap: clamp(0.2rem, 0.3vw, 2rem);
   font-family: Raleway;
   font-weight: 700;
-  font-size: clamp(1rem, 1.2vw, 5rem); /* font scales from mobile to ultra-large screens */
+  font-size: clamp(0.7rem, 0.9vw, 2.5rem); 
   line-height: 100%;
   text-align: center;
-  margin: 1.5rem 0;
-  flex-wrap: wrap; /* wrap on smaller screens */
-
+  margin: 2rem ;
+  flex-wrap: wrap;
+justify-content: space-around;
   @media (max-width: 1024px) {
-    gap: clamp(0.8rem, 2vw, 2rem);
-    font-size: clamp(0.9rem, 1vw, 2rem);
+    gap: clamp(0.4rem, 1vw, 1.5rem);
+    font-size: clamp(0.6rem, 0.8vw, 1.6rem);
   }
 
   @media (max-width: 768px) {
     justify-content: center;
-    gap: clamp(0.5rem, 1.5vw, 1.5rem);
-    font-size: clamp(0.8rem, 1vw, 1.5rem);
+    gap: clamp(0.3rem, 1vw, 1rem);
+    font-size: clamp(0.5rem, 0.7vw, 1.2rem);
   }
 `;
+
 export const Tab = styled.div`
-  padding: clamp(8px, 0.5vw, 20px) clamp(16px, 1vw, 40px); /* responsive padding */
+  padding: clamp(6px, 0.4vw, 16px) clamp(12px, 0.8vw, 32px);
   cursor: pointer;
   font-family: Raleway;
   font-weight: 500;
-  font-size: clamp(1rem, 1vw, 2.5rem); /* fully responsive font */
+  font-size: clamp(0.8rem, 0.9vw, 2rem);
   line-height: 100%;
   text-align: center;
   border-bottom: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
@@ -126,21 +127,25 @@ export const Tab = styled.div`
   border-radius: 6px;
 
   @media (max-width: 1024px) {
-    padding: clamp(6px, 0.5vw, 16px) clamp(12px, 1vw, 30px);
-    font-size: clamp(0.9rem, 0.9vw, 2rem);
+    padding: clamp(5px, 0.4vw, 14px) clamp(10px, 0.8vw, 26px);
+    font-size: clamp(0.7rem, 0.8vw, 1.6rem);
   }
 
+  @media (max-width: 1440px) {
+    padding: clamp(5px, 0.6vw, 20px) clamp(10px, 0.8vw, 26px);
+    font-size: clamp(0.7rem, 1vw, 2rem);
+  }
   @media (max-width: 768px) {
-    padding: clamp(4px, 0.5vw, 12px) clamp(8px, 1vw, 20px);
-    font-size: clamp(0.8rem, 0.8vw, 1.5rem);
+    padding: clamp(4px, 0.3vw, 10px) clamp(6px, 0.6vw, 18px);
+    font-size: clamp(0.6rem, 0.7vw, 1.2rem);
   }
 
-  @media (min-width: 2560px) { /* 2K / 4K screens */
-    font-size: clamp(1.5rem, 1.5vw, 2rem);
+  @media (min-width: 2560px) {
+    font-size: clamp(1rem, 1.2vw, 2rem);
   }
 
-  @media (min-width: 3840px) { /* 4K / 8K ultra-wide screens */
-    font-size: clamp(2rem, 2vw, 3rem);
+  @media (min-width: 3840px) {
+    font-size: clamp(1.2rem, 1.5vw, 2.5rem);
   }
 `;
 
@@ -312,6 +317,36 @@ export const TitleSection = styled.div`
   // margin-top:3%;
 `;
 
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(70px, 6vw, 150px);
+  }
+
+  @media (min-width: 1024px) {
+    height: clamp(80px, 5vw, 180px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(100px, 4vw, 220px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(150px, 3vw, 300px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(200px, 2vw, 400px);
+  }
+`;
+export const TextBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
+`;
 export const Icon = styled.div`
   font-size: 2rem;
   color: #2a2a86;
@@ -393,11 +428,41 @@ export const Subtitle = styled.p`
 `;
 
 export const DepartmentSelect = styled.select`
-  padding: 8px 12px;
-  font-size: 14px;
-  border-radius: 5px;
+  padding: clamp(0.4rem, 0.8vw, 0.8rem) 
+           clamp(0.8rem, 2vw, 1.5rem) 
+           clamp(0.4rem, 0.8vw, 0.8rem) 
+           clamp(0.8rem, 1.5vw, 1.5rem);
+  font-size: clamp(0.85rem, 1vw, 1.25rem);
+  border-radius: clamp(4px, 0.5vw, 6px);
   border: 1px solid #ccc;
   background: white;
+  height: clamp(35px, 3vw, 50px);
+  min-width: clamp(150px, 25vw, 300px);
+
+  appearance: none;
+  background: url("data:image/svg+xml;utf8,<svg fill='black' height='14' viewBox='0 0 24 24' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") 
+              no-repeat right clamp(8px, 1vw, 15px) center;
+  background-color: white;
+  background-size: clamp(12px, 1vw, 18px);
+
+  @media (min-width: 1440px) {
+    font-size: clamp(1rem, 0.8vw, 1.4rem);
+    height: clamp(45px, 2vw, 55px);
+    min-width: clamp(200px, 18vw, 300px);
+    border-radius: clamp(5px, 0.5vw, 6px);
+  }
+
+  @media (min-width: 2560px) {
+    font-size: clamp(1.2rem, 0.6vw, 1.6rem);
+    height: clamp(50px, 1.5vw, 60px);
+    min-width: clamp(250px, 15vw, 350px);
+  }
+
+  @media (min-width: 3840px) {
+    font-size: clamp(1.5rem, 0.5vw, 2rem);
+    height: clamp(60px, 1vw, 70px);
+    min-width: clamp(300px, 12vw, 450px);
+  }
 `;
 export const DropdownWrapper = styled.div`
   position: relative;
@@ -434,6 +499,7 @@ export const HeaderRow = styled.div`
   flex-wrap: wrap;
 `;
 
+
 export const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
@@ -443,11 +509,25 @@ export const SearchWrapper = styled.div`
 
 export const SearchIcon = styled(FiSearch)`
   position: absolute;
-  left: 10px;
+  left: clamp(10px, 1vw, 25px);
+  top: 50%;
+  transform: translateY(-50%);
   color: #888;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 1.5vw, 1.5rem);
+
+  @media (min-width: 1440px) {
+    font-size: clamp(1.2rem, 1vw, 1.6rem);
+  }
+
+  @media (min-width: 2560px) {
+    font-size: clamp(1.4rem, 0.8vw, 1.8rem);
+  }
+
+  @media (min-width: 3840px) {
+    font-size: clamp(1.6rem, 0.6vw, 2rem);
+  }
+
   pointer-events: none;
-  margin-top:10px;
 `;
 
 export const CalendarWrapper = styled.div`

@@ -126,19 +126,42 @@ export const TitleSection = styled.div`
     gap: 10px;
   }
 
-  .icon-box {
-    background-color: white;
-    padding: 10px;
-    border-radius: 8px;
-    display: inline-block;
-    color: blue;
+  // .icon-box {
+  //   background-color: white;
+  //   padding: 10px;
+  //   border-radius: 8px;
+  //   display: inline-block;
+  //   color: blue;
+  // }
+
+  // img {
+  //   height: 74px;
+  // }
+`;
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(70px, 6vw, 150px);
   }
 
-  img {
-    height: 74px;
+  @media (min-width: 1024px) {
+    height: clamp(80px, 5vw, 180px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(100px, 4vw, 220px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(150px, 3vw, 300px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(200px, 2vw, 400px);
   }
 `;
-
 
 export const TitleGroup = styled.div`
   display: flex;
@@ -228,17 +251,36 @@ export const AddButton = styled.button`
 
 // Search Input
 export const SearchInput = styled.input`
-  padding: 0.5rem 1rem 0.5rem 2.2rem;
+  padding: clamp(0.6rem, 1vw, 1.2rem) clamp(1rem, 2vw, 2rem) clamp(0.6rem, 1vw, 1.2rem) clamp(2rem, 4vw, 2.5rem); /* top, right, bottom, left */
+  border: 1px solid #172554;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
-  font-size: clamp(0.8rem, 1vw, 2.5rem);
-  min-width: 100%;
+  width: 100%;
+  font-family: 'Satoshi';
+  height: clamp(30px, 3vw, 60px);
+  font-size: clamp(0.8rem, 1vw, 1.5rem);
+
+  @media (min-width: 1440px) {
+    font-size: clamp(1rem, 0.8vw, 1.6rem);
+    height: clamp(45px, 2vw, 65px);
+   
+  }
+
+  @media (min-width: 2560px) { /* 2K/4K screens */
+    font-size: clamp(1.2rem, 0.6vw, 1.8rem);
+    height: clamp(55px, 1.5vw, 75px);
+  }
+
+  @media (min-width: 3840px) { /* 4K/8K ultra-wide screens */
+    font-size: clamp(1.5rem, 0.5vw, 2rem);
+    height: clamp(70px, 1vw, 90px);
+  }
 `;
 
 export const SearchWrapper = styled.div`
   position: relative;
-  width: clamp(150px, 20%, 350px); /* scales between 150px and 300px depending on screen */
+  display: inline-block;
+  width: 100%;
+  max-width: 450px; /* optional max width */
 `;
 
 export const SearchIcon = styled(FiSearch)`
@@ -272,6 +314,7 @@ export const CardGrid = styled.div`
     gap: 0.8rem;
   }
 `;
+
 export const DepartmentCard = styled.div`
   background: white;
   padding: 1.5rem;
@@ -344,12 +387,13 @@ export const HeadInfo = styled.div`
 export const CardRight = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between; /* pushes count up and arrow down */
   align-items: flex-end;
-  gap: 0.5rem;
+  height: 100%; /* take full height of card */
 
   .card-value {
     font-weight: 600;
-    font-size: clamp(1rem, 1.5vw, 1.5rem); /* responsive */
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
     color: #000;
   }
 
@@ -359,12 +403,13 @@ export const CardRight = styled.div`
     width: clamp(36px, 2vw, 40px);
     height: clamp(36px, 2vw, 40px);
     border-radius: 50%;
-    font-size: clamp(0.8rem, 1vw, 1rem);
+     font-size: clamp(1.2rem, 2vw, 1.8rem);
     display: flex;
     align-items: center;
     justify-content: center;
   }
 `;
+
 
 // Modal Styles
 export const ModalOverlay = styled.div`
