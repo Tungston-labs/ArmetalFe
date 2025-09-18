@@ -19,7 +19,6 @@ import Loader from "../../Components/Loader"
 import Swal from "sweetalert2";
 import { FaCheck } from "react-icons/fa";
 import HolidayIcon from "../../assets/payroll.svg"; 
-
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -35,26 +34,20 @@ const PayrollTable = () => {
   const dispatch = useDispatch();
   const { data, loading, error, totalPages } = useSelector((state) => state.payroll);
   const departmentList = useSelector(state => state.departments.list || []);
+  console.log(departmentList);
+
 
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-  const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
+const today = new Date();
+const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // getMonth() returns 0-11
+
   const [selectedYear, setSelectedYear] = useState(defaultYear);
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState({});
 
-  const getStatusColor = (status) => {
-    switch(status) {
-      case 'Paid': return 'green';
-      case 'OnHold': return 'orange';
-      case 'Pending': return 'yellow';
-      case 'Cancelled': return 'red';
-      default: return '#000';
-    }
-  };
-  
-  // Fetch departments
+  // Fetch departments on mount
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: '' }));
   }, [dispatch]);
@@ -85,7 +78,10 @@ const PayrollTable = () => {
   }, [data]);
 
   const handleSearch = (e) => { setSearchTerm(e.target.value); setPage(1); };
-  const handleMonthChange = (e) => { setSelectedMonth(Number(e.target.value)); };
+const handleMonthChange = (e) => {
+  setSelectedMonth(Number(e.target.value)); // convert string to number
+};
+
   const handleYearChange = (e) => { setSelectedYear(Number(e.target.value)); setPage(1); };
   const handleDepartmentChange = (e) => { setSelectedDepartment(e.target.value); setPage(1); };
 
@@ -94,12 +90,14 @@ const PayrollTable = () => {
   };
 
   const handleSelectAll = () => {
-    setSelectedEmployees(selectedEmployees.length === data.length ? [] : data.map(emp => emp.id));
+    setSelectedEmployees(selectedEmployees.length === data.length ? [] : data.map(emp => emp.employee));
   };
-
   const handleSingleStatusChange = async (empId, newStatus) => {
-    const empStatus = verificationStatus[empId];
+    // find this employee
+    const emp = data.find(e => e.employee === empId);
+    const empStatus = verificationStatus[emp?.id];
   
+    // 🚫 If not verified by both admins
     if (!empStatus?.first || !empStatus?.second) {
       Swal.fire({
         icon: "warning",
@@ -109,6 +107,7 @@ const PayrollTable = () => {
       return;
     }
   
+    // ✅ If verified by both, proceed
     await dispatch(updatePayrollStatus({
       employeeId: empId,
       month: selectedMonth,
@@ -116,15 +115,18 @@ const PayrollTable = () => {
       status: newStatus,
     }));
   
-    dispatch(getPayrollData({ page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment }));
+    dispatch(getPayrollData({
+      page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment
+    }));
   };
   
   const handleBulkStatusChange = async (e) => {
     const newStatus = e.target.value;
     if (!newStatus || selectedEmployees.length === 0) return;
   
+    // 🚫 Check if every selected employee has both verifications
     const unverified = data.filter(emp =>
-      selectedEmployees.includes(emp.id) &&
+      selectedEmployees.includes(emp.employee) &&
       (!verificationStatus[emp.id]?.first || !verificationStatus[emp.id]?.second)
     );
   
@@ -134,10 +136,11 @@ const PayrollTable = () => {
         title: "Verification Pending",
         text: "Some selected employees are not verified by both admins.",
       });
-      e.target.selectedIndex = 0;
+      e.target.selectedIndex = 0; // reset select
       return;
     }
   
+    // ✅ Proceed if all verified
     await dispatch(submitPayrollRecords({
       month: selectedMonth,
       year: selectedYear,
@@ -146,39 +149,50 @@ const PayrollTable = () => {
     }));
   
     e.target.selectedIndex = 0;
-    dispatch(getPayrollData({ page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment }));
+    dispatch(getPayrollData({
+      page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment
+    }));
   };
   
+
+  
+
   const handleCircleClick = async (e, employee, type) => {
     e.preventDefault();
-    const user = JSON.parse(localStorage.getItem("user"));
+  
+    const user = JSON.parse(localStorage.getItem("user")); // current logged-in HR
     if (!user) return;
   
     const empStatus = verificationStatus[employee.id];
   
-    // Already verified this slot
+    // 🚫 Case 1: Circle already verified
     if (empStatus?.[type]) {
-      Swal.fire({ icon: "info", title: "Already Verified", text: "This was already verified." });
+      Swal.fire({
+        icon: "info",
+        title: "Already Verified",
+        text: "This verification was already completed.",
+      });
       return;
     }
   
-    // ✅ Block if the same admin already verified once
+    // 🚫 Case 2: Same HR trying to verify both circles
     if (
-      employee.hr1_verified_by === user.username ||
-      employee.hr2_verified_by === user.username
+      (type === "first" && empStatus?.second) ||
+      (type === "second" && empStatus?.first)
     ) {
       Swal.fire({
         icon: "warning",
         title: "Not Allowed",
-        text: "One admin can verify only once.",
+        text: "One admin can only verify once.",
       });
-      return; // 🔒 stop here
+      return;
     }
   
+    // ✅ If valid, call API
     try {
       await dispatch(
         verifyEmployeePayroll({
-          employeeId: employee.id,
+          employeeId: employee.employee,
           month: selectedMonth,
           year: selectedYear,
         })
@@ -189,32 +203,23 @@ const PayrollTable = () => {
         [employee.id]: { ...prev[employee.id], [type]: true },
       }));
   
-      await dispatch(
-        getPayrollData({
-          page,
-          search: searchTerm,
-          month: selectedMonth,
-          year: selectedYear,
-          department: selectedDepartment,
-        })
-      );
-  
       Swal.fire({
         icon: "success",
         title: "Verified",
-        text: "Payroll verification recorded.",
+        text: "Payroll verification recorded successfully.",
         timer: 1500,
         showConfirmButton: false,
       });
     } catch (err) {
-      let msg =
-        err?.payload?.error ||
-        err?.response?.data?.error ||
-        err?.message ||
-        "Something went wrong!";
+      let msg = "Something went wrong!";
+      if (err?.payload?.error) msg = err.payload.error;
+      else if (err?.response?.data?.error) msg = err.response.data.error;
+      else if (typeof err === "string") msg = err;
+  
       Swal.fire({ icon: "error", title: "Verification Failed", text: msg });
     }
   };
+  
   
 
   const handlePageChange = (newPage) => { if (newPage >= 1 && newPage <= totalPages) setPage(newPage); };
@@ -226,7 +231,7 @@ const PayrollTable = () => {
         <Header>
           <TitleSection>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Icon src={HolidayIcon} alt="holiday" />
+                      <Icon src={HolidayIcon} alt="holiday" />
               <div>
                 <Title>Payroll</Title>
                 <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
@@ -240,18 +245,23 @@ const PayrollTable = () => {
                 </option>
               ))}
             </Select>
+
           </TitleSection>
         </Header>
 
         <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <SearchInput placeholder=" Enter employee ID" value={searchTerm} onChange={handleSearch} style={{ width: '250px' }} />
+          <SearchInput placeholder="Search by employee ID" value={searchTerm} onChange={handleSearch} style={{ width: '250px' }} />
           <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
-              {months.map((month, index) => (
-                <option key={month} value={index + 1}>{month}</option>
-              ))}
-            </Select>
+  {months.map((month, index) => (
+    <option key={month} value={index + 1}>
+      {month}
+    </option>
+  ))}
+</Select>
+
             <Select value={selectedYear} onChange={handleYearChange}>
+              {/* <option value=""></option> */}
               {years.map(year => <option key={year} value={year}>{year}</option>)}
             </Select>
           </div>
@@ -275,16 +285,16 @@ const PayrollTable = () => {
           <Table>
             <thead>
               <tr>
-                <Th><input type="checkbox" /></Th>
+                <Th><input type="checkbox"></input></Th>
                 <Th>Sl No</Th>
                 <Th>Employee ID</Th>
-                {/* <Th>Employee name</Th> */}
+                <Th>Employee name</Th>
                 <Th>Job Position</Th>
                 <Th>Joining Date</Th>
                 <Th>Email ID</Th>
                 <Th>Salary</Th>
                 <Th>Info</Th>
-                <Th>Verification</Th>
+                <Th></Th>
                 <Th>Status</Th>
               </tr>
             </thead>
@@ -296,67 +306,56 @@ const PayrollTable = () => {
               ) : data?.length > 0 ? (
                 data.map((emp, index) => (
                   <tr key={emp.id}>
-                    <Td><input type="checkbox" checked={selectedEmployees.includes(emp.id)} onChange={() => toggleEmployeeSelect(emp.id)} /></Td>
+                    <Td><input type="checkbox" checked={selectedEmployees.includes(emp.employee)} onChange={() => toggleEmployeeSelect(emp.employee)} /></Td>
                     <Td>{(page - 1) * 10 + index + 1}</Td>
                     <Td>{emp.employee_id}</Td>
-                    {/* <Td>{emp.employee_name}</Td> */}
-                  <Td title={emp.designation}>
-  {emp.designation.length > 7 ? emp.designation.slice(0, 7) + "..." : emp.designation}
-</Td>
-
+                    <Td>{emp.employee_name}</Td>
+                    <Td>{emp.designation}</Td>
                     <Td>{emp.joining_date}</Td>
-                   <Td title={emp.email}>
-  {emp.email.length > 7 ? emp.email.slice(0, 7) + "..." : emp.email}
-</Td>
+                    <Td>{emp.email}</Td>
                     <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
                     <Td><Link to={`/payrolldetails/${emp.id}`}><GoInfo style={{ cursor: 'pointer',color:"black" }} /></Link></Td>
+                   <Td>
+  <div style={{ display: 'flex', gap: '8px' }}>
+    <div
+      onClick={(e) => handleCircleClick(e, emp, 'first')}
+      style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        border: '2px solid #ccc',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: verificationStatus[emp.id]?.first ? 'not-allowed' : 'pointer'
+      }}
+    >
+      {verificationStatus[emp.id]?.first && (
+        <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
+      )}
+    </div>
+
+    <div
+      onClick={(e) => handleCircleClick(e, emp, 'second')}
+      style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        border: '2px solid #ccc',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: verificationStatus[emp.id]?.second ? 'not-allowed' : 'pointer'
+      }}
+    >
+      {verificationStatus[emp.id]?.second && (
+        <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
+      )}
+    </div>
+  </div>
+</Td>
                     <Td>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <div
-                          onClick={(e) => handleCircleClick(e, emp, 'first')}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            border: '2px solid #ccc',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: verificationStatus[emp.id]?.first ? 'not-allowed' : 'pointer'
-                          }}
-                        >
-                          {verificationStatus[emp.id]?.first && (
-                            <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
-                          )}
-                        </div>
-                        <div
-                          onClick={(e) => handleCircleClick(e, emp, 'second')}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            border: '2px solid #ccc',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: verificationStatus[emp.id]?.second ? 'not-allowed' : 'pointer'
-                          }}
-                        >
-                          {verificationStatus[emp.id]?.second && (
-                            <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
-                          )}
-                        </div>
-                      </div>
-                    </Td>
-                    <Td>
-                      <Select
-                        value={emp.status || ''}
-                        onChange={(e) => handleSingleStatusChange(emp.id, e.target.value)}
-                        style={{
-                          backgroundColor: getStatusColor(emp.status),
-                          color: emp.status === 'Pending' ? 'black' : 'white',
-                        }}
-                      >
+                      <Select value={emp.status || ''} onChange={(e) => handleSingleStatusChange(emp.employee, e.target.value)}>
                         <option value="">Select</option>
                         <option value="OnHold">OnHold</option>
                         <option value="Cancelled">Cancelled</option>
