@@ -85,6 +85,7 @@ export const TaskDate = styled.div`
 export const TaskTime = styled.div`
   font-size: 13px;
   color: #777;
+  padding-left:10px;
 `;
 
 export const TaskContent = styled.div`

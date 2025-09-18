@@ -18,6 +18,7 @@ import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
 import { FaCheck } from "react-icons/fa";
 import HolidayIcon from "../../assets/payroll.svg"; 
+
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -32,19 +33,19 @@ const years = Array.from({ length: 10 }, (_, i) => defaultYear - 2 + i);
 const PayrollTable = () => {
   const dispatch = useDispatch();
   const { data, loading, error, totalPages } = useSelector((state) => state.payroll);
+  console.log({data});
+  
   const departmentList = useSelector(state => state.departments.list || []);
-  console.log(departmentList);
-
 
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-const today = new Date();
-const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // getMonth() returns 0-11
-
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(defaultYear);
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState({});
+  console.log({verificationStatus});
+  
   const [bulkStatus, setBulkStatus] = useState('');
 
   const getStatusColor = (status) => {
@@ -88,10 +89,7 @@ const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // get
   }, [data]);
 
   const handleSearch = (e) => { setSearchTerm(e.target.value); setPage(1); };
-const handleMonthChange = (e) => {
-  setSelectedMonth(Number(e.target.value)); // convert string to number
-};
-
+  const handleMonthChange = (e) => { setSelectedMonth(Number(e.target.value)); };
   const handleYearChange = (e) => { setSelectedYear(Number(e.target.value)); setPage(1); };
   const handleDepartmentChange = (e) => { setSelectedDepartment(e.target.value); setPage(1); };
 
@@ -106,9 +104,14 @@ const handleMonthChange = (e) => {
       selectedEmployees.length === data.length ? [] : data.map(emp => emp.id)
     );
   };
-  const handleSingleStatusChange = async (empId, newStatus) => {
-    const empStatus = verificationStatus[empId];
+  const handleSingleStatusChange = async (employeeId, newStatus) => {
+    console.log({employeeId});
+    
+    const empStatus = verificationStatus[employeeId.id];
 
+    console.log({empStatus});
+    
+  
     if (!empStatus?.first || !empStatus?.second) {
       Swal.fire({
         icon: "warning",
@@ -117,31 +120,43 @@ const handleMonthChange = (e) => {
       });
       return;
     }
-    await dispatch(updatePayrollStatus({
-      employeeId: empId,
-      month: selectedMonth,
-      year: selectedYear,
-      status: newStatus,
-    }))
-      .unwrap()
-      .then(() => {
-        dispatch(getPayrollData({ page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment }));
-      })
-      .catch(err => {
-        Swal.fire({ icon: "error", title: "Update Failed", text: err?.message || "Something went wrong!" });
+  
+    try {
+      await dispatch(updatePayrollStatus({
+        employeeId:employeeId.employee, // already employee_id
+        month: selectedMonth,
+        year: selectedYear,
+        status: newStatus,
+      })).unwrap();
+  
+      dispatch(getPayrollData({
+        page,
+        search: searchTerm,
+        month: selectedMonth,
+        year: selectedYear,
+        department: selectedDepartment,
+      }));
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: err?.message || "Something went wrong!",
       });
+    }
   };
+  
 
   const handleBulkStatusChange = async (e) => {
     const newStatus = e.target.value;
     setBulkStatus(newStatus);
-
+  
     if (!newStatus || selectedEmployees.length === 0) return;
+  
     const unverified = data.filter(emp =>
-      selectedEmployees.includes(emp.employee) &&
+      selectedEmployees.includes(emp.id) &&
       (!verificationStatus[emp.id]?.first || !verificationStatus[emp.id]?.second)
     );
-
+  
     if (unverified.length > 0) {
       Swal.fire({
         icon: "warning",
@@ -151,61 +166,67 @@ const handleMonthChange = (e) => {
       setBulkStatus('');
       return;
     }
-
-    await dispatch(submitPayrollRecords({
-      month: selectedMonth,
-      year: selectedYear,
-      employee_ids: selectedEmployees,
-      status: newStatus,
-    }))
-      .unwrap()
-      .then(() => {
-        setBulkStatus('');
-        dispatch(getPayrollData({ page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment }));
-      })
-      .catch(err => {
-        Swal.fire({ icon: "error", title: "Bulk Update Failed", text: err?.message || "Something went wrong!" });
-        setBulkStatus('');
+  
+    const employee_ids = selectedEmployees.map(id => data.find(e => e.id === id).employee);
+  
+    try {
+      await dispatch(submitPayrollRecords({ month: selectedMonth, year: selectedYear, employee_ids, status: newStatus })).unwrap();
+  
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Payroll status updated for selected employees.",
+        timer: 1500,
+        showConfirmButton: false,
       });
+  
+      setBulkStatus('');
+      setSelectedEmployees([]); // reset selection
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Bulk Update Failed",
+        text: err?.message || "Something went wrong!"
+      });
+      setBulkStatus('');
+    }
   };
+  
 
   const handleCircleClick = async (e, employee, type) => {
+    console.log({employee});
+    
     e.preventDefault();
   
-    const user = JSON.parse(localStorage.getItem("user")); // current logged-in HR
+    const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
     if (!user) return;
-
-    const empStatus = verificationStatus[employee.id];
-    if (empStatus?.[type]) {
-      Swal.fire({
-        icon: "info",
-        title: "Already Verified",
-        text: "This verification was already completed.",
-      });
+  
+    // Already verified by this type
+    if (verificationStatus[employee.id]?.[type]) {
+      Swal.fire({ icon: "info", title: "Already Verified", text: "This was already verified." });
       return;
     }
-
+  
+    // Same HR cannot verify twice
     if (employee.hr1_verified_by === user.username || employee.hr2_verified_by === user.username) {
-      Swal.fire({
-        icon: "warning",
-        title: "Not Allowed",
-        text: "One admin can only verify once.",
-      });
+      Swal.fire({ icon: "warning", title: "Cannot Verify", text: "You cannot verify the same payroll twice." });
       return;
     }
-
+  
     try {
       await dispatch(verifyEmployeePayroll({
-        employeeId: employee.id,
+        employeeId: employee.employee,
         month: selectedMonth,
         year: selectedYear,
       })).unwrap();
-
+  
+      // Update verificationStatus locally
       setVerificationStatus(prev => ({
         ...prev,
         [employee.id]: { ...prev[employee.id], [type]: true },
       }));
-
+  
+      // Refresh payroll data
       await dispatch(getPayrollData({
         page,
         search: searchTerm,
@@ -213,19 +234,35 @@ const handleMonthChange = (e) => {
         year: selectedYear,
         department: selectedDepartment,
       }));
-
+  
       Swal.fire({
         icon: "success",
         title: "Verified",
-        text: "Payroll verification recorded successfully.",
+        text: "Payroll verification recorded.",
         timer: 1500,
         showConfirmButton: false,
       });
     } catch (err) {
-      let msg = err?.payload?.error || err?.response?.data?.error || err?.message || "Something went wrong!";
-      Swal.fire({ icon: "error", title: "Verification Failed", text: msg });
+      console.error("Verify payroll error:", err);
+  
+      // Show friendly alert
+      Swal.fire({
+        icon: "warning",
+        title: "Verification Failed",
+        text: "Cannot verify payroll: Same HR cannot verify twice.",
+      }).then(() => {
+        // Refresh payroll listing
+        dispatch(getPayrollData({
+          page,
+          search: searchTerm,
+          month: selectedMonth,
+          year: selectedYear,
+          department: selectedDepartment,
+        }));
+      });
     }
   };
+  
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
@@ -238,7 +275,7 @@ const handleMonthChange = (e) => {
         <Header>
           <TitleSection>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Icon src={HolidayIcon} alt="holiday" />
+              <Icon src={HolidayIcon} alt="holiday" />
               <div>
                 <Title>Payroll</Title>
                 <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
@@ -252,7 +289,6 @@ const handleMonthChange = (e) => {
                 </option>
               ))}
             </Select>
-
           </TitleSection>
         </Header>
 
@@ -265,15 +301,11 @@ const handleMonthChange = (e) => {
           />
           <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
-  {months.map((month, index) => (
-    <option key={month} value={index + 1}>
-      {month}
-    </option>
-  ))}
-</Select>
-
+              {months.map((month, index) => (
+                <option key={month} value={index + 1}>{month}</option>
+              ))}
+            </Select>
             <Select value={selectedYear} onChange={handleYearChange}>
-              {/* <option value=""></option> */}
               {years.map(year => <option key={year} value={year}>{year}</option>)}
             </Select>
           </div>
@@ -320,7 +352,7 @@ const handleMonthChange = (e) => {
                 <Th>Email ID</Th>
                 <Th>Salary</Th>
                 <Th>Info</Th>
-                <Th></Th>
+                <Th>Verification</Th>
                 <Th>Status</Th>
               </tr>
             </thead>
@@ -371,7 +403,52 @@ const handleMonthChange = (e) => {
                       </Link>
                     </Td>
                     <Td>
-                      <Select value={emp.status || ''} onChange={(e) => handleSingleStatusChange(emp.employee, e.target.value)}>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <div
+                          onClick={(e) => handleCircleClick(e, emp, 'first')}
+                          style={{
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '50%',
+                            border: '2px solid #ccc',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: verificationStatus[emp.id]?.first ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          {verificationStatus[emp.id]?.first && (
+                            <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
+                          )}
+                        </div>
+                        <div
+                          onClick={(e) => handleCircleClick(e, emp, 'second')}
+                          style={{
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '50%',
+                            border: '2px solid #ccc',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: verificationStatus[emp.id]?.second ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          {verificationStatus[emp.id]?.second && (
+                            <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
+                          )}
+                        </div>
+                      </div>
+                    </Td>
+                    <Td>
+                      <Select
+                        value={emp.status || ''}
+                        onChange={(e) => handleSingleStatusChange(emp, e.target.value)}
+                        style={{
+                          backgroundColor: getStatusColor(emp.status),
+                          color: emp.status === 'Pending' ? 'black' : 'white',
+                        }}
+                      >
                         <option value="">Select</option>
                         <option value="OnHold">OnHold</option>
                         <option value="Cancelled">Cancelled</option>

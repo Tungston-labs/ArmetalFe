@@ -26,7 +26,10 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        return LeaveRequest.objects.filter(employee__user=self.request.user)
+        return LeaveRequest.objects.filter(
+            employee__user=self.request.user
+        ).order_by("-created_at")
+
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
