@@ -71,6 +71,7 @@ const LoginForm = () => {
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
+console.log("---",formData);
 
 
   const handleSubmit = async (e) => {

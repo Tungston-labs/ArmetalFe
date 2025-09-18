@@ -210,7 +210,7 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
     department_employees = serializers.SerializerMethodField()
     daily_tasks = serializers.SerializerMethodField()
     today_sessions = serializers.SerializerMethodField()
-
+    department_head = serializers.SerializerMethodField()
     dob = serializers.DateField(required=False)
     joining_date = serializers.DateField(required=False)
     visa_expiry_date = serializers.DateField(required=False)
@@ -255,6 +255,16 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             'weekly_days': week_attendance.count(),
             'monthly_working_hours': float(monthly_hours)
         }
+    def get_department_head(self, obj):
+        head = obj.department.department_head
+        if head:
+            return {
+                "id": head.id,
+                "name": head.name,
+                "designation": head.designation,
+                "profile_pic": head.profile_pic.url if head.profile_pic else None,
+            }
+        return None
 
     def get_department_employees(self, obj):
         employees = Employee_db.objects.filter(department=obj.department)

@@ -53,10 +53,21 @@ const formatDate = (dateStr) => {
   }
 };
 const formatHours = (hours) => {
-  if (!hours && hours !== 0) return "-"; 
-  const num = Number(hours);
-  return `${num.toString().padStart(2, "0")}.00 Hr`;
+  if (hours === null || hours === undefined || hours === "") return "-";
+
+  let [h = "0", m = "0"] = hours.toString().split(".");
+
+  // If minutes part is single digit like "3" → "30"
+  if (m.length === 1) {
+    m = m + "0";
+  }
+
+  const formattedH = h.padStart(2, "0");
+  const formattedM = m.padStart(2, "0");
+
+  return `${formattedH}:${formattedM}`;
 };
+
 
 
 const DailyTaskList = () => {

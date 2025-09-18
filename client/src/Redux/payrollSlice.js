@@ -82,10 +82,13 @@ export const verifyEmployeePayroll = createAsyncThunk(
       const data = await verifyPayroll({ employeeId, month, year });
       return { employeeId, data };
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to verify payroll");
+      return rejectWithValue(
+        error.response?.data?.error || "Failed to verify payroll"
+      );
     }
   }
 );
+
 
 
 const payrollSlice = createSlice({
@@ -151,10 +154,21 @@ const payrollSlice = createSlice({
         state.loading = true;
         state.submitSuccess = false;
       })
-      .addCase(submitPayrollRecords.fulfilled, (state) => {
+      .addCase(submitPayrollRecords.fulfilled, (state, action) => {
         state.loading = false;
         state.submitSuccess = true;
+      
+        // Update the status of selected employees in state.data
+        if (action.meta.arg.employee_ids && action.meta.arg.status) {
+          const { employee_ids, status } = action.meta.arg;
+          state.data = state.data.map(emp =>
+            employee_ids.includes(emp.employee)
+              ? { ...emp, status }  // update status locally
+              : emp
+          );
+        }
       })
+      
       .addCase(submitPayrollRecords.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -209,9 +223,10 @@ const payrollSlice = createSlice({
       
       .addCase(verifyEmployeePayroll.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        // Do NOT set state.error here, just set verifySuccess false
         state.verifySuccess = false;
       });
+      
 
 
   },
