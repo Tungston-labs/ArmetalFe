@@ -29,6 +29,7 @@ import {
   Input,
   InfoSection,
   Label,
+  EmployeeImage,
 } from './BasicLevel.Styles';
 
 import Multistep from '../../Components/Multistep';
@@ -226,7 +227,7 @@ if (formData.phno) {
 
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+               <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>

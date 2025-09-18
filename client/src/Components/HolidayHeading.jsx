@@ -23,8 +23,8 @@ const Header = () => {
         <TitleContainer>
            <EmployeeImage  src={HolidayIcon} alt="employeeIcon" />
             <TextBlock>
-              <Title>Employee</Title>
-              <Subtitle>Manage your Employee.</Subtitle>
+              <Title>Holiday</Title>
+              <Subtitle>Unifying Teams. Simplifying Operations.</Subtitle>
             </TextBlock>
         </TitleContainer>
     </HeaderContainer>

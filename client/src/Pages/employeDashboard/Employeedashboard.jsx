@@ -33,6 +33,7 @@ import {
 import InCompanyIcon from "../../assets/clock.svg";
 import { FaRegClock, FaArrowUpRightFromSquare } from "react-icons/fa6";
 import { BiTimeFive } from "react-icons/bi";
+import { BiSolidRightTopArrowCircle } from "react-icons/bi";
 import LeaveIcon from "../../assets/leave.svg";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -165,9 +166,11 @@ const formatUTCToLocal = (utcTimeStr) => {
                 {employeeDashData?.bank_details?.employee?.department}
               </DepartmentTitle>
               <ArrowIcon onClick={() => navigate("/department")} style={{ cursor: "pointer" }}>
-      <FaArrowUpRightFromSquare />
+      <BiSolidRightTopArrowCircle style={{color:"#2f49d1"}} />
     </ArrowIcon>
+    
             </DepartmentTitleRow>
+
             <hr></hr>
             <SubLabel>Department head</SubLabel>
             <DepartmentHead>{employeeDashData?.department_head?.name}</DepartmentHead>

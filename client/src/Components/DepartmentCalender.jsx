@@ -236,20 +236,28 @@ const handleDateClick = (date) => {
         Upcoming Holidays <FiArrowUpRight />
         </SectionTitle>
         </NavLink>
-        <HolidayList>
-          {upcomingHolidays.map((h, i) => (
-            <HolidayItem key={i}>
-              <HolidayIcon>
-                <img src={HolidaySvg} alt="holiday icon" />
-              </HolidayIcon>
-              <HolidayInfo>
-                <HolidayTitle>{h.description}</HolidayTitle>
-                <p>{h.holiday_type}</p>
-              </HolidayInfo>
-              <HolidayDate>{new Date(h.date).toLocaleDateString()}</HolidayDate>
-            </HolidayItem>
-          ))}
-        </HolidayList>
+   <HolidayList>
+  {upcomingHolidays.slice(0, 3).map((h, i) => (
+    <HolidayItem key={i}>
+      <HolidayIcon>
+        <img src={HolidaySvg} alt="holiday icon" />
+      </HolidayIcon>
+      <HolidayInfo>
+        <HolidayTitle title={h.description}>
+          {h.description.length > 7 
+            ? h.description.slice(0, 7) + "..." 
+            : h.description}
+        </HolidayTitle>
+        <p>{h.holiday_type}</p>
+      </HolidayInfo>
+      <HolidayDate>{new Date(h.date).toLocaleDateString()}</HolidayDate>
+    </HolidayItem>
+  ))}
+</HolidayList>
+
+
+
+
       </RightSection>
     </Container>
   );

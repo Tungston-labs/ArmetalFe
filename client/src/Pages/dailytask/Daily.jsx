@@ -15,19 +15,27 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import TaskIcon from "../../assets/task.svg";
 import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
+import { useRef } from "react";
 
 export default function DailyTask() {
   const dispatch = useDispatch();
   const { employees = [], tasks = [], loading } = useSelector(state => state.dailyTask);
   const { list: departments = [] } = useSelector(state => state.departments);
-
+  const dateInputRef = useRef(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState(null);
 const selected = new Date(selectedDate); // convert string to Date
+ const [selectedDates, setSelectedDates] = useState(
+    () => new Date().toISOString().split("T")[0]
+  );
 
-
+  const handleCalendarClick = () => {
+    if (dateInputRef.current) {
+      dateInputRef.current.showPicker(); // ✅ opens native date picker
+    }
+  };
   // Fetch departments on mount
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: '' }));
@@ -70,7 +78,9 @@ const selected = new Date(selectedDate); // convert string to Date
     next.setDate(next.getDate() + 1);
     setSelectedDate(next.toISOString().split("T")[0]);
   };
-
+const handleIconClick = () => {
+    dateInputRef.current.showPicker(); // opens native date picker
+  };
   const filteredEmployees = (employees || []).filter(emp =>
     emp.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -114,23 +124,49 @@ const selected = new Date(selectedDate); // convert string to Date
 
           {/* Date selector */}
           <div className="calendar-header">
-            <div className="left">
-                <button onClick={handlePrevDate}>{"<"}</button>
-              <FaRegCalendarAlt className="calendar-icon" />
-              <div className="date-info">
-                <div className="day">{new Date(selectedDate).getDate()}</div>
-                <div>
-                  <div className="month">{new Date(selectedDate).toLocaleString('default', { month: 'long' })}</div>
-                  <div className="weekday">{new Date(selectedDate).toLocaleString('default', { weekday: 'long' })}</div>
-                </div>
-              </div>
-            </div>
-            <div className="nav">
-              {/* <button onClick={handlePrevDate}>{"<"}</button> */}
-              <button onClick={handleNextDate}>{">"}</button>
-            </div>
-          </div>
+      <div className="left">
+        <button>{"<"}</button>
 
+        {/* Calendar Icon */}
+        <FaRegCalendarAlt
+          className="calendar-icon"
+          style={{ fontSize: "24px", color: "#3250B5", cursor: "pointer" }}
+          onClick={handleIconClick}
+        />
+
+        {/* Hidden date input */}
+ <input
+  type="date"
+  ref={dateInputRef}
+  value={selectedDates}
+  onChange={(e) => {
+    if (e.target.value) {
+      setSelectedDates(e.target.value);
+    } else {
+      // fallback to today's date
+      const today = new Date().toISOString().split("T")[0];
+      setSelectedDates(today);
+    }
+  }}
+  style={{ display: "none" }}
+/>
+
+<div className="date-info">
+  <div className="day">{new Date(selectedDates).getDate()}</div>
+  <div>
+    <div className="month">
+      {new Date(selectedDates).toLocaleString("default", { month: "long" })}
+    </div>
+    <div className="weekday">
+      {new Date(selectedDates).toLocaleString("default", { weekday: "long" })}
+    </div>
+  </div>
+</div>
+      </div>
+      <div className="nav">
+        <button>{">"}</button>
+      </div>
+    </div>
           {/* <input type="date" value={selectedDate} onChange={handleDateChange} /> */}
         </DateSelector>
 
@@ -164,23 +200,26 @@ const selected = new Date(selectedDate); // convert string to Date
 
 
         <div style={{ display: 'flex', gap: '.5rem' }}>
-          <EmployeesPanel>
-            <Heading>Employees</Heading>
-            {(filteredEmployees || []).map(emp => (
-              <EmployeeCard
-                key={emp.id}
-                onClick={() => handleEmployeeSelect(emp)}
-                active={emp.id === selectedEmployee?.id}
-              >
-                {emp.profile_pic ? (
-                  <img src={emp.profile_pic} alt={emp.name} />
-                ) : (
-                  <PiUserCirclePlusThin size={40} color="#999" />
-                )}
-                <span>{emp.name}</span>
-              </EmployeeCard>
-            ))}
-          </EmployeesPanel>
+      <EmployeesPanel>
+  <Heading className="employee-heading">Employees</Heading>
+  <div className="employee-list">
+    {(filteredEmployees || []).map(emp => (
+      <EmployeeCard
+        key={emp.id}
+        onClick={() => handleEmployeeSelect(emp)}
+        active={emp.id === selectedEmployee?.id}
+      >
+        {emp.profile_pic ? (
+          <img src={emp.profile_pic} alt={emp.name} />
+        ) : (
+          <PiUserCirclePlusThin size={40} color="#999" />
+        )}
+        <span>{emp.name}</span>
+      </EmployeeCard>
+    ))}
+  </div>
+</EmployeesPanel>
+
  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
   <Head>Daily Task</Head>
           <TaskPanel>

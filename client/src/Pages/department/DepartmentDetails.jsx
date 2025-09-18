@@ -146,8 +146,8 @@ if (!department) return <Loader />;
   />
   <EmployeeImage  src={Employee} alt="employeeIcon" />
     <TextBlock>
-      <Title>Employee</Title>
-      <Subtitle>Manage your Employee.</Subtitle>
+      <Title>Department</Title>
+      <Subtitle>Manage all departments within the organization.</Subtitle>
     </TextBlock>
   </TitleSection>
 

@@ -6,7 +6,7 @@ import API from "../services/api";
 import { useLogout } from "../services/logout"; // adjust path
 import { useDispatch } from "react-redux";
 import { logout as logoutAction } from "../Redux/authSlice";
-
+import Swal from "sweetalert2";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -38,10 +38,34 @@ const dispatch = useDispatch();
 const logout = useLogout();
 
 const handleLogoutClick = async () => {
-  await logout(); // call API logout if refresh token exists
-  dispatch(logoutAction()); // clear Redux state
-  setMenuOpen(false);
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you want to logout?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, logout',
+    cancelButtonText: 'Cancel',
+  });
+
+  if (result.isConfirmed) {
+    // Show the success message first
+    await Swal.fire({
+      title: 'Logged out!',
+      text: 'You have been successfully logged out.',
+      icon: 'success',
+      confirmButtonColor: '#3085d6',
+    });
+
+    // Then call logout & clear Redux state
+    await logout();
+    dispatch(logoutAction());
+
+    setMenuOpen(false);
+  }
 };
+
 
 
   const handlePasswordChange = async () => {

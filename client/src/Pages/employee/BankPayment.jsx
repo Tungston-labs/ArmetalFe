@@ -21,6 +21,7 @@ import { clearBankPayment } from '../../Redux/employeeSlice';
 // import { FaUserCircle } from "react-icons/fa";
 import Loader from "../../Components/Loader"
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import { EmployeeImage } from './BasicLevel.Styles';
 export default function BankPaymentForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -154,7 +155,7 @@ const [bankProofImage, setBankProofImage] = useState(null);
     <Container>
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-     <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+          <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
