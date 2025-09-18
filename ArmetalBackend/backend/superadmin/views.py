@@ -80,9 +80,19 @@ class CompanySubscriptionListCreateView(APIView):
                 month=m,
                 year=year
             )
-            if created:
-                obj.save()  # Ensure amount is calculated
+
+            # Always recalc and update amount/currency
+            rate, currency = obj.get_rate_per_employee_and_currency()
+            obj.amount = round(company.number_of_employees * rate, 2)
+            obj.currency = currency
+
+            if obj.status == 'paid' and not obj.paid_date:
+                obj.paid_date = now().date()
+
+            obj.save()
+
             subs.append(obj)
+
 
         serializer = CompanySubscriptionSerializer(subs, many=True)
         return Response(serializer.data)

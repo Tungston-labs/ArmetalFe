@@ -56,13 +56,14 @@ const PayrollTable = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Paid': return 'green';
-      case 'OnHold': return 'orange';
-      case 'Pending': return 'yellow';
-      case 'Cancelled': return 'red';
+      case 'Paid': return '#4B976D';
+      case 'OnHold': return '#BA703A';
+      case 'Pending': return '#DD991D';
+      case 'Cancelled': return '#E67B7B';
       default: return '#000';
     }
   };
+  
 
   // Fetch departments
   useEffect(() => {
@@ -441,40 +442,41 @@ const PayrollTable = () => {
                       </div>
                     </Td>
                     <Td>
-                      <Select
-                        value={emp.status || ''}
-                        onChange={(e) => handleSingleStatusChange(emp, e.target.value)}
-                        style={{
-                          backgroundColor: getStatusColor(emp.status),
-                          color: emp.status === 'Pending' ? 'black' : 'white',
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option
-                          value="OnHold"
-                          style={{ backgroundColor: "orange", color: "white" }}
-                        >
-                          OnHold
-                        </option>
-                        <option
-                          value="Cancelled"
-                          style={{ backgroundColor: "red", color: "white" }}
-                        >
-                          Cancelled
-                        </option>
-                        <option
-                          value="Pending"
-                          style={{ backgroundColor: "yellow", color: "black" }}
-                        >
-                          Pending
-                        </option>
-                        <option
-                          value="Paid"
-                          style={{ backgroundColor: "green", color: "white" }}
-                        >
-                          Paid
-                        </option>
-                      </Select>
+                    <Select
+  value={emp.status || ''}
+  onChange={(e) => handleSingleStatusChange(emp, e.target.value)}
+  style={{
+    backgroundColor: getStatusColor(emp.status),
+    color: emp.status === 'Pending' ? 'black' : 'white',
+  }}
+>
+  <option value="">Select</option>
+  <option
+    value="OnHold"
+    style={{ backgroundColor: "#BA703A", color: "white" }}
+  >
+    On Hold
+  </option>
+  <option
+    value="Cancelled"
+    style={{ backgroundColor: "#E67B7B", color: "white" }}
+  >
+    Cancelled
+  </option>
+  <option
+    value="Pending"
+    style={{ backgroundColor: "#DD991D", color: "black" }}
+  >
+    Pending
+  </option>
+  <option
+    value="Paid"
+    style={{ backgroundColor: "#4B976D", color: "white" }}
+  >
+    Paid
+  </option>
+</Select>
+
 
                     </Td>
                   </tr>
