@@ -201,11 +201,12 @@ const payrollSlice = createSlice({
         state.loading = false;
         state.verifySuccess = true;
         state.data = state.data.map((emp) =>
-          emp.id === action.payload.employeeId
-            ? { ...emp, ...action.payload.data } // merge backend response
+          emp.employee?.id === action.payload.employeeId
+            ? action.payload.data  // replace with fresh record from backend
             : emp
         );
       })
+      
       .addCase(verifyEmployeePayroll.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

@@ -172,16 +172,10 @@ class PayrollVerifyView(APIView):
 
         record.save()
 
-        return Response({
-            "message": "Verification successful",
-            "hr1_verified": record.hr1_verified_by is not None,
-            "hr2_verified": record.hr2_verified_by is not None,
-            "fully_verified": record.is_fully_verified(),
-            "verified_by": {
-                "hr1": record.hr1_verified_by.username if record.hr1_verified_by else None,
-                "hr2": record.hr2_verified_by.username if record.hr2_verified_by else None,
-            }
-        })
+        # ✅ Return full payroll record so frontend can refresh row
+        serializer = EmployeePayrollRecordSerializer(record)
+        return Response(serializer.data)
+
 
 class PayrollStatusUpdateView(APIView):
     permission_classes = [IsAuthenticated]
