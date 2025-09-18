@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { LuArrowLeft } from "react-icons/lu";
+
 export const Container = styled.div`
   padding: 2rem;
   background: white;
@@ -277,12 +278,13 @@ export const EmployeeImage = styled.img`
   }
 
   @media (min-width: 2560px) {
-    height: clamp(80px, 1vw, 100px);
+    height: clamp(80px, 2vw, 100px);
   }
 
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
   }`;
+
   export const BackArrow = styled(LuArrowLeft)`
   width: clamp(20px, 2vw, 35px);
   height: clamp(20px, 2vw, 35px);

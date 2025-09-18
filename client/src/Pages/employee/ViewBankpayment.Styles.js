@@ -68,16 +68,76 @@ export const RightSection = styled.div`
   min-width: 300px;
 `;
 
+export const Label = styled.label`
+  font-weight: 500;
+  color: #052DB4;
+
+  /* 📱 Small phones */
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+  }
+
+  /* 📲 Tablets */
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+
+  /* 💻 Laptops & Desktops */
+  @media (min-width: 769px) and (max-width: 1920px) {
+    font-size: 1rem;
+  }
+
+  /* 🖥 4K screens */
+  @media (min-width: 1921px) and (max-width: 3839px) {
+    font-size: 1.5rem;
+  }
+
+  /* 🖥 8K screens */
+  @media (min-width: 3840px) {
+    font-size: 1.8rem;
+  }
+`;
 
 export const Input = styled.input`
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
   width: 100%;
-border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
+  padding: clamp(0.5rem, 0.8vw, 1rem);
+  border-radius: 7px;
+  border: 1px solid #052DB4;
+  background: #FFF;
+  color: black;
+  font-size: clamp(12px, 1vw, 16px);
+
+  /* 📱 Small devices */
+  @media (max-width: 480px) {
+    font-size: 12px;
+    padding: 0.5rem;
+  }
+
+  /* 📲 Tablets */
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 14px;
+    padding: 0.6rem;
+  }
+
+  /* 💻 Laptops */
+  @media (min-width: 769px) and (max-width: 1920px) {
+    font-size: 15px;
+    padding: 0.7rem;
+  }
+
+  /* 🖥 4K */
+  @media (min-width: 1921px) and (max-width: 3839px) {
+    font-size: 16px;
+    padding: 0.9rem;
+  }
+
+  /* 🖥 8K */
+  @media (min-width: 3840px) {
+    font-size: 18px;
+    padding: 1rem;
+  }
 `;
+
 
 export const Textarea = styled.textarea`
   padding: 0.6rem;
@@ -104,12 +164,12 @@ export const FieldWrapper = styled.div`
   // margin-bottom: 1rem;
 `;
 
-export const Label = styled.label`
-  font-size: 0.9rem;
-  font-weight: 500;
-  // margin-bottom: 0.3rem;
-  color: #052DB4;
-`;
+// export const Label = styled.label`
+//   font-size: 0.9rem;
+//   font-weight: 500;
+//   // margin-bottom: 0.3rem;
+//   color: #052DB4;
+// `;
 
 
 export const Section = styled.div`
@@ -208,6 +268,30 @@ export const TextGroup = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(20px, 6vw, 20px);
+  }
+
+  @media (min-width: 1024px) {
+    height: clamp(20px, 4vw, 50px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(50px, 1vw, 80px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(80px, 1vw, 100px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(100px, 3vw, 200px);
+  }`;
 
 export const Title = styled.h2`
   font-size: 1.4rem;
