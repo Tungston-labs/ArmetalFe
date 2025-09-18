@@ -42,16 +42,19 @@ const [pagination, setPagination] = useState(null);
   const [employees, setEmployees] = useState([]);
   const getStatusStyle = (status) => {
     switch (status) {
-      case 'Approve':
-        return { backgroundColor: 'green', color: 'white' };
-      case 'On Hold':
-        return { backgroundColor: 'orange', color: 'white' };
-      case 'In Verification':
-        return { backgroundColor: 'yellow', color: 'black' };
+      case "Approve":
+        return { backgroundColor: "#4B976D", color: "white" }; // Paid → Approve
+      case "On Hold":
+        return { backgroundColor: "#BA703A", color: "white" };
+      case "In Verification":
+        return { backgroundColor: "#DD991D", color: "black" }; // Pending
+      case "Cancel":
+        return { backgroundColor: "#E67B7B", color: "white" };
       default:
-        return { backgroundColor: '#fff', color: '#000' };
+        return { backgroundColor: "#fff", color: "#000" };
     }
   };
+  
   
   
   
