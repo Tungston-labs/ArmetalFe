@@ -493,13 +493,12 @@ export const EmployeeImage = styled.img`
   }
 
   @media (min-width: 2560px) {
-    height: clamp(80px, 1vw, 100px);
+    height: clamp(80px, 2vw, 100px);
   }
 
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
-  }
-    `;
+  }`;
 
 export const Pagination = styled.div`
   display: flex;

@@ -22,6 +22,29 @@ export const Header = styled.div`
     color: #333;
   }
 `;
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(20px, 6vw, 20px);
+  }
+
+  @media (min-width: 1024px) {
+    height: clamp(20px, 4vw, 50px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(50px, 1vw, 80px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(80px, 1vw, 100px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(100px, 3vw, 200px);
+  }`;
 
 export const EditButton = styled.button`
   display: flex;
@@ -140,15 +163,40 @@ export const Tab = styled.button`
 
 export const GroupLabel = styled.h4`
   margin-bottom: 1rem;
-  font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 18px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 700;
+  line-height: 100%;
+  letter-spacing: 0%;
 
+  /* 🔹 Fluid font-size with clamp */
+  font-size: clamp(14px, 1.2vw, 22px);
+
+  /* 📱 Small phones */
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
+
+  /* 📲 Tablets */
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 16px;
+  }
+
+  /* 💻 Laptops & desktops */
+  @media (min-width: 769px) and (max-width: 1920px) {
+    font-size: 18px;
+  }
+
+  /* 🖥 4K screens */
+  @media (min-width: 1921px) and (max-width: 3839px) {
+    font-size: 22px;
+  }
+
+  /* 🖥 8K screens */
+  @media (min-width: 3840px) {
+    font-size: 26px;
+  }
 `;
+
 
 export const Rows = styled.div`
   display: flex;

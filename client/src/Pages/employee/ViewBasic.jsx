@@ -31,6 +31,7 @@ import {
   FieldGroup,
   FieldWrapper,
   FieldWrappers,
+  EmployeeImage,
 } from "./ViewBasic.Style";
 import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
@@ -176,7 +177,7 @@ useEffect(() => {
               style={{ width: 30, height: 30, cursor: "pointer", color: "#304EB0" }}
               onClick={() => navigate(-1)}
             />
-            <img src={EmployeeIcon} alt="employeeIcon" style={{ height: 60 }} />
+           <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
             <div>
               <Title>Employee</Title>
               <Subtitle style={{ color: "#304EB0" }}>Manage your Employee.</Subtitle>

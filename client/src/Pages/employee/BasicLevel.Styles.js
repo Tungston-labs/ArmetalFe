@@ -89,10 +89,36 @@ background: #FFF;
 
 export const Label = styled.label`
   color: #3352BA;
-   marginBottom: 0.4rem;
-   fontSize: 0.7rem;
-   font-weight:400;
+  font-weight: 400;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+
+  /* 📱 Small phones */
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+  }
+
+  /* 📲 Tablets */
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+
+  /* 💻 Laptops & Desktops */
+  @media (min-width: 769px) and (max-width: 1920px) {
+    font-size: 1rem;
+  }
+
+  /* 🖥 4K screens */
+  @media (min-width: 1921px) and (max-width: 3839px) {
+    font-size: 1.5rem;
+  }
+
+  /* 🖥 8K screens */
+  @media (min-width: 3840px) {
+    font-size: 1.8rem;
+  }
 `;
+
 
 export const TextArea = styled.textarea`
   width: 99%;

@@ -26,6 +26,7 @@ import {
   TitleSection,
   FieldWrapper,
   Label,
+  EmployeeImage,
 } from "./ViewBankpayment.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import { HiOutlinePencilAlt } from "react-icons/hi";
@@ -158,7 +159,7 @@ console.log("employeeBankPayments",employeeBankPayments)
                    style={{ width: "30px", height: 30, cursor: "pointer",color:"#304EB0" }}
                    onClick={() => navigate("/employee")}
                    />
-               <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+              <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
                          <div>
                       
                            <Title>Employee</Title>

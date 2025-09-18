@@ -83,8 +83,8 @@ const selected = new Date(selectedDate); // convert string to Date
          <TitleSection>
            <EmployeeImage  src={TaskIcon} alt="employeeIcon" />
            <TextBlock>
-             <Title>Employee</Title>
-             <Subtitle>Manage your Employee.</Subtitle>
+             <Title>Daily Task</Title>
+             <Subtitle>Check daily task details for each employee</Subtitle>
            </TextBlock>
          </TitleSection>
         </Header>

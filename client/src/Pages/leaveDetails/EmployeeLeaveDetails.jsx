@@ -24,7 +24,8 @@ import {
   TwoColumnRows,
   FlexRows,
   DateField,
-  EmployeeImage
+  EmployeeImage,
+  BackArrow
 } from "./EmployeeLeaveDetails.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
