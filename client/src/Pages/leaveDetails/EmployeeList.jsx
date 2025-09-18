@@ -23,6 +23,7 @@ import {
   TopRow,
   BottomRow,
   TextBlock,
+  EmployeeImage,
 } from "./EmployeeList.styles";
 import { IoIosArrowDown } from "react-icons/io";
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -124,13 +125,14 @@ const EmployeeList = () => {
      <HeaderSection>
   {/* Top row: Title + Add Button */}
   <TopRow>
-   <TitleSection>
-  <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+  <TitleSection>
+  <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
   <TextBlock>
     <Title>Employee</Title>
     <Subtitle>Manage your Employee.</Subtitle>
   </TextBlock>
 </TitleSection>
+
 
 
     <AddButton onClick={() => navigate("/basic-details")}>

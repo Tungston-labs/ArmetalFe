@@ -30,7 +30,8 @@ import {
   DropdownWrapper,
   DropdownMenu, 
   SearchWrapper,
-  SearchIcon
+  SearchIcon,
+  EmployeeImage
 } from './LeaveRequest.Styles';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Navbar from '../../Components/Navbar';
@@ -126,7 +127,7 @@ const isLoading = loading || deptLoading;
   )}
       <HeaderSection>
        <TitleSection>
-         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+         <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
          <TextBlock>
            <Title>Employee</Title>
            <Subtitle>Manage your Employee.</Subtitle>

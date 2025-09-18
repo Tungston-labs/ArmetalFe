@@ -17,10 +17,11 @@ DeptTitle,
   HeaderRow,
   SearchWrapper,
   SearchIcon,
-  CalendarWrapper
+  CalendarWrapper,
+  EmployeeImage,
+  TextBlock
 } from "./DetailOnleaveStyles";
 import { HiArrowLeft } from "react-icons/hi";
-
 
 import { FaInfoCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -109,18 +110,23 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
 
     <HeaderSection>
   <TitleSection>
-    <HiArrowLeft 
-      size={34} 
-      style={{ cursor: "pointer", color:"#3250B5" }} 
-      onClick={() => navigate(-1)} 
-    />
-    <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-    <div>
+  <HiArrowLeft
+  onClick={() => navigate(-1)}
+  style={{
+    cursor: "pointer",
+    color: "#3250B5",
+    width: "clamp(24px, 3vw, 50px)",
+    height: "clamp(24px, 3vw, 50px)"
+  }}
+/>
+
+ <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
+    <TextBlock>
       <Title>Employee</Title>
       <Subtitle>
         {departmentId ? "Employees On Leave" : "Manage your Employee."}
       </Subtitle>
-    </div>
+    </TextBlock>
   </TitleSection>
 
   {/* New Row: Search + Calendar */}

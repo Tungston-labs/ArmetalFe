@@ -27,7 +27,14 @@ export const BackButton = styled.button`
 export const TitleContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  // gap: 10px;
+`;
+
+export const TextBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
 `;
 
 export const Icon = styled.img`
@@ -120,5 +127,29 @@ export const SearchInput = styled.input`
 
   &::placeholder {
     color: #a0a0d0;
+  }
+`;
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(70px, 6vw, 150px);
+  }
+
+  @media (min-width: 1024px) {
+    height: clamp(80px, 5vw, 180px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(100px, 4vw, 220px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(150px, 3vw, 300px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(200px, 2vw, 400px);
   }
 `;

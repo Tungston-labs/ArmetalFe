@@ -37,6 +37,8 @@ export const HRManager = styled.div`
     object-fit: cover;
   }
 `;
+
+// Typography (Title, Subtitle)
 export const Title = styled.h2`
   font-size: 1.4rem;
   margin: 0 0 5px 0;
@@ -102,6 +104,8 @@ export const Subtitle = styled.p`
     font-size: 2.5rem;
   }
 `;
+
+
 export const HeaderSection = styled.div`
   display: flex;
   justify-content: space-between;
@@ -122,19 +126,42 @@ export const TitleSection = styled.div`
     gap: 10px;
   }
 
-  .icon-box {
-    background-color: white;
-    padding: 10px;
-    border-radius: 8px;
-    display: inline-block;
-    color: blue;
+  // .icon-box {
+  //   background-color: white;
+  //   padding: 10px;
+  //   border-radius: 8px;
+  //   display: inline-block;
+  //   color: blue;
+  // }
+
+  // img {
+  //   height: 74px;
+  // }
+`;
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(70px, 6vw, 150px);
   }
 
-  img {
-    height: 74px;
+  @media (min-width: 1024px) {
+    height: clamp(80px, 5vw, 180px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(100px, 4vw, 220px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(150px, 3vw, 300px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(200px, 2vw, 400px);
   }
 `;
-
 
 export const TitleGroup = styled.div`
   display: flex;
@@ -165,7 +192,7 @@ export const ActionArea = styled.div`
 `;
 
 export const InitialCircle = styled.div`
-width: clamp(35px, 3vw, 90px);
+  width: clamp(35px, 3vw, 90px);
   height: clamp(35px, 3vw, 90px);
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 1);
@@ -200,6 +227,8 @@ width: clamp(35px, 3vw, 90px);
   }
 `;
 
+
+
 export const AddButton = styled.button`
   display: flex;
   align-items: center;
@@ -207,51 +236,83 @@ export const AddButton = styled.button`
   font-family: Satoshi;
   background: #304EB0;
   color: white;
-  padding: 0.5rem 2rem;
+  padding: clamp(0.4rem, 0.8vw, 0.8rem) clamp(1rem, 2vw, 2rem); /* vertical | horizontal */
   border-radius: 8px;
   border: none;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font size */
   cursor: pointer;
-  font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 18px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  transition: all 0.3s ease;
 
-   &:hover {
+  &:hover {
     background-color: #3f60cbff;
   }
 `;
 
+
+// Search Input
 export const SearchInput = styled.input`
-  padding: 0.5rem 1rem 0.5rem 2.2rem; // left padding for icon space
+  padding: clamp(0.6rem, 1vw, 1.2rem) clamp(1rem, 2vw, 2rem) clamp(0.6rem, 1vw, 1.2rem) clamp(2rem, 4vw, 2.5rem); /* top, right, bottom, left */
+  border: 1px solid #172554;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
-  font-size: 0.9rem;
-  min-width: 100%;
+  width: 100%;
+  font-family: 'Satoshi';
+  height: clamp(30px, 3vw, 60px);
+  font-size: clamp(0.8rem, 1vw, 1.5rem);
+
+  @media (min-width: 1440px) {
+    font-size: clamp(1rem, 0.8vw, 1.6rem);
+    height: clamp(45px, 2vw, 65px);
+   
+  }
+
+  @media (min-width: 2560px) { /* 2K/4K screens */
+    font-size: clamp(1.2rem, 0.6vw, 1.8rem);
+    height: clamp(55px, 1.5vw, 75px);
+  }
+
+  @media (min-width: 3840px) { /* 4K/8K ultra-wide screens */
+    font-size: clamp(1.5rem, 0.5vw, 2rem);
+    height: clamp(70px, 1vw, 90px);
+  }
 `;
+
 export const SearchWrapper = styled.div`
   position: relative;
-  width: 220px;
+  display: inline-block;
+  width: 100%;
+  max-width: 450px; /* optional max width */
 `;
 
 export const SearchIcon = styled(FiSearch)`
   position: absolute;
   top: 50%;
-  left: 12px;
+  left: clamp(8px, 1vw, 16px); /* responsive horizontal spacing */
   transform: translateY(-50%);
   color: #888;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1.5vw, 1.5rem); /* responsive font size */
 `;
 
+
+// Card Grid
 export const CardGrid = styled.div`
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(4,1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
+
+  @media (max-width: 1440px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
 `;
 
 export const DepartmentCard = styled.div`
@@ -263,33 +324,31 @@ export const DepartmentCard = styled.div`
   cursor: pointer;
   transition: all 0.3s ease;
 
-  // 💡 Hover effect
   &:hover {
     .initial-circle {
-      background-color:rgb(255, 255, 255);
-    // color: #1a73e8;
+      background-color: rgb(255, 255, 255);
+      color: #1a73e8;
     }
 
     .dept-name,
     .head-name,
     .subtitle,
     .card-value {
-      color:rgb(62, 101, 200);
+      color: rgb(62, 101, 200);
     }
 
     .arrow-icon {
-      background-color:rgb(51, 51, 192);
+      background-color: rgb(51, 51, 192);
       color: white;
     }
   }
 
   h3 {
-    font-size: 1.05rem;
+    font-size: clamp(1rem, 1.2vw, 2rem); /* responsive */
     font-weight: 600;
     margin: 0;
     color: #000;
     font-family: 'Satoshi';
-    
   }
 
   .head-row {
@@ -298,14 +357,14 @@ export const DepartmentCard = styled.div`
     gap: 0.4rem;
 
     img {
-      width: 24px;
-      height: 24px;
+      width: clamp(24px, 1.2vw, 30px);
+      height: clamp(24px, 1.2vw, 30px);
       border-radius: 50%;
       object-fit: cover;
     }
 
     .head-name {
-      font-size: 0.85rem;
+      font-size: clamp(0.8rem, 0.9vw, 2rem);
       margin: 0;
       font-weight: 500;
       color: #000;
@@ -314,96 +373,43 @@ export const DepartmentCard = styled.div`
 `;
 
 
+
 export const HeadInfo = styled.div`
   margin-top: 0.5rem;
 
   small {
-    font-size: clamp(0.75rem, 0.9vw, 1rem); /* scales 12px → 18px */
+    font-size: clamp(0.75rem, 1vw, 2rem); /* responsive */
     color: #888;
     display: block;
-    line-height: 1.4;
-    letter-spacing: 0;
-  }
-
-  .head-row {
-    display: flex;
-    align-items: center;
-    margin-top: 0.5rem;
-
-    img {
-      width: clamp(28px, 2vw, 56px);  /* scales avatar size for mobile → 4K */
-      height: clamp(28px, 2vw, 56px);
-      border-radius: 50%;
-      margin-right: clamp(0.4rem, 0.8vw, 1rem);
-      object-fit: cover;
-    }
-
-    .head-name {
-      font-weight: 600;
-      font-size: clamp(0.9rem, 1.2vw, 1.6rem); /* scales smoothly */
-      color: #333;
-      line-height: 1.3;
-    }
-  }
-
-  /* ✅ Extra fine-tuning with breakpoints */
-  @media (max-width: 480px) {
-    .head-row {
-      flex-direction: column; /* stack avatar + name on tiny screens */
-      align-items: flex-start;
-
-      img {
-        margin-bottom: 0.4rem;
-      }
-    }
-  }
-
-  @media (min-width: 2560px) {
-    .head-name {
-      font-size: 1.8rem; /* a bit bigger for 4K+ screens */
-    }
-    small {
-      font-size: 1.2rem;
-    }
   }
 `;
-
-
 
 export const CardRight = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between; /* pushes count up and arrow down */
+  align-items: flex-end;
+  height: 100%; /* take full height of card */
 
   .card-value {
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
     color: #000;
-    font-family: Satoshi;
-// font-weight: 700;
-// font-style: Bold;
-// font-size: 20px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-
   }
 
   .arrow-icon {
-  background: rgb(255, 255, 255);
-  color: rgb(52, 52, 124);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  // margin-left:5px;
+    background: rgb(255, 255, 255);
+    color: rgb(52, 52, 124);
+    width: clamp(36px, 2vw, 40px);
+    height: clamp(36px, 2vw, 40px);
+    border-radius: 50%;
+     font-size: clamp(1.2rem, 2vw, 1.8rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-
 `;
+
 
 // Modal Styles
 export const ModalOverlay = styled.div`
@@ -417,16 +423,37 @@ export const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 999;
+  padding: 1rem; /* ensures space on very small screens */
 `;
 
 export const ModalContent = styled.div`
   background-color: white;
-  padding: 2rem;
+  padding: clamp(1rem, 2vw, 2.5rem); /* responsive padding */
   border-radius: 10px;
   max-width: 600px;
   width: 100%;
   position: relative;
   z-index: 1000;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+
+  /* ✅ Responsive scaling */
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+
+  @media (max-width: 768px) {
+    max-width: 95%; /* take almost full width on tablets */
+  }
+
+  @media (min-width: 1920px) {
+    max-width: 800px; /* wider modal for Full HD */
+  }
+
+  @media (min-width: 2560px) {
+    max-width: 1000px; /* 2K screens */
+  }
+
+  @media (min-width: 3840px) {
+    max-width: 1200px; /* 4K screens */
+  }
 `;
 
 export const CloseButton = styled.button`
@@ -435,9 +462,15 @@ export const CloseButton = styled.button`
   right: 1rem;
   background: transparent;
   border: none;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 1.5vw, 1.8rem);
   cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #304eb0;
+  }
 `;
+
 export const DropdownWrapper = styled.div`
   position: relative;
 `;

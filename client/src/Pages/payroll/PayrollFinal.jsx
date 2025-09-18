@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container, Header, TitleSection, Title, Subtitle, SearchInput, Pagination,
-  TableWrapper, Table, Th, Td, Select, Icon
+  TableWrapper, Table, Th, Td, Select,
+  Icon,
+  BulkActionBar,
+  TextBlock,
+  EmployeeImage,
+  LeftBlock
 } from './Final.Styles';
 import { Link } from 'react-router-dom';
 import { GoInfo } from "react-icons/go";
@@ -293,12 +298,7 @@ const PayrollTable = () => {
         </Header>
 
         <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <SearchInput
-            placeholder=" Enter employee ID"
-            value={searchTerm}
-            onChange={handleSearch}
-            style={{ width: '250px' }}
-          />
+          <SearchInput placeholder=" Enter employee ID" value={searchTerm} onChange={handleSearch}  />
           <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
               {months.map((month, index) => (
@@ -311,28 +311,25 @@ const PayrollTable = () => {
           </div>
         </Header>
 
-        <div style={{ background: '#3352BA', color: '#fff', padding: '10px 20px', margin: '20px 0 10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <input
-              type="checkbox"
-              checked={selectedEmployees.length === data.length && data.length > 0}
-              onChange={handleSelectAll}
-              style={{ marginRight: '10px' }}
-            />
-            <strong>Selected {selectedEmployees.length} Employees</strong>
-          </div>
-          <Select
-            style={{ background: '#fff', color: '#000', minWidth: '120px' }}
-            value={bulkStatus}
-            onChange={handleBulkStatusChange}
-          >
-            <option value="">Select</option>
-            <option value="OnHold">OnHold</option>
-            <option value="Cancelled">Cancelled</option>
-            <option value="Pending">Pending</option>
-            <option value="Paid">Paid</option>
-          </Select>
-        </div>
+        <BulkActionBar>
+  <div>
+    <input
+      type="checkbox"
+      checked={selectedEmployees.length === data.length}
+      onChange={handleSelectAll}
+    />
+    <strong>Selected {selectedEmployees.length} Employees</strong>
+  </div>
+
+  <select onChange={handleBulkStatusChange}>
+    <option>Select</option>
+    <option value="OnHold">OnHold</option>
+    <option value="Cancelled">Cancelled</option>
+    <option value="Pending">Pending</option>
+    <option value="Paid">Paid</option>
+  </select>
+</BulkActionBar>
+
 
         <TableWrapper>
           <Table>

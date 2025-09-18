@@ -5,7 +5,8 @@ import {
   EmployeeCard, TaskPanel, TaskCard, TaskHeader, Hr, Description,
   TimeBox, SearchInput, Title, Subtitle, TitleSection, TextBlock, DropdownWrapper, DepartmentDropdown,
   Heading,
-  Head
+  Head,
+  EmployeeImage
 } from './Daily.styles';
 import { getEmployees, getTasks } from '../../Redux/dailyTaskSlice';
 import { getDepartments } from '../../Redux/departmentSlice';
@@ -79,13 +80,13 @@ const selected = new Date(selectedDate); // convert string to Date
       <Navbar />
       <Container>
         <Header>
-          <TitleSection>
-            <img src={TaskIcon} alt="Task icon" />
-            <TextBlock>
-              <Title>Daily Task</Title>
-              <Subtitle>Check daily task details for each employee</Subtitle>
-            </TextBlock>
-          </TitleSection>
+         <TitleSection>
+           <EmployeeImage  src={TaskIcon} alt="employeeIcon" />
+           <TextBlock>
+             <Title>Employee</Title>
+             <Subtitle>Manage your Employee.</Subtitle>
+           </TextBlock>
+         </TitleSection>
         </Header>
 
         <DateSelector>

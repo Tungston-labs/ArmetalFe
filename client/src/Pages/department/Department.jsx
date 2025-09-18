@@ -23,6 +23,7 @@ import {
   ModalContent,
   InitialCircle,
   SearchWrapper,
+  EmployeeImage,
 } from '../department/DepartmentStyles';
 
 import {
@@ -128,7 +129,7 @@ const Department = () => {
           <TitleSection>
             <div className="left-content">
               <div className="icon-box">
-                <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+               <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
               </div>
               <div>
                 <Title>Department</Title>

@@ -49,15 +49,54 @@ export const CardTitle = styled.div`
   font-weight: bold;
   font-family: 'Satoshi', sans-serif;
 
+   /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 14px;
+    font-size: 16px;
   }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 17px;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 15px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 30px;
+  }
+}
 `;
 
 export const CardSubtitle = styled.div`
-  font-size: 10px;
+  font-size: 13px;
   color: #666;
   font-family: 'Satoshi', sans-serif;
+   /* Small devices (mobile) */
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 13px;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 14px;
+margin-top: -10px;
+
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 20px;
+  }
+}
 `;
 
 export const CardLink = styled.div`
@@ -70,9 +109,26 @@ export const CardLink = styled.div`
   font-size: 14px;
   font-family: 'Raleway', sans-serif;
 
+  /* Small devices (mobile) */
   @media (max-width: 480px) {
+    font-size: 11px;
+  }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
     font-size: 12px;
   }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 13px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 16px;
+  }
+}
 `;
 
 /* Department section responsive */
@@ -95,14 +151,31 @@ export const DepartmentTitleRow = styled.div`
 `;
 
 export const DepartmentTitle = styled.div`
-  font-size: 20px;
+  font-size: 20px; /* default */
   font-weight: 700;
   background: white;
 
+  /* Small devices (mobile) */
   @media (max-width: 480px) {
     font-size: 16px;
   }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 18px;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 20px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 28px;
+  }
 `;
+
 
 export const DepartmentCount = styled.div`
   font-size: 18px;
@@ -110,18 +183,59 @@ export const DepartmentCount = styled.div`
 `;
 
 export const SubLabel = styled.div`
-  font-size: 13px;
+  font-size: 13px; /* default */
   color: #777;
   margin-top: 12px;
   background: white;
+
+  /* Small devices (mobile) */
+  @media (max-width: 480px) {
+    font-size: 11px;
+  }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 12px;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 13px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 18px;
+  }
 `;
 
 export const DepartmentHead = styled.div`
-  font-size: 16px;
+  font-size: 16px; /* default */
   font-weight: 500;
   margin-top: 4px;
   background: white;
+
+  /* Small devices (mobile) */
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 15px;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 16px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 22px;
+  }
 `;
+
 
 export const MemberList = styled.div`
   display: flex;

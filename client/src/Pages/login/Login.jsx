@@ -250,7 +250,6 @@ console.log("---",formData);
                   border: "none",
                   color: "black", // make it look like a link
                   fontSize: "14px",
-                  marginTop: "8px",
                   fontFamily: 'Raleway',
                   textDecoration: "none",
                   // fontSize: "14px",
@@ -293,12 +292,12 @@ console.log("---",formData);
           </FormBox>
         ) : (
           <FormBox>
-            <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', whiteSpace: 'nowrap' }}>Change your password</h2>
-            <p style={{ fontFamily: "raleway", fontSize: 20 }}>
+            {/* <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', whiteSpace: 'nowrap' }}>Change your password</h2> */}
+            {/* <p style={{ fontFamily: "raleway", fontSize: 20 }}>
               Enter a new password<br />
               Below to change your password
-            </p>
-            <form onSubmit={handlePasswordChange}>
+            </p> */}
+            {/* <form onSubmit={handlePasswordChange}>
               <Label>Old password</Label>
               <div style={{ position: "relative" }}>
                 <Input
@@ -362,7 +361,7 @@ console.log("---",formData);
     {error}
   </p>
 )}
-            </form>
+            </form> */}
           </FormBox>
         )}
       </RightPanel>

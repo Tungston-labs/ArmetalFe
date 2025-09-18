@@ -26,7 +26,8 @@ import {
   ModalContent,
   InitialCircle,
   SearchWrapper,
-  DropdownMenu, DropdownWrapper
+  DropdownMenu, DropdownWrapper,
+  EmployeeImage
   
 } from './Reimb_Department.Styles.js';
 
@@ -99,7 +100,7 @@ const Department = () => {
 <TitleSection>
   <div className="left-content">
     <div className="icon-box">
-       <img src={Employee}  alt="employee icon" />
+        <EmployeeImage  src={Employee} alt="employeeIcon" />
     </div>
     <div>
       <Title>Reimbursement</Title>

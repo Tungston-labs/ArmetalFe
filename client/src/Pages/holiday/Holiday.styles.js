@@ -117,26 +117,40 @@ export const SearchInput = styled.input`
 // FormStyles.js
 
 
+export const FormSection = styled.div`
+  display: flex;
+  gap: clamp(12px, 2vw, 27px);
+  flex-wrap: wrap;
+
+  /* ✅ Larger gaps for bigger screens */
+  @media (min-width: 1920px) {
+    gap: clamp(20px, 2vw, 36px);
+  }
+
+  @media (min-width: 2560px) {
+    gap: clamp(24px, 2vw, 48px);
+  }
+
+  /* ✅ Stack vertically on small screens */
+  @media (max-width: 767px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+`;
+
 export const FieldWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 200px;
+  gap: 6px;
   flex: 1;
+  min-width: clamp(160px, 20vw, 200px);
 
-  /* ✅ On 4K, expand width for readability */
   @media (min-width: 2560px) {
-    min-width: 320px;
+    min-width: 320px; /* Wider on 4K */
   }
 
-  /* ✅ On tablets, make narrower */
-  @media (max-width: 1023px) {
-    min-width: 160px;
-  }
-
-  /* ✅ On mobile, full width */
   @media (max-width: 767px) {
-    min-width: 100%;
+    min-width: 100%; /* Full width on mobile */
   }
 `;
 
@@ -144,131 +158,116 @@ export const Label = styled.label`
   font-family: Satoshi;
   font-weight: 400;
   line-height: 120%;
-
-  /* ✅ Responsive font scaling */
   font-size: clamp(0.8rem, 1vw, 1rem);
 
-  @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.1rem;
+  @media (min-width: 1920px) {
+    font-size: clamp(1rem, 0.9vw, 1.2rem);
   }
 
   @media (min-width: 2560px) {
     font-size: 1.3rem;
   }
-`;
 
-export const FormSection = styled.div`
-  display: flex;
-  gap: 27px;
-  flex-wrap: wrap;
-
-  /* ✅ Larger gaps for big screens */
-  @media (min-width: 1920px) {
-    gap: 36px;
-  }
-
-  @media (min-width: 2560px) {
-    gap: 48px;
-  }
-
-  /* ✅ Stack fields vertically on small screens */
-  @media (max-width: 767px) {
-    flex-direction: column;
-    gap: 16px;
+  @media (min-width: 3840px) {
+    font-size: 1.8rem;
   }
 `;
 
 export const Input = styled.input`
-  padding: 8px 12px;
+  padding: clamp(6px, 1vw, 12px) clamp(10px, 1vw, 16px);
   border: 1px solid #ccc;
   border-radius: 7px;
   width: 100%;
-  background-color: white;
-
-  /* ✅ Responsive font */
+  background-color: #fff;
   font-size: clamp(0.85rem, 1vw, 1rem);
-
-  @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.1rem;
-    padding: 12px 16px;
-  }
 
   @media (min-width: 2560px) {
     font-size: 1.3rem;
     padding: 14px 20px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 1.6rem;
+    padding: 18px 24px;
   }
 `;
 
 export const Select = styled.select`
-  padding: 8px 12px;
+  padding: clamp(6px, 1vw, 12px) clamp(10px, 1vw, 16px);
   border: 1px solid #ccc;
   border-radius: 7px;
   width: 100%;
-  background-color: white;
-
-  /* ✅ Responsive font */
+  background-color: #fff;
   font-size: clamp(0.85rem, 1vw, 1rem);
-
-  @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.1rem;
-    padding: 12px 16px;
-  }
 
   @media (min-width: 2560px) {
     font-size: 1.3rem;
     padding: 14px 20px;
   }
-`;
 
-// export const DateWrapper = styled.div`
-//   display: flex;
-//   align-items: center;
-//   gap: 8px;
-//   border: 1px solid #ccc;
-//   border-radius: 7px;
-//   padding: 4px 8px;
-//   background-color: white;
-// `;
-
-// export const DateInput = styled.input`
-//   border: none;
-//   outline: none;
-//   flex: 1;
-// `;
-
-export const Hr = styled.hr`
-  border: none;
-  border-top: 1px solid #ccc;
-
-`;
-export const DateInput = styled.input`
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 7px;
-  background-color: #fff;
-  width: 100%;
+  @media (min-width: 3840px) {
+    font-size: 1.6rem;
+    padding: 18px 24px;
+  }
 `;
 
 export const DateWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap:10px;
+  gap: clamp(6px, 1vw, 12px);
+  width: 100%;
 `;
 
+export const DateInput = styled.input`
+  padding: clamp(6px, 1vw, 12px) clamp(10px, 1vw, 16px);
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100%;
+  background-color: #fff;
+  font-size: clamp(0.85rem, 1vw, 1rem);
+
+  @media (min-width: 2560px) {
+    font-size: 1.3rem;
+    padding: 14px 20px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 1.6rem;
+    padding: 18px 24px;
+  }
+`;
+
+export const Hr = styled.hr`
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: clamp(12px, 2vw, 24px) 0;
+`;
 
 
 export const AddButton = styled.button`
   background-color: #3352BA;
   color: white;
-  padding: 10px 16px;
+  padding: clamp(6px, 1.2vw, 12px) clamp(10px, 2vw, 18px);
   border: none;
-  border-radius: 7px;
+  border-radius: clamp(5px, 0.6vw, 10px);
   cursor: pointer;
-  font-size: 16px;
-  height: 42px;
-  align-self: flex-end; 
-  margin-left: auto;   
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+  height: clamp(36px, 4vh, 48px);
+  align-self: flex-end;
+  margin-left: auto;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #26408B;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%; /* full width on small screens */
+    align-self: center;
+    margin-left: 0;
+  }
 `;
+
 
 export const TableWrapper = styled.div`
   // overflow-x: auto;
@@ -315,32 +314,40 @@ export const Table = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px;
-  margin-top: -1rem;
+  margin-top: 1rem;
+ text-align: left;
+  font-family: 'Satoshi';
 
-  th, td {
+  /* Scroll on small screens */
+  // display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  td {
     text-align: left;
-    padding: 0.5rem;
+    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
     white-space: nowrap;
     background-color: white;
     border: none;
+    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
   }
 
   th {
-    background-color: #3352BA;
+ text-align: left;
+    background-color: #304EB0;
     color: white;
-    padding: 0.75rem;
     font-family: Raleway;
+    padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
+    font-size: clamp(0.9rem, 1vw, 1.8rem); /* responsive font */
   }
 
-  /* ✅ Background color for even rows */
-  tbody tr:nth-child(even) td {
-    background-color: #E6ECFF;
-  }
-
-  /* ✅ Shadow only for tbody rows */
   tbody tr {
     box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-    font-family: Satoshi;
+  }
+
+  /* Background color for even rows */
+  tbody tr:nth-child(even) td {
+    background-color: #E6ECFF;
   }
 
   tbody tr td:first-child {
@@ -357,49 +364,17 @@ export const Table = styled.table`
     background-color: #f5f5f5;
   }
 
-  /* ✅ Responsive breakpoints */
-  /* 4K UHD (3840px and up) */
   @media (min-width: 2560px) {
-    th, td {
-      font-size: 22px;
-      padding: 1.2rem;
+    td, th {
+      font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
+      padding: clamp(8px, 1vw, 24px);
     }
   }
 
-  /* QHD / 2K screens (1920px–2559px) */
-  @media (min-width: 1920px) and (max-width: 2559px) {
-    th, td {
-      font-size: 20px;
-      padding: 1rem;
-    }
-  }
-
-  /* Normal desktops & laptops (1024px–1919px) */
-  @media (min-width: 1024px) and (max-width: 1919px) {
-    th, td {
-      font-size: 16px;
-      padding: 0.7rem;
-    }
-  }
-
-  /* Tablets (768px–1023px) */
-  @media (min-width: 768px) and (max-width: 1023px) {
-    th, td {
-      font-size: 14px;
-      padding: 0.5rem;
-    }
-    border-spacing: 0 6px;
-  }
-
-  /* Mobiles (≤767px) */
-  @media (max-width: 767px) {
-    display: block;
-    overflow-x: auto;   /* horizontal scroll */
-    white-space: nowrap;
-
-    th, td {
-      font-size: 12px;
-      padding: 0.4rem;
+  @media (min-width: 3840px) {
+    td, th {
+      font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
+      padding: clamp(10px, 2vw, 32px);
     }
   }
 `;

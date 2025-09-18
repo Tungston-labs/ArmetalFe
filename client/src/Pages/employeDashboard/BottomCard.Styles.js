@@ -25,24 +25,62 @@ export const Header = styled.div`
 export const AttendanceHeader = styled(Header)``;
 
 export const Title = styled.h3`
-  font-size: 16px;
-  font-weight: 600;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  font-style: bold;
+  line-height: 1;
+  letter-spacing: 0;
   color: #3352BA;
- font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 20px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-size: 20px; /* default */
 
+  /* Small devices (mobile) */
+  @media (max-width: 480px) {
+    font-size: 16px;
+  }
 
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 18px;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 25px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 2rem;
+  }
 `;
+
 
 export const RightArrow = styled.div`
   cursor: pointer;
   color: #2d63f3;
+  font-size: 24px; /* default size */
+
+  /* Small devices (mobile) */
+  @media (max-width: 480px) {
+    font-size: 18px;
+  }
+
+  /* Medium devices (tablets) */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 20px;
+  }
+
+  /* Large desktops */
+  @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 24px;
+  }
+
+  /* Extra-large / 4K screens */
+  @media (min-width: 1601px) {
+    font-size: 32px;
+  }
 `;
+
 
 export const TaskList = styled.div`
   display: flex;

@@ -14,6 +14,8 @@ import {
   ProfileImg,
   Pagination,
   LoaderOverlay,
+  EmployeeImage,
+  DepartmentSelect,
 } from "./Visa.Styles";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { FaTrash } from "react-icons/fa";
@@ -116,13 +118,13 @@ const EmployeeList = () => {
       )}
 
       <HeaderSection>
-         <TitleSection>
-         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-         <TextBlock>
-           <Title>Employee</Title>
-           <Subtitle>Manage your Employee.</Subtitle>
-         </TextBlock>
-       </TitleSection>
+          <TitleSection>
+                  <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
+                  <TextBlock>
+                    <Title>Employee</Title>
+                    <Subtitle>Manage your Employee.</Subtitle>
+                  </TextBlock>
+                </TitleSection>
         <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent:"space-between" }}>
             <SearchWrapper>
               {/* <SearchIcon /> */}
@@ -134,7 +136,7 @@ const EmployeeList = () => {
               />
             </SearchWrapper>
 
-            <select
+            <DepartmentSelect
               value={expiryFilter}
               onChange={(e) => {
                 setExpiryFilter(e.target.value);
@@ -149,7 +151,7 @@ const EmployeeList = () => {
               <option value="">All Employees</option>
               <option value="visa">Visa Expiry (next 30 days)</option>
               <option value="contract">Contract Expiry (next 30 days)</option>
-            </select>
+            </DepartmentSelect>
           </div>
         </HeaderSection>
 

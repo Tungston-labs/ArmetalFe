@@ -19,7 +19,9 @@ import {
   HRManager,
   IconButton,
   TitleSection,
-  DropdownMenu, DropdownWrapper 
+  DropdownMenu, DropdownWrapper, 
+  EmployeeImage,
+  TextBlock
 } from '../department/DepartmentDetails.Styles';
 import { FaInfoCircle, FaTrash } from 'react-icons/fa';
 import { HiOutlinePencilSquare } from "react-icons/hi2";
@@ -142,12 +144,12 @@ if (!department) return <Loader />;
     style={{ width: '24px', height: '24px', cursor: 'pointer',color:"#3250B5" }} 
     onClick={() => window.history.back()}
   />
-  <img src={Employee}  alt="employee icon" />
-  <div>
-    <Title>Department</Title>
-    <Subtitle>Manage all departments within the organization.</Subtitle>
-  </div>
-</TitleSection>
+  <EmployeeImage  src={Employee} alt="employeeIcon" />
+    <TextBlock>
+      <Title>Employee</Title>
+      <Subtitle>Manage your Employee.</Subtitle>
+    </TextBlock>
+  </TitleSection>
 
 
 
