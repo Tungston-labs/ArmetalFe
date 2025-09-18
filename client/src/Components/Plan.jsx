@@ -20,6 +20,14 @@ import {
 } from './Plan.Styles';
 import API from '../services/api';
 
+const formattedAmount = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: entry.currency,
+}).format(entry.amount);
+
+<TableData>{formattedAmount}</TableData>
+
+
 const PaymentOverview = ({ companyId: propCompanyId }) => {
   const { id: urlCompanyId } = useParams();
   const companyId = propCompanyId || urlCompanyId;
@@ -173,8 +181,8 @@ const handleDownload = (entry) => {
     </p>
   </PlanDetails>
 
-  <PlanPrice>$5</PlanPrice>
-</PlanCard>
+  <PlanPrice>{paymentData[0]?.amount || 0} {paymentData[0]?.currency || 'AED'}</PlanPrice>
+  </PlanCard>
 
 
       <ScrollWrapper>
