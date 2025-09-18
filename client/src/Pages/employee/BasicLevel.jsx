@@ -48,8 +48,10 @@ export default function AddEmployeeForm() {
   const [isFormDirty, setIsFormDirty] = useState(false);
   const stepTitles = ['Basic Info', 'Job Details', 'Legal Info'];
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")||sessionStorage.getItem("user"));
   const country = user?.company?.country;
+
+  
 
   const [formData, setFormData] = useState({
     name: '',
@@ -88,6 +90,7 @@ export default function AddEmployeeForm() {
     dispatch(setBasicFormData({ ...formData, [name]: value }));
     setIsFormDirty(true);
   };
+console.log({country});
 
   // Validate before submit
  // Validate before submit
@@ -110,7 +113,6 @@ const validateForm = () => {
     "department_id", "employment_type", "joining_date", "passport_number",
     "total_leave", "contract_expiry_date", "role",
   ];
-
   if (country !== "IN")
     requiredFields.push("visa_expiry_date", "insurance_number", "iqama_number");
   if (country === "IN") requiredFields.push("aadar_number");

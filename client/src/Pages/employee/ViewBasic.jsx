@@ -54,7 +54,7 @@ const ViewBasic = () => {
 
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")||sessionStorage.getItem("user"));
 
 
   // Fetch departments
