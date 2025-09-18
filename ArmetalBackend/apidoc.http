@@ -397,7 +397,7 @@ Content-Type: application/json
 
 ### Get Employee Dashboard Details
 GET http://178.248.112.16:8001/api/dashboard/employee/53/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4MDAyNjU0LCJpYXQiOjE3NTgwMDA4NTQsImp0aSI6IjUxNzY1YTI4MjczMzRjZGRiNTlkMDA1YmU3NTkyMDAxIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.bZ2uqm0qHb31zit1hxBB4KwKpDl2hDbu_VtPfGxGL4M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4MTgyNTA0LCJpYXQiOjE3NTgxODA3MDQsImp0aSI6IjJmNjQ2MGUzNWM1MjQ4YjU4MDczOWFjYmVkOTgyZTM2IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.hloOtKCEUCXBSfdr7KqHRA8UUR_eOfcnMpWJyfNEa7I
 # ----------------------------------API FOR EMPLOYEE-----------------------
 
 
