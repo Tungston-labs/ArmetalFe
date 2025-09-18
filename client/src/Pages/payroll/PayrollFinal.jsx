@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container, Header, TitleSection, Title, Subtitle, SearchInput, Pagination,
-<<<<<<< HEAD
   TableWrapper, Table, Th, Td, Select,
   Icon,
   BulkActionBar,
   TextBlock,
   EmployeeImage,
   LeftBlock
-=======
-  TableWrapper, Table, Th, Td, Select, Icon
->>>>>>> 29e4723f33094b6f7e8cecd9b3102d0f28fd6347
 } from './Final.Styles';
 import { Link } from 'react-router-dom';
 import { GoInfo } from "react-icons/go";
