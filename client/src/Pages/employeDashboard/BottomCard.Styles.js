@@ -35,22 +35,22 @@ export const Title = styled.h3`
 
   /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 16px;
+    font-size: 0.5rem;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 18px;
+    font-size: 0.9rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 25px;
+    font-size: 1.5rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 `;
 

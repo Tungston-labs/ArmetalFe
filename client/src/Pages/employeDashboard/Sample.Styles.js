@@ -39,7 +39,7 @@ export const ProfileCard = styled.div`
     padding: 10px;
 p {
   margin-top: -10px;
-  font-size: 1.2rem; /* default for medium screens */
+  font-size: 1.2rem; 
   color: #333;
   font-family: 'Satoshi', sans-serif;
 
@@ -55,12 +55,12 @@ p {
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 1.3rem;
+    font-size: 1rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -88,7 +88,7 @@ p {
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
 }
 
@@ -130,22 +130,22 @@ export const InfoCard = styled.div`
 
   /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 16px;
+    font-size: 0.6rem;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 17px;
+    font-size: 0.8rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 19px;
+    font-size: 1rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 30px;
+    font-size: 1.2rem;
   }
 }
 
@@ -159,22 +159,22 @@ export const InfoCard = styled.div`
 
   /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 12px;
+    font-size: 0.3;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 13px;
+    font-size: 0.5rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 14px;
+    font-size: 0.8rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 20px;
+    font-size: 1rem;
   }
 }
 
@@ -193,22 +193,22 @@ button {
 
   /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 11px;
+    font-size: 0.3rem;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 12px;
+    font-size: 0.5rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 13px;
+    font-size: 0.7rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 16px;
+    font-size: 0.9rem;
   }
 }
 `;
@@ -238,7 +238,7 @@ export const TimeTrackingCard = styled.div`
       font-size: 1.3rem;
     }
     @media (min-width: 1601px) {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
   }
 
@@ -256,7 +256,7 @@ export const TimeTrackingCard = styled.div`
       font-size: 0.95rem;
     }
     @media (min-width: 1601px) {
-      font-size: 1.5rem;
+      font-size: 1rem;
     }
   }
 
@@ -278,7 +278,7 @@ export const TimeTrackingCard = styled.div`
       font-size: 1.05rem;
     }
     @media (min-width: 1601px) {
-      font-size: 1.8rem;
+      font-size: 1rem;
     }
   }
 `;

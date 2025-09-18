@@ -23,7 +23,8 @@ import {
   TwoColumnRow,
   TwoColumnRows,
   FlexRows,
-  DateField
+  DateField,
+  EmployeeImage
 } from "./EmployeeLeaveDetails.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
@@ -81,12 +82,9 @@ if (loading) {
       
 
       <TitleSection style={{color:"#3250B5"}}>
-         <LuArrowLeft
-  style={{ width: "30px", height: 30, cursor: "pointer",color:"#3250B5" }}
-  onClick={() => navigate(-1)} // 👈 Go back to previous page
-/>
+      <BackArrow onClick={() => navigate(-1)} />
 
-        <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+  <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
         <div>
      
           <Title>Employee</Title>

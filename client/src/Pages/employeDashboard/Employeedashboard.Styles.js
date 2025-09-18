@@ -51,22 +51,22 @@ export const CardTitle = styled.div`
 
    /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 16px;
+    font-size: 0.6rem;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 17px;
+    font-size: 0.8rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 15px;
+    font-size: 1rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 30px;
+    font-size:1.2rem ;
   }
 }
 `;
@@ -77,24 +77,24 @@ export const CardSubtitle = styled.div`
   font-family: 'Satoshi', sans-serif;
    /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 12px;
+    font-size: 0.3rem;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 13px;
+    font-size: 0.5rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 14px;
+    font-size: 0.8rem;
 margin-top: -10px;
 
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 20px;
+    font-size: 1rem;
   }
 }
 `;
@@ -111,22 +111,22 @@ export const CardLink = styled.div`
 
   /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 11px;
+    font-size: 0.3rem;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 12px;
+    font-size: 0.5rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 13px;
+    font-size: 0.7rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 16px;
+    font-size: 0.9rem;
   }
 }
 `;
@@ -157,22 +157,22 @@ export const DepartmentTitle = styled.div`
 
   /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 16px;
+    font-size: 0.6rem;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 18px;
+    font-size: 0.8rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 20px;
+    font-size: 1rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 28px;
+    font-size: 1.5rem;
   }
 `;
 
@@ -190,49 +190,49 @@ export const SubLabel = styled.div`
 
   /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 11px;
+    font-size: 0.5rem;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 12px;
+    font-size: 0.7rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 13px;
+    font-size: 0.9rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 18px;
+    font-size: 1.2rem;
   }
 `;
 
 export const DepartmentHead = styled.div`
-  font-size: 16px; /* default */
+  font-size: 16px;
   font-weight: 500;
   margin-top: 4px;
   background: white;
 
   /* Small devices (mobile) */
   @media (max-width: 480px) {
-    font-size: 14px;
+    font-size: 0.7rem;
   }
 
   /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 15px;
+    font-size: 0.9rem;
   }
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 22px;
+    font-size: 1.2rem;
   }
 `;
 
