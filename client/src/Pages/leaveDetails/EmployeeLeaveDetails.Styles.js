@@ -128,7 +128,7 @@ export const TopBar = styled.div`
   // margin-bottom: 1.5rem;
 `;
 
-export conimport { LuArrowLeft } from "react-icons/lu";st HRManager = styled.div`
+export const HRManager = styled.div`
   display: flex;
   height:30px;
  
