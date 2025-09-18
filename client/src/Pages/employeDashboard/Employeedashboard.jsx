@@ -170,7 +170,7 @@ const formatUTCToLocal = (utcTimeStr) => {
             </DepartmentTitleRow>
             <hr></hr>
             <SubLabel>Department head</SubLabel>
-            <DepartmentHead>Ajay kumar M.A</DepartmentHead>
+            <DepartmentHead>{employeeDashData?.department_head?.name}</DepartmentHead>
           </Department>
           <MemberList>
             {members.map((member, index) => (
