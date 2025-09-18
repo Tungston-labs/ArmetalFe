@@ -93,27 +93,21 @@ class CompanySubscription(TimeStampedModel):
     def __str__(self):
         return f"{self.company.name} - {month_name[self.month]} {self.year} ({self.status})"
 
-  
-    # def save(self, *args, **kwargs):
-    #     if self.amount is None or self.amount == 0:
-    #         rate, currency = self.get_rate_per_employee_and_currency()
-    #         self.amount = round(self.company.number_of_employees * rate, 2)
-    #         self.currency = currency
-
-    #     if self.status == 'paid' and not self.paid_date:
-    #         self.paid_date = now().date()
-
-    #     super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         rate, currency = self.get_rate_per_employee_and_currency()
-        self.amount = round(self.company.number_of_employees * rate, 2)
-        self.currency = currency
+        expected_amount = round(self.company.number_of_employees * rate, 2)
+
+        # Always update amount/currency if mismatch
+        if not self.amount or self.amount != expected_amount or self.currency != currency:
+            self.amount = expected_amount
+            self.currency = currency
 
         if self.status == 'paid' and not self.paid_date:
             self.paid_date = now().date()
 
         super().save(*args, **kwargs)
+
     
 
     def get_rate_per_employee_and_currency(self):
