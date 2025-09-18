@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 import loginpageimage from "../../assets/loginpage.svg";
 export const device = {
   mobileS: "(max-width: 320px)",
@@ -7,7 +7,7 @@ export const device = {
   tablet: "(max-width: 768px)",
   laptop: "(max-width: 1024px)",
   desktop: "(max-width: 1440px)",
-  wide: "(max-width: 1920px)"
+  wide: "(max-width: 1920px)",
 };
 
 export const Container = styled.div`
@@ -74,7 +74,9 @@ export const FormBox = styled.div`
   max-width: 400px;
   width: 100%;
   margin-top: 50px;
-
+  @media (min-width: 3840px) {
+    max-width: 35%;
+  }
   // h2 {
   //   font-family: Satoshi, sans-serif;
   //   font-weight: 700;
@@ -99,10 +101,10 @@ export const FormBox = styled.div`
 export const Label = styled.label`
   font-weight: 400;
   display: block;
-  font-family: 'Raleway', sans-serif;
+  font-family: "Raleway", sans-serif;
   margin-top: 5px;
   margin-bottom: 2px;
-  font-size: clamp(13px, 1vw,2rem);  /* responsive base */
+  font-size: clamp(13px, 1vw, 2rem); /* responsive base */
 
   @media ${device.mobileS} {
     font-size: 13px;
@@ -119,17 +121,26 @@ export const Label = styled.label`
   @media ${device.desktop} {
     font-size: 18px;
   }
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
 
 export const Input = styled.input`
   width: 100%;
   padding: 10px;
-  margin-bottom: ${(props) => props.marginBottom || '23px'};
+  margin-bottom: ${(props) => props.marginBottom || "23px"};
   border: none;
   background: #efefef;
   border-radius: 8px;
-  font-family: 'Raleway', sans-serif;
-  font-size: clamp(14px, 1vw,2rem);
+  font-family: "Raleway", sans-serif;
+  font-size: clamp(14px, 1vw, 2rem);
+  @media (min-width: 3840px) {
+    padding: 2rem;
+    margin-block: 1rem;
+    font-size: 2rem;
+    border-radius:1.25rem;
+  }
 `;
 
 export const CheckboxContainer = styled.div`
@@ -138,7 +149,7 @@ export const CheckboxContainer = styled.div`
   margin-bottom: 20px;
   margin-top: 30px;
   font-size: clamp(14px, 1.5vw, 17px);
-  font-family: 'Raleway', sans-serif;
+  font-family: "Raleway", sans-serif;
   margin-left: 3px;
 
   input[type="checkbox"] {
@@ -154,7 +165,7 @@ export const CheckboxContainer = styled.div`
   }
 
   input[type="checkbox"]:checked::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 2px;
     left: 6px;
@@ -164,26 +175,37 @@ export const CheckboxContainer = styled.div`
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
+  @media (min-width: 3840px) {
+    input {
+      padding: 1rem;
+    }
+    font-size: 2rem;
+  }
 `;
 
 export const Button = styled.button`
   width: 100%;
   padding: clamp(10px, 1.2vw, 12px);
-  background: linear-gradient(to right, #172554, #3352BA);
+  background: linear-gradient(to right, #172554, #3352ba);
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-family: 'Raleway', sans-serif;
+  font-family: "Raleway", sans-serif;
   font-weight: bold;
   font-size: clamp(14px, 1vw, 1.5rem);
+  @media (min-width: 3840px) {
+    padding: 1.5rem;
+    font-size: 2.5rem;
+    border-radius:1.25rem;
+  }
 `;
 
 export const SmallLink = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  font-family: 'Raleway', sans-serif;
+  font-family: "Raleway", sans-serif;
   color: black;
   text-decoration: none;
   font-size: clamp(12px, 1vw, 1.5rem); /* responsive font size */
@@ -194,8 +216,10 @@ export const SmallLink = styled.button`
     text-decoration: underline;
     color: #1e3a8a; /* optional hover color */
   }
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+  }
 `;
-
 
 export const LeftHeader = styled.div`
   width: 80%;
@@ -214,6 +238,14 @@ export const LeftHeader = styled.div`
 
   p {
     font-size: clamp(14px, 2vw, 22px);
+  }
+  @media (min-width: 3840px) {
+    h2 {
+      font-size: 7rem !important;
+    }
+    p{
+      font-size: 3rem;
+    }
   }
 `;
 
@@ -286,7 +318,7 @@ export const Title = styled.h2`
   font-family: "Satoshi", sans-serif;
   font-weight: bold;
   margin: 0;
-  font-size: clamp(24px, 2.5vw, 5rem);  // responsive base
+  font-size: clamp(24px, 2.5vw, 5rem); // responsive base
 
   @media ${device.mobileM} {
     font-size: 22px;
@@ -298,6 +330,10 @@ export const Title = styled.h2`
 
   @media ${device.laptop} {
     font-size: 36px;
+  }
+  @media (min-width: 3840px) {
+    font-size: 6rem;
+    padding-block: 2rem;
   }
 `;
 
@@ -316,5 +352,8 @@ export const Subtitle = styled.p`
 
   @media ${device.laptop} {
     font-size: 18px;
+  }
+  @media (min-width: 3840px) {
+    font-size: 3rem;
   }
 `;
