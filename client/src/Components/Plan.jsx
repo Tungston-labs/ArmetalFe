@@ -36,7 +36,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
 
   const fetchPaymentData = async (id) => {
     try {
-      const token = localStorage.getItem("accessToken");
+      const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
       const res = await API.get(`http://178.248.112.16:8001/api/subscriptions/${id}/`);
 
       if (Array.isArray(res.data)) {
@@ -65,9 +65,9 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const handleStatusChange = async (subscriptionId, currentStatus) => {
     const newStatus = currentStatus === 'paid' ? 'unpaid' : 'paid';
     try {
-      const token = localStorage.getItem("accessToken");
+      const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
       await API.patch(
-        `http://178.248.112.16:8000/api/subscriptions/mark-paid/${subscriptionId}/`,
+        `http://178.248.112.16:8001/api/subscriptions/mark-paid/${subscriptionId}/`,
         { status: newStatus },
         
       );
@@ -142,12 +142,10 @@ const handleDownload = (entry) => {
   const handleSendEmail = async (entry) => {
     try {
       const token = localStorage.getItem("accessToken");
-      await axios.post("http://178.248.112.16:8000/api/invoice/send-email/", {
+      await API.post("http://178.248.112.16:8001/api/invoice/send-email/", {
         entry: entry,
         company_id: entry.company,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      }, );
 
       alert("Invoice email sent successfully.");
     } catch (error) {

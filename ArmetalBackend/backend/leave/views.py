@@ -274,7 +274,7 @@ class LeaveByStatusView(APIView):
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found."}, status=404)
 
-        leaves = LeaveRequest.objects.filter(employee=employee, status=status)
+        leaves = LeaveRequest.objects.filter(employee=employee, status=status).order_by('created_at')
         serializer = LeaveRequestSerializer(leaves, many=True)
         return Response(serializer.data)
 from rest_framework.views import APIView
