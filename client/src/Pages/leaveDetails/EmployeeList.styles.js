@@ -446,27 +446,24 @@ export const EmployeeImage = styled.img`
   width: auto; /* maintain aspect ratio */
   
   @media (min-width: 768px) {
-    height: clamp(70px, 6vw, 150px);
+    height: clamp(20px, 6vw, 20px);
   }
 
   @media (min-width: 1024px) {
-    height: clamp(80px, 5vw, 180px);
+    height: clamp(20px, 4vw, 50px);
   }
 
   @media (min-width: 1440px) {
-    height: clamp(100px, 4vw, 220px);
+    height: clamp(50px, 1vw, 80px);
   }
 
   @media (min-width: 2560px) {
-    height: clamp(150px, 3vw, 300px);
+    height: clamp(80px, 1vw, 100px);
   }
 
   @media (min-width: 3840px) {
-    height: clamp(200px, 2vw, 400px);
-  }
-`;
-
-
+    height: clamp(100px, 3vw, 200px);
+  }`;
 export const AddButton = styled.button`
   background: #1e3a8a;
   color: white;

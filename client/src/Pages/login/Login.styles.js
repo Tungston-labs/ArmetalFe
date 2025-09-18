@@ -1,5 +1,14 @@
 import styled from 'styled-components';
 import loginpageimage from "../../assets/loginpage.svg";
+export const device = {
+  mobileS: "(max-width: 320px)",
+  mobileM: "(max-width: 480px)",
+  mobileL: "(max-width: 600px)",
+  tablet: "(max-width: 768px)",
+  laptop: "(max-width: 1024px)",
+  desktop: "(max-width: 1440px)",
+  wide: "(max-width: 1920px)"
+};
 
 export const Container = styled.div`
   display: flex;
@@ -66,34 +75,50 @@ export const FormBox = styled.div`
   width: 100%;
   margin-top: 50px;
 
-  h2 {
-    font-family: Satoshi, sans-serif;
-    font-weight: 700;
-    font-size: clamp(28px, 4vw, 41px); /* responsive font */
-    line-height: 1.2;
-    text-align: left;
-    margin: 0 0 10px 0;
-  }
+  // h2 {
+  //   font-family: Satoshi, sans-serif;
+  //   font-weight: 700;
+  //   font-size: clamp(28px, 4vw, 41px); /* responsive font */
+  //   line-height: 1.2;
+  //   text-align: left;
+  //   margin: 0 0 10px 0;
+  // }
 
-  p {
-    font-family: Raleway, sans-serif;
-    font-size: clamp(14px, 2vw, 20px); /* responsive font */
-    line-height: 1.4;
-    margin: 5px 0 20px 0;
-  }
+  // p {
+  //   font-family: Raleway, sans-serif;
+  //   font-size: clamp(14px, 2vw, 20px); /* responsive font */
+  //   line-height: 1.4;
+  //   margin: 5px 0 20px 0;
+  // }
 
-  @media (max-width: 480px) {
-    margin-top: 20px;
-  }
+  // @media (max-width: 480px) {
+  //   margin-top: 20px;
+  // }
 `;
 
 export const Label = styled.label`
   font-weight: 400;
   display: block;
-  font-size: clamp(14px, 1.5vw, 17px);
   font-family: 'Raleway', sans-serif;
   margin-top: 5px;
   margin-bottom: 2px;
+  font-size: clamp(13px, 1vw,2rem);  /* responsive base */
+
+  @media ${device.mobileS} {
+    font-size: 13px;
+  }
+
+  @media ${device.tablet} {
+    font-size: 15px;
+  }
+
+  @media ${device.laptop} {
+    font-size: 16px;
+  }
+
+  @media ${device.desktop} {
+    font-size: 18px;
+  }
 `;
 
 export const Input = styled.input`
@@ -104,7 +129,7 @@ export const Input = styled.input`
   background: #efefef;
   border-radius: 8px;
   font-family: 'Raleway', sans-serif;
-  font-size: clamp(14px, 1.5vw, 16px);
+  font-size: clamp(14px, 1vw,2rem);
 `;
 
 export const CheckboxContainer = styled.div`
@@ -151,15 +176,26 @@ export const Button = styled.button`
   cursor: pointer;
   font-family: 'Raleway', sans-serif;
   font-weight: bold;
-  font-size: clamp(14px, 1.5vw, 18px);
+  font-size: clamp(14px, 1vw, 1.5rem);
 `;
 
-export const SmallLink = styled.p`
-  font-size: clamp(10px, 1.2vw, 14px);
-  text-decoration: none;
+export const SmallLink = styled.button`
+  background: none;
+  border: none;
   cursor: pointer;
-  margin-top: -5%;
+  font-family: 'Raleway', sans-serif;
+  color: black;
+  text-decoration: none;
+  font-size: clamp(12px, 1vw, 1.5rem); /* responsive font size */
+  margin-top: -8px;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+    color: #1e3a8a; /* optional hover color */
+  }
 `;
+
 
 export const LeftHeader = styled.div`
   width: 80%;
@@ -245,4 +281,40 @@ export const SmallNote = styled.p`
   text-align: center;
   margin-top: ${(props) => props.marginTop || "20px"};
   color: ${(props) => props.color || "#3250B5"};
+`;
+export const Title = styled.h2`
+  font-family: "Satoshi", sans-serif;
+  font-weight: bold;
+  margin: 0;
+  font-size: clamp(24px, 2.5vw, 5rem);  // responsive base
+
+  @media ${device.mobileM} {
+    font-size: 22px;
+  }
+
+  @media ${device.tablet} {
+    font-size: 30px;
+  }
+
+  @media ${device.laptop} {
+    font-size: 36px;
+  }
+`;
+
+export const Subtitle = styled.p`
+  font-family: "Raleway", sans-serif;
+  margin-top: 8px;
+  font-size: clamp(14px, 1vw, 2.5rem); // responsive base
+
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
+
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+
+  @media ${device.laptop} {
+    font-size: 18px;
+  }
 `;
