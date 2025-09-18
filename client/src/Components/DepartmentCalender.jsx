@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import API from "../services/api"; // <-- use your configured axios
 import { NavLink } from "react-router-dom";
-import Loader from "../Components/Loader"
-
+import Loader from "../Components/Loader";
 
 import {
   Container,
@@ -45,16 +44,15 @@ const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
 const DepartmentCalendar = () => {
   const [summary, setSummary] = useState(null);
-  console.log({summary})
+  console.log({ summary });
   const [loading, setLoading] = useState(true);
- const today = new Date();
-const [month, setMonth] = useState(today.getMonth());
-const [year, setYear] = useState(today.getFullYear());
+  const today = new Date();
+  const [month, setMonth] = useState(today.getMonth());
+  const [year, setYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
-const currentDay = today.getDate();
-const currentMonth = today.getMonth();
-const currentYear = today.getFullYear();
-
+  const currentDay = today.getDate();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -72,8 +70,6 @@ const currentYear = today.getFullYear();
 
   // if (loading) return <p>Loading...</p>;
   if (!summary) return <p>Failed to fetch data.</p>;
-
-
 
   const onLeaveToday = summary.on_leave_today_count || 0;
   const activeToday = summary.active_today_count || 0;
@@ -100,13 +96,23 @@ const currentYear = today.getFullYear();
       setYear(year + 1);
     } else setMonth(month + 1);
   };
-const handleDateClick = (date) => {
-  if (!date) return; // ignore empty cells
-  setSelectedDate({ date, month, year });
-};
+  const handleDateClick = (date) => {
+    if (!date) return; // ignore empty cells
+    setSelectedDate({ date, month, year });
+  };
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const departments = summary.departments || [];
@@ -115,50 +121,55 @@ const handleDateClick = (date) => {
 
   return (
     <Container>
-       {loading && (
-
-        <Loader />
-
-    )}
+      {loading && <Loader />}
       {/* LEFT SIDE */}
       <LeftSection>
         {/* Departments */}
-        <NavLink to="/department" style={{ textDecoration: "none", color: "inherit" }}>
+        <NavLink
+          to="/department"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
           <SectionTitle>
             Department <FiArrowUpRight />
           </SectionTitle>
         </NavLink>
-      <DepartmentWrapper>
-  {departments.map((dept) => (
-    <DepartmentCard key={dept.id}>
-      <InitialCircle>{dept.name.charAt(0)}</InitialCircle>
+        <DepartmentWrapper>
+          {departments.map((dept) => (
+            <DepartmentCard key={dept.id}>
+              <InitialCircle>{dept.name.charAt(0)}</InitialCircle>
 
-      <DeptInfo>
-        <h3>{dept.name}</h3>
-        <DeptHead>Department head: 
-       <p>  {dept.head?.name || "N/A"}</p> 
-          </DeptHead>
-      </DeptInfo>
+              <DeptInfo>
+                <h3>{dept.name}</h3>
+                <DeptHead>
+                  Department head:
+                  <p> {dept.head?.name || "N/A"}</p>
+                </DeptHead>
+              </DeptInfo>
 
-      <DeptCount>{dept.employee_count}
-       <ArrowIcon>
-       <Link to={`/departments/${dept.id}`}>
-            <FiArrowUpRight size={20} style={{ cursor: "pointer",color:"#304EB0" }} />
-          </Link>
-      </ArrowIcon>
-      </DeptCount>
-    </DepartmentCard>
-  ))}
-</DepartmentWrapper>
-
+              <DeptCount>
+                {dept.employee_count}
+                <ArrowIcon>
+                  <Link to={`/departments/${dept.id}`}>
+                    <FiArrowUpRight
+                      size={20}
+                      style={{ cursor: "pointer", color: "#304EB0" }}
+                    />
+                  </Link>
+                </ArrowIcon>
+              </DeptCount>
+            </DepartmentCard>
+          ))}
+        </DepartmentWrapper>
 
         {/* Employee Presence */}
-        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: "none", color: "inherit" }}>
-        <SectionTitle>
-          Employee Presence & Upcoming Holidays <FiArrowUpRight />
-        </SectionTitle>
+        <NavLink
+          to="/employee-Contract-Visa-Expiry"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <SectionTitle>
+            Employee Presence & Upcoming Holidays <FiArrowUpRight />
+          </SectionTitle>
         </NavLink>
-       
 
         <PresenceWrapper>
           <ChartConatiner>
@@ -166,7 +177,7 @@ const handleDateClick = (date) => {
           </ChartConatiner>
 
           {/* Employee Contract Expiry */}
-         <EmployeeExpiryWrapper>
+          <EmployeeExpiryWrapper>
             <h3>Employee Contract Expiry</h3>
             {contractExpiry.slice(0, 5).map((emp) => (
               <EmployeeRow key={emp.id}>
@@ -184,57 +195,59 @@ const handleDateClick = (date) => {
       <RightSection>
         {/* Calendar */}
         <CalendarWrapper>
-  <CalendarHeader>
-    <NavArrow onClick={prevMonth}>&lt;</NavArrow>
-    <h3>
-      {monthNames[month]} <span>{year}</span>
-    </h3>
-    <NavArrow onClick={nextMonth}>&gt;</NavArrow>
-  </CalendarHeader>
+          <CalendarHeader>
+            <NavArrow onClick={prevMonth}>&lt;</NavArrow>
+            <h3>
+              {monthNames[month]} <span>{year}</span>
+            </h3>
+            <NavArrow onClick={nextMonth}>&gt;</NavArrow>
+          </CalendarHeader>
 
-  <CalendarGrid>
-    {days.map((d, i) => (
-      <CalendarDay key={i} isHeader>
-        {d}
-      </CalendarDay>
-    ))}
+          <CalendarGrid>
+            {days.map((d, i) => (
+              <CalendarDay key={i} isHeader>
+                {d}
+              </CalendarDay>
+            ))}
 
-    {dates.map((date, i) => {
-      const isToday =
-        date === currentDay &&
-        month === currentMonth &&
-        year === currentYear;
+            {dates.map((date, i) => {
+              const isToday =
+                date === currentDay &&
+                month === currentMonth &&
+                year === currentYear;
 
-      const isSunday = (i + 1) % 7 === 0;
+              const isSunday = (i + 1) % 7 === 0;
 
-      const isSelected =
-        selectedDate &&
-        selectedDate.date === date &&
-        selectedDate.month === month &&
-        selectedDate.year === year;
+              const isSelected =
+                selectedDate &&
+                selectedDate.date === date &&
+                selectedDate.month === month &&
+                selectedDate.year === year;
 
-      return (
-        <CalendarDay
-          key={i}
-          isToday={isToday}
-          isSunday={isSunday}
-          isSelected={isSelected}
-          onClick={() => handleDateClick(date)}
-        >
-          {date}
-        </CalendarDay>
-      );
-    })}
-  </CalendarGrid>
-</CalendarWrapper>
-
+              return (
+                <CalendarDay
+                  key={i}
+                  isToday={isToday}
+                  isSunday={isSunday}
+                  isSelected={isSelected}
+                  onClick={() => handleDateClick(date)}
+                >
+                  {date}
+                </CalendarDay>
+              );
+            })}
+          </CalendarGrid>
+        </CalendarWrapper>
 
         {/* Upcoming Holidays */}
-       
-        <NavLink to="/holiday" style={{ textDecoration: "none", color: "inherit" }}>
-        <SectionTitle>
-        Upcoming Holidays <FiArrowUpRight />
-        </SectionTitle>
+
+        <NavLink
+          to="/holiday"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <SectionTitle>
+            Upcoming Holidays <FiArrowUpRight />
+          </SectionTitle>
         </NavLink>
         <HolidayList>
           {upcomingHolidays.map((h, i) => (

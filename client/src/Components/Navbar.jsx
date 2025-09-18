@@ -284,6 +284,9 @@ export const TopBar = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  @media (min-width: 3840px) {
+   height: 100px;
+  }
 `;
 
 export const HRManager = styled.div`
@@ -302,6 +305,14 @@ export const HRManager = styled.div`
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
+  }
+  @media (min-width:3840px) {
+    img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
   }
 `;
 
