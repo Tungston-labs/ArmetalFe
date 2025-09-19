@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-
-
 export const ProfileCard = styled.div`
   border-radius: 10px;
   overflow: hidden;
@@ -14,13 +12,18 @@ export const ProfileCard = styled.div`
    @media (max-width: 480px) {
       height: 100px;
     }
+    @media(min-width: 2068px) and (max-width: 6000px){
+      background-color:#000;
+          height: 450px; 
+
+      }
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius: 10px 10px 0 0;
     }
-
+    
     .edit-icon {
       position: absolute;
       bottom: 12px;
@@ -60,8 +63,10 @@ p {
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
+  @media(min-width: 2068px) and (max-width: 6000px){
+      font-size:2.5rem}
 }
 
 
@@ -90,20 +95,26 @@ p {
   @media (min-width: 1601px) {
     font-size: 1rem;
   }
+     @media(min-width: 2068px) and (max-width: 6000px){
+      font-size:2rem}
+}
 }
 
   }
 `;
 
-
 export const InfoGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Two cards per row */
   gap: 10px;
-
   @media (max-width: 768px) {
     grid-template-columns: 1fr; /* Stack on small screens */
   }
+        @media(min-width: 2068px) and (max-width: 6000px){
+        grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+
+
 `;
 
 export const SvgImage = styled.img`
@@ -121,98 +132,120 @@ export const InfoCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
+  @media (min-width: 2068px) and (max-width: 6000px) {
+    padding: 2.9rem;
+  }
 
   h3 {
-  font-size: 18px; /* default */
-  margin: 0;
-  font-family: 'Satoshi', sans-serif;
+    font-size: 18px; /* default */
+    margin: 0;
+    font-family: "Satoshi", sans-serif;
 
-  /* Small devices (mobile) */
-  @media (max-width: 480px) {
-    font-size: 0.6rem;
+    /* Small devices (mobile) */
+    @media (max-width: 480px) {
+      font-size: 0.6rem;
+    }
+    @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size: 2rem;
+    }
+
+    /* Medium devices (tablets) */
+    @media (min-width: 481px) and (max-width: 1024px) {
+      font-size: 0.8rem;
+    }
+
+    /* Large desktops */
+    @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 1rem;
+    }
+   
+    /* Extra-large / 4K screens */
+    @media (min-width: 1601px) {
+      font-size: 1.2rem;
+    }
+      @media (min-width: 2008px){
+      font-size:1.8rem
+      }
+    @media (min-width: 3068px) and (max-width: 6000px) {
+      font-size: 2.3rem;
+    }
   }
 
-  /* Medium devices (tablets) */
-  @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 0.8rem;
+  p {
+    margin: 5px 0 10px;
+    font-size: 13px; /* default for small/medium screens */
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+    font-family: "Satoshi", sans-serif;
+
+    /* Small devices (mobile) */
+    @media (max-width: 480px) {
+      font-size: 0.3;
+    }
+
+    /* Medium devices (tablets) */
+    @media (min-width: 481px) and (max-width: 1024px) {
+      font-size: 0.5rem;
+    }
+
+    /* Large desktops */
+    @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 0.8rem;
+    }
+
+    /* Extra-large / 4K screens */
+    @media (min-width: 1601px) {
+      font-size: 1rem;
+    }
+       @media (min-width: 2008px){
+      font-size:1.8rem
+      }
+       @media (min-width: 2008px){
+      font-size:1.8rem
+      }
+    @media (min-width: 3068px) and (max-width: 6000px) {
+      font-size: 1.8rem;
+    }
   }
 
-  /* Large desktops */
-  @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 1rem;
+  button {
+    background: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px; /* default */
+    color: #3f51b5;
+    cursor: pointer;
+    font-family: "Raleway", sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto; /* stays at the bottom */
+
+    /* Small devices (mobile) */
+    @media (max-width: 480px) {
+      font-size: 0.3rem;
+    }
+
+    /* Medium devices (tablets) */
+    @media (min-width: 481px) and (max-width: 1024px) {
+      font-size: 0.5rem;
+    }
+
+    /* Large desktops */
+    @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 0.7rem;
+    }
+
+    /* Extra-large / 4K screens */
+    @media (min-width: 1601px) {
+      font-size: 0.9rem;
+    }
+    @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size: 1.5rem;
+    }
   }
-
-  /* Extra-large / 4K screens */
-  @media (min-width: 1601px) {
-    font-size: 1.2rem;
-  }
-}
-
- p {
-  margin: 5px 0 10px;
-  font-size: 13px; /* default for small/medium screens */
-  color: #555;
-  display: flex;
-  justify-content: space-between;
-  font-family: 'Satoshi', sans-serif;
-
-  /* Small devices (mobile) */
-  @media (max-width: 480px) {
-    font-size: 0.3;
-  }
-
-  /* Medium devices (tablets) */
-  @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 0.5rem;
-  }
-
-  /* Large desktops */
-  @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 0.8rem;
-  }
-
-  /* Extra-large / 4K screens */
-  @media (min-width: 1601px) {
-    font-size: 1rem;
-  }
-}
-
-button {
-  background: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px; /* default */
-  color: #3f51b5;
-  cursor: pointer;
-  font-family: 'Raleway', sans-serif;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto; /* stays at the bottom */
-
-  /* Small devices (mobile) */
-  @media (max-width: 480px) {
-    font-size: 0.3rem;
-  }
-
-  /* Medium devices (tablets) */
-  @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 0.5rem;
-  }
-
-  /* Large desktops */
-  @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 0.7rem;
-  }
-
-  /* Extra-large / 4K screens */
-  @media (min-width: 1601px) {
-    font-size: 0.9rem;
-  }
-}
 `;
-
 
 export const TimeTrackingCard = styled.div`
   background: #fff;
@@ -223,7 +256,7 @@ export const TimeTrackingCard = styled.div`
   min-height: 200px;
 
   h4 {
-    color: #3352BA;
+    color: #3352ba;
     margin-bottom: 10px;
     margin-top: -5px;
     font-size: 1.2rem;
@@ -240,7 +273,15 @@ export const TimeTrackingCard = styled.div`
     @media (min-width: 1601px) {
       font-size: 1.5rem;
     }
+    @media (min-width: 2068px) and (max-width: 6000px) {
+      padding: 80px 20px;
+    }
+         @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size: 2.2rem;
+    }
+
   }
+
 
   p {
     margin: 15px 0;
@@ -257,6 +298,9 @@ export const TimeTrackingCard = styled.div`
     }
     @media (min-width: 1601px) {
       font-size: 1rem;
+    }
+         @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size: 2rem;
     }
   }
 
@@ -280,6 +324,9 @@ export const TimeTrackingCard = styled.div`
     @media (min-width: 1601px) {
       font-size: 1rem;
     }
+         @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size: 1.8rem;
+    }
   }
 `;
 
@@ -292,25 +339,25 @@ export const TimeTrackingCard = styled.div`
 
 export const TaskTitle = styled.h4`
   // margin-bottom: 15px;
-  margin-top:-20px;
-  color: #3352BA;
+  margin-top: -20px;
+  color: #3352ba;
   font-family: Raleway;
-font-weight: 700;
-font-style: Bold;
-font-size: 20px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 20px;
+  leading-trim: NONE;
+  line-height: 100%;
+  letter-spacing: 0%;
 
   font-size: 1.2rem;
- font-family: 'Raleway', sans-serif;
+  font-family: "Raleway", sans-serif;
 `;
 
 export const TaskItem = styled.div`
   display: flex;
   gap: 15px;
   padding: 10px 0;
-  background:white;
+  background: white;
   border-bottom: 1px solid #eee;
   align-items: flex-start;
   &:last-child {
@@ -341,9 +388,7 @@ export const TaskMeta = styled.div`
   }
 `;
 
-
 export const TaskText = styled.div`
-
   h5 {
     margin: 0;
     font-size: 12px;
@@ -361,10 +406,14 @@ export const Container = styled.div`
   flex-direction: column;
   padding: 10px;
   gap: 20px;
-  background: #F4F4F4;
+  background: #f4f4f4;
   // height: 100vh;
-  width:100%;
+  width: 100%;
   box-sizing: border-box;
+  (min-width: 2068px) and (max-width: 6000px) {
+    padding: 20px;
+    background-color: blue;
+  }
 `;
 
 export const TopSection = styled.div`
@@ -372,7 +421,7 @@ export const TopSection = styled.div`
   gap: 20px;
   flex-wrap: nowrap; /* prevent stacking unless on small screens */
   align-items: stretch; /* equal height columns */
-margin-bottom:30px;
+  margin-bottom: 30px;
   @media (max-width: 1024px) {
     flex-direction: row;
   }
@@ -385,7 +434,7 @@ export const LeftColumn = styled.div`
   background: white;
   border-radius: 9px;
   // border: 0.1px solid #000;
-  background: #FFF;
+  background: #fff;
 `;
 export const RightColumn = styled.div`
   flex: 1; /* take equal space with LeftColumn */
@@ -398,7 +447,7 @@ export const RightColumn = styled.div`
 
 export const TaskSection = styled.div`
   display: flex;
-    margin-top:20px;
+  margin-top: 20px;
   flex-direction: column;
   gap: 12px; /* space between tasks */
   overflow-y: auto;
@@ -430,7 +479,7 @@ export const TaskSection = styled.div`
     width: 6px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
   }
 `;

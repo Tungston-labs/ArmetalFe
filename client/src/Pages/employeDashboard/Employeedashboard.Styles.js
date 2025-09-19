@@ -1,8 +1,7 @@
 // Employeedashboard.Styles.js
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const MainWrapper = styled.div`
-
   width: 100%;
   box-sizing: border-box;
   flex-direction: column; /* Mobile-first: stack everything */
@@ -14,16 +13,23 @@ export const MainWrapper = styled.div`
 
 export const Container = styled.div`
   padding: 10px;
-    display: flex;
+  display: flex;
   background-color: #f4f4f4;
   width: 100%;
   box-sizing: border-box;
+
+  @media (min-width: 2068px) and (max-width: 6000px) {
+    padding: 20px;
+  }
 `;
 
 /* Responsive card grid */
 export const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* default: 2 per row for small screens */
+  grid-template-columns: repeat(
+    2,
+    1fr
+  ); /* default: 2 per row for small screens */
   gap: 10px;
   margin-bottom: 12px;
 
@@ -31,7 +37,6 @@ export const CardGrid = styled.div`
     grid-template-columns: repeat(4, 1fr); /* 4 per row for tablets and up */
   }
 `;
-
 
 export const InfoCard = styled.div`
   background: white;
@@ -42,6 +47,10 @@ export const InfoCard = styled.div`
   flex-direction: column;
   justify-content: space-between;
   min-height: 75px;
+
+  @media (min-width: 2068px) and (max-width: 6000px) {
+    padding: 40px;
+  }
 `;
 
 export const CardTitle = styled.div`
@@ -68,6 +77,9 @@ export const CardTitle = styled.div`
   @media (min-width: 1601px) {
     font-size:1.2rem ;
   }
+       @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size: 1.5rem;
+    }
 }
 `;
 
@@ -96,6 +108,9 @@ margin-top: -10px;
   @media (min-width: 1601px) {
     font-size: 1rem;
   }
+       @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size: 1.3rem;
+    }
 }
 `;
 
@@ -128,18 +143,25 @@ export const CardLink = styled.div`
   @media (min-width: 1601px) {
     font-size: 0.9rem;
   }
+       @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size:1.3rem;
+    }
 }
 `;
 
 /* Department section responsive */
 export const DepartmentBox = styled.div`
-  background: #F4F4F4;
+  background: #f4f4f4;
   // border-radius: 9px;
   // border: 0.2px solid gray;
   margin-bottom: 24px;
   position: relative;
-  margin-top:-2px;
-  min-height:300px;
+  margin-top: -2px;
+  min-height: 300px;
+
+  @media (min-width: 2068px) and (max-width: 6000px) {
+    min-height: 500px;
+  }
 `;
 
 export const DepartmentTitleRow = styled.div`
@@ -174,12 +196,18 @@ export const DepartmentTitle = styled.div`
   @media (min-width: 1601px) {
     font-size: 1rem;
   }
+  @media (min-width: 2068px) and (max-width: 6000px) {
+    font-size: 1.7rem;
+  }
 `;
-
 
 export const DepartmentCount = styled.div`
   font-size: 18px;
   font-weight: bold;
+
+  @media (min-width: 2068px) and (max-width: 6000px) {
+    font-size: 1.7rem;
+  }
 `;
 
 export const SubLabel = styled.div`
@@ -207,9 +235,13 @@ export const SubLabel = styled.div`
   @media (min-width: 1601px) {
     font-size: 1rem;
   }
+
+  @media (min-width: 2068px) and (max-width: 6000px) {
+    font-size: 1.7rem;
+  }
 `;
 
-export const  DepartmentHead = styled.div`
+export const DepartmentHead = styled.div`
   font-size: 16px;
   font-weight: 500;
   margin-top: 4px;
@@ -234,8 +266,10 @@ export const  DepartmentHead = styled.div`
   @media (min-width: 1601px) {
     font-size: 1rem;
   }
+  @media (min-width: 2068px) and (max-width: 6000px) {
+    font-size: 1.7rem;
+  }
 `;
-
 
 export const MemberList = styled.div`
   display: flex;
@@ -266,7 +300,7 @@ export const MemberList = styled.div`
     width: 6px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
   }
 `;
@@ -283,12 +317,19 @@ export const Avatar = styled.img`
   height: 2.5rem;
   object-fit: cover;
   margin-right: 10px;
+       @media (min-width: 2068px) and (max-width: 6000px) {
+width: 3.5rem;
+  height: 3.5rem;    }
 `;
+
 
 export const MemberName = styled.div`
   font-size: 14px;
   color: #333;
   font-weight: 500;
+       @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size: 1.7rem;
+    }
 `;
 
 export const ArrowIcon = styled.div`
@@ -299,16 +340,16 @@ export const ArrowIcon = styled.div`
   // padding: 7px;
   border-radius: 50%;
   cursor: pointer;
-  margin-top:-10px;
+  margin-top: -10px;
 `;
 
 /* Time log responsive */
 export const TimeLogContainer = styled.div`
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   // border-radius: 8px;
   padding: 12px;
-  margin-top:10px;
+  margin-top: 10px;
 
   /* Mobile padding fix */
   @media (max-width: 480px) {
@@ -353,12 +394,10 @@ export const ScrollableTableWrapper = styled.div`
     height: 6px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
   }
 `;
-
-
 
 export const DateHeading = styled.div`
   font-size: 1.2rem;
@@ -369,7 +408,7 @@ export const DateHeading = styled.div`
   align-items: center;
   margin-bottom: 15px;
   margin-top: -15px;
-  font-family: 'Satoshi', sans-serif;
+  font-family: "Satoshi", sans-serif;
 
   @media (max-width: 480px) {
     font-size: 1rem;
@@ -401,8 +440,8 @@ export const TableHeader = styled.th`
   padding: 10px;
   font-weight: bold;
   font-size: 14px;
-  font-family: 'Raleway', sans-serif;
-  color: ${(props) => (props.green ? 'green' : props.red ? 'red' : '#333')};
+  font-family: "Raleway", sans-serif;
+  color: ${(props) => (props.green ? "green" : props.red ? "red" : "#333")};
 
   @media (max-width: 480px) {
     font-size: 12px;
@@ -413,11 +452,13 @@ export const TableCell = styled.td`
   padding: 10px;
   font-size: 14px;
   color: #333;
-  font-family: 'Satoshi', sans-serif;
+  font-family: "Satoshi", sans-serif;
   text-align: ${(props) =>
-    props.align === 'right' ? 'right' :
-    props.align === 'center' ? 'center' :
-    'left'};
+    props.align === "right"
+      ? "right"
+      : props.align === "center"
+      ? "center"
+      : "left"};
 
   @media (max-width: 480px) {
     font-size: 12px;
@@ -438,7 +479,7 @@ export const Department = styled.div`
   background: white;
   padding: 18px;
   border-radius: 9px;
-  font-family: 'Satoshi', sans-serif;
+  font-family: "Satoshi", sans-serif;
 `;
 export const NoLogsWrapper = styled.div`
   display: flex;

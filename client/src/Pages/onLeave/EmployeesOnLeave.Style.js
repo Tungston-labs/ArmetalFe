@@ -14,6 +14,9 @@ export const CardContainer = styled.div`
   gap: 1rem;
   //   width: 300px;
   position: relative;
+  @media (min-width: 3840px) {
+    padding-inline: 4rem;
+  }
 `;
 
 export const Initial = styled.div`
@@ -164,7 +167,7 @@ export const SearchIcon = styled(FiSearch)`
   color: #888;
   font-size: 1.2rem;
   pointer-events: none;
-  @media (min-width: 3840px){
+  @media (min-width: 3840px) {
     font-size: 2.5rem;
   }
 `;
@@ -333,7 +336,7 @@ export const DeptSub = styled.div`
     font-size: 1rem;
   }
 
-    @media (min-width: 2560px) {
+  @media (min-width: 2560px) {
     font-size: 1.4rem;
   }
   /* 4K screens */
@@ -371,9 +374,9 @@ export const DeptHead = styled.div`
     @media (min-width: 1601px) and (max-width: 2560px) {
       font-size: 0.95rem;
     }
-  @media (min-width: 2560px) {
-    font-size: 1.2rem;
-  }
+    @media (min-width: 2560px) {
+      font-size: 1.2rem;
+    }
     /* 4K screens */
     @media (min-width: 3840px) {
       font-size: 2rem;

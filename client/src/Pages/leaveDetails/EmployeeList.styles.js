@@ -204,6 +204,15 @@ export const Pagination = styled.div`
     border: 1px solid #ccc;
     cursor: pointer;
     font-size: 0.7rem;
+
+    @media (min-width: 3500px) {
+      padding: 0.8rem 1.5;
+      font-size: 2.5rem;
+    }
+    @media (min-width: 2000px) {
+      padding: 0.6rem 0.8rem;
+      font-size: 1.8rem;
+    }
   }
   @media (min-width: 2560px) {
     span{

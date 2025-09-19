@@ -37,7 +37,7 @@ const BackButton = styled.button`
   cursor: pointer;
   margin-bottom: 1rem;
   font-weight: 500;
-color:#3250B5;
+color:#000;
 
   &:hover {
     background: #f0f0f0;
