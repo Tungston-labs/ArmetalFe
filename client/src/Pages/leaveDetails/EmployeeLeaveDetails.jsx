@@ -85,13 +85,13 @@ if (loading) {
       
 
       <TitleSection style={{color:"#3250B5"}}>
-      <BackArrow onClick={() => navigate(-1)} />
+      <BackArrow onClick={() => navigate("/employee-leave-request")} />
 
   <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
         <div>
      
           <Title>Employee</Title>
-          <Subtitle style={{color:"#3250B5"}}>Manage your Employee.</Subtitle>
+          <Subtitle>Manage your Employee.</Subtitle>
         </div>
       </TitleSection>
 
