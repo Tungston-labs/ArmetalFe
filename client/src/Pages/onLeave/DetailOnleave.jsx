@@ -188,7 +188,7 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
 </Tabs>
 
       <hr style={{ marginTop: "-18px" }} />
-<DeptTitle>Department:{selectedDept?.name || "Department"}</DeptTitle>
+{/* <DeptTitle>Department:{selectedDept?.name || "Department"}</DeptTitle> */}
 
       <Table>
         <thead>

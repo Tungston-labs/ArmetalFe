@@ -1,6 +1,32 @@
 import styled from 'styled-components';
-import { HiOutlinePencilSquare } from 'react-icons/hi2';
 
+import { LuArrowLeft } from "react-icons/lu";
+
+
+export const BackArrow = styled(LuArrowLeft)`
+  cursor: pointer;
+  color: #3352BA;
+  width: clamp(20px, 2vw, 50px);
+  height: clamp(20px, 2vw, 50px);
+
+  /* 2K / QHD */
+  @media (min-width: 2560px) {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* 4K */
+  @media (min-width: 3840px) {
+    width: 80px;
+    height: 80px;
+  }
+
+  /* 8K */
+  @media (min-width: 7680px) {
+    width: 120px;
+    height: 120px;
+  }
+`;
 export const Container = styled.div`
   background: white;
 
