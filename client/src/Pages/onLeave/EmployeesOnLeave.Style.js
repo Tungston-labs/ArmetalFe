@@ -266,7 +266,7 @@ export const CardGrid = styled.div`
     /* 4K screens */
     grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
     gap: 3rem;
-    padding-block: 2.5rem;
+    padding: 2.5rem;
   }
 `;
 export const DeptTitle = styled.div`
