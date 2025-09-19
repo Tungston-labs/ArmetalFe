@@ -196,7 +196,7 @@ useEffect(() => {
 
       {/* Form */}
       <FormWrapper>
-        <ImageColumn style={{ position: "relative", width: "150px", height: "150px" }}>
+        <ImageColumn >
           {formData.profile_pic ? (
             <ProfileImage
               src={
@@ -205,7 +205,7 @@ useEffect(() => {
                   : formData.profile_pic
               }
               alt="Profile"
-              style={{ width: 150, height: 150, borderRadius: "10%", objectFit: "cover" }}
+             
             />
           ) : (
             <div

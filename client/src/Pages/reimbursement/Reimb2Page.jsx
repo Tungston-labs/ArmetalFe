@@ -18,6 +18,8 @@ import {
   TitleSection,
   DropdownMenu,
   DropdownWrapper,
+  Header3,
+  BackArrow,
 } from '../reimbursement/Reimb2page.Styles';
 import { FaInfoCircle } from 'react-icons/fa';
 import { FaArrowLeft } from "react-icons/fa6";
@@ -113,10 +115,10 @@ useEffect(() => {
   
       // API call
       const res = await updateReimbursementStatus(empId, newStatus);
-      console.log("✅ Backend response:", res);
+      console.log(" Backend response:", res);
   
     } catch (error) {
-      console.error("❌ Failed to update status:", error);
+      console.error(" Failed to update status:", error);
       setEmployees(prevEmployees); // rollback
     }
   };
@@ -156,15 +158,7 @@ useEffect(() => {
       {/* Header */}
       <HeaderSection>
         <TitleSection>
-        <FaArrowLeft
-  onClick={() => window.history.back()}
-  style={{
-    cursor: "pointer",
-    color: "#3250B5",
-    width: "clamp(20px, 3vw, 40px)",
-    height: "clamp(20px, 3vw, 40px)"
-  }}
-/>
+<BackArrow onClick={() => window.history.back()} />;
 
           <img src={RemiIcon} alt="employeeIcon" style={{ height: "70px" }} />
           <div>
@@ -226,7 +220,8 @@ useEffect(() => {
       )}
 
       {/* Employee Table */}
-      <h3 style={{fontFamily:"satoshi",fontWeight:700}}>Employee Reimbursements</h3>
+    
+      <Header3> Employee Reimbursements </Header3>
       <TableWrapper>
         <StyledTable>
           <thead>

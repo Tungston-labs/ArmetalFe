@@ -25,7 +25,7 @@ export const Header = styled.div`
 export const EmployeeImage = styled.img`
   height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
   width: auto; /* maintain aspect ratio */
-  
+
   @media (min-width: 768px) {
     height: clamp(20px, 6vw, 20px);
   }
@@ -44,7 +44,8 @@ export const EmployeeImage = styled.img`
 
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
-  }`;
+  }
+`;
 
 export const EditButton = styled.button`
   display: flex;
@@ -52,7 +53,11 @@ export const EditButton = styled.button`
   justify-content: center; /* ✅ Center content horizontally */
   padding: 0.5rem;
   border: none;
-  background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(23, 37, 84, 1) 50%,
+    rgba(51, 82, 186, 1) 100%
+  );
   color: white;
   border-radius: 8px;
   width: 100px;
@@ -66,11 +71,10 @@ export const EditButton = styled.button`
   }
 `;
 
-
 export const Row = styled.div`
   display: flex;
   gap: 2.5rem;
-  width:100%;
+  width: 100%;
   flex-wrap: wrap;
   align-items: flex-start;
 `;
@@ -90,15 +94,14 @@ export const RightSection = styled.div`
   min-width: 300px;
 `;
 
-
 export const Input = styled.input`
   padding: 0.6rem;
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 100%;
-border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
+  border-radius: 7px;
+  border: 1px solid #052db4;
+  background: #fff;
 `;
 
 export const Textarea = styled.textarea`
@@ -109,8 +112,8 @@ export const Textarea = styled.textarea`
   resize: none;
   height: 95px;
   border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
+  border: 1px solid #052db4;
+  background: #fff;
 `;
 export const FieldWrapper = styled.div`
   display: flex;
@@ -125,7 +128,7 @@ export const FieldWrappers = styled.div`
 export const Label = styled.label`
   font-weight: 500;
   margin-bottom: 0.3rem;
-  color: #052DB4;
+  color: #052db4;
 `;
 
 export const Avatar = styled.img`
@@ -135,10 +138,8 @@ export const Avatar = styled.img`
   object-fit: cover;
 `;
 
-
-
 export const Section = styled.div`
-//   padding: 2rem;
+  //   padding: 2rem;
   background: white;
   font-family: sans-serif;
 `;
@@ -197,12 +198,11 @@ export const GroupLabel = styled.h4`
   }
 `;
 
-
 export const Rows = styled.div`
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
-  align-items: flex-start; 
+  align-items: flex-start;
   background-color: #fff;
 `;
 
@@ -214,8 +214,8 @@ export const Select = styled.select`
   border-radius: 6px;
   background-color: #fff;
   border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
+  border: 1px solid #052db4;
+  background: #fff;
 `;
 
 export const Column = styled.div`
@@ -224,11 +224,10 @@ export const Column = styled.div`
   gap: 1rem; /* adds vertical spacing */
 `;
 
-
 export const Button = styled.button`
-  display: block;             /* makes margin: auto work */
-  margin: 1rem auto 0 auto;   /* top: 1rem, auto on left/right to center */
-  background:#172554;
+  display: block; /* makes margin: auto work */
+  margin: 1rem auto 0 auto; /* top: 1rem, auto on left/right to center */
+  background: #172554;
   color: white;
   border: none;
   padding: 0.6rem 2rem;
@@ -252,14 +251,14 @@ export const Rowes = styled.div`
     border-radius: 6px;
     min-width: 0;
     border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
+    border: 1px solid #052db4;
+    background: #fff;
   }
 `;
 export const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 2rem; 
+  gap: 2rem;
 `;
 
 export const TextGroup = styled.div`
@@ -270,34 +269,32 @@ export const TextGroup = styled.div`
 export const Title = styled.h2`
   font-size: 1.4rem;
   margin: 0;
-  color:#304EB0;
+  color: #304eb0;
   font-family: Satoshi;
-font-weight: 700;
-// font-style: Bold;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-
+  font-weight: 700;
+  // font-style: Bold;
+  leading-trim: NONE;
+  line-height: 100%;
+  letter-spacing: 0%;
 `;
 
 export const Subtitle = styled.p`
   // color:#304EB0;
   margin: 0;
   font-family: Raleway;
-font-weight: 300;
-font-style: Light;
-font-size: 1rem;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-
+  font-weight: 300;
+  font-style: Light;
+  font-size: 1rem;
+  leading-trim: NONE;
+  line-height: 100%;
+  letter-spacing: 0%;
 `;
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
+
   align-items: center;
-  padding: 0.3rem ;
+  padding: 0.3rem;
   // border: 1px solid #ccc;
   // border-radius: 8px;
   background-color: #fff;
@@ -331,11 +328,11 @@ export const FormWrapper = styled.div`
   align-items: flex-start;
 `;
 export const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 10px;
+  height: 10px;
   border-radius: 10%;
   object-fit: cover;
-
+  /* style={{ width: 150, height: 150, borderRadius: "10%", objectFit: "cover" }} */
   @media (max-width: 768px) {
     width: 50px;
     height: 60px;
@@ -350,16 +347,24 @@ export const ImageColumn = styled.div`
   flex: 0 0 auto;
 
   img {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 210px;
     border-radius: 10px;
     object-fit: cover;
+
+    @media (min-width: 2000px) {
+      width: 150px;
+      height: 240px;
+    }
+       @media (min-width: 3500px) {
+      width: 150px;
+      height: 250px;
+    }
   }
 `;
 export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
-
 `;
 
 export const FullPageLoaderWrapper = styled.div`

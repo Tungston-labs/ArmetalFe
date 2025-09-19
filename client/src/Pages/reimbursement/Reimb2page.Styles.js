@@ -1,11 +1,30 @@
-import styled from 'styled-components';
-import { HiOutlinePencilSquare } from 'react-icons/hi2';
+import styled from "styled-components";
+import { HiOutlinePencilSquare } from "react-icons/hi2";
+import { FaArrowLeft } from "react-icons/fa6";
+
 export const Container = styled.div`
   padding: 2rem;
   background: white;
-
 `;
+export const BackArrow = styled(FaArrowLeft)`
+  cursor: pointer;
+  color: #3250b5;
+  width: clamp(20px, 3vw, 40px);
+  height: clamp(20px, 3vw, 40px);
+  transition: color 0.2s ease-in-out;
 
+  &:hover {
+    color: #223b85;
+  }
+  @media (min-width: 2000px) {
+    width: clamp(20px, 3vw, 60px);
+    height: clamp(20px, 3vw, 60px);
+  }
+   @media (min-width: 3500px) {
+    width: clamp(20px, 3vw,80px);
+    height: clamp(20px, 3vw, 80px);
+  }
+`;
 export const HeaderSection = styled.div`
   margin-bottom: 2rem;
 `;
@@ -43,27 +62,33 @@ export const Title = styled.h2`
   font-weight: 700;
   line-height: 1.2;
 
-  @media (min-width: 480px) { /* small tablet */
+  @media (min-width: 480px) {
+    /* small tablet */
     font-size: 0.8rem;
   }
 
-  @media (min-width: 768px) { /* tablet */
+  @media (min-width: 768px) {
+    /* tablet */
     font-size: 1rem;
   }
 
-  @media (min-width: 1024px) { /* desktop */
+  @media (min-width: 1024px) {
+    /* desktop */
     font-size: 1.5rem;
   }
 
-  @media (min-width: 1440px) { /* large desktop / 2K */
+  @media (min-width: 1440px) {
+    /* large desktop / 2K */
     font-size: 2rem;
   }
 
-  @media (min-width: 2560px) { /* 4K */
+  @media (min-width: 2560px) {
+    /* 4K */
     font-size: 3em;
   }
 
-  @media (min-width: 3840px) { /* 8K */
+  @media (min-width: 3840px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -93,7 +118,7 @@ export const Subtitle = styled.p`
   }
 
   @media (min-width: 2560px) {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   @media (min-width: 3840px) {
@@ -108,7 +133,7 @@ export const Subtitle = styled.p`
 export const FormSection = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem 17rem; 
+  gap: 1.5rem 17rem;
   margin-bottom: 2rem;
 `;
 
@@ -127,15 +152,19 @@ export const AddButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top:-5%;
-  width:90px;
-  font-family:satoshi;
-background: linear-gradient(181deg,rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
+  margin-top: -5%;
+  width: 90px;
+  font-family: satoshi;
+  background: linear-gradient(
+    181deg,
+    rgba(23, 37, 84, 1) 50%,
+    rgba(51, 82, 186, 1) 100%
+  );
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   border: none;
-  font-size:15px;
+  font-size: 15px;
   cursor: pointer;
 `;
 export const SearchInput = styled.input`
@@ -145,14 +174,27 @@ export const SearchInput = styled.input`
   outline: none;
   font-size: 0.9rem;
   width: 220px;
+  @media (min-width: 2000px) {
+    padding: 1.5rem 5rem;
+  }
+  @media (min-width: 2000px) {
+    padding: 1.5rem 5rem;
+  }
 `;
+
 export const Label = styled.label`
   font-size: clamp(0.9rem, 1vw, 1.2rem); /* scales with screen width */
   margin-bottom: 0.5rem;
-  color: gray;
+  color: #000;
 
   @media (max-width: 768px) {
-    font-size: 1rem; /* slightly larger for mobile readability */
+    font-size: 1rem;
+  }
+  @media (min-width: 2000px) {
+    font-size: 1.8rem;
+  }
+  @media (min-width: 3500px) {
+    font-size: 2.12rem;
   }
 `;
 
@@ -161,21 +203,37 @@ export const Input = styled.input`
   font-size: clamp(0.9rem, 1vw, 1rem); /* scales text */
   background: white;
   border-radius: 6px;
-  border: 1px solid #052DB4;
+  border: 1px solid #052db4;
   width: 100%;
 
   @media (max-width: 768px) {
-    padding: 0.75rem 1rem; /* extra padding for touch devices */
+    padding: 0.75rem 1rem;
     font-size: 1rem;
+  }
+  @media (min-width: 2000px) {
+    padding: 1.25rem 1rem;
+    font-size: 1.7rem;
+  }
+  @media (min-width: 3500px) {
+    padding: 1.5rem 1rem;
+    font-size: 2rem;
+  }
+`;
+export const Header3 = styled.h3`
+  font-family: satoshi;
+  font-weight: 700;
+  @media (min-width: 3500px) {
+    font-size: 2.2rem;
+  }
+  @media (min-width: 2000px) {
+    font-size: 1.7rem;
   }
 `;
 
-
 export const TableWrapper = styled.div`
-//   overflow-x: auto;
-  background-color:white;
+  //   overflow-x: auto;
+  background-color: white;
   // margin-top:-1rem;
-
 `;
 
 export const StyledTable = styled.table`
@@ -183,8 +241,8 @@ export const StyledTable = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px;
   margin-top: 1rem;
- text-align: left;
-  font-family: 'Satoshi';
+  text-align: left;
+  font-family: "Satoshi";
 
   /* Scroll on small screens */
   // display: block;
@@ -201,8 +259,8 @@ export const StyledTable = styled.table`
   }
 
   th {
- text-align: left;
-    background-color: #304EB0;
+    text-align: left;
+    background-color: #304eb0;
     color: white;
     font-family: Raleway;
     padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
@@ -215,7 +273,7 @@ export const StyledTable = styled.table`
 
   /* Background color for even rows */
   tbody tr:nth-child(even) td {
-    background-color: #E6ECFF;
+    background-color: #e6ecff;
   }
 
   tbody tr td:first-child {
@@ -233,23 +291,21 @@ export const StyledTable = styled.table`
   }
 
   @media (min-width: 2560px) {
-    td, th {
+    td,
+    th {
       font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
       padding: clamp(8px, 1vw, 24px);
     }
   }
 
   @media (min-width: 3840px) {
-    td, th {
+    td,
+    th {
       font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
       padding: clamp(10px, 2vw, 32px);
     }
   }
 `;
-
-
-
-
 
 export const Avatar = styled.img`
   width: 32px;
@@ -262,7 +318,7 @@ export const Avatar = styled.img`
 export const IconButton = styled.button`
   background: none;
   border: none;
-  color: ${({ danger }) => (danger ? '#f44336' : '#333')};
+  color: ${({ danger }) => (danger ? "#f44336" : "#333")};
   font-size: clamp(0.9rem, 1vw, 1.4rem); /* scales with screen size */
   cursor: pointer;
   display: flex;
@@ -276,7 +332,7 @@ export const IconButton = styled.button`
   /* ✅ Touch-friendly size on mobile */
   @media (max-width: 768px) {
     font-size: 1.2rem;
-    padding: 0.5rem; 
+    padding: 0.5rem;
   }
 
   /* ✅ Bigger on large / 4K screens */
@@ -294,11 +350,11 @@ export const TopBar = styled.div`
 
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
+
   align-items: center;
 
-  padding: 0.3rem ;
+  padding: 0.3rem;
   // border: 1px solid #ccc;
   // border-radius: 8px;
   background-color: #fff;
