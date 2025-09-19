@@ -1,6 +1,5 @@
-import styled from 'styled-components';
-import { FiSearch } from 'react-icons/fi';
-
+import styled from "styled-components";
+import { FiSearch } from "react-icons/fi";
 
 export const DepartmentContainer = styled.div`
   padding: 2rem;
@@ -47,27 +46,33 @@ export const Title = styled.h2`
   font-weight: 700;
   line-height: 1.2;
 
-  @media (min-width: 480px) { /* small tablet */
+  @media (min-width: 480px) {
+    /* small tablet */
     font-size: 0.8rem;
   }
 
-  @media (min-width: 768px) { /* tablet */
+  @media (min-width: 768px) {
+    /* tablet */
     font-size: 1rem;
   }
 
-  @media (min-width: 1024px) { /* desktop */
+  @media (min-width: 1024px) {
+    /* desktop */
     font-size: 1.5rem;
   }
 
-  @media (min-width: 1440px) { /* large desktop / 2K */
+  @media (min-width: 1440px) {
+    /* large desktop / 2K */
     font-size: 2rem;
   }
 
-  @media (min-width: 2560px) { /* 4K */
+  @media (min-width: 2560px) {
+    /* 4K */
     font-size: 3em;
   }
 
-  @media (min-width: 3840px) { /* 8K */
+  @media (min-width: 3840px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -105,7 +110,6 @@ export const Subtitle = styled.p`
   }
 `;
 
-
 export const HeaderSection = styled.div`
   display: flex;
   justify-content: space-between;
@@ -141,7 +145,7 @@ export const TitleSection = styled.div`
 export const EmployeeImage = styled.img`
   height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
   width: auto; /* maintain aspect ratio */
-  
+
   @media (min-width: 768px) {
     height: clamp(20px, 6vw, 20px);
   }
@@ -160,7 +164,8 @@ export const EmployeeImage = styled.img`
 
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
-  }`;
+  }
+`;
 
 export const TitleGroup = styled.div`
   display: flex;
@@ -168,7 +173,7 @@ export const TitleGroup = styled.div`
   gap: 1rem;
 
   h2 {
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
     font-weight: 700;
     font-size: 22px;
     margin: 0;
@@ -177,7 +182,7 @@ export const TitleGroup = styled.div`
   p {
     margin: 0;
     font-size: 16px;
-    font-family: 'Raleway';
+    font-family: "Raleway";
   }
 `;
 
@@ -195,7 +200,7 @@ export const InitialCircle = styled.div`
   height: clamp(35px, 3vw, 90px);
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 1);
-  color: #ECF8FF;
+  color: #ecf8ff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,7 +211,7 @@ export const InitialCircle = styled.div`
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
-    color: #CAD2ED; 
+    color: #cad2ed;
   }
 
   /* Extra-large screens (2K TVs) */
@@ -226,14 +231,12 @@ export const InitialCircle = styled.div`
   }
 `;
 
-
-
 export const AddButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-family: Satoshi;
-  background: #304EB0;
+  background: #304eb0;
   color: white;
   padding: clamp(0.4rem, 0.8vw, 0.8rem) clamp(1rem, 2vw, 2rem); /* vertical | horizontal */
   border-radius: 8px;
@@ -245,31 +248,40 @@ export const AddButton = styled.button`
   &:hover {
     background-color: #3f60cbff;
   }
-`;
+    @media (min-width: 3840px) {
+      font-size: 2.5rem;
+      img{
+        width:50px !important;
+        height:50px !important;
+      }
+    }
 
+`;
 
 // Search Input
 export const SearchInput = styled.input`
-  padding: clamp(0.6rem, 1vw, 1.2rem) clamp(1rem, 2vw, 2rem) clamp(0.6rem, 1vw, 1.2rem) clamp(2rem, 4vw, 2.5rem); /* top, right, bottom, left */
+  padding: clamp(0.6rem, 1vw, 1.2rem) clamp(1rem, 2vw, 2rem)
+    clamp(0.6rem, 1vw, 1.2rem) clamp(2rem, 4vw, 2.5rem); /* top, right, bottom, left */
   border: 1px solid #172554;
   border-radius: 6px;
   width: 100%;
-  font-family: 'Satoshi';
+  font-family: "Satoshi";
   height: clamp(30px, 3vw, 60px);
   font-size: clamp(0.8rem, 1vw, 1.5rem);
 
   @media (min-width: 1440px) {
     font-size: clamp(1rem, 0.8vw, 1.6rem);
     height: clamp(45px, 2vw, 65px);
-   
   }
 
-  @media (min-width: 2560px) { /* 2K/4K screens */
+  @media (min-width: 2560px) {
+    /* 2K/4K screens */
     font-size: clamp(1.2rem, 0.6vw, 1.8rem);
     height: clamp(55px, 1.5vw, 75px);
   }
 
-  @media (min-width: 3840px) { /* 4K/8K ultra-wide screens */
+  @media (min-width: 3840px) {
+    /* 4K/8K ultra-wide screens */
     font-size: clamp(1.5rem, 0.5vw, 2rem);
     height: clamp(70px, 1vw, 90px);
   }
@@ -291,7 +303,6 @@ export const SearchIcon = styled(FiSearch)`
   font-size: clamp(0.9rem, 1.5vw, 1.5rem); /* responsive font size */
 `;
 
-
 // Card Grid
 export const CardGrid = styled.div`
   margin-top: 2rem;
@@ -312,6 +323,15 @@ export const CardGrid = styled.div`
     grid-template-columns: 1fr;
     gap: 0.8rem;
   }
+  @media (min-width: 2560px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    padding-block: 2rem;
+  }
+  @media (min-width: 3840px) {
+    gap: 3rem;
+    padding-block: 3rem;
+  }
 `;
 
 export const DepartmentCard = styled.div`
@@ -330,7 +350,7 @@ export const DepartmentCard = styled.div`
     }
 
     .dept-name,
-    .head-name,
+    .name,
     .subtitle,
     .card-value {
       color: rgb(62, 101, 200);
@@ -347,7 +367,19 @@ export const DepartmentCard = styled.div`
     font-weight: 600;
     margin: 0;
     color: #000;
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
+  }
+  @media (min-width: 3840px) {
+    h3 {
+      font-size: 3rem;
+    }
+    padding: 3rem;
+    .head-row {
+      img {
+        width: 50px !important;
+        height: 50px !important;
+      }
+    }
   }
 
   .head-row {
@@ -371,8 +403,6 @@ export const DepartmentCard = styled.div`
   }
 `;
 
-
-
 export const HeadInfo = styled.div`
   margin-top: 0.5rem;
 
@@ -380,6 +410,16 @@ export const HeadInfo = styled.div`
     font-size: clamp(0.75rem, 1vw, 2rem); /* responsive */
     color: #888;
     display: block;
+  }
+  @media (min-width: 3840px) {
+    small {
+      font-size: 2.5rem;
+      padding-block: 0.5rem;
+    }
+    img {
+      width: 100px;
+      height: 100px;
+    }
   }
 `;
 
@@ -402,13 +442,27 @@ export const CardRight = styled.div`
     width: clamp(36px, 2vw, 40px);
     height: clamp(36px, 2vw, 40px);
     border-radius: 50%;
-     font-size: clamp(1.2rem, 2vw, 1.8rem);
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
     display: flex;
     align-items: center;
     justify-content: center;
   }
+  @media (min-width: 2560px) {
+    svg {
+      width: 25px;
+      height: 25px;
+    }
+  }
+  @media (min-width: 3840px) {
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+    .card-value {
+      font-size: 2rem;
+    }
+  }
 `;
-
 
 // Modal Styles
 export const ModalOverlay = styled.div`

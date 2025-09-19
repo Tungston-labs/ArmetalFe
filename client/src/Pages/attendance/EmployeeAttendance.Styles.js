@@ -471,13 +471,14 @@ export const SearchInput = styled.input`
   }
 
   @media (min-width: 2560px) { /* 2K/4K screens */
-    font-size: clamp(1.2rem, 0.6vw, 1.8rem);
-    height: clamp(55px, 1.5vw, 75px);
+    font-size: 1.5rem;
+    height: 60px;
   }
 
   @media (min-width: 3840px) { /* 4K/8K ultra-wide screens */
-    font-size: clamp(1.5rem, 0.5vw, 2rem);
-    height: clamp(70px, 1vw, 90px);
+    font-size: 2.5rem;
+    height:90px;
+    width: 600px;
   }
 `;
 

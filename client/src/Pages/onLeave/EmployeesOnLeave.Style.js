@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { FiSearch } from 'react-icons/fi';
+import styled from "styled-components";
+import { FiSearch } from "react-icons/fi";
 
 export const GridContainer = styled.div`
   display: grid;
@@ -9,10 +9,10 @@ export const GridContainer = styled.div`
 `;
 
 export const CardContainer = styled.div`
-//   display: flex;
+  //   display: flex;
   align-items: center;
   gap: 1rem;
-//   width: 300px;
+  //   width: 300px;
   position: relative;
 `;
 
@@ -21,7 +21,7 @@ export const Initial = styled.div`
   height: clamp(35px, 3vw, 90px);
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 1);
-  color: #ECF8FF;
+  color: #ecf8ff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,7 +32,7 @@ export const Initial = styled.div`
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
-    color: #CAD2ED; 
+    color: #cad2ed;
   }
 
   /* Extra-large screens (2K TVs) */
@@ -51,8 +51,6 @@ export const Initial = styled.div`
     padding-right: 30px;
   }
 `;
-
-
 
 export const InfoSection = styled.div`
   flex-grow: 1;
@@ -114,12 +112,11 @@ export const Tabs = styled.div`
   gap: 2rem;
   margin: 1.7rem 0;
   // border-bottom: 2px solid #ddd;
-  
 `;
 export const Tab = styled.div`
-  padding:5px  20px;
+  padding: 5px 20px;
   cursor: pointer;
-  background:#304EB0;
+  background: #304eb0;
   font-weight: 500;
   background: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
   color: ${({ active }) => (active ? "white" : "#555")};
@@ -132,28 +129,31 @@ export const SearchWrapper = styled.div`
 `;
 
 export const SearchInput = styled.input`
-  padding: clamp(0.6rem, 1vw, 1.2rem) clamp(1rem, 2vw, 2rem) clamp(0.6rem, 1vw, 1.2rem) clamp(2rem, 4vw, 2.5rem); /* top, right, bottom, left */
+  padding: clamp(0.6rem, 1vw, 1.2rem) clamp(1rem, 2vw, 2rem)
+    clamp(0.6rem, 1vw, 1.2rem) clamp(2rem, 4vw, 2.5rem); /* top, right, bottom, left */
   border: 1px solid #172554;
   border-radius: 6px;
   width: 100%;
-  font-family: 'Satoshi';
+  font-family: "Satoshi";
   height: clamp(30px, 3vw, 60px);
   font-size: clamp(0.8rem, 1vw, 1.5rem);
 
   @media (min-width: 1440px) {
     font-size: clamp(1rem, 0.8vw, 1.6rem);
     height: clamp(45px, 2vw, 65px);
-   
   }
 
-  @media (min-width: 2560px) { /* 2K/4K screens */
-    font-size: clamp(1.2rem, 0.6vw, 1.8rem);
-    height: clamp(55px, 1.5vw, 75px);
+  @media (min-width: 2560px) {
+    /* 2K/4K screens */
+    font-size: 1.5rem;
+    height: 60px;
   }
 
-  @media (min-width: 3840px) { /* 4K/8K ultra-wide screens */
-    font-size: clamp(1.5rem, 0.5vw, 2rem);
-    height: clamp(70px, 1vw, 90px);
+  @media (min-width: 3840px) {
+    /* 4K/8K ultra-wide screens */
+    font-size: 2.5rem;
+    height: 90px;
+    padding-left: 4rem;
   }
 `;
 export const SearchIcon = styled(FiSearch)`
@@ -164,6 +164,9 @@ export const SearchIcon = styled(FiSearch)`
   color: #888;
   font-size: 1.2rem;
   pointer-events: none;
+  @media (min-width: 3840px){
+    font-size: 2.5rem;
+  }
 `;
 export const TopBar = styled.div`
   display: flex;
@@ -179,7 +182,7 @@ export const HRManager = styled.div`
   padding: 0.3rem;
   border: 1px solid black;
   border-radius: 8px;
-  background-color:rgb(178, 196, 243);
+  background-color: rgb(178, 196, 243);
   font-size: 0.95rem;
   color: #333;
 
@@ -200,63 +203,70 @@ export const Subtitle = styled.p`
   margin-left: 10px;
   margin-top: -1px;
   color: #1e3a8a;
-
-
 `;
 
 export const CardRight = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* pushes count up & arrow down */
-  align-items: flex-end; 
+  align-items: flex-end;
   height: 100%; /* make it stretch full card height */
   padding: 0.3rem 0; /* small spacing so they don’t stick to edges */
 
- .card-value {
-  font-weight: 700;
-  font-size: clamp(1.2rem, 3vw, 1.5rem); /* fluid scaling: mobile → desktop → large screens */
-  color: #000;
+  .card-value {
+    font-weight: 700;
+    font-size: clamp(
+      1.2rem,
+      3vw,
+      1.5rem
+    ); /* fluid scaling: mobile → desktop → large screens */
+    color: #000;
 
-  /* Ultra-large / 4K screens */
-  @media (min-width: 3840px) {
-    font-size: 3.5rem; /* very large screens */
+    /* Ultra-large / 4K screens */
+    @media (min-width: 3840px) {
+      font-size: 3.5rem; /* very large screens */
+    }
   }
-}
-
+  @media (min-width: 3840px) {
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
   .arrow-icon {
-  background: #fff;
-  color: #34347c;
-  width: clamp(32px, 4vw, 60px);  /* bigger max for large screens */
-  height: clamp(32px, 4vw, 60px);
-  border-radius: 50%;
-  font-size: clamp(1rem, 1.8vw, 2rem); /* larger on big screens */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-
-}
-
+    background: #fff;
+    color: #34347c;
+    width: clamp(32px, 4vw, 60px); /* bigger max for large screens */
+    height: clamp(32px, 4vw, 60px);
+    border-radius: 50%;
+    font-size: clamp(1rem, 1.8vw, 2rem); /* larger on big screens */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
-
 
 export const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1rem;
   margin: 0.5rem;
-
   @media (min-width: 1600px) {
     gap: 1.5rem;
   }
 
-  @media (min-width: 2560px) { /* QHD/2K large monitors */
+  @media (min-width: 2560px) {
+    /* QHD/2K large monitors */
     gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    padding-block: 1rem;
   }
 
-  @media (min-width: 3840px) { /* 4K screens */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2.5rem;
+  @media (min-width: 3840px) {
+    /* 4K screens */
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    gap: 3rem;
+    padding-block: 2.5rem;
   }
 `;
 export const DeptTitle = styled.div`
@@ -284,14 +294,18 @@ export const DeptTitle = styled.div`
   /* Extra-large / QHD */
   @media (min-width: 1601px) and (max-width: 2560px) {
     font-size: 1.5rem;
+    padding-bottom: 0.2rem;
   }
 
   /* 4K screens */
+  @media (min-width: 2560px) {
+    font-size: 2rem;
+  }
   @media (min-width: 3840px) {
     font-size: 3rem;
+    padding-bottom: 0.5rem;
   }
 `;
-
 
 export const DeptSub = styled.div`
   font-size: clamp(0.75rem, 1.2vw, 2rem);
@@ -319,12 +333,14 @@ export const DeptSub = styled.div`
     font-size: 1rem;
   }
 
+    @media (min-width: 2560px) {
+    font-size: 1.4rem;
+  }
   /* 4K screens */
   @media (min-width: 3840px) {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 `;
-
 
 export const DeptHead = styled.div`
   display: flex;
@@ -355,14 +371,15 @@ export const DeptHead = styled.div`
     @media (min-width: 1601px) and (max-width: 2560px) {
       font-size: 0.95rem;
     }
-
+  @media (min-width: 2560px) {
+    font-size: 1.2rem;
+  }
     /* 4K screens */
     @media (min-width: 3840px) {
-      font-size: 1.2rem;
+      font-size: 2rem;
     }
   }
 `;
-
 
 export const Card = styled.div`
   background: white;
@@ -373,7 +390,6 @@ export const Card = styled.div`
   justify-content: space-between;
   transition: all 0.3s ease;
   cursor: pointer;
-
   &:hover {
     ${DeptTitle},
     ${DeptSub},
@@ -398,7 +414,7 @@ export const Card = styled.div`
     font-weight: 600;
     margin: 0;
     color: #000;
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
   }
 
   .head-row {
@@ -421,7 +437,8 @@ export const Card = styled.div`
     }
   }
 
-  @media (min-width: 3840px) { /* 4K */
+  @media (min-width: 3840px) {
+    /* 4K */
     padding: 2rem;
     h3 {
       font-size: 2rem;

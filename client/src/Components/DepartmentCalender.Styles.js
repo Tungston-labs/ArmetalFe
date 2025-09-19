@@ -26,7 +26,7 @@ export const Container = styled.div`
 
   /* 🖥️ TV screens (center and max-width control) */
   @media (min-width: ${breakpoints.tv}) {
-    max-width: 90%; /* prevent content from stretching edge-to-edge */
+    max-width: 100%; /* prevent content from stretching edge-to-edge */
     gap: 3rem;
   }
 
@@ -60,7 +60,9 @@ export const SectionTitle = styled.h2`
 
   /* Scale up on very large displays */
   @media (min-width: ${breakpoints.tv}) {
-    font-size: clamp(1.5rem, 2vw, 3rem);
+    font-size: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #3352ba;
   }
   @media (min-width: ${breakpoints.largeTv}) {
     font-size: 3.5rem;
@@ -82,6 +84,11 @@ export const DepartmentWrapper = styled.div`
   &::-webkit-scrollbar-thumb {
     background: #ccc;
     border-radius: 3px;
+  }
+  @media (min-width: ${breakpoints.tv}) {
+    gap: 3rem;
+    padding-block: 1rem;
+    margin-bottom: 2rem;
   }
   @media (min-width: ${breakpoints.largeTv}) {
     gap: 4rem;
@@ -111,11 +118,13 @@ export const DepartmentCard = styled.div`
   @media (min-width: ${breakpoints.tv}) {
     min-width: 400px;
     min-height: 200px;
-    padding: 2rem;
+    padding: 1rem;
   }
-  @media (min-width: ${breakpoints.tv}) {
+  @media (min-width: ${breakpoints.largeTv}) {
     min-width: 700px;
     min-height: 200px;
+    padding: 2rem;
+
     /* padding-inline: 3rem; */
   }
 `;
@@ -129,6 +138,9 @@ export const InitialCircle = styled.div`
   font-style: Bold;
   line-height: 100%;
   @media (min-width: ${breakpoints.tv}) {
+    font-size: 14rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
     font-size: 18rem;
   }
 `;
@@ -160,6 +172,15 @@ export const DeptInfo = styled.div`
   }
   @media (min-width: ${breakpoints.tv}) {
     h3 {
+      font-size: 2rem;
+      text-transform: capitalize;
+    }
+    p {
+      font-size: 1.5rem;
+    }
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    h3 {
       font-size: 3rem;
       text-transform: capitalize;
     }
@@ -185,6 +206,9 @@ export const DeptCount = styled.div`
   line-height: 100%;
   letter-spacing: 0%;
   @media (min-width: ${breakpoints.tv}) {
+    font-size: 2rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
     font-size: 3rem;
   }
 `;
@@ -221,6 +245,9 @@ export const CalendarWrapper = styled.div`
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  @media (min-width: ${breakpoints.tv}) {
+    padding: 1rem;
+  }
   @media (min-width: ${breakpoints.largeTv}) {
     padding: 2rem;
   }
@@ -244,6 +271,13 @@ export const CalendarHeader = styled.div`
   }
   @media (min-width: ${breakpoints.tv}) {
     h3 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+    padding: 1rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    h3 {
       font-size: 4rem;
       margin: 0;
     }
@@ -259,6 +293,9 @@ export const NavArrow = styled.button`
   font-weight: bold;
   color: #3352ba;
   @media (min-width: ${breakpoints.tv}) {
+    font-size: 3rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
     font-size: 4rem;
   }
 `;
@@ -271,7 +308,7 @@ export const CalendarGrid = styled.div`
   @media (min-width: ${breakpoints.tv}) {
     gap: 1rem;
   }
-  @media (min-width: ${breakpoints.tv}) {
+  @media (min-width: ${breakpoints.largeTv}) {
     gap: 2rem;
   }
 `;
@@ -312,6 +349,10 @@ export const PresenceWrapper = styled.div`
     gap: 1rem;
   }
   @media (min-width: ${breakpoints.tv}) {
+    gap: 2rem;
+    padding-block: 1rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
     gap: 4rem;
     padding-block: 2rem;
   }
@@ -363,6 +404,12 @@ export const EmployeeExpiryWrapper = styled.div`
     line-height: 120%;
   }
   @media (min-width: ${breakpoints.tv}) {
+    padding: 1rem;
+    h3 {
+      font-size: 2rem;
+    }
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
     padding: 2rem;
     h3 {
       font-size: 3rem;
@@ -397,6 +444,10 @@ export const EmpName = styled.div`
   font-size: clamp(0.8rem, 1vw, 1.8rem);
   font-weight: 500;
   @media (min-width: ${breakpoints.tv}) {
+    font-size: 1.5rem;
+    padding-block: 0.7rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
     font-size: 2.5rem;
     padding-block: 1rem;
   }
@@ -470,6 +521,9 @@ export const ChartConatiner = styled.div`
   background: #fff;
   border-radius: 12px;
   @media (min-width: ${breakpoints.tv}) {
+    width: 450px;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
     width: 550px;
   }
 `;
@@ -506,6 +560,9 @@ export const CalendarDay = styled.div`
   align-items: center;
   justify-content: center;
   @media (min-width: ${breakpoints.tv}) {
+    font-size: 1.5rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
     font-size: 2rem;
   }
 `;
