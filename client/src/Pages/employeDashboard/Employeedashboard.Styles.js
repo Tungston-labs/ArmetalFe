@@ -172,7 +172,7 @@ export const DepartmentTitle = styled.div`
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
 `;
 
@@ -205,11 +205,11 @@ export const SubLabel = styled.div`
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 `;
 
-export const DepartmentHead = styled.div`
+export const  DepartmentHead = styled.div`
   font-size: 16px;
   font-weight: 500;
   margin-top: 4px;
@@ -227,12 +227,12 @@ export const DepartmentHead = styled.div`
 
   /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 `;
 
@@ -294,9 +294,9 @@ export const MemberName = styled.div`
 export const ArrowIcon = styled.div`
   position: absolute;
   right: 16px;
-  background: #2f49d1;
+  // background: ;
   color: white;
-  padding: 7px;
+  // padding: 7px;
   border-radius: 50%;
   cursor: pointer;
   margin-top:-10px;

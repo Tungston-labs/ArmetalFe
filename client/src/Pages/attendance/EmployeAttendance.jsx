@@ -37,6 +37,7 @@ import { GoArrowUpRight } from "react-icons/go";
 import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
+
 import { TextBlock } from "../leaveDetails/EmployeeList.styles";
 const EmployeeList = () => {
   const dispatch = useDispatch();

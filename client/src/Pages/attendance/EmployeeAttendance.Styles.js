@@ -356,6 +356,7 @@ export const EmployeeImage = styled.img`
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
   }`;
+  
 export const TextBlock = styled.div`
   display: flex;
   flex-direction: column;

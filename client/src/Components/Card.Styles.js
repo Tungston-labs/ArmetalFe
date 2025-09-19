@@ -40,9 +40,9 @@ export const CardContainer = styled.div`
   /* 🖥️ 4K screens */
   @media (min-width: ${breakpoints.largeTv}) {
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 80%;
-    margin: 0 auto;
+    gap: 3rem;
+    max-width: 100%;
+    padding-bottom: 4rem;
   }
 `;
 
@@ -112,6 +112,13 @@ export const IconSection = styled.div`
     margin-top: 5px;
     min-width: 25px;
   }
+  @media (min-width: ${breakpoints.largeTv}) {
+    margin: 0px;
+  img{
+    width:100px;
+    height:100px;
+  }
+  }
 `;
 
 export const Divider = styled.div`
@@ -139,7 +146,7 @@ export const Divider = styled.div`
   /* 🖥️ 4K screens */
   @media (min-width: ${breakpoints.largeTv}) {
     display: block;
-    margin-left: 10px;
+    margin-left: 60px;
     width: 5px;
     left: 80px;
   }
@@ -168,6 +175,9 @@ export const CardTitle = styled.h3`
   @media (min-width: ${breakpoints.large}) {
     font-size: 2.8rem;
   }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 3rem;
+  }
 `;
 
 export const CardCount = styled.span`
@@ -180,6 +190,9 @@ export const CardCount = styled.span`
 
   @media (min-width: ${breakpoints.large}) {
     font-size: 3rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 4rem;
   }
 `;
 
@@ -218,6 +231,14 @@ export const CardListItem = styled.div`
       margin-right: 5px !important;
     }
   }
+  @media (min-width: ${breakpoints.largeTv}) {
+    
+    img {
+      width: 40px !important;
+      height: 40px !important;
+      margin-right: 5px !important;
+    }
+  }
 `;
 
 export const EmployeeAvatar = styled.div`
@@ -238,6 +259,11 @@ export const EmployeeName = styled.span`
 
   @media (min-width: ${breakpoints.large}) {
     font-size: 1.5rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    padding-inline: 2rem;
+    padding-block: 0.5rem;
+    font-size: 2rem;
   }
 `;
 
@@ -307,5 +333,10 @@ export const IconWrapper = styled.div`
     right: 20px;
     bottom: 20px;
     font-size: 2rem;
+    svg{
+      height: 40px;
+      width: 40px;
+    }
+    bottom:0;
   }
 `;

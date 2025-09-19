@@ -534,11 +534,18 @@ export const CalendarWrapper = styled.div`
   align-items: center;
 `;
 export const DeptTitle = styled.div`
- font-family: Satoshi;
-font-weight: 400;
-font-style: Regular;
-font-size: 1.4rem;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 400;
+  font-style: normal; /* "Regular" → normal */
+  font-size: clamp(1rem, 2vw, 1.2rem); /* min 1rem, ideal 2vw, max 1.4rem */
+  line-height: 1.2; /* 100% line-height → 1.2 for better readability */
+  letter-spacing: 0;
+
+  @media (max-width: 768px) {
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+  }
+
+  @media (max-width: 480px) {
+    font-size: clamp(0.8rem, 4vw, 1rem);
+  }
 `;

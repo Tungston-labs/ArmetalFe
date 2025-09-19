@@ -64,7 +64,8 @@ export const DateSelector = styled.div`
     justify-content: center; 
     align-items: center; 
     gap: 1.5rem;
-    flex: 2; /* center portion */
+    flex: 2; 
+    margin-left:-5rem;
   }
 
   .left {
@@ -479,12 +480,18 @@ export const DropdownMenu = styled.div`
   }
 `;
 export const Heading = styled.h2`
-font-family: Raleway;
-font-weight: 700;
-font-style: Bold;
-font-size: 19px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-family: Raleway;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 19px;
+  line-height: 100%;
+  letter-spacing: 0%;
 
+  /* Keep heading sticky inside EmployeesPanel */
+  position: sticky;
+  top: 0;
+  background: white; /* match panel background */
+  z-index: 5;
+  padding: 0.5rem 0.8rem; /* optional: adds some spacing */
+  border-bottom: 1px solid #eee; /* optional divider */
 `;

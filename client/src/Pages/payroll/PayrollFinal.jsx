@@ -6,7 +6,8 @@ import {
   BulkActionBar,
   TextBlock,
   EmployeeImage,
-  LeftBlock
+  LeftBlock,
+  LeftGroup
 } from './Final.Styles';
 import { Link } from 'react-router-dom';
 import { GoInfo } from "react-icons/go";
@@ -280,22 +281,24 @@ const PayrollTable = () => {
       <Container>
         <Header>
           <TitleSection>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Icon src={HolidayIcon} alt="holiday" />
-              <div>
-                <Title>Payroll</Title>
-                <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
-              </div>
-            </div>
-            <Select value={selectedDepartment} onChange={handleDepartmentChange}>
-              <option value="">Select Department</option>
-              {departmentList.map(dept => (
-                <option key={dept.id} value={String(dept.id).split(":")[0]}>
-                  {dept.name}
-                </option>
-              ))}
-            </Select>
-          </TitleSection>
+  <LeftGroup>
+    <EmployeeImage src={HolidayIcon} alt="employeeIcon" />
+    <div>
+      <Title>Payroll</Title>
+      <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
+    </div>
+  </LeftGroup>
+
+  <Select value={selectedDepartment} onChange={handleDepartmentChange}>
+    <option value="">Select Department</option>
+    {departmentList.map(dept => (
+      <option key={dept.id} value={String(dept.id).split(":")[0]}>
+        {dept.name}
+      </option>
+    ))}
+  </Select>
+</TitleSection>
+
         </Header>
 
         <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

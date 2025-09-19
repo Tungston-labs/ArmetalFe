@@ -17,6 +17,7 @@ import {
 } from '../../Redux/employeeSlice';
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
+import { EmployeeImage } from './BasicLevel.Styles';
 
 export default function DocumentUploadForm() {
   const navigate = useNavigate();
@@ -183,8 +184,7 @@ const handleSubmit = async () => {
     <Container>
       <Header>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-      <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-         
+               <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>

@@ -4,12 +4,16 @@ export const Container = styled.div`
   padding: 3rem;
   box-sizing: border-box;
   background: #f4f4f4;
-
   /* Allow scrolling if content overflows */
   min-height: 100vh;  
   width: 100%;
   overflow-x: auto; /* horizontal scroll if needed */
   overflow-y: auto; /* vertical scroll */
+
+  @media (max-width: 3840px) {
+    /* background-color: green; */
+    /* padding: 0; */
+  }
 `;
 
 

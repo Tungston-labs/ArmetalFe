@@ -249,6 +249,29 @@ export const Title = styled.h2`
     font-size: 4rem;
   }
 `;
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(20px, 6vw, 20px);
+  }
+
+  @media (min-width: 1024px) {
+    height: clamp(20px, 4vw, 50px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(50px, 1vw, 80px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(80px, 1vw, 100px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(100px, 3vw, 200px);
+  }`;
 
 export const Subtitle = styled.p`
   // font-size: 1rem;

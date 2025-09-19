@@ -67,10 +67,29 @@ const BackIcon = styled(FaArrowLeft)`
 
 export const TitleSection = styled.div`
   display: flex;
-  justify-content: space-between; /* left + right separation */
+  justify-content: space-between; /* left group + right select */
   align-items: center;
-  flex-wrap: wrap; /* responsive wrapping on smaller screens */
+  flex-wrap: nowrap; /* keep them on one line */
   gap: clamp(8px, 1vw, 20px);
+  width: 100%;
+
+  @media (max-width: 767px) {
+    flex-direction: column; /* stack vertically on mobile */
+    align-items: flex-start;
+    gap: 12px;
+  }
+`;
+
+export const LeftGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+
+  @media (max-width: 767px) {
+    width: 100%;
+    justify-content: flex-start;
+  }
 `;
 
 export const LeftBlock = styled.div`
@@ -385,9 +404,8 @@ export const Select = styled.select`
   background-color: white;
   background-size: clamp(12px, 1vw, 18px);
 
-  /* Mobile full-width */
   @media (max-width: 767px) {
-    width: 100%;
+    width: 100%; /* full width on mobile */
   }
 `;
 
