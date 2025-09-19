@@ -204,7 +204,7 @@ const Department = () => {
         {showModal && (
           <ModalOverlay>
             <ModalContent>
-              <Container style={{ position: 'relative', maxWidth: '600px' }}>
+              <Container style={{ position: 'relative', }}>
                 <CloseButton onClick={() => setShowModal(false)} title="Close modal" aria-label="Close modal">
                   <FaTimes />
                 </CloseButton>

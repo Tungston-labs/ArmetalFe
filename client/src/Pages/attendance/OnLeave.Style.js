@@ -1,7 +1,41 @@
 // EmployeeAttendance.styles.js
 import styled from "styled-components";
 import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
+import { IoEyeOutline } from "react-icons/io5";
 
+export const ViewButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const ViewIcon = styled(IoEyeOutline)`
+  color: #5f53a5;
+  font-size: clamp(14px, 1.2vw, 24px);
+
+  /* 2K / QHD */
+  @media (min-width: 2560px) {
+    font-size: 28px;
+  }
+
+  /* 4K */
+  @media (min-width: 3840px) {
+    font-size: 36px;
+  }
+
+  /* 8K */
+  @media (min-width: 7680px) {
+    font-size: 50px;
+  }
+`;
 
 
 export const Header = styled.div`

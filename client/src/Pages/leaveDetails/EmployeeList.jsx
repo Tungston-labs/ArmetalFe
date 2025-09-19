@@ -25,7 +25,14 @@ import {
   TextBlock,
   EmployeeImage,
 } from "./EmployeeList.styles";
-import { IoIosArrowDown } from "react-icons/io";
+import {
+  ModalOverlay,
+  ModalContainer,
+  ModalTitle,
+  ModalText,
+  ModalButton,
+  ModalButtonWrapper
+} from "./DeletModal.styles";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -296,65 +303,25 @@ const EmployeeList = () => {
         </>
       )}
 
-      {showDeleteModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              background: "white",
-              padding: "2rem",
-              borderRadius: "10px",
-              textAlign: "center",
-              maxWidth: "400px",
-              width: "100%",
-            }}
-          >
-            <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete this employee?</p>
-            <div style={{ marginTop: "1rem" }}>
-              <button
-                onClick={confirmDelete}
-                style={{
-                  marginRight: "1rem",
-                  backgroundColor: "red",
-                  color: "white",
-                  border: "none",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Delete
-              </button>
-              <button
-                onClick={cancelDelete}
-                style={{
-                  backgroundColor: "gray",
-                  color: "white",
-                  border: "none",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+     {showDeleteModal && (
+  <ModalOverlay>
+   <ModalContainer>
+  <ModalTitle>Confirm Deletion</ModalTitle>
+  <ModalText>Are you sure you want to delete this employee?</ModalText>
+
+  {/* Use the styled wrapper for responsive button layout */}
+  <ModalButtonWrapper>
+    <ModalButton bg="red" onClick={confirmDelete}>
+      Delete
+    </ModalButton>
+    <ModalButton bg="gray" onClick={cancelDelete}>
+      Cancel
+    </ModalButton>
+  </ModalButtonWrapper>
+</ModalContainer>
+
+  </ModalOverlay>
+)}
     </Container>
   </>
 );

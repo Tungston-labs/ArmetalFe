@@ -475,7 +475,7 @@ export const ModalContent = styled.div`
   background-color: white;
   padding: clamp(1rem, 2vw, 2.5rem); /* responsive padding */
   border-radius: 10px;
-  max-width: 600px;
+  /* max-width: 600px; */
   width: 100%;
   position: relative;
   z-index: 1000;

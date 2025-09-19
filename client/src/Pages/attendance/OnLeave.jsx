@@ -7,7 +7,9 @@ import {
   TableCell, EmployeeImg, Pagination, DateInput, Tab, Tabs,
   DepartmentSelect, DropdownMenu, DropdownWrapper,
   SearchWrapper,
-  SearchIcon
+  SearchIcon,
+  ViewButton,
+  ViewIcon
 } from "./OnLeave.Style";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoEyeOutline } from "react-icons/io5";
@@ -225,14 +227,12 @@ export default function EmployeeAttendance() {
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{formatTime(timeIn)}</TableCell>
                   <TableCell>{formatTime(timeOut)}</TableCell>
-                  <TableCell>
-                    <button
-                      onClick={() => navigate(`/attendance/detail/${row.id}`)}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                    >
-                      <IoEyeOutline style={{ fontSize: '18px', color: '#5F53A5' }} />
-                    </button>
-                  </TableCell>
+                 <TableCell>
+  <ViewButton onClick={() => navigate(`/attendance/detail/${row.id}`)}>
+    <ViewIcon />
+  </ViewButton>
+</TableCell>
+
                 </TableRow>
               );
             })

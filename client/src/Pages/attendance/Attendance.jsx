@@ -25,6 +25,8 @@ import {
   DayBoxes,
   DayBox,
   ActiveDayBox,
+  TotalHours,
+  BackArrow,
 } from './Attendance.Style';
 import { FaClock } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -119,10 +121,8 @@ useEffect(()=>{
       {/* Header Section */}
       <HeaderSection>
         <InfoGrid>
-          <LuArrowLeft
-            style={{ width: '30px', height: 30, cursor: 'pointer' }}
-            onClick={() => navigate(-1)}
-          />
+         <BackArrow onClick={() => navigate("/employee-on-present")} />
+
 
           <div style={{ width: '10%' }}>
             {employee?.profile_pic ? (
@@ -242,10 +242,11 @@ useEffect(()=>{
         </tbody>
       </Table>
 
-      <p style={{ marginTop: '20px' }}>
-        <strong>Total Hours Worked:</strong>{' '}
-        {attendanceDetail?.total_hours_formatted ?? '00:00'} hrs
-      </p>
+     <TotalHours>
+  <strong>Total Hours Worked:</strong>{" "}
+  {attendanceDetail?.total_hours_formatted ?? "00:00"} hrs
+</TotalHours>
+
     </Container>
   );
 };
