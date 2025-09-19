@@ -89,11 +89,11 @@ console.log("---",formData);
   
       // If "Remember me" checked -> use localStorage
       // Else -> use sessionStorage (clears on browser close)
-      const storage = formData.remember ? localStorage : sessionStorage;
+      // const storage = formData.remember ? localStorage : sessionStorage;
   
-      storage.setItem("accessToken", access);
-      storage.setItem("refreshToken", refresh);
-      storage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("accessToken", access);
+      localStorage.setItem("refreshToken", refresh);
+      localStorage.setItem("user", JSON.stringify(user));
   
       dispatch(
         login({

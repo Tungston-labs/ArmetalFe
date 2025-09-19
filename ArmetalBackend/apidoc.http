@@ -391,8 +391,8 @@ POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "snv_arm_kak_117",     
-  "password": "password123"  
+  "username": "TUNGRAS82",     
+  "password": "Athul"  
 }
 
 ### Get Employee Dashboard Details
@@ -641,8 +641,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###LEAVE COUNT SUMMARY
 
-GET http://127.0.0.1:8000/api/leave/summary/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNzExNDUzLCJpYXQiOjE3NTE3MDc4NTMsImp0aSI6Ijg1YzE0MGJlMTc5ZTQ0MGViMDY1N2UwOTYyNmI1ZjVhIiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.l9BlUkbDK831kZGsMuQatC2_Ryv9sIZq-YY_AJsf-tk
+GET http://178.248.112.16:8001/api/leave/summary/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4MjY5NTYyLCJpYXQiOjE3NTgyNjU5NjIsImp0aSI6IjQyYzU4YTIwMDBlOTQyZmM4OWExN2M2YzQzNmI3ZDhlIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.byrfEwfw4V6eelg7_WFeK8yRu-9R2Gp82Xjwxi_EBm0
 
 
 
