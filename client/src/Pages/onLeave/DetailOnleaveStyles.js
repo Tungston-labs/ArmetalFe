@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { FiSearch } from "react-icons/fi";
 export const Container = styled.div`
   padding: 2rem;
- font-family: Satoshi;
-  background:white;
+  font-family: Satoshi;
+  background: white;
 `;
 
 export const Header = styled.div`
@@ -71,7 +71,7 @@ export const SearchInput = styled.input`
   border: 1px solid #172554;
   border-radius: 6px;
   width: 100%;
-  font-family: 'Satoshi';
+  font-family: "Satoshi";
   height: clamp(35px, 3vw, 50px);
   font-size: clamp(0.9rem, 1vw, 1.5rem);
 
@@ -95,12 +95,12 @@ export const Tabs = styled.div`
   // gap: clamp(0.2rem, 0.3vw, 2rem);
   font-family: Raleway;
   font-weight: 700;
-  font-size: clamp(0.7rem, 0.9vw, 2.5rem); 
+  font-size: clamp(0.7rem, 0.9vw, 2.5rem);
   line-height: 100%;
   text-align: center;
-  margin: 2rem ;
+  margin: 2rem;
   flex-wrap: wrap;
-justify-content: space-around;
+  justify-content: space-around;
   @media (max-width: 1024px) {
     gap: clamp(0.4rem, 1vw, 1.5rem);
     font-size: clamp(0.6rem, 0.8vw, 1.6rem);
@@ -149,17 +149,13 @@ export const Tab = styled.div`
   }
 `;
 
-
-
-
-
 export const Table = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px;
   margin-top: 1rem;
- text-align: left;
-  font-family: 'Satoshi';
+  text-align: left;
+  font-family: "Satoshi";
 
   /* Scroll on small screens */
   // display: block;
@@ -176,8 +172,8 @@ export const Table = styled.table`
   }
 
   th {
- text-align: left;
-    background-color: #304EB0;
+    text-align: left;
+    background-color: #304eb0;
     color: white;
     font-family: Raleway;
     padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
@@ -190,7 +186,7 @@ export const Table = styled.table`
 
   /* Background color for even rows */
   tbody tr:nth-child(even) td {
-    background-color: #E6ECFF;
+    background-color: #e6ecff;
   }
 
   tbody tr td:first-child {
@@ -208,20 +204,21 @@ export const Table = styled.table`
   }
 
   @media (min-width: 2560px) {
-    td, th {
+    td,
+    th {
       font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
       padding: clamp(8px, 1vw, 24px);
     }
   }
 
   @media (min-width: 3840px) {
-    td, th {
+    td,
+    th {
       font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
       padding: clamp(10px, 2vw, 32px);
     }
   }
 `;
-
 
 // export const Row = styled.tr``;
 
@@ -260,6 +257,19 @@ export const Pagination = styled.div`
     cursor: pointer;
     font-size: 0.7rem;
   }
+  @media (min-width: 2560px) {
+    span {
+      font-size: 2rem;
+      padding: 0.5rem 1.5rem;
+    }
+    gap: 0.5rem;
+  }
+  @media (min-width: 3840px) {
+    span {
+      font-size: 2.5rem;
+    }
+    gap: 1rem;
+  }
 
   .active {
     background: #1e3a8a;
@@ -277,10 +287,10 @@ export const TopBar = styled.div`
 
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
+
   align-items: center;
-  padding: 0.3rem ;
+  padding: 0.3rem;
   // border: 1px solid #ccc;
   // border-radius: 8px;
   background-color: #fff;
@@ -311,7 +321,7 @@ export const HeaderSection = styled.div`
 
 export const TitleSection = styled.div`
   display: flex;
-  
+
   align-items: center;
   // background:red;
   // margin-top:3%;
@@ -320,7 +330,7 @@ export const TitleSection = styled.div`
 export const EmployeeImage = styled.img`
   height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
   width: auto; /* maintain aspect ratio */
-  
+
   @media (min-width: 768px) {
     height: clamp(20px, 6vw, 20px);
   }
@@ -339,7 +349,8 @@ export const EmployeeImage = styled.img`
 
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
-  }`;
+  }
+`;
 export const TextBlock = styled.div`
   display: flex;
   flex-direction: column;
@@ -357,7 +368,7 @@ export const ActionArea = styled.div`
   align-items: end;
   gap: 1rem;
   // background:black;
-  margin-top:-8%;
+  margin-top: -8%;
 `;
 
 export const Title = styled.h2`
@@ -368,27 +379,33 @@ export const Title = styled.h2`
   font-weight: 700;
   line-height: 1.2;
 
-  @media (min-width: 480px) { /* small tablet */
+  @media (min-width: 480px) {
+    /* small tablet */
     font-size: 0.8rem;
   }
 
-  @media (min-width: 768px) { /* tablet */
+  @media (min-width: 768px) {
+    /* tablet */
     font-size: 1rem;
   }
 
-  @media (min-width: 1024px) { /* desktop */
+  @media (min-width: 1024px) {
+    /* desktop */
     font-size: 1.5rem;
   }
 
-  @media (min-width: 1440px) { /* large desktop / 2K */
+  @media (min-width: 1440px) {
+    /* large desktop / 2K */
     font-size: 2rem;
   }
 
-  @media (min-width: 2560px) { /* 4K */
+  @media (min-width: 2560px) {
+    /* 4K */
     font-size: 3em;
   }
 
-  @media (min-width: 3840px) { /* 8K */
+  @media (min-width: 3840px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -427,10 +444,8 @@ export const Subtitle = styled.p`
 `;
 
 export const DepartmentSelect = styled.select`
-  padding: clamp(0.4rem, 0.8vw, 0.8rem) 
-           clamp(0.8rem, 2vw, 1.5rem) 
-           clamp(0.4rem, 0.8vw, 0.8rem) 
-           clamp(0.8rem, 1.5vw, 1.5rem);
+  padding: clamp(0.4rem, 0.8vw, 0.8rem) clamp(0.8rem, 2vw, 1.5rem)
+    clamp(0.4rem, 0.8vw, 0.8rem) clamp(0.8rem, 1.5vw, 1.5rem);
   font-size: clamp(0.85rem, 1vw, 1.25rem);
   border-radius: clamp(4px, 0.5vw, 6px);
   border: 1px solid #ccc;
@@ -439,8 +454,8 @@ export const DepartmentSelect = styled.select`
   min-width: clamp(150px, 25vw, 300px);
 
   appearance: none;
-  background: url("data:image/svg+xml;utf8,<svg fill='black' height='14' viewBox='0 0 24 24' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") 
-              no-repeat right clamp(8px, 1vw, 15px) center;
+  background: url("data:image/svg+xml;utf8,<svg fill='black' height='14' viewBox='0 0 24 24' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
+    no-repeat right clamp(8px, 1vw, 15px) center;
   background-color: white;
   background-size: clamp(12px, 1vw, 18px);
 
@@ -498,7 +513,6 @@ export const HeaderRow = styled.div`
   flex-wrap: wrap;
 `;
 
-
 export const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
@@ -532,9 +546,18 @@ export const SearchIcon = styled(FiSearch)`
 export const CalendarWrapper = styled.div`
   display: flex;
   align-items: center;
+  @media (min-width: 2560px) {
+    font-size: 2rem;
+    height: 60px;
+  }
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+
+    height: 90px;
+  }
 `;
 export const DeptTitle = styled.div`
-  font-family: 'Satoshi', sans-serif;
+  font-family: "Satoshi", sans-serif;
   font-weight: 400;
   font-style: normal; /* "Regular" → normal */
   font-size: clamp(1rem, 2vw, 1.2rem); /* min 1rem, ideal 2vw, max 1.4rem */

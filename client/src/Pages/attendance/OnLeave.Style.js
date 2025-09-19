@@ -114,6 +114,15 @@ export const DateInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 7px;
   background-color: #fff;
+  @media (min-width: 2560px) {
+    font-size: 2rem;
+    height: 60px;
+  }
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+
+    height: 90px;
+  }
 `;
 
 export const Container = styled.div`
@@ -466,6 +475,19 @@ export const Pagination = styled.div`
     border: 1px solid #ccc;
     cursor: pointer;
     font-size: 0.8rem;
+  }
+  @media (min-width: 2560px) {
+    span{
+      font-size: 2rem;
+    padding: 0.5rem 1.5rem;
+    }
+    gap: 0.5rem;
+  }
+  @media (min-width: 3840px) {
+    span{
+      font-size: 2.5rem;
+    }
+    gap: 1rem;
   }
 
   .active {
