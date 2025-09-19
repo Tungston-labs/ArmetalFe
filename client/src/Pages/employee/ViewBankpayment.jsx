@@ -40,6 +40,7 @@ import {
 } from "../../Redux/employeeSlice";
 import SyncLoader from "../../Components/Loder";
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import { ResponsiveH3 } from "./ViewDocument.Styles";
 const ViewBankPayment = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -175,8 +176,9 @@ console.log("employeeBankPayments",employeeBankPayments)
       </Header>
 
       <Hr />
-      <h3>Bank & Payment Details</h3>
-
+      
+     
+<ResponsiveH3>Bank & Payment Details</ResponsiveH3>
       <FormWrapper>
         <ImageColumn>
           <ProfileImage

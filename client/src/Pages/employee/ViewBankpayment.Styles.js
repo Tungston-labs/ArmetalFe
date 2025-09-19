@@ -24,25 +24,46 @@ export const Header = styled.div`
 `;
 
 export const EditButton = styled.button`
-  display: flex;
+  display: flex; /* icon + text */
   align-items: center;
-  justify-content: center; /* ✅ Center content horizontally */
-  padding: 0.5rem;
+  justify-content: center; /* center content */
+  gap: 0.4rem; 
+  padding: clamp(0.3rem, 0.5vw, 0.6rem);
   border: none;
   background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
   border-radius: 8px;
-  width: 100px;
-  height: 42px;
-  font-size: 0.9rem;
+  
+  width: clamp(80px, 4vw, 100px); 
+   height: clamp(35px, 4vw, 40px);  
+  font-size: clamp(0.8rem, 0.9vw, 1rem); 
   cursor: pointer;
-  gap: 0.5rem; /* ✅ Add space between icon and text */
 
   svg {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1vw, 1.2rem); 
+  }
+
+  /* Ultra-large screens */
+  @media (min-width: 3840px) { /* 4K */
+    width: 150px;
+    height: 60px;
+    font-size: 1.2rem;
+
+    svg {
+      font-size: 1.4rem;
+    }
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    width: 200px;
+    height: 80px;
+    font-size: 1.6rem;
+
+    svg {
+      font-size: 2rem;
+    }
   }
 `;
-
 
 export const Row = styled.div`
   display: flex;
@@ -69,8 +90,10 @@ export const RightSection = styled.div`
 `;
 
 export const Label = styled.label`
-  font-weight: 500;
-  color: #052DB4;
+  color: #3352BA;
+  font-weight: 400;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
 
   /* 📱 Small phones */
   @media (max-width: 480px) {
@@ -89,52 +112,47 @@ export const Label = styled.label`
 
   /* 🖥 4K screens */
   @media (min-width: 1921px) and (max-width: 3839px) {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   /* 🖥 8K screens */
   @media (min-width: 3840px) {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
 `;
 
 export const Input = styled.input`
   width: 100%;
-  padding: clamp(0.5rem, 0.8vw, 1rem);
+  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
+  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  color: black;
   border-radius: 7px;
   border: 1px solid #052DB4;
   background: #FFF;
-  color: black;
-  font-size: clamp(12px, 1vw, 16px);
-
-  /* 📱 Small devices */
+  box-sizing: border-box;
+margin-top:5px;
+  /* Responsive refinements */
   @media (max-width: 480px) {
-    font-size: 12px;
-    padding: 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
   }
 
-  /* 📲 Tablets */
-  @media (min-width: 481px) and (max-width: 768px) {
-    font-size: 14px;
-    padding: 0.6rem;
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    margin-bottom:1rem;
   }
 
-  /* 💻 Laptops */
-  @media (min-width: 769px) and (max-width: 1920px) {
-    font-size: 15px;
-    padding: 0.7rem;
-  }
-
-  /* 🖥 4K */
-  @media (min-width: 1921px) and (max-width: 3839px) {
-    font-size: 16px;
-    padding: 0.9rem;
-  }
-
-  /* 🖥 8K */
   @media (min-width: 3840px) {
-    font-size: 18px;
-    padding: 1rem;
+    font-size: 2rem;
+    padding: 1.5rem 2rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 1.3rem;
+    padding: 1.4rem 2rem;
+    margin-bottom:1rem;
   }
 `;
 
@@ -181,19 +199,51 @@ export const Section = styled.div`
 export const Tabs = styled.div`
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: clamp(0.5rem, 2vw, 3rem); /* responsive gap between tabs */
+  margin-bottom: clamp(1rem, 2vw, 2rem);
+  flex-wrap: wrap; /* allows tabs to wrap on small screens */
+  padding: clamp(0.5rem, 1vw, 1rem);
 `;
 
 export const Tab = styled.button`
   background: ${({ active }) => (active ? "#002ea3" : "transparent")};
   color: ${({ active }) => (active ? "#fff" : "#000")};
-  border: none;
-  padding: 0.6rem 1.5rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
   border: ${({ active }) => (active ? "none" : "1px solid #ccc")};
+  border-radius: 6px;
+  padding: clamp(0.4rem, 1vw, 0.8rem) clamp(0.8rem, 2vw, 1.5rem); /* responsive padding */
+  font-size: clamp(0.8rem, 1vw, 1.2rem); /* responsive font size */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: ${({ active }) => (active ? "#002ea3" : "#f0f0f0")};
+  }
+
+  /* Large screens adjustments */
+  @media (min-width: 1440px) {
+    font-size: 1rem;
+    padding: 0.8rem 1.6rem;
+  }
+
+  @media (min-width: 1960px) {
+    font-size: 1.2rem;
+    padding: 0.9rem 1.8rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.6rem;
+    padding: 1rem 2rem;
+  }
+
+  @media (min-width: 3840px) { /* 4K */
+    font-size: 2rem;
+    padding: 1.2rem 2.2rem;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    font-size: 2.5rem;
+    padding: 1.5rem 3rem;
+  }
 `;
 
 export const GroupLabel = styled.h4`

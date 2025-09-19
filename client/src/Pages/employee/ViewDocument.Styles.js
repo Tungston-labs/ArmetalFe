@@ -23,26 +23,70 @@ export const Header = styled.div`
   }
 `;
 
+export const ResponsiveH3 = styled.h3`
+  font-family: Satoshi, sans-serif;
+  font-weight: 700;
+  color: #030303;
+
+  /* Responsive font size */
+  font-size: clamp(1rem, 2vw, 1.2rem); /* min 1rem, max 2rem, scales with viewport */
+
+  /* Optional: adjust margin for responsiveness */
+  margin-top: clamp(0.5rem, 1vw, 1rem);
+  margin-bottom: clamp(0.5rem, 1vw, 1rem);
+
+  /* Ultra-large screens */
+  @media (min-width: 3840px) { /* 4K */
+    font-size: 3rem;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    font-size: 4rem;
+  }
+`;
+
 export const EditButton = styled.button`
-  display: flex; /* enable inline icon + text */
+  display: flex; /* icon + text */
   align-items: center;
-    justify-content: center; /* ✅ Center content horizontally */
-  gap: 0.4rem; /* space between icon and text */
-  padding: 0.4rem ;
+  justify-content: center; /* center content */
+  gap: 0.4rem; 
+  padding: clamp(0.3rem, 0.5vw, 0.6rem);
   border: none;
-   background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
+  background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
   color: white;
   border-radius: 8px;
-  width:100px;
-  height:42px;
-  font-size: 0.9rem;
+  
+  width: clamp(80px, 4vw, 100px); 
+   height: clamp(35px, 4vw, 40px);  
+  font-size: clamp(0.8rem, 0.9vw, 1rem); 
   cursor: pointer;
 
   svg {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1vw, 1.2rem); 
   }
 
+  /* Ultra-large screens */
+  @media (min-width: 3840px) { /* 4K */
+    width: 150px;
+    height: 60px;
+    font-size: 1.2rem;
+
+    svg {
+      font-size: 1.4rem;
+    }
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    width: 200px;
+    height: 80px;
+    font-size: 1.6rem;
+
+    svg {
+      font-size: 2rem;
+    }
+  }
 `;
+
 export const Row = styled.div`
   display: flex;
   gap: 2.5rem;
@@ -89,21 +133,74 @@ export const FieldWrapper = styled.div`
 `;
 
 export const Label = styled.label`
+  color: #3352BA;
+  font-weight: 400;
+  margin-bottom: 0.4rem;
   font-size: 0.9rem;
-  font-weight: 500;
-  // margin-bottom: 0.3rem;
-  color: #052DB4;
-`;
-export const Input = styled.input`
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 100%;
-  border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
 
+  /* 📱 Small phones */
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+  }
+
+  /* 📲 Tablets */
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+
+  /* 💻 Laptops & Desktops */
+  @media (min-width: 769px) and (max-width: 1920px) {
+    font-size: 1rem;
+  }
+
+  /* 🖥 4K screens */
+  @media (min-width: 1921px) and (max-width: 3839px) {
+    font-size: 1.8rem;
+  }
+
+  /* 🖥 8K screens */
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+  }
 `;
+
+
+
+export const Input = styled.input`
+  width: 100%;
+  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
+  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  color: black;
+  border-radius: 7px;
+  border: 1px solid #052DB4;
+  background: #FFF;
+  box-sizing: border-box;
+margin-top:5px;
+  /* Responsive refinements */
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    padding: 1.5rem 2rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 1.3rem;
+    padding: 1.4rem 2rem;
+    margin-bottom:1rem;
+  }
+`;
+
 
 export const Avatar = styled.img`
   width: 100px;
@@ -123,19 +220,51 @@ export const Section = styled.div`
 export const Tabs = styled.div`
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: clamp(0.5rem, 2vw, 3rem); /* responsive gap between tabs */
+  margin-bottom: clamp(1rem, 2vw, 2rem);
+  flex-wrap: wrap; /* allows tabs to wrap on small screens */
+  padding: clamp(0.5rem, 1vw, 1rem);
 `;
 
 export const Tab = styled.button`
   background: ${({ active }) => (active ? "#002ea3" : "transparent")};
   color: ${({ active }) => (active ? "#fff" : "#000")};
-  border: none;
-  padding: 0.6rem 1.5rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
   border: ${({ active }) => (active ? "none" : "1px solid #ccc")};
+  border-radius: 6px;
+  padding: clamp(0.4rem, 1vw, 0.8rem) clamp(0.8rem, 2vw, 1.5rem); /* responsive padding */
+  font-size: clamp(0.8rem, 1vw, 1.2rem); /* responsive font size */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: ${({ active }) => (active ? "#002ea3" : "#f0f0f0")};
+  }
+
+  /* Large screens adjustments */
+  @media (min-width: 1440px) {
+    font-size: 1rem;
+    padding: 0.8rem 1.6rem;
+  }
+
+  @media (min-width: 1960px) {
+    font-size: 1.2rem;
+    padding: 0.9rem 1.8rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.6rem;
+    padding: 1rem 2rem;
+  }
+
+  @media (min-width: 3840px) { /* 4K */
+    font-size: 2rem;
+    padding: 1.2rem 2.2rem;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    font-size: 2.5rem;
+    padding: 1.5rem 3rem;
+  }
 `;
 
 export const GroupLabel = styled.h4`
@@ -325,47 +454,75 @@ export const Hr = styled.hr`
   border-top: 1px solid #ccc;
 
 `;
+
 export const UploadSection = styled.div`
-  // margin-bottom: 1.5rem;
-  // background: #fff;
-  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background: #F1F1F1;
+  padding: clamp(0.8rem, 1vw, 2rem);
   border-radius: 8px;
+
+  @media (min-width: 1440px) {
+    padding: 2rem;
+    border-radius: 10px;
+  }
+  @media (min-width: 1960px) {
+    padding: 2.5rem;
+    border-radius: 12px;
+  }
+  @media (min-width: 2560px) {
+    padding: 2rem;
+    border-radius: 14px;
+     margin-bottom:2rem;
+  }
+  @media (min-width: 3840px) {
+    padding: 3rem;
+    border-radius: 16px;
+       margin-bottom:2.5rem;
+  }
+  @media (min-width: 7680px) {
+    padding: 4rem;
+    border-radius: 18px;
+  }
 `;
 
 export const LabelRow = styled.div`
-  font-size: 16px;
+  font-size: clamp(0.9rem, 1vw, 1.2rem);
   font-weight: 500;
-  margin-bottom: 0.8rem;
-  background:#F1F1F1;
-    color: #3352BA;
-  padding:10px;
-  font-family: Satoshi;
-font-weight: 500;
-font-style: Medium;
-font-size: 17px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  margin-bottom: clamp(0.5rem, 1vw, 1rem);
+  background: white;
+  color: #999999;
+  padding: clamp(0.2rem, 0.5vw, 0.5rem);
 
+  @media (min-width: 1440px) { font-size: 1.3rem; padding: 0.6rem; }
+  @media (min-width: 1960px) { font-size: 1.8rem; padding: 0.7rem; }
+  @media (min-width: 2560px) { font-size: 2rem; padding: 0.9rem; }
+  @media (min-width: 3840px) { font-size: 2.2rem; padding: 1rem; }
+  @media (min-width: 7680px) { font-size: 2.5rem; padding: 1.2rem; }
 `;
 
 export const UploadButton = styled.button`
   background-color: #1e40af;
   color: #fff;
-  padding: 0.6rem 1rem;
+  padding: clamp(0.5rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 2rem);
   border: none;
-  width:15%;
-  font-size:18px;
-  height:80px;
+  width: clamp(80px, 15%, 200px);
+  height: clamp(50px, 10vw, 120px);
+  font-size: clamp(0.9rem, 1vw, 1.2rem);
   border-radius: 6px;
-  // margin-bottom: 1rem;
   font-weight: 500;
   cursor: pointer;
 
   &:hover {
     background-color: #1c3aa9;
   }
+
+  @media (min-width: 1440px) { font-size: 1.3rem; width: 150px; height: 70px; }
+  @media (min-width: 1960px) { font-size: 1.5rem; width: 170px; height: 80px; }
+  @media (min-width: 2560px) { font-size: 1.9rem; width: 220px; height: 150px; }
+  @media (min-width: 3840px) { font-size: 2.2rem; width: 240px; height: 180px; }
+  @media (min-width: 7680px) { font-size: 2.5rem; width: 260px; height: 200px; }
 `;
+
 
 // export const ImagePreviewRow = styled.div`
 //   display: flex;
@@ -413,18 +570,25 @@ export const Button = styled.button`
 `;
 
 export const SectionTitle = styled.h4`
-  // margin-top: 2rem;
-  margin-bottom: 1rem;
-  font-size:18px;
+    margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #000;
   font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 18px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.3;
 
-  // color: #333;
+  /* Responsive font sizing */
+  font-size: clamp(1rem, 1.2vw, 2rem);
+
+  /* Adjust for ultra-wide screens */
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 3rem;
+  }
 `;
 export const ImagePreviewRow = styled.div`
   display: flex;
@@ -432,16 +596,28 @@ export const ImagePreviewRow = styled.div`
 `;
 
 export const ImageBox = styled.div`
- width: 117px;
-//   height: 80px;
-//   border-radius: 10px;
-//   border: 1px solid #ccc;
+  width: clamp(80px, 10vw, 200px);   /* min 80px, max 200px, grows with screen */
+  height: clamp(60px, 8vw, 160px);   /* min 60px, max 160px, grows with screen */
+  border-radius: 10px;
+  border: 1px solid #ccc;
   overflow: hidden;
-//   background-color: #f8f8f8;
+  background-color: #f8f8f8;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+
+  /* Ultra-large screens adjustments */
+  @media (min-width: 3840px) { /* 4K */
+    width: 300px;
+    height: 240px;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    width: 400px;
+    height: 320px;
+  }
 `;
+

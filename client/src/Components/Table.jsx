@@ -11,9 +11,11 @@ import {
   ImageUpload,
   ButtonGroup,
   Button,
-  TwoColumnRows
+  TwoColumnRows,
+  FileInput,
+  ImagePreview
 } from './Table.Styles';
-import { Label } from '../Pages/employee/BasicLevel.Styles';
+import { FormGroups, Label } from '../Pages/employee/BasicLevel.Styles';
 const ErrorMsg = ({ msg }) =>
   msg ? <p style={{ color: 'red', fontSize: '0.75rem', marginTop: '4px' }}>{msg}</p> : null;
 
@@ -55,7 +57,7 @@ isEditMode=false,
             {/* Bank Proof Image */}
           {record.bank_proof_image && (
             <Row style={{ marginTop: '1rem' }}>
-              <FormGroup style={{ flex: '1 1 100%' }}>
+              <FormGroups style={{ flex: '1 1 100%' }}>
                 <label style={{ fontWeight: '500' }}>Bank Proof</label>
                 <a
                   href={record.bank_proof_image}
@@ -75,59 +77,59 @@ isEditMode=false,
                     }}
                   />
                 </a>
-              </FormGroup>
+              </FormGroups>
             </Row>
           )}
 
           <TwoColumnRows>
-            <FormGroup>
+            <FormGroups>
               <Label>Swift Code</Label>
-              <Input value={record.swift_code} readOnly placeholder="Swift Code" /></FormGroup>
-            <FormGroup>
+              <Input value={record.swift_code} readOnly placeholder="Swift Code" /></FormGroups>
+            <FormGroups>
                 <Label>Payment Mode</Label>
-              <Input value={record.payment_mode} readOnly placeholder="Payment Mode" /></FormGroup>
+              <Input value={record.payment_mode} readOnly placeholder="Payment Mode" /></FormGroups>
           </TwoColumnRows>
           <TwoColumnRows>
-            <FormGroup>
+            <FormGroups>
                  <Label>Account Number</Label>
-              <Input value={record.account_number} readOnly placeholder="Account Number" /></FormGroup>
-            <FormGroup>
+              <Input value={record.account_number} readOnly placeholder="Account Number" /></FormGroups>
+            <FormGroups>
               <Label>UAN Number</Label>
-              <Input value={record.uan_epf_number} readOnly placeholder="UAN Number" /></FormGroup>
+              <Input value={record.uan_epf_number} readOnly placeholder="UAN Number" /></FormGroups>
           </TwoColumnRows>
           <TwoColumnRows>
-            <FormGroup>
+            <FormGroups>
              <Label>PAN Number</Label>
-              <Input value={record.pan_number} readOnly placeholder="PAN Number" /></FormGroup>
+              <Input value={record.pan_number} readOnly placeholder="PAN Number" /></FormGroups>
             <FormGroup>
                 <Label>Tax Regime</Label>
               <Input value={record.tax_regime} readOnly placeholder="Tax Regime" /></FormGroup>
           </TwoColumnRows>
           <TwoColumnRows>
-            <FormGroup>
+            <FormGroups>
                 <Label>TDS %"</Label>
-              <Input value={record.tds_deduction_amount} readOnly placeholder="TDS %" /></FormGroup>
-            <FormGroup>
+              <Input value={record.tds_deduction_amount} readOnly placeholder="TDS %" /></FormGroups>
+            <FormGroups>
                   <Label>Declaration"</Label>
-              <Input value={record.declaration_80c ? 'Yes' : 'No'} readOnly placeholder="80C Declaration" /></FormGroup>
+              <Input value={record.declaration_80c ? 'Yes' : 'No'} readOnly placeholder="80C Declaration" /></FormGroups>
           </TwoColumnRows>
 
           <SectionTitle>Salary</SectionTitle>
           <TwoColumnRows>
-            <FormGroup>
+            <FormGroups>
                <Label>Basic Salary"</Label>
-              <Input value={record.basic_salary} readOnly placeholder="Basic Salary" /></FormGroup>
-            <FormGroup>
+              <Input value={record.basic_salary} readOnly placeholder="Basic Salary" /></FormGroups>
+            <FormGroups>
                <Label>Salary Increment"</Label>
-              <Input value={record.salary_increment} readOnly placeholder="Salary Increment" /></FormGroup>
+              <Input value={record.salary_increment} readOnly placeholder="Salary Increment" /></FormGroups>
           </TwoColumnRows>
           <TwoColumnRows>
-            <FormGroup>
+            <FormGroups>
                 <Label>Housing Allowance"</Label>
-              <Input value={record.housing_allowance} readOnly placeholder="Housing Allowance" /></FormGroup>
-            <FormGroup>
+              <Input value={record.housing_allowance} readOnly placeholder="Housing Allowance" /></FormGroups>
+            <FormGroups>
                    <Label>Transportation"</Label>
-              <Input value={record.transportation} readOnly placeholder="Transportation" /></FormGroup>
+              <Input value={record.transportation} readOnly placeholder="Transportation" /></FormGroups>
           </TwoColumnRows>
         </FormSection>
       ))}
@@ -144,45 +146,30 @@ isEditMode=false,
 
       <FormSection>
         <Row>
-          <FormGroup style={{ flex: '1 1 100%' }}>
+          <FormGroups style={{ flex: '1 1 100%' }}>
             <ErrorMsg msg={errors.bankName} />
                   <Label>Bank name</Label>
             <Input placeholder="Bank name" value={bankName} onChange={(e) => setBankName(e.target.value)} />
-          </FormGroup>
-    <FormGroup style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
-  <label style={{ fontWeight: '500' }}>Upload Bank Passbook Image</label>
+          </FormGroups>
+    <FormGroups style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
+  <Label style={{ fontWeight: '500' }}>Upload Bank Passbook Image</Label>
   
-  {bankProofImage && (
-    <img
-      src={URL.createObjectURL(bankProofImage)}
-      alt="Bank Proof Preview"
-      style={{
-        marginTop: '0.75rem',
-        width: '160px',
-        borderRadius: '6px',
-        border: '1px solid #ccc',
-        display:"flex"
-      }}
-    />
-  )}
-  <input
-    type="file"
-    accept="image/*"
-    onChange={(e) => setBankProofImage(e.target.files[0])}
-    style={{ marginTop: '0.5rem',display:"flex" }}
-  />
-</FormGroup>
+{bankProofImage && <ImagePreview src={URL.createObjectURL(bankProofImage)} alt="Bank Proof Preview" />}
+<FileInput type="file" accept="image/*" onChange={(e) => setBankProofImage(e.target.files[0])} />
+
+
+</FormGroups>
 
         </Row>
 
         <Row>
           <TwoColumnRows>
-            <div>
+            <FormGroups>
               <ErrorMsg msg={errors.swiftCode} />
                  <Label>Swift code</Label>
               <Input placeholder="Swift code" value={swiftCode} onChange={(e) => setSwiftCode(e.target.value)} />
-            </div>
-            <div>
+            </FormGroups>
+            <FormGroups>
               <ErrorMsg msg={errors.paymentMode} />
                  <Label> Payment Mode</Label>
               <Select value={paymentMode} onChange={(e) => setPaymentMode(e.target.value)}>
@@ -191,32 +178,32 @@ isEditMode=false,
                 <option value="cod">Cash on Delivery</option>
                 <option value="cheque">Cheque</option>
               </Select>
-            </div>
+            </FormGroups>
           </TwoColumnRows>
 
           <TwoColumnRows>
-            <div>
+            <FormGroups>
               <ErrorMsg msg={errors.accountNumber} />
                 <Label>Account number</Label>
               <Input placeholder="Account number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} />
-            </div>
-            <div>
+            </FormGroups>
+            <FormGroups>
               <ErrorMsg msg={errors.uanNumber} />
                  <Label>UAN / EPF Account number</Label>
               <Input placeholder="UAN / EPF Account number" value={uanNumber} onChange={(e) => setUanNumber(e.target.value)} />
-            </div>
+            </FormGroups>
           </TwoColumnRows>
         </Row>
 
         <SectionTitle>Tax and Compliance</SectionTitle>
         <Row>
           <TwoColumnRows>
-            <div>
+            <FormGroups>
               <ErrorMsg msg={errors.panNumber} />
                     <Label>PAN Number</Label>
               <Input placeholder="PAN Number" value={panNumber} onChange={(e) => setPanNumber(e.target.value)} />
-            </div>
-            <div>
+            </FormGroups>
+            <FormGroups>
               <ErrorMsg msg={errors.taxRegime} />
                      <Label> Regime</Label>
               <Select value={taxRegime} onChange={(e) => setTaxRegime(e.target.value)}>
@@ -224,11 +211,11 @@ isEditMode=false,
                 <option value="old">Old Regime</option>
                 <option value="new">New Regime</option>
               </Select>
-            </div>
+            </FormGroups>
           </TwoColumnRows>
 
           <TwoColumnRows>
-            <div>
+            <FormGroups>
               <ErrorMsg msg={errors.tdsAmount} />
                      <Label> TDS Deduction Amount</Label>
               <Select value={tdsAmount} onChange={(e) => setTdsAmount(e.target.value)}>
@@ -237,8 +224,8 @@ isEditMode=false,
                 <option value="20.00">20%</option>
                 <option value="30.00">30%</option>
               </Select>
-            </div>
-            <div>
+            </FormGroups>
+            <FormGroups>
               <ErrorMsg msg={errors.declaration80C} />
                      <Label>Declaration under 80C</Label>
               <Select value={declaration80C} onChange={(e) => setDeclaration80C(e.target.value)}>
@@ -246,19 +233,19 @@ isEditMode=false,
                 <option value="true">Yes</option>
                 <option value="false">No</option>
               </Select>
-            </div>
+            </FormGroups>
           </TwoColumnRows>
         </Row>
 
         <SectionTitle>Salary and Increment</SectionTitle>
         <Row>
           <TwoColumnRows>
-            <div>
+            <FormGroups>
               <ErrorMsg msg={errors.basicSalary} />
                   <Label>Basic Salary</Label>
               <Input placeholder="Basic Salary" value={basicSalary} onChange={(e) => setBasicSalary(e.target.value)} />
-            </div>
-            <div>
+            </FormGroups>
+            <FormGroups>
               <ErrorMsg msg={errors.salaryIncrement} />
                  <Label>Salary increment</Label>
               <Select value={salaryIncrement} onChange={(e) => setSalaryIncrement(e.target.value)}>
@@ -272,20 +259,20 @@ isEditMode=false,
                 <option value="60">60%</option>
                 <option value="70">70%</option>
               </Select>
-            </div>
+            </FormGroups>
           </TwoColumnRows>
 
           <TwoColumnRows>
-            <div>
+            <FormGroups>
               <ErrorMsg msg={errors.housingAllowance} />
                <Label>Housing allowance</Label>
               <Input placeholder="Housing allowance" value={housingAllowance} onChange={(e) => setHousingAllowance(e.target.value)} />
-            </div>
-            <div>
+            </FormGroups>
+            <FormGroups>
               <ErrorMsg msg={errors.transportation} />
                     <Label>Transportation</Label>
               <Input placeholder="Transportation" value={transportation} onChange={(e) => setTransportation(e.target.value)} />
-            </div>
+            </FormGroups>
           </TwoColumnRows>
         </Row>
 

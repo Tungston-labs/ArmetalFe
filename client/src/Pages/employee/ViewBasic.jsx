@@ -32,6 +32,7 @@ import {
   FieldWrapper,
   FieldWrappers,
   EmployeeImage,
+  ResponsiveH3,
 } from "./ViewBasic.Style";
 import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
@@ -192,7 +193,8 @@ useEffect(() => {
       </Header>
 
       <Hr />
-      <h3>Employee Details</h3>
+<ResponsiveH3>Employee Details</ResponsiveH3>
+
 
       {/* Form */}
       <FormWrapper>
@@ -344,27 +346,19 @@ useEffect(() => {
         <Rowes>
           <FieldGroup>
             <Label>Department</Label>
-            <select
-              name="department"
-              value={formData.department || ""}
-              onChange={handleChange}
-              disabled={!editMode}
-              style={{
-                backgroundColor: "white",
-                padding: "0.7rem",
-                fontSize: "0.9rem",
-                borderRadius: "7px",
-                border: "1px solid #052DB4",
-                width: "100%",
-              }}
-            >
-              <option value="">Select Department</option>
-              {departmentList.map((dept) => (
-                <option key={dept.id} value={dept.id}>
-                  {dept.name}
-                </option>
-              ))}
-            </select>
+           <Select
+  name="department"
+  value={formData.department || ""}
+  onChange={handleChange}
+  disabled={!editMode}
+>
+  <option value="">Select Department</option>
+  {departmentList.map((dept) => (
+    <option key={dept.id} value={dept.id}>
+      {dept.name}
+    </option>
+  ))}
+</Select>
           </FieldGroup>
 
           <FieldGroup>

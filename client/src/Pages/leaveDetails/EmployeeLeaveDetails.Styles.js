@@ -23,32 +23,69 @@ export const InfoGrid = styled.div`
 `;
 
 export const ProfileImage = styled.img`
-  width: 150px;
-  height: 150px;
-  border-radius: 10%;
+  width: clamp(50px, 8vw, 200px);   /* min 50px, max 250px, scales with viewport */
+  height: clamp(50px, 10vw, 250px);  /* keeps square shape */
+  border-radius: 10%;                 /* rounded corners */
   object-fit: cover;
 
+  /* Optional fine-tuning for very small screens */
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Optional fine-tuning for tablets */
   @media (max-width: 768px) {
-    width: 50px;
+    width: 60px;
     height: 60px;
   }
 
-  @media (max-width: 480px) {
-    width: 20px;
-    height: 30px;
+  /* Optional fine-tuning for large ultra-wide screens */
+  @media (min-width: 3840px) { /* 4K */
+    /* width: 300px; */
+    height: 300px;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    width: 400px;
+    height: 400px;
   }
 `;
 
 
 export const Input = styled.input`
-  padding: 0.6rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 99%;
-  margin-bottom: 1rem;
+  width: 100%;
+  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
+  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  color: black;
   border-radius: 7px;
-border: 1px solid #3253C1;
-background: #FFF;
+  border: 1px solid #052DB4;
+  background: #FFF;
+  box-sizing: border-box;
+margin-top:5px;
+  /* Responsive refinements */
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    padding: 1.5rem 2rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 1.3rem;
+    padding: 1.4rem 2rem;
+    margin-bottom:1rem;
+  }
 `;
 
 export const TextArea = styled.textarea`
@@ -62,13 +99,50 @@ export const TextArea = styled.textarea`
   border-radius: 7px;
 border: 1px solid #3253C1;
 background: #FFF;
+  font-size: clamp(0.8rem, 1vw, 1.5rem);
+
+  &:focus {
+    outline: none;
+    border-color: #002ea3;
+    box-shadow: 0 0 5px rgba(50, 83, 193, 0.3);
+  }
+
+  /* Extra-large (4K) screens */
+  @media (min-width: 3840px) {
+    min-height: 250px;
+    font-size: 1.8rem;
+    padding: 1.5rem;
+  }
+
+  /* Ultra-large (8K) screens */
+  @media (min-width: 7680px) {
+    min-height: 350px;
+    font-size: 2rem;
+    padding: 2rem;
+  }
 `;
 
-export const SectionTitle = styled.h4`
-  // margin-top: 2rem;
-  margin-bottom: 0.5rem;
-  color: #333;
 
+export const SectionTitle = styled.h4`
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #000;
+  font-family: Satoshi;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.3;
+
+  /* Responsive font sizing */
+  font-size: clamp(1rem, 1.2vw, 2rem);
+
+  /* Adjust for ultra-wide screens */
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 3rem;
+  }
 `;
 
 export const TwoColumn = styled.div`
@@ -104,23 +178,62 @@ export const ActionButton = styled.button`
 export const ApproveButton = styled(ActionButton)`
   background-color: rgba(51, 82, 186, 1);
   color: white;
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 24px);
+  border-radius: 8px;
   transition: all 0.3s ease;
 
   &:hover {
-    background-color:blue;
+    background-color: blue;
+    transform: scale(1.05);
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 1.8rem;
+    padding: 18px 36px;
+  }
+
+  @media (min-width: 3840px) { /* 4K */
+    font-size: 2rem;
+    padding: 18px 36px;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    font-size: 2.5rem;
+    padding: 24px 48px;
   }
 `;
-
 
 export const DeclineButton = styled(ActionButton)`
   background-color: #f17070;
   color: white;
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 24px);
+  border-radius: 8px;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color:rgb(240, 47, 40); /* darker red */
+    background-color: rgb(240, 47, 40);
     opacity: 0.9;
+    transform: scale(1.05);
+  }
+
+@media (min-width: 2560px) { /* 4K */
+    font-size: 1.8rem;
+    padding: 18px 36px;
+  }
+
+  @media (min-width: 3840px) { /* 4K */
+    font-size: 2rem;
+    padding: 18px 36px;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    font-size: 2.5rem;
+    padding: 24px 48px;
   }
 `;
+
 
 export const TopBar = styled.div`
   display: flex;
@@ -185,16 +298,35 @@ export const InfoSection = styled.div`
 `;
 
 export const FullWidthInput = styled.input`
-  width: 97%;
-  padding: 0.6rem 1rem;
+  width: clamp(90%, 97%, 100%);             /* responsive width */
+  padding: clamp(0.5rem, 1vw, 1rem);       /* responsive padding */
   margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  height:40%;
+  border: 1px solid #3253C1;
   border-radius: 7px;
-border: 1px solid #3253C1;
-background: #FFF;
+  height: clamp(35px, 5vw, 60px);          /* responsive height */
+  background: #FFF;
+  font-size: clamp(0.8rem, 1vw, 1rem);     /* responsive font size */
+
+  &:focus {
+    outline: none;
+    border-color: #002ea3;
+    box-shadow: 0 0 5px rgba(50, 83, 193, 0.3);
+  }
+
+  /* Ultra-large screens */
+  @media (min-width: 3840px) { /* 4K */
+    height: 10rem;
+    padding: 1.5rem;
+    font-size: 2rem;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    height: 120px;
+    padding: 2rem;
+    font-size: 2rem;
+  }
 `;
+
 
 export const TwoColumnRow = styled.div`
   display: grid;
@@ -296,3 +428,15 @@ export const EmployeeImage = styled.img`
     color: #1e3a8a; /* darker shade on hover */
   }
 `;
+export const ProfileImageWrapper = styled.div`
+  width: clamp(60px, 10%, 200px); /* min 60px, max 200px, scales with screen */
+  height: clamp(60px, 10%, 200px);
+  overflow: hidden;
+  border-radius: 10%; /* square with rounded corners */
+`;
+
+// export const ProfileImage = styled.img`
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+// `;

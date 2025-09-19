@@ -25,7 +25,8 @@ import {
   FlexRows,
   DateField,
   EmployeeImage,
-  BackArrow
+  BackArrow,
+  ProfileImageWrapper
 } from "./EmployeeLeaveDetails.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
@@ -36,6 +37,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
+import { Label } from "../employee/BasicLevel.Styles";
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -96,12 +98,10 @@ if (loading) {
       <Hr />
     
       <InfoGrid>
-        <div style={{ width: "10%" }}>
-          <ProfileImage
-            src={employee.profile_pic}
-            alt="Employee"
-          />
-        </div>
+       <ProfileImageWrapper>
+  <ProfileImage src={employee.profile_pic} alt="Employee" />
+</ProfileImageWrapper>
+
         <div style={{ display: "flex", width: "90%", justifyContent: "space-between" }}>
           <TwoColumn>
             <Input placeholder="Name" value={employee.name || ''} readOnly />
@@ -137,11 +137,11 @@ if (loading) {
         </LeftSide>
         <RightSide>
           <DateField>
-            <label>From</label>
+            <Label>From</Label>
             <Input type="date" value={leaveDetails?.from_date || ''} readOnly />
           </DateField>
           <DateField>
-            <label>To</label>
+            <Label>To</Label>
             <Input type="date" value={leaveDetails?.to_date || ''} readOnly />
           </DateField>
         </RightSide>

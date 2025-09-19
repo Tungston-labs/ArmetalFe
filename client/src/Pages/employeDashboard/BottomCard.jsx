@@ -97,9 +97,9 @@ const DailyTaskList = () => {
       <Section>
         <Header>
           <Title>Daily Task List</Title>
-          <RightArrow>
+          {/* <RightArrow>
             <BiSolidRightTopArrowCircle size={28} />
-          </RightArrow>
+          </RightArrow> */}
         </Header>
 
         <TaskList>
@@ -114,9 +114,9 @@ const DailyTaskList = () => {
           <TaskRole>{task.project || "N/A"}</TaskRole>
           <TaskDescription>{task.task || "No description"}</TaskDescription>
         </TaskContent>
-        <RightArrow>
+        {/* <RightArrow>
           <FiArrowUpRight size={16} />
-        </RightArrow>
+        </RightArrow> */}
       </TaskCard>
     ))
   ) : (
@@ -135,9 +135,9 @@ const DailyTaskList = () => {
       <Section>
         <AttendanceHeader>
           <Title>{new Date().toLocaleDateString()}</Title>
-          <RightArrow>
+          {/* <RightArrow>
             <BiSolidRightTopArrowCircle size={28} />
-          </RightArrow>
+          </RightArrow> */}
         </AttendanceHeader>
 
         <Table>

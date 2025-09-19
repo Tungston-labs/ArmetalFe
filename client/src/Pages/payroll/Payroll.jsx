@@ -9,7 +9,9 @@ import {
   SectionTitles,
   TableHeadingEarnings,
   TableHeadingDeductions,
-  BackTitle
+  BackTitle,
+  SectionHeading,
+  BackIcon
 } from './Payroll.styles';
 import { BsPrinter } from "react-icons/bs";
 import { printElement } from '../../services/utlis/printPayroll';
@@ -57,8 +59,8 @@ const PayrollDetails = () => {
     <Container>
       <Header>
      <LeftHeader>
-  <BackTitle onClick={() => navigate(-1)}>
-    <HiArrowLeft size={20} />
+  <BackTitle onClick={() => navigate("/payrolldetails")}>
+   <BackIcon />
     <Title>Employee Details</Title>
   </BackTitle>
 </LeftHeader>
@@ -83,7 +85,8 @@ const PayrollDetails = () => {
 
      <GridLayout>
   <TableWrapper>
-    <h3 style={{fontFamily:"Satoshi",fontWeight:"700"}}>Net pay Summary</h3>
+   {/* <SectionHeading>Net Pay Summary</SectionHeading> */}
+
     <TableHeadingEarnings>Field Label</TableHeadingEarnings>
     <Table>
       <tbody>
@@ -119,54 +122,59 @@ const PayrollDetails = () => {
   <TableWrapper>
     <SectionTitles>Salary Earnings</SectionTitles>
 
-    <TableHeadingEarnings>
-      <div>Earnings</div>
-      <div>Days</div>
-      <div>Hours</div>
-      <div>Amount</div>
-    </TableHeadingEarnings>
+   <Table>
+  <thead>
+    <tr>
+      <th>Earnings</th>
+      <th>Days</th>
+      <th>Hours</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {earnings?.map((item, index) => (
+      <tr key={index}>
+        <TableData>{item.label}</TableData>
+        <TableData>{item.days ?? '-'}</TableData>
+        <TableData>{item.hours ?? '-'}</TableData>
+        <TableData>{item.amount}</TableData>
+      </tr>
+    ))}
+    <TotalRow>
+      <TableData colSpan="3"><strong>Total Earnings</strong></TableData>
+      <TableData><strong>{gross_earnings}</strong></TableData>
+    </TotalRow>
+  </tbody>
+</Table>
 
-    <Table>
-      <tbody>
-        {earnings?.map((item, index) => (
-          <tr key={index}>
-            <TableData>{item.label}</TableData>
-            <TableData>{item.days ?? '-'}</TableData>
-            <TableData>{item.hours ?? '-'}</TableData>
-            <TableData>{item.amount}</TableData>
-          </tr>
-        ))}
-        <TotalRow>
-          <TableData colSpan="3"><strong>Total Earnings</strong></TableData>
-          <TableData><strong>{gross_earnings}</strong></TableData>
-        </TotalRow>
-      </tbody>
-    </Table>
+
   </TableWrapper>
 
   {/* Salary Deductions */}
   <TableWrapper>
     <SectionTitles>Salary Deductions</SectionTitles>
 
-    <TableHeadingDeductions>
-      <div>Deductions</div>
-      <div>Value</div>
-    </TableHeadingDeductions>
+   <Table>
+  <thead>
+    <tr>
+      <th>Deductions</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    {deductions?.map((item, index) => (
+      <tr key={index}>
+        <TableData>{item.label}</TableData>
+        <TableData>{item.value}</TableData>
+      </tr>
+    ))}
+    <TotalRow>
+      <TableData><strong>Total Deduction</strong></TableData>
+      <TableData><strong>{total_deductions}</strong></TableData>
+    </TotalRow>
+  </tbody>
+</Table>
 
-    <Table>
-      <tbody>
-        {deductions?.map((item, index) => (
-          <tr key={index}>
-            <TableData>{item.label}</TableData>
-            <TableData>{item.value}</TableData>
-          </tr>
-        ))}
-        <TotalRow>
-          <TableData><strong>Total Deduction</strong></TableData>
-          <TableData><strong>{total_deductions}</strong></TableData>
-        </TotalRow>
-      </tbody>
-    </Table>
   </TableWrapper>
 </GridLayout>
 

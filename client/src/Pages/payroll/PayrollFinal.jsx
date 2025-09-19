@@ -22,7 +22,7 @@ import { getDepartments } from '../../Redux/departmentSlice';
 import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
-import { FaCheck } from "react-icons/fa";
+import VerificationCircles from '../../Components/VerificationCircle';
 import HolidayIcon from "../../assets/payroll.svg";
 
 const months = [
@@ -403,44 +403,14 @@ const PayrollTable = () => {
                         <GoInfo style={{ cursor: 'pointer', color: "black" }} />
                       </Link>
                     </Td>
-                    <Td>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <div
-                          onClick={(e) => handleCircleClick(e, emp, 'first')}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            border: '2px solid #ccc',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: verificationStatus[emp.id]?.first ? 'not-allowed' : 'pointer'
-                          }}
-                        >
-                          {verificationStatus[emp.id]?.first && (
-                            <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
-                          )}
-                        </div>
-                        <div
-                          onClick={(e) => handleCircleClick(e, emp, 'second')}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            border: '2px solid #ccc',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: verificationStatus[emp.id]?.second ? 'not-allowed' : 'pointer'
-                          }}
-                        >
-                          {verificationStatus[emp.id]?.second && (
-                            <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
-                          )}
-                        </div>
-                      </div>
-                    </Td>
+                  <Td>
+  <VerificationCircles
+    emp={emp}
+    verificationStatus={verificationStatus}
+    handleCircleClick={handleCircleClick}
+  />
+</Td>
+
                     <Td>
                     <Select
   value={emp.status || ''}

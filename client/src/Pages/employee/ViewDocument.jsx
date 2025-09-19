@@ -9,7 +9,8 @@ import {
   TitleSection,
   FieldWrapper,
   Label,
-  EmployeeImage
+  EmployeeImage,
+  ResponsiveH3
 } from "./ViewDocument.Styles";
 import { uploadImageThunk } from "../../Redux/employeeSlice";
 import { LuCirclePlus } from "react-icons/lu";
@@ -192,7 +193,7 @@ const navigate = useNavigate();
       </Header>
 
       <Hr />
-      <h3>Employee Documents</h3>
+     <ResponsiveH3>Employee Documents</ResponsiveH3>
 
       <FormWrapper>
         <ImageColumn>
