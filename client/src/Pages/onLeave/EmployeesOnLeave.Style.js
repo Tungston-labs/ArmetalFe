@@ -280,7 +280,10 @@ export const DeptTitle = styled.div`
   font-family: Raleway;
   line-height: 1.2;
   letter-spacing: 0%;
-
+white-space: nowrap;        /* Keep text on one line */
+  overflow: hidden;           /* Hide overflow */
+  text-overflow: ellipsis;    /* Show '...' when truncated */
+  max-width: 10ch;             /* Approx 7 characters width */
   /* Small devices */
   @media (max-width: 600px) {
     font-size: 0.9rem;
