@@ -143,11 +143,17 @@ const Department = () => {
     departments.map((dept) => {
       const initial = dept.name?.[0]?.toUpperCase() || '?';
       return (
-        <DepartmentCard key={dept.id} onClick={() => handleCardClick(dept.id)}>
+<DepartmentCard key={dept.id} onClick={() => handleCardClick(dept.id)}>
   <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
     <InitialCircle className="initial-circle">{initial}</InitialCircle>
     <div>
-      <h3 className="dept-name">{dept.name}</h3>
+      <h3 
+        className="dept-name" 
+        title={dept.name} // tooltip for full dept name
+      >
+        {dept.name?.length > 10 ? dept.name.slice(0, 10) + "..." : dept.name}
+      </h3>
+
       <HeadInfo>
         <small className="subtitle">Department Head</small>
         <div className="head-row">
@@ -160,10 +166,20 @@ const Department = () => {
           ) : (
             <PiUserCirclePlusThin size={24} color="#999" />
           )}
-          <p className="head-name">
-            {typeof dept.department_head === 'object'
-              ? dept.department_head?.name
-              : dept.department_head || 'Not Assigned'}
+          <p 
+            className="head-name"
+            title={
+              typeof dept.department_head === 'object'
+                ? dept.department_head?.name
+                : dept.department_head || 'Not Assigned'
+            }
+          >
+            {(() => {
+              const headName = typeof dept.department_head === 'object'
+                ? dept.department_head?.name
+                : dept.department_head || 'Not Assigned';
+              return headName?.length > 10 ? headName.slice(0, 10) + "..." : headName;
+            })()}
           </p>
         </div>
       </HeadInfo>
@@ -171,12 +187,13 @@ const Department = () => {
   </div>
 
   <CardRight>
-  <div className="card-value">{dept.reimbursement_request_count || 0}</div>
+    <div className="card-value">{dept.reimbursement_request_count || 0}</div>
     <div className="arrow-icon">
       <GoArrowUpRight size={15} style={{ strokeWidth: 2 }} />
     </div>
   </CardRight>
 </DepartmentCard>
+
 
       );
     })

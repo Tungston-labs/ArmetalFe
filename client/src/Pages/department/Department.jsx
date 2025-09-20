@@ -77,6 +77,10 @@ const Department = () => {
   
 
   const handleSave = async () => {
+    if (formData.department_code.length > 10) {
+    setFormError("Department code cannot be more than 10 characters.");
+    return;
+  }
     try {
       const result = await dispatch(createNewDepartment(formData));
 
@@ -168,22 +172,40 @@ const Department = () => {
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
                     <InitialCircle className="initial-circle">{initial}</InitialCircle>
                     <div>
-                      <h3 className="dept-name">{dept.name}</h3>
-                      <HeadInfo>
-                        <small className="subtitle">Department Head</small>
-                        <div className="head-row">
-                          {typeof dept.department_head === 'object' && dept.department_head?.profile_pic ? (
-                            <img src={dept.department_head.profile_pic} alt={dept.department_head.name} />
-                          ) : (
-                            <PiUserCirclePlusThin size={24} color="#999" />
-                          )}
-                          <p className="head-name">
-                            {typeof dept.department_head === 'object'
-                              ? dept.department_head?.name
-                              : dept.department_head || 'Not Assigned'}
-                          </p>
-                        </div>
-                      </HeadInfo>
+                     <h3 
+  className="dept-name" 
+  title={dept.name} // tooltip shows full dept name
+>
+  {dept.name?.length > 10 ? dept.name.slice(0, 10) + "..." : dept.name}
+</h3>
+
+<HeadInfo>
+  <small className="subtitle">Department Head</small>
+  <div className="head-row">
+    {typeof dept.department_head === 'object' && dept.department_head?.profile_pic ? (
+      <img src={dept.department_head.profile_pic} alt={dept.department_head.name} />
+    ) : (
+      <PiUserCirclePlusThin size={24} color="#999" />
+    )}
+    <p 
+      className="head-name" 
+      title={
+        typeof dept.department_head === 'object'
+          ? dept.department_head?.name
+          : dept.department_head || 'Not Assigned'
+      }
+    >
+      {(() => {
+        const headName = typeof dept.department_head === 'object'
+          ? dept.department_head?.name
+          : dept.department_head || 'Not Assigned';
+        return headName?.length > 10 ? headName.slice(0, 10) + "..." : headName;
+      })()}
+    </p>
+  </div>
+</HeadInfo>
+
+                      
                     </div>
                   </div>
 

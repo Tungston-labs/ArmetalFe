@@ -266,6 +266,8 @@ export const AddButton = styled.button`
     align-self: center;
     margin-left: 0;
   }
+
+  
 `;
 
 
