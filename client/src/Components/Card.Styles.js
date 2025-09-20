@@ -334,7 +334,7 @@ export const EmployeeDept = styled.span`
 
 export const IconWrapper = styled.div`
   position: absolute;
-  right: 10px;
+  right: 0px;
   bottom: 10px;
   color: #3352BA;
   cursor: pointer;
@@ -366,8 +366,8 @@ export const IconWrapper = styled.div`
 
   /* 🖥️ 2K */
   @media (min-width: ${breakpoints.tv}) {
-    right: 15px;
-    bottom: 15px;
+    right: 0px;
+    bottom: 0px;
     font-size: 1.5rem; /* bigger icon */
     svg{
       height: 30px;
@@ -377,8 +377,8 @@ export const IconWrapper = styled.div`
 
   /* 🖥️ 4K */
   @media (min-width: ${breakpoints.largeTv}) {
-    right: 20px;
-    bottom: 20px;
+    /* right: 20px;
+    bottom: 20px; */
     font-size: 2rem;
     svg{
       height: 40px;
