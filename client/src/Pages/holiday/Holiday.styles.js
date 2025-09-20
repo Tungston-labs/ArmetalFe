@@ -247,27 +247,35 @@ export const Hr = styled.hr`
 export const AddButton = styled.button`
   background-color: #3352BA;
   color: white;
-  padding: clamp(6px, 0.8vw, 20px) clamp(12px, 1.5vw, 36px);
   border: none;
   border-radius: clamp(5px, 0.5vw, 16px);
   cursor: pointer;
   font-size: clamp(0.9rem, 1vw, 1.6rem);
+  padding: clamp(8px, 1vw, 20px) clamp(12px, 1.5vw, 36px);
   height: clamp(36px, 4vh, 64px);
+  transition: all 0.3s ease;
+
+  /* Alignment defaults */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   align-self: flex-end;
   margin-left: auto;
-  transition: all 0.3s ease;
-  max-width: 260px; /* keeps it from exploding on wide screens */
+  width: auto;
+  max-width: 260px;
 
   &:hover {
     background-color: #26408B;
   }
 
-  /* Mobile (small phones) */
+  /* Mobile phones */
   @media (max-width: 480px) {
     width: 100%;
+    max-width: none;
     align-self: center;
     margin-left: 0;
-    max-width: none;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    padding: clamp(8px, 2vw, 16px) clamp(12px, 4vw, 20px);
   }
 
   /* Tablets */
@@ -275,39 +283,38 @@ export const AddButton = styled.button`
     width: 80%;
     align-self: center;
     margin-left: 0;
+    font-size: clamp(1rem, 1.5vw, 1.4rem);
   }
 
-  /* Laptops */
-  @media (min-width: 769px) and (max-width: 1200px) {
+  /* Laptops & desktops */
+  @media (min-width: 769px) and (max-width: 2560px) {
     width: auto;
-    max-width: 280px;
-  }
-
-  /* Desktops */
-  @media (min-width: 1201px) and (max-width: 2560px) {
-    font-size: clamp(1rem, 0.9vw, 1.6rem);
-    padding: clamp(12px, 0.8vw, 20px) clamp(16px, 1.2vw, 36px);
     max-width: 300px;
+    font-size: clamp(1rem, 0.9vw, 1.6rem);
+    padding: clamp(12px, 1vw, 20px) clamp(16px, 1.2vw, 36px);
+  }
+    @media (min-width: 1500px) and (max-width: 2560px) {
+    max-width: 400px;
+    font-size: clamp(1rem, 0.9vw, 1.6rem);
+    padding: clamp(25px, 1vw, 200px) clamp(16px, 1.2vw, 360px);
   }
 
-  /* 4K screens */
-  @media (min-width: 2561px) and (max-width: 3840px) {
+  /* Ultra HD / 4K */
+  @media (min-width: 2500px) and (max-width: 3840px) {
     font-size: clamp(1.2rem, 0.8vw, 2rem);
-    padding: 20px 48px;
+    padding: clamp(30px, 1vw, 24px) clamp(20px, 1.5vw, 48px);
     max-width: 340px;
   }
 
   /* 8K screens */
-  @media (min-width: 3841px) {
-    font-size: clamp(1.4rem, 0.7vw, 2rem);
-    padding: 24px 48px;
+  @media (min-width: 3800px) {
+    font-size: clamp(1.8rem, 0.9vw, 2.8rem);
+    padding: clamp(50px, 1vw, 28px) clamp(35px, 1.5vw, 480px);
     max-width: 400px;
-    display: flex;
-    align-items: center;
-    justify-content:center;
-
+    align-self: center;
   }
 `;
+
 
 
 

@@ -150,87 +150,85 @@ export default function DailyTask() {
           </div>
 
           {/* Date selector */}
-          <div className="calendar-header">
-            <div className="left">
-              <button className="left-lesser">{"<"}</button>
+        <div className="calendar-header">
+  <div className="left">
+    <button className="left-lesser">{"<"}</button>
 
-              {/* Calendar Icon */}
-              <FaRegCalendarAlt
-                className="calendar-icon"
-                onClick={handleIconClick}
-              />
+    <FaRegCalendarAlt
+      className="calendar-icon"
+      onClick={handleIconClick}
+    />
 
-              {/* Hidden date input */}
-              <input
-                type="date"
-                ref={dateInputRef}
-                value={selectedDates}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    setSelectedDates(e.target.value);
-                  } else {
-                    // fallback to today's date
-                    const today = new Date().toISOString().split("T")[0];
-                    setSelectedDates(today);
-                  }
-                }}
-                style={{ display: "none" }}
-              />
+    <input
+      type="date"
+      ref={dateInputRef}
+      value={selectedDate}
+      onChange={(e) => {
+        if (e.target.value) {
+          setSelectedDate(e.target.value); // <-- updates bottom calendar too
+        } else {
+          const today = new Date().toISOString().split("T")[0];
+          setSelectedDate(today);
+        }
+      }}
+      style={{ display: "none" }}
+    />
 
-              <div className="date-info">
-                <div className="day">{new Date(selectedDates).getDate()}</div>
-                <div>
-                  <div className="month">
-                    {new Date(selectedDates).toLocaleString("default", {
-                      month: "long",
-                    })}
-                  </div>
-                  <div className="weekday">
-                    {new Date(selectedDates).toLocaleString("default", {
-                      weekday: "long",
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="nav">
-              <button className="right-greater">{">"}</button>
-            </div>
-          </div>
+    <div className="date-info">
+      <div className="day">{new Date(selectedDate).getDate()}</div>
+      <div>
+        <div className="month">
+          {new Date(selectedDate).toLocaleString("default", {
+            month: "long",
+          })}
+        </div>
+        <div className="weekday">
+          {new Date(selectedDate).toLocaleString("default", {
+            weekday: "long",
+          })}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div className="nav">
+    <button className="right-greater">{">"}</button>
+  </div>
+</div>
+
           {/* <input type="date" value={selectedDate} onChange={handleDateChange} /> */}
         </DateSelector>
+<Calendar>
+  {[...Array(7)].map((_, i) => {
+    const baseDate = new Date(selectedDate); // string → Date
+    const newDate = new Date(baseDate);
+    newDate.setDate(baseDate.getDate() + i);
 
-        <Calendar>
-          {[...Array(6)].map((_, i) => {
-            const baseDate = new Date(selectedDate); // string → Date
-            const newDate = new Date(baseDate);
-            newDate.setDate(baseDate.getDate() + i);
+    const isActive = newDate.toDateString() ===
+                     new Date(selectedDate).toDateString();
 
-            // Compare as Dates
-            const isActive = newDate.toDateString() === baseDate.toDateString();
+    const dayName = newDate.toLocaleString("default", {
+      weekday: "short",
+    });
 
-            const dayName = newDate.toLocaleString("default", {
-              weekday: "short",
-            });
+    return (
+      <Day
+        key={i}
+        active={isActive}
+        onClick={() =>
+          setSelectedDate(newDate.toISOString().split("T")[0])
+        }
+      >
+        <strong>{dayName}</strong>
+        <Hr />
+        <span>
+          {newDate.getDate()}{" "}
+          {newDate.toLocaleString("default", { month: "short" })}
+        </span>
+      </Day>
+    );
+  })}
+</Calendar>
 
-            return (
-              <Day
-                key={i}
-                active={isActive}
-                onClick={() =>
-                  setSelectedDate(newDate.toISOString().split("T")[0])
-                } // keep string in state
-              >
-                <strong>{dayName}</strong>
-                <Hr />
-                <span>
-                  {newDate.getDate()}{" "}
-                  {newDate.toLocaleString("default", { month: "short" })}
-                </span>
-              </Day>
-            );
-          })}
-        </Calendar>
 
         <div style={{ display: "flex", gap: ".5rem" }}>
           <EmployeesPanel>
