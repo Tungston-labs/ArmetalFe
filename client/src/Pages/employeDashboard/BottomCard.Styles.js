@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import NoAttendance from "../../assets/puchtime.svg"; 
 
 export const Container = styled.div`
   display: grid;
@@ -52,6 +53,10 @@ export const Title = styled.h3`
   @media (min-width: 1601px) {
     font-size: 1.8rem;
   }
+     @media (min-width: 2101px) {
+    font-size: 2rem;
+  }
+  
 `;
 
 
@@ -87,6 +92,31 @@ export const TaskList = styled.div`
   flex-direction: column;
   gap: 12px;
 `;
+export const Wrapper = styled.div`
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 12px; 
+`;
+
+export const Image = styled.img`
+  width: 200px;
+  height: auto;
+   @media (min-width: 2200px) {
+    width:400px
+  }
+`
+
+export const Message = styled.p`
+  margin-top: 10px;
+  color: #3352ba;
+  font-size: 16px;
+  font-weight: 500;
+   @media (min-width: 2200px) {
+   font-size: 32px;
+  font-weight: 500;
+   }
+   `;
 
 export const TaskCard = styled.div`
   display: flex;
@@ -97,12 +127,46 @@ export const TaskCard = styled.div`
   // border-left: 4px solid #2d63f3;
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 `;
+export const AttendanceSection = styled.div`
+  display: flex;
+  flex-direction: column;   
+  align-items: center;      
+  justify-content: center;  
+  gap: 10px;                
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+
+  @media (min-width: 2200px) {
+   padding: 20px;
+  }
+`;
+
+export const AttendanceImage = styled.img`
+  width: 200px;
+  height:190px;
+   @media (min-width: 2200px) {
+    width:400px;
+    height:340px;
+  }
+`;
+
+export const Text = styled.span`
+  color: #3352ba;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  @media (min-width: 2200px) {
+   font-size: 32px;
+  font-weight: 500;
+  }
+`;
 export const Divider = styled.div`
   width: 5px;
   background-color: #3352BA; /* light gray */
   margin: 0 12px;
   height: auto;
-align-self: stretch;
+  align-self: stretch;
 
 `;
 
@@ -158,11 +222,13 @@ export const TableRow = styled.tr`
 `;
 
 export const TableCell = styled.td`
-  padding: 12px 10px;
   text-align: center;
   font-size: 14px;
   color: #333;
-  
+   @media (min-width: 2200px) {
+    font-size: 34px;
+    padding-top: 20px;
+  }
 `;
 
 export const TimeIn = styled.span`

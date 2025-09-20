@@ -25,7 +25,7 @@ export const Header = styled.div`
 export const EmployeeImage = styled.img`
   height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
   width: auto; /* maintain aspect ratio */
-  
+
   @media (min-width: 768px) {
     height: clamp(20px, 6vw, 20px);
   }
@@ -44,30 +44,36 @@ export const EmployeeImage = styled.img`
 
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
-  }`;
+  }
+`;
 
 export const EditButton = styled.button`
   display: flex; /* icon + text */
   align-items: center;
   justify-content: center; /* center content */
-  gap: 0.4rem; 
+  gap: 0.4rem;
   padding: clamp(0.3rem, 0.5vw, 0.6rem);
   border: none;
-  background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(23, 37, 84, 1) 50%,
+    rgba(51, 82, 186, 1) 100%
+  );
   color: white;
   border-radius: 8px;
-  
-  width: clamp(80px, 4vw, 100px); 
-   height: clamp(35px, 4vw, 40px);  
-  font-size: clamp(0.8rem, 0.9vw, 1rem); 
+
+  width: clamp(80px, 4vw, 100px);
+  height: clamp(35px, 4vw, 40px);
+  font-size: clamp(0.8rem, 0.9vw, 1rem);
   cursor: pointer;
 
   svg {
-    font-size: clamp(0.9rem, 1vw, 1.2rem); 
+    font-size: clamp(0.9rem, 1vw, 1.2rem);
   }
 
   /* Ultra-large screens */
-  @media (min-width: 3840px) { /* 4K */
+  @media (min-width: 3840px) {
+    /* 4K */
     width: 150px;
     height: 60px;
     font-size: 1.2rem;
@@ -77,7 +83,8 @@ export const EditButton = styled.button`
     }
   }
 
-  @media (min-width: 7680px) { /* 8K */
+  @media (min-width: 7680px) {
+    /* 8K */
     width: 200px;
     height: 80px;
     font-size: 1.6rem;
@@ -88,11 +95,10 @@ export const EditButton = styled.button`
   }
 `;
 
-
 export const Row = styled.div`
   display: flex;
   gap: 2.5rem;
-  width:100%;
+  width: 100%;
   flex-wrap: wrap;
   align-items: flex-start;
 `;
@@ -112,17 +118,16 @@ export const RightSection = styled.div`
   min-width: 300px;
 `;
 
-
 export const Input = styled.input`
   width: 100%;
   padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
   font-size: clamp(0.8rem, 0.9vw, 1.1rem);
   color: black;
   border-radius: 7px;
-  border: 1px solid #052DB4;
-  background: #FFF;
+  border: 1px solid #052db4;
+  background: #fff;
   box-sizing: border-box;
-margin-top:5px;
+  margin-top: 5px;
   /* Responsive refinements */
   @media (max-width: 480px) {
     font-size: 0.8rem;
@@ -132,19 +137,19 @@ margin-top:5px;
   @media (min-width: 1920px) {
     font-size: 1.5rem;
     padding: 1rem 1rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 
   @media (min-width: 3840px) {
     font-size: 2rem;
     padding: 1.5rem 2rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 
   @media (min-width: 7680px) {
     font-size: 1.3rem;
     padding: 1.4rem 2rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -154,18 +159,24 @@ export const ResponsiveH3 = styled.h3`
   color: #030303;
 
   /* Responsive font size */
-  font-size: clamp(1rem, 2vw, 1.2rem); /* min 1rem, max 2rem, scales with viewport */
+  font-size: clamp(
+    1rem,
+    2vw,
+    1.2rem
+  ); /* min 1rem, max 2rem, scales with viewport */
 
   /* Optional: adjust margin for responsiveness */
   margin-top: clamp(0.5rem, 1vw, 1rem);
   margin-bottom: clamp(0.5rem, 1vw, 1rem);
 
   /* Ultra-large screens */
-  @media (min-width: 3840px) { /* 4K */
+  @media (min-width: 3840px) {
+    /* 4K */
     font-size: 3rem;
   }
 
-  @media (min-width: 7680px) { /* 8K */
+  @media (min-width: 7680px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -178,8 +189,8 @@ export const Textarea = styled.textarea`
   resize: none;
   height: 95px;
   border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
+  border: 1px solid #052db4;
+  background: #fff;
 `;
 export const FieldWrapper = styled.div`
   display: flex;
@@ -192,7 +203,7 @@ export const FieldWrappers = styled.div`
   width: 100%;
 `;
 export const Label = styled.label`
-  color: #3352BA;
+  color: #3352ba;
   font-weight: 400;
   margin-bottom: 0.4rem;
   font-size: 0.9rem;
@@ -230,10 +241,8 @@ export const Avatar = styled.img`
   object-fit: cover;
 `;
 
-
-
 export const Section = styled.div`
-//   padding: 2rem;
+  //   padding: 2rem;
   background: white;
   font-family: sans-serif;
 `;
@@ -277,18 +286,20 @@ export const Tab = styled.button`
     padding: 1rem 2rem;
   }
 
-  @media (min-width: 3840px) { /* 4K */
+  @media (min-width: 3840px) {
+    /* 4K */
     font-size: 2rem;
     padding: 1.2rem 2.2rem;
   }
 
-  @media (min-width: 7680px) { /* 8K */
+  @media (min-width: 7680px) {
+    /* 8K */
     font-size: 2.5rem;
     padding: 1.5rem 3rem;
   }
 `;
 export const GroupLabel = styled.h4`
- margin-top: 1rem;
+  margin-top: 1rem;
   margin-bottom: 0.5rem;
   color: #000;
   font-family: Satoshi;
@@ -309,12 +320,11 @@ export const GroupLabel = styled.h4`
   }
 `;
 
-
 export const Rows = styled.div`
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
-  align-items: flex-start; 
+  align-items: flex-start;
   background-color: #fff;
 `;
 
@@ -322,10 +332,10 @@ export const Select = styled.select`
   width: 100%;
   padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
   border-radius: 7px;
-  border: 1px solid #052DB4;
-  background: #FFF;
+  border: 1px solid #052db4;
+  background: #fff;
   color: black;
-margin-top:5px;
+  margin-top: 5px;
   /* Fluid responsive font size */
   font-size: clamp(0.75rem, 0.9vw, 1rem);
 
@@ -338,7 +348,7 @@ margin-top:5px;
 
   &:focus {
     outline: none;
-    border-color: #3352BA;
+    border-color: #3352ba;
     box-shadow: 0 0 4px rgba(5, 45, 180, 0.3);
   }
 
@@ -351,19 +361,19 @@ margin-top:5px;
   @media (min-width: 1920px) {
     font-size: 1.5rem;
     padding: 1.2rem 1rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 
   @media (min-width: 3840px) {
     font-size: 2rem;
     padding: 1.5rem 2rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 
   @media (min-width: 7680px) {
     font-size: 1.3rem;
     padding: 1.4rem 2rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -373,11 +383,10 @@ export const Column = styled.div`
   gap: 1rem; /* adds vertical spacing */
 `;
 
-
 export const Button = styled.button`
-  display: block;             /* makes margin: auto work */
-  margin: 1rem auto 0 auto;   /* top: 1rem, auto on left/right to center */
-  background:#172554;
+  display: block; /* makes margin: auto work */
+  margin: 1rem auto 0 auto; /* top: 1rem, auto on left/right to center */
+  background: #172554;
   color: white;
   border: none;
   padding: 0.6rem 2rem;
@@ -401,14 +410,14 @@ export const Rowes = styled.div`
     border-radius: 6px;
     min-width: 0;
     border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
+    border: 1px solid #052db4;
+    background: #fff;
   }
 `;
 export const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 2rem; 
+  gap: 2rem;
 `;
 
 export const TextGroup = styled.div`
@@ -483,10 +492,10 @@ export const Subtitle = styled.p`
 `;
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
+
   align-items: center;
-  padding: 0.3rem ;
+  padding: 0.3rem;
   // border: 1px solid #ccc;
   // border-radius: 8px;
   background-color: #fff;
@@ -518,13 +527,19 @@ export const FormWrapper = styled.div`
   display: flex;
   gap: 2rem;
   align-items: flex-start;
+  @media (min-width: 2000px) {
+    height: 400px;
+  }
+  @media (min-width: 3500px) {
+    height: 510px;
+  }
 `;
 export const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 10px;
+  height: 10px;
   border-radius: 10%;
   object-fit: cover;
-
+  /* style={{ width: 150, height: 150, borderRadius: "10%", objectFit: "cover" }} */
   @media (max-width: 768px) {
     width: 50px;
     height: 60px;
@@ -539,16 +554,24 @@ export const ImageColumn = styled.div`
   flex: 0 0 auto;
 
   img {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 210px;
     border-radius: 10px;
     object-fit: cover;
+
+    @media (min-width: 2000px) {
+      width: 250px;
+      height: 100%;
+    }
+    @media (min-width: 3500px) {
+      width: 300px;
+      height: 100%;
+    }
   }
 `;
 export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
-
 `;
 
 export const FullPageLoaderWrapper = styled.div`

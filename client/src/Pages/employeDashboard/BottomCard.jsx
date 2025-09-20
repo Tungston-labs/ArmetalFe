@@ -21,6 +21,12 @@ import {
   TimeIn,
   TimeOut,
   Divider,
+  Wrapper,
+  Image,
+  Message,
+  AttendanceSection,
+  AttendanceImage,
+  Text,
 } from "./BottomCard.Styles";
 import NoTasks from "../../assets/daliy.svg"; // for empty tasks
 import NoAttendance from "../../assets/puchtime.svg"; 
@@ -120,12 +126,10 @@ const DailyTaskList = () => {
       </TaskCard>
     ))
   ) : (
-    <div style={{ textAlign: "center", padding: "20px", background: "white" }}>
-      <img src={NoTasks} alt="No tasks" style={{ width: "200px", height: "auto" }} />
-      <p style={{ marginTop: "10px", color: "#3352BA", fontSize: "16px" }}>
-        Today's task list is empty
-      </p>
-    </div>
+    <Wrapper>
+      <Image src={NoTasks} alt="No tasks" />
+      <Message>Today's task list is empty</Message>
+    </Wrapper>
   )}
 </TaskList>
 
@@ -175,10 +179,10 @@ const DailyTaskList = () => {
   ) : (
     <TableRow>
       <TableCell colSpan={3} style={{ textAlign: "center" }}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-          <img src={NoAttendance} alt="No attendance" style={{ width: "290px", height: "auto" }} />
-          <span style={{ color: "#3352BA", fontSize: "16px" }}>No attendance recorded today</span>
-        </div>
+     <AttendanceSection>
+      <AttendanceImage src={NoAttendance} alt="No attendance" />
+      <Text>No attendance recorded today</Text>
+    </AttendanceSection>
       </TableCell>
     </TableRow>
   )}

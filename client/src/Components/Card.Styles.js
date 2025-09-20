@@ -158,7 +158,7 @@ export const Divider = styled.div`
   /* 🖥️ 4K screens */
   @media (min-width: ${breakpoints.largeTv}) {
     display: block;
-    margin-left: 60px;
+    margin-left: 65px;
     width: 5px;
     left: 80px;
   }

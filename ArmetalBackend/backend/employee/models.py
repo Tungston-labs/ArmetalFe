@@ -90,7 +90,7 @@ class Employee_db(TimeStampedModel):
 class EmpBankPaymentModel(models.Model):
     PAYMENT_MODES = [
         ('online', 'Online'),
-        ('cod', 'Cash on Delivery'),
+        ('by cash', 'By Cash'),
         ('cheque', 'Cheque'),
     ]
 

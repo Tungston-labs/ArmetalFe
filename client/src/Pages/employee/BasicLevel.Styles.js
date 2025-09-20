@@ -297,6 +297,11 @@ export const ApproveButton = styled(ActionButton)`
     height: 50px;
     font-size: 1.2rem;
   }
+  @media (min-width: 3840px) { /* 4K */
+    height: 5rem;
+    width: 15rem;
+    font-size: 2.5rem;
+  }
 
   @media (min-width: 7680px) { /* 8K */
     width: clamp(120px, 5%, 200px);

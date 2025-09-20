@@ -156,12 +156,17 @@ export const CheckboxContainer = styled.div`
     appearance: none;
     width: clamp(16px, 2vw, 20px);
     height: clamp(16px, 2vw, 20px);
-    background-color: black;
+    background-color: white; /* default background */
     border-radius: 2px;
     border: 2px solid #000;
     margin-right: 16px;
     cursor: pointer;
     position: relative;
+    transition: all 0.2s ease-in-out;
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: black; /* background turns black when checked */
   }
 
   input[type="checkbox"]:checked::after {
@@ -175,6 +180,7 @@ export const CheckboxContainer = styled.div`
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
+
   @media (min-width: 3840px) {
     input {
       padding: 1rem;
@@ -182,6 +188,7 @@ export const CheckboxContainer = styled.div`
     font-size: 2rem;
   }
 `;
+
 
 export const Button = styled.button`
   width: 100%;
