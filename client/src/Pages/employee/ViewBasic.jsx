@@ -176,12 +176,12 @@ useEffect(() => {
           <TitleSection>
             <LuArrowLeft
               style={{ width: 30, height: 30, cursor: "pointer", color: "#304EB0" }}
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/employee")}
             />
            <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
             <div>
               <Title>Employee</Title>
-              <Subtitle style={{ color: "#304EB0" }}>Manage your Employee.</Subtitle>
+              <Subtitle>Manage your Employee.</Subtitle>
             </div>
           </TitleSection>
         </HeaderWrapper>

@@ -196,7 +196,7 @@ export const Pagination = styled.div`
   justify-content: flex-start; /* changed from flex-end to flex-start */
   gap: 0.3rem;
   margin-top: 1.5rem;
-  padding: 0.6rem;
+  // padding: 0.6rem;
 
   span {
     padding: 0.2rem 0.4rem;
@@ -204,26 +204,37 @@ export const Pagination = styled.div`
     border: 1px solid #ccc;
     cursor: pointer;
     font-size: 0.7rem;
+
+    @media (min-width: 3500px) {
+      padding: 0.8rem 1.5;
+      font-size: 2.5rem;
+    }
+    @media (min-width: 2000px) {
+      // padding: 0.6rem 0.8rem;
+      font-size: 1.8rem;
+    }
   }
   @media (min-width: 2560px) {
-    span {
+    span{
       font-size: 2rem;
-      padding: 0.5rem 1.5rem;
+    padding: 0.5rem 1.5rem;
     }
     gap: 0.5rem;
   }
   @media (min-width: 3840px) {
-    span {
+    span{
       font-size: 2.5rem;
     }
     gap: 1rem;
   }
+
   .active {
     background: #1e3a8a;
     color: white;
     border-color: #1e3a8a;
   }
 `;
+
 
 export const TopBar = styled.div`
   display: flex;

@@ -17,8 +17,8 @@ export const Header = styled.div`
   }
 
   p {
-    color: gray;
-    font-size: 0.9rem;
+    // color: gray;
+    // font-size: 0.9rem;
   }
 `;
 
@@ -228,6 +228,7 @@ export const Title = styled.h2`
     font-size: 4rem;
   }
 `;
+
 export const Subtitle = styled.p`
   // font-size: 1rem;
   color: #3250b5;
@@ -260,6 +261,7 @@ export const Subtitle = styled.p`
     font-size: 2.5rem;
   }
 `;
+
 export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;

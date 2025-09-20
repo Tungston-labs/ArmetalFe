@@ -18,8 +18,8 @@ export const Header = styled.div`
 
   p {
     margin: 0.2rem 0 0;
-    font-size: 0.9rem;
-    color: #333;
+    // font-size: 0.9rem;
+    // color: #333;
   }
 `;
 
@@ -355,7 +355,7 @@ export const EmployeeImage = styled.img`
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
   }`;
-export const Title = styled.h2`
+  export const Title = styled.h2`
   font-size: 1.4rem;
   margin: 0 0 5px 0;
   color: #3250b5;

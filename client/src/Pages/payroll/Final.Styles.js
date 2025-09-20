@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { FaArrowLeft } from "react-icons/fa6";
 
+
 export const Container = styled.div`
   font-family: 'Segoe UI', sans-serif;
   background-color: white;
@@ -445,11 +446,33 @@ export const Pagination = styled.div`
     border: 1px solid #ccc;
     cursor: pointer;
     border-radius: 4px;
-
-    &.active {
-      background-color: #2f4cac;
-      color: white;
+ @media (min-width: 3500px) {
+      padding: 0.8rem 1.5;
+      font-size: 2.5rem;
     }
+    @media (min-width: 2000px) {
+      padding: 0.6rem 0.8rem;
+      font-size: 1.8rem;
+    }
+  }
+  @media (min-width: 2560px) {
+    span{
+      font-size: 2rem;
+    padding: 0.5rem 1.5rem;
+    }
+    gap: 0.5rem;
+  }
+  @media (min-width: 3840px) {
+    span{
+      font-size: 2.5rem;
+    }
+    gap: 1rem;
+  }
+    .active {
+    background: #1e3a8a;
+    color: white;
+    border-color: #1e3a8a;
+  }
   }
 `;
 export const Icon = styled.img`

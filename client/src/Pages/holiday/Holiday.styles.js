@@ -247,26 +247,64 @@ export const Hr = styled.hr`
 export const AddButton = styled.button`
   background-color: #3352BA;
   color: white;
-  padding: clamp(6px, 1.2vw, 12px) clamp(10px, 2vw, 18px);
+  padding: clamp(6px, 0.8vw, 20px) clamp(12px, 1.5vw, 36px);
   border: none;
-  border-radius: clamp(5px, 0.6vw, 10px);
+  border-radius: clamp(5px, 0.5vw, 16px);
   cursor: pointer;
-  font-size: clamp(0.9rem, 1vw, 1.1rem);
-  height: clamp(36px, 4vh, 48px);
+  font-size: clamp(0.9rem, 1vw, 1.6rem);
+  height: clamp(36px, 4vh, 64px);
   align-self: flex-end;
   margin-left: auto;
   transition: all 0.3s ease;
+  max-width: 260px; /* keeps it from exploding on wide screens */
 
   &:hover {
     background-color: #26408B;
   }
 
+  /* Mobile (small phones) */
   @media (max-width: 480px) {
-    width: 100%; /* full width on small screens */
+    width: 100%;
+    align-self: center;
+    margin-left: 0;
+    max-width: none;
+  }
+
+  /* Tablets */
+  @media (min-width: 481px) and (max-width: 768px) {
+    width: 80%;
     align-self: center;
     margin-left: 0;
   }
+
+  /* Laptops */
+  @media (min-width: 769px) and (max-width: 1200px) {
+    width: auto;
+    max-width: 280px;
+  }
+
+  /* Desktops */
+  @media (min-width: 1201px) and (max-width: 2560px) {
+    font-size: clamp(1rem, 0.9vw, 1.6rem);
+    padding: clamp(12px, 0.8vw, 20px) clamp(16px, 1.2vw, 36px);
+    max-width: 300px;
+  }
+
+  /* 4K screens */
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: clamp(1.2rem, 0.8vw, 2rem);
+    padding: 20px 48px;
+    max-width: 340px;
+  }
+
+  /* 8K screens */
+  @media (min-width: 3841px) {
+    font-size: clamp(1.4rem, 0.7vw, 2rem);
+    padding: 24px 48px;
+    max-width: 400px;
+  }
 `;
+
 
 
 export const TableWrapper = styled.div`
@@ -445,10 +483,33 @@ export const Pagination = styled.div`
     cursor: pointer;
     border-radius: 4px;
 
-    &.active {
-      background-color: #2f4cac;
-      color: white;
+     @media (min-width: 3500px) {
+      padding: 0.8rem 1.5;
+      font-size: 2.5rem;
     }
+    @media (min-width: 2000px) {
+      padding: 0.6rem 0.8rem;
+      font-size: 1.8rem;
+    }
+  }
+  @media (min-width: 2560px) {
+    span{
+      font-size: 2rem;
+    padding: 0.5rem 1.5rem;
+    }
+    gap: 0.5rem;
+  }
+  @media (min-width: 3840px) {
+    span{
+      font-size: 2.5rem;
+    }
+    gap: 1rem;
+  }
+    .active {
+    background: #1e3a8a;
+    color: white;
+    border-color: #1e3a8a;
+  }
   }
 `;
 export const ErrorMessage = styled.p`
