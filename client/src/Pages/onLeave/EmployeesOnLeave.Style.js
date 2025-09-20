@@ -51,7 +51,7 @@ export const Initial = styled.div`
     width: 150px;
     height: 150px;
     font-size: 15rem;
-    padding-right: 30px;
+    padding-right: 120px;
   }
 `;
 
@@ -267,7 +267,9 @@ export const CardGrid = styled.div`
 
   @media (min-width: 3840px) {
     /* 4K screens */
-    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    /* grid-template-columns: repeat(auto-fit, minmax(600px, 1fr)); */
+        grid-template-columns: repeat(4, 1fr);
+
     gap: 3rem;
     padding: 2.5rem;
   }
