@@ -168,9 +168,11 @@ export const Divider = styled.div`
 export const CardContent = styled.div`
   flex: 1;
   padding: 1rem;
-
   @media (max-width: ${breakpoints.mobile}) {
     padding: 0.5rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    padding-inline: 2rem;
   }
 `;
 
