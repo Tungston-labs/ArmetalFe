@@ -69,7 +69,7 @@ const DepartmentCalendar = () => {
   }, []);
 
   // if (loading) return <p>Loading...</p>;
-  if (!summary) return <p>Failed to fetch data.</p>;
+  if (!summary) return <p>Loading.....</p>;
 
   const onLeaveToday = summary.on_leave_today_count || 0;
   const activeToday = summary.active_today_count || 0;

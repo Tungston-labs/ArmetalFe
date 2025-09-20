@@ -179,7 +179,7 @@ const navigate = useNavigate();
                          <div>
                       
                            <Title>Employee</Title>
-                           <Subtitle style={{color:"#304EB0"}}>Manage your Employee.</Subtitle>
+                           <Subtitle>Manage your Employee.</Subtitle>
                          </div>
                        </TitleSection>
                </HeaderWrapper>

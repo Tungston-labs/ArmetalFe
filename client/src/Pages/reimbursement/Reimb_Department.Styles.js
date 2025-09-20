@@ -227,7 +227,7 @@ export const InitialCircle = styled.div`
     width: 150px;
     height: 150px;
     font-size: 15rem;
-    padding-right: 30px;
+    padding-right: 120px;
   }
 `;
 
@@ -331,6 +331,7 @@ export const CardGrid = styled.div`
   @media (min-width: 3840px) {
     gap: 3rem;
     padding-block: 3rem;
+    padding-inline: 4rem;
   }
 `;
 

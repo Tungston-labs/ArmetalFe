@@ -13,14 +13,14 @@ export const ProfileCard = styled.div`
       height: 100px;
     }
     @media(min-width: 2068px) and (max-width: 6000px){
-      background-color:#000;
+      /* background-color:#000; */
           height: 450px; 
 
       }
     img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       border-radius: 10px 10px 0 0;
     }
     

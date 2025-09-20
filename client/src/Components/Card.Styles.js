@@ -94,9 +94,13 @@ export const CardHeader = styled.div`
   align-items: center;
   flex-wrap: wrap;
 
-  @media (max-width: ${breakpoints.tablet}) {
+  @media (max-width: ${breakpoints.desktop}) {
     flex-direction: column;
     align-items: flex-start;
+  }
+  @media (min-width: ${breakpoints.desktop}) {
+    flex-direction: row;
+    /* align-items: flex-start; */
   }
 `;
 
@@ -111,6 +115,9 @@ export const IconSection = styled.div`
     margin-left: 5px;
     margin-top: 5px;
     min-width: 25px;
+  }
+  @media (max-width: ${breakpoints.desktop}) {
+   padding-bottom:0.5rem;
   }
   @media (min-width: ${breakpoints.tv}) {
     margin: 0px;
@@ -168,9 +175,15 @@ export const Divider = styled.div`
 export const CardContent = styled.div`
   flex: 1;
   padding: 1rem;
-
+  width:100%;
   @media (max-width: ${breakpoints.mobile}) {
     padding: 0.5rem;
+  }
+  @media (max-width: ${breakpoints.desktop}) {
+    padding: 0;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    padding-inline: 2rem;
   }
 `;
 
@@ -301,12 +314,16 @@ export const EmployeeId = styled.div`
   }
 
   @media (min-width: ${breakpoints.laptop}) and (max-width: ${breakpoints.desktop}) {
+    /* display: none; */
     .to-date {
       display: none;
     }
     .continue-sign {
       display: inline;
     }
+  }
+  @media (max-width:1430px) {
+    display: none;
   }
 `;
 
@@ -317,7 +334,7 @@ export const EmployeeDept = styled.span`
 
 export const IconWrapper = styled.div`
   position: absolute;
-  right: 10px;
+  right: 0px;
   bottom: 10px;
   color: #3352BA;
   cursor: pointer;
@@ -341,11 +358,16 @@ export const IconWrapper = styled.div`
     right: 8px;
     font-size: 1rem;
   }
+  @media (max-width: 1430px) {
+    bottom:0px;
+    right: -8px;
+    font-size: 1rem;
+  }
 
   /* 🖥️ 2K */
   @media (min-width: ${breakpoints.tv}) {
-    right: 15px;
-    bottom: 15px;
+    right: 0px;
+    bottom: 0px;
     font-size: 1.5rem; /* bigger icon */
     svg{
       height: 30px;
@@ -355,8 +377,8 @@ export const IconWrapper = styled.div`
 
   /* 🖥️ 4K */
   @media (min-width: ${breakpoints.largeTv}) {
-    right: 20px;
-    bottom: 20px;
+    /* right: 20px;
+    bottom: 20px; */
     font-size: 2rem;
     svg{
       height: 40px;

@@ -18,8 +18,7 @@ export const Header = styled.div`
 
   p {
     margin: 0.2rem 0 0;
-    font-size: 0.9rem;
-    color: #333;
+    // font-size: 0.9rem;
   }
 `;
 export const EmployeeImage = styled.img`
@@ -433,27 +432,33 @@ export const Title = styled.h2`
   font-weight: 700;
   line-height: 1.2;
 
-  @media (min-width: 480px) { /* small tablet */
+  @media (min-width: 480px) {
+    /* small tablet */
     font-size: 0.8rem;
   }
 
-  @media (min-width: 768px) { /* tablet */
+  @media (min-width: 768px) {
+    /* tablet */
     font-size: 1rem;
   }
 
-  @media (min-width: 1024px) { /* desktop */
+  @media (min-width: 1024px) {
+    /* desktop */
     font-size: 1.5rem;
   }
 
-  @media (min-width: 1440px) { /* large desktop / 2K */
+  @media (min-width: 1440px) {
+    /* large desktop / 2K */
     font-size: 2rem;
   }
 
-  @media (min-width: 2560px) { /* 4K */
+  @media (min-width: 2560px) {
+    /* 4K */
     font-size: 3em;
   }
 
-  @media (min-width: 3840px) { /* 8K */
+  @media (min-width: 3840px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -487,9 +492,10 @@ export const Subtitle = styled.p`
   }
 
   @media (min-width: 3840px) {
-    font-size: 2.5rem;
+    font-size: 2.5rem !important;
   }
 `;
+
 export const HRManager = styled.div`
   display: flex;
   height: 30px;
@@ -526,12 +532,15 @@ export const Rightside = styled.div`
 export const FormWrapper = styled.div`
   display: flex;
   gap: 2rem;
-  align-items: flex-start;
-  @media (min-width: 2000px) {
-    height: 400px;
+  align-items: center;
+  height: auto;
+
+  @media (min-width: 2560px) {
+    height: auto;
+    align-items: center;
   }
-  @media (min-width: 3500px) {
-    height: 510px;
+  @media (min-width: 3840px) {
+    height: auto;
   }
 `;
 export const ProfileImage = styled.img`
@@ -555,15 +564,15 @@ export const ImageColumn = styled.div`
 
   img {
     width: 150px;
-    height: 210px;
+    height: 100%;
     border-radius: 10px;
     object-fit: cover;
 
-    @media (min-width: 2000px) {
+    @media (min-width: 2560px) {
       width: 250px;
       height: 100%;
     }
-    @media (min-width: 3500px) {
+    @media (min-width: 3840px) {
       width: 300px;
       height: 100%;
     }

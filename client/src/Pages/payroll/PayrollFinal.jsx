@@ -1,457 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import {
-//   Container, Header, TitleSection, Title, Subtitle, SearchInput, Pagination,
-//   TableWrapper, Table, Th, Td, Select, Icon
-// } from './Final.Styles';
-// import { Link } from 'react-router-dom';
-// import { GoInfo } from "react-icons/go";
-// import { useDispatch, useSelector } from 'react-redux';
-// import {
-//   getPayrollData,
-//   submitPayrollRecords,
-//   updatePayrollStatus,
-//   verifyEmployeePayroll
-// } from '../../Redux/payrollSlice';
-// import { getDepartments } from '../../Redux/departmentSlice';
-// import Navbar from '../../Components/Navbar';
-// import Loader from "../../Components/Loader";
-// import Swal from "sweetalert2";
-// import { FaCheck } from "react-icons/fa";
-// import HolidayIcon from "../../assets/payroll.svg"; 
-
-// const months = [
-//   'January', 'February', 'March', 'April', 'May', 'June',
-//   'July', 'August', 'September', 'October', 'November', 'December'
-// ];
-
-// const today = new Date();
-// const nextMonthDate = new Date(today.getFullYear(), today.getMonth() - 1);
-// const defaultMonth = nextMonthDate.getMonth() + 1;
-// const defaultYear = nextMonthDate.getFullYear();
-// const years = Array.from({ length: 10 }, (_, i) => defaultYear - 2 + i);
-
-// const PayrollTable = () => {
-//   const dispatch = useDispatch();
-//   const { data, loading, error, totalPages } = useSelector((state) => state.payroll);
-//   const departmentList = useSelector(state => state.departments.list || []);
-
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const [page, setPage] = useState(1);
-//   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
-//   const [selectedYear, setSelectedYear] = useState(defaultYear);
-//   const [selectedDepartment, setSelectedDepartment] = useState('');
-//   const [selectedEmployees, setSelectedEmployees] = useState([]);
-//   const [verificationStatus, setVerificationStatus] = useState({});
-//   const [bulkStatus, setBulkStatus] = useState('');
-
-//   const getStatusColor = (status) => {
-//     switch (status) {
-//       case 'Paid': return 'green';
-//       case 'OnHold': return 'orange';
-//       case 'Pending': return 'yellow';
-//       case 'Cancelled': return 'red';
-//       default: return '#000';
-//     }
-//   };
-
-//   // Fetch departments
-//   useEffect(() => {
-//     dispatch(getDepartments({ page: 1, search: '' }));
-//   }, [dispatch]);
-
-//   // Fetch payroll data
-//   useEffect(() => {
-//     dispatch(getPayrollData({
-//       page,
-//       search: searchTerm,
-//       month: selectedMonth,
-//       year: selectedYear,
-//       department: selectedDepartment
-//     })).unwrap().catch(err => console.error("Error fetching payroll data:", err));
-//   }, [dispatch, page, searchTerm, selectedMonth, selectedYear, selectedDepartment]);
-
-//   // Persist verification status
-//   useEffect(() => {
-//     if (data?.length) {
-//       const initialStatus = {};
-//       data.forEach(emp => {
-//         initialStatus[emp.id] = {
-//           first: emp.hr1_verified,
-//           second: emp.hr2_verified,
-//         };
-//       });
-//       setVerificationStatus(initialStatus);
-//     }
-//   }, [data]);
-
-//   const handleSearch = (e) => { setSearchTerm(e.target.value); setPage(1); };
-//   const handleMonthChange = (e) => { setSelectedMonth(Number(e.target.value)); };
-//   const handleYearChange = (e) => { setSelectedYear(Number(e.target.value)); setPage(1); };
-//   const handleDepartmentChange = (e) => { setSelectedDepartment(e.target.value); setPage(1); };
-
-//   const toggleEmployeeSelect = (id) => {
-//     setSelectedEmployees(prev =>
-//       prev.includes(id) ? prev.filter(empId => empId !== id) : [...prev, id]
-//     );
-//   };
-
-//   const handleSelectAll = () => {
-//     setSelectedEmployees(
-//       selectedEmployees.length === data.length ? [] : data.map(emp => emp.id)
-//     );
-//   };
-
-//   const handleSingleStatusChange = async (empId, newStatus) => {
-//     const emp = data.find(e => e.id === empId);
-  
-//     // Check if both admins verified using backend state
-//     if (!emp.hr1_verified || !emp.hr2_verified) {
-//       Swal.fire({
-//         icon: "warning",
-//         title: "Verification Pending",
-//         text: "Payroll cannot be updated until both admins verify.",
-//       });
-//       return;
-//     }
-  
-//     try {
-//       await dispatch(updatePayrollStatus({
-//         employeeId: empId,
-//         month: selectedMonth,
-//         year: selectedYear,
-//         status: newStatus,
-//       })).unwrap();
-  
-//       // Refetch payroll data
-//       dispatch(getPayrollData({
-//         page,
-//         search: searchTerm,
-//         month: selectedMonth,
-//         year: selectedYear,
-//         department: selectedDepartment,
-//       }));
-  
-//       Swal.fire({ icon: "success", title: "Updated", timer: 1200, showConfirmButton: false });
-//     } catch (err) {
-//       Swal.fire({ icon: "error", title: "Update Failed", text: err?.message || "Something went wrong!" });
-//     }
-//   };
-  
-
-//   const handleBulkStatusChange = async (e) => {
-//     const newStatus = e.target.value;
-//     setBulkStatus(newStatus);
-
-//     if (!newStatus || selectedEmployees.length === 0) return;
-
-//     const unverified = data.filter(emp =>
-//       selectedEmployees.includes(emp.id) &&
-//       (!verificationStatus[emp.id]?.first || !verificationStatus[emp.id]?.second)
-//     );
-
-//     if (unverified.length > 0) {
-//       Swal.fire({
-//         icon: "warning",
-//         title: "Verification Pending",
-//         text: "Some selected employees are not verified by both admins.",
-//       });
-//       setBulkStatus('');
-//       return;
-//     }
-
-//     await dispatch(submitPayrollRecords({
-//       month: selectedMonth,
-//       year: selectedYear,
-//       employee_ids: selectedEmployees,
-//       status: newStatus,
-//     }))
-//       .unwrap()
-//       .then(() => {
-//         setBulkStatus('');
-//         dispatch(getPayrollData({ page, search: searchTerm, month: selectedMonth, year: selectedYear, department: selectedDepartment }));
-//       })
-//       .catch(err => {
-//         Swal.fire({ icon: "error", title: "Bulk Update Failed", text: err?.message || "Something went wrong!" });
-//         setBulkStatus('');
-//       });
-//   };
-
-//   const handleCircleClick = async (e, employee, type) => {
-//     e.preventDefault();
-//     const user = JSON.parse(localStorage.getItem("user"));
-//     if (!user) return;
-  
-//     // Prevent double-click visually (optional)
-//     if (verificationStatus[employee.id]?.[type]) {
-//       Swal.fire({ icon: "info", title: "Already Verified", text: "This was already verified." });
-//       return;
-//     }
-  
-//     try {
-//       // Call backend verification API
-//       await dispatch(verifyEmployeePayroll({
-//         employeeId: employee.id,
-//         month: selectedMonth,
-//         year: selectedYear,
-//       })).unwrap();
-  
-//       // Refetch payroll data to sync verification status
-//       dispatch(getPayrollData({
-//         page,
-//         search: searchTerm,
-//         month: selectedMonth,
-//         year: selectedYear,
-//         department: selectedDepartment,
-//       }));
-  
-//       Swal.fire({
-//         icon: "success",
-//         title: "Verified",
-//         text: "Payroll verification recorded.",
-//         timer: 1500,
-//         showConfirmButton: false,
-//       });
-//     } catch (err) {
-//       let msg = err?.payload?.error || err?.response?.data?.error || err?.message || "Something went wrong!";
-//       Swal.fire({ icon: "error", title: "Verification Failed", text: msg });
-//     }
-//   };
-  
-  
-
-//   const handlePageChange = (newPage) => {
-//     if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
-//   };
-
-//   return (
-//     <>
-//       <Navbar />
-//       <Container>
-//         <Header>
-//           <TitleSection>
-//             <div style={{ display: 'flex', alignItems: 'center' }}>
-//               <Icon src={HolidayIcon} alt="holiday" />
-//               <div>
-//                 <Title>Payroll</Title>
-//                 <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
-//               </div>
-//             </div>
-//             <Select value={selectedDepartment} onChange={handleDepartmentChange}>
-//               <option value="">Select Department</option>
-//               {departmentList.map(dept => (
-//                 <option key={dept.id} value={String(dept.id).split(":")[0]}>
-//                   {dept.name}
-//                 </option>
-//               ))}
-//             </Select>
-//           </TitleSection>
-//         </Header>
-
-//         <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-//           <SearchInput
-//             placeholder=" Enter employee ID"
-//             value={searchTerm}
-//             onChange={handleSearch}
-//             style={{ width: '250px' }}
-//           />
-//           <div style={{ display: 'flex', gap: '10px' }}>
-//             <Select value={selectedMonth} onChange={handleMonthChange}>
-//               {months.map((month, index) => (
-//                 <option key={month} value={index + 1}>{month}</option>
-//               ))}
-//             </Select>
-//             <Select value={selectedYear} onChange={handleYearChange}>
-//               {years.map(year => <option key={year} value={year}>{year}</option>)}
-//             </Select>
-//           </div>
-//         </Header>
-
-//         <div style={{ background: '#3352BA', color: '#fff', padding: '10px 20px', margin: '20px 0 10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-//           <div>
-//             <input
-//               type="checkbox"
-//               checked={selectedEmployees.length === data.length && data.length > 0}
-//               onChange={handleSelectAll}
-//               style={{ marginRight: '10px' }}
-//             />
-//             <strong>Selected {selectedEmployees.length} Employees</strong>
-//           </div>
-//           <Select
-//             value={bulkStatus}
-//             onChange={handleBulkStatusChange}
-//             style={{
-//               width: '150px',
-//               backgroundColor: bulkStatus ? getStatusColor(bulkStatus) : '#fff',
-//               color: bulkStatus === 'Pending' ? 'black' : 'white',
-//             }}
-//           >
-//             <option value="">Bulk Action</option>
-//             <option value="OnHold">OnHold</option>
-//             <option value="Cancelled">Cancelled</option>
-//             <option value="Pending">Pending</option>
-//             <option value="Paid">Paid</option>
-//           </Select>
-//         </div>
-
-//         <TableWrapper>
-//           <Table>
-//             <thead>
-//               <tr>
-//                 <Th>
-//                   <input
-//                     type="checkbox"
-//                     checked={selectedEmployees.length === data.length && data.length > 0}
-//                     onChange={handleSelectAll}
-//                   />
-//                 </Th>
-//                 <Th>Sl No</Th>
-//                 <Th>Employee ID</Th>
-//                 <Th>Job Position</Th>
-//                 <Th>Joining Date</Th>
-//                 <Th>Email ID</Th>
-//                 <Th>Salary</Th>
-//                 <Th>Info</Th>
-//                 <Th>Verification</Th>
-//                 <Th>Status</Th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {loading ? (
-//                 <tr><td colSpan="11" style={{ textAlign: "center", padding: "2rem" }}><Loader size="large" tip="Loading..." /></td></tr>
-//               ) : error ? (
-//                 <tr><Td colSpan="11">Error: {error}</Td></tr>
-//               ) : data?.length > 0 ? (
-//                 data.map((emp, index) => (
-//                   <tr key={emp.id}>
-//                     <Td>
-//                       <input
-//                         type="checkbox"
-//                         checked={selectedEmployees.includes(emp.id)}
-//                         onChange={() => toggleEmployeeSelect(emp.id)}
-//                       />
-//                     </Td>
-//                     <Td>{(page - 1) * 10 + index + 1}</Td>
-//                     <Td>{emp.employee_id}</Td>
-//                     <Td
-//                       style={{
-//                         maxWidth: "100px",
-//                         whiteSpace: "nowrap",
-//                         overflow: "hidden",
-//                         textOverflow: "ellipsis"
-//                       }}
-//                       title={emp.designation}
-//                     >
-//                       {emp.designation}
-//                     </Td>
-//                     <Td>{emp.joining_date}</Td>
-//                     <Td
-//                       style={{
-//                         maxWidth: "150px",
-//                         whiteSpace: "nowrap",
-//                         overflow: "hidden",
-//                         textOverflow: "ellipsis"
-//                       }}
-//                       title={emp.email}
-//                     >
-//                       {emp.email}
-//                     </Td>
-//                     <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
-//                     <Td>
-//                       <Link to={`/payrolldetails/${emp.id}`}>
-//                         <GoInfo style={{ cursor: 'pointer', color: "black" }} />
-//                       </Link>
-//                     </Td>
-                    
-//                     <Td>
-//                     <Td>
-//   <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-//     {['first', 'second'].map((type) => {
-//       const isVerified = type === 'first' ? emp.hr1_verified : emp.hr2_verified;
-
-//       return (
-//         <div
-//           key={type}
-//           onClick={(e) => !isVerified && handleCircleClick(e, emp, type)}
-//           style={{
-//             width: '20px',
-//             height: '20px',
-//             borderRadius: '50%',
-//             border: '2px solid #ccc',
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'center',
-//             cursor: isVerified ? 'not-allowed' : 'pointer',
-//             backgroundColor: isVerified ? '#d1e7ff' : 'transparent',
-//             userSelect: 'none',
-//           }}
-//         >
-//           {isVerified && <FaCheck style={{ color: 'blue', fontSize: '10px' }} />}
-//         </div>
-//       );
-//     })}
-//   </div>
-// </Td>
-
-// </Td>
-
-                    
-//                     <Td>
-//                       <Select
-//                         value={emp.status || ''}
-//                         onChange={(e) => handleSingleStatusChange(emp.id, e.target.value)}
-//                         style={{
-//                           backgroundColor: getStatusColor(emp.status),
-//                           color: emp.status === 'Pending' ? 'black' : 'white',
-//                         }}
-//                       >
-//                         <option value="">Select</option>
-//                         <option value="OnHold">OnHold</option>
-//                         <option value="Cancelled">Cancelled</option>
-//                         <option value="Pending">Pending</option>
-//                         <option value="Paid">Paid</option>
-//                       </Select>
-//                     </Td>
-//                   </tr>
-//                 ))
-//               ) : (
-//                 <tr><Td colSpan="11">No data found</Td></tr>
-//               )}
-//             </tbody>
-//           </Table>
-//         </TableWrapper>
-
-//         <Pagination>
-//           <span
-//             onClick={() => handlePageChange(page - 1)}
-//             style={{ cursor: page > 1 ? 'pointer' : 'not-allowed', opacity: page > 1 ? 1 : 0.5 }}
-//           >
-//             &larr;
-//           </span>
-//           {[...Array(totalPages)].map((_, i) => {
-//             const pageNum = i + 1;
-//             return (
-//               <span
-//                 key={pageNum}
-//                 onClick={() => handlePageChange(pageNum)}
-//                 className={pageNum === page ? "active" : ""}
-//               >
-//                 {pageNum}
-//               </span>
-//             );
-//           })}
-//           <span
-//             onClick={() => handlePageChange(page + 1)}
-//             style={{ cursor: page < totalPages ? 'pointer' : 'not-allowed', opacity: page < totalPages ? 1 : 0.5 }}
-//           >
-//             &rarr;
-//           </span>
-//         </Pagination>
-//       </Container>
-//     </>
-//   );
-// };
-
-// export default PayrollTable;
 import React, { useEffect, useState } from 'react';
 import {
   Container, Header, TitleSection, Title, Subtitle, SearchInput, Pagination,
@@ -474,7 +20,7 @@ import {
 } from '../../Redux/payrollSlice';
 import { getDepartments } from '../../Redux/departmentSlice';
 import Navbar from '../../Components/Navbar';
-import Loader from "../../Components/Loader"
+import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
 import VerificationCircles from '../../Components/VerificationCircle';
 import HolidayIcon from "../../assets/payroll.svg";
@@ -496,14 +42,10 @@ const PayrollTable = () => {
   console.log({ data });
 
   const departmentList = useSelector(state => state.departments.list || []);
-  console.log(departmentList);
-
 
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-const today = new Date();
-const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // getMonth() returns 0-11
-
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(defaultYear);
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
@@ -554,19 +96,20 @@ const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // get
   }, [data]);
 
   const handleSearch = (e) => { setSearchTerm(e.target.value); setPage(1); };
-const handleMonthChange = (e) => {
-  setSelectedMonth(Number(e.target.value)); // convert string to number
-};
-
+  const handleMonthChange = (e) => { setSelectedMonth(Number(e.target.value)); };
   const handleYearChange = (e) => { setSelectedYear(Number(e.target.value)); setPage(1); };
   const handleDepartmentChange = (e) => { setSelectedDepartment(e.target.value); setPage(1); };
 
   const toggleEmployeeSelect = (id) => {
-    setSelectedEmployees(prev => prev.includes(id) ? prev.filter(empId => empId !== id) : [...prev, id]);
+    setSelectedEmployees(prev =>
+      prev.includes(id) ? prev.filter(empId => empId !== id) : [...prev, id]
+    );
   };
 
   const handleSelectAll = () => {
-    setSelectedEmployees(selectedEmployees.length === data.length ? [] : data.map(emp => emp.employee));
+    setSelectedEmployees(
+      selectedEmployees.length === data.length ? [] : data.map(emp => emp.id)
+    );
   };
   const handleSingleStatusChange = async (employeeId, newStatus) => {
     console.log({ employeeId });
@@ -612,21 +155,22 @@ const handleMonthChange = (e) => {
 
   const handleBulkStatusChange = async (e) => {
     const newStatus = e.target.value;
+    setBulkStatus(newStatus);
+
     if (!newStatus || selectedEmployees.length === 0) return;
-  
-    // 🚫 Check if every selected employee has both verifications
+
     const unverified = data.filter(emp =>
-      selectedEmployees.includes(emp.employee) &&
+      selectedEmployees.includes(emp.id) &&
       (!verificationStatus[emp.id]?.first || !verificationStatus[emp.id]?.second)
     );
-  
+
     if (unverified.length > 0) {
       Swal.fire({
         icon: "warning",
         title: "Verification Pending",
         text: "Some selected employees are not verified by both admins.",
       });
-      e.target.selectedIndex = 0; // reset select
+      setBulkStatus('');
       return;
     }
 
@@ -654,9 +198,6 @@ const handleMonthChange = (e) => {
       setBulkStatus('');
     }
   };
-  
-
-  
 
 
   const handleCircleClick = async (e, employee, type) => {
@@ -678,21 +219,7 @@ const handleMonthChange = (e) => {
       Swal.fire({ icon: "warning", title: "Cannot Verify", text: "You cannot verify the same payroll twice." });
       return;
     }
-  
-    // 🚫 Case 2: Same HR trying to verify both circles
-    if (
-      (type === "first" && empStatus?.second) ||
-      (type === "second" && empStatus?.first)
-    ) {
-      Swal.fire({
-        icon: "warning",
-        title: "Not Allowed",
-        text: "One admin can only verify once.",
-      });
-      return;
-    }
-  
-    // ✅ If valid, call API
+
     try {
       await dispatch(verifyEmployeePayroll({
         employeeId: employee.employee,
@@ -718,7 +245,7 @@ const handleMonthChange = (e) => {
       Swal.fire({
         icon: "success",
         title: "Verified",
-        text: "Payroll verification recorded successfully.",
+        text: "Payroll verification recorded.",
         timer: 1500,
         showConfirmButton: false,
       });
@@ -742,8 +269,6 @@ const handleMonthChange = (e) => {
       });
     }
   };
-  
-  
 
 
   const handlePageChange = (newPage) => {
@@ -780,15 +305,11 @@ const handleMonthChange = (e) => {
           <SearchInput placeholder=" Enter employee ID" value={searchTerm} onChange={handleSearch} />
           <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
-  {months.map((month, index) => (
-    <option key={month} value={index + 1}>
-      {month}
-    </option>
-  ))}
-</Select>
-
+              {months.map((month, index) => (
+                <option key={month} value={index + 1}>{month}</option>
+              ))}
+            </Select>
             <Select value={selectedYear} onChange={handleYearChange}>
-              {/* <option value=""></option> */}
               {years.map(year => <option key={year} value={year}>{year}</option>)}
             </Select>
           </div>
@@ -818,16 +339,21 @@ const handleMonthChange = (e) => {
           <Table>
             <thead>
               <tr>
-                <Th></Th>
+                <Th>
+                  <input
+                    type="checkbox"
+                    checked={selectedEmployees.length === data.length && data.length > 0}
+                    onChange={handleSelectAll}
+                  />
+                </Th>
                 <Th>Sl No</Th>
                 <Th>Employee ID</Th>
-                <Th>Employee name</Th>
                 <Th>Job Position</Th>
                 <Th>Joining Date</Th>
                 <Th>Email ID</Th>
                 <Th>Salary</Th>
                 <Th>Info</Th>
-                <Th></Th>
+                <Th>Verification</Th>
                 <Th>Status</Th>
               </tr>
             </thead>
@@ -839,54 +365,39 @@ const handleMonthChange = (e) => {
               ) : data?.length > 0 ? (
                 data.map((emp, index) => (
                   <tr key={emp.id}>
-                    <Td><input type="checkbox" checked={selectedEmployees.includes(emp.employee)} onChange={() => toggleEmployeeSelect(emp.employee)} /></Td>
+                    <Td>
+                      <input
+                        type="checkbox"
+                        checked={selectedEmployees.includes(emp.id)}
+                        onChange={() => toggleEmployeeSelect(emp.id)}
+                      />
+                    </Td>
                     <Td>{(page - 1) * 10 + index + 1}</Td>
                     <Td>{emp.employee_id}</Td>
-                    <Td>{emp.employee_name}</Td>
-                    <Td>{emp.designation}</Td>
+                    <Td
+                      style={{
+                        maxWidth: "100px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}
+                      title={emp.designation}
+                    >
+                      {emp.designation}
+                    </Td>
                     <Td>{emp.joining_date}</Td>
-                    <Td>{emp.email}</Td>
+                    <Td
+                      style={{
+                        maxWidth: "150px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}
+                      title={emp.email}
+                    >
+                      {emp.email}
+                    </Td>
                     <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
-                    <Td><Link to={`/payrolldetails/${emp.id}`}><GoInfo style={{ cursor: 'pointer',color:"black" }} /></Link></Td>
-                   <Td>
-  <div style={{ display: 'flex', gap: '8px' }}>
-    <div
-      onClick={(e) => handleCircleClick(e, emp, 'first')}
-      style={{
-        width: '20px',
-        height: '20px',
-        borderRadius: '50%',
-        border: '2px solid #ccc',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: verificationStatus[emp.id]?.first ? 'not-allowed' : 'pointer'
-      }}
-    >
-      {verificationStatus[emp.id]?.first && (
-        <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
-      )}
-    </div>
-
-    <div
-      onClick={(e) => handleCircleClick(e, emp, 'second')}
-      style={{
-        width: '20px',
-        height: '20px',
-        borderRadius: '50%',
-        border: '2px solid #ccc',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: verificationStatus[emp.id]?.second ? 'not-allowed' : 'pointer'
-      }}
-    >
-      {verificationStatus[emp.id]?.second && (
-        <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
-      )}
-    </div>
-  </div>
-</Td>
                     <Td>
                       <Link to={`/payrolldetails/${emp.id}`}>
                         <GoInfo style={{ cursor: 'pointer', color: "black" }} />
@@ -948,12 +459,30 @@ const handleMonthChange = (e) => {
         </TableWrapper>
 
         <Pagination>
-          <span onClick={() => handlePageChange(page - 1)} style={{ cursor: page > 1 ? 'pointer' : 'not-allowed', opacity: page > 1 ? 1 : 0.5 }}>&larr;</span>
+          <span
+            onClick={() => handlePageChange(page - 1)}
+            style={{ cursor: page > 1 ? 'pointer' : 'not-allowed', opacity: page > 1 ? 1 : 0.5 }}
+          >
+            &larr;
+          </span>
           {[...Array(totalPages)].map((_, i) => {
             const pageNum = i + 1;
-            return <span key={pageNum} onClick={() => handlePageChange(pageNum)} className={pageNum === page ? "active" : ""}>{pageNum}</span>;
+            return (
+              <span
+                key={pageNum}
+                onClick={() => handlePageChange(pageNum)}
+                className={pageNum === page ? "active" : ""}
+              >
+                {pageNum}
+              </span>
+            );
           })}
-          <span onClick={() => handlePageChange(page + 1)} style={{ cursor: page < totalPages ? 'pointer' : 'not-allowed', opacity: page < totalPages ? 1 : 0.5 }}>&rarr;</span>
+          <span
+            onClick={() => handlePageChange(page + 1)}
+            style={{ cursor: page < totalPages ? 'pointer' : 'not-allowed', opacity: page < totalPages ? 1 : 0.5 }}
+          >
+            &rarr;
+          </span>
         </Pagination>
       </Container>
     </>

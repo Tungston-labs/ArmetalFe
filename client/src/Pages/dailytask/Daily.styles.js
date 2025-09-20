@@ -120,7 +120,6 @@ export const DateSelector = styled.div`
     gap: 1rem;
   }
 
-  /* Default (small to medium screens) */
   .day {
     font-size: 3rem;
     font-weight: bold;
@@ -267,7 +266,7 @@ export const EmployeesPanel = styled.div`
   margin-top: 20px;
 `;
 export const DepartmentDropdown = styled.select`
-  padding: 0.6rem;
+  padding: 0.6rem 2rem 0.6rem 0.6rem; 
   font-size: 0.9rem;
   border-radius: 7px;
   border: 1px solid #172554;
@@ -279,6 +278,7 @@ export const DepartmentDropdown = styled.select`
     outline: none;
     border-color: #3352ba;
   }
+
   @media (min-width: 2000px) {
     padding: 1.6rem;
     min-width: 450px;
@@ -345,11 +345,11 @@ export const Head = styled.h2`
   line-height: 100%;
   letter-spacing: 0%;
   @media (min-width: 2000px) {
-    font-size: 40px;
+    font-size: 30px;
     margin-top: 2.2rem;
   }
   @media (min-width: 3500px) {
-    font-size: 60px;
+    font-size: 40px;
     margin-top: 2.5rem;
   }
 `;

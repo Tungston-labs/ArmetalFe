@@ -270,7 +270,7 @@ const isLoading = loading || deptLoading;
           &larr;
         </span>
       
-        {[1, 2].map((pageNumber) => {
+        {[1].map((pageNumber) => {
           const isActive = pagination?.current_page === pageNumber;
       
           return (

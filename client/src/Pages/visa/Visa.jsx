@@ -263,7 +263,7 @@ const EmployeeList = () => {
                   onClick={() => setPage(pageNumber)}
                   style={{
                     margin: "0 4px",
-                    padding: "6px 10px",
+                    // padding: "6px 10px",
                     borderRadius: "4px",
                     cursor: "pointer",
                     backgroundColor: isActive ? "#003366" : "#e0e0e0",

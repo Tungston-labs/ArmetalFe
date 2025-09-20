@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  padding: 3rem;
+  padding: 0.5rem;
   box-sizing: border-box;
   background: #f4f4f4;
   /* Allow scrolling if content overflows */
@@ -10,9 +10,11 @@ export const Container = styled.div`
   overflow-x: auto; /* horizontal scroll if needed */
   overflow-y: auto; /* vertical scroll */
 
-  @media (max-width: 3840px) {
-    /* background-color: green; */
-    /* padding: 0; */
+  @media (min-width: 1440px) {
+    padding:1rem;
+  }
+  @media (min-width: 1560px) {
+    padding:3rem;
   }
 `;
 
