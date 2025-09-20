@@ -50,21 +50,13 @@ const handleLogoutClick = async () => {
   });
 
   if (result.isConfirmed) {
-    // Show the success message first
-    await Swal.fire({
-      title: 'Logged out!',
-      text: 'You have been successfully logged out.',
-      icon: 'success',
-      confirmButtonColor: '#3085d6',
-    });
-
-    // Then call logout & clear Redux state
+    // Directly logout without extra alert
     await logout();
     dispatch(logoutAction());
-
     setMenuOpen(false);
   }
 };
+
 
 
 

@@ -158,7 +158,7 @@ useEffect(() => {
       {/* Header */}
       <HeaderSection>
         <TitleSection>
-<BackArrow onClick={() => window.history.back()} />;
+<BackArrow onClick={() => window.history.back()} />
 
           <img src={RemiIcon} alt="employeeIcon" style={{ height: "70px" }} />
           <div>
