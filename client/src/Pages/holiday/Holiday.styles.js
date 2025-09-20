@@ -302,6 +302,10 @@ export const AddButton = styled.button`
     font-size: clamp(1.4rem, 0.7vw, 2rem);
     padding: 24px 48px;
     max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+
   }
 `;
 

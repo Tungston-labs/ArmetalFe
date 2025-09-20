@@ -139,7 +139,7 @@ export const SearchInput = styled.input`
   @media (min-width: 3840px) {
     /* 4K/8K ultra-wide screens */
     font-size: 2.5rem;
-    width: 600px;
+    width:auto;
     height: 90px;
   }
 `;

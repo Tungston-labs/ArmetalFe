@@ -534,11 +534,13 @@ export const FormWrapper = styled.div`
   display: flex;
   gap: 2rem;
   align-items: flex-start;
-  @media (min-width: 2000px) {
-    height: 400px;
+  @media (min-width: 2560px) {
+    height: auto;
+        align-items:center;
+
   }
-  @media (min-width: 3500px) {
-    height: 510px;
+  @media (min-width: 3840px) {
+    height: auto;
   }
 `;
 export const ProfileImage = styled.img`
@@ -566,11 +568,11 @@ export const ImageColumn = styled.div`
     border-radius: 10px;
     object-fit: cover;
 
-    @media (min-width: 2000px) {
+    @media (min-width: 2560px) {
       width: 250px;
       height: 100%;
     }
-    @media (min-width: 3500px) {
+    @media (min-width: 3840px) {
       width: 300px;
       height: 100%;
     }

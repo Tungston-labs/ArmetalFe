@@ -492,7 +492,7 @@ export const SearchInput = styled.input`
     /* 4K/8K ultra-wide screens */
     font-size: 2.5rem;
     height:90px;
-    width: 600px;
+    width:auto;
   }
 `;
 

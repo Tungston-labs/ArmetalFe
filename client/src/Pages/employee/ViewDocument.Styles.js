@@ -462,6 +462,14 @@ export const FormWrapper = styled.div`
   display: flex;
   gap: 2rem;
   align-items: flex-start;
+   @media (min-width: 2560px) {
+    height: auto;
+        align-items:center;
+
+  }
+  @media (min-width: 3840px) {
+    height: auto;
+  }
 `;
 export const ProfileImage = styled.img`
   width: 100px;
@@ -487,6 +495,14 @@ export const ImageColumn = styled.div`
     height: 150px;
     border-radius: 10%;
     object-fit: cover;
+    @media (min-width: 2560px) {
+        width: 250px;
+        height: 100%;
+      }
+      @media (min-width: 3840px) {
+        width: 300px;
+        height: 100%;
+      }
   }
 `;
 export const Hr = styled.hr`
