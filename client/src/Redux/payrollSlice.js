@@ -166,10 +166,16 @@ const payrollSlice = createSlice({
         state.loading = true;
         state.updateStatusSuccess = false;
       })
-      .addCase(updatePayrollStatus.fulfilled, (state) => {
+      .addCase(updatePayrollStatus.fulfilled, (state, action) => {
         state.loading = false;
         state.updateStatusSuccess = true;
+        state.data = state.data.map(emp =>
+          emp.id === action.payload.employeeId
+            ? { ...emp, status: action.payload.data.status }
+            : emp
+        );
       })
+      
       .addCase(updatePayrollStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -201,10 +207,11 @@ const payrollSlice = createSlice({
         state.loading = false;
         state.verifySuccess = true;
         state.data = state.data.map((emp) =>
-          emp.employee?.id === action.payload.employeeId
-            ? action.payload.data  // replace with fresh record from backend
+          emp.id === action.payload.employeeId
+            ? action.payload.data
             : emp
         );
+        
       })
       
       .addCase(verifyEmployeePayroll.rejected, (state, action) => {

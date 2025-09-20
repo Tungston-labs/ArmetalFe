@@ -280,23 +280,16 @@ export const Td = styled.td`
   font-size: 0.9rem;
   font-weight: 400;
 
-  @media (min-width: 2560px) {
-    font-size: 20px;
-  }
-  @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 18px;
-  }
-  @media (max-width: 1023px) {
-    font-size: 0.8rem;
-  }
-  @media (max-width: 767px) {
-    font-size: 0.75rem;
+  div {
+    display: flex;
+    justify-content: center; /* center circles */
+    gap: 8px;
   }
 `;
 
+
 export const Tr = styled.tr`
   box-shadow: 0 0 0 1px #00000047;
-  overflow: hidden;
 `;
 
 export const Select = styled.select`

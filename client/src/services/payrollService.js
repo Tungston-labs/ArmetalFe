@@ -1,53 +1,79 @@
 // services/payrollService.js
 import API from "./api"; // Axios instance
 
-
+// 1. Fetch payroll data
 export const fetchPayrollData = async (month, year, search = "", page = 1, department = "") => {
-  const response = await API.get("/payroll/", {
-    params: { month, year, search, page, department },  // 👈 include department
-  });
-  console.log("✅ Payroll API Response:", response.data);
-  return response.data;
-};
-
-
-
-// 2. Create or update payroll records for selected employees
-export const createOrUpdatePayroll = async ({ month, year, employee_ids, status }) => {
-  const response = await API.post("/payroll/", {
-    month,
-    year,
-    employee_ids,
-    status,
-  });
-  return response.data;
-};
-// 3. verify payroll records by 2 hr admins
-export const verifyPayroll = async ({ employeeId, month, year }) => {
   try {
-    const response = await API.post(`/payroll/${employeeId}/verify/`, {
-      month,
-      year,
+    const response = await API.get("/payroll/", {
+      params: { month, year, search, page, department }, // 👈 include department
     });
+    console.log("✅ Payroll API Response:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error verifying payroll:", error.response?.data || error.message);
-    throw error;
+    const msg = error.response?.data?.error || error.message || "Something went wrong while fetching payroll!";
+    throw new Error(msg);
   }
 };
 
+// 2. Create or update payroll records for selected employees
+export const createOrUpdatePayroll = async ({ month, year, employee_ids, status }) => {
+  try {
+    const response = await API.post("/payroll/", {
+      month,
+      year,
+      employee_ids,
+      status,
+    });
+    return response.data;
+  } catch (error) {
+    const msg = error.response?.data?.error || error.message || "Failed to create or update payroll!";
+    throw new Error(msg);
+  }
+};
+// 3. Verify payroll records by 2 HR admins
+export const verifyPayroll = async ({ employeeId, month, year }) => {
+  try {
+    const token = localStorage.getItem("token"); // or wherever you store JWT
+    const response = await API.post(
+      `/payroll/${employeeId}/verify/`,
+      { month, year },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", // important!
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const msg = error.response?.data?.error || error.message || "Error verifying payroll!";
+    throw new Error(msg);
+  }
+};
+
+
 // 4. Update payroll status for a single employee
 export const updateEmployeePayrollStatus = async ({ employeeId, month, year, status }) => {
-  const response = await API.patch(`/payroll/${employeeId}/status/update/`, {
-    month,
-    year,
-    status,
-  });
-  return response.data;
+  try {
+    const response = await API.patch(`/payroll/${employeeId}/status/update/`, {
+      month,
+      year,
+      status,
+    });
+    return response.data;
+  } catch (error) {
+    const msg = error.response?.data?.error || error.message || "Error updating payroll status!";
+    throw new Error(msg);
+  }
 };
 
+// 5. Get payroll detail by record ID
 export const getPayrollDetailById = async (id) => {
-  const response = await API.get(`/payroll/record/${id}/`);
-  return response.data;
+  try {
+    const response = await API.get(`/payroll/record/${id}/`);
+    return response.data;
+  } catch (error) {
+    const msg = error.response?.data?.error || error.message || "Error fetching payroll detail!";
+    throw new Error(msg);
+  }
 };
-
