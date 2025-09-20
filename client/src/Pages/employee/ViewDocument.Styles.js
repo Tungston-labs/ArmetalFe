@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div`
   padding: 2rem;
   background: white;
- font-family: Satoshi;
+  font-family: Satoshi;
 `;
 
 export const Header = styled.div`
@@ -29,18 +29,24 @@ export const ResponsiveH3 = styled.h3`
   color: #030303;
 
   /* Responsive font size */
-  font-size: clamp(1rem, 2vw, 1.2rem); /* min 1rem, max 2rem, scales with viewport */
+  font-size: clamp(
+    1rem,
+    2vw,
+    1.2rem
+  ); /* min 1rem, max 2rem, scales with viewport */
 
   /* Optional: adjust margin for responsiveness */
   margin-top: clamp(0.5rem, 1vw, 1rem);
   margin-bottom: clamp(0.5rem, 1vw, 1rem);
 
   /* Ultra-large screens */
-  @media (min-width: 3840px) { /* 4K */
+  @media (min-width: 3840px) {
+    /* 4K */
     font-size: 3rem;
   }
 
-  @media (min-width: 7680px) { /* 8K */
+  @media (min-width: 7680px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -49,24 +55,29 @@ export const EditButton = styled.button`
   display: flex; /* icon + text */
   align-items: center;
   justify-content: center; /* center content */
-  gap: 0.4rem; 
+  gap: 0.4rem;
   padding: clamp(0.3rem, 0.5vw, 0.6rem);
   border: none;
-  background: linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(23, 37, 84, 1) 50%,
+    rgba(51, 82, 186, 1) 100%
+  );
   color: white;
   border-radius: 8px;
-  
-  width: clamp(80px, 4vw, 100px); 
-   height: clamp(35px, 4vw, 40px);  
-  font-size: clamp(0.8rem, 0.9vw, 1rem); 
+
+  width: clamp(80px, 4vw, 100px);
+  height: clamp(35px, 4vw, 40px);
+  font-size: clamp(0.8rem, 0.9vw, 1rem);
   cursor: pointer;
 
   svg {
-    font-size: clamp(0.9rem, 1vw, 1.2rem); 
+    font-size: clamp(0.9rem, 1vw, 1.2rem);
   }
 
   /* Ultra-large screens */
-  @media (min-width: 3840px) { /* 4K */
+  @media (min-width: 3840px) {
+    /* 4K */
     width: 150px;
     height: 60px;
     font-size: 1.2rem;
@@ -76,7 +87,8 @@ export const EditButton = styled.button`
     }
   }
 
-  @media (min-width: 7680px) { /* 8K */
+  @media (min-width: 7680px) {
+    /* 8K */
     width: 200px;
     height: 80px;
     font-size: 1.6rem;
@@ -90,7 +102,7 @@ export const EditButton = styled.button`
 export const Row = styled.div`
   display: flex;
   gap: 2.5rem;
-  width:100%;
+  width: 100%;
   flex-wrap: wrap;
   align-items: flex-start;
 `;
@@ -111,9 +123,6 @@ export const RightSection = styled.div`
   min-width: 300px;
 `;
 
-
-
-
 export const Textarea = styled.textarea`
   padding: 0.6rem;
   border: 1px solid #ccc;
@@ -122,8 +131,8 @@ export const Textarea = styled.textarea`
   resize: none;
   height: 95px;
   border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
+  border: 1px solid #052db4;
+  background: #fff;
 `;
 
 export const FieldWrapper = styled.div`
@@ -133,7 +142,7 @@ export const FieldWrapper = styled.div`
 `;
 
 export const Label = styled.label`
-  color: #3352BA;
+  color: #3352ba;
   font-weight: 400;
   margin-bottom: 0.4rem;
   font-size: 0.9rem;
@@ -164,18 +173,16 @@ export const Label = styled.label`
   }
 `;
 
-
-
 export const Input = styled.input`
   width: 100%;
   padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
   font-size: clamp(0.8rem, 0.9vw, 1.1rem);
   color: black;
   border-radius: 7px;
-  border: 1px solid #052DB4;
-  background: #FFF;
+  border: 1px solid #052db4;
+  background: #fff;
   box-sizing: border-box;
-margin-top:5px;
+  margin-top: 5px;
   /* Responsive refinements */
   @media (max-width: 480px) {
     font-size: 0.8rem;
@@ -185,22 +192,21 @@ margin-top:5px;
   @media (min-width: 1920px) {
     font-size: 1.5rem;
     padding: 1rem 1rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 
   @media (min-width: 3840px) {
     font-size: 2rem;
     padding: 1.5rem 2rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 
   @media (min-width: 7680px) {
     font-size: 1.3rem;
     padding: 1.4rem 2rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 `;
-
 
 export const Avatar = styled.img`
   width: 100px;
@@ -209,10 +215,8 @@ export const Avatar = styled.img`
   object-fit: cover;
 `;
 
-
-
 export const Section = styled.div`
-//   padding: 2rem;
+  //   padding: 2rem;
   background: white;
   font-family: sans-serif;
 `;
@@ -256,12 +260,14 @@ export const Tab = styled.button`
     padding: 1rem 2rem;
   }
 
-  @media (min-width: 3840px) { /* 4K */
+  @media (min-width: 3840px) {
+    /* 4K */
     font-size: 2rem;
     padding: 1.2rem 2.2rem;
   }
 
-  @media (min-width: 7680px) { /* 8K */
+  @media (min-width: 7680px) {
+    /* 8K */
     font-size: 2.5rem;
     padding: 1.5rem 3rem;
   }
@@ -292,7 +298,6 @@ export const Column = styled.div`
   flex-direction: column;
   gap: 1rem; /* adds vertical spacing */
 `;
-
 
 // export const Button = styled.button`
 //   display: block;             /* makes margin: auto work */
@@ -335,7 +340,7 @@ export const TextGroup = styled.div`
 export const EmployeeImage = styled.img`
   height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
   width: auto; /* maintain aspect ratio */
-  
+
   @media (min-width: 768px) {
     height: clamp(20px, 6vw, 20px);
   }
@@ -354,8 +359,9 @@ export const EmployeeImage = styled.img`
 
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
-  }`;
-  export const Title = styled.h2`
+  }
+`;
+export const Title = styled.h2`
   font-size: 1.4rem;
   margin: 0 0 5px 0;
   color: #3250b5;
@@ -363,27 +369,33 @@ export const EmployeeImage = styled.img`
   font-weight: 700;
   line-height: 1.2;
 
-  @media (min-width: 480px) { /* small tablet */
+  @media (min-width: 480px) {
+    /* small tablet */
     font-size: 0.8rem;
   }
 
-  @media (min-width: 768px) { /* tablet */
+  @media (min-width: 768px) {
+    /* tablet */
     font-size: 1rem;
   }
 
-  @media (min-width: 1024px) { /* desktop */
+  @media (min-width: 1024px) {
+    /* desktop */
     font-size: 1.5rem;
   }
 
-  @media (min-width: 1440px) { /* large desktop / 2K */
+  @media (min-width: 1440px) {
+    /* large desktop / 2K */
     font-size: 2rem;
   }
 
-  @media (min-width: 2560px) { /* 4K */
+  @media (min-width: 2560px) {
+    /* 4K */
     font-size: 3em;
   }
 
-  @media (min-width: 3840px) { /* 8K */
+  @media (min-width: 3840px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -427,10 +439,10 @@ export const TitleSection = styled.div`
 `;
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
+
   align-items: center;
-  padding: 0.3rem ;
+  padding: 0.3rem;
   // border: 1px solid #ccc;
   // border-radius: 8px;
   background-color: #fff;
@@ -461,11 +473,11 @@ export const Rightside = styled.div`
 export const FormWrapper = styled.div`
   display: flex;
   gap: 2rem;
-  align-items: flex-start;
-   @media (min-width: 2560px) {
+  align-items: center;
+  height: auto;
+  @media (min-width: 2560px) {
     height: auto;
-        align-items:center;
-
+    align-items: center;
   }
   @media (min-width: 3840px) {
     height: auto;
@@ -492,28 +504,27 @@ export const ImageColumn = styled.div`
 
   img {
     width: 150px;
-    height: 150px;
-    border-radius: 10%;
+    height: 100%;
+    border-radius: 10px;
     object-fit: cover;
     @media (min-width: 2560px) {
-        width: 250px;
-        height: 100%;
-      }
-      @media (min-width: 3840px) {
-        width: 300px;
-        height: 100%;
-      }
+      width: 250px;
+      height: 100%;
+    }
+    @media (min-width: 3840px) {
+      width: 300px;
+      height: 100%;
+    }
   }
 `;
 export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
-
 `;
 
 export const UploadSection = styled.div`
   margin-bottom: 1.5rem;
-  background: #F1F1F1;
+  background: #f1f1f1;
   padding: clamp(0.8rem, 1vw, 2rem);
   border-radius: 8px;
 
@@ -528,12 +539,12 @@ export const UploadSection = styled.div`
   @media (min-width: 2560px) {
     padding: 2rem;
     border-radius: 14px;
-     margin-bottom:2rem;
+    margin-bottom: 2rem;
   }
   @media (min-width: 3840px) {
     padding: 3rem;
     border-radius: 16px;
-       margin-bottom:2.5rem;
+    margin-bottom: 2.5rem;
   }
   @media (min-width: 7680px) {
     padding: 4rem;
@@ -549,11 +560,26 @@ export const LabelRow = styled.div`
   color: #999999;
   padding: clamp(0.2rem, 0.5vw, 0.5rem);
 
-  @media (min-width: 1440px) { font-size: 1.3rem; padding: 0.6rem; }
-  @media (min-width: 1960px) { font-size: 1.8rem; padding: 0.7rem; }
-  @media (min-width: 2560px) { font-size: 2rem; padding: 0.9rem; }
-  @media (min-width: 3840px) { font-size: 2.2rem; padding: 1rem; }
-  @media (min-width: 7680px) { font-size: 2.5rem; padding: 1.2rem; }
+  @media (min-width: 1440px) {
+    font-size: 1.3rem;
+    padding: 0.6rem;
+  }
+  @media (min-width: 1960px) {
+    font-size: 1.8rem;
+    padding: 0.7rem;
+  }
+  @media (min-width: 2560px) {
+    font-size: 2rem;
+    padding: 0.9rem;
+  }
+  @media (min-width: 3840px) {
+    font-size: 2.2rem;
+    padding: 1rem;
+  }
+  @media (min-width: 7680px) {
+    font-size: 2.5rem;
+    padding: 1.2rem;
+  }
 `;
 
 export const UploadButton = styled.button`
@@ -572,13 +598,32 @@ export const UploadButton = styled.button`
     background-color: #1c3aa9;
   }
 
-  @media (min-width: 1440px) { font-size: 1.3rem; width: 150px; height: 70px; }
-  @media (min-width: 1960px) { font-size: 1.5rem; width: 170px; height: 80px; }
-  @media (min-width: 2560px) { font-size: 1.9rem; width: 220px; height: 150px; }
-  @media (min-width: 3840px) { font-size: 2.2rem; width: 240px; height: 180px; }
-  @media (min-width: 7680px) { font-size: 2.5rem; width: 260px; height: 200px; }
+  @media (min-width: 1440px) {
+    font-size: 1.3rem;
+    width: 150px;
+    height: 70px;
+  }
+  @media (min-width: 1960px) {
+    font-size: 1.5rem;
+    width: 170px;
+    height: 80px;
+  }
+  @media (min-width: 2560px) {
+    font-size: 1.9rem;
+    width: 220px;
+    height: 150px;
+  }
+  @media (min-width: 3840px) {
+    font-size: 2.2rem;
+    width: 240px;
+    height: 180px;
+  }
+  @media (min-width: 7680px) {
+    font-size: 2.5rem;
+    width: 260px;
+    height: 200px;
+  }
 `;
-
 
 // export const ImagePreviewRow = styled.div`
 //   display: flex;
@@ -600,8 +645,8 @@ export const InlineUploadRow = styled.div`
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap; /* makes it responsive */
-  background:#F1F1F1;
-  padding:10px;
+  background: #f1f1f1;
+  padding: 10px;
 `;
 
 export const ButtonGroup = styled.div`
@@ -612,8 +657,8 @@ export const ButtonGroup = styled.div`
 `;
 
 export const Button = styled.button`
-  background: ${({ secondary }) => (secondary ? '#9EABD8' : '#172554')};
-  color: ${({ secondary }) => (secondary ? '#000' : '#fff')};
+  background: ${({ secondary }) => (secondary ? "#9EABD8" : "#172554")};
+  color: ${({ secondary }) => (secondary ? "#000" : "#fff")};
   padding: 0.7rem 1.5rem;
   border: none;
   border-radius: 8px;
@@ -621,12 +666,12 @@ export const Button = styled.button`
   cursor: pointer;
 
   &:hover {
-    background: ${({ secondary }) => (secondary ? '#aab3d0' : '#002244')};
+    background: ${({ secondary }) => (secondary ? "#aab3d0" : "#002244")};
   }
 `;
 
 export const SectionTitle = styled.h4`
-    margin-top: 1rem;
+  margin-top: 1rem;
   margin-bottom: 0.5rem;
   color: #000;
   font-family: Satoshi;
@@ -652,8 +697,8 @@ export const ImagePreviewRow = styled.div`
 `;
 
 export const ImageBox = styled.div`
-  width: clamp(80px, 10vw, 200px);   /* min 80px, max 200px, grows with screen */
-  height: clamp(60px, 8vw, 160px);   /* min 60px, max 160px, grows with screen */
+  width: clamp(80px, 10vw, 200px); /* min 80px, max 200px, grows with screen */
+  height: clamp(60px, 8vw, 160px); /* min 60px, max 160px, grows with screen */
   border-radius: 10px;
   border: 1px solid #ccc;
   overflow: hidden;
@@ -666,14 +711,15 @@ export const ImageBox = styled.div`
   }
 
   /* Ultra-large screens adjustments */
-  @media (min-width: 3840px) { /* 4K */
+  @media (min-width: 3840px) {
+    /* 4K */
     width: 300px;
     height: 240px;
   }
 
-  @media (min-width: 7680px) { /* 8K */
+  @media (min-width: 7680px) {
+    /* 8K */
     width: 400px;
     height: 320px;
   }
 `;
-

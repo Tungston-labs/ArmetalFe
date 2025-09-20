@@ -19,7 +19,6 @@ export const Header = styled.div`
   p {
     margin: 0.2rem 0 0;
     // font-size: 0.9rem;
-    
   }
 `;
 export const EmployeeImage = styled.img`
@@ -533,11 +532,12 @@ export const Rightside = styled.div`
 export const FormWrapper = styled.div`
   display: flex;
   gap: 2rem;
-  align-items: flex-start;
+  align-items: center;
+  height: auto;
+
   @media (min-width: 2560px) {
     height: auto;
-        align-items:center;
-
+    align-items: center;
   }
   @media (min-width: 3840px) {
     height: auto;
@@ -564,7 +564,7 @@ export const ImageColumn = styled.div`
 
   img {
     width: 150px;
-    height: 210px;
+    height: 100%;
     border-radius: 10px;
     object-fit: cover;
 
