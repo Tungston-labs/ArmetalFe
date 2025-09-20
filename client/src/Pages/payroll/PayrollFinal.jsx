@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import {
   Container, Header, TitleSection, Title, Subtitle, SearchInput, Pagination,
@@ -21,12 +20,10 @@ import {
 } from '../../Redux/payrollSlice';
 import { getDepartments } from '../../Redux/departmentSlice';
 import Navbar from '../../Components/Navbar';
-import Loader from "../../Components/Loader"
+import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
 import VerificationCircles from '../../Components/VerificationCircle';
 import HolidayIcon from "../../assets/payroll.svg";
-import { FaCheck } from "react-icons/fa";
-
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -45,14 +42,10 @@ const PayrollTable = () => {
   console.log({ data });
 
   const departmentList = useSelector(state => state.departments.list || []);
-  console.log(departmentList);
-
 
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-const today = new Date();
-const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // getMonth() returns 0-11
-
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(defaultYear);
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
@@ -103,19 +96,20 @@ const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // get
   }, [data]);
 
   const handleSearch = (e) => { setSearchTerm(e.target.value); setPage(1); };
-const handleMonthChange = (e) => {
-  setSelectedMonth(Number(e.target.value)); // convert string to number
-};
-
+  const handleMonthChange = (e) => { setSelectedMonth(Number(e.target.value)); };
   const handleYearChange = (e) => { setSelectedYear(Number(e.target.value)); setPage(1); };
   const handleDepartmentChange = (e) => { setSelectedDepartment(e.target.value); setPage(1); };
 
   const toggleEmployeeSelect = (id) => {
-    setSelectedEmployees(prev => prev.includes(id) ? prev.filter(empId => empId !== id) : [...prev, id]);
+    setSelectedEmployees(prev =>
+      prev.includes(id) ? prev.filter(empId => empId !== id) : [...prev, id]
+    );
   };
 
   const handleSelectAll = () => {
-    setSelectedEmployees(selectedEmployees.length === data.length ? [] : data.map(emp => emp.employee));
+    setSelectedEmployees(
+      selectedEmployees.length === data.length ? [] : data.map(emp => emp.id)
+    );
   };
   const handleSingleStatusChange = async (employeeId, newStatus) => {
     console.log({ employeeId });
@@ -161,21 +155,22 @@ const handleMonthChange = (e) => {
 
   const handleBulkStatusChange = async (e) => {
     const newStatus = e.target.value;
+    setBulkStatus(newStatus);
+
     if (!newStatus || selectedEmployees.length === 0) return;
-  
-    // 🚫 Check if every selected employee has both verifications
+
     const unverified = data.filter(emp =>
-      selectedEmployees.includes(emp.employee) &&
+      selectedEmployees.includes(emp.id) &&
       (!verificationStatus[emp.id]?.first || !verificationStatus[emp.id]?.second)
     );
-  
+
     if (unverified.length > 0) {
       Swal.fire({
         icon: "warning",
         title: "Verification Pending",
         text: "Some selected employees are not verified by both admins.",
       });
-      e.target.selectedIndex = 0; // reset select
+      setBulkStatus('');
       return;
     }
 
@@ -203,9 +198,6 @@ const handleMonthChange = (e) => {
       setBulkStatus('');
     }
   };
-  
-
-  
 
 
   const handleCircleClick = async (e, employee, type) => {
@@ -227,21 +219,7 @@ const handleMonthChange = (e) => {
       Swal.fire({ icon: "warning", title: "Cannot Verify", text: "You cannot verify the same payroll twice." });
       return;
     }
-  
-    // 🚫 Case 2: Same HR trying to verify both circles
-    if (
-      (type === "first" && empStatus?.second) ||
-      (type === "second" && empStatus?.first)
-    ) {
-      Swal.fire({
-        icon: "warning",
-        title: "Not Allowed",
-        text: "One admin can only verify once.",
-      });
-      return;
-    }
-  
-    // ✅ If valid, call API
+
     try {
       await dispatch(verifyEmployeePayroll({
         employeeId: employee.employee,
@@ -267,7 +245,7 @@ const handleMonthChange = (e) => {
       Swal.fire({
         icon: "success",
         title: "Verified",
-        text: "Payroll verification recorded successfully.",
+        text: "Payroll verification recorded.",
         timer: 1500,
         showConfirmButton: false,
       });
@@ -291,8 +269,6 @@ const handleMonthChange = (e) => {
       });
     }
   };
-  
-  
 
 
   const handlePageChange = (newPage) => {
@@ -329,15 +305,11 @@ const handleMonthChange = (e) => {
           <SearchInput placeholder=" Enter employee ID" value={searchTerm} onChange={handleSearch} />
           <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
-  {months.map((month, index) => (
-    <option key={month} value={index + 1}>
-      {month}
-    </option>
-  ))}
-</Select>
-
+              {months.map((month, index) => (
+                <option key={month} value={index + 1}>{month}</option>
+              ))}
+            </Select>
             <Select value={selectedYear} onChange={handleYearChange}>
-              {/* <option value=""></option> */}
               {years.map(year => <option key={year} value={year}>{year}</option>)}
             </Select>
           </div>
@@ -367,16 +339,21 @@ const handleMonthChange = (e) => {
           <Table>
             <thead>
               <tr>
-                <Th></Th>
+                <Th>
+                  <input
+                    type="checkbox"
+                    checked={selectedEmployees.length === data.length && data.length > 0}
+                    onChange={handleSelectAll}
+                  />
+                </Th>
                 <Th>Sl No</Th>
                 <Th>Employee ID</Th>
-                <Th>Employee name</Th>
                 <Th>Job Position</Th>
                 <Th>Joining Date</Th>
                 <Th>Email ID</Th>
                 <Th>Salary</Th>
                 <Th>Info</Th>
-                <Th></Th>
+                <Th>Verification</Th>
                 <Th>Status</Th>
               </tr>
             </thead>
@@ -388,54 +365,39 @@ const handleMonthChange = (e) => {
               ) : data?.length > 0 ? (
                 data.map((emp, index) => (
                   <tr key={emp.id}>
-                    <Td><input type="checkbox" checked={selectedEmployees.includes(emp.employee)} onChange={() => toggleEmployeeSelect(emp.employee)} /></Td>
+                    <Td>
+                      <input
+                        type="checkbox"
+                        checked={selectedEmployees.includes(emp.id)}
+                        onChange={() => toggleEmployeeSelect(emp.id)}
+                      />
+                    </Td>
                     <Td>{(page - 1) * 10 + index + 1}</Td>
                     <Td>{emp.employee_id}</Td>
-                    <Td>{emp.employee_name}</Td>
-                    <Td>{emp.designation}</Td>
+                    <Td
+                      style={{
+                        maxWidth: "100px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}
+                      title={emp.designation}
+                    >
+                      {emp.designation}
+                    </Td>
                     <Td>{emp.joining_date}</Td>
-                    <Td>{emp.email}</Td>
+                    <Td
+                      style={{
+                        maxWidth: "150px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}
+                      title={emp.email}
+                    >
+                      {emp.email}
+                    </Td>
                     <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
-                    <Td><Link to={`/payrolldetails/${emp.id}`}><GoInfo style={{ cursor: 'pointer',color:"black" }} /></Link></Td>
-                   <Td>
-  <div style={{ display: 'flex', gap: '8px' }}>
-    <div
-      onClick={(e) => handleCircleClick(e, emp, 'first')}
-      style={{
-        width: '20px',
-        height: '20px',
-        borderRadius: '50%',
-        border: '2px solid #ccc',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: verificationStatus[emp.id]?.first ? 'not-allowed' : 'pointer'
-      }}
-    >
-      {verificationStatus[emp.id]?.first && (
-        <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
-      )}
-    </div>
-
-    <div
-      onClick={(e) => handleCircleClick(e, emp, 'second')}
-      style={{
-        width: '20px',
-        height: '20px',
-        borderRadius: '50%',
-        border: '2px solid #ccc',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: verificationStatus[emp.id]?.second ? 'not-allowed' : 'pointer'
-      }}
-    >
-      {verificationStatus[emp.id]?.second && (
-        <FaCheck style={{ color: 'blue', fontSize: '10px' }} />
-      )}
-    </div>
-  </div>
-</Td>
                     <Td>
                       <Link to={`/payrolldetails/${emp.id}`}>
                         <GoInfo style={{ cursor: 'pointer', color: "black" }} />
@@ -497,12 +459,30 @@ const handleMonthChange = (e) => {
         </TableWrapper>
 
         <Pagination>
-          <span onClick={() => handlePageChange(page - 1)} style={{ cursor: page > 1 ? 'pointer' : 'not-allowed', opacity: page > 1 ? 1 : 0.5 }}>&larr;</span>
+          <span
+            onClick={() => handlePageChange(page - 1)}
+            style={{ cursor: page > 1 ? 'pointer' : 'not-allowed', opacity: page > 1 ? 1 : 0.5 }}
+          >
+            &larr;
+          </span>
           {[...Array(totalPages)].map((_, i) => {
             const pageNum = i + 1;
-            return <span key={pageNum} onClick={() => handlePageChange(pageNum)} className={pageNum === page ? "active" : ""}>{pageNum}</span>;
+            return (
+              <span
+                key={pageNum}
+                onClick={() => handlePageChange(pageNum)}
+                className={pageNum === page ? "active" : ""}
+              >
+                {pageNum}
+              </span>
+            );
           })}
-          <span onClick={() => handlePageChange(page + 1)} style={{ cursor: page < totalPages ? 'pointer' : 'not-allowed', opacity: page < totalPages ? 1 : 0.5 }}>&rarr;</span>
+          <span
+            onClick={() => handlePageChange(page + 1)}
+            style={{ cursor: page < totalPages ? 'pointer' : 'not-allowed', opacity: page < totalPages ? 1 : 0.5 }}
+          >
+            &rarr;
+          </span>
         </Pagination>
       </Container>
     </>
