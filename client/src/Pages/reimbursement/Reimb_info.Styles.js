@@ -6,6 +6,16 @@ export const PageWrapper = styled.div`
   padding: 2rem;
   font-family: Arial, sans-serif;
   color: #222;
+  @media (min-width: 2560px) {
+    h6 {
+      font-size: 1.5rem;
+    }
+  }
+  @media (min-width: 3840px) {
+    h6 {
+      font-size: 2.5rem;
+    }
+  }
 `;
 
 export const Header = styled.div`
@@ -34,27 +44,33 @@ export const HeaderTitle = styled.h2`
   font-weight: 700;
   line-height: 1.2;
 
-  @media (min-width: 480px) { /* small tablet */
+  @media (min-width: 480px) {
+    /* small tablet */
     font-size: 0.8rem;
   }
 
-  @media (min-width: 768px) { /* tablet */
+  @media (min-width: 768px) {
+    /* tablet */
     font-size: 1rem;
   }
 
-  @media (min-width: 1024px) { /* desktop */
+  @media (min-width: 1024px) {
+    /* desktop */
     font-size: 1.5rem;
   }
 
-  @media (min-width: 1440px) { /* large desktop / 2K */
+  @media (min-width: 1440px) {
+    /* large desktop / 2K */
     font-size: 2rem;
   }
 
-  @media (min-width: 2560px) { /* 4K */
+  @media (min-width: 2560px) {
+    /* 4K */
     font-size: 3em;
   }
 
-  @media (min-width: 3840px) { /* 8K */
+  @media (min-width: 3840px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -95,15 +111,31 @@ export const HeaderSubtitle = styled.p`
 export const ProfileSection = styled.div`
   display: flex;
   gap: 1.5rem;
-  align-items: flex-start;
+  align-items: center;
   // margin-bottom: 1.5rem;
+  @media (min-width: 2560px) {
+    gap: 2rem;
+    padding-block: 2rem;
+    height: 20rem;
+  }
+  @media (min-width: 3840px) {
+    height: 30rem;
+  }
 `;
 
 export const ProfileImage = styled.img`
   width: 10rem;
   height: 10rem;
-//   border-radius: 12px;
+  //   border-radius: 12px;
   object-fit: cover;
+  @media (min-width: 2560px) {
+    width: 20rem;
+    height: 100%;
+  }
+  @media (min-width: 3840px) {
+    width: 35rem;
+    height: 100%;
+  }
 `;
 
 export const ProfileInfo = styled.div`
@@ -113,27 +145,39 @@ export const ProfileInfo = styled.div`
 `;
 
 export const Row = styled.div`
-//   display: flex;
+  //   display: flex;
   gap: 1rem;
 `;
 
 export const Label = styled.div`
   font-size: 1rem;
-  color: #3352BA; 
+  color: #3352ba;
   min-width: 100px;
-margin-bottom:5px;
-font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-
+  margin-bottom: 5px;
+  font-family: Satoshi;
+  font-weight: 400;
+  font-style: Bold;
+  leading-trim: NONE;
+  line-height: 100%;
+  letter-spacing: 0%;
+  @media (min-width: 2560px) {
+    font-size: 1.5rem !important;
+  }
+  @media (min-width: 3840px) {
+    font-size: 2.5rem !important;
+  }
+  
 `;
 
 export const Value = styled.div`
   font-size: 1rem;
   font-weight: 500;
+  @media (min-width: 2560px) {
+    font-size: 2rem;
+  }
+  @media (min-width: 3840px) {
+    font-size: 3rem;
+  }
 `;
 
 export const DateSection = styled.div`
@@ -141,20 +185,28 @@ export const DateSection = styled.div`
 `;
 
 export const DescriptionBox = styled.div`
-  border: 1px solid ;
+  border: 1px solid;
   padding: 1rem;
   border-radius: 7px;
   line-height: 1.4;
   margin-bottom: 1.5rem;
 
   /* Ensure text wraps and respects line breaks */
-  white-space: pre-wrap;      /* preserves line breaks */
-  word-wrap: break-word;      /* wraps long words */
-  overflow-wrap: break-word;  /* ensures no overflow */
+  white-space: pre-wrap; /* preserves line breaks */
+  word-wrap: break-word; /* wraps long words */
+  overflow-wrap: break-word; /* ensures no overflow */
 
   /* Optional: make scrollable if too long */
-  max-height: 300px;          /* adjust as needed */
+  height: 200px; /* adjust as needed */
   overflow-y: auto;
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+    height: 300px;
+  }
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+    height: 600px;
+  }
 `;
 
 export const BillsSection = styled.div`
@@ -174,6 +226,14 @@ export const BillImage = styled.img`
   border: 1px solid #ddd;
   border-radius: 6px;
   object-fit: cover;
+  @media (min-width: 2560px) {
+    width: 280px;
+    height: 350px;
+  }
+  @media (min-width: 3840px) {
+    width: 400px;
+    height: 550px;
+  }
 `;
 
 export const SelectBox = styled.select`
@@ -182,6 +242,12 @@ export const SelectBox = styled.select`
   border-radius: 6px;
   font-size: 0.9rem;
   cursor: pointer;
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
 export const Divider = styled.hr`
   border: none;

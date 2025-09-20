@@ -23,7 +23,6 @@ API.interceptors.request.use(
 );
 
 // Response Interceptor: Refresh token on 401
-// Response Interceptor: Refresh token on 401
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -32,12 +31,12 @@ API.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      localStorage.getItem("refreshToken")
+      (localStorage.getItem("refreshToken")|| sessionStorage.getItem("refreshToken"))
     ) {
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
+        const refreshToken = localStorage.getItem("refreshToken")|| sessionStorage.getItem("refreshToken");
 
         const res = await axios.post("http://178.248.112.16:8001/api/token/refresh/", {
           refresh: refreshToken,
@@ -46,11 +45,18 @@ API.interceptors.response.use(
         const newAccessToken = res.data.access;
         const newRefreshToken = res.data.refresh; // 👈 important
 
+        if(localStorage.getItem("refreshToken")){
         // Store both tokens
         localStorage.setItem("accessToken", newAccessToken);
         if (newRefreshToken) {
           localStorage.setItem("refreshToken", newRefreshToken); // 👈 overwrite old refresh token
         }
+      }else{
+        sessionStorage.setItem("accessToken", newAccessToken);
+        if (newRefreshToken) {
+          sessionStorage.setItem("refreshToken", newRefreshToken); // 👈 overwrite old refresh token
+        }
+      }
 
         // Retry the original request
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

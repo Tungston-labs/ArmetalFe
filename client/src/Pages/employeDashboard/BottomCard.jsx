@@ -21,6 +21,12 @@ import {
   TimeIn,
   TimeOut,
   Divider,
+  Wrapper,
+  Image,
+  Message,
+  AttendanceSection,
+  AttendanceImage,
+  Text,
 } from "./BottomCard.Styles";
 import NoTasks from "../../assets/daliy.svg"; // for empty tasks
 import NoAttendance from "../../assets/puchtime.svg"; 
@@ -53,10 +59,21 @@ const formatDate = (dateStr) => {
   }
 };
 const formatHours = (hours) => {
-  if (!hours && hours !== 0) return "-"; 
-  const num = Number(hours);
-  return `${num.toString().padStart(2, "0")}.00 Hr`;
+  if (hours === null || hours === undefined || hours === "") return "-";
+
+  let [h = "0", m = "0"] = hours.toString().split(".");
+
+  // If minutes part is single digit like "3" → "30"
+  if (m.length === 1) {
+    m = m + "0";
+  }
+
+  const formattedH = h.padStart(2, "0");
+  const formattedM = m.padStart(2, "0");
+
+  return `${formattedH}:${formattedM}`;
 };
+
 
 
 const DailyTaskList = () => {
@@ -86,9 +103,9 @@ const DailyTaskList = () => {
       <Section>
         <Header>
           <Title>Daily Task List</Title>
-          <RightArrow>
+          {/* <RightArrow>
             <BiSolidRightTopArrowCircle size={28} />
-          </RightArrow>
+          </RightArrow> */}
         </Header>
 
         <TaskList>
@@ -103,18 +120,16 @@ const DailyTaskList = () => {
           <TaskRole>{task.project || "N/A"}</TaskRole>
           <TaskDescription>{task.task || "No description"}</TaskDescription>
         </TaskContent>
-        <RightArrow>
+        {/* <RightArrow>
           <FiArrowUpRight size={16} />
-        </RightArrow>
+        </RightArrow> */}
       </TaskCard>
     ))
   ) : (
-    <div style={{ textAlign: "center", padding: "20px", background: "white" }}>
-      <img src={NoTasks} alt="No tasks" style={{ width: "200px", height: "auto" }} />
-      <p style={{ marginTop: "10px", color: "#3352BA", fontSize: "16px" }}>
-        Today's task list is empty
-      </p>
-    </div>
+    <Wrapper>
+      <Image src={NoTasks} alt="No tasks" />
+      <Message>Today's task list is empty</Message>
+    </Wrapper>
   )}
 </TaskList>
 
@@ -124,9 +139,9 @@ const DailyTaskList = () => {
       <Section>
         <AttendanceHeader>
           <Title>{new Date().toLocaleDateString()}</Title>
-          <RightArrow>
+          {/* <RightArrow>
             <BiSolidRightTopArrowCircle size={28} />
-          </RightArrow>
+          </RightArrow> */}
         </AttendanceHeader>
 
         <Table>
@@ -164,10 +179,10 @@ const DailyTaskList = () => {
   ) : (
     <TableRow>
       <TableCell colSpan={3} style={{ textAlign: "center" }}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-          <img src={NoAttendance} alt="No attendance" style={{ width: "290px", height: "auto" }} />
-          <span style={{ color: "#3352BA", fontSize: "16px" }}>No attendance recorded today</span>
-        </div>
+     <AttendanceSection>
+      <AttendanceImage src={NoAttendance} alt="No attendance" />
+      <Text>No attendance recorded today</Text>
+    </AttendanceSection>
       </TableCell>
     </TableRow>
   )}

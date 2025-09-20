@@ -33,15 +33,16 @@ import Loader from "../../Components/Loader"
 const getStatusStyle = (status) => {
   switch (status) {
     case "Approve":
-      return { backgroundColor: "green", color: "white" };
+      return { backgroundColor: "#4B976D", color: "white" }; // green
     case "On Hold":
-      return { backgroundColor: "orange", color: "white" };
+      return { backgroundColor: "#BA703A", color: "white" }; // brown-orange
     case "In Verification":
-      return { backgroundColor: "yellow", color: "black" };
+      return { backgroundColor: "#DD991D", color: "black" }; // yellow
     default:
       return { backgroundColor: "#fff", color: "#000" };
   }
 };
+
 
 
 
@@ -108,20 +109,16 @@ const ReimbursementDetail = () => {
             </HeaderSubtitle>
           </div>
         </HeaderLeft>
-<SelectBox
+        <SelectBox
   value={reimbursement.status || ""}
   onChange={async (e) => {
     const newStatus = e.target.value;
 
     try {
-      // Optimistic update
       setReimbursement((prev) => ({ ...prev, status: newStatus }));
-
-      // Wait for API to persist
       await updateReimbursementStatus(id, newStatus);
     } catch (error) {
       console.error("Failed to update status:", error);
-      // rollback in case of failure
       setReimbursement((prev) => ({ ...prev, status: reimbursement.status }));
     }
   }}
@@ -140,6 +137,7 @@ const ReimbursementDetail = () => {
   <option value="On Hold">On Hold</option>
   <option value="In Verification">In Verification</option>
 </SelectBox>
+
       </Header>
 
       {/* Profile */}

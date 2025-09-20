@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import { addCompany, editCompany } from '../../Redux/superAdminSlice';
 import { FiUpload } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
+import Swal from 'sweetalert2';
 
 const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) => {
   const dispatch = useDispatch();
@@ -129,67 +130,79 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
     fileInputRef.current.value = '';
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const errors = {};
-    if (!formData.name.trim()) errors.name = "Company name is required.";
-    if (!formData.address.trim()) errors.address = "Address is required.";
-    if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Valid email is required.";
-    if (!formData.location.trim()) errors.location = "Location is required.";
-    if (!formData.country) errors.country = "Country is required.";
-    if (!formData.latitude || formData.latitude < -90 || formData.latitude > 90) {
-      errors.latitude = "Latitude must be between -90 and 90.";
+  const errors = {};
+  if (!formData.name.trim()) errors.name = "Company name is required.";
+  if (!formData.address.trim()) errors.address = "Address is required.";
+  if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Valid email is required.";
+  if (!formData.location.trim()) errors.location = "Location is required.";
+  if (!formData.country) errors.country = "Country is required.";
+  if (!formData.latitude || formData.latitude < -90 || formData.latitude > 90) {
+    errors.latitude = "Latitude must be between -90 and 90.";
+  }
+  if (!formData.longitude || formData.longitude < -180 || formData.longitude > 180) {
+    errors.longitude = "Longitude must be between -180 and 180.";
+  }
+
+  const phoneRegex = /^\d{7,12}$/;
+  if (!formData.contact_number.trim() || !phoneRegex.test(formData.contact_number)) {
+    errors.contact_number = "Phone must be 7 to 12 digits.";
+  }
+
+  if (formData.modules.length === 0) errors.modules = "Select at least one module.";
+
+  setFormErrors(errors);
+  if (Object.keys(errors).length > 0) return;
+
+  const modulesObject = {};
+  allModules.forEach(mod => {
+    modulesObject[mod] = formData.modules.includes(mod);
+  });
+
+  const payload = new FormData();
+  payload.append("name", formData.name);
+  payload.append("address", formData.address);
+  payload.append("email", formData.email);
+  payload.append("location", formData.location);
+  payload.append("country", formData.country);
+  payload.append("latitude", formData.latitude);
+  payload.append("longitude", formData.longitude);
+  payload.append("contact_number", `${formData.country_code}${formData.contact_number}`);
+  payload.append("modules", JSON.stringify(modulesObject));
+  if (formData.logo) payload.append("logo", formData.logo);
+
+  try {
+    if (isEdit && selectedCompany?.id) {
+      await dispatch(editCompany({ id: selectedCompany.id, data: payload })).unwrap();
+      Swal.fire({
+        title: 'Updated!',
+        text: 'Company details have been updated successfully.',
+        icon: 'success',
+        confirmButtonColor: '#3250B5'
+      });
+    } else {
+      await dispatch(addCompany(payload)).unwrap();
+      Swal.fire({
+        title: 'Saved!',
+        text: 'Company has been added successfully.',
+        icon: 'success',
+        confirmButtonColor: '#3250B5'
+      });
     }
-    if (!formData.longitude || formData.longitude < -180 || formData.longitude > 180) {
-      errors.longitude = "Longitude must be between -180 and 180.";
-    }
-
-
-    const phoneRegex = /^\d{7,12}$/;
-    if (!formData.contact_number.trim() || !phoneRegex.test(formData.contact_number)) {
-      errors.contact_number = "Phone must be 7 to 12 digits.";
-    }
-
-    if (formData.modules.length === 0) errors.modules = "Select at least one module.";
-
-    setFormErrors(errors);
-    if (Object.keys(errors).length > 0) return;
-
-    const modulesObject = {};
-    allModules.forEach(mod => {
-      modulesObject[mod] = formData.modules.includes(mod);
+    onClose();
+  } catch (err) {
+    console.error("Company save failed", err);
+    Swal.fire({
+      title: 'Error!',
+      text: 'Something went wrong. Please try again.',
+      icon: 'error',
+      confirmButtonColor: '#D33'
     });
+  }
+};
 
-    const payload = new FormData();
-    payload.append("name", formData.name);
-    payload.append("address", formData.address);
-    payload.append("email", formData.email);
-    payload.append("location", formData.location);
-    payload.append("country", formData.country);
-    payload.append("latitude", formData.latitude);
-    payload.append("longitude", formData.longitude);
-
-
-    const fullPhone = `${formData.country_code}${formData.contact_number}`;
-    payload.append("contact_number", fullPhone);
-
-    payload.append("modules", JSON.stringify(modulesObject));
-    if (formData.logo) {
-      payload.append("logo", formData.logo);
-    }
-
-    try {
-      if (isEdit && selectedCompany?.id) {
-        await dispatch(editCompany({ id: selectedCompany.id, data: payload })).unwrap();
-      } else {
-        await dispatch(addCompany(payload)).unwrap();
-      }
-      onClose();
-    } catch (err) {
-      console.error("Company save failed", err);
-    }
-  };
 
   return (
     <FormWrapper>

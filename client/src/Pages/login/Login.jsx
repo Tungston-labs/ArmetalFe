@@ -12,7 +12,9 @@ import {
   SmallLink,
   LeftHeader,
   Logo,
-  CustomLink
+  CustomLink,
+  Title,
+  Subtitle
 } from '../login/Login.styles';
 
 import axios from 'axios';
@@ -69,6 +71,7 @@ const LoginForm = () => {
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
+console.log("---",formData);
 
 
   const handleSubmit = async (e) => {
@@ -86,11 +89,11 @@ const LoginForm = () => {
   
       // If "Remember me" checked -> use localStorage
       // Else -> use sessionStorage (clears on browser close)
-      const storage = formData.remember ? localStorage : sessionStorage;
+      // const storage = formData.remember ? localStorage : sessionStorage;
   
-      storage.setItem("accessToken", access);
-      storage.setItem("refreshToken", refresh);
-      storage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("accessToken", access);
+      localStorage.setItem("refreshToken", refresh);
+      localStorage.setItem("user", JSON.stringify(user));
   
       dispatch(
         login({
@@ -174,32 +177,12 @@ const LoginForm = () => {
       <RightPanel>
         {view === 'login' ? (
           <FormBox>
-    {/* <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', fontWeight: 'bold',}}>Log in</h2>
-    <p style={{ fontSize: 20, fontFamily: 'Raleway' }}>
-              Welcome back!<br />
-              Please log in to your account
-            </p> */}
              <div style={{ textAlign: "left" }}>
-    <h2
-      style={{
-        fontSize: 41,
-        fontFamily: "Satoshi",
-        fontWeight: "bold",
-        margin: 0,              // remove default margin
-      }}
-    >
-      Log in
-    </h2>
-    <p
-      style={{
-        fontSize: 20,
-        fontFamily: "Raleway",
-        marginTop: "8px",      // small spacing between h2 and p
-      }}
-    >
+    <Title>Log in</Title>
+    <Subtitle>
       Welcome back! <br />
       Please log in to your account
-    </p>
+    </Subtitle>
   </div>
             <form onSubmit={handleSubmit}>
               <Label>Username</Label>
@@ -239,25 +222,10 @@ const LoginForm = () => {
 
 
 
-              <SmallLink
-                as="button"
-                type="button"
-                onClick={handleForgotPassword}
-                style={{
-                  cursor: "pointer",
-                  background: "none",
-                  border: "none",
-                  color: "black", // make it look like a link
-                  fontSize: "14px",
-                  marginTop: "8px",
-                  fontFamily: 'Raleway',
-                  textDecoration: "none",
-                  // fontSize: "14px",
-                  marginTop: "-10px"
-                }}
-              >
-                Forgot password?
-              </SmallLink>
+           <SmallLink type="button" onClick={handleForgotPassword}>
+  Forgot password?
+</SmallLink>
+
 
 
 
@@ -292,12 +260,12 @@ const LoginForm = () => {
           </FormBox>
         ) : (
           <FormBox>
-            <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', whiteSpace: 'nowrap' }}>Change your password</h2>
-            <p style={{ fontFamily: "raleway", fontSize: 20 }}>
+            {/* <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', whiteSpace: 'nowrap' }}>Change your password</h2> */}
+            {/* <p style={{ fontFamily: "raleway", fontSize: 20 }}>
               Enter a new password<br />
               Below to change your password
-            </p>
-            <form onSubmit={handlePasswordChange}>
+            </p> */}
+            {/* <form onSubmit={handlePasswordChange}>
               <Label>Old password</Label>
               <div style={{ position: "relative" }}>
                 <Input
@@ -361,7 +329,7 @@ const LoginForm = () => {
     {error}
   </p>
 )}
-            </form>
+            </form> */}
           </FormBox>
         )}
       </RightPanel>

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { LuArrowLeft } from "react-icons/lu";
 
 export const Container = styled.div`
   padding: 2rem;
@@ -22,32 +23,69 @@ export const InfoGrid = styled.div`
 `;
 
 export const ProfileImage = styled.img`
-  width: 150px;
-  height: 150px;
-  border-radius: 10%;
+  width: clamp(50px, 8vw, 200px);   /* min 50px, max 250px, scales with viewport */
+  height: clamp(50px, 10vw, 250px);  /* keeps square shape */
+  border-radius: 10%;                 /* rounded corners */
   object-fit: cover;
 
+  /* Optional fine-tuning for very small screens */
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Optional fine-tuning for tablets */
   @media (max-width: 768px) {
-    width: 50px;
+    width: 60px;
     height: 60px;
   }
 
-  @media (max-width: 480px) {
-    width: 20px;
-    height: 30px;
+  /* Optional fine-tuning for large ultra-wide screens */
+  @media (min-width: 3840px) { /* 4K */
+    /* width: 300px; */
+    height: 300px;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    width: 400px;
+    height: 400px;
   }
 `;
 
 
 export const Input = styled.input`
-  padding: 0.6rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 99%;
-  margin-bottom: 1rem;
+  width: 100%;
+  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
+  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  color: black;
   border-radius: 7px;
-border: 1px solid #3253C1;
-background: #FFF;
+  border: 1px solid #052DB4;
+  background: #FFF;
+  box-sizing: border-box;
+margin-top:5px;
+  /* Responsive refinements */
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    padding: 1.5rem 2rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 1.3rem;
+    padding: 1.4rem 2rem;
+    margin-bottom:1rem;
+  }
 `;
 
 export const TextArea = styled.textarea`
@@ -61,13 +99,50 @@ export const TextArea = styled.textarea`
   border-radius: 7px;
 border: 1px solid #3253C1;
 background: #FFF;
+  font-size: clamp(0.8rem, 1vw, 1.5rem);
+
+  &:focus {
+    outline: none;
+    border-color: #002ea3;
+    box-shadow: 0 0 5px rgba(50, 83, 193, 0.3);
+  }
+
+  /* Extra-large (4K) screens */
+  @media (min-width: 3840px) {
+    min-height: 250px;
+    font-size: 1.8rem;
+    padding: 1.5rem;
+  }
+
+  /* Ultra-large (8K) screens */
+  @media (min-width: 7680px) {
+    min-height: 350px;
+    font-size: 2rem;
+    padding: 2rem;
+  }
 `;
 
-export const SectionTitle = styled.h4`
-  // margin-top: 2rem;
-  margin-bottom: 0.5rem;
-  color: #333;
 
+export const SectionTitle = styled.h4`
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #000;
+  font-family: Satoshi;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.3;
+
+  /* Responsive font sizing */
+  font-size: clamp(1rem, 1.2vw, 2rem);
+
+  /* Adjust for ultra-wide screens */
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 3rem;
+  }
 `;
 
 export const TwoColumn = styled.div`
@@ -103,23 +178,62 @@ export const ActionButton = styled.button`
 export const ApproveButton = styled(ActionButton)`
   background-color: rgba(51, 82, 186, 1);
   color: white;
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 24px);
+  border-radius: 8px;
   transition: all 0.3s ease;
 
   &:hover {
-    background-color:blue;
+    background-color: blue;
+    transform: scale(1.05);
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 1.8rem;
+    padding: 18px 36px;
+  }
+
+  @media (min-width: 3840px) { /* 4K */
+    font-size: 2rem;
+    padding: 18px 36px;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    font-size: 2.5rem;
+    padding: 24px 48px;
   }
 `;
-
 
 export const DeclineButton = styled(ActionButton)`
   background-color: #f17070;
   color: white;
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 24px);
+  border-radius: 8px;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color:rgb(240, 47, 40); /* darker red */
+    background-color: rgb(240, 47, 40);
     opacity: 0.9;
+    transform: scale(1.05);
+  }
+
+@media (min-width: 2560px) { /* 4K */
+    font-size: 1.8rem;
+    padding: 18px 36px;
+  }
+
+  @media (min-width: 3840px) { /* 4K */
+    font-size: 2rem;
+    padding: 18px 36px;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    font-size: 2.5rem;
+    padding: 24px 48px;
   }
 `;
+
 
 export const TopBar = styled.div`
   display: flex;
@@ -154,16 +268,69 @@ export const HRManager = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 24px;
-  margin: 0;
-  margin-left:10px;
+  font-size: 1.4rem;
+  margin: 0 0 5px 0;
+  color: #3250b5;
+  font-family: "Satoshi";
+  font-weight: 700;
+  line-height: 1.2;
+
+  @media (min-width: 480px) { /* small tablet */
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 768px) { /* tablet */
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) { /* desktop */
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 1440px) { /* large desktop / 2K */
+    font-size: 2rem;
+  }
+
+  @media (min-width: 2560px) { /* 4K */
+    font-size: 3em;
+  }
+
+  @media (min-width: 3840px) { /* 8K */
+    font-size: 4rem;
+  }
 `;
 
 export const Subtitle = styled.p`
-  font-size: 14px;
-  color: #555;
-  margin-left:10px;
-  margin-top:-1px;
+  // font-size: 1rem;
+  color: #3250b5;
+  margin: 0;
+  font-family: Raleway;
+  font-weight: 300;
+  line-height: 1.2;
+
+  @media (min-width: 480px) {
+    font-size: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
 export const TitleSection = styled.div`
   display: flex;
@@ -184,16 +351,35 @@ export const InfoSection = styled.div`
 `;
 
 export const FullWidthInput = styled.input`
-  width: 97%;
-  padding: 0.6rem 1rem;
+  width: clamp(90%, 97%, 100%);             /* responsive width */
+  padding: clamp(0.5rem, 1vw, 1rem);       /* responsive padding */
   margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  height:40%;
+  border: 1px solid #3253C1;
   border-radius: 7px;
-border: 1px solid #3253C1;
-background: #FFF;
+  height: clamp(35px, 5vw, 60px);          /* responsive height */
+  background: #FFF;
+  font-size: clamp(0.8rem, 1vw, 1rem);     /* responsive font size */
+
+  &:focus {
+    outline: none;
+    border-color: #002ea3;
+    box-shadow: 0 0 5px rgba(50, 83, 193, 0.3);
+  }
+
+  /* Ultra-large screens */
+  @media (min-width: 3840px) { /* 4K */
+    height: 10rem;
+    padding: 1.5rem;
+    font-size: 2rem;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    height: 120px;
+    padding: 2rem;
+    font-size: 2rem;
+  }
 `;
+
 
 export const TwoColumnRow = styled.div`
   display: grid;
@@ -259,3 +445,65 @@ export const DateField = styled.div`
     width: 90%;
   }
 `;
+
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(20px, 6vw, 20px);
+  }
+
+  @media (min-width: 1024px) {
+    height: clamp(20px, 4vw, 50px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(50px, 1vw, 80px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(80px, 2vw, 100px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(100px, 3vw, 200px);
+  }`;
+
+
+
+export const BackArrow = styled(LuArrowLeft)`
+  cursor: pointer;
+  width: clamp(20px, 2vw, 50px);
+  height: clamp(20px, 2vw, 50px);
+
+  /* 2K / QHD */
+  @media (min-width: 2560px) {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* 4K */
+  @media (min-width: 3840px) {
+    width: 80px;
+    height: 80px;
+  }
+
+  /* 8K */
+  @media (min-width: 7680px) {
+    width: 120px;
+    height: 120px;
+  }
+`;
+export const ProfileImageWrapper = styled.div`
+  width: clamp(60px, 10%, 200px); /* min 60px, max 200px, scales with screen */
+  height: clamp(60px, 10%, 200px);
+  overflow: hidden;
+  border-radius: 10%; /* square with rounded corners */
+`;
+
+// export const ProfileImage = styled.img`
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+// `;

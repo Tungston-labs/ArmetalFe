@@ -111,7 +111,7 @@ const CompanyTable = () => {
   <SearchIcon />
   <SearchInput
     type="text"
-    placeholder="Search by Company name"
+    placeholder="Search by Company ID"
     value={search}
     onChange={(e) => {
       setSearch(e.target.value);

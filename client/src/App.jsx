@@ -60,6 +60,7 @@ function App() {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
+    
     const accessToken = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
   
     if (user && accessToken) {

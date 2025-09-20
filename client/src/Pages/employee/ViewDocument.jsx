@@ -8,7 +8,9 @@ import {
   Subtitle, Rightside, HeaderWrapper, TextGroup, HRManager,
   TitleSection,
   FieldWrapper,
-  Label
+  Label,
+  EmployeeImage,
+  ResponsiveH3
 } from "./ViewDocument.Styles";
 import { uploadImageThunk } from "../../Redux/employeeSlice";
 import { LuCirclePlus } from "react-icons/lu";
@@ -173,7 +175,7 @@ const navigate = useNavigate();
                    style={{ width: "30px", height: 30, cursor: "pointer",color:"#304EB0" }}
                    onClick={() => navigate("/employee")}
                    />
-               <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+     <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
                          <div>
                       
                            <Title>Employee</Title>
@@ -191,7 +193,7 @@ const navigate = useNavigate();
       </Header>
 
       <Hr />
-      <h3>Employee Documents</h3>
+     <ResponsiveH3>Employee Documents</ResponsiveH3>
 
       <FormWrapper>
         <ImageColumn>

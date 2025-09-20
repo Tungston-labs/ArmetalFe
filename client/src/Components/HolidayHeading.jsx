@@ -8,7 +8,9 @@ import {
   Title, 
   Subtitle, 
   SearchBox, 
-  SearchInput 
+  SearchInput, 
+  EmployeeImage,
+  TextBlock
 } from "./HolidayHeading.styles";
 
 import { FiArrowLeft, FiSearch } from "react-icons/fi";
@@ -17,23 +19,14 @@ import HolidayIcon from "../assets/payroll.svg";
 const Header = () => {
   return (
     <HeaderContainer>
-      {/* Left Section */}
-      <LeftSection>
-       
+      {/* Left Section */}       
         <TitleContainer>
-          <Icon src={HolidayIcon} alt="holiday" />
-          <div>
-            <Title>Holiday</Title>
-            <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
-          </div>
+           <EmployeeImage  src={HolidayIcon} alt="employeeIcon" />
+            <TextBlock>
+              <Title>Holiday</Title>
+              <Subtitle>Unifying Teams. Simplifying Operations.</Subtitle>
+            </TextBlock>
         </TitleContainer>
-      </LeftSection>
-
-      {/* Search */}
-      {/* <SearchBox>
-        <FiSearch size={16} />
-        <SearchInput placeholder="Search by Employee name" />
-      </SearchBox> */}
     </HeaderContainer>
   );
 };

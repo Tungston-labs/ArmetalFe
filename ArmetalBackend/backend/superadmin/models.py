@@ -93,11 +93,14 @@ class CompanySubscription(TimeStampedModel):
     def __str__(self):
         return f"{self.company.name} - {month_name[self.month]} {self.year} ({self.status})"
 
-  
+
     def save(self, *args, **kwargs):
-        if self.amount is None or self.amount == 0:
-            rate, currency = self.get_rate_per_employee_and_currency()
-            self.amount = self.company.number_of_employees * rate
+        rate, currency = self.get_rate_per_employee_and_currency()
+        expected_amount = round(self.company.number_of_employees * rate, 2)
+
+        # Always update amount/currency if mismatch
+        if not self.amount or self.amount != expected_amount or self.currency != currency:
+            self.amount = expected_amount
             self.currency = currency
 
         if self.status == 'paid' and not self.paid_date:
@@ -105,17 +108,26 @@ class CompanySubscription(TimeStampedModel):
 
         super().save(*args, **kwargs)
 
+    
+
     def get_rate_per_employee_and_currency(self):
-        """Return per-employee rate and currency based on location"""
-        location = self.company.location.lower()
-        if location == 'dubai':
-            return 5.0, 'AED'
-        elif location == 'india':
-            return 113.0, 'INR'
-        elif location == 'usa':
-            return 2.0, 'USD'  # Example
-        # Add more logic as needed
-        return 5.0, 'AED'  # Default fallback
+        """Return per-employee rate and currency based on the company's country"""
+        country_rate_map = {
+            'AE': (5.0, 'AED'),
+            'IN': (113.0, 'INR'),
+            'US': (2.0, 'USD'),
+            'SG': (2.7, 'SGD'),
+            'GB': (1.9, 'GBP'),
+            'DE': (2.0, 'EUR'),
+            'FR': (2.0, 'EUR'),
+            'JP': (300.0, 'JPY'),
+            'CN': (13.0, 'CNY'),
+            'AU': (3.0, 'AUD'),
+            'CA': (2.5, 'CAD'),
+        }
+
+        country_code = self.company.country or 'AE'  # Default to UAE if not set
+        return country_rate_map.get(country_code, (5.0, 'AED'))
     
 
 class ImpersonationRequest(models.Model):

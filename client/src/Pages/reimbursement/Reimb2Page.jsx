@@ -18,6 +18,8 @@ import {
   TitleSection,
   DropdownMenu,
   DropdownWrapper,
+  Header3,
+  BackArrow,
 } from '../reimbursement/Reimb2page.Styles';
 import { FaInfoCircle } from 'react-icons/fa';
 import { FaArrowLeft } from "react-icons/fa6";
@@ -42,16 +44,19 @@ const [pagination, setPagination] = useState(null);
   const [employees, setEmployees] = useState([]);
   const getStatusStyle = (status) => {
     switch (status) {
-      case 'Approve':
-        return { backgroundColor: 'green', color: 'white' };
-      case 'On Hold':
-        return { backgroundColor: 'orange', color: 'white' };
-      case 'In Verification':
-        return { backgroundColor: 'yellow', color: 'black' };
+      case "Approve":
+        return { backgroundColor: "#4B976D", color: "white" }; // Paid → Approve
+      case "On Hold":
+        return { backgroundColor: "#BA703A", color: "white" };
+      case "In Verification":
+        return { backgroundColor: "#DD991D", color: "black" }; // Pending
+      case "Cancel":
+        return { backgroundColor: "#E67B7B", color: "white" };
       default:
-        return { backgroundColor: '#fff', color: '#000' };
+        return { backgroundColor: "#fff", color: "#000" };
     }
   };
+  
   
   
   
@@ -110,10 +115,10 @@ useEffect(() => {
   
       // API call
       const res = await updateReimbursementStatus(empId, newStatus);
-      console.log("✅ Backend response:", res);
+      console.log(" Backend response:", res);
   
     } catch (error) {
-      console.error("❌ Failed to update status:", error);
+      console.error(" Failed to update status:", error);
       setEmployees(prevEmployees); // rollback
     }
   };
@@ -153,12 +158,9 @@ useEffect(() => {
       {/* Header */}
       <HeaderSection>
         <TitleSection>
-          <FaArrowLeft 
-  style={{ width: '24px', height: '24px', cursor: 'pointer', color: "#3250B5" }}
-  onClick={() => window.history.back()}
-/>
+<BackArrow onClick={() => window.history.back()} />;
 
-          <img src={RemiIcon} alt="employeeIcon" style={{ height: "60px" }} />
+          <img src={RemiIcon} alt="employeeIcon" style={{ height: "70px" }} />
           <div>
             <Title>Reimbursement</Title>
             <Subtitle>Manage all departments within the organization.</Subtitle>
@@ -218,7 +220,8 @@ useEffect(() => {
       )}
 
       {/* Employee Table */}
-      <h3 style={{fontFamily:"satoshi",fontWeight:700}}>Employee Reimbursements</h3>
+    
+      <Header3> Employee Reimbursements </Header3>
       <TableWrapper>
         <StyledTable>
           <thead>

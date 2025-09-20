@@ -5,8 +5,8 @@ const breakpoints = {
   tablet: "768px",
   laptop: "1024px",
   desktop: "1440px",
-  tv: "2560px",     // 2K / QHD screens
-  largeTv: "3840px" // 4K UHD screens
+  tv: "2560px", // 2K / QHD screens
+  largeTv: "3840px", // 4K UHD screens
 };
 
 export const Container = styled.div`
@@ -26,16 +26,15 @@ export const Container = styled.div`
 
   /* 🖥️ TV screens (center and max-width control) */
   @media (min-width: ${breakpoints.tv}) {
-    max-width: 90%;   /* prevent content from stretching edge-to-edge */
+    max-width: 100%; /* prevent content from stretching edge-to-edge */
     gap: 3rem;
   }
 
   @media (min-width: ${breakpoints.largeTv}) {
-    max-width: 80%;   /* tighter for 4K */
+    max-width: 100%; /* tighter for 4K */
     gap: 4rem;
   }
 `;
-
 
 export const LeftSection = styled.div`
   flex: 1 1 60%;
@@ -47,12 +46,11 @@ export const RightSection = styled.div`
   min-width: 350px;
 `;
 
-
 export const SectionTitle = styled.h2`
   font-size: clamp(1rem, 1.2vw, 2rem);
   margin: 1.5rem 0 1rem;
   font-weight: 700;
-  border-bottom: 1px solid #3352BA;
+  border-bottom: 1px solid #3352ba;
   padding-bottom: 0.3rem;
   font-family: Satoshi;
 
@@ -62,11 +60,16 @@ export const SectionTitle = styled.h2`
 
   /* Scale up on very large displays */
   @media (min-width: ${breakpoints.tv}) {
-    font-size: clamp(1.5rem, 2vw, 3rem);
+    font-size: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #3352ba;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 3.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #3352ba;
   }
 `;
-
-
 
 export const DepartmentWrapper = styled.div`
   display: flex;
@@ -82,12 +85,22 @@ export const DepartmentWrapper = styled.div`
     background: #ccc;
     border-radius: 3px;
   }
+  @media (min-width: ${breakpoints.tv}) {
+    gap: 3rem;
+    padding-block: 1rem;
+    margin-bottom: 2rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    gap: 4rem;
+    padding-block: 2rem;
+    margin-bottom: 4rem;
+  }
 `;
 
 export const DepartmentCard = styled.div`
   flex: 0 0 auto;
   background: #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   padding: 1rem;
   display: flex;
   align-items: center;
@@ -105,51 +118,79 @@ export const DepartmentCard = styled.div`
   @media (min-width: ${breakpoints.tv}) {
     min-width: 400px;
     min-height: 200px;
+    padding: 1rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    min-width: 700px;
+    min-height: 200px;
     padding: 2rem;
+
+    /* padding-inline: 3rem; */
   }
 `;
-
 
 export const InitialCircle = styled.div`
   font-size: clamp(2rem, 5vw, 10rem);
   font-weight: bold;
-  color: #B5E2FF;
+  color: #b5e2ff;
   margin-right: 1rem;
   font-family: Raleway;
   font-style: Bold;
   line-height: 100%;
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: 14rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 18rem;
+  }
 `;
 export const DeptInfo = styled.div`
-  flex: 1;                 
+  flex: 1;
   display: flex;
-  flex-direction: column;   
+  flex-direction: column;
   justify-content: flex-start;
-  margin-top:2rem;
+  margin-top: 2rem;
 
-  h3{
-  font-family: Raleway;
-font-weight: 700;
-font-style: Bold;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  h3 {
+    font-family: Raleway;
+    font-weight: 700;
+    font-style: Bold;
+    leading-trim: NONE;
+    line-height: 100%;
+    letter-spacing: 0%;
     font-size: clamp(1rem, 1.2vw, 2rem);
-
   }
 
-  p{
-  font-family: Raleway;
-font-weight: 400;
-font-style: Regular;
+  p {
+    font-family: Raleway;
+    font-weight: 400;
+    font-style: Regular;
     font-size: clamp(0.8rem, 1vw, 1.5rem);
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
-
+    leading-trim: NONE;
+    line-height: 100%;
+    letter-spacing: 0%;
+  }
+  @media (min-width: ${breakpoints.tv}) {
+    h3 {
+      font-size: 2rem;
+      text-transform: capitalize;
+    }
+    p {
+      font-size: 1.5rem;
+    }
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    h3 {
+      font-size: 3rem;
+      text-transform: capitalize;
+    }
+    p {
+      font-size: 2rem;
+    }
   }
 `;
 export const DeptHead = styled.p`
-  // margin-top: 0.5rem;     
+  // margin-top: 0.5rem;
   font-size: clamp(0.7rem, 1vw, 1rem);
   color: #666;
 `;
@@ -158,31 +199,40 @@ export const DeptCount = styled.div`
   font-weight: bold;
   padding: 0.25rem 0.5rem;
   border-radius: 8px;
-  align-self: flex-start; 
+  align-self: flex-start;
   font-family: Satoshi;
   font-weight: 700;
   font-style: Bold;
   line-height: 100%;
   letter-spacing: 0%;
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: 2rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 3rem;
+  }
 `;
-
 
 export const ArrowIcon = styled.div`
   position: absolute;
   bottom: 0.5rem;
   right: 0.9rem;
   font-size: 1.2rem;
-  color: #3352BA;
+  color: #3352ba;
   cursor: pointer;
-
- 
+  @media (min-width: ${breakpoints.tv}) {
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
 `;
 export const CardIcon = styled.div`
   position: absolute;
   bottom: 0.5rem;
   right: 0.5rem;
   font-size: 1.25rem; // adjust icon size
-  color: #3352ba;     // or any color you like
+  color: #3352ba; // or any color you like
   cursor: pointer;
 
   &:hover {
@@ -194,7 +244,13 @@ export const CalendarWrapper = styled.div`
   background: #fff;
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  @media (min-width: ${breakpoints.tv}) {
+    padding: 1rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    padding: 2rem;
+  }
 `;
 
 export const CalendarHeader = styled.div`
@@ -206,15 +262,28 @@ export const CalendarHeader = styled.div`
   h3 {
     font-size: clamp(1rem, 1.5vw, 2.5rem);
     font-weight: bold;
-    color: #3352BA; /* ✅ same color for month + year */
+    color: #3352ba; /* ✅ same color for month + year */
   }
 
   span {
     margin-left: 0.3rem;
     color: inherit; /* ✅ inherits h3 color */
   }
+  @media (min-width: ${breakpoints.tv}) {
+    h3 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+    padding: 1rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    h3 {
+      font-size: 4rem;
+      margin: 0;
+    }
+    padding: 2rem;
+  }
 `;
-
 
 export const NavArrow = styled.button`
   background: transparent;
@@ -222,7 +291,13 @@ export const NavArrow = styled.button`
   font-size: 1.2rem;
   cursor: pointer;
   font-weight: bold;
-  color: #3352BA;
+  color: #3352ba;
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: 3rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 4rem;
+  }
 `;
 
 export const CalendarGrid = styled.div`
@@ -233,8 +308,10 @@ export const CalendarGrid = styled.div`
   @media (min-width: ${breakpoints.tv}) {
     gap: 1rem;
   }
+  @media (min-width: ${breakpoints.largeTv}) {
+    gap: 2rem;
+  }
 `;
-
 
 // export const CalendarDay = styled.div`
 //   text-align: center;
@@ -271,6 +348,14 @@ export const PresenceWrapper = styled.div`
     flex-direction: column;
     gap: 1rem;
   }
+  @media (min-width: ${breakpoints.tv}) {
+    gap: 2rem;
+    padding-block: 1rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    gap: 4rem;
+    padding-block: 2rem;
+  }
 `;
 
 export const DonutChart = styled.div`
@@ -279,7 +364,7 @@ export const DonutChart = styled.div`
   padding: 1rem;
   flex: 1;
   min-width: 200px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   text-align: center;
 
   .circle {
@@ -287,10 +372,7 @@ export const DonutChart = styled.div`
     height: clamp(80px, 10vw, 140px);
     margin: 0 auto;
     border-radius: 50%;
-    background: conic-gradient(
-      blue 0% 70%, 
-      red 70% 100%
-    );
+    background: conic-gradient(blue 0% 70%, red 70% 100%);
   }
 `;
 
@@ -312,17 +394,28 @@ export const EmployeeExpiryWrapper = styled.div`
   background: #fff;
   border-radius: 7px;
   padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  // max-height: 300px;  
-  overflow-y: auto;  
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  // max-height: 300px;
+  overflow-y: auto;
   h3 {
     font-family: Satoshi;
     font-weight: 700;
     font-size: clamp(1rem, 1.3vw, 2rem);
     line-height: 120%;
   }
+  @media (min-width: ${breakpoints.tv}) {
+    padding: 1rem;
+    h3 {
+      font-size: 2rem;
+    }
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    padding: 2rem;
+    h3 {
+      font-size: 3rem;
+    }
+  }
 `;
-
 
 export const EmployeeRow = styled.div`
   display: grid;
@@ -350,6 +443,14 @@ export const Avatar = styled.img`
 export const EmpName = styled.div`
   font-size: clamp(0.8rem, 1vw, 1.8rem);
   font-weight: 500;
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: 1.5rem;
+    padding-block: 0.7rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 2.5rem;
+    padding-block: 1rem;
+  }
 `;
 
 export const EmpId = styled.div`
@@ -417,8 +518,14 @@ export const HolidayDate = styled.div`
 `;
 
 export const ChartConatiner = styled.div`
-  background:#fff;
+  background: #fff;
   border-radius: 12px;
+  @media (min-width: ${breakpoints.tv}) {
+    width: 450px;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    width: 550px;
+  }
 `;
 
 // Calendar Day
@@ -452,4 +559,10 @@ export const CalendarDay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: 1.5rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 2rem;
+  }
 `;

@@ -1,11 +1,39 @@
 // AddEmployeeForm.styles.js
 import styled from 'styled-components';
+import { FaPlus } from "react-icons/fa6";
 
 export const Container = styled.div`
-  padding: 2rem;
+  padding: clamp(1rem, 2vw, 3rem);
   background: #FFFFFF;
   font-family: Satoshi;
+  box-sizing: border-box;
+
+  /* Mobile screens */
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
+
+  /* Tablets */
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+
+  /* Full HD (1920px) */
+  @media (min-width: 1920px) {
+    padding: 2.5rem;
+  }
+
+  /* 4K (3840px) */
+  @media (min-width: 3840px) {
+    padding: 3rem 4rem;
+  }
+
+  /* 8K (7680px) */
+  @media (min-width: 7680px) {
+    padding: 5rem 6rem;
+  }
 `;
+
 
 export const Header = styled.div`
   display: flex;
@@ -62,37 +90,111 @@ export const ProfileImage = styled.img`
     height: 30px;
   }
 `;
-export const Select = styled.select`
- width:100%;
- padding: 0.5rem;
- fontSize: 1rem;
- borderRadius: 6px;
- border: 1px solid #ccc;
- background:white;
- color:black;
+// export const Select = styled.select`
+//   width: 100%;
+//   padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
+//   font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+//   border-radius: 6px;
+//   border: 1px solid #ccc;
+//   background: white;
+//   color: black;
+//   box-sizing: border-box;
+//   appearance: none; /* ✅ removes default arrow styling (optional) */
 
- 
-`;
+//   /* Mobile screens */
+//   @media (max-width: 480px) {
+//     font-size: 0.8rem;
+//     padding: 0.5rem 0.8rem;
+//   }
+
+//   /* Full HD (1920px) */
+//   @media (min-width: 1920px) {
+//     font-size: 1rem;
+//     padding: 0.8rem 1rem;
+//   }
+
+//   /* 4K (3840px) */
+//   @media (min-width: 3840px) {
+//     font-size: 1.1rem;
+//     padding: 1rem 1.2rem;
+//   }
+
+//   /* 8K (7680px) */
+//   @media (min-width: 7680px) {
+//     font-size: 1.3rem;
+//     padding: 1.2rem 1.5rem;
+//   }
+// `;
+
 
 export const Input = styled.input`
-  padding: 0.8rem 1rem;
-  // border: 1px solid #ccc;
-  // border-radius: 6px;
   width: 100%;
-  // margin-bottom: 1rem;
-  color:black;
-  // margin-top:10px;
+  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
+  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  color: black;
   border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
+  border: 1px solid #052DB4;
+  background: #FFF;
+  box-sizing: border-box;
+margin-top:5px;
+  /* Responsive refinements */
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    padding: 1.5rem 2rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 1.3rem;
+    padding: 1.4rem 2rem;
+    margin-bottom:1rem;
+  }
 `;
+
 
 export const Label = styled.label`
   color: #3352BA;
-   marginBottom: 0.4rem;
-   fontSize: 0.7rem;
-   font-weight:400;
+  font-weight: 400;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+
+  /* 📱 Small phones */
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+  }
+
+  /* 📲 Tablets */
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+
+  /* 💻 Laptops & Desktops */
+  @media (min-width: 769px) and (max-width: 1920px) {
+    font-size: 1rem;
+  }
+
+  /* 🖥 4K screens */
+  @media (min-width: 1921px) and (max-width: 3839px) {
+    font-size: 1.8rem;
+  }
+
+  /* 🖥 8K screens */
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+  }
 `;
+
 
 export const TextArea = styled.textarea`
   width: 99%;
@@ -109,15 +211,25 @@ export const TextArea = styled.textarea`
 export const SectionTitle = styled.h4`
   margin-top: 1rem;
   margin-bottom: 0.5rem;
-  // color:#999999;
   color: #000;
-font-family: Satoshi;
-font-size: 18px;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
+  font-family: Satoshi;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.3;
 
+  /* Responsive font sizing */
+  font-size: clamp(1rem, 1.2vw, 2rem);
+
+  /* Adjust for ultra-wide screens */
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 3rem;
+  }
 `;
+
 
 export const TwoColumn = styled.div`
   // display: grid;
@@ -138,25 +250,84 @@ export const ThreeColumn = styled.div`
 
 export const FlexRow = styled.div`
   display: flex;
-  justify-content:center;
-  gap: 1rem;
-  margin-top:3%;
+  justify-content: center;
+  gap: clamp(0.5rem, 1vw, 2rem);  /* responsive gap */
+  margin-top: clamp(1rem, 3vw, 5rem);  /* responsive top margin */
+  flex-wrap: wrap; /* wrap on smaller screens */
 `;
 
 export const ActionButton = styled.button`
-  padding: 0.6rem 1.4rem;
+  padding: clamp(0.4rem, 0.8vw, 1rem) clamp(1rem, 2vw, 2rem); /* vertical & horizontal padding responsive */
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1vw, 1.2rem);  /* responsive font size */
+  transition: all 0.3s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  /* 4K screens */
+  @media (min-width: 2560px) {
+    padding: 1rem 2.5rem;
+    font-size: 1.4rem;
+  }
+
+  /* 8K screens */
+  @media (min-width: 7680px) {
+    padding: 1.2rem 3rem;
+    font-size: 1.6rem;
+  }
 `;
 
 export const ApproveButton = styled(ActionButton)`
-  background-color:#172554;
-  color: white;height:42px;
-  width:8%;
+  background-color: #172554;
+  color: white;
 
+  /* Responsive width and height */
+  // width: clamp(60px, 8%, 120px);   
+  height: clamp(35px, 3vh, 50px);  /* min 35px, responsive to viewport height, max 50px */
+
+  font-size: clamp(0.8rem, 1vw, 1rem); /* responsive font size */
+
+  @media (min-width: 2560px) { /* 4K */
+    width: clamp(80px, 6%, 150px);
+    height: 50px;
+    font-size: 1.2rem;
+  }
+  @media (min-width: 3840px) { /* 4K */
+    height: 5rem;
+    width: 15rem;
+    font-size: 2.5rem;
+  }
+
+  @media (min-width: 7680px) { /* 8K */
+    width: clamp(120px, 5%, 200px);
+    height: 56px;
+    font-size: 1.4rem;
+  }
+`;
+
+export const FormGroups = styled.div`
+  // margin-bottom: 0.2rem;
+  width: 100%;
+`;
+export const ErrorText = styled.p`
+  color: red;
+  font-size: clamp(0.7rem, 0.8vw, 1rem); 
+  margin-bottom: 0.3rem;
+
+  /* Larger screens (4K) */
+  @media (min-width: 3840px) {
+    font-size: 1.8rem;
+  }
+
+  /* Ultra large screens (8K) */
+  @media (min-width: 7680px) {
+    font-size: 2rem;
+  }
 `;
 
 
@@ -223,6 +394,29 @@ export const Title = styled.h2`
     font-size: 4rem;
   }
 `;
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+  
+  @media (min-width: 768px) {
+    height: clamp(20px, 6vw, 20px);
+  }
+
+  @media (min-width: 1024px) {
+    height: clamp(20px, 4vw, 50px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(50px, 1vw, 80px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(80px, 1vw, 100px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(100px, 3vw, 200px);
+  }`;
 
 export const Subtitle = styled.p`
   // font-size: 1rem;
@@ -275,28 +469,102 @@ export const InfoSection = styled.div`
   
 `;
 
+
 export const FullWidthInput = styled.input`
   width: 99%;
   padding: 0.8rem 1rem;
   margin-bottom: 0.5rem;
-  // margin-top:30px;
-  // border: 1px solid #ccc;
-  // border-radius: 6px;
-  height:40%;
+  border-radius: 7px;
+  border: 1px solid #052DB4;
+  background: #FFF;
   color: black;
 
-  border-radius: 7px;
-border: 1px solid #052DB4;
-background: #FFF;
-`;
+  /* Responsive font sizing */
+  font-size: clamp(0.8rem, 1vw, 1rem);
 
+  &:focus {
+    outline: none;
+    border-color: #3352BA;
+    box-shadow: 0 0 4px rgba(5, 45, 180, 0.3);
+  }
+
+  /* Mobile (≤480px) */
+  @media (max-width: 480px) {
+    font-size: 0.75rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  /* Tablet (481px – 768px) */
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 0.85rem;
+    padding: 0.7rem 0.9rem;
+  }
+
+  /* Small Laptops (769px – 1280px) */
+  @media (min-width: 769px) and (max-width: 1280px) {
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+  }
+
+  /* Desktops / Full HD (1281px – 1920px) */
+  @media (min-width: 1281px) and (max-width: 1920px) {
+    font-size: 1rem;
+    padding: 0.9rem 1.1rem;
+  }
+
+  /* 2K (1921px – 2560px) */
+  @media (min-width: 1921px) and (max-width: 2560px) {
+    font-size: 1.5rem;
+    padding: 1.5rem 1.2rem;
+  }
+
+  /* 4K (2561px – 3840px) */
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 1.5rem;
+    padding: 1.8rem 1.3rem;
+  }
+
+  /* 6K (3841px – 5120px) */
+  @media (min-width: 3841px) and (max-width: 5120px) {
+    font-size: 1.8rem;
+    padding: 2rem 1.4rem;
+  }
+
+  /* 8K (≥7680px) */
+  @media (min-width: 7680px) {
+    font-size: 1.4rem;
+    padding: 1.3rem 1.5rem;
+  }
+`;
 export const TwoColumnRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-top:0px;
-  width:99%;
+  gap: clamp(1rem, 2vw, 2.5rem);
+  margin-top: 0;
+  width: 99%;
+
+  /* Mobile (stack to 1 column) */
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Large screens (more breathing space) */
+  @media (min-width: 1920px) {
+    gap: 3rem;
+  }
+
+  /* 4K */
+  @media (min-width: 3840px) {
+    gap: 4rem;
+  }
+
+  /* 8K */
+  @media (min-width: 7680px) {
+    gap: 6rem;
+  }
 `;
+
 export const TwoColumnRows= styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -418,4 +686,231 @@ export const ColumnRow = styled.div`
   grid-template-columns: 1fr 1fr;
    column-gap: 3rem;
   width:98%;
+`;
+
+export const Select = styled.select`
+  width: 100%;
+  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
+  border-radius: 7px;
+  border: 1px solid #052DB4;
+  background: #FFF;
+  color: black;
+margin-top:5px;
+  /* Fluid responsive font size */
+  font-size: clamp(0.75rem, 0.9vw, 1rem);
+
+  /* Native dropdown reset + custom arrow */
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+
+  &:focus {
+    outline: none;
+    border-color: #3352BA;
+    box-shadow: 0 0 4px rgba(5, 45, 180, 0.3);
+  }
+
+  /* Responsive refinements */
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+    padding: 1.2rem 1rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    padding: 1.5rem 2rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 1.3rem;
+    padding: 1.4rem 2rem;
+    margin-bottom:1rem;
+  }
+`;
+
+
+export const UploadWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #052DB4;
+  border-radius: 7px;
+  padding: clamp(0.6rem, 1vw, 0.9rem);
+  cursor: pointer;
+  background-color: #fff;
+  // font-size: clamp(0.8rem, 1vw, 1rem);
+
+  &:hover {
+    border-color: #3352BA;
+    box-shadow: 0 0 4px rgba(5, 45, 180, 0.3);
+  }
+
+   @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    padding: 1.5rem 2rem;
+    margin-bottom:1rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 1.3rem;
+    padding: 1.4rem 2rem;
+    margin-bottom:1rem;
+  }
+`;
+
+
+export const FileName = styled.span`
+  flex: 1;
+  color: ${(props) => (props.hasFile ? "#000" : "#999")};
+  font-size: clamp(0.75rem, 0.9vw, 1rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const HiddenFileInput = styled.input`
+  display: none;
+`;
+
+export const PlusIcon = styled(FaPlus)`
+  color: #3352BA;
+  font-size: clamp(1rem, 1.2vw, 1.4rem);
+  margin-left: 0.5rem;
+
+  @media (min-width: 3840px) {
+    font-size: 1.6rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 2rem;
+  }
+`;
+
+
+export const UploadWrappers = styled.div`
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+`;
+
+export const ProfileLabel = styled.label`
+  cursor: pointer;
+  display: inline-block;
+`;
+
+export const ProfileImages = styled.img`
+  width: clamp(60px, 12vw, 300px);  /* auto-resizes between small and large screens */
+  height: clamp(60px, 12vw, 300px);
+  border-radius: 10%;               /* square with 10% rounded corners */
+  object-fit: cover;
+  border: 2px solid #052DB4;
+
+  /* Small screens */
+  @media (max-width: 480px) {
+    width: 70px;
+    height: 70px;
+  }
+
+  /* Tablets */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    width: 120px;
+    height: 120px;
+  }
+
+  /* Normal laptops/desktops */
+  @media (min-width: 1440px) {
+    width: 200px;
+    height: 200px;
+  }
+
+  /* 4K screens */
+  @media (min-width: 2560px) {
+    width: 260px;
+    height: 260px;
+  }
+
+  /* 8K screens */
+  @media (min-width: 7680px) {
+    width: 300px;
+    height: 300px;
+  }
+`;
+
+export const IconWrappers = styled.div`
+  width: clamp(60px, 12vw, 300px);
+  height: clamp(60px, 12vw, 300px);
+  border-radius: 10%;                
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #3352BA;
+  color: #3352BA;
+  background: #f8f9fa;
+
+  @media (max-width: 480px) {
+    width: 70px;
+    height: 70px;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    width: 120px;
+    height: 120px;
+  }
+
+  @media (min-width: 1440px) {
+    width: 200px;
+    height: 200px;
+  }
+
+  @media (min-width: 2560px) {
+    width: 260px;
+    height: 280px;
+  }
+
+  @media (min-width: 7680px) {
+    width: 300px;
+    height: 300px;
+  }
+`;
+
+
+
+export const PlusButtons = styled.label`
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #001F3F;
+  color: white;
+  border-radius: 50%;
+  width: clamp(1rem, 2vw, 3rem);
+  height: clamp(1rem, 2vw, 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(12px, 1vw, 18px);
+  cursor: pointer;
+`;
+
+export const HiddenFileInputs = styled.input`
+  display: none;
 `;

@@ -1,11 +1,12 @@
 // DailyTask.styles.js
-import styled from 'styled-components';
+import styled from "styled-components";
+import { FaRegCalendarAlt } from "react-icons/fa";
 
 export const Container = styled.div`
   padding: 2rem;
-  font-family: 'Segoe UI', sans-serif;
-  background:white;
-   font-family: Satoshi;
+  font-family: "Segoe UI", sans-serif;
+  background: white;
+  font-family: Satoshi;
 `;
 
 export const Header = styled.div`
@@ -16,15 +17,13 @@ export const Header = styled.div`
   h2 {
     margin: 0;
   }
-
- 
 `;
 
 export const RoleInfo = styled.div`
   background: #fff;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 `;
 
 export const DateSelector = styled.div`
@@ -61,10 +60,12 @@ export const DateSelector = styled.div`
 
   .calendar-header {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
     gap: 1.5rem;
-    flex: 2; /* center portion */
+
+    flex: 2;
+    margin-left: -5rem;
   }
 
   .left {
@@ -72,10 +73,45 @@ export const DateSelector = styled.div`
     align-items: center;
     gap: 1rem;
   }
+  /* .left-lesser {
+    font-size: 24px;
+  }
+  .right-greater {
+    font-size: 24px;
+  }
+  @media (min-width: 2000px) {
+    .right-greater {
+      font-size: 50px;
+    }
+    .left-lesser {
+      font-size: 50px;
+    }
+  }
 
+  @media (min-width: 3500px) {
+    .right-greater {
+      font-size: 75px;
+    }
+    .left-lesser {
+      font-size: 75px;
+    }
+  } */
   .calendar-icon {
     color: #3250b5;
     font-size: 2rem;
+    cursor: pointer;
+  }
+
+  @media (min-width: 2000px) {
+    .calendar-icon {
+      font-size: 4rem;
+    }
+  }
+
+  @media (min-width: 3500px) {
+    .calendar-icon {
+      font-size: 5rem;
+    }
   }
 
   .date-info {
@@ -84,6 +120,7 @@ export const DateSelector = styled.div`
     gap: 1rem;
   }
 
+  /* Default (small to medium screens) */
   .day {
     font-size: 3rem;
     font-weight: bold;
@@ -97,6 +134,32 @@ export const DateSelector = styled.div`
   .weekday {
     font-size: 1.2rem;
     font-weight: 400;
+  }
+
+  /* Large screens (2000px and above) */
+  @media (min-width: 2000px) {
+    .day {
+      font-size: 4rem;
+    }
+    .month {
+      font-size: 2rem;
+    }
+    .weekday {
+      font-size: 1.6rem;
+    }
+  }
+
+  /* Extra-large screens (3500px and above) */
+  @media (min-width: 3500px) {
+    .day {
+      font-size: 5rem;
+    }
+    .month {
+      font-size: 3rem;
+    }
+    .weekday {
+      font-size: 2.5rem;
+    }
   }
 
   @media (max-width: 1024px) {
@@ -132,57 +195,76 @@ export const DateSelector = styled.div`
   }
 `;
 
-
-
 export const SearchInput = styled.input`
   padding: 0.6rem;
-  font-size:0.9rem;
+  font-size: 0.9rem;
   border-radius: 8px;
   border: 1px solid #ccc;
   min-width: 250px;
   border-radius: 7px;
-border: 1px solid #172554;
-background: #FFF;
+  border: 1px solid #172554;
+  background: #fff;
+
+  @media (min-width: 2000px) {
+    padding: 1.1rem;
+    min-width: 350px;
+    font-size: 1.7rem;
+  }
+  @media (min-width: 3500px) {
+    padding: 1.6rem;
+    min-width: 450px;
+    font-size: 2rem;
+  }
 `;
 
 export const Calendar = styled.div`
   margin-top: 1.5rem;
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
   gap: 4rem;
   width: 100%;
-  height:84px;
-  
+  height: 84px;
 `;
 
 export const Day = styled.div`
   padding: 0.6rem 1rem;
-   background: ${({ active }) => (active ? 'linear-gradient(180deg,rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%)' : '#eee')};
+  background: ${({ active }) =>
+    active
+      ? "linear-gradient(180deg,rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%)"
+      : "#eee"};
   // background: linear-gradient(180deg,rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
-  color: ${({ active }) => (active ? '#fff' : '#000')};
+  color: ${({ active }) => (active ? "#fff" : "#000")};
   border-radius: 10px;
   cursor: pointer;
   text-align: center;
-  height:84px;
-
+  height: 84px;
 
   strong {
     display: block;
+  }
+  @media (min-width: 2000px) {
+    padding: 1.2rem 1.5;
+    height: 124px;
+    font-size: 25px;
+  }
+  @media (min-width: 3500px) {
+    padding: 1.4rem 2rem;
+    height: 154px;
+    font-size: 35px;
   }
 `;
 
 export const EmployeesPanel = styled.div`
   width: 25%;
-   background:white;
+  background: white;
 
   padding: 0.1rem;
   border-radius: 12px;
   max-height: 60vh;
   overflow-y: auto;
   // box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  margin-top:20px;
-  
+  margin-top: 20px;
 `;
 export const DepartmentDropdown = styled.select`
   padding: 0.6rem;
@@ -195,41 +277,81 @@ export const DepartmentDropdown = styled.select`
 
   &:focus {
     outline: none;
-    border-color: #3352BA;
+    border-color: #3352ba;
+  }
+  @media (min-width: 2000px) {
+    padding: 1.6rem;
+    min-width: 450px;
+    font-size: 2rem;
+  }
+  @media (min-width: 3500px) {
+    padding: 1.6rem;
+    min-width: 500px;
+    font-size: 2rem;
   }
 `;
-
 
 export const EmployeeCard = styled.div`
   display: flex;
   align-items: center;
   gap: 0.8rem;
   padding: 0.6rem;
-  background: ${({ active }) => (active ? '#E0E3EE' : '#fff')};
+  background: ${({ active }) => (active ? "#E0E3EE" : "#fff")};
   margin-bottom: 0.5rem;
   cursor: pointer;
   border-radius: 7px;
-border: 0.2px ;
-// box-shadow: 0 0 4.2px 0 rgba(0, 0, 0, 0.25);
-box-shadow: 0px 0px 4.2px 0px rgba(0, 0, 0, 0.25);
+  border: 0.2px;
+  // box-shadow: 0 0 4.2px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 4.2px 0px rgba(0, 0, 0, 0.25);
 
+  @media (min-width: 2000px) {
+    padding: 1.1rem;
+  }
+  @media (min-width: 3500px) {
+    padding: 2.2rem;
+  }
   img {
     width: 35px;
     height: 35px;
     border-radius: 50%;
+
+    @media (min-width: 3500px) {
+      width: 55px;
+      height: 55px;
+    }
+    @media (min-width: 2000px) {
+      width: 70px;
+      height: 70px;
+    }
+  }
+  span {
+    @media (min-width: 2000px) {
+      font-size: 35px;
+    }
+    @media (min-width: 3500px) {
+      font-size: 50px;
+    }
   }
 `;
 export const Head = styled.h2`
   font-size: 19px;
-  font-family: 'Satoshi', sans-serif;
+  font-family: "Satoshi", sans-serif;
   font-weight: 700;
   margin-bottom: 1rem;
   margin-top: 1rem;
   font-family: Raleway;
-font-weight: 700;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-weight: 700;
+  leading-trim: NONE;
+  line-height: 100%;
+  letter-spacing: 0%;
+  @media (min-width: 2000px) {
+    font-size: 40px;
+    margin-top: 2.2rem;
+  }
+  @media (min-width: 3500px) {
+    font-size: 60px;
+    margin-top: 2.5rem;
+  }
 `;
 
 export const TaskPanel = styled.div`
@@ -237,34 +359,57 @@ export const TaskPanel = styled.div`
   background: #fff;
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
   max-height: 60vh;
- margin-top:-1rem;
- border-radius: 9px;
-border: 0.2px solid #000;
-background: #FFF;
-box-shadow: 0 0 4.3px 0 rgba(0, 0, 0, 0.25);
-
+  margin-top: -1rem;
+  border-radius: 9px;
+  border: 0.2px solid #000;
+  background: #fff;
+  box-shadow: 0 0 4.3px 0 rgba(0, 0, 0, 0.25);
 `;
 
 export const TaskHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: #E1E8EC;
+  background: #e1e8ec;
   padding: 2rem;
   border-radius: 11px;
-height:30px;
+  height: 30px;
+  @media (min-width: 2000px) {
+    height: 50px;
+    padding: 3rem;
+  }
+  @media (min-width: 3500px) {
+    height: 70px;
+    padding: 4rem;
+  }
   img {
     width: 38px;
     height: 38px;
     border-radius: 50%;
+    @media (min-width: 2000px) {
+      width: 60px;
+      height: 60px;
+    }
+    @media (min-width: 3500px) {
+      width: 58px;
+      height: 58px;
+    }
+  }
+  h3 {
+    @media (min-width: 2000px) {
+      font-size: 40px;
+    }
+    @media (min-width: 3500px) {
+      font-size: 60px;
+    }
   }
 `;
 
 export const TaskCard = styled.div`
-  background: #F2F5ED;
+  background: #f2f5ed;
   margin-top: 1rem;
   padding: 1rem;
   border: 1px solid #ccc;
@@ -275,21 +420,21 @@ export const TaskCard = styled.div`
 
   h4 {
     margin: 0;
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
     font-weight: 700;
     font-size: 14px;
     color: #333;
   }
-h5{
-   margin: 0;
-    font-family: 'Satoshi';
+  h5 {
+    margin: 0;
+    font-family: "Satoshi";
     font-weight: 700;
     font-size: 14px;
     color: #333;
-}
+  }
   p {
     margin: 0;
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
     font-weight: 700;
     font-size: 13px;
     color: #444;
@@ -298,10 +443,9 @@ h5{
   small {
     color: gray;
     font-size: 12px;
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
   }
 `;
-
 
 // export const Description = styled.p`
 
@@ -314,11 +458,11 @@ export const TimeBox = styled.div`
 `;
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
+
   align-items: center;
   // gap: 0.75rem;
-  padding: 0.3rem ;
+  padding: 0.3rem;
   // border: 1px solid #ccc;
   // border-radius: 8px;
   // background-color: #fff;
@@ -345,27 +489,33 @@ export const Title = styled.h2`
   font-weight: 700;
   line-height: 1.2;
 
-  @media (min-width: 480px) { /* small tablet */
+  @media (min-width: 480px) {
+    /* small tablet */
     font-size: 0.8rem;
   }
 
-  @media (min-width: 768px) { /* tablet */
+  @media (min-width: 768px) {
+    /* tablet */
     font-size: 1rem;
   }
 
-  @media (min-width: 1024px) { /* desktop */
+  @media (min-width: 1024px) {
+    /* desktop */
     font-size: 1.5rem;
   }
 
-  @media (min-width: 1440px) { /* large desktop / 2K */
+  @media (min-width: 1440px) {
+    /* large desktop / 2K */
     font-size: 2rem;
   }
 
-  @media (min-width: 2560px) { /* 4K */
+  @media (min-width: 2560px) {
+    /* 4K */
     font-size: 3em;
   }
 
-  @media (min-width: 3840px) { /* 8K */
+  @media (min-width: 3840px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -403,22 +553,47 @@ export const Subtitle = styled.p`
   }
 `;
 
+export const EmployeeImage = styled.img`
+  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
+  width: auto; /* maintain aspect ratio */
+
+  @media (min-width: 768px) {
+    height: clamp(20px, 6vw, 20px);
+  }
+
+  @media (min-width: 1024px) {
+    height: clamp(20px, 4vw, 50px);
+  }
+
+  @media (min-width: 1440px) {
+    height: clamp(50px, 1vw, 80px);
+  }
+
+  @media (min-width: 2560px) {
+    height: clamp(80px, 2vw, 100px);
+  }
+
+  @media (min-width: 3840px) {
+    height: clamp(100px, 3vw, 200px);
+  }
+`;
 
 export const TitleSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  // gap: 1rem;
 `;
 
 export const TextBlock = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
 `;
 
 export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;
-
 `;
 export const Description = styled.p`
   font-size: 0.9rem;
@@ -453,13 +628,52 @@ export const DropdownMenu = styled.div`
     }
   }
 `;
+export const NoTaskWrapper = styled.div`
+  text-align: center;
+  padding: 2rem;
+  align-content: end;
+  @media (min-width: 2000px) {
+    padding: 4rem;
+  }
+  @media (min-width: 3500px) {
+    padding: 6rem;
+  }
+  img {
+    width: 400px;
+    height: 350px;
+    opacity: 0.8;
+    margin-bottom: 0;
+    @media (min-width: 2000px) {
+      width: 800px;
+      height: 750px;
+    }
+    @media (min-width: 3500px) {
+      width: 1000px;
+      height: 900px;
+    }
+  }
+`;
 export const Heading = styled.h2`
-font-family: Raleway;
-font-weight: 700;
-font-style: Bold;
-font-size: 19px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-family: Raleway;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 19px;
+  line-height: 100%;
+  letter-spacing: 0%;
 
+  /* Keep heading sticky inside EmployeesPanel */
+  position: sticky;
+  top: 0;
+  background: white; /* match panel background */
+  z-index: 5;
+  padding: 0.5rem 0.8rem; /* optional: adds some spacing */
+  border-bottom: 1px solid #eee; /* optional divider */
+
+  @media (min-width: 2000px) {
+    font-size: 39px;
+  }
+
+  @media (min-width: 3500px) {
+    font-size: 49px;
+  }
 `;

@@ -31,6 +31,8 @@ import {
   FieldGroup,
   FieldWrapper,
   FieldWrappers,
+  EmployeeImage,
+  ResponsiveH3,
 } from "./ViewBasic.Style";
 import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
@@ -53,7 +55,7 @@ const ViewBasic = () => {
 
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")||sessionStorage.getItem("user"));
 
 
   // Fetch departments
@@ -176,7 +178,7 @@ useEffect(() => {
               style={{ width: 30, height: 30, cursor: "pointer", color: "#304EB0" }}
               onClick={() => navigate(-1)}
             />
-            <img src={EmployeeIcon} alt="employeeIcon" style={{ height: 60 }} />
+           <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
             <div>
               <Title>Employee</Title>
               <Subtitle style={{ color: "#304EB0" }}>Manage your Employee.</Subtitle>
@@ -191,11 +193,12 @@ useEffect(() => {
       </Header>
 
       <Hr />
-      <h3>Employee Details</h3>
+<ResponsiveH3>Employee Details</ResponsiveH3>
+
 
       {/* Form */}
       <FormWrapper>
-        <ImageColumn style={{ position: "relative", width: "150px", height: "150px" }}>
+        <ImageColumn >
           {formData.profile_pic ? (
             <ProfileImage
               src={
@@ -204,7 +207,7 @@ useEffect(() => {
                   : formData.profile_pic
               }
               alt="Profile"
-              style={{ width: 150, height: 150, borderRadius: "10%", objectFit: "cover" }}
+             
             />
           ) : (
             <div
@@ -343,27 +346,19 @@ useEffect(() => {
         <Rowes>
           <FieldGroup>
             <Label>Department</Label>
-            <select
-              name="department"
-              value={formData.department || ""}
-              onChange={handleChange}
-              disabled={!editMode}
-              style={{
-                backgroundColor: "white",
-                padding: "0.7rem",
-                fontSize: "0.9rem",
-                borderRadius: "7px",
-                border: "1px solid #052DB4",
-                width: "100%",
-              }}
-            >
-              <option value="">Select Department</option>
-              {departmentList.map((dept) => (
-                <option key={dept.id} value={dept.id}>
-                  {dept.name}
-                </option>
-              ))}
-            </select>
+           <Select
+  name="department"
+  value={formData.department || ""}
+  onChange={handleChange}
+  disabled={!editMode}
+>
+  <option value="">Select Department</option>
+  {departmentList.map((dept) => (
+    <option key={dept.id} value={dept.id}>
+      {dept.name}
+    </option>
+  ))}
+</Select>
           </FieldGroup>
 
           <FieldGroup>

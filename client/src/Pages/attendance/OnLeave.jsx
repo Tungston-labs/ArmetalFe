@@ -7,7 +7,9 @@ import {
   TableCell, EmployeeImg, Pagination, DateInput, Tab, Tabs,
   DepartmentSelect, DropdownMenu, DropdownWrapper,
   SearchWrapper,
-  SearchIcon
+  SearchIcon,
+  ViewButton,
+  ViewIcon
 } from "./OnLeave.Style";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoEyeOutline } from "react-icons/io5";
@@ -19,6 +21,7 @@ import { getDepartments } from "../../Redux/departmentSlice";
 import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { FiSearch } from 'react-icons/fi';
+import { EmployeeImage } from "../leaveDetails/EmployeeList.styles";
 export default function EmployeeAttendance() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -114,12 +117,16 @@ export default function EmployeeAttendance() {
           <div style={{ display: "flex", alignItems: "center", gap: "0rem" }}>
 
            <div style={{ display: "flex", alignItems: "center", gap: "10px",color:"#3250B5" }}>
-  <HiArrowLeft 
-    size={34} 
-    style={{ cursor: "pointer" }} 
-    onClick={() => navigate(-1)} 
-  />
-    <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+           <HiArrowLeft
+  onClick={() => navigate(-1)}
+  style={{
+    cursor: "pointer",
+    width: "clamp(24px, 3vw, 50px)",
+    height: "clamp(24px, 3vw, 50px)"
+  }}
+/>
+
+  <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
   <div>
     <Title>Employee</Title>
     <Subtitle>Manage your Employee.</Subtitle>
@@ -220,14 +227,12 @@ export default function EmployeeAttendance() {
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{formatTime(timeIn)}</TableCell>
                   <TableCell>{formatTime(timeOut)}</TableCell>
-                  <TableCell>
-                    <button
-                      onClick={() => navigate(`/attendance/detail/${row.id}`)}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                    >
-                      <IoEyeOutline style={{ fontSize: '18px', color: '#5F53A5' }} />
-                    </button>
-                  </TableCell>
+                 <TableCell>
+  <ViewButton onClick={() => navigate(`/attendance/detail/${row.id}`)}>
+    <ViewIcon />
+  </ViewButton>
+</TableCell>
+
                 </TableRow>
               );
             })

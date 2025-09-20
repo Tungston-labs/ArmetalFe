@@ -31,6 +31,9 @@ export const SidebarContainer = styled.div`
   @media (max-width: 768px) {
     width: 60px;
   }
+    @media (min-width: 2560px) {
+    width: 20%;
+  }
 `;
 
 
@@ -76,6 +79,18 @@ export const Logo = styled.div`
   &.hidden {
     display: none;
   }
+   @media (min-width: 2560px) {
+    img{
+    min-height: 150px;
+    margin-block: 2rem;
+    }
+   }
+   @media (min-width: 3840px) {
+    img{
+    min-height: 250px;
+    margin-block: 5rem;
+    }
+   }
 `;
 
 
@@ -91,6 +106,13 @@ export const Nav = styled.ul`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  
+   @media (min-width: 2560px) {
+    gap: 1.5rem;
+  }
+   @media (min-width: 3840px) {
+    gap:2.5rem;
+  }
 `;
 
 export const BottomSection = styled.div`
@@ -225,6 +247,18 @@ export const CustomLink = styled(Link)`
     svg {
       margin-right: 0;
     }
+  }
+   @media (min-width: 2560px) {
+    font-size: 2rem;
+    padding-block: 1rem;
+    padding-inline: 1.5rem;
+    border-radius: 1rem;
+  }
+   @media (min-width: 3840px) {
+    font-size: 3rem;
+    padding-block: 1.5rem;
+    padding-inline: 2rem;
+    border-radius: 2rem;
   }
 `;
 

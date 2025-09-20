@@ -26,7 +26,10 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        return LeaveRequest.objects.filter(employee__user=self.request.user)
+        return LeaveRequest.objects.filter(
+            employee__user=self.request.user
+        ).order_by("-created_at")
+
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -271,7 +274,7 @@ class LeaveByStatusView(APIView):
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found."}, status=404)
 
-        leaves = LeaveRequest.objects.filter(employee=employee, status=status)
+        leaves = LeaveRequest.objects.filter(employee=employee, status=status).order_by('created_at')
         serializer = LeaveRequestSerializer(leaves, many=True)
         return Response(serializer.data)
 from rest_framework.views import APIView
@@ -284,7 +287,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from datetime import date, timedelta
 import calendar
-
+from datetime import date
 from leave.models import LeaveRequest
 from employee.models import Employee_db
 from holidays.models import PublicHoliday
@@ -314,53 +317,50 @@ class LeaveSummaryView(APIView):
         # Calculate working days (Mon-Sat, excluding Sundays and holidays)
         working_days = sum(
             1 for d in range((last_day - first_day).days + 1)
-            if (first_day + timedelta(days=d)).weekday() != 6 and (first_day + timedelta(days=d)) not in holidays
+            if (first_day + timedelta(days=d)).weekday() != 6
+            and (first_day + timedelta(days=d)) not in holidays
         )
 
-        # Get approved leaves in this month
+        # ---- YEARLY APPROVED LEAVES ----
+        year_start = date(year, 1, 1)
+        year_end = date(year, 12, 31)
+
         leave_requests = LeaveRequest.objects.filter(
             employee=employee,
             status='approved',
-            from_date__lte=last_day,
-            to_date__gte=first_day
+            from_date__gte=year_start,
+            to_date__lte=year_end
         )
 
-        total_leave_days = 0
+        total_approved_days = 0
         for leave in leave_requests:
-            leave_start = max(leave.from_date, first_day)
-            leave_end = min(leave.to_date, last_day)
-            total_leave_days += (leave_end - leave_start).days + 1
+            days = (leave.to_date - leave.from_date).days + 1
+            total_approved_days += days
 
-        # LOP Calculation
+        # LOP Calculation (year basis)
         allowed_leaves = employee.total_leave or 0
-        lop_days = max(0, total_leave_days - allowed_leaves)
+        remaining_leave = max(allowed_leaves - total_approved_days, 0)
+        lop_days = max(0, total_approved_days - allowed_leaves)
 
-        # Salary calculation (you can fetch actual salary if needed)
-        monthly_salary = employee.salary if hasattr(employee, 'salary') and employee.salary else 30000  # fallback
+        # Salary calculation (monthly still based on working days)
+        monthly_salary = getattr(employee, "salary", 30000) or 30000
         per_day_salary = monthly_salary / working_days if working_days else 0
         lop_amount = round(per_day_salary * lop_days, 2)
-
-        # All-time approved count
-        all_time_approved = LeaveRequest.objects.filter(
-            employee=employee,
-            status='approved'
-        ).count()
-
-        # Remaining leave (not month-based)
-        remaining_leave = max(allowed_leaves - all_time_approved, 0)
 
         return Response({
             "employee_name": employee.name,
             "profile_pic": employee.profile_pic.url if employee.profile_pic else None,
             "total_leave": allowed_leaves,
-            "approved_count": all_time_approved,
-            "pending_count": remaining_leave,
-            "monthly_leave_days": total_leave_days,
-            "lop_days": lop_days,
-            "lop_amount": lop_amount,
-            "working_days": working_days,
+            "approved_count": total_approved_days,   # yearly approved leave days
+            "remaining_leave": remaining_leave,      # yearly balance
+            "lop_days": lop_days,                    # yearly lop days
+            "lop_amount": lop_amount,                # lop in money
+            "working_days": working_days,            # monthly working days
             "monthly_salary": monthly_salary,
         })
+
+
+         
 
 class LeaveRequestEmpDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = LeaveRequest.objects.all()

@@ -26,6 +26,7 @@ import {
   TitleSection,
   FieldWrapper,
   Label,
+  EmployeeImage,
 } from "./ViewBankpayment.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import { HiOutlinePencilAlt } from "react-icons/hi";
@@ -39,6 +40,7 @@ import {
 } from "../../Redux/employeeSlice";
 import SyncLoader from "../../Components/Loder";
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import { ResponsiveH3 } from "./ViewDocument.Styles";
 const ViewBankPayment = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -158,7 +160,7 @@ console.log("employeeBankPayments",employeeBankPayments)
                    style={{ width: "30px", height: 30, cursor: "pointer",color:"#304EB0" }}
                    onClick={() => navigate("/employee")}
                    />
-               <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+              <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
                          <div>
                       
                            <Title>Employee</Title>
@@ -174,8 +176,9 @@ console.log("employeeBankPayments",employeeBankPayments)
       </Header>
 
       <Hr />
-      <h3>Bank & Payment Details</h3>
-
+      
+     
+<ResponsiveH3>Bank & Payment Details</ResponsiveH3>
       <FormWrapper>
         <ImageColumn>
           <ProfileImage

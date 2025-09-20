@@ -34,7 +34,7 @@ class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
             date = parse_date(date_str)
             if date:
                 queryset = queryset.filter(created_at__date=date)  # 👈 use created_at
-        return queryset
+        return queryset.order_by("-created_at")
 
     def perform_create(self, serializer):
         employee = self.request.user.employee_db

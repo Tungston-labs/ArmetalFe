@@ -23,6 +23,7 @@ import {
   ModalContent,
   InitialCircle,
   SearchWrapper,
+  EmployeeImage,
 } from '../department/DepartmentStyles';
 
 import {
@@ -128,7 +129,7 @@ const Department = () => {
           <TitleSection>
             <div className="left-content">
               <div className="icon-box">
-                <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+               <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
               </div>
               <div>
                 <Title>Department</Title>
@@ -203,7 +204,7 @@ const Department = () => {
         {showModal && (
           <ModalOverlay>
             <ModalContent>
-              <Container style={{ position: 'relative', maxWidth: '600px' }}>
+              <Container style={{ position: 'relative', }}>
                 <CloseButton onClick={() => setShowModal(false)} title="Close modal" aria-label="Close modal">
                   <FaTimes />
                 </CloseButton>

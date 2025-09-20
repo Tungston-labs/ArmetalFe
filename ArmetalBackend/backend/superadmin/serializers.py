@@ -104,15 +104,35 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Modules must be a dictionary")
         return value
 
-
-
+ 
+    
 class CompanySubscriptionSerializer(serializers.ModelSerializer):
     month_display = serializers.SerializerMethodField()
+    amount = serializers.SerializerMethodField()
+    currency = serializers.SerializerMethodField()
 
     class Meta:
         model = CompanySubscription
-        fields = ['id', 'company', 'month', 'month_display', 'year', 'paid_date', 'amount', 'currency', 'status']
+        fields = [
+            'id',
+            'company',
+            'month',
+            'month_display',
+            'year',
+            'paid_date',
+            'amount',
+            'currency',
+            'status',
+        ]
 
     def get_month_display(self, obj):
-        return month_name[obj.month]    
-    
+        from calendar import month_name
+        return month_name[obj.month]
+
+    def get_amount(self, obj):
+        rate, currency = obj.get_rate_per_employee_and_currency()
+        return round(obj.company.number_of_employees * rate, 2)
+
+    def get_currency(self, obj):
+        _, currency = obj.get_rate_per_employee_and_currency()
+        return currency

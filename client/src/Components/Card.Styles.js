@@ -33,16 +33,16 @@ export const CardContainer = styled.div`
   @media (min-width: ${breakpoints.tv}) and (max-width: ${breakpoints.largeTv}) {
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    max-width: 90%;
+    max-width: 100%;
     margin: 0 auto;
   }
 
   /* 🖥️ 4K screens */
   @media (min-width: ${breakpoints.largeTv}) {
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 80%;
-    margin: 0 auto;
+    gap: 3rem;
+    max-width: 100%;
+    padding-bottom: 4rem;
   }
 `;
 
@@ -112,6 +112,20 @@ export const IconSection = styled.div`
     margin-top: 5px;
     min-width: 25px;
   }
+  @media (min-width: ${breakpoints.tv}) {
+    margin: 0px;
+  img{
+    width:65px;
+    height:65px;
+  }
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    margin: 0px;
+  img{
+    width:100px;
+    height:100px;
+  }
+  }
 `;
 
 export const Divider = styled.div`
@@ -135,11 +149,16 @@ export const Divider = styled.div`
     width: 4px;
     left: 70px;
   }
-
+@media (min-width: ${breakpoints.tv}) {
+    display: block;
+    margin-left: 20px;
+    width: 4px;
+    left: 80px;
+  }
   /* 🖥️ 4K screens */
   @media (min-width: ${breakpoints.largeTv}) {
     display: block;
-    margin-left: 10px;
+    margin-left: 65px;
     width: 5px;
     left: 80px;
   }
@@ -165,8 +184,11 @@ export const CardTitle = styled.h3`
     font-size: 1rem;
   }
 
-  @media (min-width: ${breakpoints.large}) {
-    font-size: 2.8rem;
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: 2rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 3rem;
   }
 `;
 
@@ -178,8 +200,11 @@ export const CardCount = styled.span`
     font-size: 1.2rem;
   }
 
-  @media (min-width: ${breakpoints.large}) {
-    font-size: 3rem;
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: 2rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 4rem;
   }
 `;
 
@@ -218,6 +243,22 @@ export const CardListItem = styled.div`
       margin-right: 5px !important;
     }
   }
+  @media (min-width: ${breakpoints.tv}) {
+    
+    img {
+      width: 30px !important;
+      height: 30px !important;
+      margin-right: 5px !important;
+    }
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    
+    img {
+      width: 40px !important;
+      height: 40px !important;
+      margin-right: 5px !important;
+    }
+  }
 `;
 
 export const EmployeeAvatar = styled.div`
@@ -236,8 +277,14 @@ export const EmployeeName = styled.span`
   font-weight: 500;
   font-size: clamp(0.75rem, 0.5vw, 1.8rem);
 
-  @media (min-width: ${breakpoints.large}) {
-    font-size: 1.5rem;
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: 1rem;
+    padding:0.25rem 1rem;
+  }
+  @media (min-width: ${breakpoints.largeTv}) {
+    padding-inline: 2rem;
+    padding-block: 0.5rem;
+    font-size: 2rem;
   }
 `;
 
@@ -300,6 +347,10 @@ export const IconWrapper = styled.div`
     right: 15px;
     bottom: 15px;
     font-size: 1.5rem; /* bigger icon */
+    svg{
+      height: 30px;
+      width: 30px;
+    }
   }
 
   /* 🖥️ 4K */
@@ -307,5 +358,10 @@ export const IconWrapper = styled.div`
     right: 20px;
     bottom: 20px;
     font-size: 2rem;
+    svg{
+      height: 40px;
+      width: 40px;
+    }
+    bottom:0;
   }
 `;

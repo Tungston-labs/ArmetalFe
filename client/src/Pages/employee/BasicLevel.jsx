@@ -29,6 +29,21 @@ import {
   Input,
   InfoSection,
   Label,
+  EmployeeImage,
+  Select,
+  UploadWrapper,
+  FileName,
+  HiddenFileInput,
+  PlusIcon,
+  UploadWrappers,
+  ProfileImages,
+  IconWrappers,
+  ProfileLabel,
+  HiddenFileInputs,
+  PlusButtons,
+  FormGroup,
+  FormGroups,
+  ErrorText,
 } from './BasicLevel.Styles';
 
 import Multistep from '../../Components/Multistep';
@@ -48,8 +63,10 @@ export default function AddEmployeeForm() {
   const [isFormDirty, setIsFormDirty] = useState(false);
   const stepTitles = ['Basic Info', 'Job Details', 'Legal Info'];
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")||sessionStorage.getItem("user"));
   const country = user?.company?.country;
+
+  
 
   const [formData, setFormData] = useState({
     name: '',
@@ -88,6 +105,7 @@ export default function AddEmployeeForm() {
     dispatch(setBasicFormData({ ...formData, [name]: value }));
     setIsFormDirty(true);
   };
+console.log({country});
 
   // Validate before submit
  // Validate before submit
@@ -110,7 +128,6 @@ const validateForm = () => {
     "department_id", "employment_type", "joining_date", "passport_number",
     "total_leave", "contract_expiry_date", "role",
   ];
-
   if (country !== "IN")
     requiredFields.push("visa_expiry_date", "insurance_number", "iqama_number");
   if (country === "IN") requiredFields.push("aadar_number");
@@ -226,7 +243,7 @@ if (formData.phno) {
 
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+               <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
           <div>
             <Title>Employee</Title>
             <Subtitle>Manage your Employee.</Subtitle>
@@ -246,44 +263,20 @@ if (formData.phno) {
       {/* Basic Info Section */}
       <InfoGrid>
         {/* Profile Picture Upload */}
-        <div style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
-  <label htmlFor="profile-upload" style={{ cursor: 'pointer' }}>
+  <UploadWrappers>
+  <ProfileLabel htmlFor="profile-upload">
     {formData.profile_pic ? (
-      <ProfileImage
-        src={URL.createObjectURL(formData.profile_pic)}
-        alt="Employee"
-      />
+      <ProfileImages src={URL.createObjectURL(formData.profile_pic)} alt="Employee" />
     ) : (
-      <IconWrapper>
+      <IconWrappers>
         <PiUserCirclePlusThin size={50} />
-      </IconWrapper>
+      </IconWrappers>
     )}
-  </label>
+  </ProfileLabel>
 
-  {/* Small "+" button (optional, keep if you want it visible) */}
-  <label
-    htmlFor="profile-upload"
-    style={{
-      position: 'absolute',
-      top: '-5px',
-      right: '-5px',
-      background: '#001F3F',
-      color: 'white',
-      borderRadius: '50%',
-      width: '24px',
-      height: '24px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '16px',
-      cursor: 'pointer',
-    }}
-  >
-    +
-  </label>
+  <PlusButtons htmlFor="profile-upload">+</PlusButtons>
 
-  {/* Hidden file input */}
-  <input
+  <HiddenFileInputs
     id="profile-upload"
     type="file"
     accept="image/*"
@@ -291,36 +284,35 @@ if (formData.phno) {
       setFormData((prev) => ({ ...prev, profile_pic: e.target.files[0] }));
       setIsFormDirty(true);
     }}
-    style={{ display: 'none' }}
   />
-</div>
+</UploadWrappers>
 
 
         {/* Name & Email */}
         <TwoColumn>
-          <div style={{marginTop:"-10px"}}> 
-            {errors.name && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name}</p>}
+          <FormGroups style={{marginTop:"-10px"}}> 
+            {errors.name && <ErrorText >{errors.name}</ErrorText>}
             <Label>Name</Label>
             <Input name="name" placeholder="Name" value={formData.name} onChange={handleChange} autoComplete="off" />
-          </div>
-          <div style={{marginTop:"5px"}}>
-            {errors.email && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.email}</p>}
+          </FormGroups>
+          <FormGroups style={{marginTop:"5px"}}>
+            {errors.email && <ErrorText >{errors.email}</ErrorText>}
             <Label>Email</Label>
             <Input name="email" placeholder="Email ID" value={formData.email} onChange={handleChange} autoComplete="off" />
-          </div>
+          </FormGroups>
         </TwoColumn>
 
         {/* Address, DOB, Gender */}
         <InfoSection>
-          <div>
-            {errors.address && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.address}</p>}
+          <FormGroups>
+            {errors.address && <ErrorText >{errors.address}</ErrorText>}
               <Label>Address</Label>
             <FullWidthInput name="address" placeholder="Address" value={formData.address} onChange={handleChange} autoComplete="off"/>
-          </div>
+          </FormGroups>
 
           <TwoColumnRow>
-            <div >
-              {errors.dob && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.dob}</p>}
+            <FormGroups >
+              {errors.dob && <ErrorText>{errors.dob}</ErrorText>}
                 <Label>Date of Birth</Label>
               <Input
                 type="date"
@@ -329,31 +321,23 @@ if (formData.phno) {
                 onChange={handleChange}
                 autoComplete="off"
               />
-            </div>
-            <div>
-              {errors.gender && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.gender}</p>}
+            </FormGroups>
+            <FormGroups>
+              {errors.gender && <ErrorText >{errors.gender}</ErrorText>}
                 <Label>Gender</Label>
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                autoComplete="off"
-                style={{
-                  width: '100%',
-                  padding: '0.8rem',
-                  fontSize: '0.9rem',
-                  borderRadius: '7px',
-                  border:"1px solid #052DB4",
-                  background:"#FFF",
-                  color: 'black',
-                }}
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
+           <Select
+  name="gender"
+  value={formData.gender}
+  onChange={handleChange}
+  autoComplete="off"
+>
+  <option value="">Select Gender</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Other">Other</option>
+</Select>
+
+            </FormGroups>
           </TwoColumnRow>
         </InfoSection>
       </InfoGrid>
@@ -364,83 +348,67 @@ if (formData.phno) {
       <SectionTitle>Job Details</SectionTitle>
 
       <TwoColumnRows>
-        <div>
-          {errors.department_id && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.department_id}</p>}
-            <Label>Department</Label>
-          <select
-          
-            name="department_id"
-            value={formData.department_id}
-            onChange={handleChange}
-            autoComplete="off"
-            style={{
-              width: '100%',
-              padding: '0.7rem',
-              borderRadius: '7px',
-              border: '1px solid #052DB4',
-              background: '#FFF',
-              marginTop:"5px"
-            }}
-          >
-            <option value="">Select Department</option>
-            {departmentList.map((dept) => (
-              <option key={dept.id} value={dept.id}>{dept.name}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          {errors.employment_type && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.employment_type}</p>}
+       <FormGroups>
+  {errors.department_id && <ErrorText>{errors.department_id}</ErrorText>}
+  <Label htmlFor="department_id">Department</Label>
+  <Select
+    name="department_id"
+    value={formData.department_id}
+    onChange={handleChange}
+    autoComplete="off"
+  >
+    <option value="">Select Department</option>
+    {departmentList.map((dept) => (
+      <option key={dept.id} value={dept.id}>
+        {dept.name}
+      </option>
+    ))}
+  </Select>
+</FormGroups>
+
+        <FormGroups>
+          {errors.employment_type && <ErrorText >{errors.employment_type}</ErrorText>}
             <Label>Employee Type</Label>
-          <select
-            name="employment_type"
-            value={formData.employment_type}
-            onChange={handleChange}
-            autoComplete="off"
-            style={{
-              width: '100%',
-              padding: '0.7rem',
-              fontSize: '0.8rem',
-              borderRadius: '7px',
-              border:"1px solid #052DB4",
-              background:"#FFF",
-              color: 'black',
-               marginTop:"5px"
-            }}
-          >
-            <option value="">Select Employment Type</option>
-            <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
-            <option value="Contract">Contract</option>
-          </select>
-        </div>
+        <Select
+  name="employment_type"
+  value={formData.employment_type}
+  onChange={handleChange}
+  autoComplete="off"
+>
+  <option value="">Select Employment Type</option>
+  <option value="Full-time">Full-time</option>
+  <option value="Part-time">Part-time</option>
+  <option value="Contract">Contract</option>
+</Select>
+
+        </FormGroups>
       </TwoColumnRows>
 
       <TwoColumnRows >
-        <div>
-          {errors.designation && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.designation}</p>}
+        <FormGroups>
+          {errors.designation && <ErrorText >{errors.designation}</ErrorText>}
           <Label>Designation</Label>
           <Input      
-           style={{marginTop:"5px"}} name="designation" placeholder="Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
-        </div>
-        <div>
-          {errors.joining_date && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.joining_date}</p>}
+           name="designation" placeholder="Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
+        </FormGroups>
+        <FormGroups>
+          {errors.joining_date && <ErrorText>{errors.joining_date}</ErrorText>}
             <Label>Joining Date</Label>
-          <Input style={{marginTop:"5px"}}
+          <Input 
             type="date"
             name="joining_date"
             value={formData.joining_date}
             onChange={handleChange}
             autoComplete="off"
           />
-        </div>
+        </FormGroups>
       </TwoColumnRows>
 
       <TwoColumnRows>
-        <div>
-          {errors.total_leave && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.total_leave}</p>}
+        <FormGroups>
+          {errors.total_leave && <ErrorText >{errors.total_leave}</ErrorText>}
             <Label>Total Leaves</Label>
           <Input
-          style={{marginTop:"5px"}}
             name="total_leave"
             placeholder="Total Leaves"
             value={formData.total_leave}
@@ -449,31 +417,23 @@ if (formData.phno) {
             type="number"
             min="0"
           />
-        </div>
-        <div >
-          {errors.role && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.role}</p>}
+        </FormGroups>
+        <FormGroups >
+          {errors.role && <ErrorText >{errors.role}</ErrorText>}
             <Label>Roles</Label>
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            autoComplete="off"
-            style={{
-              width: '100%',
-              padding: '0.7rem',
-              fontSize: '0.8rem',
-              borderRadius: '7px',
-              border: '1px solid #052DB4',
-              background: '#FFF',
-              color: 'black',
-            }}
-          >
-            <option value="">Select Role</option>
-            <option value="employee">Employee</option>
-            <option value="hr">HR</option>
-            <option value="manager">Manager</option>
-          </select>
-        </div>
+         <Select
+  name="role"
+  value={formData.role}
+  onChange={handleChange}
+  autoComplete="off"
+>
+  <option value="">Select Role</option>
+  <option value="employee">Employee</option>
+  <option value="hr">HR</option>
+  <option value="manager">Manager</option>
+</Select>
+
+        </FormGroups>
       </TwoColumnRows>
 
       {/* Legal & ID Info */}
@@ -496,75 +456,43 @@ if (formData.phno) {
     { key: 'idcard', label: 'ID Card' },
   ].map(({ key, label, type }) => (
     <div key={key} style={{ marginBottom: '1rem' }}>
-      <label
-        htmlFor={key}
-        style={{
-          display: 'block',
-          marginBottom: '0.4rem',
-          fontSize: '0.9rem',
-          fontWeight: '500',
-          color: '#3352BA'
-        }}
-      >
-        {label}
-      </label>
+    
+
 
       {errors[key] && (
-        <p style={{ color: 'red', fontSize: '0.75rem', marginBottom: '0.3rem' }}>
+        <ErrorText>
           {errors[key]}
-        </p>
+        </ErrorText>
       )}
+  <Label htmlFor={key}>{label}</Label>
+     {key === 'idcard' ? (
+  <UploadWrapper onClick={() => document.getElementById("idcard-upload").click()}>
+    <FileName hasFile={!!formData.idcard}>
+      {formData.idcard?.name || "Choose file"}
+    </FileName>
+    <PlusIcon />
+    <HiddenFileInput
+      id="idcard-upload"
+      type="file"
+      name="idcard"
+      accept="image/*"
+      onChange={(e) => {
+        setFormData((prev) => ({ ...prev, idcard: e.target.files[0] }));
+        setIsFormDirty(true);
+      }}
+    />
+  </UploadWrapper>
+) : (
+  <Input
+    id={key}
+    name={key}
+    placeholder={label}
+    type={type || "text"}
+    value={formData[key]}
+    onChange={handleChange}
+  />
+)}
 
-      {key === 'idcard' ? (
-        <div
-          onClick={() => document.getElementById('idcard-upload').click()}
-          style={{
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            border: '1px solid #052DB4',
-            borderRadius: '7px',
-            padding: '0.7rem',
-            cursor: 'pointer',
-            backgroundColor: '#fff',
-            fontSize: '0.9rem',
-          }}
-        >
-          <span
-            style={{
-              flex: 1,
-              color: formData.idcard ? '#000' : '#999',
-              fontSize: '0.8rem',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {formData.idcard?.name || 'Choose file'}
-          </span>
-          <FaPlus style={{ color: '#3352BA', fontSize: '1rem', marginLeft: '0.5rem' }} />
-          <input
-            id="idcard-upload"
-            type="file"
-            name="idcard"
-            accept="image/*"
-            onChange={(e) => {
-              setFormData((prev) => ({ ...prev, idcard: e.target.files[0] }));
-              setIsFormDirty(true);
-            }}
-            style={{ display: 'none' }}
-          />
-        </div>
-      ) : (
-        <Input
-          id={key}
-          name={key}
-          placeholder={label}
-          type={type || 'text'}
-          value={formData[key]}
-          onChange={handleChange}
-        />
-      )}
     </div>
   ))}
 </ColumnRow>

@@ -14,49 +14,80 @@ export const ModalOverlay = styled.div`
 export const ModalContainer = styled.div`
   background: white;
   width: 90%;
-  max-width: 1200px;
-  padding: 30px;
+  /* max-width: 1200px; */
+  padding: clamp(16px, 2vw, 40px);
   border-radius: 10px;
-  max-height: 90%;
+  /* max-height: 90%; */
   overflow-y: auto;
   z-index: ${({ zIndex }) => zIndex || 1001};
   pointer-events: auto;
+
+  @media (max-width: 768px) {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  @media (min-width: 3840px) {
+    max-width: 2200px; /* for 4K */
+  }
+
+  @media (min-width: 7680px) {
+    max-width: 4000px; /* for 8K */
+  }
 `;
 
-
-
-
 export const ModalHeader = styled.div`
-  font-size: 20px;
+  font-size: clamp(1rem, 2vw, 2rem);
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+
+  /* 4K override */
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
+
+  /* 8K override */
+  @media (min-width: 7680px) {
+    font-size: 3.5rem;
+  }
 `;
 
 export const FieldRow = styled.div`
   display: flex;
-  gap: 20px;
+  gap: clamp(10px, 2vw, 30px);
   margin-bottom: 20px;
+  flex-wrap: wrap; /* makes it responsive */
 `;
 
 export const InputField = styled.input.attrs({ readOnly: true })`
   flex: 1;
-  padding: 10px;
-  font-size: 14px;
+  padding: clamp(8px, 1vw, 14px);
+  font-size: clamp(0.8rem, 1vw, 1rem);
   border: 1px solid lightgray;
   border-radius: 5px;
 
-  &::before {
-    content: attr(label);
-    display: block;
-    color: gray;
-    font-size: 12px;
-    margin-bottom: 4px;
+  @media (min-width: 3840px) {
+    font-size: 1.3rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 1.8rem;
   }
 `;
+
 
 export const TableContainer = styled.table`
   width: 100%;
   border-collapse: collapse;
+  font-size: clamp(0.8rem, 1vw, 1rem);
+
+  @media (min-width: 3840px) {
+    font-size: 1.4rem;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 2rem;
+  }
 `;
 
 export const TableHeader = styled.thead`
@@ -64,69 +95,110 @@ export const TableHeader = styled.thead`
   color: white;
 
   th {
-    padding: 12px;
+    padding: clamp(8px, 1vw, 16px);
     text-align: left;
+    font-size: 1.5rem;
   }
 `;
 
 export const TableRow = styled.tr`
-  background-color: ${({ $highlighted }) => ($highlighted ? "#f1f4ff" : "white")};
+  background-color: ${({ $highlighted }) =>
+    $highlighted ? "#f1f4ff" : "white"};
 `;
 
 export const TableData = styled.td`
-  padding: 12px;
+  padding: clamp(8px, 1vw, 16px);
   vertical-align: middle;
-  
 `;
 
 export const ProfileImg = styled.img`
-  width: 30px;
-  height: 30px;
+  width: clamp(25px, 2vw, 40px);
+  height: clamp(25px, 2vw, 40px);
   border-radius: 50%;
   margin-right: 10px;
   vertical-align: middle;
+  object-fit: cover;
 `;
 
 export const ActionButtons = styled.div`
   display: flex;
   justify-content: flex-end;
-  gap: 20px;   // space between buttons
+  gap: clamp(10px, 2vw, 25px);
   margin-top: 20px;
-  flex-wrap: wrap; // ensures buttons don't overflow on small screens
+  flex-wrap: wrap;
 `;
 
 export const ApproveButton = styled.button`
   background-color: #2f43b8;
   color: white;
-  padding: 8px 20px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  min-width: 100px; // optional, for consistent sizing
-  transition: background-color 0.3s ease, transform 0.2s ease;
-
-  &:hover {
-    background-color: #1e2a90; // slightly darker blue on hover
-    transform: scale(1.05); // subtle zoom effect
-  }
-`;
-
-
-export const DeclineButton = styled.button`
-  background-color: #ff6f61;
-  color: white;
-  padding: 8px 20px;
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 24px);
   border-radius: 6px;
   border: none;
   cursor: pointer;
   min-width: 100px;
-  margin-left: 10px;
+  font-size: clamp(0.8rem, 1vw, 1.2rem);
   transition: background-color 0.3s ease, transform 0.2s ease;
 
+  @media (min-width: 3840px) {
+    font-size: 1.6rem;
+    padding: 16px 32px;
+  }
+
+  @media (min-width: 7680px) {
+    font-size: 2.2rem;
+    padding: 22px 40px;
+  }
+
   &:hover {
-    background-color: #ff4a3a; /* slightly darker/redder on hover */
-    transform: scale(1.05); /* subtle zoom effect */
+    background-color: #1e2a90;
+    transform: scale(1.05);
   }
 `;
 
+export const DeclineButton = styled.button`
+  background-color: #ff6f61;
+  color: white;
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 24px);
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  min-width: 100px;
+  font-size: clamp(0.8rem, 1vw, 1rem);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #ff4a3a;
+    transform: scale(1.05);
+  }
+
+  /* 📱 Small devices */
+  @media (max-width: 480px) {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  /* 📱 Tablets */
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+
+  /* 💻 Large desktop / Full HD */
+  @media (min-width: 1920px) {
+    font-size: 1.8rem;
+    padding: 12px 20px;
+  }
+
+  /* 🖥️ 4K Screens */
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    padding: 14px 28px;
+  }
+
+  /* 🖥️ 8K Screens */
+  @media (min-width: 7680px) {
+    font-size: 2rem;
+    padding: 20px 36px;
+  }
+`;
 

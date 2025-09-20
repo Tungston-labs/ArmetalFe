@@ -23,7 +23,10 @@ import {
   TwoColumnRow,
   TwoColumnRows,
   FlexRows,
-  DateField
+  DateField,
+  EmployeeImage,
+  BackArrow,
+  ProfileImageWrapper
 } from "./EmployeeLeaveDetails.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
@@ -34,6 +37,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
+import { Label } from "../employee/BasicLevel.Styles";
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -81,28 +85,23 @@ if (loading) {
       
 
       <TitleSection style={{color:"#3250B5"}}>
-         <LuArrowLeft
-  style={{ width: "30px", height: 30, cursor: "pointer",color:"#3250B5" }}
-  onClick={() => navigate(-1)} // 👈 Go back to previous page
-/>
+      <BackArrow onClick={() => navigate("/employee-leave-request")} />
 
-        <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
+  <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
         <div>
      
           <Title>Employee</Title>
-          <Subtitle style={{color:"#3250B5"}}>Manage your Employee.</Subtitle>
+          <Subtitle>Manage your Employee.</Subtitle>
         </div>
       </TitleSection>
 
       <Hr />
     
       <InfoGrid>
-        <div style={{ width: "10%" }}>
-          <ProfileImage
-            src={employee.profile_pic}
-            alt="Employee"
-          />
-        </div>
+       <ProfileImageWrapper>
+  <ProfileImage src={employee.profile_pic} alt="Employee" />
+</ProfileImageWrapper>
+
         <div style={{ display: "flex", width: "90%", justifyContent: "space-between" }}>
           <TwoColumn>
             <Input placeholder="Name" value={employee.name || ''} readOnly />
@@ -138,11 +137,11 @@ if (loading) {
         </LeftSide>
         <RightSide>
           <DateField>
-            <label>From</label>
+            <Label>From</Label>
             <Input type="date" value={leaveDetails?.from_date || ''} readOnly />
           </DateField>
           <DateField>
-            <label>To</label>
+            <Label>To</Label>
             <Input type="date" value={leaveDetails?.to_date || ''} readOnly />
           </DateField>
         </RightSide>

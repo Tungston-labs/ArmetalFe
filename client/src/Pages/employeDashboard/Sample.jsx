@@ -11,11 +11,6 @@ import {
   InfoGrid,
   InfoCard,
   TimeTrackingCard,
-  TaskSection,
-  TaskTitle,
-  TaskItem,
-  TaskMeta,
-  TaskText,
 } from "./Sample.Styles";
 import InCompanyIcon from "../../assets/clock.svg";
 import SalaryIcon from "../../assets/salary.svg";
@@ -26,7 +21,7 @@ import TimeIcon from "../../assets/time.svg";
 import { FaEdit } from "react-icons/fa";
 import { fetchEmployeeDash } from "../../Redux/authSlice";
 import { useParams } from "react-router-dom";
-import noTasks from "../../assets/daliy.svg"; 
+import noTasks from "../../assets/daliy.svg";
 import { Spin } from "antd";
 import { FaArrowLeft } from "react-icons/fa";
 // import Employeedashboard from "./Employeedashboard"
@@ -34,10 +29,10 @@ const Dashboard = () => {
   const { employeeId } = useParams();
   console.log("Employee ID from route:", employeeId);
   const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const { employeeDashData, loadingEmployeeDash, employeeDashError } =
     useSelector((state) => state.auth);
-  const BASE_URL="http://178.248.112.16:8001"
+  const BASE_URL = "http://178.248.112.16:8001";
   useEffect(() => {
     if (employeeId) {
       dispatch(fetchEmployeeDash(employeeId));
@@ -57,26 +52,22 @@ const Dashboard = () => {
     <>
       <Container>
         <TopSection>
-          
           <LeftColumn>
-            
             <ProfileCard>
-              
-          <div className="image-wrapper">
-  {/* Back arrow */}
- 
+              <div className="image-wrapper">
+                {/* Back arrow */}
 
-  <img
-    src={`${BASE_URL}${employeeDashData?.bank_details?.employee?.profile_pic}`}
-    alt="profile"
-  />
+                <img
+                  src={`${BASE_URL}${employeeDashData?.bank_details?.employee?.profile_pic}`}
+                  alt="profile"
+                />
 
-  <FaEdit
-    className="edit-icon"
-    style={{ cursor: "pointer" }}
-    onClick={() => navigate(`/ViewBasic/${employeeId}`)}
-  />
-</div>
+                <FaEdit
+                  className="edit-icon"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate(`/ViewBasic/${employeeId}`)}
+                />
+              </div>
 
               <div className="details">
                 <p>
@@ -169,7 +160,10 @@ const Dashboard = () => {
                   fontFamily: "Satoshi",
                 }}
               >
-                Monthly days: <strong>{employeeDashData?.attendance_summary?.monthly_working_hours}</strong>
+                Monthly days:{" "}
+                <strong>
+                  {employeeDashData?.attendance_summary?.monthly_working_hours}
+                </strong>
               </p>
 
               <p style={{ display: "flex", justifyContent: "space-between" }}>
@@ -181,7 +175,6 @@ const Dashboard = () => {
           </RightColumn>
         </TopSection>
       </Container>
-
     </>
   );
 };

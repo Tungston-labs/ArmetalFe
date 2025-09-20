@@ -1,7 +1,41 @@
 // EmployeeAttendance.styles.js
 import styled from "styled-components";
 import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
+import { IoEyeOutline } from "react-icons/io5";
 
+export const ViewButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const ViewIcon = styled(IoEyeOutline)`
+  color: #5f53a5;
+  font-size: clamp(14px, 1.2vw, 24px);
+
+  /* 2K / QHD */
+  @media (min-width: 2560px) {
+    font-size: 28px;
+  }
+
+  /* 4K */
+  @media (min-width: 3840px) {
+    font-size: 36px;
+  }
+
+  /* 8K */
+  @media (min-width: 7680px) {
+    font-size: 50px;
+  }
+`;
 
 
 export const Header = styled.div`
@@ -114,6 +148,15 @@ export const DateInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 7px;
   background-color: #fff;
+  @media (min-width: 2560px) {
+    font-size: 2rem;
+    height: 60px;
+  }
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+
+    height: 90px;
+  }
 `;
 
 export const Container = styled.div`
@@ -131,9 +174,8 @@ export const HeaderSection = styled.div`
 
 export const TitleSection = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 100%;
+  // gap: 10px;
 `;
 
 export const Title = styled.h2`
@@ -233,33 +275,33 @@ export const HRManager = styled.div`
 
 export const Tabs = styled.div`
   display: flex;
-  gap: clamp(1rem, 2vw, 5rem); /* responsive gap for all screens */
+  // gap: clamp(0.2rem, 0.3vw, 2rem);
   font-family: Raleway;
   font-weight: 700;
-  font-size: clamp(1rem, 1.2vw, 5rem); /* font scales from mobile to ultra-large screens */
+  font-size: clamp(0.7rem, 0.9vw, 2.5rem); 
   line-height: 100%;
   text-align: center;
-  margin: 1.5rem 0;
-  flex-wrap: wrap; /* wrap on smaller screens */
-
+  margin: 2rem ;
+  flex-wrap: wrap;
+justify-content: space-around;
   @media (max-width: 1024px) {
-    gap: clamp(0.8rem, 2vw, 2rem);
-    font-size: clamp(0.9rem, 1vw, 2rem);
+    gap: clamp(0.4rem, 1vw, 1.5rem);
+    font-size: clamp(0.6rem, 0.8vw, 1.6rem);
   }
 
   @media (max-width: 768px) {
     justify-content: center;
-    gap: clamp(0.5rem, 1.5vw, 1.5rem);
-    font-size: clamp(0.8rem, 1vw, 1.5rem);
+    gap: clamp(0.3rem, 1vw, 1rem);
+    font-size: clamp(0.5rem, 0.7vw, 1.2rem);
   }
 `;
 
 export const Tab = styled.div`
-  padding: clamp(8px, 0.5vw, 20px) clamp(16px, 1vw, 40px); /* responsive padding */
+  padding: clamp(6px, 0.4vw, 16px) clamp(12px, 0.8vw, 32px);
   cursor: pointer;
   font-family: Raleway;
   font-weight: 500;
-  font-size: clamp(1rem, 1vw, 2.5rem); /* fully responsive font */
+  font-size: clamp(0.8rem, 0.9vw, 2rem);
   line-height: 100%;
   text-align: center;
   border-bottom: ${({ active }) => (active ? "3px solid #1e3a8a" : "none")};
@@ -268,23 +310,28 @@ export const Tab = styled.div`
   border-radius: 6px;
 
   @media (max-width: 1024px) {
-    padding: clamp(6px, 0.5vw, 16px) clamp(12px, 1vw, 30px);
-    font-size: clamp(0.9rem, 0.9vw, 2rem);
+    padding: clamp(5px, 0.4vw, 14px) clamp(10px, 0.8vw, 26px);
+    font-size: clamp(0.7rem, 0.8vw, 1.6rem);
   }
 
+  @media (max-width: 1440px) {
+    padding: clamp(5px, 0.6vw, 20px) clamp(10px, 0.8vw, 26px);
+    font-size: clamp(0.7rem, 1vw, 2rem);
+  }
   @media (max-width: 768px) {
-    padding: clamp(4px, 0.5vw, 12px) clamp(8px, 1vw, 20px);
-    font-size: clamp(0.8rem, 0.8vw, 1.5rem);
+    padding: clamp(4px, 0.3vw, 10px) clamp(6px, 0.6vw, 18px);
+    font-size: clamp(0.6rem, 0.7vw, 1.2rem);
   }
 
-  @media (min-width: 2560px) { /* 2K / 4K screens */
-    font-size: clamp(1.5rem, 1.5vw, 2rem);
+  @media (min-width: 2560px) {
+    font-size: clamp(1rem, 1.2vw, 2rem);
   }
 
-  @media (min-width: 3840px) { /* 4K / 8K ultra-wide screens */
-    font-size: clamp(2rem, 2vw, 3rem);
+  @media (min-width: 3840px) {
+    font-size: clamp(1.2rem, 1.5vw, 2.5rem);
   }
 `;
+
 
 export const ActionArea = styled.div`
   display: flex;
@@ -462,6 +509,19 @@ export const Pagination = styled.div`
     border: 1px solid #ccc;
     cursor: pointer;
     font-size: 0.8rem;
+  }
+  @media (min-width: 2560px) {
+    span{
+      font-size: 2rem;
+    padding: 0.5rem 1.5rem;
+    }
+    gap: 0.5rem;
+  }
+  @media (min-width: 3840px) {
+    span{
+      font-size: 2.5rem;
+    }
+    gap: 1rem;
   }
 
   .active {

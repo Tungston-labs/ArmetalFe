@@ -14,7 +14,8 @@ import {
   TitleSection,
   Pagination,
   SearchWrapper,
-  SearchIcon
+  SearchIcon,
+  EmployeeImage
 } from "./EmployeeAttendance.Styles";
 import {
   CardContainer,
@@ -36,6 +37,7 @@ import { GoArrowUpRight } from "react-icons/go";
 import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
+
 import { TextBlock } from "../leaveDetails/EmployeeList.styles";
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -76,13 +78,13 @@ const EmployeeList = () => {
     <Navbar />
     <Container>
       <HeaderSection>
-         <TitleSection>
-         <img src={EmployeeIcon} alt="employeeIcon" style={{ height: "60px" }} />
-         <TextBlock>
-           <Title>Employee</Title>
-           <Subtitle>Manage your Employee.</Subtitle>
-         </TextBlock>
-       </TitleSection>
+        <TitleSection>
+          <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
+          <TextBlock>
+            <Title>Employee</Title>
+            <Subtitle>Manage your Employee.</Subtitle>
+          </TextBlock>
+        </TitleSection>
         <SearchWrapper>
              {/* <SearchIcon /> */}
              <SearchInput
