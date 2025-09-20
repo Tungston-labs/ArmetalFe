@@ -357,16 +357,36 @@ letter-spacing: 0%;
 `;
 
 export const Subtitle = styled.p`
-  // color:#304EB0;
+  // font-size: 1rem;
+  color: #3250b5;
   margin: 0;
   font-family: Raleway;
-font-weight: 300;
-font-style: Light;
-font-size: 1rem;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  font-weight: 300;
+  line-height: 1.2;
 
+  @media (min-width: 480px) {
+    font-size: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
 export const HRManager = styled.div`
   display: flex;
