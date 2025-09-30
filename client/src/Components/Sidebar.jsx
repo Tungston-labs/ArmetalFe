@@ -54,7 +54,6 @@ export default function Sidebar() {
     return location.pathname.startsWith(path) ? "active" : "";
   };
 
-  // ❌ Don’t render if no user yet
   if (!user) return null;
 
   return (

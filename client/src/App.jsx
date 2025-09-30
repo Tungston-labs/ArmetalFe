@@ -54,7 +54,7 @@ import Dashboard from "./Pages/employeDashboard/Sample.jsx";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./Redux/authSlice";
-
+import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
 function App() {
   const dispatch = useDispatch();
 
@@ -93,6 +93,7 @@ function App() {
             <Route path="/payrolldetails/:id" element={<Payroll />} />
             <Route path="/payrolldetails" element={<PayrollFinal />} />
             <Route path="/superadmin" element={<SuperAdmin />} />
+            <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard/>}/>
             <Route path="/add-company" element={<AddCompany />} />
             <Route path="/employee-Contract-Visa-Expiry" element={<Visa />} />
             <Route path="/daily-task" element={<DailyTask />} />
