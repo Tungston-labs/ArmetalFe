@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import bannerBg from "../../assets/superadmin.svg";
 export const DashboardWrapper = styled.div`
   font-family: "Satoshi", sans-serif;
   background: #f3f3f3;
@@ -23,51 +23,97 @@ export const Subtitle = styled.p`
   margin: 0.25rem 0 0;
 `;
 
-/* Blue Banner */
+
 export const BlueBanner = styled.section`
-  background: linear-gradient(186deg, #8963d3 9.99%, #110324 77.29%);
+  background: url(${bannerBg}) no-repeat center;
+  background-size: cover;
   border-radius: 10px;
   padding: clamp(1rem, 2vw, 2rem);
   color: #fff;
-  margin-bottom: 2rem;
+  margin-bottom: 6rem;
+  position: relative;
 `;
+
 
 export const BannerHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 5rem;
 
   h2 {
     font-size: clamp(1.25rem, 2vw, 1.75rem);
     margin: 0;
+    font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 32px;
+line-height: 100%;
+letter-spacing: 0%;
+margin-bottom: 15px;
   }
 
   p {
     font-size: clamp(0.8rem, 1vw, 1rem);
     margin: 0.25rem 0 0;
+    font-family: Satoshi;
+font-weight: 400;
+font-style: Regular;
+font-size: 24px;
+line-height: 100%;
+letter-spacing: 0%;
+
   }
 
   span {
     font-size: clamp(1.2rem, 2vw, 1.5rem);
     font-weight: bold;
+    font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 32px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+
   }
 `;
 
 export const CardContainer = styled.div`
+  position: absolute; 
+  bottom: -3rem;    
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 1rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 95%;
+  box-sizing: border-box; 
+    overflow: hidden;   
+  z-index: 2;        
+`;
 
-  &::-webkit-scrollbar {
-    height: 6px;
+
+export const CardSlider = styled.div`
+  display: flex;
+  gap: 1rem;
+  animation: slide 20s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
   }
-  &::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 6px;
+
+  @keyframes slide {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
 `;
+
 
 export const CompanyCard = styled.div`
   flex: 0 0 auto;
@@ -75,17 +121,57 @@ export const CompanyCard = styled.div`
   color: #111;
   border-radius: 6px;
   padding: 1rem;
-  min-width: 220px;
-  max-width: 260px;
+  min-width: 350px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 
-  p {
-    margin: 0.25rem 0 0;
-    font-size: 0.85rem;
-    color: #444;
+  .card-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .company-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; 
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .company-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #444;
+
+      span:last-child {
+        font-weight: bold;
+        color: #111;
+      }
+
+      margin-bottom: 0.25rem;
+    }
   }
 `;
 
+
+export const CardContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+export const CompanyLogo = styled.img`
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  flex-shrink: 0;
+`;
 export const CardTitle = styled.h3`
   margin: 0;
   font-size: 0.9rem;
@@ -116,31 +202,54 @@ export const TableHeader = styled.div`
   h2 {
     margin: 0;
     font-size: clamp(1rem, 2vw, 1.5rem);
+    font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 32px;
+line-height: 100%;
+letter-spacing: 0%;
+margin-bottom: 20px;
   }
 
   p {
     margin: 0.25rem 0 0;
     color: #666;
     font-size: 0.9rem;
+    font-family: Satoshi;
+font-weight: 400;
+font-style: Regular;
+font-size: 24px;
+line-height: 100%;
+letter-spacing: 0%;
+
   }
 
   span {
     font-size: clamp(1rem, 2vw, 1.25rem);
     font-weight: bold;
     color: #000;
+    font-family: Satoshi;
+font-weight: 700;
+font-style: Bold;
+font-size: 32px;
+line-height: 100%;
+letter-spacing: 0%;
+
   }
 `;
 
 export const TableWrapper = styled.div`
   overflow-x: auto;
+  padding: 10px;
+  border-radius: 7px;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+
 `;
 
 export const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  border-radius: 8px;
   overflow: hidden;
-
   th,
   td {
     padding: 0.75rem;
