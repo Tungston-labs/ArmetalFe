@@ -102,15 +102,14 @@ const Dashboard = () => {
                 <th>Company ID</th>
                 <th>Contact details</th>
                 <th>No of Employees</th>
-                <th>Paid date</th>
-                <th>Next Due Date</th>
+                <th>Due Date</th>
               </tr>
             </thead>
             <tbody>
               {payments.map((row, i) => (
                 <tr
                   key={i}
-                  onClick={() => navigate(`/company/${row.company_id}`)}
+                  onClick={() => navigate(`/superadmin/view/${row.id}`)}
                   style={{ cursor: "pointer" }}
                 >
                   <td>{row.name}</td>
@@ -118,7 +117,6 @@ const Dashboard = () => {
                   <td>{row.company_id}</td>
                   <td>{row.contact_number}</td>
                   <td>{row.number_of_employees}</td>
-                  <td>{row.last_paid_date || "-----"}</td>
                   <td>{row.next_due_date || "-----"}</td>
                 </tr>
               ))}

@@ -250,11 +250,13 @@ export const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   overflow: hidden;
+
   th,
   td {
     padding: 0.75rem;
     text-align: left;
     font-size: clamp(0.8rem, 1vw, 0.95rem);
+    transition: background 0.3s, color 0.3s; /* smooth transition */
   }
 
   thead {
@@ -264,5 +266,12 @@ export const StyledTable = styled.table`
 
   tbody tr:nth-child(even) {
     background: #f9f9f9;
+  }
+
+  /* Hover effect */
+  tbody tr td:hover {
+    color:  #2a5bd7;          /* white text for contrast */
+    cursor: pointer;
+
   }
 `;
