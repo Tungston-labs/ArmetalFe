@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { logout as logoutAction } from "../Redux/authSlice";
 import Swal from "sweetalert2";
 
-function Navbar() {
+function Navbar({ bgColor = "#fff" }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showChangeModal, setShowChangeModal] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
@@ -68,7 +68,7 @@ const handleLogoutClick = async () => {
         new_password: newPassword,
       });
 
-      setMessage("Password changed successfully ✅");
+      setMessage("Password changed successfully ");
       setTimeout(() => {
         setShowChangeModal(false);
         setOldPassword("");
@@ -85,7 +85,7 @@ const handleLogoutClick = async () => {
 
   return (
     <div>
-      <TopBar>
+      <TopBar style={{ backgroundColor: bgColor }}>
         <div />
         <DropdownWrapper ref={dropdownRef}>
           <HRManager onClick={() => setMenuOpen(!menuOpen)}>
@@ -101,13 +101,13 @@ const handleLogoutClick = async () => {
               <div
                 onClick={() => {
                   setShowChangeModal(true);
-                  setMenuOpen(false); // close after click
+                  setMenuOpen(false);
                 }}
               >
                 Change Password
               </div>
               <div onClick={handleLogoutClick}>Logout</div>
-              </DropdownMenu>
+            </DropdownMenu>
           )}
         </DropdownWrapper>
       </TopBar>

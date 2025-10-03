@@ -16,8 +16,9 @@ import {
   StyledTable,
   CardContent,
   CompanyLogo,
-  CardSlider,
+  CardSlider,TopBar
 } from "./Superadmin_Dashboard.Styles";
+import Navbar from "../../Components/Navbar"
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompanyOverview } from "../../Redux/superAdminSlice";
@@ -44,6 +45,10 @@ console.log({overview});
 
   return (
     <DashboardWrapper>
+        <TopBar>
+        <div />
+        <Navbar bgColor="#f3f3f3" />
+                </TopBar>
       <Header>
         <Title>Dashboard</Title>
         <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
@@ -69,7 +74,7 @@ console.log({overview});
               >
                 <CompanyCard>
                   <CardContent>
-                    <CompanyLogo src={c.logo || "/default-logo.png"} alt={c.name} />
+                    <CompanyLogo src={c.logo_url || "/default-logo.png"} alt={c.name} />
                     <div>
                       <CardTitle>Company Name</CardTitle>
                       <CardSubtitle>{c.name}</CardSubtitle>
