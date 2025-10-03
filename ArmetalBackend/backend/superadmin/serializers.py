@@ -157,10 +157,13 @@ class CompanyListSerializer(serializers.ModelSerializer):
         ]
 
     def get_logo_url(self, obj):
-        request = self.context.get('request')
+        request = self.context.get('request', None)
         if obj.logo and hasattr(obj.logo, 'url'):
-            return request.build_absolute_uri(obj.logo.url)
-        return None    
+            if request:
+                return request.build_absolute_uri(obj.logo.url)
+            return obj.logo.url  
+        return None
+ 
 
     def get_last_paid_date(self, obj):
         last_paid = obj.subscriptions.filter(status="paid").order_by('-year', '-month').first()

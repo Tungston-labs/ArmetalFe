@@ -35,6 +35,7 @@ const Dashboard = () => {
   if (loading) {
     return <p>Loading dashboard...</p>;
   }
+console.log({overview});
 
   const companies = overview?.companies || [];
   const payments = overview?.unpaid_companies || [];
