@@ -145,6 +145,7 @@ class CompanyListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = [
+            'id',
             'company_id',
             'name',
             'logo',

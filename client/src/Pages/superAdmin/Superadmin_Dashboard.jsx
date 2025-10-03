@@ -63,7 +63,7 @@ const Dashboard = () => {
             {companies.map((c, i) => (
               <Link
                 key={i}
-                to={`/company/${c.company_id}`}
+                to={`/superadmin/view/${c.id}`}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <CompanyCard>
