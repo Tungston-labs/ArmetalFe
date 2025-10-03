@@ -154,10 +154,15 @@ class SendInvoiceEmailView(APIView):
             return Response({"error": str(e)}, status=500)
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import CompanyListSerializer
+from .models import Company
+
 class CompanyOverviewView(APIView):
     def get(self, request):
         companies = Company.objects.all()
-        serializer = CompanyListSerializer(companies, many=True)
+        serializer = CompanyListSerializer(companies, many=True, context={'request': request})
 
         # Find unpaid companies based on their latest subscription
         unpaid_companies = []
@@ -166,7 +171,7 @@ class CompanyOverviewView(APIView):
             if latest_sub and latest_sub.status == "unpaid":
                 unpaid_companies.append(company)
 
-        unpaid_serializer = CompanyListSerializer(unpaid_companies, many=True)
+        unpaid_serializer = CompanyListSerializer(unpaid_companies, many=True, context={'request': request})
 
         data = {
             "total_companies": companies.count(),
@@ -175,3 +180,4 @@ class CompanyOverviewView(APIView):
             "unpaid_companies": unpaid_serializer.data,
         }
         return Response(data)
+
