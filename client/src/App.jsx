@@ -60,9 +60,9 @@ function App() {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
-    
+
     const accessToken = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
-  
+
     if (user && accessToken) {
       dispatch(login({
         userName: user.username,
@@ -71,7 +71,7 @@ function App() {
       }));
     }
   }, [dispatch]);
-  
+
   return (
     <>
       <Routes>
@@ -93,7 +93,7 @@ function App() {
             <Route path="/payrolldetails/:id" element={<Payroll />} />
             <Route path="/payrolldetails" element={<PayrollFinal />} />
             <Route path="/superadmin" element={<SuperAdmin />} />
-            <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard/>}/>
+            <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard />} />
             <Route path="/add-company" element={<AddCompany />} />
             <Route path="/employee-Contract-Visa-Expiry" element={<Visa />} />
             <Route path="/daily-task" element={<DailyTask />} />
@@ -132,9 +132,9 @@ function App() {
             <Route path="/reimbursement" element={<Reimbursement />} />
             <Route path="/reimbursement_detail/:id" element={<Reimb2page />} />
             <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
-              <Route path="/finance" element={<FinancePage />} />
+            <Route path="/finance" element={<FinancePage />} />
 
-                <Route path="/card" element={<Dashboard />} />
+            <Route path="/card" element={<Dashboard />} />
           </Route>
         </Route>
       </Routes>

@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-// import userReducer from '../Redux/userSlice';
 import authReducer from '../Redux/authSlice';
 import departmentReducer from "../Redux/departmentSlice";
 import holidayReducer from "../Redux/holidaySlice"
@@ -23,7 +22,7 @@ export const store = configureStore({
     departments: departmentReducer,
     holidays: holidayReducer,
     superAdmin:superAdminReducer,
-         employee: employeeReducer,
+    employee: employeeReducer,
     dailyTask: dailyTaskReducer,
     employees: employeesReducer,
     leave: leaveReducer,

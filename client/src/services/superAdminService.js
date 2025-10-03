@@ -45,6 +45,11 @@ export const deleteCompany = async (id) => {
   return response.data;
 };
 
+// GET: Company Overview
+export const fetchCompanyOverview = async () => {
+  const response = await API.get("/companies/overview/");
+  return response.data;
+};
 
 
 

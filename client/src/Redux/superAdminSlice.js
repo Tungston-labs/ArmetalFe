@@ -4,7 +4,7 @@ import {
   createCompany,
   fetchCompanyById,
   updateCompany,
-  deleteCompany
+  deleteCompany,fetchCompanyOverview
 } from '../services/superAdminService';
 
 // Async thunk for fetching paginated company list
@@ -49,6 +49,15 @@ export const removeCompany = createAsyncThunk(
   }
 );
 
+// Company Overview
+export const getCompanyOverview = createAsyncThunk(
+  "superAdmin/getCompanyOverview",
+  async () => {
+    return await fetchCompanyOverview();
+  }
+);
+
+
 // Slice definition
 const superAdminSlice = createSlice({
   name: 'superAdmin',
@@ -62,6 +71,7 @@ const superAdminSlice = createSlice({
       previous: null,
     },
     selectedCompany: null,
+    overview:null,
     loading: false,
     error: null,
     searchQuery: "", 
@@ -118,7 +128,21 @@ const superAdminSlice = createSlice({
       // Delete company
       .addCase(removeCompany.fulfilled, (state, action) => {
         state.companies = state.companies.filter(c => c.id !== action.payload);
+      })
+      // company overview
+      .addCase(getCompanyOverview.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCompanyOverview.fulfilled, (state, action) => {
+        state.loading = false;
+        state.overview = action.payload;
+      })
+      .addCase(getCompanyOverview.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
+      
   }
 });
 
