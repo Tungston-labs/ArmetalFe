@@ -609,7 +609,7 @@ Content-Type: application/json
 
 {
   "username": "TUNGRAS82",     
-  "password": "athul"
+  "password": "Athul"
 }
 ### 
 GET http://127.0.0.1:8000/api/profile/
@@ -621,6 +621,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ### Swipe (Punch In/Out)
 POST http://178.248.112.16:8001/api/attendance/swipe/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mzc5Nzc2LCJpYXQiOjE3NTQzNzYxNzYsImp0aSI6Ijg3MjBkMjg1ZTU3OTQwZTY4MDMwNjhkZTdjNGY1Nzc4IiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.wyr8YNbzlGpYEGHMnb_Cij7o7Twy05MaUMODpPofAB8
+
+###
+POST http://178.248.112.16:8001/api/attendance/swipe/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTE5OTkyLCJpYXQiOjE3NTk5MTYzOTIsImp0aSI6ImQwMWUyNTQwYmRiYTQ2ZjM4YTFkYTZkNmZmYWJlOTUwIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.ce5vxi2nHgAkW2pcLY1giKy5rdHn9aLKueajsWcDTxE
+Content-Type: application/json
+
+{
+  "latitude": 10.1060,
+  "longitude": 76.4730
+}
 
 # list out employee attendance for admin
 ###

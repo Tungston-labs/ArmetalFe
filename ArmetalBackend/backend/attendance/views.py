@@ -69,7 +69,7 @@ class AttendanceSwipeView(APIView):
                 return Response({"error": "Invalid latitude/longitude"}, status=400)
 
             # ✅ Step 2: Determine punch type
-            punch_type = project.punch_in_type.lower()  # 'onsite' or 'variant'
+            punch_type = project.punch_type.lower()  # 'onsite' or 'variant'
 
             # ✅ Step 3: Validate location only for onsite
             if punch_type == "onsite":
