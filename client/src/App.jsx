@@ -55,6 +55,8 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./Redux/authSlice";
 import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
+import FieldShift from "./Pages/Shift/FieldShift.jsx"
+import FieldDepartment from "./Pages/Shift/FieldDepartment.jsx"
 function App() {
   const dispatch = useDispatch();
 
@@ -133,7 +135,8 @@ function App() {
             <Route path="/reimbursement_detail/:id" element={<Reimb2page />} />
             <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
               <Route path="/finance" element={<FinancePage />} />
-
+          <Route path="/field-shift" element={<FieldShift />} />
+            <Route path="/fieldshift-department" element={<FieldDepartment />} />
                 <Route path="/card" element={<Dashboard />} />
           </Route>
         </Route>

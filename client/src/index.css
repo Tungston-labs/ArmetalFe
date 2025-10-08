@@ -8,4 +8,5 @@ body {
 
     overflow-y: auto; /* or scroll, hidden, visible */
    background: #FFFFFF;
+    font-family: 'Satoshi', sans-serif;
   }
