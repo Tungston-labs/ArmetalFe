@@ -6,6 +6,8 @@ import { BsFillBuildingsFill } from "react-icons/bs";
 import { FaMoneyCheckAlt, FaUmbrellaBeach, FaReceipt } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import fieldIcon from "../../src/assets/field.png"; // adjust path based on your folder structure
+
 import {
   SidebarContainer,
   Logo,
@@ -82,15 +84,15 @@ export default function Sidebar() {
 
         )}
         {user?.is_superadmin && (
-         <CustomLink 
-         as={NavLink} 
-         to="/superadmin" 
-         className={({ isActive }) => `${collapsed ? 'collapsed' : ''} ${isActive ? 'active' : ''}`}
-     >
-         <BsFillBuildingsFill />  
-         <span>Companys</span>
-     </CustomLink>
-     
+          <CustomLink
+            as={NavLink}
+            to="/superadmin"
+            className={({ isActive }) => `${collapsed ? 'collapsed' : ''} ${isActive ? 'active' : ''}`}
+          >
+            <BsFillBuildingsFill />
+            <span>Companys</span>
+          </CustomLink>
+
 
         )}
 
@@ -131,6 +133,26 @@ export default function Sidebar() {
                 <FaReceipt /><span>Reimbursement</span>
               </CustomLink>
             )}
+
+            {modules.field_shift && (
+              <CustomLink
+                to="/field-shift"
+                className={`${collapsed ? "collapsed" : ""} ${isActive("/field-shift")}`}
+              >
+                <img
+                  src={fieldIcon}
+                  alt="Field Shift"
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    marginRight: "8px",
+                    verticalAlign: "middle"
+                  }}
+                />
+                <span>FieldShift</span>
+              </CustomLink>
+            )}
+
           </>
         )}
       </Nav>

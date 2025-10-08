@@ -52,7 +52,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
   ];
 
 
-  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement"];
+  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement","field_shift"];
 
   const [formData, setFormData] = useState({
     name: '',
