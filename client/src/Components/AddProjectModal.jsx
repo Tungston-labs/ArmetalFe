@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   ModalOverlay,
   ModalContainer,
@@ -16,45 +17,92 @@ import {
   ButtonContainer,
   CancelButton,
   SaveButton,
-  AdditionalFrame
+  SelectWrapper,
+  DropdownIcon
 } from './AddProjectModalStyles';
-import { SelectWrapper } from './AddProjectModalStyles';
-import { DropdownIcon } from './AddProjectModalStyles';
-const AddProjectModal = ({ isOpen, onClose, onSave }) => {
-  if (!isOpen) return null;
+import { createProject, getProjects } from '../Redux/fieldShiftSlice';
+
+const AddProjectModal = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     projectName: '',
     punchInType: '',
     latitude: '',
     longitude: '',
-   
+    employees: [], // optional
   });
+
+  const [errors, setErrors] = useState({});
+  const [isSaving, setIsSaving] = useState(false);
+  const [apiError, setApiError] = useState('');
+
+  if (!isOpen) return null;
+
+  // Validate form fields
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.projectName.trim()) {
+      newErrors.projectName = 'Project name is required';
+    }
+
+    if (!formData.punchInType) {
+      newErrors.punchInType = 'Punch in type is required';
+    }
+
+    if (formData.latitude && isNaN(Number(formData.latitude))) {
+      newErrors.latitude = 'Latitude must be a number';
+    }
+
+    if (formData.longitude && isNaN(Number(formData.longitude))) {
+      newErrors.longitude = 'Longitude must be a number';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: '' })); // remove error on change
   };
 
-  const handleSave = () => {
-    onSave(formData); 
-    onClose();
+  const handleSave = async () => {
+    if (!validate()) return;
+
+    setIsSaving(true);
+    setApiError('');
+
+    try {
+      const payload = {
+        name: formData.projectName,
+        punch_type: formData.punchInType,
+        latitude: formData.latitude || null,
+        longitude: formData.longitude || null,
+        employees: formData.employees,
+      };
+
+      await dispatch(createProject(payload)).unwrap();
+
+      dispatch(getProjects());
+      onClose();
+    } catch (err) {
+      setApiError(err.message || 'Failed to save project');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
-        
         <ModalHeader>
-          <BackButton onClick={onClose}>
-            &larr; 
-          </BackButton>
+          <BackButton onClick={onClose}>&larr;</BackButton>
           <HeaderContent>
-            <HeaderTitle>Add field</HeaderTitle>
-            <HeaderSubtitle>Manage all departments within the organization.</HeaderSubtitle>
+            <HeaderTitle>Add Project</HeaderTitle>
+            <HeaderSubtitle>Manage all projects within the organization.</HeaderSubtitle>
           </HeaderContent>
         </ModalHeader>
 
@@ -68,28 +116,27 @@ const AddProjectModal = ({ isOpen, onClose, onSave }) => {
               value={formData.projectName}
               onChange={handleChange}
             />
+            {errors.projectName && <span style={{ color: 'red' }}>{errors.projectName}</span>}
           </FieldGroup>
 
-          {/* Punch in type */}
- <FieldGroup>
-  <Label>Punch in type</Label>
-  
-  <SelectWrapper>
-    <SelectField
-      name="punchInType"
-      value={formData.punchInType}
-      onChange={handleChange}
-    >
-      <Option value="" disabled>Select type</Option>
-      <Option value="manual">Manual</Option>
-      <Option value="gps">GPS</Option>
-    </SelectField>
+          <FieldGroup>
+            <Label>Punch in type</Label>
+            <SelectWrapper>
+              <SelectField
+                name="punchInType"
+                value={formData.punchInType}
+                onChange={handleChange}
+              >
+                <Option value="" disabled>Select type</Option>
+                <Option value="on_site">On Site</Option>
+                <Option value="variant">Variant</Option>
+              </SelectField>
+              <DropdownIcon />
+            </SelectWrapper>
+            {errors.punchInType && <span style={{ color: 'red' }}>{errors.punchInType}</span>}
+          </FieldGroup>
 
-    <DropdownIcon />
-  </SelectWrapper>
-</FieldGroup>
-
-        <FieldGroup>
+          <FieldGroup>
             <Label>Latitude</Label>
             <InputField
               type="text"
@@ -98,8 +145,8 @@ const AddProjectModal = ({ isOpen, onClose, onSave }) => {
               value={formData.latitude}
               onChange={handleChange}
             />
+            {errors.latitude && <span style={{ color: 'red' }}>{errors.latitude}</span>}
           </FieldGroup>
-
 
           <FieldGroup>
             <Label>Longitude</Label>
@@ -110,18 +157,18 @@ const AddProjectModal = ({ isOpen, onClose, onSave }) => {
               value={formData.longitude}
               onChange={handleChange}
             />
+            {errors.longitude && <span style={{ color: 'red' }}>{errors.longitude}</span>}
           </FieldGroup>
-
         </FormGrid>
+
+        {apiError && <p style={{ color: 'red', marginTop: '10px' }}>{apiError}</p>}
 
         <ButtonContainer>
           <CancelButton onClick={onClose}>Cancel</CancelButton>
-          <SaveButton onClick={handleSave}>Save</SaveButton>
+          <SaveButton onClick={handleSave} disabled={isSaving}>
+            {isSaving ? 'Saving...' : 'Save'}
+          </SaveButton>
         </ButtonContainer>
-
-        {/* Frame 1811 - Additional section */}
-   
-
       </ModalContainer>
     </ModalOverlay>
   );

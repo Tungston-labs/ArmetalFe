@@ -8,10 +8,13 @@ const createProject = async (projectData) => {
 };
 
 // Get all projects
-const getProjects = async () => {
-  const response = await API.get("/project/");
-  return response.data;
-};
+const getProjects = async (search = "", page = 1) => {
+  const response = await API.get("/project/", {
+    params: { search, page },
+  });
+  return response.data; 
+}
+
 
 // Get a single project by ID
 const getProjectById = async (id) => {

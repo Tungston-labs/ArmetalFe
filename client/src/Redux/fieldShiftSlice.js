@@ -3,22 +3,23 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import projectService from "../services/fieldShiftService";
 
 // Thunks
-export const createProject = createAsyncThunk(
-  "projects/create",
-  async (projectData, { rejectWithValue }) => {
+
+export const getProjects = createAsyncThunk(
+  "projects/getAll",
+  async ({ search = "", page = 1 } = {}, { rejectWithValue }) => {
     try {
-      return await projectService.createProject(projectData);
+      return await projectService.getProjects(search, page);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
-export const getProjects = createAsyncThunk(
-  "projects/getAll",
-  async (_, { rejectWithValue }) => {
+export const createProject = createAsyncThunk(
+  "projects/create",
+  async (projectData, { rejectWithValue }) => {
     try {
-      return await projectService.getProjects();
+      return await projectService.createProject(projectData);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -63,8 +64,11 @@ export const deleteProject = createAsyncThunk(
 const projectSlice = createSlice({
   name: "projects",
   initialState: {
-    projects: [],
-    project: null,
+    projects: [],        // paginated results
+    total_pages: 0,
+    current_page: 1,
+    total_items: 0,
+    project: null,       // single project
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -81,6 +85,23 @@ const projectSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Get projects
+      .addCase(getProjects.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getProjects.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.projects = action.payload.results;
+        state.total_pages = action.payload.total_pages;
+        state.current_page = action.payload.current_page;
+        state.total_items = action.payload.total_items;
+      })
+      .addCase(getProjects.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
       // Create
       .addCase(createProject.pending, (state) => {
         state.isLoading = true;
@@ -88,23 +109,10 @@ const projectSlice = createSlice({
       .addCase(createProject.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.projects.push(action.payload);
+        state.projects.unshift(action.payload);
+        state.total_items += 1;
       })
       .addCase(createProject.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-      })
-      // Get all
-      .addCase(getProjects.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getProjects.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.projects = action.payload;
-      })
-      .addCase(getProjects.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -147,6 +155,7 @@ const projectSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.projects = state.projects.filter((proj) => proj.id !== action.payload);
+        state.total_items -= 1;
       })
       .addCase(deleteProject.rejected, (state, action) => {
         state.isLoading = false;
