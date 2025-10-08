@@ -563,22 +563,40 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 
-# ----------------project module
-
-POST /api/project/
-Authorization: Token <user_token>
+# ----------------project module-------------------------
+###
+POST http://178.248.112.16:8001/api/project/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTEyMDUxLCJpYXQiOjE3NTk5MDg0NTEsImp0aSI6Ijc3YzAzM2VhNTExZTQwNTFhNGM3YmQzMGUzMDlkODdlIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.3XFF-RdLJfn1IXBvQak7hZ1ZVG2jBM3pfGnHlxEdP2k
 Content-Type: application/json
 
 {
-  "project_name": "Site Project B",
+  "name": "Site Project B",
   "punch_type": "variant",
-  "latitude": 12.9352,
-  "longitude": 77.6245,
-  "employees": [3, 4, 5]
+  "employees": [53,65]
 }
 
+###list projects
+GET http://178.248.112.16:8001/api/project/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTEyMDUxLCJpYXQiOjE3NTk5MDg0NTEsImp0aSI6Ijc3YzAzM2VhNTExZTQwNTFhNGM3YmQzMGUzMDlkODdlIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.3XFF-RdLJfn1IXBvQak7hZ1ZVG2jBM3pfGnHlxEdP2k
 
+###get a single project detail
+GET http://178.248.112.16:8001/api/project/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTEyMDUxLCJpYXQiOjE3NTk5MDg0NTEsImp0aSI6Ijc3YzAzM2VhNTExZTQwNTFhNGM3YmQzMGUzMDlkODdlIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.3XFF-RdLJfn1IXBvQak7hZ1ZVG2jBM3pfGnHlxEdP2k
 
+###delete a single project detail
+DELETE  http://178.248.112.16:8001/api/project/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTEyMDUxLCJpYXQiOjE3NTk5MDg0NTEsImp0aSI6Ijc3YzAzM2VhNTExZTQwNTFhNGM3YmQzMGUzMDlkODdlIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.3XFF-RdLJfn1IXBvQak7hZ1ZVG2jBM3pfGnHlxEdP2k
+
+###
+PUT http://178.248.112.16:8001/api/project/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTEyMDUxLCJpYXQiOjE3NTk5MDg0NTEsImp0aSI6Ijc3YzAzM2VhNTExZTQwNTFhNGM3YmQzMGUzMDlkODdlIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.3XFF-RdLJfn1IXBvQak7hZ1ZVG2jBM3pfGnHlxEdP2k
+Content-Type: application/json
+
+{
+  "name": "Site Project B",
+  "punch_type": "variant",
+  "employees": [53,65]
+}
 
 #-------------------------------------------------------- API FOR MOBILE APPLICATION
 

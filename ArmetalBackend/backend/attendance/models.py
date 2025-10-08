@@ -71,6 +71,14 @@ class AttendanceSession(models.Model):
     time_out = models.DateTimeField(null=True, blank=True)
     timezone = models.CharField(max_length=50, default='UTC', null=True, blank=True)
     note = models.TextField(blank=True, null=True)
+    punch_in_latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    punch_in_longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    punch_in_location = models.CharField(max_length=255, null=True, blank=True)
+
+    punch_out_latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    punch_out_longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    punch_out_location = models.CharField(max_length=255, null=True, blank=True)
+
 
     def save(self, *args, **kwargs):
         # Store original values before processing

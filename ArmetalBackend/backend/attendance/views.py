@@ -33,7 +33,11 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Attendance, AttendanceSession
+# attendance/views.py
 
+from project.models import Project  # Import your Project model
+from django.db.models import Q
+from geopy.geocoders import Nominatim
 logger = logging.getLogger(__name__)
 
 
@@ -46,65 +50,55 @@ class AttendanceSwipeView(APIView):
             employee = getattr(user, 'employee_db', None)
             logger.info(f"AttendanceSwipeView request.data={request.data}")
 
-
             if not employee:
                 return Response({'error': 'Employee not found'}, status=404)
 
-            company = employee.department.company
+            # ✅ Step 1: Check if employee is assigned to a project
+            project = Project.objects.filter(employees=employee).first()
+            if not project:
+                return Response({'error': 'Employee not assigned to any project'}, status=400)
 
-            # ✅ 1. Get employee current location from request
             emp_lat = request.data.get("latitude")
             emp_lon = request.data.get("longitude")
-
             if emp_lat is None or emp_lon is None:
-                return Response(
-                    {"error": "Latitude and longitude are required."},
-                    status=400
-                )
+                return Response({"error": "Latitude and longitude are required"}, status=400)
 
             try:
                 emp_lat, emp_lon = float(emp_lat), float(emp_lon)
             except ValueError:
                 return Response({"error": "Invalid latitude/longitude"}, status=400)
 
-            if not company.latitude or not company.longitude:
-                return Response(
-                    {"error": "Company location not set. Contact admin."},
-                    status=400
-                )
+            # ✅ Step 2: Determine punch type
+            punch_type = project.punch_in_type.lower()  # 'onsite' or 'variant'
 
-            company_location = (company.latitude, company.longitude)
-            employee_location = (emp_lat, emp_lon)
+            # ✅ Step 3: Validate location only for onsite
+            if punch_type == "onsite":
+                project_location = (float(project.latitude), float(project.longitude))
+                employee_location = (emp_lat, emp_lon)
+                distance = geodesic(employee_location, project_location).meters
 
-            # ✅ 2. Distance check
-            distance = geodesic(employee_location, company_location).meters
+                if distance > 50:
+                    return Response({
+                        "error": f"You are too far from the project site ({int(distance)}m). Must be within 50m."
+                    }, status=400)
 
-            print("Company lat/lon from DB:", company.latitude, company.longitude)
-            print("Employee lat/lon from request:", emp_lat, emp_lon)
-            print("Calculated distance (m):", distance)
+            # ✅ Step 4: Get readable address from lat/lon (optional)
+            address = self._get_location_address(emp_lat, emp_lon)
 
-            if distance > 50:
-                return Response(
-                    {"error": f"You are too far from company location ({int(distance)}m). Must be within 50m."},
-                    status=400
-                )
-
-            # ✅ 3. Continue with your existing logic
+            # ✅ Step 5: Proceed with punch logic
             company_tz = get_company_timezone(employee)
             now_utc = timezone.now()
             now_company_tz = now_utc.astimezone(company_tz)
             today = now_company_tz.date()
 
-            # Get or create attendance for today
             attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
             latest_session = attendance.sessions.last()
-
             should_punch_in = self._should_punch_in(latest_session)
 
             if should_punch_in:
-                return self._handle_punch_in(attendance, now_company_tz, company_tz)
+                return self._handle_punch_in(attendance, now_company_tz, company_tz, emp_lat, emp_lon, address)
             else:
-                return self._handle_punch_out(latest_session, now_company_tz, company_tz, attendance)
+                return self._handle_punch_out(latest_session, now_company_tz, company_tz, emp_lat, emp_lon, address, attendance)
 
         except Exception as e:
             logger.critical(f"Unhandled error in AttendanceSwipeView: {e}", exc_info=True)
@@ -117,54 +111,45 @@ class AttendanceSwipeView(APIView):
             return False
         return True
 
-    def _handle_punch_in(self, attendance, now_company_tz, company_tz):
+    def _handle_punch_in(self, attendance, now_company_tz, company_tz, lat, lon, address):
         try:
             session = AttendanceSession.objects.create(
                 attendance=attendance,
                 time_in=now_company_tz,
-                timezone=company_tz.zone
+                timezone=company_tz.zone,
+                punch_in_latitude=lat,
+                punch_in_longitude=lon,
+                punch_in_location=address
             )
             return Response({
                 'status': 'success',
                 'action': 'punch_in',
                 'time': now_company_tz.strftime("%H:%M:%S"),
                 'date': now_company_tz.date().isoformat(),
-                'session_id': session.id
+                'session_id': session.id,
+                'location': address
             }, status=201)
         except Exception as e:
             logger.error(f"Error during punch in: {e}")
             return Response({'error': 'Failed to punch in'}, status=500)
 
-    def _handle_punch_out(self, latest_session, now_company_tz, company_tz, attendance):
+    def _handle_punch_out(self, latest_session, now_company_tz, company_tz, lat, lon, address, attendance):
         try:
             time_in = latest_session.time_in
-            validation_time_in = time_in
             if isinstance(time_in, time):
-                validation_time_in = datetime.combine(attendance.date, time_in)
-                validation_time_in = company_tz.localize(validation_time_in)
-            elif isinstance(time_in, datetime):
-                if timezone.is_naive(time_in):
-                    validation_time_in = company_tz.localize(time_in)
-                else:
-                    validation_time_in = time_in.astimezone(company_tz)
+                time_in = datetime.combine(attendance.date, time_in)
+                time_in = company_tz.localize(time_in)
 
-            if now_company_tz <= validation_time_in:
+            if now_company_tz <= time_in:
                 return Response({
-                    'error': 'Punch out time must be after punch in time',
-                    'details': {
-                        'punch_in': validation_time_in.strftime("%Y-%m-%d %H:%M:%S"),
-                        'attempted_punch_out': now_company_tz.strftime("%Y-%m-%d %H:%M:%S")
-                    }
+                    'error': 'Punch out must be after punch in',
                 }, status=400)
 
-            original_time_in = latest_session.time_in
             latest_session.time_out = now_company_tz
+            latest_session.punch_out_latitude = lat
+            latest_session.punch_out_longitude = lon
+            latest_session.punch_out_location = address
             latest_session.save()
-
-            latest_session.refresh_from_db()
-            if latest_session.time_in != original_time_in:
-                latest_session.time_in = original_time_in
-                latest_session.save()
 
             session_duration = latest_session.get_duration()
 
@@ -173,15 +158,23 @@ class AttendanceSwipeView(APIView):
                 'action': 'punch_out',
                 'time': now_company_tz.strftime("%H:%M:%S"),
                 'session_duration': session_duration,
-                'total_hours': float(attendance.total_hours or 0),
+                'location': address,
                 'timezone': company_tz.zone
             }, status=200)
-
         except Exception as e:
             logger.error(f"Error during punch out: {e}")
             return Response({'error': 'Failed to punch out'}, status=500)
 
-        
+    def _get_location_address(self, lat, lon):
+        """Convert lat/lon to human-readable address (optional)"""
+        try:
+            geolocator = Nominatim(user_agent="attendance_app")
+            location = geolocator.reverse(f"{lat}, {lon}")
+            return location.address if location else None
+        except Exception as e:
+            logger.warning(f"Geocoding failed: {e}")
+            return None
+
 
 # to add a note to the corresponding punch out section
 
