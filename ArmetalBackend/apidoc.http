@@ -563,6 +563,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 
+# ----------------project module
+
+POST /api/project/
+Authorization: Token <user_token>
+Content-Type: application/json
+
+{
+  "project_name": "Site Project B",
+  "punch_type": "variant",
+  "latitude": 12.9352,
+  "longitude": 77.6245,
+  "employees": [3, 4, 5]
+}
+
 
 
 
