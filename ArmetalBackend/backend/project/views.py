@@ -17,13 +17,15 @@ class ProjectListCreateView(generics.ListCreateAPIView):
         # Automatically assign the logged-in user's company
         serializer.save(company=self.request.user.company)
 
-
-
-# Retrieve, Update, Delete
 class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all().prefetch_related('employees')
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
+
+    def patch(self, request, *args, **kwargs):
+        # Use partial=True to allow updating only 'employees'
+        return self.partial_update(request, *args, **kwargs)
+
 
 
 from rest_framework.views import APIView
