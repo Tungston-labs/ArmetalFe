@@ -11,163 +11,17 @@ import {
   Checkbox,
 } from "./EmployeeModal.Styles";
 import { FaSearch } from "react-icons/fa";
-const employeesData = [
-  {
-    id: 1,
-    name: "Employee",
-    empId: "125/425",
-    email: "dummy@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
+import { useDispatch, useSelector } from "react-redux";
+import { getEmployeesNotInProject, updateProject } from "../Redux/fieldShiftSlice";
+import Swal from "sweetalert2";
 
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 3,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 4,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 5,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 6,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-    {
-    id: 2,
-    name: "Employee",
-    empId: "125/426",
-    email: "dummy2@gmail.com",
-    job: "UI/UX Designer",
-    department: "Design Department",
-  },
-  
-  // Add more sample data as needed
-];
+const EmployeeModal = ({ onClose, projectId }) => {
+  const dispatch = useDispatch();
+
+  // ✅ Correct state keys from slice
+  const { employeesNotInProject = [], isLoading } = useSelector(
+    (state) => state.projects
+  );
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selected, setSelected] = useState([]);

@@ -166,26 +166,26 @@ export const SummaryRow = styled.div`
   }
 `;
 
-export const SummaryCol = styled.div`
-  flex: 1;
-  min-width: 220px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
+// export const SummaryCol = styled.div`
+//   flex: 1;
+//   min-width: 220px;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 10px;
+// `;
 
-export const Row = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 2rem; 
-  font-size: 14px;
-`;
+// export const Row = styled.div`
+//   display: flex;
+//   align-items: center;
+//   gap: 2rem; 
+//   font-size: 14px;
+// `;
 
-export const SmallRow = styled(Row)`
-  font-size: 12px;
-  color: #6b6b6b;
+// export const SmallRow = styled(Row)`
+//   font-size: 12px;
+//   color: #6b6b6b;
     
-`;
+// `;
 
 
 export const DateNav = styled.div`
