@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions
 from .models import Company
-from .serializers import CompanyCreateSerializer
+from .serializers import CompanyCreateSerializer,CompanyListSerializer
 from .permissions import IsSuperAdmin
 from rest_framework import generics, filters
 from rest_framework import serializers
@@ -152,3 +152,32 @@ class SendInvoiceEmailView(APIView):
             return Response({"message": "Email sent successfully"}, status=200)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import CompanyListSerializer
+from .models import Company
+
+class CompanyOverviewView(APIView):
+    def get(self, request):
+        companies = Company.objects.all()
+        serializer = CompanyListSerializer(companies, many=True, context={'request': request})
+
+        # Find unpaid companies based on their latest subscription
+        unpaid_companies = []
+        for company in companies:
+            latest_sub = company.subscriptions.order_by('-year', '-month').first()
+            if latest_sub and latest_sub.status == "unpaid":
+                unpaid_companies.append(company)
+
+        unpaid_serializer = CompanyListSerializer(unpaid_companies, many=True, context={'request': request})
+
+        data = {
+            "total_companies": companies.count(),
+            "unpaid_companies_count": len(unpaid_companies),
+            "companies": serializer.data,
+            "unpaid_companies": unpaid_serializer.data,
+        }
+        return Response(data)
+

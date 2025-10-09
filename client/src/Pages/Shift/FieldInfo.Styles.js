@@ -35,6 +35,24 @@ export const TitleGroup = styled.div`
     color: #30408d;
   }
 `;
+export const SummaryCol = styled.div`
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+export const Row = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+`;
+
+export const SmallRow = styled(Row)`
+  font-size: 12px;
+  color: #6b6b6b;
+`;
 
 export const Small = styled.div`
   font-size: 12px;

@@ -306,3 +306,5 @@ class ScheduleReminderSerializer(serializers.ModelSerializer):
         model = ScheduleReminder
         fields = '__all__'
         read_only_fields = ('employee', 'created_at', 'notified')
+
+

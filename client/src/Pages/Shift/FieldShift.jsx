@@ -1,4 +1,6 @@
-import {useState} from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   PageWrapper,
   HeaderSection,
@@ -27,84 +29,98 @@ import FieldShiftIcon from "../../assets/shifttopper.svg";
 import TagIcon from "../../assets/downicon.svg";
 import Navbar from "../../Components/Navbar";
 import { FaPlus } from "react-icons/fa";
+import { getProjects } from "../../Redux/fieldShiftSlice";
+
 const DepartmentPage = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-  const departments = [
-    { name: "Sales", employees: 12, tag: "Variant" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-    { name: "Sales", employees: 12, tag: "Variant" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-     { name: "Sales", employees: 12, tag: "Variant" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-     { name: "Sales", employees: 12, tag: "Variant" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-    { name: "Project Name", employees: 12, tag: "On Site" },
-  ];
-const handleSaveProject = (data) => {  
-    console.log('New Field Added:', data);
+  const dispatch = useDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();  
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const { projects, isLoading } = useSelector((state) => state.projects);
+
+  // Fetch projects from API
+  useEffect(() => {
+    dispatch(getProjects({ search: searchTerm }));
+  }, [dispatch, searchTerm]);
+
+  const handleSaveProject = (data) => {
+    console.log("New Project Added:", data);
+    setIsModalOpen(false);
+    dispatch(getProjects()); // refresh project list
   };
-  return (<>
-    <Navbar/>
-    <PageWrapper>
-      <HeaderSection>
-     <TitleSection>
-  <IconWrapper>
-    <img src={FieldShiftIcon} alt="FieldShift" />
-  </IconWrapper>
-  <TextGroup>
-    <Title>FieldShift</Title>
-    <Subtitle>Manage all departments within the organization.</Subtitle>
-  </TextGroup>
-</TitleSection>
 
-      <AddFieldButton onClick={() => setIsModalOpen(true)}>
-     <FaPlus />  Add Field
-        </AddFieldButton>
-      </HeaderSection>
-<SearchContainer>
-  <SearchIcon />
-  <SearchBar placeholder="Search by Company name" />
-</SearchContainer>
+  return (
+    <>
+      <Navbar />
+      <PageWrapper>
+        <HeaderSection>
+          <TitleSection>
+            <IconWrapper>
+              <img src={FieldShiftIcon} alt="FieldShift" />
+            </IconWrapper>
+            <TextGroup>
+              <Title>FieldShift</Title>
+              <Subtitle>Manage all projects within the organization.</Subtitle>
+            </TextGroup>
+          </TitleSection>
 
-      <CardsGrid>
-        {departments.map((dept, index) => (
-  <Card key={index} style={{ backgroundImage: `url(${cardBg})` }}>
-  <CardHeader>
-  <CardTitleSection>
-    <CardTitle>{dept.name}</CardTitle>
-  </CardTitleSection>
-  <HiOutlineDotsHorizontal className="menu-icon" />
-</CardHeader>
+          <AddFieldButton onClick={() => setIsModalOpen(true)}>
+            <FaPlus /> Add Project
+          </AddFieldButton>
+        </HeaderSection>
 
-  <CardText>
-  <span>Total employee</span>
-  <span className="employee-count">{dept.employees}</span>
-</CardText>
+        <SearchContainer>
+          <SearchIcon />
+          <SearchBar
+            placeholder="Search by project name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </SearchContainer>
 
-    <CardFooter>
-  <Tag>
-    <img src={TagIcon} alt="Tag icon" />
-    {dept.tag}
-  </Tag>
-</CardFooter>
-  </Card>
-))}
+        <CardsGrid>
+  {isLoading ? (
+    <p>Loading projects...</p>
+  ) : projects.length === 0 ? (
+    <p>No projects found.</p>
+  ) : (
+    projects.map((project) => (
+      <Card
+        key={project.id}
+        style={{ backgroundImage: `url(${cardBg})`, cursor: "pointer" }}
+        onClick={() => navigate(`/fieldshift-department/${project.id}`, { state: { projectName: project.name } })}
+      >
+        <CardHeader>
+          <CardTitleSection>
+            <CardTitle>{project.name}</CardTitle>
+          </CardTitleSection>
+          <HiOutlineDotsHorizontal className="menu-icon" />
+        </CardHeader>
 
-      </CardsGrid>
-      <AddProjectModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveProject}
-      />
+        <CardText>
+          <span>Total employees</span>
+          <span className="employee-count">{project.employees?.length || 0}</span>
+        </CardText>
 
-    </PageWrapper>
+        <CardFooter>
+          <Tag>
+            <img src={TagIcon} alt="Tag icon" />
+            {project.punch_type || "N/A"}
+          </Tag>
+        </CardFooter>
+      </Card>
+    ))
+  )}
+</CardsGrid>
+
+
+        <AddProjectModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveProject}
+        />
+      </PageWrapper>
     </>
   );
 };

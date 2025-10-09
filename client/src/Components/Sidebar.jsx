@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { RiHome5Line } from "react-icons/ri";
 import { FaUsers, FaSitemap, FaTasks } from "react-icons/fa";
 import { MdOutlineLaptopChromebook } from "react-icons/md";
+import { BsFillBuildingsFill } from "react-icons/bs";
 import { FaMoneyCheckAlt, FaUmbrellaBeach, FaReceipt } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import fieldIcon from "../../src/assets/field.png"; // adjust path based on your folder structure
+
 import {
   SidebarContainer,
   Logo,
@@ -14,6 +17,8 @@ import {
   TopSection,
 } from './Sidebar.styles';
 import API from '../services/api';
+import { NavLink } from "react-router-dom";
+
 
 
 export default function Sidebar() {
@@ -25,9 +30,9 @@ export default function Sidebar() {
   const reduxUser = useSelector((state) => state.auth.user);
 
   // ✅ Fallback to localStorage in case of refresh
-  
+
   const storedUser = useSelector((state) => state.auth.user);
-  const user = reduxUser || storedUser; 
+  const user = reduxUser || storedUser;
   const modules = user?.company_modules || {};
 
   useEffect(() => {
@@ -72,10 +77,23 @@ export default function Sidebar() {
       <Nav>
 
         {user?.is_superadmin && (
-          <CustomLink to="/superadmin" className={`${collapsed ? 'collapsed' : ''} ${isActive("/superadmin")}`}>
+          <CustomLink as={NavLink} to="/superadmin-dashboard" className={`${collapsed ? 'collapsed' : ''} ${isActive("/superadmin-dashboard")}`}>
             <MdOutlineLaptopChromebook />
-            <span>Super Admin</span>
+            <span>Dashboard</span>
           </CustomLink>
+
+        )}
+        {user?.is_superadmin && (
+          <CustomLink
+            as={NavLink}
+            to="/superadmin"
+            className={({ isActive }) => `${collapsed ? 'collapsed' : ''} ${isActive ? 'active' : ''}`}
+          >
+            <BsFillBuildingsFill />
+            <span>Companys</span>
+          </CustomLink>
+
+
         )}
 
         {(user?.is_hr_admin || user?.is_hr) && Object.keys(modules).length > 0 && (
@@ -115,6 +133,26 @@ export default function Sidebar() {
                 <FaReceipt /><span>Reimbursement</span>
               </CustomLink>
             )}
+
+            {modules.field_shift && (
+              <CustomLink
+                to="/field-shift"
+                className={`${collapsed ? "collapsed" : ""} ${isActive("/field-shift")}`}
+              >
+                <img
+                  src={fieldIcon}
+                  alt="Field Shift"
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    marginRight: "8px",
+                    verticalAlign: "middle"
+                  }}
+                />
+                <span>FieldShift</span>
+              </CustomLink>
+            )}
+
           </>
         )}
       </Nav>

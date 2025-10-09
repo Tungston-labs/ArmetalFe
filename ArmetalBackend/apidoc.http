@@ -437,7 +437,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 #### Get Leave Detail by ID (HR Admin)
 GET http://127.0.0.1:8000/api/leave/admin/3/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4ODU0ODIzLCJpYXQiOjE3NDg4NTEyMjMsImp0aSI6Ijc3NTViNjMxMDc5NDQzNDE4ZTI3ZWY2YWI2YmYwODZkIiwidXNlcl9pZCI6M30.Me_MGEl8zfsWRUN84_wSRx-eDMswEtQAb6mj7wqW-P8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDAxNDMwLCJpYXQiOjE3NTk5OTc4MzAsImp0aSI6ImYxN2U0ZjIzMTNmOTQ0NWY4MDY4MTgzMzg1YTRmOTRjIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.OtAiHVE0yzzxBc1C1MhDi1SjKeU62fGGmn8q_JW8Ebs
 
 
 
@@ -503,8 +503,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ### Swipe (Punch In/Out)
-POST http://127.0.0.1:8000/api/attendance/swipe/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNzQ1Nzk0LCJpYXQiOjE3NTA3NDIxOTQsImp0aSI6ImEzODU5YTNiMTBlOTQ0MDdiZjRhMjllNWU5MzBlZWJkIiwidXNlcl9pZCI6NDMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.a4D6kj8KCHObkgOD4s1UfVXaavoOlHu4F9TDpPA5VPc
+POST http://178.248.112.16:8001/api/attendance/swipe/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTAyMDkzLCJpYXQiOjE3NTk4OTg0OTMsImp0aSI6ImQzYmQ4MWY1MzE1ZTQzYmY5ZDU4NTE4M2FiYTc0YmNmIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.A4xEiGvaHk7JVoCEfFOYcwa1XVmCY18UXeEQ83trMOo
 
 
 # list out employee attendance for admin
@@ -563,7 +563,43 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 
+# ----------------project module-------------------------
+###
+POST http://178.248.112.16:8001/api/project/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTEyMDUxLCJpYXQiOjE3NTk5MDg0NTEsImp0aSI6Ijc3YzAzM2VhNTExZTQwNTFhNGM3YmQzMGUzMDlkODdlIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.3XFF-RdLJfn1IXBvQak7hZ1ZVG2jBM3pfGnHlxEdP2k
+Content-Type: application/json
 
+{
+  "name": "Site Project B",
+  "punch_type": "variant",
+  "employees": [53,65]
+}
+
+###list projects
+GET http://178.248.112.16:8001/api/project/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTk2NzA2LCJpYXQiOjE3NTk5OTMxMDYsImp0aSI6Ijk5YWIwMWEzNWFjNjRlNGI5OTVkNTAwZDkzMGMwZjI0IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.aUiX6EZo7zff3GPet3jq_OcbdRlyImLY1yYHhDpWVWk
+
+###get a single project detail
+GET http://178.248.112.16:8001/api/project/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDA5NTU1LCJpYXQiOjE3NjAwMDU5NTUsImp0aSI6ImY0MTBiMGM2NzFiMDRiYjM4NjAxNjMyOWU1NzJjYWIzIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.qKY23h_X1Q4qprDMXelbzlaqeWh9wXaC7fL79Go_KcQ
+###delete a single project detail
+DELETE  http://178.248.112.16:8001/api/project/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDAxNDMwLCJpYXQiOjE3NTk5OTc4MzAsImp0aSI6ImYxN2U0ZjIzMTNmOTQ0NWY4MDY4MTgzMzg1YTRmOTRjIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.OtAiHVE0yzzxBc1C1MhDi1SjKeU62fGGmn8q_JW8Ebs
+
+###
+PUT http://178.248.112.16:8001/api/project/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTk2NzA2LCJpYXQiOjE3NTk5OTMxMDYsImp0aSI6Ijk5YWIwMWEzNWFjNjRlNGI5OTVkNTAwZDkzMGMwZjI0IiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.aUiX6EZo7zff3GPet3jq_OcbdRlyImLY1yYHhDpWVWk
+Content-Type: application/json
+
+{
+  "name": "Site Project B",
+  "punch_type": "variant",
+  "employees": [53,65]
+}
+
+###get a employees not in a project
+GET http://178.248.112.16:8001/api/project/8/employees-not-in-project/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDExMzkzLCJpYXQiOjE3NjAwMDc3OTMsImp0aSI6ImFlMjJmZTFhNzY3MjQ1OWI4OWQ0ODllZWM4OTI1NTJkIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.GJdW_710a-zhI6snDQt_2s1Xni0zTq3gIGPF8QjRQlc
 
 
 #-------------------------------------------------------- API FOR MOBILE APPLICATION
@@ -577,7 +613,7 @@ Content-Type: application/json
 
 {
   "username": "TUNGRAS82",     
-  "password": "athul"
+  "password": "Athul"
 }
 ### 
 GET http://127.0.0.1:8000/api/profile/
@@ -589,6 +625,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ### Swipe (Punch In/Out)
 POST http://178.248.112.16:8001/api/attendance/swipe/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mzc5Nzc2LCJpYXQiOjE3NTQzNzYxNzYsImp0aSI6Ijg3MjBkMjg1ZTU3OTQwZTY4MDMwNjhkZTdjNGY1Nzc4IiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.wyr8YNbzlGpYEGHMnb_Cij7o7Twy05MaUMODpPofAB8
+
+###
+POST http://178.248.112.16:8001/api/attendance/swipe/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTE5OTkyLCJpYXQiOjE3NTk5MTYzOTIsImp0aSI6ImQwMWUyNTQwYmRiYTQ2ZjM4YTFkYTZkNmZmYWJlOTUwIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.ce5vxi2nHgAkW2pcLY1giKy5rdHn9aLKueajsWcDTxE
+Content-Type: application/json
+
+{
+  "latitude": 10.1060,
+  "longitude": 76.4730
+}
 
 # list out employee attendance for admin
 ###

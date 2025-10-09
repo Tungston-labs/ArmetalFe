@@ -2,8 +2,8 @@ from rest_framework import serializers
 from .models import Company,CompanySubscription
 from user.models import User
 from calendar import month_name
-
-
+from datetime import date
+import calendar
 from rest_framework import serializers
 from superadmin.models import Company
 from user.models import User
@@ -136,3 +136,52 @@ class CompanySubscriptionSerializer(serializers.ModelSerializer):
     def get_currency(self, obj):
         _, currency = obj.get_rate_per_employee_and_currency()
         return currency
+    
+class CompanyListSerializer(serializers.ModelSerializer):
+    last_paid_date = serializers.SerializerMethodField()
+    next_due_date = serializers.SerializerMethodField()
+    logo_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Company
+        fields = [
+            'id',
+            'company_id',
+            'name',
+            'logo_url',
+            'address',
+            'contact_number',
+            'number_of_employees',
+            'last_paid_date',
+            'next_due_date',
+        ]
+
+    def get_logo_url(self, obj):
+        request = self.context.get('request', None)
+        if obj.logo and hasattr(obj.logo, 'url'):
+            if request:
+                return request.build_absolute_uri(obj.logo.url)
+            return obj.logo.url
+        return None
+
+    def get_last_paid_date(self, obj):
+        last_paid = obj.subscriptions.filter(status="paid").order_by('-year', '-month').first()
+        if last_paid and last_paid.paid_date:
+            return last_paid.paid_date.isoformat()
+        return None
+
+    def get_next_due_date(self, obj):
+        last_paid = obj.subscriptions.filter(status="paid").order_by('-year', '-month').first()
+        if not last_paid or not last_paid.paid_date:
+            return None
+
+        paid_date = last_paid.paid_date
+        year, month, day = paid_date.year, paid_date.month, paid_date.day
+        if month == 12:
+            next_month, next_year = 1, year + 1
+        else:
+            next_month, next_year = month + 1, year
+
+        days_in_next_month = calendar.monthrange(next_year, next_month)[1]
+        next_day = min(day, days_in_next_month)
+        return date(next_year, next_month, next_day).isoformat()

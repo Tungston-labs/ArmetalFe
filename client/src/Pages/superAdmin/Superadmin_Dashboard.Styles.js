@@ -34,6 +34,12 @@ export const BlueBanner = styled.section`
   position: relative;
 `;
 
+export const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+`;
 
 export const BannerHeader = styled.div`
   display: flex;
@@ -167,11 +173,15 @@ export const CardContent = styled.div`
 `;
 
 export const CompanyLogo = styled.img`
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
+  width: 90px;
+  height: 90px;
+  object-fit: contain;       /* fit entire image inside box */
   flex-shrink: 0;
+  border-radius: 6px;       /* optional: match card style */
+  background-color: #fff;    /* optional: for transparent logos */
+  padding: 4px;             /* optional: give some spacing inside */
 `;
+
 export const CardTitle = styled.h3`
   margin: 0;
   font-size: 0.9rem;
@@ -250,11 +260,13 @@ export const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   overflow: hidden;
+
   th,
   td {
     padding: 0.75rem;
     text-align: left;
     font-size: clamp(0.8rem, 1vw, 0.95rem);
+    transition: background 0.3s, color 0.3s; /* smooth transition */
   }
 
   thead {
@@ -264,5 +276,12 @@ export const StyledTable = styled.table`
 
   tbody tr:nth-child(even) {
     background: #f9f9f9;
+  }
+
+  /* Hover effect */
+  tbody tr td:hover {
+    color:  #2a5bd7;          /* white text for contrast */
+    cursor: pointer;
+
   }
 `;

@@ -111,7 +111,7 @@ console.log("---",formData);
         })
       );
   
-      if (user.is_superadmin) navigate("/superadmin");
+      if (user.is_superadmin) navigate("/superadmin-dashboard");
       else navigate("/");
     } catch (err) {
       console.log(err);

@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'payroll',
     'reimbursement',
     'rest_framework',
+    'project',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
 ]
