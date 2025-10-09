@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EmployeeModal from "../../Components/EmployeeModal";
-import EditProjectModal from "../../Components/EditProjectModal"; 
+import EditProjectModal from "../../Components/EditProjectModal";
+import Navbar from "../../Components/Navbar";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { getProjectById, updateProject, deleteProject } from "../../Redux/fieldShiftSlice";
 import {
   PageWrapper,
   Header,
@@ -17,40 +21,66 @@ import {
   TableCell,
   AddButton,
 } from "./FieldDepartment.Styles";
+import {
+  IconWrapper,
+  Subtitle,
+  TitleSection,
+  Title,
+  TextGroup,
+} from "./FieldShift.Styles";
 import FieldShiftIcon from "../../assets/shifttopper.svg";
 import { GoInfo } from "react-icons/go";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
-import { IconWrapper, Subtitle, TitleSection, Title, TextGroup } from "./FieldShift.Styles";
-import Navbar from "../../Components/Navbar";
 import { BiEditAlt } from "react-icons/bi";
 import Swal from "sweetalert2";
 
 const FieldShift = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const { project, loading, error } = useSelector((state) => state.projects);
+
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
-
   const [formData, setFormData] = useState({
-    projectName: "Project ABC",
-    punchType: "Variant",
-    latitude: "12.3456",
-    longitude: "78.9012",
+    projectName: "",
+    punchType: "",
+    latitude: "",
+    longitude: "",
   });
+  const [employees, setEmployees] = useState([]);
 
-  // ✅ Employees managed in state
-  const [employees, setEmployees] = useState(
-    Array.from({ length: 10 }).map((_, i) => ({
-      id: i + 1,
-      name: `Employee ${i + 1}`,
-      employeeId: `EMP${1000 + i}`,
-      email: "dummy@gmail.com",
-      position: "UI/UX Designer",
-      department: "Design Department",
-    }))
-  );
+  // ✅ Fetch project details on mount
+  useEffect(() => {
+    if (id) dispatch(getProjectById(id));
+  }, [dispatch, id]);
 
-  // ✅ Project Delete (already works fine)
+  // ✅ Update form and employee list when project data changes
+  useEffect(() => {
+    if (project) {
+      setFormData({
+        projectName: project.name || "",
+        punchType: project.punch_type || "",
+        latitude: project.latitude || "",
+        longitude: project.longitude || "",
+      });
+
+      setEmployees(
+        project.employees?.map((emp) => ({
+          id: emp.id,
+          name: emp.name,
+          employeeId: emp.employee_id,
+          email: emp.email,
+          position: emp.designation,
+          department: emp.department,
+        })) || []
+      );
+    }
+  }, [project]);
+
   const handleDelete = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -60,21 +90,31 @@ const FieldShift = () => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setIsDeleted(true);
-        Swal.fire({
-          title: "Deleted!",
-          text: "The project has been successfully deleted.",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
+        try {
+          await dispatch(deleteProject(id)).unwrap();
+          Swal.fire({
+            title: "Deleted!",
+            text: "The project has been successfully deleted.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          setIsDeleted(true);
+        } catch (err) {
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to delete project.",
+            icon: "error",
+          });
+        }
       }
     });
   };
 
-  // ✅ Employee Delete Handler
+
+  // ✅ Handle employee delete
   const handleEmployeeDelete = (id) => {
     const employee = employees.find((emp) => emp.id === id);
     Swal.fire({
@@ -99,15 +139,58 @@ const FieldShift = () => {
     });
   };
 
-  const handleSaveFromModal = (updatedData) => {
-    setFormData({
-      projectName: updatedData.projectName,
-      punchType: updatedData.punchInType,
+  const handleSaveFromModal = async (updatedData) => {
+    const updatedProject = {
+      name: updatedData.projectName,
+      punch_type: updatedData.punchInType,
       latitude: updatedData.latitude,
       longitude: updatedData.longitude,
-    });
-    setIsEditModalOpen(false);
+    };
+
+    try {
+      await dispatch(updateProject({ id, projectData: updatedProject })).unwrap();
+
+      Swal.fire({
+        title: "Updated!",
+        text: "Project details have been updated successfully.",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      setIsEditModalOpen(false);
+      dispatch(getProjectById(id)); // refresh project data
+    } catch (err) {
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to update project.",
+        icon: "error",
+      });
+    }
   };
+
+  // ✅ Show loading and error states
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <PageWrapper>
+          <h3>Loading project details...</h3>
+        </PageWrapper>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <PageWrapper>
+          <h3 style={{ color: "red" }}>Failed to load project: {error}</h3>
+        </PageWrapper>
+      </>
+    );
+  }
 
   return (
     <>
@@ -132,7 +215,14 @@ const FieldShift = () => {
         {!isDeleted ? (
           <>
             <FormContainer>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  gap: "10rem",
+                }}
+              >
                 {/* Left side form */}
                 <div style={{ flex: "1" }}>
                   <FormRow>
@@ -229,8 +319,12 @@ const FieldShift = () => {
             </EmployeesSection>
 
             {showEmployeeModal && (
-              <EmployeeModal onClose={() => setShowEmployeeModal(false)} />
+              <EmployeeModal
+                onClose={() => setShowEmployeeModal(false)}
+                projectId={id}
+              />
             )}
+
           </>
         ) : (
           <div style={{ textAlign: "center", marginTop: "4rem" }}>

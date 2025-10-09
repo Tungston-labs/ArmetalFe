@@ -581,8 +581,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###get a single project detail
 GET http://178.248.112.16:8001/api/project/1/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDAwNTA1LCJpYXQiOjE3NTk5OTY5MDUsImp0aSI6Ijk4MGRjMjExMGI1YzQ5OWNhMGE3NDdkOWVmNGQ5Njk4IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.iv_PGemt_6mZpxpCUc_2yHxetkct00-1LsH0l607Duo
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDA5NTU1LCJpYXQiOjE3NjAwMDU5NTUsImp0aSI6ImY0MTBiMGM2NzFiMDRiYjM4NjAxNjMyOWU1NzJjYWIzIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.qKY23h_X1Q4qprDMXelbzlaqeWh9wXaC7fL79Go_KcQ
 ###delete a single project detail
 DELETE  http://178.248.112.16:8001/api/project/1/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDAxNDMwLCJpYXQiOjE3NTk5OTc4MzAsImp0aSI6ImYxN2U0ZjIzMTNmOTQ0NWY4MDY4MTgzMzg1YTRmOTRjIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.OtAiHVE0yzzxBc1C1MhDi1SjKeU62fGGmn8q_JW8Ebs
@@ -599,8 +598,8 @@ Content-Type: application/json
 }
 
 ###get a employees not in a project
-GET http://178.248.112.16:8001/api/project/1/employees-not-in-project/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDAwNTA1LCJpYXQiOjE3NTk5OTY5MDUsImp0aSI6Ijk4MGRjMjExMGI1YzQ5OWNhMGE3NDdkOWVmNGQ5Njk4IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.iv_PGemt_6mZpxpCUc_2yHxetkct00-1LsH0l607Duo
+GET http://178.248.112.16:8001/api/project/8/employees-not-in-project/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDExMzkzLCJpYXQiOjE3NjAwMDc3OTMsImp0aSI6ImFlMjJmZTFhNzY3MjQ1OWI4OWQ0ODllZWM4OTI1NTJkIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.GJdW_710a-zhI6snDQt_2s1Xni0zTq3gIGPF8QjRQlc
 
 
 #-------------------------------------------------------- API FOR MOBILE APPLICATION

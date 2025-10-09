@@ -175,19 +175,19 @@ const projectSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-      .addCase(getEmployeesNotInProject.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getEmployeesNotInProject.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.employeesNotInProject = action.payload;
-      })
-      .addCase(getEmployeesNotInProject.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-      });
+  .addCase(getEmployeesNotInProject.pending, (state) => {
+    state.isLoading = true;
+  })
+  .addCase(getEmployeesNotInProject.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.employeesNotInProject = action.payload;
+  })
+  .addCase(getEmployeesNotInProject.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isError = true;
+    state.message = action.payload;
+  });
 
   },
 });
