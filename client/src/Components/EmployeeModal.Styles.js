@@ -80,11 +80,28 @@ export const SearchBar = styled.div`
 
 
 export const TableWrapper = styled.div`
+  flex: 1;
   overflow-y: auto;
-  /* max-height: 400px; */
+  max-height: 400px; /* adjust as needed */
+  margin-top: 0.5rem;
   /* border: 1px solid #eee; */
   /* border-radius: 6px; */
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+
+  /* For WebKit browsers */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 10px;
+  }
 `;
+
 
 export const Table = styled.table`
   width: 100%;
