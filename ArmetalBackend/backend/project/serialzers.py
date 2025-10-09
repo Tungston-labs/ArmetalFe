@@ -9,7 +9,7 @@ from employee.models import Employee_db
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee_db
-        fields = ['id', 'name', 'employee_id', 'email', 'position', 'department']
+        fields = ['id', 'name', 'employee_id', 'email', 'designation', 'department']
 
 class ProjectSerializer(serializers.ModelSerializer):
     employees = EmployeeSerializer(many=True, read_only=True)  # nested full details

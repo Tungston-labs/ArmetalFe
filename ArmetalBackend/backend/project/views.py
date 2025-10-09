@@ -1,6 +1,6 @@
 from rest_framework import generics,filters
 from .models import Project
-from project.serialzers import ProjectSerializer
+from project.serialzers import ProjectSerializer,EmployeeSerializer
 from rest_framework.permissions import IsAuthenticated
 
 class ProjectListCreateView(generics.ListCreateAPIView):
@@ -31,7 +31,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from employee.models import Employee_db
 from .models import Project
-from employee.serializers import EmployeeSerializer
 from django.shortcuts import get_object_or_404
 
 class EmployeesNotInProjectView(APIView):
