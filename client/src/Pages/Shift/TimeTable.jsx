@@ -10,7 +10,6 @@ import {
   LocationText,
   TableBoarder,
   TimeBoxWrapper,
-  Line,
   TimeIn,
   TimeOut
 } from "./TimeTable.Styles";
@@ -58,7 +57,7 @@ const TimeTable = () => {
   <TableBoarder>
     <TimeBoxWrapper>
       <TimeIn>{item.timeIn}</TimeIn>
-      ------------------------------To------------------------------
+  ---------------------------To---------------------------
       {/* <Line /> */}
       <TimeOut>{item.timeOut}</TimeOut>
     </TimeBoxWrapper>
@@ -67,7 +66,7 @@ const TimeTable = () => {
   <TableCell>
       <TableBoarder>
     <LocationBox>
-      <span role="img" aria-label="location">📍</span>
+      <span role="img" aria-label="location">Location</span>
       <LocationText>{item.location}</LocationText>
     </LocationBox>
     </TableBoarder>

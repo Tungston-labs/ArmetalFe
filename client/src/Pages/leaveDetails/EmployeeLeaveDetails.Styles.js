@@ -332,6 +332,7 @@ export const Subtitle = styled.p`
     font-size: 2.5rem;
   }
 `;
+
 export const TitleSection = styled.div`
   display: flex;
   align-items: center;

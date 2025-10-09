@@ -1,4 +1,4 @@
-
+import { FaRegCalendarAlt } from "react-icons/fa";
 import styled from "styled-components";
 
 export const PageWrapper = styled.div`
@@ -13,17 +13,17 @@ export const PageWrapper = styled.div`
 export const Header = styled.header`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   margin-bottom: 18px;
 `;
 
-export const BackButton = styled.button`
-  border: none;
-  background: transparent;
-  padding: 6px;
-  cursor: pointer;
-  font-size: 18px;
-`;
+// export const BackButton = styled.button`
+//   border: none;
+//   background: transparent;
+//   padding: 6px;
+//   cursor: pointer;
+//   font-size: 18px;
+// `;
 
 /* Title */
 export const TitleGroup = styled.div`
@@ -125,7 +125,7 @@ export const InputRow = styled.div`
 `;
 
 export const InfoInput = styled.input`
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid #052DB4;
   padding: 10px 12px;
   font-size: 14px;
@@ -148,6 +148,27 @@ export const SummaryRow = styled.div`
   }
 `;
 
+export const SummaryCol = styled.div`
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const Row = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2rem; 
+  font-size: 14px;
+`;
+
+export const SmallRow = styled(Row)`
+  font-size: 12px;
+  color: #6b6b6b;
+    
+`;
+
 
 export const DateNav = styled.div`
   position: absolute;
@@ -157,29 +178,6 @@ export const DateNav = styled.div`
   align-items: center;
   gap: 20px;
 
-  .date-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 600;
-
-    .day-number {
-      font-size: 24px;
-    }
-
-    .month-day {
-      display: flex;
-      flex-direction: column;
-      font-size: 16px;
-    }
-  }
-
-  .nav-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
   @media (max-width: 560px) {
     position: static;
     transform: none;
@@ -187,6 +185,36 @@ export const DateNav = styled.div`
     margin-top: 12px;
   }
 `;
+
+export const DateContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+`;
+
+export const CalendarIcon = styled(FaRegCalendarAlt)`
+  font-size: 2rem;     
+  color: #333;
+`;
+
+export const DayNumber = styled.div`
+  font-size: 3rem;
+`;
+
+export const MonthDay = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+`;
+
+export const NavButtons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+
 
 export const DayTabs = styled.div`
   display: flex;
@@ -283,3 +311,24 @@ export const TimeCellInline = styled.div`
   align-items: center;
 `;
 export const TimeHeader = styled.div``;
+
+
+export const BackButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #3352ba;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+margin-top: 10px;
+  &:hover {
+    transform: translateX(-3px);
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.3rem;
+  }
+`;

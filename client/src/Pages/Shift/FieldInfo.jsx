@@ -3,7 +3,6 @@ import React, { useState, useMemo } from "react";
 import {
   PageWrapper,
   Header,
-  BackButton,
   TitleGroup,
   ProfileRow,
   Avatar,
@@ -24,12 +23,21 @@ import {
   LocationCell,
   ContainerGrid,
   Small,
-  IconBtn
+  IconBtn,
+  SmallRow,
+  DateContainer,
+  DayNumber,
+  MonthDay,
+  NavButtons,
+  CalendarIcon,
+  BackButton,
 } from "./FieldInfo.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import FieldShiftIcon from "../../assets/shifttopper.svg"; 
-import { GoInfo } from "react-icons/go";
 import TimeTable from "./TimeTable";
+import { IconWrapper, Subtitle, TextGroup, Title, TitleSection } from "./FieldShift.Styles";
+import Navbar from "../../Components/Navbar";
+import { FaRegCalendarAlt } from "react-icons/fa";
 
 const days = [
   { label: "Mon", date: "12 ", month:"oct" },
@@ -41,7 +49,7 @@ const days = [
 ];
 
 const initialTimes = [
-  // sample times mapped to day index (0..5)
+
   { id: 1, dayIndex: 0, timeIn: "08:30 AM", timeOut: "11:30 AM", location: "Office - Block A" },
   { id: 2, dayIndex: 0, timeIn: "09:15 AM", timeOut: "11:45 AM", location: "Client Site" },
   { id: 3, dayIndex: 0, timeIn: "10:00 AM", timeOut: "12:30 PM", location: "Remote" },
@@ -55,7 +63,7 @@ const FieldInfo = () => {
   const [selectedDay, setSelectedDay] = useState(0);
   const [times, setTimes] = useState(initialTimes);
 
-  // Profile & form mock data (editable if you want)
+
   const [profile] = useState({
     name: "DummyDummy",
     phone: "1254841521",
@@ -77,19 +85,24 @@ const FieldInfo = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <PageWrapper>
-      <Header>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <BackButton onClick={() => window.history.back()}>
-            <LuArrowLeft />
-          </BackButton>
-          <img src={FieldShiftIcon} alt="FieldShift" style={{ width: 36, height: 36 }} />
-          <TitleGroup>
-            <h2>FieldShift</h2>
-            <Small>Manage all departments within the organization.</Small>
-          </TitleGroup>
-        </div>
-      </Header>
+     <Header>
+              <BackButton onClick={() => navigate(-1)}>
+                         <LuArrowLeft />
+                       </BackButton>
+     
+               <TitleSection>
+                 <IconWrapper>
+                   <img src={FieldShiftIcon} alt="FieldShift" />
+                 </IconWrapper>
+                 <TextGroup>
+                   <Title>FieldShift</Title>
+                   <Subtitle>Manage all departments within the organization.</Subtitle>
+                 </TextGroup>
+               </TitleSection>
+             </Header>
 
       <ContainerGrid>
 
@@ -121,25 +134,28 @@ const FieldInfo = () => {
 
   
 <SummaryRow>
-  <SummaryCol>
-  <Row><span>Monthly working hour</span><strong>145 Hrs</strong></Row>
+ <SummaryCol>
+  <SmallRow><span>Monthly working hour</span><strong>145 Hrs</strong></SmallRow>
   <SmallRow><span>Total Monthly working hour</span><strong>145 Hrs</strong></SmallRow>
   <SmallRow><span>Weekly working hour</span><strong>45 Hrs</strong></SmallRow>
 </SummaryCol>
 
-  <DateNav>
-    <div className="date-container">
-      <div className="day-number">16</div>
-      <div className="month-day">
-        <div>November</div>
-        <div>Monday</div>
-      </div>
-    </div>
-    <div className="nav-buttons">
-      <IconBtn>{"<"}</IconBtn>
-      <IconBtn>{">"}</IconBtn>
-    </div>
-  </DateNav>
+
+    <DateNav>
+      <DateContainer>
+        <CalendarIcon />
+        <DayNumber>16</DayNumber>
+        <MonthDay>
+          <div>November</div>
+          <div>Monday</div>
+        </MonthDay>
+      </DateContainer>
+
+      <NavButtons>
+        <IconBtn>{"<"}</IconBtn>
+        <IconBtn>{">"}</IconBtn>
+      </NavButtons>
+    </DateNav>
 </SummaryRow>
 
        <DayTabs>
@@ -157,66 +173,11 @@ const FieldInfo = () => {
   ))}
 </DayTabs>
 
-        {/* Times table */}
-        {/* <TableWrapper>
-          <TableHeaderRow>
-            <TableHeaderCell style={{ width: "25%" }}>Time in</TableHeaderCell>
-            <TableHeaderCell style={{ width: "25%" }}>To / Duration</TableHeaderCell>
-            <TableHeaderCell style={{ width: "20%" }}>Time out</TableHeaderCell>
-            <TableHeaderCell style={{ width: "30%" }}>Location</TableHeaderCell>
-          </TableHeaderRow>
-
-          {timesForDay.length === 0 ? (
-            <div style={{ padding: 24 }}>No entries for this day.</div>
-          ) : (
-            timesForDay.map((row, idx) => (
-              <TimesRow key={row.id} even={idx % 2 === 0}>
-                <TimeCell>
-                  <TimeBtn>{row.timeIn}</TimeBtn>
-                </TimeCell>
-
-                <TimeCell>
-                  <div style={{ height: 8, background: "#eee", borderRadius: 4 }} />
-                </TimeCell>
-
-                <TimeCell>
-                  <TimeBtn variant="out">{row.timeOut}</TimeBtn>
-                </TimeCell>
-
-                <LocationCell>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <GoInfo />
-                      <div>
-                        <div style={{ fontWeight: 700, fontSize: 13 }}>location</div>
-                        <div style={{ fontSize: 12, color: "#666" }}>{row.location}</div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <button
-                        onClick={() => removeRow(row.id)}
-                        style={{
-                          border: "none",
-                          background: "transparent",
-                          color: "#d43f3f",
-                          cursor: "pointer",
-                          fontWeight: 700,
-                        }}
-                        aria-label={`Remove ${row.id}`}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                </LocationCell>
-              </TimesRow>
-            ))
-          )}
-        </TableWrapper> */}
+     
         <TimeTable/>
       </ContainerGrid>
     </PageWrapper>
+    </>
   );
 };
 

@@ -10,7 +10,7 @@ export const TableContainer = styled.div`
 
 export const TableHeader = styled.div`
   display: grid;
-grid-template-columns: 53% 11% 30%;
+grid-template-columns: 55% 5.5% 30%;
   background-color: #304EB0;
   color: white;
   padding: 15px 15px;
@@ -26,7 +26,7 @@ grid-template-columns: 53% 11% 30%;
 
 export const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 70% 30%; 
+  grid-template-columns: 60% 40%; 
   align-items: center;
   /* border-bottom: 1px solid #e5e5e5; */
   padding: 0px 1px;
@@ -54,7 +54,7 @@ export const TimeBoxWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  /* gap: 10px; */
 `;
 
 export const Line = styled.div`
@@ -100,6 +100,6 @@ export const LocationBox = styled.div`
 export const LocationText = styled.p`
   margin: 0;
   color: #304EB0;
-  line-height: 1.4;
+  /* line-height: 1.4; */
   font-size: 13px;
 `;
