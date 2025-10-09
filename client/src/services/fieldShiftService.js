@@ -34,12 +34,20 @@ const deleteProject = async (id) => {
   return response.data;
 };
 
+// Get employees not in a specific project
+const getEmployeesNotInProject = async (projectId) => {
+  const response = await API.get(`/project/${projectId}/employees-not-in-project/`);
+  return response.data;
+};
+
+
 const projectService = {
   createProject,
   getProjects,
   getProjectById,
   updateProject,
   deleteProject,
+  getEmployeesNotInProject
 };
 
 export default projectService;

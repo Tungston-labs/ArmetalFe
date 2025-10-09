@@ -60,6 +60,18 @@ export const deleteProject = createAsyncThunk(
   }
 );
 
+export const getEmployeesNotInProject = createAsyncThunk(
+  "projects/getEmployeesNotInProject",
+  async (projectId, { rejectWithValue }) => {
+    try {
+      return await projectService.getEmployeesNotInProject(projectId);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+
 // Slice
 const projectSlice = createSlice({
   name: "projects",
@@ -69,6 +81,7 @@ const projectSlice = createSlice({
     current_page: 1,
     total_items: 0,
     project: null,       // single project
+    employeesNotInProject: [],
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -161,7 +174,21 @@ const projectSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(getEmployeesNotInProject.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getEmployeesNotInProject.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.employeesNotInProject = action.payload;
+      })
+      .addCase(getEmployeesNotInProject.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
+
   },
 });
 
