@@ -12,7 +12,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'employee_id', 'email', 'designation', 'department']
 
 class ProjectSerializer(serializers.ModelSerializer):
-    employees = EmployeeSerializer(many=True, read_only=True)  # nested full details
+    employees = serializers.PrimaryKeyRelatedField(
+        queryset=Employee_db.objects.all(),
+        many=True,
+        required=False  # optional for updates
+    )
     company = serializers.StringRelatedField(read_only=True)
 
     class Meta:
