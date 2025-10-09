@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   ModalOverlay,
@@ -25,53 +25,48 @@ import { createProject, getProjects } from '../Redux/fieldShiftSlice';
 const AddProjectModal = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
+  const initialForm = {
     projectName: '',
     punchInType: '',
     latitude: '',
     longitude: '',
-    employees: [], // optional
-  });
+    employees: [],
+  };
 
+  const [formData, setFormData] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [apiError, setApiError] = useState('');
 
+  // Reset form every time modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(initialForm);
+      setErrors({});
+      setApiError('');
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  // Validate form fields
   const validate = () => {
     const newErrors = {};
-
-    if (!formData.projectName.trim()) {
-      newErrors.projectName = 'Project name is required';
-    }
-
-    if (!formData.punchInType) {
-      newErrors.punchInType = 'Punch in type is required';
-    }
-
-    if (formData.latitude && isNaN(Number(formData.latitude))) {
-      newErrors.latitude = 'Latitude must be a number';
-    }
-
-    if (formData.longitude && isNaN(Number(formData.longitude))) {
-      newErrors.longitude = 'Longitude must be a number';
-    }
-
+    if (!formData.projectName.trim()) newErrors.projectName = 'Project name is required';
+    if (!formData.punchInType) newErrors.punchInType = 'Punch in type is required';
+    if (formData.latitude && isNaN(Number(formData.latitude))) newErrors.latitude = 'Latitude must be a number';
+    if (formData.longitude && isNaN(Number(formData.longitude))) newErrors.longitude = 'Longitude must be a number';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: '' })); // remove error on change
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleSave = async () => {
     if (!validate()) return;
-
     setIsSaving(true);
     setApiError('');
 
@@ -85,8 +80,8 @@ const AddProjectModal = ({ isOpen, onClose }) => {
       };
 
       await dispatch(createProject(payload)).unwrap();
-
-      dispatch(getProjects());
+      await dispatch(getProjects());
+      setFormData(initialForm); // ✅ reset after save
       onClose();
     } catch (err) {
       setApiError(err.message || 'Failed to save project');

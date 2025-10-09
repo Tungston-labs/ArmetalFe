@@ -24,3 +24,23 @@ class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all().prefetch_related('employees')
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from employee.models import Employee_db
+from .models import Project
+from employee.serializers import EmployeeSerializer
+from django.shortcuts import get_object_or_404
+
+class EmployeesNotInProjectView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, project_id):
+        project = get_object_or_404(Project, id=project_id)
+        # Employees NOT in this project
+        employees = Employee_db.objects.exclude(id__in=project.employees.all())
+        serializer = EmployeeSerializer(employees, many=True)
+        return Response(serializer.data)
+

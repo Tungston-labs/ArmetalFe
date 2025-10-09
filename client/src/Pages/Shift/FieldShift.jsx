@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   PageWrapper,
@@ -33,6 +34,7 @@ import { getProjects } from "../../Redux/fieldShiftSlice";
 const DepartmentPage = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();  
   const [searchTerm, setSearchTerm] = useState("");
 
   const { projects, isLoading } = useSelector((state) => state.projects);
@@ -78,35 +80,40 @@ const DepartmentPage = () => {
         </SearchContainer>
 
         <CardsGrid>
-          {isLoading ? (
-            <p>Loading projects...</p>
-          ) : projects.length === 0 ? (
-            <p>No projects found.</p>
-          ) : (
-            projects.map((project) => (
-              <Card key={project.id} style={{ backgroundImage: `url(${cardBg})` }}>
-                <CardHeader>
-                  <CardTitleSection>
-                    <CardTitle>{project.name}</CardTitle>
-                  </CardTitleSection>
-                  <HiOutlineDotsHorizontal className="menu-icon" />
-                </CardHeader>
+  {isLoading ? (
+    <p>Loading projects...</p>
+  ) : projects.length === 0 ? (
+    <p>No projects found.</p>
+  ) : (
+    projects.map((project) => (
+      <Card
+        key={project.id}
+        style={{ backgroundImage: `url(${cardBg})`, cursor: "pointer" }}
+        onClick={() => navigate(`/fieldshift-department/${project.id}`, { state: { projectName: project.name } })}
+      >
+        <CardHeader>
+          <CardTitleSection>
+            <CardTitle>{project.name}</CardTitle>
+          </CardTitleSection>
+          <HiOutlineDotsHorizontal className="menu-icon" />
+        </CardHeader>
 
-                <CardText>
-                  <span>Total employees</span>
-                  <span className="employee-count">{project.employees?.length || 0}</span>
-                </CardText>
+        <CardText>
+          <span>Total employees</span>
+          <span className="employee-count">{project.employees?.length || 0}</span>
+        </CardText>
 
-                <CardFooter>
-                  <Tag>
-                    <img src={TagIcon} alt="Tag icon" />
-                    {project.punch_type || "N/A"}
-                  </Tag>
-                </CardFooter>
-              </Card>
-            ))
-          )}
-        </CardsGrid>
+        <CardFooter>
+          <Tag>
+            <img src={TagIcon} alt="Tag icon" />
+            {project.punch_type || "N/A"}
+          </Tag>
+        </CardFooter>
+      </Card>
+    ))
+  )}
+</CardsGrid>
+
 
         <AddProjectModal
           isOpen={isModalOpen}
