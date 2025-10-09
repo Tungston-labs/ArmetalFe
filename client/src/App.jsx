@@ -57,6 +57,8 @@ import { login } from "./Redux/authSlice";
 import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
 import FieldShift from "./Pages/Shift/FieldShift.jsx"
 import FieldDepartment from "./Pages/Shift/FieldDepartment.jsx"
+import FieldInfo from "./Pages/Shift/FieldInfo.jsx";
+
 function App() {
   const dispatch = useDispatch();
 
@@ -137,6 +139,7 @@ function App() {
               <Route path="/finance" element={<FinancePage />} />
           <Route path="/field-shift" element={<FieldShift />} />
             <Route path="/fieldshift-department" element={<FieldDepartment />} />
+                <Route path="/fieldshift-info" element={<FieldInfo />} />
                 <Route path="/card" element={<Dashboard />} />
           </Route>
         </Route>
