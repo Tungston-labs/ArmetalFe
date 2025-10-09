@@ -11,6 +11,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         model = Employee_db
         fields = ['id', 'name', 'employee_id', 'email', 'designation', 'department']
 
+
 class ProjectSerializer(serializers.ModelSerializer):
     employees = serializers.PrimaryKeyRelatedField(
         queryset=Employee_db.objects.all(),
@@ -23,3 +24,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'company', 'employees']
         read_only_fields = ['company']
+
+    def update(self, instance, validated_data):
+        # Only update fields that exist in the request
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
