@@ -10,6 +10,8 @@ from rest_framework import serializers
 from .models import Attendance, AttendanceSession
 from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone,safe_parse_datetime,ensure_timezone
 import pytz
+from django.db.models import Sum
+from datetime import timedelta
 
 
 class AttendanceSessionSerializer(serializers.ModelSerializer):
@@ -94,8 +96,7 @@ class EmployeeInfoSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'email', 'employee_id', 'profile_pic', 'department', 'designation']
         depth = 1  # if department/designation are foreign keys
 
-from django.db.models import Sum
-from datetime import timedelta
+
 
 class AttendanceDetailSerializer(serializers.ModelSerializer):
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
