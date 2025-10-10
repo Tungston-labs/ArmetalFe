@@ -139,7 +139,8 @@ function App() {
             <Route path="/finance" element={<FinancePage />} />
             <Route path="/field-shift" element={<FieldShift />} />
             <Route path="/fieldshift-department/:id/" element={<FieldDepartment />} />
-            <Route path="/card" element={<Dashboard />} />
+            <Route path="/fieldinfo" element={<FieldInfo />} />
+            <Route path="/card" element={<Dashboard />}/>
           </Route>
         </Route>
       </Routes>

@@ -34,7 +34,6 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
 import { BiEditAlt } from "react-icons/bi";
 import Swal from "sweetalert2";
-
 const FieldShift = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -81,6 +80,12 @@ const FieldShift = () => {
     }
   }, [project]);
 
+  const handleInfoClick = (employeeId) => {
+    console.log("Navigating to employee info for ID:", employeeId);
+    
+    navigate("/fieldinfo", { state: { employeeId } });
+  };
+
   const handleDelete = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -114,46 +119,46 @@ const FieldShift = () => {
   };
 
 
-// ✅ Handle employee delete (API integrated)
-const handleEmployeeDelete = async (employeeId) => {
-  const employee = employees.find((emp) => emp.id === employeeId);
+  // ✅ Handle employee delete (API integrated)
+  const handleEmployeeDelete = async (employeeId) => {
+    const employee = employees.find((emp) => emp.id === employeeId);
 
-  Swal.fire({
-    title: "Are you sure?",
-    text: `You are about to remove ${employee.name} from this project.`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, remove",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        await dispatch(removeEmployeeFromProject({ projectId: id, employeeId })).unwrap();
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You are about to remove ${employee.name} from this project.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, remove",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await dispatch(removeEmployeeFromProject({ projectId: id, employeeId })).unwrap();
 
-        // remove locally
-        setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId));
+          // remove locally
+          setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId));
 
-        Swal.fire({
-          title: "Removed!",
-          text: `${employee.name} has been successfully removed from this project.`,
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
+          Swal.fire({
+            title: "Removed!",
+            text: `${employee.name} has been successfully removed from this project.`,
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
 
-        // optional refresh of project data
-        dispatch(getProjectById(id));
-      } catch (err) {
-        Swal.fire({
-          title: "Error!",
-          text: "Failed to remove employee from project.",
-          icon: "error",
-        });
+          // optional refresh of project data
+          dispatch(getProjectById(id));
+        } catch (err) {
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to remove employee from project.",
+            icon: "error",
+          });
+        }
       }
-    }
-  });
-};
+    });
+  };
 
 
   const handleSaveFromModal = async (updatedData) => {
@@ -319,7 +324,10 @@ const handleEmployeeDelete = async (employeeId) => {
                         <TableCell>{emp.position}</TableCell>
                         <TableCell>{emp.department}</TableCell>
                         <TableCell>
-                          <GoInfo />
+                          <GoInfo
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleInfoClick(emp.id)}
+                          />
                         </TableCell>
                         <TableCell>
                           <FaTrash

@@ -1,6 +1,6 @@
 from rest_framework import generics,filters,status
 from .models import Project
-from project.serialzers import ProjectReadSerializer,ProjectWriteSerializer,EmployeeSerializer,ProjectSerializer
+from project.serialzers import ProjectReadSerializer,ProjectWriteSerializer,EmployeeSerializer,ProjectSerializer,EmployeeAttendanceDetailSerializer
 from rest_framework.permissions import IsAuthenticated
 
 class ProjectListCreateView(generics.ListCreateAPIView):
@@ -83,3 +83,51 @@ class RemoveEmployeeFromProjectView(APIView):
         # Remove employee from project's ManyToMany field
         project.employees.remove(employee)
         return Response({'detail': f'Employee {employee.name} removed from project {project.name}.'}, status=status.HTTP_200_OK)
+
+
+# attendance/views.py
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from django.utils import timezone
+from datetime import datetime
+from attendance.models import Attendance
+from employee.models import Employee_db
+
+class EmployeeAttendanceDetailView(APIView):
+    """
+    Get employee attendance details for a given employee ID
+    Optional query param: date=YYYY-MM-DD (default today)
+    """
+    permission_classes = [IsAuthenticated]  # You can add custom permissions if needed
+
+    def get(self, request, employee_id):
+        # Fetch employee
+        try:
+            employee = Employee_db.objects.get(id=employee_id)
+        except Employee_db.DoesNotExist:
+            return Response({"detail": "Employee not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Get date filter
+        date_str = request.query_params.get('date')
+        if date_str:
+            try:
+                selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            except ValueError:
+                return Response({'detail': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            selected_date = timezone.localdate()
+
+        # Fetch attendance for the employee on that date
+        try:
+            attendance = Attendance.objects.get(employee=employee, date=selected_date)
+            serializer = EmployeeAttendanceDetailSerializer(attendance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Attendance.DoesNotExist:
+            # Return employee info even if no attendance exists
+            emp_serializer = EmployeeSerializer(employee)
+            return Response({
+                "employee": emp_serializer.data,
+                "detail": f"No attendance recorded on {selected_date}."
+            }, status=status.HTTP_200_OK)
