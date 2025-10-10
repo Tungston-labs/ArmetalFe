@@ -624,14 +624,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ### Get attendance for a specific employee (defaults to today)
-GET http://localhost:8000/api/attendance/employee/1/attendance/
-Authorization: Bearer <YOUR_ACCESS_TOKEN>
+GET http://178.248.112.16:8001/api/project/employee/53/attendance/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDg3NzI4LCJpYXQiOjE3NjAwODQxMjgsImp0aSI6ImU5YTkyMTAyZTE2YjQzMDhhNThhMTA5NDQyZTY5YWUxIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.M_pGS3eojwqk6ZVUw7dBbYhAj9XE3EsIJTwBcPXY3Wg
 Accept: application/json
 
 ###
 
 ### Get attendance for a specific date
-GET http://localhost:8000/api/attendance/employee/1/attendance/?date=2025-10-10
+GET http://localhost:8000/api/attendance/employee/53/attendance/?date=2025-10-10
 Authorization: Bearer <YOUR_ACCESS_TOKEN>
 Accept: application/json
 

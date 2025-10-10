@@ -4,6 +4,8 @@ from employee.models import Employee_db
 from attendance.models import Attendance, AttendanceSession 
 from attendance.serializers import AttendanceSessionSerializer
 from datetime import timedelta
+from django.db.models import Sum
+
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
