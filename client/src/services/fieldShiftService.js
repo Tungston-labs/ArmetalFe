@@ -27,6 +27,13 @@ const updateProject = async ({ id, projectData }) => {
   const response = await API.put(`/project/${id}/`, projectData);
   return response.data;
 };
+// Assign employees to a project
+const assignEmployees = async (projectId, employeeIds) => {
+  const response = await API.patch(`/project/${projectId}/`, {
+    employees: employeeIds,
+  });
+  return response.data;
+};
 
 // Delete a project
 const deleteProject = async (id) => {
@@ -39,6 +46,11 @@ const getEmployeesNotInProject = async (projectId) => {
   const response = await API.get(`/project/${projectId}/employees-not-in-project/`);
   return response.data;
 };
+// Remove an employee from a specific project
+const removeEmployeeFromProject = async (projectId, employeeId) => {
+  const response = await API.delete(`/project/${projectId}/remove-employee/${employeeId}/`);
+  return response.data;
+};
 
 
 const projectService = {
@@ -47,7 +59,8 @@ const projectService = {
   getProjectById,
   updateProject,
   deleteProject,
-  getEmployeesNotInProject
+  getEmployeesNotInProject,
+  removeEmployeeFromProject,assignEmployees
 };
 
 export default projectService;

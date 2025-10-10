@@ -28,7 +28,24 @@ class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return ProjectReadSerializer
 
     def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+        project = self.get_object()
+        data = request.data.copy()
+
+        # Handle employee addition
+        employee_ids = data.pop("employees", None)  # pop so serializer won't overwrite
+        if employee_ids is not None:
+            # Add only new employees
+            for emp_id in employee_ids:
+                project.employees.add(emp_id)
+
+        # Update other fields normally
+        serializer = self.get_serializer(project, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # Return the updated project with employees
+        read_serializer = ProjectReadSerializer(project)
+        return Response(read_serializer.data)
 
 
 from rest_framework.views import APIView

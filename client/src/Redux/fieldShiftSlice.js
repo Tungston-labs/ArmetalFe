@@ -70,7 +70,27 @@ export const getEmployeesNotInProject = createAsyncThunk(
     }
   }
 );
+export const assignEmployees = createAsyncThunk(
+  "projects/assignEmployees",
+  async ({ projectId, employeeIds }, { rejectWithValue }) => {
+    try {
+      return await projectService.assignEmployees(projectId, employeeIds);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
+export const removeEmployeeFromProject = createAsyncThunk(
+  "projects/removeEmployeeFromProject",
+  async ({ projectId, employeeId }, { rejectWithValue }) => {
+    try {
+      return await projectService.removeEmployeeFromProject(projectId, employeeId);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 // Slice
 const projectSlice = createSlice({
@@ -187,7 +207,47 @@ const projectSlice = createSlice({
     state.isLoading = false;
     state.isError = true;
     state.message = action.payload;
+  })
+  .addCase(removeEmployeeFromProject.pending, (state) => {
+    state.isLoading = true;
+  })
+  .addCase(removeEmployeeFromProject.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+  
+    // Optionally update local state:
+    const { projectId, employeeId } = action.meta.arg;
+    const project = state.projects.find((p) => p.id === projectId);
+    if (project && project.employees) {
+      project.employees = project.employees.filter((emp) => emp.id !== employeeId);
+    }
+  })
+  .addCase(removeEmployeeFromProject.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isError = true;
+    state.message = action.payload;
+  })
+  .addCase(assignEmployees.pending, (state) => {
+    state.isLoading = true;
+  })
+  .addCase(assignEmployees.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    // Update the single project data (if open)
+    state.project = action.payload;
+
+    // Also update inside list if exists
+    const updatedProject = action.payload;
+    state.projects = state.projects.map((p) =>
+      p.id === updatedProject.id ? updatedProject : p
+    );
+  })
+  .addCase(assignEmployees.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isError = true;
+    state.message = action.payload;
   });
+  
 
   },
 });

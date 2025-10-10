@@ -12,13 +12,13 @@ import {
 } from "./EmployeeModal.Styles";
 import { FaSearch } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { getEmployeesNotInProject, updateProject } from "../Redux/fieldShiftSlice";
+import { getEmployeesNotInProject, assignEmployees, getProjectById } from "../Redux/fieldShiftSlice";
 import Swal from "sweetalert2";
 
-const EmployeeModal = ({ onClose, projectId }) => {
+
+const EmployeeModal = ({ onClose, projectId, project }) => {
   const dispatch = useDispatch();
 
-  // ✅ Correct state keys from slice
   const { employeesNotInProject = [], isLoading } = useSelector(
     (state) => state.projects
   );
@@ -32,7 +32,6 @@ const EmployeeModal = ({ onClose, projectId }) => {
     }
   }, [dispatch, projectId]);
 
-  // ✅ Safe filtering
   const filteredEmployees = (employeesNotInProject || []).filter((emp) =>
     emp.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -50,21 +49,22 @@ const EmployeeModal = ({ onClose, projectId }) => {
     }
 
     try {
-      await dispatch(
-        updateProject({
-          id: projectId,
-          projectData: { employees: selected },
-        })
-      ).unwrap();
+      // Merge new employees with existing
+      const currentEmployeeIds = project?.employees?.map(emp => emp.id) || [];
+      const mergedEmployeeIds = Array.from(new Set([...currentEmployeeIds, ...selected]));
+
+      // Call assignEmployees
+      await dispatch(assignEmployees({ projectId, employeeIds: mergedEmployeeIds })).unwrap();
 
       Swal.fire("Success!", "Employees added successfully.", "success");
       onClose();
+
+      // Refresh project data
+      dispatch(getProjectById(projectId));
     } catch (error) {
       Swal.fire("Error", "Failed to add employees.", "error");
     }
   };
-
-  console.log("employeesNotInProject:", employeesNotInProject);
 
   return (
     <ModalOverlay>

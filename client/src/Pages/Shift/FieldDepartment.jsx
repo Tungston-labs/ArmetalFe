@@ -4,7 +4,7 @@ import EditProjectModal from "../../Components/EditProjectModal";
 import Navbar from "../../Components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProjectById, updateProject, deleteProject } from "../../Redux/fieldShiftSlice";
+import { getProjectById, updateProject, deleteProject, removeEmployeeFromProject } from "../../Redux/fieldShiftSlice";
 import {
   PageWrapper,
   Header,
@@ -114,30 +114,47 @@ const FieldShift = () => {
   };
 
 
-  // ✅ Handle employee delete
-  const handleEmployeeDelete = (id) => {
-    const employee = employees.find((emp) => emp.id === id);
-    Swal.fire({
-      title: "Are you sure?",
-      text: `You are about to delete ${employee.name}.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setEmployees((prev) => prev.filter((emp) => emp.id !== id));
+// ✅ Handle employee delete (API integrated)
+const handleEmployeeDelete = async (employeeId) => {
+  const employee = employees.find((emp) => emp.id === employeeId);
+
+  Swal.fire({
+    title: "Are you sure?",
+    text: `You are about to remove ${employee.name} from this project.`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, remove",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await dispatch(removeEmployeeFromProject({ projectId: id, employeeId })).unwrap();
+
+        // remove locally
+        setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId));
+
         Swal.fire({
-          title: "Deleted!",
-          text: `${employee.name} has been removed from the list.`,
+          title: "Removed!",
+          text: `${employee.name} has been successfully removed from this project.`,
           icon: "success",
           timer: 1500,
           showConfirmButton: false,
         });
+
+        // optional refresh of project data
+        dispatch(getProjectById(id));
+      } catch (err) {
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to remove employee from project.",
+          icon: "error",
+        });
       }
-    });
-  };
+    }
+  });
+};
+
 
   const handleSaveFromModal = async (updatedData) => {
     const updatedProject = {
