@@ -1,6 +1,6 @@
-from rest_framework import generics,filters
+from rest_framework import generics,filters,status
 from .models import Project
-from project.serialzers import ProjectSerializer,EmployeeSerializer
+from project.serialzers import ProjectReadSerializer,ProjectWriteSerializer,EmployeeSerializer,ProjectSerializer
 from rest_framework.permissions import IsAuthenticated
 
 class ProjectListCreateView(generics.ListCreateAPIView):
@@ -17,15 +17,18 @@ class ProjectListCreateView(generics.ListCreateAPIView):
         # Automatically assign the logged-in user's company
         serializer.save(company=self.request.user.company)
 
+
 class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all().prefetch_related('employees')
-    serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
 
-    def patch(self, request, *args, **kwargs):
-        # Use partial=True to allow updating only 'employees'
-        return self.partial_update(request, *args, **kwargs)
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return ProjectWriteSerializer
+        return ProjectReadSerializer
 
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 
 from rest_framework.views import APIView
@@ -45,3 +48,21 @@ class EmployeesNotInProjectView(APIView):
         serializer = EmployeeSerializer(employees, many=True)
         return Response(serializer.data)
 
+
+class RemoveEmployeeFromProjectView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, project_id, employee_id):
+        try:
+            project = Project.objects.get(pk=project_id)
+        except Project.DoesNotExist:
+            return Response({'detail': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            employee = Employee_db.objects.get(pk=employee_id)
+        except Employee_db.DoesNotExist:
+            return Response({'detail': 'Employee not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Remove employee from project's ManyToMany field
+        project.employees.remove(employee)
+        return Response({'detail': f'Employee {employee.name} removed from project {project.name}.'}, status=status.HTTP_200_OK)

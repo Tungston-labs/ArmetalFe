@@ -34,3 +34,30 @@ class ProjectSerializer(serializers.ModelSerializer):
             instance.employees.set(employees)
 
         return instance
+    
+class ProjectReadSerializer(serializers.ModelSerializer):
+    employees = EmployeeSerializer(many=True, read_only=True)
+    company = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'company', 'employees']
+class ProjectWriteSerializer(serializers.ModelSerializer):
+    employees = serializers.PrimaryKeyRelatedField(
+        queryset=Employee_db.objects.all(),
+        many=True,
+        required=False
+    )
+
+    class Meta:
+        model = Project
+        fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'employees']
+
+    def update(self, instance, validated_data):
+        employees = validated_data.pop('employees', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if employees is not None:
+            instance.employees.set(employees)
+        return instance
