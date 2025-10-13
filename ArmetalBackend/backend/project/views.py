@@ -55,13 +55,33 @@ from employee.models import Employee_db
 from .models import Project
 from django.shortcuts import get_object_or_404
 
+# class EmployeesNotInProjectView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request, project_id):
+#         project = get_object_or_404(Project, id=project_id)
+#         # Employees NOT in this project
+#         employees = Employee_db.objects.exclude(id__in=project.employees.all())
+#         serializer = EmployeeSerializer(employees, many=True)
+#         return Response(serializer.data)
+
+
 class EmployeesNotInProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, project_id):
+        # Get the project and company of the logged-in user
         project = get_object_or_404(Project, id=project_id)
-        # Employees NOT in this project
-        employees = Employee_db.objects.exclude(id__in=project.employees.all())
+
+        # Get company of the logged-in user (assuming user has `company` field)
+        company = request.user.company  
+
+        # Get all employees in this company who are NOT part of ANY project
+        # and not already assigned to the current project
+        employees = Employee_db.objects.filter(company=company).exclude(
+            id__in=Project.objects.values_list('employees__id', flat=True)
+        )
+
         serializer = EmployeeSerializer(employees, many=True)
         return Response(serializer.data)
 
