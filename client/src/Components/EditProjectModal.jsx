@@ -18,7 +18,7 @@ import {
   SaveButton,
   SelectWrapper,
   DropdownIcon
-} from './AddProjectModalStyles'; // Reuse same styles
+} from './AddProjectModalStyles';
 
 const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
   if (!isOpen) return null;
@@ -30,12 +30,18 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
     longitude: '',
   });
 
-  // Pre-fill form when modal opens with projectData
+  const [errors, setErrors] = useState({});
+
+  // Pre-fill form
   useEffect(() => {
     if (projectData) {
+      let punchType = projectData.punchInType?.toLowerCase();
+      if (punchType === "on site") punchType = "on_site";
+      if (punchType === "variant") punchType = "variant";
+
       setFormData({
         projectName: projectData.projectName || '',
-        punchInType: projectData.punchInType || '',
+        punchInType: punchType || '',
         latitude: projectData.latitude || '',
         longitude: projectData.longitude || '',
       });
@@ -44,13 +50,23 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: '' })); // clear error on change
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.projectName.trim()) newErrors.projectName = 'Project name is required';
+    if (!formData.punchInType) newErrors.punchInType = 'Punch in type is required';
+    if (!formData.latitude) newErrors.latitude = 'Latitude is required';
+    if (!formData.longitude) newErrors.longitude = 'Longitude is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSave = () => {
+    if (!validate()) return; // stop if validation fails
     onSave(formData);
     onClose();
   };
@@ -58,11 +74,8 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
-        
         <ModalHeader>
-          <BackButton onClick={onClose}>
-            &larr;
-          </BackButton>
+          <BackButton onClick={onClose}>&larr;</BackButton>
           <HeaderContent>
             <HeaderTitle>Edit Field</HeaderTitle>
             <HeaderSubtitle>Update the project details below.</HeaderSubtitle>
@@ -79,6 +92,7 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
               value={formData.projectName}
               onChange={handleChange}
             />
+            {errors.projectName && <span style={{ color: 'red' }}>{errors.projectName}</span>}
           </FieldGroup>
 
           <FieldGroup>
@@ -90,11 +104,12 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
                 onChange={handleChange}
               >
                 <Option value="" disabled>Select type</Option>
-                <Option value="manual">Manual</Option>
-                <Option value="gps">GPS</Option>
+                <Option value="on_site">On Site</Option>
+                <Option value="variant">Variant</Option>
               </SelectField>
               <DropdownIcon />
             </SelectWrapper>
+            {errors.punchInType && <span style={{ color: 'red' }}>{errors.punchInType}</span>}
           </FieldGroup>
 
           <FieldGroup>
@@ -106,6 +121,7 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
               value={formData.latitude}
               onChange={handleChange}
             />
+            {errors.latitude && <span style={{ color: 'red' }}>{errors.latitude}</span>}
           </FieldGroup>
 
           <FieldGroup>
@@ -117,6 +133,7 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
               value={formData.longitude}
               onChange={handleChange}
             />
+            {errors.longitude && <span style={{ color: 'red' }}>{errors.longitude}</span>}
           </FieldGroup>
         </FormGrid>
 
