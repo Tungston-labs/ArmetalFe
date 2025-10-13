@@ -119,7 +119,7 @@ class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
         Calculate total expected working hours for the month
         Excluding Sundays and Public Holidays
         """
-        from payroll.models import PublicHoliday  # adjust import path if needed
+        from holidays.models import PublicHoliday  
 
         month_start = obj.date.replace(day=1)
         if month_start.month == 12:
