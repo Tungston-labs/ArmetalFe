@@ -57,7 +57,6 @@ const FieldShift = () => {
     if (id) dispatch(getProjectById(id));
   }, [dispatch, id]);
 
-  // ✅ Update form and employee list when project data changes
   useEffect(() => {
     if (project) {
       setFormData({
@@ -83,7 +82,7 @@ const FieldShift = () => {
   const handleInfoClick = (employeeId) => {
     console.log("Navigating to employee info for ID:", employeeId);
     
-    navigate("/fieldinfo", { state: { employeeId } });
+    navigate(`/fieldinfo/${employeeId}`, { state: { employeeId } });
   };
 
   const handleDelete = () => {

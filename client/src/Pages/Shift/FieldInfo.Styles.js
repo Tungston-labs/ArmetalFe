@@ -42,24 +42,76 @@ export const SummaryCol = styled.div`
   flex-direction: column;
   gap: 6px;
 `;
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end; 
+  margin-right: 0; 
+  width: 100%; 
+`;
+
+export const ButtonAct = styled.div`
+  background-color: #304eb0;
+  color: #fff;
+  font-size: 14PX;
+  padding: 8px 16px;
+  border-radius: 6px;
+  align-items: center;
+  cursor: pointer;
+`;
 
 export const Row = styled.div`
   display: flex;
-  justify-content: space-between;
+  gap: 20px;
   font-size: 14px;
 `;
-
-export const SmallRow = styled(Row)`
+export const SmallRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
   font-size: 12px;
   color: #6b6b6b;
+  margin-bottom: 8px;
+
+  span,
+  strong {
+    font-family: "Satoshi", Arial, sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    line-height: 100%;
+    letter-spacing: 0;
+    color: inherit;
+
+    /* Responsive width & font-size */
+    width: 220px;
+    font-size: 16px;
+
+    @media (max-width: 1024px) {
+      width: 170px;
+      font-size: 12px;
+    }
+ 
+    @media (max-width: 768px) {
+      width: 150px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 300px) {
+      width: 120px;
+      font-size: 10px;
+    }
+  }
+
+  strong {
+    color: #000;
+  }
 `;
+
 
 export const Small = styled.div`
   font-size: 12px;
   color: #6b6b6b;
 `;
 
-/* Grid container */
 export const ContainerGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
@@ -70,13 +122,12 @@ export const ContainerGrid = styled.div`
   }
 `;
 
-
 export const ProfileRow = styled.div`
   display: flex;
   gap: 18px;
-  align-items: stretch; 
+  align-items: stretch;
 
- border-bottom: 1px solid #00000054;
+  border-bottom: 1px solid #00000054;
   @media (max-width: 560px) {
     flex-direction: column;
     align-items: center;
@@ -108,35 +159,33 @@ export const InputRow = styled.div`
   gap: 20px;
   margin-bottom: 10px;
 
- .InputRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  
-}
+  .InputRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
 
-.left-column {
-  display: grid;
-  grid-template-rows: repeat(3, auto); /* 3 inputs */
-  gap: 10px;
-}
+  .left-column {
+    display: grid;
+    grid-template-rows: repeat(3, auto); /* 3 inputs */
+    gap: 10px;
+  }
 
-.right-column {
-  display: grid;
-  grid-template-rows: 1fr auto; 
-  gap: 10px;
-  
-}
+  .right-column {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 10px;
+  }
 
-    .dual-inputs {
-      display: flex;
-      gap: 10px;
+  .dual-inputs {
+    display: flex;
+    gap: 10px;
 
-      input {
-        flex: 1;
-      }
+    input {
+      flex: 1;
     }
-  
+  }
+
   @media (max-width: 980px) {
     grid-template-columns: 1fr;
   }
@@ -144,7 +193,7 @@ export const InputRow = styled.div`
 
 export const InfoInput = styled.input`
   border-radius: 6px;
-  border: 1px solid #052DB4;
+  border: 1px solid #052db4;
   padding: 10px 12px;
   font-size: 14px;
   background: #fff;
@@ -165,29 +214,6 @@ export const SummaryRow = styled.div`
     align-items: stretch;
   }
 `;
-
-// export const SummaryCol = styled.div`
-//   flex: 1;
-//   min-width: 220px;
-//   display: flex;
-//   flex-direction: column;
-//   gap: 10px;
-// `;
-
-// export const Row = styled.div`
-//   display: flex;
-//   align-items: center;
-//   gap: 2rem; 
-//   font-size: 14px;
-// `;
-
-// export const SmallRow = styled(Row)`
-//   font-size: 12px;
-//   color: #6b6b6b;
-    
-// `;
-
-
 export const DateNav = styled.div`
   position: absolute;
   left: 50%;
@@ -212,7 +238,7 @@ export const DateContainer = styled.div`
 `;
 
 export const CalendarIcon = styled(FaRegCalendarAlt)`
-  font-size: 2rem;     
+  font-size: 2rem;
   color: #333;
 `;
 
@@ -232,11 +258,9 @@ export const NavButtons = styled.div`
   gap: 8px;
 `;
 
-
-
 export const DayTabs = styled.div`
   display: flex;
-  gap:2rem;
+  gap: 2rem;
   padding: 12px 0;
   flex-wrap: wrap;
   justify-content: center;
@@ -253,7 +277,8 @@ export const DayTab = styled.button`
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: ${({ active }) => (active ? "0 3px 8px rgba(48,64,141,0.08)" : "none")};
+  box-shadow: ${({ active }) =>
+    active ? "0 3px 8px rgba(48,64,141,0.08)" : "none"};
   transition: all 0.18s ease;
 `;
 
@@ -261,7 +286,7 @@ export const TableWrapper = styled.div`
   margin-top: 8px;
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0 6px 20px rgba(53,63,98,0.04);
+  box-shadow: 0 6px 20px rgba(53, 63, 98, 0.04);
   overflow: hidden;
 `;
 
@@ -330,7 +355,6 @@ export const TimeCellInline = styled.div`
 `;
 export const TimeHeader = styled.div``;
 
-
 export const BackButton = styled.button`
   display: flex;
   align-items: center;
@@ -341,7 +365,7 @@ export const BackButton = styled.button`
   font-size: 1.6rem;
   cursor: pointer;
   transition: transform 0.2s ease;
-margin-top: 10px;
+  margin-top: 10px;
   &:hover {
     transform: translateX(-3px);
   }

@@ -1,9 +1,7 @@
-
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   PageWrapper,
   Header,
-  TitleGroup,
   ProfileRow,
   Avatar,
   ProfileDetails,
@@ -14,169 +12,296 @@ import {
   DateNav,
   DayTabs,
   DayTab,
-  TableWrapper,
-  TableHeaderRow,
-  TableHeaderCell,
-  TimesRow,
-  TimeCell,
-  TimeBtn,
-  LocationCell,
   ContainerGrid,
-  Small,
-  IconBtn,
   SmallRow,
   DateContainer,
   DayNumber,
   MonthDay,
   NavButtons,
+  IconBtn,
   CalendarIcon,
   BackButton,
+  ButtonAct,
+  ButtonContainer,
 } from "./FieldInfo.Styles";
 import { LuArrowLeft } from "react-icons/lu";
-import FieldShiftIcon from "../../assets/shifttopper.svg"; 
+import FieldShiftIcon from "../../assets/shifttopper.svg";
 import TimeTable from "./TimeTable";
-import { IconWrapper, Subtitle, TextGroup, Title, TitleSection } from "./FieldShift.Styles";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import {
+  IconWrapper,
+  Subtitle,
+  TextGroup,
+  Title,
+  TitleSection,
+} from "./FieldShift.Styles";
 import Navbar from "../../Components/Navbar";
-import { FaRegCalendarAlt } from "react-icons/fa";
-
-const days = [
-  { label: "Mon", date: "12 ", month:"oct" },
-  { label: "Tue", date: "13 ",month:"oct" },
-  { label: "Wed", date: "14 ",month:"oct" },
-  { label: "Thu", date: "15 ",month:"oct" },
-  { label: "Fri", date: "16 ",month:"oct" },
-  { label: "Sat", date: "17 ",month:"oct" },
-];
-
-const initialTimes = [
-
-  { id: 1, dayIndex: 0, timeIn: "08:30 AM", timeOut: "11:30 AM", location: "Office - Block A" },
-  { id: 2, dayIndex: 0, timeIn: "09:15 AM", timeOut: "11:45 AM", location: "Client Site" },
-  { id: 3, dayIndex: 0, timeIn: "10:00 AM", timeOut: "12:30 PM", location: "Remote" },
-  { id: 4, dayIndex: 1, timeIn: "08:45 AM", timeOut: "11:30 AM", location: "Office - Block A" },
-  { id: 5, dayIndex: 2, timeIn: "08:15 AM", timeOut: "11:00 AM", location: "Branch Office" },
-  { id: 6, dayIndex: 3, timeIn: "08:30 AM", timeOut: "11:30 AM", location: "Office - Block A" },
-  { id: 7, dayIndex: 4, timeIn: "08:30 AM", timeOut: "11:30 AM", location: "Training Room" },
-];
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getFieldInfo } from "../../Redux/fieldShiftSlice";
+import Modal from "../../Components/ModalShift";
+import CalendarModal from "../../Components/CalendarModal";
 
 const FieldInfo = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
-  const [times, setTimes] = useState(initialTimes);
-
-
-  const [profile] = useState({
-    name: "DummyDummy",
-    phone: "1254841521",
-    email: "dummy@gmail.com",
-    dob: "12-12-2000",
-    gender: "Female",
-    note:
-      "Lorem ipsum dolor sit amet consectetur. At odio fermentum in faucibus ac odio nunc. Quam pulvinar placerat ac vel amet urna.",
-    photo: "https://i.pravatar.cc/150?img=32",
-  });
-
-  const timesForDay = useMemo(
-    () => times.filter((t) => t.dayIndex === selectedDay),
-    [times, selectedDay]
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
   );
 
-  const removeRow = (id) => {
-    setTimes((prev) => prev.filter((r) => r.id !== id));
+  const { fieldInfo, isLoading } = useSelector((state) => state.projects);
+
+  useEffect(() => {
+    if (id && selectedDate) {
+      dispatch(getFieldInfo({ employeeId: id, date: selectedDate }));
+    }
+  }, [id, selectedDate, dispatch]);
+
+  const profile = fieldInfo?.employee;
+  const sessions = fieldInfo?.sessions || [];
+
+  // Format session times
+  const formattedSessions = useMemo(
+    () =>
+      sessions.map((s) => ({
+        timeIn: new Date(s.time_in).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        timeOut: s.time_out
+          ? new Date(s.time_out).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : "Ongoing",
+        location: s.punch_in_location || "No location info",
+        note: s.note || "",
+      })),
+    [sessions]
+  );
+
+  const getWeekDays = (baseDate) => {
+    const start = new Date(baseDate);
+    start.setDate(start.getDate() - start.getDay() + 1);
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      week.push({
+        label: d.toLocaleDateString("en-US", { weekday: "short" }),
+        date: d.getDate(),
+        month: d.toLocaleDateString("en-US", { month: "short" }),
+        fullDate: d.toISOString().split("T")[0],
+      });
+    }
+    return week;
   };
+
+  const days = getWeekDays(selectedDate);
+
+  if (isLoading)
+    return <p style={{ textAlign: "center" }}>Loading attendance info...</p>;
+
+  if (!fieldInfo)
+    return <p style={{ textAlign: "center" }}>No field info found.</p>;
 
   return (
     <>
-    <Navbar/>
-    <PageWrapper>
-     <Header>
-              <BackButton onClick={() => navigate(-1)}>
-                         <LuArrowLeft />
-                       </BackButton>
-     
-               <TitleSection>
-                 <IconWrapper>
-                   <img src={FieldShiftIcon} alt="FieldShift" />
-                 </IconWrapper>
-                 <TextGroup>
-                   <Title>FieldShift</Title>
-                   <Subtitle>Manage all departments within the organization.</Subtitle>
-                 </TextGroup>
-               </TitleSection>
-             </Header>
+      <Navbar />
+      <PageWrapper>
+        {/* Header */}
+        <Header>
+          <BackButton onClick={() => navigate(-1)}>
+            <LuArrowLeft />
+          </BackButton>
 
-      <ContainerGrid>
+          <TitleSection>
+            <IconWrapper>
+              <img src={FieldShiftIcon} alt="FieldShift" />
+            </IconWrapper>
+            <TextGroup>
+              <Title>FieldShift</Title>
+              <Subtitle>
+                Manage all departments within the organization.
+              </Subtitle>
+            </TextGroup>
+          </TitleSection>
+          <ButtonContainer>
+            <ButtonAct onClick={() => setIsModalOpen(true)}>
+              Activity Log
+            </ButtonAct>
+          </ButtonContainer>
 
-      <ProfileRow>
-  <Avatar>
-    <img src={profile.photo} alt="avatar" />
-  </Avatar>
+          {isModalOpen && (
+            <Modal
+              onClose={() => setIsModalOpen(false)}
+              data={fieldInfo?.locations || []}
+              date={selectedDate}
+            />
+          )}
+        </Header>
 
-  <ProfileDetails>
-    <InputRow>
-      <div className="left-column">
-        <InfoInput value={profile.name} readOnly />
-        <InfoInput value={profile.phone} readOnly />
-          <InfoInput value={profile.email} readOnly />
-   
-      </div>
+        <ContainerGrid>
+          <ProfileRow>
+            <Avatar>
+              <img
+                src={
+                  profile?.profile_pic
+                    ? `${import.meta.env.VITE_BASE_URL}${profile.profile_pic}`
+                    : "https://i.pravatar.cc/150"
+                }
+                alt="avatar"
+              />
+            </Avatar>
 
-      <div className="right-column">
-           <InfoInput value={profile.note} readOnly />
-        <div className="dual-inputs">
-          <InfoInput value={profile.dob} readOnly />
-          <InfoInput value={profile.gender} readOnly />
-        </div>
-      </div>
-    </InputRow>
-  </ProfileDetails>
-</ProfileRow>
+            <ProfileDetails>
+              <InputRow>
+                <div className="left-column">
+                  <InfoInput value={profile?.name || ""} readOnly />
+                  <InfoInput value={profile?.employee_id || ""} readOnly />
+                  <InfoInput value={profile?.email || ""} readOnly />
+                </div>
 
+                <div className="right-column">
+                  <InfoInput value={profile?.designation || ""} readOnly />
+                  <div className="dual-inputs">
+                    <InfoInput
+                      value={
+                        profile?.joining_date
+                          ? new Date(profile.joining_date).toLocaleDateString()
+                          : ""
+                      }
+                      readOnly
+                    />
+                    <InfoInput value={profile?.gender || ""} readOnly />
+                  </div>
+                </div>
+              </InputRow>
+            </ProfileDetails>
+          </ProfileRow>
 
-  
-<SummaryRow>
- <SummaryCol>
-  <SmallRow><span>Monthly working hour</span><strong>145 Hrs</strong></SmallRow>
-  <SmallRow><span>Total Monthly working hour</span><strong>145 Hrs</strong></SmallRow>
-  <SmallRow><span>Weekly working hour</span><strong>45 Hrs</strong></SmallRow>
-</SummaryCol>
+          {/* Summary Section */}
+          <SummaryRow>
+            <SummaryCol>
+              <SmallRow>
+                <span>Monthly Working Hours</span>
+                <strong>{fieldInfo?.total_hours || "00:00"}</strong>
+              </SmallRow>
+              <SmallRow>
+                <span>Total Monthly Working Hours</span>
+                <strong>{fieldInfo?.total_working_hours || "00:00"}</strong>
+              </SmallRow>
+              <SmallRow>
+                <span>Weekly Working Hours</span>
+                <strong>{fieldInfo?.weekly_hours_formatted || "00:00"}</strong>
+              </SmallRow>
+            </SummaryCol>
 
+            <DateNav>
+              <DateContainer>
+                <CalendarIcon
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setIsCalendarOpen(true)}
+                />
+                {isCalendarOpen && (
+                  <div
+                    style={{
+                      position: "fixed",
+                      inset: 0,
+                      background: "rgba(0, 0, 0, 0.4)",
+                      backdropFilter: "blur(5px)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 999,
+                    }}
+                  >
+                    <CalendarModal
+                      onClose={() => setIsCalendarOpen(false)}
+                      selectedDate={selectedDate}
+                      setSelectedDate={setSelectedDate}
+                    />
+                  </div>
+                )}
 
-    <DateNav>
-      <DateContainer>
-        <CalendarIcon />
-        <DayNumber>16</DayNumber>
-        <MonthDay>
-          <div>November</div>
-          <div>Monday</div>
-        </MonthDay>
-      </DateContainer>
+                <DayNumber>
+                  {fieldInfo?.date
+                    ? new Date(fieldInfo.date).getDate()
+                    : new Date(selectedDate).getDate()}
+                </DayNumber>
+                <MonthDay>
+                  <div>
+                    {fieldInfo?.date
+                      ? new Date(fieldInfo.date).toLocaleString("default", {
+                          month: "long",
+                        })
+                      : new Date(selectedDate).toLocaleString("default", {
+                          month: "long",
+                        })}
+                  </div>
+                  <div>
+                    {fieldInfo?.date
+                      ? new Date(fieldInfo.date).toLocaleDateString("default", {
+                          weekday: "long",
+                        })
+                      : new Date(selectedDate).toLocaleDateString("default", {
+                          weekday: "long",
+                        })}
+                  </div>
+                </MonthDay>
+              </DateContainer>
 
-      <NavButtons>
-        <IconBtn>{"<"}</IconBtn>
-        <IconBtn>{">"}</IconBtn>
-      </NavButtons>
-    </DateNav>
-</SummaryRow>
+              <NavButtons>
+                <IconBtn
+                  onClick={() => {
+                    const prev = new Date(selectedDate);
+                    prev.setDate(prev.getDate() - 1);
+                    setSelectedDate(prev.toISOString().split("T")[0]);
+                  }}
+                >
+                  {"<"}
+                </IconBtn>
 
-       <DayTabs>
-  {days.map((d, i) => (
-    <DayTab
-      key={i}
-      active={i === selectedDay}
-      onClick={() => setSelectedDay(i)}
-      aria-pressed={i === selectedDay}
-    >
-      <div style={{ fontWeight: 700 }}>{d.label}</div>
-      <div style={{ fontSize: 12 }}>{d.date}</div>
-      <div style={{ fontSize: 12 }}>{d.month}</div> 
-    </DayTab>
-  ))}
-</DayTabs>
+                <IconBtn
+                  onClick={() => {
+                    const next = new Date(selectedDate);
+                    next.setDate(next.getDate() + 1);
+                    setSelectedDate(next.toISOString().split("T")[0]);
+                  }}
+                >
+                  {">"}
+                </IconBtn>
+              </NavButtons>
+            </DateNav>
+          </SummaryRow>
 
-     
-        <TimeTable/>
-      </ContainerGrid>
-    </PageWrapper>
+          <DayTabs>
+            {days.map((d, i) => (
+              <DayTab
+                key={i}
+                active={i === selectedDay}
+                onClick={() => {
+                  setSelectedDay(i);
+                  setSelectedDate(days[i].fullDate);
+                }}
+                aria-pressed={i === selectedDay}
+              >
+                <div style={{ fontWeight: 700 }}>{d.label}</div>
+                <div style={{ fontSize: 12 }}>{d.date}</div>
+                <div style={{ fontSize: 12 }}>{d.month}</div>
+              </DayTab>
+            ))}
+          </DayTabs>
+
+          <TimeTable data={formattedSessions} />
+        </ContainerGrid>
+      </PageWrapper>
     </>
   );
 };

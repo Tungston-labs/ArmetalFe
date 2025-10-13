@@ -1,6 +1,6 @@
 // src/features/projects/projectSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import projectService from "../services/fieldShiftService";
+import projectService, { fieldInfoService } from "../services/fieldShiftService";
 
 // Thunks
 
@@ -91,7 +91,16 @@ export const removeEmployeeFromProject = createAsyncThunk(
     }
   }
 );
-
+export const getFieldInfo = createAsyncThunk(
+  "projects/getFieldInfo",
+  async ({ employeeId, date }, { rejectWithValue }) => {
+    try {
+      return await fieldInfoService(employeeId, date);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 // Slice
 const projectSlice = createSlice({
   name: "projects",
@@ -102,6 +111,7 @@ const projectSlice = createSlice({
     total_items: 0,
     project: null,       // single project
     employeesNotInProject: [],
+    fieldInfo: null, 
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -246,7 +256,21 @@ const projectSlice = createSlice({
     state.isLoading = false;
     state.isError = true;
     state.message = action.payload;
-  });
+  })
+  .addCase(getFieldInfo.pending, (state) => {
+  state.isLoading = true;
+})
+.addCase(getFieldInfo.fulfilled, (state, action) => {
+  state.isLoading = false;
+  state.isSuccess = true;
+  state.fieldInfo = action.payload; 
+})
+.addCase(getFieldInfo.rejected, (state, action) => {
+  state.isLoading = false;
+  state.isError = true;
+  state.message = action.payload;
+});
+
   
 
   },

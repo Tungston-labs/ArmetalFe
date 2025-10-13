@@ -51,7 +51,11 @@ const removeEmployeeFromProject = async (projectId, employeeId) => {
   const response = await API.delete(`/project/${projectId}/remove-employee/${employeeId}/`);
   return response.data;
 };
-
+// Field Info service
+export const fieldInfoService = async (employeeId, date) => {
+  const response = await API.get(`/project/employee/${employeeId}/attendance/?date=${date}`);
+  return response.data;
+};
 
 const projectService = {
   createProject,

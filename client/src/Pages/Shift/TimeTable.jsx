@@ -4,46 +4,23 @@ import {
   TableHeader,
   TableRow,
   TableCell,
-  TimeBox,
-//   TimeText,
   LocationBox,
   LocationText,
   TableBoarder,
   TimeBoxWrapper,
   TimeIn,
-  TimeOut
+  TimeOut,
 } from "./TimeTable.Styles";
+import { ImLocation2 } from "react-icons/im";
+const TimeTable = ({ data = [] }) => {
+  if (!data.length) {
+    return (
+      <p style={{ textAlign: "center", padding: "20px" }}>
+        No field sessions found.
+      </p>
+    );
+  }
 
-
-const data = [
-  {
-    timeIn: "08:30 AM",
-    timeOut: "11:30 AM",
-    location: "Lorem ipsum dolor sit amet consectetur. Nisi sodales sedfgghvfghfh tgfuygvyuhguykbfj ............",
-  },
-  {
-    timeIn: "08:30 AM",
-    timeOut: "11:30 AM",
-location: "Lorem ipsum dolor sit amet consectetur. Nisi sodales sedfgghvfghfh tgfuygvyuhguykbfj ............",
-  },
-  {
-    timeIn: "08:30 AM",
-    timeOut: "11:30 AM",
-location: "Lorem ipsum dolor sit amet consectetur. Nisi sodales sedfgghvfghfh tgfuygvyuhguykbfj ............",
-  },
-  {
-    timeIn: "08:30 AM",
-    timeOut: "11:30 AM",
-location: "Lorem ipsum dolor sit amet consectetur. Nisi sodales sedfgghvfghfh tgfuygvyuhguykbfj ............",
-  },
-  {
-    timeIn: "08:30 AM",
-    timeOut: "11:30 AM",
-location: "Lorem ipsum dolor sit amet consectetur. Nisi sodales sedfgghvfghfh tgfuygvyuhguykbfj ............",
-  },
-];
-
-const TimeTable = () => {
   return (
     <TableContainer>
       <TableHeader>
@@ -53,26 +30,27 @@ const TimeTable = () => {
       </TableHeader>
 
       {data.map((item, index) => (
-     <TableRow key={index}>
-  <TableBoarder>
-    <TimeBoxWrapper>
-      <TimeIn>{item.timeIn}</TimeIn>
-  ---------------------------To---------------------------
-      {/* <Line /> */}
-      <TimeOut>{item.timeOut}</TimeOut>
-    </TimeBoxWrapper>
-  </TableBoarder>
+        <TableRow key={index}>
+          <TableBoarder>
+            <TimeBoxWrapper>
+              <TimeIn>{item.timeIn}</TimeIn>
+              <span style={{ margin: "0 10px", color: "#888" }}>to</span>
+              <TimeOut>{item.timeOut}</TimeOut>
+            </TimeBoxWrapper>
+          </TableBoarder>
 
-  <TableCell>
-      <TableBoarder>
-    <LocationBox>
-      <span role="img" aria-label="location">Location</span>
-      <LocationText>{item.location}</LocationText>
-    </LocationBox>
-    </TableBoarder>
-  </TableCell>
-</TableRow>
-
+          <TableCell>
+            <TableBoarder>
+              <LocationBox>
+                <ImLocation2 />
+                <LocationText>{item.location}</LocationText>
+                {item.note && (
+                  <p style={{ marginTop: "4px", color: "#555" }}>{item.note}</p>
+                )}
+              </LocationBox>
+            </TableBoarder>
+          </TableCell>
+        </TableRow>
       ))}
     </TableContainer>
   );
