@@ -160,3 +160,6 @@ class AttendanceDetailSerializer(serializers.ModelSerializer):
         return f"{h:02d}:{m:02d}"
 
 
+class AttendanceLocationSerializer(serializers.Serializer):
+    location = serializers.CharField()
+    timestamp = serializers.DateTimeField(required=False)

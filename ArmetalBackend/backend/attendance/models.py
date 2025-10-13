@@ -18,6 +18,7 @@ class Attendance(TimeStampedModel):
     date = models.DateField(default=timezone.now)
     total_hours = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     remark = models.CharField(max_length=255, blank=True, null=True)
+    locations = models.JSONField(default=list, blank=True, null=True)
 
     class Meta:
         unique_together = ['employee', 'date']

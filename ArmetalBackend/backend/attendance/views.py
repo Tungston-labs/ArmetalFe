@@ -15,7 +15,7 @@ from rest_framework.generics import RetrieveAPIView
 
 from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
-from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer
+from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer,AttendanceLocationSerializer
 from shared.pagination import CustomPagination
 from .utils.timezone_utils import get_company_timezone, ensure_timezone,safe_parse_datetime
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
@@ -302,3 +302,37 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'id'     
 
+
+class AttendanceLocationUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = AttendanceLocationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        employee = getattr(user, 'employee_profile', None)  # your User -> Employee relation
+        if not employee:
+            return Response({"detail": "Employee not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Get today's attendance
+        today = timezone.localdate()
+        try:
+            attendance = Attendance.objects.get(employee=employee, date=today)
+        except Attendance.DoesNotExist:
+            return Response({"detail": "No active attendance session. Punch in first."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Append location
+        loc_data = {
+            "location": serializer.validated_data["location"],
+            "timestamp": serializer.validated_data.get("timestamp", timezone.now().isoformat())
+        }
+
+        if attendance.locations is None:
+            attendance.locations = []
+
+        attendance.locations.append(loc_data)
+        attendance.save(update_fields=['locations'])
+
+        return Response({"detail": "Location updated successfully.", "locations": attendance.locations})
