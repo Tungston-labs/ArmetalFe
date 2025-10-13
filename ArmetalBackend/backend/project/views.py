@@ -66,29 +66,44 @@ from django.shortcuts import get_object_or_404
 #         return Response(serializer.data)
 
 
+# views.py
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from employee.models import Employee_db
+from .models import Project
+from .serialzers import EmployeeSerializer  # ✅ confirm correct import path
+
 class EmployeesNotInProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk):
-        # Get logged-in user's company
+    def get(self, request, project_id):
         user = request.user
         company = getattr(user, "company", None)
+
         if not company:
-            return Response({"detail": "User has no company assigned"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "User has no company assigned"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Get the project
-        project = get_object_or_404(Project, pk=pk)
+        project = get_object_or_404(Project, id=project_id)
 
-        # Ensure the project belongs to the same company
         if project.company != company:
-            return Response({"detail": "Not authorized for this project"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "Not authorized for this project"},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
-        # Get employees in the same company not in this project
-        employees_not_in_project = Employee_db.objects.filter(company=company).exclude(id__in=project.employees.all())
+        # ✅ Get employees of the same company not assigned to any project
+        employees_not_in_project = Employee_db.objects.filter(company=company).exclude(
+            id__in=Project.objects.values_list('employees', flat=True)
+        )
 
         serializer = EmployeeSerializer(employees_not_in_project, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 class RemoveEmployeeFromProjectView(APIView):
