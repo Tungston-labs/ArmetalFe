@@ -78,6 +78,9 @@ class ProjectWriteSerializer(serializers.ModelSerializer):
 from datetime import timedelta, date
 from django.db.models import Sum
 
+from datetime import timedelta, date
+from django.db.models import Sum
+
 class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
     employee = EmployeeSerializer(read_only=True)
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
@@ -85,13 +88,15 @@ class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
     weekly_hours_formatted = serializers.SerializerMethodField()
     monthly_hours_formatted = serializers.SerializerMethodField()
     total_working_hours = serializers.SerializerMethodField()  # new field
+    locations = serializers.SerializerMethodField()  # new field
 
     class Meta:
         model = Attendance
         fields = [
             'id', 'date', 'total_hours', 'total_hours_formatted',
             'weekly_hours_formatted', 'monthly_hours_formatted',
-            'total_working_hours',  # include here
+            'total_working_hours',  
+            'locations',
             'remark', 'employee', 'sessions'
         ]
 
@@ -142,6 +147,10 @@ class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
         )
 
         return working_days * 8  # 8 hours per working day
+
+    def get_locations(self, obj):
+        """Return locations list as stored in Attendance.locations"""
+        return obj.locations if obj.locations else []
 
     def format_hours(self, hours):
         if not hours:
