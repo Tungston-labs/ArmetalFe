@@ -69,21 +69,26 @@ from django.shortcuts import get_object_or_404
 class EmployeesNotInProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, project_id):
-        # Get the project and company of the logged-in user
-        project = get_object_or_404(Project, id=project_id)
+    def get(self, request, pk):
+        # Get logged-in user's company
+        user = request.user
+        company = getattr(user, "company", None)
+        if not company:
+            return Response({"detail": "User has no company assigned"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Get company of the logged-in user (assuming user has `company` field)
-        company = request.user.company  
+        # Get the project
+        project = get_object_or_404(Project, pk=pk)
 
-        # Get all employees in this company who are NOT part of ANY project
-        # and not already assigned to the current project
-        employees = Employee_db.objects.filter(company=company).exclude(
-            id__in=Project.objects.values_list('employees__id', flat=True)
-        )
+        # Ensure the project belongs to the same company
+        if project.company != company:
+            return Response({"detail": "Not authorized for this project"}, status=status.HTTP_403_FORBIDDEN)
 
-        serializer = EmployeeSerializer(employees, many=True)
-        return Response(serializer.data)
+        # Get employees in the same company not in this project
+        employees_not_in_project = Employee_db.objects.filter(company=company).exclude(id__in=project.employees.all())
+
+        serializer = EmployeeSerializer(employees_not_in_project, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class RemoveEmployeeFromProjectView(APIView):
