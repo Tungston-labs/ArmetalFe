@@ -15,7 +15,7 @@ from rest_framework.generics import RetrieveAPIView
 
 from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
-from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer
+from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer,AttendanceLocationSerializer
 from shared.pagination import CustomPagination
 from .utils.timezone_utils import get_company_timezone, ensure_timezone,safe_parse_datetime
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
@@ -302,3 +302,59 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'id'     
 
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.utils import timezone
+from attendance.models import Attendance
+from employee.models import Employee_db
+from .serializers import AttendanceLocationSerializer
+import logging
+
+logger = logging.getLogger(__name__)
+
+class AttendanceLocationUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        """
+        Append employee's current location to today's attendance.
+        Must be called after first punch-in.
+        """
+        serializer = AttendanceLocationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = request.user
+            # Fetch employee linked to the logged-in user
+            employee = Employee_db.objects.get(user=user)
+        except Employee_db.DoesNotExist:
+            return Response({"detail": "Employee not found."}, status=404)
+
+        # Get today's attendance
+        today = timezone.localdate()
+        try:
+            attendance = Attendance.objects.get(employee=employee, date=today)
+        except Attendance.DoesNotExist:
+            return Response({"detail": "No active attendance session. Punch in first."},
+                            status=400)
+
+        # Append location
+        loc_data = {
+            "location": serializer.validated_data["location"],
+            "timestamp": serializer.validated_data.get("timestamp", timezone.now().isoformat())
+        }
+
+        if attendance.locations is None:
+            attendance.locations = []
+
+        attendance.locations.append(loc_data)
+        attendance.save(update_fields=['locations'])
+
+        logger.info(f"Location updated for employee {employee.id}: {loc_data}")
+
+        return Response({
+            "detail": "Location updated successfully.",
+            "locations": attendance.locations
+        })

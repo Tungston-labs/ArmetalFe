@@ -48,22 +48,50 @@ class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return Response(read_serializer.data)
 
 
+
+
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from employee.models import Employee_db
-from .models import Project
+from rest_framework import status
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
+from .models import Project
+from employee.models import Employee_db
+from employee.serializers import EmployeeSerializer
 
 class EmployeesNotInProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, project_id):
+        user = request.user
+        company = getattr(user, "company", None)
+
+        if not company:
+            return Response(
+                {"detail": "User has no company assigned"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Get the project
         project = get_object_or_404(Project, id=project_id)
-        # Employees NOT in this project
-        employees = Employee_db.objects.exclude(id__in=project.employees.all())
-        serializer = EmployeeSerializer(employees, many=True)
-        return Response(serializer.data)
+
+        # Ensure the project belongs to the same company
+        if project.company != company:
+            return Response(
+                {"detail": "Not authorized for this project"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ✅ Get employees from same company (through department)
+        employees_not_in_project = Employee_db.objects.filter(
+            department__company=company
+        ).exclude(
+            id__in=project.employees.all()
+        )
+
+        serializer = EmployeeSerializer(employees_not_in_project, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RemoveEmployeeFromProjectView(APIView):
@@ -85,7 +113,6 @@ class RemoveEmployeeFromProjectView(APIView):
         return Response({'detail': f'Employee {employee.name} removed from project {project.name}.'}, status=status.HTTP_200_OK)
 
 
-# attendance/views.py
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response

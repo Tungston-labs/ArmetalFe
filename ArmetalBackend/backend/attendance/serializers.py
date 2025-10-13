@@ -21,7 +21,12 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AttendanceSession
-        fields = ['id', 'time_in', 'time_out', 'duration', 'note']
+        fields = ['id', 'time_in', 'time_out', 'duration', 'note','punch_in_latitude',
+            'punch_in_longitude',
+            'punch_in_location',
+            'punch_out_latitude',
+            'punch_out_longitude',
+            'punch_out_location',]
 
     def get_time_in(self, obj):
         return self._safe_convert(obj.time_in, obj)
@@ -155,3 +160,6 @@ class AttendanceDetailSerializer(serializers.ModelSerializer):
         return f"{h:02d}:{m:02d}"
 
 
+class AttendanceLocationSerializer(serializers.Serializer):
+    location = serializers.CharField()
+    timestamp = serializers.DateTimeField(required=False)
