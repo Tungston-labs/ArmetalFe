@@ -171,7 +171,7 @@ export const AddButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top:-5%;
+  margin-top:-3.3%;
   width:90px;
   font-family:satoshi;
 background: linear-gradient(181deg,rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
@@ -182,6 +182,30 @@ background: linear-gradient(181deg,rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1)
   font-size:15px;
   cursor: pointer;
 `;
+
+export const DeleteButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: -5%;
+  margin-right: 100px;
+  width: 90px;
+  font-family: satoshi;
+  background: linear-gradient(181deg, rgba(186, 51, 51, 1) 50%, rgba(255, 87, 87, 1) 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.9;
+    transform: scale(1.03);
+  }
+`;
+
 export const SearchInput = styled.input`
   padding: 0.5rem 1rem;
   border-radius: 6px;

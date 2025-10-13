@@ -8,19 +8,6 @@ import {
   fetchEmployeesByDepartment,
 } from "../services/departmentServices";
 
-// Get all departments
-
-
-// export const getDepartments = createAsyncThunk(
-//   "departments/getAll",
-//   async (search = '', { rejectWithValue }) => {
-//     try {
-//       return await fetchDepartments(search);
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data || error.message);
-//     }
-//   }
-// );
 
 export const getDepartments = createAsyncThunk(
   "departments/getAll",

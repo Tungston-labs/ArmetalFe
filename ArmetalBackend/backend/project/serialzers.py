@@ -8,9 +8,15 @@ from django.db.models import Sum
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    department_name = serializers.CharField(source='department.name', read_only=True)
+
     class Meta:
         model = Employee_db
-        fields = ['id', 'name', 'employee_id', 'email', 'designation', 'department', 'profile_pic','joining_date','gender']
+        fields = [
+            'id', 'name', 'employee_id', 'email', 'designation', 
+            'department', 'department_name', 'profile_pic', 'joining_date', 'gender'
+        ]
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     employees = serializers.PrimaryKeyRelatedField(

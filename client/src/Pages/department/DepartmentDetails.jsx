@@ -19,18 +19,18 @@ import {
   HRManager,
   IconButton,
   TitleSection,
-  DropdownMenu, DropdownWrapper, 
+  DropdownMenu, DropdownWrapper,
   EmployeeImage,
   TextBlock,
-  BackArrow
+  BackArrow, DeleteButton
 } from '../department/DepartmentDetails.Styles';
 import { FaInfoCircle, FaTrash } from 'react-icons/fa';
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { fetchDepartmentById, updateDepartment } from '../../services/departmentServices';
-import { getEmployeesByDepartment,updateDepartmentById } from '../../Redux/departmentSlice';
+import { getEmployeesByDepartment, updateDepartmentById, deleteDepartmentById } from '../../Redux/departmentSlice';
 import { useNavigate } from 'react-router-dom';
 import { deleteEmployeeById } from '../../Redux/employeeSlice';
-import Employee from "../../assets/employee.svg"; 
+import Employee from "../../assets/employee.svg";
 import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your choice
 import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar';
@@ -42,7 +42,6 @@ const DepartmentDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -62,7 +61,72 @@ const DepartmentDetail = () => {
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
+
+  const handleDeleteDepartment = async () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This action will permanently delete this department!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33", // red
+      cancelButtonColor: "#3085d6", // blue
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await dispatch(deleteDepartmentById(department.id)).unwrap();
+
+          Swal.fire({
+            title: "Deleted!",
+            text: "Department has been deleted successfully.",
+            icon: "success",
+            confirmButtonColor: "#3352BA",
+          });
+
+          navigate("/department");
+        } catch (error) {
+          Swal.fire({
+            title: "Failed!",
+            text: "Something went wrong while deleting.",
+            icon: "error",
+            confirmButtonColor: "#3352BA",
+          });
+        }
+      }
+    });
+  };
+  const handleDeleteEmployee = (employeeId, employeeName) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Do you want to delete employee "${employeeName}"?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await dispatch(deleteEmployeeById(employeeId)).unwrap();
+          await dispatch(getEmployeesByDepartment(id)); // refresh employee list
   
+          Swal.fire({
+            title: "Deleted!",
+            text: "Employee has been deleted successfully.",
+            icon: "success",
+            confirmButtonColor: "#3352BA",
+          });
+        } catch (error) {
+          Swal.fire({
+            title: "Failed!",
+            text: "Something went wrong while deleting the employee.",
+            icon: "error",
+            confirmButtonColor: "#3352BA",
+          });
+        }
+      }
+    });
+  };
   
 
   useEffect(() => {
@@ -97,224 +161,191 @@ const DepartmentDetail = () => {
         ...formData,
         department_head_id: formData.department_head_id ? parseInt(formData.department_head_id) : null,
       };
-  
-     if (!payload.department_head_id) {
+
+      if (!payload.department_head_id) {
+        Swal.fire({
+          icon: "warning",
+          title: "Missing Department Head",
+          text: "Please select a department head before saving.",
+          confirmButtonColor: "#3352BA",
+        });
+        return;
+      }
+
+      await dispatch(updateDepartmentById({ id, data: payload })).unwrap();
+
       Swal.fire({
-        icon: "warning",
-        title: "Missing Department Head",
-        text: "Please select a department head before saving.",
+        icon: "success",
+        title: "Updated!",
+        text: "Department updated successfully.",
         confirmButtonColor: "#3352BA",
       });
-      return;
+
+      setIsEditing(false);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "Something went wrong while updating department.",
+      });
     }
-
-    await dispatch(updateDepartmentById({ id, data: payload })).unwrap();
-
-    Swal.fire({
-      icon: "success",
-      title: "Updated!",
-      text: "Department updated successfully.",
-      confirmButtonColor: "#3352BA",
-    });
-
-    setIsEditing(false);
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Update Failed",
-      text: "Something went wrong while updating department.",
-    });
-  }
-};
-  
-  
-  
-  
+  };
 
 
-if (!department) return <Loader />;
+
+
+
+
+  if (!department) return <Loader />;
 
   return (
     <>
-    {/* <Navbar/> */}
-    <Container>
+      {/* <Navbar/> */}
+      <Container>
 
-      <HeaderSection>
-<TitleSection>
-   <BackArrow onClick={() => navigate("/department")} />
-  <EmployeeImage  src={Employee} alt="employeeIcon" />
-    <TextBlock>
-      <Title>Department</Title>
-      <Subtitle>Manage all departments within the organization.</Subtitle>
-    </TextBlock>
-  </TitleSection>
-
-
-
-  <ActionArea>
-    <AddButton
-      onClick={() => {
-        if (isEditing) {
-          handleUpdate(); // Save the changes
-        }
-        setIsEditing(!isEditing); // Toggle editing mode
-      }}
-    >
-      {isEditing ? (
-        <>
-          <HiOutlinePencilSquare style={{ width: '18px', height: '19px' }} /> Save
-        </>
-      ) : (
-        <>
-          <HiOutlinePencilSquare style={{ width: '18px', height: '18px' }} /> Edit
-        </>
-      )}
-    </AddButton>
-  </ActionArea>
-</HeaderSection>
+        <HeaderSection>
+          <TitleSection>
+            <BackArrow onClick={() => navigate("/department")} />
+            <EmployeeImage src={Employee} alt="employeeIcon" />
+            <TextBlock>
+              <Title>Department</Title>
+              <Subtitle>Manage all departments within the organization.</Subtitle>
+            </TextBlock>
+          </TitleSection>
 
 
-      <FormSection>
-        <InputGroup>
-          <Label>Department name</Label>
-          <Input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            disabled={!isEditing}
-          />
-        </InputGroup>
-        <InputGroup>
-          <Label>Department Code Name</Label>
-          <Input
-            name="department_code"
-            value={formData.department_code}
-            onChange={handleChange}
-            disabled={!isEditing}
-          />
-        </InputGroup>
-        <InputGroup>
-          <Label>Department head</Label>
-          {isEditing ? (
-            <select
-              name="department_head_id"
-              value={formData.department_head_id}
-              onChange={handleChange}
-              style={{
-                padding: '10px',
-                borderRadius: '8px',
-                border: '1px solid #ccc',
-                fontSize: '16px'
+          <ActionArea>
+            <DeleteButton onClick={handleDeleteDepartment}>
+              <FaTrash style={{ width: "14px", height: "14px" }} /> Delete
+            </DeleteButton>
+
+            <AddButton
+              onClick={() => {
+                if (isEditing) {
+                  handleUpdate(); // Save changes
+                }
+                setIsEditing(!isEditing);
               }}
             >
-              <option value="">-- Select Department Head --</option>
-              {departmentEmployees.map((emp) => (
-                <option key={emp.id} value={emp.id}>
-                  {emp.name}
-                </option>
-              ))}
-            </select>
-          ) : (
+              {isEditing ? (
+                <>
+                  <HiOutlinePencilSquare style={{ width: "18px", height: "19px" }} /> Save
+                </>
+              ) : (
+                <>
+                  <HiOutlinePencilSquare style={{ width: "18px", height: "18px" }} /> Edit
+                </>
+              )}
+            </AddButton>
+          </ActionArea>
 
+
+        </HeaderSection>
+
+
+        <FormSection>
+          <InputGroup>
+            <Label>Department name</Label>
             <Input
-              name="department_head"
-              value={department.department_head?.name || 'Not Assigned'}
-              disabled
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              disabled={!isEditing}
             />
+          </InputGroup>
+          <InputGroup>
+            <Label>Department Code Name</Label>
+            <Input
+              name="department_code"
+              value={formData.department_code}
+              onChange={handleChange}
+              disabled={!isEditing}
+            />
+          </InputGroup>
+          <InputGroup>
+            <Label>Department head</Label>
+            {isEditing ? (
+              <select
+                name="department_head_id"
+                value={formData.department_head_id}
+                onChange={handleChange}
+                style={{
+                  padding: '10px',
+                  borderRadius: '8px',
+                  border: '1px solid #ccc',
+                  fontSize: '16px'
+                }}
+              >
+                <option value="">-- Select Department Head --</option>
+                {departmentEmployees.map((emp) => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+
+              <Input
+                name="department_head"
+                value={department.department_head?.name || 'Not Assigned'}
+                disabled
+              />
 
 
-          )}
-        </InputGroup>
-       
-      </FormSection>
+            )}
+          </InputGroup>
 
-      <h3>Added employee list</h3>
-      <TableWrapper>
-        <StyledTable>
-          <thead>
-            <tr>
-              <th>Sl No</th>
-              <th>Employee name</th>
-              <th>Employee ID</th>
-              <th>Email ID</th>
-              <th>Job Position</th>
-              <th>Department</th>
-              <th>Info</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {departmentEmployees.map((emp, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>
-                <Avatar src={emp.profile_pic ? `http://178.248.112.16:8000${emp.profile_pic}` : 'https://i.pravatar.cc/40'} />
-                  {emp.name}
-                </td>
-                <td>{emp.employee_id}</td>
-                <td>{emp.email}</td>
-                <td>{emp.designation}</td>
-                <td>{department.name}</td>
-                <td>
-                  <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`)}>
-                    <GoInfo />
-                  </IconButton>
+        </FormSection>
 
-                </td>
-                <td>
-                <IconButton danger onClick={() => {
-  setSelectedEmployeeId(emp.id);
-  setShowDeleteModal(true);
-}}>
+        <h3>Added employee list</h3>
+        <TableWrapper>
+          <StyledTable>
+            <thead>
+              <tr>
+                <th>Sl No</th>
+                <th>Employee name</th>
+                <th>Employee ID</th>
+                <th>Email ID</th>
+                <th>Job Position</th>
+                <th>Department</th>
+                <th>Info</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {departmentEmployees.map((emp, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>
+                    <Avatar src={emp.profile_pic ? `http://178.248.112.16:8000${emp.profile_pic}` : 'https://i.pravatar.cc/40'} />
+                    {emp.name}
+                  </td>
+                  <td>{emp.employee_id}</td>
+                  <td>{emp.email}</td>
+                  <td>{emp.designation}</td>
+                  <td>{department.name}</td>
+                  <td>
+                    <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`)}>
+                      <GoInfo />
+                    </IconButton>
+
+                  </td>
+                  <td>
+                  <IconButton danger onClick={() => handleDeleteEmployee(emp.id, emp.name)}>
   <FaTrash />
 </IconButton>
 
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </StyledTable>
-      </TableWrapper>
-      {showDeleteModal && (
-  <div style={{
-    position: 'fixed',
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    zIndex: 999
-  }}>
-    <div style={{
-      background: '#fff',
-      padding: '2rem',
-      borderRadius: '8px',
-      minWidth: '300px',
-      textAlign: 'center'
-    }}>
-      <h3>Confirm Delete</h3>
-      <p>
-  Are you sure you want to delete employee{' '}
-  <strong>
-    {
-      departmentEmployees.find((e) => e.id === selectedEmployeeId)?.name ||
-      'this employee'
-    }
-  </strong>
-  ?
-</p>
 
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
-        <button onClick={() => setShowDeleteModal(false)} style={{ padding: '8px 16px' }}>
-          Cancel
-        </button>
-        <button onClick={handleConfirmDelete} style={{ padding: '8px 16px', background: 'red', color: '#fff' }}>
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </StyledTable>
+        </TableWrapper>
+     
 
-    </Container>
+
+      </Container>
     </>
   );
 };
