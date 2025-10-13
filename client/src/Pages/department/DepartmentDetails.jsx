@@ -22,7 +22,8 @@ import {
   DropdownMenu, DropdownWrapper,
   EmployeeImage,
   TextBlock,
-  BackArrow, DeleteButton
+  BackArrow, DeleteButton,
+  ButtonGroup
 } from '../department/DepartmentDetails.Styles';
 import { FaInfoCircle, FaTrash } from 'react-icons/fa';
 import { HiOutlinePencilSquare } from "react-icons/hi2";
@@ -215,6 +216,7 @@ const DepartmentDetail = () => {
 
 
           <ActionArea>
+            <ButtonGroup>
             <DeleteButton onClick={handleDeleteDepartment}>
               <FaTrash style={{ width: "14px", height: "14px" }} /> Delete
             </DeleteButton>
@@ -237,6 +239,7 @@ const DepartmentDetail = () => {
                 </>
               )}
             </AddButton>
+            </ButtonGroup>
           </ActionArea>
 
 

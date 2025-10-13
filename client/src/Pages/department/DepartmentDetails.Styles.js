@@ -1,11 +1,10 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 import { LuArrowLeft } from "react-icons/lu";
 
-
 export const BackArrow = styled(LuArrowLeft)`
   cursor: pointer;
-  color: #3352BA;
+  color: #3352ba;
   width: clamp(20px, 2vw, 50px);
   height: clamp(20px, 2vw, 50px);
 
@@ -48,7 +47,6 @@ export const Container = styled.div`
   }
 `;
 
-
 export const HeaderSection = styled.div`
   margin-bottom: 2rem;
 `;
@@ -86,27 +84,33 @@ export const Title = styled.h2`
   font-weight: 700;
   line-height: 1.2;
 
-  @media (min-width: 480px) { /* small tablet */
+  @media (min-width: 480px) {
+    /* small tablet */
     font-size: 0.8rem;
   }
 
-  @media (min-width: 768px) { /* tablet */
+  @media (min-width: 768px) {
+    /* tablet */
     font-size: 1rem;
   }
 
-  @media (min-width: 1024px) { /* desktop */
+  @media (min-width: 1024px) {
+    /* desktop */
     font-size: 1.5rem;
   }
 
-  @media (min-width: 1440px) { /* large desktop / 2K */
+  @media (min-width: 1440px) {
+    /* large desktop / 2K */
     font-size: 2rem;
   }
 
-  @media (min-width: 2560px) { /* 4K */
+  @media (min-width: 2560px) {
+    /* 4K */
     font-size: 3em;
   }
 
-  @media (min-width: 3840px) { /* 8K */
+  @media (min-width: 3840px) {
+    /* 8K */
     font-size: 4rem;
   }
 `;
@@ -160,26 +164,35 @@ export const ActionArea = styled.div`
   display: flex;
   flex-direction: column;
   align-items: end;
-  gap: 1rem;
 `;
 export const InputGroup = styled.div`
   width: calc(40% - 1rem);
   display: flex;
   flex-direction: column;
 `;
+export const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+`;
+
 export const AddButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top:-3.3%;
-  width:90px;
-  font-family:satoshi;
-background: linear-gradient(181deg,rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%);
+  width: 90px;
+  font-family: satoshi;
+  background: linear-gradient(
+    181deg,
+    rgba(23, 37, 84, 1) 50%,
+    rgba(51, 82, 186, 1) 100%
+  );
   color: white;
+  margin-right:10px;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   border: none;
-  font-size:15px;
+  font-size: 15px;
   cursor: pointer;
 `;
 
@@ -187,11 +200,13 @@ export const DeleteButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: -5%;
-  margin-right: 100px;
   width: 90px;
   font-family: satoshi;
-  background: linear-gradient(181deg, rgba(186, 51, 51, 1) 50%, rgba(255, 87, 87, 1) 100%);
+  background: linear-gradient(
+    181deg,
+    rgba(186, 51, 51, 1) 50%,
+    rgba(255, 87, 87, 1) 100%
+  );
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -232,7 +247,7 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   background: white;
-  border: 1px solid #052DB4;
+  border: 1px solid #052db4;
   border-radius: 4px;
   width: 100%;
 
@@ -251,20 +266,18 @@ export const Input = styled.input`
   }
 `;
 
-
 export const TableWrapper = styled.div`
-//   overflow-x: auto;
-  background-color:white;
-
+  //   overflow-x: auto;
+  background-color: white;
 `;
 
 export const StyledTable = styled.table`
-   width: 100%;
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px;
   margin-top: 1rem;
- text-align: left;
-  font-family: 'Satoshi';
+  text-align: left;
+  font-family: "Satoshi";
 
   /* Scroll on small screens */
   // display: block;
@@ -281,8 +294,8 @@ export const StyledTable = styled.table`
   }
 
   th {
- text-align: left;
-    background-color: #304EB0;
+    text-align: left;
+    background-color: #304eb0;
     color: white;
     font-family: Raleway;
     padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
@@ -295,7 +308,7 @@ export const StyledTable = styled.table`
 
   /* Background color for even rows */
   tbody tr:nth-child(even) td {
-    background-color: #E6ECFF;
+    background-color: #e6ecff;
   }
 
   tbody tr td:first-child {
@@ -313,14 +326,16 @@ export const StyledTable = styled.table`
   }
 
   @media (min-width: 2560px) {
-    td, th {
+    td,
+    th {
       font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
       padding: clamp(8px, 1vw, 24px);
     }
   }
 
   @media (min-width: 3840px) {
-    td, th {
+    td,
+    th {
       font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
       padding: clamp(10px, 2vw, 32px);
     }
@@ -337,7 +352,7 @@ export const Avatar = styled.img`
 export const IconButton = styled.button`
   background: none;
   border: none;
-  color: ${({ danger }) => (danger ? '#f44336' : '#333')};
+  color: ${({ danger }) => (danger ? "#f44336" : "#333")};
   font-size: 1.1rem;
   cursor: pointer;
 
@@ -354,11 +369,11 @@ export const TopBar = styled.div`
 
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
+
   align-items: center;
 
-  padding: 0.3rem ;
+  padding: 0.3rem;
   // border: 1px solid #ccc;
   // border-radius: 8px;
   background-color: #fff;
@@ -411,7 +426,7 @@ export const DropdownMenu = styled.div`
 export const EmployeeImage = styled.img`
   height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
   width: auto; /* maintain aspect ratio */
-  
+
   @media (min-width: 768px) {
     height: clamp(20px, 6vw, 20px);
   }
@@ -430,7 +445,8 @@ export const EmployeeImage = styled.img`
 
   @media (min-width: 3840px) {
     height: clamp(100px, 3vw, 200px);
-  }`;
+  }
+`;
 export const TextBlock = styled.div`
   display: flex;
   flex-direction: column;
