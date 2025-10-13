@@ -303,17 +303,34 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     lookup_field = 'id'     
 
 
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.utils import timezone
+from attendance.models import Attendance
+from employee.models import Employee_db
+from .serializers import AttendanceLocationSerializer
+import logging
+
+logger = logging.getLogger(__name__)
+
 class AttendanceLocationUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        """
+        Append employee's current location to today's attendance.
+        Must be called after first punch-in.
+        """
         serializer = AttendanceLocationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = request.user
-        employee = getattr(user, 'employee_profile', None)  # your User -> Employee relation
-        if not employee:
-            return Response({"detail": "Employee not found."}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            user = request.user
+            # Fetch employee linked to the logged-in user
+            employee = Employee_db.objects.get(user=user)
+        except Employee_db.DoesNotExist:
+            return Response({"detail": "Employee not found."}, status=404)
 
         # Get today's attendance
         today = timezone.localdate()
@@ -321,7 +338,7 @@ class AttendanceLocationUpdateView(APIView):
             attendance = Attendance.objects.get(employee=employee, date=today)
         except Attendance.DoesNotExist:
             return Response({"detail": "No active attendance session. Punch in first."},
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=400)
 
         # Append location
         loc_data = {
@@ -335,4 +352,9 @@ class AttendanceLocationUpdateView(APIView):
         attendance.locations.append(loc_data)
         attendance.save(update_fields=['locations'])
 
-        return Response({"detail": "Location updated successfully.", "locations": attendance.locations})
+        logger.info(f"Location updated for employee {employee.id}: {loc_data}")
+
+        return Response({
+            "detail": "Location updated successfully.",
+            "locations": attendance.locations
+        })
