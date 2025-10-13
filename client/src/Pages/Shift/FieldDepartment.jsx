@@ -74,7 +74,7 @@ const FieldShift = () => {
           employeeId: emp.employee_id,
           email: emp.email,
           position: emp.designation,
-          department: emp.department,
+          department_name: emp.department_name,
         })) || []
       );
     }
@@ -322,7 +322,7 @@ const FieldShift = () => {
                         <TableCell>{emp.employeeId}</TableCell>
                         <TableCell>{emp.email}</TableCell>
                         <TableCell>{emp.position}</TableCell>
-                        <TableCell>{emp.department}</TableCell>
+                        <TableCell>{emp.department_name}</TableCell>
                         <TableCell>
                           <GoInfo
                             style={{ cursor: "pointer" }}

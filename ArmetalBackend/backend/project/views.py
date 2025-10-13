@@ -113,7 +113,6 @@ class RemoveEmployeeFromProjectView(APIView):
         return Response({'detail': f'Employee {employee.name} removed from project {project.name}.'}, status=status.HTTP_200_OK)
 
 
-# attendance/views.py
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
