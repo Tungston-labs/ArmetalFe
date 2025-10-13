@@ -75,18 +75,23 @@ class ProjectWriteSerializer(serializers.ModelSerializer):
 
 
         
+from datetime import timedelta, date
+from django.db.models import Sum
+
 class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
     employee = EmployeeSerializer(read_only=True)
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
     total_hours_formatted = serializers.SerializerMethodField()
     weekly_hours_formatted = serializers.SerializerMethodField()
     monthly_hours_formatted = serializers.SerializerMethodField()
+    total_working_hours = serializers.SerializerMethodField()  # new field
 
     class Meta:
         model = Attendance
         fields = [
             'id', 'date', 'total_hours', 'total_hours_formatted',
             'weekly_hours_formatted', 'monthly_hours_formatted',
+            'total_working_hours',  # include here
             'remark', 'employee', 'sessions'
         ]
 
@@ -108,6 +113,35 @@ class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
         month_end = next_month_start - timedelta(days=1)
         total = Attendance.objects.filter(employee=obj.employee, date__range=[month_start, month_end]).aggregate(total=Sum('total_hours'))['total'] or 0
         return self.format_hours(total)
+
+    def get_total_working_hours(self, obj):
+        """
+        Calculate total expected working hours for the month
+        Excluding Sundays and Public Holidays
+        """
+        from payroll.models import PublicHoliday  # adjust import path if needed
+
+        month_start = obj.date.replace(day=1)
+        if month_start.month == 12:
+            next_month_start = month_start.replace(year=month_start.year+1, month=1, day=1)
+        else:
+            next_month_start = month_start.replace(month=month_start.month+1, day=1)
+        month_end = next_month_start - timedelta(days=1)
+
+        # Fetch holidays in the month
+        holidays = set(
+            PublicHoliday.objects.filter(date__range=(month_start, month_end))
+            .values_list('date', flat=True)
+        )
+
+        # Count working days (Mon-Sat) excluding holidays
+        working_days = sum(
+            1 for d in range((month_end - month_start).days + 1)
+            if (month_start + timedelta(days=d)).weekday() != 6  # exclude Sundays
+            and (month_start + timedelta(days=d)) not in holidays
+        )
+
+        return working_days * 8  # 8 hours per working day
 
     def format_hours(self, hours):
         if not hours:
