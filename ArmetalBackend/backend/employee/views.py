@@ -186,17 +186,23 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+
 class UpcomingExpiryEmployeeListView(generics.ListAPIView):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = StandardResultsSetPagination 
 
     def get_queryset(self):
+        user = self.request.user
+        company = getattr(user, "company", None)
+        if not company:
+            return Employee_db.objects.none()  # no company assigned
+
         expiry_type = self.request.query_params.get("type")  # 'visa' or 'contract'
         today = timezone.now().date()
         one_month_later = today + timedelta(days=30)
 
-        queryset = Employee_db.objects.all()
+        queryset = Employee_db.objects.filter(department__company=company)  # filter by company
 
         if expiry_type == "visa":
             queryset = queryset.filter(
@@ -214,6 +220,7 @@ class UpcomingExpiryEmployeeListView(generics.ListAPIView):
         return queryset.order_by(
             "visa_expiry_date" if expiry_type == "visa" else "contract_expiry_date"
         )
+
 
 
 # views.py
