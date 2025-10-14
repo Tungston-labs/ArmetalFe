@@ -15,7 +15,7 @@ import {
   RightSection,
   Amount,
 } from "./Side_detail.Styles";
-import { getGroupedReimbursements } from "../../services/reimbursement"; // import service
+import { getGroupedReimbursements } from "../../services/reimbursement";
 
 const ReimbursementHistory = ({ onClose }) => {
   const [reimbursements, setReimbursements] = useState([]);
@@ -36,13 +36,19 @@ const ReimbursementHistory = ({ onClose }) => {
     fetchReimbursements();
   }, []);
 
-  if (loading) return <p>Loading reimbursements...</p>;
+  const handleOverlayClick = (e) => {
+    // Only close if clicked directly on overlay
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
+  if (loading) return <p>Loading reimbursements...</p>;
   if (!reimbursements.length) return <p>No reimbursements found.</p>;
 
   return (
-    <ModalOverlay>
-      <ModalContent>
+    <ModalOverlay onClick={handleOverlayClick}>
+      <ModalContent onClick={(e) => e.stopPropagation()}>
         <PageWrapper>
           <Header>
             <Title>Reimbursement History</Title>
@@ -55,7 +61,7 @@ const ReimbursementHistory = ({ onClose }) => {
               {section.reimbursements.map((item) => (
                 <Card key={item.id}>
                   <ProfileImage
-                    src={item.profile_pic|| "https://via.placeholder.com/50"}
+                    src={item.profile_pic || "https://via.placeholder.com/50"}
                     alt={item.employee_name}
                   />
                   <Info>

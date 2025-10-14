@@ -29,10 +29,16 @@ const ActivityLogModal = ({ data = [], date, onClose }) => {
     }));
   }, [data]);
 
+  // ✅ Handle outside clicks
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    
-    <Overlay>
-      <ModalWrapper>
+    <Overlay onClick={handleOverlayClick}>
+      <ModalWrapper onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <h3>Hourly Activity Log</h3>
           <CloseBtn onClick={onClose}>Close</CloseBtn>
