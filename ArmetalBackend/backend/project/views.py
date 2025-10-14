@@ -169,6 +169,8 @@ class EmployeeAttendanceDetailView(APIView):
         if attendance:
             serializer = EmployeeAttendanceDetailSerializer(attendance, context={'request': request})
             data = serializer.data
+            # Ensure correct total working hours
+            data["total_working_hours"] = total_working_hours
         else:
             emp_serializer = EmployeeSerializer(employee, context={'request': request})
             data = {
@@ -180,6 +182,7 @@ class EmployeeAttendanceDetailView(APIView):
                 "total_working_hours": total_working_hours,
                 "locations": []
             }
+
 
         # Ensure calculations are consistent
         data["weekly_hours_formatted"] = format_hours(total_week)
