@@ -23,6 +23,9 @@ import {
   BackButton,
   ButtonAct,
   ButtonContainer,
+  DayLabel,
+  DayDate,
+  DayMonth,
 } from "./FieldInfo.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import FieldShiftIcon from "../../assets/shifttopper.svg";
@@ -49,7 +52,11 @@ const FieldInfo = () => {
   const { id } = useParams();
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(0);
+  const [selectedDay, setSelectedDay] = useState(() => {
+    const today = new Date();
+    const weekdayIndex = today.getDay() === 0 ? 6 : today.getDay() - 1;
+    return weekdayIndex;
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -153,7 +160,9 @@ const FieldInfo = () => {
               <img
                 src={
                   profile?.profile_pic
-                    ? `${import.meta.env.VITE_BASE_URL}${profile.profile_pic}`
+                    ? profile.profile_pic.startsWith("http")
+                      ? profile.profile_pic
+                      : `${import.meta.env.VITE_BASE_URL}${profile.profile_pic}`
                     : "https://i.pravatar.cc/150"
                 }
                 alt="avatar"
@@ -191,7 +200,7 @@ const FieldInfo = () => {
             <SummaryCol>
               <SmallRow>
                 <span>Monthly Working Hours</span>
-                <strong>{fieldInfo?.total_hours || "00:00"}</strong>
+                <strong>{fieldInfo?.monthly_hours_formatted || "00:00"}</strong>
               </SmallRow>
               <SmallRow>
                 <span>Total Monthly Working Hours</span>
@@ -292,9 +301,9 @@ const FieldInfo = () => {
                 }}
                 aria-pressed={i === selectedDay}
               >
-                <div style={{ fontWeight: 700 }}>{d.label}</div>
-                <div style={{ fontSize: 12 }}>{d.date}</div>
-                <div style={{ fontSize: 12 }}>{d.month}</div>
+                <DayLabel>{d.label}</DayLabel>
+                <DayDate>{d.date}</DayDate>
+                <DayMonth>{d.month}</DayMonth>
               </DayTab>
             ))}
           </DayTabs>
