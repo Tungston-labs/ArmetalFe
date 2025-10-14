@@ -820,14 +820,15 @@ class EmployeeMonthlySummaryView(APIView):
         # Total working hours
         total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
 
-        # Half days (< 8 hours)
-        half_days = attendances.filter(total_hours__lt=8).values_list("date", flat=True)
+        # Half days (4 <= hours < 7)
+        half_days = attendances.filter(total_hours__gte=2, total_hours__lt=7).values_list("date", flat=True)
 
-        # Present days (attendance exists)
-        present_days = attendances.values_list("date", flat=True)
+        # Present days (hours >= 7)
+        present_days = attendances.filter(total_hours__gte=7).values_list("date", flat=True)
 
-       # Absent days only until today
-        absent_days = [d for d in working_days if d <= today and d not in present_days]
+        # Absent days only until today (exclude present and half days)
+        absent_days = [d for d in working_days if d <= today and d not in present_days and d not in half_days]
+
 
         # Remaining working days
         remaining_working_days = [d for d in working_days if d > today]
