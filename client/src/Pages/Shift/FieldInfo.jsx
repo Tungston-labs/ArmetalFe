@@ -153,7 +153,7 @@ const FieldInfo = () => {
               <img
                 src={
                   profile?.profile_pic
-                    ? `${import.meta.env.VITE_BASE_URL}${profile.profile_pic}`
+                    ? `${profile.profile_pic}`
                     : "https://i.pravatar.cc/150"
                 }
                 alt="avatar"
