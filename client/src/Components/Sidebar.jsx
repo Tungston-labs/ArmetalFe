@@ -6,7 +6,7 @@ import { BsFillBuildingsFill } from "react-icons/bs";
 import { FaMoneyCheckAlt, FaUmbrellaBeach, FaReceipt } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import fieldIcon from "../../src/assets/field.png"; // adjust path based on your folder structure
+import fieldIcon from "../../src/assets/shifts.png"; // adjust path based on your folder structure
 
 import {
   SidebarContainer,
@@ -143,8 +143,8 @@ export default function Sidebar() {
                   src={fieldIcon}
                   alt="Field Shift"
                   style={{
-                    width: "30px",
-                    height: "30px",
+                    width: "20px",
+                    height: "20px",
                     marginRight: "8px",
                     verticalAlign: "middle"
                   }}

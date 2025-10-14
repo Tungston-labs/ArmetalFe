@@ -175,7 +175,7 @@ export const CustomLink = styled(Link)`
   align-items: center;
   padding: 12px;
   border-radius: 8px;
- font-size: clamp(1rem, 1vw, 1.5rem); /* Responsive font size */
+  font-size: clamp(1rem, 1vw, 1.5rem);
   color: white;
   font-weight: 600;
   text-decoration: none;
@@ -184,9 +184,10 @@ export const CustomLink = styled(Link)`
   cursor: pointer;
   position: relative;
 
-  svg {
+  svg,
+  img {
     margin-right: 12px;
-    transition: margin 0.3s ease, color 0.3s ease;
+    transition: filter 0.3s ease, margin 0.3s ease, color 0.3s ease;
   }
 
   span {
@@ -201,15 +202,24 @@ export const CustomLink = styled(Link)`
     svg {
       color: #172554;
     }
+
+    img {
+      /* ✅ Blue tint for hover */
+      filter: brightness(0) saturate(100%) invert(9%) sepia(40%) saturate(4410%) hue-rotate(217deg) brightness(95%) contrast(105%);
+    }
   }
 
-  /* Active link style (same as hover) */
   &.active {
     background: white;
     color: #172554;
 
     svg {
       color: #172554;
+    }
+
+    img {
+      /* ✅ Same blue tint for active state */
+      filter: brightness(0) saturate(100%) invert(9%) sepia(40%) saturate(4410%) hue-rotate(217deg) brightness(95%) contrast(105%);
     }
 
     &::after {
@@ -224,7 +234,6 @@ export const CustomLink = styled(Link)`
     }
   }
 
-  /* Sidebar collapsed */
   &.collapsed {
     justify-content: center;
 
@@ -232,7 +241,8 @@ export const CustomLink = styled(Link)`
       display: none;
     }
 
-    svg {
+    svg,
+    img {
       margin-right: 0;
     }
   }
@@ -244,22 +254,26 @@ export const CustomLink = styled(Link)`
       display: none;
     }
 
-    svg {
+    svg,
+    img {
       margin-right: 0;
     }
   }
-   @media (min-width: 2560px) {
+
+  @media (min-width: 2560px) {
     font-size: 2rem;
     padding-block: 1rem;
     padding-inline: 1.5rem;
     border-radius: 1rem;
   }
-   @media (min-width: 3840px) {
+
+  @media (min-width: 3840px) {
     font-size: 3rem;
     padding-block: 1.5rem;
     padding-inline: 2rem;
     border-radius: 2rem;
   }
 `;
+
 
 
