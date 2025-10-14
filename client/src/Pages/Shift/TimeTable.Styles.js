@@ -2,104 +2,190 @@ import styled from "styled-components";
 
 export const TableContainer = styled.div`
   width: 100%;
-  overflow-x: auto;
-  border-radius: 8px;
-  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); */
   background: #fff;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: "Satoshi", sans-serif;
 `;
 
 export const TableHeader = styled.div`
-  display: grid;
-grid-template-columns: 55% 5.5% 30%;
-  background-color: #304EB0;
-  color: white;
-  padding: 15px 15px;
-  font-weight: bold;
-  font-size: 14px;
-  text-align: left;
-
-  @media (max-width: 768px) {
-    font-size: 12px;
-    grid-template-columns: 1fr; /* stack on mobile */
-  }
-`;
-
-export const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 60% 40%; 
-  align-items: center;
-  /* border-bottom: 1px solid #e5e5e5; */
-  padding: 0px 1px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    row-gap: 10px;
-  }
-`;
-
-
-export const TableCell = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 5px;
-`;
-
-export const TableBoarder = styled.div`
-box-shadow: 0px 0px 2.7px 0px #00000047;
-  padding: 5px 10px;
-`;
-
-export const TimeBoxWrapper = styled.div`
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  /* gap: 10px; */
-`;
-
-export const Line = styled.div`
-  flex: 1;
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 0 8px;
-`;
-export const TimeBox = styled.div`
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  background-color: ${(props) => props.bg || "#ccc"};
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-weight: 600;
-  min-width: 90px;
+  margin-bottom: 8px;
+  gap: 10px;
+padding: 0px 10px;
+  .time-section {
+    flex: 2;
+
+    .time-box {
+      background-color: #304eb0;
+      color: white;
+      padding: 10px 30px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-transform: capitalize;
+    }
+  }
+
+  .location-section {
+    flex: 1;
+
+    div {
+      background-color: #304eb0;
+      color: white;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: capitalize;
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+
+    .time-section,
+    .location-section {
+      width: 100%;
+    }
+
+    .time-box {
+      justify-content: space-around;
+    }
+  }
 `;
 
-export const TimeOut = styled.span`
-  font-size: 13px;
-  background-color: #FD907B;
-  color: black;
-  padding: 10px;
-`;
-export const TimeIn = styled.span`
-  font-size: 13px;
-  background-color: #304EB0;
-  color: white;
-  padding: 10px;
-`;
-
-export const LocationBox = styled.div`
+/* TABLE ROW */
+export const TableRow = styled.div`
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 10px;
+  /* border-bottom: 1px solid #eaeaea; */
+  padding: 8px 10px;
 
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
+/* TIME SECTION (matches header) */
+export const TimeSection = styled.div`
+  flex: 2;
+  background: #ffffff;
+  box-shadow: 0px 0px 2.7px 0px #00000047;
+  border-radius: 6px;
+  padding: 8px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-export const LocationText = styled.p`
-  margin: 0;
-  color: #304EB0;
-  /* line-height: 1.4; */
+  .time-in {
+    font-size: 13px;
+    background-color: #304eb0;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .time-out {
+    font-size: 13px;
+    background-color: #fd907b;
+    color: black;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .time-separator {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 8px;
+    position: relative;
+
+    &::before {
+      content: "";
+      flex: 1;
+      border-bottom: 2px dotted #ccc;
+    }
+
+    .to-text {
+      flex: none;
+      padding: 0 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    &::after {
+      content: "";
+      flex: 1;
+      border-bottom: 2px dotted #ccc;
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 6px;
+
+    .time-separator {
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+  }
+`;
+
+/* LOCATION SECTION */
+export const LocationSection = styled.div`
+  flex: 1;
+  background: #ffffff;
+  box-shadow: 0px 0px 2.7px 0px #00000047;
+  border-radius: 4px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
   font-size: 13px;
+
+  svg {
+    color: #304eb0;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  p {
+    margin: 0;
+    color: #304eb0;
+    font-weight: 600;
+  }
+
+  .note {
+    margin-top: 4px;
+    color: #555;
+    font-weight: 400;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 4px;
+  }
 `;
