@@ -631,7 +631,7 @@ Accept: application/json
 ###
 
 ### Get attendance for a specific date
-GET http://178.248.112.16:8001/api/project/employee/53/attendance/?date=2025-10-13
+GET http://178.248.112.16:8001/api/project/employee/53/attendance/?date=2025-10-15
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwNDI3MjIyLCJpYXQiOjE3NjA0MjM2MjIsImp0aSI6IjhlZWViOTRhY2FiYjQ2ZTZiNzc3NjZhNTZjZjBhMTkyIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.YZz2hp5YeL1tnp-qljAdhuAYzJBKMiukDDH6mvVrlrg
 Accept: application/json
 

@@ -19,6 +19,7 @@ from project.serialzers import (
     EmployeeAttendanceDetailSerializer
 )
 from datetime import timedelta
+import calendar
 
 
 # ============================================================
@@ -113,6 +114,7 @@ class RemoveEmployeeFromProjectView(APIView):
 # ============================================================
 #  Employee Attendance Detail
 # ============================================================
+
 class EmployeeAttendanceDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -125,7 +127,7 @@ class EmployeeAttendanceDetailView(APIView):
             try:
                 selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
             except ValueError:
-                return Response({'detail': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
         else:
             selected_date = timezone.localdate()
 
@@ -134,29 +136,29 @@ class EmployeeAttendanceDetailView(APIView):
         # Weekly/Monthly totals
         week_start = selected_date - timedelta(days=selected_date.weekday())
         week_end = week_start + timedelta(days=6)
-        total_week = Attendance.objects.filter(employee=employee, date__range=[week_start, week_end]).aggregate(total=Sum('total_hours'))['total'] or 0
+        total_week = Attendance.objects.filter(
+            employee=employee, date__range=[week_start, week_end]
+        ).aggregate(total=Sum('total_hours'))['total'] or 0
 
         month_start = selected_date.replace(day=1)
-        if month_start.month == 12:
-            next_month_start = month_start.replace(year=month_start.year+1, month=1, day=1)
-        else:
-            next_month_start = month_start.replace(month=month_start.month+1, day=1)
-        month_end = next_month_start - timedelta(days=1)
-        total_month = Attendance.objects.filter(employee=employee, date__range=[month_start, month_end]).aggregate(total=Sum('total_hours'))['total'] or 0
+        month_end = month_start.replace(day=calendar.monthrange(month_start.year, month_start.month)[1])
+        total_month = Attendance.objects.filter(
+            employee=employee, date__range=[month_start, month_end]
+        ).aggregate(total=Sum('total_hours'))['total'] or 0
 
-
-        # 1. All dates in month
+        # ==============================
+        # Total working hours (new logic)
+        # ==============================
         all_days = [month_start + timedelta(days=i) for i in range((month_end - month_start).days + 1)]
+        sundays = [d for d in all_days if d.weekday() == 6]
+        holidays = set(
+            PublicHoliday.objects.filter(date__range=(month_start, month_end))
+            .values_list('date', flat=True)
+        )
+        working_days = [d for d in all_days if d not in sundays and d not in holidays]
+        total_working_hours = len(working_days) * 8
 
-        # 2. Exclude Sundays and holidays
-        holidays = set(PublicHoliday.objects.filter(date__range=(month_start, month_end)).values_list('date', flat=True))
-        working_days_list = [d for d in all_days if d.weekday() != 6 and d not in holidays]
-
-        # 3. Count and calculate total hours
-        working_days_count = len(working_days_list)
-        total_working_hours = working_days_count * 8
-
-
+        # Helper
         def format_hours(hours):
             if not hours:
                 return "00:00"
@@ -184,4 +186,4 @@ class EmployeeAttendanceDetailView(APIView):
         data["monthly_hours_formatted"] = format_hours(total_month)
         data["total_working_hours"] = total_working_hours
 
-        return Response(data, status=status.HTTP_200_OK)
+        return Response(data, status=200)

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.db.models import Sum
 from django.conf import settings
 from datetime import timedelta
-
+import calendar
 from .models import Project
 from employee.models import Employee_db
 from attendance.models import Attendance, AttendanceSession
@@ -147,32 +147,21 @@ class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
         return self.format_hours(total)
 
     def get_total_working_hours(self, obj):
-        """Calculate total expected working hours for the month"""
         from holidays.models import PublicHoliday
         month_start = obj.date.replace(day=1)
-        if month_start.month == 12:
-            next_month_start = month_start.replace(year=month_start.year + 1, month=1, day=1)
-        else:
-            next_month_start = month_start.replace(month=month_start.month + 1, day=1)
-        month_end = next_month_start - timedelta(days=1)
+        month_end = month_start.replace(day=calendar.monthrange(month_start.year, month_start.month)[1])
 
-        # Fetch holidays
+        all_days = [month_start + timedelta(days=i) for i in range((month_end - month_start).days + 1)]
+        sundays = [d for d in all_days if d.weekday() == 6]
+
         holidays = set(
             PublicHoliday.objects.filter(date__range=(month_start, month_end))
             .values_list('date', flat=True)
         )
 
-        # Generate all dates in the month
-        all_days = [month_start + timedelta(days=i) for i in range((month_end - month_start).days + 1)]
+        working_days = [d for d in all_days if d not in sundays and d not in holidays]
 
-        # Exclude Sundays and holidays
-        working_days_list = [d for d in all_days if d.weekday() != 6 and d not in holidays]
-
-        # Count total working days
-        working_days_count = len(working_days_list)
-
-        # Total working hours
-        return working_days_count * 8  # 8 hours/day
+        return len(working_days) * 8  # 8 hours/day
 
 
     def get_locations(self, obj):
