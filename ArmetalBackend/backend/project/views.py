@@ -18,6 +18,7 @@ from project.serialzers import (
     ProjectSerializer,
     EmployeeAttendanceDetailSerializer
 )
+from datetime import timedelta
 
 
 # ============================================================
@@ -143,13 +144,18 @@ class EmployeeAttendanceDetailView(APIView):
         month_end = next_month_start - timedelta(days=1)
         total_month = Attendance.objects.filter(employee=employee, date__range=[month_start, month_end]).aggregate(total=Sum('total_hours'))['total'] or 0
 
-        # Total working hours (exclude Sundays & public holidays)
+
+        # 1. All dates in month
+        all_days = [month_start + timedelta(days=i) for i in range((month_end - month_start).days + 1)]
+
+        # 2. Exclude Sundays and holidays
         holidays = set(PublicHoliday.objects.filter(date__range=(month_start, month_end)).values_list('date', flat=True))
-        working_days = sum(
-            1 for d in range((month_end - month_start).days + 1)
-            if (month_start + timedelta(days=d)).weekday() != 6 and (month_start + timedelta(days=d)) not in holidays
-        )
-        total_working_hours = working_days * 8
+        working_days_list = [d for d in all_days if d.weekday() != 6 and d not in holidays]
+
+        # 3. Count and calculate total hours
+        working_days_count = len(working_days_list)
+        total_working_hours = working_days_count * 8
+
 
         def format_hours(hours):
             if not hours:

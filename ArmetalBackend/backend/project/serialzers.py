@@ -156,18 +156,24 @@ class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
             next_month_start = month_start.replace(month=month_start.month + 1, day=1)
         month_end = next_month_start - timedelta(days=1)
 
+        # Fetch holidays
         holidays = set(
             PublicHoliday.objects.filter(date__range=(month_start, month_end))
             .values_list('date', flat=True)
         )
 
-        working_days = sum(
-            1 for d in range((month_end - month_start).days + 1)
-            if (month_start + timedelta(days=d)).weekday() != 6
-            and (month_start + timedelta(days=d)) not in holidays
-        )
+        # Generate all dates in the month
+        all_days = [month_start + timedelta(days=i) for i in range((month_end - month_start).days + 1)]
 
-        return working_days * 8  # 8 hours/day
+        # Exclude Sundays and holidays
+        working_days_list = [d for d in all_days if d.weekday() != 6 and d not in holidays]
+
+        # Count total working days
+        working_days_count = len(working_days_list)
+
+        # Total working hours
+        return working_days_count * 8  # 8 hours/day
+
 
     def get_locations(self, obj):
         return obj.locations if obj.locations else []
