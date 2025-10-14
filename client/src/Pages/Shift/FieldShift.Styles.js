@@ -123,28 +123,33 @@ export const Subtitle = styled.p`
   font-weight: 300;
   line-height: 1.2;
 
-  @media (min-width: 480px) {
-    font-size: 0.5rem;
+  @media (max-width: 768px) {
+    font-size: 14px;
   }
 
-  @media (min-width: 768px) {
-    font-size: 0.9rem;
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 14px;
   }
 
-  @media (min-width: 1024px) {
-    font-size: 1rem;
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 14px;
+  }
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    font-size: 16px;
   }
 
-  @media (min-width: 1440px) {
-    font-size: 0.9rem;
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    font-size: 18px;
+  }
+  @media (min-width: 2060px) and (max-width: 2600px) {
+    font-size: 20px;
+  }
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 24px;
   }
 
-  @media (min-width: 2560px) {
-    font-size: 1.5rem;
-  }
-
-  @media (min-width: 3840px) {
-    font-size: 2.5rem;
+  @media (min-width: 3841px) {
+    font-size: 32px;
   }
 `;
 

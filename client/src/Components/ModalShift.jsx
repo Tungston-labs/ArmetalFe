@@ -30,6 +30,7 @@ const ActivityLogModal = ({ data = [], date, onClose }) => {
   }, [data]);
 
   return (
+    
     <Overlay>
       <ModalWrapper>
         <ModalHeader>

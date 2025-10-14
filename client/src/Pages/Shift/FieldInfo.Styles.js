@@ -13,19 +13,9 @@ export const PageWrapper = styled.div`
 export const Header = styled.header`
   display: flex;
   align-items: center;
-  /* justify-content: space-between; */
   margin-bottom: 18px;
 `;
 
-// export const BackButton = styled.button`
-//   border: none;
-//   background: transparent;
-//   padding: 6px;
-//   cursor: pointer;
-//   font-size: 18px;
-// `;
-
-/* Title */
 export const TitleGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -44,19 +34,47 @@ export const SummaryCol = styled.div`
 `;
 export const ButtonContainer = styled.div`
   display: flex;
-  justify-content: flex-end; 
-  margin-right: 0; 
-  width: 100%; 
+  justify-content: flex-end;
+  margin-right: 0;
+  width: 100%;
 `;
 
 export const ButtonAct = styled.div`
   background-color: #304eb0;
   color: #fff;
-  font-size: 14PX;
+  font-size: 14px;
   padding: 8px 16px;
   border-radius: 6px;
   align-items: center;
   cursor: pointer;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 14px;
+  }
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    font-size: 18px;
+  }
+  @media (min-width: 2060px) and (max-width: 2600px) {
+    font-size: 20px;
+  }
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 24px;
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 32px;
+  }
 `;
 
 export const Row = styled.div`
@@ -81,23 +99,44 @@ export const SmallRow = styled.div`
     letter-spacing: 0;
     color: inherit;
 
-    /* Responsive width & font-size */
     width: 220px;
     font-size: 16px;
 
-    @media (max-width: 1024px) {
-      width: 170px;
-      font-size: 12px;
-    }
- 
     @media (max-width: 768px) {
-      width: 150px;
-      font-size: 12px;
+      font-size: 14px;
+      width: 180px;
     }
 
-    @media (max-width: 300px) {
-      width: 120px;
-      font-size: 10px;
+    @media (min-width: 769px) and (max-width: 1024px) {
+      font-size: 14px;
+      width: 200px;
+    }
+
+    @media (min-width: 1025px) and (max-width: 1440px) {
+      font-size: 14px;
+      width: 210px;
+    }
+    @media (min-width: 1441px) and (max-width: 1700px) {
+      font-size: 16px;
+      width: 250px;
+    }
+
+    @media (min-width: 1701px) and (max-width: 2060px) {
+      font-size: 18px;
+      width: 300px;
+    }
+    @media (min-width: 2060px) and (max-width: 2600px) {
+      font-size: 20px;
+      width: 350px;
+    }
+    @media (min-width: 2561px) and (max-width: 3840px) {
+      font-size: 20px;
+      width: 400px;
+    }
+
+    @media (min-width: 3841px) {
+      font-size: 32px;
+      width: 450px;
     }
   }
 
@@ -105,7 +144,6 @@ export const SmallRow = styled.div`
     color: #000;
   }
 `;
-
 
 export const Small = styled.div`
   font-size: 12px;
@@ -140,12 +178,53 @@ export const Avatar = styled.div`
   border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+  @media (max-width:768px){
+  width: 100px;
+    height: 200px;
+
+  }
+  @media (min-width: 769px) and (max-width: 1024px) {
+    width: 110px;
+    height: 125px;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    width: 100px;
+    height: 125px;
+  }
+
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    width: 120px;
+    height: 125px;
+  }
+
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    width: 140px;
+    height: 140px;
+  }
+
+  @media (min-width: 2060px) and (max-width: 2600px) {
+    width: 160px;
+    height: 180px;
+  }
+
+  @media (min-width: 2601px) and (max-width: 3840px) {
+    width: 180px;
+    height: 180px;
+  }
+
+  @media (min-width: 3841px) {
+    width: 200px;
+    height: 200px;
+  }
 `;
+
 
 export const ProfileDetails = styled.div`
   flex: 1;
@@ -200,6 +279,35 @@ export const InfoInput = styled.input`
   outline: none;
   width: 100%;
   box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 14px;
+  }
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    font-size: 18px;
+  }
+  @media (min-width: 2060px) and (max-width: 2600px) {
+    font-size: 20px;
+  }
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 24px;
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 32px;
+  }
 `;
 
 export const SummaryRow = styled.div`
@@ -228,6 +336,14 @@ export const DateNav = styled.div`
     justify-content: center;
     margin-top: 12px;
   }
+  @media (max-width: 900px) {
+    position: static;
+    transform: translateX(-20%);
+
+    transform: none;
+    justify-content: center;
+    margin-top: 12px;
+  }
 `;
 
 export const DateContainer = styled.div`
@@ -243,7 +359,35 @@ export const CalendarIcon = styled(FaRegCalendarAlt)`
 `;
 
 export const DayNumber = styled.div`
-  font-size: 3rem;
+  font-size: 2rem;
+  @media (max-width: 768px) {
+    font-size: 0.5rem;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 1.5rem;
+  }
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    font-size: 1.8rem;
+  }
+
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    font-size: 2.2rem;
+  }
+  @media (min-width: 2060px) and (max-width: 2600px) {
+    font-size: 2.5rem;
+  }
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 3rem;
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 3.5rem;
+  }
 `;
 
 export const MonthDay = styled.div`
@@ -282,6 +426,102 @@ export const DayTab = styled.button`
   transition: all 0.18s ease;
 `;
 
+export const DayLabel = styled.div`
+  font-weight: 700;
+  font-size: 14px;
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 2061px) and (max-width: 2600px) {
+    font-size: 15px;
+  }
+
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 22px;
+  }
+`;
+
+export const DayDate = styled.div`
+  font-size: 12px;
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 11px;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 2061px) and (max-width: 2600px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 20px;
+  }
+`;
+
+export const DayMonth = styled.div`
+  font-size: 12px;
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 11px;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 2061px) and (max-width: 2600px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 20px;
+  }
+`;
 export const TableWrapper = styled.div`
   margin-top: 8px;
   background: #fff;
