@@ -20,6 +20,8 @@ import {
   TableRow,
   TableCell,
   AddButton,
+  ButtonWrapper,
+  EmployeeHeader,
 } from "./FieldDepartment.Styles";
 import {
   IconWrapper,
@@ -34,6 +36,7 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
 import { BiEditAlt } from "react-icons/bi";
 import Swal from "sweetalert2";
+import Loader from "../../Components/Loader";
 const FieldShift = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -51,8 +54,6 @@ const FieldShift = () => {
     longitude: "",
   });
   const [employees, setEmployees] = useState([]);
-
-  // ✅ Fetch project details on mount
   useEffect(() => {
     if (id) dispatch(getProjectById(id));
   }, [dispatch, id]);
@@ -117,8 +118,6 @@ const FieldShift = () => {
     });
   };
 
-
-  // ✅ Handle employee delete (API integrated)
   const handleEmployeeDelete = async (employeeId) => {
     const employee = employees.find((emp) => emp.id === employeeId);
 
@@ -134,8 +133,6 @@ const FieldShift = () => {
       if (result.isConfirmed) {
         try {
           await dispatch(removeEmployeeFromProject({ projectId: id, employeeId })).unwrap();
-
-          // remove locally
           setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId));
 
           Swal.fire({
@@ -145,8 +142,6 @@ const FieldShift = () => {
             timer: 1500,
             showConfirmButton: false,
           });
-
-          // optional refresh of project data
           dispatch(getProjectById(id));
         } catch (err) {
           Swal.fire({
@@ -190,13 +185,12 @@ const FieldShift = () => {
     }
   };
 
-  // ✅ Show loading and error states
   if (loading) {
     return (
       <>
         <Navbar />
         <PageWrapper>
-          <h3>Loading project details...</h3>
+        <Loader/>
         </PageWrapper>
       </>
     );
@@ -218,7 +212,7 @@ const FieldShift = () => {
       <Navbar />
       <PageWrapper>
         <Header>
-          <BackButton onClick={() => navigate(-1)}>
+          <BackButton onClick={() => navigate("/field-shift")}>
             <LuArrowLeft />
           </BackButton>
 
@@ -269,15 +263,8 @@ const FieldShift = () => {
                   </FormRow>
                 </div>
 
-                {/* Right side buttons */}
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
-                    minWidth: "120px",
-                    marginTop: "2rem",
-                  }}
-                >
+              
+                  <ButtonWrapper>
                   <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
                     <BiEditAlt style={{ marginRight: "6px" }} />
                     Edit
@@ -286,18 +273,18 @@ const FieldShift = () => {
                     <FaTrash style={{ marginRight: "6px" }} />
                     Delete
                   </ActionButton>
+                  </ButtonWrapper>
                 </div>
-              </div>
             </FormContainer>
 
-            {/* ✅ Employees Section */}
             <EmployeesSection>
-              <div className="employee-header">
-                <h2>Employees</h2>
-                <AddButton onClick={() => setShowEmployeeModal(true)}>
-                  <FaPlus /> Add
-                </AddButton>
-              </div>
+             <EmployeeHeader>
+  <h2>Employees</h2>
+  <AddButton onClick={() => setShowEmployeeModal(true)}>
+    <FaPlus /> Add
+  </AddButton>
+</EmployeeHeader>
+
 
               <TableWrapper>
                 <Table>

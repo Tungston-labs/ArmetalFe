@@ -67,13 +67,16 @@ const EmployeeList = () => {
   };
 
   return (
+    <>
+        <Navbar/>
+       
     <Container>
       {loading && (
 
         <Loader />
 
     )}
-    <Navbar/>
+
       {/* Header */}
       <HeaderSection>
          <TitleSection>
@@ -194,6 +197,7 @@ const EmployeeList = () => {
         </Pagination>
       )}
     </Container>
+     </>
   );
 };
 

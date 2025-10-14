@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { logout as logoutAction } from "../Redux/authSlice";
 import Swal from "sweetalert2";
 
-function Navbar({ bgColor = "#fff" }) {
+function Navbar({ bgColor = "transparent" }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showChangeModal, setShowChangeModal] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
@@ -85,7 +85,7 @@ const handleLogoutClick = async () => {
 
   return (
     <div>
-      <TopBar style={{ backgroundColor: bgColor }}>
+      <TopBar >
         <div />
         <DropdownWrapper ref={dropdownRef}>
           <HRManager onClick={() => setMenuOpen(!menuOpen)}>
@@ -300,20 +300,23 @@ export const TopBar = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  background-color: transparent; 
+
   @media (min-width: 2560px) {
-   height: 70px;
+    height: 70px;
   }
   @media (min-width: 3840px) {
-   height: 100px;
+    height: 100px;
   }
 `;
+
 
 export const HRManager = styled.div`
   display: flex;
   height: 30px;
   align-items: center;
   padding: 0.3rem;
-  background-color: #fff;
+  background-color: transparent; 
   font-size: 1rem;
   color: #333;
   cursor: pointer;

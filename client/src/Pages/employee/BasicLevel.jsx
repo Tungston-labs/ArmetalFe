@@ -51,6 +51,7 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaPlus } from 'react-icons/fa';
 import Loader from "../../Components/Loader"
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import Navbar from '../../Components/Navbar';
 
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
@@ -237,6 +238,8 @@ if (formData.phno) {
   };
 
   return (
+    <>
+    <Navbar/>
     <Container>
       {/* Unsaved changes guard */}
       <UnsavedChangesGuard isDirty={isFormDirty} />
@@ -506,5 +509,6 @@ if (formData.phno) {
 
       {status === "loading" && <Loader size="large" tip="Loading..." />}
     </Container>
+    </>
   );
 }

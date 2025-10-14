@@ -117,7 +117,7 @@ const FieldInfo = () => {
       <PageWrapper>
         {/* Header */}
         <Header>
-          <BackButton onClick={() => navigate(-1)}>
+          <BackButton onClick={() => navigate("/fieldshift-department/id")}>
             <LuArrowLeft />
           </BackButton>
 

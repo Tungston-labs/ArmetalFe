@@ -201,7 +201,7 @@ const DepartmentDetail = () => {
 
   return (
     <>
-      {/* <Navbar/> */}
+      <Navbar/>
       <Container>
 
         <HeaderSection>

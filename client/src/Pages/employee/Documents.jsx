@@ -18,6 +18,7 @@ import {
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
 import { EmployeeImage } from './BasicLevel.Styles';
+import Navbar from '../../Components/Navbar';
 
 export default function DocumentUploadForm() {
   const navigate = useNavigate();
@@ -180,6 +181,7 @@ const handleSubmit = async () => {
 
   return (
      <>
+     <Navbar/>
     {loading && <Loader  />}
     <Container>
       <Header>

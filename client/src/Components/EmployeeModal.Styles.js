@@ -11,18 +11,52 @@ export const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 999;
+  padding: 10px;
 `;
 
 export const ModalContainer = styled.div`
   background: #fff;
-  width: 80%;
-  /* max-width: 1000px; */
-  /* border-radius: 8px; */
-  padding: 1.5rem 2rem;
+  width: 100%;
+  max-width: 2000px; 
+  padding: clamp(1rem, 2vw, 2rem);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   font-family: "Satoshi", sans-serif;
   display: flex;
   flex-direction: column;
+  border-radius: 8px;
+
+  @media (min-width: 3840px) {
+    max-width: 2800px;
+    padding: 2rem 2rem;
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    max-width: 1900px;
+    padding: 2.5rem 3rem;
+  }
+
+  @media (min-width: 1940px) and (max-width: 2559px) {
+    max-width: 1600px;
+    padding: 2rem 2.5rem;
+  }
+
+  @media (min-width: 1440px) and (max-width: 1939px) {
+    max-width: 1100px;
+  }
+
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    max-width: 800px;
+  }
+
+  @media (max-width: 1023px) {
+    width: 95%;
+    padding: 1rem 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 95%;
+    padding: 0.8rem 1rem;
+  }
 `;
 
 export const Header = styled.div`
@@ -30,23 +64,47 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  font-weight: 600;
-  color: #304EB0;
-  font-size: 1rem;
-  font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 22px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  color: #304eb0;
+  font-family: "Satoshi";
+  font-weight: 700;
+  font-size: clamp(1.2rem, 1.5vw, 2.2rem);
+  line-height: 1;
 
+  @media (min-width: 3840px) {
+    max-width: 2000px;
+    font-size: clamp(1.8rem, 2vw, 2.8rem);
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    max-width: 1400px;
+    font-size: clamp(1.5rem, 1.5vw, 2.5rem);
+  }
+
+  @media (min-width: 1940px) and (max-width: 2559px) {
+    max-width: 1200px;
+    font-size: clamp(1.4rem, 1.5vw, 2.2rem);
+  }
+
+  @media (min-width: 1440px) and (max-width: 1939px) {
+    max-width: 1000px;
+    font-size: clamp(1.3rem, 1.2vw, 2rem);
+  }
+
+  @media (max-width: 1024px) {
+    justify-content: center;
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    font-size: clamp(1rem, 4vw, 1.4rem);
+  }
 `;
 
 export const SearchBar = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-bottom: 1rem;
 
   .input-wrapper {
     position: relative;
@@ -54,11 +112,39 @@ export const SearchBar = styled.div`
   }
 
   input {
-    /* width: 100%; */
-    padding: 6px 10px 6px 30px;
+    width: 100%;
     border: 1px solid #5f53a5;
     border-radius: 6px;
     outline: none;
+
+   
+    font-size: 1.1rem;
+    padding: 8px 16px 8px 30px;
+
+    @media (min-width: 1940px) and (max-width: 2559px) {
+      font-size: 1.2rem;
+      padding: 9px 18px 9px 32px;
+    }
+
+    @media (min-width: 2560px) and (max-width: 3839px) {
+      font-size: 1.3rem;
+      padding: 10px 20px 10px 34px;
+    }
+
+    @media (min-width: 3840px) {
+      font-size: 2rem;
+      padding: 12px 24px 12px 36px;
+    }
+
+    @media (max-width: 1024px) {
+      font-size: 1rem;
+      padding: 6px 12px 6px 28px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.85rem;
+      padding: 6px 10px 6px 26px;
+    }
   }
 
   .search-icon {
@@ -67,7 +153,29 @@ export const SearchBar = styled.div`
     top: 50%;
     transform: translateY(-50%);
     color: #5f53a5;
-    pointer-events: none;
+
+    /* Default font size */
+    font-size: 1.1rem;
+
+    @media (min-width: 1940px) and (max-width: 2559px) {
+      font-size: 1.2rem;
+    }
+
+    @media (min-width: 2560px) and (max-width: 3839px) {
+      font-size: 1.3rem;
+    }
+
+    @media (min-width: 3840px) {
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      font-size: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.8rem;
+    }
   }
 
   button {
@@ -75,21 +183,40 @@ export const SearchBar = styled.div`
     background: none;
     color: #3352BA;
     cursor: pointer;
+
+    /* Default font size */
+    font-size: 1rem;
+
+    @media (min-width: 1940px) and (max-width: 2559px) {
+      font-size: 1.1rem;
+    }
+
+    @media (min-width: 2560px) and (max-width: 3839px) {
+      font-size: 1.2rem;
+    }
+
+    @media (min-width: 3840px) {
+      font-size: 1.4rem;
+    }
+
+    @media (max-width: 1024px) {
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.75rem;
+    }
   }
 `;
-
 
 export const TableWrapper = styled.div`
   flex: 1;
   overflow-y: auto;
-  max-height: 400px; /* adjust as needed */
+  max-height: 400px;
   margin-top: 0.5rem;
-  /* border: 1px solid #eee; */
-  /* border-radius: 6px; */
   scrollbar-width: thin;
   scrollbar-color: #c1c1c1 #f1f1f1;
 
-  /* For WebKit browsers */
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -100,8 +227,15 @@ export const TableWrapper = styled.div`
     background-color: #c1c1c1;
     border-radius: 10px;
   }
-`;
 
+  @media (min-width: 2560px) {
+    max-height: 600px;
+  }
+
+  @media (min-width: 3840px) {
+    max-height: 800px;
+  }
+`;
 
 export const Table = styled.table`
   width: 100%;
@@ -110,47 +244,28 @@ export const Table = styled.table`
   margin-top: 1rem;
   text-align: left;
   font-family: "Satoshi";
-
-  /* Scroll on small screens */
-  // display: block;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 
-  td {
-    text-align: left;
-    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
+  td, th {
+    font-size: clamp(0.8rem, 1vw, 1.5rem);
+    padding: clamp(4px, 0.5vw, 12px);
     white-space: nowrap;
-    background-color: white;
-    border: none;
-    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
   }
 
   th {
-    text-align: left;
     background-color: #304eb0;
     color: white;
     font-family: Raleway;
-    padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
-    font-size: clamp(0.9rem, 1vw, 1.8rem); /* responsive font */
+    font-weight: 600;
   }
 
   tbody tr {
-    box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+    box-shadow: 0px 0px 2.7px rgba(0, 0, 0, 0.28);
+    background-color: white;
   }
 
-  /* Background color for even rows */
   tbody tr:nth-child(even) td {
     background-color: #e6ecff;
-  }
-
-  tbody tr td:first-child {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-  }
-
-  tbody tr td:last-child {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
   }
 
   tbody tr:hover td {
@@ -158,17 +273,15 @@ export const Table = styled.table`
   }
 
   @media (min-width: 2560px) {
-    td,
-    th {
-      font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
+    td, th {
+      font-size: clamp(1.2rem, 1.5vw, 1.8rem);
       padding: clamp(8px, 1vw, 24px);
     }
   }
 
   @media (min-width: 3840px) {
-    td,
-    th {
-      font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
+    td, th {
+      font-size: clamp(1.5rem, 2vw, 2rem);
       padding: clamp(10px, 2vw, 32px);
     }
   }
@@ -176,13 +289,61 @@ export const Table = styled.table`
 
 export const Checkbox = styled.input`
   cursor: pointer;
+
+  /* Default size for desktop (1440px+) */
+  width: 18px;
+  height: 18px;
+
+  @media (min-width: 1940px) and (max-width: 2559px) {
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    width: 24px;
+    height: 24px;
+  }
+
+  @media (min-width: 3840px) {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  @media (max-width: 1024px) {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (max-width: 480px) {
+    width: 16px;
+    height: 16px;
+  }
 `;
+
 
 export const ButtonRow = styled.div`
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 1rem; /* default gap */
   margin-top: 1rem;
+
+  @media (min-width: 1940px) and (max-width: 2559px) {
+    gap: 1.2rem;
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+  }
 `;
 
 export const Button = styled.button`
@@ -191,6 +352,7 @@ export const Button = styled.button`
   border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
+  font-size: 0.8rem;
 
   &.cancel {
     background: #ff4d4f;
@@ -201,4 +363,32 @@ export const Button = styled.button`
     background: #3352BA;
     color: white;
   }
+
+  @media (min-width: 1940px) and (max-width: 2559px) {
+    padding: 10px 24px;
+    font-size: 1.1rem;
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    padding: 12px 28px;
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: 3840px) {
+    padding: 14px 32px;
+    font-size: 2rem;
+  }
+
+  @media (max-width: 1024px) {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    width: 100%;
+    text-align: center;
+  }
 `;
+

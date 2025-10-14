@@ -30,6 +30,7 @@ import TagIcon from "../../assets/downicon.svg";
 import Navbar from "../../Components/Navbar";
 import { FaPlus } from "react-icons/fa";
 import { getProjects } from "../../Redux/fieldShiftSlice";
+import Loader from "../../Components/Loader";
 
 const DepartmentPage = () => {
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ const DepartmentPage = () => {
 
         <CardsGrid>
   {isLoading ? (
-    <p>Loading projects...</p>
+<Loader/>
   ) : projects.length === 0 ? (
     <p>No projects found.</p>
   ) : (

@@ -109,8 +109,9 @@ const EmployeeList = () => {
 
   return (
     <>
+       <Navbar />
         <Container>
-      <Navbar />
+   
       {loading && (
         <LoaderOverlay>
           <Loader />
