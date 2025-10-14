@@ -155,9 +155,12 @@ class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
         sundays = [d for d in all_days if d.weekday() == 6]
 
         holidays = set(
-            PublicHoliday.objects.filter(date__range=(month_start, month_end))
-            .values_list('date', flat=True)
+            PublicHoliday.objects.filter(
+                company=obj.employee.department.company,
+                date__range=(month_start, month_end)
+            ).values_list('date', flat=True)
         )
+
 
         working_days = [d for d in all_days if d not in sundays and d not in holidays]
 

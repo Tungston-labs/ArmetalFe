@@ -152,9 +152,12 @@ class EmployeeAttendanceDetailView(APIView):
         all_days = [month_start + timedelta(days=i) for i in range((month_end - month_start).days + 1)]
         sundays = [d for d in all_days if d.weekday() == 6]
         holidays = set(
-            PublicHoliday.objects.filter(date__range=(month_start, month_end))
-            .values_list('date', flat=True)
+            PublicHoliday.objects.filter(
+                company=employee.department.company,
+                date__range=(month_start, month_end)
+            ).values_list('date', flat=True)
         )
+
         working_days = [d for d in all_days if d not in sundays and d not in holidays]
         total_working_hours = len(working_days) * 8
 
