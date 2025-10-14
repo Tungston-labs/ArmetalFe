@@ -534,7 +534,8 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "contract_expiry_date": emp.contract_expiry_date,
-                "employee_id":emp.employee_id
+                "employee_id":emp.employee_id,
+                "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
             for emp in upcoming_contract_expiry_qs
         ]
