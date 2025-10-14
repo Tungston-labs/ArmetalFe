@@ -1,8 +1,28 @@
-from rest_framework import generics,filters,status
-from .models import Project
-from project.serialzers import ProjectReadSerializer,ProjectWriteSerializer,EmployeeSerializer,ProjectSerializer,EmployeeAttendanceDetailSerializer
+from rest_framework import generics, filters, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from datetime import datetime, timedelta
+from django.db.models import Sum
 
+from .models import Project
+from employee.models import Employee_db
+from attendance.models import Attendance
+from holidays.models import PublicHoliday
+from project.serialzers import (
+    ProjectReadSerializer,
+    ProjectWriteSerializer,
+    EmployeeSerializer,
+    ProjectSerializer,
+    EmployeeAttendanceDetailSerializer
+)
+
+
+# ============================================================
+#  Project List/Create
+# ============================================================
 class ProjectListCreateView(generics.ListCreateAPIView):
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
@@ -10,14 +30,15 @@ class ProjectListCreateView(generics.ListCreateAPIView):
     search_fields = ['name']
 
     def get_queryset(self):
-        # Return projects for the logged-in user's company
         return Project.objects.filter(company=self.request.user.company).prefetch_related('employees')
 
     def perform_create(self, serializer):
-        # Automatically assign the logged-in user's company
         serializer.save(company=self.request.user.company)
 
 
+# ============================================================
+#  Project Retrieve/Update/Delete
+# ============================================================
 class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all().prefetch_related('employees')
     permission_classes = [IsAuthenticated]
@@ -31,116 +52,73 @@ class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         project = self.get_object()
         data = request.data.copy()
 
-        # Handle employee addition
-        employee_ids = data.pop("employees", None)  # pop so serializer won't overwrite
+        # Add new employees
+        employee_ids = data.pop("employees", None)
         if employee_ids is not None:
-            # Add only new employees
             for emp_id in employee_ids:
                 project.employees.add(emp_id)
 
-        # Update other fields normally
+        # Update other fields
         serializer = self.get_serializer(project, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        # Return the updated project with employees
-        read_serializer = ProjectReadSerializer(project)
+        # Return full project details with employee info
+        read_serializer = ProjectReadSerializer(project, context={'request': request})
         return Response(read_serializer.data)
 
 
-
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
-from .models import Project
-from employee.models import Employee_db
-from employee.serializers import EmployeeSerializer
-
+# ============================================================
+#  Employees Not In Project
+# ============================================================
 class EmployeesNotInProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, project_id):
-        user = request.user
-        company = getattr(user, "company", None)
-
+        company = getattr(request.user, "company", None)
         if not company:
-            return Response(
-                {"detail": "User has no company assigned"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "User has no company assigned"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Get the project
         project = get_object_or_404(Project, id=project_id)
 
-        # Ensure the project belongs to the same company
         if project.company != company:
-            return Response(
-                {"detail": "Not authorized for this project"},
-                status=status.HTTP_403_FORBIDDEN
-            )
+            return Response({"detail": "Not authorized for this project"}, status=status.HTTP_403_FORBIDDEN)
 
-        # ✅ Get employees from same company (through department)
         employees_not_in_project = Employee_db.objects.filter(
             department__company=company
-        ).exclude(
-            id__in=project.employees.all()
-        )
+        ).exclude(id__in=project.employees.all())
 
-        serializer = EmployeeSerializer(employees_not_in_project,context={'request': request}, many=True)
+        serializer = EmployeeSerializer(employees_not_in_project, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# ============================================================
+#  Remove Employee From Project
+# ============================================================
 class RemoveEmployeeFromProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, project_id, employee_id):
-        try:
-            project = Project.objects.get(pk=project_id)
-        except Project.DoesNotExist:
-            return Response({'detail': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
+        project = get_object_or_404(Project, pk=project_id)
+        employee = get_object_or_404(Employee_db, pk=employee_id)
 
-        try:
-            employee = Employee_db.objects.get(pk=employee_id)
-        except Employee_db.DoesNotExist:
-            return Response({'detail': 'Employee not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        # Remove employee from project's ManyToMany field
         project.employees.remove(employee)
-        return Response({'detail': f'Employee {employee.name} removed from project {project.name}.'}, status=status.HTTP_200_OK)
+        return Response(
+            {'detail': f'Employee {employee.name} removed from project {project.name}.'},
+            status=status.HTTP_200_OK
+        )
 
 
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from django.utils import timezone
-from datetime import datetime, timedelta
-from django.db.models import Sum
-from attendance.models import Attendance
-from employee.models import Employee_db
-from holidays.models import PublicHoliday
-from .serialzers import EmployeeAttendanceDetailSerializer, EmployeeSerializer
-
-
+# ============================================================
+#  Employee Attendance Detail
+# ============================================================
 class EmployeeAttendanceDetailView(APIView):
-    """
-    Get employee attendance details for a given employee ID.
-    Optional query param: date=YYYY-MM-DD (default today)
-    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request, employee_id):
-        # Fetch employee
-        try:
-            employee = Employee_db.objects.get(id=employee_id)
-        except Employee_db.DoesNotExist:
-            return Response({"detail": "Employee not found."}, status=status.HTTP_404_NOT_FOUND)
+        employee = get_object_or_404(Employee_db, id=employee_id)
 
-        # Get date filter
+        # Date filter
         date_str = request.query_params.get('date')
         if date_str:
             try:
@@ -150,36 +128,29 @@ class EmployeeAttendanceDetailView(APIView):
         else:
             selected_date = timezone.localdate()
 
-        # Try fetching attendance for that date
         attendance = Attendance.objects.filter(employee=employee, date=selected_date).first()
 
-        # --- COMMON CALCULATIONS (for both with/without attendance) ---
-
-        # Weekly total
+        # Weekly/Monthly totals
         week_start = selected_date - timedelta(days=selected_date.weekday())
         week_end = week_start + timedelta(days=6)
         total_week = Attendance.objects.filter(employee=employee, date__range=[week_start, week_end]).aggregate(total=Sum('total_hours'))['total'] or 0
 
-        # Monthly total
         month_start = selected_date.replace(day=1)
         if month_start.month == 12:
-            next_month_start = month_start.replace(year=month_start.year + 1, month=1, day=1)
+            next_month_start = month_start.replace(year=month_start.year+1, month=1, day=1)
         else:
-            next_month_start = month_start.replace(month=month_start.month + 1, day=1)
+            next_month_start = month_start.replace(month=month_start.month+1, day=1)
         month_end = next_month_start - timedelta(days=1)
         total_month = Attendance.objects.filter(employee=employee, date__range=[month_start, month_end]).aggregate(total=Sum('total_hours'))['total'] or 0
 
-        # Total expected working hours (excluding Sundays & public holidays)
-        holidays = set(
-            PublicHoliday.objects.filter(date__range=(month_start, month_end)).values_list('date', flat=True)
-        )
+        # Total working hours (exclude Sundays & public holidays)
+        holidays = set(PublicHoliday.objects.filter(date__range=(month_start, month_end)).values_list('date', flat=True))
         working_days = sum(
             1 for d in range((month_end - month_start).days + 1)
             if (month_start + timedelta(days=d)).weekday() != 6 and (month_start + timedelta(days=d)) not in holidays
         )
-        total_working_hours = working_days * 8  # assuming 8 hrs/day
+        total_working_hours = working_days * 8
 
-        # Format helper
         def format_hours(hours):
             if not hours:
                 return "00:00"
@@ -187,12 +158,11 @@ class EmployeeAttendanceDetailView(APIView):
             m = int(round((hours - h) * 60))
             return f"{h:02d}:{m:02d}"
 
-        # If attendance exists, use serializer
         if attendance:
-            serializer = EmployeeAttendanceDetailSerializer(attendance)
+            serializer = EmployeeAttendanceDetailSerializer(attendance, context={'request': request})
             data = serializer.data
         else:
-            emp_serializer = EmployeeSerializer(employee,context={'request': request})
+            emp_serializer = EmployeeSerializer(employee, context={'request': request})
             data = {
                 "employee": emp_serializer.data,
                 "detail": f"No attendance recorded on {selected_date}.",
@@ -203,7 +173,7 @@ class EmployeeAttendanceDetailView(APIView):
                 "locations": []
             }
 
-        # Add calculations (to ensure consistency even if serializer is used)
+        # Ensure calculations are consistent
         data["weekly_hours_formatted"] = format_hours(total_week)
         data["monthly_hours_formatted"] = format_hours(total_month)
         data["total_working_hours"] = total_working_hours

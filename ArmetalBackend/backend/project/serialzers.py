@@ -10,7 +10,7 @@ from attendance.serializers import AttendanceSessionSerializer
 
 
 # ============================================================
-# 🔹 Employee Serializer
+#  Employee Serializer
 # ============================================================
 class EmployeeSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source='department.name', read_only=True)
@@ -35,7 +35,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 
 # ============================================================
-# 🔹 Project Serializers
+#  Project Serializers
 # ============================================================
 class ProjectSerializer(serializers.ModelSerializer):
     employees = serializers.PrimaryKeyRelatedField(
@@ -96,7 +96,7 @@ class ProjectWriteSerializer(serializers.ModelSerializer):
 
 
 # ============================================================
-# 🔹 Employee Attendance Detail Serializer
+#  Employee Attendance Detail Serializer
 # ============================================================
 class EmployeeAttendanceDetailSerializer(serializers.ModelSerializer):
     employee = serializers.SerializerMethodField()
