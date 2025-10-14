@@ -41,6 +41,7 @@ import {
 import SyncLoader from "../../Components/Loder";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { ResponsiveH3 } from "./ViewDocument.Styles";
+import { PiUserCircleThin } from "react-icons/pi";
 const ViewBankPayment = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -180,15 +181,27 @@ console.log("employeeBankPayments",employeeBankPayments)
      
 <ResponsiveH3>Bank & Payment Details</ResponsiveH3>
       <FormWrapper>
-        <ImageColumn>
-          <ProfileImage
-            src={
-              employeeDetail?.profile_pic ||
-              "https://i.pravatar.cc/100?img=5"
-            }
-            alt="Profile"
-          />
-        </ImageColumn>
+        <ImageColumn
+  style={{
+    width: "10rem",
+    height: "10rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f0f0f0",
+    borderRadius: "10%", 
+  }}
+>
+  {employeeDetail?.profile_pic ? (
+    <ProfileImage
+      src={employeeDetail.profile_pic}
+      alt="Profile"
+      style={{ width: "100%", height: "100%", borderRadius: "10%" }}
+    />
+  ) : (
+    <PiUserCircleThin size={80} color="#ccc" />
+  )}
+</ImageColumn>
 
       <Row>
   <LeftSection>
