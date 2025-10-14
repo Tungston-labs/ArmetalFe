@@ -29,6 +29,7 @@ import {
   updateReimbursementStatus,
 } from "../../services/reimbursement";
 import Loader from "../../Components/Loader"
+import Navbar from "../../Components/Navbar";
 // Add this function at the top of your component
 const getStatusStyle = (status) => {
   switch (status) {
@@ -90,6 +91,8 @@ const ReimbursementDetail = () => {
   if (!reimbursement) return <p>No reimbursement found.</p>;
 
   return (
+    <>
+    <Navbar/>
     <PageWrapper>
       {/* Header */}
       <Header>
@@ -202,6 +205,7 @@ const ReimbursementDetail = () => {
 </BillsSection>
 
     </PageWrapper>
+    </>
   );
 };
 

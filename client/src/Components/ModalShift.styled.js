@@ -1,27 +1,36 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+export const slideIn = keyframes`
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+`;
 
 export const Overlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(10px);
+  inset: 0;
   background: rgba(0, 0, 0, 0.25);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
+  justify-content: flex-end;
+  align-items: stretch;
+  z-index: 2999;
 `;
+
 export const ModalWrapper = styled.div`
   background: #fff;
+  width: 50%;
+  height: 100vh;
+  border-radius: 0;
   padding: 24px;
-  border-radius: 8px;
-  width: 600px;
-  height: auto;
-  max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.2);
+  animation: ${slideIn} 0.3s ease-out;
+  position: relative;
 `;
 
 export const ModalHeader = styled.div`
@@ -33,6 +42,34 @@ export const ModalHeader = styled.div`
     margin: 0;
     font-size: 1.2rem;
     color: #3250b5;
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      font-size: 1.2rem;
+    }
+
+    @media (min-width: 1025px) and (max-width: 1440px) {
+      font-size: 1.2rem;
+    }
+    @media (min-width: 1441px) and (max-width: 1700px) {
+      font-size: 1.2rem;
+    }
+
+    @media (min-width: 1701px) and (max-width: 2060px) {
+      font-size: 1.5rem;
+    }
+    @media (min-width: 2060px) and (max-width: 2600px) {
+      font-size: 2rem;
+    }
+    @media (min-width: 2561px) and (max-width: 3840px) {
+      font-size: 2.2rem;
+    }
+
+    @media (min-width: 3841px) {
+      font-size: 2.5rem;
+    }
   }
 `;
 
@@ -43,6 +80,34 @@ export const CloseBtn = styled.button`
   padding: 6px 16px;
   border-radius: 6px;
   cursor: pointer;
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 14px;
+  }
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    font-size: 18px;
+  }
+  @media (min-width: 2060px) and (max-width: 2600px) {
+    font-size: 22px;
+  }
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 24px;
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 28px;
+  }
 `;
 
 export const ModalDate = styled.div`
@@ -56,6 +121,35 @@ export const ModalDate = styled.div`
     color: #000;
     margin-right: 8px;
     line-height: 1;
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      font-size: 24px;
+    }
+
+    @media (min-width: 1025px) and (max-width: 1440px) {
+      font-size: 28px;
+    }
+    @media (min-width: 1441px) and (max-width: 1700px) {
+      font-size: 32px;
+    }
+
+    @media (min-width: 1701px) and (max-width: 2060px) {
+      font-size: 36px;
+    }
+    @media (min-width: 2060px) and (max-width: 2600px) {
+      font-size: 42px;
+    }
+    @media (min-width: 2561px) and (max-width: 3840px) {
+      font-size: 46px;
+    }
+
+    @media (min-width: 3841px) {
+      font-size: 48px;
+    }
   }
 
   .month-week {
@@ -67,18 +161,74 @@ export const ModalDate = styled.div`
       font-size: 14px;
       color: #111;
       font-weight: 600;
+      @media (max-width: 768px) {
+        font-size: 12px;
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+        font-size: 12px;
+      }
+
+      @media (min-width: 1025px) and (max-width: 1440px) {
+        font-size: 14px;
+      }
+      @media (min-width: 1441px) and (max-width: 1700px) {
+        font-size: 16px;
+      }
+
+      @media (min-width: 1701px) and (max-width: 2060px) {
+        font-size: 18px;
+      }
+      @media (min-width: 2060px) and (max-width: 2600px) {
+        font-size: 22px;
+      }
+      @media (min-width: 2561px) and (max-width: 3840px) {
+        font-size: 24px;
+      }
+
+      @media (min-width: 3841px) {
+        font-size: 28px;
+      }
     }
 
     .weekday {
       font-size: 12px;
       color: #555;
+      @media (max-width: 768px) {
+        font-size: 12px;
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+        font-size: 12px;
+      }
+
+      @media (min-width: 1025px) and (max-width: 1440px) {
+        font-size: 14px;
+      }
+      @media (min-width: 1441px) and (max-width: 1700px) {
+        font-size: 16px;
+      }
+
+      @media (min-width: 1701px) and (max-width: 2060px) {
+        font-size: 18px;
+      }
+      @media (min-width: 2060px) and (max-width: 2600px) {
+        font-size: 22px;
+      }
+      @media (min-width: 2561px) and (max-width: 3840px) {
+        font-size: 24px;
+      }
+
+      @media (min-width: 3841px) {
+        font-size: 28px;
+      }
     }
   }
 `;
 
-
 export const Table = styled.div`
   width: 100%;
+  margin-top: 16px;
   border-collapse: collapse;
 `;
 
@@ -95,10 +245,41 @@ export const TableRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 3fr;
   padding: 8px 12px;
+  margin-top: 20px;
   background: ${({ even }) => (even ? "#f2fff7ff" : "#fff")};
 `;
 
 export const TableCell = styled.div`
   padding: 4px 8px;
   word-break: break-word;
+  font-size: 16px;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 14px;
+  }
+  @media (min-width: 1441px) and (max-width: 1700px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 1701px) and (max-width: 2060px) {
+    font-size: 18px;
+  }
+  @media (min-width: 2060px) and (max-width: 2600px) {
+    font-size: 22px;
+  }
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    font-size: 24px;
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 28px;
+  }
 `;

@@ -10,6 +10,7 @@ import {
   TimeBoxWrapper,
   TimeIn,
   TimeOut,
+  TimeSeparator,
 } from "./TimeTable.Styles";
 import { ImLocation2 } from "react-icons/im";
 const TimeTable = ({ data = [] }) => {
@@ -34,7 +35,7 @@ const TimeTable = ({ data = [] }) => {
           <TableBoarder>
             <TimeBoxWrapper>
               <TimeIn>{item.timeIn}</TimeIn>
-              <span style={{ margin: "0 10px", color: "#888" }}>to</span>
+              <TimeSeparator>to</TimeSeparator>
               <TimeOut>{item.timeOut}</TimeOut>
             </TimeBoxWrapper>
           </TableBoarder>
