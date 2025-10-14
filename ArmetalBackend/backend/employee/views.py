@@ -822,7 +822,7 @@ class EmployeeMonthlySummaryView(APIView):
         total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
 
         # Half days (4 <= hours < 7)
-        half_days = attendances.filter(total_hours__gte=2, total_hours__lt=7).values_list("date", flat=True)
+        half_days = attendances.filter(total_hours__gte=2, total_hours__lt=6).values_list("date", flat=True)
 
         # Present days (hours >= 7)
         present_days = attendances.filter(total_hours__gte=6).values_list("date", flat=True)
