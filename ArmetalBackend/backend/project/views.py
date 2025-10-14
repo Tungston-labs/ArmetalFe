@@ -90,7 +90,7 @@ class EmployeesNotInProjectView(APIView):
             id__in=project.employees.all()
         )
 
-        serializer = EmployeeSerializer(employees_not_in_project, many=True)
+        serializer = EmployeeSerializer(employees_not_in_project,context={'request': request}, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -192,7 +192,7 @@ class EmployeeAttendanceDetailView(APIView):
             serializer = EmployeeAttendanceDetailSerializer(attendance)
             data = serializer.data
         else:
-            emp_serializer = EmployeeSerializer(employee)
+            emp_serializer = EmployeeSerializer(employee,context={'request': request})
             data = {
                 "employee": emp_serializer.data,
                 "detail": f"No attendance recorded on {selected_date}.",

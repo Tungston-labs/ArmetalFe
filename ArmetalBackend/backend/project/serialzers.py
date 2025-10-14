@@ -5,17 +5,30 @@ from attendance.models import Attendance, AttendanceSession
 from attendance.serializers import AttendanceSessionSerializer
 from datetime import timedelta
 from django.db.models import Sum
+from django.conf import settings
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source='department.name', read_only=True)
+    profile_pic = serializers.SerializerMethodField()  # <-- add this line
 
     class Meta:
         model = Employee_db
         fields = [
-            'id', 'name', 'employee_id', 'email', 'designation', 
-            'department', 'department_name', 'profile_pic', 'joining_date', 'gender'
+            'id', 'name', 'employee_id', 'email', 'designation',
+            'department', 'department_name', 'profile_pic',
+            'joining_date', 'gender'
         ]
+
+    def get_profile_pic(self, obj):
+        request = self.context.get('request')  # get request object
+        if obj.profile_pic:
+            # If API is accessed with request context (e.g. through a DRF View)
+            if request:
+                return request.build_absolute_uri(obj.profile_pic.url)
+            # fallback in case no request context is available
+            return f"{settings.MEDIA_URL}{obj.profile_pic.url}"
+        return None
 
 
 class ProjectSerializer(serializers.ModelSerializer):

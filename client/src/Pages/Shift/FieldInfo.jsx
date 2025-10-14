@@ -191,7 +191,7 @@ const FieldInfo = () => {
             <SummaryCol>
               <SmallRow>
                 <span>Monthly Working Hours</span>
-                <strong>{fieldInfo?.total_hours || "00:00"}</strong>
+                <strong>{fieldInfo?.monthly_hours_formatted || "00:00"}</strong>
               </SmallRow>
               <SmallRow>
                 <span>Total Monthly Working Hours</span>
