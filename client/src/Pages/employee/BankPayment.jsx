@@ -22,6 +22,7 @@ import { clearBankPayment } from '../../Redux/employeeSlice';
 import Loader from "../../Components/Loader"
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { EmployeeImage } from './BasicLevel.Styles';
+import Navbar from '../../Components/Navbar';
 export default function BankPaymentForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -151,6 +152,7 @@ const [bankProofImage, setBankProofImage] = useState(null);
 
   return (
      <>
+     <Navbar/>
     {loading && <Loader  />}
     <Container>
       <Header>

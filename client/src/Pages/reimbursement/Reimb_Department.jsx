@@ -31,19 +31,7 @@ import {
   
 } from './Reimb_Department.Styles.js';
 
-// import {
-//   Container,
-//   TitleRow,
-//   Form,
-//   FormGroup,
-//   Label,
-//   Input,
-//   ButtonRow,
-//   CancelButton,
-//   SaveButton,
-//   BackArrow,
-  
-// } from './AddDepartment.Styles';
+
 import Employee from "../../assets/remi.svg"; 
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -93,8 +81,10 @@ const Department = () => {
   };
 
   return (
+    <>
+         <Navbar />
     <DepartmentContainer>
-     <Navbar />
+
 
       <HeaderSection>
 <TitleSection>
@@ -205,6 +195,7 @@ const Department = () => {
 
        {showModal && <Side_detail onClose={() => setShowModal(false)} />}
     </DepartmentContainer>
+    </>
   );
 };
 

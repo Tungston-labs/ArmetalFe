@@ -460,45 +460,60 @@ export const CardRight = styled.div`
 // Modal Styles
 export const ModalOverlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0; /* shorthand for top/right/bottom/left = 0 */
   background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
-  padding: 1rem; /* ensures space on very small screens */
+  padding: 1rem; /* ensures spacing on very small screens */
 `;
 
 export const ModalContent = styled.div`
-  background-color: white;
-  padding: clamp(1rem, 2vw, 2.5rem); /* responsive padding */
+  background-color: #fff;
   border-radius: 10px;
-  /* max-width: 600px; */
   width: 100%;
+  padding: 1.5rem; /* base padding */
   position: relative;
   z-index: 1000;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  font-size: 1rem; /* base font */
 
-  /* ✅ Responsive scaling */
-  font-size: clamp(0.9rem, 1vw, 1.1rem);
-
+  /* Responsive max-width for different screens */
   @media (max-width: 768px) {
-    max-width: 95%; /* take almost full width on tablets */
+    max-width: 95%; /* almost full width for tablets and small screens */
+    padding: 1rem;
+    font-size: 0.9rem;
   }
 
-  @media (min-width: 1920px) {
-    max-width: 800px; /* wider modal for Full HD */
+  @media (min-width: 769px) and (max-width: 1440px) {
+    max-width: 800px; /* standard laptop/desktop */
+    padding: 1.5rem;
+    font-size: 1rem;
   }
 
-  @media (min-width: 2560px) {
-    max-width: 1000px; /* 2K screens */
+  @media (min-width: 1441px) and (max-width: 1920px) {
+    max-width: 1000px;
+    padding: 1.8rem;
+    font-size: 1.05rem;
   }
 
-  @media (min-width: 3840px) {
-    max-width: 1200px; /* 4K screens */
+  @media (min-width: 1921px) and (max-width: 2560px) {
+    max-width: 1200px;
+    padding: 2rem;
+    font-size: 1.1rem;
+  }
+
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    max-width: 1500px;
+    padding: 2.2rem;
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: 3841px) {
+    max-width: 1200px;
+    padding: 2.5rem;
+    font-size: 1.5rem;
   }
 `;
 
@@ -508,12 +523,27 @@ export const CloseButton = styled.button`
   right: 1rem;
   background: transparent;
   border: none;
-  font-size: clamp(1rem, 1.5vw, 1.8rem);
+  font-size: 1.5rem;
   cursor: pointer;
   transition: color 0.2s ease;
 
   &:hover {
     color: #304eb0;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 1.6rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.8rem;
+  }
+   @media (min-width: 2560px) {
+    font-size: 1.8rem;
   }
 `;
 
@@ -525,7 +555,7 @@ export const DropdownMenu = styled.div`
   position: absolute;
   top: 40px;
   right: 0;
-  background: white;
+  background: #fff;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   overflow: hidden;
@@ -535,6 +565,7 @@ export const DropdownMenu = styled.div`
     padding: 10px 15px;
     cursor: pointer;
     white-space: nowrap;
+    transition: background-color 0.2s ease;
 
     &:hover {
       background-color: #f0f0f0;

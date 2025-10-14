@@ -3,7 +3,7 @@ export const HRManager = styled.div`
   height: 30px;
   align-items: center;
   padding: 0.3rem;
-  background-color: transparent; // inherit navbar bg
+  background-color: transparent; 
   font-size: 1rem;
   color: #333;
   cursor: pointer;

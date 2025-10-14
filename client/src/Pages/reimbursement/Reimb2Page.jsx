@@ -149,11 +149,12 @@ useEffect(() => {
 
   return (
     <>
+       <Navbar/>
     {loading && <Loader text="Loading Department..." />}
     {!loading && (
     <Container>
       {/* Top Bar */}
-   <Navbar/>
+
 
       {/* Header */}
       <HeaderSection>

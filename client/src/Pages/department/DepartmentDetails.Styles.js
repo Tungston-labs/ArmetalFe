@@ -179,41 +179,45 @@ export const ButtonGroup = styled.div`
 export const AddButton = styled.button`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  width: 90px;
+  min-width: 80px;
   font-family: satoshi;
-  background: linear-gradient(
-    181deg,
-    rgba(23, 37, 84, 1) 50%,
-    rgba(51, 82, 186, 1) 100%
-  );
-  color: white;
-  margin-right:10px;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: none;
-  font-size: 15px;
-  cursor: pointer;
-`;
-
-export const DeleteButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 90px;
-  font-family: satoshi;
-  background: linear-gradient(
-    181deg,
-    rgba(186, 51, 51, 1) 50%,
-    rgba(255, 87, 87, 1) 100%
-  );
+  background: linear-gradient(181deg, rgba(23,37,84,1) 50%, rgba(51,82,186,1) 100%);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   border: none;
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+
+  @media (min-width: 768px) {
+    font-size: 15px;
+    padding: 0.6rem 1.2rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 16px;
+    padding: 0.7rem 1.4rem;
+  }
+   @media (min-width: 1940px0px) {
+    font-size: 16px;
+    padding: 0.7rem 1.4rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 18px;
+    padding: 0.8rem 1.6rem;
+  }
+   @media (min-width: 3840px) {
+    font-size: 1.8rem;
+    padding: 0.8rem 1.6rem;
+  }
+`;
+
+export const DeleteButton = styled(AddButton)`
+  background: linear-gradient(181deg, rgba(186,51,51,1) 50%, rgba(255,87,87,1) 100%);
 
   &:hover {
     opacity: 0.9;
