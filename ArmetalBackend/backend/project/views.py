@@ -118,16 +118,20 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.db.models import Sum
 from attendance.models import Attendance
 from employee.models import Employee_db
+from holidays.models import PublicHoliday
+from .serialzers import EmployeeAttendanceDetailSerializer, EmployeeSerializer
+
 
 class EmployeeAttendanceDetailView(APIView):
     """
-    Get employee attendance details for a given employee ID
+    Get employee attendance details for a given employee ID.
     Optional query param: date=YYYY-MM-DD (default today)
     """
-    permission_classes = [IsAuthenticated]  # You can add custom permissions if needed
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, employee_id):
         # Fetch employee
@@ -146,15 +150,62 @@ class EmployeeAttendanceDetailView(APIView):
         else:
             selected_date = timezone.localdate()
 
-        # Fetch attendance for the employee on that date
-        try:
-            attendance = Attendance.objects.get(employee=employee, date=selected_date)
+        # Try fetching attendance for that date
+        attendance = Attendance.objects.filter(employee=employee, date=selected_date).first()
+
+        # --- COMMON CALCULATIONS (for both with/without attendance) ---
+
+        # Weekly total
+        week_start = selected_date - timedelta(days=selected_date.weekday())
+        week_end = week_start + timedelta(days=6)
+        total_week = Attendance.objects.filter(employee=employee, date__range=[week_start, week_end]).aggregate(total=Sum('total_hours'))['total'] or 0
+
+        # Monthly total
+        month_start = selected_date.replace(day=1)
+        if month_start.month == 12:
+            next_month_start = month_start.replace(year=month_start.year + 1, month=1, day=1)
+        else:
+            next_month_start = month_start.replace(month=month_start.month + 1, day=1)
+        month_end = next_month_start - timedelta(days=1)
+        total_month = Attendance.objects.filter(employee=employee, date__range=[month_start, month_end]).aggregate(total=Sum('total_hours'))['total'] or 0
+
+        # Total expected working hours (excluding Sundays & public holidays)
+        holidays = set(
+            PublicHoliday.objects.filter(date__range=(month_start, month_end)).values_list('date', flat=True)
+        )
+        working_days = sum(
+            1 for d in range((month_end - month_start).days + 1)
+            if (month_start + timedelta(days=d)).weekday() != 6 and (month_start + timedelta(days=d)) not in holidays
+        )
+        total_working_hours = working_days * 8  # assuming 8 hrs/day
+
+        # Format helper
+        def format_hours(hours):
+            if not hours:
+                return "00:00"
+            h = int(hours)
+            m = int(round((hours - h) * 60))
+            return f"{h:02d}:{m:02d}"
+
+        # If attendance exists, use serializer
+        if attendance:
             serializer = EmployeeAttendanceDetailSerializer(attendance)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Attendance.DoesNotExist:
-            # Return employee info even if no attendance exists
+            data = serializer.data
+        else:
             emp_serializer = EmployeeSerializer(employee)
-            return Response({
+            data = {
                 "employee": emp_serializer.data,
-                "detail": f"No attendance recorded on {selected_date}."
-            }, status=status.HTTP_200_OK)
+                "detail": f"No attendance recorded on {selected_date}.",
+                "total_hours_formatted": "00:00",
+                "weekly_hours_formatted": format_hours(total_week),
+                "monthly_hours_formatted": format_hours(total_month),
+                "total_working_hours": total_working_hours,
+                "locations": []
+            }
+
+        # Add calculations (to ensure consistency even if serializer is used)
+        data["weekly_hours_formatted"] = format_hours(total_week)
+        data["monthly_hours_formatted"] = format_hours(total_month)
+        data["total_working_hours"] = total_working_hours
+
+        return Response(data, status=status.HTTP_200_OK)
