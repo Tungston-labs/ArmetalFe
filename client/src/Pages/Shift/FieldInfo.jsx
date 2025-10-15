@@ -26,25 +26,24 @@ import {
   DayLabel,
   DayDate,
   DayMonth,
+  IconWrapper,
+  TitleSection,
+    Subtitle,
+  TextGroup,
+  Title,
+  LeftSection,
 } from "./FieldInfo.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import FieldShiftIcon from "../../assets/shifttopper.svg";
 import TimeTable from "./TimeTable";
-import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import {
-  IconWrapper,
-  Subtitle,
-  TextGroup,
-  Title,
-  TitleSection,
-} from "./FieldShift.Styles";
 import Navbar from "../../Components/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getFieldInfo } from "../../Redux/fieldShiftSlice";
 import Modal from "../../Components/ModalShift";
 import CalendarModal from "../../Components/CalendarModal";
+import { PiUserCirclePlusThin } from "react-icons/pi";
 
 const FieldInfo = () => {
   const navigate = useNavigate();
@@ -124,52 +123,54 @@ const FieldInfo = () => {
       <PageWrapper>
         {/* Header */}
         <Header>
-          <BackButton onClick={() => navigate("/fieldshift-department/id")}>
-            <LuArrowLeft />
-          </BackButton>
+  <LeftSection>
+    <BackButton onClick={() => navigate("/fieldshift-department/id")}>
+      <LuArrowLeft />
+    </BackButton>
 
-          <TitleSection>
-            <IconWrapper>
-              <img src={FieldShiftIcon} alt="FieldShift" />
-            </IconWrapper>
-            <TextGroup>
-              <Title>FieldShift</Title>
-              <Subtitle>
-                Manage all departments within the organization.
-              </Subtitle>
-            </TextGroup>
-          </TitleSection>
-          <ButtonContainer>
-            <ButtonAct onClick={() => setIsModalOpen(true)}>
-              Activity Log
-            </ButtonAct>
-          </ButtonContainer>
-{isModalOpen && (
-  <Modal
-    onClose={() => setIsModalOpen(false)}
-    data={fieldInfo?.locations || []}
-    date={selectedDate}
-  />
-)}
+    <TitleSection>
+      <IconWrapper>
+        <img src={FieldShiftIcon} alt="FieldShift" />
+      </IconWrapper>
+      <TextGroup>
+        <Title>FieldShift</Title>
+        <Subtitle>Manage all departments within the organization.</Subtitle>
+      </TextGroup>
+    </TitleSection>
+  </LeftSection>
 
+  <ButtonContainer>
+    <ButtonAct onClick={() => setIsModalOpen(true)}>
+      Activity Log
+    </ButtonAct>
+  </ButtonContainer>
 
+  {isModalOpen && (
+    <Modal
+      onClose={() => setIsModalOpen(false)}
+      data={fieldInfo?.locations || []}
+      date={selectedDate}
+    />
+  )}
+</Header>
 
-        </Header>
 
         <ContainerGrid>
           <ProfileRow>
-            <Avatar>
-              <img
-                src={
-                  profile?.profile_pic
-                    ? profile.profile_pic.startsWith("http")
-                      ? profile.profile_pic
-                      : `${import.meta.env.VITE_BASE_URL}${profile.profile_pic}`
-                    : "https://i.pravatar.cc/150"
-                }
-                alt="avatar"
-              />
-            </Avatar>
+         <Avatar>
+  {profile?.profile_pic ? (
+    <img
+      src={
+        profile.profile_pic.startsWith("http")
+          ? profile.profile_pic
+          : `${import.meta.env.VITE_BASE_URL}${profile.profile_pic}`
+      }
+      alt="avatar"
+    />
+  ) : (
+    <PiUserCirclePlusThin className="default-icon" />
+  )}
+</Avatar>
 
             <ProfileDetails>
               <InputRow>
