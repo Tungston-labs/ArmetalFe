@@ -75,7 +75,6 @@ export const IconWrapper = styled.div`
 `;
 
 
-
 export const TextGroup = styled.div`
   display: flex;
   flex-direction: column;
