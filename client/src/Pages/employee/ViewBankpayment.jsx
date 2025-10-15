@@ -182,21 +182,12 @@ console.log("employeeBankPayments",employeeBankPayments)
 <ResponsiveH3>Bank & Payment Details</ResponsiveH3>
       <FormWrapper>
         <ImageColumn
-  style={{
-    width: "10rem",
-    height: "10rem",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f0f0f0",
-    borderRadius: "10%", 
-  }}
 >
   {employeeDetail?.profile_pic ? (
     <ProfileImage
       src={employeeDetail.profile_pic}
       alt="Profile"
-      style={{ width: "100%", height: "100%", borderRadius: "10%" }}
+      // style={{ width: "100%", height: "100%", borderRadius: "10%" }}
     />
   ) : (
     <PiUserCircleThin size={80} color="#ccc" />

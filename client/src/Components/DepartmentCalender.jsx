@@ -40,6 +40,7 @@ import {
 import HalfDoughnutChart from "./HalfDoughnutChart";
 import HolidaySvg from "../assets/holiday.svg";
 import { Link } from "react-router-dom";
+import { PiUserCircleThin } from "react-icons/pi";
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
 const DepartmentCalendar = () => {
@@ -180,12 +181,29 @@ const DepartmentCalendar = () => {
           <EmployeeExpiryWrapper>
             <h3>Employee Contract Expiry</h3>
             {contractExpiry.slice(0, 5).map((emp) => (
-              <EmployeeRow key={emp.id}>
-                <Avatar src="https://via.placeholder.com/30" />
-                <EmpName>{emp.name}</EmpName>
-                <EmpId>{emp.employee_id}</EmpId>
-                <EmpEmail>{emp.department}</EmpEmail>
-              </EmployeeRow>
+          <EmployeeRow key={emp.id}>
+  {emp.profile_pic ? (
+    <Avatar src={emp.profile_pic} alt={emp.name} />
+  ) : (
+    <div
+      style={{
+        width: "30px",
+        height: "30px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "50%",
+        backgroundColor: "#f0f0f0",
+      }}
+    >
+      <PiUserCircleThin size={24} color="#ccc" />
+    </div>
+  )}
+  <EmpName>{emp.name}</EmpName>
+  <EmpId>{emp.employee_id}</EmpId>
+  <EmpEmail>{emp.department}</EmpEmail>
+</EmployeeRow>
+
             ))}
           </EmployeeExpiryWrapper>
         </PresenceWrapper>
