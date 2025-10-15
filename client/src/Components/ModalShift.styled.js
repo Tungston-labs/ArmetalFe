@@ -37,11 +37,12 @@ export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 3rem;
   h3 {
     margin: 0;
     font-size: 1.2rem;
     color: #3250b5;
+    
     @media (max-width: 768px) {
       font-size: 1rem;
     }
@@ -127,24 +128,24 @@ export const ModalDate = styled.div`
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
-      font-size: 24px;
+      font-size: 30px;
     }
 
     @media (min-width: 1025px) and (max-width: 1440px) {
-      font-size: 28px;
+      font-size: 32px;
     }
     @media (min-width: 1441px) and (max-width: 1700px) {
       font-size: 32px;
     }
 
     @media (min-width: 1701px) and (max-width: 2060px) {
-      font-size: 36px;
+      font-size: 40px;
     }
     @media (min-width: 2060px) and (max-width: 2600px) {
-      font-size: 42px;
+      font-size: 50px;
     }
     @media (min-width: 2561px) and (max-width: 3840px) {
-      font-size: 46px;
+      font-size: 60px;
     }
 
     @media (min-width: 3841px) {
@@ -246,7 +247,9 @@ export const TableRow = styled.div`
   grid-template-columns: 1fr 3fr;
   padding: 8px 12px;
   margin-top: 20px;
-  background: ${({ even }) => (even ? "#f2fff7ff" : "#fff")};
+  background: ${({ even }) => (even ? "#E6ECFF" : "#fff")};
+  box-shadow: 0px 0px 2.7px 0px #00000047;
+
 `;
 
 export const TableCell = styled.div`

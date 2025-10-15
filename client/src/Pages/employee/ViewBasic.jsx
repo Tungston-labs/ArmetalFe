@@ -198,68 +198,67 @@ useEffect(() => {
 
       {/* Form */}
       <FormWrapper>
-        <ImageColumn >
-          {formData.profile_pic ? (
-            <ProfileImage
-              src={
-                formData.profile_pic instanceof File
-                  ? URL.createObjectURL(formData.profile_pic)
-                  : formData.profile_pic
-              }
-              alt="Profile"
-             
-            />
-          ) : (
-            <div
-              style={{
-                width: "10rem",
-                height: "10rem",
-                borderRadius: "10%",
-                backgroundColor: "#f0f0f0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <PiUserCirclePlusThin size={100} color="#ccc" />
-            </div>
-          )}
+      <ImageColumn style={{ position: "relative" }}>
+  {formData.profile_pic ? (
+    <ProfileImage
+      src={
+        formData.profile_pic instanceof File
+          ? URL.createObjectURL(formData.profile_pic)
+          : formData.profile_pic
+      }
+      alt="Profile"
+    />
+  ) : (
+    <div
+      style={{
+        width: "10rem",
+        height: "10rem",
+        borderRadius: "10%",
+        backgroundColor: "#f0f0f0",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <PiUserCirclePlusThin size={100} color="#ccc" />
+    </div>
+  )}
 
-          {editMode && (
-            <>
-              <input
-                type="file"
-                name="profile_pic"
-                accept="image/*"
-                id="profilePicInput"
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, profile_pic: e.target.files[0] }))
-                }
-                style={{ display: "none" }}
-              />
-              <label
-                htmlFor="profilePicInput"
-                style={{
-                  position: "absolute",
-                  bottom: 10,
-                  right: 10,
-                  backgroundColor: "#007bff",
-                  color: "#fff",
-                  borderRadius: "50%",
-                  width: 20,
-                  height: 20,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 20,
-                  cursor: "pointer",
-                }}
-              >
-                +
-              </label>
-            </>
-          )}
-        </ImageColumn>
+  {editMode && (
+    <>
+      <input
+        type="file"
+        name="profile_pic"
+        accept="image/*"
+        id="profilePicInput"
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, profile_pic: e.target.files[0] }))
+        }
+        style={{ display: "none" }}
+      />
+      <label
+        htmlFor="profilePicInput"
+        style={{
+          position: "absolute",
+          bottom: 10,
+          right: 10,
+          backgroundColor: "#007bff",
+          color: "#fff",
+          borderRadius: "50%",
+          width: 30,
+          height: 30,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 20,
+          cursor: "pointer",
+        }}
+      >
+        +
+      </label>
+    </>
+  )}
+</ImageColumn>
 
         {/* Basic Info */}
   <Row>

@@ -69,7 +69,7 @@ isEditMode=false,
                     src={record.bank_proof_image}
                     alt="Bank Proof"
                     style={{
-                      maxWidth: '200px',
+                      maxWidth: '8rem',
                       borderRadius: '6px',
                       border: '1px solid #ccc',
                       backgroundColor: '#fff',

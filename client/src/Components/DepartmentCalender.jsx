@@ -40,6 +40,7 @@ import {
 import HalfDoughnutChart from "./HalfDoughnutChart";
 import HolidaySvg from "../assets/holiday.svg";
 import { Link } from "react-router-dom";
+import { PiUserCircleThin } from "react-icons/pi";
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
 const DepartmentCalendar = () => {

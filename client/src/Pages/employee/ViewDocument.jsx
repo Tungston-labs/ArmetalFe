@@ -26,6 +26,7 @@ import { useNavigate } from "react-router-dom";
 import { LuArrowLeft } from "react-icons/lu";
 // ✅ Loader Wrapper
 import EmployeeIcon from "../../assets/employeeicon.svg";
+import { PiUserCircleThin } from "react-icons/pi";
 const FullPageLoaderWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -196,12 +197,19 @@ const navigate = useNavigate();
      <ResponsiveH3>Employee Documents</ResponsiveH3>
 
       <FormWrapper>
-        <ImageColumn>
-          <ProfileImage
-            src={employeeDetail?.profile_pic || "https://i.pravatar.cc/100?img=5"}
-            alt="Profile"
-          />
-        </ImageColumn>
+    
+
+<ImageColumn
+>
+  {employeeDetail?.profile_pic ? (
+    <ProfileImage
+      src={employeeDetail.profile_pic}
+      alt="Profile"
+    />
+  ) : (
+    <PiUserCircleThin size={80} color="#ccc" />
+  )}
+</ImageColumn>
 
        <Row>
   <LeftSection>

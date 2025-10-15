@@ -144,14 +144,16 @@ const FieldInfo = () => {
               Activity Log
             </ButtonAct>
           </ButtonContainer>
+{isModalOpen && (
+  <Modal
+    onClose={() => setIsModalOpen(false)}
+    data={fieldInfo?.locations || []}
+    date={selectedDate}
+  />
+)}
 
-          {isModalOpen && (
-            <Modal
-              onClose={() => setIsModalOpen(false)}
-              data={fieldInfo?.locations || []}
-              date={selectedDate}
-            />
-          )}
+
+
         </Header>
 
         <ContainerGrid>
@@ -216,26 +218,32 @@ const FieldInfo = () => {
                   style={{ cursor: "pointer" }}
                   onClick={() => setIsCalendarOpen(true)}
                 />
-                {isCalendarOpen && (
-                  <div
-                    style={{
-                      position: "fixed",
-                      inset: 0,
-                      background: "rgba(0, 0, 0, 0.4)",
-                      backdropFilter: "blur(5px)",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      zIndex: 999,
-                    }}
-                  >
-                    <CalendarModal
-                      onClose={() => setIsCalendarOpen(false)}
-                      selectedDate={selectedDate}
-                      setSelectedDate={setSelectedDate}
-                    />
-                  </div>
-                )}
+              {isCalendarOpen && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0, 0, 0, 0.4)",
+      backdropFilter: "blur(5px)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 999,
+    }}
+    onClick={() => setIsCalendarOpen(false)} // <-- closes when overlay clicked
+  >
+    <div
+      onClick={(e) => e.stopPropagation()} // <-- prevents modal click from closing
+    >
+      <CalendarModal
+        onClose={() => setIsCalendarOpen(false)}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
+    </div>
+  </div>
+)}
+
 
                 <DayNumber>
                   {fieldInfo?.date

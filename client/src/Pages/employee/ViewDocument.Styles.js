@@ -503,20 +503,35 @@ export const ImageColumn = styled.div`
   flex: 0 0 auto;
 
   img {
-    width: 150px;
-    height: 100%;
+    width: 10rem;
+    height: 10rem;
     border-radius: 10px;
     object-fit: cover;
-    @media (min-width: 2560px) {
-      width: 250px;
-      height: 100%;
+
+
+     @media (min-width: 1024px) {
+      width: 10rem;
+      height: 12rem;
+    }
+ @media (min-width: 1440px) {
+      width: 10rem;
+      height: 15rem;
+    }
+     @media (min-width: 1940px) {
+      width: 15rem;
+      height: 20rem;
+    }
+ @media (min-width: 2560px) {
+      width: 15rem;
+      height: 20rem;
     }
     @media (min-width: 3840px) {
-      width: 300px;
-      height: 100%;
+      width: 20rem;
+      height: 25rem;
     }
   }
 `;
+
 export const Hr = styled.hr`
   border: none;
   border-top: 1px solid #ccc;

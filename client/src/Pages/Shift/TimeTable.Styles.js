@@ -2,276 +2,190 @@ import styled from "styled-components";
 
 export const TableContainer = styled.div`
   width: 100%;
-  overflow-x: auto;
-  border-radius: 8px;
-  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); */
   background: #fff;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: "Satoshi", sans-serif;
 `;
 
 export const TableHeader = styled.div`
-  display: grid;
-  grid-template-columns: 55% 5.5% 30%;
-  background-color: #304eb0;
-  color: white;
-  padding: 15px 15px;
-  font-weight: bold;
-  font-size: 14px;
-  text-align: left;
-  @media (max-width: 768px) {
-    font-size: 12px;
-    grid-template-columns: 55% 20.5% 40%;
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 12px;
-    grid-template-columns: 50% 12.5% 30%;
-  }
-
-  @media (min-width: 1025px) and (max-width: 1440px) {
-    font-size: 12px;
-    grid-template-columns: 50.5% 9.5% 40%;
-  }
-  @media (min-width: 1441px) and (max-width: 1700px) {
-    font-size: 14px;
-    grid-template-columns: 54% 6.5% 40%;
-  }
-
-  @media (min-width: 1701px) and (max-width: 2060px) {
-    font-size: 14px;
-    grid-template-columns: 55% 5.5% 40%;
-  }
-  @media (min-width: 2060px) and (max-width: 2600px) {
-    font-size: 14px;
-        grid-template-columns: 56% 4.5% 40%;
-
-  }
-  @media (min-width: 2601px) and (max-width: 3840px) {
-    font-size: 14px;
-        grid-template-columns: 56.9% 3.5% 40%;
-
-  }
-
-  @media (min-width: 3841px) {
-    font-size: 14px;
-        grid-template-columns: 57.5% 3% 40%;
-
-  }
-`;
-
-export const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 60% 40%;
-  align-items: center;
-  /* border-bottom: 1px solid #e5e5e5; */
-  padding: 0px 1px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    row-gap: 10px;
-  }
-`;
-
-export const TableCell = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 5px;
-`;
-
-export const TableBoarder = styled.div`
-  box-shadow: 0px 0px 2.7px 0px #00000047;
-  padding: 5px 10px;
-`;
-
-export const TimeBoxWrapper = styled.div`
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  /* gap: 10px; */
-`;
-
-export const Line = styled.div`
-  flex: 1;
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 0 8px;
-`;
-export const TimeBox = styled.div`
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  background-color: ${(props) => props.bg || "#ccc"};
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-weight: 600;
-  min-width: 90px;
-`;
+  margin-bottom: 8px;
+  gap: 10px;
+padding: 0px 10px;
+  .time-section {
+    flex: 2;
 
-export const TimeOut = styled.span`
-  font-size: 13px;
-  background-color: #fd907b;
-  color: black;
-  padding: 10px;
-  width: 80px;
+    .time-box {
+      background-color: #304eb0;
+      color: white;
+      padding: 10px 30px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-transform: capitalize;
+    }
+  }
+
+  .location-section {
+    flex: 1;
+
+    div {
+      background-color: #304eb0;
+      color: white;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: capitalize;
+    }
+  }
+
   @media (max-width: 768px) {
-    font-size: 12px;
-  }
+    flex-direction: column;
 
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 12px;
-  }
+    .time-section,
+    .location-section {
+      width: 100%;
+    }
 
-  @media (min-width: 1025px) and (max-width: 1440px) {
-    font-size: 12px;
-  }
-  @media (min-width: 1441px) and (max-width: 1700px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 1701px) and (max-width: 2060px) {
-    font-size: 14px;
-  }
-  @media (min-width: 2060px) and (max-width: 2600px) {
-    font-size: 14px;
-  }
-  @media (min-width: 2561px) and (max-width: 3840px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 3841px) {
-    font-size: 14px;
-  }
-`;
-export const TimeSeparator = styled.span`
-  color: #888;
-  margin: 0 10px;
-  font-size: 13px;
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 12px;
-  }
-
-  @media (min-width: 1025px) and (max-width: 1440px) {
-    font-size: 12px;
-  }
-
-  @media (min-width: 1441px) and (max-width: 1700px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 1701px) and (max-width: 2060px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 2060px) and (max-width: 2600px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 2561px) and (max-width: 3840px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 3841px) {
-    font-size: 14px;
-  }
-`;
-export const TimeIn = styled.span`
-  font-size: 13px;
-  background-color: #304eb0;
-  color: white;
-  padding: 10px;
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 12px;
-  }
-
-  @media (min-width: 1025px) and (max-width: 1440px) {
-    font-size: 12px;
-  }
-  @media (min-width: 1441px) and (max-width: 1700px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 1701px) and (max-width: 2060px) {
-    font-size: 14px;
-  }
-  @media (min-width: 2060px) and (max-width: 2600px) {
-    font-size: 14px;
-  }
-  @media (min-width: 2561px) and (max-width: 3840px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 3841px) {
-    font-size: 14px;
+    .time-box {
+      justify-content: space-around;
+    }
   }
 `;
 
-export const LocationBox = styled.div`
+/* TABLE ROW */
+export const TableRow = styled.div`
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  width: 480px; /* base width */
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 10px;
+  /* border-bottom: 1px solid #eaeaea; */
+  padding: 8px 10px;
 
   @media (max-width: 768px) {
-    width: 260px;
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    width: 270px;
-  }
-
-  @media (min-width: 1025px) and (max-width: 1440px) {
-    width: 320px;
-  }
-  @media (min-width: 1441px) and (max-width: 1700px) {
-    width: 400px;
-  }
-
-  @media (min-width: 1701px) and (max-width: 2060px) {
-    width: 460px;
-  }
-  @media (min-width: 2060px) and (max-width: 2600px) {
-    width: 510px;
-  }
-  @media (min-width: 2561px) and (max-width: 3840px) {
-    width: 640px;
-  }
-
-  @media (min-width: 3841px) {
-    width: 750px;
+    flex-direction: column;
   }
 `;
 
-export const LocationText = styled.p`
-  margin: 0;
-  color: #304eb0;
-  /* line-height: 1.4; */
+/* TIME SECTION (matches header) */
+export const TimeSection = styled.div`
+  flex: 2;
+  background: #ffffff;
+  box-shadow: 0px 0px 2.7px 0px #00000047;
+  border-radius: 6px;
+  padding: 8px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .time-in {
+    font-size: 13px;
+    background-color: #304eb0;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .time-out {
+    font-size: 13px;
+    background-color: #fd907b;
+    color: black;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .time-separator {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 8px;
+    position: relative;
+
+    &::before {
+      content: "";
+      flex: 1;
+      border-bottom: 2px dotted #ccc;
+    }
+
+    .to-text {
+      flex: none;
+      padding: 0 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    &::after {
+      content: "";
+      flex: 1;
+      border-bottom: 2px dotted #ccc;
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 6px;
+
+    .time-separator {
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+  }
+`;
+
+/* LOCATION SECTION */
+export const LocationSection = styled.div`
+  flex: 1;
+  background: #ffffff;
+  box-shadow: 0px 0px 2.7px 0px #00000047;
+  border-radius: 4px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
   font-size: 13px;
 
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 12px;
+  svg {
+    color: #304eb0;
+    flex-shrink: 0;
+    margin-top: 4px;
   }
 
-  @media (min-width: 1025px) and (max-width: 1440px) {
-    font-size: 12px;
-  }
-  @media (min-width: 1441px) and (max-width: 1700px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 1701px) and (max-width: 2060px) {
-    font-size: 14px;
-  }
-  @media (min-width: 2060px) and (max-width: 2600px) {
-    font-size: 14px;
-  }
-  @media (min-width: 2561px) and (max-width: 3840px) {
-    font-size: 14px;
+  p {
+    margin: 0;
+    color: #304eb0;
+    font-weight: 600;
   }
 
-  @media (min-width: 3841px) {
-    font-size: 14px;
+  .note {
+    margin-top: 4px;
+    color: #555;
+    font-weight: 400;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 4px;
   }
 `;
