@@ -118,7 +118,6 @@ class EmployeeListView(generics.ListAPIView):
         print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
         return queryset.order_by('name')
 
-# 2. Retrieve, Update, Delete
 class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee_db.objects.all()
     serializer_class = EmployeeSerializer
@@ -126,10 +125,21 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'pk'
 
     def perform_destroy(self, instance):
-        # delete the associated user too
+        # Get the company before deleting the employee
+        company = instance.department.company if instance.department else None
+
+        # Delete the associated user if exists
         if instance.user:
             instance.user.delete()
+
+        # Delete the employee
         instance.delete()
+
+        # Decrease employee count safely
+        if company:
+            company.number_of_employees = max((company.number_of_employees or 1) - 1, 0)
+            company.save()
+
 
 
 
