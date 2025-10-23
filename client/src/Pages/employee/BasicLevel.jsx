@@ -263,9 +263,7 @@ if (formData.phno) {
         </div>
       </div>
 
-      {/* Basic Info Section */}
       <InfoGrid>
-        {/* Profile Picture Upload */}
   <UploadWrappers>
   <ProfileLabel htmlFor="profile-upload">
     {formData.profile_pic ? (

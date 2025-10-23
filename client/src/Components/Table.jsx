@@ -147,8 +147,9 @@ isEditMode=false,
       <FormSection>
         <Row>
           <FormGroups style={{ flex: '1 1 100%' }}>
-            <ErrorMsg msg={errors.bankName} />
+       
                   <Label>Bank name</Label>
+                       <ErrorMsg msg={errors.bankName} />
             <Input placeholder="Bank name" value={bankName} onChange={(e) => setBankName(e.target.value)} />
           </FormGroups>
     <FormGroups style={{ flex: '1 1 100%', alignItems: 'flex-start' }}>
@@ -165,13 +166,15 @@ isEditMode=false,
         <Row>
           <TwoColumnRows>
             <FormGroups>
-              <ErrorMsg msg={errors.swiftCode} />
+      
                  <Label>Swift code</Label>
+                         <ErrorMsg msg={errors.swiftCode} />
               <Input placeholder="Swift code" value={swiftCode} onChange={(e) => setSwiftCode(e.target.value)} />
             </FormGroups>
             <FormGroups>
-              <ErrorMsg msg={errors.paymentMode} />
+          
                  <Label> Payment Mode</Label>
+                     <ErrorMsg msg={errors.paymentMode} />
               <Select value={paymentMode} onChange={(e) => setPaymentMode(e.target.value)}>
                 <option value="">Select Payment Mode</option>
                 <option value="online">Online</option>
@@ -183,13 +186,15 @@ isEditMode=false,
 
           <TwoColumnRows>
             <FormGroups>
-              <ErrorMsg msg={errors.accountNumber} />
+          
                 <Label>Account number</Label>
+                    <ErrorMsg msg={errors.accountNumber} />
               <Input placeholder="Account number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} />
             </FormGroups>
             <FormGroups>
-              <ErrorMsg msg={errors.uanNumber} />
+           
                  <Label>UAN / EPF Account number</Label>
+                    <ErrorMsg msg={errors.uanNumber} />
               <Input placeholder="UAN / EPF Account number" value={uanNumber} onChange={(e) => setUanNumber(e.target.value)} />
             </FormGroups>
           </TwoColumnRows>
@@ -199,13 +204,15 @@ isEditMode=false,
         <Row>
           <TwoColumnRows>
             <FormGroups>
-              <ErrorMsg msg={errors.panNumber} />
+          
                     <Label>PAN Number</Label>
+                        <ErrorMsg msg={errors.panNumber} />
               <Input placeholder="PAN Number" value={panNumber} onChange={(e) => setPanNumber(e.target.value)} />
             </FormGroups>
             <FormGroups>
-              <ErrorMsg msg={errors.taxRegime} />
+           
                      <Label> Regime</Label>
+                        <ErrorMsg msg={errors.taxRegime} />
               <Select value={taxRegime} onChange={(e) => setTaxRegime(e.target.value)}>
                 <option value="">Select Regime</option>
                 <option value="old">Old Regime</option>
@@ -216,8 +223,9 @@ isEditMode=false,
 
           <TwoColumnRows>
             <FormGroups>
-              <ErrorMsg msg={errors.tdsAmount} />
+      
                      <Label> TDS Deduction Amount</Label>
+                             <ErrorMsg msg={errors.tdsAmount} />
               <Select value={tdsAmount} onChange={(e) => setTdsAmount(e.target.value)}>
                 <option value="">TDS Deduction Amount</option>
                 <option value="10.00">10%</option>
@@ -226,8 +234,9 @@ isEditMode=false,
               </Select>
             </FormGroups>
             <FormGroups>
-              <ErrorMsg msg={errors.declaration80C} />
+         
                      <Label>Declaration under 80C</Label>
+                          <ErrorMsg msg={errors.declaration80C} />
               <Select value={declaration80C} onChange={(e) => setDeclaration80C(e.target.value)}>
                 <option value="">Declaration under 80C?</option>
                 <option value="true">Yes</option>
@@ -241,8 +250,9 @@ isEditMode=false,
         <Row>
           <TwoColumnRows>
             <FormGroups>
-              <ErrorMsg msg={errors.basicSalary} />
+           
                   <Label>Basic Salary</Label>
+                     <ErrorMsg msg={errors.basicSalary} />
               <Input placeholder="Basic Salary" value={basicSalary} onChange={(e) => setBasicSalary(e.target.value)} />
             </FormGroups>
             <FormGroups>
@@ -264,13 +274,15 @@ isEditMode=false,
 
           <TwoColumnRows>
             <FormGroups>
-              <ErrorMsg msg={errors.housingAllowance} />
+          
                <Label>Housing allowance</Label>
+                 <ErrorMsg msg={errors.housingAllowance} />
               <Input placeholder="Housing allowance" value={housingAllowance} onChange={(e) => setHousingAllowance(e.target.value)} />
             </FormGroups>
             <FormGroups>
-              <ErrorMsg msg={errors.transportation} />
+           
                     <Label>Transportation</Label>
+                       <ErrorMsg msg={errors.transportation} />
               <Input placeholder="Transportation" value={transportation} onChange={(e) => setTransportation(e.target.value)} />
             </FormGroups>
           </TwoColumnRows>

@@ -141,6 +141,7 @@ function App() {
             <Route path="/fieldshift-department/:id/" element={<FieldDepartment />} />
 <Route path="/fieldinfo/:id" element={<FieldInfo />} />
             <Route path="/card" element={<Dashboard />}/>
+            
           </Route>
         </Route>
       </Routes>
