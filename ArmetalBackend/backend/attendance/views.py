@@ -40,17 +40,10 @@ from django.db.models import Q
 from geopy.geocoders import Nominatim
 logger = logging.getLogger(__name__)
 
-from geopy.distance import geodesic
-from django.conf import settings
-from django.utils import timezone
-import logging
-from datetime import datetime, time
-
-logger = logging.getLogger(__name__)
-
 
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated]
+    
 
     def post(self, request):
         try:
@@ -127,6 +120,80 @@ class AttendanceSwipeView(APIView):
         except Exception as e:
             logger.critical(f"Unhandled error in AttendanceSwipeView: {e}", exc_info=True)
             return Response({'error': 'Internal server error'}, status=500)
+
+
+            
+
+    def _should_punch_in(self, latest_session):
+        if not latest_session:
+            return True
+        if not latest_session.time_out:
+            return False
+        return True
+
+    def _handle_punch_in(self, attendance, now_company_tz, company_tz, lat, lon, address):
+        try:
+            session = AttendanceSession.objects.create(
+                attendance=attendance,
+                time_in=now_company_tz,
+                timezone=company_tz.zone,
+                punch_in_latitude=lat,
+                punch_in_longitude=lon,
+                punch_in_location=address
+            )
+            return Response({
+                'status': 'success',
+                'action': 'punch_in',
+                'time': now_company_tz.strftime("%H:%M:%S"),
+                'date': now_company_tz.date().isoformat(),
+                'session_id': session.id,
+                'location': address
+            }, status=201)
+        except Exception as e:
+            logger.error(f"Error during punch in: {e}")
+            return Response({'error': 'Failed to punch in'}, status=500)
+
+    def _handle_punch_out(self, latest_session, now_company_tz, company_tz, lat, lon, address, attendance):
+        try:
+            time_in = latest_session.time_in
+            if isinstance(time_in, time):
+                time_in = datetime.combine(attendance.date, time_in)
+                time_in = company_tz.localize(time_in)
+
+            if now_company_tz <= time_in:
+                return Response({
+                    'error': 'Punch out must be after punch in',
+                }, status=400)
+
+            latest_session.time_out = now_company_tz
+            latest_session.punch_out_latitude = lat
+            latest_session.punch_out_longitude = lon
+            latest_session.punch_out_location = address
+            latest_session.save()
+
+            session_duration = latest_session.get_duration()
+
+            return Response({
+                'status': 'success',
+                'action': 'punch_out',
+                'time': now_company_tz.strftime("%H:%M:%S"),
+                'session_duration': session_duration,
+                'location': address,
+                'timezone': company_tz.zone
+            }, status=200)
+        except Exception as e:
+            logger.error(f"Error during punch out: {e}")
+            return Response({'error': 'Failed to punch out'}, status=500)
+
+    def _get_location_address(self, lat, lon):
+        """Convert lat/lon to human-readable address (optional)"""
+        try:
+            geolocator = Nominatim(user_agent="attendance_app")
+            location = geolocator.reverse(f"{lat}, {lon}")
+            return location.address if location else None
+        except Exception as e:
+            logger.warning(f"Geocoding failed: {e}")
+            return None
 
 
 # to add a note to the corresponding punch out section
