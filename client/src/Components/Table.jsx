@@ -228,6 +228,7 @@ isEditMode=false,
                              <ErrorMsg msg={errors.tdsAmount} />
               <Select value={tdsAmount} onChange={(e) => setTdsAmount(e.target.value)}>
                 <option value="">TDS Deduction Amount</option>
+                <option value="00.00">0%</option>
                 <option value="10.00">10%</option>
                 <option value="20.00">20%</option>
                 <option value="30.00">30%</option>

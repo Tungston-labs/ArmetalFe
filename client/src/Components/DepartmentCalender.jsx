@@ -179,33 +179,20 @@ const DepartmentCalendar = () => {
 
           {/* Employee Contract Expiry */}
           <EmployeeExpiryWrapper>
-            <h3>Employee Contract Expiry</h3>
-            {contractExpiry.slice(0, 5).map((emp) => (
-          <EmployeeRow key={emp.id}>
-  {emp.profile_pic ? (
-    <Avatar src={emp.profile_pic} alt={emp.name} />
-  ) : (
-    <div
-      style={{
-        width: "30px",
-        height: "30px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: "50%",
-        backgroundColor: "#f0f0f0",
-      }}
-    >
-      <PiUserCircleThin size={24} color="#ccc" />
-    </div>
-  )}
-  <EmpName>{emp.name}</EmpName>
-  <EmpId>{emp.employee_id}</EmpId>
-  <EmpEmail>{emp.department}</EmpEmail>
-</EmployeeRow>
+  <h3>Employee Contract Expiry</h3>
+  {contractExpiry.slice(0, 5).map((emp) => (
+    <EmployeeRow key={emp.id}>
+      <Avatar
+        src={emp.profile_pic ? emp.profile_pic : "https://via.placeholder.com/30"}
+        alt={emp.name}
+      />
+      <EmpName>{emp.name}</EmpName>
+      <EmpId>{emp.employee_id}</EmpId>
+      <EmpEmail>{emp.department}</EmpEmail>
+    </EmployeeRow>
+  ))}
+</EmployeeExpiryWrapper>
 
-            ))}
-          </EmployeeExpiryWrapper>
         </PresenceWrapper>
       </LeftSection>
 

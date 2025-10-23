@@ -118,7 +118,6 @@ class EmployeeListView(generics.ListAPIView):
         print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
         return queryset.order_by('name')
 
-# 2. Retrieve, Update, Delete
 class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee_db.objects.all()
     serializer_class = EmployeeSerializer
@@ -126,10 +125,21 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'pk'
 
     def perform_destroy(self, instance):
-        # delete the associated user too
+        # Get the company before deleting the employee
+        company = instance.department.company if instance.department else None
+
+        # Delete the associated user if exists
         if instance.user:
             instance.user.delete()
+
+        # Delete the employee
         instance.delete()
+
+        # Decrease employee count safely
+        if company:
+            company.number_of_employees = max((company.number_of_employees or 1) - 1, 0)
+            company.save()
+
 
 
 
@@ -186,17 +196,23 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+
 class UpcomingExpiryEmployeeListView(generics.ListAPIView):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = StandardResultsSetPagination 
 
     def get_queryset(self):
+        user = self.request.user
+        company = getattr(user, "company", None)
+        if not company:
+            return Employee_db.objects.none()  # no company assigned
+
         expiry_type = self.request.query_params.get("type")  # 'visa' or 'contract'
         today = timezone.now().date()
         one_month_later = today + timedelta(days=30)
 
-        queryset = Employee_db.objects.all()
+        queryset = Employee_db.objects.filter(department__company=company)  # filter by company
 
         if expiry_type == "visa":
             queryset = queryset.filter(
@@ -214,6 +230,7 @@ class UpcomingExpiryEmployeeListView(generics.ListAPIView):
         return queryset.order_by(
             "visa_expiry_date" if expiry_type == "visa" else "contract_expiry_date"
         )
+
 
 
 # views.py
@@ -527,7 +544,8 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "contract_expiry_date": emp.contract_expiry_date,
-                "employee_id":emp.employee_id
+                "employee_id":emp.employee_id,
+                "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
             for emp in upcoming_contract_expiry_qs
         ]
@@ -813,14 +831,15 @@ class EmployeeMonthlySummaryView(APIView):
         # Total working hours
         total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
 
-        # Half days (< 8 hours)
-        half_days = attendances.filter(total_hours__lt=8).values_list("date", flat=True)
+        # Half days (4 <= hours < 7)
+        half_days = attendances.filter(total_hours__gte=2, total_hours__lt=6).values_list("date", flat=True)
 
-        # Present days (attendance exists)
-        present_days = attendances.values_list("date", flat=True)
+        # Present days (hours >= 7)
+        present_days = attendances.filter(total_hours__gte=6).values_list("date", flat=True)
 
-       # Absent days only until today
-        absent_days = [d for d in working_days if d <= today and d not in present_days]
+        # Absent days only until today (exclude present and half days)
+        absent_days = [d for d in working_days if d <= today and d not in present_days and d not in half_days]
+
 
         # Remaining working days
         remaining_working_days = [d for d in working_days if d > today]
