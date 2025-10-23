@@ -218,7 +218,7 @@ console.log("employeeBankPayments",employeeBankPayments)
       <Textarea value={employeeDetail?.address || ""} readOnly />
     </FieldWrapper>
 
-    <Rows style={{ marginTop: "2.3rem", display: "flex", gap: "1rem" }}>
+    <Rows style={{ display: "flex", gap: "1rem" }}>
       <FieldWrapper style={{ flex: 1 }}>
         <Label>Date of Birth</Label>
         <Input type="text" value={employeeDetail?.dob || ""} readOnly />

@@ -235,7 +235,7 @@ const navigate = useNavigate();
       <Textarea value={employeeDetail?.address || ""} readOnly />
     </FieldWrapper>
 
-    <Rows style={{ marginTop: "2rem" }}>
+    <Rows>
       <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
         <Label>Date of Birth</Label>
         <Input type="text" value={employeeDetail?.dob || ""} readOnly />

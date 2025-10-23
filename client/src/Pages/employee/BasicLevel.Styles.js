@@ -90,110 +90,99 @@ export const ProfileImage = styled.img`
     height: 30px;
   }
 `;
-// export const Select = styled.select`
-//   width: 100%;
-//   padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
-//   font-size: clamp(0.8rem, 0.9vw, 1.1rem);
-//   border-radius: 6px;
-//   border: 1px solid #ccc;
-//   background: white;
-//   color: black;
-//   box-sizing: border-box;
-//   appearance: none; /* ✅ removes default arrow styling (optional) */
-
-//   /* Mobile screens */
-//   @media (max-width: 480px) {
-//     font-size: 0.8rem;
-//     padding: 0.5rem 0.8rem;
-//   }
-
-//   /* Full HD (1920px) */
-//   @media (min-width: 1920px) {
-//     font-size: 1rem;
-//     padding: 0.8rem 1rem;
-//   }
-
-//   /* 4K (3840px) */
-//   @media (min-width: 3840px) {
-//     font-size: 1.1rem;
-//     padding: 1rem 1.2rem;
-//   }
-
-//   /* 8K (7680px) */
-//   @media (min-width: 7680px) {
-//     font-size: 1.3rem;
-//     padding: 1.2rem 1.5rem;
-//   }
-// `;
-
 
 export const Input = styled.input`
   width: 100%;
-  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
-  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  padding: 0.5rem 0.8rem;
+  font-size: 1rem;
   color: black;
   border-radius: 7px;
   border: 1px solid #052DB4;
   background: #FFF;
   box-sizing: border-box;
-margin-top:5px;
-  /* Responsive refinements */
+  margin-top: 5px;
+
+  /* Small screens */
   @media (max-width: 480px) {
     font-size: 0.8rem;
-    padding: 0.6rem 0.8rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  /* Medium screens */
+  @media (min-width: 1020px) {
+    font-size: 1.1rem;
+    padding: 0.6rem 0.9rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 1rem;
+    padding: 0.6rem 0.9rem;
   }
 
   @media (min-width: 1920px) {
+    font-size: 1.2rem;
+    padding: 0.8rem 1.2rem;
+    /* margin-bottom: 1rem; */
+  }
+
+  @media (min-width: 2560px) {
     font-size: 1.5rem;
-    padding: 1rem 1rem;
-    margin-bottom:1rem;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem;
   }
 
   @media (min-width: 3840px) {
     font-size: 2rem;
     padding: 1.5rem 2rem;
-    margin-bottom:1rem;
-  }
-
-  @media (min-width: 7680px) {
-    font-size: 1.3rem;
-    padding: 1.4rem 2rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 `;
+
 
 
 export const Label = styled.label`
   color: #3352BA;
   font-weight: 400;
-  margin-bottom: 0.4rem;
-  font-size: 0.9rem;
+  /* margin-bottom: 0.4rem; */
+  font-size: 0.9rem; /* default for small devices */
 
-  /* 📱 Small phones */
+  /* Small phones */
   @media (max-width: 480px) {
     font-size: 0.7rem;
   }
 
-  /* 📲 Tablets */
+  /* Tablets */
   @media (min-width: 481px) and (max-width: 768px) {
     font-size: 0.8rem;
   }
 
-  /* 💻 Laptops & Desktops */
-  @media (min-width: 769px) and (max-width: 1920px) {
+  /* Laptops & Desktops */
+  @media (min-width: 769px) and (max-width: 1020px) {
+    font-size: 0.95rem;
+  }
+  @media (min-width: 1021px) and (max-width: 1440px) {
+    font-size: 1.05rem;
+  }
+  @media (min-width: 1441px) and (max-width: 1920px) {
     font-size: 1rem;
   }
 
-  /* 🖥 4K screens */
-  @media (min-width: 1921px) and (max-width: 3839px) {
+  /* 2K screens */
+  @media (min-width: 1921px) and (max-width: 2560px) {
+    font-size: 1.5rem;
+  }
+
+  /* 4K screens */
+  @media (min-width: 2561px) and (max-width: 3839px) {
     font-size: 1.8rem;
   }
 
-  /* 🖥 8K screens */
+  /* 8K screens */
   @media (min-width: 3840px) {
     font-size: 2rem;
   }
 `;
+
 
 
 export const TextArea = styled.textarea`
@@ -217,10 +206,10 @@ export const SectionTitle = styled.h4`
   font-weight: 700;
   line-height: 1.3;
 
-  /* Responsive font sizing */
+
   font-size: clamp(1rem, 1.2vw, 2rem);
 
-  /* Adjust for ultra-wide screens */
+
   @media (min-width: 3840px) {
     font-size: 2.5rem;
   }
@@ -251,9 +240,40 @@ export const ThreeColumn = styled.div`
 export const FlexRow = styled.div`
   display: flex;
   justify-content: center;
-  gap: clamp(0.5rem, 1vw, 2rem);  /* responsive gap */
-  margin-top: clamp(1rem, 3vw, 5rem);  /* responsive top margin */
-  flex-wrap: wrap; /* wrap on smaller screens */
+  gap: 1rem; /* default gap */
+  margin-top: 2rem; /* default top margin */
+  flex-wrap: wrap;
+
+  /* Medium screens */
+  @media (min-width: 1020px) {
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 1440px) {
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  @media (min-width: 1920px) {
+    gap: 2.5rem;
+    margin-top: 4rem;
+  }
+
+  @media (min-width: 2560px) {
+    gap: 3rem;
+    margin-top: 5rem;
+  }
+
+  @media (min-width: 3840px) {
+    gap: 4rem;
+    margin-top: 6rem;
+  }
+
+  @media (min-width: 7680px) {
+    gap: 5rem;
+    margin-top: 7rem;
+  }
 `;
 
 export const ActionButton = styled.button`
@@ -285,30 +305,53 @@ export const ActionButton = styled.button`
 export const ApproveButton = styled(ActionButton)`
   background-color: #172554;
   color: white;
+  /* width: 100px; */
+  /* height: 40px; */
+  font-size: 1rem;
 
-  /* Responsive width and height */
-  // width: clamp(60px, 8%, 120px);   
-  height: clamp(35px, 3vh, 50px);  /* min 35px, responsive to viewport height, max 50px */
+  /* Center the text */
+  display: flex;
+  align-items: center;   /* vertical center */
+  justify-content: center; /* horizontal center */
+  text-align: center;
 
-  font-size: clamp(0.8rem, 1vw, 1rem); /* responsive font size */
+  @media (min-width: 1020px) {
+    width: 120px;
+    height: 45px;
+    font-size: 1.1rem;
+  }
 
-  @media (min-width: 2560px) { /* 4K */
-    width: clamp(80px, 6%, 150px);
-    height: 50px;
+  @media (min-width: 1440px) {
+    /* width: 140px; */
+    /* height: 50px; */
     font-size: 1.2rem;
   }
-  @media (min-width: 3840px) { /* 4K */
-    height: 5rem;
-    width: 15rem;
-    font-size: 2.5rem;
+
+  @media (min-width: 1920px) {
+    /* width: 160px; */
+    /* height: 55px; */
+    font-size: 1.3rem;
   }
 
-  @media (min-width: 7680px) { /* 8K */
-    width: clamp(120px, 5%, 200px);
-    height: 56px;
-    font-size: 1.4rem;
+  @media (min-width: 2560px) {
+    width: 180px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    width: 220px;
+    height: 70px;
+    font-size: 2rem;
+  }
+
+  @media (min-width: 7680px) {
+    width: 300px;
+    height: 80px;
+    font-size: 2.5rem;
   }
 `;
+
 
 export const FormGroups = styled.div`
   // margin-bottom: 0.2rem;
@@ -481,8 +524,6 @@ export const FullWidthInput = styled.input`
   background: #FFF;
   color: black;
 
-  /* Responsive font sizing */
-  font-size: clamp(0.8rem, 1vw, 1rem);
 
   &:focus {
     outline: none;
@@ -502,37 +543,38 @@ export const FullWidthInput = styled.input`
     padding: 0.7rem 0.9rem;
   }
 
-  /* Small Laptops (769px – 1280px) */
+
   @media (min-width: 769px) and (max-width: 1280px) {
     font-size: 0.9rem;
     padding: 0.8rem 1rem;
   }
 
-  /* Desktops / Full HD (1281px – 1920px) */
-  @media (min-width: 1281px) and (max-width: 1920px) {
-    font-size: 1rem;
-    padding: 0.9rem 1.1rem;
-  }
 
-  /* 2K (1921px – 2560px) */
+  @media (min-width: 1281px) and (max-width: 1440px) {
+    font-size: 1rem;
+    padding: 1rem 1.1rem;
+  }
+ @media (min-width: 1441px) and (max-width: 1920px) {
+    font-size: 1rem;
+    padding: 1rem 1.1rem;
+  }
   @media (min-width: 1921px) and (max-width: 2560px) {
     font-size: 1.5rem;
-    padding: 1.5rem 1.2rem;
+    padding: 1.8rem 1.2rem;
   }
 
-  /* 4K (2561px – 3840px) */
+ 
   @media (min-width: 2561px) and (max-width: 3840px) {
-    font-size: 1.5rem;
-    padding: 1.8rem 1.3rem;
+    font-size: 2rem;
+    padding: 2.2rem 1.3rem;
   }
 
-  /* 6K (3841px – 5120px) */
   @media (min-width: 3841px) and (max-width: 5120px) {
     font-size: 1.8rem;
     padding: 2rem 1.4rem;
   }
 
-  /* 8K (≥7680px) */
+  
   @media (min-width: 7680px) {
     font-size: 1.4rem;
     padding: 1.3rem 1.5rem;
@@ -622,22 +664,6 @@ export const FormGroup = styled.div`
   min-width: 180px;
 `;
 
-// export const Input = styled.input`
-//   width: 100%;
-//   padding: 0.6rem;
-//   border-radius: 8px;
-//   border: 1px solid #ccc;
-// `;
-
-// export const TextArea = styled.textarea`
-//   width: 100%;
-//   padding: 0.6rem;
-//   height: 60px;
-//   border-radius: 8px;
-//   border: 1px solid #ccc;
-// `;
-
-
 export const Avatar = styled.img`
   width: 80px;
   height: 80px;
@@ -660,18 +686,7 @@ export const Button = styled.button`
     background: #002244;
   }
 `;
-// export const Title = styled.h2`
-//   font-size: 24px;
-//   margin: 0;
 
-// `;
-
-// export const Subtitle = styled.p`
-//   font-size: 14px;
-//   color: #555;
-
-//   margin-top:-1px;
-// `;
 export const IconWrapper = styled.div`
   width: 10rem;
   height: 10rem;
@@ -692,14 +707,14 @@ export const ColumnRow = styled.div`
 
 export const Select = styled.select`
   width: 100%;
-  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
+padding: 0.5rem 0.8rem;
+  font-size: 1rem;
   border-radius: 7px;
   border: 1px solid #052DB4;
   background: #FFF;
   color: black;
 margin-top:5px;
-  /* Fluid responsive font size */
-  font-size: clamp(0.75rem, 0.9vw, 1rem);
+
 
   /* Native dropdown reset + custom arrow */
   appearance: none;
@@ -714,28 +729,39 @@ margin-top:5px;
     box-shadow: 0 0 4px rgba(5, 45, 180, 0.3);
   }
 
-  /* Responsive refinements */
+   /* Small screens */
   @media (max-width: 480px) {
     font-size: 0.8rem;
-    padding: 0.6rem 0.8rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  /* Medium screens */
+  @media (min-width: 1020px) {
+    font-size: 1.1rem;
+    padding: 0.6rem 0.9rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 1rem;
+    padding: 0.7rem 0.9rem;
   }
 
   @media (min-width: 1920px) {
+    font-size: 1.2rem;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 2560px) {
     font-size: 1.5rem;
-    padding: 1.2rem 1rem;
-    margin-bottom:1rem;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem;
   }
 
   @media (min-width: 3840px) {
     font-size: 2rem;
     padding: 1.5rem 2rem;
-    margin-bottom:1rem;
-  }
-
-  @media (min-width: 7680px) {
-    font-size: 1.3rem;
-    padding: 1.4rem 2rem;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 `;
 

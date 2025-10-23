@@ -285,7 +285,7 @@ useEffect(() => {
       <Textarea name="address" value={formData.address || ""} onChange={handleChange} readOnly={!editMode} />
     </FieldWrapper>
 
-    <Rows style={{ marginTop: "1rem" }}>
+    <Rows>
      <FieldWrappers>
   <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
     <Label>Date of Birth</Label>

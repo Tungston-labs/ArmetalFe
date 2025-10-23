@@ -119,23 +119,39 @@ export const RightSection = styled.div`
 
 export const Input = styled.input`
   width: 100%;
-  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
-  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  padding: 0.5rem 0.8rem;
+  font-size: 1rem;
   color: black;
   border-radius: 7px;
   border: 1px solid #052db4;
   background: #fff;
   box-sizing: border-box;
-  margin-top: 5px;
-  /* Responsive refinements */
+  margin-bottom: 5px;
   @media (max-width: 480px) {
     font-size: 0.8rem;
-    padding: 0.6rem 0.8rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  /* Medium screens */
+  @media (min-width: 1020px) {
+    font-size: 1.1rem;
+    padding: 0.6rem 0.9rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 1rem;
+    padding: 0.7rem 0.9rem;
   }
 
   @media (min-width: 1920px) {
+    font-size: 1.2rem;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 2560px) {
     font-size: 1.5rem;
-    padding: 1rem 1rem;
+    padding: 1.2rem 1.5rem;
     margin-bottom: 1rem;
   }
 
@@ -144,13 +160,8 @@ export const Input = styled.input`
     padding: 1.5rem 2rem;
     margin-bottom: 1rem;
   }
-
-  @media (min-width: 7680px) {
-    font-size: 1.3rem;
-    padding: 1.4rem 2rem;
-    margin-bottom: 1rem;
-  }
 `;
+
 
 export const ResponsiveH3 = styled.h3`
   font-family: Satoshi, sans-serif;
@@ -181,16 +192,69 @@ export const ResponsiveH3 = styled.h3`
 `;
 
 export const Textarea = styled.textarea`
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
   width: 100%;
-  resize: none;
+  padding: 0.7rem;
   height: 95px;
   border-radius: 7px;
   border: 1px solid #052db4;
   background: #fff;
+  resize: none;
+  font-size: 0.9rem; /* default font size */
+
+  /* Small phones */
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+    height: 80px;
+  }
+
+  /* Tablets */
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 0.8rem;
+    padding: 0.6rem;
+    height: 90px;
+  }
+
+  /* Laptops & Desktops */
+  @media (min-width: 769px) and (max-width: 1020px) {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+    height: 95px;
+  }
+  @media (min-width: 1021px) and (max-width: 1440px) {
+    font-size: 1rem;
+    padding: 0.8rem;
+    height: 100px;
+  }
+  @media (min-width: 1441px) and (max-width: 1920px) {
+    font-size: 1.1rem;
+    padding: 0.9rem;
+    height: 110px;
+  }
+
+  /* 2K screens */
+  @media (min-width: 1921px) and (max-width: 2560px) {
+    font-size: 1.3rem;
+    padding: 1rem;
+    height: 160px;
+  }
+
+  /* 4K screens */
+  @media (min-width: 2561px) and (max-width: 3839px) {
+    font-size: 1.5rem;
+    padding: 1.2rem;
+    height: 190px;
+  }
+
+  /* 8K screens */
+  @media (min-width: 3840px) {
+    font-size: 1.8rem;
+    padding: 1.5rem;
+    height: 230px;
+  }
 `;
+
+
 export const FieldWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -321,11 +385,59 @@ export const GroupLabel = styled.h4`
 
 export const Rows = styled.div`
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap; /* wrap items on smaller screens */
+  gap: 1rem; /* default gap */
   margin-bottom: 1rem;
   align-items: flex-start;
   background-color: #fff;
+
+  /* Small phones */
+  @media (max-width: 480px) {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Tablets */
+  @media (min-width: 481px) and (max-width: 768px) {
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Laptops & Desktops */
+  @media (min-width: 769px) and (max-width: 1020px) {
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 1021px) and (max-width: 1440px) {
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  @media (min-width: 1441px) and (max-width: 1920px) {
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* 2K screens */
+  @media (min-width: 1921px) and (max-width: 2560px) {
+    gap: 1.8rem;
+    margin-top: 1.2rem;
+  }
+
+  /* 4K screens */
+  @media (min-width: 2561px) and (max-width: 3839px) {
+    gap: 2rem;
+    margin-top: 1.2rem;
+  }
+
+  /* 8K screens */
+  @media (min-width: 3840px) {
+    gap: 2.5rem;
+    margin-top: 1.2rem;
+  }
 `;
+
 
 export const Select = styled.select`
   width: 100%;
