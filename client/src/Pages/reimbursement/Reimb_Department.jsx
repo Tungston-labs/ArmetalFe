@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartments, createNewDepartment } from '../../Redux/departmentSlice.js';
 import { useNavigate } from 'react-router-dom';
-import { FiSearch } from 'react-icons/fi'; // Make sure this is imported in your file
 import Side_detail from "./Side_detail.jsx"
 import {
   DepartmentContainer,
@@ -111,16 +110,7 @@ const Department = () => {
 
 
         <ActionArea>
-        {/* <SearchWrapper>
-    <SearchIcon />
-    <SearchInput
-      type="text"
-      placeholder="Search by Department name"
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-    />
-  </SearchWrapper>
-           */}
+       
         </ActionArea>
       </HeaderSection>
 

@@ -20,12 +20,12 @@ import {
   DropdownWrapper,
   Header3,
   BackArrow,
-} from '../reimbursement/Reimb2page.Styles';
+} from './Reimbpage.Styles';
 import { FaInfoCircle } from 'react-icons/fa';
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import RemiIcon from "../../assets/remi.svg";
-import { fetchReimbursementsByDepartment,updateReimbursementStatus } from '../../services/reimbursement'; // <-- your service
+import { fetchReimbursementsByDepartment,updateReimbursementStatus } from '../../services/reimbursement';
 import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
 import { Pagination } from '../leaveDetails/EmployeeList.styles';

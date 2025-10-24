@@ -30,7 +30,7 @@ import {
   Title,
   TextGroup,
 } from "./FieldShift.Styles";
-import FieldShiftIcon from "../../assets/shifttopper.svg";
+import FieldShiftIcon from "../../assets/projecticon.svg";
 import { GoInfo } from "react-icons/go";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { LuArrowLeft } from "react-icons/lu";
@@ -83,7 +83,7 @@ const FieldShift = () => {
   const handleInfoClick = (employeeId) => {
     console.log("Navigating to employee info for ID:", employeeId);
     
-    navigate(`/fieldinfo/${employeeId}`, { state: { employeeId } });
+    navigate(`/project/${employeeId}`, { state: { employeeId } });
   };
 
   const handleDelete = () => {
@@ -212,7 +212,7 @@ const FieldShift = () => {
       <Navbar />
       <PageWrapper>
         <Header>
-          <BackButton onClick={() => navigate("/field-shift")}>
+          <BackButton onClick={() => navigate("/project")}>
             <LuArrowLeft />
           </BackButton>
 

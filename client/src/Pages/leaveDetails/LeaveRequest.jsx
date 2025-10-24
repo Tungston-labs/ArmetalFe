@@ -302,13 +302,6 @@ const isLoading = loading || deptLoading;
         </span>
       </Pagination>
 
-      {/* {showModal && (
-        <ConfirmLeaveModal
-          onClose={() => setShowModal(false)}
-          onConfirm={handleStatusUpdate}
-          actionType={actionType}
-        />
-      )} */}
 {showModal && (
   <OnLeaveModal
     leaveId={selectedLeave?.leave_id}    // ✅ leave id

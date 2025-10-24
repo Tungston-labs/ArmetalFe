@@ -17,8 +17,6 @@ import {
   setBankFormData
 } from '../../Redux/employeeSlice';
 import { clearBankPayment } from '../../Redux/employeeSlice';
-// import { FiChevronDown } from "react-icons/fi";
-// import { FaUserCircle } from "react-icons/fa";
 import Loader from "../../Components/Loader"
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { EmployeeImage } from './BasicLevel.Styles';

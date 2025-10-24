@@ -20,10 +20,12 @@ import { addCompany, editCompany } from '../../Redux/superAdminSlice';
 import { FiUpload } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
 import Swal from 'sweetalert2';
+import { ClipLoader } from "react-spinners";
 
 const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) => {
   const dispatch = useDispatch();
   const fileInputRef = useRef();
+const [isSubmitting, setIsSubmitting] = useState(false);
 
   const countryDialCodes = [
     { code: '+971', label: 'UAE (+971)' },
@@ -52,7 +54,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
   ];
 
 
-  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement","field_shift"];
+  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement","project"];
 
   const [formData, setFormData] = useState({
     name: '',
@@ -155,12 +157,12 @@ const handleSubmit = async (e) => {
 
   setFormErrors(errors);
   if (Object.keys(errors).length > 0) return;
-
+  setIsSubmitting(true);
   const modulesObject = {};
   allModules.forEach(mod => {
     modulesObject[mod] = formData.modules.includes(mod);
   });
-
+console.log("module object:",modulesObject);
   const payload = new FormData();
   payload.append("name", formData.name);
   payload.append("address", formData.address);
@@ -200,6 +202,9 @@ const handleSubmit = async (e) => {
       icon: 'error',
       confirmButtonColor: '#D33'
     });
+  }
+  finally {
+    setIsSubmitting(false); 
   }
 };
 
@@ -343,35 +348,7 @@ const handleSubmit = async (e) => {
           </div>
         </FormSection>
 
-        {/* <Label>Upload logo</Label>
-        <LogoUploadBox onClick={() => fileInputRef.current.click()}>
-          <FiUpload size={24} />
-          <p>
-            Click to upload or Drag and Drop <br />
-            Max 2 MB file size (PNG or SVG only)
-          </p>
-          <input
-            type="file"
-            accept=".png,.svg"
-            ref={fileInputRef}
-            onChange={handleLogoChange}
-            style={{ display: "none" }}
-          />
-        </LogoUploadBox>
-
-        {logoPreview && (
-          <LogoPreview>
-            {formData.logo?.type === "image/svg+xml" ? (
-              <object data={logoPreview} type="image/svg+xml" width="50" height="50" />
-            ) : (
-              <img src={logoPreview} alt="Logo" />
-            )}
-            <button onClick={removeLogo} type="button">
-              <AiOutlineClose />
-            </button>
-          </LogoPreview>
-        )} */}
-
+       
 
         <h4>Privileges</h4>
         <CheckboxGroup>
@@ -393,7 +370,16 @@ const handleSubmit = async (e) => {
 
         <ButtonGroup>
           <Button type="button" cancel onClick={onClose}>Cancel</Button>
-          <Button type="submit">{isEdit ? "Update" : "Save"}</Button>
+       <Button type="submit" disabled={isSubmitting}>
+  {isSubmitting ? (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <ClipLoader size={16} color="#fff" />
+      {isEdit ? "Updating..." : "Saving..."}
+    </div>
+  ) : (
+    isEdit ? "Update" : "Save"
+  )}
+</Button>
         </ButtonGroup>
       </form>
     </FormWrapper>
