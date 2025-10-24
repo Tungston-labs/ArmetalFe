@@ -6,8 +6,7 @@ import { BsFillBuildingsFill } from "react-icons/bs";
 import { FaMoneyCheckAlt, FaUmbrellaBeach, FaReceipt } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import fieldIcon from "../../src/assets/shifts.png"; // adjust path based on your folder structure
-
+import { MdContentPasteSearch } from "react-icons/md";
 import {
   SidebarContainer,
   Logo,
@@ -15,6 +14,7 @@ import {
   ToggleButton,
   CustomLink,
   TopSection,
+  LinkIcon,
 } from './Sidebar.styles';
 import API from '../services/api';
 import { NavLink } from "react-router-dom";
@@ -25,11 +25,7 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
-  // ✅ Subscribe to Redux user state
   const reduxUser = useSelector((state) => state.auth.user);
-
-  // ✅ Fallback to localStorage in case of refresh
 
   const storedUser = useSelector((state) => state.auth.user);
   const user = reduxUser || storedUser;
@@ -136,20 +132,11 @@ export default function Sidebar() {
 
             {modules.field_shift && (
               <CustomLink
-                to="/field-shift"
-                className={`${collapsed ? "collapsed" : ""} ${isActive("/field-shift")}`}
+                to="/project"
+                className={`${collapsed ? "collapsed" : ""} ${isActive("/project")}`}
               >
-                <img
-                  src={fieldIcon}
-                  alt="Field Shift"
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    marginRight: "8px",
-                    verticalAlign: "middle"
-                  }}
-                />
-                <span>FieldShift</span>
+                   <MdContentPasteSearch />
+                <span>Project</span>
               </CustomLink>
             )}
 

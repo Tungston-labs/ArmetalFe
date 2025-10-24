@@ -52,7 +52,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) =>
   ];
 
 
-  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement","field_shift"];
+  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement","project"];
 
   const [formData, setFormData] = useState({
     name: '',
@@ -343,35 +343,7 @@ const handleSubmit = async (e) => {
           </div>
         </FormSection>
 
-        {/* <Label>Upload logo</Label>
-        <LogoUploadBox onClick={() => fileInputRef.current.click()}>
-          <FiUpload size={24} />
-          <p>
-            Click to upload or Drag and Drop <br />
-            Max 2 MB file size (PNG or SVG only)
-          </p>
-          <input
-            type="file"
-            accept=".png,.svg"
-            ref={fileInputRef}
-            onChange={handleLogoChange}
-            style={{ display: "none" }}
-          />
-        </LogoUploadBox>
-
-        {logoPreview && (
-          <LogoPreview>
-            {formData.logo?.type === "image/svg+xml" ? (
-              <object data={logoPreview} type="image/svg+xml" width="50" height="50" />
-            ) : (
-              <img src={logoPreview} alt="Logo" />
-            )}
-            <button onClick={removeLogo} type="button">
-              <AiOutlineClose />
-            </button>
-          </LogoPreview>
-        )} */}
-
+       
 
         <h4>Privileges</h4>
         <CheckboxGroup>

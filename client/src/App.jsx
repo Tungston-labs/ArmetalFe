@@ -137,9 +137,9 @@ function App() {
             <Route path="/reimbursement_detail/:id" element={<Reimb2page />} />
             <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
             <Route path="/finance" element={<FinancePage />} />
-            <Route path="/field-shift" element={<FieldShift />} />
-            <Route path="/fieldshift-department/:id/" element={<FieldDepartment />} />
-<Route path="/fieldinfo/:id" element={<FieldInfo />} />
+            <Route path="/project" element={<FieldShift />} />
+            <Route path="/project-department/:id/" element={<FieldDepartment />} />
+<Route path="/project/:id" element={<FieldInfo />} />
             <Route path="/card" element={<Dashboard />}/>
             
           </Route>
