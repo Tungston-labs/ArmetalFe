@@ -130,7 +130,7 @@ export default function Sidebar() {
               </CustomLink>
             )}
 
-            {modules.field_shift && (
+            {modules.project && (
               <CustomLink
                 to="/project"
                 className={`${collapsed ? "collapsed" : ""} ${isActive("/project")}`}

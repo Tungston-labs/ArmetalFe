@@ -34,7 +34,7 @@ import HalfDoughnutChart from "../../Components/HalfDoughnutChart";
 import arabic from 'react-date-object/calendars/arabic';
 import arabic_ar from 'react-date-object/locales/arabic_ar';
 import DateObject from "react-date-object";
-// import { ReactComponent as UserSVG } from '../../assets/total.svg'; // adjust path
+
 
 import hijri from "react-date-object/calendars/arabic";
 import 'react-multi-date-picker/styles/layouts/mobile.css'; 
