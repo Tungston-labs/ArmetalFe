@@ -20,10 +20,12 @@ import { addCompany, editCompany } from '../../Redux/superAdminSlice';
 import { FiUpload } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
 import Swal from 'sweetalert2';
+import { ClipLoader } from "react-spinners";
 
 const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null }) => {
   const dispatch = useDispatch();
   const fileInputRef = useRef();
+const [isSubmitting, setIsSubmitting] = useState(false);
 
   const countryDialCodes = [
     { code: '+971', label: 'UAE (+971)' },
@@ -155,12 +157,12 @@ const handleSubmit = async (e) => {
 
   setFormErrors(errors);
   if (Object.keys(errors).length > 0) return;
-
+  setIsSubmitting(true);
   const modulesObject = {};
   allModules.forEach(mod => {
     modulesObject[mod] = formData.modules.includes(mod);
   });
-
+console.log("module object:",modulesObject);
   const payload = new FormData();
   payload.append("name", formData.name);
   payload.append("address", formData.address);
@@ -200,6 +202,9 @@ const handleSubmit = async (e) => {
       icon: 'error',
       confirmButtonColor: '#D33'
     });
+  }
+  finally {
+    setIsSubmitting(false); 
   }
 };
 
@@ -365,7 +370,16 @@ const handleSubmit = async (e) => {
 
         <ButtonGroup>
           <Button type="button" cancel onClick={onClose}>Cancel</Button>
-          <Button type="submit">{isEdit ? "Update" : "Save"}</Button>
+       <Button type="submit" disabled={isSubmitting}>
+  {isSubmitting ? (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <ClipLoader size={16} color="#fff" />
+      {isEdit ? "Updating..." : "Saving..."}
+    </div>
+  ) : (
+    isEdit ? "Update" : "Save"
+  )}
+</Button>
         </ButtonGroup>
       </form>
     </FormWrapper>
