@@ -61,7 +61,7 @@ const DepartmentPage = () => {
               <img src={FieldShiftIcon} alt="FieldShift" />
             </IconWrapper>
             <TextGroup>
-              <Title>FieldShift</Title>
+              <Title>Project</Title>
               <Subtitle>Manage all projects within the organization.</Subtitle>
             </TextGroup>
           </TitleSection>
