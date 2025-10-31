@@ -7,27 +7,6 @@ from attendance.models import Attendance
 from leave.models import LeaveRequest
 from holidays.models import PublicHoliday
 import calendar
-
-
-
-class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
-    bank_details = EmpBankPaymentSerializer(read_only=True)
-
-    class Meta:
-        model = Employee_db
-        fields = [
-            'id',
-            'name',
-            'employee_id',
-            'email',
-            'department',
-            'joining_date',
-            'designation',
-            'bank_details',
-        ]
-
-
-
 # class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 #     employee_name = serializers.CharField(source='employee.name', read_only=True)
 #     department = serializers.CharField(source='employee.department.name', read_only=True)
@@ -153,6 +132,27 @@ class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
 #         data['deductions'] = [d for d in data['deductions'] if d is not None]
 
 #         return data
+
+
+class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
+    bank_details = EmpBankPaymentSerializer(read_only=True)
+
+    class Meta:
+        model = Employee_db
+        fields = [
+            'id',
+            'name',
+            'employee_id',
+            'email',
+            'department',
+            'joining_date',
+            'designation',
+            'bank_details',
+        ]
+
+
+
+
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source='employee.name', read_only=True)
     department = serializers.CharField(source='employee.department.name', read_only=True)

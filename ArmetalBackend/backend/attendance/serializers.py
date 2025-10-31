@@ -67,6 +67,7 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
 
 class AttendanceSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source='employee.name', read_only=True)
+    employee_id = serializers.CharField(source='employee.employee_id', read_only=True)
     profile_pic = serializers.ImageField(source='employee.profile_pic', read_only=True)
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
     total_hours_formatted = serializers.SerializerMethodField()
@@ -77,6 +78,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
             'id',
             'employee',
             'employee_name',
+            'employee_id',
             'date',
             'profile_pic',
             'total_hours',

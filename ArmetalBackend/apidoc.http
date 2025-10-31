@@ -363,7 +363,7 @@ POST http://178.248.112.16:8001/api/forgot-password/send-otp/
 Content-Type: application/json
 
 {
-  "email": "athuluiux@gmail.com"
+  "email": "nisna.u5@gmail.com"
 }
 # verify OPTIONS 
 ###
@@ -371,8 +371,8 @@ POST http://178.248.112.16:8001/api/forgot-password/verify-otp/
 Content-Type: application/json
 
 {
-  "email": "tls@gmail.com",
-  "otp": "441526"
+  "email": "nisna.u5@gmail.com",
+  "otp": "978004"
 }
 
 # reset password after otp verification
@@ -382,7 +382,7 @@ POST http://178.248.112.16:8001/api/forgot-password/reset/
 Content-Type: application/json
 
 {
-  "email": "tls@gmail.com",
+  "email": "nisna.u5@gmail.com",
   "new_password": "password123",
   "confirm_password": "password123"
 }
@@ -509,8 +509,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 # list out employee attendance for admin
 ###
-GET http://178.248.112.16:8001/api/admin/attendance/?department_id=16
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MTU0NjY1LCJpYXQiOjE3NTUxNTEwNjUsImp0aSI6IjUwMGY2ZGQ3MDQ4NTQzNmJhZmRhODhlMDA3ZWYwOGEwIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.Imu8QcW2Zz_BXBGbHxCUIMtnK8u7tpezZSfIpse1adY
+GET http://178.248.112.16:8001/api/admin/attendance/?department_id=92
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxODkyNzE4LCJpYXQiOjE3NjE4ODkxMTgsImp0aSI6ImUzOGI5MjA5MGQ0NTRiZWE4MDY1M2YzYTVjNmEyYTJiIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.KjKa2eImLmI8W5taRNDhhiLElAuh10oyWwQFFWgdIjU
 
 # lst todays punch in punch outs
 ###

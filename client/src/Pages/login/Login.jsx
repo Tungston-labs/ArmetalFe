@@ -100,14 +100,7 @@ console.log("---",formData);
           userName: user.username,
           accessToken: access,
           user,
-          // user: {
-          //   id: user.id,
-          //   email: user.email,
-          //   is_superadmin: user.is_superadmin,
-          //   is_hr_admin: user.is_hr_admin,
-          //   is_employee: user.is_employee,
-          //   company: user.company,
-          // },
+         
         })
       );
   

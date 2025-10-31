@@ -22,23 +22,6 @@ class SafeDateField(serializers.DateField):
 
 
 
-# class EmployeeSerializer(serializers.ModelSerializer):
-#     dob = SafeDateField(required=False)
-#     joining_date = SafeDateField(required=False)
-#     visa_expiry_date = SafeDateField(required=False)
-  
- 
-
-#     department_id = serializers.PrimaryKeyRelatedField(
-#         source='department',
-#         queryset=Department.objects.all(),
-#         write_only=True
-#     )
-#     department = serializers.CharField(source='department.name', read_only=True)
-
-#     class Meta:
-#         model = Employee_db
-#         exclude = ['user', 'password']
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
