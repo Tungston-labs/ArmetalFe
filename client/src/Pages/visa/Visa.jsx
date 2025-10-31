@@ -222,7 +222,17 @@ const EmployeeList = () => {
                   </td>
                   <td>{emp.employee_id}</td>
                   <td>{emp.email}</td>
-                  <td>{emp.visa_expiry_date}</td>
+       <td>
+  {expiryFilter === "contract"
+    ? emp.contract_expiry_date
+      ? emp.contract_expiry_date
+      : "----"
+    : emp.visa_expiry_date
+    ? emp.visa_expiry_date
+    : "----"}
+</td>
+
+
                   <td
                     onClick={() => navigate(`/fulldashboard/${emp.id}`)}
                     style={{ cursor: "pointer" }}

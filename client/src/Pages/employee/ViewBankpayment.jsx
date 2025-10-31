@@ -42,6 +42,8 @@ import SyncLoader from "../../Components/Loder";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { ResponsiveH3 } from "./ViewDocument.Styles";
 import { PiUserCircleThin } from "react-icons/pi";
+import Swal from "sweetalert2";
+
 const ViewBankPayment = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -102,52 +104,82 @@ const ViewBankPayment = () => {
     setBankProofImage(e.target.files[0]);
   };
 const { loading } = useSelector((state) => state.employees);
-  const handleSubmit = () => {
-    if (!bankName || !accountNumber || !panNumber || !basicSalary) {
-      setErrors({
-        bankName: !bankName ? "Bank Name is required" : "",
-        accountNumber: !accountNumber ? "Account Number is required" : "",
-        panNumber: !panNumber ? "PAN Number is required" : "",
-        basicSalary: !basicSalary ? "Basic Salary is required" : "",
-      });
-      return;
-    }
 
-    const formData = {
-      bank_name: bankName,
-      swift_code: swiftCode,
-      payment_mode: paymentMode,
-      account_number: accountNumber,
-      uan_epf_number: uanNumber,
-      pan_number: panNumber,
-      tax_regime: taxRegime,
-      tds_deduction_amount: tdsAmount,
-      declaration_80c: declaration80C,
-      basic_salary: basicSalary,
-      salary_increment: salaryIncrement,
-      housing_allowance: housingAllowance,
-      transportation: transportation,
-    };
+const handleSubmit = () => {
+  const existingPayment = employeeBankPayments?.results?.[0];
+  const existingPaymentId = existingPayment?.id || null;
 
-    dispatch(
-      submitBankPayment({
-        
-        employeeId: id,
-        data: formData,
-        paymentId,
-        bankProofImage,
-      })
-    )
-      .unwrap()
-      .then(() => {
-        alert("✅ Bank details updated successfully.");
-        setIsEditable(false);
-      })
-      .catch((err) => {
-        console.log(err)
-        alert("❌ Error: " + (err.message || "Update failed"));
+  // Validation
+  if (!bankName || !accountNumber || !panNumber || !basicSalary) {
+    setErrors({
+      bankName: !bankName ? "Bank Name is required" : "",
+      accountNumber: !accountNumber ? "Account Number is required" : "",
+      panNumber: !panNumber ? "PAN Number is required" : "",
+      basicSalary: !basicSalary ? "Basic Salary is required" : "",
+    });
+    return;
+  }
+
+  // ✅ FIXED: Use FormData instead of plain object
+  const formData = new FormData();
+  formData.append("bank_name", bankName);
+  formData.append("swift_code", swiftCode);
+  formData.append("payment_mode", paymentMode);
+  formData.append("account_number", accountNumber);
+  formData.append("uan_epf_number", uanNumber);
+  formData.append("pan_number", panNumber);
+  formData.append("tax_regime", taxRegime);
+  formData.append("tds_deduction_amount", tdsAmount);
+  formData.append("declaration_80c", declaration80C);
+  formData.append("basic_salary", basicSalary);
+  formData.append("salary_increment", salaryIncrement);
+  formData.append("housing_allowance", housingAllowance);
+  formData.append("transportation", transportation);
+
+  // ✅ Append image if available
+  if (bankProofImage) {
+    formData.append("bank_proof", bankProofImage);
+  }
+
+  // Dispatch thunk
+  dispatch(
+    submitBankPayment({
+      employeeId: id,
+      paymentId: existingPaymentId,
+      data: formData, // ✅ send as FormData
+      bankProofImage,
+    })
+  )
+    .unwrap()
+    .then(() => {
+      Swal.fire({
+        icon: "success",
+        title: existingPaymentId ? "Updated!" : "Saved!",
+        text: existingPaymentId
+          ? "Bank details updated successfully."
+          : "Bank details saved successfully.",
+        confirmButtonColor: "#304EB0",
       });
-  };
+        dispatch(fetchAllBankPaymentsThunk(id));
+      setIsEditable(false);
+    })
+    .catch((err) => {
+      console.log("❌ Bank Payment Error:", err);
+      const errMsg =
+        err?.detail ||
+        (Array.isArray(err) ? err.join(", ") : err?.message) ||
+        "Something went wrong.";
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errMsg,
+      });
+    });
+};
+
+
+
+
 console.log("employeeBankPayments",employeeBankPayments)
   return (
     <>
@@ -170,10 +202,11 @@ console.log("employeeBankPayments",employeeBankPayments)
                        </TitleSection>
                </HeaderWrapper>
         <Rightside>
-          <EditButton onClick={() => setIsEditable((prev) => !prev)}>
-            {isEditable ? "Cancel" : "Edit"}
-          </EditButton>
-        </Rightside>
+  <EditButton onClick={handleSubmit}>
+    Save
+  </EditButton>
+</Rightside>
+
       </Header>
 
       <Hr />

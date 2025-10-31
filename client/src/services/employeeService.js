@@ -85,11 +85,6 @@ export const fetchUpcomingExpiryEmployees = async (expiryType) => {
   return response.data;
 };
 
-// ✅ Fetch all bank payments by employee ID
-// export const fetchAllBankPaymentsByEmployee = async (employeeId) => {
-//   const res = await API.get(`/bank-payments/${employeeId}/`);
-//   return res.data; // returns an array of payment objects
-// };
 
 // 1. Get all bank payments for a specific employee
 export const fetchBankPaymentsByEmployee = async (employeeId) => {
@@ -105,36 +100,17 @@ export const fetchBankPaymentsByEmployee = async (employeeId) => {
   }
 };
 
-// 2. Create a new bank payment for a specific employee
-export const createBankPayment = async (employeeId, data) => {
-  try {
-    const isFormData = data instanceof FormData;
-
-    const res = await API.post(
-      `/employees/${employeeId}/bank-payments/`,
-      data,
-      {
-        headers: isFormData ? { "Content-Type": "multipart/form-data" } : {},
-      }
-    );
-
-    return res.data;
-  } catch (error) {
-    console.error(
-      "❌ Error creating bank payment:",
-      error.response?.data || error.message
-    );
-    throw error;
-  }
+// ✅ Create new bank payment
+export const createBankPayment = async (employeeId, formData) => {
+  return await API.post(`/employees/${employeeId}/bank-payments/`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
-// 3. Update a specific bank payment under a specific employee
-export const updateBankPayment = async (
-  employeeId,
-  paymentId,
-  formData,
-  hasImage
-) => {
+// ✅ Update existing bank payment
+export const updateBankPayment = async (employeeId, paymentId, formData) => {
   return await API.put(
     `/employees/${employeeId}/bank-payments/${paymentId}/`,
     formData,
@@ -142,12 +118,10 @@ export const updateBankPayment = async (
       headers: {
         "Content-Type": "multipart/form-data",
       },
-      // headers: {
-      //   "Content-Type": hasImage ? "multipart/form-data" : "application/json",
-      // },
     }
   );
 };
+
 
 // 4. Delete a specific bank payment under a specific employee
 export const deleteBankPayment = async (employeeId, paymentId) => {

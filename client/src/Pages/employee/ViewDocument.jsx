@@ -6,15 +6,11 @@ import {
   ImagePreviewRow, Input, UploadButton, Hr, Button,
   ProfileImage, ImageColumn, Title, FormWrapper,
   Subtitle, Rightside, HeaderWrapper, TextGroup, HRManager,
-  TitleSection,
-  FieldWrapper,
-  Label,
-  EmployeeImage,
-  ResponsiveH3
+  TitleSection, FieldWrapper, Label, EmployeeImage, ResponsiveH3
 } from "./ViewDocument.Styles";
 import { uploadImageThunk } from "../../Redux/employeeSlice";
-import { LuCirclePlus } from "react-icons/lu";
-import { NavLink, useParams, useLocation } from "react-router-dom";
+import { LuCirclePlus, LuArrowLeft } from "react-icons/lu";
+import { NavLink, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getEmployeeDocumentsThunk,
@@ -22,11 +18,10 @@ import {
 } from "../../Redux/employeeSlice";
 import SyncLoader from "react-spinners/SyncLoader";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { LuArrowLeft } from "react-icons/lu";
-// ✅ Loader Wrapper
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { PiUserCircleThin } from "react-icons/pi";
+import Swal from "sweetalert2"; // ✅ Import SweetAlert2
+
 const FullPageLoaderWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -44,12 +39,15 @@ const ViewDocument = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
-const navigate = useNavigate();
-  const { employeeDetail, employeeDocuments, loading } = useSelector((state) => state.employees);
-    const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const { employeeDetail, employeeDocuments, loading } = useSelector(
+    (state) => state.employees
+  );
+
   const [refreshKey, setRefreshKey] = useState(Date.now());
-  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+  const [editMode] = useState(true); // Always in edit mode ✅
 
   useEffect(() => {
     if (id) {
@@ -69,7 +67,7 @@ const navigate = useNavigate();
     <UploadSection>
       <LabelRow>{label}</LabelRow>
       <InlineUploadRow>
-        {editMode && inputKeys.map((key, index) => (
+        {inputKeys.map((key, index) => (
           <UploadButton as="label" key={key}>
             <LuCirclePlus /> Choose Image {index + 1}
             <input
@@ -82,28 +80,22 @@ const navigate = useNavigate();
         ))}
 
         <ImagePreviewRow>
-          {!editMode ? (
-            imageList.length > 0 ? (
-              imageList.map((url, idx) => (
-                <ImageBox key={idx}>
-                  <img src={`${getFullImageUrl(url)}?v=${refreshKey}`} alt={`${label} ${idx + 1}`} />
-                </ImageBox>
-              ))
+          {inputKeys.map((key, idx) =>
+            formData[key]?.[0] ? (
+              <ImageBox key={key}>
+                <img
+                  src={URL.createObjectURL(formData[key][0])}
+                  alt={`Preview ${idx + 1}`}
+                />
+              </ImageBox>
             ) : (
-              <p style={{ marginLeft: "1rem", color: "#aaa" }}>No image uploaded</p>
-            )
-          ) : (
-            inputKeys.map((key, idx) =>
-              formData[key]?.[0] ? (
-                <ImageBox key={key}>
-                  <img src={URL.createObjectURL(formData[key][0])} alt={`Preview ${idx + 1}`} />
+              imageList[idx] && (
+                <ImageBox key={idx}>
+                  <img
+                    src={`${getFullImageUrl(imageList[idx])}?v=${refreshKey}`}
+                    alt={`Image ${idx + 1}`}
+                  />
                 </ImageBox>
-              ) : (
-                imageList[idx] && (
-                  <ImageBox key={idx}>
-                    <img src={`${getFullImageUrl(imageList[idx])}?v=${refreshKey}`} alt={`Image ${idx + 1}`} />
-                  </ImageBox>
-                )
               )
             )
           )}
@@ -132,13 +124,13 @@ const navigate = useNavigate();
         form.append("insurance_image_url", res);
       }
 
-      // Multi-image fields → Upload all and stringify array
+      // Multi-image fields
       const handleArrayUpload = async (key) => {
         if (Array.isArray(formData[key])) {
           const urls = await Promise.all(
             formData[key].map((file) => dispatch(uploadImageThunk(file)).unwrap())
           );
-          form.append(key, JSON.stringify(urls));  // JSON stringify for array fields
+          form.append(key, JSON.stringify(urls));
         }
       };
 
@@ -146,19 +138,31 @@ const navigate = useNavigate();
       await handleArrayUpload("contract_urls");
       await handleArrayUpload("certificate_urls");
 
-      // PATCH request to backend
       await dispatch(updateEmployeeDocumentsThunk({ id, form }));
       await dispatch(getEmployeeDocumentsThunk(id));
       setFormData({});
-      setEditMode(false);
       setRefreshKey(Date.now());
-      alert("Documents updated successfully!");
+
+      // ✅ SweetAlert success popup
+      Swal.fire({
+        icon: "success",
+        title: "Saved!",
+        text: "Employee documents updated successfully.",
+        confirmButtonColor: "#304EB0",
+      });
     } catch (error) {
       console.error("Error submitting:", error);
+
+      // ❌ SweetAlert error popup
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "There was an error updating employee documents.",
+        confirmButtonColor: "#d33",
+      });
     }
   };
 
-  // ✅ Loader before content
   if (loading || !employeeDocuments) {
     return (
       <FullPageLoaderWrapper>
@@ -170,94 +174,93 @@ const navigate = useNavigate();
   return (
     <Container>
       <Header>
-        <HeaderWrapper>      
-                 <TitleSection>
-                          <LuArrowLeft
-                   style={{ width: "30px", height: 30, cursor: "pointer",color:"#304EB0" }}
-                   onClick={() => navigate("/employee")}
-                   />
-     <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
-                         <div>
-                      
-                           <Title>Employee</Title>
-                           <Subtitle>Manage your Employee.</Subtitle>
-                         </div>
-                       </TitleSection>
-               </HeaderWrapper>
+        <HeaderWrapper>
+          <TitleSection>
+            <LuArrowLeft
+              style={{ width: "30px", height: 30, cursor: "pointer", color: "#304EB0" }}
+              onClick={() => navigate("/employee")}
+            />
+            <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
+            <div>
+              <Title>Employee</Title>
+              <Subtitle>Manage your Employee.</Subtitle>
+            </div>
+          </TitleSection>
+        </HeaderWrapper>
 
         <Rightside>
-          
-          <EditButton onClick={() => setEditMode((prev) => !prev)}>
-            {editMode ? "Cancel" : "Edit"}
-          </EditButton>
+          <EditButton onClick={handleSubmit}>Save</EditButton>
         </Rightside>
       </Header>
 
       <Hr />
-     <ResponsiveH3>Employee Documents</ResponsiveH3>
+      <ResponsiveH3>Employee Documents</ResponsiveH3>
 
       <FormWrapper>
-    
+        <ImageColumn>
+          {employeeDetail?.profile_pic ? (
+            <ProfileImage src={employeeDetail.profile_pic} alt="Profile" />
+          ) : (
+            <PiUserCircleThin size={80} color="#ccc" />
+          )}
+        </ImageColumn>
 
-<ImageColumn
->
-  {employeeDetail?.profile_pic ? (
-    <ProfileImage
-      src={employeeDetail.profile_pic}
-      alt="Profile"
-    />
-  ) : (
-    <PiUserCircleThin size={80} color="#ccc" />
-  )}
-</ImageColumn>
+        <Row>
+          <LeftSection>
+            <FieldWrapper>
+              <Label>Name</Label>
+              <Input type="text" value={employeeDetail?.name || ""} readOnly />
+            </FieldWrapper>
 
-       <Row>
-  <LeftSection>
-    <FieldWrapper>
-      <Label>Name</Label>
-      <Input type="text" value={employeeDetail?.name || ""} readOnly />
-    </FieldWrapper>
+            <FieldWrapper>
+              <Label>Employee ID</Label>
+              <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
+            </FieldWrapper>
 
-    <FieldWrapper>
-      <Label>Employee ID</Label>
-      <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
-    </FieldWrapper>
+            <FieldWrapper>
+              <Label>Email</Label>
+              <Input type="email" value={employeeDetail?.email || ""} readOnly />
+            </FieldWrapper>
+          </LeftSection>
 
-    <FieldWrapper>
-      <Label>Email</Label>
-      <Input type="email" value={employeeDetail?.email || ""} readOnly />
-    </FieldWrapper>
-  </LeftSection>
+          <RightSection>
+            <FieldWrapper>
+              <Label>Address</Label>
+              <Textarea value={employeeDetail?.address || ""} readOnly />
+            </FieldWrapper>
 
-  <RightSection>
-    <FieldWrapper>
-      <Label>Address</Label>
-      <Textarea value={employeeDetail?.address || ""} readOnly />
-    </FieldWrapper>
+            <Rows>
+              <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
+                <Label>Date of Birth</Label>
+                <Input type="text" value={employeeDetail?.dob || ""} readOnly />
+              </FieldWrapper>
 
-    <Rows>
-      <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
-        <Label>Date of Birth</Label>
-        <Input type="text" value={employeeDetail?.dob || ""} readOnly />
-      </FieldWrapper>
-
-      <FieldWrapper style={{ flex: 1 }}>
-        <Label>Gender</Label>
-        <Input type="text" value={employeeDetail?.gender || ""} readOnly />
-      </FieldWrapper>
-    </Rows>
-  </RightSection>
-</Row>
-
+              <FieldWrapper style={{ flex: 1 }}>
+                <Label>Gender</Label>
+                <Input type="text" value={employeeDetail?.gender || ""} readOnly />
+              </FieldWrapper>
+            </Rows>
+          </RightSection>
+        </Row>
       </FormWrapper>
 
       <Hr />
 
       <Section>
         <Tabs>
-          <NavLink to={`/ViewBasic/${id}`}><Tab active={location.pathname === `/ViewBasic/${id}`}>Basic Details</Tab></NavLink>
-          <NavLink to={`/ViewBasic/${id}/bank`}><Tab active={location.pathname === `/ViewBasic/${id}/bank`}>Bank and payment details</Tab></NavLink>
-          <NavLink to={`/ViewBasic/${id}/documents`}><Tab active={location.pathname === `/ViewBasic/${id}/documents`}>Documents</Tab></NavLink>
+          <NavLink to={`/ViewBasic/${id}`}>
+            <Tab active={location.pathname === `/ViewBasic/${id}`}>Basic Details</Tab>
+          </NavLink>
+          <NavLink to={`/ViewBasic/${id}/bank`}>
+            <Tab active={location.pathname === `/ViewBasic/${id}/bank`}>
+              Bank and payment details
+            </Tab>
+          </NavLink>
+          <NavLink to={`/ViewBasic/${id}/documents`}>
+            <Tab active={location.pathname === `/ViewBasic/${id}/documents`}>
+              Documents
+            </Tab>
+          </NavLink>
         </Tabs>
 
         <SectionTitle>Documents</SectionTitle>
@@ -265,19 +268,12 @@ const navigate = useNavigate();
         {renderImageList("Passport", [
           employeeDocuments?.passport_image1_url,
           employeeDocuments?.passport_image2_url,
-        ].filter(Boolean), [ "passport_image1_url", "passport_image2_url" ])}
+        ].filter(Boolean), ["passport_image1_url", "passport_image2_url"])}
 
-        {renderImageList("Work Permit", employeeDocuments?.work_permit_urls || [], [ "work_permit_urls" ])}
-        {renderImageList("Employment Contract", employeeDocuments?.contract_urls || [], [ "contract_urls" ])}
-        {renderImageList("Insurance", [employeeDocuments?.insurance_image_url].filter(Boolean), [ "insurance_image_url" ])}
-        {renderImageList("Certificate", employeeDocuments?.certificate_urls || [], [ "certificate_urls" ])}
-
-        {editMode && (
-          <ButtonGroup>
-            <Button secondary onClick={() => setEditMode(false)}>Cancel</Button>
-            <Button onClick={handleSubmit}>Save</Button>
-          </ButtonGroup>
-        )}
+        {renderImageList("Work Permit", employeeDocuments?.work_permit_urls || [], ["work_permit_urls"])}
+        {renderImageList("Employment Contract", employeeDocuments?.contract_urls || [], ["contract_urls"])}
+        {renderImageList("Insurance", [employeeDocuments?.insurance_image_url].filter(Boolean), ["insurance_image_url"])}
+        {renderImageList("Certificate", employeeDocuments?.certificate_urls || [], ["certificate_urls"])}
       </Section>
     </Container>
   );

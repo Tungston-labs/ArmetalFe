@@ -16,7 +16,6 @@ import DailyTask from "./Pages/dailytask/Daily.jsx";
 import BasicLevel from "./Pages/employee/BasicLevel.jsx";
 import BankPayment from "./Pages/employee/BankPayment.jsx";
 import Documents from "./Pages/employee/Documents.jsx";
-// import EditBasicLevel from "./Pages/employee/EditBasiclevel.jsx"
 import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
 import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
 import Attendance from "./Pages/attendance/Attendance.jsx";
@@ -26,11 +25,6 @@ import EmployeesOnLeave from "./Pages/onLeave/EmployeesOnLeave.jsx";
 import ViewBasic from "./Pages/employee/ViewBasic.jsx"
 import ViewBankpayment from "./Pages/employee/ViewBankpayment.jsx"
 import ViewDocument from "./Pages/employee/ViewDocument.jsx"
-import BasicFormEdit from "./Pages/editform/BasicFormEdit.jsx"
-import BankpaymentEdit from "./Pages/editform/BankpaymentEdit.jsx"
-import DocumentEdit from "./Pages/editform/DocumentEdit.jsx"
-// import Succes from "./Components/Succes.jsx";
-// import ConfirmLeaveModal from "./Components/ConfirmLeaveModal.jsx";
 import Payroll1 from "./Pages/payroll/Payroll1.jsx";
 import RequireAuth from "./Components/RequireAuth.jsx";
 import Viewpage from "./Pages/superAdmin/Viewpage.jsx";
@@ -124,11 +118,6 @@ function App() {
 
             <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
             <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
-            <Route path="/edit-basicform" element={<BasicFormEdit />} />
-            <Route path="/edit-bankpayment" element={<BankpaymentEdit />} />
-            <Route path="/edit-document" element={<DocumentEdit />} />
-            {/* <Route path="/succes" element={<Succes />} /> */}
-            {/* <Route path="/confirm" element={<ConfirmLeaveModal />} /> */}
             <Route path="/employee-dashboard" element={<Employeedashboard />} />
             <Route path="/sample" element={<Sample />} />
             <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
