@@ -267,22 +267,6 @@ export const HRManager = styled.div`
   }
 `;
 
-// export const HeaderSection = styled.div`
-//   // display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   flex-wrap: wrap;
-//   gap: 1rem;
-//   // background:yellow;
-// `;
-
-// export const TitleSection = styled.div`
-//   display: flex;
-
-//   align-items: center;
-//   // background:red;
-//   // margin-top:3%;
-// `;
 
 export const Icon = styled.div`
   font-size: 2rem;
@@ -297,43 +281,7 @@ export const ActionArea = styled.div`
   // background:black;
   margin-top: -8%;
 `;
-// export const Title = styled.h2`
-//   font-size: 1.4rem;
-//   margin: 0;
-// //  font-family:satoshi;
-//  margin-top:10px;
-//  color:#3250B5;
-//  font-family: "Satoshi";
-// font-weight: 700;
-// // font-style: Bold;
-// // font-size: 22px;
-// leading-trim: NONE;
-// line-height: 100%;
-// letter-spacing: 0%;
 
-// `;
-
-// export const Subtitle = styled.p`
-//   font-size: 1rem;
-//    color:#3250B5;
-//    margin-top:5px;
-//   font-size:raleway;
-//   font-family: Raleway;
-// font-style: Light;
-// leading-trim: NONE;
-// line-height: 100%;
-// letter-spacing: 0%;
-
-// `;
-
-// export const DepartmentSelect = styled.select`
-//   padding: 8px 12px;
-//   font-size: 14px;
-//   border-radius: 5px;
-//   border: 1px solid #ccc;
-//   background: white;
-//   margin-top:20px;
-// `;
 export const DropdownWrapper = styled.div`
   position: relative;
 `;

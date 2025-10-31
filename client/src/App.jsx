@@ -47,7 +47,7 @@ import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
 import NewDashboard from "./Pages/dashboard/NewDashboard.jsx";
 import DashboardNew from "./Pages/dashboard/DashboardNew.jsx";
 import Reimbursement from "./Pages/reimbursement/Reimb_Department.jsx"
-import Reimb2page from "./Pages/reimbursement/Reimb2Page.jsx"
+import Reimbpage from "./Pages/reimbursement/ReimbPage.jsx"
 import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
 import FinancePage from "./Pages/finance/FinancePage.jsx"
 import Dashboard from "./Pages/employeDashboard/Sample.jsx";
@@ -134,13 +134,14 @@ function App() {
             <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
 
             <Route path="/reimbursement" element={<Reimbursement />} />
-            <Route path="/reimbursement_detail/:id" element={<Reimb2page />} />
+            <Route path="/reimbursement_detail/:id" element={<Reimbpage />} />
             <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
             <Route path="/finance" element={<FinancePage />} />
-            <Route path="/field-shift" element={<FieldShift />} />
-            <Route path="/fieldshift-department/:id/" element={<FieldDepartment />} />
-<Route path="/fieldinfo/:id" element={<FieldInfo />} />
+            <Route path="/project" element={<FieldShift />} />
+            <Route path="/project-department/:id/" element={<FieldDepartment />} />
+<Route path="/project/:id" element={<FieldInfo />} />
             <Route path="/card" element={<Dashboard />}/>
+            
           </Route>
         </Route>
       </Routes>

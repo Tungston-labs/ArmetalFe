@@ -25,7 +25,7 @@ import {
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import cardBg from "../../assets/shift.svg";
 import AddProjectModal from "../../Components/AddProjectModal";
-import FieldShiftIcon from "../../assets/shifttopper.svg";
+import FieldShiftIcon from "../../assets/projecticon.svg";
 import TagIcon from "../../assets/downicon.svg";
 import Navbar from "../../Components/Navbar";
 import { FaPlus } from "react-icons/fa";
@@ -61,7 +61,7 @@ const DepartmentPage = () => {
               <img src={FieldShiftIcon} alt="FieldShift" />
             </IconWrapper>
             <TextGroup>
-              <Title>FieldShift</Title>
+              <Title>Project</Title>
               <Subtitle>Manage all projects within the organization.</Subtitle>
             </TextGroup>
           </TitleSection>
@@ -90,7 +90,7 @@ const DepartmentPage = () => {
       <Card
         key={project.id}
         style={{ backgroundImage: `url(${cardBg})`, cursor: "pointer" }}
-        onClick={() => navigate(`/fieldshift-department/${project.id}`, { state: { projectName: project.name } })}
+        onClick={() => navigate(`/project-department/${project.id}`, { state: { projectName: project.name } })}
       >
         <CardHeader>
           <CardTitleSection>

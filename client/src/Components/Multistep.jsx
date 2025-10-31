@@ -13,7 +13,7 @@ const Multistep = ({ currentStep }) => (
   <ConfigProvider
     theme={{
       token: {
-        colorPrimary: "#2F4CAC", // step highlight color
+        colorPrimary: "#2F4CAC", 
       },
     }}
   >

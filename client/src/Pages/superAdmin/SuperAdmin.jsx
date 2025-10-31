@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AddCompanyModal from '../superAdmin/AddCompany'; // adjust path as needed
+import AddCompanyModal from '../superAdmin/AddCompany'; 
 import {
   Container,
   Header,

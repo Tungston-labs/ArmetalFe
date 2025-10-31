@@ -274,6 +274,15 @@ export const CustomLink = styled(Link)`
     border-radius: 2rem;
   }
 `;
+export const LinkIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+  transition: filter 0.3s ease;
 
+  /* default: white color */
+  filter: brightness(0) invert(1);
+`;
 
 

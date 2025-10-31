@@ -34,7 +34,7 @@ import {
   LeftSection,
 } from "./FieldInfo.Styles";
 import { LuArrowLeft } from "react-icons/lu";
-import FieldShiftIcon from "../../assets/shifttopper.svg";
+import FieldShiftIcon from "../../assets/projecticon.svg";
 import TimeTable from "./TimeTable";
 import "react-calendar/dist/Calendar.css";
 import Navbar from "../../Components/Navbar";
@@ -44,7 +44,7 @@ import { getFieldInfo } from "../../Redux/fieldShiftSlice";
 import Modal from "../../Components/ModalShift";
 import CalendarModal from "../../Components/CalendarModal";
 import { PiUserCirclePlusThin } from "react-icons/pi";
-
+import Loader from "../../Components/Loader"
 const FieldInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -112,7 +112,7 @@ const FieldInfo = () => {
   const days = getWeekDays(selectedDate);
 
   if (isLoading)
-    return <p style={{ textAlign: "center" }}>Loading attendance info...</p>;
+    return <Loader/>;
 
   if (!fieldInfo)
     return <p style={{ textAlign: "center" }}>No field info found.</p>;
@@ -124,7 +124,7 @@ const FieldInfo = () => {
         {/* Header */}
         <Header>
   <LeftSection>
-    <BackButton onClick={() => navigate("/fieldshift-department/id")}>
+    <BackButton onClick={() => navigate("/project-department/id")}>
       <LuArrowLeft />
     </BackButton>
 
@@ -133,7 +133,7 @@ const FieldInfo = () => {
         <img src={FieldShiftIcon} alt="FieldShift" />
       </IconWrapper>
       <TextGroup>
-        <Title>FieldShift</Title>
+        <Title>Project</Title>
         <Subtitle>Manage all departments within the organization.</Subtitle>
       </TextGroup>
     </TitleSection>
