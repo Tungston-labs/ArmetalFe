@@ -213,14 +213,29 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
         return (date.today() - obj.joining_date).days if obj.joining_date else 0
 
     def get_leave_summary(self, obj):
+        """
+        Calculate leave summary properly:
+        - total_leave: current available leave balance from Employee_db
+        - leave_taken: total days from approved leave requests
+        - pending_leave: same as total_leave (already updated in DB)
+        """
         total_leave = obj.total_leave or 0
-        approved = LeaveRequest.objects.filter(employee=obj, status='approved').count()
-        pending = total_leave - approved
+
+        # ✅ Sum up all approved leave days
+        approved_leaves = LeaveRequest.objects.filter(employee=obj, status='approved')
+        leave_days_taken = 0
+
+        for leave in approved_leaves:
+            if leave.from_date and leave.to_date:
+                delta = (leave.to_date - leave.from_date).days + 1
+                leave_days_taken += max(delta, 0)
+
         return {
-            'total_leave': total_leave,
-            'leave_taken': approved,
-            'pending_leave': total_leave
+            'total_leave': total_leave,         # current balance from DB
+            'leave_taken': leave_days_taken,    # sum of days, not count of requests
+            'pending_leave': total_leave        # same as balance
         }
+
 
     def get_attendance_summary(self, obj):
         today = date.today()
