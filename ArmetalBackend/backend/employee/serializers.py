@@ -219,7 +219,7 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
         return {
             'total_leave': total_leave,
             'leave_taken': approved,
-            'pending_leave': pending
+            'pending_leave': total_leave
         }
 
     def get_attendance_summary(self, obj):
