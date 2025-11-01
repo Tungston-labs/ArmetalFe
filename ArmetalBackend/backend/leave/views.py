@@ -204,24 +204,20 @@ class LeaveRequestAdminDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'pk'
 
+    # No manual logic needed — model handles deductions automatically
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        old_status = instance.status
-        new_status = request.data.get("status", old_status)
-
         response = super().update(request, *args, **kwargs)
 
-        # ✅ Only run logic when leave is approved for the first time
-        if old_status != "approved" and new_status == "approved":
-            employee = instance.employee
+        instance = self.get_object()
+        employee = instance.employee
 
-            # ✅ Calculate number of leave days (inclusive)
-            leave_days = (instance.to_date - instance.from_date).days + 1
-
-            # ✅ If employee has no total_leave left, add to paid_leave
-            if employee.total_leave == 0:
-                employee.paid_leave = (employee.paid_leave or 0) + leave_days
-                employee.save(update_fields=["paid_leave"])
+        # ✅ Optionally return updated leave info for UI refresh
+        response.data["employee_leave_summary"] = {
+            "employee_id": employee.id,
+            "employee_name": employee.name,
+            "total_leave": employee.total_leave,
+            "paid_leave": employee.paid_leave,
+        }
 
         return response
 
