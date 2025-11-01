@@ -187,11 +187,9 @@ class EmployeesOnLeaveTodayByDepartmentView(APIView):
   
 
 
-from datetime import timedelta
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import generics
 from django.utils import timezone
 from .models import LeaveRequest
 from employee.models import Employee_db
@@ -206,26 +204,34 @@ class LeaveRequestAdminDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
+        employee = instance.employee
         old_status = instance.status
         new_status = request.data.get("status", old_status)
 
-        response = super().update(request, *args, **kwargs)
+        # ✅ Update the record normally
+        partial = kwargs.pop('partial', False)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        instance.refresh_from_db()
 
-        # ✅ Only trigger logic when leave is approved
+        # ✅ Only trigger logic when status changes to "approved"
         if old_status != "approved" and new_status == "approved":
-            employee = instance.employee
-
-            # ✅ Calculate number of leave days
             leave_days = 0.5 if instance.leave_type.lower() == "half-day" else (
                 (instance.to_date - instance.from_date).days + 1
             )
 
-            # ✅ If total_leave is 0, add to paid_leave
-            if employee.total_leave == 0:
+            # ✅ Deduct from total_leave if available
+            if employee.total_leave and employee.total_leave >= leave_days:
+                employee.total_leave -= leave_days
+            else:
+                # ✅ If no total_leave, add to paid_leave
                 employee.paid_leave = (employee.paid_leave or 0) + leave_days
-                employee.save(update_fields=["paid_leave"])
 
-        return response
+            employee.save(update_fields=["total_leave", "paid_leave"])
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 from rest_framework.views import APIView
