@@ -222,6 +222,7 @@ class LeaveRequestAdminDetailView(generics.RetrieveUpdateDestroyAPIView):
         return response
 
 
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -278,7 +279,8 @@ class DepartmentEmployeesOnLeaveView(APIView):
                         "leave_type": leave.leave_type,
                         "from_date": leave.from_date,
                         "to_date": leave.to_date,
-                        "paid_leave_count": leave.employee.paid_leave,  
+                        "paid_leave_count": leave.employee.paid_leave,
+                        "pending_leave":leave.employee.total_leave,  
                     }
                     for leave in on_leave_employees
                 ]
