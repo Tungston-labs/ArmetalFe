@@ -81,32 +81,40 @@ console.log("Company Country:", formData?.company?.country);
 
 
 useEffect(() => {
-  if (employeeDetail && Object.keys(formData).length === 0) {
-    let deptId = "";
-    if (typeof employeeDetail.department === "string") {
-      const match = departmentList.find((d) => d.name === employeeDetail.department);
-      deptId = match ? match.id : "";
-    } else if (typeof employeeDetail.department === "number") {
-      deptId = employeeDetail.department;
-    }
+  // Run only when valid employee data is fetched
+  if (!employeeDetail || Object.keys(employeeDetail).length === 0) return;
 
-    const company =
-      employeeDetail.company && typeof employeeDetail.company === "object"
-        ? employeeDetail.company
-        : user?.company || { country: "" };
-
-    setFormData({
-      ...employeeDetail,
-      department: deptId,
-      total_leave: employeeDetail.total_leave || "",
-      contract_expiry_date: employeeDetail.contract_expiry_date || "",
-      role: employeeDetail.role || "",
-      idcard: employeeDetail.idcard || "",
-      company,
-      aadar_number: employeeDetail.aadar_number || employeeDetail.aadhaar_number || "",
-    });
+  // Compute department ID
+  let deptId = "";
+  if (typeof employeeDetail.department === "string") {
+    const match = departmentList.find((d) => d.name === employeeDetail.department);
+    deptId = match ? match.id : "";
+  } else if (typeof employeeDetail.department === "number") {
+    deptId = employeeDetail.department;
   }
+
+  const company =
+    employeeDetail.company && typeof employeeDetail.company === "object"
+      ? employeeDetail.company
+      : user?.company || { country: "" };
+
+  const updatedFormData = {
+    ...employeeDetail,
+    department: deptId,
+    total_leave: employeeDetail.total_leave || "",
+    contract_expiry_date: employeeDetail.contract_expiry_date || "",
+    role: employeeDetail.role || "",
+    idcard: employeeDetail.idcard || "",
+    company,
+    aadar_number: employeeDetail.aadar_number || employeeDetail.aadhaar_number || "",
+  };
+
+  setFormData((prev) => {
+    const same = JSON.stringify(prev) === JSON.stringify(updatedFormData);
+    return same ? prev : updatedFormData;
+  });
 }, [employeeDetail, departmentList, user]);
+
 
 
   // Handle input change
