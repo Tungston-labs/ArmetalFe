@@ -196,7 +196,6 @@ from django.utils import timezone
 from .models import LeaveRequest
 from employee.models import Employee_db
 from .serializers import LeaveRequestSerializer
-from shared.permissions import IsHRAdmin
 
 
 class LeaveRequestAdminDetailView(generics.RetrieveUpdateDestroyAPIView):
