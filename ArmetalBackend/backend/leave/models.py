@@ -31,7 +31,7 @@ class LeaveRequest(TimeStampedModel):
 
     def __str__(self):
         return f"{self.employee.name} - {self.leave_type} ({self.status})"
-    
+
     def save(self, *args, **kwargs):
         is_new = self._state.adding  # True if this is a new leave request
         old_status = None
@@ -39,14 +39,20 @@ class LeaveRequest(TimeStampedModel):
         if not is_new:
             old_status = LeaveRequest.objects.filter(pk=self.pk).values_list("status", flat=True).first()
 
-        # ✅ If status changed to "approved", deduct leave days
+        # ✅ Only adjust counts when status changes to 'approved'
         if self.status == "approved" and old_status != "approved":
             leave_days = (self.to_date - self.from_date).days + 1
-            if self.employee.total_leave is not None:
-                if self.employee.total_leave >= leave_days:
-                    self.employee.total_leave -= leave_days
-                    self.employee.save()
-                else:
-                    raise ValidationError("Not enough leave balance for this employee.")
+            employee = self.employee
+
+            available_leave = employee.total_leave or 0
+
+            if available_leave >= leave_days:
+                employee.total_leave -= leave_days
+            else:
+                remaining_days = leave_days - available_leave
+                employee.total_leave = 0
+                employee.paid_leave = (employee.paid_leave or 0) + remaining_days
+
+            employee.save(update_fields=["total_leave", "paid_leave"])
 
         super().save(*args, **kwargs)
