@@ -1,8 +1,17 @@
-// src/components/HalfDoughnutChart.jsx
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
 import { useNavigate } from "react-router-dom";
+import {
+  ChartContainer,
+  CenterText,
+  CenterTitle,
+  CenterSubtitle,
+  CustomLegend,
+  LegendItem,
+  LegendColor,
+  LegendLabel,
+} from "./HalfDoughnutChart.Styles";
 
 ChartJS.register(ArcElement, Tooltip);
 
@@ -30,7 +39,7 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { display: false }, // ❌ hide default legend
+      legend: { display: false },
       tooltip: { enabled: false },
     },
     onClick: (evt, elements) => {
@@ -43,106 +52,26 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: "400px",
-        height: "400px",
-        margin: "0 auto",
-        position: "relative",
-      }}
-    >
+    <ChartContainer>
       <Doughnut data={data} options={options} />
 
-      {/* Center text */}
-      <div
-        style={{
-          position: "absolute",
-          top: "60%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          textAlign: "center",
-          pointerEvents: "none",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "clamp(1.2rem, 3vw, 2rem)",
-            margin: 0,
-            fontFamily: "satoshi",
-          }}
-        >
-          {total}
-        </h1>
-        <p
-          style={{
-            fontSize: "clamp(0.8rem, 2vw, 1rem)",
-            margin: 0,
-            fontFamily: "raleway",
-            fontWeight: 600,
-          }}
-        >
-          Total Employees
-        </p>
-      </div>
+      <CenterText>
+        <CenterTitle>{total}</CenterTitle>
+        <CenterSubtitle>Total Employees</CenterSubtitle>
+      </CenterText>
 
-      {/* Custom Legend */}
-      {/* Custom Legend */}
-<div
-  style={{
-    marginTop: "-6rem",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "8px",
-  }}
->
-  {/* Active Employees */}
-  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-    <span
-      style={{
-        width: "14px",
-        height: "14px",
-        backgroundColor: "#2f4ded",
-        display: "inline-block",
-        borderRadius: "2px",
-      }}
-    ></span>
-    <span
-      style={{
-        fontFamily: "Satoshi",
-        fontSize: "0.9rem",
-        fontWeight: 500,
-      }}
-    >
-      Active Employees
-    </span>
-  </div>
+      <CustomLegend>
+        <LegendItem>
+          <LegendColor color="#2f4ded" />
+          <LegendLabel>Active Employees</LegendLabel>
+        </LegendItem>
 
-  {/* On Leave Today */}
-  <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-    <span
-      style={{
-        width: "14px",
-        height: "14px",
-        backgroundColor: "#ff6b5f",
-        display: "inline-block",
-        borderRadius: "2px",
-      }}
-    ></span>
-    <span
-      style={{
-        fontFamily: "Satoshi",
-        fontSize: "0.9rem",
-        fontWeight: 500,
-      }}
-    >
-      On Leave Today
-    </span>
-  </div>
-</div>
-
-    </div>
+        <LegendItem>
+          <LegendColor color="#ff6b5f" />
+          <LegendLabel>On Leave Today</LegendLabel>
+        </LegendItem>
+      </CustomLegend>
+    </ChartContainer>
   );
 };
 
