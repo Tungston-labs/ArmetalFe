@@ -33,16 +33,16 @@ import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getLeaveDetails, patchLeaveStatus } from '../../Redux/leaveSlice';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
 import { Label } from "../employee/BasicLevel.Styles";
+
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { leaveDetails, loading } = useSelector(state => state.leave);
-const navigate = useNavigate();
+  const { leaveDetails, loading, pendingLeaves } = useSelector(state => state.leave);
+  const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
   const [actionType, setActionType] = useState('');
@@ -53,16 +53,21 @@ const navigate = useNavigate();
     }
   }, [dispatch, id]);
 
+  
+  // useEffect(() => {
+  //   if (leaveDetails?.employee?.id) {
+  //     dispatch(getEmployeePendingLeaves(leaveDetails.employee.id));
+  //   }
+  // }, [leaveDetails?.employee?.id, dispatch]);
+
   const employee = leaveDetails?.employee || {};
 
   const handleStatusUpdate = async () => {
     if (!id || !actionType) return;
-  
     const status = actionType === 'approve' ? 'approved' : 'rejected';
-  
     try {
       await dispatch(patchLeaveStatus({ leaveId: id, status }));
-      navigate("/employee-leave-request");   // ✅ go back to leave-request page
+      navigate("/employee-leave-request");
     } catch (error) {
       console.error("Error updating leave status:", error);
     } finally {
@@ -70,37 +75,35 @@ const navigate = useNavigate();
       setActionType('');
     }
   };
-  
-if (loading) {
-  return (
-    <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'100vh' }}>
-      <Loader color="#003366" size={15} />
-    </div>
-  );
-}
 
+  if (loading) {
+    return (
+      <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'100vh' }}>
+        <Loader color="#003366" size={15} />
+      </div>
+    );
+  }
+
+  // ✅ Determine paid or unpaid
+  // const isPaidLeave = pendingLeaves === 0;
 
   return (
     <Container>
-      
-
-      <TitleSection style={{color:"#3250B5"}}>
-      <BackArrow onClick={() => navigate("/employee-leave-request")} />
-
-  <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
+      <TitleSection style={{ color: "#3250B5" }}>
+        <BackArrow onClick={() => navigate("/employee-leave-request")} />
+        <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
         <div>
-     
           <Title>Employee</Title>
           <Subtitle>Manage your Employee.</Subtitle>
         </div>
       </TitleSection>
 
       <Hr />
-    
+
       <InfoGrid>
-       <ProfileImageWrapper>
-  <ProfileImage src={employee.profile_pic} alt="Employee" />
-</ProfileImageWrapper>
+        <ProfileImageWrapper>
+          <ProfileImage src={employee.profile_pic} alt="Employee" />
+        </ProfileImageWrapper>
 
         <div style={{ display: "flex", width: "90%", justifyContent: "space-between" }}>
           <TwoColumn>
@@ -120,6 +123,7 @@ if (loading) {
       </InfoGrid>
 
       <Hr />
+
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
         <Input placeholder="Job position / Designation" value={employee.designation || ''} readOnly />
@@ -147,6 +151,21 @@ if (loading) {
         </RightSide>
       </FlexRows>
 
+      {/* 🟢 Pending leave info */}
+      <SectionTitle>Leave Balance</SectionTitle>
+      <TwoColumnRows>
+        <Input
+          placeholder="Pending Leaves"
+          // value={pendingLeaves !== undefined ? pendingLeaves : 'Loading...'}
+          readOnly
+        />
+        <Input
+          placeholder="Leave Type"
+          // value={isPaidLeave ? 'Paid Leave' : 'Unpaid Leave'}
+          readOnly
+        />
+      </TwoColumnRows>
+
       <SectionTitle>Reason for Leave</SectionTitle>
       <TextArea value={leaveDetails?.reason || ''} readOnly />
 
@@ -162,18 +181,14 @@ if (loading) {
         }}>Approve</ApproveButton>
       </FlexRow>
 
-    
       {showModal && (
-  <ConfirmLeaveModal
-    onClose={() => setShowModal(false)}
-    actionType={actionType}
-    leaveId={id}
-    onConfirm={handleStatusUpdate}   // ✅ pass handler
-  />
-)}
-
-        
-      
+        <ConfirmLeaveModal
+          onClose={() => setShowModal(false)}
+          actionType={actionType}
+          leaveId={id}
+          onConfirm={handleStatusUpdate}
+        />
+      )}
     </Container>
   );
 };

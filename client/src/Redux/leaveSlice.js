@@ -54,12 +54,28 @@ export const patchLeaveStatus = createAsyncThunk(
   }
 );
 
+export const getEmployeePendingLeaves = createAsyncThunk(
+  "leave/getEmployeePendingLeaves",
+  async (employeeId, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/leaves/${employeeId}/pending-count/`);
+      return response.data.count;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+
+
 const leaveSlice = createSlice({
   name: 'leave',
   initialState: {
     leaves: [],
     onLeaveEmployees: [],
     leaveDetails: null,
+     pendingLeaves: 0,
     loading: false,
     error: null,
     pagination: {
@@ -93,7 +109,9 @@ const leaveSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
+ .addCase(getEmployeePendingLeaves.fulfilled, (state, action) => {
+        state.pendingLeaves = action.payload;
+      })
       // Get Leave Details
       .addCase(getLeaveDetails.pending, (state) => {
         state.loading = true;
