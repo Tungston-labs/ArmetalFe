@@ -225,21 +225,166 @@ export const TableCell = styled.td`
   text-align: center;
   font-size: 14px;
   color: #333;
-   @media (min-width: 2200px) {
+  vertical-align: middle;
+padding: 0.3rem ;
+  @media (min-width: 2200px) {
     font-size: 34px;
     padding-top: 20px;
   }
 `;
+export const TimeWrapper = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  vertical-align: middle;
 
+  @media (max-width: 768px) {
+    gap: 4px;
+  }
+
+  @media (min-width: 1920px) {
+    gap: 10px;
+  }
+
+  @media (min-width: 2560px) {
+    gap: 14px;
+  }
+
+  @media (min-width: 3840px) {
+    gap: 18px;
+  }
+`;
+
+export const TimeText = styled.span`
+  display: inline-block;
+  line-height: 1.2;
+  font-size: 0.9rem;
+
+  @media (min-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1.1rem;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 1.25rem;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.75rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+  }
+`;
+
+export const ClockIcon = styled.img`
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+
+  @media (max-width: 480px) {
+    width: 12px;
+    height: 12px;
+  }
+
+  @media (min-width: 1920px) {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (min-width: 2560px) {
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (min-width: 3840px) {
+    width: 28px;
+    height: 28px;
+  }
+`;
 export const TimeIn = styled.span`
-  color: green;
-  font-weight: 600; 
-   text-align: center;
+  color: #008000; /* green */
+  font-weight: 600;
+  text-align: center;
+  display: inline-block;
+  font-size: clamp(0.8rem, 0.5vw + 0.6rem, 1.6rem);
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+  min-width: 70px;
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: 0.2rem 0.5rem;
+    min-width: 55px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    min-width: 50px;
+  }
+
+  /* 🖥️ For large desktop (2K) */
+  @media (min-width: 1920px) {
+    font-size: 1.4rem;
+    padding: 0.4rem 1rem;
+    min-width: 90px;
+  }
+
+  /* 🖥️ For 4K resolution screens */
+  @media (min-width: 2560px) {
+    font-size: 1.8rem;
+    padding: 0.5rem 1.2rem;
+    min-width: 110px;
+  }
 `;
 
 export const TimeOut = styled.span`
-  color: red;
+  color: #d32f2f; /* red */
   font-weight: 600;
-    text-align: center;
+  text-align: center;
+  display: inline-block;
+  font-size: clamp(0.8rem, 0.5vw + 0.6rem, 1.6rem);
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+  min-width: 70px;
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: 0.2rem 0.5rem;
+    min-width: 55px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    min-width: 50px;
+  }
+
+  /* 🖥️ For large desktop (2K) */
+  @media (min-width: 1920px) {
+    font-size: 1.4rem;
+    padding: 0.4rem 1rem;
+    min-width: 90px;
+  }
+
+  /* 🖥️ For 4K resolution screens */
+  @media (min-width: 2560px) {
+    font-size: 1.8rem;
+    padding: 0.5rem 1.2rem;
+    min-width: 110px;
+  }
 `;
 

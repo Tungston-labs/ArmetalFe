@@ -54,9 +54,10 @@ export const InfoCard = styled.div`
 `;
 
 export const CardTitle = styled.div`
-  font-size: 16px;
-  font-weight: bold;
-  font-family: 'Satoshi', sans-serif;
+font-size: 18px; /* default */
+    margin: 0;
+    font-family: "Satoshi", sans-serif;
+  font-weight: 400;
 
    /* Small devices (mobile) */
   @media (max-width: 480px) {
@@ -80,7 +81,7 @@ export const CardTitle = styled.div`
        @media (min-width: 2068px) and (max-width: 6000px) {
       font-size: 1.5rem;
     }
-}
+
 `;
 
 export const CardSubtitle = styled.div`
@@ -98,12 +99,16 @@ export const CardSubtitle = styled.div`
   }
 
   /* Large desktops */
-  @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 0.8rem;
-margin-top: -10px;
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 0.7rem;
+    margin-top: -2px;
 
   }
+@media (min-width: 1441px) and (max-width: 1600px) {
+    font-size: 0.8rem;
+    margin-top: -5px;
 
+  }
   /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
     font-size: 1rem;
@@ -111,7 +116,7 @@ margin-top: -10px;
        @media (min-width: 2068px) and (max-width: 6000px) {
       font-size: 1.3rem;
     }
-}
+
 `;
 
 export const CardLink = styled.div`
@@ -146,7 +151,7 @@ export const CardLink = styled.div`
        @media (min-width: 2068px) and (max-width: 6000px) {
       font-size:1.3rem;
     }
-}
+
 `;
 
 /* Department section responsive */

@@ -197,51 +197,77 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
             <th>Employee name</th>
             <th>Employee ID</th>
             <th>Email ID</th>
-            <th>Visa expiry</th>
+            <th>Department</th>
             <th>Info</th>
-            <th>Delete</th>
+            {/* <th>Delete</th> */}
           </tr>
         </thead>
-        <tbody>
-          {isDataLoading ? (
-            <tr>
-              <td colSpan="8" style={{ textAlign: "center", padding: "2rem" }}>
-                Loading...
-              </td>
-            </tr>
-          ) : Array.isArray(dataToRender) && dataToRender.length > 0 ? (
-            dataToRender.map((emp, index) => (
-              <tr key={emp.id}>
-                <td>{index + 1 + (page - 1) * 7}</td>
-                <td >
-                  {/* {emp.profile_pic ? (
-                    <ProfileImg src={emp.profile_pic} alt="profile" />
-                  ) : (
-                    <PiUserCirclePlusThin size={40} color="#999" />
-                  )} */}
-                  {emp.name}
-                </td>
-                <td>{emp.employee_id}</td>
-                <td>{emp.email}</td>
-                <td>{emp.visa_expiry_date}</td>
-                <td onClick={() => navigate(`/ViewBasic/${emp.id}`)}>
-                  <GoInfo />
-                </td>
-                <td>
-                  <FaTrash
-                    color="red"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleDeleteClick(emp.id)}
-                  />
-                </td>
-              </tr>
-            ))
+       <tbody>
+  {isDataLoading ? (
+    <tr>
+      <td colSpan="8" style={{ textAlign: "center", padding: "2rem" }}>
+        Loading...
+      </td>
+    </tr>
+  ) : Array.isArray(dataToRender) && dataToRender.length > 0 ? (
+    dataToRender.map((emp, index) => (
+      <tr
+        key={emp.id}
+        onClick={() =>
+    navigate(`/fulldashboard/${emp.id}`, {
+      state: { from: location.pathname + location.search },
+    })
+  }
+        style={{
+          cursor: "pointer",
+          transition: "background 0.2s ease",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = "#f5f6fa")}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+      >
+        <td>{index + 1 + (page - 1) * 7}</td>
+        <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {emp.profile_pic ? (
+            <img
+              src={`http://178.248.112.16:8001${emp.profile_pic}`}
+              alt={emp.name}
+              style={{
+                width: "25px",
+                height: "25px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
           ) : (
-            <tr>
-              <td colSpan="8">No employees found.</td>
-            </tr>
+            <PiUserCirclePlusThin size={40} color="#999" />
           )}
-        </tbody>
+          {emp.name}
+        </td>
+        <td>{emp.employee_id}</td>
+        <td>{emp.email}</td>
+        <td>{emp.department}</td>
+        <td className="info-btn">
+          <GoInfo
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate(`/fulldashboard/${emp.id}`)}
+          />
+        </td>
+        {/* <td className="delete-btn">
+          <FaTrash
+            color="red"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleDeleteClick(emp.id)}
+          />
+        </td> */}
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="8">No employees found.</td>
+    </tr>
+  )}
+</tbody>
+
       </Table>
 
       {!departmentId && pagination?.total_pages > 1 && (

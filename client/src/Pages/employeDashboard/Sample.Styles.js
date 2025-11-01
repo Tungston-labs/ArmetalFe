@@ -128,7 +128,7 @@ export const InfoCard = styled.div`
   background: #fff;
   border-radius: 9px;
   padding: 0.9rem;
-  /border: 0px solid #000;
+  border: 0px solid #000;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -153,7 +153,9 @@ export const InfoCard = styled.div`
     @media (min-width: 481px) and (max-width: 1024px) {
       font-size: 0.8rem;
     }
-
+ @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 1rem;
+    }
     /* Large desktops */
     @media (min-width: 1025px) and (max-width: 1600px) {
       font-size: 1rem;
@@ -190,10 +192,12 @@ export const InfoCard = styled.div`
     }
 
     /* Large desktops */
-    @media (min-width: 1025px) and (max-width: 1600px) {
+    @media (min-width: 1025px) and (max-width: 1440px) {
+      font-size: 0.7rem;
+    }
+ @media (min-width: 1441px) and (max-width: 1600px) {
       font-size: 0.8rem;
     }
-
     /* Extra-large / 4K screens */
     @media (min-width: 1601px) {
       font-size: 1rem;

@@ -10,7 +10,6 @@ import {
   TitleSection,
   SearchWrapper,
   SearchInput,
-  SearchIcon,
   ProfileImg,
   Pagination,
   LoaderOverlay,
@@ -43,11 +42,10 @@ const EmployeeList = () => {
 
   const [searchText, setSearchText] = useState("");
   const [page, setPage] = useState(1);
-  const [expiryFilter, setExpiryFilter] = useState(""); // '' | 'visa' | 'contract'
+  const [expiryFilter, setExpiryFilter] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Fetch employees whenever page, searchText, or expiryFilter changes
   useEffect(() => {
     const fetchEmployees = () => {
       if (expiryFilter) {
@@ -65,7 +63,6 @@ const EmployeeList = () => {
     fetchEmployees();
   }, [dispatch, page, searchText, expiryFilter]);
 
-  // Ensure current page does not exceed total pages
   useEffect(() => {
     if (pagination?.total_pages && page > pagination.total_pages) {
       setPage(pagination.total_pages);
@@ -74,7 +71,7 @@ const EmployeeList = () => {
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
-    setPage(1); // Reset to first page on search
+    setPage(1);
   };
 
   const handleDeleteClick = (id) => {
@@ -84,7 +81,6 @@ const EmployeeList = () => {
 
   const confirmDelete = async () => {
     await dispatch(deleteEmployeeById(selectedEmployeeId));
-    // Refresh list after deletion
     if (expiryFilter) {
       dispatch(
         getUpcomingExpiryEmployees({
@@ -109,26 +105,32 @@ const EmployeeList = () => {
 
   return (
     <>
-       <Navbar />
-        <Container>
-   
-      {loading && (
-        <LoaderOverlay>
-          <Loader />
-        </LoaderOverlay>
-      )}
+      <Navbar />
+      <Container>
+        {loading && (
+          <LoaderOverlay>
+            <Loader />
+          </LoaderOverlay>
+        )}
 
-      <HeaderSection>
+        <HeaderSection>
           <TitleSection>
-                  <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
-                  <TextBlock>
-                    <Title>Employee</Title>
-                    <Subtitle>Manage your Employee.</Subtitle>
-                  </TextBlock>
-                </TitleSection>
-        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent:"space-between" }}>
+            <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
+            <TextBlock>
+              <Title>Employee</Title>
+              <Subtitle>Manage your Employee.</Subtitle>
+            </TextBlock>
+          </TitleSection>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
             <SearchWrapper>
-              {/* <SearchIcon /> */}
               <SearchInput
                 type="text"
                 placeholder="Enter Employee ID or Name"
@@ -143,11 +145,6 @@ const EmployeeList = () => {
                 setExpiryFilter(e.target.value);
                 setPage(1);
               }}
-              style={{
-                padding: "5px",
-                borderRadius: "3px",
-                cursor: "pointer",
-              }}
             >
               <option value="">All Employees</option>
               <option value="visa">Visa Expiry (next 30 days)</option>
@@ -160,7 +157,10 @@ const EmployeeList = () => {
           <NavLink to="/employee" style={{ textDecoration: "none" }}>
             <Tab active={location.pathname === "/employee"}>Total Employee</Tab>
           </NavLink>
-          <NavLink to="/employee-leave-request" style={{ textDecoration: "none" }}>
+          <NavLink
+            to="/employee-leave-request"
+            style={{ textDecoration: "none" }}
+          >
             <Tab active={location.pathname === "/employee-leave-request"}>
               Employee leave request
             </Tab>
@@ -203,16 +203,46 @@ const EmployeeList = () => {
             {loading ? (
               <tr>
                 <td colSpan="8">
-                  <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "2rem",
+                    }}
+                  >
                     <p>Loading...</p>
                   </div>
                 </td>
               </tr>
             ) : employeeList && employeeList.length > 0 ? (
               employeeList.map((emp, index) => (
-                <tr key={emp.id}>
+                <tr
+                  key={emp.id}
+                 onClick={() =>
+    navigate(`/fulldashboard/${emp.id}`, {
+      state: { from: location.pathname + location.search },
+    })
+  }
+
+                  style={{
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#f0f4ff")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "transparent")
+                  }
+                >
                   <td>{index + 1 + (currentPage - 1) * 20}</td>
-                  <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <td
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
                     {emp.profile_pic ? (
                       <ProfileImg src={emp.profile_pic} alt="profile" />
                     ) : (
@@ -222,28 +252,22 @@ const EmployeeList = () => {
                   </td>
                   <td>{emp.employee_id}</td>
                   <td>{emp.email}</td>
-       <td>
-  {expiryFilter === "contract"
-    ? emp.contract_expiry_date
-      ? emp.contract_expiry_date
-      : "----"
-    : emp.visa_expiry_date
-    ? emp.visa_expiry_date
-    : "----"}
-</td>
-
-
-                  <td
-                    onClick={() => navigate(`/fulldashboard/${emp.id}`)}
-                    style={{ cursor: "pointer" }}
-                  >
+                  <td>
+                    {expiryFilter === "contract"
+                      ? emp.contract_expiry_date || "----"
+                      : emp.visa_expiry_date || "----"}
+                  </td>
+                  <td>
                     <GoInfo />
                   </td>
                   <td>
                     <FaTrash
                       color="red"
                       style={{ cursor: "pointer" }}
-                      onClick={() => handleDeleteClick(emp.id)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent navigation
+                        handleDeleteClick(emp.id);
+                      }}
                     />
                   </td>
                 </tr>
@@ -274,7 +298,6 @@ const EmployeeList = () => {
                   onClick={() => setPage(pageNumber)}
                   style={{
                     margin: "0 4px",
-                    // padding: "6px 10px",
                     borderRadius: "4px",
                     cursor: "pointer",
                     backgroundColor: isActive ? "#003366" : "#e0e0e0",

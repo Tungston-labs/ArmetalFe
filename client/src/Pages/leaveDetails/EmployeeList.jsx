@@ -227,53 +227,61 @@ const EmployeeList = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(employeeList) && employeeList.length > 0 ? (
-                employeeList.map((emp, index) => (
-                  <tr key={emp.id}>
-                    <td>{index + 1 + (page - 1) * 20}</td>
-                    <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      {emp.profile_pic ? (
-                        <img
-                          src={emp.profile_pic}
-                          alt={emp.name}
-                          style={{
-                            width: "25px",
-                            height: "25px",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      ) : (
-                        <PiUserCirclePlusThin size={40} color="#999" />
-                      )}
-                      {emp.name}
-                    </td>
-                    <td>{emp.employee_id}</td>
-                    <td>{emp.email}</td>
-                    <td>{emp.designation}</td>
-                    <td>{emp.department}</td>
-                    <td
-                      onClick={() => navigate(`/fulldashboard/${emp.id}`)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <GoInfo />
-                    </td>
-                    <td>
-                      <FaTrash
-                        color="red"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleDeleteClick(emp.id)}
-                      />
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8" style={{ textAlign: "center" }}>
-                    No employees found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
+  {Array.isArray(employeeList) && employeeList.length > 0 ? (
+    employeeList.map((emp, index) => (
+      <tr
+        key={emp.id}
+        onClick={() => navigate(`/fulldashboard/${emp.id}`)}
+        style={{
+          cursor: "pointer",
+          transition: "background 0.2s ease",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = "#f9f9ff")}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+      >
+        <td>{index + 1 + (page - 1) * 20}</td>
+        <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {emp.profile_pic ? (
+            <img
+              src={emp.profile_pic}
+              alt={emp.name}
+              style={{
+                width: "25px",
+                height: "25px",
+                borderRadius: "50%",
+              }}
+            />
+          ) : (
+            <PiUserCirclePlusThin size={40} color="#999" />
+          )}
+          {emp.name}
+        </td>
+        <td>{emp.employee_id}</td>
+        <td>{emp.email}</td>
+        <td>{emp.designation}</td>
+        <td>{emp.department}</td>
+        <td>
+          <GoInfo />
+        </td>
+        <td
+          onClick={(e) => {
+            e.stopPropagation(); // 🔒 Prevent row click
+            handleDeleteClick(emp.id);
+          }}
+        >
+          <FaTrash color="red" style={{ cursor: "pointer" }} />
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="8" style={{ textAlign: "center" }}>
+        No employees found.
+      </td>
+    </tr>
+  )}
+</tbody>
+
           </Table>
 
           <Pagination>

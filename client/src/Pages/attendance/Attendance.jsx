@@ -30,7 +30,7 @@ import {
 } from './Attendance.Style';
 import { FaClock } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
-import { LuArrowLeft } from "react-icons/lu";
+import Loader from '../../Components/Loader';
 
 const TimesheetPage = () => {
   const { id } = useParams(); // <-- attendance id
@@ -66,7 +66,7 @@ useEffect(()=>{
     }
   }, [attendanceDetail]);
 
-  if (detailLoading) return <p>Loading attendance details...</p>;
+  if (detailLoading) return<Loader/> ;
  // if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
   if (!attendanceDetail) return <p>No data found</p>;
 
