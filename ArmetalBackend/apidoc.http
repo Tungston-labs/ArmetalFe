@@ -656,8 +656,8 @@ POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "TUNGRAS82",     
-  "password": "Athul"
+  "username": "TUNDEV4QN",     
+  "password": "password123"
 }
 ### 
 GET http://127.0.0.1:8000/api/profile/
@@ -700,15 +700,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # api for applying leave.
 
 ### Create Leave (Employee)
-POST http://127.0.0.1:8000/api/leave/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNzAyMTk2LCJpYXQiOjE3NTE2OTg1OTYsImp0aSI6ImM3OWU5ZWUwOWVmNDQxMjFhMjUyMjY0ODA1ODFiOWY2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.hPexAZkIQsI6OCSm9-ToXADkNoRODip-6CeuB2AjfhE
+POST http://178.248.112.16:8001/api/leave/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxOTczMDcwLCJpYXQiOjE3NjE5Njk0NzAsImp0aSI6IjczNjAyZjNlNWRjNzQ2NzliNTBiNzI0NjRkMDhjNGMyIiwidXNlcl9pZCI6IjUwMSIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6ZmFsc2V9.plLwxGYrujO2Q8jZ5SE-UFFw-JDPOu4j5vhyGYdqvzs
 Content-Type: application/json
 
 {
   "leave_type": "casual",
   "reason": "Casual",
-  "from_date": "2025-09-02",
-  "to_date": "2025-09-11",
+  "from_date": "2025-11-02",
+  "to_date": "2025-12-11",
   "to_email": "nisna@gmail.com",
   "cc_email": "nisnatls@gmail.com.com"
 }
