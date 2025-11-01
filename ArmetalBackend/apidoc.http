@@ -436,8 +436,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 #### Get Leave Detail by ID (HR Admin)
-GET http://127.0.0.1:8000/api/leave/admin/3/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMDAxNDMwLCJpYXQiOjE3NTk5OTc4MzAsImp0aSI6ImYxN2U0ZjIzMTNmOTQ0NWY4MDY4MTgzMzg1YTRmOTRjIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.OtAiHVE0yzzxBc1C1MhDi1SjKeU62fGGmn8q_JW8Ebs
+GET http://178.248.112.16:8001/api/leave/admin/167/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxOTk0MjkxLCJpYXQiOjE3NjE5OTA2OTEsImp0aSI6IjU4YWM1ODk4M2YyZjQyZTliMDU5MmU4Zjc1YTFjZGRkIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.eCgZDQ_6EpQzjNWYipJTs06GrI4oo0vPFpurxVAzlJc
 
 
 
@@ -453,7 +453,7 @@ Content-Type: application/json
 
 
 ### Delete Leave (HR Admin)
-DELETE http://127.0.0.1:8000/api/leave/admin/1/
+DELETE http://127.0.0.1:8000/api/leave/admin/167/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4ODU0ODIzLCJpYXQiOjE3NDg4NTEyMjMsImp0aSI6Ijc3NTViNjMxMDc5NDQzNDE4ZTI3ZWY2YWI2YmYwODZkIiwidXNlcl9pZCI6M30.Me_MGEl8zfsWRUN84_wSRx-eDMswEtQAb6mj7wqW-P8
 
 
@@ -462,11 +462,11 @@ GET http://178.248.112.16:8001/api/leave/admin/?status=pending
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzQ0MTM5LCJpYXQiOjE3NTUzNDA1MzksImp0aSI6ImQyNWU2YTlhNzJmNjQyYzZhY2Y0ZjZkOTgwYjU1MTc2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.hiQfQo3Q3xyoDo1WZkmt8nlTriYbR7zXqbLWUGT4hzw
 
 ### list employees on leave
-GET http://178.248.112.16:8001/api/departments/16/on-leave-employees/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzQ0MTM5LCJpYXQiOjE3NTUzNDA1MzksImp0aSI6ImQyNWU2YTlhNzJmNjQyYzZhY2Y0ZjZkOTgwYjU1MTc2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.hiQfQo3Q3xyoDo1WZkmt8nlTriYbR7zXqbLWUGT4hzw
+GET http://178.248.112.16:8001/api/departments/167/on-leave-employees/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxOTk0MjkxLCJpYXQiOjE3NjE5OTA2OTEsImp0aSI6IjU4YWM1ODk4M2YyZjQyZTliMDU5MmU4Zjc1YTFjZGRkIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.eCgZDQ_6EpQzjNWYipJTs06GrI4oo0vPFpurxVAzlJc
 ### list employees on same department who 
-GET http://178.248.112.16:8001/api/department/53/on-leaves/?date=2025-08-21
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1Njg5MzY2LCJpYXQiOjE3NTU2ODU3NjYsImp0aSI6IjFkNGUwOGFjYzMzMjRjMTY5M2Y1YjVmM2VlYTEzN2Y1IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.Io9G8KvAvTgsC-LlgtfDARGR3JU1D7Q-N69DL-eBUPI
+GET http://178.248.112.16:8001/api/department/167/on-leaves/?date=2025-08-21
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxOTk0MjkxLCJpYXQiOjE3NjE5OTA2OTEsImp0aSI6IjU4YWM1ODk4M2YyZjQyZTliMDU5MmU4Zjc1YTFjZGRkIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.eCgZDQ_6EpQzjNWYipJTs06GrI4oo0vPFpurxVAzlJc
 
 # =-------------------------API FOR TASK MANAGEMENT--------------------------
 

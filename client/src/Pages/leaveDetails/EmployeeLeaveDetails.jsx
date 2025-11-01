@@ -156,12 +156,12 @@ const EmployeeLeaveForm = () => {
       <TwoColumnRows>
         <Input
           placeholder="Pending Leaves"
-          // value={pendingLeaves !== undefined ? pendingLeaves : 'Loading...'}
-          readOnly
+          value={employee?.total_leave || ''} readOnly
+          
         />
         <Input
           placeholder="0"
-          value={leaveDetails?.paid_leave_count || ''} readOnly
+          value={employee?.paid_leave || ''} readOnly
         />
       </TwoColumnRows>
 

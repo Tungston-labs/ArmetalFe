@@ -5,11 +5,7 @@ from django.utils.timezone import make_aware
 
 from datetime import datetime,time  
 from datetime import timedelta
-import pytz
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, generics, filters
 from rest_framework.generics import RetrieveAPIView
 
@@ -20,21 +16,12 @@ from shared.pagination import CustomPagination
 from .utils.timezone_utils import get_company_timezone, ensure_timezone,safe_parse_datetime
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 import logging
-from datetime import datetime, time
-from django.utils import timezone
-from .models import Attendance, AttendanceSession
-from employee.models import Employee_db
 import pytz
 from geopy.distance import geodesic
 import logging
-from datetime import datetime, time
-from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Attendance, AttendanceSession
-# attendance/views.py
-
 from project.models import Project  # Import your Project model
 from django.db.models import Q
 from geopy.geocoders import Nominatim
@@ -43,13 +30,11 @@ logger = logging.getLogger(__name__)
 
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated]
-    
 
     def post(self, request):
         try:
             user = request.user
             employee = getattr(user, 'employee_db', None)
-            logger.info(f"AttendanceSwipeView request.data={request.data}")
 
             if not employee:
                 return Response({'error': 'Employee not found'}, status=404)
@@ -59,55 +44,50 @@ class AttendanceSwipeView(APIView):
             if emp_lat is None or emp_lon is None:
                 return Response({"error": "Latitude and longitude are required"}, status=400)
 
-            try:
-                emp_lat, emp_lon = float(emp_lat), float(emp_lon)
-            except ValueError:
-                return Response({"error": "Invalid latitude/longitude"}, status=400)
+            emp_lat, emp_lon = float(emp_lat), float(emp_lon)
 
-            # ✅ Step 1: Check if employee is assigned to a project
+            # ✅ Step 1: Get punch type (company/onsite)
             project = Project.objects.filter(employees=employee).first()
+            punch_type = project.punch_type.lower() if project else "company"
 
-            if project:
-                punch_type = project.punch_type.lower()
-            else:
-                # ✅ Default to "company" mode if no project
-                punch_type = "company"
-
-            # ✅ Step 2: Validate location based on punch type
+            # ✅ Step 2: Validate distance
             if punch_type == "onsite":
                 project_location = (float(project.latitude), float(project.longitude))
                 employee_location = (emp_lat, emp_lon)
                 distance = geodesic(employee_location, project_location).meters
-
                 if distance > 50:
-                    return Response({
-                        "error": f"You are too far from the project site ({int(distance)}m). Must be within 50m."
-                    }, status=400)
-
-            elif punch_type == "company":
-                # ✅ Use employee’s company location
-                company = employee.department.company  
-                company_lat = float(company.latitude)
-                company_lon = float(company.longitude)
-
-                company_location = (company_lat, company_lon)
+                    return Response({"error": f"You are too far from project site ({int(distance)}m). Must be within 50m."}, status=400)
+            else:
+                company = employee.department.company
+                company_location = (float(company.latitude), float(company.longitude))
                 employee_location = (emp_lat, emp_lon)
                 distance = geodesic(employee_location, company_location).meters
-
                 if distance > 50:
-                    return Response({
-                        "error": f"You are too far from company location ({int(distance)}m). Must be within 50m."
-                    }, status=400)
+                    return Response({"error": f"You are too far from company location ({int(distance)}m). Must be within 50m."}, status=400)
 
-            # ✅ Step 3: Optional readable address
+            # ✅ Step 3: Address & timezone
             address = self._get_location_address(emp_lat, emp_lon)
-
-            # ✅ Step 4: Proceed with punch logic
             company_tz = get_company_timezone(employee)
             now_utc = timezone.now()
             now_company_tz = now_utc.astimezone(company_tz)
             today = now_company_tz.date()
 
+            # ✅ Step 4: Check if employee is on approved leave today
+            from attendance.models import LeaveRequest  # adjust import if needed
+            is_on_leave = LeaveRequest.objects.filter(
+                employee=employee,
+                status="approved",
+                from_date__lte=today,
+                to_date__gte=today
+            ).exists()
+
+            if is_on_leave:
+                return Response(
+                    {"error": "You are currently on approved leave and cannot mark attendance."},
+                    status=400
+                )
+
+            # ✅ Step 5: Attendance logic
             attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
             latest_session = attendance.sessions.last()
             should_punch_in = self._should_punch_in(latest_session)
@@ -120,6 +100,88 @@ class AttendanceSwipeView(APIView):
         except Exception as e:
             logger.critical(f"Unhandled error in AttendanceSwipeView: {e}", exc_info=True)
             return Response({'error': 'Internal server error'}, status=500)
+
+
+
+# class AttendanceSwipeView(APIView):
+#     permission_classes = [IsAuthenticated]
+    
+
+#     def post(self, request):
+#         try:
+#             user = request.user
+#             employee = getattr(user, 'employee_db', None)
+#             logger.info(f"AttendanceSwipeView request.data={request.data}")
+
+#             if not employee:
+#                 return Response({'error': 'Employee not found'}, status=404)
+
+#             emp_lat = request.data.get("latitude")
+#             emp_lon = request.data.get("longitude")
+#             if emp_lat is None or emp_lon is None:
+#                 return Response({"error": "Latitude and longitude are required"}, status=400)
+
+#             try:
+#                 emp_lat, emp_lon = float(emp_lat), float(emp_lon)
+#             except ValueError:
+#                 return Response({"error": "Invalid latitude/longitude"}, status=400)
+
+#             # ✅ Step 1: Check if employee is assigned to a project
+#             project = Project.objects.filter(employees=employee).first()
+
+#             if project:
+#                 punch_type = project.punch_type.lower()
+#             else:
+#                 # ✅ Default to "company" mode if no project
+#                 punch_type = "company"
+
+#             # ✅ Step 2: Validate location based on punch type
+#             if punch_type == "onsite":
+#                 project_location = (float(project.latitude), float(project.longitude))
+#                 employee_location = (emp_lat, emp_lon)
+#                 distance = geodesic(employee_location, project_location).meters
+
+#                 if distance > 50:
+#                     return Response({
+#                         "error": f"You are too far from the project site ({int(distance)}m). Must be within 50m."
+#                     }, status=400)
+
+#             elif punch_type == "company":
+#                 # ✅ Use employee’s company location
+#                 company = employee.department.company  
+#                 company_lat = float(company.latitude)
+#                 company_lon = float(company.longitude)
+
+#                 company_location = (company_lat, company_lon)
+#                 employee_location = (emp_lat, emp_lon)
+#                 distance = geodesic(employee_location, company_location).meters
+
+#                 if distance > 50:
+#                     return Response({
+#                         "error": f"You are too far from company location ({int(distance)}m). Must be within 50m."
+#                     }, status=400)
+
+#             # ✅ Step 3: Optional readable address
+#             address = self._get_location_address(emp_lat, emp_lon)
+
+#             # ✅ Step 4: Proceed with punch logic
+#             company_tz = get_company_timezone(employee)
+#             now_utc = timezone.now()
+#             now_company_tz = now_utc.astimezone(company_tz)
+#             today = now_company_tz.date()
+
+#             attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
+#             latest_session = attendance.sessions.last()
+#             should_punch_in = self._should_punch_in(latest_session)
+
+#             if should_punch_in:
+#                 return self._handle_punch_in(attendance, now_company_tz, company_tz, emp_lat, emp_lon, address)
+#             else:
+#                 return self._handle_punch_out(latest_session, now_company_tz, company_tz, emp_lat, emp_lon, address, attendance)
+
+#         except Exception as e:
+#             logger.critical(f"Unhandled error in AttendanceSwipeView: {e}", exc_info=True)
+#             return Response({'error': 'Internal server error'}, status=500)
 
 
             
