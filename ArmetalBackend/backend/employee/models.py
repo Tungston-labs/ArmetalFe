@@ -42,8 +42,8 @@ class Employee_db(TimeStampedModel):
     insurance_number = EncryptedCharField(max_length=500)
     visa_expiry_date = models.DateField(blank=True, null=True)
     contract_expiry_date = models.DateField(blank=True,null=True)
-    total_leave = models.DecimalField(null=True,blank=True,max_digits=5,decimal_places=2)
-    paid_leave = models.DecimalField(null=True,blank=True,max_digits=5,decimal_places=2)
+    total_leave = models.IntegerField(null=True,blank=True)
+    paid_leave = models.IntegerField(null=True,blank=True)
     idcard = models.ImageField(upload_to='idcard_pics/', blank=True, null=True)
     ROLE_CHOICES = (
         ('employee', 'Employee'),
