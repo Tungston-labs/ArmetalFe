@@ -707,8 +707,8 @@ Content-Type: application/json
 {
   "leave_type": "casual",
   "reason": "Casual",
-  "from_date": "2025-11-02",
-  "to_date": "2025-12-11",
+  "from_date": "2025-12-12",
+  "to_date": "2025-12-12",
   "to_email": "nisna@gmail.com",
   "cc_email": "nisnatls@gmail.com.com"
 }

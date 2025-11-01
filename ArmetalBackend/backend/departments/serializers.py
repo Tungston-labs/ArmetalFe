@@ -10,14 +10,17 @@ class DepartmentSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
+
     employee_count = serializers.IntegerField(read_only=True)
     reimbursement_request_count = serializers.IntegerField(read_only=True)
-    attendance_employee_count = serializers.IntegerField(read_only=True)  # ✅ new
-    leave_request_count = serializers.IntegerField(read_only=True)       # ✅ new
+    attendance_employee_count = serializers.IntegerField(read_only=True)
+    leave_request_count = serializers.IntegerField(read_only=True)
+    todays_leave_employee_count = serializers.IntegerField(read_only=True)  # ✅ new
 
     class Meta:
         model = Department
         fields = '__all__'
         read_only_fields = ['company']
+
 
 
