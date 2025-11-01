@@ -118,7 +118,7 @@ export default function EmployeeAttendance() {
 
            <div style={{ display: "flex", alignItems: "center", gap: "10px",color:"#3250B5" }}>
            <HiArrowLeft
-  onClick={() => navigate(-1)}
+  onClick={() => navigate("/employee-attendance")}
   style={{
     cursor: "pointer",
     width: "clamp(24px, 3vw, 50px)",
@@ -215,22 +215,24 @@ export default function EmployeeAttendance() {
               const timeOut = getLatestTimeOut(sessions);
 
               return (
-                <TableRow key={row.id}>
-                  <TableCell>
-                    <EmployeeImg
-                      src={row.profile_pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(row.employee_name)}`}
-                      alt={row.employee_name}
-                    />
-                    {row.employee_name}
-                  </TableCell>
-                  <TableCell>{row.employee}</TableCell>
+                   <TableRow key={row.employee_id}>
+               <TableCell>
+  <EmployeeImg
+    src={row.profile_pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(row.employee_name)}`}
+    alt={row.employee_name}
+    style={{ marginRight: "10px", verticalAlign: "middle" }}
+  />
+  {row.employee_name}
+</TableCell>
+                  <TableCell>{row.employee_id}</TableCell>
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{formatTime(timeIn)}</TableCell>
                   <TableCell>{formatTime(timeOut)}</TableCell>
                  <TableCell>
-  <ViewButton onClick={() => navigate(`/attendance/detail/${row.id}`)}>
-    <ViewIcon />
-  </ViewButton>
+<ViewButton onClick={() => navigate(`/attendance/detail/${row.id}`)}>
+  <ViewIcon />
+</ViewButton>
+
 </TableCell>
 
                 </TableRow>

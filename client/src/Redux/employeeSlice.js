@@ -83,28 +83,22 @@ export const deleteEmployeeById = createAsyncThunk(
 
 // Submit Bank Payment
 export const submitBankPayment = createAsyncThunk(
-  'employee/submitBankPayment',
-  async ({ employeeId, data, paymentId = null, bankProofImage = null }, thunkAPI) => {
+  "employees/submitBankPayment",
+  async ({ employeeId, data, paymentId }, thunkAPI) => {
     try {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-
-      if (bankProofImage) {
-        formData.append('bank_proof_image', bankProofImage);
-      }
-
       const response = paymentId
-        ? await updateBankPayment(employeeId, paymentId, formData)
-        : await createBankPayment(employeeId, formData);
-
-      return response;
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err|| 'Error saving bank payment.');
+        ? await updateBankPayment(employeeId, paymentId, data)
+        : await createBankPayment(employeeId, data);
+      return response.data;
+    } catch (error) {
+      console.log("❌ Error submitting bank payment: ", error.response?.data);
+      return thunkAPI.rejectWithValue(error.response?.data);
     }
   }
 );
+
+
+
 
 
 
@@ -367,7 +361,7 @@ const employeeSlice = createSlice({
           .addCase(submitBankPayment.fulfilled, (state, action) => {
         const updated = action.payload;
         if (!Array.isArray(state.employeeBankPayments)) {
-          state.employeeBankPayments = []; // fallback
+          state.employeeBankPayments = [action.payload]; // fallback
         }
 
         const index = state.employeeBankPayments.findIndex(p => p.id === updated.id);
