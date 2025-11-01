@@ -9,14 +9,13 @@ from shared.pagination import CustomPagination
 
 from django.core.mail import EmailMessage
 from rest_framework import generics, filters
-from rest_framework.permissions import IsAuthenticated
 from leave.models import LeaveRequest
-from leave.serializers import LeaveRequestSerializer
 from shared.pagination import CustomPagination
 from employee.models import Employee_db
 from user.permissions import IsEmployee
+from datetime import timedelta
+from django.db.models import Q
 
-from rest_framework.response import Response
 
 class LeaveRequestCreateListView(generics.ListCreateAPIView):
     serializer_class = LeaveRequestSerializer
@@ -30,13 +29,12 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
             employee__user=self.request.user
         ).order_by("-created_at")
 
-
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
 
         # Filter counts
         pending_count = queryset.filter(status='pending').count()
-        lop_count = queryset.filter(leave_type='earned').count()  # or whatever leave type you count as LOP
+        lop_count = queryset.filter(leave_type='earned').count()
 
         # Paginated list
         page = self.paginate_queryset(queryset)
@@ -50,8 +48,25 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         employee = Employee_db.objects.get(user=self.request.user)
+        from_date = serializer.validated_data.get('from_date')
+        to_date = serializer.validated_data.get('to_date')
+
+        # ✅ Check for overlapping leave requests
+        overlapping_leaves = LeaveRequest.objects.filter(
+            employee=employee
+        ).filter(
+            Q(from_date__lte=to_date) & Q(to_date__gte=from_date)
+        )
+
+        if overlapping_leaves.exists():
+            raise serializers.ValidationError({
+                "detail": "You have already added leave for one or more of the selected dates."
+            })
+
+        # ✅ If no overlap, save leave
         leave = serializer.save(employee=employee)
 
+        # Send leave request email
         subject = f"Leave Request from {employee.name}"
         message = (
             f"Dear Sir/Madam,\n\n"
@@ -80,6 +95,7 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
             email.send(fail_silently=False)
         except Exception as e:
             print(f"Email sending failed: {e}")
+
 
 
 from rest_framework.response import Response
