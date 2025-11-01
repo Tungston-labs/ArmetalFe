@@ -187,11 +187,47 @@ class EmployeesOnLeaveTodayByDepartmentView(APIView):
   
 
 
+from datetime import timedelta
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
+from django.utils import timezone
+from .models import LeaveRequest
+from employee.models import Employee_db
+from .serializers import LeaveRequestSerializer
+from shared.permissions import IsHRAdmin
+
+
 class LeaveRequestAdminDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = LeaveRequest.objects.all()
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'pk'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        old_status = instance.status
+        new_status = request.data.get("status", old_status)
+
+        response = super().update(request, *args, **kwargs)
+
+        # ✅ Only trigger logic when leave is approved
+        if old_status != "approved" and new_status == "approved":
+            employee = instance.employee
+
+            # ✅ Calculate number of leave days
+            leave_days = 0.5 if instance.leave_type.lower() == "half-day" else (
+                (instance.to_date - instance.from_date).days + 1
+            )
+
+            # ✅ If total_leave is 0, add to paid_leave
+            if employee.total_leave == 0:
+                employee.paid_leave = (employee.paid_leave or 0) + leave_days
+                employee.save(update_fields=["paid_leave"])
+
+        return response
+
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -202,7 +238,7 @@ from employee.models import Employee_db
 
 class DepartmentEmployeesOnLeaveView(APIView):
     def get(self, request, employee_id):
-        date_str = request.query_params.get('date')  # Expecting ?date=YYYY-MM-DD
+        date_str = request.query_params.get('date')
         if not date_str:
             return Response(
                 {"error": "Please provide a date in YYYY-MM-DD format as a query parameter."},
@@ -217,22 +253,16 @@ class DepartmentEmployeesOnLeaveView(APIView):
             )
 
         try:
-            # Get the clicked employee
             employee = Employee_db.objects.get(id=employee_id)
-
             if not employee.department:
                 return Response(
                     {"error": "This employee has no department assigned."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # Get department details
             department = employee.department
-
-            # Get all employees in the same department
             department_employees = Employee_db.objects.filter(department=department)
 
-            # Get approved leave requests for employees in this department for the given date
             on_leave_employees = LeaveRequest.objects.filter(
                 employee__in=department_employees,
                 status='approved',
@@ -240,7 +270,6 @@ class DepartmentEmployeesOnLeaveView(APIView):
                 to_date__gte=leave_date
             ).select_related('employee')
 
-            # Prepare response data
             data = {
                 "department": {
                     "id": department.id,
@@ -249,13 +278,14 @@ class DepartmentEmployeesOnLeaveView(APIView):
                 },
                 "on_leave": [
                     {
-                        "id": leave.id,  # ✅ add leave request ID
+                        "id": leave.id,
                         "employee_name": leave.employee.name,
                         "email": leave.employee.email,
                         "phone": leave.employee.phno,
                         "leave_type": leave.leave_type,
                         "from_date": leave.from_date,
                         "to_date": leave.to_date,
+                        "paid_leave_count": leave.employee.paid_leave,  
                     }
                     for leave in on_leave_employees
                 ]
@@ -268,6 +298,7 @@ class DepartmentEmployeesOnLeaveView(APIView):
                 {"error": "Employee not found."},
                 status=status.HTTP_404_NOT_FOUND
             )
+
 
 
 from rest_framework.views import APIView
