@@ -115,7 +115,9 @@ useEffect(() => {
     'Saturday',
   ];
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
-
+    const handleBack= (deptId) => {
+    navigate(`/employee-on-present?department_id=${deptId}`);
+  };
   return (
     <>
     <Header employee={employee}/>
@@ -123,7 +125,7 @@ useEffect(() => {
       {/* Header Section */}
       <HeaderSection>
         <InfoGrid>
-         <BackArrow onClick={() => navigate("/employee-on-present")} />
+         <BackArrow onClick={handleBack} />
 
 
           <div style={{ width: '10%' }}>
