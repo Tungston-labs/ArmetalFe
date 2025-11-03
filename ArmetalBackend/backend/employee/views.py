@@ -558,10 +558,12 @@ class DashboardSummaryView(APIView):
 
         # 8. On leave today
         on_leave_today_count = LeaveRequest.objects.filter(
-            from_date__lte=today,
-            to_date__gte=today,
-            employee__department__company=company
-        ).count()
+                from_date__lte=today,
+                to_date__gte=today,
+                employee__department__company=company,
+                status='approved'
+            ).values('employee').distinct().count()
+
 
         return Response({
             "total_employees": {
