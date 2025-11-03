@@ -48,7 +48,7 @@ import {
 
 import Multistep from '../../Components/Multistep';
 import { PiUserCirclePlusThin } from "react-icons/pi";
-import { FaPlus } from 'react-icons/fa';
+import JobDetails from '../../Components/JobDetails';
 import Loader from "../../Components/Loader"
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Navbar from '../../Components/Navbar';
@@ -256,7 +256,7 @@ if (formData.phno) {
 
       <Hr />
 
-      {/* Multistep progress bar */}
+    
       <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
         <div style={{ width: '50%' }}>
           <Multistep currentStep={currentStep} steps={stepTitles} />
@@ -344,9 +344,10 @@ if (formData.phno) {
       </InfoGrid>
 
       <Hr />
+      <JobDetails />
 
-      {/* Job Details */}
-      <SectionTitle>Job Details</SectionTitle>
+     
+      {/* /* <SectionTitle>Job Details</SectionTitle>
 
       <TwoColumnRows>
        <FormGroups>
@@ -437,7 +438,6 @@ if (formData.phno) {
         </FormGroups>
       </TwoColumnRows>
 
-      {/* Legal & ID Info */}
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
 
 <ColumnRow>
@@ -496,7 +496,7 @@ if (formData.phno) {
 
     </div>
   ))}
-</ColumnRow>
+</ColumnRow> * */}
 
 
 
