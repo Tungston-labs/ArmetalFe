@@ -702,14 +702,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Create Leave (Employee)
 POST http://178.248.112.16:8001/api/leave/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxOTczMDcwLCJpYXQiOjE3NjE5Njk0NzAsImp0aSI6IjczNjAyZjNlNWRjNzQ2NzliNTBiNzI0NjRkMDhjNGMyIiwidXNlcl9pZCI6IjUwMSIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6ZmFsc2V9.plLwxGYrujO2Q8jZ5SE-UFFw-JDPOu4j5vhyGYdqvzs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMTcxMjIwLCJpYXQiOjE3NjIxNjc2MjAsImp0aSI6IjgzZjkwNjk3NDE1OTRkMjI5MDkxMjBkZGVhZWYwODg2IiwidXNlcl9pZCI6IjUwMSIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6ZmFsc2V9.jWIPV6QyKrffqbhK9YE9H73Ioyw19XMQ5-1jsjizxB4
 Content-Type: application/json
 
 {
   "leave_type": "casual",
   "reason": "Casual",
-  "from_date": "2025-12-12",
-  "to_date": "2025-12-12",
+  "from_date": "2025-12-02",
+  "to_date": "2025-12-02",
+  "from_date_type": "afternoon",
+  "to_date_type": "afternoon",
   "to_email": "nisna@gmail.com",
   "cc_email": "nisnatls@gmail.com.com"
 }
