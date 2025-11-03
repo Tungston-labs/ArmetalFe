@@ -7,11 +7,11 @@ from .models import (
     Employee_db, EmpBankPaymentModel, EmpDocument, TempUpload
 )
 from departments.models import Department
-from departments.models import Department
 from attendance.models import Attendance
 from task.models import DailyTask
 from leave.models import LeaveRequest
 from datetime import date, timedelta
+from calendar import monthrange
 
 # Custom field to handle datetime-to-date safely
 class SafeDateField(serializers.DateField):
@@ -239,20 +239,41 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
 
     def get_attendance_summary(self, obj):
         today = date.today()
-        start_week = today - timedelta(days=today.weekday())
+
+        # ✅ Month boundaries
         start_month = today.replace(day=1)
+        _, last_day = monthrange(today.year, today.month)
+        end_month = today.replace(day=last_day)
 
-        week_attendance = Attendance.objects.filter(employee=obj, date__gte=start_week, date__lte=today)
-        month_attendance = Attendance.objects.filter(employee=obj, date__gte=start_month)
+        # ✅ Determine which week of the month today belongs to (1–7, 8–14, 15–21, 22–28, 29–end)
+        day_of_month = today.day
+        week_number = (day_of_month - 1) // 7 + 1
 
-        weekly_hours = week_attendance.aggregate(total=Sum('total_hours'))['total'] or 0
-        monthly_hours = month_attendance.aggregate(total=Sum('total_hours'))['total'] or 0
+        start_week = start_month + timedelta(days=(week_number - 1) * 7)
+        end_week = min(start_week + timedelta(days=6), end_month)
+
+        # ✅ Fetch attendance data for week and month
+        week_attendance = Attendance.objects.filter(employee=obj, date__range=[start_week, end_week])
+        month_attendance = Attendance.objects.filter(employee=obj, date__range=[start_month, end_month])
+
+        # ✅ Format hours from float (e.g. 9.65 → "09:39")
+        def format_hours(hours):
+            hours = float(hours or 0)
+            h = int(hours)
+            m = int(round((hours - h) * 60))
+            return f"{h:02d}:{m:02d}"
+
+        weekly_total = week_attendance.aggregate(total=Sum('total_hours'))['total'] or 0
+        monthly_total = month_attendance.aggregate(total=Sum('total_hours'))['total'] or 0
 
         return {
-            'weekly_working_hours': float(weekly_hours),
-            'weekly_days': week_attendance.count(),
-            'monthly_working_hours': float(monthly_hours)
+            "weekly_working_hours": format_hours(weekly_total),
+            "weekly_days": week_attendance.count(),
+            "monthly_working_hours": format_hours(monthly_total),
+            "monthly_days": month_attendance.count(),
+            "week_range": f"{start_week.strftime('%d %b')} - {end_week.strftime('%d %b')}"
         }
+    
     def get_department_head(self, obj):
         head = obj.department.department_head
         if head:
