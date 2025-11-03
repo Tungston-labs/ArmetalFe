@@ -73,7 +73,7 @@ class AttendanceSwipeView(APIView):
             today = now_company_tz.date()
 
             # ✅ Step 4: Check if employee is on approved leave today
-            from attendance.models import LeaveRequest  # adjust import if needed
+            from leave.models import LeaveRequest
             is_on_leave = LeaveRequest.objects.filter(
                 employee=employee,
                 status="approved",
