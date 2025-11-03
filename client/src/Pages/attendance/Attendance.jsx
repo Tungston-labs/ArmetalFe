@@ -115,9 +115,9 @@ useEffect(() => {
     'Saturday',
   ];
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
-  const handleBack=()=>{
-    navigate(-1);
-  }
+    const handleBack= (deptId) => {
+    navigate(`/employee-on-present?department_id=${deptId}`);
+  };
   return (
     <>
     <Header employee={employee}/>
