@@ -205,6 +205,27 @@ const handleTabNavigation = (path) => {
       navigate(path);
     }
   };
+const handleBack = () => {
+  let departmentId = "";
+
+  if (typeof employeeDetail.department === "object") {
+    departmentId = employeeDetail.department.id;
+  } else if (typeof employeeDetail.department === "number") {
+    departmentId = employeeDetail.department;
+  } else if (typeof employeeDetail.department === "string") {
+    const matchedDept = departmentList.find(
+      (dept) => dept.name === employeeDetail.department
+    );
+    departmentId = matchedDept ? matchedDept.id : "";
+  }
+
+  if (departmentId) {
+    navigate(`/departments/${departmentId}`);
+  } else {
+    navigate(`/departments`);
+  }
+};
+
 
 
   if (loading || !formData || Object.keys(formData).length === 0) {
@@ -214,17 +235,17 @@ const handleTabNavigation = (path) => {
       </FullPageLoaderWrapper>
     );
   }
-
+ 
   return (
     <>
     <Container>
       <Headers>
         <HeaderWrapper>
           <TitleSection>
-           <LuArrowLeft
-              style={{ width: 30, height: 30, cursor: "pointer", color: "#304EB0" }}
-              onClick={() => handleTabNavigation("/employee")} // ✅ alert on back
-            />
+          <LuArrowLeft
+      style={{ width: 30, height: 30, cursor: "pointer", color: "#304EB0" }}
+      onClick={handleBack}
+    />
             <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
             <div>
               <Title>Employee</Title>
