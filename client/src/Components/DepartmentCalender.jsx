@@ -1,10 +1,10 @@
-// DepartmentCalendar.jsx
 import React, { useEffect, useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
-import API from "../services/api"; // <-- use your configured axios
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
+import API from "../services/api";
 import Loader from "../Components/Loader";
-
+import HalfDoughnutChart from "./HalfDoughnutChart";
+import HolidaySvg from "../assets/holiday.svg";
 import {
   Container,
   LeftSection,
@@ -36,16 +36,13 @@ import {
   HolidayTitle,
   HolidayDate,
   ArrowIcon,
+  UpcomingHolidaySection,
 } from "./DepartmentCalender.Styles";
-import HalfDoughnutChart from "./HalfDoughnutChart";
-import HolidaySvg from "../assets/holiday.svg";
-import { Link } from "react-router-dom";
-import { PiUserCircleThin } from "react-icons/pi";
+
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
 const DepartmentCalendar = () => {
   const [summary, setSummary] = useState(null);
-  console.log({ summary });
   const [loading, setLoading] = useState(true);
   const today = new Date();
   const [month, setMonth] = useState(today.getMonth());
@@ -54,7 +51,10 @@ const DepartmentCalendar = () => {
   const currentDay = today.getDate();
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
+  const [sliceCount, setSliceCount] = useState(3);
+const [holidaySliceCount, setHolidaySliceCount] = useState(3);
 
+  // ✅ Fetch dashboard summary
   useEffect(() => {
     const fetchSummary = async () => {
       try {
@@ -69,51 +69,60 @@ const DepartmentCalendar = () => {
     fetchSummary();
   }, []);
 
-  // if (loading) return <p>Loading...</p>;
-  if (!summary) return <p>Loading.....</p>;
+  // ✅ Dynamically change number of employees shown based on screen width
+  useEffect(() => {
+    let resizeTimeout;
+
+   const updateSliceCount = () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    const width = window.innerWidth;
+
+    if (width < 768) setSliceCount(3);            // 📱 Mobile
+    else if (width < 1024) setSliceCount(6);     
+        else if (width < 1440) setSliceCount(3);  // 💻 Tablet
+    else if (width < 1920) setSliceCount(5);      // 🖥️ Desktop
+    else if (width < 2560) setSliceCount(6);      // 🖥️ 2K Monitor
+    else setSliceCount(8);        
+    
+      if (width < 768) setHolidaySliceCount(2);
+      else if (width < 1024) setHolidaySliceCount(4);
+            else if (width < 1440) setHolidaySliceCount(6);
+      else if (width < 1920) setHolidaySliceCount(4);
+      else if (width < 2560) setHolidaySliceCount(4);
+      else setHolidaySliceCount(4);
+  }, 150);
+};
+    updateSliceCount();
+    window.addEventListener("resize", updateSliceCount);
+    return () => window.removeEventListener("resize", updateSliceCount);
+  }, []);
+
+  if (!summary) return <Loader />;
 
   const onLeaveToday = summary.on_leave_today_count || 0;
   const activeToday = summary.active_today_count || 0;
 
-  // Prepare calendar dates
+  // ✅ Calendar logic
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const dates = [];
-  const startOffset = (firstDay + 6) % 7; // align with Mon-Sun start
-  for (let i = 0; i < startOffset; i++) dates.push("");
-  for (let i = 1; i <= daysInMonth; i++) dates.push(i);
-  while (dates.length % 7 !== 0) dates.push("");
+  const startOffset = (firstDay + 6) % 7;
+  const dates = Array.from({ length: startOffset + daysInMonth }, (_, i) =>
+    i < startOffset ? "" : i - startOffset + 1
+  );
 
-  const prevMonth = () => {
-    if (month === 0) {
-      setMonth(11);
-      setYear(year - 1);
-    } else setMonth(month - 1);
-  };
+  const prevMonth = () =>
+    month === 0 ? (setMonth(11), setYear(year - 1)) : setMonth(month - 1);
+  const nextMonth = () =>
+    month === 11 ? (setMonth(0), setYear(year + 1)) : setMonth(month + 1);
 
-  const nextMonth = () => {
-    if (month === 11) {
-      setMonth(0);
-      setYear(year + 1);
-    } else setMonth(month + 1);
-  };
   const handleDateClick = (date) => {
-    if (!date) return; // ignore empty cells
-    setSelectedDate({ date, month, year });
+    if (date) setSelectedDate({ date, month, year });
   };
+
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
   ];
 
   const departments = summary.departments || [];
@@ -123,38 +132,31 @@ const DepartmentCalendar = () => {
   return (
     <Container>
       {loading && <Loader />}
+
       {/* LEFT SIDE */}
       <LeftSection>
         {/* Departments */}
-        <NavLink
-          to="/department"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
+        <NavLink to="/department" style={{ textDecoration: "none", color: "inherit" }}>
           <SectionTitle>
             Department <FiArrowUpRight />
           </SectionTitle>
         </NavLink>
+
         <DepartmentWrapper>
           {departments.map((dept) => (
             <DepartmentCard key={dept.id}>
               <InitialCircle>{dept.name.charAt(0)}</InitialCircle>
-
               <DeptInfo>
                 <h3>{dept.name}</h3>
                 <DeptHead>
-                  Department head:
-                  <p> {dept.head?.name || "N/A"}</p>
+                  Department head: <p>{dept.head?.name || "N/A"}</p>
                 </DeptHead>
               </DeptInfo>
-
               <DeptCount>
                 {dept.employee_count}
                 <ArrowIcon>
                   <Link to={`/departments/${dept.id}`}>
-                    <FiArrowUpRight
-                      size={20}
-                      style={{ cursor: "pointer", color: "#304EB0" }}
-                    />
+                    <FiArrowUpRight size={20} style={{ cursor: "pointer", color: "#304EB0" }} />
                   </Link>
                 </ArrowIcon>
               </DeptCount>
@@ -177,22 +179,17 @@ const DepartmentCalendar = () => {
             <HalfDoughnutChart active={activeToday} onLeave={onLeaveToday} />
           </ChartConatiner>
 
-          {/* Employee Contract Expiry */}
           <EmployeeExpiryWrapper>
-  <h3>Employee Contract Expiry</h3>
-  {contractExpiry.slice(0, 5).map((emp) => (
-    <EmployeeRow key={emp.id}>
-      <Avatar
-        src={emp.profile_pic ? emp.profile_pic : "https://via.placeholder.com/30"}
-        alt={emp.name}
-      />
-      <EmpName>{emp.name}</EmpName>
-      <EmpId>{emp.employee_id}</EmpId>
-      <EmpEmail>{emp.department}</EmpEmail>
-    </EmployeeRow>
-  ))}
-</EmployeeExpiryWrapper>
-
+            <h3>Employee Contract Expiry</h3>
+            {contractExpiry.slice(0, sliceCount).map((emp) => (
+              <EmployeeRow key={emp.id}>
+                <Avatar src={emp.profile_pic || "https://via.placeholder.com/30"} alt={emp.name} />
+                <EmpName>{emp.name}</EmpName>
+                <EmpId>{emp.employee_id}</EmpId>
+                <EmpEmail>{emp.department}</EmpEmail>
+              </EmployeeRow>
+            ))}
+          </EmployeeExpiryWrapper>
         </PresenceWrapper>
       </LeftSection>
 
@@ -210,19 +207,12 @@ const DepartmentCalendar = () => {
 
           <CalendarGrid>
             {days.map((d, i) => (
-              <CalendarDay key={i} isHeader>
-                {d}
-              </CalendarDay>
+              <CalendarDay key={i} isHeader>{d}</CalendarDay>
             ))}
-
             {dates.map((date, i) => {
               const isToday =
-                date === currentDay &&
-                month === currentMonth &&
-                year === currentYear;
-
+                date === currentDay && month === currentMonth && year === currentYear;
               const isSunday = (i + 1) % 7 === 0;
-
               const isSelected =
                 selectedDate &&
                 selectedDate.date === date &&
@@ -245,37 +235,35 @@ const DepartmentCalendar = () => {
         </CalendarWrapper>
 
         {/* Upcoming Holidays */}
+        <UpcomingHolidaySection>
+          <NavLink to="/holiday" style={{ textDecoration: "none", color: "inherit" }}>
+            <SectionTitle>
+              Upcoming Holidays <FiArrowUpRight />
+            </SectionTitle>
+          </NavLink>
 
-        <NavLink
-          to="/holiday"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <SectionTitle>
-            Upcoming Holidays <FiArrowUpRight />
-          </SectionTitle>
-        </NavLink>
-   <HolidayList>
-  {upcomingHolidays.slice(0, 3).map((h, i) => (
-    <HolidayItem key={i}>
-      <HolidayIcon>
-        <img src={HolidaySvg} alt="holiday icon" />
-      </HolidayIcon>
-      <HolidayInfo>
-        <HolidayTitle title={h.description}>
-          {h.description.length > 7 
-            ? h.description.slice(0, 7) + "..." 
-            : h.description}
-        </HolidayTitle>
-        <p>{h.holiday_type}</p>
-      </HolidayInfo>
-      <HolidayDate>{new Date(h.date).toLocaleDateString()}</HolidayDate>
-    </HolidayItem>
-  ))}
-</HolidayList>
+          <HolidayList>
+        {upcomingHolidays.slice(0, holidaySliceCount).map((h, i) => (
 
-
-
-
+              <HolidayItem key={i}>
+                <HolidayIcon>
+                  <img src={HolidaySvg} alt="holiday icon" />
+                </HolidayIcon>
+                <HolidayInfo>
+                  <HolidayTitle title={h.description}>
+                    {h.description.length > 20
+                      ? h.description.slice(0, 20) + "..."
+                      : h.description}
+                  </HolidayTitle>
+                  <p>{h.holiday_type}</p>
+                </HolidayInfo>
+                <HolidayDate>
+                  {new Date(h.date).toLocaleDateString()}
+                </HolidayDate>
+              </HolidayItem>
+            ))}
+          </HolidayList>
+        </UpcomingHolidaySection>
       </RightSection>
     </Container>
   );

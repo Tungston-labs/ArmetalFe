@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import Sample from "./Sample"; 
 import Employeedashboard from "./Employeedashboard"; 
 import styled from "styled-components";
-import Loader from "../../Components/Loader"
-import BottomCard from "./BottomCard"
-import { useNavigate } from "react-router-dom";
+import Loader from "../../Components/Loader";
+import BottomCard from "./BottomCard";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import Navbar from "../../Components/Navbar";
 
@@ -37,7 +37,7 @@ const BackButton = styled.button`
   cursor: pointer;
   margin-bottom: 1rem;
   font-weight: 500;
-color:#000;
+  color: #000;
 
   &:hover {
     background: #f0f0f0;
@@ -47,6 +47,7 @@ color:#000;
 const FullDashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000);
@@ -61,21 +62,25 @@ const FullDashboard = () => {
     );
   }
 
-  return (<>
-<Navbar/>
-    <Wrapper>
-      {/* Back Button */}
-      <BackButton onClick={() => navigate(-1)}>
-        <FaArrowLeft /> 
-      </BackButton>
+  // ✅ Determine where user came from; fallback to /employee
+  const previousPage = location.state?.from || "/employee";
 
-      <div style={{ display: "flex", width: "100%", height: "100%" }}>
-        <Sample />
-        <Employeedashboard />
-      </div>
-      <BottomCard />
-    </Wrapper>
-      </>
+  return (
+    <>
+      <Navbar />
+      <Wrapper>
+        {/* Back Button */}
+        <BackButton onClick={() => navigate(previousPage)}>
+          <FaArrowLeft /> Back
+        </BackButton>
+
+        <div style={{ display: "flex", width: "100%", height: "100%" }}>
+          <Sample />
+          <Employeedashboard />
+        </div>
+        <BottomCard />
+      </Wrapper>
+    </>
   );
 };
 

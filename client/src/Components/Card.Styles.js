@@ -9,7 +9,7 @@ const breakpoints = {
 };
 export const CardContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);  /* default for desktops */
+  grid-template-columns: repeat(3, 1fr);  
   gap: 1rem;
   margin: 0.5rem;
   background: #f4f4f4;
@@ -21,7 +21,7 @@ export const CardContainer = styled.div`
 
   /* 📱 Tablets */
   @media (min-width: ${breakpoints.mobile}) and (max-width: ${breakpoints.laptop}) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   /* 💻 Standard desktops */
@@ -99,7 +99,7 @@ export const CardHeader = styled.div`
     align-items: flex-start;
   }
   @media (min-width: ${breakpoints.desktop}) {
-    flex-direction: row;
+    /* flex-direction: row; */
     /* align-items: flex-start; */
   }
 `;
@@ -194,7 +194,7 @@ export const CardTitle = styled.h3`
   margin-left: 10px;
 
   @media (max-width: ${breakpoints.tablet}) {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   @media (min-width: ${breakpoints.tv}) {
@@ -237,11 +237,11 @@ export const CardListItem = styled.div`
   gap: 0.5rem;
 
   @media (max-width: ${breakpoints.laptop}) {
-    grid-template-columns: 40px 1fr 1fr;
+    grid-template-columns: 30px 1fr 2fr;
   }
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: 40px 1fr;
+    /* grid-template-columns: 40px 1fr; */
     font-size: 0.8rem;
   }
 
@@ -288,48 +288,138 @@ export const EmployeeAvatar = styled.div`
 
 export const EmployeeName = styled.span`
   font-weight: 500;
-  font-size: clamp(0.75rem, 0.5vw, 1.8rem);
+  color: #222;
+  font-size: 0.75rem; /* 📱 Mobile default */
+  transition: all 0.3s ease-in-out;
 
-  @media (min-width: ${breakpoints.tv}) {
-    font-size: 1rem;
-    padding:0.25rem 1rem;
+
+  @media (min-width: 768px) {
+    font-size: 0.65rem;
+  
   }
-  @media (min-width: ${breakpoints.largeTv}) {
-    padding-inline: 2rem;
-    padding-block: 0.5rem;
+
+  @media (min-width: 1024px) {
+    font-size: 0.8rem;
+
+  }
+    @media (min-width: 1440px) {
+    font-size: 0.8rem;
+  
+  }
+
+    @media (min-width: 1600px) {
+    font-size: 0.9rem;
+
+  }
+
+
+  @media (min-width: 1920px) {
+    font-size: 1.6rem;
+    padding: 0.5rem 1.2rem;
+  }
+
+  @media (min-width: 2560px) {
     font-size: 2rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+
+  @media (min-width: 3840px) {
+    font-size: 2.6rem;
+    padding: 1rem 2rem;
   }
 `;
 
 export const EmployeeId = styled.div`
-  font-size: clamp(0.75rem, 0.5vw, 1.8rem);
   color: #666;
+  font-size: 0.75rem; /* base for mobile */
 
   .from-date,
   .to-date {
     display: inline;
   }
+
   .continue-sign {
     display: none;
   }
 
+  /* Tablet */
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  /* Laptop range */
   @media (min-width: ${breakpoints.laptop}) and (max-width: ${breakpoints.desktop}) {
-    /* display: none; */
+    font-size: 1rem;
+
     .to-date {
       display: none;
     }
+
     .continue-sign {
       display: inline;
     }
   }
-  @media (max-width:1430px) {
+
+  /* Desktop (≥ 1440px) */
+  @media (min-width: 1440px) {
+    font-size: 0.8rem;
+  }
+   @media (min-width: 1770px) {
+    font-size: 1rem;
+  }
+
+  /* Full HD (1920px) */
+  @media (min-width: ${breakpoints.tv}) {
+    font-size: 1.3rem;
+  }
+
+  /* 4K screens (2560px+) */
+  @media (min-width: ${breakpoints.largeTv}) {
+    font-size: 1.6rem;
+  }
+
+  /* Hide below 1430px (based on your rule) */
+  @media (max-width: 1430px) {
     display: none;
   }
 `;
 
+
 export const EmployeeDept = styled.span`
   color: #777;
-  font-size: clamp(0.75rem, 0.5vw, 1.8rem);
+  font-weight: 500;
+  display: inline-block;
+  text-align: left;
+  line-height: 1.3;
+  font-size: 0.6rem;
+
+  /* Tablets */
+  @media (min-width: 600px) {
+    font-size: 0.65rem;
+  }
+
+  /* Small laptop */
+  @media (min-width: 1024px) {
+    font-size: 0.8rem;
+  }
+
+
+  @media (min-width: 1440px) {
+    font-size: 1rem;
+  }
+
+   @media (min-width: 1600px) {
+    font-size: 0.9rem;
+  }
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+  }
+
+  /* 4K screens (3840×2160) */
+  @media (min-width: 3840px) {
+    font-size: 1.9rem;
+  }
 `;
 
 export const IconWrapper = styled.div`

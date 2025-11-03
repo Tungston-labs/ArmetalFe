@@ -1,4 +1,3 @@
-// EmployeeAttendance.jsx
 
 import React, { useEffect, useState } from "react";
 import {
@@ -20,7 +19,7 @@ import { HiArrowLeft } from "react-icons/hi";
 import { getDepartments } from "../../Redux/departmentSlice";
 import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import { FiSearch } from 'react-icons/fi';
+import Loader from "../../Components/Loader";
 import { EmployeeImage } from "../leaveDetails/EmployeeList.styles";
 export default function EmployeeAttendance() {
   const location = useLocation();
@@ -91,23 +90,35 @@ export default function EmployeeAttendance() {
       return '---';
     }
   };
+const getEarliestTimeIn = (sessions) => {
+  if (!sessions?.length) return null;
+  return sessions
+    .filter((s) => s.time_in)
+    .reduce((earliest, s) => (!earliest || s.time_in < earliest ? s.time_in : earliest), null);
+};
 
-  const getEarliestTimeIn = (sessions) => {
-    return sessions.reduce((earliest, s) => {
-      if (!earliest || (s.time_in && s.time_in < earliest)) return s.time_in;
-      return earliest;
-    }, null);
-  };
+const getLatestTimeOut = (sessions) => {
+  if (!sessions?.length) return null;
 
-  const getLatestTimeOut = (sessions) => {
-    return sessions.reduce((latest, s) => {
-      if (!latest || (s.time_out && s.time_out > latest)) return s.time_out;
-      return latest;
-    }, null);
-  };
+  // Sort sessions by time_in
+  const sorted = [...sessions].sort((a, b) => new Date(a.time_in) - new Date(b.time_in));
+
+  // Get last session
+  const lastSession = sorted[sorted.length - 1];
+
+  // If last session has no time_out → still inside
+  if (!lastSession.time_out) return null;
+
+  // Otherwise, return the latest valid time_out overall
+  return sorted
+    .filter((s) => s.time_out)
+    .reduce((latest, s) => (!latest || s.time_out > latest ? s.time_out : latest), null);
+};
+
 
   return (
     <>
+      {loading && <Loader />}
     <Navbar/>
     <Container>
 
@@ -199,49 +210,62 @@ export default function EmployeeAttendance() {
             <TableHeader />
           </TableRow>
         </thead>
-        <tbody>
-          {loading ? (
-            <TableRow>
-              <TableCell colSpan="6">
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-                
-                </div>
-              </TableCell>
-            </TableRow>
-          ) : attendanceList.length > 0 ? (
-            attendanceList.map((row) => {
-              const sessions = row.sessions || [];
-              const timeIn = getEarliestTimeIn(sessions);
-              const timeOut = getLatestTimeOut(sessions);
+     <tbody>
+  {loading ? (
+    <TableRow>
+      <TableCell colSpan="6">
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+          Loading...
+        </div>
+      </TableCell>
+    </TableRow>
+  ) : attendanceList.length > 0 ? (
+    attendanceList.map((row) => {
+      const sessions = row.sessions || [];
+      const timeIn = getEarliestTimeIn(sessions);
+      const timeOut = getLatestTimeOut(sessions);
 
-              return (
-                   <TableRow key={row.employee_id}>
-               <TableCell>
-  <EmployeeImg
-    src={row.profile_pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(row.employee_name)}`}
-    alt={row.employee_name}
-    style={{ marginRight: "10px", verticalAlign: "middle" }}
-  />
-  {row.employee_name}
-</TableCell>
-                  <TableCell>{row.employee_id}</TableCell>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{formatTime(timeIn)}</TableCell>
-                  <TableCell>{formatTime(timeOut)}</TableCell>
-                 <TableCell>
-<ViewButton onClick={() => navigate(`/attendance/detail/${row.id}`)}>
-  <ViewIcon />
-</ViewButton>
+      return (
+        <TableRow
+          key={row.employee_id}
+          onClick={() => navigate(`/attendance/detail/${row.id}`)}
+          style={{
+            cursor: "pointer",
+            transition: "background-color 0.2s ease",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f0f4ff")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+        >
+          <TableCell>
+            <EmployeeImg
+              src={
+                row.profile_pic ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(row.employee_name)}`
+              }
+              alt={row.employee_name}
+              style={{ marginRight: "10px", verticalAlign: "middle" }}
+            />
+            {row.employee_name}
+          </TableCell>
+          <TableCell>{row.employee_id}</TableCell>
+          <TableCell>{row.date}</TableCell>
+          <TableCell>{formatTime(timeIn)}</TableCell>
+          <TableCell>{formatTime(timeOut)}</TableCell>
+          <TableCell>
+            <ViewButton>
+              <ViewIcon />
+            </ViewButton>
+          </TableCell>
+        </TableRow>
+      );
+    })
+  ) : (
+    <TableRow>
+      <TableCell colSpan="6">No records found</TableCell>
+    </TableRow>
+  )}
+</tbody>
 
-</TableCell>
-
-                </TableRow>
-              );
-            })
-          ) : (
-            <TableRow><TableCell colSpan="6">No records found</TableCell></TableRow>
-          )}
-        </tbody>
       </Table>
 
       {/* Dynamic Pagination */}

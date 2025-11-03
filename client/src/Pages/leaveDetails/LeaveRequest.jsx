@@ -37,6 +37,7 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import Navbar from '../../Components/Navbar';
 import Loader  from "../../Components/Loader"
 import { TextBlock } from './EmployeeList.styles';
+
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -197,69 +198,75 @@ const isLoading = loading || deptLoading;
           </TableRow>
         </thead>
         <tbody>
-          {loading ? (
-            <TableRow>  <TableCell colSpan="7">
-    {/* <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-    <p>Loading...</p>
-    </div> */}
-  </TableCell></TableRow>
-          ) : filteredLeaves.length === 0 ? (
-            <TableRow><TableCell colSpan="7">No matching leave requests found.</TableCell></TableRow>
-          ) : (
-            filteredLeaves.map((leave) => (
-              <TableRow key={leave.id}>
-                <TableCell style={{  alignItems: 'center', gap: '10px' }}>
-  {leave?.employee?.profile_pic ? (
-    <ProfileImage
-      src={leave.employee.profile_pic}
-      alt="profile"
-    />
+  {loading ? (
+    <TableRow>
+      <TableCell colSpan="7"></TableCell>
+    </TableRow>
+  ) : filteredLeaves.length === 0 ? (
+    <TableRow>
+      <TableCell colSpan="7">No matching leave requests found.</TableCell>
+    </TableRow>
   ) : (
-    <PiUserCirclePlusThin size={40} color="#999" />
-  )}
-  {leave?.employee?.name || 'N/A'}
-</TableCell>
-                <TableCell>{leave.leave_type}</TableCell>
-                <TableCell>{leave.employee.email}</TableCell>
-                <TableCell>{leave.employee.phno}</TableCell>
-                <TableCell>{leave.from_date} - {leave.to_date}</TableCell>
-                <TableCell>
-                  <IoEyeOutline
-                    onClick={() => navigate(`/leave-details/${leave.id}`)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <ActionButtons>
-                
-<ApproveButton
-  onClick={() => {
-    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-    console.log("Opening modal with:", leave.id, leave.employee?.id, today);
-
-    setSelectedLeave({
-      leave_id: leave.id,          // ✅ add leave ID
-      employee_id: leave.employee?.id,
-      date: today
-    });
-
-    setShowModal(true);
-  }}
->
-  On Leaves
-</ApproveButton>
-
-
-
-
-
-
-                  </ActionButtons>
-                </TableCell>
-              </TableRow>
-            ))
+    filteredLeaves.map((leave) => (
+      <TableRow
+        key={leave.id}
+        onClick={() => navigate(`/leave-details/${leave.id}`)}
+        style={{
+          cursor: "pointer",
+          transition: "background 0.2s ease",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = "#f9f9ff")}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+      >
+        <TableCell style={{ alignItems: "center", gap: "10px" }}>
+          {leave?.employee?.profile_pic ? (
+            <ProfileImage src={leave.employee.profile_pic} alt="profile" />
+          ) : (
+            <PiUserCirclePlusThin size={40} color="#999" />
           )}
-        </tbody>
+          {leave?.employee?.name || "N/A"}
+        </TableCell>
+        <TableCell>{leave.leave_type}</TableCell>
+        <TableCell>{leave.employee.email}</TableCell>
+        <TableCell>{leave.employee.phno}</TableCell>
+        <TableCell>
+          {leave.from_date} - {leave.to_date}
+        </TableCell>
+        <TableCell>
+          <IoEyeOutline
+            onClick={(e) => {
+              e.stopPropagation(); // 🔒 prevent row click
+              navigate(`/leave-details/${leave.id}`);
+            }}
+            style={{ cursor: "pointer" }}
+          />
+        </TableCell>
+        <TableCell
+          onClick={(e) => {
+            e.stopPropagation(); // 🔒 prevent row navigation
+          }}
+        >
+          <ActionButtons>
+            <ApproveButton
+              onClick={() => {
+                const today = new Date().toISOString().split("T")[0];
+                setSelectedLeave({
+                  leave_id: leave.id,
+                  employee_id: leave.employee?.id,
+                  date: today,
+                });
+                setShowModal(true);
+              }}
+            >
+              On Leaves
+            </ApproveButton>
+          </ActionButtons>
+        </TableCell>
+      </TableRow>
+    ))
+  )}
+</tbody>
+
       </Table>
 
             <Pagination>

@@ -11,7 +11,7 @@ const breakpoints = {
 
 export const Container = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   justify-content: space-between;
   gap: 2rem;
   width: 100%;
@@ -44,6 +44,18 @@ export const LeftSection = styled.div`
 export const RightSection = styled.div`
   flex: 1 1 27%;
   min-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  /* ✅ Default: stacked vertically on desktops */
+  @media (max-width: 768px) {
+    flex-direction: row; /* side by side on mobile */
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    min-width: 100%;
+    align-items: stretch;
+  }
 `;
 
 export const SectionTitle = styled.h2`
@@ -241,15 +253,29 @@ export const CardIcon = styled.div`
 `;
 
 export const CalendarWrapper = styled.div`
+
   background: #fff;
   border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  @media (min-width: ${breakpoints.tv}) {
-    padding: 1rem;
+  transition: 0.3s;
+
+  @media (max-width: 768px) {
+    width: 50%;
+    padding: 0.8rem;
+      flex: 1;
   }
-  @media (min-width: ${breakpoints.largeTv}) {
+
+  @media (min-width: 1920px) {
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 2560px) {
     padding: 2rem;
+  }
+
+  @media (min-width: 3840px) {
+    padding: 2.5rem;
   }
 `;
 
@@ -313,29 +339,6 @@ export const CalendarGrid = styled.div`
   }
 `;
 
-// export const CalendarDay = styled.div`
-//   text-align: center;
-//   padding: 0.5rem;
-//   border-radius: 6px;
-//   font-size: clamp(0.7rem, 1vw, 1rem);
-
-//   background: ${({ isToday, isSunday }) =>
-//     isToday ? "#3352BA" : isSunday ? "#ffcccc" : "transparent"}; /* light red for Sunday */
-
-//   color: ${({ isToday, isSunday }) =>
-//     isToday ? "#fff" : isSunday ? "#FF2304" : "#000"}; /* dark red text on Sunday */
-
-//   font-weight: ${({ isToday }) => (isToday ? "bold" : "normal")};
-//   cursor: ${({ isHeader }) => (isHeader ? "default" : "pointer")};
-
-//   border: ${({ isSunday, isToday }) =>
-//     isToday ? "none" : isSunday ? "1px solid #FF2304" : "none"}; /* dark red border for Sunday, none for today */
-
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   min-height: 40px;
-// `;
 
 // Employee presence donut + contract expiry
 export const PresenceWrapper = styled.div`
@@ -343,20 +346,37 @@ export const PresenceWrapper = styled.div`
   gap: 1.5rem;
   margin-top: 1rem;
   flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1rem;
+  padding-block: 0.5rem;
 
-  @media (max-width: ${breakpoints.tablet}) {
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    gap: 0.5rem;
+    padding-block: 1rem;
     flex-direction: column;
-    gap: 1rem;
   }
+
+  /* 🟢 1440px and above: wider layouts */
+  @media (min-width: 1440px) {
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+    flex-direction: row;
+  }
+
+  /* 🟢 1920px (TV screens) */
   @media (min-width: ${breakpoints.tv}) {
     gap: 2rem;
     padding-block: 1rem;
   }
+
+  /* 🟢 2560px (Large TV) */
   @media (min-width: ${breakpoints.largeTv}) {
     gap: 4rem;
     padding-block: 2rem;
   }
 `;
+
 
 export const DonutChart = styled.div`
   background: #fff;
@@ -415,6 +435,10 @@ export const EmployeeExpiryWrapper = styled.div`
       font-size: 3rem;
     }
   }
+
+  @media (min-width: 1025px) {
+    order: 2; 
+  }
 `;
 
 export const EmployeeRow = styled.div`
@@ -425,7 +449,7 @@ export const EmployeeRow = styled.div`
   padding: 6px 0;
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: 40px 1fr;
+    /* grid-template-columns: 40px 1fr; */
     gap: 0.3rem;
   }
 
@@ -520,11 +544,49 @@ export const HolidayDate = styled.div`
 export const ChartConatiner = styled.div`
   background: #fff;
   border-radius: 12px;
-  @media (min-width: ${breakpoints.tv}) {
-    width: 450px;
+  margin: 0 auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+
+  /* 📱 Mobile */
+  width: 90%;
+  height: 260px;
+
+  /* 📱 Tablets */
+  @media (min-width: 768px) {
+    width: 40%;
+    height: 320px;
   }
-  @media (min-width: ${breakpoints.largeTv}) {
-    width: 550px;
+
+  /* 💻 Desktops / 1080p */
+  @media (min-width: 1024px) {
+    width: 450px;
+    height: 300px;
+      order: 1;
+  }
+@media (min-width: 1440px) {
+    width: 300px;
+    height: 450px;
+  }
+  /* 🖥️ 2K Displays */
+  @media (min-width: 1920px) {
+    width: 500px;
+    height: 450px;
+  }
+
+  /* 🖥️ QHD (2.5K) */
+  @media (min-width: 2560px) {
+    width: 600px;
+    height: 520px;
+  }
+
+  /* 🖥️ 4K Ultra HD */
+  @media (min-width: 3840px) {
+    width: 800px;
+    height: 700px;
   }
 `;
 
@@ -566,3 +628,30 @@ export const CalendarDay = styled.div`
     font-size: 2rem;
   }
 `;
+export const UpcomingHolidaySection = styled.div`
+  /* background: #fff; */
+  /* border-radius: 12px; */
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); */
+  padding: 1rem 1.2rem;
+  margin-top: 1.5rem;
+  transition: 0.3s ease all;
+
+  @media (max-width: 768px) {
+    width: 50%;
+    margin-top: 0;
+    padding: 0.8rem;
+  }
+
+  @media (min-width: 1920px) {
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    padding: 2rem;
+  }
+
+  @media (min-width: 3840px) {
+    padding: 2.5rem;
+  }
+`;
+

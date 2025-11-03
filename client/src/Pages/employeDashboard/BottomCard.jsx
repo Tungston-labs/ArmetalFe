@@ -27,6 +27,9 @@ import {
   AttendanceSection,
   AttendanceImage,
   Text,
+  TimeWrapper,
+  ClockIcon,
+  TimeText,
 } from "./BottomCard.Styles";
 import NoTasks from "../../assets/daliy.svg"; // for empty tasks
 import NoAttendance from "../../assets/puchtime.svg"; 
@@ -159,21 +162,24 @@ const DailyTaskList = () => {
           <tbody>
   {attendance.length > 0 ? (
     attendance.map((row, index) => (
-      <TableRow key={index}>
-      <TableCell>
-        <span style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
-          {formatTime(row.time_in)}
-          <img src="/images/daily.png" alt="clock" style={{ width: "14px", height: "14px" }} />
-        </span>
-      </TableCell>
-      <TableCell style={{ textAlign: "center", fontWeight: "600" }}>To</TableCell>
-      <TableCell>
-        <span style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
-          <img src="/images/daily.png" alt="clock" style={{ width: "14px", height: "14px" }} />
-          {formatTime(row.time_out)}
-        </span>
-      </TableCell>
-    </TableRow>
+     <TableRow key={index}>
+  <TableCell>
+    <TimeWrapper>
+      <TimeText>{formatTime(row.time_in)}</TimeText>
+      <ClockIcon src="/images/daily.png" alt="clock" />
+    </TimeWrapper>
+  </TableCell>
+
+  <TableCell style={{ textAlign: "center", fontWeight: "600" }}>To</TableCell>
+
+  <TableCell>
+    <TimeWrapper >
+      <ClockIcon src="/images/daily.png" alt="clock" />
+      <TimeText>{formatTime(row.time_out)}</TimeText>
+    </TimeWrapper>
+  </TableCell>
+</TableRow>
+
     
     ))
   ) : (

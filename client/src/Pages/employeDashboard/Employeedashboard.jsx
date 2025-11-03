@@ -103,8 +103,8 @@ const infoCards = [
   },
   {
     title: employeeDashData?.attendance_summary?.monthly_working_hours,
-    subtitle: "Weekly Logged Hours",
-    label: "Monthly working hour",
+    subtitle: " Logged Hours",
+    label: "Monthly  ",
     icon: LeaveIcon,
   },
 ];

@@ -347,6 +347,7 @@ const PayrollTable = () => {
                   />
                 </Th>
                 <Th>Sl No</Th>
+                   <Th>Name</Th>
                 <Th>Employee ID</Th>
                 <Th>Job Position</Th>
                 <Th>Joining Date</Th>
@@ -373,6 +374,7 @@ const PayrollTable = () => {
                       />
                     </Td>
                     <Td>{(page - 1) * 10 + index + 1}</Td>
+                         <Td>{emp.employee_name}</Td>
                     <Td>{emp.employee_id}</Td>
                     <Td
                       style={{
