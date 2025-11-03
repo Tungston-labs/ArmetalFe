@@ -376,9 +376,6 @@ class AttendanceDetailByDateView(APIView):
         except Attendance.DoesNotExist:
             return Response({'detail': f'No attendance recorded on {selected_date}.'}, status=status.HTTP_404_NOT_FOUND)
 
-    
-
-
 
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
@@ -390,13 +387,13 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         attendance_id = kwargs.get('id')
         date_str = request.query_params.get('date')
 
-        # Get base attendance record (the one user originally opened)
+        # ✅ Base attendance record (for employee context)
         try:
-            base_attendance = Attendance.objects.get(id=attendance_id)
+            base_attendance = Attendance.objects.select_related('employee').get(id=attendance_id)
         except Attendance.DoesNotExist:
             return Response({"error": "Attendance not found"}, status=404)
 
-        # ✅ If ?date= is provided, find the record for that date for the same employee
+        # ✅ If ?date= provided → get record for that employee/date
         if date_str:
             try:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
@@ -408,19 +405,29 @@ class AttendanceAdminDetailView(RetrieveAPIView):
                 date=date_obj
             ).first()
 
+            # ⚠️ If no attendance found for that date, still return basic info
             if not attendance:
-                return Response(
-                    {"message": f"No attendance found for {date_obj}"},
-                    status=404
-                )
+                serializer = self.get_serializer(base_attendance)
+                data = serializer.data
+
+                # Wipe out time/session info (make it clear this date has no attendance)
+                data.update({
+                    "date": str(date_obj),
+                    "sessions": [],
+                    "total_hours": None,
+                    "status": "Absent",
+                    "note": f"No attendance available for {date_obj}"
+                })
+
+                return Response(data, status=200)
 
             serializer = self.get_serializer(attendance)
             return Response(serializer.data)
 
-        # Default behavior → fetch by attendance ID
+        # ✅ Default → show normal attendance by ID
         serializer = self.get_serializer(base_attendance)
         return Response(serializer.data)
-   
+
 
 
 from rest_framework.views import APIView

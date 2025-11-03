@@ -521,8 +521,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # attendance detail view(hr admin)
 
 ###
-GET http://178.248.112.16:8001/api/admin/attendance/31/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1Njk0Njg5LCJpYXQiOjE3NTU2OTEwODksImp0aSI6ImQyNzAzZTg1ZmQ0NjRlNDlhMmViNmFmYzM5NjVmN2EyIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.Jaj-6CLHis1GLtjfHuKdbWkUwYCdf1hTWXmDL_xbJgE
+# GET http://178.248.112.16:8001/api/admin/attendance/31/
+GET http://178.248.112.16:8001/api/admin/attendance/156/?date=2025-11-02
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMTUyNTk2LCJpYXQiOjE3NjIxNDg5OTYsImp0aSI6IjdiYjU2OTgzNmNjNjQ5YTRiY2JmMTkzNDY5OTM5ZjY0IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.J8Z9bOf_WAaoupZ8v0RVywdM8uJfGBSSqbM5WI0YOSs
 # --------------PUBLIC HOLIDAY ----------------------------------
 
 ### Create Holiday
