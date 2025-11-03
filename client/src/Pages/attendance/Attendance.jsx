@@ -99,21 +99,25 @@ const TimesheetPage = () => {
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
   const today = new Date();
 
-  // ✅ Week Calculation
-  const getWeekDays = (dateStr) => {
-    if (!dateStr) return [];
-    const baseDate = new Date(dateStr);
-    const startOfWeek = new Date(baseDate);
-    const dow = baseDate.getDay();
-    const mondayOffset = dow === 0 ? -6 : 1 - dow;
-    startOfWeek.setDate(baseDate.getDate() + mondayOffset);
+ // ✅ Include Sunday (7 days total)
+const getWeekDays = (dateStr) => {
+  if (!dateStr) return [];
+  const baseDate = new Date(dateStr);
 
-    return Array.from({ length: 6 }, (_, i) => {
-      const d = new Date(startOfWeek);
-      d.setDate(startOfWeek.getDate() + i);
-      return d;
-    });
-  };
+  // Find Monday of the current week
+  const startOfWeek = new Date(baseDate);
+  const day = baseDate.getDay();
+  const mondayOffset = day === 0 ? -6 : 1 - day;
+  startOfWeek.setDate(baseDate.getDate() + mondayOffset);
+
+  // Generate 7 days (Mon–Sun)
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    return d;
+  });
+};
+
 
   const weekDays = selectedDate ? getWeekDays(selectedDate) : [];
   const monthNames = [
