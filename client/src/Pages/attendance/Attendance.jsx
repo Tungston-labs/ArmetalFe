@@ -33,17 +33,33 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import Loader from '../../Components/Loader';
 
 const TimesheetPage = () => {
-  const { id } = useParams(); // <-- attendance id
+  const { id } = useParams(); // attendance ID
   const dispatch = useDispatch();
   const navigate = useNavigate();
-console.log("id====>",id)
-  const { attendanceDetail, detailLoading } = useSelector(
+
+  const { attendanceDetail, detailLoading, error } = useSelector(
     (state) => state.attendance
   );
 
   const [selectedDate, setSelectedDate] = useState('');
-  //dispatch(getAttendanceDetail(id))
-  // format times
+
+  // ✅ Fetch attendance data by ID & date
+  useEffect(() => {
+    if (id && selectedDate) {
+      dispatch(getAttendanceDetail({ id, date: selectedDate }));
+    } else if (id) {
+      dispatch(getAttendanceDetail({ id }));
+    }
+  }, [id, selectedDate, dispatch]);
+
+  // ✅ Auto set selected date from response (first load)
+  useEffect(() => {
+    if (attendanceDetail?.date) {
+      setSelectedDate(attendanceDetail.date);
+    }
+  }, [attendanceDetail]);
+
+  // ✅ Format time nicely
   const formatTime = (datetimeStr) => {
     if (!datetimeStr) return '---';
     const date = new Date(datetimeStr.replace(' ', 'T'));
@@ -54,27 +70,14 @@ console.log("id====>",id)
     });
   };
 
-useEffect(()=>{
-  console.log("here i'm")
-  dispatch(getAttendanceDetail(id))
-},[])
+  if (detailLoading) return <Loader />;
+  if (error) return <p style={{ color: 'red', textAlign: 'center' }}>Error: {error}</p>;
+  if (!attendanceDetail) return <p style={{ textAlign: 'center' }}>No data found</p>;
 
-  useEffect(() => {
-    
-    if (attendanceDetail?.date) {
-      setSelectedDate(attendanceDetail.date);
-    }
-  }, [attendanceDetail]);
-
-  if (detailLoading) return<Loader/> ;
- // if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
-  if (!attendanceDetail) return <p>No data found</p>;
-
-  // Safely destructure with fallback
   const employee = attendanceDetail?.employee ?? {};
   const sessions = attendanceDetail?.sessions ?? [];
 
-  // helpers for week days
+  // ✅ Week calculation
   const getWeekDays = (dateStr) => {
     if (!dateStr) return [];
     const baseDate = new Date(dateStr);
@@ -92,28 +95,14 @@ useEffect(()=>{
 
   const weekDays = selectedDate ? getWeekDays(selectedDate) : [];
   const monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
   ];
   const dayNames = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
+    'Sunday', 'Monday', 'Tuesday', 'Wednesday',
+    'Thursday', 'Friday', 'Saturday'
   ];
+
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
 
   return (
@@ -121,8 +110,7 @@ useEffect(()=>{
       {/* Header Section */}
       <HeaderSection>
         <InfoGrid>
-         <BackArrow onClick={() => navigate("/employee-on-present")} />
-
+          <BackArrow onClick={() => navigate("/employee-on-present")} />
 
           <div style={{ width: '10%' }}>
             {employee?.profile_pic ? (
@@ -194,7 +182,12 @@ useEffect(()=>{
           const isActive = iso === selectedDate;
           const Component = isActive ? ActiveDayBox : DayBox;
           return (
-            <Component key={i} onClick={() => setSelectedDate(iso)}>
+            <Component
+              key={i}
+              onClick={() => {
+                if (iso !== selectedDate) setSelectedDate(iso);
+              }}
+            >
               <strong>{dayNames[dayDate.getDay()].slice(0, 3)}</strong>
               <div>{dayDate.getDate()}</div>
               <p>{monthNames[dayDate.getMonth()]}</p>
@@ -218,16 +211,11 @@ useEffect(()=>{
               <TableRow key={idx}>
                 <TimeCell>{formatTime(s?.time_in)}</TimeCell>
                 <TimeRange>
-                  <TimeIcon>
-                    <FaClock />
-                  </TimeIcon>
+                  <TimeIcon><FaClock /></TimeIcon>
                   <span>
-                    ..................................... To
-                    .....................................
+                    ..................................... To .....................................
                   </span>
-                  <TimeIcon>
-                    <FaClock />
-                  </TimeIcon>
+                  <TimeIcon><FaClock /></TimeIcon>
                 </TimeRange>
                 <TimeCell>{formatTime(s?.time_out)}</TimeCell>
               </TableRow>
@@ -235,18 +223,17 @@ useEffect(()=>{
           ) : (
             <TableRow>
               <td colSpan={3} style={{ textAlign: 'center' }}>
-                No sessions
+                No sessions found
               </td>
             </TableRow>
           )}
         </tbody>
       </Table>
 
-     <TotalHours>
-  <strong>Total Hours Worked:</strong>{" "}
-  {attendanceDetail?.total_hours_formatted ?? "00:00"} hrs
-</TotalHours>
-
+      <TotalHours>
+        <strong>Total Hours Worked:</strong>{" "}
+        {attendanceDetail?.total_hours_formatted ?? "00:00"} hrs
+      </TotalHours>
     </Container>
   );
 };

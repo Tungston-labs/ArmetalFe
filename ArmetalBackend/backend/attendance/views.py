@@ -378,11 +378,49 @@ class AttendanceDetailByDateView(APIView):
 
     
 
+
+
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
-    lookup_field = 'id'     
+    lookup_field = 'id'
+
+    def get(self, request, *args, **kwargs):
+        attendance_id = kwargs.get('id')
+        date_str = request.query_params.get('date')
+
+        # Get base attendance record (the one user originally opened)
+        try:
+            base_attendance = Attendance.objects.get(id=attendance_id)
+        except Attendance.DoesNotExist:
+            return Response({"error": "Attendance not found"}, status=404)
+
+        # ✅ If ?date= is provided, find the record for that date for the same employee
+        if date_str:
+            try:
+                date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+            except ValueError:
+                return Response({"error": "Invalid date format. Use YYYY-MM-DD"}, status=400)
+
+            attendance = Attendance.objects.filter(
+                employee=base_attendance.employee,
+                date=date_obj
+            ).first()
+
+            if not attendance:
+                return Response(
+                    {"message": f"No attendance found for {date_obj}"},
+                    status=404
+                )
+
+            serializer = self.get_serializer(attendance)
+            return Response(serializer.data)
+
+        # Default behavior → fetch by attendance ID
+        serializer = self.get_serializer(base_attendance)
+        return Response(serializer.data)
+   
 
 
 from rest_framework.views import APIView
