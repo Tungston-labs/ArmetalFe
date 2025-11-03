@@ -100,7 +100,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class EmployeeInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee_db
-        fields = ['id', 'name', 'email', 'employee_id', 'profile_pic', 'department', 'designation']
+        fields = ['id', 'name', 'email', 'employee_id', 'profile_pic', 'department', 'designation','address','dob','gender']
         depth = 1  # if department/designation are foreign keys
 
 class AttendanceDetailSerializer(serializers.ModelSerializer):
