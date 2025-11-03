@@ -65,11 +65,53 @@ const ViewBasic = () => {
   }, [dispatch, departmentList.length]);
 
   useEffect(() => {
-  if (id) {
-    setFormData({}); // optional: prevents showing stale data
-    dispatch(getEmployeeById(id));
+    if (id) {
+      dispatch(getEmployeeById(id));
+    }
+  }, [dispatch, id]);
+
+  // inside your component, before the return statement
+
+console.log("Employee Detail:", employeeDetail);
+console.log("Form Data:", formData);
+console.log("Company Object:", formData.company);
+console.log("Company Country:", formData?.company?.country);
+
+
+useEffect(() => {
+  // Run only when valid employee data is fetched
+  if (!employeeDetail || Object.keys(employeeDetail).length === 0) return;
+
+  // Compute department ID
+  let deptId = "";
+  if (typeof employeeDetail.department === "string") {
+    const match = departmentList.find((d) => d.name === employeeDetail.department);
+    deptId = match ? match.id : "";
+  } else if (typeof employeeDetail.department === "number") {
+    deptId = employeeDetail.department;
   }
-}, [dispatch, id, location.pathname]);
+
+  const company =
+    employeeDetail.company && typeof employeeDetail.company === "object"
+      ? employeeDetail.company
+      : user?.company || { country: "" };
+
+  const updatedFormData = {
+    ...employeeDetail,
+    department: deptId,
+    total_leave: employeeDetail.total_leave || "",
+    contract_expiry_date: employeeDetail.contract_expiry_date || "",
+    role: employeeDetail.role || "",
+    idcard: employeeDetail.idcard || "",
+    company,
+    aadar_number: employeeDetail.aadar_number || employeeDetail.aadhaar_number || "",
+  };
+
+  setFormData((prev) => {
+    const same = JSON.stringify(prev) === JSON.stringify(updatedFormData);
+    return same ? prev : updatedFormData;
+  });
+}, [employeeDetail, departmentList, user]);
 
   // Populate formData from employee details
   useEffect(() => {
@@ -100,6 +142,7 @@ const ViewBasic = () => {
        setIsEdited(false);
     }
   }, [employeeDetail, departmentList, user]);
+
 
   // Handle input change
   const handleChange = (e) => {

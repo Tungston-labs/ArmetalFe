@@ -135,7 +135,7 @@ useEffect(()=>{
           <div
             style={{
               display: 'flex',
-              width: '90%',
+              width: '100%',
               justifyContent: 'space-between',
             }}
           >

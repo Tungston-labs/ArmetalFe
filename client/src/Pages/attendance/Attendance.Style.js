@@ -42,11 +42,47 @@ export const HeaderSection = styled.div`
 `;
 
 export const ProfileImage = styled.img`
-  width: clamp(50px, 5vw, 300px);   /* minimum 50px, maximum 300px */
-  height: clamp(50px, 5vw, 300px);  /* keeps image square */
-  border-radius: clamp(5%, 5vw, 20%); /* corners scale proportionally */
+  width: 65px;
+  height: 65px;
   object-fit: cover;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  /* 📱 Small screens (mobiles) */
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* 💻 Medium screens (tablets & small laptops) */
+  @media (max-width: 1024px) and (min-width: 481px) {
+    width: 70px;
+    height: 80px;
+  }
+
+  /* 🖥️ Large screens (1080p - standard desktops) */
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    width: 80px;
+    height: 100px;
+  }
+@media (min-width: 1441px) and (max-width: 1920px) {
+    width: 120px;
+    height: 120px;
+  }
+  /* 🖥️ Ultra-wide / 4K displays */
+@media (min-width: 1921px) and (max-width: 2560px) {
+    width: 170px;
+    height: 170px;
+  }
+  @media (min-width: 2561px) and (max-width: 3840px) {
+    width: 250px;
+    height: 250px;
+  }
 `;
+
 
 
 export const InputGroup = styled.div`
@@ -474,12 +510,12 @@ export const DateDetails = styled.div`
   @media (max-width: 768px) {
     position: static;
     transform: none;
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: center;
     gap: 12px;
 
     .date-block {
-      flex-direction: column;
+      /* flex-direction: column; */
       gap: 8px;
     }
 
