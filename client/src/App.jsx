@@ -5,7 +5,7 @@ import Layout from "./Components/Layout";
 import Department from "./Pages/department/Department";
 // import Dashboard from "./Pages/dashboard/Dashboard";
 import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
-import Table from "./Components/Table.jsx";
+
 import EmployeeList from "./Pages/leaveDetails/EmployeeList.jsx";
 import Holiday from "./Pages/holiday/Holiday.jsx";
 import Payroll from "./Pages/payroll/Payroll.jsx";
@@ -52,8 +52,7 @@ import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
 import FieldShift from "./Pages/Shift/FieldShift.jsx"
 import FieldDepartment from "./Pages/Shift/FieldDepartment.jsx"
 import FieldInfo from "./Pages/Shift/FieldInfo.jsx";
-import Header from "./Components/Header.jsx";
-
+import JobDetails from "./Components/JobDetails.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -87,7 +86,6 @@ function App() {
             <Route path="/departments/:id" element={<DepartmentDetails />} />
             <Route path="/employee" element={<EmployeeList />} />
             <Route path="superadmin/view/:id" element={<Viewpage />} />
-            <Route path="/table" element={<Table />} />
             <Route path="/holiday" element={<Holiday />} />
             <Route path="/payrolldetails/:id" element={<Payroll />} />
             <Route path="/payrolldetails" element={<PayrollFinal />} />
@@ -131,9 +129,9 @@ function App() {
             <Route path="/project-department/:id/" element={<FieldDepartment />} />
 <Route path="/project/:id" element={<FieldInfo />} />
             <Route path="/card" element={<Dashboard />}/>
-            <Route path="/header" element={<Header/>} />
-
-
+            
+<Route path="/job" element={<JobDetails />}></Route>
+            
           </Route>
         </Route>
       </Routes>

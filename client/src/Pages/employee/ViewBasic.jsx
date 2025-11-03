@@ -2,26 +2,17 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Header,
-  LeftSection,
-  RightSection,
-  Textarea,
+  Headers,
   EditButton,
-  Row,
   Tabs,
   Tab,
   Section,
   GroupLabel,
-  Rows,
   Input,
   Select,
   Hr,
-  Button,
-  ProfileImage,
   Rowes,
-  ImageColumn,
   Title,
-  FormWrapper,
   Subtitle,
   Rightside,
   HeaderWrapper,
@@ -29,22 +20,19 @@ import {
   Column,
   FullPageLoaderWrapper,
   FieldGroup,
-  FieldWrapper,
-  FieldWrappers,
   EmployeeImage,
   ResponsiveH3,
 } from "./ViewBasic.Style";
 import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmployeeById, submitEmployee } from "../../Redux/employeeSlice";
-import { PiUserCirclePlusThin } from "react-icons/pi";
 import { NavLink, useLocation, useParams, useNavigate } from "react-router-dom";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { getDepartments } from "../../Redux/departmentSlice";
 import Loader from "../../Components/Loader";
 import { Label } from "./BasicLevel.Styles";
 import Swal from "sweetalert2";
-
+import Header from "../../Components/Header";
 const ViewBasic = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -69,9 +57,6 @@ const ViewBasic = () => {
       dispatch(getEmployeeById(id));
     }
   }, [dispatch, id]);
-
-  // inside your component, before the return statement
-
 console.log("Employee Detail:", employeeDetail);
 console.log("Form Data:", formData);
 console.log("Company Object:", formData.company);
@@ -79,10 +64,8 @@ console.log("Company Country:", formData?.company?.country);
 
 
 useEffect(() => {
-  // Run only when valid employee data is fetched
   if (!employeeDetail || Object.keys(employeeDetail).length === 0) return;
 
-  // Compute department ID
   let deptId = "";
   if (typeof employeeDetail.department === "string") {
     const match = departmentList.find((d) => d.name === employeeDetail.department);
@@ -113,7 +96,6 @@ useEffect(() => {
   });
 }, [employeeDetail, departmentList, user]);
 
-  // Populate formData from employee details
   useEffect(() => {
     if (employeeDetail && Object.keys(formData).length === 0) {
       let deptId = "";
@@ -144,18 +126,17 @@ useEffect(() => {
   }, [employeeDetail, departmentList, user]);
 
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));  
       setIsEdited(true); 
   };
 
-  // Handle form submit
+
   const handleSubmit = async () => {
     let payload = { ...formData };
 
-    // Remove empty fields
+
     Object.keys(payload).forEach((key) => {
       if (payload[key] === "" || payload[key] === null || payload[key] === undefined) {
         delete payload[key];
@@ -164,7 +145,7 @@ useEffect(() => {
 
     const country = formData?.company?.country;
 
-    // Country-specific validations
+   
     if (country === "IN") {
       delete payload.iqama_number;
       delete payload.insurance_number;
@@ -235,9 +216,9 @@ const handleTabNavigation = (path) => {
   }
 
   return (
+    <>
     <Container>
-      {/* Header */}
-      <Header>
+      <Headers>
         <HeaderWrapper>
           <TitleSection>
            <LuArrowLeft
@@ -255,116 +236,11 @@ const handleTabNavigation = (path) => {
         <Rightside>
           <EditButton onClick={handleSubmit}>Save</EditButton>
         </Rightside>
-      </Header>
+      </Headers>
 
       <Hr />
       <ResponsiveH3>Employee Details</ResponsiveH3>
-
-      {/* Form */}
-      <FormWrapper>
-        <ImageColumn style={{ position: "relative" }}>
-          {formData.profile_pic ? (
-            <ProfileImage
-              src={
-                formData.profile_pic instanceof File
-                  ? URL.createObjectURL(formData.profile_pic)
-                  : formData.profile_pic
-              }
-              alt="Profile"
-            />
-          ) : (
-            <div
-              style={{
-                width: "10rem",
-                height: "10rem",
-                borderRadius: "10%",
-                backgroundColor: "#f0f0f0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <PiUserCirclePlusThin size={100} color="#ccc" />
-            </div>
-          )}
-
-          <input
-            type="file"
-            name="profile_pic"
-            accept="image/*"
-            id="profilePicInput"
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, profile_pic: e.target.files[0] }))
-            }
-            style={{ display: "none" }}
-          />
-          <label
-            htmlFor="profilePicInput"
-            style={{
-              position: "absolute",
-              bottom: 10,
-              right: 10,
-              backgroundColor: "#007bff",
-              color: "#fff",
-              borderRadius: "50%",
-              width: 30,
-              height: 30,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 20,
-              cursor: "pointer",
-            }}
-          >
-            +
-          </label>
-        </ImageColumn>
-
-        {/* Basic Info */}
-        <Row>
-          <LeftSection>
-            <FieldWrapper>
-              <Label>Name</Label>
-              <Input name="name" value={formData.name || ""} onChange={handleChange} />
-            </FieldWrapper>
-
-            <FieldWrapper>
-              <Label>Employee ID</Label>
-              <Input name="employee_id" value={formData.employee_id || ""} readOnly />
-            </FieldWrapper>
-
-            <FieldWrapper>
-              <Label>Email</Label>
-              <Input name="email" value={formData.email || ""} onChange={handleChange} />
-            </FieldWrapper>
-          </LeftSection>
-
-          <RightSection>
-            <FieldWrapper>
-              <Label>Address</Label>
-              <Textarea name="address" value={formData.address || ""} onChange={handleChange} />
-            </FieldWrapper>
-
-            <Rows>
-              <FieldWrappers>
-                <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
-                  <Label>Date of Birth</Label>
-                  <Input name="dob" value={formData.dob || ""} onChange={handleChange} />
-                </FieldWrapper>
-
-                <FieldWrapper style={{ flex: 1 }}>
-                  <Label>Gender</Label>
-                  <Input name="gender" value={formData.gender || ""} onChange={handleChange} />
-                </FieldWrapper>
-              </FieldWrappers>
-            </Rows>
-          </RightSection>
-        </Row>
-      </FormWrapper>
-
-      <Hr />
-
-      {/* Job & Legal Info */}
+  <Header employee={formData} />
       <Section>
         <Tabs>
           <NavLink to={`/ViewBasic/${id}`} style={{ textDecoration: "none" }}>
@@ -537,6 +413,7 @@ const handleTabNavigation = (path) => {
         </Column>
       </Section>
     </Container>
+      </>
   );
 };
 

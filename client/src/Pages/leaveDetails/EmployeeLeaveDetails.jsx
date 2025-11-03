@@ -28,7 +28,7 @@ import {
   BackArrow,
   ProfileImageWrapper
 } from "./EmployeeLeaveDetails.Styles";
-import { LuArrowLeft } from "react-icons/lu";
+import Header from "../../Components/Header";
 import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
@@ -88,6 +88,8 @@ const EmployeeLeaveForm = () => {
   // const isPaidLeave = pendingLeaves === 0;
 
   return (
+    <>
+ 
     <Container>
       <TitleSection style={{ color: "#3250B5" }}>
         <BackArrow onClick={() => navigate("/employee-leave-request")} />
@@ -99,8 +101,8 @@ const EmployeeLeaveForm = () => {
       </TitleSection>
 
       <Hr />
-
-      <InfoGrid>
+   <Header employee={employee}/>
+      {/* <InfoGrid>
         <ProfileImageWrapper>
           <ProfileImage src={employee.profile_pic} alt="Employee" />
         </ProfileImageWrapper>
@@ -122,7 +124,7 @@ const EmployeeLeaveForm = () => {
         </div>
       </InfoGrid>
 
-      <Hr />
+      <Hr /> */}
 
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
@@ -190,6 +192,7 @@ const EmployeeLeaveForm = () => {
         />
       )}
     </Container>
+    </>
   );
 };
 

@@ -6,7 +6,7 @@ export const Container = styled.div`
   font-family: Satoshi;
 `;
 
-export const Header = styled.div`
+export const Headers = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;

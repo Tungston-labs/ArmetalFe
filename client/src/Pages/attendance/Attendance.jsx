@@ -31,7 +31,7 @@ import {
 import { FaClock } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Loader from '../../Components/Loader';
-
+import Header from '../../Components/Header';
 const TimesheetPage = () => {
   const { id } = useParams(); // <-- attendance id
   const dispatch = useDispatch();
@@ -54,10 +54,10 @@ console.log("id====>",id)
     });
   };
 
-useEffect(()=>{
-  console.log("here i'm")
-  dispatch(getAttendanceDetail(id))
-},[])
+useEffect(() => {
+  console.log('fetch attendance for id', id);
+  dispatch(getAttendanceDetail(id));
+}, [dispatch, id]);
 
   useEffect(() => {
     
@@ -117,6 +117,8 @@ useEffect(()=>{
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
 
   return (
+    <>
+    <Header employee={employee}/>
     <Container>
       {/* Header Section */}
       <HeaderSection>
@@ -248,6 +250,7 @@ useEffect(()=>{
 </TotalHours>
 
     </Container>
+    </>
   );
 };
 
