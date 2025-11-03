@@ -43,7 +43,7 @@ export const LeftSection = styled.div`
 
 export const RightSection = styled.div`
   flex: 1 1 27%;
-  min-width: 350px;
+  /* min-width: 350px; */
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -346,17 +346,28 @@ export const PresenceWrapper = styled.div`
   gap: 1.5rem;
   margin-top: 1rem;
   flex-wrap: wrap;
-  flex-direction: column;
+  /* flex-direction: column; */
   gap: 1rem;
   padding-block: 0.5rem;
 
 
-  @media (min-width: 768px) and (max-width: 1024px) {
+@media (max-width: 768px) {
+    gap: 0.5rem;
+    padding-block: 1rem;
+    /* flex-direction: column; */
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
     gap: 0.5rem;
     padding-block: 1rem;
     flex-direction: column;
   }
 
+   @media (min-width: 1025px) and (max-width: 1440px) {
+    gap: 0.5rem;
+    padding-block: 1rem;
+    flex-direction: column;
+  }
   /* 🟢 1440px and above: wider layouts */
   @media (min-width: 1440px) {
     gap: 1.5rem;
@@ -560,10 +571,15 @@ export const ChartConatiner = styled.div`
     width: 40%;
     height: 320px;
   }
+    @media (min-width: 769px) and (max-width: 1024px) {
+    width: 100%;
+    height: 320px;
+  }
+
 
   /* 💻 Desktops / 1080p */
-  @media (min-width: 1024px) {
-    width: 450px;
+  @media (min-width: 1025px)  and (max-width: 1439px) {
+     width: 100%;
     height: 300px;
       order: 1;
   }

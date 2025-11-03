@@ -80,14 +80,14 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
 
     if (width < 768) setSliceCount(3);            // 📱 Mobile
     else if (width < 1024) setSliceCount(6);     
-        else if (width < 1440) setSliceCount(3);  // 💻 Tablet
-    else if (width < 1920) setSliceCount(5);      // 🖥️ Desktop
-    else if (width < 2560) setSliceCount(6);      // 🖥️ 2K Monitor
+        else if (width < 1440) setSliceCount(3);  
+    else if (width < 1920) setSliceCount(5);     
+    else if (width < 2560) setSliceCount(6);      
     else setSliceCount(8);        
     
       if (width < 768) setHolidaySliceCount(2);
-      else if (width < 1024) setHolidaySliceCount(4);
-            else if (width < 1440) setHolidaySliceCount(6);
+      else if (width < 1024) setHolidaySliceCount(10);
+            else if (width < 1440) setHolidaySliceCount(5);
       else if (width < 1920) setHolidaySliceCount(4);
       else if (width < 2560) setHolidaySliceCount(4);
       else setHolidaySliceCount(4);

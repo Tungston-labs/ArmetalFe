@@ -52,6 +52,7 @@ import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
 import FieldShift from "./Pages/Shift/FieldShift.jsx"
 import FieldDepartment from "./Pages/Shift/FieldDepartment.jsx"
 import FieldInfo from "./Pages/Shift/FieldInfo.jsx";
+import Header from "./Components/Header.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -130,7 +131,9 @@ function App() {
             <Route path="/project-department/:id/" element={<FieldDepartment />} />
 <Route path="/project/:id" element={<FieldInfo />} />
             <Route path="/card" element={<Dashboard />}/>
-            
+            <Route path="/header" element={<Header/>} />
+
+
           </Route>
         </Route>
       </Routes>
