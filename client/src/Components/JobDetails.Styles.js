@@ -36,7 +36,7 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   width: 100%;
-  padding: 10px 12px;
+  padding: 11px 12px;
   border: 1px solid #052db4;
   border-radius: 6px;
   font-size: 15px;
@@ -105,3 +105,18 @@ export const NextButton = styled.button`
   }
 `;
 
+export const ErrorText = styled.p`
+  color: red;
+  font-size: clamp(0.7rem, 0.8vw, 1rem); 
+  margin-bottom: 0.3rem;
+
+  /* Larger screens (4K) */
+  @media (min-width: 3840px) {
+    font-size: 1.8rem;
+  }
+
+  /* Ultra large screens (8K) */
+  @media (min-width: 7680px) {
+    font-size: 2rem;
+  }
+`;
