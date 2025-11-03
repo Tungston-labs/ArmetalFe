@@ -108,6 +108,9 @@ class LeaveRequestCancelView(generics.DestroyAPIView):
 
 
 # ✅ HR: Leave List View
+
+
+
 class LeaveRequestAdminListView(generics.ListAPIView):
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
@@ -123,9 +126,16 @@ class LeaveRequestAdminListView(generics.ListAPIView):
             return LeaveRequest.objects.none()
 
         queryset = LeaveRequest.objects.filter(employee__department__company=company)
+
+        # ✅ Department filter
         dept_id = self.request.query_params.get('department_id')
         if dept_id:
             queryset = queryset.filter(employee__department_id=dept_id)
+
+        # ✅ Status filter (fix)
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
 
         return queryset.order_by('-created_at')
 
