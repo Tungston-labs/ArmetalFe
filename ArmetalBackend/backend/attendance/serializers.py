@@ -103,8 +103,6 @@ class EmployeeInfoSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'email', 'employee_id', 'profile_pic', 'department', 'designation']
         depth = 1  # if department/designation are foreign keys
 
-
-
 class AttendanceDetailSerializer(serializers.ModelSerializer):
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
     employee = EmployeeInfoSerializer(read_only=True)
@@ -125,9 +123,36 @@ class AttendanceDetailSerializer(serializers.ModelSerializer):
         return self.format_hours(obj.total_hours)
 
     def get_weekly_hours_formatted(self, obj):
-        """Sum hours for the week of obj.date for that employee"""
-        week_start = obj.date - timedelta(days=obj.date.weekday())  # Monday
-        week_end = week_start + timedelta(days=6)
+        """
+        Calculate hours within the same month-based week.
+        Example: Week 1 = 1-7, Week 2 = 8-14, etc.
+        """
+        day = obj.date.day
+        month_start = obj.date.replace(day=1)
+
+        # Determine week block
+        if day <= 7:
+            week_start = month_start
+            week_end_day = 7
+        elif day <= 14:
+            week_start = month_start.replace(day=8)
+            week_end_day = 14
+        elif day <= 21:
+            week_start = month_start.replace(day=15)
+            week_end_day = 21
+        elif day <= 28:
+            week_start = month_start.replace(day=22)
+            week_end_day = 28
+        else:
+            week_start = month_start.replace(day=29)
+            # Handle variable month length
+            if month_start.month == 12:
+                next_month_start = month_start.replace(year=month_start.year + 1, month=1, day=1)
+            else:
+                next_month_start = month_start.replace(month=month_start.month + 1, day=1)
+            week_end_day = (next_month_start - timedelta(days=1)).day
+
+        week_end = month_start.replace(day=week_end_day)
 
         total = Attendance.objects.filter(
             employee=obj.employee,
@@ -139,7 +164,7 @@ class AttendanceDetailSerializer(serializers.ModelSerializer):
     def get_monthly_hours_formatted(self, obj):
         """Sum hours for the month of obj.date for that employee"""
         month_start = obj.date.replace(day=1)
-        # Get next month's first day, subtract a day to get last of current month
+
         if month_start.month == 12:
             next_month_start = month_start.replace(year=month_start.year + 1, month=1, day=1)
         else:
@@ -160,6 +185,7 @@ class AttendanceDetailSerializer(serializers.ModelSerializer):
         h = int(hours)
         m = int(round((hours - h) * 60))
         return f"{h:02d}:{m:02d}"
+
 
 
 class AttendanceLocationSerializer(serializers.Serializer):

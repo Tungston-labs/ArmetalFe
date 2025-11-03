@@ -31,6 +31,8 @@ import {
 import { FaClock } from "react-icons/fa";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Loader from "../../Components/Loader";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const TimesheetPage = () => {
   const { id } = useParams();
@@ -53,10 +55,11 @@ const TimesheetPage = () => {
           getAttendanceDetail({ attendanceId: id, date: selectedDate })
         );
 
-        if (result?.error) {
+        if (result?.error || result?.payload?.note) {
           const message =
-            result?.error?.message ||
+            result?.payload?.note ||
             result?.payload?.message ||
+            result?.error?.message ||
             "No attendance available for this date";
           setNoAttendanceMessage(message);
         } else if (result?.payload?.sessions?.length === 0) {
@@ -72,9 +75,9 @@ const TimesheetPage = () => {
     fetchData();
   }, [id, selectedDate, dispatch]);
 
-  // ✅ Set initial selected date
+  // ✅ Initialize selectedDate only once (when first data loads)
   useEffect(() => {
-    if (attendanceDetail?.date) {
+    if (!selectedDate && attendanceDetail?.date) {
       setSelectedDate(attendanceDetail.date);
     }
   }, [attendanceDetail]);
@@ -96,7 +99,7 @@ const TimesheetPage = () => {
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
   const today = new Date();
 
-  // Week Calculation
+  // ✅ Week Calculation
   const getWeekDays = (dateStr) => {
     if (!dateStr) return [];
     const baseDate = new Date(dateStr);
@@ -114,35 +117,22 @@ const TimesheetPage = () => {
 
   const weekDays = selectedDate ? getWeekDays(selectedDate) : [];
   const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
   ];
   const dayNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+    "Sunday", "Monday", "Tuesday", "Wednesday",
+    "Thursday", "Friday", "Saturday",
   ];
 
+  // ✅ Navigate previous date
   const handlePreviousDay = () => {
     const prevDate = new Date(selectedDateObj);
     prevDate.setDate(prevDate.getDate() - 1);
     setSelectedDate(prevDate.toISOString().split("T")[0]);
   };
 
+  // ✅ Navigate next date (disabled for future)
   const handleNextDay = () => {
     const nextDate = new Date(selectedDateObj);
     nextDate.setDate(nextDate.getDate() + 1);
@@ -212,14 +202,35 @@ const TimesheetPage = () => {
             style={{ cursor: "pointer" }}
             onClick={handlePreviousDay}
           />
-          <div className="date-block">
-            <CiCalendarDate size={28} />
-            <h1>{selectedDateObj.getDate()}</h1>
+
+          {/* ✅ React DatePicker */}
+          <div className="date-block" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <DatePicker
+              selected={selectedDateObj}
+              onChange={(date) => {
+                if (date > today) {
+                  setNoAttendanceMessage("No attendance available for this date");
+                  return;
+                }
+                setSelectedDate(date.toISOString().split("T")[0]);
+              }}
+              dateFormat="yyyy-MM-dd"
+              maxDate={today}
+              customInput={
+                <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                  <CiCalendarDate size={28} />
+                  <h1 style={{ marginLeft: "5px" }}>
+                    {selectedDateObj.getDate() || "--"}
+                  </h1>
+                </div>
+              }
+            />
             <div className="month-day">
               <strong>{monthNames[selectedDateObj.getMonth()]}</strong>
               <p>{dayNames[selectedDateObj.getDay()]}</p>
             </div>
           </div>
+
           <GoChevronRight
             size={28}
             style={{
