@@ -14,7 +14,7 @@ import {
 } from "./Sample.Styles";
 import InCompanyIcon from "../../assets/clock.svg";
 import SalaryIcon from "../../assets/salary.svg";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PendingIcon from "../../assets/pending.svg";
 import LeaveIcon from "../../assets/leave.svg";
 import TimeIcon from "../../assets/time.svg";
@@ -30,6 +30,8 @@ const Dashboard = () => {
   console.log("Employee ID from route:", employeeId);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from;
   const { employeeDashData, loadingEmployeeDash, employeeDashError } =
     useSelector((state) => state.auth);
   const BASE_URL = "http://178.248.112.16:8001";
@@ -65,8 +67,11 @@ const Dashboard = () => {
                 <FaEdit
                   className="edit-icon"
                   style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/ViewBasic/${employeeId}`)}
+                  onClick={() =>
+                    navigate(`/ViewBasic/${employeeId}`, { state: { from: from || "contract" } })
+                  }
                 />
+
               </div>
 
               <div className="details">
@@ -90,11 +95,11 @@ const Dashboard = () => {
                   <strong>
                     {employeeDashData?.bank_details?.employee?.joining_date
                       ? new Date(
-                          employeeDashData.bank_details.employee.joining_date
-                        ).toLocaleDateString(
-                          "en-GB", // DD/MM/YYYY format
-                          { day: "numeric", month: "long", year: "numeric" }
-                        )
+                        employeeDashData.bank_details.employee.joining_date
+                      ).toLocaleDateString(
+                        "en-GB", // DD/MM/YYYY format
+                        { day: "numeric", month: "long", year: "numeric" }
+                      )
                       : "-"}
                   </strong>
                 </p>
