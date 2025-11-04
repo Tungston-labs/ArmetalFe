@@ -138,20 +138,42 @@ const EmployeeLeaveForm = () => {
 
       <SectionTitle>Leave Application</SectionTitle>
       <FlexRows>
-        <LeftSide>
-          <Input placeholder="Leave Type" value={leaveDetails?.leave_type || ''} readOnly />
-        </LeftSide>
-        <RightSide>
-          <DateField>
-            <Label>From</Label>
-            <Input type="date" value={leaveDetails?.from_date || ''} readOnly />
-          </DateField>
-          <DateField>
-            <Label>To</Label>
-            <Input type="date" value={leaveDetails?.to_date || ''} readOnly />
-          </DateField>
-        </RightSide>
-      </FlexRows>
+  <LeftSide>
+    <Input placeholder="Leave Type" value={leaveDetails?.leave_type || ''} readOnly />
+  </LeftSide>
+  <RightSide>
+    <DateField>
+      <Label>From</Label>
+      <Input
+  type="text"
+  style={{ width: '180px' }} // or 200px if needed
+  value={
+    leaveDetails?.from_date
+      ? `${leaveDetails.from_date} (${leaveDetails.from_date_type || ''})`
+      : ''
+  }
+  readOnly
+/>
+
+    </DateField>
+    <DateField>
+      <Label>To</Label>
+      <Input
+  type="text"
+  style={{ width: '180px' }} // or 200px if needed
+  value={
+    leaveDetails?.to_date
+      ? `${leaveDetails.to_date} (${leaveDetails.to_date_type || ''})`
+      : ''
+  }
+  readOnly
+/>
+
+    </DateField>
+  </RightSide>
+</FlexRows>
+
+      
 
       {/* 🟢 Pending leave info */}
       <SectionTitle>Leave Balance</SectionTitle>

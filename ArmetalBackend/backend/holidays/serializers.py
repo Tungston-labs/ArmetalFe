@@ -6,7 +6,14 @@ class PublicHolidaySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PublicHoliday
-        fields = ['id', 'description', 'holiday_type', 'holiday_type_display', 'date']
+        fields = [
+            'id',
+            'description',
+            'holiday_type',
+            'holiday_type_display',
+            'date',
+            'day',  
+        ]
 
     def get_holiday_type_display(self, obj):
         return obj.get_holiday_type_display()

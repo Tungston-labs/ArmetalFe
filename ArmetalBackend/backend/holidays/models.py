@@ -1,8 +1,6 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from superadmin.models import Company
+import datetime
 
 class PublicHoliday(models.Model):
     HOLIDAY_TYPES = [
@@ -13,19 +11,30 @@ class PublicHoliday(models.Model):
         ('bank', 'Bank Holiday'),
         ('regional', 'Cultural/Regional Holiday'),
         ('observance', 'Observance/Non-Leave Day'),
+        ('company_off_day', 'Company Off Day'),  # 🆕 new type
     ]
+
     company = models.ForeignKey(
         Company,
-        on_delete=models.CASCADE,null=True,blank=True,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='holidays'
     )
-    date = models.DateField(unique=False)
+    date = models.DateField()
+    day = models.CharField(max_length=20, blank=True, null=True)  # 🆕 auto-calculated
     description = models.CharField(max_length=255)
-    holiday_type = models.CharField(max_length=20, choices=HOLIDAY_TYPES,null=True,blank=True)
-    
+    holiday_type = models.CharField(max_length=20, choices=HOLIDAY_TYPES, null=True, blank=True)
 
     class Meta:
-        unique_together = ('company', 'date') 
-        ordering = ['date'] 
+        unique_together = ('company', 'date')
+        ordering = ['date']
+
+    def save(self, *args, **kwargs):
+        # Auto-fetch day from date (e.g. Monday, Tuesday...)
+        if self.date:
+            self.day = self.date.strftime('%A')  # e.g. Sunday
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.date} - {self.description}"
+        return f"{self.date} ({self.day}) - {self.description}"
