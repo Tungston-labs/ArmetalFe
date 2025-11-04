@@ -328,7 +328,7 @@ const DepartmentDetail = () => {
                   <td>{emp.designation}</td>
                   <td>{department.name}</td>
                   <td>
-                    <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`)}>
+                    <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })}>
                       <GoInfo />
                     </IconButton>
 
