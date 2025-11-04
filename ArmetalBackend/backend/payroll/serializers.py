@@ -27,6 +27,13 @@ class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
 
 
 
+from rest_framework import serializers
+from datetime import date, timedelta
+import calendar
+
+from .models import EmployeePayrollRecord, Attendance, LeaveRequest, PublicHoliday
+
+
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source='employee.name', read_only=True)
     department = serializers.CharField(source='employee.department.name', read_only=True)
@@ -54,14 +61,13 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         )
         holidays = set()
         company_off_days = set()
-
         for h in holidays_qs:
             if h.holiday_type == 'company_off_day':
-                company_off_days.add(h.date.weekday())  # weekday index (0=Mon)
+                company_off_days.add(h.date.weekday())
             else:
                 holidays.add(h.date)
 
-        # --- Working Days ---
+        # --- Working Days (calendar-based, excluding company off days & holidays) ---
         working_days = sum(
             1 for d in range((last_day - first_day).days + 1)
             if (first_day + timedelta(days=d)).weekday() not in company_off_days
@@ -73,7 +79,6 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         attendances = Attendance.objects.filter(employee=employee, date__range=(first_day, last_day))
         total_present_hours = 0
         full_days = half_days = 0
-
         for att in attendances:
             hours = float(att.total_hours or 0)
             total_present_hours += hours
@@ -81,7 +86,6 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                 full_days += 1
             elif 4 <= hours < 8:
                 half_days += 1
-
         days_present = full_days + (half_days * 0.5)
 
         # --- Approved Leave Days ---
@@ -96,10 +100,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             for n in range((end - start).days + 1):
                 approved_leave_dates.add(start + timedelta(days=n))
 
-        # --- Unswiped Days (excluding approved leaves, holidays, and off days) ---
+        # --- Unswiped Days (excluding attendance, approved leaves, holidays, off days) ---
         attendance_dates = {a.date for a in attendances}
         all_days = [(first_day + timedelta(days=i)) for i in range((last_day - first_day).days + 1)]
-
         unswiped_valid_days = [
             d for d in all_days
             if d not in attendance_dates
@@ -112,10 +115,8 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # --- Paid Leave ---
         paid_leave_balance = float(employee.paid_leave or 0.0)
 
-        # ✅ LOP Days = Unswiped days (not covered by approved leave) - Paid leave coverage
-        # Paid leave compensates absence, not adds to LOP.
+        # --- LOP Days (do not round, keep half-days) ---
         lop_days = max(unswiped_days - paid_leave_balance, 0)
-        # lop_days = round(lop_days, 2)
 
         # --- Salary Components ---
         basic_salary = float(instance.basic_salary or 0)
@@ -159,9 +160,10 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             }
         })
 
+        # Remove None entries in deductions
         data['deductions'] = [d for d in data['deductions'] if d is not None]
-        return data
 
+        return data
 
     
 
