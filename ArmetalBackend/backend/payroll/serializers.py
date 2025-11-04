@@ -27,11 +27,6 @@ class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
 
 
 
-from rest_framework import serializers
-from datetime import date, timedelta
-import calendar
-
-from .models import EmployeePayrollRecord, Attendance, LeaveRequest, PublicHoliday
 
 
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
