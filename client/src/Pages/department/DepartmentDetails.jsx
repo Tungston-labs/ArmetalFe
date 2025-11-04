@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
   HeaderSection,
-  TopBar,
   Title,
   ActionArea,
   Subtitle,
@@ -14,15 +13,12 @@ import {
   Input,
   TableWrapper,
   StyledTable,
-  Avatar,
   AddButton,
-  HRManager,
   IconButton,
   TitleSection,
-  DropdownMenu, DropdownWrapper,
   EmployeeImage,
   TextBlock,
-  BackArrow, DeleteButton,
+  BackArrow, 
   ButtonGroup
 } from '../department/DepartmentDetails.Styles';
 import { FaInfoCircle, FaTrash } from 'react-icons/fa';
@@ -32,8 +28,8 @@ import { getEmployeesByDepartment, updateDepartmentById, deleteDepartmentById } 
 import { useNavigate } from 'react-router-dom';
 import { deleteEmployeeById } from '../../Redux/employeeSlice';
 import Employee from "../../assets/employee.svg";
-import { HiArrowLeft } from 'react-icons/hi'; // or another arrow icon of your choice
-import { IoIosArrowDown } from "react-icons/io";
+import { HiArrowLeft } from 'react-icons/hi'; 
+import { FaUserCircle } from "react-icons/fa"; 
 import Navbar from '../../Components/Navbar';
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader"
@@ -96,38 +92,43 @@ const DepartmentDetail = () => {
       }
     });
   };
-  const handleDeleteEmployee = (employeeId, employeeName) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: `Do you want to delete employee "${employeeName}"?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await dispatch(deleteEmployeeById(employeeId)).unwrap();
-          await dispatch(getEmployeesByDepartment(id)); // refresh employee list
-  
-          Swal.fire({
-            title: "Deleted!",
-            text: "Employee has been deleted successfully.",
-            icon: "success",
-            confirmButtonColor: "#3352BA",
-          });
-        } catch (error) {
-          Swal.fire({
-            title: "Failed!",
-            text: "Something went wrong while deleting the employee.",
-            icon: "error",
-            confirmButtonColor: "#3352BA",
-          });
-        }
+ const handleDeleteEmployee = (employeeId, employeeName) => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: `Employee "${employeeName}" will be permanently deleted from the system.`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33", // red
+    cancelButtonColor: "#3085d6", // blue
+    confirmButtonText: "Yes, delete!",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        // Delete employee from the system
+        await dispatch(deleteEmployeeById(employeeId)).unwrap();
+
+        // Refresh the department employee list
+        await dispatch(getEmployeesByDepartment(id));
+
+        // Show confirmation alert
+        Swal.fire({
+          title: "Deleted!",
+          text: `Employee "${employeeName}" has been deleted from the system.`,
+          icon: "success",
+          confirmButtonColor: "#3352BA",
+        });
+      } catch (error) {
+        Swal.fire({
+          title: "Failed!",
+          text: "Something went wrong while deleting the employee.",
+          icon: "error",
+          confirmButtonColor: "#3352BA",
+        });
       }
-    });
-  };
+    }
+  });
+};
+
   
 
   useEffect(() => {
@@ -156,41 +157,54 @@ const DepartmentDetail = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleUpdate = async () => {
-    try {
-      const payload = {
-        ...formData,
-        department_head_id: formData.department_head_id ? parseInt(formData.department_head_id) : null,
-      };
+const handleUpdate = async () => {
+  try {
+    const payload = {
+      ...formData,
+      department_head_id: formData.department_head_id
+        ? parseInt(formData.department_head_id)
+        : null,
+    };
 
-      if (!payload.department_head_id) {
-        Swal.fire({
-          icon: "warning",
-          title: "Missing Department Head",
-          text: "Please select a department head before saving.",
-          confirmButtonColor: "#3352BA",
-        });
-        return;
-      }
-
-      await dispatch(updateDepartmentById({ id, data: payload })).unwrap();
-
+    if (!payload.department_head_id) {
       Swal.fire({
-        icon: "success",
-        title: "Updated!",
-        text: "Department updated successfully.",
+        icon: "warning",
+        title: "Missing Department Head",
+        text: "Please select a department head before saving.",
         confirmButtonColor: "#3352BA",
       });
-
-      setIsEditing(false);
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Update Failed",
-        text: "Something went wrong while updating department.",
-      });
+      return;
     }
-  };
+
+    // Update department in backend
+    await dispatch(updateDepartmentById({ id, data: payload })).unwrap();
+
+    // 🔥 Immediately refetch the updated department details
+    const updatedData = await fetchDepartmentById(id);
+    setDepartment(updatedData);
+    setFormData({
+      name: updatedData.name || "",
+      department_code: updatedData.department_code || "",
+      department_head_id: updatedData.department_head?.id || "",
+    });
+
+    Swal.fire({
+      icon: "success",
+      title: "Updated!",
+      text: "Department updated successfully.",
+      confirmButtonColor: "#3352BA",
+    });
+
+    setIsEditing(false);
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Update Failed",
+      text: "Something went wrong while updating department.",
+    });
+  }
+};
+
 
 
 
@@ -254,6 +268,7 @@ const DepartmentDetail = () => {
               value={formData.name}
               onChange={handleChange}
               disabled={!isEditing}
+              readOnly
             />
           </InputGroup>
           <InputGroup>
@@ -262,7 +277,8 @@ const DepartmentDetail = () => {
               name="department_code"
               value={formData.department_code}
               onChange={handleChange}
-              disabled={!isEditing}
+              // disabled={!isEditing}
+              readOnly
             />
           </InputGroup>
           <InputGroup>
@@ -311,38 +327,58 @@ const DepartmentDetail = () => {
                 <th>Email ID</th>
                 <th>Job Position</th>
                 <th>Department</th>
-                <th>Info</th>
                 <th>Delete</th>
               </tr>
             </thead>
             <tbody>
-              {departmentEmployees.map((emp, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>
-                    <Avatar src={emp.profile_pic ? `http://178.248.112.16:8001${emp.profile_pic}` : 'https://i.pravatar.cc/40'} />
-                    {emp.name}
-                  </td>
-                  <td>{emp.employee_id}</td>
-                  <td>{emp.email}</td>
-                  <td>{emp.designation}</td>
-                  <td>{department.name}</td>
-                  <td>
-                    <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })}>
-                      <GoInfo />
-                    </IconButton>
+  {departmentEmployees.map((emp, index) => (
+    <tr
+      key={index}
+      onClick={() => navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })}
+      style={{
+        cursor: "pointer",
+        transition: "background-color 0.2s ease",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f4f6fa")}
+      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+    >
+      <td>{index + 1}</td>
+      <td style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        {emp.profile_pic ? (
+          <img
+            src={`http://178.248.112.16:8001${emp.profile_pic}`}
+            alt={emp.name}
+            style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              objectFit: "cover",
+            }}
+          />
+        ) : (
+          <FaUserCircle size={32} color="#c9cacc" />
+        )}
+        <span>{emp.name}</span>
+      </td>
+      <td>{emp.employee_id}</td>
+      <td>{emp.email}</td>
+      <td>{emp.designation}</td>
+      <td>{department.name}</td>
+      <td>
+        <IconButton
+          danger
+          onClick={(e) => {
+            e.stopPropagation(); // stop row click
+            handleDeleteEmployee(emp.id, emp.name);
+          }}
+        >
+          <FaTrash />
+        </IconButton>
+      </td>
+    </tr>
+  ))}
+</tbody>
 
-                  </td>
-                  <td>
-                  <IconButton danger onClick={() => handleDeleteEmployee(emp.id, emp.name)}>
-  <FaTrash />
-</IconButton>
-
-
-                  </td>
-                </tr>
-              ))}
-            </tbody>
           </StyledTable>
         </TableWrapper>
      

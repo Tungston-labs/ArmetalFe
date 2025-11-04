@@ -122,22 +122,67 @@ export const Table = styled.table`
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 
+ td {
+  text-align: left;
+  padding: 8px 10px;
+  white-space: nowrap;
+  background-color: white;
+  border: none;
+  font-size: 1rem; /* default for medium screens */
+}
+
+/* Small screens (mobile) */
+@media (max-width: 600px) {
   td {
-    text-align: left;
-    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
-    white-space: nowrap;
-    background-color: white;
-    border: none;
-    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
+    font-size: 0.75rem;
+    padding: 6px 8px;
   }
+}
+
+/* Tablets and small laptops */
+@media (min-width: 601px) and (max-width: 1024px) {
+  td {
+    font-size: 0.9rem;
+    padding: 7px 9px;
+  }
+}
+
+/* Large screens (desktop) */
+@media (min-width: 1025px) {
+  td {
+    font-size: 1rem;
+    padding: 8px 10px;
+  }
+}
+
+/* Extra-large screens (up to 4K) */
+@media (min-width: 1600px) {
+  td {
+    font-size: 1rem;
+    padding: 8px 10px;
+  }
+}
+@media (min-width: 1920px) {
+  td {
+    font-size: 1.1rem;
+    padding: 10px 12px;
+  }
+}
+
+@media (min-width: 2560px) {
+  td {
+    font-size: 1.5rem;
+    padding: 10px 12px;
+  }
+}
 
   th {
     text-align: left;
     background-color: #304eb0;
     color: white;
     font-family: Raleway;
-    padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
-    font-size: clamp(0.9rem, 1vw, 1.8rem); /* responsive font */
+    padding: clamp(6px, 0.5vw, 16px);
+    font-size: clamp(0.9rem, 1vw, 1.8rem); 
   }
 
   tbody tr {
@@ -439,12 +484,12 @@ export const AddButton = styled.button`
   background: #1e3a8a;
   color: white;
   border: none;
-  padding: clamp(0.5rem, 1vw, 1rem) clamp(1rem, 2vw, 2rem);
   border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: clamp(0.3rem, 0.5vw, 1rem);
-  font-size: clamp(0.9rem, 1vw, 1rem);
+  gap: 0.5rem;
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
   cursor: pointer;
   transition: background 0.3s ease;
 
@@ -452,59 +497,91 @@ export const AddButton = styled.button`
     background: #2744a3;
   }
 
-  @media (min-width: 1440px) {
-    font-size: clamp(0.9rem, 0.8vw, 1rem);
-    padding: clamp(0.8rem, 1vw, 1rem) clamp(1.5rem, 2vw, 2rem);
+  /* Large desktops (1440px and up) */
+  @media (min-width: 1440px) and (max-width: 1920px) {
+    font-size: 1.1rem;
+    padding: 0.6rem 1rem;
+    gap: 0.75rem;
   }
-
-  @media (min-width: 2560px) {
-    font-size: 1.5rem;
-    padding: 1rem 3rem;
+ @media (min-width: 1921) and (max-width: 2560px) {
+    font-size: 1.1rem;
+    padding: 0.6rem 1rem;
+    gap: 0.75rem;
+  }
+  /* Ultra-wide (2560px and up) */
+  @media (min-width: 2561px) {
+    font-size: 1.4rem;
+    padding: 1.2rem 3rem;
     gap: 1rem;
   }
 
+  /* 4K and above (3840px and up) */
   @media (min-width: 3840px) {
-    font-size: 2.5rem;
-    padding: 1.3rem 4.5rem;
+    font-size: 2rem;
+    padding: 1.5rem 4rem;
     gap: 1.2rem;
   }
 `;
 
+
 export const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
-  width: 100%;
-  max-width: 450px; /* optional max width */
+  /* width: 100%; */
+  /* max-width: 350px;  */
 `;
 
 export const SearchInput = styled.input`
-  padding: clamp(0.6rem, 1vw, 1.2rem) clamp(1rem, 2vw, 2rem)
-    clamp(0.6rem, 1vw, 1.2rem) clamp(2rem, 4vw, 2.5rem); /* top, right, bottom, left */
+  padding: 0.8rem 1rem;
   border: 1px solid #172554;
   border-radius: 6px;
   width: 100%;
   font-family: "Satoshi";
-  height: clamp(30px, 3vw, 60px);
-  font-size: clamp(0.8rem, 1vw, 1.5rem);
+  height: 30px;
+  font-size: 0.7rem;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
 
-  @media (min-width: 1440px) {
-    font-size: clamp(1rem, 0.8vw, 1.6rem);
-    height: clamp(45px, 2vw, 65px);
+  &:focus {
+    outline: none;
+    border-color: #021e82;
   }
 
-  @media (min-width: 2560px) {
-    /* 2K/4K screens */
+  /* Laptop screens (≥1024px) */
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    padding: 0.8rem 0.9rem;
+    height: 30px;
+    font-size: 0.8rem;
+   
+  }
+
+  /* Large desktops (≥1440px) */
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    padding: 0.9rem 1rem;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  /* Ultra-wide (≥2560px) */
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    padding: 0.9rem 1rem;
+    height: 50px;
     font-size: 1.5rem;
-    height: 60px;
   }
-
+@media (min-width: 2560px) and (max-width: 3839px) {
+    padding: 0.9rem 1rem;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  /* 4K and above (≥3840px) */
   @media (min-width: 3840px) {
-    /* 4K/8K ultra-wide screens */
-    font-size: 2.5rem;
+    padding: 1.5rem 4rem;
     height: 90px;
-    width:auto;
+    font-size: 2rem;
+    width: auto;
   }
 `;
+
 
 export const SearchIcon = styled(FiSearch)`
   position: absolute;
@@ -530,39 +607,42 @@ export const SearchIcon = styled(FiSearch)`
 `;
 
 export const DepartmentSelect = styled.select`
-  padding: clamp(0.4rem, 0.8vw, 0.8rem) clamp(0.8rem, 2vw, 1.5rem)
-    clamp(0.4rem, 0.8vw, 0.8rem) clamp(0.8rem, 1.5vw, 1.5rem);
-  font-size: clamp(0.85rem, 1vw, 1.25rem);
-  border-radius: clamp(4px, 0.5vw, 6px);
-  border: 1px solid #ccc;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #172554;
   background: white;
-  height: clamp(35px, 3vw, 50px);
-  min-width: clamp(150px, 25vw, 300px);
+  height: 45px;
+  min-width: 200px;
 
   appearance: none;
   background: url("data:image/svg+xml;utf8,<svg fill='black' height='14' viewBox='0 0 24 24' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
-    no-repeat right clamp(8px, 1vw, 15px) center;
+    no-repeat right 10px center;
   background-color: white;
-  background-size: clamp(12px, 1vw, 18px);
+  background-size: 14px;
 
-  @media (min-width: 1440px) {
-    font-size: clamp(1rem, 0.8vw, 1.4rem);
-    height: clamp(45px, 2vw, 55px);
-    min-width: clamp(200px, 18vw, 300px);
-    border-radius: clamp(5px, 0.5vw, 6px);
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    font-size: 1rem;
+    height: 40px;
+    min-width: 250px;
+    border-radius: 6px;
   }
 
-  @media (min-width: 2560px) {
-    /* font-size: clamp(1.2rem, 0.6vw, 1.6rem); */
+  @media (min-width: 1920px) and (max-width: 2559px) {
     font-size: 1.5rem;
-
-    height: 60px;
-    min-width: clamp(250px, 15vw, 350px);
+    height: 50px;
+    min-width: 250px;
   }
 
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    font-size: 1.5rem;
+    height: 60px;
+    min-width: 300px;
+  }
   @media (min-width: 3840px) {
-    font-size: 2.5rem;
-    height: 90px;
-    min-width: clamp(300px, 12vw, 450px);
+    font-size: 2rem;
+    height: 80px;
+    min-width: 500px;
   }
 `;
+

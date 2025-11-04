@@ -132,8 +132,8 @@ export const Subtitle = styled.p`
 // `;
 export const FormSection = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem 17rem;
+  /* flex-wrap: wrap; */
+  gap: 1rem ;
   margin-bottom: 2rem;
 `;
 
@@ -199,24 +199,27 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
-  padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.6rem, 1vw, 0.75rem);
-  font-size: clamp(0.9rem, 1vw, 1rem); /* scales text */
   background: white;
-  border-radius: 6px;
   border: 1px solid #052db4;
+  border-radius: 4px;
   width: 100%;
 
-  @media (max-width: 768px) {
-    padding: 0.75rem 1rem;
+  /* ✅ Responsive padding & font */
+  padding: clamp(0.4rem, 0.8vw, 0.75rem) clamp(0.6rem, 1vw, 1rem);
+  font-size: clamp(0.85rem, 1vw, 1.1rem);
+
+   @media (min-width: 1440px) and (max-width: 1919px) {
     font-size: 1rem;
+    padding: 0.6rem 1.25rem;
   }
-  @media (min-width: 2000px) {
-    padding: 1.25rem 1rem;
-    font-size: 1.7rem;
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    font-size: 1.2rem;
+    padding: 0.75rem 1.25rem;
   }
-  @media (min-width: 3500px) {
-    padding: 1.5rem 1rem;
-    font-size: 2rem;
+
+  @media (min-width: 2560px) {
+    font-size: 1.4rem;
+    padding: 1rem 1.5rem;
   }
 `;
 export const Header3 = styled.h3`
@@ -240,7 +243,7 @@ export const StyledTable = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px;
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
   text-align: left;
   font-family: "Satoshi";
 
@@ -249,14 +252,60 @@ export const StyledTable = styled.table`
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 
+ 
+ td {
+  text-align: left;
+  padding: 8px 10px;
+  white-space: nowrap;
+  background-color: white;
+  border: none;
+  font-size: 1rem; /* default for medium screens */
+}
+
+/* Small screens (mobile) */
+@media (max-width: 600px) {
   td {
-    text-align: left;
-    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
-    white-space: nowrap;
-    background-color: white;
-    border: none;
-    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
+    font-size: 0.75rem;
+    padding: 6px 8px;
   }
+}
+
+/* Tablets and small laptops */
+@media (min-width: 601px) and (max-width: 1024px) {
+  td {
+    font-size: 0.9rem;
+    padding: 7px 9px;
+  }
+}
+
+/* Large screens (desktop) */
+@media (min-width: 1025px) {
+  td {
+    font-size: 1rem;
+    padding: 5px 10px;
+  }
+}
+
+/* Extra-large screens (up to 4K) */
+@media (min-width: 1600px) {
+  td {
+    font-size: 1rem;
+    padding: 5px 10px;
+  }
+}
+@media (min-width: 1920px) {
+  td {
+    font-size: 1.1rem;
+    padding: 8px 12px;
+  }
+}
+
+@media (min-width: 2560px) {
+  td {
+    font-size: 1.5rem;
+    padding: 8px 12px;
+  }
+}
 
   th {
     text-align: left;

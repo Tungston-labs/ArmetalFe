@@ -87,9 +87,9 @@ const EmployeeList = () => {
          </TextBlock>
        </TitleSection>
       <SearchWrapper>
-  <SearchIcon>
-    <FiSearch />
-  </SearchIcon>
+  {/* <SearchIcon>
+
+  </SearchIcon> */}
   <SearchInput
     type="text"
     placeholder="Department Name"

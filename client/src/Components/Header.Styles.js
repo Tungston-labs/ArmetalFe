@@ -58,30 +58,6 @@ export const ProfileCard = styled.div`
   }
 `;
 
-export const ProfileImageWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-
-  @media (min-width: 768px) {
-    width: 180px;
-    margin-right: 30px;
-    justify-content: flex-start;
-  }
-`;
-
-export const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 10px;
-  object-fit: cover;
-  background-color: #ffe066;
-
-  @media (min-width: 768px) {
-    width: 200px;
-    height: 180px;
-  }
-`;
 
 // --- Main Layout ---
 export const ContentArea = styled.div`
@@ -239,3 +215,53 @@ export const InfoRow = styled.div`
   }
 `;
 
+export const EditImageButton = styled.button`
+  position: absolute;
+  bottom: 5px;
+  background: #304eb0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+  &:hover {
+    background: #1e3a8a;
+  }
+`;
+export const ProfileImageWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+`;
+
+export const ProfileImage = styled.img`
+  width: 180px;
+  height: 180px;
+  border-radius: 10%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+  transition: 0.3s ease;
+  ${(props) =>
+    props.editable &&
+    `
+    &:hover {
+      opacity: 0.7;
+    }
+  `}
+`;
+
+export const PlusIconWrapper = styled.div`
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: #007bff;
+  color: white;
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

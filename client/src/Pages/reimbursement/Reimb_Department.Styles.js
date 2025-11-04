@@ -232,30 +232,46 @@ export const InitialCircle = styled.div`
 `;
 
 export const AddButton = styled.button`
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: Satoshi;
-  background: #304eb0;
-  color: white;
-  padding: clamp(0.4rem, 0.8vw, 0.8rem) clamp(1rem, 2vw, 2rem); /* vertical | horizontal */
-  border-radius: 8px;
-  border: none;
-  font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font size */
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
 
   &:hover {
-    background-color: #3f60cbff;
+    background: #2744a3;
   }
-    @media (min-width: 3840px) {
-      font-size: 2.5rem;
-      img{
-        width:50px !important;
-        height:50px !important;
-      }
-    }
 
+  /* Large desktops (1440px and up) */
+  @media (min-width: 1440px) and (max-width: 1920px) {
+    font-size: 1.1rem;
+    padding: 0.6rem 1rem;
+    gap: 0.75rem;
+  }
+ @media (min-width: 1921) and (max-width: 2560px) {
+    font-size: 1.1rem;
+    padding: 0.6rem 1rem;
+    gap: 0.75rem;
+  }
+  /* Ultra-wide (2560px and up) */
+  @media (min-width: 2561px) {
+    font-size: 1.4rem;
+    padding: 1.2rem 3rem;
+    gap: 1rem;
+  }
+
+  /* 4K and above (3840px and up) */
+  @media (min-width: 3840px) {
+    font-size: 2rem;
+    padding: 1.5rem 4rem;
+    gap: 1.2rem;
+  }
 `;
 
 // Search Input

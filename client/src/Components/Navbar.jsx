@@ -301,7 +301,8 @@ export const TopBar = styled.div`
   align-items: center;
   /* margin-bottom: 1.5rem; */
   background-color: transparent; 
-
+position: absolute;
+right: 0;
   @media (min-width: 2560px) {
     height: 70px;
   }
