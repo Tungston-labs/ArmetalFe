@@ -217,9 +217,9 @@ const DepartmentDetail = () => {
 
           <ActionArea>
             <ButtonGroup>
-            <DeleteButton onClick={handleDeleteDepartment}>
+            {/* <DeleteButton onClick={handleDeleteDepartment}>
               <FaTrash style={{ width: "14px", height: "14px" }} /> Delete
-            </DeleteButton>
+            </DeleteButton> */}
 
             <AddButton
               onClick={() => {
@@ -328,7 +328,7 @@ const DepartmentDetail = () => {
                   <td>{emp.designation}</td>
                   <td>{department.name}</td>
                   <td>
-                    <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`)}>
+                    <IconButton onClick={() => navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })}>
                       <GoInfo />
                     </IconButton>
 

@@ -93,7 +93,7 @@ export const ProfileImage = styled.img`
 
 export const Input = styled.input`
   width: 100%;
-  padding: 0.5rem 0.8rem;
+  padding: 1rem 0.8rem;
   font-size: 1rem;
   color: black;
   border-radius: 7px;
@@ -103,20 +103,20 @@ export const Input = styled.input`
   margin-top: 5px;
 
   /* Small screens */
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.8rem;
     padding: 0.5rem 0.7rem;
   }
 
   /* Medium screens */
-  @media (min-width: 1020px) {
+  @media (min-width: 769px) and (max-width: 1020px) {
     font-size: 1.1rem;
-    padding: 0.6rem 0.9rem;
+    padding: 0.5rem 0.7rem;
   }
 
   @media (min-width: 1440px) {
     font-size: 1rem;
-    padding: 0.6rem 0.9rem;
+    padding: 0.9rem 0.9rem;
   }
 
   @media (min-width: 1920px) {
@@ -225,7 +225,7 @@ export const TwoColumn = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 5rem;
   width: 30%;
-  margin-top:20px;
+  margin-top:10px;
   
 `;
 
@@ -531,55 +531,41 @@ export const FullWidthInput = styled.input`
     box-shadow: 0 0 4px rgba(5, 45, 180, 0.3);
   }
 
-  /* Mobile (≤480px) */
-  @media (max-width: 480px) {
-    font-size: 0.75rem;
-    padding: 0.6rem 0.8rem;
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.7rem;
   }
 
-  /* Tablet (481px – 768px) */
-  @media (min-width: 481px) and (max-width: 768px) {
-    font-size: 0.85rem;
-    padding: 0.7rem 0.9rem;
+  /* Medium screens */
+  @media (min-width: 769px) and (max-width: 1020px) {
+    font-size: 1.1rem;
+    padding: 0.5rem 0.7rem;
   }
 
-
-  @media (min-width: 769px) and (max-width: 1280px) {
-    font-size: 0.9rem;
-    padding: 0.8rem 1rem;
-  }
-
-
-  @media (min-width: 1281px) and (max-width: 1440px) {
+  @media (min-width: 1440px) {
     font-size: 1rem;
-    padding: 1rem 1.1rem;
+    padding: 0.9rem 0.9rem;
   }
- @media (min-width: 1441px) and (max-width: 1920px) {
-    font-size: 1rem;
-    padding: 1rem 1.1rem;
+
+  @media (min-width: 1920px) {
+    font-size: 1.2rem;
+    padding: 0.8rem 1.2rem;
+    /* margin-bottom: 1rem; */
   }
-  @media (min-width: 1921px) and (max-width: 2560px) {
+
+  @media (min-width: 2560px) {
     font-size: 1.5rem;
-    padding: 1.8rem 1.2rem;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem;
   }
 
- 
-  @media (min-width: 2561px) and (max-width: 3840px) {
+  @media (min-width: 3840px) {
     font-size: 2rem;
-    padding: 2.2rem 1.3rem;
-  }
-
-  @media (min-width: 3841px) and (max-width: 5120px) {
-    font-size: 1.8rem;
-    padding: 2rem 1.4rem;
-  }
-
-  
-  @media (min-width: 7680px) {
-    font-size: 1.4rem;
-    padding: 1.3rem 1.5rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
   }
 `;
+
 export const TwoColumnRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -589,7 +575,7 @@ export const TwoColumnRow = styled.div`
 
   /* Mobile (stack to 1 column) */
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+    /* grid-template-columns: 1fr; */
     gap: 1rem;
   }
 
@@ -707,7 +693,7 @@ export const ColumnRow = styled.div`
 
 export const Select = styled.select`
   width: 100%;
-padding: 0.5rem 0.8rem;
+  padding: 1rem 0.8rem;
   font-size: 1rem;
   border-radius: 7px;
   border: 1px solid #052DB4;
@@ -729,27 +715,27 @@ margin-top:5px;
     box-shadow: 0 0 4px rgba(5, 45, 180, 0.3);
   }
 
-   /* Small screens */
-  @media (max-width: 480px) {
+    /* Small screens */
+  @media (max-width: 768px) {
     font-size: 0.8rem;
     padding: 0.5rem 0.7rem;
   }
 
   /* Medium screens */
-  @media (min-width: 1020px) {
+  @media (min-width: 769px) and (max-width: 1020px) {
     font-size: 1.1rem;
-    padding: 0.6rem 0.9rem;
+    padding: 0.5rem 0.7rem;
   }
 
   @media (min-width: 1440px) {
     font-size: 1rem;
-    padding: 0.7rem 0.9rem;
+    padding: 0.9rem 0.9rem;
   }
 
   @media (min-width: 1920px) {
     font-size: 1.2rem;
-    padding: 1rem 1.2rem;
-    margin-bottom: 1rem;
+    padding: 0.8rem 1.2rem;
+    /* margin-bottom: 1rem; */
   }
 
   @media (min-width: 2560px) {
@@ -764,7 +750,6 @@ margin-top:5px;
     margin-bottom: 1rem;
   }
 `;
-
 
 export const UploadWrapper = styled.div`
   position: relative;

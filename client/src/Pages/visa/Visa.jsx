@@ -218,11 +218,12 @@ const EmployeeList = () => {
               employeeList.map((emp, index) => (
                 <tr
                   key={emp.id}
-                 onClick={() =>
-    navigate(`/fulldashboard/${emp.id}`, {
-      state: { from: location.pathname + location.search },
-    })
-  }
+onClick={() =>
+  navigate(`/fulldashboard/${emp.id}`, {
+    state: { from: "contract" },
+  })
+}
+
 
                   style={{
                     cursor: "pointer",

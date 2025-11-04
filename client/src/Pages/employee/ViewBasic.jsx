@@ -2,26 +2,17 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Header,
-  LeftSection,
-  RightSection,
-  Textarea,
+  Headers,
   EditButton,
-  Row,
   Tabs,
   Tab,
   Section,
   GroupLabel,
-  Rows,
   Input,
   Select,
   Hr,
-  Button,
-  ProfileImage,
   Rowes,
-  ImageColumn,
   Title,
-  FormWrapper,
   Subtitle,
   Rightside,
   HeaderWrapper,
@@ -29,22 +20,19 @@ import {
   Column,
   FullPageLoaderWrapper,
   FieldGroup,
-  FieldWrapper,
-  FieldWrappers,
   EmployeeImage,
   ResponsiveH3,
 } from "./ViewBasic.Style";
 import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmployeeById, submitEmployee } from "../../Redux/employeeSlice";
-import { PiUserCirclePlusThin } from "react-icons/pi";
 import { NavLink, useLocation, useParams, useNavigate } from "react-router-dom";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { getDepartments } from "../../Redux/departmentSlice";
 import Loader from "../../Components/Loader";
 import { Label } from "./BasicLevel.Styles";
 import Swal from "sweetalert2";
-
+import Header from "../../Components/Header";
 const ViewBasic = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -69,51 +57,45 @@ const ViewBasic = () => {
       dispatch(getEmployeeById(id));
     }
   }, [dispatch, id]);
-
-  // inside your component, before the return statement
-
-console.log("Employee Detail:", employeeDetail);
-console.log("Form Data:", formData);
-console.log("Company Object:", formData.company);
-console.log("Company Country:", formData?.company?.country);
+  console.log("Employee Detail:", employeeDetail);
+  console.log("Form Data:", formData);
+  console.log("Company Object:", formData.company);
+  console.log("Company Country:", formData?.company?.country);
 
 
-useEffect(() => {
-  // Run only when valid employee data is fetched
-  if (!employeeDetail || Object.keys(employeeDetail).length === 0) return;
+  useEffect(() => {
+    if (!employeeDetail || Object.keys(employeeDetail).length === 0) return;
 
-  // Compute department ID
-  let deptId = "";
-  if (typeof employeeDetail.department === "string") {
-    const match = departmentList.find((d) => d.name === employeeDetail.department);
-    deptId = match ? match.id : "";
-  } else if (typeof employeeDetail.department === "number") {
-    deptId = employeeDetail.department;
-  }
+    let deptId = "";
+    if (typeof employeeDetail.department === "string") {
+      const match = departmentList.find((d) => d.name === employeeDetail.department);
+      deptId = match ? match.id : "";
+    } else if (typeof employeeDetail.department === "number") {
+      deptId = employeeDetail.department;
+    }
 
-  const company =
-    employeeDetail.company && typeof employeeDetail.company === "object"
-      ? employeeDetail.company
-      : user?.company || { country: "" };
+    const company =
+      employeeDetail.company && typeof employeeDetail.company === "object"
+        ? employeeDetail.company
+        : user?.company || { country: "" };
 
-  const updatedFormData = {
-    ...employeeDetail,
-    department: deptId,
-    total_leave: employeeDetail.total_leave || "",
-    contract_expiry_date: employeeDetail.contract_expiry_date || "",
-    role: employeeDetail.role || "",
-    idcard: employeeDetail.idcard || "",
-    company,
-    aadar_number: employeeDetail.aadar_number || employeeDetail.aadhaar_number || "",
-  };
+    const updatedFormData = {
+      ...employeeDetail,
+      department: deptId,
+      total_leave: employeeDetail.total_leave || "",
+      contract_expiry_date: employeeDetail.contract_expiry_date || "",
+      role: employeeDetail.role || "",
+      idcard: employeeDetail.idcard || "",
+      company,
+      aadar_number: employeeDetail.aadar_number || employeeDetail.aadhaar_number || "",
+    };
 
-  setFormData((prev) => {
-    const same = JSON.stringify(prev) === JSON.stringify(updatedFormData);
-    return same ? prev : updatedFormData;
-  });
-}, [employeeDetail, departmentList, user]);
+    setFormData((prev) => {
+      const same = JSON.stringify(prev) === JSON.stringify(updatedFormData);
+      return same ? prev : updatedFormData;
+    });
+  }, [employeeDetail, departmentList, user]);
 
-  // Populate formData from employee details
   useEffect(() => {
     if (employeeDetail && Object.keys(formData).length === 0) {
       let deptId = "";
@@ -139,23 +121,22 @@ useEffect(() => {
         company,
         aadar_number: employeeDetail.aadar_number || employeeDetail.aadhaar_number || "",
       });
-       setIsEdited(false);
+      setIsEdited(false);
     }
   }, [employeeDetail, departmentList, user]);
 
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));  
-      setIsEdited(true); 
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setIsEdited(true);
   };
 
-  // Handle form submit
+
   const handleSubmit = async () => {
     let payload = { ...formData };
 
-    // Remove empty fields
+
     Object.keys(payload).forEach((key) => {
       if (payload[key] === "" || payload[key] === null || payload[key] === undefined) {
         delete payload[key];
@@ -164,7 +145,7 @@ useEffect(() => {
 
     const country = formData?.company?.country;
 
-    // Country-specific validations
+
     if (country === "IN") {
       delete payload.iqama_number;
       delete payload.insurance_number;
@@ -199,12 +180,12 @@ useEffect(() => {
       title: "Updated!",
       text: "Employee details updated successfully.",
       confirmButtonColor: "#304EB0",
-      
+
     });
-      setIsEdited(false);
+    setIsEdited(false);
   };
 
-const handleTabNavigation = (path) => {
+  const handleTabNavigation = (path) => {
     if (isEdited) {
       Swal.fire({
         title: "Unsaved Changes",
@@ -225,6 +206,16 @@ const handleTabNavigation = (path) => {
     }
   };
 
+  const from = location.state?.from;
+
+  const handleBack = () => {
+    if (from === "department") navigate(`/departments/${formData.department}`);
+    else if (from === "employee") navigate("/employee");
+    else if (from === "contract") navigate("/employee-contract-visa-expiry");
+    else navigate("/"); // fallback
+  };
+
+
 
   if (loading || !formData || Object.keys(formData).length === 0) {
     return (
@@ -235,308 +226,204 @@ const handleTabNavigation = (path) => {
   }
 
   return (
-    <Container>
-      {/* Header */}
-      <Header>
-        <HeaderWrapper>
-          <TitleSection>
-           <LuArrowLeft
-              style={{ width: 30, height: 30, cursor: "pointer", color: "#304EB0" }}
-              onClick={() => handleTabNavigation("/employee")} // ✅ alert on back
-            />
-            <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
-            <div>
-              <Title>Employee</Title>
-              <Subtitle>Manage your Employee.</Subtitle>
-            </div>
-          </TitleSection>
-        </HeaderWrapper>
+    <>
+      <Container>
+        <Headers>
+          <HeaderWrapper>
+            <TitleSection>
+              <LuArrowLeft
+                style={{ width: 30, height: 30, cursor: "pointer", color: "#304EB0" }}
+                onClick={handleBack}
+              />
+              <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
+              <div>
+                <Title>Employee</Title>
+                <Subtitle>Manage your Employee.</Subtitle>
+              </div>
+            </TitleSection>
+          </HeaderWrapper>
 
-        <Rightside>
-          <EditButton onClick={handleSubmit}>Save</EditButton>
-        </Rightside>
-      </Header>
+          <Rightside>
+            <EditButton onClick={handleSubmit}>Save</EditButton>
+          </Rightside>
+        </Headers>
 
-      <Hr />
-      <ResponsiveH3>Employee Details</ResponsiveH3>
+        <Hr />
+        <ResponsiveH3>Employee Details</ResponsiveH3>
+        <Header employee={formData} />
+        <Section>
+          <Tabs>
+            <NavLink to={`/ViewBasic/${id}`} style={{ textDecoration: "none" }}>
+              <Tab active={location.pathname === `/ViewBasic/${id}`}
+                onClick={() => handleTabNavigation(`/ViewBasic/${id}`)}
+              >Basic Details</Tab>
+            </NavLink>
+            <NavLink to={`/ViewBasic/${id}/bank`} style={{ textDecoration: "none" }}>
+              <Tab active={location.pathname === `/ViewBasic/${id}/bank`}
+                onClick={() => handleTabNavigation(`/ViewBasic/${id}/bank`)}>
+                Bank and payment details
+              </Tab>
+            </NavLink>
+            <NavLink to={`/ViewBasic/${id}/documents`} style={{ textDecoration: "none" }}>
+              <Tab active={location.pathname === `/ViewBasic/${id}/documents`}
+                onClick={() => handleTabNavigation(`/ViewBasic/${id}/documents`)}
+              >
+                Documents
+              </Tab>
+            </NavLink>
+          </Tabs>
 
-      {/* Form */}
-      <FormWrapper>
-        <ImageColumn style={{ position: "relative" }}>
-          {formData.profile_pic ? (
-            <ProfileImage
-              src={
-                formData.profile_pic instanceof File
-                  ? URL.createObjectURL(formData.profile_pic)
-                  : formData.profile_pic
-              }
-              alt="Profile"
-            />
-          ) : (
-            <div
-              style={{
-                width: "10rem",
-                height: "10rem",
-                borderRadius: "10%",
-                backgroundColor: "#f0f0f0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <PiUserCirclePlusThin size={100} color="#ccc" />
-            </div>
-          )}
-
-          <input
-            type="file"
-            name="profile_pic"
-            accept="image/*"
-            id="profilePicInput"
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, profile_pic: e.target.files[0] }))
-            }
-            style={{ display: "none" }}
-          />
-          <label
-            htmlFor="profilePicInput"
-            style={{
-              position: "absolute",
-              bottom: 10,
-              right: 10,
-              backgroundColor: "#007bff",
-              color: "#fff",
-              borderRadius: "50%",
-              width: 30,
-              height: 30,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 20,
-              cursor: "pointer",
-            }}
-          >
-            +
-          </label>
-        </ImageColumn>
-
-        {/* Basic Info */}
-        <Row>
-          <LeftSection>
-            <FieldWrapper>
-              <Label>Name</Label>
-              <Input name="name" value={formData.name || ""} onChange={handleChange} />
-            </FieldWrapper>
-
-            <FieldWrapper>
-              <Label>Employee ID</Label>
-              <Input name="employee_id" value={formData.employee_id || ""} readOnly />
-            </FieldWrapper>
-
-            <FieldWrapper>
-              <Label>Email</Label>
-              <Input name="email" value={formData.email || ""} onChange={handleChange} />
-            </FieldWrapper>
-          </LeftSection>
-
-          <RightSection>
-            <FieldWrapper>
-              <Label>Address</Label>
-              <Textarea name="address" value={formData.address || ""} onChange={handleChange} />
-            </FieldWrapper>
-
-            <Rows>
-              <FieldWrappers>
-                <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
-                  <Label>Date of Birth</Label>
-                  <Input name="dob" value={formData.dob || ""} onChange={handleChange} />
-                </FieldWrapper>
-
-                <FieldWrapper style={{ flex: 1 }}>
-                  <Label>Gender</Label>
-                  <Input name="gender" value={formData.gender || ""} onChange={handleChange} />
-                </FieldWrapper>
-              </FieldWrappers>
-            </Rows>
-          </RightSection>
-        </Row>
-      </FormWrapper>
-
-      <Hr />
-
-      {/* Job & Legal Info */}
-      <Section>
-        <Tabs>
-          <NavLink to={`/ViewBasic/${id}`} style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === `/ViewBasic/${id}`}
-              onClick={() => handleTabNavigation(`/ViewBasic/${id}`)}
-            >Basic Details</Tab>
-          </NavLink>
-          <NavLink to={`/ViewBasic/${id}/bank`} style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === `/ViewBasic/${id}/bank`}
-              onClick={() => handleTabNavigation(`/ViewBasic/${id}/bank`)}>
-              Bank and payment details
-            </Tab>
-          </NavLink>
-          <NavLink to={`/ViewBasic/${id}/documents`} style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === `/ViewBasic/${id}/documents`}
-              onClick={() => handleTabNavigation(`/ViewBasic/${id}/documents`)}
-            >
-              Documents
-            </Tab>
-          </NavLink>
-        </Tabs>
-
-        <GroupLabel>Job Details</GroupLabel>
-        <Rowes>
-          <FieldGroup>
-            <Label>Designation</Label>
-            <Input name="designation" value={formData.designation || ""} onChange={handleChange} />
-          </FieldGroup>
-          <FieldGroup>
-            <Label>Joining Date</Label>
-            <Input name="joining_date" value={formData.joining_date || ""} onChange={handleChange} />
-          </FieldGroup>
-        </Rowes>
-
-        <Rowes>
-          <FieldGroup>
-            <Label>Department</Label>
-            <Select name="department" value={formData.department || ""} onChange={handleChange}>
-              <option value="">Select Department</option>
-              {departmentList.map((dept) => (
-                <option key={dept.id} value={dept.id}>
-                  {dept.name}
-                </option>
-              ))}
-            </Select>
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label>Employment Type</Label>
-            <Input
-              name="employment_type"
-              value={formData.employment_type || ""}
-              onChange={handleChange}
-            />
-          </FieldGroup>
-        </Rowes>
-
-        <Rowes>
-          <FieldGroup>
-            <Label>Total Leaves</Label>
-            <Input
-              type="number"
-              name="total_leave"
-              value={formData.total_leave || ""}
-              onChange={handleChange}
-            />
-          </FieldGroup>
-        </Rowes>
-
-        <GroupLabel>Employee Legal & ID Information</GroupLabel>
-        <Column>
-          <FieldGroup>
-            <Label>Phone Number</Label>
-            <Input name="phno" value={formData.phno || ""} onChange={handleChange} />
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label>Passport Number</Label>
-            <Input
-              name="passport_number"
-              value={formData.passport_number || ""}
-              onChange={handleChange}
-            />
-          </FieldGroup>
-
-          {formData?.company?.country === "IN" ? (
+          <GroupLabel>Job Details</GroupLabel>
+          <Rowes>
             <FieldGroup>
-              <Label>Aadhaar Number</Label>
+              <Label>Designation</Label>
+              <Input name="designation" value={formData.designation || ""} onChange={handleChange} />
+            </FieldGroup>
+            <FieldGroup>
+              <Label>Joining Date</Label>
+              <Input name="joining_date" value={formData.joining_date || ""} onChange={handleChange} />
+            </FieldGroup>
+          </Rowes>
+
+          <Rowes>
+            <FieldGroup>
+              <Label>Department</Label>
+              <Select name="department" value={formData.department || ""} onChange={handleChange}>
+                <option value="">Select Department</option>
+                {departmentList.map((dept) => (
+                  <option key={dept.id} value={dept.id}>
+                    {dept.name}
+                  </option>
+                ))}
+              </Select>
+            </FieldGroup>
+
+            <FieldGroup>
+              <Label>Employment Type</Label>
               <Input
-                name="aadar_number"
-                placeholder="Aadhaar Number"
-                value={formData.aadar_number || ""}
+                name="employment_type"
+                value={formData.employment_type || ""}
                 onChange={handleChange}
               />
             </FieldGroup>
-          ) : (
-            <>
-              <FieldGroup>
-                <Label>Visa Expiry Date</Label>
-                <Input
-                  type="date"
-                  name="visa_expiry_date"
-                  value={formData.visa_expiry_date || ""}
-                  onChange={handleChange}
-                />
-              </FieldGroup>
-              <FieldGroup>
-                <Label>Iqama Number</Label>
-                <Input
-                  name="iqama_number"
-                  value={formData.iqama_number || ""}
-                  onChange={handleChange}
-                />
-              </FieldGroup>
-              <FieldGroup>
-                <Label>Insurance Number</Label>
-                <Input
-                  name="insurance_number"
-                  value={formData.insurance_number || ""}
-                  onChange={handleChange}
-                />
-              </FieldGroup>
-            </>
-          )}
+          </Rowes>
 
-          <FieldGroup>
-            <Label>Role</Label>
-            <Select name="role" value={formData.role || ""} onChange={handleChange}>
-              <option value="">Select Role</option>
-              <option value="employee">Employee</option>
-              <option value="hr">HR</option>
-              <option value="manager">Manager</option>
-            </Select>
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label>Contract Expiry Date</Label>
-            <Input
-              type="date"
-              name="contract_expiry_date"
-              value={formData.contract_expiry_date || ""}
-              onChange={handleChange}
-            />
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label>ID Card</Label>
-            <div>
-              {formData.idcard && (
-                <img
-                  src={
-                    formData.idcard instanceof File
-                      ? URL.createObjectURL(formData.idcard)
-                      : formData.idcard
-                  }
-                  alt="ID Card"
-                  style={{ width: 120, height: "auto", marginBottom: 10 }}
-                />
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                name="idcard"
-                onChange={(e) =>
-                  setFormData({ ...formData, idcard: e.target.files[0] })
-                }
+          <Rowes>
+            <FieldGroup>
+              <Label>Total Leaves</Label>
+              <Input
+                type="number"
+                name="total_leave"
+                value={formData.total_leave || ""}
+                onChange={handleChange}
               />
-            </div>
-          </FieldGroup>
-        </Column>
-      </Section>
-    </Container>
+            </FieldGroup>
+          </Rowes>
+
+          <GroupLabel>Employee Legal & ID Information</GroupLabel>
+          <Column>
+            <FieldGroup>
+              <Label>Phone Number</Label>
+              <Input name="phno" value={formData.phno || ""} onChange={handleChange} />
+            </FieldGroup>
+
+            <FieldGroup>
+              <Label>Passport Number</Label>
+              <Input
+                name="passport_number"
+                value={formData.passport_number || ""}
+                onChange={handleChange}
+              />
+            </FieldGroup>
+
+            {formData?.company?.country === "IN" ? (
+              <FieldGroup>
+                <Label>Aadhaar Number</Label>
+                <Input
+                  name="aadar_number"
+                  placeholder="Aadhaar Number"
+                  value={formData.aadar_number || ""}
+                  onChange={handleChange}
+                />
+              </FieldGroup>
+            ) : (
+              <>
+                <FieldGroup>
+                  <Label>Visa Expiry Date</Label>
+                  <Input
+                    type="date"
+                    name="visa_expiry_date"
+                    value={formData.visa_expiry_date || ""}
+                    onChange={handleChange}
+                  />
+                </FieldGroup>
+                <FieldGroup>
+                  <Label>Iqama Number</Label>
+                  <Input
+                    name="iqama_number"
+                    value={formData.iqama_number || ""}
+                    onChange={handleChange}
+                  />
+                </FieldGroup>
+                <FieldGroup>
+                  <Label>Insurance Number</Label>
+                  <Input
+                    name="insurance_number"
+                    value={formData.insurance_number || ""}
+                    onChange={handleChange}
+                  />
+                </FieldGroup>
+              </>
+            )}
+
+            <FieldGroup>
+              <Label>Role</Label>
+              <Select name="role" value={formData.role || ""} onChange={handleChange}>
+                <option value="">Select Role</option>
+                <option value="employee">Employee</option>
+                <option value="hr">HR</option>
+                <option value="manager">Manager</option>
+              </Select>
+            </FieldGroup>
+
+            <FieldGroup>
+              <Label>Contract Expiry Date</Label>
+              <Input
+                type="date"
+                name="contract_expiry_date"
+                value={formData.contract_expiry_date || ""}
+                onChange={handleChange}
+              />
+            </FieldGroup>
+
+            <FieldGroup>
+              <Label>ID Card</Label>
+              <div>
+                {formData.idcard && (
+                  <img
+                    src={
+                      formData.idcard instanceof File
+                        ? URL.createObjectURL(formData.idcard)
+                        : formData.idcard
+                    }
+                    alt="ID Card"
+                    style={{ width: 120, height: "auto", marginBottom: 10 }}
+                  />
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="idcard"
+                  onChange={(e) =>
+                    setFormData({ ...formData, idcard: e.target.files[0] })
+                  }
+                />
+              </div>
+            </FieldGroup>
+          </Column>
+        </Section>
+      </Container>
+    </>
   );
 };
 

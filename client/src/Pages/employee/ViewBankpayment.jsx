@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Header,
+  Headers,
   LeftSection,
   RightSection,
   Textarea,
@@ -41,7 +41,7 @@ import {
 import SyncLoader from "../../Components/Loder";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { ResponsiveH3 } from "./ViewDocument.Styles";
-import { PiUserCircleThin } from "react-icons/pi";
+import Header from "../../Components/Header";
 import Swal from "sweetalert2";
 
 const ViewBankPayment = () => {
@@ -186,7 +186,7 @@ console.log("employeeBankPayments",employeeBankPayments)
     {loading && <SyncLoader/>}
 
     <Container>
-      <Header>
+      <Headers>
         <HeaderWrapper>      
                  <TitleSection>
                           <LuArrowLeft
@@ -207,67 +207,13 @@ console.log("employeeBankPayments",employeeBankPayments)
   </EditButton>
 </Rightside>
 
-      </Header>
+      </Headers>
 
       <Hr />
       
      
 <ResponsiveH3>Bank & Payment Details</ResponsiveH3>
-      <FormWrapper>
-        <ImageColumn
->
-  {employeeDetail?.profile_pic ? (
-    <ProfileImage
-      src={employeeDetail.profile_pic}
-      alt="Profile"
-      // style={{ width: "100%", height: "100%", borderRadius: "10%" }}
-    />
-  ) : (
-    <PiUserCircleThin size={80} color="#ccc" />
-  )}
-</ImageColumn>
-
-      <Row>
-  <LeftSection>
-    <FieldWrapper>
-      <Label>Name</Label>
-      <Input type="text" value={employeeDetail?.name || ""} readOnly />
-    </FieldWrapper>
-
-    <FieldWrapper>
-      <Label>Employee ID</Label>
-      <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
-    </FieldWrapper>
-
-    <FieldWrapper>
-      <Label>Email</Label>
-      <Input type="email" value={employeeDetail?.email || ""} readOnly />
-    </FieldWrapper>
-  </LeftSection>
-
-  <RightSection>
-    <FieldWrapper>
-      <Label>Address</Label>
-      <Textarea value={employeeDetail?.address || ""} readOnly />
-    </FieldWrapper>
-
-    <Rows style={{ display: "flex", gap: "1rem" }}>
-      <FieldWrapper style={{ flex: 1 }}>
-        <Label>Date of Birth</Label>
-        <Input type="text" value={employeeDetail?.dob || ""} readOnly />
-      </FieldWrapper>
-
-      <FieldWrapper style={{ flex: 1 }}>
-        <Label>Gender</Label>
-        <Input type="text" value={employeeDetail?.gender || ""} readOnly />
-      </FieldWrapper>
-    </Rows>
-  </RightSection>
-</Row>
-
-      </FormWrapper>
-
-      <Hr />
+    <Header employee={employeeDetail} />
 
       <Section>
         <Tabs>

@@ -30,14 +30,16 @@ import {
 } from "./Attendance.Style";
 import { FaClock } from "react-icons/fa";
 import { PiUserCirclePlusThin } from "react-icons/pi";
-import Loader from "../../Components/Loader";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+import Loader from '../../Components/Loader';
+import Header from '../../Components/Header';
 const TimesheetPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
 
   const { attendanceDetail, detailLoading } = useSelector(
     (state) => state.attendance
@@ -96,7 +98,9 @@ const TimesheetPage = () => {
 
   const employee = attendanceDetail?.employee ?? {};
   const sessions = attendanceDetail?.sessions ?? [];
+  // const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
+
   const today = new Date();
 
  // ✅ Include Sunday (7 days total)
@@ -149,10 +153,16 @@ const getWeekDays = (dateStr) => {
 
   const isFutureDate = selectedDateObj > today;
 
+    const handleBack= (deptId) => {
+    navigate(`/employee-on-present?department_id=${deptId}`);
+  };
   return (
+    <>
+    
+    <Header employee={employee}/>
     <Container>
       {/* Header */}
-      <HeaderSection>
+      {/* <HeaderSection>
         <InfoGrid>
           <BackArrow onClick={() => navigate("/employee-on-present")} />
           <div style={{ width: "10%" }}>
@@ -181,7 +191,7 @@ const getWeekDays = (dateStr) => {
             </InfoSection>
           </div>
         </InfoGrid>
-      </HeaderSection>
+      </HeaderSection> */}
 
       <Hr />
 
@@ -311,6 +321,7 @@ const getWeekDays = (dateStr) => {
         hrs
       </TotalHours>
     </Container>
+    </>
   );
 };
 

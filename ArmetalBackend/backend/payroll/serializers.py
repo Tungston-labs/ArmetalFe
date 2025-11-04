@@ -140,6 +140,10 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         excess_till_last = max(0, prev_cumulative - allowed_leaves)
         excess_leave_days = excess_till_now - excess_till_last
 
+        # ✅ Convert to float before addition
+        unswiped_days = float(unswiped_days or 0)
+        excess_leave_days = float(excess_leave_days or 0)
+
         # Final LOP days = unswiped + excess leave
         lop_days = round(unswiped_days + excess_leave_days, 2)
 

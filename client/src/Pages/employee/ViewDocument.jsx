@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container, Header, LeftSection, RightSection, UploadSection,
+  Container, Headers, LeftSection, RightSection, UploadSection,
   InlineUploadRow, Textarea, EditButton, Row, ImageBox, Tabs,
   LabelRow, Tab, SectionTitle, Section, ButtonGroup, Rows,
   ImagePreviewRow, Input, UploadButton, Hr, Button,
@@ -19,7 +19,7 @@ import {
 import SyncLoader from "react-spinners/SyncLoader";
 import styled from "styled-components";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import { PiUserCircleThin } from "react-icons/pi";
+import Header from "../../Components/Header";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert2
 
 const FullPageLoaderWrapper = styled.div`
@@ -173,7 +173,7 @@ const ViewDocument = () => {
 
   return (
     <Container>
-      <Header>
+      <Headers>
         <HeaderWrapper>
           <TitleSection>
             <LuArrowLeft
@@ -191,60 +191,11 @@ const ViewDocument = () => {
         <Rightside>
           <EditButton onClick={handleSubmit}>Save</EditButton>
         </Rightside>
-      </Header>
+      </Headers>
 
       <Hr />
       <ResponsiveH3>Employee Documents</ResponsiveH3>
-
-      <FormWrapper>
-        <ImageColumn>
-          {employeeDetail?.profile_pic ? (
-            <ProfileImage src={employeeDetail.profile_pic} alt="Profile" />
-          ) : (
-            <PiUserCircleThin size={80} color="#ccc" />
-          )}
-        </ImageColumn>
-
-        <Row>
-          <LeftSection>
-            <FieldWrapper>
-              <Label>Name</Label>
-              <Input type="text" value={employeeDetail?.name || ""} readOnly />
-            </FieldWrapper>
-
-            <FieldWrapper>
-              <Label>Employee ID</Label>
-              <Input type="text" value={employeeDetail?.employee_id || ""} readOnly />
-            </FieldWrapper>
-
-            <FieldWrapper>
-              <Label>Email</Label>
-              <Input type="email" value={employeeDetail?.email || ""} readOnly />
-            </FieldWrapper>
-          </LeftSection>
-
-          <RightSection>
-            <FieldWrapper>
-              <Label>Address</Label>
-              <Textarea value={employeeDetail?.address || ""} readOnly />
-            </FieldWrapper>
-
-            <Rows>
-              <FieldWrapper style={{ flex: 1, marginRight: "1rem" }}>
-                <Label>Date of Birth</Label>
-                <Input type="text" value={employeeDetail?.dob || ""} readOnly />
-              </FieldWrapper>
-
-              <FieldWrapper style={{ flex: 1 }}>
-                <Label>Gender</Label>
-                <Input type="text" value={employeeDetail?.gender || ""} readOnly />
-              </FieldWrapper>
-            </Rows>
-          </RightSection>
-        </Row>
-      </FormWrapper>
-
-      <Hr />
+<Header employee={employeeDetail}/>
 
       <Section>
         <Tabs>
