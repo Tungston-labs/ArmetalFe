@@ -111,6 +111,8 @@ class LeaveRequest(TimeStampedModel):
 
         return total_days
 
+    from decimal import Decimal
+
     def save(self, *args, **kwargs):
         is_new = self._state.adding
         old_status = None
@@ -120,18 +122,20 @@ class LeaveRequest(TimeStampedModel):
 
         # ✅ Only adjust counts when status changes to 'approved'
         if self.status == "approved" and old_status != "approved":
-            leave_days = self.calculate_leave_days()
+            leave_days = Decimal(str(self.calculate_leave_days()))
             employee = self.employee
 
-            available_leave = employee.total_leave or 0
+            total_leave = employee.total_leave or Decimal('0')
+            paid_leave = employee.paid_leave or Decimal('0')
 
-            if available_leave >= leave_days:
-                employee.total_leave -= leave_days
+            if total_leave >= leave_days:
+                employee.total_leave = total_leave - leave_days
             else:
-                remaining_days = leave_days - available_leave
-                employee.total_leave = 0
-                employee.paid_leave = (employee.paid_leave or 0) + remaining_days
+                remaining_days = leave_days - total_leave
+                employee.total_leave = Decimal('0')
+                employee.paid_leave = paid_leave + remaining_days
 
             employee.save(update_fields=["total_leave", "paid_leave"])
 
         super().save(*args, **kwargs)
+

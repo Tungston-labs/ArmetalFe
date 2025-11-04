@@ -185,7 +185,7 @@ const EmployeeLeaveForm = () => {
         />
         <Input
           placeholder=" Paid Leave "
-          // value={isPaidLeave ? 'Paid Leave' : 'Unpaid Leave'}
+          value={employee?.paid_leave || ''}
           readOnly
         />
       </TwoColumnRows>
