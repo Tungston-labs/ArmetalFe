@@ -8,7 +8,6 @@ from leave.models import LeaveRequest
 from holidays.models import PublicHoliday
 import calendar
 
-
 class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
     bank_details = EmpBankPaymentSerializer(read_only=True)
 
@@ -26,8 +25,7 @@ class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
         ]
 
 
-from datetime import date, timedelta
-import calendar
+
 
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source='employee.name', read_only=True)
@@ -49,18 +47,21 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         first_day = date(year, month, 1)
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
-        # --- Identify Company Off Days and Holidays ---
-        holidays_qs = PublicHoliday.objects.filter(date__range=(first_day, last_day), company=employee.department.company)
+        # --- Identify Company Off Days & Holidays ---
+        holidays_qs = PublicHoliday.objects.filter(
+            date__range=(first_day, last_day),
+            company=employee.department.company
+        )
         holidays = set()
         company_off_days = set()
 
         for h in holidays_qs:
             if h.holiday_type == 'company_off_day':
-                company_off_days.add(h.date.weekday())
+                company_off_days.add(h.date.weekday())  # weekday index (0=Mon)
             else:
                 holidays.add(h.date)
 
-        # --- Compute Working Days ---
+        # --- Working Days ---
         working_days = sum(
             1 for d in range((last_day - first_day).days + 1)
             if (first_day + timedelta(days=d)).weekday() not in company_off_days
@@ -71,8 +72,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # --- Attendance ---
         attendances = Attendance.objects.filter(employee=employee, date__range=(first_day, last_day))
         total_present_hours = 0
-        full_days = 0
-        half_days = 0
+        full_days = half_days = 0
 
         for att in attendances:
             hours = float(att.total_hours or 0)
@@ -84,12 +84,11 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         days_present = full_days + (half_days * 0.5)
 
-        # --- Approved Leaves ---
+        # --- Approved Leave Days ---
         leave_requests = LeaveRequest.objects.filter(
             employee=employee, status='approved',
             from_date__lte=last_day, to_date__gte=first_day
         )
-
         approved_leave_dates = set()
         for leave in leave_requests:
             start = max(leave.from_date, first_day)
@@ -97,8 +96,8 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             for n in range((end - start).days + 1):
                 approved_leave_dates.add(start + timedelta(days=n))
 
-        # --- Unswiped Days (exclude holidays, off days, and approved leave days) ---
-        attendance_dates = set(a.date for a in attendances)
+        # --- Unswiped Days (excluding approved leaves, holidays, and off days) ---
+        attendance_dates = {a.date for a in attendances}
         all_days = [(first_day + timedelta(days=i)) for i in range((last_day - first_day).days + 1)]
 
         unswiped_valid_days = [
@@ -110,12 +109,15 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         ]
         unswiped_days = float(len(unswiped_valid_days))
 
-        # --- LOP Calculation ---
-        # Only consider unswiped days (not in approved leave) + paid_leave from employee model
-        paid_leave_balance = float(employee.paid_leave or 0)
-        lop_days = round(unswiped_days + paid_leave_balance, 2)
+        # --- Paid Leave ---
+        paid_leave_balance = float(employee.paid_leave or 0.0)
 
-        # --- Salary Computation ---
+        # ✅ LOP Days = Unswiped days (not covered by approved leave) - Paid leave coverage
+        # Paid leave compensates absence, not adds to LOP.
+        lop_days = max(unswiped_days - paid_leave_balance, 0)
+        lop_days = round(lop_days, 2)
+
+        # --- Salary Components ---
         basic_salary = float(instance.basic_salary or 0)
         housing_allowance = float(instance.housing_allowance or 0)
         transportation = float(instance.transportation or 0)
@@ -159,7 +161,6 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         data['deductions'] = [d for d in data['deductions'] if d is not None]
         return data
-
 
 
     
