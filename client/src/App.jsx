@@ -53,6 +53,7 @@ import FieldShift from "./Pages/Shift/FieldShift.jsx"
 import FieldDepartment from "./Pages/Shift/FieldDepartment.jsx"
 import FieldInfo from "./Pages/Shift/FieldInfo.jsx";
 import JobDetails from "./Components/JobDetails.jsx";
+import EmployeeHeader from "./Components/EmployeeHeader.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -131,6 +132,7 @@ function App() {
             <Route path="/card" element={<Dashboard />}/>
             
 <Route path="/job" element={<JobDetails />}></Route>
+<Route path="/header" element={<EmployeeHeader />}></Route>
             
           </Route>
         </Route>
