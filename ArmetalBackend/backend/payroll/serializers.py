@@ -50,7 +50,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
         # --- Identify Company Off Days and Holidays ---
-        holidays_qs = PublicHoliday.objects.filter(date__range=(first_day, last_day), company=employee.company)
+        holidays_qs = PublicHoliday.objects.filter(date__range=(first_day, last_day), company=employee.department.company)
         holidays = set()
         company_off_days = set()
 
