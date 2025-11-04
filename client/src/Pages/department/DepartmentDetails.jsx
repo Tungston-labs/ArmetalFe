@@ -217,9 +217,9 @@ const DepartmentDetail = () => {
 
           <ActionArea>
             <ButtonGroup>
-            <DeleteButton onClick={handleDeleteDepartment}>
+            {/* <DeleteButton onClick={handleDeleteDepartment}>
               <FaTrash style={{ width: "14px", height: "14px" }} /> Delete
-            </DeleteButton>
+            </DeleteButton> */}
 
             <AddButton
               onClick={() => {

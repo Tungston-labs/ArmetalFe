@@ -15,33 +15,26 @@ import {
   Title,
   Subtitle,
   Hr,
-  ColumnRow,
+
   InfoGrid,
-  FlexRow,
-  ProfileImage,
-  ApproveButton,
-  IconWrapper,
+
   FullWidthInput,
   TwoColumn,
   TwoColumnRow,
-  TwoColumnRows,
-  SectionTitle,
+ 
   Input,
   InfoSection,
   Label,
   EmployeeImage,
   Select,
-  UploadWrapper,
-  FileName,
-  HiddenFileInput,
-  PlusIcon,
+ 
   UploadWrappers,
   ProfileImages,
   IconWrappers,
   ProfileLabel,
   HiddenFileInputs,
   PlusButtons,
-  FormGroup,
+
   FormGroups,
   ErrorText,
 } from './BasicLevel.Styles';
@@ -58,6 +51,7 @@ export default function AddEmployeeForm() {
   const navigate = useNavigate();
   const { status, error, formData: reduxFormData } = useSelector((state) => state.employee);
   const departmentList = useSelector((state) => state.departments.list);
+const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
@@ -92,14 +86,14 @@ export default function AddEmployeeForm() {
     idcard: null, 
   });
 
-  // Load department list
+
   useEffect(() => {
     if (departmentList.length === 0) {
       dispatch(getDepartments({ page: 1, search: '' }));
     }
   }, [reduxFormData, dispatch, departmentList]);
 
-  // Handle input change
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -108,8 +102,6 @@ export default function AddEmployeeForm() {
   };
 console.log({country});
 
-  // Validate before submit
- // Validate before submit
 const validateForm = () => {
   const newErrors = {};
 
@@ -139,18 +131,18 @@ const validateForm = () => {
     }
   });
 
-  // Phone
+ 
   const phoneRegex = /^[0-9]{10}$/;
-// --- Phone Validation ---
+
 if (formData.phno) {
   if (country === "IN") {
-    // ✅ India: strict 10-digit numbers
+
     const indiaRegex = /^[0-9]{10}$/;
     if (!indiaRegex.test(formData.phno.trim())) {
       newErrors.phno = "Enter a valid 10-digit phone number";
     }
   } else {
-    // 🌍 Other countries: E.164 international format
+   
     const intlRegex = /^\+?[1-9]\d{7,14}$/;
     if (!intlRegex.test(formData.phno.trim())) {
       newErrors.phno = "Enter a valid phone number with country code (e.g. +966512345678)";
@@ -159,13 +151,13 @@ if (formData.phno) {
 }
 
 
-  // Email
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (formData.email && !emailRegex.test(formData.email.trim())) {
     newErrors.email = "Enter a valid email address";
   }
 
-  // --- Date Validations ---
+
   const today = new Date().toISOString().split("T")[0];
   if (dob && dob >= today) {
     newErrors.dob = "Date of birth must be in the past";
@@ -180,7 +172,7 @@ if (formData.phno) {
     newErrors.visa_expiry_date = "Visa expiry must be in the future";
   }
 
-  // Aadhaar
+ 
   const twelveDigitRegex = /^[0-9]{12}$/;
   if (country === "IN") {
     if (!aadar_number || !twelveDigitRegex.test(aadar_number.trim())) {
@@ -193,12 +185,12 @@ if (formData.phno) {
     }
   }
 
-  // Passport
+  
   if (passport_number && !/^[A-Za-z0-9]{6,9}$/.test(passport_number.trim())) {
     newErrors.passport_number = "Enter a valid passport number (6–9 chars)";
   }
 
-  // Insurance
+
   if (insurance_number && insurance_number.trim().length < 5) {
     newErrors.insurance_number = "Insurance number must be at least 5 characters";
   }
@@ -208,7 +200,7 @@ if (formData.phno) {
 };
 
 
-  // Submit form
+
   const handleSubmit = () => {
     if (!validateForm()) return;
 
@@ -240,8 +232,9 @@ if (formData.phno) {
   return (
     <>
     <Navbar/>
+      {loading && <Loader />} 
     <Container>
-      {/* Unsaved changes guard */}
+  
       <UnsavedChangesGuard isDirty={isFormDirty} />
 
       <Header>
@@ -302,8 +295,6 @@ if (formData.phno) {
             <Input name="email" placeholder="Email ID" value={formData.email} onChange={handleChange} autoComplete="off" />
           </FormGroups>
         </TwoColumn>
-
-        {/* Address, DOB, Gender */}
         <InfoSection>
           <FormGroups>
             {errors.address && <ErrorText >{errors.address}</ErrorText>}
@@ -344,168 +335,48 @@ if (formData.phno) {
       </InfoGrid>
 
       <Hr />
-      <JobDetails />
+<JobDetails
+  country={country}
+  departments={departmentList}
+  initialValues={formData}
+  validateParent={validateForm}
+  onNext={async (jobPlain, jobFormData) => {
+    const merged = { ...formData, ...jobPlain };
 
-     
-      {/* /* <SectionTitle>Job Details</SectionTitle>
+    setLoading(true); // 🔹 show loader before submission
 
-      <TwoColumnRows>
-       <FormGroups>
-  {errors.department_id && <ErrorText>{errors.department_id}</ErrorText>}
-  <Label htmlFor="department_id">Department</Label>
-  <Select
-    name="department_id"
-    value={formData.department_id}
-    onChange={handleChange}
-    autoComplete="off"
-  >
-    <option value="">Select Department</option>
-    {departmentList.map((dept) => (
-      <option key={dept.id} value={dept.id}>
-        {dept.name}
-      </option>
-    ))}
-  </Select>
-</FormGroups>
+    try {
+      dispatch(setBasicFormData(merged));
+      const res = await dispatch(submitEmployee({ basic: merged }));
 
-        <FormGroups>
-          {errors.employment_type && <ErrorText >{errors.employment_type}</ErrorText>}
-            <Label>Employee Type</Label>
-        <Select
-  name="employment_type"
-  value={formData.employment_type}
-  onChange={handleChange}
-  autoComplete="off"
->
-  <option value="">Select Employment Type</option>
-  <option value="Full-time">Full-time</option>
-  <option value="Part-time">Part-time</option>
-  <option value="Contract">Contract</option>
-</Select>
+      if (res.meta.requestStatus === "fulfilled") {
+        const id = res.payload?.employee?.id || res.payload?.id;
+        if (id) {
+          dispatch(setEmployeeId(id));
+          setIsFormDirty(false);
+          navigate("/bank-payment");
+        }
+      } else {
+        const backendErrors = res.payload;
+        if (backendErrors && typeof backendErrors === "object") {
+          const newErrors = {};
+          for (const field in backendErrors) {
+            newErrors[field] = Array.isArray(backendErrors[field])
+              ? backendErrors[field][0]
+              : backendErrors[field];
+          }
+          setErrors(newErrors);
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false); // 🔹 hide loader after completion
+    }
+  }}
+/>
 
-        </FormGroups>
-      </TwoColumnRows>
-
-      <TwoColumnRows >
-        <FormGroups>
-          {errors.designation && <ErrorText >{errors.designation}</ErrorText>}
-          <Label>Designation</Label>
-          <Input      
-           name="designation" placeholder="Designation" value={formData.designation} onChange={handleChange} autoComplete="off" />
-        </FormGroups>
-        <FormGroups>
-          {errors.joining_date && <ErrorText>{errors.joining_date}</ErrorText>}
-            <Label>Joining Date</Label>
-          <Input 
-            type="date"
-            name="joining_date"
-            value={formData.joining_date}
-            onChange={handleChange}
-            autoComplete="off"
-          />
-        </FormGroups>
-      </TwoColumnRows>
-
-      <TwoColumnRows>
-        <FormGroups>
-          {errors.total_leave && <ErrorText >{errors.total_leave}</ErrorText>}
-            <Label>Total Leaves</Label>
-          <Input
-            name="total_leave"
-            placeholder="Total Leaves"
-            value={formData.total_leave}
-            onChange={handleChange}
-            autoComplete="off"
-            type="number"
-            min="0"
-          />
-        </FormGroups>
-        <FormGroups >
-          {errors.role && <ErrorText >{errors.role}</ErrorText>}
-            <Label>Roles</Label>
-         <Select
-  name="role"
-  value={formData.role}
-  onChange={handleChange}
-  autoComplete="off"
->
-  <option value="">Select Role</option>
-  <option value="employee">Employee</option>
-  <option value="hr">HR</option>
-  <option value="manager">Manager</option>
-</Select>
-
-        </FormGroups>
-      </TwoColumnRows>
-
-      <SectionTitle>Employee Legal & ID Information</SectionTitle>
-
-<ColumnRow>
-  {[
-    { key: 'phno', label: 'Phone Number' },
-    { key: 'passport_number', label: 'Passport Number' },
-    ...(country === "IN"
-      ? [
-          { key: 'aadar_number', label: 'Aadhaar Number' }
-        ]
-      : [
-          { key: 'visa_expiry_date', label: 'Visa Expiry Date', type: 'date' },
-          { key: 'iqama_number', label: 'Iqama Number' },
-          { key: 'insurance_number', label: 'Insurance Number' },
-        ]),
-    { key: 'contract_expiry_date', label: 'Contract Expiry Date', type: 'date' },
-    { key: 'idcard', label: 'ID Card' },
-  ].map(({ key, label, type }) => (
-    <div key={key} style={{ marginBottom: '1rem' }}>
-    
-
-
-      {errors[key] && (
-        <ErrorText>
-          {errors[key]}
-        </ErrorText>
-      )}
-  <Label htmlFor={key}>{label}</Label>
-     {key === 'idcard' ? (
-  <UploadWrapper onClick={() => document.getElementById("idcard-upload").click()}>
-    <FileName hasFile={!!formData.idcard}>
-      {formData.idcard?.name || "Choose file"}
-    </FileName>
-    <PlusIcon />
-    <HiddenFileInput
-      id="idcard-upload"
-      type="file"
-      name="idcard"
-      accept="image/*"
-      onChange={(e) => {
-        setFormData((prev) => ({ ...prev, idcard: e.target.files[0] }));
-        setIsFormDirty(true);
-      }}
-    />
-  </UploadWrapper>
-) : (
-  <Input
-    id={key}
-    name={key}
-    placeholder={label}
-    type={type || "text"}
-    value={formData[key]}
-    onChange={handleChange}
-  />
-)}
-
-    </div>
-  ))}
-</ColumnRow> * */}
-
-
-
-      {/* Next button */}
-      <FlexRow>
-        <ApproveButton onClick={handleSubmit}>Next</ApproveButton>
-      </FlexRow>
-
-      {status === "loading" && <Loader size="large" tip="Loading..." />}
+  
     </Container>
     </>
   );
