@@ -41,6 +41,16 @@ from leave.models import LeaveRequest
 from django.db.models import Count, OuterRef, Subquery, IntegerField
 from django.utils import timezone
 
+from django.db.models import Count, OuterRef, Subquery, IntegerField, Q
+from django.utils import timezone
+from rest_framework import generics, filters
+from .serializers import DepartmentSerializer
+from .models import Department
+from attendance.models import Attendance
+from leave.models import LeaveRequest
+from reimbursement.models import Reimbursement
+
+
 class DepartmentCreateListView(generics.ListCreateAPIView):
     serializer_class = DepartmentSerializer
     permission_classes = [IsHRAdmin]
@@ -50,6 +60,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
     def get_queryset(self):
         today = timezone.localdate()
 
+        # ✅ Employees who have attendance today
         attendance_subquery = (
             Attendance.objects
             .filter(employee__department=OuterRef("pk"), date=today)
@@ -58,6 +69,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
             .values("c")[:1]
         )
 
+        # ✅ Employees with pending leave requests
         leave_subquery = (
             LeaveRequest.objects
             .filter(employee__department=OuterRef("pk"), status="pending")
@@ -66,6 +78,21 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
             .values("c")[:1]
         )
 
+        # ✅ Employees who are actually on approved leave today
+        todays_leave_subquery = (
+            LeaveRequest.objects
+            .filter(
+                employee__department=OuterRef("pk"),
+                status="approved",
+                from_date__lte=today,
+                to_date__gte=today
+            )
+            .values("employee__department")
+            .annotate(c=Count("employee", distinct=True))
+            .values("c")[:1]
+        )
+
+        # ✅ Reimbursements on hold
         reimbursement_subquery = (
             Reimbursement.objects
             .filter(employee__department=OuterRef("pk"), status="On Hold")
@@ -82,12 +109,12 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
                 attendance_employee_count=Subquery(attendance_subquery, output_field=IntegerField()),
                 leave_request_count=Subquery(leave_subquery, output_field=IntegerField()),
                 reimbursement_request_count=Subquery(reimbursement_subquery, output_field=IntegerField()),
+                todays_leave_employee_count=Subquery(todays_leave_subquery, output_field=IntegerField()),  # ✅ added
             )
         )
 
     def perform_create(self, serializer):
         serializer.save(company=self.request.user.company)
-
 
 
 

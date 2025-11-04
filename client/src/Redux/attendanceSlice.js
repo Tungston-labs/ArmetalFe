@@ -17,16 +17,16 @@ export const getAttendanceList = createAsyncThunk(
 
 export const getAttendanceDetail = createAsyncThunk(
   'attendance/getDetail',
-  async (id, thunkAPI) => {
+  async ({ attendanceId, date }, thunkAPI) => {
     try {
-      console.log("here")
-      const data = await fetchAttendanceDetail(id);
+      const data = await fetchAttendanceDetail(attendanceId, date);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || 'Fetch failed');
     }
   }
 );
+
 
 const attendanceSlice = createSlice({
   name: 'attendance',

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getAttendanceDetail } from '../../Redux/attendanceSlice';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { getAttendanceDetail } from "../../Redux/attendanceSlice";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import { CiCalendarDate } from "react-icons/ci";
 import {
@@ -27,138 +27,171 @@ import {
   ActiveDayBox,
   TotalHours,
   BackArrow,
-} from './Attendance.Style';
-import { FaClock } from 'react-icons/fa';
+} from "./Attendance.Style";
+import { FaClock } from "react-icons/fa";
 import { PiUserCirclePlusThin } from "react-icons/pi";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import Loader from '../../Components/Loader';
 import Header from '../../Components/Header';
 const TimesheetPage = () => {
-  const { id } = useParams(); // <-- attendance id
+  const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-console.log("id====>",id)
+  
+
   const { attendanceDetail, detailLoading } = useSelector(
     (state) => state.attendance
   );
 
-  const [selectedDate, setSelectedDate] = useState('');
-  //dispatch(getAttendanceDetail(id))
-  // format times
-  const formatTime = (datetimeStr) => {
-    if (!datetimeStr) return '---';
-    const date = new Date(datetimeStr.replace(' ', 'T'));
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-  };
+  const [selectedDate, setSelectedDate] = useState("");
+  const [noAttendanceMessage, setNoAttendanceMessage] = useState("");
 
-useEffect(() => {
-  console.log('fetch attendance for id', id);
-  dispatch(getAttendanceDetail(id));
-}, [dispatch, id]);
-
+  // ✅ Fetch attendance by ID & date
   useEffect(() => {
-    
-    if (attendanceDetail?.date) {
+    const fetchData = async () => {
+      if (!id) return;
+      try {
+        const result = await dispatch(
+          getAttendanceDetail({ attendanceId: id, date: selectedDate })
+        );
+
+        if (result?.error || result?.payload?.note) {
+          const message =
+            result?.payload?.note ||
+            result?.payload?.message ||
+            result?.error?.message ||
+            "No attendance available for this date";
+          setNoAttendanceMessage(message);
+        } else if (result?.payload?.sessions?.length === 0) {
+          setNoAttendanceMessage("No attendance available for this date");
+        } else {
+          setNoAttendanceMessage("");
+        }
+      } catch (err) {
+        setNoAttendanceMessage("No attendance available for this date");
+      }
+    };
+
+    fetchData();
+  }, [id, selectedDate, dispatch]);
+
+  // ✅ Initialize selectedDate only once (when first data loads)
+  useEffect(() => {
+    if (!selectedDate && attendanceDetail?.date) {
       setSelectedDate(attendanceDetail.date);
     }
   }, [attendanceDetail]);
 
-  if (detailLoading) return<Loader/> ;
- // if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
-  if (!attendanceDetail) return <p>No data found</p>;
-
-  // Safely destructure with fallback
-  const employee = attendanceDetail?.employee ?? {};
-  const sessions = attendanceDetail?.sessions ?? [];
-
-  // helpers for week days
-  const getWeekDays = (dateStr) => {
-    if (!dateStr) return [];
-    const baseDate = new Date(dateStr);
-    const startOfWeek = new Date(baseDate);
-    const dow = baseDate.getDay();
-    const mondayOffset = dow === 0 ? -6 : 1 - dow;
-    startOfWeek.setDate(baseDate.getDate() + mondayOffset);
-
-    return Array.from({ length: 6 }, (_, i) => {
-      const d = new Date(startOfWeek);
-      d.setDate(startOfWeek.getDate() + i);
-      return d;
+  const formatTime = (datetimeStr) => {
+    if (!datetimeStr) return "---";
+    const date = new Date(datetimeStr.replace(" ", "T"));
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
+  if (detailLoading) return <Loader />;
+
+  const employee = attendanceDetail?.employee ?? {};
+  const sessions = attendanceDetail?.sessions ?? [];
+  // const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
+  const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
+
+  const today = new Date();
+
+ // ✅ Include Sunday (7 days total)
+const getWeekDays = (dateStr) => {
+  if (!dateStr) return [];
+  const baseDate = new Date(dateStr);
+
+  // Find Monday of the current week
+  const startOfWeek = new Date(baseDate);
+  const day = baseDate.getDay();
+  const mondayOffset = day === 0 ? -6 : 1 - day;
+  startOfWeek.setDate(baseDate.getDate() + mondayOffset);
+
+  // Generate 7 days (Mon–Sun)
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    return d;
+  });
+};
+
+
   const weekDays = selectedDate ? getWeekDays(selectedDate) : [];
   const monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
   ];
   const dayNames = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
+    "Sunday", "Monday", "Tuesday", "Wednesday",
+    "Thursday", "Friday", "Saturday",
   ];
-  const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
+
+  // ✅ Navigate previous date
+  const handlePreviousDay = () => {
+    const prevDate = new Date(selectedDateObj);
+    prevDate.setDate(prevDate.getDate() - 1);
+    setSelectedDate(prevDate.toISOString().split("T")[0]);
+  };
+
+  // ✅ Navigate next date (disabled for future)
+  const handleNextDay = () => {
+    const nextDate = new Date(selectedDateObj);
+    nextDate.setDate(nextDate.getDate() + 1);
+    if (nextDate > today) {
+      setNoAttendanceMessage("No attendance available for this date");
+      return;
+    }
+    setSelectedDate(nextDate.toISOString().split("T")[0]);
+  };
+
+  const isFutureDate = selectedDateObj > today;
+
     const handleBack= (deptId) => {
     navigate(`/employee-on-present?department_id=${deptId}`);
   };
   return (
     <>
+    
     <Header employee={employee}/>
     <Container>
-      {/* Header Section */}
-      <HeaderSection>
+      {/* Header */}
+      {/* <HeaderSection>
         <InfoGrid>
-         <BackArrow onClick={handleBack} />
-
-
-          <div style={{ width: '10%' }}>
+          <BackArrow onClick={() => navigate("/employee-on-present")} />
+          <div style={{ width: "10%" }}>
             {employee?.profile_pic ? (
-              <ProfileImage src={employee?.profile_pic} alt="Employee" />
+              <ProfileImage src={employee.profile_pic} alt="Employee" />
             ) : (
-              <PiUserCirclePlusThin size={100} style={{ color: '#aaa' }} />
+              <PiUserCirclePlusThin size={100} style={{ color: "#aaa" }} />
             )}
           </div>
 
           <div
             style={{
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'space-between',
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-between",
             }}
           >
             <TwoColumn>
-              <Input value={employee?.name ?? ''} readOnly />
+              <Input value={employee?.name ?? ""} readOnly />
             </TwoColumn>
 
             <InfoSection>
               <TwoColumnRow>
-                <Input
-                  value={selectedDate ?? ''}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  type="date"
-                />
+                <Input value={selectedDate ?? ""} readOnly type="date" />
               </TwoColumnRow>
             </InfoSection>
           </div>
         </InfoGrid>
-      </HeaderSection>
+      </HeaderSection> */}
 
       <Hr />
 
@@ -167,38 +200,70 @@ useEffect(() => {
         <WorkingInfo>
           <div>
             <strong>
-              Monthly: {attendanceDetail?.monthly_hours_formatted ?? '00:00'} hrs
+              Monthly: {attendanceDetail?.monthly_hours_formatted ?? "00:00"} hrs
             </strong>
           </div>
           <div>
             <strong>
-              Weekly: {attendanceDetail?.weekly_hours_formatted ?? '00:00'} hrs
+              Weekly: {attendanceDetail?.weekly_hours_formatted ?? "00:00"} hrs
             </strong>
           </div>
         </WorkingInfo>
 
         <DateDetails>
-          <div className="date-block">
-            <CiCalendarDate size={28} />
-            <h1>{selectedDateObj.getDate()}</h1>
+          <GoChevronLeft
+            size={28}
+            style={{ cursor: "pointer" }}
+            onClick={handlePreviousDay}
+          />
+
+          {/* ✅ React DatePicker */}
+          <div className="date-block" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <DatePicker
+              selected={selectedDateObj}
+              onChange={(date) => {
+                if (date > today) {
+                  setNoAttendanceMessage("No attendance available for this date");
+                  return;
+                }
+                setSelectedDate(date.toISOString().split("T")[0]);
+              }}
+              dateFormat="yyyy-MM-dd"
+              maxDate={today}
+              customInput={
+                <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                  <CiCalendarDate size={28} />
+                  <h1 style={{ marginLeft: "5px" }}>
+                    {selectedDateObj.getDate() || "--"}
+                  </h1>
+                </div>
+              }
+            />
             <div className="month-day">
               <strong>{monthNames[selectedDateObj.getMonth()]}</strong>
               <p>{dayNames[selectedDateObj.getDay()]}</p>
             </div>
           </div>
-          <GoChevronLeft size={20} />
-          <GoChevronRight size={20} />
+
+          <GoChevronRight
+            size={28}
+            style={{
+              cursor: selectedDateObj >= today ? "not-allowed" : "pointer",
+              opacity: selectedDateObj >= today ? 0.4 : 1,
+            }}
+            onClick={handleNextDay}
+          />
         </DateDetails>
       </DateWrapper>
 
-      {/* Weekday Boxes */}
+      {/* Week Day Boxes */}
       <DayBoxes>
         {weekDays.map((dayDate, i) => {
-          const iso = dayDate.toISOString().split('T')[0];
+          const iso = dayDate.toISOString().split("T")[0];
           const isActive = iso === selectedDate;
           const Component = isActive ? ActiveDayBox : DayBox;
           return (
-            <Component key={i} onClick={() => setSelectedDate(iso)}>
+            <Component key={i}>
               <strong>{dayNames[dayDate.getDay()].slice(0, 3)}</strong>
               <div>{dayDate.getDate()}</div>
               <p>{monthNames[dayDate.getMonth()]}</p>
@@ -207,7 +272,7 @@ useEffect(() => {
         })}
       </DayBoxes>
 
-      {/* Sessions Table */}
+      {/* Table */}
       <Table>
         <thead>
           <tr>
@@ -217,7 +282,18 @@ useEffect(() => {
           </tr>
         </thead>
         <tbody>
-          {sessions.length > 0 ? (
+          {isFutureDate || noAttendanceMessage || sessions.length === 0 ? (
+            <TableRow>
+              <td colSpan={3} style={{ textAlign: "center", color: "#777" }}>
+                {typeof noAttendanceMessage === "object"
+                  ? noAttendanceMessage.message
+                  : noAttendanceMessage ||
+                    (isFutureDate
+                      ? "No attendance available for this date"
+                      : "No sessions found")}
+              </td>
+            </TableRow>
+          ) : (
             sessions.map((s, idx) => (
               <TableRow key={idx}>
                 <TimeCell>{formatTime(s?.time_in)}</TimeCell>
@@ -225,10 +301,7 @@ useEffect(() => {
                   <TimeIcon>
                     <FaClock />
                   </TimeIcon>
-                  <span>
-                    ..................................... To
-                    .....................................
-                  </span>
+                  <span>............. To .............</span>
                   <TimeIcon>
                     <FaClock />
                   </TimeIcon>
@@ -236,21 +309,17 @@ useEffect(() => {
                 <TimeCell>{formatTime(s?.time_out)}</TimeCell>
               </TableRow>
             ))
-          ) : (
-            <TableRow>
-              <td colSpan={3} style={{ textAlign: 'center' }}>
-                No sessions
-              </td>
-            </TableRow>
           )}
         </tbody>
       </Table>
 
-     <TotalHours>
-  <strong>Total Hours Worked:</strong>{" "}
-  {attendanceDetail?.total_hours_formatted ?? "00:00"} hrs
-</TotalHours>
-
+      <TotalHours>
+        <strong>Total Hours Worked:</strong>{" "}
+        {!isFutureDate
+          ? attendanceDetail?.total_hours_formatted ?? "00:00"
+          : "00:00"}{" "}
+        hrs
+      </TotalHours>
     </Container>
     </>
   );

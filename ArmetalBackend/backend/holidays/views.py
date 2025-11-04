@@ -31,9 +31,16 @@ class PublicHolidayDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView)
 
 # Employee View
 class PublicHolidayEmployeeListView(generics.ListAPIView):
-    queryset = PublicHoliday.objects.all().order_by('date')
     serializer_class = PublicHolidaySerializer
     permission_classes = [IsAuthenticated, IsEmployee]
+
+    def get_queryset(self):
+        return (
+            PublicHoliday.objects
+            .filter(company=self.request.user.company)
+            .exclude(holiday_type='company_off_day')
+            .order_by('date')
+        )
 
 
 

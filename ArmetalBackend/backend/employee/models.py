@@ -22,6 +22,7 @@ class Employee_db(TimeStampedModel):
     employee_id = models.CharField(max_length=200, unique=True, editable=False)
     password = models.CharField(max_length=200,unique=True,null=True,blank=True)
     name = EncryptedCharField(max_length=500)
+    name_search = models.CharField(max_length=500, db_index=True, blank=True, null=True)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     email = models.EmailField(unique=True)
     phno = EncryptedCharField(max_length=500,unique=True,null=True,blank=True)
@@ -42,7 +43,8 @@ class Employee_db(TimeStampedModel):
     insurance_number = EncryptedCharField(max_length=500)
     visa_expiry_date = models.DateField(blank=True, null=True)
     contract_expiry_date = models.DateField(blank=True,null=True)
-    total_leave = models.IntegerField(null=True,blank=True)
+    total_leave = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    paid_leave = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     idcard = models.ImageField(upload_to='idcard_pics/', blank=True, null=True)
     ROLE_CHOICES = (
         ('employee', 'Employee'),
@@ -57,13 +59,19 @@ class Employee_db(TimeStampedModel):
 
 
     def save(self, *args, **kwargs):
+        # Generate employee_id if missing
         if not self.employee_id:
             company_name = self.department.company.name if self.department and self.department.company else "DEF"
             department_name = self.department.name if self.department else "GEN"
             self.employee_id = generate_employee_id(company_name, department_name)
 
-        # Create user if not already linked
-        if not hasattr(self, 'user') or self.user is None:
+        # Always refresh searchable name
+        if self.name:
+            clean_name = str(self.name).strip().lower()
+            self.name_search = clean_name
+
+        # Create linked user if missing
+        if not getattr(self, 'user', None):
             password = generate_password()
             self.password = password
             self.user = User.objects.create_user(
@@ -71,20 +79,16 @@ class Employee_db(TimeStampedModel):
                 email=self.email,
                 password=password,
                 is_employee=True,
-                is_hr=self.role == 'hr', 
+                is_hr=self.role == 'hr',
                 company=self.department.company if self.department else None
             )
         else:
-            # If user exists and role is changed to 'hr', update the flag
+            # Keep role sync with user
             self.user.is_hr = self.role == 'hr'
             self.user.save()
 
         super().save(*args, **kwargs)
 
-
-    def __str__(self):
-        
-        return f"{self.name} ({self.employee_id})"
 
 
 class EmpBankPaymentModel(models.Model):

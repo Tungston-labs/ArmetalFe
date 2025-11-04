@@ -1,28 +1,28 @@
-from rest_framework import generics,status,filters
+from rest_framework import generics, status, filters,serializers
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
+from django.utils import timezone
+from django.utils.dateparse import parse_date
+from datetime import timedelta, date
+import calendar
+
 from .models import LeaveRequest
 from .serializers import LeaveRequestSerializer
 from employee.models import Employee_db
-from user.permissions import IsEmployee,IsHRAdmin
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from user.permissions import IsEmployee, IsHRAdmin
 from shared.pagination import CustomPagination
-
+from holidays.models import PublicHoliday
 from django.core.mail import EmailMessage
-from rest_framework import generics, filters
-from rest_framework.permissions import IsAuthenticated
-from leave.models import LeaveRequest
-from leave.serializers import LeaveRequestSerializer
-from shared.pagination import CustomPagination
-from employee.models import Employee_db
-from user.permissions import IsEmployee
+from rest_framework.views import APIView
 
-from rest_framework.response import Response
 
+# ✅ Employee: List + Create Leave Requests
 class LeaveRequestCreateListView(generics.ListCreateAPIView):
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsEmployee]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'employee_id']
+    search_fields = ['employee__name']
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -30,15 +30,11 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
             employee__user=self.request.user
         ).order_by("-created_at")
 
-
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-
-        # Filter counts
         pending_count = queryset.filter(status='pending').count()
-        lop_count = queryset.filter(leave_type='earned').count()  # or whatever leave type you count as LOP
+        lop_count = queryset.filter(leave_type='earned').count()
 
-        # Paginated list
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
 
@@ -50,15 +46,31 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         employee = Employee_db.objects.get(user=self.request.user)
+        from_date = serializer.validated_data.get('from_date')
+        to_date = serializer.validated_data.get('to_date')
+
+        # ✅ Overlap check
+        overlapping = LeaveRequest.objects.filter(
+            employee=employee
+        ).filter(Q(from_date__lte=to_date) & Q(to_date__gte=from_date))
+
+        if overlapping.exists():
+            raise serializers.ValidationError({
+                "detail": "You have already added leave for one or more of the selected dates."
+            })
+
+        # ✅ Save Leave
         leave = serializer.save(employee=employee)
 
+        # ✅ Include half-day details in email
         subject = f"Leave Request from {employee.name}"
         message = (
             f"Dear Sir/Madam,\n\n"
             f"I am writing to formally request leave as per the following details:\n\n"
             f"Leave Type : {leave.leave_type.title()}\n"
-            f"From       : {leave.from_date.strftime('%d-%m-%Y')}\n"
-            f"To         : {leave.to_date.strftime('%d-%m-%Y')}\n"
+            f"From       : {leave.from_date.strftime('%d-%m-%Y')} ({leave.from_date_type.title()})\n"
+            f"To         : {leave.to_date.strftime('%d-%m-%Y')} ({leave.to_date_type.title()})\n"
+            f"Total Days : {leave.calculate_leave_days()}\n"
             f"Reason     : {leave.reason}\n\n"
             f"Regards,\n"
             f"{employee.name}\n"
@@ -66,27 +78,20 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
             f"{employee.email}"
         )
 
-        to_email = [leave.to_email]
-        cc_emails = [leave.cc_email] if leave.cc_email else []
-
         try:
             email = EmailMessage(
                 subject=subject,
                 body=message,
                 from_email=employee.email,
-                to=to_email,
-                cc=cc_emails,
+                to=[leave.to_email],
+                cc=[leave.cc_email] if leave.cc_email else [],
             )
             email.send(fail_silently=False)
         except Exception as e:
             print(f"Email sending failed: {e}")
 
 
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import generics
-
+# ✅ Employee: Cancel Pending Leave
 class LeaveRequestCancelView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, IsEmployee]
 
@@ -97,31 +102,19 @@ class LeaveRequestCancelView(generics.DestroyAPIView):
         try:
             leave = self.get_queryset().get(pk=kwargs['pk'])
             leave.delete()
-  
             return Response(status=status.HTTP_204_NO_CONTENT)
         except LeaveRequest.DoesNotExist:
             return Response({"detail": "Pending leave not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
+# ✅ HR: Leave List View
 
 
-from rest_framework.filters import OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-
-from rest_framework import generics, filters
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import IsAuthenticated
-from leave.models import LeaveRequest
-from leave.serializers import LeaveRequestSerializer
-from shared.pagination import CustomPagination
-from user.permissions import IsHRAdmin
 
 class LeaveRequestAdminListView(generics.ListAPIView):
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['status']
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['employee__name']
     ordering_fields = ['from_date', 'to_date']
     pagination_class = CustomPagination
@@ -129,239 +122,186 @@ class LeaveRequestAdminListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         company = user.company
-
         if not company:
             return LeaveRequest.objects.none()
 
-        queryset = LeaveRequest.objects.filter(
-            employee__department__company=company
-        )
+        queryset = LeaveRequest.objects.filter(employee__department__company=company)
 
-        department_id = self.request.query_params.get('department_id')
-        if department_id:
-            queryset = queryset.filter(employee__department_id=department_id)
+        # ✅ Department filter
+        dept_id = self.request.query_params.get('department_id')
+        if dept_id:
+            queryset = queryset.filter(employee__department_id=dept_id)
+
+        # ✅ Status filter (fix)
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
 
         return queryset.order_by('-created_at')
 
 
-from rest_framework.views import APIView
-from django.utils import timezone
-from employee.models import  Employee_db
-from employee.serializers import EmployeeSerializer  # Use the appropriate serializer
-
-class EmployeesOnLeaveTodayByDepartmentView(APIView):
-    permission_classes = [IsAuthenticated, IsHRAdmin]
-
-    def get(self, request, department_id):
-        today = timezone.now().date()
-
-        leaves_qs = LeaveRequest.objects.filter(
-            status='approved',
-            from_date__lte=today,
-            to_date__gte=today,
-            employee__department_id=department_id
-        )
-
-        employees = Employee_db.objects.filter(id__in=leaves_qs.values_list('employee_id', flat=True))
-        serializer = EmployeeSerializer(employees, many=True)
-
-        return Response(serializer.data)
-
-  
-
-
+# ✅ HR: Leave Detail (Approve / Reject)
 class LeaveRequestAdminDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = LeaveRequest.objects.all()
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'pk'
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.utils.dateparse import parse_date
-from .models import LeaveRequest
-from employee.models import Employee_db
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        instance = self.get_object()
+        emp = instance.employee
 
+        response.data["employee_leave_summary"] = {
+            "employee_id": emp.id,
+            "employee_name": emp.name,
+            "total_leave": emp.total_leave,
+            "paid_leave": emp.paid_leave,
+        }
+        return response
+
+
+# ✅ HR: Employees on Leave (today) by Department
+class EmployeesOnLeaveTodayByDepartmentView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def get(self, request, department_id):
+        today = timezone.now().date()
+        leaves = LeaveRequest.objects.filter(
+            status='approved',
+            from_date__lte=today,
+            to_date__gte=today,
+            employee__department_id=department_id
+        )
+        employees = Employee_db.objects.filter(id__in=leaves.values_list('employee_id', flat=True))
+        from employee.serializers import EmployeeSerializer
+        serializer = EmployeeSerializer(employees, many=True)
+        return Response(serializer.data)
+
+
+# ✅ Department Employees on a Given Date
 class DepartmentEmployeesOnLeaveView(APIView):
     def get(self, request, employee_id):
-        date_str = request.query_params.get('date')  # Expecting ?date=YYYY-MM-DD
+        date_str = request.query_params.get('date')
         if not date_str:
-            return Response(
-                {"error": "Please provide a date in YYYY-MM-DD format as a query parameter."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": "Please provide ?date=YYYY-MM-DD"}, status=400)
 
         leave_date = parse_date(date_str)
         if not leave_date:
-            return Response(
-                {"error": "Invalid date format. Please use YYYY-MM-DD."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": "Invalid date format"}, status=400)
 
         try:
-            # Get the clicked employee
-            employee = Employee_db.objects.get(id=employee_id)
-
-            if not employee.department:
-                return Response(
-                    {"error": "This employee has no department assigned."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Get department details
-            department = employee.department
-
-            # Get all employees in the same department
-            department_employees = Employee_db.objects.filter(department=department)
-
-            # Get approved leave requests for employees in this department for the given date
-            on_leave_employees = LeaveRequest.objects.filter(
-                employee__in=department_employees,
-                status='approved',
-                from_date__lte=leave_date,
-                to_date__gte=leave_date
-            ).select_related('employee')
-
-            # Prepare response data
-            data = {
-                "department": {
-                    "id": department.id,
-                    "name": department.name,
-                    "description": getattr(department, 'description', ''),
-                },
-                "on_leave": [
-                    {
-                        "id": leave.id,  # ✅ add leave request ID
-                        "employee_name": leave.employee.name,
-                        "email": leave.employee.email,
-                        "phone": leave.employee.phno,
-                        "leave_type": leave.leave_type,
-                        "from_date": leave.from_date,
-                        "to_date": leave.to_date,
-                    }
-                    for leave in on_leave_employees
-                ]
-            }
-
-            return Response(data, status=status.HTTP_200_OK)
-
+            emp = Employee_db.objects.get(id=employee_id)
         except Employee_db.DoesNotExist:
-            return Response(
-                {"error": "Employee not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "Employee not found"}, status=404)
+
+        if not emp.department:
+            return Response({"error": "Employee has no department assigned"}, status=400)
+
+        dept = emp.department
+        dept_emps = Employee_db.objects.filter(department=dept)
+
+        leaves = LeaveRequest.objects.filter(
+            employee__in=dept_emps,
+            status='approved',
+            from_date__lte=leave_date,
+            to_date__gte=leave_date
+        ).select_related('employee')
+
+        data = {
+            "department": {"id": dept.id, "name": dept.name},
+            "on_leave": [
+                {
+                    "id": l.id,
+                    "employee_name": l.employee.name,
+                    "email": l.employee.email,
+                    "phone": l.employee.phno,
+                    "leave_type": l.leave_type,
+                    "from_date": l.from_date,
+                    "to_date": l.to_date,
+                    "paid_leave_count": l.employee.paid_leave,
+                    "pending_leave": l.employee.total_leave,
+                } for l in leaves
+            ]
+        }
+        return Response(data)
 
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from employee.models import Employee_db
-from .models import LeaveRequest
-from .serializers import LeaveRequestSerializer
-
+# ✅ Employee: Leave by Status (pending / approved / rejected)
 class LeaveByStatusView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        status = request.query_params.get('status')  # ?status=pending
-
-        if not status:
-            return Response({"error": "Leave status is required as a query parameter."}, status=400)
+        status_param = request.query_params.get('status')
+        if not status_param:
+            return Response({"error": "Leave status is required (?status=pending)"}, status=400)
 
         try:
-            employee = Employee_db.objects.get(user=request.user)
+            emp = Employee_db.objects.get(user=request.user)
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found."}, status=404)
 
-        leaves = LeaveRequest.objects.filter(employee=employee, status=status).order_by('created_at')
+        leaves = LeaveRequest.objects.filter(employee=emp, status=status_param).order_by('created_at')
         serializer = LeaveRequestSerializer(leaves, many=True)
         return Response(serializer.data)
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from employee.models import Employee_db
-from leave.models import LeaveRequest
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from datetime import date, timedelta
-import calendar
-from datetime import date
-from leave.models import LeaveRequest
-from employee.models import Employee_db
-from holidays.models import PublicHoliday
 
 
+# ✅ Employee: Leave Summary View
 class LeaveSummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
-            employee = Employee_db.objects.get(user=request.user)
+            emp = Employee_db.objects.get(user=request.user)
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found."}, status=404)
 
         today = date.today()
-        year = today.year
-        month = today.month
+        year, month = today.year, today.month
         first_day = date(year, month, 1)
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
-        # Get holidays in the current month
-        holidays = set(
-            PublicHoliday.objects.filter(date__range=(first_day, last_day))
-            .values_list('date', flat=True)
-        )
+        # Holidays
+        holidays = set(PublicHoliday.objects.filter(
+            date__range=(first_day, last_day)
+        ).values_list('date', flat=True))
 
-        # Calculate working days (Mon-Sat, excluding Sundays and holidays)
         working_days = sum(
             1 for d in range((last_day - first_day).days + 1)
-            if (first_day + timedelta(days=d)).weekday() != 6
-            and (first_day + timedelta(days=d)) not in holidays
+            if (first_day + timedelta(days=d)).weekday() != 6 and
+               (first_day + timedelta(days=d)) not in holidays
         )
 
-        # ---- YEARLY APPROVED LEAVES ----
-        year_start = date(year, 1, 1)
-        year_end = date(year, 12, 31)
-
-        leave_requests = LeaveRequest.objects.filter(
-            employee=employee,
-            status='approved',
-            from_date__gte=year_start,
-            to_date__lte=year_end
+        # Yearly approved leaves using half-day calculation
+        year_start, year_end = date(year, 1, 1), date(year, 12, 31)
+        approved = LeaveRequest.objects.filter(
+            employee=emp, status='approved',
+            from_date__gte=year_start, to_date__lte=year_end
         )
 
-        total_approved_days = 0
-        for leave in leave_requests:
-            days = (leave.to_date - leave.from_date).days + 1
-            total_approved_days += days
+        total_approved_days = sum(l.calculate_leave_days() for l in approved)
+        allowed = emp.total_leave or 0
+        remaining = max(allowed - total_approved_days, 0)
+        lop_days = max(0, total_approved_days - allowed)
 
-        # LOP Calculation (year basis)
-        allowed_leaves = employee.total_leave or 0
-        remaining_leave = max(allowed_leaves - total_approved_days, 0)
-        lop_days = max(0, total_approved_days - allowed_leaves)
-
-        # Salary calculation (monthly still based on working days)
-        monthly_salary = getattr(employee, "salary", 30000) or 30000
+        monthly_salary = getattr(emp, "salary", 30000) or 30000
         per_day_salary = monthly_salary / working_days if working_days else 0
         lop_amount = round(per_day_salary * lop_days, 2)
 
         return Response({
-            "employee_name": employee.name,
-            "profile_pic": employee.profile_pic.url if employee.profile_pic else None,
-            "total_leave": allowed_leaves,
-            "approved_count": total_approved_days,   # yearly approved leave days
-            "remaining_leave": remaining_leave,      # yearly balance
-            "lop_days": lop_days,                    # yearly lop days
-            "lop_amount": lop_amount,                # lop in money
-            "working_days": working_days,            # monthly working days
+            "employee_name": emp.name,
+            "profile_pic": emp.profile_pic.url if emp.profile_pic else None,
+            "total_leave": allowed,
+            "approved_count": total_approved_days,
+            "remaining_leave": remaining,
+            "lop_days": lop_days,
+            "lop_amount": lop_amount,
+            "working_days": working_days,
             "monthly_salary": monthly_salary,
         })
 
 
-         
-
+# ✅ Employee: Retrieve/Update/Delete own leave
 class LeaveRequestEmpDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = LeaveRequest.objects.all()
     serializer_class = LeaveRequestSerializer

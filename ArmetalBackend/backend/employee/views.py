@@ -21,7 +21,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'employee_id']
+    search_fields = ['name_search', 'employee_id']
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -558,10 +558,12 @@ class DashboardSummaryView(APIView):
 
         # 8. On leave today
         on_leave_today_count = LeaveRequest.objects.filter(
-            from_date__lte=today,
-            to_date__gte=today,
-            employee__department__company=company
-        ).count()
+                from_date__lte=today,
+                to_date__gte=today,
+                employee__department__company=company,
+                status='approved'
+            ).values('employee').distinct().count()
+
 
         return Response({
             "total_employees": {

@@ -165,17 +165,23 @@ const Dashboard = () => {
                   fontFamily: "Satoshi",
                 }}
               >
-                Monthly days:{" "}
+                Monthly Days:{" "}
                 <strong>
-                  {employeeDashData?.attendance_summary?.monthly_working_hours}
+                  {employeeDashData?.attendance_summary?.monthly_days}
                 </strong>
               </p>
 
               <p style={{ display: "flex", justifyContent: "space-between" }}>
-                Total working Hour: <strong>121</strong>
+                Weekly working Hour: <strong>
+                  {employeeDashData?.attendance_summary?.weekly_working_hours}
+                </strong>
               </p>
               <hr></hr>
-              <a href="/">Total working Hour</a>
+              <p style={{ display: "flex", justifyContent: "space-between" }}>
+                Total working Hour: <strong>
+                  {employeeDashData?.attendance_summary?.monthly_working_hours}
+                </strong>
+              </p>
             </TimeTrackingCard>
           </RightColumn>
         </TopSection>
