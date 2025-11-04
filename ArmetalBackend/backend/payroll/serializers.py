@@ -115,7 +115,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # ✅ LOP Days = Unswiped days (not covered by approved leave) - Paid leave coverage
         # Paid leave compensates absence, not adds to LOP.
         lop_days = max(unswiped_days - paid_leave_balance, 0)
-        lop_days = round(lop_days, 2)
+        # lop_days = round(lop_days, 2)
 
         # --- Salary Components ---
         basic_salary = float(instance.basic_salary or 0)
