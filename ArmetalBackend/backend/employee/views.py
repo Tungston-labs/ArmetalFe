@@ -21,7 +21,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'employee_id']
+    search_fields = ['name_search', 'employee_id']
     pagination_class = CustomPagination
 
     def get_queryset(self):
