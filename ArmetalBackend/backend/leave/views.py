@@ -332,12 +332,13 @@ class LeaveSummaryView(APIView):
 
         # --- Paid Leave ---
         paid_leave_balance = float(emp.paid_leave or 0.0)
+        total_leave = float(emp.total_leave or 0.0)
 
         # --- LOP Calculation (same as payroll serializer) ---
         lop_days = max(unswiped_days - paid_leave_balance, 0)
 
         # --- Salary-based LOP Amount ---
-        monthly_salary = float(getattr(emp, "salary", 30000) or 30000)
+        monthly_salary = float(getattr(emp, "salary", 0) or 0)
         per_day_salary = monthly_salary / working_days if working_days > 0 else 0
         lop_amount = round(per_day_salary * lop_days, 2)
 
@@ -349,10 +350,12 @@ class LeaveSummaryView(APIView):
             "days_present": days_present,
             "unswiped_days": unswiped_days,
             "paid_leave_used": paid_leave_balance,
+            "total_leave": total_leave,
             "lop_days": lop_days,
             "lop_amount": lop_amount,
             "monthly_salary": monthly_salary,
         })
+
 
 
 # ✅ Employee: Retrieve/Update/Delete own leave
