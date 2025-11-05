@@ -227,8 +227,9 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
 
         for leave in approved_leaves:
             if leave.from_date and leave.to_date:
-                delta = (leave.to_date - leave.from_date).days + 1
-                leave_days_taken += max(delta, 0)
+                # ✅ Use model method to correctly account for half days
+                leave_days_taken += leave.calculate_leave_days()
+
 
         return {
             'total_leave': total_leave,         # current balance from DB
