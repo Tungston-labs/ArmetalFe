@@ -73,29 +73,7 @@ export const DateSelector = styled.div`
     align-items: center;
     gap: 1rem;
   }
-  /* .left-lesser {
-    font-size: 24px;
-  }
-  .right-greater {
-    font-size: 24px;
-  }
-  @media (min-width: 2000px) {
-    .right-greater {
-      font-size: 50px;
-    }
-    .left-lesser {
-      font-size: 50px;
-    }
-  }
-
-  @media (min-width: 3500px) {
-    .right-greater {
-      font-size: 75px;
-    }
-    .left-lesser {
-      font-size: 75px;
-    }
-  } */
+ 
   .calendar-icon {
     color: #3250b5;
     font-size: 2rem;
@@ -121,22 +99,43 @@ export const DateSelector = styled.div`
   }
 
   .day {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: bold;
   }
 
   .month {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 700;
   }
 
   .weekday {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 400;
   }
 
-  /* Large screens (2000px and above) */
-  @media (min-width: 2000px) {
+    @media (min-width: 769px)and (max-width: 1023px) {
+    .day {
+      font-size: 2.5rem;
+    }
+    .month {
+      font-size: 1.2rem;
+    }
+    .weekday {
+      font-size: 1.2rem;
+    }
+  }
+    @media (min-width: 1024px)and (max-width: 1440px) {
+    .day {
+      font-size: 3rem;
+    }
+    .month {
+      font-size: 1.5rem;
+    }
+    .weekday {
+      font-size: 1.2rem;
+    }
+  }
+  @media (min-width: 1441px)and (max-width: 1919px) {
     .day {
       font-size: 4rem;
     }
@@ -147,9 +146,19 @@ export const DateSelector = styled.div`
       font-size: 1.6rem;
     }
   }
-
-  /* Extra-large screens (3500px and above) */
-  @media (min-width: 3500px) {
+ 
+  @media (min-width: 1920px)and (max-width: 2559px) {
+    .day {
+      font-size: 4rem;
+    }
+    .month {
+      font-size: 2rem;
+    }
+    .weekday {
+      font-size: 1.6rem;
+    }
+  }
+  @media (min-width: 2560px) and (max-width: 3840px) {
     .day {
       font-size: 5rem;
     }
@@ -160,11 +169,21 @@ export const DateSelector = styled.div`
       font-size: 2.5rem;
     }
   }
-
+  @media (min-width: 3841px) {
+    .day {
+      font-size: 4rem;
+    }
+    .month {
+      font-size: 2rem;
+    }
+    .weekday {
+      font-size: 1.6rem;
+    }
+  }
   @media (max-width: 1024px) {
     justify-content: center;
     gap: 2rem;
-
+   flex-direction: column;
     .search-department {
       order: 2;
       width: 100%;
@@ -224,6 +243,41 @@ export const Calendar = styled.div`
   gap: 4rem;
   width: 100%;
   height: 84px;
+
+    
+
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    gap: 2rem;
+    height: 100px;
+  }
+
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    gap: 2rem;
+    height: 70px;
+  }
+
+
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    gap: 1rem;
+    height: 70px;
+  }
+@media (min-width: 769px) and (max-width: 1023px) {
+    gap: 0.8rem;
+    height: 100px;
+  }
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+    height: auto;
+  }
+  @media (min-width: 2560px) and (max-width: 3499px) {
+    gap: 5rem;
+    height: 100px;
+  }
+  @media (min-width: 3500px) {
+    gap: 6rem;
+    height: 200px;
+  }
 `;
 
 export const Day = styled.div`
@@ -242,6 +296,21 @@ export const Day = styled.div`
   strong {
     display: block;
   }
+    @media (max-width: 768px)  {
+    padding: 1rem ;
+    height:65px;
+    font-size: 10px;
+  }
+    @media (min-width: 769px) and (max-width: 1023px) {
+    padding: 1rem ;
+    height:65px;
+    font-size: 10px;
+  }
+     @media (min-width: 1024px) and (max-width: 1440px) {
+    padding: 1rem ;
+    height:75px;
+    font-size: 13px;
+  }
   @media (min-width: 2000px) {
     padding: 1.2rem 1.5;
     height: 124px;
@@ -255,16 +324,60 @@ export const Day = styled.div`
 `;
 
 export const EmployeesPanel = styled.div`
-  width: 25%;
-  background: white;
-
-  padding: 0.1rem;
+  background: #fff;
+  padding: 0.5rem;
+  margin-top: 20px;
+  border: none;
+  transition: all 0.3s ease;
   border-radius: 12px;
+  min-height: 40vh;
   max-height: 60vh;
   overflow-y: auto;
-  // box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  margin-top: 20px;
+  overflow-x: hidden;
+
+  @media (max-width: 1440px) {
+    width: 30%;
+    min-height: 45vh;
+    max-height: 65vh;
+  }
+
+  /* 📱 Tablets */
+  @media (max-width: 1024px) {
+    width: 40%;
+    min-height: 50vh;
+    max-height: 70vh;
+    border-radius: 10px;
+  }
+@media (min-width: 769px) and (max-width: 1023px) {
+    width: 100%;
+    min-height: 35vh;
+    max-height: 50vh;
+
+    margin-top: 10px;
+  }
+  /* 📱 Large mobile devices */
+  @media (max-width: 768px) {
+    width: 100%;
+    min-height: 35vh;
+    max-height: 55vh;
+    /* padding: 0.5rem; */
+    margin-top: 10px;
+  }
+
+  /* 🖥️ 4K and ultra-wide displays */
+  @media (min-width: 2560px) {
+    width: 20%;
+    min-height: 50vh;
+    max-height: 70vh;
+    border-radius: 14px;
+    padding: 1rem;
+  }
 `;
+
+
+
+
+
 export const DepartmentDropdown = styled.select`
   padding: 0.6rem 2rem 0.6rem 0.6rem; 
   font-size: 0.9rem;
@@ -301,7 +414,6 @@ export const EmployeeCard = styled.div`
   cursor: pointer;
   border-radius: 7px;
   border: 0.2px;
-  // box-shadow: 0 0 4.2px 0 rgba(0, 0, 0, 0.25);
   box-shadow: 0px 0px 4.2px 0px rgba(0, 0, 0, 0.25);
 
   @media (min-width: 2000px) {
@@ -323,16 +435,19 @@ export const EmployeeCard = styled.div`
       width: 70px;
       height: 70px;
     }
+    
   }
   span {
     @media (min-width: 2000px) {
-      font-size: 35px;
+      font-size: 30px;
     }
     @media (min-width: 3500px) {
       font-size: 50px;
     }
   }
 `;
+
+
 export const Head = styled.h2`
   font-size: 19px;
   font-family: "Satoshi", sans-serif;
@@ -358,16 +473,54 @@ export const TaskPanel = styled.div`
   flex: 1;
   background: #fff;
   padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 9px;
+  border: 0.2px solid #000;
+  box-shadow: 0 0 4.3px 0 rgba(0, 0, 0, 0.25);
   overflow-y: auto;
   max-height: 60vh;
   margin-top: -1rem;
-  border-radius: 9px;
-  border: 0.2px solid #000;
-  background: #fff;
-  box-shadow: 0 0 4.3px 0 rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+
+  /* ✅ Medium screens (laptops / desktops) */
+  @media (max-width: 1440px) {
+    padding: 0.9rem;
+    max-height: 65vh;
+  }
+
+  /* ✅ Tablets */
+  @media (max-width: 1024px) {
+    padding: 0.8rem;
+    border-radius: 8px;
+    margin-top: 0;
+    max-height: 70vh;
+  }
+
+  /* ✅ Large mobile devices */
+  @media (min-width: 768px)  and (max-width: 1023px) {
+    padding: 0.75rem;
+    border-radius: 8px;
+    max-height: 50vh;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+
+  }
+
+  /* ✅ Small mobile devices */
+  @media (max-width: 480px) {
+    padding: 0.6rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+    box-shadow: none;
+    border: 0.5px solid #ccc;
+  }
+
+  /* ✅ Ultra-wide / 4K screens */
+  @media (min-width: 2560px) {
+    padding: 2rem;
+    border-radius: 12px;
+    max-height: 70vh;
+  }
 `;
+
 
 export const TaskHeader = styled.div`
   display: flex;
@@ -417,45 +570,159 @@ export const TaskCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  transition: all 0.3s ease;
 
-  h4 {
-    margin: 0;
-    font-family: "Satoshi";
-    font-weight: 700;
-    font-size: 14px;
-    color: #333;
-  }
+  h4,
   h5 {
     margin: 0;
-    font-family: "Satoshi";
+    font-family: "Satoshi", sans-serif;
     font-weight: 700;
     font-size: 14px;
     color: #333;
   }
+
   p {
     margin: 0;
-    font-family: "Satoshi";
+    font-family: "Satoshi", sans-serif;
     font-weight: 700;
     font-size: 13px;
-    color: #444;
+    color: #333;
   }
 
   small {
     color: gray;
     font-size: 12px;
-    font-family: "Satoshi";
+    font-family: "Satoshi", sans-serif;
+  }
+
+  /* 📱 Small mobile screens */
+  @media (max-width: 480px) {
+    padding: 0.7rem;
+    gap: 0.4rem;
+
+    h4,
+    h5 {
+      font-size: 12px;
+    }
+
+    p {
+      font-size: 11px;
+    }
+
+    small {
+      font-size: 10px;
+    }
+  }
+
+  /* 💻 Tablets and small laptops */
+  @media (max-width: 1024px) and (min-width: 481px) {
+    padding: 0.9rem;
+    gap: 0.45rem;
+
+    h4,
+    h5 {
+      font-size: 13px;
+    }
+
+    p {
+      font-size: 12px;
+    }
+
+    small {
+      font-size: 11px;
+    }
+  }
+
+  /* 🖥️ Larger desktops */
+  @media (min-width: 1440px) {
+    padding: 1.2rem;
+    h4,
+    h5 {
+      font-size: 16px;
+    }
+    p {
+      font-size: 15px;
+    }
+    small {
+      font-size: 13px;
+    }
+  }
+
+  /* 🖥️ 4K and ultrawide displays */
+  @media (min-width: 2560px) {
+    padding: 2rem;
+    border-radius: 14px;
+
+    h4,
+    h5 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    small {
+      font-size: 15px;
+    }
+  }
+  @media (min-width:3840px) {
+    padding: 2rem;
+    border-radius: 14px;
+
+    h4,
+    h5 {
+      font-size: 40px;
+    }
+
+    p {
+      font-size: 35px;
+    }
+
+    small {
+      font-size: 30px;
+    }
   }
 `;
 
-// export const Description = styled.p`
-
-//   font-size: 0.9rem;
-//   margin: 0.8rem 0;
-// `;
 
 export const TimeBox = styled.div`
   font-weight: bold;
+  font-family: "Satoshi", sans-serif;
+  color: #333;
+  transition: all 0.3s ease;
+
+  /* 📱 Small mobile screens */
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
+
+  /* 💻 Tablets and small laptops */
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 13px;
+  }
+
+  /* 🖥️ Desktops */
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 14px;
+  }
+
+  /* 🖥️ Large monitors (2K–4K) */
+  @media (min-width: 1441px) {
+    font-size: 18px;
+  }
+
+  /* 🖥️ Ultra-wide / 4K+ displays */
+  @media (min-width: 2560px) {
+    font-size: 22px;
+  }
+
+   @media (min-width: 3840px) {
+    font-size: 28px;
+  }
 `;
+
+
 export const HRManager = styled.div`
   display: flex;
   height: 30px;
@@ -651,6 +918,14 @@ export const NoTaskWrapper = styled.div`
       width: 1000px;
       height: 900px;
     }
+     @media (min-width: 769px) and (max-width: 1023px) {
+      width: 220px;
+      height: 220px;
+  }
+    @media (max-width: 768px) {
+      width: 250px;
+      height: 250px;
+  }
   }
 `;
 export const Heading = styled.h2`
@@ -675,5 +950,48 @@ export const Heading = styled.h2`
 
   @media (min-width: 3500px) {
     font-size: 49px;
+  }
+`;
+export const TaskLayout = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  align-items: flex-start;
+
+  /* For small devices: keep side-by-side (40% / 60%) */
+  @media (max-width: 768px) {
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    & > div:first-child {
+      width: 40%;
+    }
+
+    & > div:last-child {
+      width: 60%;
+    }
+  }
+
+  /* For extra small screens, stack vertically */
+  @media (max-width: 480px) {
+    flex-direction: column;
+
+    & > div:first-child,
+    & > div:last-child {
+      width: 100%;
+    }
+  }
+
+  /* For medium and large screens: normal layout */
+  @media (min-width: 769px) {
+    flex-direction: row;
+
+    & > div:first-child {
+      width: 30%;
+    }
+
+    & > div:last-child {
+      flex: 1;
+    }
   }
 `;

@@ -287,29 +287,132 @@ export const StyledTable = styled.table`
   margin-top: 1rem;
   text-align: left;
   font-family: "Satoshi";
-
-  /* Scroll on small screens */
-  // display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 
-  td {
-    text-align: left;
-    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
-    white-space: nowrap;
-    background-color: white;
-    border: none;
-    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
-  }
 
-  th {
-    text-align: left;
-    background-color: #304eb0;
-    color: white;
-    font-family: Raleway;
-    padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
-    font-size: clamp(0.9rem, 1vw, 1.8rem); /* responsive font */
+  td {
+  text-align: left;
+  padding: 8px 10px;
+  white-space: nowrap;
+  background-color: white;
+  border: none;
+  font-size: 1rem; 
+}
+
+/* Small screens (mobile) */
+@media (max-width: 600px) {
+  td {
+    font-size: 0.75rem;
+    padding: 5px 8px;
   }
+}
+
+/* Tablets and small laptops */
+@media (min-width: 601px) and (max-width: 1024px) {
+  td {
+    font-size: 0.8rem;
+    padding: 3px 9px;
+  }
+}
+
+/* Large screens (desktop) */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  td {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+  }
+}
+@media (min-width: 1440px) and (max-width: 1599px) {
+  td {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+  }
+}
+@media (min-width: 1560px) and (max-width: 1919px) {
+  td {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+  }
+}
+
+@media (min-width: 1920px)and (max-width: 2559px) {
+  td {
+    font-size: 1.1rem;
+    padding: 5px 12px;
+  }
+}
+
+@media (min-width: 2560px) and (max-width: 3839px) {
+  td {
+    font-size: 1.5rem;
+    padding: 10px 10px;
+  }
+}
+@media (min-width: 3840px) {
+  td{
+    font-size: 2rem;
+    padding: 10px 15px;
+  }
+}
+
+
+ th {
+  text-align: left;
+  background-color: #304eb0;
+  color: white;
+  font-family: Raleway, sans-serif;
+   padding: 6px 6px;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  th {
+    padding: 4px 5px;
+    font-size: 0.85rem;
+  }
+}
+@media (min-width: 1025) and (max-width: 1440px) {
+  th {
+    padding: 6px 6px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 1441px) and (max-width: 1559px) {
+  th {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 1560px) and (max-width: 1919px) {
+  th {
+    padding: 10px 8px;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2559px) {
+  th {
+    padding: 9px 8px;
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 2560px) and (max-width: 3839px) {
+  th {
+    padding: 9px 8px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 3840px) {
+  th {
+    padding: 12px 16px;
+    font-size: 1.8rem;
+  }
+}
+
 
   tbody tr {
     box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
@@ -334,21 +437,6 @@ export const StyledTable = styled.table`
     background-color: #f5f5f5;
   }
 
-  @media (min-width: 2560px) {
-    td,
-    th {
-      font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
-      padding: clamp(8px, 1vw, 24px);
-    }
-  }
-
-  @media (min-width: 3840px) {
-    td,
-    th {
-      font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
-      padding: clamp(10px, 2vw, 32px);
-    }
-  }
 `;
 export const Avatar = styled.img`
   width: 32px;

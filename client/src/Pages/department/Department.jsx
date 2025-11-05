@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartments, createNewDepartment } from '../../Redux/departmentSlice.js';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,6 @@ import {
   ActionArea,
   AddButton,
   SearchInput,
-  SearchIcon,
   CardGrid,
   DepartmentCard,
   HeadInfo,
@@ -39,12 +38,12 @@ import {
   BackArrow,
 } from './AddDepartment.Styles';
 
-import { Spin } from "antd";
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
 import Navbar from '../../Components/Navbar.jsx';
-import Loader from "../../Components/Loader.jsx"
+import Loader from "../../Components/Loader.jsx";
+
 const Department = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -58,48 +57,51 @@ const Department = () => {
   });
   const [formError, setFormError] = useState("");
 
+  // Fetch all departments once on mount
   useEffect(() => {
-  const delayDebounce = setTimeout(() => {
-    dispatch(getDepartments({ page: 1, search: search.trim() }));
-  }, 500); // waits 500ms after typing stops
+    dispatch(getDepartments({ page: 1, search: '' }));
+  }, [dispatch]);
 
-  return () => clearTimeout(delayDebounce);
-}, [dispatch, search]);
-
+  // Client-side search (filter)
+  const filteredDepartments = useMemo(() => {
+    if (!search.trim()) return departments;
+    return departments.filter((dept) =>
+      dept.name.toLowerCase().includes(search.toLowerCase()) ||
+      dept.department_code.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [departments, search]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
     let updatedValue = value;
-  
-    // force uppercase for department name and code
+
+    // Force uppercase for name and code
     if (name === "name" || name === "department_code") {
       updatedValue = value.toUpperCase();
     }
-  
+
     setFormData({ ...formData, [name]: updatedValue });
   };
-  
 
   const handleSave = async () => {
     if (formData.department_code.length > 10) {
-    setFormError("Department code cannot be more than 10 characters.");
-    return;
-  }
+      setFormError("Department code cannot be more than 10 characters.");
+      return;
+    }
     try {
       const result = await dispatch(createNewDepartment(formData));
 
       if (createNewDepartment.fulfilled.match(result)) {
         setShowModal(false);
         setFormData({ name: '', department_code: '' });
-        setFormError(""); // clear old error
-        dispatch(getDepartments({ page: 1, search: search.trim() }));
+        setFormError("");
+        dispatch(getDepartments({ page: 1, search: '' })); // refresh list once
       } else {
         const errorMessage =
           result?.payload?.detail ||
           result?.payload?.message ||
           "Department with same code exist. Please try again.";
-        setFormError(errorMessage); // show inline error
+        setFormError(errorMessage);
       }
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -111,44 +113,22 @@ const Department = () => {
     navigate(`/departments/${id}`);
   };
 
- if (loading) {
-  return (
-    <>
-      <Navbar />
-      <div
-        style={{
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
           width: "100%",
-        }}
-      >
-        <Loader />
-      </div>
-    </>
-  );
-}
-
-const SearchBar = React.memo(({ search, setSearch }) => {
-  return (
-    <div style={{ marginTop: "1rem" }}>
-      <input
-        type="text"
-        placeholder="Enter Department name"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        autoFocus
-        style={{
-          padding: "8px",
-          borderRadius: "6px",
-          border: "1px solid #ccc",
-          width: "250px"
-        }}
-      />
-    </div>
-  );
-});
+        }}>
+          <Loader />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -158,7 +138,7 @@ const SearchBar = React.memo(({ search, setSearch }) => {
           <TitleSection>
             <div className="left-content">
               <div className="icon-box">
-               <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
+                <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
               </div>
               <div>
                 <Title>Department</Title>
@@ -171,69 +151,55 @@ const SearchBar = React.memo(({ search, setSearch }) => {
             </AddButton>
           </TitleSection>
 
-          {/* <ActionArea>
+          <ActionArea>
             <SearchWrapper>
-        
               <SearchInput
                 type="text"
-                placeholder="Enter Department name"
+                placeholder="Search department name.."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </SearchWrapper>
-          </ActionArea> */}
-<SearchBar search={search} setSearch={setSearch} />
-
-
+          </ActionArea>
         </HeaderSection>
 
         <CardGrid>
-          {loading ? (
-            <p>Loading...</p>
-          ) : error ? (
+          {error ? (
             <p style={{ color: 'red' }}>Error: {error?.detail?.toString()}</p>
-          ) : Array.isArray(departments) && departments.length > 0 ? (
-            departments.map((dept) => {
+          ) : filteredDepartments?.length > 0 ? (
+            filteredDepartments.map((dept) => {
               const initial = dept.name?.[0]?.toUpperCase() || '?';
               return (
                 <DepartmentCard key={dept.id} onClick={() => handleCardClick(dept.id)}>
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
                     <InitialCircle className="initial-circle">{initial}</InitialCircle>
                     <div>
-                     <h3 
-  className="dept-name" 
-  title={dept.name} // tooltip shows full dept name
->
-  {dept.name?.length > 10 ? dept.name.slice(0, 10) + "..." : dept.name}
-</h3>
+                      <h3 className="dept-name" title={dept.name}>
+                        {dept.name?.length > 10 ? dept.name.slice(0, 10) + "..." : dept.name}
+                      </h3>
 
-<HeadInfo>
-  <small className="subtitle">Department Head</small>
-  <div className="head-row">
-    {typeof dept.department_head === 'object' && dept.department_head?.profile_pic ? (
-      <img src={dept.department_head.profile_pic} alt={dept.department_head.name} />
-    ) : (
-      <PiUserCirclePlusThin size={24} color="#999" />
-    )}
-    <p 
-      className="head-name" 
-      title={
-        typeof dept.department_head === 'object'
-          ? dept.department_head?.name
-          : dept.department_head || 'Not Assigned'
-      }
-    >
-      {(() => {
-        const headName = typeof dept.department_head === 'object'
-          ? dept.department_head?.name
-          : dept.department_head || 'Not Assigned';
-        return headName?.length > 10 ? headName.slice(0, 10) + "..." : headName;
-      })()}
-    </p>
-  </div>
-</HeadInfo>
-
-                      
+                      <HeadInfo>
+                        <small className="subtitle">Department Head</small>
+                        <div className="head-row">
+                          {typeof dept.department_head === 'object' && dept.department_head?.profile_pic ? (
+                            <img src={dept.department_head.profile_pic} alt={dept.department_head.name} />
+                          ) : (
+                            <PiUserCirclePlusThin size={24} color="#999" />
+                          )}
+                          <p className="head-name" title={
+                            typeof dept.department_head === 'object'
+                              ? dept.department_head?.name
+                              : dept.department_head || 'Not Assigned'
+                          }>
+                            {(() => {
+                              const headName = typeof dept.department_head === 'object'
+                                ? dept.department_head?.name
+                                : dept.department_head || 'Not Assigned';
+                              return headName?.length > 10 ? headName.slice(0, 10) + "..." : headName;
+                            })()}
+                          </p>
+                        </div>
+                      </HeadInfo>
                     </div>
                   </div>
 
@@ -254,7 +220,7 @@ const SearchBar = React.memo(({ search, setSearch }) => {
         {showModal && (
           <ModalOverlay>
             <ModalContent>
-              <Container style={{ position: 'relative', }}>
+              <Container style={{ position: 'relative' }}>
                 <CloseButton onClick={() => setShowModal(false)} title="Close modal" aria-label="Close modal">
                   <FaTimes />
                 </CloseButton>
@@ -290,7 +256,6 @@ const SearchBar = React.memo(({ search, setSearch }) => {
                     />
                   </FormGroup>
 
-                  {/* Show inline error */}
                   {formError && <p style={{ color: 'red' }}>{formError}</p>}
 
                   <ButtonRow>

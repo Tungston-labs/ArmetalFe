@@ -73,7 +73,7 @@ export const TitleSection = styled.div`
   flex-wrap: nowrap; /* keep them on one line */
   gap: clamp(8px, 1vw, 20px);
   width: 100%;
-
+margin: 10px;
   @media (max-width: 767px) {
     flex-direction: column; /* stack vertically on mobile */
     align-items: flex-start;
@@ -210,60 +210,105 @@ export const SearchInput = styled.input`
 export const BulkActionBar = styled.div`
   background: #3352ba;
   color: #fff;
-  padding: clamp(8px, 1vw, 20px);
+  padding: 10px;
   margin: 20px 0 10px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* let it stack on smaller screens */
-  gap: clamp(8px, 1vw, 16px);
+  flex-wrap: wrap; 
+  gap: 10px;
 
   input[type="checkbox"] {
-    margin-right: clamp(6px, 0.5vw, 12px);
-    transform: scale(clamp(0.9, 1vw, 1.3)); /* responsive checkbox size */
+    margin-right: 8px;
+    transform: scale(1);
   }
 
   strong {
-    font-size: clamp(0.9rem, 1vw, 1.4rem);
+    font-size: 1rem;
   }
 
   select {
     background: #fff;
     color: #000;
     min-width: 120px;
-    padding: clamp(4px, 0.5vw, 8px);
-    font-size: clamp(0.9rem, 1vw, 1.2rem);
+    padding: 6px 10px;
+    font-size: 1rem;
     border-radius: 4px;
   }
 
+  /* 📱 Small screens (mobile) */
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
+
+    strong {
+      font-size: 0.85rem;
+    }
+
     select {
-      width: 100%; /* dropdown full width on mobile */
+      width: 100%;
+      font-size: 0.85rem;
+      padding: 5px 8px;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(0.9);
+      margin-right: 6px;
     }
   }
 
-  @media (min-width: 2560px) {
+  /* 💻 Medium screens (tablets/laptops) */
+  @media (min-width: 769px) and (max-width: 1440px) {
     strong {
-      font-size: clamp(1.2rem, 1.5vw, 1.6rem);
+      font-size: 1rem;
     }
+
     select {
-      font-size: clamp(1.2rem, 1.5vw, 1.6rem);
-      padding: clamp(6px, 1vw, 12px);
+      font-size: 1rem;
+      padding: 6px 10px;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1);
     }
   }
 
-  @media (min-width: 3840px) {
+  /* 🖥️ Large screens (Full HD up to 2K) */
+  @media (min-width: 1441px) and (max-width: 2560px) {
     strong {
-      font-size: clamp(1.4rem, 2vw, 1.8rem);
+      font-size: 1.1rem;
     }
+
     select {
-      font-size: clamp(1.4rem, 2vw, 1.8rem);
-      padding: clamp(8px, 2vw, 16px);
+      font-size: 1.1rem;
+      padding: 8px 12px;
     }
+
+    input[type="checkbox"] {
+      transform: scale(1.1);
+    }
+  }
+
+  /* 🖥️ 4K and above */
+  @media (min-width: 2561px) {
+    strong {
+      font-size: 1.3rem;
+    }
+
+    select {
+      font-size: 1.3rem;
+      padding: 10px 14px;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+
+    gap: 14px;
+    padding: 14px;
   }
 `;
+
 
 export const TableWrapper = styled.div`
   margin-top: 10px;
@@ -286,23 +331,6 @@ export const Table = styled.table`
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 
-  td {
-    text-align: left;
-    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
-    white-space: nowrap;
-    background-color: white;
-    border: none;
-    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
-  }
-
-  th {
- text-align: left;
-    background-color: #304EB0;
-    color: white;
-    font-family: Raleway;
-    padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
-    font-size: clamp(0.9rem, 1vw, 1.8rem); /* responsive font */
-  }
 
   tbody tr {
     box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
@@ -327,28 +355,22 @@ export const Table = styled.table`
     background-color: #f5f5f5;
   }
 
-  @media (min-width: 2560px) {
-    td, th {
-      font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
-      padding: clamp(8px, 1vw, 24px);
-    }
-  }
-
-  @media (min-width: 3840px) {
-    td, th {
-      font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
-      padding: clamp(10px, 2vw, 32px);
-    }
-  }
+ 
 `;
 
 
 export const Th = styled.th`
-  background-color: #e1e8ec;
-  text-align: left;
+    background-color: #304EB0;
   font-weight: 600;
-
-  @media (min-width: 2560px) {
+  text-align: left;
+    color: white;
+    font-family: "Raleway";
+    padding: 8px;
+  
+ @media (min-width: 3840px) {
+    font-size: 24px;
+  }
+  @media (min-width: 2560px)and (max-width: 3839px) {
     font-size: 22px;
   }
   @media (min-width: 1920px) and (max-width: 2559px) {
@@ -363,18 +385,56 @@ export const Th = styled.th`
 `;
 
 export const Td = styled.td`
-  padding: 0.3rem;
   background: #fff;
   color: #000;
-  text-align: center;
-  font-family: Satoshi;
+  font-family: "Satoshi", sans-serif;
   font-size: 0.9rem;
   font-weight: 400;
-
+  text-align: left;
+  white-space: nowrap;
+  background-color: white;
+  border: none;
+  transition: all 0.2s ease;
+padding: 0px 8px;
   div {
     display: flex;
-    justify-content: center; /* center circles */
+    justify-content: center;
     gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* 📱 Small screens (mobile) */
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+
+    text-align: center;
+    white-space: normal; /* allow wrapping */
+  }
+
+  /* 💻 Medium screens (tablet, small desktop) */
+  @media (min-width: 769px) and (max-width: 1440px) {
+    font-size: 0.85rem;
+
+  }
+
+  /* 🖥️ Large screens (full HD) */
+  @media (min-width: 1441px) and (max-width: 1920px) {
+    font-size: 1rem;
+
+  }
+  @media (min-width: 1921px) and (max-width: 2560px) {
+    font-size: 1rem;
+
+  }
+
+  @media (min-width: 2561px) and (max-width: 3839px) {
+    font-size: 1.5rem;
+
+  }
+
+  @media (min-width: 3840px) {
+padding: 3px;
+    font-size: 1.5rem;
   }
 `;
 
@@ -384,24 +444,50 @@ export const Tr = styled.tr`
 `;
 
 export const Select = styled.select`
-  padding: clamp(4px, 0.6vw, 10px) clamp(16px, 1vw, 28px) clamp(4px, 0.6vw, 10px) clamp(6px, 0.8vw, 12px);
+   margin: 4px;
+  padding: 6px 10px 6px 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-family: Satoshi, sans-serif;
+  font-family: "Satoshi", sans-serif;
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(0.8rem, 1vw, 1.1rem);
-
+  font-size: 1rem;;
   appearance: none;
   background: url("data:image/svg+xml;utf8,<svg fill='black' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
-    no-repeat right 8px center;
+    no-repeat right 10px center;
   background-color: white;
-  background-size: clamp(12px, 1vw, 18px);
+  background-size: 16px;
 
-  @media (max-width: 767px) {
-    width: 100%; /* full width on mobile */
+  /* 📱 Mobile screens */
+  @media (max-width: 768px) {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 5px 14px 5px 8px;
+    background-size: 12px;
+  }
+
+  /* 💻 Medium screens (laptops/desktops) */
+  @media (min-width: 769px) and (max-width: 1440px) {
+    font-size: 1rem;
+    padding: 6px 20px 6px 10px;
+    background-size: 16px;
+  }
+
+  /* 🖥️ Large screens (2K) */
+  @media (min-width: 1441px) and (max-width: 2560px) {
+    font-size: 1.1rem;
+    padding: 8px 20px 8px 12px;
+    background-size: 18px;
+  }
+
+  /* 🖥️ 4K and above */
+  @media (min-width: 2561px) {
+    font-size: 1.3rem;
+    padding: 10px 28px 10px 14px;
+    background-size: 20px;
   }
 `;
+
 
 export const EmployeeImage = styled.img`
   height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */

@@ -232,25 +232,53 @@ export const InitialCircle = styled.div`
 `;
 
 export const AddButton = styled.button`
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: Satoshi;
-  background: #304eb0;
-  color: white;
-  padding: clamp(0.4rem, 0.8vw, 0.8rem) clamp(1rem, 2vw, 2rem); /* vertical | horizontal */
-  border-radius: 8px;
-  border: none;
-  font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font size */
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
 
   &:hover {
-    background-color: #3f60cbff;
+    background: #2744a3;
   }
+ @media (min-width: 768px) and (max-width: 1439px) {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  /* Large desktops (1440px and up) */
+  @media (min-width: 1440px) and (max-width: 1920px) {
+    font-size: 1.1rem;
+    padding: 0.6rem 1rem;
+    gap: 0.75rem;
+  }
+ @media (min-width: 1921) and (max-width: 2560px) {
+    font-size: 1.1rem;
+    padding: 0.6rem 1rem;
+    gap: 0.75rem;
+   
+  }
+  /* Ultra-wide (2560px and up) */
+  @media (min-width: 2561px) {
+    font-size: 1.4rem;
+    padding: 1.2rem 3rem;
+    gap: 1rem;
+      margin-top: 3rem;
+  }
+
+  /* 4K and above (3840px and up) */
   @media (min-width: 3840px) {
-    font-size: 2.5rem;
+    font-size: 2rem;
     padding: 1.5rem 4rem;
+    gap: 1.2rem;
+    margin-top: 5rem;
   }
 `;
 
@@ -287,8 +315,8 @@ export const SearchInput = styled.input`
 export const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
-  width: 100%;
-  max-width: 450px; /* optional max width */
+  /* width: 100%; */
+  /* max-width: 450px; */
 `;
 
 export const SearchIcon = styled(FiSearch)`
@@ -460,60 +488,51 @@ export const CardRight = styled.div`
 // Modal Styles
 export const ModalOverlay = styled.div`
   position: fixed;
-  inset: 0; /* shorthand for top/right/bottom/left = 0 */
-  background-color: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 999;
-  padding: 1rem; /* ensures spacing on very small screens */
+  justify-content: center;
+  z-index: 2000; /* ensure it's above everything else */
+  pointer-events: all;
 `;
+
 
 export const ModalContent = styled.div`
   background-color: #fff;
   border-radius: 10px;
   width: 100%;
-  padding: 1.5rem; /* base padding */
+  padding: 1.5rem;
   position: relative;
-  z-index: 1000;
+  z-index: 10000; /* above overlay */
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
-  font-size: 1rem; /* base font */
+  font-size: 1rem;
 
   /* Responsive max-width for different screens */
   @media (max-width: 768px) {
-    max-width: 95%; /* almost full width for tablets and small screens */
+    max-width: 95%;
     padding: 1rem;
     font-size: 0.9rem;
   }
 
   @media (min-width: 769px) and (max-width: 1440px) {
-    max-width: 800px; /* standard laptop/desktop */
-    padding: 1.5rem;
-    font-size: 1rem;
+    max-width: 800px;
   }
 
   @media (min-width: 1441px) and (max-width: 1920px) {
     max-width: 1000px;
-    padding: 1.8rem;
-    font-size: 1.05rem;
   }
 
   @media (min-width: 1921px) and (max-width: 2560px) {
     max-width: 1200px;
-    padding: 2rem;
-    font-size: 1.1rem;
   }
 
   @media (min-width: 2561px) and (max-width: 3840px) {
     max-width: 1500px;
-    padding: 2.2rem;
-    font-size: 1.2rem;
   }
 
   @media (min-width: 3841px) {
     max-width: 1200px;
-    padding: 2.5rem;
-    font-size: 1.5rem;
   }
 `;
 
@@ -540,9 +559,6 @@ export const CloseButton = styled.button`
   }
 
   @media (min-width: 2560px) {
-    font-size: 1.8rem;
-  }
-   @media (min-width: 2560px) {
     font-size: 1.8rem;
   }
 `;

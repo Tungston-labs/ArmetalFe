@@ -25,6 +25,7 @@ import {
   Head,
   EmployeeImage,
   NoTaskWrapper,
+  TaskLayout,
 } from "./Daily.styles";
 import { getEmployees, getTasks } from "../../Redux/dailyTaskSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
@@ -176,7 +177,7 @@ const weekDates = [...Array(7)].map((_, i) => {
                 value={selectedDate}
                 onChange={(e) => {
                   if (e.target.value) {
-                    setSelectedDate(e.target.value); // <-- updates bottom calendar too
+                    setSelectedDate(e.target.value);
                   } else {
                     const today = new Date().toISOString().split("T")[0];
                     setSelectedDate(today);
@@ -206,7 +207,7 @@ const weekDates = [...Array(7)].map((_, i) => {
             </div>
           </div>
 
-          {/* <input type="date" value={selectedDate} onChange={handleDateChange} /> */}
+
         </DateSelector>
         <Calendar>
   {weekDates.map((day, i) => {
@@ -235,91 +236,91 @@ const weekDates = [...Array(7)].map((_, i) => {
 </Calendar>
 
 
-        <div style={{ display: "flex", gap: ".5rem" }}>
-          <EmployeesPanel>
-            <Heading className="employee-heading">Employees</Heading>
-            <div className="employee-list">
-              {(filteredEmployees || []).map((emp) => (
-                <EmployeeCard
-                  key={emp.id}
-                  onClick={() => handleEmployeeSelect(emp)}
-                  active={emp.id === selectedEmployee?.id}
-                >
-                  {emp.profile_pic ? (
-                    <img src={emp.profile_pic} alt={emp.name} />
-                  ) : (
-                    <PiUserCirclePlusThin size={40} color="#999" />
-                  )}
-                  <span>{emp.name}</span>
-                </EmployeeCard>
-              ))}
-            </div>
-          </EmployeesPanel>
+       <TaskLayout>
+  <EmployeesPanel>
+    <Heading className="employee-heading">Employees</Heading>
+    <div className="employee-list">
+      {(filteredEmployees || []).map((emp) => (
+        <EmployeeCard
+          key={emp.id}
+          onClick={() => handleEmployeeSelect(emp)}
+          active={emp.id === selectedEmployee?.id}
+        >
+          {emp.profile_pic ? (
+            <img src={emp.profile_pic} alt={emp.name} />
+          ) : (
+            <PiUserCirclePlusThin size={40} color="#999" />
+          )}
+          <span>{emp.name}</span>
+        </EmployeeCard>
+      ))}
+    </div>
+  </EmployeesPanel>
 
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-            }}
-          >
-            <Head>Daily Task</Head>
-            <TaskPanel>
-              {selectedEmployee && (
-                <TaskHeader>
-                  <img
-                    src={selectedEmployee.profile_pic || "/images/default.png"}
-                    alt={selectedEmployee.name}
-                  />
-                  <h3>{selectedEmployee.name}</h3>
-                </TaskHeader>
-              )}
+  <div
+    style={{
+      flex: 1,
+      display: "flex",
+      flexDirection: "column",
+      gap: "1rem",
+    }}
+  >
+    <Head>Daily Task</Head>
+    <TaskPanel>
+      {selectedEmployee && (
+        <TaskHeader>
+          <img
+            src={selectedEmployee.profile_pic || "/images/default.png"}
+            alt={selectedEmployee.name}
+          />
+          <h3>{selectedEmployee.name}</h3>
+        </TaskHeader>
+      )}
 
-              {loading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    padding: "2rem",
-                  }}
-                >
-                  <Loader size="large" tip="Loading..." />
-                </div>
-              ) : tasks.length > 0 ? (
-                tasks.map((task, idx) => (
-                  <TaskCard key={idx}>
-                    <h4>
-                      Project: &nbsp;<strong>{task.project}</strong>
-                    </h4>
-                    <h5>
-                      <strong>Task</strong>
-                    </h5>
-                    <p>
-                      <strong>Description: </strong>
-                    </p>
-                    <Description>{task.task}</Description>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <TimeBox>{task.time_taken} Hrs</TimeBox>
-                      <small>
-                        {new Date(task.updated_at).toLocaleString()}
-                      </small>
-                    </div>
-                  </TaskCard>
-                ))
-              ) : (
-                <NoTaskWrapper>
-                  <img src="/images/dailytask.png" alt="No tasks" />
-                </NoTaskWrapper>
-              )}
-            </TaskPanel>
-          </div>
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "2rem",
+          }}
+        >
+          <Loader size="large" tip="Loading..." />
         </div>
+      ) : tasks.length > 0 ? (
+        tasks.map((task, idx) => (
+          <TaskCard key={idx}>
+            <h4>
+              Project: &nbsp;<strong>{task.project}</strong>
+            </h4>
+            <h5>
+              <h4>Task:</h4>
+                        <strong>{task.task}</strong>
+            </h5>
+            <p>
+              <strong>Description: </strong>
+            </p>
+            <Description>{task.description}</Description>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <TimeBox>{task.time_taken} Hrs</TimeBox>
+              <small>{new Date(task.updated_at).toLocaleString()}</small>
+            </div>
+          </TaskCard>
+        ))
+      ) : (
+        <NoTaskWrapper>
+          <img src="/images/dailytask.png" alt="No tasks" />
+        </NoTaskWrapper>
+      )}
+    </TaskPanel>
+  </div>
+</TaskLayout>
+
       </Container>
     </>
   );
