@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'superadmin',
     'task',
     'user',
-    'employee',
+    'employee.apps.EmployeeConfig',
     'holidays',
     'payroll',
     'reimbursement',
