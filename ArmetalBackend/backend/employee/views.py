@@ -712,74 +712,89 @@ class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from django.db.models import Sum
+from datetime import date, timedelta, datetime
+import calendar
+
+from employee.models import Employee_db, Attendance
+from superadmin.models import PublicHoliday
+
 class EmployeeMonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
+            # Get employee from logged-in user
             employee = request.user.employee_db
+            department = employee.department
+            company = department.company if department else None
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found"}, status=404)
+
+        if not department or not company:
+            return Response({"error": "Employee not assigned to a department or company"}, status=400)
 
         today = timezone.now().date()
         year = today.year
         month = today.month
 
-        # Month start & end
+        # First and last day of month
         first_day = date(year, month, 1)
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
-        # All days of the month
+        # All days in month
         all_days = [first_day + timedelta(days=i) for i in range((last_day - first_day).days + 1)]
 
-        # 🔹 Find company's regular weekly off day (based on `company_off_day`)
-        company_off_days = PublicHoliday.objects.filter(
-            company=employee.department.company,
+        # Get company_off_day (e.g., Friday) for this company
+        company_off_day = PublicHoliday.objects.filter(
+            company=company,
             holiday_type='company_off_day'
-        ).values_list("day", flat=True).distinct()
+        ).first()
+        off_day_name = company_off_day.day if company_off_day else None
 
-        # Example: ['Sunday'] or ['Friday']
-        company_off_day_names = list(company_off_days)
-
-        # 🔹 Convert day names (e.g. Sunday -> 6, Monday -> 0)
-        weekday_map = {
-            'Monday': 0, 'Tuesday': 1, 'Wednesday': 2, 'Thursday': 3,
-            'Friday': 4, 'Saturday': 5, 'Sunday': 6
-        }
-        off_day_indexes = [weekday_map[d] for d in company_off_day_names if d in weekday_map]
-
-        # 🔹 Regular company off days for the month
-        company_off_dates = [d for d in all_days if d.weekday() in off_day_indexes]
-
-        # 🔹 Company holidays (excluding company_off_day)
-        holidays = PublicHoliday.objects.filter(
-            company=employee.department.company,
+        # Company holidays excluding company_off_day
+        holidays_qs = PublicHoliday.objects.filter(
+            company=company,
             date__range=(first_day, last_day)
-        ).exclude(holiday_type='company_off_day').values_list("date", flat=True)
+        ).exclude(holiday_type='company_off_day')
+        holidays = [h.date for h in holidays_qs]
 
-        # 🔹 Working days = all days - company_off_dates - holidays
-        working_days = [d for d in all_days if d not in company_off_dates and d not in holidays]
+        # Working days = all_days excluding company_off_day and holidays
+        working_days = [
+            d for d in all_days
+            if (off_day_name is None or d.strftime('%A') != off_day_name)
+            and d not in holidays
+        ]
 
-        # Attendance records for this month
-        attendances = Attendance.objects.filter(
-            employee=employee,
-            date__range=(first_day, last_day)
-        )
+        # Attendance records
+        attendances = Attendance.objects.filter(employee=employee, date__range=(first_day, last_day))
 
-        # Total working hours
+        # Total hours
         total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
 
-        # Half-day (4–8 hrs)
-        half_days = attendances.filter(total_hours__gte=4, total_hours__lt=8).values_list("date", flat=True)
+        # Half days (4 <= hours < 8)
+        half_days = [att.date for att in attendances if 4 <= (att.total_hours or 0) < 8]
 
-        # Full-day present (>=8 hrs)
-        present_days = attendances.filter(total_hours__gte=8).values_list("date", flat=True)
+        # Full present days (hours >= 8)
+        present_days = [att.date for att in attendances if (att.total_hours or 0) >= 8]
 
-        # Absent days (until today)
-        absent_days = [d for d in working_days if d <= today and d not in present_days and d not in half_days]
+        # Absent days (working days until today, excluding present and half days)
+        absent_days = [
+            d for d in working_days
+            if d <= today and d not in present_days and d not in half_days
+        ]
 
-        # Remaining working days
+        # Remaining working days (after today)
         remaining_working_days = [d for d in working_days if d > today]
+
+        # Company off day dates for this month
+        off_day_dates = [
+            d for d in all_days if off_day_name and d.strftime('%A') == off_day_name
+        ]
 
         data = {
             "month": today.strftime("%B"),
@@ -787,18 +802,19 @@ class EmployeeMonthlySummaryView(APIView):
             "total_working_days_dates": working_days,
             "total_working_hours": float(total_hours),
             "half_days_count": len(half_days),
-            "half_days_dates": list(half_days),
+            "half_days_dates": half_days,
             "present_days_count": len(present_days),
-            "present_days_dates": list(present_days),
+            "present_days_dates": present_days,
             "absent_days_count": len(absent_days),
             "absent_days_dates": absent_days,
             "remaining_working_days_count": len(remaining_working_days),
             "remaining_working_days_dates": remaining_working_days,
             "holidays_count": len(holidays),
-            "holidays_dates": list(holidays),
-            "company_off_day_names": company_off_day_names,  # ⬅️ Return off-day names
-            "company_off_day_dates": company_off_dates       # ⬅️ Return off-day dates
+            "holidays_dates": holidays,
+            "company_off_day_name": off_day_name,
+            "company_off_day_dates": off_day_dates
         }
 
         return Response(data)
+
 
