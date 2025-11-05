@@ -1,5 +1,4 @@
-// src/Components/JobDetails.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import { useSelector } from "react-redux";
 import {
   FormContainer,
@@ -11,11 +10,10 @@ import {
   Select,
   FileInputLabel,
   FileInput,
-  ButtonWrapper,
-  NextButton,
 } from "./JobDetails.Styles";
 
-const JobDetails = ({ country: propCountry, departments = [], initialValues = {}, onNext, }) => {
+// ✅ Make JobDetails controllable by parent using ref
+const JobDetails = forwardRef(({ country: propCountry, departments = [], initialValues = {}, onFormChange, errors: parentErrors }, ref) => {
   const savedUser = (() => {
     try {
       return JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
@@ -23,14 +21,14 @@ const JobDetails = ({ country: propCountry, departments = [], initialValues = {}
       return null;
     }
   })();
+const [localErrors, setLocalErrors] = useState({});
+
   const defaultCountry = propCountry || savedUser?.company?.country || "IN";
-
-  // Accept departments prop, otherwise fallback to store
   const deptFromStore = useSelector((s) => s.departments?.list || []);
-  const departmentList = (departments && departments.length) ? departments : deptFromStore;
-const [loading, setLoading] = useState(false);
-
+  const departmentList = departments?.length ? departments : deptFromStore;
   const [country] = useState(defaultCountry);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     designation: "",
@@ -51,32 +49,38 @@ const [loading, setLoading] = useState(false);
     idcard: null,
     email: "",
     dob: "",
-    ...initialValues, // merge initial values if any
+    ...initialValues,
   });
 
-  const [errors, setErrors] = useState({});
-
   useEffect(() => {
-    // if parent changed initialValues after mount, sync
-    if (initialValues && Object.keys(initialValues).length) {
+    if (initialValues && Object.keys(initialValues).length)
       setFormData((prev) => ({ ...prev, ...initialValues }));
-    }
   }, [initialValues]);
 
-  const handleChange = (e) => {
-    const { name, value, files, type } = e.target;
-    if (type === "file") {
-      setFormData((prev) => ({ ...prev, [name]: files && files[0] ? files[0] : null }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
 
+  const handleChange = (e) => {
+
+    if (onFormChange) {
+        onFormChange(e); 
+    }
+
+  };
   const validateForm = () => {
     const newErrors = {};
     const now = new Date().toISOString().split("T")[0];
 
-    const baseRequired = ["designation", "joining_date", "department_id", "employment_type", "total_leave", "phno", "email", "dob"];
+    const baseRequired = [
+      "designation",
+      "joining_date",
+      "department_id",
+      "employment_type",
+      "total_leave",
+      "phno",
+      "email",
+      "dob",
+      "role",
+      "passport_number",
+    ];
 
     if (country === "IN") {
       baseRequired.push("aadar_number");
@@ -84,97 +88,50 @@ const [loading, setLoading] = useState(false);
       baseRequired.push("visa_expiry_date", "insurance_number", "iqama_number");
     }
 
-    baseRequired.forEach((f) => {
-      const val = formData[f];
-      if (val === undefined || val === null || (typeof val === "string" && val.trim() === "")) {
-        newErrors[f] = "This field is required";
+    baseRequired.forEach((field) => {
+      const val = formData[field];
+      if (!val || (typeof val === "string" && val.trim() === "")) {
+        newErrors[field] = "This field is required";
       }
     });
 
-    // phone
+    // Validate patterns
     if (formData.phno) {
-      const phone = formData.phno.toString().trim();
-      if (country === "IN") {
-        if (!/^[0-9]{10}$/.test(phone)) newErrors.phno = "Enter a valid 10-digit phone number";
-      } else {
-        if (!/^\+?[1-9]\d{7,14}$/.test(phone)) newErrors.phno = "Enter a valid phone number with country code (e.g. +966512345678)";
-      }
+      const phone = formData.phno.trim();
+      if (country === "IN" && !/^[0-9]{10}$/.test(phone))
+        newErrors.phno = "Enter a valid 10-digit phone number";
+      else if (country !== "IN" && !/^\+?[1-9]\d{7,14}$/.test(phone))
+        newErrors.phno = "Enter a valid international phone number";
     }
 
-    if (formData.email) {
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) newErrors.email = "Enter a valid email address";
-    }
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      newErrors.email = "Enter a valid email";
 
-    if (formData.dob && formData.dob >= now) newErrors.dob = "Date of birth must be in the past";
-    if (formData.joining_date && formData.joining_date > now) newErrors.joining_date = "Joining date cannot be in the future";
-    if (formData.contract_expiry_date && formData.contract_expiry_date <= now) newErrors.contract_expiry_date = "Contract expiry must be in the future";
-    if (formData.visa_expiry_date && formData.visa_expiry_date <= now) newErrors.visa_expiry_date = "Visa expiry must be in the future";
-    if (country === "IN") {
-      if (formData.aadar_number && !/^[0-9]{12}$/.test((formData.aadar_number + "").trim())) {
-        newErrors.aadar_number = "Enter a valid 12-digit Aadhaar number";
-      }
-    } else {
-      if (formData.iqama_number) {
-        const iq = (formData.iqama_number + "").replace(/\D/g, "");
-        if (iq.length !== 12) newErrors.iqama_number = "Enter a valid 12-digit Iqama number";
-      }
-    }
-    if (formData.passport_number && !/^[A-Za-z0-9]{6,9}$/.test((formData.passport_number + "").trim())) {
-      newErrors.passport_number = "Enter a valid passport number (6–9 chars)";
-    }
+    if (formData.dob && formData.dob >= now)
+      newErrors.dob = "Date of birth must be in the past";
 
-    if (formData.insurance_number && (formData.insurance_number + "").trim().length < 5) {
-      newErrors.insurance_number = "Insurance number must be at least 5 characters";
-    }
+    if (formData.joining_date && formData.joining_date > now)
+      newErrors.joining_date = "Joining date cannot be in the future";
+
+    if (formData.contract_expiry_date && formData.contract_expiry_date <= now)
+      newErrors.contract_expiry_date = "Contract expiry must be in the future";
+
+    if (formData.visa_expiry_date && formData.visa_expiry_date <= now)
+      newErrors.visa_expiry_date = "Visa expiry must be in the future";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const buildUploadFormData = (plain) => {
-    const fd = new FormData();
-    Object.entries(plain).forEach(([k, v]) => {
-      if (v === null || v === undefined) return;
-      if (k === "idcard" && v instanceof File) {
-        fd.append("idcard", v);
-      } else if (v instanceof File) {
-        fd.append(k, v);
-      } else {
-        fd.append(k, v);
-      }
-    });
-    return fd;
-  };
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  if (typeof validateParent === "function" && !validateParent()) return;
-  if (!validateForm()) return;
-
-  setLoading(true); // show loader
-
-  try {
-    const plain = { ...formData };
-    const uploadForm = buildUploadFormData(plain);
-
-    // simulate delay or call parent handler
-    if (typeof onNext === "function") {
-      await onNext(plain, uploadForm);
-    } else {
-      console.log("JobDetails validated:", plain);
-    }
-  } catch (error) {
-    console.error("Submission error:", error);
-  } finally {
-    setLoading(false); // hide loader after process
-  }
-};
-
+  // ✅ expose validate to parent so it triggers when clicking Next
+  useImperativeHandle(ref, () => ({
+    validate: () => validateForm(),
+    getData: () => formData,
+  }));
 
 
   return (
-    <FormContainer onSubmit={handleSubmit} noValidate>
+    <FormContainer noValidate>
       <SectionTitle>Job Details</SectionTitle>
 
       <FormRow>
@@ -226,6 +183,7 @@ const handleSubmit = async (e) => {
     placeholder="Total leave"
     step="0.1" 
     min="0"    
+     onWheel={(e) => e.target.blur()} 
   />
   {errors.total_leave && (
     <div style={{ color: "red", marginTop: 6 }}>
@@ -246,7 +204,29 @@ const handleSubmit = async (e) => {
           {errors.role && <div style={{ color: "red", marginTop: 6 }}>{errors.role}</div>}
         </FormGroup>
       </FormRow>
+<FormRow>
+    <FormGroup style={{ maxWidth: "49.5%" }}>
+  <Label>Pending Leave</Label>
+  <Input
+    type="number"
+    name="pending_leave"
+    value={formData.pending_leave}
+    onChange={handleChange}
+    placeholder="Pending leave"
+    step="0.1"
+    min="0"
+    onWheel={(e) => e.target.blur()} // prevent scroll wheel value change
+    style={{ width: "100%" }}
+  />
+  {errors.pending_leave && (
+    <div style={{ color: "red", marginTop: 6 }}>
+      {errors.pending_leave}
+    </div>
+  )}
+</FormGroup>
 
+      
+      </FormRow>
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
 
       <FormRow>
@@ -319,11 +299,9 @@ const handleSubmit = async (e) => {
         </FormRow>
       )}
 
-      <ButtonWrapper>
-        <NextButton type="submit" onClick={handleSubmit}>Next</NextButton>
-      </ButtonWrapper>
+     
     </FormContainer>
   );
-};
+});
 
 export default JobDetails;

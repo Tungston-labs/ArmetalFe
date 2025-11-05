@@ -8,11 +8,55 @@ export const FormContainer = styled.form`
 `;
 
 export const SectionTitle = styled.h3`
-  font-size: 18px;
   font-weight: 600;
   margin-bottom: 15px;
   color: #222;
+  font-size: 18px;
+
+  /* Small mobile screens */
+  @media (max-width: 480px) {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  /* Tablets (481px–768px) */
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Small laptops (769px–1024px) */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 17px;
+    margin-bottom: 14px;
+  }
+
+  /* Desktops (1025px–1439px) */
+  @media (min-width: 1025px) and (max-width: 1439px) {
+    font-size: 18px;
+  }
+
+  /* Full HD (1440px–1919px) */
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    font-size: 20px;
+  }
+
+  /* 2K (1920px–2559px) */
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    font-size: 22px;
+  }
+
+  /* 2.5K–3K (2560px–3839px) */
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    font-size: 24px;
+  }
+
+  /* 4K and above */
+  @media (min-width: 3840px) {
+    font-size: 26px;
+  }
 `;
+
 
 export const FormRow = styled.div`
   display: flex;
@@ -29,15 +73,23 @@ export const FormGroup = styled.div`
 `;
 
 export const Label = styled.label`
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 5px;
+  font-size: clamp(0.85rem, 0.9vw, 1.1rem);
+  font-weight: 500;
+  color: #1e3a8a;
+
+  @media (min-width: 1920px) {
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 1.8rem;
+  }
 `;
 
 export const Input = styled.input`
   width: 100%;
   padding: 11px 12px;
-  border: 1px solid #052db4;
+  border: 1px solid #052DB4;
   border-radius: 6px;
   font-size: 15px;
   background-color: #fff;
@@ -46,6 +98,31 @@ export const Input = styled.input`
   &:focus {
     outline: none;
     border-color: #1e40af;
+  }
+
+   @media (min-width: 1025px) and (max-width: 1439px) {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    font-size: 1rem;
+    padding: 0.5rem 0.9rem;
+  }
+
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    font-size: 1.2rem;
+    padding: 0.7rem 1rem;
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    font-size: 1.35rem;
+    padding: 0.8rem 1.1rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 1.5rem;
+    padding: 0.9rem 1.2rem;
   }
 `;
 
@@ -61,6 +138,31 @@ export const Select = styled.select`
   &:focus {
     outline: none;
     border-color: #1e40af;
+  }
+
+   @media (min-width: 1025px) and (max-width: 1439px) {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    font-size: 1rem;
+    padding: 0.5rem 0.9rem;
+  }
+
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    font-size: 1.2rem;
+    padding: 0.7rem 1rem;
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    font-size: 1.35rem;
+    padding: 0.8rem 1.1rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 1.5rem;
+    padding: 0.9rem 1.2rem;
   }
 `;
 

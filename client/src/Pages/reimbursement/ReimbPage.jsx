@@ -234,76 +234,83 @@ useEffect(() => {
               <th>Department</th>
               <th>Amount(AED)</th>
               <th>Status</th>
-              <th>Info</th>
+      
             </tr>
           </thead>
-          <tbody>
-            {employees.map((emp, index) => (
-              <tr key={emp.id}>
-          <td>{(page - 1) * 20 + (index + 1)}</td>
+      <tbody>
+  {employees.map((emp, index) => (
+    <tr
+      key={emp.id}
+      onClick={() => navigate(`/reimbursement_info/${emp.id}`)}
+      style={{
+        cursor: "pointer",
+        transition: "background-color 0.2s ease",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f3f4f6")}
+      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+    >
+      <td>{(page - 1) * 20 + (index + 1)}</td>
 
-                <td>
-                  <Avatar src={emp.profile_pic || 'https://i.pravatar.cc/40'} />
-                  {emp.employee_name}
-                </td>
-                <td>{emp.employee_id}</td>
-                <td>{emp.designation}</td>
-                <td>{emp.department?.name}</td>
-                <td>{emp.amount}</td>
-                <td>
-  <select
-    value={emp.status || ""} // placeholder empty string
-    onChange={async (e) => {
-      const newStatus = e.target.value;
+      <td>
+        <Avatar src={emp.profile_pic || 'https://i.pravatar.cc/40'} />
+        {emp.employee_name}
+      </td>
+      <td>{emp.employee_id}</td>
+      <td>{emp.designation}</td>
+      <td>{emp.department?.name}</td>
+      <td>{emp.amount}</td>
+      <td
+        onClick={(e) => e.stopPropagation()} // prevent row click from triggering
+      >
+        <select
+          value={emp.status || ""}
+          onChange={async (e) => {
+            const newStatus = e.target.value;
+            setEmployees((prev) =>
+              prev.map((empItem) =>
+                empItem.id === emp.id
+                  ? { ...empItem, status: newStatus }
+                  : empItem
+              )
+            );
 
-      // Optimistic UI update
-      setEmployees(prev =>
-        prev.map(empItem =>
-          empItem.id === emp.id ? { ...empItem, status: newStatus } : empItem
-        )
-      );
+            try {
+              await updateReimbursementStatus(emp.id, newStatus);
+            } catch (err) {
+              console.error(err);
+              setEmployees((prev) =>
+                prev.map((empItem) =>
+                  empItem.id === emp.id
+                    ? { ...empItem, status: emp.status }
+                    : empItem
+                )
+              );
+            }
+          }}
+          style={{
+            ...getStatusStyle(emp.status),
+            appearance: "none",
+            WebkitAppearance: "none",
+            MozAppearance: "none",
+            padding: "5px 10px",
+            borderRadius: "6px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          <option value="" disabled>
+            Select
+          </option>
+          <option value="Approve">Approved</option>
+          <option value="On Hold">On Hold</option>
+          <option value="In Verification">In Verification</option>
+        </select>
+      </td>
 
-      try {
-        await updateReimbursementStatus(emp.id, newStatus);
-      } catch (err) {
-        console.error(err);
-        // rollback if API fails
-        setEmployees(prev =>
-          prev.map(empItem =>
-            empItem.id === emp.id ? { ...empItem, status: emp.status } : empItem
-          )
-        );
-      }
-    }}
-    style={{
-      ...getStatusStyle(emp.status),
-      appearance: 'none',
-      WebkitAppearance: 'none',
-      MozAppearance: 'none',
-      padding: '5px 10px',
-      borderRadius: '6px',
-      fontWeight: 'bold',
-      cursor: 'pointer',
-    }}
-  >
-    <option value="" disabled>Select</option>
-    <option value="Approve">Approved</option>
-    <option value="On Hold">On Hold</option>
-    <option value="In Verification">In Verification</option>
-  </select>
-</td>
-
-
-
-
-                <td>
-                  <IconButton onClick={() => navigate(`/reimbursement_info/${emp.id}`)}>
-                    <IoInformationCircleOutline /> 
-                  </IconButton>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+      
+    </tr>
+  ))}
+</tbody>
         </StyledTable>
       </TableWrapper>
  <Pagination>

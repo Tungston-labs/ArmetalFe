@@ -299,9 +299,10 @@ export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  /* margin-bottom: 1.5rem; */
   background-color: transparent; 
-
+position: absolute;
+right: 0;
   @media (min-width: 2560px) {
     height: 70px;
   }

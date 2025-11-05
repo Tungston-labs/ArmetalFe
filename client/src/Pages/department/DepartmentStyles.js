@@ -316,7 +316,7 @@ export const CardGrid = styled.div`
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;
   }
   @media (min-width: 2560px) {

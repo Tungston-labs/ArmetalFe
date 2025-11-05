@@ -59,8 +59,13 @@ const Department = () => {
   const [formError, setFormError] = useState("");
 
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search }));
-  }, [dispatch, search]);
+  const delayDebounce = setTimeout(() => {
+    dispatch(getDepartments({ page: 1, search: search.trim() }));
+  }, 500); // waits 500ms after typing stops
+
+  return () => clearTimeout(delayDebounce);
+}, [dispatch, search]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -125,6 +130,26 @@ const Department = () => {
   );
 }
 
+const SearchBar = React.memo(({ search, setSearch }) => {
+  return (
+    <div style={{ marginTop: "1rem" }}>
+      <input
+        type="text"
+        placeholder="Enter Department name"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        autoFocus
+        style={{
+          padding: "8px",
+          borderRadius: "6px",
+          border: "1px solid #ccc",
+          width: "250px"
+        }}
+      />
+    </div>
+  );
+});
+
   return (
     <>
       <Navbar />
@@ -146,9 +171,9 @@ const Department = () => {
             </AddButton>
           </TitleSection>
 
-          <ActionArea>
+          {/* <ActionArea>
             <SearchWrapper>
-              {/* <SearchIcon /> */}
+        
               <SearchInput
                 type="text"
                 placeholder="Enter Department name"
@@ -156,7 +181,10 @@ const Department = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </SearchWrapper>
-          </ActionArea>
+          </ActionArea> */}
+<SearchBar search={search} setSearch={setSearch} />
+
+
         </HeaderSection>
 
         <CardGrid>

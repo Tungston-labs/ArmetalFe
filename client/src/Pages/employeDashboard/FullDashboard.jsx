@@ -62,15 +62,13 @@ const FullDashboard = () => {
     );
   }
 
-  // ✅ Determine where user came from; fallback to /employee
-  const previousPage = location.state?.from || "/employee";
 
   return (
     <>
       <Navbar />
       <Wrapper>
         {/* Back Button */}
-        <BackButton onClick={() => navigate(previousPage)}>
+        <BackButton onClick={() => navigate("/employee")}>
           <FaArrowLeft /> Back
         </BackButton>
 

@@ -451,34 +451,58 @@ export const AddButton = styled.button`
 export const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
-  width: 100%;
-  max-width: 450px; /* optional max width */
+  /* width: 100%; */
+  max-width: 240px; 
 `;
 
 export const SearchInput = styled.input`
-  padding: clamp(0.6rem, 1vw, 1.2rem) clamp(1rem, 2vw, 2rem) clamp(0.6rem, 1vw, 1.2rem) clamp(2rem, 4vw, 2.5rem); /* top, right, bottom, left */
+  padding: 0.8rem 1rem;
   border: 1px solid #172554;
   border-radius: 6px;
   width: 100%;
-  font-family: 'Satoshi';
-  height: clamp(30px, 3vw, 60px);
-  font-size: clamp(0.8rem, 1vw, 1.5rem);
+  font-family: "Satoshi";
+  height: 30px;
+  font-size: 0.7rem;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
 
-  @media (min-width: 1440px) {
-    font-size: clamp(1rem, 0.8vw, 1.6rem);
-    height: clamp(45px, 2vw, 65px);
+  &:focus {
+    outline: none;
+    border-color: #021e82;
+  }
+
+  /* Laptop screens (≥1024px) */
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    padding: 0.8rem 0.9rem;
+    height: 30px;
+    font-size: 0.8rem;
    
   }
 
-  @media (min-width: 2560px) { /* 2K/4K screens */
-    font-size: 1.5rem;
-    height: 60px;
+  /* Large desktops (≥1440px) */
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    padding: 0.9rem 1rem;
+    height: 40px;
+    font-size: 1rem;
   }
 
-  @media (min-width: 3840px) { /* 4K/8K ultra-wide screens */
-    font-size: 2.5rem;
-    height:90px;
-    width:auto;
+  /* Ultra-wide (≥2560px) */
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    padding: 0.9rem 1rem;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+@media (min-width: 2560px) and (max-width: 3839px) {
+    padding: 0.9rem 1rem;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  /* 4K and above (≥3840px) */
+  @media (min-width: 3840px) {
+    padding: 1.5rem 4rem;
+    height: 90px;
+    font-size: 2rem;
+    width: auto;
   }
 `;
 

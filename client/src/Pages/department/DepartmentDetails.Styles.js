@@ -155,9 +155,9 @@ export const Subtitle = styled.p`
 // `;
 export const FormSection = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem 20rem;
-  margin-bottom: 2rem;
+  /* flex-wrap: wrap; */
+  gap: 1.5rem;
+  margin-bottom: 1rem;
 `;
 
 export const ActionArea = styled.div`
@@ -259,6 +259,10 @@ export const Input = styled.input`
   padding: clamp(0.4rem, 0.8vw, 0.75rem) clamp(0.6rem, 1vw, 1rem);
   font-size: clamp(0.85rem, 1vw, 1.1rem);
 
+   @media (min-width: 1440px) and (max-width: 1919px) {
+    font-size: 1rem;
+    padding: 0.6rem 1.25rem;
+  }
   @media (min-width: 1920px) and (max-width: 2559px) {
     font-size: 1.2rem;
     padding: 0.75rem 1.25rem;
@@ -273,6 +277,7 @@ export const Input = styled.input`
 export const TableWrapper = styled.div`
   //   overflow-x: auto;
   background-color: white;
+  margin-top: -1rem;
 `;
 
 export const StyledTable = styled.table`

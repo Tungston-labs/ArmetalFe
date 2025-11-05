@@ -7,19 +7,16 @@ import {
   Tab,
   Table,
   Title,
-  TopBar,
-  ProfileImg,
   Pagination,
   SearchInput,
   AddButton,
-  HRManager,
   Subtitle,
-  ActionArea,
+
   TitleSection,
-  DropdownWrapper,
-  DropdownMenu,
+
+
   SearchWrapper,
-  SearchIcon,
+
   TopRow,
   BottomRow,
   TextBlock,
@@ -42,8 +39,6 @@ import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader"
-import { FiSearch } from "react-icons/fi";
-import { GoInfo } from "react-icons/go";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -119,18 +114,17 @@ const EmployeeList = () => {
         department_id: departmentFilter,
       })
     ).then(() => {
-      setPage(newPage); // update only after data loads
+      setPage(newPage); 
     });
   };
 
 
   return (
     <>
-      {loading && <Loader />} {/* Full-page loader */}
+      {loading && <Loader />} 
       <Navbar />
       <Container>
         <HeaderSection>
-          {/* Top row: Title + Add Button */}
           <TopRow>
             <TitleSection>
               <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
@@ -222,7 +216,6 @@ const EmployeeList = () => {
                   <th>Email ID</th>
                   <th>Job Position</th>
                   <th>Department</th>
-                  <th>Info</th>
                   <th>Delete</th>
                 </tr>
               </thead>
@@ -264,9 +257,7 @@ const EmployeeList = () => {
                       <td>{emp.email}</td>
                       <td>{emp.designation}</td>
                       <td>{emp.department}</td>
-                      <td>
-                        <GoInfo />
-                      </td>
+                      
                       <td
                         onClick={(e) => {
                           e.stopPropagation(); // 🔒 Prevent row click
