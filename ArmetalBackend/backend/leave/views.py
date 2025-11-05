@@ -280,9 +280,12 @@ class LeaveSummaryView(APIView):
         )
 
         total_approved_days = sum(l.calculate_leave_days() for l in approved)
-        allowed = emp.total_leave or 0
+
+        # Convert Decimal to float before arithmetic
+        allowed = float(emp.total_leave or 0)
         remaining = max(allowed - total_approved_days, 0)
         lop_days = max(0, total_approved_days - allowed)
+
 
         monthly_salary = getattr(emp, "salary", 30000) or 30000
         per_day_salary = monthly_salary / working_days if working_days else 0
