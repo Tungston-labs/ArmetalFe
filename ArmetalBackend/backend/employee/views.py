@@ -720,9 +720,6 @@ from django.db.models import Sum
 from datetime import date, timedelta, datetime
 import calendar
 
-from employee.models import Employee_db, Attendance
-from superadmin.models import PublicHoliday
-
 class EmployeeMonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
