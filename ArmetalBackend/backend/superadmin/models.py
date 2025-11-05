@@ -8,6 +8,8 @@ from user.models import User
 from django.core.exceptions import ValidationError
 from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
 from django.db import transaction
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 
 import re
@@ -79,6 +81,49 @@ class Company(TimeStampedModel):
         help_text="Advance amount paid during company onboarding (not linked to subscription)"
     )
 
+    basic_salary_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=50,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        help_text="Basic salary percentage of CTC"
+    )
+
+    house_allowance_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=20,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+    )
+
+    transport_allowance_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=10,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+    )
+
+    special_allowance_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=20,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+    )
+
+    working_hours_per_day = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        default=8.0,
+        help_text="Total working hours per day"
+    )
+
+    half_day_hours = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        default=4.0,
+        help_text="Half day working hours"
+    )
+
 
     def save(self, *args, **kwargs):
 
@@ -108,6 +153,16 @@ class Company(TimeStampedModel):
             ext = self.logo.name.lower().split('.')[-1]
             if ext not in ['png', 'svg']:
                 raise ValidationError("Only .png or .svg files are allowed for the logo.")
+            
+        total_percent = (
+        self.basic_salary_percent +
+        self.house_allowance_percent +
+        self.transport_allowance_percent +
+        self.special_allowance_percent
+    )
+
+        if total_percent > 100:
+            raise ValidationError("Total salary percentage cannot exceed 100%.")
 
 
 

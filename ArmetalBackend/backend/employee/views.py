@@ -668,8 +668,19 @@ class EmployeeDocumentSummaryView(APIView):
 
 
 
-# mobile app home page with attendance details--
+from datetime import date, timedelta
+from decimal import Decimal
+from calendar import monthrange
 
+from django.utils import timezone
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+from attendance.models import Attendance
+from holidays.models import PublicHoliday
+from employee.models import Employee_db
 
 
 class AttendanceSummaryView(APIView):
@@ -679,74 +690,127 @@ class AttendanceSummaryView(APIView):
         user = request.user
 
         try:
-            employee = Employee_db.objects.get(user=user)
+            employee = Employee_db.objects.select_related(
+                "department__company"
+            ).get(user=user)
         except Employee_db.DoesNotExist:
-            return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Employee not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-        # Get ?month=YYYY-MM from query params
+        company = employee.department.company
+
+        # ✅ Dynamic company hours
+        full_day_hours = Decimal(company.working_hours_per_day)
+        half_day_hours = Decimal(company.half_day_hours)
+
+        # ---------- Month Handling ----------
         month_param = request.query_params.get("month")
+
         try:
             if month_param:
                 year, month = map(int, month_param.split("-"))
                 from_date = date(year, month, 1)
             else:
-                from_date = timezone.now().date().replace(day=1)
+                today = timezone.now().date()
+                from_date = today.replace(day=1)
+
             last_day = monthrange(from_date.year, from_date.month)[1]
             to_date = from_date.replace(day=last_day)
+
         except ValueError:
-            return Response({"error": "Invalid month format. Use YYYY-MM."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Invalid month format. Use YYYY-MM."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # List of all dates in month
-        total_dates = [from_date + timedelta(days=i) for i in range((to_date - from_date).days + 1)]
+        today = timezone.now().date()
 
-        # Mon–Fri only
-        working_days = [d for d in total_dates if d.weekday() < 5]
+        # ---------- All dates in month ----------
+        total_dates = [
+            from_date + timedelta(days=i)
+            for i in range((to_date - from_date).days + 1)
+        ]
 
-        # Holidays
+        # ---------- Weekly Off (Company Configured) ----------
+        company_off_day = PublicHoliday.objects.filter(
+            company=company,
+            holiday_type="company_off_day"
+        ).first()
+
+        off_day_name = company_off_day.day if company_off_day else None
+
+        # ---------- Holidays ----------
         holidays = PublicHoliday.objects.filter(
-            company=employee.department.company,
+            company=company,
             date__range=(from_date, to_date)
-        ).values_list("date", flat=True)
+        ).exclude(holiday_type="company_off_day")
 
-        actual_working_days = [d for d in working_days if d not in holidays]
+        holiday_dates = list(holidays.values_list("date", flat=True))
 
-        # Attendance
-        attendances = Attendance.objects.filter(employee=employee, date__range=(from_date, to_date))
+        # ---------- Actual Working Days ----------
+        actual_working_days = [
+            d for d in total_dates
+            if (off_day_name is None or d.strftime("%A") != off_day_name)
+            and d not in holiday_dates
+        ]
+
+        # ---------- Attendance ----------
+        attendances = Attendance.objects.filter(
+            employee=employee,
+            date__range=(from_date, to_date)
+        )
 
         present_days = 0
         half_days = 0
-        total_hours = 0.0
+        total_hours = Decimal(0)
         attended_dates = set()
 
         for att in attendances:
-            if att.date:
-                attended_dates.add(att.date)
-
-            if att.total_hours is None:
+            if not att.date:
                 continue
 
-            total_hours += float(att.total_hours)
+            attended_dates.add(att.date)
 
-            if att.total_hours >= 8:
+            hours = Decimal(att.total_hours or 0)
+            total_hours += hours
+
+            if hours >= full_day_hours:
                 present_days += 1
-            elif att.total_hours < 5:
+
+            elif hours >= half_day_hours:
                 half_days += 1
 
-        absent_days = [d for d in actual_working_days if d not in attended_dates]
-        today = timezone.now().date()
-        remaining_days = [d for d in actual_working_days if d > today]
+        # ---------- Absent Days (Only Until Today) ----------
+        absent_days = [
+            d for d in actual_working_days
+            if d <= today and d not in attended_dates
+        ]
+
+        # ---------- Remaining Working Days ----------
+        remaining_days = [
+            d for d in actual_working_days
+            if d > today
+        ]
 
         return Response({
             "month": from_date.strftime("%B %Y"),
+
+            "working_days": len(actual_working_days),
             "present_days": present_days,
             "half_days": half_days,
             "absent_days": len(absent_days),
-            "holiday_days": len(holidays),
-            "working_days": len(actual_working_days),
+
+            "holiday_days": len(holiday_dates),
             "remaining_working_days": len(remaining_days),
-            "total_hours": round(total_hours, 2)
+
+            "total_hours": float(round(total_hours, 2)),
+
+            # Optional (useful for mobile UI)
+            "full_day_hours_required": float(full_day_hours),
+            "half_day_hours_required": float(half_day_hours),
         })
-    
 # --------------------schedule remainder create list
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
@@ -790,12 +854,26 @@ class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 # -------------------employee summary for mobile app
 
 
+from datetime import date, timedelta
+from decimal import Decimal
+import calendar
+
+from django.utils import timezone
+from django.db.models import Sum
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from attendance.models import Attendance
+from holidays.models import PublicHoliday
+from employee.models import Employee_db
+
+
 class EmployeeMonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
-            # Get employee from logged-in user
             employee = request.user.employee_db
             department = employee.department
             company = department.company if department else None
@@ -803,34 +881,46 @@ class EmployeeMonthlySummaryView(APIView):
             return Response({"error": "Employee not found"}, status=404)
 
         if not department or not company:
-            return Response({"error": "Employee not assigned to a department or company"}, status=400)
+            return Response(
+                {"error": "Employee not assigned to a department or company"},
+                status=400
+            )
+
+        # ✅ Get dynamic company hours
+        full_day_hours = Decimal(company.working_hours_per_day)
+        half_day_hours = Decimal(company.half_day_hours)
 
         today = timezone.now().date()
         year = today.year
         month = today.month
 
-        # First and last day of month
+        # Month range
         first_day = date(year, month, 1)
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
         # All days in month
-        all_days = [first_day + timedelta(days=i) for i in range((last_day - first_day).days + 1)]
+        all_days = [
+            first_day + timedelta(days=i)
+            for i in range((last_day - first_day).days + 1)
+        ]
 
-        # Get company_off_day (e.g., Friday) for this company
+        # Company weekly off
         company_off_day = PublicHoliday.objects.filter(
             company=company,
             holiday_type='company_off_day'
         ).first()
+
         off_day_name = company_off_day.day if company_off_day else None
 
-        # Company holidays excluding company_off_day
+        # Holidays (excluding weekly off)
         holidays_qs = PublicHoliday.objects.filter(
             company=company,
             date__range=(first_day, last_day)
         ).exclude(holiday_type='company_off_day')
+
         holidays = [h.date for h in holidays_qs]
 
-        # Working days = all_days excluding company_off_day and holidays
+        # Working days
         working_days = [
             d for d in all_days
             if (off_day_name is None or d.strftime('%A') != off_day_name)
@@ -838,50 +928,85 @@ class EmployeeMonthlySummaryView(APIView):
         ]
 
         # Attendance records
-        attendances = Attendance.objects.filter(employee=employee, date__range=(first_day, last_day))
+        attendances = Attendance.objects.filter(
+            employee=employee,
+            date__range=(first_day, last_day)
+        )
 
         # Total hours
-        total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
+        total_hours = attendances.aggregate(
+            total=Sum("total_hours")
+        )["total"] or Decimal(0)
 
-        # Half days (4 <= hours < 8)
-        half_days = [att.date for att in attendances if 4 <= (att.total_hours or 0) < 8]
+        present_days = []
+        half_days = []
 
-        # Full present days (hours >= 8)
-        present_days = [att.date for att in attendances if (att.total_hours or 0) >= 8]
+        for att in attendances:
+            hours = Decimal(att.total_hours or 0)
 
-        # Absent days (working days until today, excluding present and half days)
+            if hours >= full_day_hours:
+                present_days.append(att.date)
+
+            elif hours >= half_day_hours:
+                half_days.append(att.date)
+
+        # Absent days (only until today)
         absent_days = [
             d for d in working_days
-            if d <= today and d not in present_days and d not in half_days
+            if d <= today
+            and d not in present_days
+            and d not in half_days
         ]
 
-        # Remaining working days (after today)
+        # Remaining working days
         remaining_working_days = [d for d in working_days if d > today]
 
-        # Company off day dates for this month
+        # Company off day dates this month
         off_day_dates = [
-            d for d in all_days if off_day_name and d.strftime('%A') == off_day_name
+            d for d in all_days
+            if off_day_name and d.strftime('%A') == off_day_name
         ]
 
         data = {
             "month": today.strftime("%B"),
             "total_working_days": len(working_days),
             "total_working_days_dates": working_days,
+
             "total_working_hours": float(total_hours),
-            "half_days_count": len(half_days),
-            "half_days_dates": half_days,
+
             "present_days_count": len(present_days),
             "present_days_dates": present_days,
+
+            "half_days_count": len(half_days),
+            "half_days_dates": half_days,
+
             "absent_days_count": len(absent_days),
             "absent_days_dates": absent_days,
+
             "remaining_working_days_count": len(remaining_working_days),
             "remaining_working_days_dates": remaining_working_days,
+
             "holidays_count": len(holidays),
             "holidays_dates": holidays,
+
             "company_off_day_name": off_day_name,
-            "company_off_day_dates": off_day_dates
+            "company_off_day_dates": off_day_dates,
         }
 
         return Response(data)
 
 
+from .models import SalaryIncrement
+from .serializers import SalaryIncrementSerializer
+
+
+class SalaryIncrementListCreateView(generics.ListCreateAPIView):
+    serializer_class = SalaryIncrementSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        employee_id = self.kwargs["employee_id"]
+        return SalaryIncrement.objects.filter(employee_id=employee_id)
+
+    def perform_create(self, serializer):
+        serializer.save()

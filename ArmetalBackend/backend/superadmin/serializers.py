@@ -43,6 +43,12 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "updated_at",
             "amount_per_employee",
             "initial_payment",
+            "basic_salary_percent",
+            "house_allowance_percent",
+            "transport_allowance_percent",
+            "special_allowance_percent",
+            "working_hours_per_day",
+            "half_day_hours",
         ]
 
         read_only_fields = [
@@ -61,7 +67,9 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
         }
     def validate(self, attrs):
 
-        # handle multipart decimal strings
+    # -------------------------------
+    # Handle decimal fields from multipart
+    # -------------------------------
         ape = self.initial_data.get("amount_per_employee")
         ip = self.initial_data.get("initial_payment")
 
@@ -70,6 +78,33 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 
         if ip not in [None, ""]:
             attrs["initial_payment"] = Decimal(ip)
+
+        # -------------------------------
+        # Salary Percentage Validation
+        # -------------------------------
+        basic = attrs.get("basic_salary_percent", 0)
+        hra = attrs.get("house_allowance_percent", 0)
+        transport = attrs.get("transport_allowance_percent", 0)
+        special = attrs.get("special_allowance_percent", 0)
+
+        total_percent = basic + hra + transport + special
+
+        if total_percent > 100:
+            raise serializers.ValidationError(
+                "Total salary percentage cannot exceed 100%."
+            )
+
+        # -------------------------------
+        # Working Hours Validation
+        # -------------------------------
+        working_hours = attrs.get("working_hours_per_day")
+        half_day_hours = attrs.get("half_day_hours")
+
+        if working_hours and half_day_hours:
+            if half_day_hours >= working_hours:
+                raise serializers.ValidationError(
+                    "Half day hours must be less than working hours per day."
+                )
 
         return attrs
 
@@ -94,7 +129,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 
         try:
             send_mail(
-                subject="Welcome to Armetal - Company Credentials",
+                subject="Welcome to Rekory - Company Credentials",
                 message=f"""
     Hi {company.name},
 
@@ -105,7 +140,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
     Password: {company.default_password}
 
     Regards,
-    Armetal Support
+    Rekory Team
     """,
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[company.email],
@@ -251,6 +286,12 @@ class CompanySelfUpdateSerializer(serializers.ModelSerializer):
             "logo",
             'amount_per_employee',   
             'initial_payment', 
+            "basic_salary_percent",
+            "house_allowance_percent",
+            "transport_allowance_percent",
+            "special_allowance_percent",
+            "working_hours_per_day",
+            "half_day_hours",
         ]
         extra_kwargs = {
             "email": {"required": False},

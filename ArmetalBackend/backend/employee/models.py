@@ -109,7 +109,7 @@ class EmpBankPaymentModel(models.Model):
     employee = models.OneToOneField(Employee_db, on_delete=models.CASCADE, related_name='bank_details')
     bank_name = models.CharField(max_length=100)
     swift_code = EncryptedCharField(max_length=500, blank=True, null=True)
-    payment_mode = models.CharField(max_length=10, choices=PAYMENT_MODES)
+    payment_mode = models.CharField(max_length=10, choices=PAYMENT_MODES,null=True,blank=True)
     account_number = EncryptedCharField(max_length=500)
     uan_epf_number = EncryptedCharField(max_length=500, blank=True, null=True)
     pan_number = EncryptedCharField(max_length=500)
@@ -164,4 +164,25 @@ class ScheduleReminder(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.scheduled_datetime}"
-        
+
+from decimal import Decimal
+
+
+class SalaryIncrement(models.Model):
+    employee = models.ForeignKey(
+        Employee_db,
+        on_delete=models.CASCADE,
+        related_name="salary_increments"
+    )
+
+    date = models.DateField()
+    increment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    total_salary = models.DecimalField(max_digits=10, decimal_places=2)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date"]
+
+    def __str__(self):
+        return f"{self.employee.name} - {self.increment_amount}"
