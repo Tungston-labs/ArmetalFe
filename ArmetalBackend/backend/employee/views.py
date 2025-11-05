@@ -13,7 +13,7 @@ from rest_framework import serializers
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.exceptions import NotFound
-from rest_framework.parsers import MultiPartParser,FormParser
+from rest_framework.parsers import MultiPartParser,FormParser,JSONParser
 from django.utils import timezone
 from django.db.models import Sum
 from calendar import monthrange
