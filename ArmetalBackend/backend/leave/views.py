@@ -246,7 +246,6 @@ class LeaveByStatusView(APIView):
         return Response(serializer.data)
 
 
-# ✅ Employee: Leave Summary View
 class LeaveSummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -261,45 +260,89 @@ class LeaveSummaryView(APIView):
         first_day = date(year, month, 1)
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
-        # Holidays
-        holidays = set(PublicHoliday.objects.filter(
-            date__range=(first_day, last_day)
-        ).values_list('date', flat=True))
+        # --- Identify Holidays & Company Off Days ---
+        holidays_qs = PublicHoliday.objects.filter(
+            date__range=(first_day, last_day),
+            company=emp.department.company
+        )
+        holidays = set()
+        company_off_days = set()
+        for h in holidays_qs:
+            if h.holiday_type == 'company_off_day':
+                company_off_days.add(h.date.weekday())
+            else:
+                holidays.add(h.date)
 
+        # --- Working Days ---
         working_days = sum(
             1 for d in range((last_day - first_day).days + 1)
-            if (first_day + timedelta(days=d)).weekday() != 6 and
-               (first_day + timedelta(days=d)) not in holidays
+            if (first_day + timedelta(days=d)).weekday() not in company_off_days
+            and (first_day + timedelta(days=d)) not in holidays
         )
 
-        # Yearly approved leaves using half-day calculation
-        year_start, year_end = date(year, 1, 1), date(year, 12, 31)
-        approved = LeaveRequest.objects.filter(
+        # --- Attendance ---
+        attendances = Attendance.objects.filter(employee=emp, date__range=(first_day, last_day))
+        full_days = half_days = 0
+        attendance_dates = set()
+        for att in attendances:
+            hours = float(att.total_hours or 0)
+            attendance_dates.add(att.date)
+            if hours >= 8:
+                full_days += 1
+            elif 4 <= hours < 8:
+                half_days += 1
+
+        days_present = full_days + 0.5 * half_days
+
+        # --- Approved Leave Days ---
+        leave_requests = LeaveRequest.objects.filter(
             employee=emp, status='approved',
-            from_date__gte=year_start, to_date__lte=year_end
+            from_date__lte=last_day, to_date__gte=first_day
         )
+        approved_leave_dates = set()
+        for leave in leave_requests:
+            start = max(leave.from_date, first_day)
+            end = min(leave.to_date, last_day)
+            if isinstance(start, datetime):
+                start = start.date()
+            if isinstance(end, datetime):
+                end = end.date()
+            if start <= end:
+                for n in range((end - start).days + 1):
+                    approved_leave_dates.add(start + timedelta(days=n))
 
-        total_approved_days = sum(l.calculate_leave_days() for l in approved)
+        # --- Unswiped Days ---
+        all_days = [(first_day + timedelta(days=i)) for i in range((last_day - first_day).days + 1)]
+        unswiped_valid_days = [
+            d for d in all_days
+            if d not in attendance_dates
+            and d not in holidays
+            and d.weekday() not in company_off_days
+            and d not in approved_leave_dates
+        ]
+        unswiped_days = float(len(unswiped_valid_days))
 
-        # Convert Decimal to float before arithmetic
-        allowed = float(emp.total_leave or 0)
-        remaining = max(allowed - total_approved_days, 0)
-        lop_days = max(0, total_approved_days - allowed)
+        # --- Paid Leave ---
+        paid_leave_balance = float(emp.paid_leave or 0.0)
 
+        # --- LOP Calculation (same as payroll serializer) ---
+        lop_days = max(unswiped_days - paid_leave_balance, 0)
 
-        monthly_salary = getattr(emp, "salary", 30000) or 30000
-        per_day_salary = monthly_salary / working_days if working_days else 0
+        # --- Salary-based LOP Amount ---
+        monthly_salary = float(getattr(emp, "salary", 30000) or 30000)
+        per_day_salary = monthly_salary / working_days if working_days > 0 else 0
         lop_amount = round(per_day_salary * lop_days, 2)
 
+        # --- Prepare Response ---
         return Response({
             "employee_name": emp.name,
             "profile_pic": emp.profile_pic.url if emp.profile_pic else None,
-            "total_leave": allowed,
-            "approved_count": total_approved_days,
-            "remaining_leave": remaining,
+            "working_days": working_days,
+            "days_present": days_present,
+            "unswiped_days": unswiped_days,
+            "paid_leave_used": paid_leave_balance,
             "lop_days": lop_days,
             "lop_amount": lop_amount,
-            "working_days": working_days,
             "monthly_salary": monthly_salary,
         })
 
