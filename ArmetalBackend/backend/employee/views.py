@@ -1,17 +1,34 @@
 # employees/views.py
 
-from rest_framework import generics, status, filters
+from rest_framework import generics, status, filters,permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from user.permissions import IsHRAdmin,IsEmployee
-from .models import Employee_db,TempUpload
-from .serializers import EmployeeSerializer,EmpDocumentSerializer
+from .models import Employee_db,TempUpload,EmpDocument,EmpBankPaymentModel,ScheduleReminder
+from .serializers import EmployeeSerializer,EmpDocumentSerializer,EmployeeProfileSerializer,EmployeeDocumentSummarySerializer,EmpBankPaymentSerializer,ScheduleReminderSerializer,EmployeeDashboardSerializer,TempUploadSerializer
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from shared.pagination import CustomPagination
 from rest_framework import serializers
 from django.core.mail import send_mail
 from django.conf import settings
+from rest_framework.exceptions import NotFound
+from rest_framework.parsers import MultiPartParser,FormParser
+from django.utils import timezone
+from django.db.models import Sum
+from calendar import monthrange
+from datetime import timedelta, date, datetime
+from attendance.models import Attendance
+from holidays.models import PublicHoliday
+from rest_framework.exceptions import ValidationError
+from .tasks import send_reminder
+from django.utils.timezone import now as timezone_now
+from employee.utils import send_push_notification
+import calendar
+from departments.models import Department
+from leave.models import LeaveRequest
+from rest_framework.pagination import PageNumberPagination
+from django.core.files.storage import default_storage
 # BASIC DETAILS
 
 
@@ -144,14 +161,7 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 # BANK DETAILS
 
-from rest_framework import generics, permissions
-from .models import EmpBankPaymentModel, Employee_db
-from .serializers import EmpBankPaymentSerializer
-from user.permissions import IsHRAdmin
-from rest_framework.exceptions import NotFound
-from rest_framework.parsers import MultiPartParser, FormParser
-from django.shortcuts import get_object_or_404
-from rest_framework import serializers
+
 
 class EmpBankPaymentCreateListView(generics.ListCreateAPIView):
     serializer_class = EmpBankPaymentSerializer
@@ -181,14 +191,6 @@ class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIVi
         return EmpBankPaymentModel.objects.filter(employee_id=employee_id)
 
 
-from datetime import timedelta
-from django.utils import timezone
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from .models import Employee_db
-from .serializers import EmployeeSerializer
-
-from rest_framework.pagination import PageNumberPagination
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 7
@@ -232,16 +234,7 @@ class UpcomingExpiryEmployeeListView(generics.ListAPIView):
 
 
 
-# views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status, permissions
-from rest_framework.parsers import MultiPartParser, FormParser
-from django.shortcuts import get_object_or_404
-from django.core.files.storage import default_storage
 
-from .models import EmpDocument, Employee_db
-from .serializers import EmpDocumentSerializer,TempUploadSerializer
 
 
 
@@ -281,14 +274,6 @@ class UploadImageDetailView(APIView):
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from rest_framework.response import Response
-from rest_framework import status, permissions
-from django.shortcuts import get_object_or_404
-from django.core.files.storage import default_storage
-from .models import Employee_db, EmpDocument
-from .serializers import EmpDocumentSerializer
 
 class EmployeeDocumentsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -344,9 +329,7 @@ class EmployeeDocumentsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework import generics, permissions
-from .models import EmpDocument
-from .serializers import EmpDocumentSerializer
+
 
 class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = EmpDocument.objects.all()
@@ -359,13 +342,6 @@ class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 # employee dashboard in web application
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-
-from .models import Employee_db
-from .serializers import EmployeeDashboardSerializer
 
 class EmployeeDashboardAPIView(APIView):
     permission_classes = [IsHRAdmin]
@@ -435,17 +411,6 @@ class EmployeeSelfView(APIView):
 
 # for dashboard details 
 
-from datetime import date, timedelta
-from django.utils import timezone
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-
-from attendance.models import Attendance
-from holidays.models import PublicHoliday
-from employee.models import Employee_db
-from departments.models import Department
-from leave.models import LeaveRequest
 
 
 class DashboardSummaryView(APIView):
@@ -596,12 +561,7 @@ class DashboardSummaryView(APIView):
 
 # employee/views.py
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from .models import Employee_db
-from .serializers import EmployeeProfileSerializer
-from user.permissions import IsEmployee
+
 
 class EmployeeProfileView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
@@ -616,12 +576,7 @@ class EmployeeProfileView(APIView):
 
         
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from employee.models import Employee_db
-from .serializers import EmployeeDocumentSummarySerializer
-from rest_framework import status
+
 
 class EmployeeDocumentSummaryView(APIView):
     permission_classes = [IsAuthenticated]
@@ -640,19 +595,7 @@ class EmployeeDocumentSummaryView(APIView):
 
 
 # mobile app home page with attendance details-------------------------
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
 
-from django.utils import timezone
-from django.db.models import Sum
-from calendar import monthrange
-from datetime import timedelta, date, datetime
-
-from attendance.models import Attendance
-from holidays.models import PublicHoliday
-from employee.models import Employee_db
 
 
 class AttendanceSummaryView(APIView):
@@ -729,13 +672,6 @@ class AttendanceSummaryView(APIView):
             "remaining_working_days": len(remaining_days),
             "total_hours": round(total_hours, 2)
         })
-from rest_framework import generics, permissions
-from rest_framework.exceptions import ValidationError
-from .models import ScheduleReminder
-from .serializers import ScheduleReminderSerializer
-from .tasks import send_reminder
-from django.utils.timezone import now as timezone_now
-from employee.utils import send_push_notification
 
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
@@ -776,27 +712,12 @@ class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-
-from datetime import date, timedelta
-import calendar
-from django.db.models import Sum
-from django.utils import timezone
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-
-from attendance.models import Attendance
-from holidays.models import PublicHoliday 
-from employee.models import Employee_db
-
-
 class EmployeeMonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
-            # Get employee from the logged-in user
-            employee = request.user.employee_db  
+            employee = request.user.employee_db
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found"}, status=404)
 
@@ -804,24 +725,40 @@ class EmployeeMonthlySummaryView(APIView):
         year = today.year
         month = today.month
 
-        # First and last day of the month
+        # Month start & end
         first_day = date(year, month, 1)
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
-        # All days in month
+        # All days of the month
         all_days = [first_day + timedelta(days=i) for i in range((last_day - first_day).days + 1)]
 
-        # Sundays
-        sundays = [d for d in all_days if d.weekday() == 6]
+        # 🔹 Find company's regular weekly off day (based on `company_off_day`)
+        company_off_days = PublicHoliday.objects.filter(
+            company=employee.department.company,
+            holiday_type='company_off_day'
+        ).values_list("day", flat=True).distinct()
 
-        # Company holidays for this month
+        # Example: ['Sunday'] or ['Friday']
+        company_off_day_names = list(company_off_days)
+
+        # 🔹 Convert day names (e.g. Sunday -> 6, Monday -> 0)
+        weekday_map = {
+            'Monday': 0, 'Tuesday': 1, 'Wednesday': 2, 'Thursday': 3,
+            'Friday': 4, 'Saturday': 5, 'Sunday': 6
+        }
+        off_day_indexes = [weekday_map[d] for d in company_off_day_names if d in weekday_map]
+
+        # 🔹 Regular company off days for the month
+        company_off_dates = [d for d in all_days if d.weekday() in off_day_indexes]
+
+        # 🔹 Company holidays (excluding company_off_day)
         holidays = PublicHoliday.objects.filter(
             company=employee.department.company,
             date__range=(first_day, last_day)
-        ).values_list("date", flat=True)
+        ).exclude(holiday_type='company_off_day').values_list("date", flat=True)
 
-        # Working days = all days - Sundays - Holidays
-        working_days = [d for d in all_days if d not in sundays and d not in holidays]
+        # 🔹 Working days = all days - company_off_dates - holidays
+        working_days = [d for d in all_days if d not in company_off_dates and d not in holidays]
 
         # Attendance records for this month
         attendances = Attendance.objects.filter(
@@ -832,19 +769,17 @@ class EmployeeMonthlySummaryView(APIView):
         # Total working hours
         total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
 
-        # Half days (4 <= hours < 7)
-        half_days = attendances.filter(total_hours__gte=2, total_hours__lt=6).values_list("date", flat=True)
+        # Half-day (4–8 hrs)
+        half_days = attendances.filter(total_hours__gte=4, total_hours__lt=8).values_list("date", flat=True)
 
-        # Present days (hours >= 7)
-        present_days = attendances.filter(total_hours__gte=6).values_list("date", flat=True)
+        # Full-day present (>=8 hrs)
+        present_days = attendances.filter(total_hours__gte=8).values_list("date", flat=True)
 
-        # Absent days only until today (exclude present and half days)
+        # Absent days (until today)
         absent_days = [d for d in working_days if d <= today and d not in present_days and d not in half_days]
-
 
         # Remaining working days
         remaining_working_days = [d for d in working_days if d > today]
-
 
         data = {
             "month": today.strftime("%B"),
@@ -860,7 +795,10 @@ class EmployeeMonthlySummaryView(APIView):
             "remaining_working_days_count": len(remaining_working_days),
             "remaining_working_days_dates": remaining_working_days,
             "holidays_count": len(holidays),
-            "holidays_dates": list(holidays)
+            "holidays_dates": list(holidays),
+            "company_off_day_names": company_off_day_names,  # ⬅️ Return off-day names
+            "company_off_day_dates": company_off_dates       # ⬅️ Return off-day dates
         }
 
         return Response(data)
+
