@@ -68,31 +68,18 @@ class Employee_db(TimeStampedModel):
 
     def save(self, *args, **kwargs):
 
-    # Generate employee_id if missing
+        # If employee_id not provided
+        # use email as username
         if not self.employee_id:
-            company_name = (
-                self.department.company.name
-                if self.department and self.department.company
-                else "DEF"
-            )
+            self.employee_id = self.email
 
-            department_name = (
-                self.department.name
-                if self.department
-                else "GEN"
-            )
-
-            self.employee_id = generate_employee_id(
-                company_name,
-                department_name
-            )
-
-        # searchable name
+        # searchable lowercase name
         if self.name:
             self.name_search = str(self.name).strip().lower()
 
-        # CREATE USER if not exists
+        # CREATE USER
         if not self.user_id:
+
             password = generate_password()
             self.password = password
 
@@ -102,16 +89,23 @@ class Employee_db(TimeStampedModel):
                 password=password,
                 is_employee=True,
                 is_hr=self.role == 'hr',
-                company=self.department.company if self.department else None
+                company=(
+                    self.department.company
+                    if self.department else None
+                )
             )
 
         else:
-            # 🔥 IMPORTANT: always sync username on update
+            # UPDATE USER DETAILS
             self.user.username = self.employee_id
             self.user.email = self.email
+            self.user.is_hr = self.role == 'hr'
             self.user.save()
 
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} - {self.employee_id}"
 
 
 
