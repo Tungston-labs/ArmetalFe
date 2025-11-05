@@ -1,4 +1,3 @@
-// src/Components/Header.jsx
 import React, { useRef } from "react";
 import { FiPlus } from "react-icons/fi";
 import {
@@ -13,9 +12,11 @@ import {
   InputBox,
   BioBox,
   InfoRow,
+  BackArrowWrapper, 
 } from "./Header.Styles";
+import { GoArrowLeft } from "react-icons/go";
 
-const Header = ({ employee = {}, editable = false, onChange, onImageChange }) => {
+const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBack }) => {
   const fileInputRef = useRef(null);
 
   const handleImageClick = () => {
@@ -27,35 +28,36 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange }) =>
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && onImageChange) {
-      const imageURL = URL.createObjectURL(file); // preview image
-      onImageChange(file, imageURL);
+      onImageChange(file); // only pass File, not URL
     }
   };
 
   return (
     <ProfileContainer>
       <ProfileCard>
+        {onBack && (
+          <BackArrowWrapper onClick={onBack}>
+        <GoArrowLeft   style={{  color: "#1034ad"}}/>
+          </BackArrowWrapper>
+        )}
+
         <ProfileImageWrapper>
-          {/* Profile image clickable */}
           <ProfileImage
             src={
-              employee?.profile_pic
-                ? employee.profile_pic
-                : "https://via.placeholder.com/200x200.png?text=Profile+Image"
+              employee?.profile_pic instanceof File
+                ? URL.createObjectURL(employee.profile_pic)
+                : employee.profile_pic || "https://via.placeholder.com/200x200.png?text=Profile+Image"
             }
             alt="Employee Profile"
             onClick={handleImageClick}
-             editable={editable}
+            editable={editable}
           />
-
-          {/* Plus icon on top */}
           {editable && (
             <PlusIconWrapper onClick={handleImageClick}>
               <FiPlus size={24} />
             </PlusIconWrapper>
           )}
 
-          {/* Hidden file input */}
           <input
             type="file"
             accept="image/*"
@@ -65,7 +67,6 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange }) =>
           />
         </ProfileImageWrapper>
 
-        {/* Employee Info Section */}
         <ContentArea>
           <LeftColumn>
             <InputBox

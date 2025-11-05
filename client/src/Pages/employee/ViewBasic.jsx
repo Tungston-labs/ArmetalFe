@@ -174,13 +174,18 @@ const ViewBasic = () => {
   };
 
   const from = location.state?.from;
-const handleImageChange = (file, imageURL) => {
-  // Optional: you can later upload 'file' to backend here
+// Replace your old handleImageChange with this
+// ViewBasic.jsx
+const handleImageChange = (file) => {
+  // store the File object in formData for submission
   setFormData((prev) => ({
     ...prev,
-    profile_pic: imageURL, // show preview immediately
+    profile_pic: file,
   }));
+  setIsEdited(true);
 };
+
+
 
   const handleBack = () => {
     if (from === "department") navigate(`/departments/${formData.department}`);

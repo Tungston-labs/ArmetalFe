@@ -192,6 +192,8 @@ const [bankProofImage, setBankProofImage] = useState(null);
         errors={fieldErrors}
           bankProofImage={bankProofImage}
   setBankProofImage={setBankProofImage}
+ 
+  showNextButton={true}
       />
     </Container>
     </>

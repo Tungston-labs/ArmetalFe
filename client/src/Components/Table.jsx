@@ -1,3 +1,4 @@
+// Components/Table.jsx
 import React from 'react';
 import {
   Container,
@@ -5,14 +6,11 @@ import {
   SectionTitle,
   FormSection,
   Row,
-  FormGroup,
   Input,
   Select,
   ButtonGroup,
   Button,
   TwoColumnRows,
-  FileInput,
-  ImagePreview
 } from './Table.Styles';
 import { FormGroups, Label } from '../Pages/employee/BasicLevel.Styles';
 
@@ -22,11 +20,8 @@ const ErrorMsg = ({ msg }) =>
   ) : null;
 
 const Table = ({
-  // Form state props
   bankName,
   setBankName,
-  bankProofImage,
-  setBankProofImage,
   swiftCode,
   setSwiftCode,
   paymentMode,
@@ -51,9 +46,9 @@ const Table = ({
   setHousingAllowance,
   transportation,
   setTransportation,
-
-  handleSubmit,
-  errors = {}
+  errors = {},
+  showNextButton = false,
+  handleNext, // ✅ will come from parent
 }) => {
   return (
     <Container>
@@ -62,7 +57,7 @@ const Table = ({
       </Header>
 
       <FormSection>
-        {/* --- Bank Name + Proof Upload --- */}
+        {/* --- Bank Name --- */}
         <Row>
           <FormGroups style={{ flex: '1 1 100%' }}>
             <Label>Bank Name</Label>
@@ -73,25 +68,6 @@ const Table = ({
               onChange={(e) => setBankName(e.target.value)}
             />
           </FormGroups>
-
-          {/* <FormGroups style={{ flex: '1 1 100%' }}>
-            <Label>Upload Bank Passbook Image</Label>
-            {bankProofImage && (
-              <ImagePreview
-                src={
-                  bankProofImage instanceof File
-                    ? URL.createObjectURL(bankProofImage)
-                    : bankProofImage
-                }
-                alt="Bank Proof Preview"
-              />
-            )}
-            <FileInput
-              type="file"
-              accept="image/*"
-              onChange={(e) => setBankProofImage(e.target.files[0])}
-            />
-          </FormGroups> */}
         </Row>
 
         {/* --- Bank Info --- */}
@@ -116,7 +92,6 @@ const Table = ({
               >
                 <option value="">Select Payment Mode</option>
                 <option value="online">Online</option>
-                <option value="cod">Cash on Delivery</option>
                 <option value="cheque">Cheque</option>
               </Select>
             </FormGroups>
@@ -258,12 +233,14 @@ const Table = ({
           </TwoColumnRows>
         </Row>
 
-        {/* --- Save Button --- */}
-        {/* <ButtonGroup>
-          <Button type="button" onClick={handleSubmit}>
-            Save
-          </Button>
-        </ButtonGroup> */}
+        {/* ✅ Only "Next" button shown when required */}
+        {showNextButton && (
+          <ButtonGroup>
+            <Button type="button" onClick={handleNext}>
+              Next
+            </Button>
+          </ButtonGroup>
+        )}
       </FormSection>
     </Container>
   );

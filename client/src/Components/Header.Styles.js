@@ -265,3 +265,16 @@ export const PlusIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
+export const BackArrowWrapper = styled.div`
+  position: absolute;      
+  z-index: 10;         
+  margin-left: -35px;
+  cursor: pointer;       
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size:2rem;
+
+`;
+
+

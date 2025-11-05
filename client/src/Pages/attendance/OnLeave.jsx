@@ -21,6 +21,7 @@ import Navbar from "../../Components/Navbar";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader";
 import { EmployeeImage } from "../leaveDetails/EmployeeList.styles";
+import { FaArrowLeft } from "react-icons/fa6";
 export default function EmployeeAttendance() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -128,7 +129,7 @@ const getLatestTimeOut = (sessions) => {
           <div style={{ display: "flex", alignItems: "center", gap: "0rem" }}>
 
            <div style={{ display: "flex", alignItems: "center", gap: "10px",color:"#3250B5" }}>
-           <HiArrowLeft
+           <FaArrowLeft
   onClick={() => navigate("/employee-attendance")}
   style={{
     cursor: "pointer",

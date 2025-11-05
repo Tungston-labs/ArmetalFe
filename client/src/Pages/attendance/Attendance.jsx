@@ -29,7 +29,7 @@ import {
   BackArrow,
 } from "./Attendance.Style";
 import { FaClock } from "react-icons/fa";
-import { PiUserCirclePlusThin } from "react-icons/pi";
+import { useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -39,7 +39,7 @@ const TimesheetPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+    const location = useLocation();
 
   const { attendanceDetail, detailLoading } = useSelector(
     (state) => state.attendance
@@ -47,7 +47,7 @@ const TimesheetPage = () => {
 
   const [selectedDate, setSelectedDate] = useState("");
   const [noAttendanceMessage, setNoAttendanceMessage] = useState("");
-
+  const previousPath = location.state?.from || '/employee-on-present';
   // ✅ Fetch attendance by ID & date
   useEffect(() => {
     const fetchData = async () => {
@@ -154,44 +154,20 @@ const getWeekDays = (dateStr) => {
   const isFutureDate = selectedDateObj > today;
 
     const handleBack= (deptId) => {
-    navigate(`/employee-on-present?department_id=${deptId}`);
+    navigate(previousPath);
   };
   return (
     <>
     
-    <Header employee={employee}/>
+
     <Container>
-      {/* Header */}
-      {/* <HeaderSection>
-        <InfoGrid>
-          <BackArrow onClick={() => navigate("/employee-on-present")} />
-          <div style={{ width: "10%" }}>
-            {employee?.profile_pic ? (
-              <ProfileImage src={employee.profile_pic} alt="Employee" />
-            ) : (
-              <PiUserCirclePlusThin size={100} style={{ color: "#aaa" }} />
-            )}
-          </div>
+<Header 
+  employee={employee} 
+  editable={false} 
+  onBack = {handleBack} 
+/>
 
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "space-between",
-            }}
-          >
-            <TwoColumn>
-              <Input value={employee?.name ?? ""} readOnly />
-            </TwoColumn>
 
-            <InfoSection>
-              <TwoColumnRow>
-                <Input value={selectedDate ?? ""} readOnly type="date" />
-              </TwoColumnRow>
-            </InfoSection>
-          </div>
-        </InfoGrid>
-      </HeaderSection> */}
 
       <Hr />
 

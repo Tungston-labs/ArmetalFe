@@ -405,10 +405,13 @@ export const DateWrapper = styled.div`
   justify-content: space-between;
   padding: clamp(10px, 2vw, 40px);
   position: relative; /* for absolute centering of DateDetails on large screens */
-
-  @media (max-width: 1024px) {
+  @media (max-width: 768px) {
     flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
+  }
+  @media (max-width: 1024px) {
+    /* flex-direction: column; */
+    gap: 2rem;
   }
 `;
 

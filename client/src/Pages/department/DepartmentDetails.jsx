@@ -92,42 +92,67 @@ const DepartmentDetail = () => {
       }
     });
   };
- const handleDeleteEmployee = (employeeId, employeeName) => {
+const handleDeleteEmployee = (employeeId, employeeName) => {
   Swal.fire({
     title: "Are you sure?",
     text: `Employee "${employeeName}" will be permanently deleted from the system.`,
     icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: "#d33", // red
-    cancelButtonColor: "#3085d6", // blue
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
     confirmButtonText: "Yes, delete!",
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        // Delete employee from the system
+        // 1️⃣ Delete employee
         await dispatch(deleteEmployeeById(employeeId)).unwrap();
 
-        // Refresh the department employee list
-        await dispatch(getEmployeesByDepartment(id));
+        // 2️⃣ Fetch updated employees in department
+        const updatedEmployees = await dispatch(getEmployeesByDepartment(id)).unwrap();
 
-        // Show confirmation alert
+        // 3️⃣ If department was auto-deleted or has no employees
+        if (!updatedEmployees || updatedEmployees.length === 0) {
+          Swal.fire({
+            title: "Department Deleted!",
+            text: `Employee "${employeeName}" was the last in this department. The department has been removed automatically.`,
+            icon: "success",
+            confirmButtonColor: "#3352BA",
+          });
+
+          // 4️⃣ Redirect safely (no manual deleteDepartment call)
+          navigate("/department");
+          return;
+        }
+
+        // ✅ Normal case
         Swal.fire({
           title: "Deleted!",
-          text: `Employee "${employeeName}" has been deleted from the system.`,
+          text: `Employee "${employeeName}" has been deleted successfully.`,
           icon: "success",
           confirmButtonColor: "#3352BA",
         });
       } catch (error) {
+        // Handle both employee and department missing cases
+        const errMsg =
+          error?.detail === "Department not found."
+            ? "This department no longer exists — it may have been deleted automatically."
+            : "Something went wrong while deleting the employee.";
+
         Swal.fire({
-          title: "Failed!",
-          text: "Something went wrong while deleting the employee.",
-          icon: "error",
+          title: "Notice",
+          text: errMsg,
+          icon: "info",
           confirmButtonColor: "#3352BA",
         });
+
+        // Redirect to department list just in case
+        navigate("/department");
       }
     }
   });
 };
+
+
 
   
 
