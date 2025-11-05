@@ -81,7 +81,7 @@ const ViewBasic = () => {
       ...employeeDetail,
       department: deptId,
       total_leave: employeeDetail.total_leave || "",
-      pending_leave: employeeDetail.pending_leave || "",
+      paid_leave: employeeDetail.paid_leave || "",
       contract_expiry_date: employeeDetail.contract_expiry_date || "",
       role: employeeDetail.role || "",
       idcard: employeeDetail.idcard || "",
@@ -333,11 +333,11 @@ const handleImageChange = (file, imageURL) => {
           </FieldGroup>
 
           <FieldGroup>
-            <Label>Pending Leaves</Label>
+            <Label>Paid Leave</Label>
             <Input
               type="number"
-              name="pending_leave"
-              value={formData.pending_leave || ""}
+              name="paid_leave"
+              value={formData.paid_leave || ""}
               onChange={handleChange}
             />
           </FieldGroup>
