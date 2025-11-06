@@ -33,7 +33,7 @@ import ForgetPassword from "./Pages/login/ForgetPassword.jsx";
 import Verification from "./Pages/login/Verification.jsx";
 import NewPassword from "./Pages/login/NewPassword.jsx";
 import Loder from "./Components/Loder.jsx";
-import Sample from "./Pages/employeDashboard/Sample.jsx";
+import LeftContent from "./Pages/employeDashboard/LeftContent.jsx";
 import Employeedashboard from "./Pages/employeDashboard/Employeedashboard.jsx"
 import FullDashboard from "./Pages/employeDashboard/FullDashboard.jsx";
 import EmployeAttendance from "./Pages/attendance/EmployeAttendance.jsx";
@@ -44,7 +44,7 @@ import Reimbursement from "./Pages/reimbursement/Reimb_Department.jsx"
 import Reimbpage from "./Pages/reimbursement/ReimbPage.jsx"
 import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
 import FinancePage from "./Pages/finance/FinancePage.jsx"
-import Dashboard from "./Pages/employeDashboard/Sample.jsx";
+import Dashboard from "./Pages/employeDashboard/LeftContent.jsx";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./Redux/authSlice";
@@ -119,7 +119,7 @@ function App() {
             <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
             <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
             <Route path="/employee-dashboard" element={<Employeedashboard />} />
-            <Route path="/sample" element={<Sample />} />
+            <Route path="/leftcontent" element={<LeftContent />} />
             <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
 
             <Route path="/reimbursement" element={<Reimbursement />} />

@@ -30,16 +30,17 @@ import {
   TimeWrapper,
   ClockIcon,
   TimeText,
+  RightArrows
 } from "./BottomCard.Styles";
 import NoTasks from "../../assets/daliy.svg"; // for empty tasks
 import NoAttendance from "../../assets/puchtime.svg"; 
-
-import { BiSolidRightTopArrowCircle } from "react-icons/bi";
-import { FiArrowUpRight } from "react-icons/fi";
 import { fetchEmployeeDash } from "../../Redux/authSlice";
 import { useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { FiArrowUpRight } from "react-icons/fi";
 const formatTime = (timeStr) => {
+ 
+
   if (!timeStr) return "-";
   try {
     // Convert "05:35:10.246872" → "05:35 PM"
@@ -80,6 +81,7 @@ const formatHours = (hours) => {
 
 
 const DailyTaskList = () => {
+   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { employeeId } = useParams();
   const { employeeDashData, loadingEmployeeDash, employeeDashError } = useSelector(
@@ -104,29 +106,36 @@ const DailyTaskList = () => {
     <Container>
       {/* Left Section: Daily Tasks */}
       <Section>
-        <Header>
-          <Title>Daily Task List</Title>
-          {/* <RightArrow>
-            <BiSolidRightTopArrowCircle size={28} />
-          </RightArrow> */}
-        </Header>
+       <Header>
+  <Title>Daily Task List</Title>
+  <RightArrow onClick={() => navigate(`/daily-task`)} title="Go to Tasks">
+    <FiArrowUpRight />
+  </RightArrow>
+</Header>
+
 
         <TaskList>
   {tasks.length > 0 ? (
     tasks.map((task, index) => (
-      <TaskCard key={index}>
-        <TaskLeft>
-        <TaskDate>{formatDate(task.date)}</TaskDate>
-        <TaskTime>{formatHours(task.time_taken)}</TaskTime>        </TaskLeft>
-        <Divider />
-        <TaskContent>
-          <TaskRole>{task.project || "N/A"}</TaskRole>
-          <TaskDescription>{task.task || "No description"}</TaskDescription>
-        </TaskContent>
-        {/* <RightArrow>
-          <FiArrowUpRight size={16} />
-        </RightArrow> */}
-      </TaskCard>
+     <TaskCard key={index}>
+  <TaskLeft>
+    <TaskDate>{formatDate(task.date)}</TaskDate>
+    <TaskTime>{formatHours(task.time_taken)}</TaskTime>
+  </TaskLeft>
+  <Divider />
+  <TaskContent>
+    <TaskRole>{task.project || "N/A"}</TaskRole>
+    <TaskDescription>{task.task || "No task"}</TaskDescription>
+  </TaskContent>
+
+  <RightArrows
+    onClick={() => navigate(`/daily-task`)} 
+    title="View Task Details"
+  >
+<FiArrowUpRight />
+  </RightArrows>
+</TaskCard>
+
     ))
   ) : (
     <Wrapper>
@@ -138,14 +147,17 @@ const DailyTaskList = () => {
 
       </Section>
 
-      {/* Right Section: Attendance */}
       <Section>
-        <AttendanceHeader>
-          <Title>{new Date().toLocaleDateString()}</Title>
-          {/* <RightArrow>
-            <BiSolidRightTopArrowCircle size={28} />
-          </RightArrow> */}
-        </AttendanceHeader>
+     <AttendanceHeader>
+  <Title>{new Date().toLocaleDateString()}</Title>
+  <RightArrow
+onClick={() => navigate(`/employee-on-present`)}
+
+    title="View Attendance Details"
+  >
+    <FiArrowUpRight />
+  </RightArrow>
+</AttendanceHeader>
 
         <Table>
           <thead>

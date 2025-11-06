@@ -138,7 +138,7 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
         {/* Departments */}
         <NavLink to="/department" style={{ textDecoration: "none", color: "inherit" }}>
           <SectionTitle>
-            Department <FiArrowUpRight />
+            Department <FiArrowUpRight  style={{color:"#3352ba"}}/>
           </SectionTitle>
         </NavLink>
 
@@ -170,7 +170,7 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <SectionTitle>
-            Employee Presence & Upcoming Holidays <FiArrowUpRight />
+            Employee Presence & Upcoming Holidays <FiArrowUpRight  style={{color:"#3352ba"}}/>
           </SectionTitle>
         </NavLink>
 
@@ -238,7 +238,7 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
         <UpcomingHolidaySection>
           <NavLink to="/holiday" style={{ textDecoration: "none", color: "inherit" }}>
             <SectionTitle>
-              Upcoming Holidays <FiArrowUpRight />
+              Upcoming Holidays <FiArrowUpRight   style={{color:"#3352ba"}}/>
             </SectionTitle>
           </NavLink>
 

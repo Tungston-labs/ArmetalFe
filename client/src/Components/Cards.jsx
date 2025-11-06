@@ -85,12 +85,13 @@ const Cards = () => {
                   <EmployeeId>{emp.employee_id}</EmployeeId>
                 </CardListItem>
               ))}
+                 </CardList>
               <IconWrapper>
                 <Link to="/employee">
                   <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
               </IconWrapper>
-            </CardList>
+       
           </CardContent>
         </CardHeader>
       </Card>
@@ -123,17 +124,19 @@ const Cards = () => {
                   />
                   <EmployeeName>{emp.employee}</EmployeeName>
                   <EmployeeDept>{emp.department}</EmployeeDept>
-                  <EmployeeId>
-                    <span>{emp.from_date}</span> – <span>{emp.to_date}</span>
-                  </EmployeeId>
+                 <EmployeeId data-from={emp.from_date} data-to={emp.to_date}>
+  <span>{emp.from_date}</span> – <span>{emp.to_date}</span>
+</EmployeeId>
+
                 </CardListItem>
               ))}
+                 </CardList>
               <IconWrapper>
                 <Link to="/employee-leave-request">
                   <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
               </IconWrapper>
-            </CardList>
+         
           </CardContent>
         </CardHeader>
       </Card>
@@ -169,12 +172,13 @@ const Cards = () => {
                   <EmployeeId>{emp.visa_expiry_date}</EmployeeId>
                 </CardListItem>
               ))}
+                 </CardList>
               <IconWrapper>
                 <Link to="/employee-Contract-Visa-Expiry">
                   <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
               </IconWrapper>
-            </CardList>
+
           </CardContent>
         </CardHeader>
       </Card>

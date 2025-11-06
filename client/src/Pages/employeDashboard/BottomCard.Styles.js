@@ -59,32 +59,59 @@ export const Title = styled.h3`
   
 `;
 
-
 export const RightArrow = styled.div`
+  margin-left: auto;
+  align-self: center;
   cursor: pointer;
-  color: #2d63f3;
-  font-size: 24px; /* default size */
+  font-size: 1.5rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+background-color: #3352BA;
+border-radius: 50%;
+  &:hover {
+    transform: scale(1.2);
+    color: white;
+  }
 
-  /* Small devices (mobile) */
+  /* Responsive sizes */
   @media (max-width: 480px) {
-    font-size: 18px;
+    font-size: 1rem;
   }
 
-  /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 20px;
-  }
-
-  /* Large desktops */
-  @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 24px;
-  }
-
-  /* Extra-large / 4K screens */
-  @media (min-width: 1601px) {
-    font-size: 32px;
+    font-size: 1.2rem;
   }
 `;
+
+export const RightArrows = styled.div`
+  margin-left: auto;
+  align-self: center;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #3352BA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    transform: scale(1.2);
+    color: #1e3a8a;
+  }
+
+  /* Responsive sizes */
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 481px) and (max-width: 1024px) {
+    font-size: 1.2rem;
+  }
+`;
+
 
 
 export const TaskList = styled.div`
@@ -120,13 +147,11 @@ export const Message = styled.p`
 
 export const TaskCard = styled.div`
   display: flex;
-  // align-items: flex-start;
   padding: 14px;
-  border-radius: 8px;
   background: #fff;
-  // border-left: 4px solid #2d63f3;
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 `;
+
 export const AttendanceSection = styled.div`
   display: flex;
   flex-direction: column;   
@@ -174,38 +199,128 @@ export const Divider = styled.div`
 export const TaskLeft = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-start; /* keeps both left-aligned */
 `;
 
 export const TaskDate = styled.div`
-  font-weight: 600;
+  font-weight: 400;
   font-size: 14px;
-  color: #2c2c2c;
-  white-space: nowrap; /* ensures it stays in one line */
+  color: #172554;
+  white-space: nowrap;
+  line-height: 1.4;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+    white-space: normal;
+  }
 `;
 
 export const TaskTime = styled.div`
   font-size: 13px;
-  color: #777;
-  padding-left:10px;
+  color: #172554;
+  margin-top: 2px;
+  line-height: 1.4;
+  font-weight: 600;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    margin-top: 4px;
+  }
 `;
+
 
 export const TaskContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 2;
+
+  @media (max-width: 768px) {
+    gap: 3px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 2px;
+    text-align: center;
+    align-items: center;
+  }
 `;
 
 export const TaskRole = styled.div`
-  font-size: 12px;
-  color: #999;
+  /* font-size: 12px; */
+  color: black;
   font-weight: 500;
+  word-break: break-word;
+
+@media (min-width: 2560px) and (max-width:3840px) {
+    font-size: 1.5rem;
+  }
+
+@media (min-width: 1920px) and (max-width:2559px) {
+    font-size: 1.4rem;
+  }
+
+@media (min-width: 1600px) and (max-width:1919px) {
+    font-size: 1.2rem;
+  }
+
+@media (min-width: 1020px) and (max-width:1599) {
+    font-size: 1.2rem;
+  }
+  @media (min-width: 768px) and (max-width:1019px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 11.5px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    font-weight: 600;
+  }
 `;
 
 export const TaskDescription = styled.div`
-  font-size: 13px;
-  color: #555;
+
+  color: black;
   line-height: 1.4;
+  word-wrap: break-word;
+  max-width: 100%;
+
+@media (min-width: 2560px) and (max-width:3840px) {
+    font-size: 1.5rem;
+  }
+
+ @media (min-width: 1920px) and (max-width:2559px) {
+    font-size: 1.2rem;
+  } 
+
+  @media (min-width: 1600px) and (max-width:1919px) {
+    font-size: 1rem;
+  }
+
+   @media (min-width: 1020px) and (max-width:1619px) {
+    font-size: 1rem;
+  }
+   @media (min-width: 769px) and (max-width:1019px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 12.5px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+    text-align: center;
+  }
 `;
 
 export const Table = styled.table`
@@ -218,7 +333,7 @@ export const Table = styled.table`
 
 
 export const TableRow = styled.tr`
-  border-bottom: 1px solid #eee;
+  border-bottom: 10px solid #f4f4f4;
 `;
 
 export const TableCell = styled.td`

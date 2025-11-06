@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Sample from "./Sample"; 
+import LeftContent from "./LeftContent"; 
 import Employeedashboard from "./Employeedashboard"; 
 import styled from "styled-components";
 import Loader from "../../Components/Loader";
@@ -73,7 +73,7 @@ const FullDashboard = () => {
         </BackButton>
 
         <div style={{ display: "flex", width: "100%", height: "100%" }}>
-          <Sample />
+          <LeftContent />
           <Employeedashboard />
         </div>
         <BottomCard />

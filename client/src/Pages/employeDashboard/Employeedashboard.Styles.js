@@ -54,69 +54,75 @@ export const InfoCard = styled.div`
 `;
 
 export const CardTitle = styled.div`
-font-size: 18px; /* default */
+  font-size: 18px; 
     margin: 0;
     font-family: "Satoshi", sans-serif;
-  font-weight: 400;
-
-   /* Small devices (mobile) */
-  @media (max-width: 480px) {
-    font-size: 0.6rem;
-  }
-
-  /* Medium devices (tablets) */
-  @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 0.8rem;
-  }
-
-  /* Large desktops */
-  @media (min-width: 1025px) and (max-width: 1600px) {
-    font-size: 1rem;
-  }
-
-  /* Extra-large / 4K screens */
-  @media (min-width: 1601px) {
-    font-size:1.2rem ;
-  }
-       @media (min-width: 2068px) and (max-width: 6000px) {
-      font-size: 1.5rem;
+font-weight: 500;
+    /* Small devices (mobile) */
+    @media (max-width: 480px) {
+      font-size: 0.6rem;
     }
-
+    @media (min-width: 2068px) and (max-width: 6000px) {
+      font-size: 2rem;
+    }
+ @media (min-width: 1920px) and (max-width:2067px) {
+      font-size: 1rem;
+    }
+    /* Medium devices (tablets) */
+    @media (min-width: 481px) and (max-width: 1024px) {
+      font-size: 0.8rem;
+    }
+ @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 1rem;
+    }
+    /* Large desktops */
+    @media (min-width: 1025px) and (max-width: 1600px) {
+      font-size: 1rem;
+    }
+   
+    /* Extra-large / 4K screens */
+    @media (min-width: 1601px) {
+      font-size: 1.2rem;
+    }
+     
+    @media (min-width: 3068px) and (max-width: 6000px) {
+      font-size: 2.3rem;
+    }
 `;
 
 export const CardSubtitle = styled.div`
   font-size: 13px;
   color: #666;
   font-family: 'Satoshi', sans-serif;
-   /* Small devices (mobile) */
-  @media (max-width: 480px) {
-    font-size: 0.3rem;
-  }
-
-  /* Medium devices (tablets) */
-  @media (min-width: 481px) and (max-width: 1024px) {
-    font-size: 0.5rem;
-  }
-
-  /* Large desktops */
-  @media (min-width: 1025px) and (max-width: 1440px) {
-    font-size: 0.7rem;
-    margin-top: -2px;
-
-  }
-@media (min-width: 1441px) and (max-width: 1600px) {
-    font-size: 0.8rem;
-    margin-top: -5px;
-
-  }
-  /* Extra-large / 4K screens */
-  @media (min-width: 1601px) {
-    font-size: 1rem;
-  }
-       @media (min-width: 2068px) and (max-width: 6000px) {
-      font-size: 1.3rem;
+    /* Small devices (mobile) */
+    @media (max-width: 480px) {
+      font-size: 0.3;
     }
 
+    /* Medium devices (tablets) */
+    @media (min-width: 768px) and (max-width: 1024px) {
+      font-size: 0.7rem;
+    }
+
+    /* Large desktops */
+    @media (min-width: 1025px) and (max-width: 1440px) {
+      font-size: 0.7rem;
+    }
+ @media (min-width: 1441px) and (max-width: 1600px) {
+      font-size: 0.8rem;
+    }
+    /* Extra-large / 4K screens */
+    @media (min-width: 1601px) and (max-width:1920px) {
+      font-size: 1rem;
+    }
+       @media (min-width: 1921px) and (max-width:2560px) {
+      font-size: 1.5rem;
+    }
+      
+    @media (min-width: 2561px) and (max-width: 3840px) {
+      font-size: 1.8rem;
+    }
+  
 `;
 
 export const CardLink = styled.div`
@@ -284,7 +290,7 @@ export const MemberList = styled.div`
 
   /* Small screens - show all members */
   @media (max-width: 1023px) {
-    max-height: none;
+  max-height: calc(3 * 60px);
   }
 
   /* Laptop - show 3 employees */

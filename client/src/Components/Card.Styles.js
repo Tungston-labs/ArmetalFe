@@ -230,49 +230,59 @@ export const CardList = styled.div`
 
 export const CardListItem = styled.div`
   display: grid;
-  grid-template-columns: 20px 0.5fr 1fr 1fr;
+  grid-template-columns: 30px 1fr 1fr 1fr;  
   align-items: center;
-  font-size: 0.7rem;
-  padding: 0.2rem 15px;
   gap: 0.5rem;
+  padding: 0.3rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  opacity:0.8;
 
-  @media (max-width: ${breakpoints.laptop}) {
-    grid-template-columns: 30px 1fr 2fr;
+  &:last-child {
+    border-bottom: none;
   }
 
-  @media (max-width: ${breakpoints.tablet}) {
-    /* grid-template-columns: 40px 1fr; */
-    font-size: 0.8rem;
+  img {
+    /* width: 28px;
+    height: 28px; */
+    border-radius: 50%;
+    object-fit: cover;
   }
 
-  @media (max-width: ${breakpoints.mobile}) {
-    grid-template-columns: 30px 1fr;
-    font-size: 0.75rem;
+  /* 📱 Mobile */
+  @media (min-width: 768px) and (max-width:1020px) {
+    /* grid-template-columns: 30px 1fr; */
+    padding: 0.3rem 0.5rem;
     gap: 0.3rem;
 
+    /* img {
+      width: 25px;
+      height: 25px;
+    } */
+  }
+
+  /* 💻 Large screens */
+  @media (min-width: 2560px)and (max-width:3859px) {
+    grid-template-columns: 30px 1fr 1fr 1fr;
+    padding: 0.8rem 1.5rem;
+
     img {
-      width: 25px !important;
-      height: 25px !important;
-      margin-right: 5px !important;
+      width: 55px;
+      height: 55px;
     }
   }
-  @media (min-width: ${breakpoints.tv}) {
-    
+ @media (min-width: 3840px){
+    grid-template-columns: 30px 150px 1fr 1fr;
+    padding: 0.8rem 1.5rem;
+
     img {
-      width: 30px !important;
-      height: 30px !important;
-      margin-right: 5px !important;
+      width: 55px;
+      height: 55px;
     }
   }
-  @media (min-width: ${breakpoints.largeTv}) {
-    
-    img {
-      width: 40px !important;
-      height: 40px !important;
-      margin-right: 5px !important;
-    }
-  }
+
+
 `;
+
 
 export const EmployeeAvatar = styled.div`
   width: 32px;
@@ -287,137 +297,164 @@ export const EmployeeAvatar = styled.div`
 `;
 
 export const EmployeeName = styled.span`
-  font-weight: 500;
+   font-weight: 600;
   color: #222;
-  font-size: 0.75rem; /* 📱 Mobile default */
-  transition: all 0.3s ease-in-out;
+  text-align: left;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
 
-  @media (min-width: 768px) {
+  @media (min-width: 768px) and (max-width: 1023px) {
     font-size: 0.65rem;
   
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1024px) and (max-width:1439px){
     font-size: 0.8rem;
 
   }
-    @media (min-width: 1440px) {
-    font-size: 0.8rem;
+    @media (min-width: 1440px) and (max-width:1599px){
+    font-size: 0.9rem;
   
   }
 
-    @media (min-width: 1600px) {
-    font-size: 0.9rem;
+    @media (min-width: 1600px) and (max-width:1919px) {
+    font-size: 1rem;
 
   }
 
 
-  @media (min-width: 1920px) {
-    font-size: 1.6rem;
+  @media (min-width: 1920px) and (max-width:2559px) {
+    font-size: 1.3rem;
     padding: 0.5rem 1.2rem;
   }
 
-  @media (min-width: 2560px) {
-    font-size: 2rem;
+  @media (min-width: 2560px) and (max-width:3839px) {
+    font-size: 1.4rem;
     padding: 0.75rem 1.5rem;
   }
-
-
-  @media (min-width: 3840px) {
-    font-size: 2.6rem;
-    padding: 1rem 2rem;
+ @media (min-width: 3840px) {
+ color: #777;
+  text-align: right;
+  font-size: 2rem;
+  white-space: nowrap;
+  text-align: left;
   }
 `;
 
 export const EmployeeId = styled.div`
   color: #666;
-  font-size: 0.75rem; /* base for mobile */
+  font-size: 0.75rem;
 
-  .from-date,
-  .to-date {
-    display: inline;
-  }
-
-  .continue-sign {
+  @media (min-width: 768px) and (max-width:1023px) {
     display: none;
   }
 
-  /* Tablet */
-  @media (min-width: 768px) {
-    font-size: 0.9rem;
-  }
-
-  /* Laptop range */
-  @media (min-width: ${breakpoints.laptop}) and (max-width: ${breakpoints.desktop}) {
-    font-size: 1rem;
-
-    .to-date {
+  /* Small laptop */
+  @media (min-width: 1024px) and (max-width:1439px) {
+    font-size: 0.7rem;
+    span {
       display: none;
     }
 
-    .continue-sign {
-      display: inline;
+    &::before {
+      content: attr(data-from) " ";
     }
   }
 
-  /* Desktop (≥ 1440px) */
-  @media (min-width: 1440px) {
-    font-size: 0.8rem;
-  }
-   @media (min-width: 1770px) {
-    font-size: 1rem;
+  @media (min-width: 1440px) and (max-width:1599px) {
+    font-size: 0.7rem;
+     span {
+      display: none;
+    }
+
+    &::before {
+      content: attr(data-from) " ";
+    }
   }
 
-  /* Full HD (1920px) */
-  @media (min-width: ${breakpoints.tv}) {
-    font-size: 1.3rem;
+  @media (min-width: 1600px) and (max-width:1919px) {
+    font-size: 0.9rem;
+     span {
+      display: none;
+    }
+
+    &::before {
+      content: attr(data-from) " ";
+    }
   }
 
-  /* 4K screens (2560px+) */
-  @media (min-width: ${breakpoints.largeTv}) {
-    font-size: 1.6rem;
+  @media (min-width: 1920px) and (max-width:2560px) {
+    font-size: 1.2rem;
+     span {
+      display: none;
+    }
+
+    &::before {
+      content: attr(data-from) " ";
+    }
   }
 
-  /* Hide below 1430px (based on your rule) */
-  @media (max-width: 1430px) {
-    display: none;
+  @media (min-width: 2561px) and (max-width:3840px) {
+    font-size: 1.5rem;
+     span {
+      display: none;
+    }
+
+    &::before {
+      content: attr(data-from) " ";
+    }
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 1.9rem;
+     span {
+      display: none;
+    }
+
+    &::before {
+      content: attr(data-from) " ";
+    }
   }
 `;
 
 
 export const EmployeeDept = styled.span`
-  color: #777;
-  font-weight: 500;
-  display: inline-block;
-  text-align: left;
-  line-height: 1.3;
-  font-size: 0.6rem;
+   color: #555;
+  text-align: center;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   /* Tablets */
-  @media (min-width: 600px) {
+  @media (min-width: 768px) and (max-width:1023px) {
     font-size: 0.65rem;
   }
 
   /* Small laptop */
-  @media (min-width: 1024px) {
-    font-size: 0.8rem;
+  @media (min-width: 1024px) and (max-width:1439px) {
+    font-size: 0.7rem;
   }
 
 
-  @media (min-width: 1440px) {
-    font-size: 1rem;
+  @media (min-width: 1440px) and (max-width:1599px) {
+    font-size: 0.7rem;
   }
 
-   @media (min-width: 1600px) {
+   @media (min-width: 1600px) and (max-width:1919px) {
     font-size: 0.9rem;
   }
-  @media (min-width: 1920px) {
+  @media (min-width: 1920px) and ( max-width:2560px){
+    font-size: 1.2rem;
+  }
+ @media (min-width: 2561px) and ( max-width:3840px){
     font-size: 1.5rem;
   }
-
   /* 4K screens (3840×2160) */
-  @media (min-width: 3840px) {
+  @media (min-width: 3841px) {
     font-size: 1.9rem;
   }
 `;
@@ -439,18 +476,18 @@ export const IconWrapper = styled.div`
   @media (max-width: ${breakpoints.mobile}) {
     bottom: 5px;
     right: 5px;
-    font-size: 0.8rem; /* shrink icon */
+    font-size: 0.8rem; 
   }
 
   /* 📱 Tablet */
   @media (max-width: ${breakpoints.tablet}) {
     bottom: 8px;
-    right: 8px;
+    right: 9px;
     font-size: 1rem;
   }
   @media (max-width: 1430px) {
     bottom:0px;
-    right: -8px;
+    right: 8px;
     font-size: 1rem;
   }
 

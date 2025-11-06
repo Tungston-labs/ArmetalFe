@@ -60,24 +60,12 @@ const TimeLogDashboard = () => {
 
   const baseUrl = "http://178.248.112.16:8001";
 
-  // if (loadingEmployeeDash) return <p>Loading...</p>;
-
   if (loadingEmployeeDash) {
-    // return (
-    //   <div style={{ 
-    //     display: "flex", 
-    //     justifyContent: "center", 
-    //     alignItems: "center", 
-    //     height: "100vh" 
-    //   }}>
-    //     <Spin size="large" tip="Loading Dashboard..." />
-    //   </div>
-    // );
+ 
   }
   if (employeeDashError) return <p>Error: {employeeDashError}</p>;
   const getPreviousMonthName = () => {
   const date = new Date();
-  // Get previous month (0 = January)
   date.setMonth(date.getMonth() - 1);
   return date.toLocaleString('default', { month: 'long' });
 };
@@ -140,8 +128,6 @@ const formatUTCToLocal = (utcTimeStr) => {
   return (
     <Container>
     <MainWrapper>
-
-        {/* Top Info Cards */}
         <CardGrid>
           {infoCards.map((card, index) => (
             <InfoCard key={index}>
@@ -154,10 +140,6 @@ const formatUTCToLocal = (utcTimeStr) => {
             </InfoCard>
           ))}
         </CardGrid>
-
-        {/* Department Block */}
-    
-
         <DepartmentBox>
          
           <Department>
