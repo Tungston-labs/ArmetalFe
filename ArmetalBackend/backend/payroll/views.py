@@ -281,15 +281,16 @@ class PayslipDownloadView(APIView):
         except EmployeePayrollRecord.DoesNotExist:
             raise Http404("Payroll record not found")
 
-        # ✅ Use the same serializer logic to get computed data
+        # ✅ Use serializer to get all computed values
         from .serializers import EmployeePayrollRecordSerializer
-        serialized_data = EmployeePayrollRecordSerializer(record).data
+        serialized = EmployeePayrollRecordSerializer(record).data
 
-        # ✅ Pass computed data to PDF generator
-        pdf_bytes = generate_payslip_pdf(employee, serialized_data)
+        # ✅ Pass serializer data (dict), not model instance
+        pdf_bytes = generate_payslip_pdf(serialized)
 
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="Payslip_{month}_{year}.pdf"'
         response.write(pdf_bytes)
         return response
+
 
