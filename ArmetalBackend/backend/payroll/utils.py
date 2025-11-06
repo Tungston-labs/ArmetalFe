@@ -1,56 +1,56 @@
 def generate_payslip_pdf(data):
     from io import BytesIO
     from reportlab.lib.pagesizes import A4
-    from reportlab.pdfgen import canvas
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.lib import colors
 
     buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=A4)
+    doc = SimpleDocTemplate(buffer, pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
 
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(200, 800, f"Payslip - {data['month']}/{data['year']}")
+    elements.append(Paragraph(f"<b>Payslip for {data['employee_name']}</b>", styles["Title"]))
+    elements.append(Paragraph(f"Month: {data['month']} / {data['year']}", styles["Normal"]))
+    elements.append(Spacer(1, 12))
 
-    c.setFont("Helvetica", 11)
-    c.drawString(50, 770, f"Employee Name: {data['employee_name']}")
-    c.drawString(50, 755, f"Employee ID: {data['employee_id']}")
-    c.drawString(50, 740, f"Department: {data['department']}")
-    c.drawString(50, 725, f"Designation: {data['designation']}")
-    c.drawString(50, 710, f"Email: {data['email']}")
+    # Employee details
+    emp_table = [
+        ["Employee ID", data["employee_id"]],
+        ["Department", data["department"]],
+        ["Designation", data["designation"]],
+        ["Email", data["email"]],
+    ]
+    elements.append(Table(emp_table))
+    elements.append(Spacer(1, 12))
 
-    y = 680
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, "Earnings:")
-    c.setFont("Helvetica", 11)
-    for e in data.get("earnings", []):
-        y -= 15
-        c.drawString(70, y, f"{e['label']}: ₹{e['amount']}")
+    # Earnings
+    earnings_table = [["Earnings", "Amount (₹)"]]
+    for e in data["earnings"]:
+        earnings_table.append([e["label"], f"{e['amount']:.2f}"])
+    earnings_table.append(["Gross Earnings", f"{data['gross_earnings']:.2f}"])
+    elements.append(Table(earnings_table))
+    elements.append(Spacer(1, 12))
 
-    y -= 30
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, "Deductions:")
-    c.setFont("Helvetica", 11)
-    for d in data.get("deductions", []):
-        y -= 15
-        c.drawString(70, y, f"{d['label']}: ₹{d['value']}")
+    # Deductions
+    deductions_table = [["Deductions", "Amount (₹)"]]
+    for d in data["deductions"]:
+        deductions_table.append([d["label"], f"{d['value']:.2f}"])
+    deductions_table.append(["Total Deductions", f"{data['total_deductions']:.2f}"])
+    elements.append(Table(deductions_table))
+    elements.append(Spacer(1, 12))
 
-    y -= 40
-    c.setFont("Helvetica", 11)
-    c.drawString(50, y, f"Working Days: {data['working_days']}")
-    y -= 15
-    c.drawString(50, y, f"Days Present: {data['days_present']}")
-    y -= 15
-    c.drawString(50, y, f"LOP Days: {data['lop_days']}")
-    y -= 15
-    c.drawString(50, y, f"Unswiped Days: {data['unswiped_days']}")
-    y -= 15
-    c.drawString(50, y, f"Gross Earnings: ₹{data['gross_earnings']}")
-    y -= 15
-    c.drawString(50, y, f"Total Deductions: ₹{data['total_deductions']}")
-    y -= 20
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, f"Net Pay: ₹{data['net_pay']}")
+    # Summary
+    summary_table = [
+        ["Working Days", data["working_days"]],
+        ["Days Present", data["days_present"]],
+        ["LOP Days", data["lop_days"]],
+        ["LOP Amount", f"{data['lop_amount']:.2f}"],
+        ["Net Pay", f"{data['net_pay']:.2f}"],
+    ]
+    elements.append(Table(summary_table))
 
-    c.showPage()
-    c.save()
+    doc.build(elements)
     pdf = buffer.getvalue()
     buffer.close()
     return pdf
