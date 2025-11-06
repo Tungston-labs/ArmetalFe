@@ -248,6 +248,10 @@ class EmployeePayslipView(APIView):
 
         serializer = EmployeePayrollRecordSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+
+
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, Http404
@@ -277,11 +281,15 @@ class PayslipDownloadView(APIView):
         except EmployeePayrollRecord.DoesNotExist:
             raise Http404("Payroll record not found")
 
-        # Generate the PDF content using the utility function
-        pdf_bytes = generate_payslip_pdf(employee, record)
+        # ✅ Use the same serializer logic to get computed data
+        from .serializers import EmployeePayrollRecordSerializer
+        serialized_data = EmployeePayrollRecordSerializer(record).data
 
-        # Return as PDF response
+        # ✅ Pass computed data to PDF generator
+        pdf_bytes = generate_payslip_pdf(employee, serialized_data)
+
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="Payslip_{month}_{year}.pdf"'
         response.write(pdf_bytes)
         return response
+
