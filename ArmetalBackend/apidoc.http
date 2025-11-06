@@ -16,8 +16,8 @@ POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "TUNGRAS82",
-  "password": "password123"
+  "username": "TUNDEVT1V",
+  "password": "EMPO4PRQ6U0"
 }
 
 # common logout for super admin,hr comapny,employee
@@ -504,9 +504,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Swipe (Punch In/Out)
 POST http://178.248.112.16:8001/api/attendance/swipe/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTAyMDkzLCJpYXQiOjE3NTk4OTg0OTMsImp0aSI6ImQzYmQ4MWY1MzE1ZTQzYmY5ZDU4NTE4M2FiYTc0YmNmIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.A4xEiGvaHk7JVoCEfFOYcwa1XVmCY18UXeEQ83trMOo
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNDExODAzLCJpYXQiOjE3NjI0MDgyMDMsImp0aSI6IjMwMTVhM2NlNTQwOTQ0YTNiY2UwYTE5NDUwMzgxYmVmIiwidXNlcl9pZCI6IjQ4NiIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6ZmFsc2V9.yjGENIPb-nW7aS0I4jmb9E5x4aMDpMG_iPlI7IQrDrs
 # list out employee attendance for admin
 ###
 GET http://178.248.112.16:8001/api/admin/attendance/?department_id=92
@@ -880,5 +878,5 @@ Content-Type: application/json
 
 ### 3️⃣ Delete a single reimbursement by ID
 DELETE http://178.248.112.16:8001/api/reimbursements/my-reimbursements/1/
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {accessToken}
 Content-Type: application/json
