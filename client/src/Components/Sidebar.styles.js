@@ -28,8 +28,11 @@ export const SidebarContainer = styled.div`
     }
   }
 
-  @media (max-width: 768px) {
-    width: 60px;
+  @media (min-width: 768px) and (max-width:1020px) {
+    width: 80px;
+  }
+   @media (min-width: 1440px) and (max-width:1920px) {
+    width: 15%;
   }
     @media (min-width: 2560px) {
     width: 20%;
@@ -46,7 +49,7 @@ export const Logo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 30px 0;
+  /* margin: 30px 0; */
   width: 100%;
 
   img {
@@ -65,30 +68,55 @@ export const Logo = styled.div`
   @media (max-width: 1024px) {
     img {
       width: 120px;
-    }
+
     img.default-logo {
-      width: 150px;
+      width: 120px;
     }
   }
-
+  }
   /* Hide logo on very small screens */
-  @media (max-width: 768px) {
+  @media (min-width: 768px) and (max-width:1020px){
     display: none;
   }
 
   &.hidden {
     display: none;
   }
+
+ @media (min-width: 1300px) {
+    img{
+    min-height: 150px;
+   
+    width: 150px;
+    }
+   }
+
+ @media (min-width: 1440px) {
+    img{
+    min-height: 150px;
+   
+    width: 150px;
+    }
+   }
+  @media (min-width: 1920px) {
+    img{
+    min-height: 150px;
+  
+    width: 200px;
+    }
+   }
    @media (min-width: 2560px) {
     img{
     min-height: 150px;
-    margin-block: 2rem;
+    width: 300px;
+   margin-block: 2rem;
     }
    }
    @media (min-width: 3840px) {
     img{
     min-height: 250px;
-    margin-block: 5rem;
+    margin-block: 2rem;
+    width: 450px;
     }
    }
 `;
@@ -148,10 +176,6 @@ margin-left:30px;
     color:blue;
     
   }
-
-
-  
-
   
 `;
 
@@ -170,29 +194,41 @@ export const ToggleButton = styled.button`
 `;
 
 export const CustomLink = styled(Link)`
-  width: 80%;
+  width: 90%;
   display: flex;
   align-items: center;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: clamp(1rem, 1vw, 1.5rem);
+  justify-content: flex-start;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 1rem;
   color: white;
   font-weight: 600;
   text-decoration: none;
-  font-family: Satoshi, sans-serif;
+  font-family: 'Satoshi', sans-serif;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
+  gap: 12px; 
 
   svg,
   img {
-    margin-right: 12px;
-    transition: filter 0.3s ease, margin 0.3s ease, color 0.3s ease;
+    min-width: 20px; 
+    height: 20px;
+    transition: filter 0.3s ease, transform 0.3s ease;
+
+@media (min-width: 2560px) and (max-width:3840px) {
+     min-width: 20px; 
+    height: 35px;
+  }
+
+
+    
   }
 
   span {
+    flex-grow: 1;
     white-space: nowrap;
-    transition: opacity 0.3s ease, width 0.3s ease, color 0.3s ease;
+    transition: opacity 0.3s ease, color 0.3s ease;
   }
 
   &:hover {
@@ -201,11 +237,12 @@ export const CustomLink = styled(Link)`
 
     svg {
       color: #172554;
+      transform: scale(1.1);
     }
 
     img {
-      /* ✅ Blue tint for hover */
-      filter: brightness(0) saturate(100%) invert(9%) sepia(40%) saturate(4410%) hue-rotate(217deg) brightness(95%) contrast(105%);
+      filter: brightness(0) saturate(100%) invert(9%) sepia(40%) saturate(4410%)
+        hue-rotate(217deg) brightness(95%) contrast(105%);
     }
   }
 
@@ -218,12 +255,12 @@ export const CustomLink = styled(Link)`
     }
 
     img {
-      /* ✅ Same blue tint for active state */
-      filter: brightness(0) saturate(100%) invert(9%) sepia(40%) saturate(4410%) hue-rotate(217deg) brightness(95%) contrast(105%);
+      filter: brightness(0) saturate(100%) invert(9%) sepia(40%) saturate(4410%)
+        hue-rotate(217deg) brightness(95%) contrast(105%);
     }
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       bottom: 4px;
       left: 10%;
@@ -236,6 +273,7 @@ export const CustomLink = styled(Link)`
 
   &.collapsed {
     justify-content: center;
+    gap: 0;
 
     span {
       display: none;
@@ -247,8 +285,10 @@ export const CustomLink = styled(Link)`
     }
   }
 
-  @media (max-width: 768px) {
+  /* Hide text between 768px–1020px */
+  @media (min-width: 768px) and (max-width: 1020px) {
     justify-content: center;
+    gap: 0;
 
     span {
       display: none;
@@ -260,20 +300,30 @@ export const CustomLink = styled(Link)`
     }
   }
 
+  /* Small devices (below 768px) - keep text visible */
+  @media (max-width: 767px) {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  /* Ultra-wide screens */
   @media (min-width: 2560px) {
     font-size: 2rem;
-    padding-block: 1rem;
-    padding-inline: 1.5rem;
+    padding: 1rem 1.5rem;
     border-radius: 1rem;
+    gap: 1.5rem;
   }
 
   @media (min-width: 3840px) {
     font-size: 3rem;
-    padding-block: 1.5rem;
-    padding-inline: 2rem;
+    padding: 1.5rem 2rem;
     border-radius: 2rem;
+    gap: 2rem;
   }
 `;
+
+
+
 export const LinkIcon = styled.img`
   width: 20px;
   height: 20px;
