@@ -43,6 +43,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         employee = instance.employee
+        department = employee.department
+        company = department.company if department else None
+        request = self.context.get('request')
         year, month = instance.year, instance.month
 
         first_day = date(year, month, 1)
@@ -131,6 +134,13 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         # --- Final Output ---
         data.update({
+             'company': {
+            'name': company.name if company else None,
+            'address': company.address if company else None,
+            'email': company.email if company else None,
+            'contact_number': company.contact_number if company else None,
+            'logo_url': request.build_absolute_uri(company.logo.url) if company and company.logo else None,
+        },
             'working_days': working_days,
             'days_present': days_present,
             'unswiped_days': unswiped_days,

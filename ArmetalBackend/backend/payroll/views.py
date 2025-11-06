@@ -246,7 +246,7 @@ class EmployeePayslipView(APIView):
         if month:
             queryset = queryset.filter(month__iexact=month)
 
-        serializer = EmployeePayrollRecordSerializer(queryset, many=True)
+        serializer = EmployeePayrollRecordSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
 
