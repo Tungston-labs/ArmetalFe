@@ -284,6 +284,11 @@ class PayslipDownloadView(APIView):
         # ✅ Use serializer to get all computed values
         from .serializers import EmployeePayrollRecordSerializer
         serialized = EmployeePayrollRecordSerializer(record).data
+        print("\n==================== PAYSLIP DATA ====================")
+        import pprint
+        pprint.pprint(serialized)
+        print("=====================================================\n")
+
 
         # ✅ Pass serializer data (dict), not model instance
         pdf_bytes = generate_payslip_pdf(serialized)
