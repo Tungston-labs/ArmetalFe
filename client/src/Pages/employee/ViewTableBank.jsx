@@ -11,6 +11,10 @@ import {
   FileInput,
   SaveButton,
   Container,
+  PreviewImage,
+  PdfLink,
+  PreviewBox,
+  UploadButton,
 } from "./ViewTableBank.Styles";
 
 const ViewTableBank = ({
@@ -28,6 +32,7 @@ const ViewTableBank = ({
   housingAllowance, setHousingAllowance,
   transportation, setTransportation,
   errors = {},
+    bankProofImage,   
   setBankProofImage,
 }) => {
   return (
@@ -72,14 +77,38 @@ const ViewTableBank = ({
             </div>
           </Grid2>
 
-          <div style={{ marginTop: "1rem" }}>
-            <Label>Bank Proof (optional)</Label>
-            <FileInput
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => setBankProofImage(e.target.files?.[0] || null)}
-            />
-          </div>
+         {/* <div style={{ marginTop: "1rem" }}> */}
+  {/* <Label>Bank Proof (optional)</Label> */}
+
+  {/* {bankProofImage && (
+    <PreviewBox>
+      {typeof bankProofImage === "string" &&
+      bankProofImage.endsWith(".pdf") ? (
+        <PdfLink href={bankProofImage} target="_blank">
+          📄 View Bank Proof (PDF)
+        </PdfLink>
+      ) : (
+        <PreviewImage
+          src={
+            bankProofImage instanceof File
+              ? URL.createObjectURL(bankProofImage)
+              : bankProofImage
+          }
+          alt="Bank Proof"
+        />
+      )}
+    </PreviewBox>
+  )} */}
+
+  {/* <UploadButton>
+    Upload Bank Proof
+    <FileInput
+      type="file"
+      accept="image/*,application/pdf"
+      onChange={(e) => setBankProofImage(e.target.files?.[0] || null)}
+    />
+  </UploadButton>
+</div> */}
         </CardBody>
       </Card>
 

@@ -1,12 +1,11 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 import { FaArrowLeft } from "react-icons/fa6";
 
-
 export const Container = styled.div`
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   background-color: white;
   padding: 20px;
-`
+`;
 
 export const TopBar = styled.div`
   display: flex;
@@ -17,11 +16,11 @@ export const TopBar = styled.div`
 
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
+
   align-items: center;
   // gap: 0.75rem;
-  padding: 0.3rem ;
+  padding: 0.3rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
@@ -44,8 +43,8 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* allows stacking on small screens */
-  gap: clamp(8px, 1vw, 20px); /* spacing between items */
+  flex-wrap: wrap;
+  gap: clamp(8px, 1vw, 20px);
   margin-bottom: clamp(10px, 1vw, 20px);
 `;
 
@@ -56,27 +55,20 @@ export const HeaderImage = styled.img`
     height: 50px;
   }
 `;
-const BackIcon = styled(FaArrowLeft)`
-  color: #2f57ef;
-  font-size: 20px;
-  cursor: pointer;
 
-  &:hover {
-    color: #1e3fa3;
-  }
-`;
 
 export const TitleSection = styled.div`
   display: flex;
-  justify-content: space-between; /* left group + right select */
+  justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
   gap: clamp(8px, 1vw, 20px);
   width: 100%;
-margin: 10px;
-margin-top: 30px;
-  @media (max-width: 767px) {
-    flex-direction: column; 
+  /* margin: 10px; */
+  margin-top: 30px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
@@ -86,8 +78,7 @@ export const LeftGroup = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-
-
+ 
   @media (max-width: 767px) {
     width: 100%;
     justify-content: flex-start;
@@ -101,33 +92,33 @@ export const LeftBlock = styled.div`
 `;
 export const Title = styled.h2`
   font-size: 1.4rem;
-  margin: 0 0 5px 0;
+  margin: 0 0 2px 0;
   color: #3250b5;
   font-family: "Satoshi";
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
 
-  @media (min-width: 480px) { /* small tablet */
+  @media (min-width: 480px) {
     font-size: 0.8rem;
   }
 
-  @media (min-width: 768px) { /* tablet */
-    font-size: 1rem;
-  }
-
-  @media (min-width: 1024px) { /* desktop */
+  @media (min-width: 768px) {
     font-size: 1.5rem;
   }
 
-  @media (min-width: 1440px) { /* large desktop / 2K */
-    font-size: 2rem;
+  @media (min-width: 1024px) {
+    font-size: 1.2rem;
   }
 
-  @media (min-width: 2560px) { /* 4K */
-    font-size: 3em;
+  @media (min-width: 1440px) {
+    font-size: 1.5rem;
   }
 
-  @media (min-width: 3840px) { /* 8K */
+  @media (min-width: 2560px) {
+    font-size: 2em;
+  }
+
+  @media (min-width: 3840px) {
     font-size: 4rem;
   }
 `;
@@ -153,60 +144,48 @@ export const Subtitle = styled.p`
   }
 
   @media (min-width: 1440px) {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   @media (min-width: 2560px) {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   @media (min-width: 3840px) {
     font-size: 2.5rem;
   }
 `;
+
 export const SearchInput = styled.input`
   width: 100%;
-  max-width: 450px; /* optional: limit width */
+  max-width: 450px;
   margin-top: 15px;
-  padding: clamp(8px, 1vw, 15px);
-  border: 1px solid #172554;
+  padding: 12px;
+  height: 44px;
+  border: 1px solid #ccc;
   border-radius: 6px;
   background: #fff;
-  font-family: Satoshi;
-  font-size: clamp(0.9rem, 1vw, 1.2rem); 
-  height: clamp(35px, 3vw, 50px);
+  font-family: "Satoshi", sans-serif;
+  font-size: 1rem;
 
-  /* Tablet */
   @media (max-width: 1024px) {
-    font-size: clamp(0.8rem, 1vw, 1rem);
-    padding: 10px;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
     height: 40px;
   }
 
-  /* Mobile */
   @media (max-width: 768px) {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     padding: 8px;
-    height: 35px;
+    height: 36px;
   }
 
-  /* 2K+ screens */
   @media (min-width: 2560px) {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    padding: 16px;
     height: 60px;
-    padding: 18px;
-  }
-
-  /* 4K+ screens */
-  @media (min-width: 3840px) {
-    font-size: 2rem;
-    height: 75px;
-    padding: 20px;
   }
 `;
-
-
-
 
 export const BulkActionBar = styled.div`
   background: #3352ba;
@@ -216,7 +195,7 @@ export const BulkActionBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   gap: 10px;
 
   input[type="checkbox"] {
@@ -290,7 +269,6 @@ export const BulkActionBar = styled.div`
     }
   }
 
-  /* 🖥️ 4K and above */
   @media (min-width: 2561px) {
     strong {
       font-size: 1.3rem;
@@ -310,17 +288,15 @@ export const BulkActionBar = styled.div`
   }
 `;
 
-
-
 export const TableWrapper = styled.div`
   width: 100%;
-  max-height: 60vh;       
-  overflow-y: auto;       
-  overflow-x: hidden;   
-margin-bottom:10px;
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-bottom: 10px;
   border: 1px solid #eee;
   border-radius: 10px;
-border:none;
+  border: none;
   /* Optional: nice scrollbar */
   &::-webkit-scrollbar {
     width: 4px;
@@ -331,21 +307,18 @@ border:none;
   }
 `;
 
-
-
 export const Table = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px;
   margin-top: 1rem;
- text-align: left;
-  font-family: 'Satoshi';
+  text-align: left;
+  font-family: "Satoshi";
 
   /* Scroll on small screens */
   // display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-
 
   tbody tr {
     box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
@@ -353,7 +326,7 @@ export const Table = styled.table`
 
   /* Background color for even rows */
   tbody tr:nth-child(even) td {
-    background-color: #E6ECFF;
+    background-color: #e6ecff;
   }
 
   tbody tr td:first-child {
@@ -369,23 +342,20 @@ export const Table = styled.table`
   tbody tr:hover td {
     background-color: #f5f5f5;
   }
-
- 
 `;
 
-
 export const Th = styled.th`
-    background-color: #304EB0;
+  background-color: #304eb0;
   font-weight: 600;
   text-align: left;
-    color: white;
-    font-family: "Raleway";
-    padding: 8px;
-    cursor:pointer;
- @media (min-width: 3840px) {
+  color: white;
+  font-family: "Raleway";
+  padding: 8px;
+  cursor: pointer;
+  @media (min-width: 3840px) {
     font-size: 1.5rem;
   }
-  @media (min-width: 2560px)and (max-width: 3839px) {
+  @media (min-width: 2560px) and (max-width: 3839px) {
     font-size: 1.5rem;
   }
   @media (min-width: 1920px) and (max-width: 2559px) {
@@ -395,8 +365,8 @@ export const Th = styled.th`
     font-size: 1rem;
   }
   @media (max-width: 768px) {
-        padding: 10px;
-        font-size: 0.7rem;
+    padding: 10px;
+    font-size: 0.7rem;
   }
 `;
 
@@ -411,8 +381,8 @@ export const Td = styled.td`
   background-color: white;
   border: none;
   transition: all 0.2s ease;
-padding: 0px 8px;
-  cursor:pointer;
+  padding: 0px 8px;
+  cursor: pointer;
   div {
     display: flex;
     justify-content: center;
@@ -431,42 +401,40 @@ padding: 0px 8px;
   /* 💻 Medium screens (tablet, small desktop) */
   @media (min-width: 769px) and (max-width: 1440px) {
     font-size: 0.85rem;
-
   }
 
   /* 🖥️ Large screens (full HD) */
   @media (min-width: 1441px) and (max-width: 1920px) {
     font-size: 1rem;
-
   }
   @media (min-width: 1921px) and (max-width: 2560px) {
     font-size: 1rem;
-
   }
 
   @media (min-width: 2561px) and (max-width: 3839px) {
     font-size: 1.5rem;
-
   }
 
   @media (min-width: 3840px) {
-padding: 3px;
+    padding: 3px;
     font-size: 1.5rem;
   }
 `;
 
-
 export const Tr = styled.tr`
   box-shadow: 0 0 0 1px #00000047;
 `;
+
 export const Select = styled.select`
   margin: 4px;
-  padding: 6px 10px 6px 10px;
+  width: 100%;
+  min-width: 100px;
+  padding: 6px 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: "Satoshi", sans-serif;
   font-weight: 300;
-  font-style: italic;
+  font-style: "italic";
   font-size: 1rem;
   appearance: none;
 
@@ -481,8 +449,8 @@ export const Select = styled.select`
   background-size: 16px;
 
   option {
-    background: white !important;   /* ALWAYS white */
-    color: black !important;        /* ALWAYS black */
+    background: white !important;
+    color: black !important;
   }
 
   @media (max-width: 768px) {
@@ -491,33 +459,58 @@ export const Select = styled.select`
     padding: 5px 14px 5px 8px;
     background-size: 12px;
   }
+  
 `;
 
+export const Selection = styled.select`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 300;
+  font-style: "italic";
+  font-size: 1rem;
+  appearance: none;
+   width: 15%;
+  background-color: ${(props) => props.$bg || "white"};
+  color: ${(props) => props.$color || "black"};
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  option {
+    background: white !important; 
+    color: black !important; 
+  }
 
-
+  @media (max-width: 769px) {
+    width: 50%;
+    font-size: 0.85rem;
+    padding: 8px;
+    background-size: 12px;
+  }
+    @media (min-width:770px) {
+      width: 30%;
+  }
+     @media (min-width:1300px) {
+      width: 15%;
+  }
+`;
 
 export const EmployeeImage = styled.img`
-  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
-  width: auto; /* maintain aspect ratio */
-  
+  width: auto;
+  height: 50px;
+
   @media (min-width: 768px) {
-    height: clamp(20px, 6vw, 20px);
+    height: 50px;
   }
 
   @media (min-width: 1024px) {
-    height: clamp(20px, 4vw, 50px);
+    height: 50px;
   }
 
   @media (min-width: 1440px) {
-    height: clamp(50px, 1vw, 80px);
-  }
-
-  @media (min-width: 2560px) {
-    height: clamp(80px, 1vw, 100px);
-  }
-
-  @media (min-width: 3840px) {
-    height: clamp(100px, 3vw, 200px);
+    height: 50px;
   }
 `;
 
@@ -528,7 +521,6 @@ export const TextBlock = styled.div`
   margin-left: 10px;
 `;
 
-// styles.js or your styled-components file
 export const Pagination = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -539,7 +531,7 @@ export const Pagination = styled.div`
     border: 1px solid #ccc;
     cursor: pointer;
     border-radius: 4px;
- @media (min-width: 3500px) {
+    @media (min-width: 3500px) {
       padding: 0.8rem 1.5;
       font-size: 2.5rem;
     }
@@ -549,24 +541,23 @@ export const Pagination = styled.div`
     }
   }
   @media (min-width: 2560px) {
-    span{
+    span {
       font-size: 2rem;
-    padding: 0.5rem 1.5rem;
+      padding: 0.5rem 1.5rem;
     }
     gap: 0.5rem;
   }
   @media (min-width: 3840px) {
-    span{
+    span {
       font-size: 2.5rem;
     }
     gap: 1rem;
   }
-    .active {
+  .active {
     background: #1e3a8a;
     color: white;
     border-color: #1e3a8a;
   }
-  
 `;
 export const Icon = styled.img`
   width: 52px;

@@ -116,6 +116,7 @@ const EmployeeList = () => {
             setPage(1);
           }}
           onSearchChange={(value) => handleSearch(value)}
+          showBackArrow={false}
         />
 
         {/* TABLE */}

@@ -24,6 +24,7 @@ import TimeIcon from "../../assets/time.svg";
 import { FaEdit } from "react-icons/fa";
 import { fetchEmployeeDash } from "../../Redux/authSlice";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../services/api";
 
 const LeftContent = () => {
   const { employeeId } = useParams();
@@ -35,7 +36,7 @@ const LeftContent = () => {
   const { employeeDashData, loadingEmployeeDash, employeeDashError } =
     useSelector((state) => state.auth);
 
-  const BASE_URL = "http://178.248.112.16:8001";
+  const BASE_URL = `${BASE_URL}`;
 
   useEffect(() => {
     if (employeeId) {

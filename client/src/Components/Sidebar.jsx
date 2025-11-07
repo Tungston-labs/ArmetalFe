@@ -90,7 +90,6 @@ export default function Sidebar() {
             <span>Companys</span>
           </CustomLink>
 
-
         )}
 
         {(user?.is_hr_admin || user?.is_hr) && Object.keys(modules).length > 0 && (

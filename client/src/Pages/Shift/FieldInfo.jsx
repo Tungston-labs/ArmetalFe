@@ -38,6 +38,7 @@ import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import { getAccessToken } from "../../hooks/useAccessToken";
 import ActivityLogModal from "../../Components/ModalShift";
+import { BASE_URL } from "../../services/api";
 
 const FieldInfo = () => {
   const navigate = useNavigate();
@@ -113,7 +114,7 @@ const FieldInfo = () => {
           .split("T")[0];
 
         const response = await fetch(
-          `http://178.248.112.16:8001/api/background-location/${id}/?date=${formattedDate}`,
+          `${BASE_URL}/api/background-location/${id}/?date=${formattedDate}`,
           { headers: { Authorization: `Bearer ${token}` } },
         );
 

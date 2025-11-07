@@ -37,7 +37,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchPaymentData = async (id) => {
     try {
       const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
-      const res = await API.get(`http://178.248.112.16:8001/api/subscriptions/${id}/`);
+      const res = await API.get(`/subscriptions/${id}/`);
 
       if (Array.isArray(res.data)) {
         setPaymentData(res.data);
@@ -49,7 +49,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchCompanyName = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await API.get(`http://178.248.112.16:8001/api/companies/${id}/`
+      const res = await API.get(`/companies/${id}/`
       );
 
       if (res.data?.name) {
@@ -67,7 +67,7 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
     try {
       const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
       await API.patch(
-        `http://178.248.112.16:8001/api/subscriptions/mark-paid/${subscriptionId}/`,
+        `/subscriptions/mark-paid/${subscriptionId}/`,
         { status: newStatus },
         
       );
@@ -142,7 +142,7 @@ const handleDownload = (entry) => {
   const handleSendEmail = async (entry) => {
     try {
       const token = localStorage.getItem("accessToken");
-      await API.post("http://178.248.112.16:8001/api/invoice/send-email/", {
+      await API.post("/invoice/send-email/", {
         entry: entry,
         company_id: entry.company,
       }, );

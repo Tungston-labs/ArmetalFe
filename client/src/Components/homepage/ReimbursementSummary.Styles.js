@@ -231,11 +231,11 @@ export const ChartContainer = styled.div`
     height: 280px;
   }
   @media (min-width: 1024px) {
-    height: 250px;
+    height: 300px;
   }
 
  @media (min-width: 1440px) {
-    height: 250px;
+    height: 280px;
   }
 
   @media (min-width: 1920px) {

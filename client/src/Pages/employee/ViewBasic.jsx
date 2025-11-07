@@ -19,6 +19,10 @@ import {
   FullPageLoaderWrapper,
   FieldGroup,
   Label,
+  PreviewBox,
+  PreviewImage,
+  UploadButton,
+  HiddenInput,
 } from "./ViewBasic.Style";
 
 const ViewBasic = () => {
@@ -352,19 +356,22 @@ const ViewBasic = () => {
 
               <FieldGroup>
                 <Label>ID Card</Label>
-                <div>
-                  {formData.idcard && (
-                    <img
+                {formData.idcard && (
+                  <PreviewBox>
+                    <PreviewImage
                       src={
                         formData.idcard instanceof File
                           ? URL.createObjectURL(formData.idcard)
                           : formData.idcard
                       }
                       alt="ID Card"
-                      style={{ width: 120, height: "auto", marginBottom: 10 }}
                     />
-                  )}
-                  <input
+                  </PreviewBox>
+                )}
+
+                <UploadButton>
+                  Upload ID Card
+                  <HiddenInput
                     type="file"
                     accept="image/*"
                     name="idcard"
@@ -372,7 +379,7 @@ const ViewBasic = () => {
                       setFormData({ ...formData, idcard: e.target.files[0] })
                     }
                   />
-                </div>
+                </UploadButton>
               </FieldGroup>
             </Column>
           </CardContent>

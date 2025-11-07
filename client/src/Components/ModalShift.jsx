@@ -20,7 +20,7 @@ const ActivityLogModal = ({
   onClose,
   hourlyLocationData = [],
   liveLocationData = [],
-  onDateChange, // callback to notify parent of date change
+  onDateChange, 
 }) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const calendarRef = useRef(null);
@@ -111,12 +111,11 @@ const ActivityLogModal = ({
               </div>
             </div>
 
-            {/* Calendar icon */}
+
             <CalendarIconWrapper onClick={() => setCalendarOpen(!calendarOpen)}>
               <FaCalendarAlt size={18} />
             </CalendarIconWrapper>
 
-            {/* Calendar picker */}
             {calendarOpen && (
               <div ref={calendarRef} style={{ position: "absolute", zIndex: 100, marginTop: 96 }}>
                 <Calendar

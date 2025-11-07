@@ -19,37 +19,26 @@ export const ContentWrapper = styled.div`
   transition: all 0.3s ease;
 
   &.shrink {
-    margin-right: 300px;
-    transform: scale(0.97);
+    transform: scale(0.98);
+    margin-right: 280px;
 
-    @media (min-width: 1600px) {
-      margin-right: 300px;
-      transform: scale(0.98);
-    }
- @media (max-width: 1599px) {
+    @media (max-width: 1200px) {
       margin-right: 250px;
       transform: scale(0.99);
     }
-    @media (max-width: 1200px) {
-      margin-right: 250px;
-      transform: scale(0.99);    
-    }
 
-   
-    @media (max-width: 1024px) {
-      margin-right:0;
+    @media (max-width: 1400px) {
+      margin-right: 0;
       transform: scale(1);
     }
 
-   
     @media (min-width: 1920px) {
       margin-right: 320px;
       transform: scale(0.96);
     }
 
-   
     @media (min-width: 2560px) {
-      margin-right: 400px;
+      margin-right: 380px;
       transform: scale(0.95);
     }
 
@@ -59,54 +48,53 @@ export const ContentWrapper = styled.div`
     }
   }
 
-  /* Center content on large screens */
-  @media (min-width: 1920px) {
+  
+  &:not(.shrink) {
+    @media (min-width: 1920px) {
+      margin: 0 auto;
+      max-width: 1800px;
+    }
 
-    margin: 0 auto;
-  }
+    @media (min-width: 2560px) {
+      max-width: 2200px;
+    }
 
-  @media (min-width: 2560px) {
-
-    margin: 0 auto;
-  }
-
-  @media (min-width: 3840px) {
-
-    margin: 0 auto;
+    @media (min-width: 3840px) {
+      max-width: 2600px;
+    }
   }
 `;
 
-export const TopCard = styled.div`
 
-   @media (min-width: 2560px) {
-   min-height:10vh;
+export const TopCard = styled.div`
+  @media (min-width: 2560px) {
+    min-height: 10vh;
   }
 
   @media (min-width: 3800px) {
-  min-height:10vh;
-
+    min-height: 10vh;
   }
-`
+`;
 
 export const TwoColumn = styled.div`
   display: flex;
   gap: 20px;
   margin: 20px 0;
-  align-items: stretch; 
+  align-items: stretch;
 
   @media (max-width: 1024px) {
     flex-direction: column;
   }
-    @media (min-width: 2560px) {
-   /* min-height:38vh; */
-     gap: 35px;
+  @media (min-width: 2560px) {
+    /* min-height:38vh; */
+    gap: 35px;
   }
 
   @media (min-width: 3800px) {
-  /* min-height:38vh; */
-   margin-bottom:3rem;
-   margin-top:3rem;
-   gap:40px;
+    /* min-height:38vh; */
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+    gap: 40px;
   }
 `;
 
@@ -139,7 +127,6 @@ export const RightBox = styled.div`
   } */
 `;
 
-
 export const ThreeColumnRow = styled.div`
   display: flex;
   gap: 20px;
@@ -149,16 +136,16 @@ export const ThreeColumnRow = styled.div`
   @media (max-width: 600px) {
     flex-direction: column;
   }
-   @media (min-width: 1024px) and (max-width: 1440px) {
+  @media (min-width: 1024px) and (max-width: 1440px) {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
 
- @media (min-width: 2560px) {
-  min-height:35vh;
+  @media (min-width: 2560px) {
+    min-height: 35vh;
   }
-   @media (min-width: 3840px) {
-  min-height:35vh;
+  @media (min-width: 3840px) {
+    min-height: 35vh;
   }
 `;
 
@@ -174,9 +161,7 @@ export const ThreeBox = styled.div`
   @media (max-width: 768px) {
     width: 100%;
   }
-    @media (min-width: 1024px) and (max-width: 1440px) {
+  @media (min-width: 1024px) and (max-width: 1440px) {
     width: 100%;
   }
-
-  
 `;

@@ -15,7 +15,7 @@ import {
   BodyRow,
   BodyCell,
   EmptyRow,
-
+  PageLoaderOverlay,
 } from "./EmployeeList.styles";
 import {
   ModalOverlay,
@@ -32,7 +32,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-// import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import RightSideModal from "../employeDashboard/RightSideModal";
@@ -50,10 +49,10 @@ const EmployeeList = () => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { employeeList, pagination, loading } = useSelector(
-    (state) => state.employees
+    (state) => state.employees,
   );
   const { list: departmentList, loading: deptLoading } = useSelector(
-    (state) => state.departments
+    (state) => state.departments,
   );
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: "" }));
@@ -64,7 +63,7 @@ const EmployeeList = () => {
         page,
         search: "",
         department_id: departmentFilter,
-      })
+      }),
     );
   }, [dispatch, page, departmentFilter]);
   useEffect(() => {
@@ -83,7 +82,7 @@ const EmployeeList = () => {
         page,
         search: "",
         department_id: departmentFilter,
-      })
+      }),
     );
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
@@ -98,25 +97,29 @@ const EmployeeList = () => {
         page: newPage,
         search: "",
         department_id: departmentFilter,
-      })
+      }),
     ).then(() => {
       setPage(newPage);
     });
   };
   const filteredEmployees = Array.isArray(employeeList)
     ? employeeList.filter(
-      (emp) =>
-        emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-        emp.employee_id
-          ?.toString()
-          .toLowerCase()
-          .includes(debouncedSearch.toLowerCase())
-    )
+        (emp) =>
+          emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+          emp.employee_id
+            ?.toString()
+            .toLowerCase()
+            .includes(debouncedSearch.toLowerCase()),
+      )
     : [];
   return (
     <>
-      {loading && <Loader />}
-      {/* <Navbar /> */}
+      {loading && (
+        <PageLoaderOverlay>
+          <Loader />
+        </PageLoaderOverlay>
+      )}
+
       <Container>
         <EmployeeTitle
           key={departmentList?.length || 0}
@@ -131,7 +134,6 @@ const EmployeeList = () => {
         />
         {!loading && (
           <>
-
             <StyledTable>
               <TableHead>
                 <HeadRow>
@@ -154,7 +156,6 @@ const EmployeeList = () => {
                         setSelectedEmployee(emp);
                         setOpenModal(true);
                       }}
-
                     >
                       <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
                       <BodyCell>
@@ -173,7 +174,9 @@ const EmployeeList = () => {
                       <BodyCell>{emp.employee_id}</BodyCell>
 
                       <BodyCell>
-                        <TruncatedText title={emp.email}>{emp.email}</TruncatedText>
+                        <TruncatedText title={emp.email}>
+                          {emp.email}
+                        </TruncatedText>
                       </BodyCell>
 
                       <BodyCell>
@@ -200,11 +203,10 @@ const EmployeeList = () => {
                   ))
                 ) : (
                   <EmptyRow>
-                    <td colSpan="8">No employees found.</td>
+                    <td colSpan="7">No employees found.</td>
                   </EmptyRow>
                 )}
               </TableBody>
-
             </StyledTable>
 
             <Pagination>
@@ -213,7 +215,7 @@ const EmployeeList = () => {
               </span>
               {Array.from(
                 { length: pagination?.total_pages || 1 },
-                (_, i) => i + 1
+                (_, i) => i + 1,
               ).map((pageNumber) => (
                 <span
                   key={pageNumber}
@@ -241,7 +243,8 @@ const EmployeeList = () => {
             <ModalContainer>
               <ModalTitle>Confirm Deletion</ModalTitle>
               <ModalText>
-                Are you sure you want to permanently delete this employee from the system?
+                Are you sure you want to permanently delete this employee from
+                the system?
               </ModalText>
 
               <ModalButtonWrapper>
@@ -262,8 +265,6 @@ const EmployeeList = () => {
             employeeId={selectedEmployee?.id}
           />
         )}
-
-
       </Container>
     </>
   );

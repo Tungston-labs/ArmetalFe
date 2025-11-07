@@ -105,11 +105,11 @@ export const getFieldInfo = createAsyncThunk(
 const projectSlice = createSlice({
   name: "projects",
   initialState: {
-    projects: [],        // paginated results
+    projects: [],      
     total_pages: 0,
     current_page: 1,
     total_items: 0,
-    project: null,       // single project
+    project: null,      
     employeesNotInProject: [],
     fieldInfo: null, 
     isLoading: false,
@@ -128,7 +128,7 @@ const projectSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Get projects
+  
       .addCase(getProjects.pending, (state) => {
         state.isLoading = true;
       })
@@ -145,7 +145,7 @@ const projectSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-      // Create
+    
       .addCase(createProject.pending, (state) => {
         state.isLoading = true;
       })

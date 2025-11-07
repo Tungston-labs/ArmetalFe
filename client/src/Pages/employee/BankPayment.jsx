@@ -87,11 +87,11 @@ export default function BankPaymentForm() {
       setSalaryIncrement(bankPayment.salary_increment?.toString() || "");
       setHousingAllowance(bankPayment.housing_allowance?.toString() || "");
       setTransportation(bankPayment.transportation?.toString() || "");
-      if (bankPayment.bank_proof_image) {
-        setBankProofImage(
-          `${process.env.REACT_APP_BASE_URL || "http://localhost:8000"}${bankPayment.bank_proof_image}`,
-        );
-      }
+      // if (bankPayment.bank_proof_image) {
+      //   setBankProofImage(
+      //     `${process.env.REACT_APP_BASE_URL || "http://localhost:8000"}${bankPayment.bank_proof_image}`,
+      //   );
+      // }
     }
   }, [bankPayment]);
 
@@ -121,9 +121,9 @@ export default function BankPaymentForm() {
       errors.housingAllowance = "Housing Allowance must be a valid number.";
     if (transportation && !isDecimal(transportation))
       errors.transportation = "Transportation must be a valid number.";
-if (!taxRegime) {
-  errors.taxRegime = "Tax Regime is required.";
-}
+    if (!taxRegime) {
+      errors.taxRegime = "Tax Regime is required.";
+    }
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       return;
@@ -230,8 +230,8 @@ if (!taxRegime) {
           handlePrevious={handlePrevious}
           handleNext={handleNext}
           errors={fieldErrors}
-          bankProofImage={bankProofImage}
-          setBankProofImage={setBankProofImage}
+          // bankProofImage={bankProofImage}
+          // setBankProofImage={setBankProofImage}
           showNextButton={true}
         />
       </Container>
