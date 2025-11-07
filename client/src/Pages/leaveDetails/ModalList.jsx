@@ -117,7 +117,7 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
                     <TableData>{emp.email}</TableData>
                     <TableData>{emp.phone}</TableData>
                     <TableData>
-                      {emp.from_date} to {emp.to_date}
+                      {emp.from_date}({emp.from_date_type}) to {emp.to_date}({emp.to_date_type})
                     </TableData>
                     <TableData>
                       {/* <ApproveButton

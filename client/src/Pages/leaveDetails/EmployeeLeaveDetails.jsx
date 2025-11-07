@@ -102,29 +102,7 @@ const EmployeeLeaveForm = () => {
 
       <Hr />
    <Header employee={employee}/>
-      {/* <InfoGrid>
-        <ProfileImageWrapper>
-          <ProfileImage src={employee.profile_pic} alt="Employee" />
-        </ProfileImageWrapper>
-
-        <div style={{ display: "flex", width: "90%", justifyContent: "space-between" }}>
-          <TwoColumn>
-            <Input placeholder="Name" value={employee.name || ''} readOnly />
-            <Input placeholder="Employee ID" value={employee.employee_id || ''} readOnly />
-            <Input placeholder="Email ID" value={employee.email || ''} readOnly />
-          </TwoColumn>
-
-          <InfoSection>
-            <FullWidthInput placeholder="Address" value={employee.address || ''} readOnly />
-            <TwoColumnRow>
-              <Input placeholder="DOB" value={employee.dob || ''} readOnly />
-              <Input placeholder="Gender" value={employee.gender || ''} readOnly />
-            </TwoColumnRow>
-          </InfoSection>
-        </div>
-      </InfoGrid>
-
-      <Hr /> */}
+ 
 
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
@@ -184,7 +162,7 @@ const EmployeeLeaveForm = () => {
           
         />
         <Input
-          placeholder=" Paid Leave "
+          placeholder="0"
           value={employee?.paid_leave || ''}
           readOnly
         />
