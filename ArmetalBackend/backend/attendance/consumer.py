@@ -33,7 +33,6 @@ class LiveLocationConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def update_location(self, session_id, lat, lon, ts):
-        """Update the latest known coordinates for this attendance session"""
         try:
             session = AttendanceSession.objects.get(id=session_id)
             session.last_latitude = lat

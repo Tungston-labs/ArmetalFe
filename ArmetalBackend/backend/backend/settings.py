@@ -21,7 +21,7 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ASGI_APPLICATION = 'ArmetalFE.asgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -110,7 +110,7 @@ DATABASES = {
         'NAME': 'db_armetal',         
         'USER': 'postgres',
         'PASSWORD': 'password@123',
-        'HOST': 'localhost',
+        'HOST': '178.248.112.16',
         'PORT': '5432',                
     }
 }
@@ -204,7 +204,8 @@ CORS_ALLOW_ALL_ORIGINS = True  # 👈 Use this instead of CORS_ALLOWED_ORIGINS
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://192.168.29.146:5173",  # Access from phone browser
-    "http://192.168.29.146:3000", 
+    "http://192.168.29.146:3000",
+    "http://192.168.29.193:8001" 
 ]
 
 EMAIL_BACKEND = config("EMAIL_BACKEND")

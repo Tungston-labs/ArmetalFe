@@ -80,7 +80,7 @@ console.log("---",formData);
     setLoading(true);
   
     try {
-      const response = await axios.post("http://178.248.112.16:8001/api/token/", {
+      const response = await axios.post("http://192.168.29.193:8001/api/token/", {
         username: formData.username,
         password: formData.password,
       });

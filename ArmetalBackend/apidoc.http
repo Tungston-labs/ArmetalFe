@@ -3,7 +3,7 @@
 
 #api for generating token pair
 ###
-POST http://178.248.112.16:8001/api/token/
+POST http://192.168.29.193:8001/api/token/
 Content-Type: application/json
 
 {
@@ -396,8 +396,8 @@ Content-Type: application/json
 }
 
 ### Get Employee Dashboard Details
-GET http://178.248.112.16:8001/api/dashboard/employee/351/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMTYwODU0LCJpYXQiOjE3NjIxNTcyNTQsImp0aSI6IjMxZjcyYmYxZGE4NDRmNjlhZDdkNjNmNGIxODBlNzAzIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.FjDgZ99WXUiVk_eSUjGOn3SRB4aE1AmtxXyEm2vCOpQ
+GET http://192.168.29.193:8001/api/dashboard/employee/351/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNTE3MDY3LCJpYXQiOjE3NjI1MTM0NjcsImp0aSI6Ijc5MzEwZTRlNmU1ZTQ5ZWRhZmJmZGE0MGM5NWRjYzVmIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.k8L8x-i3nvLbwOcpoSMmDzMooqzJttqkkIL9n-bHLwM
 # ----------------------------------API FOR EMPLOYEE-----------------------
 
 

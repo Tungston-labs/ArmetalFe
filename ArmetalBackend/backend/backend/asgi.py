@@ -1,14 +1,21 @@
 import os
-from django.core.asgi import get_asgi_application
-from channels.routing import ProtocolTypeRouter, URLRouter
-from attendance.middleware import JWTAuthMiddleware  # ✅ custom JWT middleware
-import attendance.routing
-
+import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+django.setup() 
+
+from channels.routing import ProtocolTypeRouter, URLRouter
+
+
+from django.core.asgi import get_asgi_application
+import attendance.routing 
+
+from shared.middleware.middleware import JWTAuthMiddlewareStack 
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": JWTAuthMiddleware(  # ✅ use JWT instead of session-based auth
-        URLRouter(attendance.routing.websocket_urlpatterns)
+    "websocket": JWTAuthMiddlewareStack(  # <-- Replaced AuthMiddlewareStack
+        URLRouter(
+            attendance.routing.websocket_urlpatterns
+        )
     ),
 })
