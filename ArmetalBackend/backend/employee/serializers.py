@@ -154,7 +154,7 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
         fields = [
             'employee_id',
             'name',
-            'healthcard_number',
+            'insurance_number',
             'passport_number',
             'iqama_number',
             'aadar_number',
