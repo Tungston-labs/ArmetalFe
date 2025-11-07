@@ -219,6 +219,8 @@ class DepartmentEmployeesOnLeaveView(APIView):
                     "leave_type": l.leave_type,
                     "from_date": l.from_date,
                     "to_date": l.to_date,
+                    "from_date_type":l.from_date_type,
+                    "to_date_type":l.to_date_type,
                     "paid_leave_count": l.employee.paid_leave,
                     "pending_leave": l.employee.total_leave,
                 } for l in leaves
