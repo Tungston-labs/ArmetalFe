@@ -202,7 +202,7 @@ class PayrollStatusUpdateView(APIView):
         record.status = new_status
         record.save()
 
-        serializer = EmployeePayrollRecordSerializer(record)
+        serializer = EmployeePayrollRecordSerializer(record,context={'request': request})
         return Response(serializer.data)
 
     
