@@ -101,14 +101,9 @@ const EmployeeLeaveForm = () => {
         showSearch={false}
       />
 
-<div style={{ marginTop: "-30px" }}>
-  <Header
-    employee={employee}
-    editable={false}
-
-  />
-</div>
-      
+      <Hr />
+   <Header employee={employee}/>
+ 
 
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
