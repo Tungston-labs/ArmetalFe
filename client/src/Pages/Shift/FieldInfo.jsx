@@ -45,11 +45,12 @@ import Modal from "../../Components/ModalShift";
 import CalendarModal from "../../Components/CalendarModal";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Loader from "../../Components/Loader"
+import useAdminLocationSocket from "../../hooks/useAdminLocationSocket";
 const FieldInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const [liveLocation, setLiveLocation] = useState(null);
+  const [locations, setLocations] = useState([]);
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(() => {
@@ -99,33 +100,7 @@ useEffect(() => {
   }, [id, selectedDate, dispatch]);
 
   //  WebSocket for live location (admin view)
-useEffect(() => {
-  if (!id) return;
-
-  const token = localStorage.getItem("accessToken"); //  correct key spelling
-
-  const socket = new WebSocket(
-    `ws://192.168.29.134:8001/ws/dashboard/location/${id}/?token=${token}`
-  );
-
-  socket.onopen = () =>
-    console.log(" Admin connected to employee live location:", id);
-
-  socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log(" Employee Live Location:", data);
-    setLiveLocation({
-      latitude: data.latitude,
-      longitude: data.longitude,
-      timestamp: data.timestamp,
-    });
-  };
-
-  socket.onerror = (e) => console.error(" Socket error:", e.message);
-  socket.onclose = () => console.log(" Socket closed");
-
-  return () => socket.close();
-}, [id]);
+const liveLocation = useAdminLocationSocket(id);
 
 
   const getWeekDays = (baseDate) => {

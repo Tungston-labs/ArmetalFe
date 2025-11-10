@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://192.168.29.134:8001/api",
+  baseURL: "http://192.168.29.193:8001/api",
   // baseURL: "http://localhost:8000/api",
   withCredentials: true,
   headers: {
@@ -38,7 +38,7 @@ API.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem("refreshToken")|| sessionStorage.getItem("refreshToken");
 
-        const res = await axios.post("http://178.248.112.16:8001/api/token/refresh/", {
+        const res = await axios.post("http://192.168.29.193:8001/api/token/refresh/", {
           refresh: refreshToken,
         });
 

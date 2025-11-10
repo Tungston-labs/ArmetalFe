@@ -11,7 +11,9 @@ import {
   TableCell,
 } from "./ModalShift.styled.js";
 
-const ActivityLogModal = ({ data = [], date, onClose, liveLocation}) => {
+const ActivityLogModal = ({ data = [], date, onClose, liveLocation }) => {
+  
+  // --- Existing Date Parsing ---
   const parsedDate = useMemo(() => {
     if (!date) return null;
     const normalized = date.includes("T") ? date : date.replace(" ", "T");
@@ -19,15 +21,44 @@ const ActivityLogModal = ({ data = [], date, onClose, liveLocation}) => {
     return isNaN(d.getTime()) ? null : d;
   }, [date]);
 
-  const formattedLocations = useMemo(() => {
+  // --- 1. Format Existing Log Data ---
+  const existingFormattedLocations = useMemo(() => {
     return data.map((item) => ({
       time: new Date(item.timestamp).toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       }),
+      // Assuming 'item.location' holds the location name from the punch-in
       location: item.location || "No location info",
+      isLive: false, // Flag to differentiate the row
     }));
   }, [data]);
+
+  // --- 2. Combine Live Location with Log Data ---
+  const finalFormattedData = useMemo(() => {
+    if (!liveLocation || !liveLocation.timestamp) {
+      // If no live data, return only the historical logs
+      return existingFormattedLocations;
+    }
+
+    // Create the live entry object
+    const liveEntry = {
+      time: new Date(liveLocation.timestamp).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }) + " (LIVE)", // Clearly mark the time as live
+      
+      // Use the resolved location name provided by the server
+      location: liveLocation.location_name || // Assuming the backend sends location_name
+                `Lat: ${liveLocation.latitude?.toFixed(6)}, Lon: ${liveLocation.longitude?.toFixed(6)}`,
+      
+      isLive: true,
+      coordinates: `Lat: ${liveLocation.latitude?.toFixed(6)}, Lon: ${liveLocation.longitude?.toFixed(6)}`
+    };
+
+    // Prepend the live entry to the array for the table
+    return [liveEntry, ...existingFormattedLocations];
+  }, [liveLocation, existingFormattedLocations]); // Depend on liveLocation updates
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -42,23 +73,12 @@ const ActivityLogModal = ({ data = [], date, onClose, liveLocation}) => {
           <h3>Hourly Activity Log</h3>
           <CloseBtn onClick={onClose}>Close</CloseBtn>
         </ModalHeader>
-          <div style={{ padding: '15px', borderBottom: '1px solid #eee' }}>
-            <h4>📡 Live Location</h4>
-            {liveLocation ? (
-                <div>
-                    <p style={{ margin: 0 }}>
-                        **Latitude:** {liveLocation.latitude.toFixed(6)} | **Longitude:** {liveLocation.longitude.toFixed(6)}
-                    </p>
-                    <p style={{ fontSize: '0.8em', color: '#666', marginTop: '4px' }}>
-                        Updated: {new Date(liveLocation.timestamp).toLocaleTimeString()}
-                    </p>
-                </div>
-            ) : (
-                <p style={{ color: '#F00' }}>Waiting for live feed...</p>
-            )}
-        </div>
+        
+        {/* ❌ REMOVED THE SEPARATE LIVE LOCATION DIV */}
+        
         {parsedDate ? (
           <ModalDate>
+            {/* ... Date details remain the same ... */}
             <div className="day">{parsedDate.getDate()}</div>
             <div className="month-week">
               <div className="month">
@@ -82,11 +102,22 @@ const ActivityLogModal = ({ data = [], date, onClose, liveLocation}) => {
             <TableCell>Location</TableCell>
           </TableHeader>
 
-          {formattedLocations.length > 0 ? (
-            formattedLocations.map((item, index) => (
-              <TableRow key={index} even={index % 2 === 0}>
+          {finalFormattedData.length > 0 ? (
+            finalFormattedData.map((item, index) => (
+              // 3. Render the combined data, highlighting the live row
+              <TableRow 
+                key={item.time + index} // Use a unique key
+                even={!item.isLive && index % 2 === 0} // Only apply striping to non-live rows
+                style={item.isLive ? { backgroundColor: '#e6ffe6', fontWeight: 'bold' } : {}} // Highlight live row
+              >
                 <TableCell>{item.time}</TableCell>
-                <TableCell>{item.location}</TableCell>
+                <TableCell 
+                    // Show coordinates as a tooltip for live data
+                    title={item.isLive ? item.coordinates : null} 
+                    style={item.isLive ? { color: 'green' } : {}}
+                >
+                  {item.location}
+                </TableCell>
               </TableRow>
             ))
           ) : (
