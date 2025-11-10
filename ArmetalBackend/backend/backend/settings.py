@@ -205,7 +205,9 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://192.168.29.146:5173",  # Access from phone browser
     "http://192.168.29.146:3000",
-    "http://192.168.29.193:8001" 
+    "http://192.168.29.193:8001",
+    "http://192.168.29.194:8001",
+
 ]
 
 EMAIL_BACKEND = config("EMAIL_BACKEND")

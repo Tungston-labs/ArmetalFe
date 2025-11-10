@@ -49,6 +49,7 @@ const FieldInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
+  const [liveLocation, setLiveLocation] = useState(null);
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(() => {
@@ -91,6 +92,41 @@ const FieldInfo = () => {
       })),
     [sessions]
   );
+useEffect(() => {
+    if (id && selectedDate) {
+      dispatch(getFieldInfo({ employeeId: id, date: selectedDate }));
+    }
+  }, [id, selectedDate, dispatch]);
+
+  //  WebSocket for live location (admin view)
+useEffect(() => {
+  if (!id) return;
+
+  const token = localStorage.getItem("accessToken"); //  correct key spelling
+
+  const socket = new WebSocket(
+    `ws://192.168.29.134:8001/ws/dashboard/location/${id}/?token=${token}`
+  );
+
+  socket.onopen = () =>
+    console.log(" Admin connected to employee live location:", id);
+
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log(" Employee Live Location:", data);
+    setLiveLocation({
+      latitude: data.latitude,
+      longitude: data.longitude,
+      timestamp: data.timestamp,
+    });
+  };
+
+  socket.onerror = (e) => console.error(" Socket error:", e.message);
+  socket.onclose = () => console.log(" Socket closed");
+
+  return () => socket.close();
+}, [id]);
+
 
   const getWeekDays = (baseDate) => {
     const start = new Date(baseDate);
@@ -116,6 +152,8 @@ const FieldInfo = () => {
 
   if (!fieldInfo)
     return <p style={{ textAlign: "center" }}>No field info found.</p>;
+
+
 
   return (
     <>
@@ -150,6 +188,7 @@ const FieldInfo = () => {
       onClose={() => setIsModalOpen(false)}
       data={fieldInfo?.locations || []}
       date={selectedDate}
+      liveLocation={liveLocation}
     />
   )}
 </Header>

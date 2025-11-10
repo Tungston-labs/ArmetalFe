@@ -11,7 +11,7 @@ import {
   TableCell,
 } from "./ModalShift.styled.js";
 
-const ActivityLogModal = ({ data = [], date, onClose }) => {
+const ActivityLogModal = ({ data = [], date, onClose, liveLocation}) => {
   const parsedDate = useMemo(() => {
     if (!date) return null;
     const normalized = date.includes("T") ? date : date.replace(" ", "T");
@@ -29,7 +29,6 @@ const ActivityLogModal = ({ data = [], date, onClose }) => {
     }));
   }, [data]);
 
-  // ✅ Handle outside clicks
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -43,7 +42,21 @@ const ActivityLogModal = ({ data = [], date, onClose }) => {
           <h3>Hourly Activity Log</h3>
           <CloseBtn onClick={onClose}>Close</CloseBtn>
         </ModalHeader>
-
+          <div style={{ padding: '15px', borderBottom: '1px solid #eee' }}>
+            <h4>📡 Live Location</h4>
+            {liveLocation ? (
+                <div>
+                    <p style={{ margin: 0 }}>
+                        **Latitude:** {liveLocation.latitude.toFixed(6)} | **Longitude:** {liveLocation.longitude.toFixed(6)}
+                    </p>
+                    <p style={{ fontSize: '0.8em', color: '#666', marginTop: '4px' }}>
+                        Updated: {new Date(liveLocation.timestamp).toLocaleTimeString()}
+                    </p>
+                </div>
+            ) : (
+                <p style={{ color: '#F00' }}>Waiting for live feed...</p>
+            )}
+        </div>
         {parsedDate ? (
           <ModalDate>
             <div className="day">{parsedDate.getDate()}</div>
