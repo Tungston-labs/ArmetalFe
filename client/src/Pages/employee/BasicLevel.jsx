@@ -92,7 +92,7 @@ const handleChange = (e) => {
   };
 
 
-/** ✅ Combined Validation */
+
 const validateForm = () => {
   const newErrors = {};
   const requiredFields = [
@@ -130,7 +130,6 @@ const validateForm = () => {
 };
 
 
-  /** ✅ Single Next Button Handler */
 const handleNext = async () => {
   console.log("Next clicked");
 

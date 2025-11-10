@@ -60,11 +60,14 @@ const LeftContent = () => {
           alt="profile"
         />
         <FaEdit
-          className="edit-icon"
-          onClick={() =>
-            navigate(`/ViewBasic/${employeeId}`, { state: { from: from || "contract" } })
-          }
-        />
+  className="edit-icon"
+  onClick={() =>
+    navigate(`/ViewBasic/${employeeId}`, {
+      state: { from: "fulldashboard", employeeId },
+    })
+  }
+/>
+
       </ImageWrapper>
 
       <Details>

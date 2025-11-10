@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { FiSearch } from "react-icons/fi";
 
 export const Container = styled.div`
-  padding: 2rem;
+  padding: 20px;
   font-family: Satoshi;
   background: white;
 `;
@@ -113,7 +113,6 @@ export const Table = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px;
-  margin-top: 1rem;
   text-align: left;
   font-family: "Satoshi";
 

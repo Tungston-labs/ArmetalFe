@@ -32,9 +32,10 @@ import { FaClock } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from '../../Components/Loader';
 import Header from '../../Components/Header';
+import EmployeeTitle from "../../Components/EmployeeTitle";
 const TimesheetPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -47,7 +48,7 @@ const TimesheetPage = () => {
 
   const [selectedDate, setSelectedDate] = useState("");
   const [noAttendanceMessage, setNoAttendanceMessage] = useState("");
-  const previousPath = location.state?.from || '/employee-on-present';
+  const previousPath = location.state?.from || '/employee-attendance';
   // ✅ Fetch attendance by ID & date
   useEffect(() => {
     const fetchData = async () => {
@@ -140,7 +141,7 @@ const getWeekDays = (dateStr) => {
     setSelectedDate(prevDate.toISOString().split("T")[0]);
   };
 
-  // ✅ Navigate next date (disabled for future)
+
   const handleNextDay = () => {
     const nextDate = new Date(selectedDateObj);
     nextDate.setDate(nextDate.getDate() + 1);
@@ -161,15 +162,22 @@ const getWeekDays = (dateStr) => {
     
 
     <Container>
-<Header 
-  employee={employee} 
-  editable={false} 
-  onBack = {handleBack} 
-/>
+      <EmployeeTitle
+        iconSrc={EmployeeIcon}
+        showAddButton={false}
+        showDropdown={false}
+        showSearch={false}
+        showTabs={false}
+      />
+<div style={{ marginTop: "-30px" }}>
+  <Header
+    employee={employee}
+    editable={false}
+    // onBack={handleBack}
+  />
+</div>
 
 
-
-      <Hr />
 
       {/* Date Wrapper */}
       <DateWrapper>

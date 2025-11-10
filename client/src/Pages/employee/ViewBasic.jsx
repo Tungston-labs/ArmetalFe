@@ -39,6 +39,9 @@ const ViewBasic = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { id: employeeId } = useParams();
+
+
 
   const { employeeDetail, loading } = useSelector((state) => state.employees);
   const departmentList = useSelector((state) => state.departments.list);
@@ -174,8 +177,7 @@ const ViewBasic = () => {
   };
 
   const from = location.state?.from;
-// Replace your old handleImageChange with this
-// ViewBasic.jsx
+
 const handleImageChange = (file) => {
   // store the File object in formData for submission
   setFormData((prev) => ({
@@ -187,12 +189,22 @@ const handleImageChange = (file) => {
 
 
 
-  const handleBack = () => {
-    if (from === "department") navigate(`/departments/${formData.department}`);
-    else if (from === "employee") navigate("/employee");
-    else if (from === "contract") navigate("/employee-contract-visa-expiry");
-    else navigate("/"); 
-  };
+const handleBack = () => {
+  if (from === "department") {
+    navigate(`/departments/${formData.department}`);
+  } else if (from === "employee") {
+    navigate("/employee");
+  } else if (from === "employee-contract-visa-expiry") {
+    navigate(`/employee-contract-visa-expiry`);
+  } else if (from === "fulldashboard") {
+    navigate(`/fulldashboard/${employeeId}`);
+  } else {
+    navigate("/");
+  }
+};
+
+
+
 
   if (loading || !formData || Object.keys(formData).length === 0) {
     return (

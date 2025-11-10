@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  HeaderSection,
-  Tabs,
-  Tab,
   Table,
-  Title,
-  Subtitle,
-  TitleSection,
-  SearchWrapper,
-  SearchInput,
   ProfileImg,
   Pagination,
   LoaderOverlay,
-  EmployeeImage,
-  DepartmentSelect,
+
 } from "./Visa.Styles";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import { FaTrash } from "react-icons/fa";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,8 +18,7 @@ import {
 } from "../../Redux/employeeSlice";
 import Loader from "../../Components/Loader";
 import Navbar from "../../Components/Navbar";
-import { TextBlock } from "../leaveDetails/EmployeeList.styles";
-import { GoInfo } from "react-icons/go";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -107,86 +96,32 @@ const EmployeeList = () => {
     <>
       <Navbar />
       <Container>
+
         {loading && (
           <LoaderOverlay>
             <Loader />
           </LoaderOverlay>
         )}
 
-        <HeaderSection>
-          <TitleSection>
-            <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
-            <TextBlock>
-              <Title>Employee</Title>
-              <Subtitle>Manage your Employee.</Subtitle>
-            </TextBlock>
-          </TitleSection>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <SearchWrapper>
-              <SearchInput
-                type="text"
-                placeholder="Enter Employee ID or Name"
-                value={searchText}
-                onChange={handleSearch}
-              />
-            </SearchWrapper>
-
-            <DepartmentSelect
-              value={expiryFilter}
-              onChange={(e) => {
-                setExpiryFilter(e.target.value);
-                setPage(1);
-              }}
-            >
-              <option value="">All Employees</option>
-              <option value="visa">Visa Expiry (next 30 days)</option>
-              <option value="contract">Contract Expiry (next 30 days)</option>
-            </DepartmentSelect>
-          </div>
-        </HeaderSection>
-
-        <Tabs>
-          <NavLink to="/employee" style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === "/employee"}>Total Employee</Tab>
-          </NavLink>
-          <NavLink
-            to="/employee-leave-request"
-            style={{ textDecoration: "none" }}
-          >
-            <Tab active={location.pathname === "/employee-leave-request"}>
-              Employee leave request
-            </Tab>
-          </NavLink>
-          <NavLink to="/employee-attendance" style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === "/employee-attendance"}>
-              Employee Attendance
-            </Tab>
-          </NavLink>
-          <NavLink
-            to="/employee-Contract-Visa-Expiry"
-            style={{ textDecoration: "none" }}
-          >
-            <Tab active={location.pathname === "/employee-Contract-Visa-Expiry"}>
-              Employee Contract & Visa Expiry
-            </Tab>
-          </NavLink>
-          <NavLink to="/employee-on-leave" style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === "/employee-on-leave"}>
-              Employees on Leave
-            </Tab>
-          </NavLink>
-        </Tabs>
-
-        <hr style={{ marginTop: "-18px" }} />
-
+<EmployeeTitle
+  iconSrc={EmployeeIcon}
+  showAddButton={false}
+  showSearch={true}  
+  showDropdown={true}
+ showBackArrow={false}
+  dropdownOptions={[
+    { id: "visa", name: "Visa Expiry (next 30 days)" },
+    { id: "contract", name: "Contract Expiry (next 30 days)" }
+  ]}
+  onDropdownChange={(value) => {
+    setExpiryFilter(value);
+    setPage(1);
+  }}
+  onSearchChange={(value) => {
+    setSearchText(value);
+    setPage(1);
+  }}
+/>
         <Table>
           <thead>
             <tr>
@@ -195,8 +130,8 @@ const EmployeeList = () => {
               <th>Employee ID</th>
               <th>Email ID</th>
               <th>Expiry Date</th>
-              <th>Info</th>
-              <th>Delete</th>
+{/* 
+              <th>Delete</th> */}
             </tr>
           </thead>
           <tbody>
@@ -220,7 +155,7 @@ const EmployeeList = () => {
                   key={emp.id}
 onClick={() =>
   navigate(`/fulldashboard/${emp.id}`, {
-    state: { from: "contract" },
+    state: { from: location.pathname }, // 👈 stores current route like "/employee-Contract-Visa-Expiry"
   })
 }
 
@@ -258,10 +193,8 @@ onClick={() =>
                       ? emp.contract_expiry_date || "----"
                       : emp.visa_expiry_date || "----"}
                   </td>
-                  <td>
-                    <GoInfo />
-                  </td>
-                  <td>
+                
+                  {/* <td>
                     <FaTrash
                       color="red"
                       style={{ cursor: "pointer" }}
@@ -270,7 +203,7 @@ onClick={() =>
                         handleDeleteClick(emp.id);
                       }}
                     />
-                  </td>
+                  </td> */}
                 </tr>
               ))
             ) : (

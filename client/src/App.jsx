@@ -19,7 +19,7 @@ import Documents from "./Pages/employee/Documents.jsx";
 import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
 import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
 import Attendance from "./Pages/attendance/Attendance.jsx";
-import OnLeave from "./Pages/attendance/OnLeave.jsx";
+// import OnLeave from "./Pages/attendance/OnLeave.jsx";
 import EmployeesOnLeave from "./Pages/onLeave/EmployeesOnLeave.jsx";
 
 import ViewBasic from "./Pages/employee/ViewBasic.jsx"
@@ -36,7 +36,11 @@ import Loder from "./Components/Loder.jsx";
 import LeftContent from "./Pages/employeDashboard/LeftContent.jsx";
 import Employeedashboard from "./Pages/employeDashboard/Employeedashboard.jsx"
 import FullDashboard from "./Pages/employeDashboard/FullDashboard.jsx";
-import EmployeAttendance from "./Pages/attendance/EmployeAttendance.jsx";
+
+
+import LeaveList from "./Pages/onLeave/LeaveList.jsx";
+
+
 import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
 import NewDashboard from "./Pages/dashboard/NewDashboard.jsx";
 import DashboardNew from "./Pages/dashboard/DashboardNew.jsx";
@@ -54,6 +58,10 @@ import FieldDepartment from "./Pages/Shift/FieldDepartment.jsx"
 import FieldInfo from "./Pages/Shift/FieldInfo.jsx";
 import JobDetails from "./Components/JobDetails.jsx";
 import EmployeeHeader from "./Components/EmployeeHeader.jsx";
+
+
+import AttendanceList from "./Pages/attendance/AttendanceList.jsx"
+import EmployeeTitle from "./Components/EmployeeTitle.jsx"
 function App() {
   const dispatch = useDispatch();
 
@@ -105,13 +113,13 @@ function App() {
               element={<EmployeeLeaveDetails />}
             />
             <Route path="/attendance/detail/:id" element={<Attendance />} />
-            <Route path="/employee-on-present" element={<OnLeave />} />
+            <Route path="/leave" element={<LeaveList />} />
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
             <Route path="/employee-on-leave" element={<EmployeesOnLeave />} />
 
             <Route path="/dashboard" element={<NewDashboard />} />
 
-            <Route path="/employee-attendance" element={<EmployeAttendance />} />
+            <Route path="/employee-attendance" element={<AttendanceList />} />
 
             <Route path="/employee-leave" element={<DetailOnleave />} />
 
@@ -133,7 +141,8 @@ function App() {
             
 <Route path="/job" element={<JobDetails />}></Route>
 <Route path="/header" element={<EmployeeHeader />}></Route>
-            
+          
+            <Route path="/title" element={<EmployeeTitle/>}></Route>
           </Route>
         </Route>
       </Routes>

@@ -188,7 +188,7 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
 </Tabs>
 
       <hr style={{ marginTop: "-18px" }} />
-{/* <DeptTitle>Department:{selectedDept?.name || "Department"}</DeptTitle> */}
+
 
       <Table>
         <thead>
@@ -198,7 +198,7 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
             <th>Employee ID</th>
             <th>Email ID</th>
             <th>Department</th>
-            <th>Info</th>
+         
             {/* <th>Delete</th> */}
           </tr>
         </thead>
@@ -246,19 +246,8 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
         <td>{emp.employee_id}</td>
         <td>{emp.email}</td>
         <td>{emp.department}</td>
-        <td className="info-btn">
-          <GoInfo
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/fulldashboard/${emp.id}`)}
-          />
-        </td>
-        {/* <td className="delete-btn">
-          <FaTrash
-            color="red"
-            style={{ cursor: "pointer" }}
-            onClick={() => handleDeleteClick(emp.id)}
-          />
-        </td> */}
+      
+       
       </tr>
     ))
   ) : (

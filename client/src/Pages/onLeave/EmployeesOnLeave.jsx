@@ -41,6 +41,7 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
 import Navbar from "../../Components/Navbar";
 import { FiSearch } from "react-icons/fi";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -71,59 +72,16 @@ const EmployeeList = () => {
         <Navbar/>
        
     <Container>
-      {loading && (
+      {loading && ( <Loader /> )}
 
-        <Loader />
-
-    )}
-
-      {/* Header */}
-      <HeaderSection>
-         <TitleSection>
-         <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
-         <TextBlock>
-           <Title>Employee</Title>
-           <Subtitle>Manage your Employee.</Subtitle>
-         </TextBlock>
-       </TitleSection>
-      <SearchWrapper>
-  {/* <SearchIcon>
-
-  </SearchIcon> */}
-  <SearchInput
-    type="text"
-    placeholder="Department Name"
-    value={searchText}
-    onChange={handleSearch}
-  />
-</SearchWrapper>
-
-      </HeaderSection>
-
-      {/* Tabs */}
-      <Tabs>
-        <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Total Employee</Tab>
-        </NavLink>
-        <NavLink to="/employee-leave-request" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-leave-request'}>Employee leave request</Tab>
-        </NavLink>
-        <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
-        </NavLink>
-        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>
-            Employee Contract & Visa Expiry
-          </Tab>
-        </NavLink>
-        <NavLink to="/employee-on-leave" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-on-leave'}>Employees on Leave</Tab>
-        </NavLink>
-      </Tabs>
-
-      <hr style={{ marginTop: "-18px" }} />
-
-      {/* Department Cards */}
+<EmployeeTitle
+  iconSrc={EmployeeIcon}
+  showAddButton={false}
+  showDropdown={false} 
+   showBackArrow={false}  
+    onSearchChange={setSearchText}     
+/>
+     
       <CardContainer>
         <CardGrid>
           {departmentList?.map((dept) => (
@@ -154,48 +112,7 @@ const EmployeeList = () => {
             </Card>
           ))}
         </CardGrid>
-      </CardContainer>
-
-      {/* Pagination */}
-      {pagination?.total_pages > 1 && (
-        <Pagination>
-          <span
-            onClick={() => page > 1 && setPage(page - 1)}
-            style={{ cursor: 'pointer', marginRight: '8px' }}
-          >
-            &larr;
-          </span>
-
-          {Array.from({ length: pagination.total_pages }, (_, i) => {
-            const pageNumber = i + 1;
-            const isActive = page === pageNumber;
-            return (
-              <span
-                key={pageNumber}
-                onClick={() => setPage(pageNumber)}
-                style={{
-                  margin: '0 4px',
-                  padding: '6px 10px',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  backgroundColor: isActive ? '#003366' : '#e0e0e0',
-                  color: isActive ? '#fff' : '#000',
-                  fontWeight: isActive ? 'bold' : 'normal',
-                }}
-              >
-                {pageNumber}
-              </span>
-            );
-          })}
-
-          <span
-            onClick={() => page < pagination.total_pages && setPage(page + 1)}
-            style={{ cursor: 'pointer', marginLeft: '8px' }}
-          >
-            &rarr;
-          </span>
-        </Pagination>
-      )}
+      </CardContainer> 
     </Container>
      </>
   );

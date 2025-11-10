@@ -62,12 +62,11 @@ export const ProfileCard = styled.div`
 // --- Main Layout ---
 export const ContentArea = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
   gap: 20px;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
+ @media (min-width: 768px)and (max-width:1023px) {
+    flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
   }
@@ -79,9 +78,10 @@ export const LeftColumn = styled.div`
   flex-direction: column;
   gap: 15px;
 
-  @media (min-width: 768px) {
-    width: 30%;
+  @media (min-width: 768px)and (max-width:1023px){
+    width: 100%;
   }
+   
 `;
 
 export const RightColumn = styled.div`
@@ -90,8 +90,8 @@ export const RightColumn = styled.div`
   flex-direction: column;
   gap: 15px;
 
-  @media (min-width: 768px) {
-    width: 70%;
+  @media (min-width: 768px)and (max-width:1023px) {
+    width: 100%;
   }
 `;
 
@@ -112,33 +112,36 @@ export const InputBox = styled.input`
   }
 
   /* Tablet screens */
-  @media (min-width: 768px) {
-    font-size: 17px;
-    padding: 12px 14px;
+  @media (min-width: 768px)and (max-width:1021px) {
+    font-size: 0.8rem;
+    padding: 10px 8px;
   }
 
   /* Laptop screens */
-  @media (min-width: 1024px) {
-    font-size: 18px;
-    padding: 13px 16px;
+  @media (min-width: 1024px) and (max-width:1439px) {
+    font-size: 1rem;
+    padding: 10px 15px;
   }
 
   /* Large desktops */
-  @media (min-width: 1440px) {
-    font-size: 19px;
+  @media (min-width: 1440px) and (max-width:1920px) {
+    font-size: 1rem;
+    padding: 10px 10px;
+  }
+@media (min-width: 1921px) and (max-width:2559px) {
+    font-size: 1.3rem;
     padding: 14px 18px;
   }
-
   /* Ultra-wide / 4K screens */
-  @media (min-width: 2560px) {
-    font-size: 20px;
+  @media (min-width: 2560px) and (max-width:3839px) {
+    font-size: 1.2rem;
     padding: 15px 20px;
   }
 
   /* 4K+ displays */
   @media (min-width: 3840px) {
-    font-size: 25px;
-    padding: 18px 22px;
+    font-size: 1.7rem;
+    padding: 15px 20px;
   }
 `;
 
@@ -160,38 +163,42 @@ export const BioBox = styled.textarea`
   }
 
   /* Tablet screens */
-  @media (min-width: 768px) {
-    font-size: 17px;
+  @media (min-width: 768px)and (max-width:1023px) {
+    font-size: 0.8rem;
     padding: 12px 14px;
-    height: 105px;
+    height: 50px;
   }
 
   /* Laptop screens */
-  @media (min-width: 1024px) {
-    font-size: 18px;
-    padding: 13px 16px;
-    height: 110px;
+  @media (min-width: 1024px) and (max-width:1440px){
+    font-size: 1rem;
+    padding: 15px 10px;
+    height: 95px;
   }
 
   /* Large desktops */
-  @media (min-width: 1440px) {
-    font-size: 19px;
+  @media (min-width: 1440px)and (max-width:1920px) {
+    font-size: 1.3rem;
+    padding: 14px 18px;
+    height: 95px;
+  }
+  @media (min-width: 1921px)and (max-width:2559px) {
+    font-size: 1.3rem;
     padding: 14px 18px;
     height: 120px;
   }
-
   /* Ultra-wide / 4K screens */
-  @media (min-width: 2560px) {
-    font-size: 20px;
+  @media (min-width: 2560px)and (max-width:3839px) {
+    font-size: 1.3rem;
     padding: 15px 20px;
     height: 125px;
   }
 
   /* 4K+ displays */
   @media (min-width: 3840px) {
-    font-size: 25px;
-    padding: 18px 22px;
-    height: 148px;
+    font-size: 1.7rem;
+    padding: 18px 15px;
+    height: 140px;
   }
 `;
 
