@@ -37,6 +37,7 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import Navbar from '../../Components/Navbar';
 import Loader  from "../../Components/Loader"
 import { TextBlock } from './EmployeeList.styles';
+import EmployeeTitle from '../../Components/EmployeeTitle';
 
 export default function LeaveRequest() {
   const dispatch = useDispatch();
@@ -107,83 +108,17 @@ const isLoading = loading || deptLoading;
   return (
     <>
     <Navbar/>
+      {loading && <Loader />}
     <Container>
-        {isLoading && (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: "rgba(255,255,255,0.7)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 9999,
-      }}
-    >
-      <Loader color="#3352BA" />
-    </div>
-  )}
-      <HeaderSection>
-       <TitleSection>
-         <EmployeeImage  src={EmployeeIcon} alt="employeeIcon" />
-         <TextBlock>
-           <Title>Employee</Title>
-           <Subtitle>Manage your Employee.</Subtitle>
-         </TextBlock>
-       </TitleSection>
-
-      <ActionArea>
-  <SearchWrapper>
-        {/* <SearchIcon /> */}
-        <SearchInput
-          type="text"
-          placeholder="Enter Employee ID or Name"
-          value={searchText}
-          onChange={handleSearch}
-        />
-      </SearchWrapper>
-  
-<DepartmentSelect
-  value={departmentFilter}
-  onChange={(e) => {
-    setDepartmentFilter(e.target.value);
-    setPage(1);
-  }}
->
-  <option value="">All Departments</option>
-  {departmentList.map((dept) => (
-    <option key={dept.id} value={dept.id}>
-      {dept.name}
-    </option>
-  ))}
-</DepartmentSelect>
-
-
-</ActionArea>
-
-      </HeaderSection>
-
-      <Tabs>
-        <NavLink to="/employee" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee'}>Total Employee </Tab>
-        </NavLink>
-        <NavLink to="/employee-leave-request" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-leave-request'}>Employee leave request</Tab>
-        </NavLink>
-        <NavLink to="/employee-attendance" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-attendance'}>Employee Attendance</Tab>
-        </NavLink>
-        <NavLink to="/employee-Contract-Visa-Expiry" style={{ textDecoration: 'none' }}>
-          <Tab active={location.pathname === '/employee-Contract-Visa-Expiry'}>Employee Contract & Visa Expiry</Tab>
-        </NavLink>
-          <NavLink to="/employee-on-leave" style={{ textDecoration: 'none' }}>
-                          <Tab active={location.pathname === '/employee-on-leave'}>Employees on Leave</Tab>
-                        </NavLink>
-      </Tabs>
-        <hr style={{marginTop:"-18px"}}></hr>
+  <EmployeeTitle
+  iconSrc={EmployeeIcon}
+  showAddButton={false}
+  dropdownOptions={departmentList || []}
+  dropdownLoading={deptLoading}
+  onSearchChange={setSearchText}
+  onDropdownChange={setDepartmentFilter}
+       showBackArrow={false}
+/>
 
       <Table>
         <thead>
@@ -191,9 +126,8 @@ const isLoading = loading || deptLoading;
             <TableHead>Employee name</TableHead>
             <TableHead>Leave type</TableHead>
             <TableHead>Email ID</TableHead>
-            <TableHead>Contact number</TableHead>
+            <TableHead>Department</TableHead>
             <TableHead>Start date to End date</TableHead>
-            <TableHead></TableHead>
             <TableHead></TableHead>
           </TableRow>
         </thead>
@@ -228,38 +162,50 @@ const isLoading = loading || deptLoading;
         </TableCell>
         <TableCell>{leave.leave_type}</TableCell>
         <TableCell>{leave.employee.email}</TableCell>
-        <TableCell>{leave.employee.phno}</TableCell>
+        <TableCell>{leave.employee.department}</TableCell>
         <TableCell>
           {leave.from_date} - {leave.to_date}
         </TableCell>
-        <TableCell>
-          <IoEyeOutline
-            onClick={(e) => {
-              e.stopPropagation(); // 🔒 prevent row click
-              navigate(`/leave-details/${leave.id}`);
-            }}
-            style={{ cursor: "pointer" }}
-          />
-        </TableCell>
+       
         <TableCell
           onClick={(e) => {
-            e.stopPropagation(); // 🔒 prevent row navigation
+            e.stopPropagation(); 
           }}
         >
           <ActionButtons>
-            <ApproveButton
-              onClick={() => {
-                const today = new Date().toISOString().split("T")[0];
-                setSelectedLeave({
-                  leave_id: leave.id,
-                  employee_id: leave.employee?.id,
-                  date: today,
-                });
-                setShowModal(true);
-              }}
-            >
-              On Leaves
-            </ApproveButton>
+          <ApproveButton
+  onClick={() => {
+    const today = new Date().toISOString().split("T")[0];
+    const leaveEnd = new Date(leave.to_date);
+    const currentDate = new Date(today);
+
+    if (leaveEnd < currentDate) {
+      alert("You cannot approve or mark past leave dates.");
+      return;
+    }
+
+    setSelectedLeave({
+      leave_id: leave.id,
+      employee_id: leave.employee?.id,
+      date: today,
+    });
+    setShowModal(true);
+  }}
+  style={{
+    backgroundColor:
+      new Date(leave.to_date) < new Date()
+        ? "#ccc"
+        : "#003366",
+    cursor:
+      new Date(leave.to_date) < new Date()
+        ? "not-allowed"
+        : "pointer",
+  }}
+  disabled={new Date(leave.to_date) < new Date()}
+>
+  On Leaves
+</ApproveButton>
+
           </ActionButtons>
         </TableCell>
       </TableRow>

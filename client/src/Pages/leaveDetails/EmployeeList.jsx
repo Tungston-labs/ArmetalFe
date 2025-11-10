@@ -39,6 +39,7 @@ import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader"
+import EmployeeTitle from "../../Components/EmployeeTitle";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -114,97 +115,26 @@ const EmployeeList = () => {
         department_id: departmentFilter,
       })
     ).then(() => {
-      setPage(newPage); 
+      setPage(newPage);
     });
   };
 
 
   return (
     <>
-      {loading && <Loader />} 
+      {loading && <Loader />}
       <Navbar />
       <Container>
-        <HeaderSection>
-          <TopRow>
-            <TitleSection>
-              <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
-              <TextBlock>
-                <Title>Employee</Title>
-                <Subtitle>Manage your Employee.</Subtitle>
-              </TextBlock>
-            </TitleSection>
+        <EmployeeTitle
+          iconSrc={EmployeeIcon}
+          dropdownOptions={departmentList || []}
+          dropdownLoading={deptLoading}
+          onAddClick={() => navigate("/basic-details")}
+          onSearchChange={setSearchText}
+          onDropdownChange={setDepartmentFilter}
+               showBackArrow={false}
+        />
 
-
-
-            <AddButton onClick={() => navigate("/basic-details")}>
-              <FaPlus /> Add Employee
-            </AddButton>
-          </TopRow>
-
-          {/* Bottom row: Search + Department */}
-          <BottomRow>
-            <SearchWrapper>
-              {/* <SearchIcon /> */}
-              <SearchInput
-                type="text"
-                placeholder="Enter Employee ID or Name"
-                value={searchText}
-                onChange={handleSearch}
-              />
-            </SearchWrapper>
-
-            <DepartmentSelect
-              value={departmentFilter}
-              onChange={(e) => setDepartmentFilter(e.target.value)}
-            >
-              <option value="">All Departments</option>
-              {deptLoading ? (
-                <option>Loading...</option>
-              ) : departmentList && departmentList.length > 0 ? (
-                departmentList.map((dept) => (
-                  <option key={dept.id} value={dept.id}>
-                    {dept.name}
-                  </option>
-                ))
-              ) : (
-                <option>No departments found</option>
-              )}
-            </DepartmentSelect>
-          </BottomRow>
-        </HeaderSection>
-
-
-        <Tabs>
-          <NavLink to="/employee" style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === "/employee"}>Total Employee</Tab>
-          </NavLink>
-          <NavLink to="/employee-leave-request" style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === "/employee-leave-request"}>
-              Employee leave request
-            </Tab>
-          </NavLink>
-          <NavLink to="/employee-attendance" style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === "/employee-attendance"}>
-              Employee Attendance
-            </Tab>
-          </NavLink>
-          <NavLink
-            to="/employee-Contract-Visa-Expiry"
-            style={{ textDecoration: "none" }}
-          >
-            <Tab active={location.pathname === "/employee-Contract-Visa-Expiry"}>
-              Employee Contract & Visa Expiry
-            </Tab>
-          </NavLink>
-          <NavLink to="/employee-on-leave" style={{ textDecoration: "none" }}>
-            <Tab active={location.pathname === "/employee-on-leave"}>
-              Employees on Leave
-            </Tab>
-          </NavLink>
-        </Tabs>
-        <hr style={{ marginTop: "-18px" }} />
-
-        {/* ✅ Show table only when NOT loading */}
         {!loading && (
           <>
             <Table>
@@ -226,9 +156,10 @@ const EmployeeList = () => {
                       key={emp.id}
                       onClick={() =>
                         navigate(`/fulldashboard/${emp.id}`, {
-                          state: { from: "employee" },
+                          state: { from: location.pathname },
                         })
                       }
+
                       style={{
                         cursor: "pointer",
                         transition: "background 0.2s ease",
@@ -257,7 +188,7 @@ const EmployeeList = () => {
                       <td>{emp.email}</td>
                       <td>{emp.designation}</td>
                       <td>{emp.department}</td>
-                      
+
                       <td
                         onClick={(e) => {
                           e.stopPropagation(); // 🔒 Prevent row click
@@ -312,7 +243,6 @@ const EmployeeList = () => {
               <ModalTitle>Confirm Deletion</ModalTitle>
               <ModalText>Are you sure you want to delete this employee?</ModalText>
 
-              {/* Use the styled wrapper for responsive button layout */}
               <ModalButtonWrapper>
                 <ModalButton bg="red" onClick={confirmDelete}>
                   Delete

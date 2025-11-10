@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import LeftContent from "./LeftContent"; 
-import Employeedashboard from "./Employeedashboard"; 
+import LeftContent from "./LeftContent";
+import Employeedashboard from "./Employeedashboard";
 import styled from "styled-components";
 import Loader from "../../Components/Loader";
 import BottomCard from "./BottomCard";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import Navbar from "../../Components/Navbar";
 
@@ -48,11 +48,12 @@ const FullDashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const { employeeId } = useParams();
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
+ useEffect(() => {
+  setLoading(false);
+}, []);
+
 
   if (loading) {
     return (
@@ -62,20 +63,28 @@ const FullDashboard = () => {
     );
   }
 
+  // ✅ Get previous page (Visa or Employee list)
+  const previousPage = location.state?.from || "/employee";
+
+  // ✅ Correct back handler
+  const handleBack = () => {
+    navigate(previousPage, { replace: true });
+  };
 
   return (
     <>
       <Navbar />
       <Wrapper>
-        {/* Back Button */}
-        <BackButton onClick={() => navigate("/employee")}>
+        {/* ✅ Back Button fixed */}
+        <BackButton onClick={handleBack}>
           <FaArrowLeft /> Back
         </BackButton>
 
         <div style={{ display: "flex", width: "100%", height: "100%" }}>
-          <LeftContent />
-          <Employeedashboard />
+          <LeftContent employeeId={employeeId} />
+          <Employeedashboard employeeId={employeeId} />
         </div>
+
         <BottomCard />
       </Wrapper>
     </>

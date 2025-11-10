@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { LuArrowLeft } from "react-icons/lu";
 
 export const Container = styled.div`
-  padding: 2rem;
+  padding: 20px;
   background: white;
   font-family: "Segoe UI", sans-serif;
 `;
@@ -55,38 +55,58 @@ export const ProfileImage = styled.img`
 
 export const Input = styled.input`
   width: 100%;
-  padding: clamp(0.6rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 1.2rem);
-  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  padding: 10px 14px;
   color: black;
   border-radius: 7px;
   border: 1px solid #052DB4;
   background: #FFF;
   box-sizing: border-box;
-margin-top:5px;
+  margin-top: 5px;
+
   /* Responsive refinements */
-  @media (max-width: 480px) {
+  @media (min-width: 768px) and (max-width: 1024px) {
+    font-size: 0.7rem;
+    padding: 8px 10px;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
     font-size: 0.8rem;
-    padding: 0.6rem 0.8rem;
+    padding: 14px 16px;
+    margin-bottom: 1rem;
   }
 
-  @media (min-width: 1920px) {
-    font-size: 1.5rem;
-    padding: 1rem 1rem;
-    margin-bottom:1rem;
+  @media (min-width: 1441px) and (max-width: 1920px) {
+    font-size: 0.9rem;
+    padding: 10px 10px;
+    margin-bottom: 1rem;
   }
 
-  @media (min-width: 3840px) {
-    font-size: 2rem;
-    padding: 1.5rem 2rem;
-    margin-bottom:1rem;
+  @media (min-width: 1921px) and (max-width: 2540px) {
+    font-size: 1.2rem;
+    padding: 14px 16px;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 2541px) and (max-width: 3840px) {
+    font-size: 1.125rem; /* 18px */
+    padding: 14px 16px;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 3841px) {
+    font-size: 1.375rem; /* 22px */
+    padding: 18px 22px;
+    margin-bottom: 1rem;
   }
 
   @media (min-width: 7680px) {
-    font-size: 1.3rem;
-    padding: 1.4rem 2rem;
-    margin-bottom:1rem;
+    font-size: 1.625rem; /* 26px */
+    padding: 22px 26px;
+    margin-bottom: 1rem;
   }
 `;
+
+
 
 export const TextArea = styled.textarea`
   width: 99%;
@@ -124,7 +144,7 @@ background: #FFF;
 
 
 export const SectionTitle = styled.h4`
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
   margin-bottom: 0.5rem;
   color: #000;
   font-family: Satoshi;
@@ -385,14 +405,14 @@ export const FullWidthInput = styled.input`
 export const TwoColumnRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: 2rem;
   width:97%;
 `;
 export const TwoColumnRows= styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  width:99%;
+  gap: 2rem;
+  width:100%;
 `;
 // export const Input = styled.input`
 //   width: 100%;

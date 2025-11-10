@@ -37,6 +37,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
 import { Label } from "../employee/BasicLevel.Styles";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
@@ -91,40 +92,23 @@ const EmployeeLeaveForm = () => {
     <>
  
     <Container>
-      <TitleSection style={{ color: "#3250B5" }}>
-        <BackArrow onClick={() => navigate("/employee-leave-request")} />
-        <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
-        <div>
-          <Title>Employee</Title>
-          <Subtitle>Manage your Employee.</Subtitle>
-        </div>
-      </TitleSection>
+ <EmployeeTitle
+        iconSrc={EmployeeIcon}
+        showAddButton={false}
+        showDropdown={false}
+        showBackArrow={true}
+        showTabs = {false}
+        showSearch={false}
+      />
 
-      <Hr />
-   <Header employee={employee}/>
-      {/* <InfoGrid>
-        <ProfileImageWrapper>
-          <ProfileImage src={employee.profile_pic} alt="Employee" />
-        </ProfileImageWrapper>
+<div style={{ marginTop: "-30px" }}>
+  <Header
+    employee={employee}
+    editable={false}
 
-        <div style={{ display: "flex", width: "90%", justifyContent: "space-between" }}>
-          <TwoColumn>
-            <Input placeholder="Name" value={employee.name || ''} readOnly />
-            <Input placeholder="Employee ID" value={employee.employee_id || ''} readOnly />
-            <Input placeholder="Email ID" value={employee.email || ''} readOnly />
-          </TwoColumn>
-
-          <InfoSection>
-            <FullWidthInput placeholder="Address" value={employee.address || ''} readOnly />
-            <TwoColumnRow>
-              <Input placeholder="DOB" value={employee.dob || ''} readOnly />
-              <Input placeholder="Gender" value={employee.gender || ''} readOnly />
-            </TwoColumnRow>
-          </InfoSection>
-        </div>
-      </InfoGrid>
-
-      <Hr /> */}
+  />
+</div>
+      
 
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
