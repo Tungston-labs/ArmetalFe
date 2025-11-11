@@ -62,6 +62,7 @@ import EmployeeHeader from "./Components/EmployeeHeader.jsx";
 
 import AttendanceList from "./Pages/attendance/AttendanceList.jsx"
 import EmployeeTitle from "./Components/EmployeeTitle.jsx"
+
 function App() {
   const dispatch = useDispatch();
 
@@ -115,7 +116,7 @@ function App() {
             <Route path="/attendance/detail/:id" element={<Attendance />} />
             <Route path="/leave" element={<LeaveList />} />
             <Route path="/ViewBasic/:id" element={<ViewBasic />} />
-            <Route path="/employee-on-leave" element={<EmployeesOnLeave />} />
+            <Route path="/employee-on-leave" element={<LeaveList />} />
 
             <Route path="/dashboard" element={<NewDashboard />} />
 
@@ -143,6 +144,7 @@ function App() {
 <Route path="/header" element={<EmployeeHeader />}></Route>
           
             <Route path="/title" element={<EmployeeTitle/>}></Route>
+  
           </Route>
         </Route>
       </Routes>

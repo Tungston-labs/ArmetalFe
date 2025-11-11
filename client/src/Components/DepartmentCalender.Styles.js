@@ -477,7 +477,7 @@ export const Avatar = styled.img`
 
 export const EmpName = styled.div`
   font-size: clamp(0.8rem, 1vw, 1.8rem);
-  font-weight: 500;
+   color: #555;
   @media (min-width: ${breakpoints.tv}) {
     font-size: 1.5rem;
     padding-block: 0.7rem;

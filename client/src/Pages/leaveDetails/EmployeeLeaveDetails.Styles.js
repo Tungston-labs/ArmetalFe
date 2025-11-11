@@ -414,12 +414,7 @@ export const TwoColumnRows= styled.div`
   gap: 2rem;
   width:100%;
 `;
-// export const Input = styled.input`
-//   width: 100%;
-//   padding: 0.6rem 1rem;
-//   border: 1px solid #ccc;
-//   border-radius: 6px;
-// `; make this as responsvie
+
 export const FlexRows = styled.div`
   display: flex;
   justify-content: space-between;

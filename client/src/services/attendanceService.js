@@ -7,8 +7,6 @@ export const fetchAttendanceList = async (params = {}) => {
   return response.data;
 };
 
-
-
 export const fetchAttendanceDetail = async (attendanceId, date) => {
   const url = date
     ? `/admin/attendance/${attendanceId}/?date=${date}`

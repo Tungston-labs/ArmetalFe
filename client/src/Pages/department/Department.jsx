@@ -43,6 +43,7 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
 import Navbar from '../../Components/Navbar.jsx';
 import Loader from "../../Components/Loader.jsx";
+import EmployeeTitle from '../../Components/EmployeeTitle.jsx';
 
 const Department = () => {
   const dispatch = useDispatch();
@@ -134,34 +135,20 @@ const Department = () => {
     <>
       <Navbar />
       <DepartmentContainer>
-        <HeaderSection>
-          <TitleSection>
-            <div className="left-content">
-              <div className="icon-box">
-                <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
-              </div>
-              <div>
-                <Title>Department</Title>
-                <Subtitle>Manage all departments within the organization.</Subtitle>
-              </div>
-            </div>
+      
+<EmployeeTitle
+  iconSrc={EmployeeIcon}
+  title="Departments"
+  subtitle="Manage your departments"
+  buttonText="Add Department"
+  searchValue={search}
+  onSearchChange={setSearch}
+  onAddClick={() => setShowModal(true)} 
+  showDropdown={false}
+  showBackArrow={false}
+  showTabs={false}
+/>
 
-            <AddButton onClick={() => setShowModal(true)}>
-              <FaPlus /> Add Department
-            </AddButton>
-          </TitleSection>
-
-          <ActionArea>
-            <SearchWrapper>
-              <SearchInput
-                type="text"
-                placeholder="Search department name.."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </SearchWrapper>
-          </ActionArea>
-        </HeaderSection>
 
         <CardGrid>
           {error ? (
