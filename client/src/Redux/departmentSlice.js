@@ -134,6 +134,7 @@ const departmentSlice = createSlice({
       })
       .addCase(getDepartments.fulfilled, (state, action) => {
         state.loading = false;
+        state.list = action.payload || [];
         state.error = null;
 state.list = Array.isArray(action.payload)
   ? [...action.payload].sort((a, b) => (a.name || a.department_name || "").localeCompare(b.name || b.department_name || ""))

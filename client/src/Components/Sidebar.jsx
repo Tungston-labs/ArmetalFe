@@ -142,37 +142,7 @@ export default function Sidebar() {
 
           </>
         )}
-          {(user?.is_hr_admin || user?.is_hr) && Object.keys(modules).length > 0 && (
-          <>
-            {modules.dashboard && (
-              <CustomLink to="/" className={`${collapsed ? 'collapsed' : ''} ${isActive("/")}`}>
-                <RiHome5Line /><span>Dashboard</span>
-              </CustomLink>
-            )}
-            {modules.employee && (
-              <CustomLink to="/employee" className={`${collapsed ? 'collapsed' : ''} ${isActive("/employee")}`}>
-                <FaUsers /><span>Employee</span>
-              </CustomLink>
-            )}
-            {modules.department && (
-              <CustomLink to="/department" className={`${collapsed ? 'collapsed' : ''} ${isActive("/department")}`}>
-                <FaSitemap /><span>Department</span>
-              </CustomLink>
-            )}
-            {modules.daily_task && (
-              <CustomLink to="/daily-task" className={`${collapsed ? 'collapsed' : ''} ${isActive("/daily-task")}`}>
-                <FaTasks /><span>Daily Task</span>
-              </CustomLink>
-            )}
-            {modules.payroll && (
-              <CustomLink to="/payrolldetails" className={`${collapsed ? 'collapsed' : ''} ${isActive("/payrolldetails")}`}>
-                <FaMoneyCheckAlt /><span>Payroll</span>
-              </CustomLink>
-            )}
-           
-
-          </>
-        )}
+      
       </Nav>
     </SidebarContainer>
   );
