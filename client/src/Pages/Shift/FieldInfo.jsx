@@ -100,7 +100,7 @@ useEffect(() => {
   }, [id, selectedDate, dispatch]);
 
   //  WebSocket for live location (admin view)
-const liveLocation = useAdminLocationSocket(id);
+const liveLocationData = useAdminLocationSocket(id);
 
 
   const getWeekDays = (baseDate) => {
@@ -163,8 +163,7 @@ const liveLocation = useAdminLocationSocket(id);
       onClose={() => setIsModalOpen(false)}
       data={fieldInfo?.locations || []}
       date={selectedDate}
-      liveLocation={liveLocation}
-    />
+      liveLocationData={liveLocationData}    />
   )}
 </Header>
 
