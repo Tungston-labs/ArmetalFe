@@ -5,9 +5,6 @@ export const Container = styled.div`
   background: #fff;
   font-family: "Inter", sans-serif;
 
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
 `;
 
 export const TopSection = styled.div`
@@ -159,17 +156,14 @@ export const Dropdown = styled.select`
   }
 `;
 
-export const TabsRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.8rem;
-  width: 100%;
-  margin-top: 0.5rem;
-
-
+// export const TabsRow = styled.div`
+//   display: grid;
+//   grid-template-columns: repeat(5, 1fr);
+//   gap: 0.8rem;
+//   width: 100%;
+//   margin-top: 0.5rem;
  
-  
-`;
+// `;
 
 export const TabButton = styled.button`
   width: 100%;
@@ -183,11 +177,96 @@ export const TabButton = styled.button`
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 
   &:hover {
     background: ${({ active }) => (active ? "#8CA0E2" : "#8CA0E2")};
-      color: ${({ active }) => (active ? "#fff" : "white")};
+    color: ${({ active }) => (active ? "#fff" : "white")};
   }
+
+  @media (max-width: 769px) {
+    flex: 0 0 calc(100% / 3 - 0.33rem); // show 3 tabs width
+  }
+`;
+
+
+export const TabsRowContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+`;
+
+export const TabsRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.8rem;
+  width: 100%;
+  margin-top: 0.5rem;
+
+  @media (min-width: 768px) and (max-width:1024px) {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+`;
+
+// export const TabButton = styled.button`
+//   width: 100%;
+//   padding: 0.5rem 0.8rem;
+//   background-color: ${({ active }) => (active ? "#003366" : "#e0e0e0")};
+//   color: ${({ active }) => (active ? "#fff" : "#000")};
+//   border: none;
+//   border-radius: 6px;
+//   text-align: center;
+//   cursor: pointer;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   min-height: 50px;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+
+//   @media (max-width: 480px) {
+//     min-height: 40px;
+//   }
+// `;
+
+export const ScrollButton = styled.button`
+  position: absolute;
+  top: 50%;
+  /* transform: translateY(-50%); */
+  /* background: rgba(0,0,0,0.2); */
+  border: none;
+  /* border-radius: 50%; */
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+`;
+
+export const ScrollLeft = styled(ScrollButton)`
+  left: 0;
+`;
+
+export const ScrollRight = styled(ScrollButton)`
+  right: 0;
 `;
 
 export const Divider = styled.hr`

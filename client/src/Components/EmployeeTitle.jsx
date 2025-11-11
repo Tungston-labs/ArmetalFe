@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useRef} from "react";
 import {
   Container,
   TopSection,
@@ -16,11 +16,15 @@ import {
   TabsRow,
   TabButton,
   Divider,
-  BackArrow, // ✅ added styled back arrow
+  BackArrow,
+  TabsRowContainer,
+  ScrollLeft,
+  ScrollRight,
 } from "./EmployeeTitle.Styles";
 import { LuCirclePlus } from "react-icons/lu";
 import { IoArrowBackOutline } from "react-icons/io5"; // ✅ back arrow icon
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
+import { FaChevronLeft,FaChevronRight } from "react-icons/fa";
 
 const EmployeeTitle = ({
   showIcon = true,
@@ -30,7 +34,7 @@ const EmployeeTitle = ({
   showSearch = true,
   showDropdown = true,
   showTabs = true,
-  showBackArrow = true, // ✅ new prop to control back arrow
+  showBackArrow = true, 
 
   iconSrc,
   title = "Employee",
@@ -55,13 +59,30 @@ const EmployeeTitle = ({
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(tabs[0]?.path || "");
-
+  const rowRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
   const handleTabClick = (path) => {
     setActiveTab(path);
     onTabChange && onTabChange(path);
     navigate(path);
   };
+  const checkScroll = () => {
+    const el = rowRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth);
+  };
 
+  const scrollLeft = () => {
+    rowRef.current.scrollBy({ left: -150, behavior: "smooth" });
+    setTimeout(checkScroll, 100);
+  };
+
+  const scrollRight = () => {
+    rowRef.current.scrollBy({ left: 150, behavior: "smooth" });
+    setTimeout(checkScroll, 100);
+  };
   return (
     <Container>
       <TopSection>
@@ -105,36 +126,47 @@ const EmployeeTitle = ({
               />
             </SearchWrapper>
           )}
-          {showDropdown && (
-            <Dropdown onChange={(e) => onDropdownChange && onDropdownChange(e.target.value)}>
-              <option value="">All Departments</option>
-              {dropdownLoading ? (
-                <option>Loading...</option>
-              ) : dropdownOptions.length > 0 ? (
-                dropdownOptions.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))
-              ) : (
-                <option>No departments found</option>
-              )}
-            </Dropdown>
-          )}
+{showDropdown && (
+  <Dropdown onChange={(e) => onDropdownChange && onDropdownChange(e.target.value)}>
+    <option value="">All Departments</option>
+    {dropdownLoading ? (
+      <option>Loading...</option>
+    ) : dropdownOptions.length > 0 ? (
+      dropdownOptions.map((option) => (
+        <option key={option.id} value={option.id}>
+          {option.name}
+        </option>
+      ))
+    ) : (
+      <option>No departments found</option>
+    )}
+  </Dropdown>
+)}
+
+
         </SearchSection>
       )}
 
       {showTabs && (
         <>
-          <TabsRow>
-            {tabs.map((tab) => (
-              <NavLink key={tab.path} to={tab.path} style={{ textDecoration: "none" }}>
-                <TabButton active={location.pathname === tab.path}>
-                  {tab.label}
-                </TabButton>
-              </NavLink>
-            ))}
-          </TabsRow>
+          <TabsRowContainer>
+  {/* <ScrollLeft onClick={scrollLeft} disabled={!canScrollLeft}>
+    <FaChevronLeft />
+  </ScrollLeft> */}
+
+  <TabsRow ref={rowRef} onScroll={checkScroll}>
+    {tabs.map((tab) => (
+      <NavLink key={tab.path} to={tab.path} style={{ textDecoration: "none" }}>
+        <TabButton active={location.pathname === tab.path}>{tab.label}</TabButton>
+      </NavLink>
+    ))}
+  </TabsRow>
+
+  {/* <ScrollRight onClick={scrollRight} disabled={!canScrollRight}>
+    <FaChevronRight />
+  </ScrollRight> */}
+</TabsRowContainer>
+
           <Divider />
         </>
       )}

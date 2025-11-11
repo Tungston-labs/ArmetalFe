@@ -1,26 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  DepartmentSelect,
-  HeaderSection,
-  Tabs,
-  Tab,
+ 
   Table,
-  Title,
   Pagination,
-  SearchInput,
-  AddButton,
-  Subtitle,
-
-  TitleSection,
-
-
-  SearchWrapper,
-
-  TopRow,
-  BottomRow,
-  TextBlock,
-  EmployeeImage,
+  TruncatedText,
 } from "./EmployeeList.styles";
 import {
   ModalOverlay,
@@ -132,7 +116,8 @@ const EmployeeList = () => {
           onAddClick={() => navigate("/basic-details")}
           onSearchChange={setSearchText}
           onDropdownChange={setDepartmentFilter}
-               showBackArrow={false}
+          showBackArrow={false}
+          showTabs={true}
         />
 
         {!loading && (
@@ -177,17 +162,37 @@ const EmployeeList = () => {
                               width: "25px",
                               height: "25px",
                               borderRadius: "50%",
+                              objectFit: "cover",
                             }}
                           />
                         ) : (
-                          <PiUserCirclePlusThin size={40} color="#999" />
+                          <div
+                            style={{
+                              width: "25px",
+                              height: "25px",
+                              borderRadius: "50%",
+                              backgroundColor: "#f0f0f0",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <PiUserCirclePlusThin size={20} color="#999" />
+                          </div>
                         )}
                         {emp.name}
                       </td>
+
                       <td>{emp.employee_id}</td>
-                      <td>{emp.email}</td>
-                      <td>{emp.designation}</td>
-                      <td>{emp.department}</td>
+                      <td>
+                        <TruncatedText title={emp.email}>{emp.email}</TruncatedText>
+                      </td>
+                      <td>
+                        <TruncatedText title={emp.designation}> {emp.designation}</TruncatedText>
+                      </td>
+                      <td>
+                        <TruncatedText title={emp.department}>{emp.department}</TruncatedText>
+                      </td>
 
                       <td
                         onClick={(e) => {

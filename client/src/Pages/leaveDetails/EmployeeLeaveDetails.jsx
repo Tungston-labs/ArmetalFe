@@ -130,7 +130,7 @@ const EmployeeLeaveForm = () => {
       <Label>From</Label>
       <Input
   type="text"
-  style={{ width: '180px' }} // or 200px if needed
+  style={{ width: '180px' }} 
   value={
     leaveDetails?.from_date
       ? `${leaveDetails.from_date} (${leaveDetails.from_date_type || ''})`
@@ -144,7 +144,7 @@ const EmployeeLeaveForm = () => {
       <Label>To</Label>
       <Input
   type="text"
-  style={{ width: '180px' }} // or 200px if needed
+  style={{ width: '180px' }} 
   value={
     leaveDetails?.to_date
       ? `${leaveDetails.to_date} (${leaveDetails.to_date_type || ''})`
@@ -157,9 +157,6 @@ const EmployeeLeaveForm = () => {
   </RightSide>
 </FlexRows>
 
-      
-
-      {/* 🟢 Pending leave info */}
       <SectionTitle>Leave Balance</SectionTitle>
       <TwoColumnRows>
         <Input
