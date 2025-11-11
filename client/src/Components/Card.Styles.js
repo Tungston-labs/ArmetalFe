@@ -249,7 +249,7 @@ export const CardListItem = styled.div`
   }
 
   /* 📱 Mobile */
-  @media (min-width: 768px) and (max-width:1020px) {
+  @media (min-width: 768px) and (max-width:1024px) {
     /* grid-template-columns: 30px 1fr; */
     padding: 0.3rem 0.5rem;
     gap: 0.3rem;
@@ -259,7 +259,15 @@ export const CardListItem = styled.div`
       height: 25px;
     } */
   }
+ @media (min-width: 1025px)and (max-width:1440px) {
+    grid-template-columns: 30px 1fr 1fr 1fr;
+    padding: 0.3rem 1rem;
 
+    img {
+      width: 55px;
+      height: 55px;
+    }
+  }
   /* 💻 Large screens */
   @media (min-width: 2560px)and (max-width:3859px) {
     grid-template-columns: 30px 1fr 1fr 1fr;
@@ -328,12 +336,12 @@ export const EmployeeName = styled.span`
 
   @media (min-width: 1920px) and (max-width:2559px) {
     font-size: 1.3rem;
-    padding: 0.5rem 1.2rem;
+    // padding: 0.5rem 1.2rem;
   }
 
   @media (min-width: 2560px) and (max-width:3839px) {
     font-size: 1.4rem;
-    padding: 0.75rem 1.5rem;
+    // padding: 0.75rem 1.5rem;
   }
  @media (min-width: 3840px) {
  color: #777;
@@ -387,7 +395,7 @@ export const EmployeeId = styled.div`
   }
 
   @media (min-width: 1920px) and (max-width:2560px) {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
      span {
       display: none;
     }
@@ -448,7 +456,7 @@ export const EmployeeDept = styled.span`
     font-size: 0.9rem;
   }
   @media (min-width: 1920px) and ( max-width:2560px){
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
  @media (min-width: 2561px) and ( max-width:3840px){
     font-size: 1.5rem;

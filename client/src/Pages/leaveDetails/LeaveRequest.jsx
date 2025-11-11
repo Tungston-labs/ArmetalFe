@@ -54,12 +54,12 @@ export default function LeaveRequest() {
   const [departmentFilter, setDepartmentFilter] = useState("");
 
   useEffect(() => {
-    dispatch(getLeaveRequests({
-      page,
-      department_id: departmentFilter || undefined,
-      search: searchText || undefined
-    }));
-  }, [dispatch, page, departmentFilter, searchText]);
+  dispatch(getLeaveRequests({
+    page,
+    department_id: departmentFilter || undefined,
+  }));
+}, [dispatch, page, departmentFilter]);
+
   
   useEffect(() => {
     // console.log("Pagination Info:", pagination);
@@ -97,12 +97,12 @@ const isLoading = loading || deptLoading;
     }
   };
   useEffect(() => {
-    // Fetch departments for dropdown
+  
     dispatch(getDepartments());
   }, [dispatch]);
   const handleSearch = (e) => {
     setSearchText(e.target.value);
-    setPage(1); // reset to first page on new search
+    setPage(1); 
   };
 
   return (

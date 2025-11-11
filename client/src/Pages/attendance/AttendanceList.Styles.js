@@ -8,13 +8,14 @@ export const PageContainer = styled.div`
 export const Title = styled.h1`
   text-align: center;
   color: #172554;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  
 `;
 
 export const DepartmentGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  // gap: 1.5rem;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
@@ -33,7 +34,7 @@ export const DepartmentCard = styled.div`
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden; /* Prevent content overflow on animation */
-
+margin-top:1rem;
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -44,7 +45,12 @@ export const DepartmentHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  // padding: 0.8rem 1rem;
+  border-bottom: 1px solid #ddd; 
+  cursor: pointer;
+  background-color: #fff;
 `;
+
 
 export const DepartmentName = styled.h2`
   color: #172554;
@@ -82,9 +88,19 @@ export const EmployeeList = styled.ul`
   max-height: 200px;
   overflow-y: auto;
 `;
+export const EmployeeHeader = styled.div`
+  font-weight: bold;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 2fr; 
+  gap: 10px;
+  padding: 0.5rem 0.5rem;
+  border-bottom: 1px solid #ccc;
+  background:#304EB0;
+  color:white;
+`;
 
 export const EmployeeItem = styled.li`
-  padding: 0.6rem 0;
+  padding: 0.5rem 0.5rem;
   border-bottom: 1px solid #eee;
   font-size: 1rem;
   color: #333;

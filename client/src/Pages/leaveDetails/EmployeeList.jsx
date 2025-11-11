@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
- 
   Table,
   Pagination,
   TruncatedText,
@@ -12,62 +11,60 @@ import {
   ModalTitle,
   ModalText,
   ModalButton,
-  ModalButtonWrapper
+  ModalButtonWrapper,
 } from "./DeletModal.styles";
 import { PiUserCirclePlusThin } from "react-icons/pi";
-import { FaInfoCircle, FaTrash, FaPlus } from "react-icons/fa";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { FaTrash } from "react-icons/fa";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Navbar from "../../Components/Navbar";
-import Loader from "../../Components/Loader"
+import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
   const [departmentFilter, setDepartmentFilter] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-
-  // Employee state
+  // Employee & Department state
   const { employeeList, pagination, loading } = useSelector(
     (state) => state.employees
   );
-
-  // Department state (FIX)
   const { list: departmentList, loading: deptLoading } = useSelector(
     (state) => state.departments
   );
 
-
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [page, setPage] = useState(pagination?.current_page || 1);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  // Fetch employees
-  useEffect(() => {
-    dispatch(
-      getAllEmployees({
-        page,
-        search: searchText,
-        department_id: departmentFilter,
-      })
-    );
-  }, [dispatch, page, searchText, departmentFilter]);
-
-  // Fetch departments
+  // Fetch all departments once
   useEffect(() => {
     dispatch(getDepartments());
   }, [dispatch]);
 
-  const handleSearch = (e) => {
-    setSearchText(e.target.value);
-    setPage(1);
-  };
+  // Fetch all employees (only once initially or on filter/page change)
+  useEffect(() => {
+    dispatch(
+      getAllEmployees({
+        page,
+        search: "", // we handle filtering locally
+        department_id: departmentFilter,
+      })
+    );
+  }, [dispatch, page, departmentFilter]);
+
+  // Debounce search text input (wait 300ms before applying)
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedSearch(searchText), 300);
+    return () => clearTimeout(handler);
+  }, [searchText]);
 
   const handleDeleteClick = (id) => {
     setSelectedEmployeeId(id);
@@ -79,7 +76,7 @@ const EmployeeList = () => {
     dispatch(
       getAllEmployees({
         page,
-        search: searchText,
+        search: "",
         department_id: departmentFilter,
       })
     );
@@ -91,11 +88,12 @@ const EmployeeList = () => {
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
+
   const handlePageChange = (newPage) => {
     dispatch(
       getAllEmployees({
         page: newPage,
-        search: searchText,
+        search: "",
         department_id: departmentFilter,
       })
     ).then(() => {
@@ -103,6 +101,17 @@ const EmployeeList = () => {
     });
   };
 
+  // Local filtering: matches employee name OR employee ID
+  const filteredEmployees = Array.isArray(employeeList)
+    ? employeeList.filter(
+        (emp) =>
+          emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+          emp.employee_id
+            ?.toString()
+            .toLowerCase()
+            .includes(debouncedSearch.toLowerCase())
+      )
+    : [];
 
   return (
     <>
@@ -135,8 +144,8 @@ const EmployeeList = () => {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(employeeList) && employeeList.length > 0 ? (
-                  employeeList.map((emp, index) => (
+                {filteredEmployees.length > 0 ? (
+                  filteredEmployees.map((emp, index) => (
                     <tr
                       key={emp.id}
                       onClick={() =>
@@ -144,16 +153,25 @@ const EmployeeList = () => {
                           state: { from: location.pathname },
                         })
                       }
-
                       style={{
                         cursor: "pointer",
                         transition: "background 0.2s ease",
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.background = "#f9f9ff")}
-                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.background = "#f9f9ff")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.background = "transparent")
+                      }
                     >
                       <td>{index + 1 + (page - 1) * 20}</td>
-                      <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <td
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                        }}
+                      >
                         {emp.profile_pic ? (
                           <img
                             src={emp.profile_pic}
@@ -185,18 +203,24 @@ const EmployeeList = () => {
 
                       <td>{emp.employee_id}</td>
                       <td>
-                        <TruncatedText title={emp.email}>{emp.email}</TruncatedText>
+                        <TruncatedText title={emp.email}>
+                          {emp.email}
+                        </TruncatedText>
                       </td>
                       <td>
-                        <TruncatedText title={emp.designation}> {emp.designation}</TruncatedText>
+                        <TruncatedText title={emp.designation}>
+                          {emp.designation}
+                        </TruncatedText>
                       </td>
                       <td>
-                        <TruncatedText title={emp.department}>{emp.department}</TruncatedText>
+                        <TruncatedText title={emp.department}>
+                          {emp.department}
+                        </TruncatedText>
                       </td>
 
                       <td
                         onClick={(e) => {
-                          e.stopPropagation(); // 🔒 Prevent row click
+                          e.stopPropagation();
                           handleDeleteClick(emp.id);
                         }}
                       >
@@ -212,22 +236,24 @@ const EmployeeList = () => {
                   </tr>
                 )}
               </tbody>
-
             </Table>
 
             <Pagination>
-              <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>&larr;</span>
-              {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
-                (pageNumber) => (
-                  <span
-                    key={pageNumber}
-                    onClick={() => handlePageChange(pageNumber)}
-                    className={page === pageNumber ? "active" : ""}
-                  >
-                    {pageNumber}
-                  </span>
-                )
-              )}
+              <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>
+                &larr;
+              </span>
+              {Array.from(
+                { length: pagination?.total_pages || 1 },
+                (_, i) => i + 1
+              ).map((pageNumber) => (
+                <span
+                  key={pageNumber}
+                  onClick={() => handlePageChange(pageNumber)}
+                  className={page === pageNumber ? "active" : ""}
+                >
+                  {pageNumber}
+                </span>
+              ))}
               <span
                 onClick={() => {
                   if (page < (pagination?.total_pages || 1)) {
@@ -238,7 +264,6 @@ const EmployeeList = () => {
                 &rarr;
               </span>
             </Pagination>
-
           </>
         )}
 
@@ -246,7 +271,9 @@ const EmployeeList = () => {
           <ModalOverlay>
             <ModalContainer>
               <ModalTitle>Confirm Deletion</ModalTitle>
-              <ModalText>Are you sure you want to delete this employee?</ModalText>
+              <ModalText>
+                Are you sure you want to delete this employee?
+              </ModalText>
 
               <ModalButtonWrapper>
                 <ModalButton bg="red" onClick={confirmDelete}>
@@ -257,13 +284,11 @@ const EmployeeList = () => {
                 </ModalButton>
               </ModalButtonWrapper>
             </ModalContainer>
-
           </ModalOverlay>
         )}
       </Container>
     </>
   );
-
 };
 
 export default EmployeeList;

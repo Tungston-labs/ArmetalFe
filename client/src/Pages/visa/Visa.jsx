@@ -5,7 +5,6 @@ import {
   ProfileImg,
   Pagination,
   LoaderOverlay,
-
 } from "./Visa.Styles";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -30,11 +29,21 @@ const EmployeeList = () => {
   );
 
   const [searchText, setSearchText] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [expiryFilter, setExpiryFilter] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  // ✅ Debounce search: wait 500ms after user stops typing
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchText);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchText]);
+
+  // ✅ Fetch employees on page, expiry filter, or debounced search change
   useEffect(() => {
     const fetchEmployees = () => {
       if (expiryFilter) {
@@ -42,24 +51,25 @@ const EmployeeList = () => {
           getUpcomingExpiryEmployees({
             expiryType: expiryFilter,
             page,
-            search: searchText,
+            search: debouncedSearch,
           })
         );
       } else {
-        dispatch(getAllEmployees({ page, search: searchText }));
+        dispatch(getAllEmployees({ page, search: debouncedSearch }));
       }
     };
     fetchEmployees();
-  }, [dispatch, page, searchText, expiryFilter]);
+  }, [dispatch, page, debouncedSearch, expiryFilter]);
 
+  // ✅ Prevent page overflow
   useEffect(() => {
     if (pagination?.total_pages && page > pagination.total_pages) {
       setPage(pagination.total_pages);
     }
   }, [pagination.total_pages]);
 
-  const handleSearch = (e) => {
-    setSearchText(e.target.value);
+  const handleSearch = (value) => {
+    setSearchText(value);
     setPage(1);
   };
 
@@ -75,11 +85,11 @@ const EmployeeList = () => {
         getUpcomingExpiryEmployees({
           expiryType: expiryFilter,
           page,
-          search: searchText,
+          search: debouncedSearch,
         })
       );
     } else {
-      dispatch(getAllEmployees({ page, search: searchText }));
+      dispatch(getAllEmployees({ page, search: debouncedSearch }));
     }
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
@@ -96,42 +106,37 @@ const EmployeeList = () => {
     <>
       <Navbar />
       <Container>
-
         {loading && (
           <LoaderOverlay>
             <Loader />
           </LoaderOverlay>
         )}
 
-<EmployeeTitle
-  iconSrc={EmployeeIcon}
-  showAddButton={false}
-  showSearch={true}  
-  showDropdown={true}
- showBackArrow={false}
-  dropdownOptions={[
-    { id: "visa", name: "Visa Expiry (next 30 days)" },
-    { id: "contract", name: "Contract Expiry (next 30 days)" }
-  ]}
-  onDropdownChange={(value) => {
-    setExpiryFilter(value);
-    setPage(1);
-  }}
-  onSearchChange={(value) => {
-    setSearchText(value);
-    setPage(1);
-  }}
-/>
+        <EmployeeTitle
+          iconSrc={EmployeeIcon}
+          showAddButton={false}
+          showSearch={true}
+          showDropdown={true}
+          showBackArrow={false}
+          dropdownOptions={[
+            { id: "visa", name: "Visa Expiry (next 30 days)" },
+            { id: "contract", name: "Contract Expiry (next 30 days)" },
+          ]}
+          onDropdownChange={(value) => {
+            setExpiryFilter(value);
+            setPage(1);
+          }}
+          onSearchChange={(value) => handleSearch(value)}
+        />
+
         <Table>
           <thead>
             <tr>
               <th>Sl No</th>
-              <th>Employee name</th>
+              <th>Employee Name</th>
               <th>Employee ID</th>
               <th>Email ID</th>
               <th>Expiry Date</th>
-{/* 
-              <th>Delete</th> */}
             </tr>
           </thead>
           <tbody>
@@ -153,13 +158,11 @@ const EmployeeList = () => {
               employeeList.map((emp, index) => (
                 <tr
                   key={emp.id}
-onClick={() =>
-  navigate(`/fulldashboard/${emp.id}`, {
-    state: { from: location.pathname }, // 👈 stores current route like "/employee-Contract-Visa-Expiry"
-  })
-}
-
-
+                  onClick={() =>
+                    navigate(`/fulldashboard/${emp.id}`, {
+                      state: { from: location.pathname },
+                    })
+                  }
                   style={{
                     cursor: "pointer",
                     transition: "background-color 0.2s ease",
@@ -193,17 +196,6 @@ onClick={() =>
                       ? emp.contract_expiry_date || "----"
                       : emp.visa_expiry_date || "----"}
                   </td>
-                
-                  {/* <td>
-                    <FaTrash
-                      color="red"
-                      style={{ cursor: "pointer" }}
-                      onClick={(e) => {
-                        e.stopPropagation(); // prevent navigation
-                        handleDeleteClick(emp.id);
-                      }}
-                    />
-                  </td> */}
                 </tr>
               ))
             ) : (
@@ -214,6 +206,7 @@ onClick={() =>
           </tbody>
         </Table>
 
+        {/* Pagination */}
         {pagination?.total_pages > 1 && (
           <Pagination>
             <span
@@ -246,7 +239,8 @@ onClick={() =>
 
             <span
               onClick={() =>
-                currentPage < pagination.total_pages && setPage(currentPage + 1)
+                currentPage < pagination.total_pages &&
+                setPage(currentPage + 1)
               }
               style={{ cursor: "pointer", marginLeft: "8px" }}
             >
@@ -255,6 +249,7 @@ onClick={() =>
           </Pagination>
         )}
 
+        {/* Delete Modal */}
         {showDeleteModal && (
           <div
             style={{

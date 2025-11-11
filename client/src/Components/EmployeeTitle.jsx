@@ -22,7 +22,7 @@ import {
   ScrollRight,
 } from "./EmployeeTitle.Styles";
 import { LuCirclePlus } from "react-icons/lu";
-import { IoArrowBackOutline } from "react-icons/io5"; // ✅ back arrow icon
+import { IoArrowBackOutline } from "react-icons/io5";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 import { FaChevronLeft,FaChevronRight } from "react-icons/fa";
 
@@ -87,7 +87,7 @@ const EmployeeTitle = ({
     <Container>
       <TopSection>
         <LeftBlock>
-          {/* ✅ Back Arrow */}
+
           {showBackArrow && (
             <BackArrow onClick={() => navigate(-1)}>
               <IoArrowBackOutline size={22} />
@@ -150,10 +150,6 @@ const EmployeeTitle = ({
       {showTabs && (
         <>
           <TabsRowContainer>
-  {/* <ScrollLeft onClick={scrollLeft} disabled={!canScrollLeft}>
-    <FaChevronLeft />
-  </ScrollLeft> */}
-
   <TabsRow ref={rowRef} onScroll={checkScroll}>
     {tabs.map((tab) => (
       <NavLink key={tab.path} to={tab.path} style={{ textDecoration: "none" }}>
@@ -161,10 +157,6 @@ const EmployeeTitle = ({
       </NavLink>
     ))}
   </TabsRow>
-
-  {/* <ScrollRight onClick={scrollRight} disabled={!canScrollRight}>
-    <FaChevronRight />
-  </ScrollRight> */}
 </TabsRowContainer>
 
           <Divider />

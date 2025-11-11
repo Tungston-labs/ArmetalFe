@@ -19,12 +19,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDepartments } from "../../Redux/departmentSlice";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../Components/Loader";
 
 const AttendanceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedDept, setSelectedDept] = useState(null);
   const [departmentAttendance, setDepartmentAttendance] = useState({});
+  const [searchText, setSearchText] = useState(""); // 🔍 added search state
 
   const { list: departmentList, loading } = useSelector(
     (state) => state.departments
@@ -50,7 +52,6 @@ const AttendanceList = () => {
     }
   };
 
-  // Get earliest valid punch-in time
   const getEarliestTimeIn = (sessions) => {
     if (!sessions?.length) return "-";
     const validSessions = sessions.filter((s) => s.time_in);
@@ -61,7 +62,6 @@ const AttendanceList = () => {
     return formatTime(earliest.time_in);
   };
 
-  // Determine correct time-out logic
   const getConditionalTimeOut = (sessions) => {
     if (!sessions?.length) return "-";
     const sorted = [...sessions].sort((a, b) =>
@@ -79,7 +79,6 @@ const AttendanceList = () => {
     return formatTime(latest.time_out);
   };
 
-  // Group by employee (latest record kept)
   const groupByEmployee = (records) => {
     const map = {};
     records.forEach((emp) => {
@@ -95,13 +94,11 @@ const AttendanceList = () => {
     return Object.values(map);
   };
 
-  // Get today's date
   const getTodayDate = () => {
     const today = new Date();
     return today.toISOString().split("T")[0];
   };
 
-  // Toggle department view and fetch attendance
   const handleToggle = async (deptId) => {
     if (selectedDept === deptId) {
       setSelectedDept(null);
@@ -127,10 +124,14 @@ const AttendanceList = () => {
     }
   };
 
-  // Handle employee row click
   const handleRowClick = (id) => {
     navigate(`/attendance/detail/${id}`);
   };
+
+  // 🔍 Filter departments by search text
+  const filteredDepartments = departmentList?.filter((dept) =>
+    dept.name?.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <PageContainer>
@@ -139,14 +140,15 @@ const AttendanceList = () => {
         showAddButton={false}
         showDropdown={false}
         showBackArrow={false}
+        onSearchChange={setSearchText} // ✅ this now works
       />
 
       {loading ? (
-        <p>Loading departments...</p>
+        <Loader />
       ) : (
         <DepartmentGrid>
-          {departmentList?.length > 0 ? (
-            departmentList.map((dept) => {
+          {filteredDepartments?.length > 0 ? (
+            filteredDepartments.map((dept) => {
               const isOpen = selectedDept === dept.id;
               const employees = departmentAttendance[dept.id] || [];
 
