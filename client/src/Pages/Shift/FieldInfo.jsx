@@ -109,7 +109,7 @@ useEffect(() => {
 
   const fetchEmployeeLocations = async () => {
     try {
-      const token = accessToken // replace with real token logic
+      const token = accessToken;
       const response = await fetch(`http://192.168.29.193:8001/api/background-location/${id}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -123,15 +123,14 @@ useEffect(() => {
     }
   };
 
-  // Fetch immediately
   fetchEmployeeLocations();
 
-  // Fetch again every 1 hour (3600000 ms)
-  const interval = setInterval(fetchEmployeeLocations, 3600000);
+  // Poll every 30 seconds for updates
+  const interval = setInterval(fetchEmployeeLocations, 30000);
 
-  // Cleanup
   return () => clearInterval(interval);
 }, [id]);
+
 
   const getWeekDays = (baseDate) => {
     const start = new Date(baseDate);

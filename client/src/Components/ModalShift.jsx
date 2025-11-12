@@ -19,9 +19,8 @@ const ActivityLogModal = ({ data = [], date, onClose,  hourlyLocationData = [],
     const d = new Date(normalized);
     return isNaN(d.getTime()) ? null : d;
   }, [date]);
+console.log("📅 Hourly Location Data:", hourlyLocationData);
 
-  // Format historical logs
-// Format periodic (HTTP) logs
 const formattedLogs = useMemo(() => {
   if (!Array.isArray(hourlyLocationData)) return [];
   return hourlyLocationData.map((item) => ({
@@ -38,7 +37,6 @@ const formattedLogs = useMemo(() => {
 }, [hourlyLocationData]);
 
 
-  // Format live locations (array)
 const formattedLive = useMemo(() => {
   if (!Array.isArray(liveLocationData)) return [];
   return liveLocationData.map((loc) => ({
@@ -59,7 +57,6 @@ const filteredLive = formattedLive.filter(
   (loc, index, self) =>
     index === self.findIndex((l) => l.timestamp === loc.timestamp)
 );
-  // Merge both — live first
  const allLocations = useMemo(() => {
   const merged = [...formattedLive, ...formattedLogs];
   return merged.sort(
