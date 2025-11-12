@@ -41,6 +41,24 @@ import {
 
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
+// ✅ Helper to parse YYYY-MM-DD as local date (avoids timezone shift)
+const parseDate = (dateStr) => {
+  if (!dateStr) return null;
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+// ✅ Map day name to number (0 = Sunday, 6 = Saturday)
+const dayNameToNumber = {
+  Sunday: 0,
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6,
+};
+
 const DepartmentCalendar = () => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -52,9 +70,9 @@ const DepartmentCalendar = () => {
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
   const [sliceCount, setSliceCount] = useState(3);
-const [holidaySliceCount, setHolidaySliceCount] = useState(3);
+  const [holidaySliceCount, setHolidaySliceCount] = useState(3);
 
-  // ✅ Fetch dashboard summary
+  // Fetch dashboard summary
   useEffect(() => {
     const fetchSummary = async () => {
       try {
@@ -69,31 +87,17 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
     fetchSummary();
   }, []);
 
-  // ✅ Dynamically change number of employees shown based on screen width
+  // Adjust slice counts for responsiveness
   useEffect(() => {
-    let resizeTimeout;
-
-   const updateSliceCount = () => {
-  clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(() => {
-    const width = window.innerWidth;
-
-    if (width < 768) setSliceCount(3);         
-    else if(width < 1024) setSliceCount(6);     
-        else if (width < 1440) setSliceCount(3);  
-    else if (width < 1920) setSliceCount(5);     
-    else if (width < 2560) setSliceCount(6);      
-    else setSliceCount(8);        
-    
-      if (width < 768) {setHolidaySliceCount(2);
-         } else if (width >= 769 && width < 1024) {
-        setHolidaySliceCount(9);
-         }else if (width < 1440) setHolidaySliceCount(5);
-      else if (width < 1920) setHolidaySliceCount(3);
-      else if (width < 2560) setHolidaySliceCount(3);
-      else setHolidaySliceCount(4);
-  }, 150);
-};
+    const updateSliceCount = () => {
+      const width = window.innerWidth;
+      if (width < 768) setSliceCount(3), setHolidaySliceCount(2);
+      else if (width < 1024) setSliceCount(6), setHolidaySliceCount(9);
+      else if (width < 1440) setSliceCount(3), setHolidaySliceCount(5);
+      else if (width < 1920) setSliceCount(5), setHolidaySliceCount(3);
+      else if (width < 2560) setSliceCount(6), setHolidaySliceCount(3);
+      else setSliceCount(8), setHolidaySliceCount(4);
+    };
     updateSliceCount();
     window.addEventListener("resize", updateSliceCount);
     return () => window.removeEventListener("resize", updateSliceCount);
@@ -103,8 +107,12 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
 
   const onLeaveToday = summary.on_leave_today_count || 0;
   const activeToday = summary.active_today_count || 0;
+  const departments = summary.departments || [];
+  const upcomingHolidays = summary.upcoming_holidays || [];
+  const contractExpiry = summary.upcoming_contract_expiry?.list || [];
+  const companyHolidays = summary.all_company_holidays?.list || [];
 
-  // ✅ Calendar logic
+  // Generate array of dates for calendar
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const startOffset = (firstDay + 6) % 7;
@@ -122,26 +130,45 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
   };
 
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
-  const departments = summary.departments || [];
-  const upcomingHolidays = summary.upcoming_holidays || [];
-  const contractExpiry = summary.upcoming_contract_expiry?.list || [];
+  // ✅ Get holiday for a specific date (recurring company off-days included)
+  const getHolidayForDate = (date) => {
+    if (!companyHolidays) return null;
 
+    // Check recurring company_off_day (e.g., every Saturday)
+    const recurringHoliday = companyHolidays.find((h) => {
+      if (h.holiday_type !== "company_off_day" || !h.day) return false;
+      const dayNum = dayNameToNumber[h.day];
+      return new Date(year, month, date).getDay() === dayNum;
+    });
+    if (recurringHoliday) return recurringHoliday;
 
-const getHolidayForDate = (date) => {
-  if (!upcomingHolidays) return null;
-  return upcomingHolidays.find((h) => {
-    const hDate = new Date(h.date);
-    return (
-      hDate.getDate() === date &&
-      hDate.getMonth() === month &&
-      hDate.getFullYear() === year
-    );
-  });
-};
+    // Check normal holidays
+    const normalHoliday = companyHolidays.find((h) => {
+      const hDate = parseDate(h.date);
+      return (
+        hDate &&
+        hDate.getDate() === date &&
+        hDate.getMonth() === month &&
+        hDate.getFullYear() === year
+      );
+    });
+
+    return normalHoliday || null;
+  };
 
   return (
     <Container>
@@ -150,9 +177,12 @@ const getHolidayForDate = (date) => {
       {/* LEFT SIDE */}
       <LeftSection>
         {/* Departments */}
-        <NavLink to="/department" style={{ textDecoration: "none", color: "inherit" }}>
+        <NavLink
+          to="/department"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
           <SectionTitle>
-            Department <FiArrowUpRight  style={{color:"#3352ba"}}/>
+            Department <FiArrowUpRight style={{ color: "#3352ba" }} />
           </SectionTitle>
         </NavLink>
 
@@ -170,7 +200,10 @@ const getHolidayForDate = (date) => {
                 {dept.employee_count}
                 <ArrowIcon>
                   <Link to={`/departments/${dept.id}`}>
-                    <FiArrowUpRight size={20} style={{ cursor: "pointer", color: "#304EB0" }} />
+                    <FiArrowUpRight
+                      size={20}
+                      style={{ cursor: "pointer", color: "#304EB0" }}
+                    />
                   </Link>
                 </ArrowIcon>
               </DeptCount>
@@ -184,7 +217,8 @@ const getHolidayForDate = (date) => {
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <SectionTitle>
-            Employee Presence & Upcoming Holidays <FiArrowUpRight  style={{color:"#3352ba"}}/>
+            Employee Presence & Upcoming Holidays{" "}
+            <FiArrowUpRight style={{ color: "#3352ba" }} />
           </SectionTitle>
         </NavLink>
 
@@ -197,7 +231,10 @@ const getHolidayForDate = (date) => {
             <h3>Employee Contract Expiry</h3>
             {contractExpiry.slice(0, sliceCount).map((emp) => (
               <EmployeeRow key={emp.id}>
-                <Avatar src={emp.profile_pic || "https://via.placeholder.com/30"} alt={emp.name} />
+                <Avatar
+                  src={emp.profile_pic || "https://via.placeholder.com/30"}
+                  alt={emp.name}
+                />
                 <EmpName>{emp.name}</EmpName>
                 <EmpId>{emp.employee_id}</EmpId>
                 <EmpEmail>{emp.department}</EmpEmail>
@@ -221,76 +258,80 @@ const getHolidayForDate = (date) => {
 
           <CalendarGrid>
             {days.map((d, i) => (
-              <CalendarDay key={i} isHeader>{d}</CalendarDay>
+              <CalendarDay key={i} isHeader>
+                {d}
+              </CalendarDay>
             ))}
-{dates.map((date, i) => {
-  if (date === "") return <CalendarDay key={i} />;
 
-  const isToday =
-    date === currentDay && month === currentMonth && year === currentYear;
+            {dates.map((date, i) => {
+              if (date === "") return <CalendarDay key={i} />;
 
-  const dateObj = new Date(year, month, date);
-  const isSunday = dateObj.getDay() === 0; // Sunday
+              const isToday =
+                date === currentDay &&
+                month === currentMonth &&
+                year === currentYear;
 
-  const isSelected =
-    selectedDate &&
-    selectedDate.date === date &&
-    selectedDate.month === month &&
-    selectedDate.year === year;
+              const dateObj = new Date(year, month, date);
+              const isSunday = dateObj.getDay() === 0;
 
-  // Only mark holiday if it’s not Sunday
-  const holiday = !isSunday ? getHolidayForDate(date) : null;
+              const isSelected =
+                selectedDate &&
+                selectedDate.date === date &&
+                selectedDate.month === month &&
+                selectedDate.year === year;
 
-  return (
-    <CalendarDay
-      key={i}
-      isToday={isToday}
-      isSunday={isSunday}
-      isSelected={isSelected}
-      onClick={() => handleDateClick(date)}
-      title={holiday ? holiday.description : ""} // 👈 tooltip on hover
-      style={{
-        position: "relative",
-        backgroundColor: holiday ? "#FFECEC" : undefined, // highlight only holidays
-        cursor: holiday ? "pointer" : "default", // nice UX touch
-      }}
-    >
-      {date}
+              const holiday = getHolidayForDate(date);
 
-      {/* Holiday icon */}
-      {holiday && (
-        <img
-          src={HolidaySvg}
-          alt={holiday.description}
-          title={holiday.description} // 👈 also show name when hovering the icon
-          style={{
-            width: "16px",
-            height: "16px",
-            position: "absolute",
-            bottom: "2px",
-            right: "2px",
-          }}
-        />
-      )}
-    </CalendarDay>
-  );
-})}
+              return (
+                <CalendarDay
+                  key={i}
+                  isToday={isToday}
+                  isSunday={isSunday}
+                  isSelected={isSelected}
+                  onClick={() => handleDateClick(date)}
+                  title={holiday ? holiday.description : ""}
+                  style={{
+                    position: "relative",
+                    backgroundColor: holiday ? "#FFECEC" : undefined,
+                    cursor: holiday ? "pointer" : "default",
+                  }}
+                >
+                  {date}
 
-
+                  {/* Holiday icon */}
+                  {holiday && (
+                    <img
+                      src={HolidaySvg}
+                      alt={holiday.description}
+                      title={holiday.description}
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        position: "absolute",
+                        bottom: "2px",
+                        right: "2px",
+                      }}
+                    />
+                  )}
+                </CalendarDay>
+              );
+            })}
           </CalendarGrid>
         </CalendarWrapper>
 
         {/* Upcoming Holidays */}
         <UpcomingHolidaySection>
-          <NavLink to="/holiday" style={{ textDecoration: "none", color: "inherit" }}>
+          <NavLink
+            to="/holiday"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
             <SectionTitle>
-              Upcoming Holidays <FiArrowUpRight   style={{color:"#3352ba"}}/>
+              Upcoming Holidays <FiArrowUpRight style={{ color: "#3352ba" }} />
             </SectionTitle>
           </NavLink>
 
           <HolidayList>
-        {upcomingHolidays.slice(0, holidaySliceCount).map((h, i) => (
-
+            {upcomingHolidays.slice(0, holidaySliceCount).map((h, i) => (
               <HolidayItem key={i}>
                 <HolidayIcon>
                   <img src={HolidaySvg} alt="holiday icon" />
@@ -304,12 +345,12 @@ const getHolidayForDate = (date) => {
                   <p>{h.holiday_type}</p>
                 </HolidayInfo>
                 <HolidayDate>
-  {new Date(h.date).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  })}
-</HolidayDate>
+                  {parseDate(h.date)?.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </HolidayDate>
               </HolidayItem>
             ))}
           </HolidayList>
