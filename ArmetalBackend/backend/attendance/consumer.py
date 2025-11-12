@@ -9,9 +9,7 @@ from .utils.geocoding_utils import get_location_name
 from employee.models import Employee_db
 
 
-# ------------------------------------------------------------
-# 🕒 Function to log hourly location
-# ------------------------------------------------------------
+
 @sync_to_async
 def log_hourly_location(employee_id, latitude, longitude, location_name):
     """Checks if 1 hour has passed since the last log and saves a new entry."""
@@ -20,7 +18,7 @@ def log_hourly_location(employee_id, latitude, longitude, location_name):
     try:
         employee = Employee_db.objects.get(id=employee_id)
     except Employee_db.DoesNotExist:
-        print(f"❌ Employee {employee_id} not found in DB.")
+        print(f" Employee {employee_id} not found in DB.")
         return False
     except Exception as e:
         print(f"CRITICAL DB ERROR: {e}")
@@ -86,13 +84,10 @@ class LiveLocationConsumer(AsyncWebsocketConsumer):
                 print("⚠️ Invalid employee_id in scope.")
                 return
 
-            # ✅ Get readable location name
             location_name = await get_location_name(latitude, longitude)
 
-            # ✅ Log hourly location
             await log_hourly_location(employee_id, latitude, longitude, location_name)
 
-            # ✅ Broadcast update to admins in same group
             await self.channel_layer.group_send(
                 self.group_name,
                 {

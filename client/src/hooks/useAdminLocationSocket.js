@@ -3,7 +3,7 @@ import { getAccessToken } from './useAccessToken';
 
 const useAdminLocationSocket = (employeeId) => {
   const socket = useRef(null);
-  const [liveLocations, setLiveLocations] = useState([]); // array instead of single object
+  const [liveLocations, setLiveLocations] = useState([]); 
 
   useEffect(() => {
     if (!employeeId) return;

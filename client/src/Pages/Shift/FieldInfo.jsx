@@ -46,6 +46,7 @@ import CalendarModal from "../../Components/CalendarModal";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Loader from "../../Components/Loader"
 import useAdminLocationSocket from "../../hooks/useAdminLocationSocket";
+import { getAccessToken } from "../../hooks/useAccessToken";
 const FieldInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -64,7 +65,8 @@ const FieldInfo = () => {
   );
 
   const { fieldInfo, isLoading } = useSelector((state) => state.projects);
-
+      const accessToken = getAccessToken();
+  
   useEffect(() => {
     if (id && selectedDate) {
       dispatch(getFieldInfo({ employeeId: id, date: selectedDate }));
@@ -101,7 +103,35 @@ useEffect(() => {
 
   //  WebSocket for live location (admin view)
 const liveLocationData = useAdminLocationSocket(id);
+const [hourlyLocationData, setHourlyLocationData] = useState([]);
+useEffect(() => {
+  if (!id) return;
 
+  const fetchEmployeeLocations = async () => {
+    try {
+      const token = accessToken // replace with real token logic
+      const response = await fetch(`http://192.168.29.193:8001/api/background-location/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) throw new Error("Failed to fetch");
+      const json = await response.json();
+      setHourlyLocationData(json || []);
+    } catch (err) {
+      console.error("Error fetching periodic location:", err);
+    }
+  };
+
+  // Fetch immediately
+  fetchEmployeeLocations();
+
+  // Fetch again every 1 hour (3600000 ms)
+  const interval = setInterval(fetchEmployeeLocations, 3600000);
+
+  // Cleanup
+  return () => clearInterval(interval);
+}, [id]);
 
   const getWeekDays = (baseDate) => {
     const start = new Date(baseDate);
@@ -159,11 +189,13 @@ const liveLocationData = useAdminLocationSocket(id);
   </ButtonContainer>
 
   {isModalOpen && (
-    <Modal
-      onClose={() => setIsModalOpen(false)}
-      data={fieldInfo?.locations || []}
-      date={selectedDate}
-      liveLocationData={liveLocationData}    />
+   <Modal
+  onClose={() => setIsModalOpen(false)}
+  date={selectedDate}
+  hourlyLocationData={hourlyLocationData}
+  liveLocationData={liveLocationData}
+/>
+
   )}
 </Header>
 

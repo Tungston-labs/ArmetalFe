@@ -11,7 +11,8 @@ import {
   TableCell,
 } from "./ModalShift.styled.js";
 
-const ActivityLogModal = ({ data = [], date, onClose, liveLocationData = [] }) => {
+const ActivityLogModal = ({ data = [], date, onClose,  hourlyLocationData = [],
+ liveLocationData = [] }) => {
   const parsedDate = useMemo(() => {
     if (!date) return null;
     const normalized = date.includes("T") ? date : date.replace(" ", "T");
@@ -20,41 +21,52 @@ const ActivityLogModal = ({ data = [], date, onClose, liveLocationData = [] }) =
   }, [date]);
 
   // Format historical logs
-  const formattedLogs = useMemo(() => {
-    return data.map((item) => ({
-      time: new Date(item.timestamp).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      location: item.location_name || "Location Unknown",
-      isLive: false,
-      timestamp: item.timestamp,
-    }));
-  }, [data]);
+// Format periodic (HTTP) logs
+const formattedLogs = useMemo(() => {
+  if (!Array.isArray(hourlyLocationData)) return [];
+  return hourlyLocationData.map((item) => ({
+    time: new Date(item.logged_at).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    location:
+      item.location_name ||
+      `Lat: ${item.latitude?.toFixed(5)}, Lon: ${item.longitude?.toFixed(5)}`,
+    isLive: false,
+    timestamp: item.logged_at,
+  }));
+}, [hourlyLocationData]);
+
 
   // Format live locations (array)
-  const formattedLive = useMemo(() => {
-    if (!Array.isArray(liveLocationData)) return [];
+const formattedLive = useMemo(() => {
+  if (!Array.isArray(liveLocationData)) return [];
+  return liveLocationData.map((loc) => ({
+    time:
+      new Date(loc.timestamp || loc.logged_at).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }) + " (LIVE)",
+    location:
+      loc.location_name ||
+      `Lat: ${loc.latitude?.toFixed(5)}, Lon: ${loc.longitude?.toFixed(5)}`,
+    isLive: true,
+    timestamp: loc.timestamp || loc.logged_at,
+  }));
+}, [liveLocationData]);
 
-    return liveLocationData.map((loc) => ({
-      time:
-        new Date(loc.timestamp).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }) + " (LIVE)",
-      location:
-        loc.location_name ||
-        `Lat: ${loc.latitude?.toFixed(5)}, Lon: ${loc.longitude?.toFixed(5)}`,
-      isLive: true,
-      timestamp: loc.timestamp,
-    }));
-  }, [liveLocationData]);
-
+const filteredLive = formattedLive.filter(
+  (loc, index, self) =>
+    index === self.findIndex((l) => l.timestamp === loc.timestamp)
+);
   // Merge both — live first
-  const allLocations = useMemo(() => [...formattedLive, ...formattedLogs], [
-    formattedLive,
-    formattedLogs,
-  ]);
+ const allLocations = useMemo(() => {
+  const merged = [...formattedLive, ...formattedLogs];
+  return merged.sort(
+    (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+  ); // sort latest → oldest
+}, [formattedLive, formattedLogs]);
+
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();

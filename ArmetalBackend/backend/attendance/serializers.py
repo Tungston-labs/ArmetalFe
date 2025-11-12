@@ -191,3 +191,13 @@ class AttendanceDetailSerializer(serializers.ModelSerializer):
 class AttendanceLocationSerializer(serializers.Serializer):
     location = serializers.CharField()
     timestamp = serializers.DateTimeField(required=False)
+
+# attendance/serializers.py
+from rest_framework import serializers
+from .models import HourlyLocationLog
+
+class HourlyLocationLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HourlyLocationLog
+        fields = ['employee', 'latitude', 'longitude', 'location_name', 'logged_at']
+        read_only_fields = ['logged_at']

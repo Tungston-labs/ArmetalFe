@@ -485,3 +485,52 @@ class AttendanceLocationUpdateView(APIView):
             "detail": "Location updated successfully.",
             "locations": attendance.locations
         })
+
+# attendance/views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from employee.models import Employee_db
+from .models import HourlyLocationLog
+from .serializers import HourlyLocationLogSerializer
+from rest_framework import status
+
+from rest_framework.response import Response
+from rest_framework import status
+from .models import HourlyLocationLog  # or your actual location model
+from .serializers import HourlyLocationLogSerializer  # make sure it's imported
+
+class BackgroundLocationUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, employee_id):
+        """
+        Return all background location logs for the given employee.
+        """
+        try:
+            employee = Employee_db.objects.get(id=employee_id)
+        except Employee_db.DoesNotExist:
+            return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Fetch recent location logs
+        logs = HourlyLocationLog.objects.filter(employee=employee).order_by('-logged_at')[:100]
+        serializer = HourlyLocationLogSerializer(logs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, employee_id):
+        """
+        Save background location updates from mobile app.
+        """
+        try:
+            employee = Employee_db.objects.get(id=employee_id)
+        except Employee_db.DoesNotExist:
+            return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        data = request.data.copy()
+        data['employee'] = employee.id
+
+        serializer = HourlyLocationLogSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
