@@ -3,7 +3,7 @@ import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { FaArrowLeft } from "react-icons/fa6";
 
 export const Container = styled.div`
-  padding: 2rem;
+  padding: 20px;
   background: white;
 `;
 export const BackArrow = styled(FaArrowLeft)`

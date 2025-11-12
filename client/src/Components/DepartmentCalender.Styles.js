@@ -614,20 +614,20 @@ export const CalendarDay = styled.div`
   font-size: clamp(0.7rem, 1vw, 1rem);
   min-height: clamp(35px, 4vw, 50px);
 
-  background: ${({ isToday, isSunday, isSelected }) =>
+  background: ${({ isToday, isSelected, isHoliday }) =>
     isSelected
       ? "#3352BA"
       : isToday
       ? "#3352BA"
-      : isSunday
-      ? "#ffcccc"
+      : isHoliday
+      ? "#FFECEC" // highlight only holidays
       : "transparent"};
 
-  color: ${({ isToday, isSunday, isSelected }) =>
-    isSelected || isToday ? "#fff" : isSunday ? "red" : "#000"};
+  color: ${({ isToday, isSelected, isHoliday }) =>
+    isSelected || isToday ? "#fff" : "#000"};
 
-  border: ${({ isSunday, isSelected }) =>
-    isSelected ? "2px solid #1e3a8a" : isSunday ? "1px solid red" : "none"};
+  border: ${({ isSelected, isHoliday }) =>
+    isSelected ? "2px solid #1e3a8a" : isHoliday ? "1px solid #FFCCCC" : "none"};
 
   font-weight: ${({ isToday, isSelected }) =>
     isToday || isSelected ? "bold" : "normal"};
@@ -637,6 +637,7 @@ export const CalendarDay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
   @media (min-width: ${breakpoints.tv}) {
     font-size: 1.5rem;
   }
@@ -644,6 +645,8 @@ export const CalendarDay = styled.div`
     font-size: 2rem;
   }
 `;
+
+
 export const UpcomingHolidaySection = styled.div`
   /* background: #fff; */
   /* border-radius: 12px; */

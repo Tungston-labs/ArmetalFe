@@ -9,7 +9,7 @@ export const Container = styled.div`
   width: 100%;
   overflow-x: auto; /* horizontal scroll if needed */
   overflow-y: auto; /* vertical scroll */
-
+ padding-top: 70px;
   @media (min-width: 1440px) {
     padding:1rem;
   }
@@ -255,7 +255,7 @@ export const CalendarWrapper = styled.div`
   border-radius: 10px;
   padding: 1rem;
   min-width: 300px;
-  margin-top: -50px;
+ margin-top: 0;
   box-sizing: border-box;
 
   /* Ensure proper height scaling */
@@ -266,23 +266,23 @@ export const CalendarWrapper = styled.div`
   /* Responsive adjustments */
   @media (max-width: 1200px) {
     padding: 0.7rem;
-    margin-top: -40px;
+    // margin-top: -40px;
   }
 
   @media (max-width: 992px) {
     padding: 0.8rem;
-    margin-top: -30px;
+    // margin-top: -30px;
   }
 
   @media (max-width: 768px) {
     padding: 0.7rem;
-    margin-top: -20px;
+    // margin-top: -20px;
     min-width: 100%;
   }
 
   @media (max-width: 480px) {
     padding: 0.5rem;
-    margin-top: -10px;
+    // margin-top: -10px;
     min-width: 100%;
   }
 `;

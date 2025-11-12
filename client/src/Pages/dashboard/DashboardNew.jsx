@@ -52,7 +52,6 @@ const CardsOnly = () => {
     <>
       <Navbar />
       <Container>
-        {/* ✅ Show static skeleton instead of blank page */}
         <Suspense
           fallback={
             <div style={{ padding: "2rem", textAlign: "center" }}>

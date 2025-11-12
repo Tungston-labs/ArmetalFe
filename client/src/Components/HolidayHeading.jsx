@@ -15,18 +15,27 @@ import {
 
 import { FiArrowLeft, FiSearch } from "react-icons/fi";
 import HolidayIcon from "../assets/payroll.svg"; 
+import EmployeeTitle from "./EmployeeTitle";
 
 const Header = () => {
   return (
     <HeaderContainer>
       {/* Left Section */}       
-        <TitleContainer>
-           <EmployeeImage  src={HolidayIcon} alt="employeeIcon" />
-            <TextBlock>
-              <Title>Holiday</Title>
-              <Subtitle>Unifying Teams. Simplifying Operations.</Subtitle>
-            </TextBlock>
-        </TitleContainer>
+
+      <EmployeeTitle
+  iconSrc={HolidayIcon}
+  title="Holiday"
+  subtitle="Unifying Teams Simplifying Operations"
+  // buttonText="Add Department"
+  // searchValue={search}
+  // onSearchChange={setSearch}
+  // onAddClick={() => setShowModal(true)} 
+  showDropdown={false}
+  showBackArrow={false}
+  showTabs={false}
+  showAddButton={false}
+  showSearch={false}
+/>
     </HeaderContainer>
   );
 };

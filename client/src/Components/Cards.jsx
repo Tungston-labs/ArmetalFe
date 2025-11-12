@@ -53,6 +53,7 @@ const Cards = () => {
   const visaExpiryList = summary.upcoming_visa_expiry?.list || [];
 
   return (
+    <>
     <CardContainer>
       {/* Total Employees */}
       <Card>
@@ -183,6 +184,7 @@ const Cards = () => {
         </CardHeader>
       </Card>
     </CardContainer>
+    </>
   );
 };
 

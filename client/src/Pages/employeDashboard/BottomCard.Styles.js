@@ -118,7 +118,75 @@ export const TaskList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  /* 👇 Scroll limit (3 visible tasks) */
+  @media (max-width: 1600px) {
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 6px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
+      @media (max-width: 1920px) {
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 6px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
+      @media (max-width: 2560px) {
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 6px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
+          @media (max-width: 3840px) {
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 6px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
+          @media (min-width: 3841px) {
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: 6px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
 `;
+
 export const Wrapper = styled.div`
   text-align: center;
   padding: 20px;
@@ -169,7 +237,7 @@ export const AttendanceSection = styled.div`
 
 export const AttendanceImage = styled.img`
   width: 200px;
-  height:190px;
+  height:100px;
    @media (min-width: 2200px) {
     width:400px;
     height:340px;
@@ -234,7 +302,7 @@ export const TaskTime = styled.div`
     font-size: 11px;
     margin-top: 4px;
   }
-`;
+`;1024
 
 
 export const TaskContent = styled.div`
@@ -251,7 +319,7 @@ export const TaskContent = styled.div`
     gap: 2px;
     text-align: center;
     align-items: center;
-  }
+  }1024
 `;
 
 export const TaskRole = styled.div`
@@ -323,17 +391,104 @@ export const TaskDescription = styled.div`
   }
 `;
 
+export const TableWrapper = styled.div`
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+
+  @media (max-width: 1600px) {
+    max-height: 350px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
+    @media (max-width: 1920px) {
+    max-height: 450px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
+     @media (max-width: 2560px) {
+    max-height: 500px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
+     @media (max-width: 3840px) {
+    max-height: 450px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
+     @media (min-width: 3841px) {
+    max-height: 480px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #3352ba66;
+      border-radius: 8px;
+    }
+  }
+`;
+
 export const Table = styled.table`
   width: 100%;
-  border-spacing: 0 12px; /* horizontal = 0, vertical = 12px */
+  border-spacing: 0 12px;
   text-align: center;
   background-color: white;
-  /* Remove border-collapse */
+  border-collapse: separate;
+
+  thead {
+    position: sticky;
+    top: 0;
+    background: #f6f8ff;
+    z-index: 2;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 
 export const TableRow = styled.tr`
-  border-bottom: 10px solid #f4f4f4;
+  border-bottom: 10px solid #fdfbfbff;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: #f9faff;
+  }
 `;
 
 export const TableCell = styled.td`
@@ -341,7 +496,9 @@ export const TableCell = styled.td`
   font-size: 14px;
   color: #333;
   vertical-align: middle;
-padding: 0.3rem ;
+  padding: 0.6rem;
+border-bottom:8px solid #F4F4F4;
+
   @media (min-width: 2200px) {
     font-size: 34px;
     padding-top: 20px;

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { FiSearch } from "react-icons/fi";
 
 export const DepartmentContainer = styled.div`
-  padding: 2rem;
+  padding: 20px;
   background-color: rgb(255, 255, 255);
 `;
 

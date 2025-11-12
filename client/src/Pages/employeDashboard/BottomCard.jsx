@@ -30,7 +30,8 @@ import {
   TimeWrapper,
   ClockIcon,
   TimeText,
-  RightArrows
+  RightArrows,
+  TableWrapper
 } from "./BottomCard.Styles";
 import NoTasks from "../../assets/daliy.svg"; // for empty tasks
 import NoAttendance from "../../assets/puchtime.svg"; 
@@ -158,7 +159,7 @@ onClick={() => navigate(`/employee-on-present`)}
     <FiArrowUpRight />
   </RightArrow>
 </AttendanceHeader>
-
+<TableWrapper>
         <Table>
           <thead>
             <TableRow>
@@ -207,6 +208,7 @@ onClick={() => navigate(`/employee-on-present`)}
 </tbody>
 
         </Table>
+        </TableWrapper>
       </Section>
     </Container>
   );

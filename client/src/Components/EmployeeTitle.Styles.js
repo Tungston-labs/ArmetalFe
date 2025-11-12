@@ -14,6 +14,7 @@ export const TopSection = styled.div`
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
+  margin-top:1rem;
 `;
 
 export const LeftBlock = styled.div`

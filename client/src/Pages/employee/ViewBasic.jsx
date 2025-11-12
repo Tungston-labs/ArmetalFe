@@ -59,6 +59,7 @@ const ViewBasic = () => {
   }, [dispatch, departmentList.length]);
   useEffect(() => {
     if (id) {
+      setFormData({});
       dispatch(getEmployeeById(id));
     }
   }, [dispatch, id]);
@@ -346,6 +347,9 @@ const handleBack = () => {
               name="total_leave"
               value={formData.total_leave || ""}
               onChange={handleChange}
+               step="0.1"
+    min="0"
+    onWheel={(e) => e.target.blur()} 
             />
           </FieldGroup>
 
@@ -356,6 +360,9 @@ const handleBack = () => {
               name="pending_leave"
               value={formData.pending_leave || ""}
               onChange={handleChange}
+               step="0.1"
+    min="0"
+    onWheel={(e) => e.target.blur()} 
             />
           </FieldGroup>
         </Rowes>

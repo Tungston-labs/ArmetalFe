@@ -24,6 +24,7 @@ import Swal from "sweetalert2";
 import VerificationCircles from '../../Components/VerificationCircle';
 import HolidayIcon from "../../assets/payroll.svg";
 import { Link, useNavigate } from 'react-router-dom';
+import EmployeeTitle from '../../Components/EmployeeTitle';
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -279,17 +280,19 @@ const PayrollTable = () => {
     <>
       <Navbar />
       <Container>
-        <Header>
-          <TitleSection>
-  <LeftGroup>
-    <EmployeeImage src={HolidayIcon} alt="employeeIcon" />
-    <div>
-      <Title>Payroll</Title>
-      <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
-    </div>
-  </LeftGroup>
-
-  <Select value={selectedDepartment} onChange={handleDepartmentChange}>
+        <EmployeeTitle
+  iconSrc={HolidayIcon}
+  title="Payroll"
+  subtitle="Unifying Teams Simplifying Operations"
+  // buttonText="History"
+  // buttonIcon={HistoryIcon} 
+  // onAddClick={() => setShowModal(true)} 
+  showDropdown={false}
+  showBackArrow={false}
+  showTabs={false}
+  showSearch={false}
+  rightElement={
+ <Select value={selectedDepartment} onChange={handleDepartmentChange}>
     <option value="">Select Department</option>
     {departmentList.map(dept => (
       <option key={dept.id} value={String(dept.id).split(":")[0]}>
@@ -297,13 +300,12 @@ const PayrollTable = () => {
       </option>
     ))}
   </Select>
-</TitleSection>
 
-        </Header>
-
+  }
+/>
         <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <SearchInput placeholder=" Enter employee ID" value={searchTerm} onChange={handleSearch} />
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <SearchInput placeholder=" Enter employee ID" value={searchTerm} onChange={handleSearch}   style={{ cursor: "pointer" }} />
+          <div style={{ display: 'flex', gap: '10px',cursor: "pointer"}}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
               {months.map((month, index) => (
                 <option key={month} value={index + 1}>{month}</option>

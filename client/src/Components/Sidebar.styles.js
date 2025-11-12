@@ -28,11 +28,14 @@ export const SidebarContainer = styled.div`
     }
   }
 
-  @media (min-width: 768px) and (max-width:1020px) {
+  @media (min-width: 768px) and (max-width:1024px) {
     width: 80px;
   }
+      @media (min-width: 1025px) and (max-width:1439px) {
+    width: 18%;
+  }
    @media (min-width: 1440px) and (max-width:1920px) {
-    width: 15%;
+    width: 20%;
   }
     @media (min-width: 2560px) {
     width: 20%;
@@ -75,7 +78,7 @@ export const Logo = styled.div`
   }
   }
   /* Hide logo on very small screens */
-  @media (min-width: 768px) and (max-width:1020px){
+  @media (min-width: 768px) and (max-width:1024px){
     display: none;
   }
 
@@ -83,7 +86,7 @@ export const Logo = styled.div`
     display: none;
   }
 
- @media (min-width: 1300px) {
+ @media (min-width: 1025px) {
     img{
     min-height: 150px;
    
@@ -194,7 +197,7 @@ export const ToggleButton = styled.button`
 `;
 
 export const CustomLink = styled(Link)`
-  width: 90%;
+  width: 99%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -285,8 +288,8 @@ export const CustomLink = styled(Link)`
     }
   }
 
-  /* Hide text between 768px–1020px */
-  @media (min-width: 768px) and (max-width: 1020px) {
+  /* Hide text between 768px–1024px */
+  @media (min-width: 768px) and (max-width: 1024px) {
     justify-content: center;
     gap: 0;
 

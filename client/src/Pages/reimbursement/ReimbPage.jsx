@@ -30,6 +30,7 @@ import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
 import { Pagination } from '../leaveDetails/EmployeeList.styles';
 import { IoInformationCircleOutline } from "react-icons/io5";
+import EmployeeTitle from '../../Components/EmployeeTitle';
 const DepartmentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -154,21 +155,16 @@ useEffect(() => {
     {!loading && (
     <Container>
       {/* Top Bar */}
-
-
-      {/* Header */}
-      <HeaderSection>
-        <TitleSection>
-<BackArrow onClick={() => window.history.back()} />
-
-          <img src={RemiIcon} alt="employeeIcon" style={{ height: "70px" }} />
-          <div>
-            <Title>Reimbursement</Title>
-            <Subtitle>Manage all departments within the organization.</Subtitle>
-          </div>
-        </TitleSection>
-      </HeaderSection>
-
+<EmployeeTitle
+  iconSrc={RemiIcon}
+  title="Reimbursement"
+  subtitle="Manage all departments within the organization"
+showAddButton={false}
+  showDropdown={false}
+  showTabs={false}
+  showSearch={false}
+ 
+/>
       {/* Form */}
       {department && (
         <FormSection>
@@ -232,7 +228,7 @@ useEffect(() => {
               <th>Employee ID</th>
               <th>Job Position</th>
               <th>Department</th>
-              <th>Amount(AED)</th>
+              <th>Amount</th>
               <th>Status</th>
       
             </tr>

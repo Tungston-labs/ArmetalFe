@@ -228,6 +228,7 @@ const Department = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
+                     style={{ cursor: "pointer" }}
                     />
                   </FormGroup>
 
@@ -240,6 +241,7 @@ const Department = () => {
                       value={formData.department_code}
                       onChange={handleChange}
                       required
+                      style={{ cursor: "pointer" }}
                     />
                   </FormGroup>
 
