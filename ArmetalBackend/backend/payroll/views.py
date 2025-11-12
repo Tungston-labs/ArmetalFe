@@ -172,9 +172,10 @@ class PayrollVerifyView(APIView):
 
         record.save()
 
-        # ✅ Return full payroll record so frontend can refresh row
-        serializer = EmployeePayrollRecordSerializer(record)
+        # ✅ FIXED: pass request in serializer context
+        serializer = EmployeePayrollRecordSerializer(record, context={"request": request})
         return Response(serializer.data)
+
 
 
 class PayrollStatusUpdateView(APIView):

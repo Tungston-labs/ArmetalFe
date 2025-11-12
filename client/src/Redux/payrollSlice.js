@@ -7,19 +7,6 @@ import {
   verifyPayroll,
 } from "../services/payrollService";
 
-// 1. Fetch payroll data with pagination and search
-
-// export const getPayrollData = createAsyncThunk(
-//   "payroll/getPayrollData",
-//   async ({ month, year, search = "", page = 1, department = "" }, { rejectWithValue }) => {
-//     try {
-//       const data = await fetchPayrollData(month, year, search, page, department); 
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data || "Failed to fetch payroll data");
-//     }
-//   }
-// );
 export const getPayrollData = createAsyncThunk(
   "payroll/getPayrollData",
   async ({ month, year, search = "", page = 1, department = "" }, { rejectWithValue }) => {
@@ -228,11 +215,12 @@ const payrollSlice = createSlice({
         
       })
       
-      .addCase(verifyEmployeePayroll.rejected, (state, action) => {
-        state.loading = false;
-        // Do NOT set state.error here, just set verifySuccess false
-        state.verifySuccess = false;
-      });
+     .addCase(verifyEmployeePayroll.rejected, (state, action) => {
+  state.loading = false;
+  state.verifySuccess = false;
+  state.error = action.payload;  // ✅ capture backend error
+});
+
       
 
 
