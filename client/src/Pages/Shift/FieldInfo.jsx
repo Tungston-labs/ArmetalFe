@@ -45,6 +45,7 @@ import Modal from "../../Components/ModalShift";
 import CalendarModal from "../../Components/CalendarModal";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Loader from "../../Components/Loader"
+import EmployeeTitle from "../../Components/EmployeeTitle";
 const FieldInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -121,40 +122,31 @@ const FieldInfo = () => {
     <>
       <Navbar />
       <PageWrapper>
-        {/* Header */}
-        <Header>
-  <LeftSection>
-    <BackButton onClick={() => navigate("/project-department/id")}>
-      <LuArrowLeft />
-    </BackButton>
+ <EmployeeTitle
+  iconSrc={FieldShiftIcon}
+  title="Project"
+  subtitle="Manage all Project within the organization"
+  showDropdown={false}
+  showTabs={false}
+  showSearch={false}
+  rightElement={
+    <>
+      <ButtonContainer>
+        <ButtonAct onClick={() => setIsModalOpen(true)}>
+          Activity Log
+        </ButtonAct>
+      </ButtonContainer>
 
-    <TitleSection>
-      <IconWrapper>
-        <img src={FieldShiftIcon} alt="FieldShift" />
-      </IconWrapper>
-      <TextGroup>
-        <Title>Project</Title>
-        <Subtitle>Manage all departments within the organization.</Subtitle>
-      </TextGroup>
-    </TitleSection>
-  </LeftSection>
-
-  <ButtonContainer>
-    <ButtonAct onClick={() => setIsModalOpen(true)}>
-      Activity Log
-    </ButtonAct>
-  </ButtonContainer>
-
-  {isModalOpen && (
-    <Modal
-      onClose={() => setIsModalOpen(false)}
-      data={fieldInfo?.locations || []}
-      date={selectedDate}
-    />
-  )}
-</Header>
-
-
+      {isModalOpen && (
+        <Modal
+          onClose={() => setIsModalOpen(false)}
+          data={fieldInfo?.locations || []}
+          date={selectedDate}
+        />
+      )}
+    </>
+  }
+/>
         <ContainerGrid>
           <ProfileRow>
          <Avatar>

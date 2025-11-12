@@ -31,6 +31,7 @@ import Navbar from "../../Components/Navbar";
 import { FaPlus } from "react-icons/fa";
 import { getProjects } from "../../Redux/fieldShiftSlice";
 import Loader from "../../Components/Loader";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 
 const DepartmentPage = () => {
   const dispatch = useDispatch();
@@ -55,30 +56,21 @@ const DepartmentPage = () => {
     <>
       <Navbar />
       <PageWrapper>
-        <HeaderSection>
-          <TitleSection>
-            <IconWrapper>
-              <img src={FieldShiftIcon} alt="FieldShift" />
-            </IconWrapper>
-            <TextGroup>
-              <Title>Project</Title>
-              <Subtitle>Manage all projects within the organization.</Subtitle>
-            </TextGroup>
-          </TitleSection>
+        <EmployeeTitle
+  iconSrc={FieldShiftIcon}
+  title="Project"
+  subtitle="Manage all projects within the organization"
+  buttonText="Add Project"
+  searchValue={searchTerm}
+  onSearchChange={setSearchTerm}
+  onAddClick={() => setIsModalOpen(true)} 
+  showDropdown={false}
+  showBackArrow={false}
+  showTabs={false}
+/>
+       
 
-          <AddFieldButton onClick={() => setIsModalOpen(true)}>
-            <FaPlus /> Add Project
-          </AddFieldButton>
-        </HeaderSection>
-
-        <SearchContainer>
-          <SearchIcon />
-          <SearchBar
-            placeholder="Search by project name"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </SearchContainer>
+        
 
         <CardsGrid>
   {isLoading ? (

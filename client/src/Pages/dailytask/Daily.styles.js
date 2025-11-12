@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FaRegCalendarAlt } from "react-icons/fa";
 
 export const Container = styled.div`
-  padding: 2rem;
+  padding: 20px;
   font-family: "Segoe UI", sans-serif;
   background: white;
   font-family: Satoshi;

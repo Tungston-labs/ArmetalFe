@@ -4,7 +4,7 @@ import { FiSearch } from "react-icons/fi";
 export const PageWrapper = styled.div`
   font-family: "Satoshi", sans-serif;
   color: #1a1a1a;
-  padding: 2rem 3rem;
+  padding: 20px;
   background: #fff;
   min-height: 100vh;
 

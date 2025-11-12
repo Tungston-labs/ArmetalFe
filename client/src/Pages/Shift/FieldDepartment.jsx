@@ -37,6 +37,7 @@ import { LuArrowLeft } from "react-icons/lu";
 import { BiEditAlt } from "react-icons/bi";
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 const FieldShift = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -211,22 +212,15 @@ const FieldShift = () => {
     <>
       <Navbar />
       <PageWrapper>
-        <Header>
-          <BackButton onClick={() => navigate("/project")}>
-            <LuArrowLeft />
-          </BackButton>
-
-          <TitleSection>
-            <IconWrapper>
-              <img src={FieldShiftIcon} alt="FieldShift" />
-            </IconWrapper>
-            <TextGroup>
-              <Title>Project</Title>
-              <Subtitle>Manage all departments within the organization.</Subtitle>
-            </TextGroup>
-          </TitleSection>
-        </Header>
-
+           <EmployeeTitle
+  iconSrc={FieldShiftIcon}
+  title="Project"
+  subtitle="Manage all Project within the organization"
+  showDropdown={false}
+  showTabs={false}
+  showAddButton={false}
+  showSearch={false}
+/>
         {!isDeleted ? (
           <>
             <FormContainer>
