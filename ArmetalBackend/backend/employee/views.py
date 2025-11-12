@@ -414,10 +414,6 @@ class EmployeeSelfView(APIView):
 
 
 from datetime import date, timedelta
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import Employee_db, LeaveRequest, Department, PublicHoliday, Attendance
 
 class DashboardSummaryView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
