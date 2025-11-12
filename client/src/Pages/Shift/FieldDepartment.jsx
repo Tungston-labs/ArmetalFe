@@ -295,30 +295,41 @@ const FieldShift = () => {
                     </TableRow>
                   </thead>
                   <tbody>
-                    {employees.map((emp, i) => (
-                      <TableRow key={emp.id} className={i % 2 === 0 ? "even" : ""}>
-                        <TableCell>{i + 1}</TableCell>
-                        <TableCell>{emp.name}</TableCell>
-                        <TableCell>{emp.employeeId}</TableCell>
-                        <TableCell>{emp.email}</TableCell>
-                        <TableCell>{emp.position}</TableCell>
-                        <TableCell>{emp.department_name}</TableCell>
-                        <TableCell>
-                          <GoInfo
-                            style={{ cursor: "pointer" }}
-                            onClick={() => handleInfoClick(emp.id)}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <FaTrash
-                            color="red"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => handleEmployeeDelete(emp.id)}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </tbody>
+  {employees.map((emp, i) => (
+    <TableRow
+      key={emp.id}
+      className={i % 2 === 0 ? "even" : ""}
+      onClick={() => navigate(`/project/${emp.id}`)} 
+      style={{ cursor: "pointer" }} // show hand cursor
+    >
+      <TableCell>{i + 1}</TableCell>
+      <TableCell>{emp.name}</TableCell>
+      <TableCell>{emp.employeeId}</TableCell>
+      <TableCell>{emp.email}</TableCell>
+      <TableCell>{emp.position}</TableCell>
+      <TableCell>{emp.department_name}</TableCell>
+
+      <TableCell
+        onClick={(e) => {
+          e.stopPropagation(); 
+          handleInfoClick(emp.id);
+        }}
+      >
+        <GoInfo style={{ cursor: "pointer" }} />
+      </TableCell>
+
+      <TableCell
+        onClick={(e) => {
+          e.stopPropagation(); 
+          handleEmployeeDelete(emp.id);
+        }}
+      >
+        <FaTrash color="red" style={{ cursor: "pointer" }} />
+      </TableCell>
+    </TableRow>
+  ))}
+</tbody>
+
                 </Table>
               </TableWrapper>
             </EmployeesSection>
