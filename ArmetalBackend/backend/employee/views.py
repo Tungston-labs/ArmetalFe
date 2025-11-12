@@ -413,6 +413,12 @@ class EmployeeSelfView(APIView):
 
 
 
+from datetime import date, timedelta
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import Employee_db, LeaveRequest, Department, PublicHoliday, Attendance
+
 class DashboardSummaryView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
@@ -429,7 +435,7 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "designation": emp.designation,
-                "employee_id":emp.employee_id,
+                "employee_id": emp.employee_id,
                 "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
             for emp in employees
@@ -461,7 +467,8 @@ class DashboardSummaryView(APIView):
                 "id": leave.id,
                 "employee": leave.employee.name,
                 "department": leave.employee.department.name if leave.employee.department else None,
-                "profile_pic": request.build_absolute_uri(leave.employee.profile_pic.url) if leave.employee.profile_pic else None,          "leave_type": leave.leave_type,
+                "profile_pic": request.build_absolute_uri(leave.employee.profile_pic.url) if leave.employee.profile_pic else None,
+                "leave_type": leave.leave_type,
                 "from_date": leave.from_date,
                 "to_date": leave.to_date,
                 "reason": leave.reason,
@@ -471,24 +478,23 @@ class DashboardSummaryView(APIView):
 
         # 4. Department list with employee count
         department_list = [
-    {
-        "id": dept.id,
-        "name": dept.name,
-        "employee_count": dept.employees.count(),
-        "head": {
-            "id": dept.department_head.id,
-            "name": dept.department_head.name
-        } if dept.department_head else None
-    }
-    for dept in Department.objects.filter(company=company)
-]
+            {
+                "id": dept.id,
+                "name": dept.name,
+                "employee_count": dept.employees.count(),
+                "head": {
+                    "id": dept.department_head.id,
+                    "name": dept.department_head.name
+                } if dept.department_head else None
+            }
+            for dept in Department.objects.filter(company=company)
+        ]
 
-
-        # 5. Upcoming holidays
+        # 5. Upcoming holidays (next 10)
         upcoming_holidays_qs = PublicHoliday.objects.filter(
             company=company,
             date__gte=today
-        ).order_by("date")[:10]  # next 10 holidays
+        ).order_by("date")[:10]
         upcoming_holidays = [
             {
                 "date": holiday.date,
@@ -496,6 +502,19 @@ class DashboardSummaryView(APIView):
                 "holiday_type": holiday.holiday_type,
             }
             for holiday in upcoming_holidays_qs
+        ]
+
+        # 5a. All company holidays (for calendar)
+        all_company_holidays_qs = PublicHoliday.objects.filter(company=company).order_by("date")
+        all_company_holidays = [
+            {
+                "id": holiday.id,
+                "date": holiday.date,
+                "day": holiday.day,
+                "description": holiday.description,
+                "holiday_type": holiday.holiday_type,
+            }
+            for holiday in all_company_holidays_qs
         ]
 
         # 6. Upcoming contract expiries
@@ -508,7 +527,7 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "contract_expiry_date": emp.contract_expiry_date,
-                "employee_id":emp.employee_id,
+                "employee_id": emp.employee_id,
                 "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
             for emp in upcoming_contract_expiry_qs
@@ -522,12 +541,11 @@ class DashboardSummaryView(APIView):
 
         # 8. On leave today
         on_leave_today_count = LeaveRequest.objects.filter(
-                from_date__lte=today,
-                to_date__gte=today,
-                employee__department__company=company,
-                status='approved'
-            ).values('employee').distinct().count()
-
+            from_date__lte=today,
+            to_date__gte=today,
+            employee__department__company=company,
+            status='approved'
+        ).values('employee').distinct().count()
 
         return Response({
             "total_employees": {
@@ -544,6 +562,10 @@ class DashboardSummaryView(APIView):
             },
             "departments": department_list,
             "upcoming_holidays": upcoming_holidays,
+            "all_company_holidays": {
+                "count": all_company_holidays_qs.count(),
+                "list": all_company_holidays
+            },
             "upcoming_contract_expiry": {
                 "count": upcoming_contract_expiry_qs.count(),
                 "list": upcoming_contract_expiry

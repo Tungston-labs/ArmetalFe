@@ -214,62 +214,65 @@ const PayrollTable = () => {
       return;
     }
 
-    // Same HR cannot verify twice
-    if (employee.hr1_verified_by === user.username || employee.hr2_verified_by === user.username) {
-      Swal.fire({ icon: "warning", title: "Cannot Verify", text: "You cannot verify the same payroll twice." });
-      return;
-    }
-
-   try {
-  await dispatch(verifyEmployeePayroll({
-    employeeId: employee.employee,
-    month: selectedMonth,
-    year: selectedYear,
-  })).unwrap();
-
-  // ✅ If success — show success popup
-  setVerificationStatus(prev => ({
-    ...prev,
-    [employee.id]: { ...prev[employee.id], [type]: true },
-  }));
-
-  await dispatch(getPayrollData({
-    page,
-    search: searchTerm,
-    month: selectedMonth,
-    year: selectedYear,
-    department: selectedDepartment,
-  }));
-
-  Swal.fire({
-    icon: "success",
-    title: "Verified",
-    text: "Payroll verification recorded.",
-    timer: 1500,
-    showConfirmButton: false,
+   // Same HR cannot verify twice
+if (employee.hr1_verified_by === user.username || employee.hr2_verified_by === user.username) {
+  Swal.fire({ 
+    icon: "warning", 
+    title: "Cannot Verify", 
+    text: "You cannot verify the same payroll twice." 
   });
-
-} catch (err) {
-  console.error("Verify payroll error:", err);
-
-  // ✅ Use backend message if available
-  const errorMsg = err?.error || err?.message || "Cannot verify payroll: Same HR cannot verify twice.";
-
-  Swal.fire({
-    icon: "warning",
-    title: "Verification Failed",
-    text: errorMsg,
-  }).then(() => {
-    dispatch(getPayrollData({
-      page,
-      search: searchTerm,
-      month: selectedMonth,
-      year: selectedYear,
-      department: selectedDepartment,
-    }));
-  });
+  return; // ✅ STOP HERE — prevent dispatch
 }
 
+
+    try {
+      await dispatch(verifyEmployeePayroll({
+        employeeId: employee.employee,
+        month: selectedMonth,
+        year: selectedYear,
+      })).unwrap();
+
+      // Update verificationStatus locally
+      setVerificationStatus(prev => ({
+        ...prev,
+        [employee.id]: { ...prev[employee.id], [type]: true },
+      }));
+
+      // Refresh payroll data
+      await dispatch(getPayrollData({
+        page,
+        search: searchTerm,
+        month: selectedMonth,
+        year: selectedYear,
+        department: selectedDepartment,
+      }));
+
+      Swal.fire({
+        icon: "success",
+        title: "Verified",
+        text: "Payroll verification recorded.",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (err) {
+      console.error("Verify payroll error:", err);
+
+      // Show friendly alert
+      Swal.fire({
+        icon: "warning",
+        title: "Verification Failed",
+        text: "Cannot verify payroll: Same HR cannot verify twice.",
+      }).then(() => {
+        // Refresh payroll listing
+        dispatch(getPayrollData({
+          page,
+          search: searchTerm,
+          month: selectedMonth,
+          year: selectedYear,
+          department: selectedDepartment,
+        }));
+      });
+    }
   };
 
 
