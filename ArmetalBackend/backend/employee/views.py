@@ -142,6 +142,20 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'pk'
 
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        old_department = instance.department
+        new_department = serializer.validated_data.get('department', old_department)
+
+        # ✅ If department changed, remove as head from old department
+        if old_department and old_department != new_department:
+            if old_department.department_head == instance:
+                old_department.department_head = None
+                old_department.save(update_fields=['department_head'])
+
+        # Save the updated employee
+        serializer.save()
+
     def perform_destroy(self, instance):
         department = instance.department
         company = department.company if department else None
