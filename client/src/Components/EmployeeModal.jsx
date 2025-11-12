@@ -96,7 +96,6 @@ const EmployeeModal = ({ onClose, projectId, project }) => {
                   <th>Sl No</th>
                   <th>Employee Name</th>
                   <th>Employee ID</th>
-                  <th>Email</th>
                   <th>Designation</th>
                   <th>Department</th>
                   <th>Select</th>
@@ -115,7 +114,6 @@ const EmployeeModal = ({ onClose, projectId, project }) => {
                       <td>{String(index + 1).padStart(3, "0")}</td>
                       <td>{emp.name}</td>
                       <td>{emp.employee_id}</td>
-                      <td>{emp.email}</td>
                       <td>{emp.designation}</td>
                       <td>{emp.department_name || "—"}</td>
                       <td>

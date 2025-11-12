@@ -33,6 +33,7 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import TaskIcon from "../../assets/task.svg";
 import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 
 export default function DailyTask() {
   const dispatch = useDispatch();
@@ -115,15 +116,17 @@ export default function DailyTask() {
     <>
       <Navbar />
       <Container>
-        <Header>
-          <TitleSection>
-            <EmployeeImage src={TaskIcon} alt="employeeIcon" />
-            <TextBlock>
-              <Title>Daily Task</Title>
-              <Subtitle>Check daily task details for each employee</Subtitle>
-            </TextBlock>
-          </TitleSection>
-        </Header>
+           
+<EmployeeTitle
+  iconSrc={TaskIcon}
+  title="Daily Task"
+  subtitle="Check daily task details for each employee"
+  showAddButton={false}
+  showDropdown={false}
+  showBackArrow={false}
+  showTabs={false}
+  showSearch={false}
+/>
 
         <DateSelector>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>

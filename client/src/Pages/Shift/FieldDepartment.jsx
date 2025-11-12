@@ -37,6 +37,7 @@ import { LuArrowLeft } from "react-icons/lu";
 import { BiEditAlt } from "react-icons/bi";
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 const FieldShift = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -211,22 +212,15 @@ const FieldShift = () => {
     <>
       <Navbar />
       <PageWrapper>
-        <Header>
-          <BackButton onClick={() => navigate("/project")}>
-            <LuArrowLeft />
-          </BackButton>
-
-          <TitleSection>
-            <IconWrapper>
-              <img src={FieldShiftIcon} alt="FieldShift" />
-            </IconWrapper>
-            <TextGroup>
-              <Title>Project</Title>
-              <Subtitle>Manage all departments within the organization.</Subtitle>
-            </TextGroup>
-          </TitleSection>
-        </Header>
-
+           <EmployeeTitle
+  iconSrc={FieldShiftIcon}
+  title="Project"
+  subtitle="Manage all Project within the organization"
+  showDropdown={false}
+  showTabs={false}
+  showAddButton={false}
+  showSearch={false}
+/>
         {!isDeleted ? (
           <>
             <FormContainer>
@@ -301,30 +295,41 @@ const FieldShift = () => {
                     </TableRow>
                   </thead>
                   <tbody>
-                    {employees.map((emp, i) => (
-                      <TableRow key={emp.id} className={i % 2 === 0 ? "even" : ""}>
-                        <TableCell>{i + 1}</TableCell>
-                        <TableCell>{emp.name}</TableCell>
-                        <TableCell>{emp.employeeId}</TableCell>
-                        <TableCell>{emp.email}</TableCell>
-                        <TableCell>{emp.position}</TableCell>
-                        <TableCell>{emp.department_name}</TableCell>
-                        <TableCell>
-                          <GoInfo
-                            style={{ cursor: "pointer" }}
-                            onClick={() => handleInfoClick(emp.id)}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <FaTrash
-                            color="red"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => handleEmployeeDelete(emp.id)}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </tbody>
+  {employees.map((emp, i) => (
+    <TableRow
+      key={emp.id}
+      className={i % 2 === 0 ? "even" : ""}
+      onClick={() => navigate(`/project/${emp.id}`)} 
+      style={{ cursor: "pointer" }} // show hand cursor
+    >
+      <TableCell>{i + 1}</TableCell>
+      <TableCell>{emp.name}</TableCell>
+      <TableCell>{emp.employeeId}</TableCell>
+      <TableCell>{emp.email}</TableCell>
+      <TableCell>{emp.position}</TableCell>
+      <TableCell>{emp.department_name}</TableCell>
+
+      <TableCell
+        onClick={(e) => {
+          e.stopPropagation(); 
+          handleInfoClick(emp.id);
+        }}
+      >
+        <GoInfo style={{ cursor: "pointer" }} />
+      </TableCell>
+
+      <TableCell
+        onClick={(e) => {
+          e.stopPropagation(); 
+          handleEmployeeDelete(emp.id);
+        }}
+      >
+        <FaTrash color="red" style={{ cursor: "pointer" }} />
+      </TableCell>
+    </TableRow>
+  ))}
+</tbody>
+
                 </Table>
               </TableWrapper>
             </EmployeesSection>
