@@ -30,6 +30,7 @@ import {
 } from "../../services/reimbursement";
 import Loader from "../../Components/Loader"
 import Navbar from "../../Components/Navbar";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 // Add this function at the top of your component
 const getStatusStyle = (status) => {
   switch (status) {
@@ -94,54 +95,49 @@ const ReimbursementDetail = () => {
     <>
     <Navbar/>
     <PageWrapper>
+<EmployeeTitle
+  iconSrc={RemiIcon}
+  title="Reimbursement"
+  subtitle="Manage all departments within the organization"
+  showDropdown={false}
+  showTabs={false}
+  showSearch={false}
+  rightElement={
+    <SelectBox
+      value={reimbursement.status || ""}
+      onChange={async (e) => {
+        const newStatus = e.target.value;
+        try {
+          setReimbursement((prev) => ({ ...prev, status: newStatus }));
+          await updateReimbursementStatus(id, newStatus);
+        } catch (error) {
+          console.error("Failed to update status:", error);
+          setReimbursement((prev) => ({
+            ...prev,
+            status: reimbursement.status,
+          }));
+        }
+      }}
+      style={{
+        ...getStatusStyle(reimbursement.status),
+        fontWeight: "bold",
+        borderRadius: "6px",
+        padding: "5px 10px",
+        cursor: "pointer",
+      }}
+    >
+      <option value="" disabled>
+        Select
+      </option>
+      <option value="Approve">Approved</option>
+      <option value="On Hold">On Hold</option>
+      <option value="In Verification">In Verification</option>
+    </SelectBox>
+  }
+/>
+
       {/* Header */}
-      <Header>
-        <HeaderLeft>
-          <HiArrowLeft
-                 size={34} 
-            style={{ cursor: "pointer", color: "#3250B5", marginRight: "10px" }}
-            onClick={() => navigate(-1)}
-          />
-          <div className="icon-box">
-            <img src={RemiIcon} alt="employeeIcon" style={{ height: "60px" }} />
-          </div>
-          <div>
-            <HeaderTitle>Reimbursement</HeaderTitle>
-            <HeaderSubtitle>
-              Manage all departments within the organization.
-            </HeaderSubtitle>
-          </div>
-        </HeaderLeft>
-        <SelectBox
-  value={reimbursement.status || ""}
-  onChange={async (e) => {
-    const newStatus = e.target.value;
-
-    try {
-      setReimbursement((prev) => ({ ...prev, status: newStatus }));
-      await updateReimbursementStatus(id, newStatus);
-    } catch (error) {
-      console.error("Failed to update status:", error);
-      setReimbursement((prev) => ({ ...prev, status: reimbursement.status }));
-    }
-  }}
-  style={{
-    ...getStatusStyle(reimbursement.status),
-    fontWeight: "bold",
-    borderRadius: "6px",
-    padding: "5px 10px",
-    cursor: "pointer",
-  }}
->
-  <option value="" disabled>
-    Select
-  </option>
-  <option value="Approve">Approved</option>
-  <option value="On Hold">On Hold</option>
-  <option value="In Verification">In Verification</option>
-</SelectBox>
-
-      </Header>
+    
 
       {/* Profile */}
       <ProfileSection>
@@ -182,7 +178,7 @@ const ReimbursementDetail = () => {
 
   <div>
     <Label style={{ color: "#6C6C6C", fontSize: "14px",paddingRight:"500px", }}>Amount</Label>
-    <Value style={{ fontWeight: "bold" }}>{reimbursement.amount} AED</Value>
+    <Value style={{ fontWeight: "bold" }}>{reimbursement.amount} </Value>
   </div>
 </DateSection>
 

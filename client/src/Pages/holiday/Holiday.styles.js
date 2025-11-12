@@ -330,7 +330,7 @@ export const Heading = styled.h2`
   font-weight: 600;
   line-height: 120%;
   letter-spacing: 0%;
-
+  cursor:pointer;
   /* ✅ Responsive font size using clamp */
   font-size: clamp(0.9rem, 1.2vw, 1.2rem);
 
@@ -368,7 +368,7 @@ export const Table = styled.table`
   margin-top: 1rem;
  text-align: left;
   font-family: 'Satoshi';
-
+  cursor:pointer;
   /* Scroll on small screens */
   // display: block;
   overflow-x: auto;
@@ -381,6 +381,7 @@ export const Table = styled.table`
     background-color: white;
     border: none;
     font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
+      cursor:pointer;
   }
 
   th {

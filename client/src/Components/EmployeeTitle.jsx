@@ -35,7 +35,8 @@ const EmployeeTitle = ({
   showDropdown = true,
   showTabs = true,
   showBackArrow = true, 
-
+  buttonIcon ,
+  rightElement,
   iconSrc,
   title = "Employee",
   subtitle = "Manage your employees",
@@ -106,14 +107,28 @@ const EmployeeTitle = ({
           </TitleBlock>
         </LeftBlock>
 
-        {showAddButton && (
-          <RightBlock>
-            <Button onClick={onAddClick || (() => navigate("/basic-details"))}>
-              <LuCirclePlus size={18} />
-              {buttonText}
-            </Button>
-          </RightBlock>
+{showAddButton && (
+  <RightBlock>
+    {rightElement ? (
+      rightElement // 👈 Render anything passed from parent
+    ) : (
+      <Button onClick={onAddClick || (() => navigate("/basic-details"))}>
+        {buttonIcon ? (
+          <img
+            src={buttonIcon}
+            alt={`${buttonText} icon`}
+            style={{ width: "18px", height: "18px", marginRight: "6px" }}
+          />
+        ) : (
+          <LuCirclePlus size={18} style={{ marginRight: "6px" }} />
         )}
+        {buttonText}
+      </Button>
+    )}
+  </RightBlock>
+)}
+
+
       </TopSection>
 
       {(showSearch || showDropdown) && (

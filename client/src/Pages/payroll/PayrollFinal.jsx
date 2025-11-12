@@ -214,16 +214,11 @@ const PayrollTable = () => {
       return;
     }
 
-   // Same HR cannot verify twice
-if (employee.hr1_verified_by === user.username || employee.hr2_verified_by === user.username) {
-  Swal.fire({ 
-    icon: "warning", 
-    title: "Cannot Verify", 
-    text: "You cannot verify the same payroll twice." 
-  });
-  return; // ✅ STOP HERE — prevent dispatch
-}
-
+    // Same HR cannot verify twice
+    if (employee.hr1_verified_by === user.username || employee.hr2_verified_by === user.username) {
+      Swal.fire({ icon: "warning", title: "Cannot Verify", text: "You cannot verify the same payroll twice." });
+      return;
+    }
 
     try {
       await dispatch(verifyEmployeePayroll({

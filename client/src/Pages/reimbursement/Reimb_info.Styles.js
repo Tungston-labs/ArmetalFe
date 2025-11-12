@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const PageWrapper = styled.div`
   background: #fff;
-  padding: 2rem;
+  padding: 20px;
   font-family: Arial, sans-serif;
   color: #222;
   @media (min-width: 2560px) {

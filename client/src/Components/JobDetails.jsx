@@ -137,13 +137,13 @@ const [localErrors, setLocalErrors] = useState({});
       <FormRow>
         <FormGroup>
           <Label>Designation</Label>
-          <Input name="designation" value={formData.designation} onChange={handleChange} placeholder="Developer" />
+          <Input name="designation" value={formData.designation} onChange={handleChange} placeholder="Developer" autoComplete="off"/>
           {errors.designation && <div style={{ color: "red", marginTop: 6 }}>{errors.designation}</div>}
         </FormGroup>
 
         <FormGroup>
           <Label>Joining Date</Label>
-          <Input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} />
+          <Input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} autoComplete="off" />
           {errors.joining_date && <div style={{ color: "red", marginTop: 6 }}>{errors.joining_date}</div>}
         </FormGroup>
       </FormRow>
@@ -181,6 +181,7 @@ const [localErrors, setLocalErrors] = useState({});
     value={formData.total_leave}
     onChange={handleChange}
     placeholder="Total leave"
+    autoComplete="off"
     step="0.1" 
     min="0"    
      onWheel={(e) => e.target.blur()} 
@@ -213,9 +214,10 @@ const [localErrors, setLocalErrors] = useState({});
     value={formData.pending_leave}
     onChange={handleChange}
     placeholder="Pending leave"
+    autoComplete="off"
     step="0.1"
     min="0"
-    onWheel={(e) => e.target.blur()} // prevent scroll wheel value change
+    onWheel={(e) => e.target.blur()} 
     style={{ width: "100%" }}
   />
   {errors.pending_leave && (
@@ -232,13 +234,13 @@ const [localErrors, setLocalErrors] = useState({});
       <FormRow>
         <FormGroup>
           <Label>Phone Number</Label>
-          <Input name="phno" value={formData.phno} onChange={handleChange} placeholder="Phone number" />
+          <Input name="phno" value={formData.phno} onChange={handleChange} placeholder="Phone number" autoComplete="off" />
           {errors.phno && <div style={{ color: "red", marginTop: 6 }}>{errors.phno}</div>}
         </FormGroup>
 
         <FormGroup>
           <Label>Passport Number</Label>
-          <Input name="passport_number" value={formData.passport_number} onChange={handleChange} placeholder="Passport number" />
+          <Input name="passport_number" value={formData.passport_number} onChange={handleChange} placeholder="Passport number" autoComplete="off" />
           {errors.passport_number && <div style={{ color: "red", marginTop: 6 }}>{errors.passport_number}</div>}
         </FormGroup>
       </FormRow>
@@ -246,19 +248,19 @@ const [localErrors, setLocalErrors] = useState({});
       <FormRow>
         <FormGroup>
           <Label>Work Permit</Label>
-          <Input name="workPermit" value={formData.workPermit} onChange={handleChange} placeholder="Work Permit" />
+          <Input name="workPermit" value={formData.workPermit} onChange={handleChange} placeholder="Work Permit" autoComplete="off" />
         </FormGroup>
 
         <FormGroup>
           <Label>Employee Contract</Label>
-          <Input name="employeeContract" value={formData.employeeContract} onChange={handleChange} placeholder="Employee Contract" />
+          <Input name="employeeContract" value={formData.employeeContract} onChange={handleChange} placeholder="Employee Contract" autoComplete="off" />
         </FormGroup>
       </FormRow>
 
       <FormRow>
         <FormGroup>
           <Label>Insurance Number</Label>
-          <Input name="insurance_number" value={formData.insurance_number} onChange={handleChange} placeholder="Insurance number" />
+          <Input name="insurance_number" value={formData.insurance_number} onChange={handleChange} placeholder="Insurance number"  autoComplete="off"/>
           {errors.insurance_number && <div style={{ color: "red", marginTop: 6 }}>{errors.insurance_number}</div>}
         </FormGroup>
 
@@ -273,13 +275,13 @@ const [localErrors, setLocalErrors] = useState({});
         <FormRow>
           <FormGroup>
             <Label>Aadhaar Number</Label>
-            <Input name="aadar_number" value={formData.aadar_number} onChange={handleChange} placeholder="Aadhaar Number" />
+            <Input name="aadar_number" value={formData.aadar_number} onChange={handleChange} placeholder="Aadhaar Number" autoComplete="off" />
             {errors.aadar_number && <div style={{ color: "red", marginTop: 6 }}>{errors.aadar_number}</div>}
           </FormGroup>
 
           <FormGroup>
             <Label>Contract Expiry Date</Label>
-            <Input type="date" name="contract_expiry_date" value={formData.contract_expiry_date} onChange={handleChange} />
+            <Input type="date" name="contract_expiry_date" value={formData.contract_expiry_date} onChange={handleChange} autoComplete="off" />
             {errors.contract_expiry_date && <div style={{ color: "red", marginTop: 6 }}>{errors.contract_expiry_date}</div>}
           </FormGroup>
         </FormRow>
@@ -287,13 +289,13 @@ const [localErrors, setLocalErrors] = useState({});
         <FormRow>
           <FormGroup>
             <Label>Iqama Number</Label>
-            <Input name="iqama_number" value={formData.iqama_number} onChange={handleChange} placeholder="Iqama Number" />
+            <Input name="iqama_number" value={formData.iqama_number} onChange={handleChange} placeholder="Iqama Number" autoComplete="off"/>
             {errors.iqama_number && <div style={{ color: "red", marginTop: 6 }}>{errors.iqama_number}</div>}
           </FormGroup>
 
           <FormGroup>
             <Label>Visa Expiry Date</Label>
-            <Input type="date" name="visa_expiry_date" value={formData.visa_expiry_date} onChange={handleChange} />
+            <Input type="date" name="visa_expiry_date" value={formData.visa_expiry_date} onChange={handleChange}  autoComplete="off"/>
             {errors.visa_expiry_date && <div style={{ color: "red", marginTop: 6 }}>{errors.visa_expiry_date}</div>}
           </FormGroup>
         </FormRow>

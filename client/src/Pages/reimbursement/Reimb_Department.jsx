@@ -39,6 +39,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import Navbar from '../../Components/Navbar.jsx';
 import Loader from "../../Components/Loader.jsx"
 import HistoryIcon from "../../assets/history.svg";
+import EmployeeTitle from '../../Components/EmployeeTitle.jsx';
 const Department = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -84,35 +85,18 @@ const Department = () => {
          <Navbar />
     <DepartmentContainer>
 
-
-      <HeaderSection>
-<TitleSection>
-  <div className="left-content">
-    <div className="icon-box">
-        <EmployeeImage  src={Employee} alt="employeeIcon" />
-    </div>
-    <div>
-      <Title>Reimbursement</Title>
-      <Subtitle>Manage all departments within the organization.</Subtitle>
-    </div>
-  </div>
-
-<AddButton onClick={() => setShowModal(true)}>
-  History
-  <img
-    src={HistoryIcon}
-    alt="history icon"
-    style={{ width: "18px", height: "18px", marginLeft: "6px" }}
-  />
-</AddButton>
-</TitleSection>
-
-
-
-        <ActionArea>
-       
-        </ActionArea>
-      </HeaderSection>
+<EmployeeTitle
+  iconSrc={Employee}
+  title="Reimbursement"
+  subtitle="Manage all departments within the organization"
+  buttonText="History"
+  buttonIcon={HistoryIcon} 
+  onAddClick={() => setShowModal(true)} 
+  showDropdown={false}
+  showBackArrow={false}
+  showTabs={false}
+  showSearch={false}
+/>
 
       <CardGrid>
   {loading ? (

@@ -5,7 +5,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 export const Container = styled.div`
   font-family: 'Segoe UI', sans-serif;
   background-color: white;
-  padding: 25px;
+  padding: 20px;
 `
 
 export const TopBar = styled.div`
@@ -366,7 +366,7 @@ export const Th = styled.th`
     color: white;
     font-family: "Raleway";
     padding: 8px;
-  
+    cursor:pointer;
  @media (min-width: 3840px) {
     font-size: 24px;
   }
@@ -396,6 +396,7 @@ export const Td = styled.td`
   border: none;
   transition: all 0.2s ease;
 padding: 0px 8px;
+  cursor:pointer;
   div {
     display: flex;
     justify-content: center;
@@ -559,7 +560,7 @@ export const Pagination = styled.div`
     color: white;
     border-color: #1e3a8a;
   }
-  }
+  
 `;
 export const Icon = styled.img`
   width: 52px;

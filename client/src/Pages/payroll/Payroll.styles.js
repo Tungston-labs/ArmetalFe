@@ -171,6 +171,7 @@ export const InfoRow = styled.div`
   justify-content: space-between;
   padding: 0.2rem 0;
   border-bottom: 1px solid #ddd;
+  cursor:pointer;
 `;
 
 export const Label = styled.div`
@@ -225,7 +226,7 @@ export const SectionTitles = styled.h3`
   font-family: Satoshi;
   font-weight: 700;
   padding-bottom: 0.5rem;
-
+  cursor:pointer;
   /* Base font size for small screens */
   font-size: 16px;
 
@@ -266,7 +267,7 @@ export const Table = styled.table`
   width: 100%;
   min-width: 600px;
   border-collapse: collapse;
-
+  cursor:pointer;
   td, th {
     border: 1px solid #999;
     padding: 0.4rem;
@@ -316,7 +317,7 @@ export const Footer = styled.div`
   margin-top: 2rem;
   font-weight: bold;
   border: 1px solid #999;
-
+  cursor:pointer;
   span {
     font-weight: bold;
   }
@@ -362,7 +363,7 @@ export const TableHeadingEarnings = styled.div`
   padding: 0.4rem;
   margin-top: 1rem;
   font-size: 14px; /* default for small screens */
-
+  cursor:pointer;
   @media (min-width: 768px) {
     font-size: 16px;
   }

@@ -294,6 +294,7 @@ const handleUpdate = async () => {
               onChange={handleChange}
               disabled={!isEditing}
               readOnly
+              style={{ cursor: "pointer" }}
             />
           </InputGroup>
           <InputGroup>
@@ -304,6 +305,7 @@ const handleUpdate = async () => {
               onChange={handleChange}
               // disabled={!isEditing}
               readOnly
+              style={{ cursor: "pointer" }}
             />
           </InputGroup>
           <InputGroup>
@@ -317,7 +319,8 @@ const handleUpdate = async () => {
                   padding: '10px',
                   borderRadius: '8px',
                   border: '1px solid #ccc',
-                  fontSize: '16px'
+                  fontSize: '16px',
+                    cursor: "pointer" 
                 }}
               >
                 <option value="">-- Select Department Head --</option>

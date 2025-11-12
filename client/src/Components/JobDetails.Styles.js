@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const FormContainer = styled.form`
   width: 100%;
   margin: 40px auto;
-  padding: 30px;
+  // padding: 30px;
 
 `;
 

@@ -12,10 +12,11 @@ import {
   InputBox,
   BioBox,
   InfoRow,
-  BackArrowWrapper, 
+  BackArrowWrapper,
+  UserIconWrapper, 
 } from "./Header.Styles";
 import { GoArrowLeft } from "react-icons/go";
-
+import { PiUserCirclePlusThin } from "react-icons/pi";
 const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBack }) => {
   const fileInputRef = useRef(null);
 
@@ -41,31 +42,39 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
           </BackArrowWrapper>
         )}
 
-        <ProfileImageWrapper>
-          <ProfileImage
-            src={
-              employee?.profile_pic instanceof File
-                ? URL.createObjectURL(employee.profile_pic)
-                : employee.profile_pic || "https://via.placeholder.com/200x200.png?text=Profile+Image"
-            }
-            alt="Employee Profile"
-            onClick={handleImageClick}
-            editable={editable}
-          />
-          {editable && (
-            <PlusIconWrapper onClick={handleImageClick}>
-              <FiPlus size={24} />
-            </PlusIconWrapper>
-          )}
+<ProfileImageWrapper>
+  {employee?.profile_pic ? (
+    <ProfileImage
+      src={
+        employee.profile_pic instanceof File
+          ? URL.createObjectURL(employee.profile_pic)
+          : employee.profile_pic
+      }
+      alt="Employee Profile"
+      onClick={handleImageClick}
+      editable={editable}
+    />
+  ) : (
+    <UserIconWrapper onClick={handleImageClick} editable={editable}>
+      <PiUserCirclePlusThin size={120} />
+    </UserIconWrapper>
+  )}
 
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
-        </ProfileImageWrapper>
+  {editable && (
+    <PlusIconWrapper onClick={handleImageClick}>
+      <FiPlus size={24} />
+    </PlusIconWrapper>
+  )}
+
+  <input
+    type="file"
+    accept="image/*"
+    ref={fileInputRef}
+    onChange={handleFileChange}
+    style={{ display: "none" }}
+  />
+</ProfileImageWrapper>
+
 
         <ContentArea>
           <LeftColumn>

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 export const ProfileContainer = styled.div`
   margin: 0 auto;
   padding: 20px;
+  
 `;
 
 export const Header = styled.div`
@@ -284,4 +285,20 @@ export const BackArrowWrapper = styled.div`
 
 `;
 
+export const UserIconWrapper = styled.div`
+  width: 180px;
+  height: 180px;
+  border-radius: 10%;
+  border: 1px solid #00177eff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  transition: 0.3s ease;
+  cursor: ${(props) => (props.editable ? "pointer" : "default")};
+
+  &:hover {
+    opacity: ${(props) => (props.editable ? 0.7 : 1)};
+  }
+`;
 

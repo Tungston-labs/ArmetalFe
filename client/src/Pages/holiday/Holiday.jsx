@@ -158,6 +158,7 @@ const cancelDelete = () => {
       onChange={(e) =>
         setFormData({ ...formData, name: e.target.value.slice(0, 250) })
       }
+      style={{cursor:"pointer"}}
     />
   </FieldWrapper>
 

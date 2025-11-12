@@ -130,6 +130,19 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
   const upcomingHolidays = summary.upcoming_holidays || [];
   const contractExpiry = summary.upcoming_contract_expiry?.list || [];
 
+
+const getHolidayForDate = (date) => {
+  if (!upcomingHolidays) return null;
+  return upcomingHolidays.find((h) => {
+    const hDate = new Date(h.date);
+    return (
+      hDate.getDate() === date &&
+      hDate.getMonth() === month &&
+      hDate.getFullYear() === year
+    );
+  });
+};
+
   return (
     <Container>
       {loading && <Loader />}
@@ -210,28 +223,60 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
             {days.map((d, i) => (
               <CalendarDay key={i} isHeader>{d}</CalendarDay>
             ))}
-            {dates.map((date, i) => {
-              const isToday =
-                date === currentDay && month === currentMonth && year === currentYear;
-              const isSunday = (i + 1) % 7 === 0;
-              const isSelected =
-                selectedDate &&
-                selectedDate.date === date &&
-                selectedDate.month === month &&
-                selectedDate.year === year;
+{dates.map((date, i) => {
+  if (date === "") return <CalendarDay key={i} />;
 
-              return (
-                <CalendarDay
-                  key={i}
-                  isToday={isToday}
-                  isSunday={isSunday}
-                  isSelected={isSelected}
-                  onClick={() => handleDateClick(date)}
-                >
-                  {date}
-                </CalendarDay>
-              );
-            })}
+  const isToday =
+    date === currentDay && month === currentMonth && year === currentYear;
+
+  const dateObj = new Date(year, month, date);
+  const isSunday = dateObj.getDay() === 0; // Sunday
+
+  const isSelected =
+    selectedDate &&
+    selectedDate.date === date &&
+    selectedDate.month === month &&
+    selectedDate.year === year;
+
+  // Only mark holiday if it’s not Sunday
+  const holiday = !isSunday ? getHolidayForDate(date) : null;
+
+  return (
+    <CalendarDay
+      key={i}
+      isToday={isToday}
+      isSunday={isSunday}
+      isSelected={isSelected}
+      onClick={() => handleDateClick(date)}
+      title={holiday ? holiday.description : ""} // 👈 tooltip on hover
+      style={{
+        position: "relative",
+        backgroundColor: holiday ? "#FFECEC" : undefined, // highlight only holidays
+        cursor: holiday ? "pointer" : "default", // nice UX touch
+      }}
+    >
+      {date}
+
+      {/* Holiday icon */}
+      {holiday && (
+        <img
+          src={HolidaySvg}
+          alt={holiday.description}
+          title={holiday.description} // 👈 also show name when hovering the icon
+          style={{
+            width: "16px",
+            height: "16px",
+            position: "absolute",
+            bottom: "2px",
+            right: "2px",
+          }}
+        />
+      )}
+    </CalendarDay>
+  );
+})}
+
+
           </CalendarGrid>
         </CalendarWrapper>
 
@@ -259,8 +304,12 @@ const [holidaySliceCount, setHolidaySliceCount] = useState(3);
                   <p>{h.holiday_type}</p>
                 </HolidayInfo>
                 <HolidayDate>
-                  {new Date(h.date).toLocaleDateString()}
-                </HolidayDate>
+  {new Date(h.date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  })}
+</HolidayDate>
               </HolidayItem>
             ))}
           </HolidayList>

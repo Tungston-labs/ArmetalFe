@@ -296,13 +296,17 @@ document.head.appendChild(style);
 
 // Styled Components
 export const TopBar = styled.div`
-  display: flex;
+ display: flex;
   justify-content: space-between;
   align-items: center;
-  /* margin-bottom: 1.5rem; */
-  background-color: transparent; 
-position: absolute;
-right: 0;
+  width: 100%;
+  height: 60px; 
+  padding: 0 1rem;
+  position: fixed;  
+  top: 0;          
+  left: 0;     
+  z-index: 1000; 
+
   @media (min-width: 2560px) {
     height: 70px;
   }

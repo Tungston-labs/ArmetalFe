@@ -63,9 +63,12 @@ export const DateSelector = styled.div`
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
-
     flex: 2;
-    margin-left: -5rem;
+
+    @media (min-width: 1025px) {
+    margin-left: -10rem;
+
+             }
   }
 
   .left {
@@ -114,6 +117,7 @@ export const DateSelector = styled.div`
   }
 
     @media (min-width: 769px)and (max-width: 1023px) {
+     
     .day {
       font-size: 2.5rem;
     }
@@ -126,24 +130,24 @@ export const DateSelector = styled.div`
   }
     @media (min-width: 1024px)and (max-width: 1440px) {
     .day {
+      font-size: 2rem;
+    }
+    .month {
+      font-size: 1.1rem;
+    }
+    .weekday {
+      font-size: 1rem;
+    }
+  }
+  @media (min-width: 1441px)and (max-width: 1919px) {
+    .day {
       font-size: 3rem;
     }
     .month {
       font-size: 1.5rem;
     }
     .weekday {
-      font-size: 1.2rem;
-    }
-  }
-  @media (min-width: 1441px)and (max-width: 1919px) {
-    .day {
-      font-size: 4rem;
-    }
-    .month {
-      font-size: 2rem;
-    }
-    .weekday {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
     }
   }
  
@@ -338,7 +342,7 @@ export const EmployeesPanel = styled.div`
   @media (max-width: 1440px) {
     width: 30%;
     min-height: 45vh;
-    max-height: 65vh;
+    max-height: 60vh;
   }
 
   /* 📱 Tablets */
@@ -444,6 +448,18 @@ export const EmployeeCard = styled.div`
     @media (min-width: 3500px) {
       font-size: 50px;
     }
+       @media (max-width:1920px) {
+      font-size: 20px;
+    }
+       @media (max-width: 1440px) {
+      font-size: 15px;
+    }
+       @media (max-width: 1024px) {
+      font-size: 15px;
+    }
+       @media (max-width: 768px) {
+      font-size: 15px;
+    }
   }
 `;
 
@@ -484,7 +500,7 @@ export const TaskPanel = styled.div`
   /* ✅ Medium screens (laptops / desktops) */
   @media (max-width: 1440px) {
     padding: 0.9rem;
-    max-height: 65vh;
+    max-height: 58vh;
   }
 
   /* ✅ Tablets */
