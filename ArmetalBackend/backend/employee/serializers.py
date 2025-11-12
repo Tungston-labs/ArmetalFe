@@ -24,6 +24,7 @@ class SafeDateField(serializers.DateField):
 
 
 
+
 class EmployeeSerializer(serializers.ModelSerializer):
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
@@ -39,9 +40,15 @@ class EmployeeSerializer(serializers.ModelSerializer):
     )
     department = serializers.CharField(source='department.name', read_only=True)
 
+    # ✅ Add is_head field
+    is_head = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Employee_db
         exclude = ['user', 'password']
+
+    def get_is_head(self, obj):
+        return obj.department and obj.department.department_head == obj
 
     def validate(self, data):
         country = self.context['request'].user.company.country
@@ -62,6 +69,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"insurance_number": "Insurance number is required for non-India"})
 
         return data
+
 
 
 class EmpBankPaymentSerializer(serializers.ModelSerializer):
