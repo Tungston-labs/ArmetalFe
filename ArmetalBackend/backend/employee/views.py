@@ -1,17 +1,34 @@
 # employees/views.py
 
-from rest_framework import generics, status, filters
+from rest_framework import generics, status, filters,permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from user.permissions import IsHRAdmin,IsEmployee
-from .models import Employee_db,TempUpload
-from .serializers import EmployeeSerializer,EmpDocumentSerializer
+from .models import Employee_db,TempUpload,EmpDocument,EmpBankPaymentModel,ScheduleReminder
+from .serializers import EmployeeSerializer,EmpDocumentSerializer,EmployeeProfileSerializer,EmployeeDocumentSummarySerializer,EmpBankPaymentSerializer,ScheduleReminderSerializer,EmployeeDashboardSerializer,TempUploadSerializer
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from shared.pagination import CustomPagination
 from rest_framework import serializers
 from django.core.mail import send_mail
 from django.conf import settings
+from rest_framework.exceptions import NotFound
+from rest_framework.parsers import MultiPartParser,FormParser,JSONParser
+from django.utils import timezone
+from django.db.models import Sum
+from calendar import monthrange
+from datetime import timedelta, date, datetime
+from attendance.models import Attendance
+from holidays.models import PublicHoliday
+from rest_framework.exceptions import ValidationError
+from .tasks import send_reminder
+from django.utils.timezone import now as timezone_now
+from employee.utils import send_push_notification
+import calendar
+from departments.models import Department
+from leave.models import LeaveRequest
+from rest_framework.pagination import PageNumberPagination
+from django.core.files.storage import default_storage
 # BASIC DETAILS
 
 
@@ -118,41 +135,47 @@ class EmployeeListView(generics.ListAPIView):
         print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
         return queryset.order_by('name')
 
+
 class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee_db.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'pk'
 
-    def perform_destroy(self, instance):
-        # Get the company before deleting the employee
-        company = instance.department.company if instance.department else None
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        old_department = instance.department
+        new_department = serializer.validated_data.get('department', old_department)
 
-        # Delete the associated user if exists
+        # ✅ If department changed, remove as head from old department
+        if old_department and old_department != new_department:
+            if old_department.department_head == instance:
+                old_department.department_head = None
+                old_department.save(update_fields=['department_head'])
+
+        # Save the updated employee
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        department = instance.department
+        company = department.company if department else None
+
+        # Delete related user first (if exists)
         if instance.user:
             instance.user.delete()
 
-        # Delete the employee
+        # Delete the employee (this will trigger signal)
         instance.delete()
 
-        # Decrease employee count safely
+        # ✅ Update company employee count
         if company:
             company.number_of_employees = max((company.number_of_employees or 1) - 1, 0)
-            company.save()
-
-
+            company.save(update_fields=["number_of_employees"])
 
 
 # BANK DETAILS
 
-from rest_framework import generics, permissions
-from .models import EmpBankPaymentModel, Employee_db
-from .serializers import EmpBankPaymentSerializer
-from user.permissions import IsHRAdmin
-from rest_framework.exceptions import NotFound
-from rest_framework.parsers import MultiPartParser, FormParser
-from django.shortcuts import get_object_or_404
-from rest_framework import serializers
+
 
 class EmpBankPaymentCreateListView(generics.ListCreateAPIView):
     serializer_class = EmpBankPaymentSerializer
@@ -182,14 +205,6 @@ class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIVi
         return EmpBankPaymentModel.objects.filter(employee_id=employee_id)
 
 
-from datetime import timedelta
-from django.utils import timezone
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from .models import Employee_db
-from .serializers import EmployeeSerializer
-
-from rest_framework.pagination import PageNumberPagination
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 7
@@ -233,16 +248,7 @@ class UpcomingExpiryEmployeeListView(generics.ListAPIView):
 
 
 
-# views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status, permissions
-from rest_framework.parsers import MultiPartParser, FormParser
-from django.shortcuts import get_object_or_404
-from django.core.files.storage import default_storage
 
-from .models import EmpDocument, Employee_db
-from .serializers import EmpDocumentSerializer,TempUploadSerializer
 
 
 
@@ -282,14 +288,6 @@ class UploadImageDetailView(APIView):
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from rest_framework.response import Response
-from rest_framework import status, permissions
-from django.shortcuts import get_object_or_404
-from django.core.files.storage import default_storage
-from .models import Employee_db, EmpDocument
-from .serializers import EmpDocumentSerializer
 
 class EmployeeDocumentsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -345,9 +343,7 @@ class EmployeeDocumentsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework import generics, permissions
-from .models import EmpDocument
-from .serializers import EmpDocumentSerializer
+
 
 class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = EmpDocument.objects.all()
@@ -360,13 +356,6 @@ class EmpDocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 # employee dashboard in web application
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-
-from .models import Employee_db
-from .serializers import EmployeeDashboardSerializer
 
 class EmployeeDashboardAPIView(APIView):
     permission_classes = [IsHRAdmin]
@@ -436,18 +425,9 @@ class EmployeeSelfView(APIView):
 
 # for dashboard details 
 
+
+
 from datetime import date, timedelta
-from django.utils import timezone
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-
-from attendance.models import Attendance
-from holidays.models import PublicHoliday
-from employee.models import Employee_db
-from departments.models import Department
-from leave.models import LeaveRequest
-
 
 class DashboardSummaryView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
@@ -465,7 +445,7 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "designation": emp.designation,
-                "employee_id":emp.employee_id,
+                "employee_id": emp.employee_id,
                 "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
             for emp in employees
@@ -497,7 +477,8 @@ class DashboardSummaryView(APIView):
                 "id": leave.id,
                 "employee": leave.employee.name,
                 "department": leave.employee.department.name if leave.employee.department else None,
-                "profile_pic": request.build_absolute_uri(leave.employee.profile_pic.url) if leave.employee.profile_pic else None,          "leave_type": leave.leave_type,
+                "profile_pic": request.build_absolute_uri(leave.employee.profile_pic.url) if leave.employee.profile_pic else None,
+                "leave_type": leave.leave_type,
                 "from_date": leave.from_date,
                 "to_date": leave.to_date,
                 "reason": leave.reason,
@@ -507,24 +488,23 @@ class DashboardSummaryView(APIView):
 
         # 4. Department list with employee count
         department_list = [
-    {
-        "id": dept.id,
-        "name": dept.name,
-        "employee_count": dept.employees.count(),
-        "head": {
-            "id": dept.department_head.id,
-            "name": dept.department_head.name
-        } if dept.department_head else None
-    }
-    for dept in Department.objects.filter(company=company)
-]
+            {
+                "id": dept.id,
+                "name": dept.name,
+                "employee_count": dept.employees.count(),
+                "head": {
+                    "id": dept.department_head.id,
+                    "name": dept.department_head.name
+                } if dept.department_head else None
+            }
+            for dept in Department.objects.filter(company=company)
+        ]
 
-
-        # 5. Upcoming holidays
+        # 5. Upcoming holidays (next 10)
         upcoming_holidays_qs = PublicHoliday.objects.filter(
             company=company,
             date__gte=today
-        ).order_by("date")[:10]  # next 10 holidays
+        ).order_by("date")[:10]
         upcoming_holidays = [
             {
                 "date": holiday.date,
@@ -532,6 +512,19 @@ class DashboardSummaryView(APIView):
                 "holiday_type": holiday.holiday_type,
             }
             for holiday in upcoming_holidays_qs
+        ]
+
+        # 5a. All company holidays (for calendar)
+        all_company_holidays_qs = PublicHoliday.objects.filter(company=company).order_by("date")
+        all_company_holidays = [
+            {
+                "id": holiday.id,
+                "date": holiday.date,
+                "day": holiday.day,
+                "description": holiday.description,
+                "holiday_type": holiday.holiday_type,
+            }
+            for holiday in all_company_holidays_qs
         ]
 
         # 6. Upcoming contract expiries
@@ -544,7 +537,7 @@ class DashboardSummaryView(APIView):
                 "name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "contract_expiry_date": emp.contract_expiry_date,
-                "employee_id":emp.employee_id,
+                "employee_id": emp.employee_id,
                 "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
             for emp in upcoming_contract_expiry_qs
@@ -558,12 +551,11 @@ class DashboardSummaryView(APIView):
 
         # 8. On leave today
         on_leave_today_count = LeaveRequest.objects.filter(
-                from_date__lte=today,
-                to_date__gte=today,
-                employee__department__company=company,
-                status='approved'
-            ).values('employee').distinct().count()
-
+            from_date__lte=today,
+            to_date__gte=today,
+            employee__department__company=company,
+            status='approved'
+        ).values('employee').distinct().count()
 
         return Response({
             "total_employees": {
@@ -580,6 +572,10 @@ class DashboardSummaryView(APIView):
             },
             "departments": department_list,
             "upcoming_holidays": upcoming_holidays,
+            "all_company_holidays": {
+                "count": all_company_holidays_qs.count(),
+                "list": all_company_holidays
+            },
             "upcoming_contract_expiry": {
                 "count": upcoming_contract_expiry_qs.count(),
                 "list": upcoming_contract_expiry
@@ -597,12 +593,7 @@ class DashboardSummaryView(APIView):
 
 # employee/views.py
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from .models import Employee_db
-from .serializers import EmployeeProfileSerializer
-from user.permissions import IsEmployee
+
 
 class EmployeeProfileView(APIView):
     permission_classes = [IsAuthenticated, IsEmployee]
@@ -617,12 +608,7 @@ class EmployeeProfileView(APIView):
 
         
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from employee.models import Employee_db
-from .serializers import EmployeeDocumentSummarySerializer
-from rest_framework import status
+
 
 class EmployeeDocumentSummaryView(APIView):
     permission_classes = [IsAuthenticated]
@@ -641,19 +627,7 @@ class EmployeeDocumentSummaryView(APIView):
 
 
 # mobile app home page with attendance details-------------------------
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
 
-from django.utils import timezone
-from django.db.models import Sum
-from calendar import monthrange
-from datetime import timedelta, date, datetime
-
-from attendance.models import Attendance
-from holidays.models import PublicHoliday
-from employee.models import Employee_db
 
 
 class AttendanceSummaryView(APIView):
@@ -730,13 +704,6 @@ class AttendanceSummaryView(APIView):
             "remaining_working_days": len(remaining_days),
             "total_hours": round(total_hours, 2)
         })
-from rest_framework import generics, permissions
-from rest_framework.exceptions import ValidationError
-from .models import ScheduleReminder
-from .serializers import ScheduleReminderSerializer
-from .tasks import send_reminder
-from django.utils.timezone import now as timezone_now
-from employee.utils import send_push_notification
 
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
@@ -777,75 +744,86 @@ class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-
-from datetime import date, timedelta
-import calendar
-from django.db.models import Sum
-from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
-from attendance.models import Attendance
-from holidays.models import PublicHoliday 
-from employee.models import Employee_db
-
+from django.utils import timezone
+from django.db.models import Sum
+from datetime import date, timedelta, datetime
+import calendar
 
 class EmployeeMonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
-            # Get employee from the logged-in user
-            employee = request.user.employee_db  
+            # Get employee from logged-in user
+            employee = request.user.employee_db
+            department = employee.department
+            company = department.company if department else None
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found"}, status=404)
+
+        if not department or not company:
+            return Response({"error": "Employee not assigned to a department or company"}, status=400)
 
         today = timezone.now().date()
         year = today.year
         month = today.month
 
-        # First and last day of the month
+        # First and last day of month
         first_day = date(year, month, 1)
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
         # All days in month
         all_days = [first_day + timedelta(days=i) for i in range((last_day - first_day).days + 1)]
 
-        # Sundays
-        sundays = [d for d in all_days if d.weekday() == 6]
+        # Get company_off_day (e.g., Friday) for this company
+        company_off_day = PublicHoliday.objects.filter(
+            company=company,
+            holiday_type='company_off_day'
+        ).first()
+        off_day_name = company_off_day.day if company_off_day else None
 
-        # Company holidays for this month
-        holidays = PublicHoliday.objects.filter(
-            company=employee.department.company,
+        # Company holidays excluding company_off_day
+        holidays_qs = PublicHoliday.objects.filter(
+            company=company,
             date__range=(first_day, last_day)
-        ).values_list("date", flat=True)
+        ).exclude(holiday_type='company_off_day')
+        holidays = [h.date for h in holidays_qs]
 
-        # Working days = all days - Sundays - Holidays
-        working_days = [d for d in all_days if d not in sundays and d not in holidays]
+        # Working days = all_days excluding company_off_day and holidays
+        working_days = [
+            d for d in all_days
+            if (off_day_name is None or d.strftime('%A') != off_day_name)
+            and d not in holidays
+        ]
 
-        # Attendance records for this month
-        attendances = Attendance.objects.filter(
-            employee=employee,
-            date__range=(first_day, last_day)
-        )
+        # Attendance records
+        attendances = Attendance.objects.filter(employee=employee, date__range=(first_day, last_day))
 
-        # Total working hours
+        # Total hours
         total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
 
-        # Half days (4 <= hours < 7)
-        half_days = attendances.filter(total_hours__gte=2, total_hours__lt=6).values_list("date", flat=True)
+        # Half days (4 <= hours < 8)
+        half_days = [att.date for att in attendances if 4 <= (att.total_hours or 0) < 8]
 
-        # Present days (hours >= 7)
-        present_days = attendances.filter(total_hours__gte=6).values_list("date", flat=True)
+        # Full present days (hours >= 8)
+        present_days = [att.date for att in attendances if (att.total_hours or 0) >= 8]
 
-        # Absent days only until today (exclude present and half days)
-        absent_days = [d for d in working_days if d <= today and d not in present_days and d not in half_days]
+        # Absent days (working days until today, excluding present and half days)
+        absent_days = [
+            d for d in working_days
+            if d <= today and d not in present_days and d not in half_days
+        ]
 
-
-        # Remaining working days
+        # Remaining working days (after today)
         remaining_working_days = [d for d in working_days if d > today]
 
+        # Company off day dates for this month
+        off_day_dates = [
+            d for d in all_days if off_day_name and d.strftime('%A') == off_day_name
+        ]
 
         data = {
             "month": today.strftime("%B"),
@@ -853,15 +831,19 @@ class EmployeeMonthlySummaryView(APIView):
             "total_working_days_dates": working_days,
             "total_working_hours": float(total_hours),
             "half_days_count": len(half_days),
-            "half_days_dates": list(half_days),
+            "half_days_dates": half_days,
             "present_days_count": len(present_days),
-            "present_days_dates": list(present_days),
+            "present_days_dates": present_days,
             "absent_days_count": len(absent_days),
             "absent_days_dates": absent_days,
             "remaining_working_days_count": len(remaining_working_days),
             "remaining_working_days_dates": remaining_working_days,
             "holidays_count": len(holidays),
-            "holidays_dates": list(holidays)
+            "holidays_dates": holidays,
+            "company_off_day_name": off_day_name,
+            "company_off_day_dates": off_day_dates
         }
 
         return Response(data)
+
+

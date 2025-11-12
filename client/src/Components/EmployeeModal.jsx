@@ -117,7 +117,7 @@ const EmployeeModal = ({ onClose, projectId, project }) => {
                       <td>{emp.employee_id}</td>
                       <td>{emp.email}</td>
                       <td>{emp.designation}</td>
-                      <td>{emp.department || "—"}</td>
+                      <td>{emp.department_name || "—"}</td>
                       <td>
                         <Checkbox
                           type="checkbox"

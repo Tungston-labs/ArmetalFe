@@ -43,11 +43,10 @@ const EmployeeList = () => {
   const { list: departmentList, loading: deptLoading } = useSelector(
     (state) => state.departments
   );
-
-  // Fetch all departments once
   useEffect(() => {
-    dispatch(getDepartments());
+    dispatch(getDepartments({ page: 1, search: "" })); // ✅ fixed
   }, [dispatch]);
+  
 
   // Fetch all employees (only once initially or on filter/page change)
   useEffect(() => {
@@ -118,16 +117,18 @@ const EmployeeList = () => {
       {loading && <Loader />}
       <Navbar />
       <Container>
-        <EmployeeTitle
-          iconSrc={EmployeeIcon}
-          dropdownOptions={departmentList || []}
-          dropdownLoading={deptLoading}
-          onAddClick={() => navigate("/basic-details")}
-          onSearchChange={setSearchText}
-          onDropdownChange={setDepartmentFilter}
-          showBackArrow={false}
-          showTabs={true}
-        />
+      <EmployeeTitle
+  key={departmentList?.length || 0} // ✅ forces rerender when departmentList changes
+  iconSrc={EmployeeIcon}
+  dropdownOptions={departmentList || []}
+  dropdownLoading={deptLoading}
+  onAddClick={() => navigate("/basic-details")}
+  onSearchChange={setSearchText}
+  onDropdownChange={setDepartmentFilter}
+  showBackArrow={false}
+  showTabs={true}
+/>
+
 
         {!loading && (
           <>

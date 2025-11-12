@@ -172,9 +172,10 @@ class PayrollVerifyView(APIView):
 
         record.save()
 
-        # ✅ Return full payroll record so frontend can refresh row
-        serializer = EmployeePayrollRecordSerializer(record)
+        # ✅ FIXED: pass request in serializer context
+        serializer = EmployeePayrollRecordSerializer(record, context={"request": request})
         return Response(serializer.data)
+
 
 
 class PayrollStatusUpdateView(APIView):
@@ -202,7 +203,7 @@ class PayrollStatusUpdateView(APIView):
         record.status = new_status
         record.save()
 
-        serializer = EmployeePayrollRecordSerializer(record)
+        serializer = EmployeePayrollRecordSerializer(record,context={'request': request})
         return Response(serializer.data)
 
     
@@ -246,8 +247,12 @@ class EmployeePayslipView(APIView):
         if month:
             queryset = queryset.filter(month__iexact=month)
 
-        serializer = EmployeePayrollRecordSerializer(queryset, many=True)
+        serializer = EmployeePayrollRecordSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
+
+
+
+
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, Http404
@@ -277,11 +282,21 @@ class PayslipDownloadView(APIView):
         except EmployeePayrollRecord.DoesNotExist:
             raise Http404("Payroll record not found")
 
-        # Generate the PDF content using the utility function
-        pdf_bytes = generate_payslip_pdf(employee, record)
+        # ✅ Use serializer to get all computed values
+        from .serializers import EmployeePayrollRecordSerializer
+        serialized = EmployeePayrollRecordSerializer(record).data
+        print("\n==================== PAYSLIP DATA ====================")
+        import pprint
+        pprint.pprint(serialized)
+        print("=====================================================\n")
 
-        # Return as PDF response
+
+        # ✅ Pass serializer data (dict), not model instance
+        pdf_bytes = generate_payslip_pdf(serialized)
+
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="Payslip_{month}_{year}.pdf"'
         response.write(pdf_bytes)
         return response
+
+

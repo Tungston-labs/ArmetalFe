@@ -85,7 +85,7 @@ const ViewBasic = () => {
       ...employeeDetail,
       department: deptId,
       total_leave: employeeDetail.total_leave || "",
-      pending_leave: employeeDetail.pending_leave || "",
+      paid_leave: employeeDetail.paid_leave || "",
       contract_expiry_date: employeeDetail.contract_expiry_date || "",
       role: employeeDetail.role || "",
       idcard: employeeDetail.idcard || "",
@@ -103,58 +103,78 @@ const ViewBasic = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setIsEdited(true);
   };
-  const handleSubmit = async () => {
-    let payload = { ...formData };
+const handleSubmit = async () => {
+  let payload = { ...formData };
 
-    Object.keys(payload).forEach((key) => {
-      if (
-        payload[key] === "" ||
-        payload[key] === null ||
-        payload[key] === undefined
-      ) {
-        delete payload[key];
-      }
-    });
-
-    const country = formData?.company?.country;
-
-    if (country === "IN") {
-      delete payload.iqama_number;
-      delete payload.insurance_number;
-      delete payload.visa_expiry_date;
-
-      if (!payload.aadar_number?.trim()) {
-        alert("Aadhaar number is required for India");
-        return;
-      }
-      if (payload.aadar_number.length !== 12) {
-        alert("Aadhaar number must be 12 digits");
-        return;
-      }
-    } else {
-      delete payload.aadar_number;
-
-      if (!payload.iqama_number?.trim()) {
-        alert("Iqama number is required");
-        return;
-      }
-      if (payload.iqama_number.length !== 12) {
-        alert("Iqama number must be 12 digits");
-        return;
-      }
+  Object.keys(payload).forEach((key) => {
+    if (
+      payload[key] === "" ||
+      payload[key] === null ||
+      payload[key] === undefined
+    ) {
+      delete payload[key];
     }
+  });
 
-    await dispatch(submitEmployee(payload));
-    await dispatch(getEmployeeById(id));
+  const country = formData?.company?.country;
 
-    Swal.fire({
-      icon: "success",
-      title: "Updated!",
-      text: "Employee details updated successfully.",
-      confirmButtonColor: "#304EB0",
+  if (country === "IN") {
+    delete payload.iqama_number;
+    delete payload.insurance_number;
+    delete payload.visa_expiry_date;
+
+    if (!payload.aadar_number?.trim()) {
+      alert("Aadhaar number is required for India");
+      return;
+    }
+    if (payload.aadar_number.length !== 12) {
+      alert("Aadhaar number must be 12 digits");
+      return;
+    }
+  } else {
+    delete payload.aadar_number;
+
+    if (!payload.iqama_number?.trim()) {
+      alert("Iqama number is required");
+      return;
+    }
+    if (payload.iqama_number.length !== 12) {
+      alert("Iqama number must be 12 digits");
+      return;
+    }
+  }
+
+  // ✅ Check if employee is head and department is changing
+  const oldDept = employeeDetail.department;
+  const newDept = payload.department;
+  if (employeeDetail.is_head && oldDept !== newDept) {
+    const confirmResult = await Swal.fire({
+      title: "Warning",
+      text: "This employee is the head of their department. Changing their department will remove them as head from the previous department. Do you want to continue?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, continue",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
     });
-    setIsEdited(false);
-  };
+
+    if (!confirmResult.isConfirmed) {
+      return; // stop submission
+    }
+  }
+
+  await dispatch(submitEmployee(payload));
+  await dispatch(getEmployeeById(id));
+
+  Swal.fire({
+    icon: "success",
+    title: "Updated!",
+    text: "Employee details updated successfully.",
+    confirmButtonColor: "#304EB0",
+  });
+  setIsEdited(false);
+};
 
   const handleTabNavigation = (path) => {
     if (isEdited) {
@@ -354,11 +374,11 @@ const handleBack = () => {
           </FieldGroup>
 
           <FieldGroup>
-            <Label>Pending Leaves</Label>
+            <Label>Paid Leave</Label>
             <Input
               type="number"
-              name="pending_leave"
-              value={formData.pending_leave || ""}
+              name="paid_leave"
+              value={formData.paid_leave || ""}
               onChange={handleChange}
                step="0.1"
     min="0"

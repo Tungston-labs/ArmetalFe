@@ -24,6 +24,7 @@ class SafeDateField(serializers.DateField):
 
 
 
+
 class EmployeeSerializer(serializers.ModelSerializer):
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
@@ -39,9 +40,15 @@ class EmployeeSerializer(serializers.ModelSerializer):
     )
     department = serializers.CharField(source='department.name', read_only=True)
 
+    # ✅ Add is_head field
+    is_head = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Employee_db
         exclude = ['user', 'password']
+
+    def get_is_head(self, obj):
+        return obj.department and obj.department.department_head == obj
 
     def validate(self, data):
         country = self.context['request'].user.company.country
@@ -62,6 +69,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"insurance_number": "Insurance number is required for non-India"})
 
         return data
+
 
 
 class EmpBankPaymentSerializer(serializers.ModelSerializer):
@@ -227,8 +235,9 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
 
         for leave in approved_leaves:
             if leave.from_date and leave.to_date:
-                delta = (leave.to_date - leave.from_date).days + 1
-                leave_days_taken += max(delta, 0)
+                # ✅ Use model method to correctly account for half days
+                leave_days_taken += leave.calculate_leave_days()
+
 
         return {
             'total_leave': total_leave,         # current balance from DB

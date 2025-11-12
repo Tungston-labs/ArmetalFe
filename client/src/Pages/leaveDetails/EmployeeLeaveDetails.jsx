@@ -101,14 +101,9 @@ const EmployeeLeaveForm = () => {
         showSearch={false}
       />
 
-<div style={{ marginTop: "-30px" }}>
-  <Header
-    employee={employee}
-    editable={false}
-
-  />
-</div>
-      
+      <Hr />
+   <Header employee={employee}/>
+ 
 
       <SectionTitle>Job Details</SectionTitle>
       <TwoColumnRows>
@@ -165,7 +160,7 @@ const EmployeeLeaveForm = () => {
           
         />
         <Input
-          placeholder=" Paid Leave "
+          placeholder="0"
           value={employee?.paid_leave || ''}
           readOnly
         />

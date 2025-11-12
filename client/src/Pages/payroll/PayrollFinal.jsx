@@ -9,6 +9,7 @@ import {
   LeftBlock,
   LeftGroup
 } from './Final.Styles';
+import { Link } from 'react-router-dom';
 import { GoInfo } from "react-icons/go";
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -23,8 +24,7 @@ import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
 import VerificationCircles from '../../Components/VerificationCircle';
 import HolidayIcon from "../../assets/payroll.svg";
-import { Link, useNavigate } from 'react-router-dom';
-import EmployeeTitle from '../../Components/EmployeeTitle';
+
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -38,7 +38,6 @@ const years = Array.from({ length: 10 }, (_, i) => defaultYear - 2 + i);
 
 const PayrollTable = () => {
   const dispatch = useDispatch();
-    const navigate = useNavigate();
   const { data, loading, error, totalPages } = useSelector((state) => state.payroll);
   console.log({ data });
 
@@ -280,19 +279,17 @@ const PayrollTable = () => {
     <>
       <Navbar />
       <Container>
-        <EmployeeTitle
-  iconSrc={HolidayIcon}
-  title="Payroll"
-  subtitle="Unifying Teams Simplifying Operations"
-  // buttonText="History"
-  // buttonIcon={HistoryIcon} 
-  // onAddClick={() => setShowModal(true)} 
-  showDropdown={false}
-  showBackArrow={false}
-  showTabs={false}
-  showSearch={false}
-  rightElement={
- <Select value={selectedDepartment} onChange={handleDepartmentChange}>
+        <Header>
+          <TitleSection>
+  <LeftGroup>
+    <EmployeeImage src={HolidayIcon} alt="employeeIcon" />
+    <div>
+      <Title>Payroll</Title>
+      <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
+    </div>
+  </LeftGroup>
+
+  <Select value={selectedDepartment} onChange={handleDepartmentChange}>
     <option value="">Select Department</option>
     {departmentList.map(dept => (
       <option key={dept.id} value={String(dept.id).split(":")[0]}>
@@ -300,12 +297,13 @@ const PayrollTable = () => {
       </option>
     ))}
   </Select>
+</TitleSection>
 
-  }
-/>
+        </Header>
+
         <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <SearchInput placeholder=" Enter employee ID" value={searchTerm} onChange={handleSearch}   style={{ cursor: "pointer" }} />
-          <div style={{ display: 'flex', gap: '10px',cursor: "pointer"}}>
+          <SearchInput placeholder=" Enter employee ID" value={searchTerm} onChange={handleSearch} />
+          <div style={{ display: 'flex', gap: '10px' }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
               {months.map((month, index) => (
                 <option key={month} value={index + 1}>{month}</option>
@@ -349,142 +347,114 @@ const PayrollTable = () => {
                   />
                 </Th>
                 <Th>Sl No</Th>
-                   <Th>Name</Th>
                 <Th>Employee ID</Th>
                 <Th>Job Position</Th>
                 <Th>Joining Date</Th>
                 <Th>Email ID</Th>
                 <Th>Salary</Th>
+                <Th>Info</Th>
                 <Th>Verification</Th>
                 <Th>Status</Th>
               </tr>
             </thead>
-<tbody>
-  {loading ? (
-    <tr>
-      <td colSpan="11" style={{ textAlign: "center", padding: "2rem" }}>
-        <Loader size="large" tip="Loading..." />
-      </td>
-    </tr>
-  ) : error ? (
-    <tr>
-      <Td colSpan="11">Error: {error}</Td>
-    </tr>
-  ) : data?.length > 0 ? (
-    data.map((emp, index) => (
-      <tr
-        key={emp.id}
-        onClick={(e) => {
-  const tag = e.target.tagName.toLowerCase();
-  if (
-    ["input", "select", "option", "button", "a", "svg", "circle", "path"].includes(tag) ||
-    e.target.closest(".verification-circles") 
-  ) {
-    return;
-  }
-
-  navigate(`/payrolldetails/${emp.id}`);
-}}
-        style={{
-          cursor: "pointer",
-          transition: "background-color 0.2s ease",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f5f7ff")}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-      >
-        <Td>
-          <input
-            type="checkbox"
-            checked={selectedEmployees.includes(emp.id)}
-            onChange={() => toggleEmployeeSelect(emp.id)}
-            onClick={(e) => e.stopPropagation()} // prevent row click
-          />
-        </Td>
-        <Td>{(page - 1) * 10 + index + 1}</Td>
-        <Td>{emp.employee_name}</Td>
-        <Td>{emp.employee_id}</Td>
-        <Td
-          style={{
-            maxWidth: "100px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-          title={emp.designation}
-        >
-          {emp.designation}
-        </Td>
-        <Td>{emp.joining_date}</Td>
-        <Td
-          style={{
-            maxWidth: "150px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-          title={emp.email}
-        >
-          {emp.email}
-        </Td>
-        <Td>₹{emp.basic_salary ?? "N/A"}</Td>
-       
-        <Td>
-          <VerificationCircles
-            emp={emp}
-            verificationStatus={verificationStatus}
-            handleCircleClick={handleCircleClick}
-          />
-        </Td>
-    <Td>
-  <Select
-    value={emp.status || ""}
-    onChange={(e) => handleSingleStatusChange(emp, e.target.value)}
-    onClick={(e) => e.stopPropagation()} // prevent row click
-    style={{
-      backgroundColor:
-        emp.status && emp.status !== "" ? getStatusColor(emp.status) : "white", // ✅ White when nothing selected
-      color:
-        emp.status && emp.status !== ""
-          ? emp.status === "Pending"
-            ? "black"
-            : "white"
-          : "black", // readable text
-      border: "1px solid #ccc",
-      borderRadius: "6px",
-      padding: "6px",
-      transition: "background-color 0.3s ease",
-      cursor: "pointer",
-    }}
-  >
-    <option value="" style={{ backgroundColor: "white", color: "black" }}>
-      Select
-    </option>
-    <option value="OnHold" style={{ backgroundColor: "#BA703A", color: "white" }}>
-      On Hold
-    </option>
-    <option value="Cancelled" style={{ backgroundColor: "#E67B7B", color: "white" }}>
-      Cancelled
-    </option>
-    <option value="Pending" style={{ backgroundColor: "#DD991D", color: "black" }}>
-      Pending
-    </option>
-    <option value="Paid" style={{ backgroundColor: "#4B976D", color: "white" }}>
-      Paid
-    </option>
-  </Select>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan="11" style={{ textAlign: "center", padding: "2rem" }}><Loader size="large" tip="Loading..." /></td></tr>
+              ) : error ? (
+                <tr><Td colSpan="11">Error: {error}</Td></tr>
+              ) : data?.length > 0 ? (
+                data.map((emp, index) => (
+                  <tr key={emp.id}>
+                    <Td>
+                      <input
+                        type="checkbox"
+                        checked={selectedEmployees.includes(emp.id)}
+                        onChange={() => toggleEmployeeSelect(emp.id)}
+                      />
+                    </Td>
+                    <Td>{(page - 1) * 10 + index + 1}</Td>
+                    <Td>{emp.employee_id}</Td>
+                    <Td
+                      style={{
+                        maxWidth: "100px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}
+                      title={emp.designation}
+                    >
+                      {emp.designation}
+                    </Td>
+                    <Td>{emp.joining_date}</Td>
+                    <Td
+                      style={{
+                        maxWidth: "150px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}
+                      title={emp.email}
+                    >
+                      {emp.email}
+                    </Td>
+                    <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
+                    <Td>
+                      <Link to={`/payrolldetails/${emp.id}`}>
+                        <GoInfo style={{ cursor: 'pointer', color: "black" }} />
+                      </Link>
+                    </Td>
+                  <Td>
+  <VerificationCircles
+    emp={emp}
+    verificationStatus={verificationStatus}
+    handleCircleClick={handleCircleClick}
+  />
 </Td>
 
+                    <Td>
+                    <Select
+  value={emp.status || ''}
+  onChange={(e) => handleSingleStatusChange(emp, e.target.value)}
+  style={{
+    backgroundColor: getStatusColor(emp.status),
+    color: emp.status === 'Pending' ? 'black' : 'white',
+  }}
+>
+  <option value="">Select</option>
+  <option
+    value="OnHold"
+    style={{ backgroundColor: "#BA703A", color: "white" }}
+  >
+    On Hold
+  </option>
+  <option
+    value="Cancelled"
+    style={{ backgroundColor: "#E67B7B", color: "white" }}
+  >
+    Cancelled
+  </option>
+  <option
+    value="Pending"
+    style={{ backgroundColor: "#DD991D", color: "black" }}
+  >
+    Pending
+  </option>
+  <option
+    value="Paid"
+    style={{ backgroundColor: "#4B976D", color: "white" }}
+  >
+    Paid
+  </option>
+</Select>
 
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <Td colSpan="11">No data found</Td>
-    </tr>
-  )}
-</tbody>
 
-
+                    </Td>
+                  </tr>
+                ))
+              ) : (
+                <tr><Td colSpan="11">No data found</Td></tr>
+              )}
+            </tbody>
           </Table>
         </TableWrapper>
 
