@@ -500,8 +500,9 @@ GET http://178.248.112.16:8001/api/admin/tasks/employee/10/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMTQ3MDE0LCJpYXQiOjE3NTAxNDM0MTQsImp0aSI6IjJlZTc2N2ZlYzkyMjRlNzg4Y2VmN2Y4NDg1YWQzZTdlIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.LGltLB6FrNheMhXJ8CUmWSlwPnB-MNEtp4rvn8Kt4t4
 
 # -------------employee attendance------------------
-
-
+###
+GET http://192.168.29.193:8001/api/background-location/343/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyOTUwMDEwLCJpYXQiOjE3NjI5NDY0MTAsImp0aSI6IjJlZDZmZDczM2YwYjRmNjZiYmI5ZDEyODc1YWNmM2UwIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.-yd0ezXdHQE6dLWMaRbpCOmiGnEpnqUefqpqKssr9jE
 ### Swipe (Punch In/Out)
 POST http://178.248.112.16:8001/api/attendance/swipe/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNDExODAzLCJpYXQiOjE3NjI0MDgyMDMsImp0aSI6IjMwMTVhM2NlNTQwOTQ0YTNiY2UwYTE5NDUwMzgxYmVmIiwidXNlcl9pZCI6IjQ4NiIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6ZmFsc2V9.yjGENIPb-nW7aS0I4jmb9E5x4aMDpMG_iPlI7IQrDrs

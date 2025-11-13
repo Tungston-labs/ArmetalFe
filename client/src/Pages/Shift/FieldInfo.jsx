@@ -45,13 +45,12 @@ import Modal from "../../Components/ModalShift";
 import CalendarModal from "../../Components/CalendarModal";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Loader from "../../Components/Loader"
-import useAdminLocationSocket from "../../hooks/useAdminLocationSocket";
 import { getAccessToken } from "../../hooks/useAccessToken";
 const FieldInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const [locations, setLocations] = useState([]);
+
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(() => {
@@ -102,34 +101,41 @@ useEffect(() => {
   }, [id, selectedDate, dispatch]);
 
   //  WebSocket for live location (admin view)
-const liveLocationData = useAdminLocationSocket(id);
 const [hourlyLocationData, setHourlyLocationData] = useState([]);
 useEffect(() => {
-  if (!id) return;
+  if (!id || !selectedDate) return;
+
+  let intervalId;
 
   const fetchEmployeeLocations = async () => {
     try {
-      const token = accessToken;
-      const response = await fetch(`http://192.168.29.193:8001/api/background-location/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const token = await getAccessToken();
+      if (!token) return;
+
+      const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
+
+      const response = await fetch(
+        `http://192.168.29.193:8001/api/background-location/${id}/?date=${formattedDate}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       if (!response.ok) throw new Error("Failed to fetch");
+
       const json = await response.json();
-      setHourlyLocationData(json || []);
+      setHourlyLocationData(json?.results || []);
     } catch (err) {
-      console.error("Error fetching periodic location:", err);
+      console.error("Error fetching location for date:", err);
     }
   };
 
+  // Fetch immediately once
   fetchEmployeeLocations();
 
-  // Poll every 30 seconds for updates
-  const interval = setInterval(fetchEmployeeLocations, 30000);
+  intervalId = setInterval(fetchEmployeeLocations, 150000);
 
-  return () => clearInterval(interval);
-}, [id]);
+  return () => clearInterval(intervalId); // cleanup
+}, [id, selectedDate]);
+
 
 
   const getWeekDays = (baseDate) => {
@@ -188,12 +194,15 @@ useEffect(() => {
   </ButtonContainer>
 
   {isModalOpen && (
-   <Modal
-  onClose={() => setIsModalOpen(false)}
-  date={selectedDate}
-  hourlyLocationData={hourlyLocationData}
-  liveLocationData={liveLocationData}
-/>
+ <Modal
+    date={selectedDate}                   // <-- parent state
+    hourlyLocationData={hourlyLocationData}
+    onClose={() => setIsModalOpen(false)}
+    onDateChange={(newDate) => {
+      setSelectedDate(newDate);           // <-- updates parent state
+      dispatch(getFieldInfo({ employeeId: id, date: newDate })); // fetch new field info
+    }}
+  />
 
   )}
 </Header>

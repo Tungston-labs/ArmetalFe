@@ -1,4 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import Calendar from "react-calendar";
+import { FaCalendarAlt } from "react-icons/fa"; // calendar icon
 import {
   Overlay,
   ModalWrapper,
@@ -9,61 +11,63 @@ import {
   TableHeader,
   TableRow,
   TableCell,
+  CalendarIconWrapper,
 } from "./ModalShift.styled.js";
 
-const ActivityLogModal = ({ data = [], date, onClose,  hourlyLocationData = [],
- liveLocationData = [] }) => {
+const ActivityLogModal = ({
+  data = [],
+  date,
+  onClose,
+  hourlyLocationData = [],
+  liveLocationData = [],
+  onDateChange, // callback to notify parent of date change
+}) => {
+  const [calendarOpen, setCalendarOpen] = useState(false);
+
   const parsedDate = useMemo(() => {
     if (!date) return null;
     const normalized = date.includes("T") ? date : date.replace(" ", "T");
     const d = new Date(normalized);
     return isNaN(d.getTime()) ? null : d;
   }, [date]);
-console.log("📅 Hourly Location Data:", hourlyLocationData);
 
-const formattedLogs = useMemo(() => {
-  if (!Array.isArray(hourlyLocationData)) return [];
-  return hourlyLocationData.map((item) => ({
-    time: new Date(item.logged_at).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-    location:
-      item.location_name ||
-      `Lat: ${item.latitude?.toFixed(5)}, Lon: ${item.longitude?.toFixed(5)}`,
-    isLive: false,
-    timestamp: item.logged_at,
-  }));
-}, [hourlyLocationData]);
-
-
-const formattedLive = useMemo(() => {
-  if (!Array.isArray(liveLocationData)) return [];
-  return liveLocationData.map((loc) => ({
-    time:
-      new Date(loc.timestamp || loc.logged_at).toLocaleTimeString([], {
+  const formattedLogs = useMemo(() => {
+    if (!Array.isArray(hourlyLocationData)) return [];
+    return hourlyLocationData.map((item) => ({
+      time: new Date(item.logged_at).toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
-      }) + " (LIVE)",
-    location:
-      loc.location_name ||
-      `Lat: ${loc.latitude?.toFixed(5)}, Lon: ${loc.longitude?.toFixed(5)}`,
-    isLive: true,
-    timestamp: loc.timestamp || loc.logged_at,
-  }));
-}, [liveLocationData]);
+      }),
+      location:
+        item.location_name ||
+        `Lat: ${item.latitude?.toFixed(5)}, Lon: ${item.longitude?.toFixed(5)}`,
+      isLive: false,
+      timestamp: item.logged_at,
+    }));
+  }, [hourlyLocationData]);
 
-const filteredLive = formattedLive.filter(
-  (loc, index, self) =>
-    index === self.findIndex((l) => l.timestamp === loc.timestamp)
-);
- const allLocations = useMemo(() => {
-  const merged = [...formattedLive, ...formattedLogs];
-  return merged.sort(
-    (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-  ); // sort latest → oldest
-}, [formattedLive, formattedLogs]);
+  const formattedLive = useMemo(() => {
+    if (!Array.isArray(liveLocationData)) return [];
+    return liveLocationData.map((loc) => ({
+      time:
+        new Date(loc.timestamp || loc.logged_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }) + " (LIVE)",
+      location:
+        loc.location_name ||
+        `Lat: ${loc.latitude?.toFixed(5)}, Lon: ${loc.longitude?.toFixed(5)}`,
+      isLive: true,
+      timestamp: loc.timestamp || loc.logged_at,
+    }));
+  }, [liveLocationData]);
 
+  const allLocations = useMemo(() => {
+    const merged = [...formattedLive, ...formattedLogs];
+    return merged.sort(
+      (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+    ); // sort latest → oldest
+  }, [formattedLive, formattedLogs]);
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
@@ -77,7 +81,7 @@ const filteredLive = formattedLive.filter(
           <CloseBtn onClick={onClose}>Close</CloseBtn>
         </ModalHeader>
 
-        {parsedDate ? (
+        {parsedDate && (
           <ModalDate>
             <div className="day">{parsedDate.getDate()}</div>
             <div className="month-week">
@@ -88,11 +92,24 @@ const filteredLive = formattedLive.filter(
                 {parsedDate.toLocaleDateString("default", { weekday: "long" })}
               </div>
             </div>
-          </ModalDate>
-        ) : (
-          <ModalDate>
-            <div>--</div>
-            <div>Invalid Date</div>
+
+            {/* Calendar icon */}
+            <CalendarIconWrapper onClick={() => setCalendarOpen(!calendarOpen)}>
+              <FaCalendarAlt size={18} />
+            </CalendarIconWrapper>
+
+            {/* Calendar picker */}
+            {calendarOpen && (
+              <div style={{ position: "absolute", zIndex: 100 }}>
+                <Calendar
+                  onChange={(newDate) => {
+                    setCalendarOpen(false);
+             onDateChange(newDate.toLocaleDateString("en-CA")); // local date
+                  }}
+                  value={parsedDate}
+                />
+              </div>
+            )}
           </ModalDate>
         )}
 
