@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
-  Header,
   DateSelector,
   Calendar,
   Day,
@@ -15,14 +14,9 @@ import {
   Description,
   TimeBox,
   SearchInput,
-  Title,
-  Subtitle,
-  TitleSection,
-  TextBlock,
   DepartmentDropdown,
   Heading,
   Head,
-  EmployeeImage,
   NoTaskWrapper,
   TaskLayout,
 } from "./Daily.styles";
@@ -44,7 +38,6 @@ export default function DailyTask() {
     (state) => state.departments
   );
 
-  // State
   const dateInputRef = useRef(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedDate, setSelectedDate] = useState(
@@ -52,6 +45,8 @@ export default function DailyTask() {
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState(null);
+
+  const today = new Date();
 
   // Fetch departments on mount
   useEffect(() => {
@@ -83,7 +78,7 @@ export default function DailyTask() {
     emp.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Generate week dates
+  // Week dates (3 before, 3 after)
   const weekDates = [...Array(7)].map((_, i) => {
     const baseDate = new Date(selectedDate);
     const d = new Date(baseDate);
@@ -91,8 +86,8 @@ export default function DailyTask() {
     return d;
   });
 
-  // Unified loader (only departments and employees loading)
-  const loading = deptLoading || !departments.length  || !employees.length;
+  // Unified loader
+  const loading = deptLoading || !departments.length || !employees.length;
 
   if (loading) {
     return (
@@ -112,21 +107,36 @@ export default function DailyTask() {
   const handleCalendarClick = () => dateInputRef.current?.showPicker();
   const handleEmployeeSelect = (emp) => setSelectedEmployee(emp);
 
+  // ✅ Left arrow - move to previous day
+  const handlePrevDay = () => {
+    const prevDate = new Date(selectedDate);
+    prevDate.setDate(prevDate.getDate() - 1);
+    setSelectedDate(prevDate.toISOString().split("T")[0]);
+  };
+
+  // ✅ Right arrow - only move if not in future
+  const handleNextDay = () => {
+    const nextDate = new Date(selectedDate);
+    nextDate.setDate(nextDate.getDate() + 1);
+    if (nextDate <= today) {
+      setSelectedDate(nextDate.toISOString().split("T")[0]);
+    }
+  };
+
   return (
     <>
       <Navbar />
       <Container>
-           
-<EmployeeTitle
-  iconSrc={TaskIcon}
-  title="Daily Task"
-  subtitle="Check daily task details for each employee"
-  showAddButton={false}
-  showDropdown={false}
-  showBackArrow={false}
-  showTabs={false}
-  showSearch={false}
-/>
+        <EmployeeTitle
+          iconSrc={TaskIcon}
+          title="Daily Task"
+          subtitle="Check daily task details for each employee"
+          showAddButton={false}
+          showDropdown={false}
+          showBackArrow={false}
+          showTabs={false}
+          showSearch={false}
+        />
 
         <DateSelector>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -151,13 +161,16 @@ export default function DailyTask() {
 
           <div className="calendar-header">
             <div className="left">
-              <button className="left-lesser">{"<"}</button>
+              <button className="left-lesser" onClick={handlePrevDay}>
+                {"<"}
+              </button>
               <FaRegCalendarAlt className="calendar-icon" onClick={handleCalendarClick} />
               <input
                 type="date"
                 ref={dateInputRef}
                 value={selectedDate}
                 onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
+                max={today.toISOString().split("T")[0]} // ✅ prevent selecting future date
                 style={{ display: "none" }}
               />
               <div className="date-info">
@@ -172,8 +185,22 @@ export default function DailyTask() {
                 </div>
               </div>
             </div>
+
             <div className="nav">
-              <button className="right-greater">{">"}</button>
+              <button
+                className="right-greater"
+                onClick={handleNextDay}
+                disabled={new Date(selectedDate).toDateString() === today.toDateString()}
+                style={{
+                  opacity: new Date(selectedDate).toDateString() === today.toDateString() ? 0.4 : 1,
+                  cursor:
+                    new Date(selectedDate).toDateString() === today.toDateString()
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+              >
+                {">"}
+              </button>
             </div>
           </div>
         </DateSelector>
@@ -181,11 +208,18 @@ export default function DailyTask() {
         <Calendar>
           {weekDates.map((day, i) => {
             const isActive = day.toDateString() === new Date(selectedDate).toDateString();
+            const isFuture = day > today;
             return (
               <Day
                 key={i}
                 active={isActive}
-                onClick={() => setSelectedDate(day.toISOString().split("T")[0])}
+                onClick={() =>
+                  !isFuture && setSelectedDate(day.toISOString().split("T")[0])
+                }
+                style={{
+                  opacity: isFuture ? 0.4 : 1,
+                  cursor: isFuture ? "not-allowed" : "pointer",
+                }}
               >
                 <strong>{day.toLocaleString("default", { weekday: "short" })}</strong>
                 <Hr />
@@ -234,12 +268,10 @@ export default function DailyTask() {
               {tasks.length > 0 ? (
                 tasks.map((task, idx) => (
                   <TaskCard key={idx}>
-                    <strong>
-                      Project: <strong>{task.project}</strong>
-                    </strong>
-                    <strong>
-                      Task: <p>{task.task}</p>
-                    </strong>
+                    <strong>Project: {task.project}</strong>
+                    <p>
+                      Task: <Description>{task.task}</Description>
+                    </p>
                     <p>
                       Description: <Description>{task.description}</Description>
                     </p>

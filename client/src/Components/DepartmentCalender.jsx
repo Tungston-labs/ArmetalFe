@@ -282,39 +282,42 @@ const DepartmentCalendar = () => {
 
               const holiday = getHolidayForDate(date);
 
-              return (
-                <CalendarDay
-                  key={i}
-                  isToday={isToday}
-                  isSunday={isSunday}
-                  isSelected={isSelected}
-                  onClick={() => handleDateClick(date)}
-                  title={holiday ? holiday.description : ""}
-                  style={{
-                    position: "relative",
-                    backgroundColor: holiday ? "#FFECEC" : undefined,
-                    cursor: holiday ? "pointer" : "default",
-                  }}
-                >
-                  {date}
+             return (
+  <CalendarDay
+    key={i}
+    isToday={isToday}
+    isSunday={isSunday}
+    isSelected={isSelected}
+    onClick={() => handleDateClick(date)}
+    title={holiday ? holiday.description : ""}
+    style={{
+      position: "relative",
+      backgroundColor: holiday ? "#FFECEC" : undefined, // highlight holiday
+      border: holiday ? "0.7px solid red" : "1px solid #ddd", // ✅ red border for holidays
+      borderRadius: "4px", // optional: rounded corners
+      cursor: holiday ? "pointer" : "default",
+    }}
+  >
+    {date}
 
-                  {/* Holiday icon */}
-                  {holiday && (
-                    <img
-                      src={HolidaySvg}
-                      alt={holiday.description}
-                      title={holiday.description}
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                        position: "absolute",
-                        bottom: "2px",
-                        right: "2px",
-                      }}
-                    />
-                  )}
-                </CalendarDay>
-              );
+    {/* Holiday icon */}
+    {holiday && (
+      <img
+        src={HolidaySvg}
+        alt={holiday.description}
+        title={holiday.description}
+        style={{
+          width: "10px",
+          height: "10px",
+          position: "absolute",
+          bottom: "2px",
+          right: "2px",
+        }}
+      />
+    )}
+  </CalendarDay>
+);
+
             })}
           </CalendarGrid>
         </CalendarWrapper>

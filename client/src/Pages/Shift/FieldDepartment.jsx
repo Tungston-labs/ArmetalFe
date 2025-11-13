@@ -290,7 +290,6 @@ const FieldShift = () => {
                       <TableHeader>Email ID</TableHeader>
                       <TableHeader>Job Position</TableHeader>
                       <TableHeader>Department</TableHeader>
-                      <TableHeader>Info</TableHeader>
                       <TableHeader>Delete</TableHeader>
                     </TableRow>
                   </thead>
@@ -309,14 +308,6 @@ const FieldShift = () => {
       <TableCell>{emp.position}</TableCell>
       <TableCell>{emp.department_name}</TableCell>
 
-      <TableCell
-        onClick={(e) => {
-          e.stopPropagation(); 
-          handleInfoClick(emp.id);
-        }}
-      >
-        <GoInfo style={{ cursor: "pointer" }} />
-      </TableCell>
 
       <TableCell
         onClick={(e) => {

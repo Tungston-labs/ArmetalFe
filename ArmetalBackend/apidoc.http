@@ -407,7 +407,7 @@ Content-Type: application/json
 
 {
   "username": "snv_arm_kak_117",     
-  "password": "password123"  
+  "password": "password1234"  
 }
 
 
@@ -836,8 +836,8 @@ Content-Type: application/json
 
 
 ###retrieve single record
-GET http://178.248.112.16:8001/api/reimbursements/1/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NDA2Mjk2LCJpYXQiOjE3NTc0MDI2OTYsImp0aSI6IjVjOWI1Njg1NzA3OTQ5MTU4YWQwNWUyNzEzNzE2ZjliIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.LK2uyEiGX0ZFHBzxy58JUOKQ2QdqFqLwVwgEKdB17UE
+GET http://178.248.112.16:8001/api/reimbursements/141/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyOTQ5OTM5LCJpYXQiOjE3NjI5NDYzMzksImp0aSI6IjA0ZDFlMDc1MDAxZDRkMzlhNzViYWUzNmVkZjhkNzA0IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.oJc2hxRBG476he5VT7tFdafNgJwY3KD7db0gULZyISk
 Content-Type: application/json
 
 
@@ -848,8 +848,8 @@ Content-Type: application/json
 
 
 ### update status by admin
-PATCH http://178.248.112.16:8001/api/reimbursements/1/   
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTQ3MzIzLCJpYXQiOjE3NTU5NDM3MjMsImp0aSI6ImY2MWI1ZGRiMzNmNjRkNmQ4YWZiNzQ4MzgyM2ZhOWMxIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.v9J6EIDOlBGNdWhowz-efW1hyglW03_wbwRyDRlrWSE
+PATCH http://178.248.112.16:8001/api/reimbursements/138/   
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyOTQ5OTM5LCJpYXQiOjE3NjI5NDYzMzksImp0aSI6IjA0ZDFlMDc1MDAxZDRkMzlhNzViYWUzNmVkZjhkNzA0IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.oJc2hxRBG476he5VT7tFdafNgJwY3KD7db0gULZyISk
 Content-Type: application/json
 
 {
