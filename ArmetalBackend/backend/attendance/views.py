@@ -1,21 +1,14 @@
 from django.shortcuts import render
-from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_aware
-
-from datetime import datetime,time  
-from datetime import timedelta
-
+from datetime import datetime,time,date,timedelta
 from rest_framework import status, generics, filters
 from rest_framework.generics import RetrieveAPIView
-
-from .models import Attendance, AttendanceSession
 from employee.models import Employee_db
 from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer,AttendanceLocationSerializer
 from shared.pagination import CustomPagination
 from .utils.timezone_utils import get_company_timezone, ensure_timezone,safe_parse_datetime
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
-import logging
 import pytz
 from geopy.distance import geodesic
 import logging
@@ -25,9 +18,14 @@ from rest_framework.response import Response
 from project.models import Project  # Import your Project model
 from django.db.models import Q
 from geopy.geocoders import Nominatim
+from django.utils import timezone
+from attendance.models import AttendanceSession, Attendance
+from shared.pagination import CustomPagination
+from rest_framework.exceptions import ValidationError
+from rest_framework import status
 logger = logging.getLogger(__name__)
 
-
+# --------------------------------------------------------------view for swipe in/out
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -197,15 +195,9 @@ class AttendanceSwipeView(APIView):
             return None
 
 
-# to add a note to the corresponding punch out section
+# ----------------------------------to add a note to the corresponding punch out section
 
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from django.utils import timezone
-from attendance.models import AttendanceSession, Attendance
-from datetime import date
-import pytz
+
 
 class AddPunchOutNoteView(APIView):
     permission_classes = [IsAuthenticated]
@@ -243,15 +235,12 @@ class AddPunchOutNoteView(APIView):
 
 
 
-from rest_framework import generics, filters
-from rest_framework.permissions import IsAuthenticated
-from user.permissions import IsHRAdmin  # Adjust import based on your project
-from .models import Attendance
-from .serializers import AttendanceSerializer
-from shared.pagination import CustomPagination
+
+
+# -----------------------------------------------------view for list attendance for admin
+
+from django.db.models import Min, Case, When, IntegerField
 from rest_framework.exceptions import ValidationError
-
-
 
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
@@ -265,28 +254,37 @@ class AttendanceAdminListView(generics.ListAPIView):
         if not department_id:
             raise ValidationError({"department_id": "This query parameter is required."})
 
-        queryset = Attendance.objects.filter(
-            employee__department_id=department_id
-        ).order_by('-date')
+        date = self.request.query_params.get('date')
+
+        # ✅ Annotate each attendance record with the earliest punch-in (from AttendanceSession)
+        queryset = (
+            Attendance.objects.filter(employee__department_id=department_id)
+            .annotate(first_punch_in=Min('sessions__time_in'))
+        )
 
         # Optional date filter
-        date = self.request.query_params.get('date')
         if date:
             queryset = queryset.filter(date=date)
+
+        # ✅ Order by date (newest first), but within date, by first_punch_in (earliest first)
+        # Employees who haven’t swiped in yet (NULL) will be pushed to the bottom
+        queryset = queryset.order_by(
+            '-date',
+            Case(
+                When(first_punch_in__isnull=True, then=1),
+                default=0,
+                output_field=IntegerField(),
+            ),
+            'first_punch_in',
+        )
 
         return queryset
 
 
 
-    
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from django.utils import timezone
-from datetime import datetime
-from .models import Attendance
-from .serializers import AttendanceDetailSerializer
+
+# -----------------------------------------------------attendance detail view group by date(admin)
+
 
 class AttendanceDetailByDateView(APIView):
     permission_classes = [IsAuthenticated, IsHRorIsEmployee]
@@ -315,7 +313,7 @@ class AttendanceDetailByDateView(APIView):
         except Attendance.DoesNotExist:
             return Response({'detail': f'No attendance recorded on {selected_date}.'}, status=status.HTTP_404_NOT_FOUND)
 
-
+# -----------------------------------------------------attendance list view (for admin)
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer
@@ -368,15 +366,7 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         return Response(serializer.data)
 
 
-
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from django.utils import timezone
-from attendance.models import Attendance
-from employee.models import Employee_db
-from .serializers import AttendanceLocationSerializer
-import logging
+# -----------------------------------------------------one hour location update from mobile app and view by admin
 
 logger = logging.getLogger(__name__)
 

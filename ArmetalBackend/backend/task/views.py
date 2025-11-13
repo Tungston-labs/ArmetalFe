@@ -1,24 +1,14 @@
 from django.shortcuts import render
-
-# Create your views here.
-# tasks/views.py
-from rest_framework import generics, permissions
 from .models import DailyTask
 from .serializers import DailyTaskSerializer
-from user.permissions import IsEmployee, IsHRAdmin  # Your custom permissions
-
-#  Employee: Create + List Own Tasks
+from user.permissions import IsEmployee, IsHRAdmin  
 from django.utils.dateparse import parse_date
-
 from rest_framework.exceptions import ValidationError
 from django.utils.timezone import now
-
 from decimal import Decimal, InvalidOperation
 from django.db.models import Sum
 from django.utils import timezone
 from rest_framework import generics, permissions, serializers
-from .models import DailyTask
-from .serializers import DailyTaskSerializer
 
 class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
     serializer_class = DailyTaskSerializer

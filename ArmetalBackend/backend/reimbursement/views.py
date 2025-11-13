@@ -1,12 +1,16 @@
-# reimbursements/views.py
 from rest_framework import generics, permissions
 from .models import Reimbursement
 from .serializers import ReimbursementListSerializer, ReimbursementDetailSerializer
 from user.permissions import IsHRorIsEmployee
 from shared.pagination import CustomPagination
+from collections import defaultdict
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .utils import send_reimbursement_email
 
 # --- List & Create for Employee ---
-from .utils import send_reimbursement_email
+
 class ReimbursementListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsHRorIsEmployee]
     pagination_class = CustomPagination
@@ -59,9 +63,6 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 # --- Retrieve, Update, Delete single reimbursement for logged-in employee ---
-from rest_framework import generics, permissions
-from .models import Reimbursement
-from .serializers import ReimbursementDetailSerializer
 
 class MyReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]  # only logged-in users
@@ -90,12 +91,6 @@ class DepartmentReimbursementListView(generics.ListAPIView):
         return Reimbursement.objects.filter(employee__department_id=department_id).order_by("-created_at")
 
 
-from collections import defaultdict
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from .models import Reimbursement
-from .serializers import ReimbursementListSerializer
 
 
 class ReimbursementGroupedByDateView(APIView):
@@ -131,14 +126,8 @@ class ReimbursementGroupedByDateView(APIView):
         return Response(result)
 
 
-    
-
-
 # --- List reimbursements for logged-in employee ---
-from rest_framework import generics, permissions
-from .models import Reimbursement
-from .serializers import ReimbursementListSerializer
-from shared.pagination import CustomPagination
+
 
 class MyReimbursementListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]  # only logged-in users
