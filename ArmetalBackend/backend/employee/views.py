@@ -52,11 +52,12 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
         if department_id:
             queryset = queryset.filter(department_id=department_id)
 
-        # ✅ Sort by department name first, then employee name alphabetically
-        queryset = queryset.order_by('department__name', 'name')
+        # ✅ Sort by department first, then by plaintext name_search
+        queryset = queryset.order_by('department__name', 'name_search')
 
         print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
         return queryset
+
 
 
 
