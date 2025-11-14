@@ -38,7 +38,7 @@ const BackButton = styled.button`
   margin-bottom: 1rem;
   font-weight: 500;
   color: #000;
-
+margin-top:1rem;
   &:hover {
     background: #f0f0f0;
   }
@@ -66,10 +66,17 @@ const FullDashboard = () => {
   // ✅ Get previous page (Visa or Employee list)
   const previousPage = location.state?.from || "/employee";
 
-  // ✅ Correct back handler
-  const handleBack = () => {
-    navigate(previousPage, { replace: true });
-  };
+const handleBack = () => {
+  if (location.state?.from) {
+    navigate(location.state.from); // if we have state, go to it
+  } else if (window.history.length > 1) {
+    navigate(-1); // go back in browser history
+  } else {
+    navigate("/employee"); // fallback
+  }
+};
+
+
 
   return (
     <>

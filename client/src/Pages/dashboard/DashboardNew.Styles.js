@@ -12,9 +12,10 @@ export const Container = styled.div`
  padding-top: 70px;
   @media (min-width: 1440px) {
     padding:1rem;
+     padding-top: 70px;
   }
   @media (min-width: 1560px) {
-    padding:3rem;
+     padding-top: 70px;
   }
 `;
 

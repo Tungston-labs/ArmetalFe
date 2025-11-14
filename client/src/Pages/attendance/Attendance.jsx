@@ -27,6 +27,7 @@ import {
   ActiveDayBox,
   TotalHours,
   BackArrow,
+  TableScroll,
 } from "./Attendance.Style";
 import { FaClock } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
@@ -125,10 +126,11 @@ const getWeekDays = (dateStr) => {
 
 
   const weekDays = selectedDate ? getWeekDays(selectedDate) : [];
-  const monthNames = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-  ];
+ const monthNames = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
   const dayNames = [
     "Sunday", "Monday", "Tuesday", "Wednesday",
     "Thursday", "Friday", "Saturday",
@@ -142,15 +144,19 @@ const getWeekDays = (dateStr) => {
   };
 
 
-  const handleNextDay = () => {
-    const nextDate = new Date(selectedDateObj);
-    nextDate.setDate(nextDate.getDate() + 1);
-    if (nextDate > today) {
-      setNoAttendanceMessage("No attendance available for this date");
-      return;
-    }
+ const handleNextDay = () => {
+  const nextDate = new Date(selectedDateObj);
+  nextDate.setDate(nextDate.getDate() + 1);
+
+  const today = new Date();
+
+  // Only allow today or past
+  if (nextDate <= today) {
     setSelectedDate(nextDate.toISOString().split("T")[0]);
-  };
+    setNoAttendanceMessage("");
+  }
+};
+
 
   const isFutureDate = selectedDateObj > today;
 
@@ -241,22 +247,44 @@ const getWeekDays = (dateStr) => {
       </DateWrapper>
 
       {/* Week Day Boxes */}
-      <DayBoxes>
-        {weekDays.map((dayDate, i) => {
-          const iso = dayDate.toISOString().split("T")[0];
-          const isActive = iso === selectedDate;
-          const Component = isActive ? ActiveDayBox : DayBox;
-          return (
-            <Component key={i}>
-              <strong>{dayNames[dayDate.getDay()].slice(0, 3)}</strong>
-              <div>{dayDate.getDate()}</div>
-              <p>{monthNames[dayDate.getMonth()]}</p>
-            </Component>
-          );
-        })}
-      </DayBoxes>
+{/* Week Day Boxes */}
+<DayBoxes>
+  {weekDays.map((dayDate, i) => {
+    const iso = dayDate.toISOString().split("T")[0];
+    const isActive = iso === selectedDate;
+    const isFuture = dayDate > today;
+    const Component = isActive ? ActiveDayBox : DayBox;
+
+    return (
+      <Component
+        key={i}
+        // keep prop available if your styled-component uses it
+        isFuture={isFuture}
+        onClick={() => {
+          if (isFuture) return;            // don't allow picking future days
+          setSelectedDate(iso);            // update selected date (triggers fetch useEffect)
+          setNoAttendanceMessage("");      // clear any existing message so table refetch looks clean
+        }}
+        // inline fallback styling so visual feedback matches behavior
+        style={{
+          cursor: isFuture ? "not-allowed" : "pointer",
+          opacity: isFuture ? 0.5 : 1,
+        }}
+        aria-pressed={isActive}
+        role="button"
+      >
+        <strong>{dayNames[dayDate.getDay()].slice(0, 3)}</strong>
+        <div>{dayDate.getDate()}</div>
+        <p>{monthNames[dayDate.getMonth()]}</p>
+      </Component>
+    );
+  })}
+</DayBoxes>
+
+
 
       {/* Table */}
+      <TableScroll>
       <Table>
         <thead>
           <tr>
@@ -296,7 +324,7 @@ const getWeekDays = (dateStr) => {
           )}
         </tbody>
       </Table>
-
+</TableScroll>
       <TotalHours>
         <strong>Total Hours Worked:</strong>{" "}
         {!isFutureDate

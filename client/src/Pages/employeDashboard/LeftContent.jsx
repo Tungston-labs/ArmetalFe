@@ -83,16 +83,11 @@ const LeftContent = () => {
               </p>
 
               <p>
-                Joined on:{" "}
-                <strong>
-                  {employee.joining_date
-                    ? new Date(employee.joining_date).toLocaleDateString(
-                        "en-GB",
-                        { day: "numeric", month: "long", year: "numeric" }
-                      )
-                    : "-"}
-                </strong>
-              </p>
+  Email:{" "}
+  <strong>
+    {employee.email ? employee.email : "-"}
+  </strong>
+</p>
             </Details>
           </ProfileCardWrapper>
         </LeftColumn>
@@ -101,11 +96,11 @@ const LeftContent = () => {
         <RightColumn>
           <InfoGrid>
             <InfoCard>
-              <h3>{employee.company_days || 0}</h3>
-              <p>Days</p>
+              <h3>{employee.joining_date || 0}</h3>
+              <p>{employee.company_days || 0} Days</p>
               <button>
                 <SvgImage src={InCompanyIcon} alt="icon" />
-                In Company
+                 Joined on
               </button>
             </InfoCard>
 

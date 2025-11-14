@@ -20,14 +20,14 @@ import { getDepartments } from "../../Redux/departmentSlice";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader";
-
+import { ClipLoader } from "react-spinners";
 const AttendanceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedDept, setSelectedDept] = useState(null);
   const [departmentAttendance, setDepartmentAttendance] = useState({});
   const [searchText, setSearchText] = useState(""); // 🔍 added search state
-
+const [loadingDept, setLoadingDept] = useState(false);
   const { list: departmentList, loading } = useSelector(
     (state) => state.departments
   );
@@ -99,12 +99,14 @@ const AttendanceList = () => {
     return today.toISOString().split("T")[0];
   };
 
-  const handleToggle = async (deptId) => {
-    if (selectedDept === deptId) {
-      setSelectedDept(null);
-    } else {
-      setSelectedDept(deptId);
-      if (!departmentAttendance[deptId]) {
+ const handleToggle = async (deptId) => {
+  if (selectedDept === deptId) {
+    setSelectedDept(null);
+  } else {
+    setSelectedDept(deptId);
+    if (!departmentAttendance[deptId]) {
+      setLoadingDept(true); // start spinner
+      try {
         const response = await dispatch(
           getAttendanceList({ department_id: deptId })
         );
@@ -120,9 +122,15 @@ const AttendanceList = () => {
           ...prev,
           [deptId]: uniqueEmployees,
         }));
+      } catch (err) {
+        console.error("Error fetching attendance:", err);
+      } finally {
+        setLoadingDept(false); // stop spinner
       }
     }
-  };
+  }
+};
+
 
   const handleRowClick = (id) => {
     navigate(`/attendance/detail/${id}`);
@@ -171,37 +179,36 @@ const AttendanceList = () => {
                         <span>Out Time</span>
                       </DropdownHeader>
 
-                      <EmployeeList>
-                        {employees.length > 0 ? (
-                          employees.map((emp) => {
-                            const sessions = emp.sessions || [];
-                            const timeIn = getEarliestTimeIn(sessions);
-                            const timeOut = getConditionalTimeOut(sessions);
+<EmployeeList>
+  {loadingDept ? (
+    <EmployeeItem style={{ textAlign: "center", padding: "1rem" }}>
+      <ClipLoader size={24} color="#003366" />
+    </EmployeeItem>
+  ) : employees.length > 0 ? (
+    employees.map((emp) => {
+      const sessions = emp.sessions || [];
+      const timeIn = getEarliestTimeIn(sessions);
+      const timeOut = getConditionalTimeOut(sessions);
 
-                            return (
-                              <EmployeeRow
-                                key={emp.id}
-                                onClick={() => handleRowClick(emp.id)}
-                                style={{ cursor: "pointer" }}
-                              >
-                                <EmployeeCell>
-                                  {emp.employee_name || "-"}
-                                </EmployeeCell>
-                                <EmployeeCell>
-                                  {emp.employee_id || "-"}
-                                </EmployeeCell>
-                                <EmployeeCell>{emp.date || "-"}</EmployeeCell>
-                                <EmployeeCell>{timeIn}</EmployeeCell>
-                                <EmployeeCell>{timeOut}</EmployeeCell>
-                              </EmployeeRow>
-                            );
-                          })
-                        ) : (
-                          <EmployeeItem>
-                            No attendance record found for today.
-                          </EmployeeItem>
-                        )}
-                      </EmployeeList>
+      return (
+        <EmployeeRow
+          key={emp.id}
+          onClick={() => handleRowClick(emp.id)}
+          style={{ cursor: "pointer" }}
+        >
+          <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
+          <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
+          <EmployeeCell>{emp.date || "-"}</EmployeeCell>
+          <EmployeeCell>{timeIn}</EmployeeCell>
+          <EmployeeCell>{timeOut}</EmployeeCell>
+        </EmployeeRow>
+      );
+    })
+  ) : (
+    <EmployeeItem>No attendance record found for today.</EmployeeItem>
+  )}
+</EmployeeList>
+
                     </DropdownWrapper>
                   )}
                 </DepartmentCard>

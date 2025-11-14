@@ -477,7 +477,11 @@ export const DayTab = styled.button`
   min-width: 72px;
   border-radius: 8px;
   border: 1px solid ${({ active }) => (active ? "#30408d" : "#e6e6e6")};
-  background: ${({ active }) => (active ? "#3352BA" : "#fff")};
+  background: ${({ active }) =>
+  active
+    ? "linear-gradient(180deg, rgba(23, 37, 84, 1) 50%, rgba(51, 82, 186, 1) 100%)"
+    : "#fff"};
+
   color: ${({ active }) => (active ? "#fff" : "#444")};
   padding: 18px;
   cursor: pointer;

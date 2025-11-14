@@ -5,6 +5,7 @@ export const Container = styled.div`
   padding: 20px;
   background: white;
   font-family: "Segoe UI", sans-serif;
+
 `;
 
 export const Breadcrumb = styled.p`
@@ -61,36 +62,36 @@ export const Input = styled.input`
   border: 1px solid #052DB4;
   background: #FFF;
   box-sizing: border-box;
-  margin-top: 5px;
 
   /* Responsive refinements */
   @media (min-width: 768px) and (max-width: 1024px) {
     font-size: 0.7rem;
     padding: 8px 10px;
+       margin-bottom: 0.5rem;
   }
 
   @media (min-width: 1025px) and (max-width: 1440px) {
     font-size: 0.8rem;
     padding: 14px 16px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   @media (min-width: 1441px) and (max-width: 1920px) {
     font-size: 0.9rem;
     padding: 10px 10px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   @media (min-width: 1921px) and (max-width: 2540px) {
     font-size: 1.2rem;
     padding: 14px 16px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   @media (min-width: 2541px) and (max-width: 3840px) {
     font-size: 1.125rem; /* 18px */
     padding: 14px 16px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   @media (min-width: 3841px) {
@@ -110,7 +111,7 @@ export const Input = styled.input`
 
 export const TextArea = styled.textarea`
   width: 99%;
-  min-height: 120px;
+  min-height: 100px;
   padding: 0.8rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -126,8 +127,28 @@ background: #FFF;
     border-color: #002ea3;
     box-shadow: 0 0 5px rgba(50, 83, 193, 0.3);
   }
+      @media (min-width: 1024px) {
+    min-height: 50px;
+    font-size: 0.8rem;
+    padding: 1.5rem;
+  }
 
-  /* Extra-large (4K) screens */
+    @media (min-width: 1440px) {
+    min-height: 50px;
+    font-size: 0.8rem;
+    padding: 1.5rem;
+  }
+  @media (min-width: 1920px) {
+    min-height: 200px;
+    font-size: 1.8rem;
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    min-height: 250px;
+    font-size: 1.8rem;
+    padding: 1.5rem;
+  }
   @media (min-width: 3840px) {
     min-height: 250px;
     font-size: 1.8rem;
@@ -144,8 +165,6 @@ background: #FFF;
 
 
 export const SectionTitle = styled.h4`
-  /* margin-top: 1rem; */
-  margin-bottom: 0.5rem;
   color: #000;
   font-family: Satoshi;
   font-style: normal;
@@ -417,35 +436,32 @@ export const TwoColumnRows= styled.div`
 
 export const FlexRows = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-between; /* left and right sides spread out */
+  align-items: flex-start; /* align at top */
   gap: 1rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* keep them on the same line */
   width: 100%;
 `;
 
 export const LeftSide = styled.div`
-  width: 30%;
-  min-width: 150px;
+  flex: 1; /* take available space */
+  min-width: 100px;
 
   input {
-    width: 100%;
+    width: 50%;
   }
 `;
 
 export const RightSide = styled.div`
   display: flex;
-  justify-content: flex-end;
-  gap: 3rem;
-  width: 20%;
-  min-width: 150px;
-  
+  gap: 1rem; /* space between From & To */
+  min-width: 300px; /* make sure enough space for inputs */
 
   input {
-    width: 40%; /* Split the 20% area between two inputs */
-    min-width: 70px;
+    width: 120px; /* each input width */
   }
 `;
+
 export const DateField = styled.div`
   display: flex;
   flex-direction: column;
@@ -456,11 +472,8 @@ export const DateField = styled.div`
     margin-bottom: 4px;
     font-weight: 500;
   }
-
-  input {
-    width: 90%;
-  }
 `;
+
 
 export const EmployeeImage = styled.img`
   height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */

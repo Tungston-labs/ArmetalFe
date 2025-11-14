@@ -61,6 +61,19 @@ const EmployeeLeaveForm = () => {
   //   }
   // }, [leaveDetails?.employee?.id, dispatch]);
 
+
+  const today = new Date();
+today.setHours(0, 0, 0, 0); // normalize to midnight
+
+const leaveStart = leaveDetails?.from_date ? new Date(leaveDetails.from_date) : null;
+const leaveEnd = leaveDetails?.to_date ? new Date(leaveDetails.to_date) : null;
+
+// Normalize leave dates to midnight
+if (leaveStart) leaveStart.setHours(0, 0, 0, 0);
+if (leaveEnd) leaveEnd.setHours(0, 0, 0, 0);
+
+const isPastLeave = leaveEnd && leaveEnd < today;
+
   const employee = leaveDetails?.employee || {};
 
   const handleStatusUpdate = async () => {
@@ -85,8 +98,6 @@ const EmployeeLeaveForm = () => {
     );
   }
 
-  // ✅ Determine paid or unpaid
-  // const isPaidLeave = pendingLeaves === 0;
 
   return (
     <>
@@ -104,8 +115,9 @@ const EmployeeLeaveForm = () => {
       <Hr />
    <Header employee={employee}/>
  
-
+    <div>
       <SectionTitle>Job Details</SectionTitle>
+  
       <TwoColumnRows>
         <Input placeholder="Job position / Designation" value={employee.designation || ''} readOnly />
         <Input placeholder="Employment Type" value={employee.employment_type || ''} readOnly />
@@ -114,7 +126,9 @@ const EmployeeLeaveForm = () => {
         <Input placeholder="Department" value={employee.department || ''} readOnly />
         <Input placeholder="Joining Date" value={employee.joining_date || ''} readOnly />
       </TwoColumnRows>
-
+      </div>
+      
+      <div>
       <SectionTitle>Leave Application</SectionTitle>
       <FlexRows>
   <LeftSide>
@@ -150,8 +164,9 @@ const EmployeeLeaveForm = () => {
 
     </DateField>
   </RightSide>
-</FlexRows>
 
+</FlexRows>
+  </div>
       <SectionTitle>Leave Balance</SectionTitle>
       <TwoColumnRows>
         <Input
@@ -170,15 +185,36 @@ const EmployeeLeaveForm = () => {
       <TextArea value={leaveDetails?.reason || ''} readOnly />
 
       <FlexRow>
-        <DeclineButton onClick={() => {
-          setActionType('rejected');
-          setShowModal(true);
-        }}>Decline</DeclineButton>
+      <FlexRow>
+  <DeclineButton
+    onClick={() => {
+      setActionType('rejected');
+      setShowModal(true);
+    }}
+  >
+    Decline
+  </DeclineButton>
 
-        <ApproveButton onClick={() => {
-          setActionType('approve');
-          setShowModal(true);
-        }}>Approve</ApproveButton>
+  <ApproveButton
+    onClick={() => {
+      if (isPastLeave) {
+        alert("You cannot approve past leave requests. Only rejection is allowed.");
+        return;
+      }
+      setActionType('approve');
+      setShowModal(true);
+    }}
+    style={{
+      backgroundColor: isPastLeave ? "#ccc" : "#003366",
+      cursor: isPastLeave ? "not-allowed" : "pointer",
+    }}
+    disabled={isPastLeave}
+  >
+    Approve
+  </ApproveButton>
+</FlexRow>
+
+
       </FlexRow>
 
       {showModal && (

@@ -158,11 +158,6 @@ const EmployeeList = () => {
               employeeList.map((emp, index) => (
                 <tr
                   key={emp.id}
-                  onClick={() =>
-                    navigate(`/fulldashboard/${emp.id}`, {
-                      state: { from: location.pathname },
-                    })
-                  }
                   style={{
                     cursor: "pointer",
                     transition: "background-color 0.2s ease",

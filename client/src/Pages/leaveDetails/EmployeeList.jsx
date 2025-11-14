@@ -273,7 +273,7 @@ const EmployeeList = () => {
             <ModalContainer>
               <ModalTitle>Confirm Deletion</ModalTitle>
               <ModalText>
-                Are you sure you want to delete this employee?
+           Are you sure you want to permanently delete this employee from the system?
               </ModalText>
 
               <ModalButtonWrapper>
