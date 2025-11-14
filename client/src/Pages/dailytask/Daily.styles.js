@@ -26,7 +26,8 @@ export const RoleInfo = styled.div`
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 `;
 
-export const DateSelector = styled.div`
+export const 
+DateSelector = styled.div`
   margin-top: 1.5rem;
   display: flex;
   align-items: center;

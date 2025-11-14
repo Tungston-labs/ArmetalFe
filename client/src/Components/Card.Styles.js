@@ -4,8 +4,8 @@ const breakpoints = {
   tablet: "768px",
   laptop: "1024px",
   desktop: "1440px",
-  tv: "2560px",     // 2K / QHD screens
-  largeTv: "3840px" // 4K UHD screens
+  tv: "2560px",   
+  largeTv: "3840px" 
 };
 export const CardContainer = styled.div`
   display: grid;
@@ -27,6 +27,7 @@ export const CardContainer = styled.div`
   /* 💻 Standard desktops */
   @media (min-width: ${breakpoints.laptop}) and (max-width: ${breakpoints.desktop}) {
     grid-template-columns: repeat(3, 1fr);
+  
   }
 
   /* 🖥️ 2K / QHD screens */

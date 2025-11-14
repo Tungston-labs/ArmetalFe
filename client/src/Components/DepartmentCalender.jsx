@@ -292,8 +292,8 @@ const DepartmentCalendar = () => {
     title={holiday ? holiday.description : ""}
     style={{
       position: "relative",
-      backgroundColor: holiday ? "#FFECEC" : undefined, // highlight holiday
-      border: holiday ? "0.7px solid red" : "1px solid #ddd", // ✅ red border for holidays
+      backgroundColor: holiday ? "#FFECEC" : undefined, 
+      border: holiday ? "0.7px solid red" : "1px solid #f6f7faff", 
       borderRadius: "4px", // optional: rounded corners
       cursor: holiday ? "pointer" : "default",
     }}

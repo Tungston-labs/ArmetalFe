@@ -114,8 +114,8 @@ export const InputBox = styled.input`
 
   /* Tablet screens */
   @media (min-width: 768px)and (max-width:1021px) {
-    font-size: 0.8rem;
-    padding: 10px 8px;
+    font-size: 0.7rem;
+    padding: 6px 8px;
   }
 
   /* Laptop screens */
@@ -165,9 +165,9 @@ export const BioBox = styled.textarea`
 
   /* Tablet screens */
   @media (min-width: 768px)and (max-width:1023px) {
-    font-size: 0.8rem;
-    padding: 12px 14px;
-    height: 50px;
+       font-size: 0.7rem;
+    padding: 10px 14px;
+    height: 40px;
   }
 
   /* Laptop screens */
@@ -179,7 +179,7 @@ export const BioBox = styled.textarea`
 
   /* Large desktops */
   @media (min-width: 1440px)and (max-width:1920px) {
-    font-size: 1.3rem;
+    font-size: 1rem;
     padding: 14px 18px;
     height: 95px;
   }
@@ -190,7 +190,7 @@ export const BioBox = styled.textarea`
   }
   /* Ultra-wide / 4K screens */
   @media (min-width: 2560px)and (max-width:3839px) {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     padding: 15px 20px;
     height: 125px;
   }

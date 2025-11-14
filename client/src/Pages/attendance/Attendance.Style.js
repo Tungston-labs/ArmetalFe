@@ -139,6 +139,33 @@ export const DateBox = styled.div`
 
 
 
+export const TableScroll = styled.div`
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 400px; 
+  border-radius: 8px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+  @media (max-width: 1024px) {
+    max-height: 250px; 
+}
+ 
+      @media (min-width: 2540px) and (max-width: 3819px)  {
+    max-height: 700px;
+  }
+      @media (min-width: 3820px) {
+    max-height:1200px;
+  }
+`;
 
 export const Table = styled.table`
   width: 100%;
@@ -417,18 +444,40 @@ export const DateWrapper = styled.div`
 export const WorkingInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: clamp(6px, 1vw, 20px);  // spacing adjusts with screen width
+  gap: 20px;  
 
   strong {
     font-weight: 600;
-    font-size: clamp(14px, 1.2vw, 28px); // scales for very large screens
+    font-size: 28px; 
+    color:#3352BA;
   }
 
   div {
-    font-size: clamp(14px, 1vw, 26px); // scales font from mobile to 8K
+    font-size: 26px; 
     font-weight: bold;
   }
+     @media (max-width: 1920px) {
+    gap: 12px;
 
+    strong {
+      font-size: 18px;
+    }
+
+    div {
+      font-size: 16px;
+    }
+  }
+ @media (max-width: 1440px) {
+    gap: 12px;
+
+    strong {
+      font-size: 18px;
+    }
+
+    div {
+      font-size: 16px;
+    }
+  }
   @media (max-width: 1024px) {
     gap: 12px;
 
@@ -455,22 +504,23 @@ export const WorkingInfo = styled.div`
 `;
 
 
+
 export const DateDetails = styled.div`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: clamp(10px, 2vw, 25px); /* responsive gap between items */
+  gap: 20px;
 
   .date-block {
     display: flex;
     align-items: center;
-    gap: clamp(6px, 1vw, 20px);
+    gap: 10px;
   }
 
   h1 {
-    font-size: clamp(28px, 4vw, 80px); /* responsive main date number */
+    font-size: 48px;
     font-weight: 600;
     margin: 0;
   }
@@ -479,112 +529,135 @@ export const DateDetails = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: clamp(2px, 0.5vw, 8px);
+    // gap: 4px;
 
     strong {
-      font-size: clamp(14px, 1.5vw, 28px); /* responsive month */
+      font-size: 20px;
       font-weight: 600;
     }
 
     p {
       margin: 0;
-      font-size: clamp(12px, 1.2vw, 22px); /* responsive day */
+      font-size: 16px;
       color: #555;
     }
   }
 
-  @media (max-width: 1440px) {
-    gap: 15px;
-
-    h1 {
-      font-size: clamp(24px, 3vw, 50px);
-    }
-
-    .month-day strong {
-      font-size: clamp(12px, 1.2vw, 20px);
-    }
-
-    .month-day p {
-      font-size: clamp(10px, 1vw, 18px);
-    }
-  }
-
+  /* 📱 Small screens */
   @media (max-width: 768px) {
     position: static;
     transform: none;
-    /* flex-direction: column; */
     align-items: center;
     gap: 12px;
 
     .date-block {
-      /* flex-direction: column; */
       gap: 8px;
     }
 
     h1 {
-      font-size: clamp(20px, 5vw, 40px);
+      font-size: 28px;
     }
 
     .month-day {
       align-items: center;
+
       strong {
-        font-size: clamp(12px, 2vw, 22px);
+        font-size: 16px;
       }
+
       p {
-        font-size: clamp(10px, 1.5vw, 18px);
+        font-size: 14px;
       }
     }
   }
 
-  @media (min-width: 2560px) { /* 2K / QHD */
-    gap: 30px;
-    h1 {
-      font-size: 90px;
-    }
-    .month-day strong {
-      font-size: 30px;
-    }
-    .month-day p {
-      font-size: 24px;
-    }
-  }
+  /* 💻 Standard HD / Full HD */
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    gap: 18px;
 
-  @media (min-width: 3840px) { /* 4K */
-    gap: 40px;
     h1 {
-      font-size: 120px;
-    }
-    .month-day strong {
-      font-size: 36px;
-    }
-    .month-day p {
-      font-size: 28px;
-    }
-  }
-
-  @media (min-width: 7680px) { /* 8K */
-    gap: 60px;
-    h1 {
-      font-size: 180px;
-    }
-    .month-day strong {
       font-size: 50px;
     }
+
+    .month-day strong {
+      font-size: 20px;
+    }
+
     .month-day p {
-      font-size: 40px;
+      font-size: 20px;
+    }
+  }
+
+  /* 🖥️ 2K Displays */
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    gap: 22px;
+
+    h1 {
+      font-size: 48px;
+    }
+
+    .month-day strong {
+      font-size: 20px;
+    }
+
+    .month-day p {
+      font-size: 16px;
+    }
+  }
+
+  /* 🖥️ 2.5K–3.8K Displays */
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    gap: 30px;
+
+    h1 {
+      font-size: 80px;
+    }
+
+    .month-day strong {
+      font-size: 28px;
+    }
+
+    .month-day p {
+      font-size: 22px;
+    }
+  }
+
+  /* 🖥️ 4K+ Displays */
+  @media (min-width: 3840px) {
+    gap: 40px;
+
+    h1 {
+      font-size: 110px;
+    }
+
+    .month-day strong {
+      font-size: 34px;
+    }
+
+    .month-day p {
+      font-size: 26px;
     }
   }
 `;
 
 
 
+
+
 export const DayBoxes = styled.div`
   display: flex;
   align-items: center;
-  gap: clamp(8px, 1vw, 24px); /* responsive gap */
   justify-content: center;
+  gap: 20px; 
 
-  @media (min-width: 2560px) { /* 2K / QHD */
+
+  @media (min-width: 1440px) {
+    gap: 2rem;
+  }
+  @media (min-width: 1920px) {
+    gap: 3rem;
+  }
+  @media (min-width: 2560px) {
     gap: 3rem;
   }
 
@@ -599,66 +672,76 @@ export const DayBoxes = styled.div`
 
 export const DayBox = styled.div`
   background-color: #f3f3f3;
-  padding: clamp(6px, 1vw, 14px);
-  width: clamp(60px, 8vw, 120px);
+  padding: 10px;
+  width: 90px;
   text-align: center;
   border-radius: 6px;
-
+  color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
   strong {
-  text-decoration: underline;
-  font-weight: 600;
-  font-size: clamp(14px, 1.2vw, 20px);
+    text-decoration: underline;
+    font-weight: 600;
+    font-size: 16px;
+    color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
+    /* 2K / QHD */
+    @media (min-width: 2560px) {
+      font-size: 1.8rem;
+    }
 
-  /* 2K / QHD */
-  @media (min-width: 2560px) {
-    font-size: 1.8rem;
+    /* 4K */
+    @media (min-width: 3840px) {
+      font-size: 2rem;
+    }
+
+    /* 8K */
+    @media (min-width: 7680px) {
+      font-size: 2.5rem;
+    }
   }
 
-  /* 4K */
-  @media (min-width: 3840px) {
-    font-size: 2rem;
+  div {
+    margin-top: 6px;
+    margin-bottom:0.3rem;
+    font-size: 14px;
+color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
+    /* 2K / QHD */
+    @media (min-width: 2560px) {
+      font-size: 1.8rem;
+      margin-top: 0.8rem;
+    }
+
+    /* 4K */
+    @media (min-width: 3840px) {
+      font-size: 2rem;
+      margin-top: 1rem;
+    }
+
+    /* 8K */
+    @media (min-width: 7680px) {
+      font-size: 3rem;
+      margin-top: 1.2rem;
+    }
   }
-
-  /* 8K */
-  @media (min-width: 7680px) {
-    font-size: 2.5rem;
-  }
-}
-
-
- div {
-  margin-top: clamp(4px, 0.5vw, 8px);
-  font-size: clamp(12px, 1vw, 18px);
-
-  /* 2K / QHD */
-  @media (min-width: 2560px) {
-    font-size: 1.8rem;
-    margin-top: 0.8rem;
-  }
-
-  /* 4K */
-  @media (min-width: 3840px) {
-    font-size: 2rem;
-    margin-top: 1rem;
-  }
-
-  /* 8K */
-  @media (min-width: 7680px) {
-    font-size: 3rem;
-    margin-top: 1.2rem;
-  }
-}
-
 
   p {
-    font-size: clamp(10px, 0.8vw, 24px);
-    color: #888;
+    font-size: 12px;
+    color: #525252ff;
+    color: ${(props) => (props.isFuture ? "#aaa" : "#525252")};
+    @media (min-width: 2560px) {
+      font-size: 1.5rem;
+    }
+
+    @media (min-width: 3840px) {
+      font-size: 1.8rem;
+    }
+
+    @media (min-width: 7680px) {
+      font-size: 2.4rem;
+    }
   }
 
   @media (min-width: 2560px) {
     width: 150px;
-    padding: 1.rem;
-    
+    padding: 1rem;
   }
 
   @media (min-width: 3840px) {
@@ -672,11 +755,20 @@ export const DayBox = styled.div`
   }
 `;
 
-export const ActiveDayBox = styled(DayBox)`
-  background-color: #3f51b5;
-  color: white;
-`;
 
+
+export const ActiveDayBox = styled(DayBox)`
+  background: linear-gradient(180deg, #172554 0%, #3352ba 100%);
+  color: #ffffff;
+
+  strong,
+  div,
+  p {
+    color: #ffffff;
+  }
+
+ 
+`;
 
 export const TotalHours = styled.p`
   margin-top: clamp(10px, 1.5vw, 30px);

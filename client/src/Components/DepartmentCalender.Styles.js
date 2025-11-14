@@ -618,16 +618,22 @@ export const CalendarDay = styled.div`
     isSelected
       ? "#3352BA"
       : isToday
-      ? "#3352BA"
+      ? "#81a6f5ff"
       : isHoliday
-      ? "#FFECEC" // highlight only holidays
+      ? "#FFECEC" 
       : "transparent"};
 
   color: ${({ isToday, isSelected, isHoliday }) =>
     isSelected || isToday ? "#fff" : "#000"};
 
-  border: ${({ isSelected, isHoliday }) =>
-    isSelected ? "2px solid #1e3a8a" : isHoliday ? "1px solid #FFCCCC" : "none"};
+  border: ${({ isSelected, isHoliday, isToday }) =>
+    isSelected
+      ? "2px solid #1e3a8a"
+      : isHoliday
+      ? "1px solid #FFCCCC"
+      : isToday
+      ? "2px solid #1e3a8a"
+      : "none"};
 
   font-weight: ${({ isToday, isSelected }) =>
     isToday || isSelected ? "bold" : "normal"};

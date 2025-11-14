@@ -127,7 +127,8 @@ const isLoading = loading || deptLoading;
             <TableHead>Leave type</TableHead>
             <TableHead>Email ID</TableHead>
             <TableHead>Department</TableHead>
-            <TableHead>Start date to End date</TableHead>
+            <TableHead>Start date </TableHead> 
+              <TableHead>End date</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </thead>
@@ -164,8 +165,11 @@ const isLoading = loading || deptLoading;
         <TableCell>{leave.employee.email}</TableCell>
         <TableCell>{leave.employee.department}</TableCell>
         <TableCell>
-          {leave.from_date} - {leave.to_date}
-        </TableCell>
+          {leave.from_date} 
+            </TableCell>
+            <TableCell> {leave.to_date}</TableCell>
+         
+      
        
         <TableCell
           onClick={(e) => {
@@ -173,38 +177,37 @@ const isLoading = loading || deptLoading;
           }}
         >
           <ActionButtons>
-          <ApproveButton
+     <ApproveButton
   onClick={() => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date();
     const leaveEnd = new Date(leave.to_date);
-    const currentDate = new Date(today);
 
-    if (leaveEnd < currentDate) {
-      alert("You cannot approve or mark past leave dates.");
+    // Disable only if leave is in the past
+    if (leaveEnd < today.setHours(0, 0, 0, 0)) {
+      alert("You cannot approve past leave requests.");
       return;
     }
 
     setSelectedLeave({
       leave_id: leave.id,
       employee_id: leave.employee?.id,
-      date: today,
+      date: today.toISOString().split("T")[0],
     });
     setShowModal(true);
   }}
   style={{
-    backgroundColor:
-      new Date(leave.to_date) < new Date()
-        ? "#ccc"
-        : "#003366",
-    cursor:
-      new Date(leave.to_date) < new Date()
-        ? "not-allowed"
-        : "pointer",
+    backgroundColor: new Date(leave.to_date) < new Date().setHours(0, 0, 0, 0)
+      ? "#ccc"
+      : "#003366",
+    cursor: new Date(leave.to_date) < new Date().setHours(0, 0, 0, 0)
+      ? "not-allowed"
+      : "pointer",
   }}
-  disabled={new Date(leave.to_date) < new Date()}
+  disabled={new Date(leave.to_date) < new Date().setHours(0, 0, 0, 0)}
 >
   On Leaves
 </ApproveButton>
+
 
           </ActionButtons>
         </TableCell>

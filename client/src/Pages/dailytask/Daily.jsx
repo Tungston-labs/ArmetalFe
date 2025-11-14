@@ -28,6 +28,8 @@ import TaskIcon from "../../assets/task.svg";
 import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function DailyTask() {
   const dispatch = useDispatch();
@@ -40,13 +42,39 @@ export default function DailyTask() {
 
   const dateInputRef = useRef(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+
+  // Helper to format Date -> YYYY-MM-DD in local time (no UTC conversion)
+  const toYMD = (d) => {
+    const date =
+      d instanceof Date
+        ? new Date(d.getFullYear(), d.getMonth(), d.getDate())
+        : (() => {
+            const parsed = new Date(d);
+            return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+          })();
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  // Parse YYYY-MM-DD string into a local Date (midnight local)
+  const parseYMD = (ymd) => {
+    if (!ymd) return null;
+    const [y, m, d] = ymd.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  };
+
+  // Initialize selectedDate using local formatting
+  const todayLocal = new Date();
+  const initialYMD = toYMD(todayLocal);
+  const [selectedDate, setSelectedDate] = useState(initialYMD); // "YYYY-MM-DD"
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const today = new Date();
+  // Fixed weekday labels (Mon -> Sun)
+  const weekdayOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   // Fetch departments on mount
   useEffect(() => {
@@ -78,12 +106,23 @@ export default function DailyTask() {
     emp.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Week dates (3 before, 3 after)
-  const weekDates = [...Array(7)].map((_, i) => {
-    const baseDate = new Date(selectedDate);
-    const d = new Date(baseDate);
-    d.setDate(baseDate.getDate() - 3 + i);
-    return d;
+  // Get Monday of the week containing the selected date (local)
+  const getStartOfWeekMonday = (ymd) => {
+    const d = parseYMD(ymd);
+    const day = d.getDay(); // 0 Sunday
+    const mondayOffset = day === 0 ? -6 : 1 - day;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() + mondayOffset);
+    monday.setHours(0, 0, 0, 0);
+    return monday;
+  };
+
+  // Build weekDates (Mon -> Sun) from selectedDate (local)
+  const weekStart = getStartOfWeekMonday(selectedDate);
+  const weekDates = weekdayOrder.map((_, i) => {
+    const d = new Date(weekStart);
+    d.setDate(weekStart.getDate() + i);
+    return d; // Date objects in local timezone midnight
   });
 
   // Unified loader
@@ -104,24 +143,63 @@ export default function DailyTask() {
     );
   }
 
-  const handleCalendarClick = () => dateInputRef.current?.showPicker();
+  const handleCalendarClick = () => setShowDatePicker(true);
   const handleEmployeeSelect = (emp) => setSelectedEmployee(emp);
 
-  // ✅ Left arrow - move to previous day
+  // Prev day (local)
   const handlePrevDay = () => {
-    const prevDate = new Date(selectedDate);
-    prevDate.setDate(prevDate.getDate() - 1);
-    setSelectedDate(prevDate.toISOString().split("T")[0]);
+    const curr = parseYMD(selectedDate);
+    curr.setDate(curr.getDate() - 1);
+    setSelectedDate(toYMD(curr));
   };
 
-  // ✅ Right arrow - only move if not in future
+  // Next day (local) — only up to today
   const handleNextDay = () => {
-    const nextDate = new Date(selectedDate);
-    nextDate.setDate(nextDate.getDate() + 1);
-    if (nextDate <= today) {
-      setSelectedDate(nextDate.toISOString().split("T")[0]);
+    const curr = parseYMD(selectedDate);
+    curr.setDate(curr.getDate() + 1);
+    const today = parseYMD(toYMD(new Date()));
+    if (curr <= today) {
+      setSelectedDate(toYMD(curr));
     }
   };
+
+  // Helpers for task UI (unchanged from your logic)
+  const formatTime = (datetimeStr) => {
+    if (!datetimeStr) return "-";
+    try {
+      const d = new Date(datetimeStr);
+      return d.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+    } catch {
+      return "-";
+    }
+  };
+
+  const getEarliestTimeIn = (sessions) => {
+    if (!sessions?.length) return "-";
+    const validSessions = sessions.filter((s) => s.time_in);
+    if (!validSessions.length) return "-";
+    const earliest = validSessions.reduce((a, b) => (a.time_in < b.time_in ? a : b));
+    return formatTime(earliest.time_in);
+  };
+
+  const getConditionalTimeOut = (sessions) => {
+    if (!sessions?.length) return "-";
+    const sorted = [...sessions].sort((a, b) => (a.time_in > b.time_in ? 1 : -1));
+    const lastSession = sorted[sorted.length - 1];
+    if (lastSession.time_in && !lastSession.time_out) {
+      return "---";
+    }
+    const validOutSessions = sorted.filter((s) => s.time_out);
+    if (!validOutSessions.length) return "-";
+    const latest = validOutSessions.reduce((a, b) => (a.time_out > b.time_out ? a : b));
+    return formatTime(latest.time_out);
+  };
+
+  const todayYMD = toYMD(new Date());
 
   return (
     <>
@@ -137,6 +215,37 @@ export default function DailyTask() {
           showTabs={false}
           showSearch={false}
         />
+
+        {/* DatePicker modal (centered) */}
+        {showDatePicker && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              background: "rgba(0,0,0,0.3)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 9999,
+            }}
+            onClick={() => setShowDatePicker(false)}
+          >
+            <div onClick={(e) => e.stopPropagation()}>
+              <DatePicker
+                selected={parseYMD(selectedDate)}
+                onChange={(date) => {
+                  setSelectedDate(toYMD(date));
+                  setShowDatePicker(false);
+                }}
+                inline
+                maxDate={parseYMD(todayYMD)}
+              />
+            </div>
+          </div>
+        )}
 
         <DateSelector>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -164,23 +273,26 @@ export default function DailyTask() {
               <button className="left-lesser" onClick={handlePrevDay}>
                 {"<"}
               </button>
+
               <FaRegCalendarAlt className="calendar-icon" onClick={handleCalendarClick} />
+
               <input
                 type="date"
                 ref={dateInputRef}
                 value={selectedDate}
                 onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
-                max={today.toISOString().split("T")[0]} // ✅ prevent selecting future date
+                max={todayYMD}
                 style={{ display: "none" }}
               />
+
               <div className="date-info">
-                <div className="day">{new Date(selectedDate).getDate()}</div>
+                <div className="day">{parseYMD(selectedDate).getDate()}</div>
                 <div>
                   <div className="month">
-                    {new Date(selectedDate).toLocaleString("default", { month: "long" })}
+                    {parseYMD(selectedDate).toLocaleString("default", { month: "long" })}
                   </div>
                   <div className="weekday">
-                    {new Date(selectedDate).toLocaleString("default", { weekday: "long" })}
+                    {parseYMD(selectedDate).toLocaleString("default", { weekday: "long" })}
                   </div>
                 </div>
               </div>
@@ -190,13 +302,10 @@ export default function DailyTask() {
               <button
                 className="right-greater"
                 onClick={handleNextDay}
-                disabled={new Date(selectedDate).toDateString() === today.toDateString()}
+                disabled={selectedDate === todayYMD}
                 style={{
-                  opacity: new Date(selectedDate).toDateString() === today.toDateString() ? 0.4 : 1,
-                  cursor:
-                    new Date(selectedDate).toDateString() === today.toDateString()
-                      ? "not-allowed"
-                      : "pointer",
+                  opacity: selectedDate === todayYMD ? 0.4 : 1,
+                  cursor: selectedDate === todayYMD ? "not-allowed" : "pointer",
                 }}
               >
                 {">"}
@@ -205,24 +314,29 @@ export default function DailyTask() {
           </div>
         </DateSelector>
 
+        {/* Calendar: fixed weekday labels, only date/month change */}
         <Calendar>
           {weekDates.map((day, i) => {
-            const isActive = day.toDateString() === new Date(selectedDate).toDateString();
-            const isFuture = day > today;
+            const dayYMD = toYMD(day);
+            const isActive = dayYMD === selectedDate;
+            const isFuture = dayYMD > todayYMD;
+
             return (
               <Day
                 key={i}
                 active={isActive}
-                onClick={() =>
-                  !isFuture && setSelectedDate(day.toISOString().split("T")[0])
-                }
+                onClick={() => {
+                  if (!isFuture) setSelectedDate(dayYMD);
+                }}
                 style={{
                   opacity: isFuture ? 0.4 : 1,
                   cursor: isFuture ? "not-allowed" : "pointer",
                 }}
               >
-                <strong>{day.toLocaleString("default", { weekday: "short" })}</strong>
+                {/* FIXED weekday label */}
+                <strong>{weekdayOrder[i]}</strong>
                 <Hr />
+                {/* only date + month update */}
                 <span>
                   {day.getDate()} {day.toLocaleString("default", { month: "short" })}
                 </span>

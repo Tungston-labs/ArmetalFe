@@ -279,6 +279,7 @@ const PayrollTable = () => {
     <>
       <Navbar />
       <Container>
+        
         <Header>
           <TitleSection>
   <LeftGroup>
@@ -347,6 +348,7 @@ const PayrollTable = () => {
                   />
                 </Th>
                 <Th>Sl No</Th>
+                 <Th>Name</Th>
                 <Th>Employee ID</Th>
                 <Th>Job Position</Th>
                 <Th>Joining Date</Th>
@@ -359,9 +361,10 @@ const PayrollTable = () => {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="11" style={{ textAlign: "center", padding: "2rem" }}><Loader size="large" tip="Loading..." /></td></tr>
-              ) : error ? (
-                <tr><Td colSpan="11">Error: {error}</Td></tr>
+                <tr><td colSpan="11" style={{ textAlign: "center", padding: "2rem" }}>
+                  <Loader size="large" tip="Loading..." />
+                  </td>
+                  </tr>
               ) : data?.length > 0 ? (
                 data.map((emp, index) => (
                   <tr key={emp.id}>
@@ -373,10 +376,12 @@ const PayrollTable = () => {
                       />
                     </Td>
                     <Td>{(page - 1) * 10 + index + 1}</Td>
+                       <Td>{emp.employee_name}</Td>
                     <Td>{emp.employee_id}</Td>
+
                     <Td
                       style={{
-                        maxWidth: "100px",
+                        maxWidth: "50px",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis"
@@ -388,7 +393,7 @@ const PayrollTable = () => {
                     <Td>{emp.joining_date}</Td>
                     <Td
                       style={{
-                        maxWidth: "150px",
+                        maxWidth: "50px",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis"

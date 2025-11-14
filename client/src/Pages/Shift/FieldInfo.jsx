@@ -229,6 +229,7 @@ const FieldInfo = () => {
 
             <DateNav>
               <DateContainer>
+                 <IconBtn onClick={handlePrevDay}>{"<"}</IconBtn>
                 <CalendarIcon
                   style={{ cursor: "pointer" }}
                   onClick={() => setIsCalendarOpen(true)}
@@ -275,7 +276,7 @@ const FieldInfo = () => {
               </DateContainer>
 
               <NavButtons>
-                <IconBtn onClick={handlePrevDay}>{"<"}</IconBtn>
+               
                 <IconBtn onClick={handleNextDay}>{">"}</IconBtn>
               </NavButtons>
             </DateNav>

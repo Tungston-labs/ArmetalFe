@@ -358,54 +358,64 @@ const handleUpdate = async () => {
                 <th>Delete</th>
               </tr>
             </thead>
-            <tbody>
-  {departmentEmployees.map((emp, index) => (
-    <tr
-      key={index}
-      onClick={() => navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })}
-      style={{
-        cursor: "pointer",
-        transition: "background-color 0.2s ease",
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f4f6fa")}
-      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-    >
-      <td>{index + 1}</td>
-      <td style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        {emp.profile_pic ? (
-          <img
-            src={`http://178.248.112.16:8001${emp.profile_pic}`}
-            alt={emp.name}
-            style={{
-              width: "32px",
-              height: "32px",
-              borderRadius: "50%",
-              objectFit: "cover",
+  <tbody>
+  {departmentEmployees
+    .slice() // create a copy to avoid mutating state
+    .sort((a, b) => a.name.localeCompare(b.name)) // sort ascending by name
+    .map((emp, index) => (
+      <tr
+        key={index}
+        onClick={() =>
+          navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })
+        }
+        style={{
+          cursor: "pointer",
+          transition: "background-color 0.2s ease",
+        }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.backgroundColor = "#f4f6fa")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.backgroundColor = "transparent")
+        }
+      >
+        <td>{index + 1}</td>
+        <td style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {emp.profile_pic ? (
+            <img
+              src={`http://178.248.112.16:8001${emp.profile_pic}`}
+              alt={emp.name}
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          ) : (
+            <FaUserCircle size={32} color="#c9cacc" />
+          )}
+          <span>{emp.name}</span>
+        </td>
+        <td>{emp.employee_id}</td>
+        <td>{emp.email}</td>
+        <td>{emp.designation}</td>
+        <td>{department.name}</td>
+        <td>
+          <IconButton
+            danger
+            onClick={(e) => {
+              e.stopPropagation(); // stop row click
+              handleDeleteEmployee(emp.id, emp.name);
             }}
-          />
-        ) : (
-          <FaUserCircle size={32} color="#c9cacc" />
-        )}
-        <span>{emp.name}</span>
-      </td>
-      <td>{emp.employee_id}</td>
-      <td>{emp.email}</td>
-      <td>{emp.designation}</td>
-      <td>{department.name}</td>
-      <td>
-        <IconButton
-          danger
-          onClick={(e) => {
-            e.stopPropagation(); // stop row click
-            handleDeleteEmployee(emp.id, emp.name);
-          }}
-        >
-          <FaTrash />
-        </IconButton>
-      </td>
-    </tr>
+          >
+            <FaTrash />
+          </IconButton>
+        </td>
+      </tr>
   ))}
 </tbody>
+
 
           </StyledTable>
         </TableWrapper>
