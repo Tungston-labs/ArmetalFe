@@ -15,7 +15,8 @@ export const fetchAttendanceDetail = async (attendanceId, date) => {
   return response.data;
 };
 
-export const searchEmployees = async (params = {}) => {
-  const response = await API.get("/employees/search/", { params });
+
+export const searchEmployees = async (search) => {
+  const response = await API.get(`/employees/search/?q=${search}`);
   return response.data;
 };

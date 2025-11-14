@@ -239,8 +239,8 @@ class AddPunchOutNoteView(APIView):
 
 # -----------------------------------------------------view for list attendance for admin
 
-from django.db.models import Min, Case, When, IntegerField
 from rest_framework.exceptions import ValidationError
+from django.db.models import Max, Min, Case, When, IntegerField
 
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
@@ -249,65 +249,85 @@ class AttendanceAdminListView(generics.ListAPIView):
     search_fields = ['employee__name', 'employee__employee_id', 'date']
     pagination_class = CustomPagination
 
+
     def get_queryset(self):
         department_id = self.request.query_params.get('department_id')
         if not department_id:
             raise ValidationError({"department_id": "This query parameter is required."})
 
-        date = self.request.query_params.get('date')
-
-        # ✅ Annotate each attendance record with the earliest punch-in (from AttendanceSession)
-        queryset = (
-            Attendance.objects.filter(employee__department_id=department_id)
-            .annotate(first_punch_in=Min('sessions__time_in'))
+        # Step 1 → Find latest attendance date for each employee in dept
+        latest_attendance = (
+            Attendance.objects
+            .filter(employee__department_id=department_id)
+            .values('employee')
+            .annotate(latest_date=Max('date'))
         )
 
-        # Optional date filter
-        if date:
-            queryset = queryset.filter(date=date)
+        # Convert to dict: {employee_id: latest_date}
+        latest_map = {
+            item['employee']: item['latest_date']
+            for item in latest_attendance
+        }
 
-        # ✅ Order by date (newest first), but within date, by first_punch_in (earliest first)
-        # Employees who haven’t swiped in yet (NULL) will be pushed to the bottom
+        # Step 2 → Get attendance rows matching latest date per employee
+        queryset = Attendance.objects.filter(
+            employee__in=latest_map.keys(),
+            date__in=latest_map.values()
+        ).annotate(
+            first_punch_in=Min('sessions__time_in')
+        )
+
+        # Final ordering → latest date first
         queryset = queryset.order_by(
             '-date',
             Case(
                 When(first_punch_in__isnull=True, then=1),
                 default=0,
-                output_field=IntegerField(),
+                output_field=IntegerField()
             ),
-            'first_punch_in',
+            'first_punch_in'
         )
 
         return queryset
+
 
 
 class EmployeeSearchView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
     def get(self, request):
-        query = request.GET.get("q", "").strip().lower()
+        query = request.GET.get("q", "").strip()
 
         if not query:
             return Response([])
 
+        # Step 1 → Filter employees by search
         employees = (
             Employee_db.objects.filter(name__icontains=query)
             .select_related("department")
+            .prefetch_related("attendance_set")
         )
 
-        results = []
+        final_results = []
+
         for emp in employees:
-            results.append({
+            attendance = emp.attendance_set.order_by('-date').first()
+
+            final_results.append({
                 "id": emp.id,
                 "employee_name": emp.name,
                 "employee_id": emp.employee_id,
                 "department": {
                     "id": emp.department.id,
                     "name": emp.department.name
-                }
+                },
+                "date": attendance.date if attendance else None,
+                "time_in": attendance.sessions.first().time_in if attendance and attendance.sessions.exists() else None,
+                "time_out": attendance.sessions.last().time_out if attendance and attendance.sessions.exists() else None,
             })
 
-        return Response(results)
+        return Response(final_results)
+
 
 
 # -----------------------------------------------------attendance detail view group by date(admin)

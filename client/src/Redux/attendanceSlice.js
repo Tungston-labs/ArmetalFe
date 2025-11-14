@@ -27,14 +27,14 @@ export const getAttendanceDetail = createAsyncThunk(
   }
 );
 
-export const employeeSearch = createAsyncThunk(
-  "employees/search",
-  async (params, thunkAPI) => {
+export const searchAttendanceEmployees = createAsyncThunk(
+  "attendance/searchEmployees",
+  async (search, { rejectWithValue }) => {
     try {
-      const data = await searchEmployees(params);
-      return data;
+      const data = await searchEmployees(search);
+      return data;   // must return list of employees with dept
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || "Error");
+      return rejectWithValue(error.response?.data || "Search failed");
     }
   }
 );
@@ -44,7 +44,6 @@ const attendanceSlice = createSlice({
   name: 'attendance',
   initialState: {
     attendanceList: [],
-    employees: [],
     searchResults: [],
 
     attendanceDetail: null,
@@ -93,17 +92,16 @@ const attendanceSlice = createSlice({
         state.attendanceDetail = null;
         state.error = action.payload;
       })
-      .addCase(employeeSearch.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+     .addCase(searchAttendanceEmployees.pending, (state) => {
+        state.searchLoading = true;
       })
-      .addCase(employeeSearch.fulfilled, (state, action) => {
-        state.loading = false;
-        state.searchResults = action.payload || [];
+      .addCase(searchAttendanceEmployees.fulfilled, (state, action) => {
+        state.searchLoading = false;
+        state.searchResults = action.payload;
       })
-      .addCase(employeeSearch.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      .addCase(searchAttendanceEmployees.rejected, (state) => {
+        state.searchLoading = false;
+        state.searchResults = [];
       });
 
   },
