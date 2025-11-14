@@ -573,7 +573,7 @@ class BackgroundLocationUpdateView(APIView):
                 try:
                     obj.location_name = get_location_name_sync(obj.latitude, obj.longitude)
                     obj.save(update_fields=["location_name"])
-                    print(f"✅ Saved location_name '{obj.location_name}' for employee {employee_id}")
+                    print(f" Saved location_name '{obj.location_name}' for employee {employee_id}")
                 except Exception as e:
                     print(f"⚠️ Geocoding failed for employee {employee_id}: {e}")
 

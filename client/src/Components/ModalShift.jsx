@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Calendar from "react-calendar";
 import { FaCalendarAlt } from "react-icons/fa"; // calendar icon
 import {
@@ -23,6 +23,7 @@ const ActivityLogModal = ({
   onDateChange, // callback to notify parent of date change
 }) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const calendarRef = useRef(null);
 
   const parsedDate = useMemo(() => {
     if (!date) return null;
@@ -69,6 +70,23 @@ const ActivityLogModal = ({
     ); // sort latest → oldest
   }, [formattedLive, formattedLogs]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setCalendarOpen(false);
+      }
+    };
+
+    if (calendarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [calendarOpen]);
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -100,11 +118,11 @@ const ActivityLogModal = ({
 
             {/* Calendar picker */}
             {calendarOpen && (
-              <div style={{ position: "absolute", zIndex: 100 }}>
+              <div ref={calendarRef} style={{ position: "absolute", zIndex: 100, marginTop: 96 }}>
                 <Calendar
                   onChange={(newDate) => {
                     setCalendarOpen(false);
-             onDateChange(newDate.toLocaleDateString("en-CA")); // local date
+                    onDateChange(newDate.toLocaleDateString("en-CA"));
                   }}
                   value={parsedDate}
                 />
