@@ -239,3 +239,35 @@ export const SaveButton = styled(CancelButton)`
     background-color: #3f60cbff;
   }
 `;
+export const CloseButton = styled.button`
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  color: #374151;
+
+  &:hover {
+    color: #111827;
+  }
+`;
+export const ModalContent = styled.div`
+  width: 720px;
+  max-width: 100%;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  overflow: hidden;
+`;
+export const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+`;

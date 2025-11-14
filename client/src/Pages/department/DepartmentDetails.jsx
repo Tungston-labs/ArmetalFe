@@ -33,7 +33,7 @@ import { FaUserCircle } from "react-icons/fa";
 import Navbar from '../../Components/Navbar';
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader"
-import { GoInfo } from 'react-icons/go';
+
 
 const DepartmentDetail = () => {
   const { id } = useParams();
@@ -229,12 +229,6 @@ const handleUpdate = async () => {
     });
   }
 };
-
-
-
-
-
-
 
   if (!department) return <Loader />;
 

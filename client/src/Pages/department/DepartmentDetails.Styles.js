@@ -148,16 +148,29 @@ export const Subtitle = styled.p`
   }
 `;
 
-// export const SubTitle = styled.p`
-//   font-size: 0.9rem;
-//   color: #666;
-//   font-family:raleway;
-// `;
+export const ButtonGroups = styled.div`
+  margin-top: 2rem;
+  // display: flex;
+  // gap: 8px;
+`;
+
+export const CancelButton = styled.button`
+  padding: 10px 10px;
+  background: #fff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #f4f4f5;
+  }
+    `;
 export const FormSection = styled.div`
   display: flex;
   /* flex-wrap: wrap; */
   gap: 1.5rem;
-  margin-bottom: 1rem;
 `;
 
 export const ActionArea = styled.div`
@@ -166,7 +179,7 @@ export const ActionArea = styled.div`
   align-items: end;
 `;
 export const InputGroup = styled.div`
-  width: calc(40% - 1rem);
+  width: calc(30% - 1rem);
   display: flex;
   flex-direction: column;
 `;
@@ -174,6 +187,29 @@ export const ButtonGroup = styled.div`
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
+`;
+// Wrapper row: inputs on the left, edit button on the right
+export const TopRow = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
+// Groups inputs together on the left
+export const InputsWrapper = styled.div`
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  width: 80%;     /* LEFT SIDE 80% width */
+`;
+
+// Right side button container
+export const RightActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  width: 20%;     /* RIGHT SIDE 20% width */
 `;
 
 export const AddButton = styled.button`
@@ -235,10 +271,10 @@ export const SearchInput = styled.input`
 `;
 export const Label = styled.label`
   color: gray;
-  margin-bottom: 0.5rem;
+  // margin-bottom: 0.5rem;
 
-  /* ✅ Responsive font size */
-  font-size: clamp(0.85rem, 1vw, 1.2rem);
+ 
+  font-size: clamp(0.85rem, 1vw, 1.3rem);
 
   @media (min-width: 1920px) and (max-width: 2559px) {
     font-size: 1.3rem;
@@ -251,11 +287,12 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   background: white;
-  border: 1px solid #052db4;
-  border-radius: 4px;
-  width: 100%;
+  // border: 1px solid #052db4;
+  // border-radius: 4px;
+  border:none;
+  width: 50%;
 
-  /* ✅ Responsive padding & font */
+
   padding: clamp(0.4rem, 0.8vw, 0.75rem) clamp(0.6rem, 1vw, 1rem);
   font-size: clamp(0.85rem, 1vw, 1.1rem);
 
