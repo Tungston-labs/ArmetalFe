@@ -2,29 +2,25 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from user.models import User
-
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
-from rest_framework import serializers
-from user.models import User
 from user.serializers import CustomTokenObtainPairSerializer
-
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import AllowAny
+from rest_framework.authentication import BasicAuthentication
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import OTP, User, generate_otp
+from .serializers import SendOTPSerializer, VerifyOTPSerializer, ResetPasswordSerializer
 
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
-
-# logout view for super admin,employees,hr
-
-# users/views.py (or wherever appropriate)
-
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -41,8 +37,6 @@ class LogoutView(APIView):
             return Response({"detail": "Logout successful"}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({"error": "Invalid or expired refresh token"}, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 class ChangePasswordView(APIView):
@@ -62,19 +56,6 @@ class ChangePasswordView(APIView):
         user.set_password(new_password)
         user.save()
         return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
-
-
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
-from rest_framework.authentication import BasicAuthentication
-from rest_framework import status
-from django.core.mail import send_mail
-from django.conf import settings
-from .models import OTP, User, generate_otp
-from .serializers import SendOTPSerializer, VerifyOTPSerializer, ResetPasswordSerializer
 
 class SendOTPView(APIView):
     authentication_classes = []  

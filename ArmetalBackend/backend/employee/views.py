@@ -1,5 +1,3 @@
-# employees/views.py
-
 from rest_framework import generics, status, filters,permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -14,8 +12,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.exceptions import NotFound
 from rest_framework.parsers import MultiPartParser,FormParser,JSONParser
-from django.utils import timezone
-from django.db.models import Sum
 from calendar import monthrange
 from datetime import timedelta, date, datetime
 from attendance.models import Attendance
@@ -29,9 +25,10 @@ from departments.models import Department
 from leave.models import LeaveRequest
 from rest_framework.pagination import PageNumberPagination
 from django.core.files.storage import default_storage
-# BASIC DETAILS
+from django.utils import timezone
+from django.db.models import Sum
 
-
+# BASIC DETAILS-create ,list
 
 
 class EmployeeListCreateView(generics.ListCreateAPIView):
@@ -49,14 +46,17 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
             print(f"❌ No valid company found for user: {user.username}")
             return Employee_db.objects.none()
 
-        department_id = self.request.query_params.get('department_id')  # <-- new
+        department_id = self.request.query_params.get('department_id')
         queryset = Employee_db.objects.filter(department__company=company)
 
         if department_id:
             queryset = queryset.filter(department_id=department_id)
 
+        # ✅ Sort by department first, then by plaintext name_search
+        queryset = queryset.order_by('department__name', 'name_search')
+
         print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
-        return queryset.order_by('name')
+        return queryset
 
 
 
@@ -107,7 +107,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
 
 # list employees without pagination
 
-
+# ------list employee according to admins company
 class EmployeeListView(generics.ListAPIView):
     """
     List all employees of the user's company, optionally filtered by department.
@@ -135,7 +135,7 @@ class EmployeeListView(generics.ListAPIView):
         print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
         return queryset.order_by('name')
 
-
+# ------------------------detail view,update,delete employee by admin
 class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee_db.objects.all()
     serializer_class = EmployeeSerializer
@@ -173,7 +173,8 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
             company.save(update_fields=["number_of_employees"])
 
 
-# BANK DETAILS
+# ------------------------create,list bank details of employee by admin
+
 
 
 
@@ -195,6 +196,7 @@ class EmpBankPaymentCreateListView(generics.ListCreateAPIView):
 
         serializer.save(employee=employee)
 
+# ------------------------detail view,update,delete employee bank details  by admin
 
 class EmpBankPaymentEmployeeScopedDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EmpBankPaymentSerializer
@@ -211,6 +213,7 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+# ------------------------list visa/contract expiring employees by admin
 
 class UpcomingExpiryEmployeeListView(generics.ListAPIView):
     serializer_class = EmployeeSerializer
@@ -249,8 +252,7 @@ class UpcomingExpiryEmployeeListView(generics.ListAPIView):
 
 
 
-
-
+# ------------------------upload employee document images
 
 class UploadImageView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -369,66 +371,7 @@ class EmployeeDashboardAPIView(APIView):
         serializer = EmployeeDashboardSerializer(employee)
         return Response(serializer.data)
 
-
-
-
-#--------------------------------- VIEW FOR EMPLOYEE--------------------------------
-
-
-
-# list employees of same department
-
-
-
- 
-
-class EmployeesInMyDepartmentView(APIView):
-    permission_classes = [IsAuthenticated, IsEmployee]
-
-    def get(self, request):
-        try:
-            employee = Employee_db.objects.get(user=request.user)
-            department = employee.department
-        except Employee_db.DoesNotExist:
-            return Response({"detail": "Employee profile not found."}, status=404)
-        except AttributeError:
-            return Response({"detail": "No department assigned."}, status=400)
-
-        employees = Employee_db.objects.filter(department=department)
-        count = employees.count()
-        serializer = EmployeeSerializer(employees, many=True)
-
-        # Get department head info
-        head = department.department_head  # Assuming ForeignKey to Employee_db
-        head_info = {
-            "name": head.name if head else None,
-            "profile_pic": head.profile_pic.url if head and head.profile_pic else None,
-        }
-
-        return Response({
-            "department": department.name,
-            "head": head_info,
-            "count":count,
-            "members": serializer.data
-
-        })
-
-
-class EmployeeSelfView(APIView):
-    permission_classes = [IsAuthenticated,IsEmployee]
-
-    def get(self, request):
-        if not hasattr(request.user, 'employee_db'):
-            return Response({'error': 'Employee profile not found.'}, status=404)
-        employee = request.user.employee_db
-        return Response(EmployeeSerializer(employee).data)
-
-# for dashboard details 
-
-
-
-from datetime import date, timedelta
-
+# ------------------------dashboard for web application
 class DashboardSummaryView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
@@ -587,12 +530,58 @@ class DashboardSummaryView(APIView):
 
 
 
-# for mobile app
+
+#--------------------------------- VIEW FOR EMPLOYEE--------------------------------
 
 
 
-# employee/views.py
+# list employees of same department
 
+
+
+ 
+
+class EmployeesInMyDepartmentView(APIView):
+    permission_classes = [IsAuthenticated, IsEmployee]
+
+    def get(self, request):
+        try:
+            employee = Employee_db.objects.get(user=request.user)
+            department = employee.department
+        except Employee_db.DoesNotExist:
+            return Response({"detail": "Employee profile not found."}, status=404)
+        except AttributeError:
+            return Response({"detail": "No department assigned."}, status=400)
+
+        employees = Employee_db.objects.filter(department=department)
+        count = employees.count()
+        serializer = EmployeeSerializer(employees, many=True)
+
+        # Get department head info
+        head = department.department_head  # Assuming ForeignKey to Employee_db
+        head_info = {
+            "name": head.name if head else None,
+            "profile_pic": head.profile_pic.url if head and head.profile_pic else None,
+        }
+
+        return Response({
+            "department": department.name,
+            "head": head_info,
+            "count":count,
+            "members": serializer.data
+
+        })
+
+# ------------------------profile view for employee
+
+class EmployeeSelfView(APIView):
+    permission_classes = [IsAuthenticated,IsEmployee]
+
+    def get(self, request):
+        if not hasattr(request.user, 'employee_db'):
+            return Response({'error': 'Employee profile not found.'}, status=404)
+        employee = request.user.employee_db
+        return Response(EmployeeSerializer(employee).data)
 
 
 class EmployeeProfileView(APIView):
@@ -626,7 +615,7 @@ class EmployeeDocumentSummaryView(APIView):
 
 
 
-# mobile app home page with attendance details-------------------------
+# mobile app home page with attendance details--
 
 
 
@@ -704,7 +693,8 @@ class AttendanceSummaryView(APIView):
             "remaining_working_days": len(remaining_days),
             "total_hours": round(total_hours, 2)
         })
-
+    
+# --------------------schedule remainder create list
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -728,6 +718,7 @@ class ReminderListCreateView(generics.ListCreateAPIView):
 
 
 
+# --------------------schedule remainder create list
 
 
 class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -743,14 +734,8 @@ class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
+# -------------------employee summary for mobile app
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
-from django.db.models import Sum
-from datetime import date, timedelta, datetime
-import calendar
 
 class EmployeeMonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]

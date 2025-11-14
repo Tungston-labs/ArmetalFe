@@ -6,7 +6,10 @@ from user.models import User
 from departments.models import Department
 from shared.models import TimeStampedModel
 from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
+from django.contrib.postgres.fields import ArrayField  
+from django.db.models import JSONField  
 
+# models.py
 
 def generate_employee_id(company_name, department_name):
     company_part = company_name[:3].upper()
@@ -124,11 +127,7 @@ class EmpBankPaymentModel(models.Model):
         return f"{self.employee.name} - {self.bank_name}"
 
 
-from django.db import models
-from django.contrib.postgres.fields import ArrayField  # Optional if using PostgreSQL
-from django.db.models import JSONField  # Django 3.1+ for generic DB support
 
-# models.py
 class TempUpload(models.Model):
     file = models.ImageField(upload_to='temp_uploads/')
     uploaded_at = models.DateTimeField(auto_now_add=True)

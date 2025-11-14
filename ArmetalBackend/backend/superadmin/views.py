@@ -46,22 +46,13 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.utils.timezone import now
-from .models import CompanySubscription
 from superadmin.serializers import CompanySubscriptionSerializer
 from calendar import monthrange
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import UpdateAPIView
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.utils.timezone import now
 from .models import Company, CompanySubscription
-from .serializers import CompanySubscriptionSerializer
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.utils.timezone import now
-from .models import Company, CompanySubscription
-from .serializers import CompanySubscriptionSerializer
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 
 class CompanySubscriptionListCreateView(APIView):
     """
@@ -114,12 +105,6 @@ class MarkSubscriptionPaidView(UpdateAPIView):
     
 
 
-# email services 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.template.loader import render_to_string
-from django.core.mail import EmailMessage
-from superadmin.models import Company 
 
 class SendInvoiceEmailView(APIView):
     def post(self, request):
@@ -154,10 +139,7 @@ class SendInvoiceEmailView(APIView):
             return Response({"error": str(e)}, status=500)
 
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .serializers import CompanyListSerializer
-from .models import Company
+
 
 class CompanyOverviewView(APIView):
     def get(self, request):

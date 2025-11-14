@@ -1,15 +1,12 @@
 from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from .models import PublicHoliday
 from .serializers import PublicHolidaySerializer
 from user.permissions import IsHRAdmin, IsEmployee
 from shared.pagination import CustomPagination
-
-# HR Admin Views
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 class PublicHolidayCreateListView(generics.ListCreateAPIView):
     serializer_class = PublicHolidaySerializer
@@ -29,7 +26,6 @@ class PublicHolidayDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView)
     permission_classes = [IsAuthenticated]
     lookup_field = 'pk'
 
-# Employee View
 class PublicHolidayEmployeeListView(generics.ListAPIView):
     serializer_class = PublicHolidaySerializer
     permission_classes = [IsAuthenticated, IsEmployee]
@@ -41,14 +37,6 @@ class PublicHolidayEmployeeListView(generics.ListAPIView):
             .exclude(holiday_type='company_off_day')
             .order_by('date')
         )
-
-
-
-
-# list types
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import PublicHoliday
 
 class HolidayTypeListView(APIView):
     def get(self, request):

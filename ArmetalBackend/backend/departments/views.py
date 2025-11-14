@@ -1,55 +1,21 @@
 from django.shortcuts import render
-from django.db.models import Count
-
-# Create your views here.
-
 from rest_framework import generics, permissions,filters
 from .models import Department
 from .serializers import DepartmentSerializer
-from user.permissions import IsHRAdmin  # Adjust import path as needed
-from django.db.models import Count, Q
-
-# Create + List View
-
-from django.db.models import Count
-
+from user.permissions import IsHRAdmin  
 from django.utils.timezone import now
-
-
-from django.db.models import Count, Q
-from django.utils.timezone import now
-
-
-from django.db.models import Count, Q
 from django.utils import timezone
-
-from django.db.models import Count, Q
-from django.utils import timezone
-from rest_framework import generics, filters
-from .models import Department
-from .serializers import DepartmentSerializer
-
-
-
-from django.db.models import Count, Q
-from django.utils import timezone
-
 from reimbursement.models import Reimbursement
 from attendance.models import Attendance
 from leave.models import LeaveRequest
-
-from django.db.models import Count, OuterRef, Subquery, IntegerField
-from django.utils import timezone
-
 from django.db.models import Count, OuterRef, Subquery, IntegerField, Q
-from django.utils import timezone
-from rest_framework import generics, filters
-from .serializers import DepartmentSerializer
-from .models import Department
-from attendance.models import Attendance
-from leave.models import LeaveRequest
-from reimbursement.models import Reimbursement
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from employee.models import Employee_db
+from employee.serializers import EmployeeSerializer
 
+# --------------------create ,list department by admin
 
 class DepartmentCreateListView(generics.ListCreateAPIView):
     serializer_class = DepartmentSerializer
@@ -119,7 +85,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
 
 
 
-# Retrieve + Update + Delete View
+# -------------------- Retrieve + Update + Delete View by admin
 class DepartmentRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DepartmentSerializer
     permission_classes = [IsHRAdmin]
@@ -127,13 +93,8 @@ class DepartmentRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Department.objects.filter(company=self.request.user.company)
     
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from employee.models import Employee_db
-from employee.serializers import EmployeeSerializer
-from departments.models import Department
 
+# --------------------employee view by departments(admin)
 class EmployeeByDepartmentView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
@@ -147,7 +108,7 @@ class EmployeeByDepartmentView(APIView):
         serializer = EmployeeSerializer(employees, many=True)
         return Response(serializer.data)
 
-
+# --------------------get department head for employee
 class MyDepartmentHeadEmailView(APIView):
     permission_classes = [IsAuthenticated]
 

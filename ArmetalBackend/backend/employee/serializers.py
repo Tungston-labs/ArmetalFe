@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import ScheduleReminder
 from django.db.models import Sum
-
 from datetime import datetime
 from .models import (
     Employee_db, EmpBankPaymentModel, EmpDocument, TempUpload
@@ -117,8 +116,7 @@ class DepartmentForProfileSerializer(serializers.ModelSerializer):
         return obj.department_head.name if obj.department_head else None
 
 
-from rest_framework import serializers
-from .models import Employee_db
+
 
 class EmployeeProfileSerializer(serializers.ModelSerializer):
     department = DepartmentForProfileSerializer()
@@ -139,10 +137,6 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
 
 
 
-from rest_framework import serializers
-from employee.models import Employee_db, EmpDocument
-from rest_framework import serializers
-from .models import Employee_db
 
 class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
     healthcard_number = serializers.CharField(source='insurance_number', allow_null=True)
