@@ -4,9 +4,26 @@ export const TableContainer = styled.div`
   width: 100%;
   background: #fff;
   border-radius: 8px;
-  overflow-x: auto;
+  overflow: hidden;
   font-family: "Satoshi", sans-serif;
+
+  /* ⭐ SCROLLING ADDED */
+  max-height: 450px;   /* adjust if needed */
+  overflow-y: auto;
+
+  /* Optional smooth scroll */
+  scrollbar-width: thin;
+  scrollbar-color: #bcbcbc #f1f1f1;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #bcbcbc;
+    border-radius: 10px;
+  }
 `;
+
 
 export const TableHeader = styled.div`
   display: flex;
@@ -107,7 +124,7 @@ export const TableHeader = styled.div`
 
   /* Mobile (≤768px) */
   @media (max-width: 768px) {
-    flex-direction: column;
+    // flex-direction: column;
     gap: 8px;
 
     .time-section,
@@ -135,7 +152,7 @@ export const TableRow = styled.div`
   padding: 8px 10px;
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    // flex-direction: column;
   }
 `;
 
@@ -285,7 +302,7 @@ export const TimeSection = styled.div`
 
   /* Mobile (≤768px) */
   @media (max-width: 768px) {
-    flex-direction: column;
+    // flex-direction: column;
     gap: 6px;
     padding: 8px 10px;
 
@@ -298,7 +315,7 @@ export const TimeSection = styled.div`
     }
 
     .time-separator {
-      flex-direction: column;
+      // flex-direction: column;
       margin: 6px 0;
       &::before,
       &::after {
@@ -349,7 +366,7 @@ export const LocationSection = styled.div`
   /* ✅ Mobile First Responsive Breakpoints */
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    // flex-direction: column;
     gap: 4px;
     font-size: 12px;
     padding: 6px 10px;

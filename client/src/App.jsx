@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import "./index.css";
 import LoginForm from "./Pages/login/Login";
 import Layout from "./Components/Layout";
-import Department from "./Pages/department/Department";
+import DepartmentList from "./Pages/department/DepartmentList";
 // import Dashboard from "./Pages/dashboard/Dashboard";
 import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
 
@@ -92,7 +92,7 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />}>
             <Route index element={<DashboardNew />} />
-            <Route path="/department" element={<Department />} />
+            <Route path="/department" element={<DepartmentList />} />
             <Route path="/departments/:id" element={<DepartmentDetails />} />
             <Route path="/employee" element={<EmployeeList />} />
             <Route path="superadmin/view/:id" element={<Viewpage />} />
@@ -144,7 +144,7 @@ function App() {
 <Route path="/header" element={<EmployeeHeader />}></Route>
           
             <Route path="/title" element={<EmployeeTitle/>}></Route>
-  
+ 
           </Route>
         </Route>
       </Routes>

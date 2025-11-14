@@ -30,14 +30,15 @@ export const DepartmentCard = styled.div`
   background: white;
   border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden; /* Prevent content overflow on animation */
 margin-top:1rem;
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   }
 `;
 
@@ -116,7 +117,7 @@ export const EmployeeItem = styled.li`
 `;
 export const DropdownHeader = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   background: #3352BA;
   color: white;
   font-weight: 600;
@@ -124,17 +125,20 @@ export const DropdownHeader = styled.div`
   padding: 0.75rem 1rem;
   border-bottom: 1px solid #d1d5db;
   border-radius: 8px 8px 0 0;
+  text-align:center;
+  justify-content:center;
 `;
 
 export const EmployeeRow = styled.li`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   padding: 0.6rem 1rem;
   border-bottom: 1px solid #eee;
   font-size: 0.95rem;
   color: #333;
   transition: background 0.2s ease;
-
+text-align:center;
+justify-content:center;
   &:hover {
     background: #f5f5f5;
   }
