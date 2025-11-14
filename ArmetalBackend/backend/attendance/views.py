@@ -281,6 +281,33 @@ class AttendanceAdminListView(generics.ListAPIView):
         return queryset
 
 
+class EmployeeSearchView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def get(self, request):
+        query = request.GET.get("q", "").strip().lower()
+
+        if not query:
+            return Response([])
+
+        employees = (
+            Employee_db.objects.filter(name__icontains=query)
+            .select_related("department")
+        )
+
+        results = []
+        for emp in employees:
+            results.append({
+                "id": emp.id,
+                "employee_name": emp.name,
+                "employee_id": emp.employee_id,
+                "department": {
+                    "id": emp.department.id,
+                    "name": emp.department.name
+                }
+            })
+
+        return Response(results)
 
 
 # -----------------------------------------------------attendance detail view group by date(admin)

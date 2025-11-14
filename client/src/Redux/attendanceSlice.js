@@ -1,6 +1,6 @@
 // redux/attendanceSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchAttendanceList,fetchAttendanceDetail } from '../services/attendanceService';
+import { fetchAttendanceList, fetchAttendanceDetail, searchEmployees } from '../services/attendanceService';
 
 export const getAttendanceList = createAsyncThunk(
   'attendance/getList',
@@ -27,11 +27,26 @@ export const getAttendanceDetail = createAsyncThunk(
   }
 );
 
+export const employeeSearch = createAsyncThunk(
+  "employees/search",
+  async (params, thunkAPI) => {
+    try {
+      const data = await searchEmployees(params);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Error");
+    }
+  }
+);
+
 
 const attendanceSlice = createSlice({
   name: 'attendance',
   initialState: {
     attendanceList: [],
+    employees: [],
+    searchResults: [],
+
     attendanceDetail: null,
     loading: false,
     error: null,
@@ -77,7 +92,20 @@ const attendanceSlice = createSlice({
         state.detailLoading = false;
         state.attendanceDetail = null;
         state.error = action.payload;
+      })
+      .addCase(employeeSearch.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(employeeSearch.fulfilled, (state, action) => {
+        state.loading = false;
+        state.searchResults = action.payload || [];
+      })
+      .addCase(employeeSearch.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
+
   },
 });
 

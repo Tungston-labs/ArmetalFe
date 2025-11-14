@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    AttendanceSwipeView,AttendanceAdminListView,AttendanceDetailByDateView,AttendanceAdminDetailView,AddPunchOutNoteView,AttendanceLocationUpdateView
+    AttendanceSwipeView,AttendanceAdminListView,AttendanceDetailByDateView,AttendanceAdminDetailView,AddPunchOutNoteView,AttendanceLocationUpdateView,EmployeeSearchView
 )
 
 urlpatterns = [
@@ -10,6 +10,8 @@ urlpatterns = [
     path('admin/attendance/<int:id>/', AttendanceAdminDetailView.as_view(), name='attendance-detail'),
     path('attendance/add-note/', AddPunchOutNoteView.as_view(), name='attendance-add-note'),
     path('attendance/update-location/', AttendanceLocationUpdateView.as_view(), name='attendance-update-location'),
+    path("employees/search/", EmployeeSearchView.as_view()),
+
 ]
 
 
