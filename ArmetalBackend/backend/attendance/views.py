@@ -291,7 +291,6 @@ class AttendanceAdminListView(generics.ListAPIView):
         return queryset
 
 
-
 class EmployeeSearchView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
@@ -301,17 +300,17 @@ class EmployeeSearchView(APIView):
         if not query:
             return Response([])
 
-        # Step 1 → Filter employees by search
+        # use correct related_name
         employees = (
             Employee_db.objects.filter(name__icontains=query)
             .select_related("department")
-            .prefetch_related("attendance_set")
+            .prefetch_related("attendance")
         )
 
         final_results = []
 
         for emp in employees:
-            attendance = emp.attendance_set.order_by('-date').first()
+            attendance = emp.attendance.order_by('-date').first()
 
             final_results.append({
                 "id": emp.id,
@@ -322,8 +321,14 @@ class EmployeeSearchView(APIView):
                     "name": emp.department.name
                 },
                 "date": attendance.date if attendance else None,
-                "time_in": attendance.sessions.first().time_in if attendance and attendance.sessions.exists() else None,
-                "time_out": attendance.sessions.last().time_out if attendance and attendance.sessions.exists() else None,
+                "time_in":
+                    attendance.sessions.first().time_in
+                    if attendance and attendance.sessions.exists()
+                    else None,
+                "time_out":
+                    attendance.sessions.last().time_out
+                    if attendance and attendance.sessions.exists()
+                    else None,
             })
 
         return Response(final_results)
