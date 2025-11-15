@@ -26,7 +26,7 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
         data: [active, onLeave],
         backgroundColor: ["#2f4ded", "#ff6b5f"],
         borderColor: "#f7f9fc",
-        borderWidth: 6,
+        borderWidth: 20,
         borderRadius: 18,
         cutout: "68%",
         circumference: 180,

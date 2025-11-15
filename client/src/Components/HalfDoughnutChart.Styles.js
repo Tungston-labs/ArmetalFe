@@ -10,9 +10,12 @@ export const ChartContainer = styled.div`
   @media (min-width: 768px) {
     max-width: 400px;
     height: 300px;
+  }@media (min-width: 768px) {
+    max-width: 400px;
+    height: 300px;
   }
  @media (min-width: 1024px) {
-    max-width: 300px;
+    max-width: 250px;
     height: 350px;
   }
   @media (min-width: 1440px) {
@@ -33,7 +36,7 @@ export const ChartContainer = styled.div`
 
 export const CenterText = styled.div`
   position: absolute;
-  top: 60%;
+  top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -46,12 +49,14 @@ export const CenterTitle = styled.h1`
   font-weight: 700;
   color: #222;
 
-  font-size: 1.2rem;
+  font-size: 1rem;
 
   @media (min-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
-
+  @media (min-width: 769px) and (max-width:1024px) {
+    font-size: 1rem;
+  }
   @media (min-width: 1440px) {
     font-size: 1.8rem;
   }
@@ -163,9 +168,12 @@ export const LegendLabel = styled.span`
   font-size: 0.9rem;
 
   @media (min-width: 768px) {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
 
+  @media (min-width: 769px) and (max-width:1024px) {
+    font-size: 0.8rem;
+  }
   @media (min-width: 1440px) {
     font-size: 1.2rem;
   }

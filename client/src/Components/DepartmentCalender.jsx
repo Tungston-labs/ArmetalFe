@@ -92,9 +92,13 @@ const DepartmentCalendar = () => {
     const updateSliceCount = () => {
       const width = window.innerWidth;
       if (width < 768) setSliceCount(3), setHolidaySliceCount(2);
-      else if (width < 1024) setSliceCount(6), setHolidaySliceCount(9);
-      else if (width < 1440) setSliceCount(3), setHolidaySliceCount(5);
-      else if (width < 1920) setSliceCount(5), setHolidaySliceCount(3);
+     else if (width >= 769 && width <= 1024) {
+  setSliceCount(3);
+  setHolidaySliceCount(2);
+}
+
+      else if (width>= 1025 && width <= 1440) setSliceCount(4), setHolidaySliceCount(2);
+      else if (width >=1441 && width <= 1920) setSliceCount(4), setHolidaySliceCount(2);
       else if (width < 2560) setSliceCount(6), setHolidaySliceCount(3);
       else setSliceCount(8), setHolidaySliceCount(4);
     };
@@ -193,7 +197,8 @@ const DepartmentCalendar = () => {
               <DeptInfo>
                 <h3>{dept.name}</h3>
                 <DeptHead>
-                  Department head: <p>{dept.head?.name || "N/A"}</p>
+                  Department head:
+                   <p>{dept.head?.name || "N/A"}</p>
                 </DeptHead>
               </DeptInfo>
               <DeptCount>

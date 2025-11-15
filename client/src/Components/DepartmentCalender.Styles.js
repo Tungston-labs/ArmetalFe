@@ -86,7 +86,7 @@ export const SectionTitle = styled.h2`
 export const DepartmentWrapper = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  gap: 1rem;
+  gap: 2rem;
   overflow-x: auto;
   padding-bottom: 1rem;
 
@@ -117,54 +117,101 @@ export const DepartmentCard = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-width: 250px;
-  min-height: 150px;
   position: relative;
 
-  @media (max-width: ${breakpoints.mobile}) {
-    min-width: 200px;
+  /* ---------- Mobile (0–768px) ---------- */
+  @media (max-width: 768px) {
+    min-width: 180px;
     min-height: 120px;
     padding: 0.8rem;
   }
 
-  @media (min-width: ${breakpoints.tv}) {
+  /* ---------- Tablet (769px–1024px) ---------- */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    min-width: 220px;
+    min-height: 140px;
+    padding: 1rem;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    min-width: 220px;
+    min-height: 140px;
+    padding: 1rem;
+  }
+ @media (min-width: 1441px) and (max-width: 1920px) {
+    min-width: 220px;
+    min-height: 140px;
+    padding: 1rem;
+  }
+  /* ---------- TV (1025px–1440px) ---------- */
+  @media (min-width: ${breakpoints.tv}) and (max-width: ${breakpoints.largeTv}) {
     min-width: 400px;
     min-height: 200px;
     padding: 1rem;
   }
+
+  /* ---------- Large TV (1441px+) ---------- */
   @media (min-width: ${breakpoints.largeTv}) {
     min-width: 700px;
-    min-height: 200px;
+    min-height: 220px;
     padding: 2rem;
-
-    /* padding-inline: 3rem; */
   }
 `;
 
+
 export const InitialCircle = styled.div`
-  font-size: clamp(2rem, 5vw, 10rem);
   font-weight: bold;
   color: #b5e2ff;
   margin-right: 1rem;
   font-family: Raleway;
   font-style: Bold;
   line-height: 100%;
-  @media (min-width: ${breakpoints.tv}) {
-    font-size: 14rem;
+
+  /* Default – Mobile */
+  font-size: 2.5rem;
+
+  /* Tablet / Small Laptop */
+  @media (min-width: 768px) {
+    font-size: 4rem;
   }
-  @media (min-width: ${breakpoints.largeTv}) {
-    font-size: 18rem;
+
+  /* Laptop / Desktop */
+  @media (min-width: 1024px) {
+    font-size: 6rem;
+  }
+
+  /* 1440px – Large Desktop */
+  @media (min-width: 1440px) {
+    font-size: 6rem;
+  }
+
+  /* 1920px – Full HD Monitor */
+  @media (min-width: 1920px) {
+    font-size: 10rem;
+  }
+
+  /* 2560px – 2K Monitor */
+  @media (min-width: 2560px) {
+    font-size: 12rem;
+  }
+
+  /* 3840px – 4K / Ultra-Wide */
+  @media (min-width: 3840px) {
+    font-size: 16rem;
   }
 `;
+
+
+
 export const DeptInfo = styled.div`
   flex: 1;
-  display: flex;
+  // display: flex;
   flex-direction: column;
   justify-content: flex-start;
   margin-top: 2rem;
 
   h3 {
-    font-family: Raleway;
+    font-family: "Raleway";
     font-weight: 700;
     font-style: Bold;
     leading-trim: NONE;
@@ -174,13 +221,13 @@ export const DeptInfo = styled.div`
   }
 
   p {
-    font-family: Raleway;
-    font-weight: 400;
+    font-family: "Raleway";
     font-style: Regular;
     font-size: clamp(0.8rem, 1vw, 1.5rem);
     leading-trim: NONE;
     line-height: 100%;
     letter-spacing: 0%;
+    margin-top:5px;
   }
   @media (min-width: ${breakpoints.tv}) {
     h3 {
@@ -188,7 +235,7 @@ export const DeptInfo = styled.div`
       text-transform: capitalize;
     }
     p {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
     }
   }
   @media (min-width: ${breakpoints.largeTv}) {
@@ -345,8 +392,8 @@ export const PresenceWrapper = styled.div`
   display: flex;
   gap: 1.5rem;
   margin-top: 1rem;
-  flex-wrap: wrap;
-  /* flex-direction: column; */
+  // flex-wrap: wrap;
+  /* flex-direction: row; */
   gap: 1rem;
   padding-block: 0.5rem;
 
@@ -354,19 +401,19 @@ export const PresenceWrapper = styled.div`
 @media (max-width: 768px) {
     gap: 0.5rem;
     padding-block: 1rem;
-    /* flex-direction: column; */
+    flex-direction: row; 
   }
 
   @media (min-width: 769px) and (max-width: 1024px) {
     gap: 0.5rem;
     padding-block: 1rem;
-    flex-direction: column;
+    flex-direction: row;
   }
 
    @media (min-width: 1025px) and (max-width: 1440px) {
     gap: 0.5rem;
     padding-block: 1rem;
-    flex-direction: column;
+    flex-direction: row;
   }
   /* 🟢 1440px and above: wider layouts */
   @media (min-width: 1440px) {
@@ -427,7 +474,7 @@ export const EmployeeExpiryWrapper = styled.div`
   padding: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   // max-height: 300px;
-  overflow-y: auto;
+  // overflow-y: auto;
   h3 {
     font-family: Satoshi;
     font-weight: 700;
@@ -563,29 +610,28 @@ export const ChartConatiner = styled.div`
   transition: all 0.3s ease-in-out;
 
   /* 📱 Mobile */
-  width: 90%;
+  width: 50%;
   height: 260px;
 
   /* 📱 Tablets */
   @media (min-width: 768px) {
     width: 40%;
-    height: 320px;
+    // height: 320px;
   }
     @media (min-width: 769px) and (max-width: 1024px) {
-    width: 100%;
-    height: 320px;
+    // height: 320px;
   }
 
 
   /* 💻 Desktops / 1080p */
   @media (min-width: 1025px)  and (max-width: 1439px) {
-     width: 100%;
+    //  width: 100%;
     height: 300px;
       order: 1;
   }
 @media (min-width: 1440px) {
     width: 300px;
-    height: 450px;
+    height: 350px;
   }
   /* 🖥️ 2K Displays */
   @media (min-width: 1920px) {
@@ -658,7 +704,7 @@ export const UpcomingHolidaySection = styled.div`
   /* border-radius: 12px; */
   /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); */
   padding: 1rem 1.2rem;
-  margin-top: 1.5rem;
+  // margin-top: 1.5rem;
   transition: 0.3s ease all;
 
   @media (max-width: 768px) {
