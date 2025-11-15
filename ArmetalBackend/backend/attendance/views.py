@@ -294,23 +294,24 @@ class EmployeeSearchView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
     def get(self, request):
-        query = request.GET.get("q", "").strip().lower()
+        query = request.GET.get("q", "").strip()
 
         if not query:
             return Response([])
 
-        # Search using name_search (not encrypted name)
         employees = (
-            Employee_db.objects.filter(name_search__icontains=query)
+            Employee_db.objects.filter(name__icontains=query)
             .select_related("department")
-            .prefetch_related("attendance")
+            .prefetch_related("attendances")  # correct related name
         )
 
         final_results = []
 
         for emp in employees:
-            attendance = emp.attendance.order_by('-date').first()
+            # Get latest attendance
+            attendance = emp.attendances.order_by('-date').first()
 
+            # Prepare response
             final_results.append({
                 "id": emp.id,
                 "employee_name": emp.name,
@@ -331,6 +332,7 @@ class EmployeeSearchView(APIView):
             })
 
         return Response(final_results)
+
 
 # -----------------------------------------------------attendance detail view group by date(admin)
 
