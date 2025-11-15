@@ -300,7 +300,7 @@ class EmployeeSearchView(APIView):
             return Response([])
 
         employees = (
-            Employee_db.objects.filter(name__icontains=query)
+            Employee_db.objects.filter(name_search__icontains=query)
             .select_related("department")
             .prefetch_related("attendances")  # correct related name
         )
