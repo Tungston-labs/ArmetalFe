@@ -290,19 +290,18 @@ class AttendanceAdminListView(generics.ListAPIView):
 
         return queryset
 
-
 class EmployeeSearchView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
     def get(self, request):
-        query = request.GET.get("q", "").strip()
+        query = request.GET.get("q", "").strip().lower()
 
         if not query:
             return Response([])
 
-        # use correct related_name
+        # Search using name_search (not encrypted name)
         employees = (
-            Employee_db.objects.filter(name__icontains=query)
+            Employee_db.objects.filter(name_search__icontains=query)
             .select_related("department")
             .prefetch_related("attendance")
         )
@@ -332,8 +331,6 @@ class EmployeeSearchView(APIView):
             })
 
         return Response(final_results)
-
-
 
 # -----------------------------------------------------attendance detail view group by date(admin)
 
