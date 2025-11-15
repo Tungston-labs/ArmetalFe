@@ -93,11 +93,11 @@ export const Card = styled.div`
 export const CardHeader = styled.div`
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
 
   @media (max-width: ${breakpoints.desktop}) {
-    flex-direction: column;
-    align-items: flex-start;
+    // flex-direction: column;
+    // align-items: flex-start;
   }
   @media (min-width: ${breakpoints.desktop}) {
     /* flex-direction: row; */
@@ -140,22 +140,32 @@ export const Divider = styled.div`
   position: absolute;             
   top: 0;
   bottom: 0;
-  left: 60px;                    
+  left: 65px;                    
   width: 3px;
   background: #3352ba;
   border-radius: 4px;
+  margin:10px;
 
-  /* ❌ Hide divider up to 1654px */
-  @media (max-width: 1654px) {
-    display: none;
+  @media (max-width: 1024px) {
+    display: block;
+
+    width: 3px;
+    margin-left:-0.2rem;
   }
+  
+@media (max-width: 1654px) {
+    display: block;
 
-  /* ✅ Show and style again from 1655px+ */
+    width: 3px;
+    margin-left:-0.1rem;
+  }
+  
+
   @media (min-width: 1655px) and (max-width: ${breakpoints.largeTv}) {
     display: block;
 
-    width: 4px;
-    left: 70px;
+    width: 3px;
+    // left: 70px;
   }
 @media (min-width: ${breakpoints.tv}) {
     display: block;
@@ -195,7 +205,7 @@ export const CardTitle = styled.h3`
   margin-left: 10px;
 
   @media (max-width: ${breakpoints.tablet}) {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   @media (min-width: ${breakpoints.tv}) {
@@ -211,7 +221,7 @@ export const CardCount = styled.span`
   font-weight: bold;
 
   @media (max-width: ${breakpoints.tablet}) {
-    font-size: 1.2rem;
+    font-size: 0.8rem;
   }
 
   @media (min-width: ${breakpoints.tv}) {

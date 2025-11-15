@@ -22,12 +22,12 @@ import { Link } from "react-router-dom";
 import totalIcon from "../assets/total.svg";
 import totalIcons from "../assets/total2.svg";
 import totalIconses from "../assets/total3.svg";
-
+import { useNavigate } from "react-router-dom";
 const Cards = () => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+const navigate = useNavigate();
   useEffect(() => {
     const fetchSummary = async () => {
       try {
@@ -56,7 +56,10 @@ const Cards = () => {
     <>
     <CardContainer>
       {/* Total Employees */}
-      <Card>
+    <Card
+  onClick={() => navigate("/employee")}
+  style={{ cursor: "pointer" }}
+>
         <CardHeader>
           <IconSection>
             <img src={totalIcon} alt="Total Employees" width={35} height={35} />
@@ -67,7 +70,7 @@ const Cards = () => {
               <CardTitle>Total Employees</CardTitle>
               <CardCount>{summary.total_employees?.count || 0}</CardCount>
             </div>
-            <CardList>
+            {/* <CardList>
               {employeesList.slice(0, 3).map((emp) => (
                 <CardListItem key={emp.id}>
                   <img
@@ -86,19 +89,22 @@ const Cards = () => {
                   <EmployeeId>{emp.employee_id}</EmployeeId>
                 </CardListItem>
               ))}
-                 </CardList>
-              <IconWrapper>
+                 </CardList> */}
+              {/* <IconWrapper>
                 <Link to="/employee">
                   <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
-              </IconWrapper>
+              </IconWrapper> */}
        
           </CardContent>
         </CardHeader>
       </Card>
 
       {/* Employee Leave Requests */}
-      <Card>
+      <Card
+      onClick={() => navigate("/employee-leave-request")}
+  style={{ cursor: "pointer" }}
+>
         <CardHeader>
           <IconSection>
             <img src={totalIcons} alt="Leave Requests" width={35} height={35} />
@@ -109,7 +115,7 @@ const Cards = () => {
               <CardTitle>Employee Leave Request</CardTitle>
               <CardCount>{summary.pending_leaves?.count || 0}</CardCount>
             </div>
-            <CardList>
+            {/* <CardList>
               {leaveRequest.slice(0, 3).map((emp) => (
                 <CardListItem key={emp.id}>
                   <img
@@ -131,19 +137,22 @@ const Cards = () => {
 
                 </CardListItem>
               ))}
-                 </CardList>
-              <IconWrapper>
+                 </CardList> */}
+              {/* <IconWrapper>
                 <Link to="/employee-leave-request">
                   <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
-              </IconWrapper>
+              </IconWrapper> */}
          
           </CardContent>
         </CardHeader>
       </Card>
 
       {/* Employee Visa Expiry */}
-      <Card>
+      <Card
+      onClick={() => navigate("/employee-Contract-Visa-Expiry")}
+  style={{ cursor: "pointer" }}
+>
         <CardHeader>
           <IconSection>
             <img src={totalIconses} alt="Visa Expiry" width={35} height={35} />
@@ -154,7 +163,7 @@ const Cards = () => {
               <CardTitle>Employee Visa Expiry</CardTitle>
               <CardCount>{summary.upcoming_visa_expiry?.count || 0}</CardCount>
             </div>
-            <CardList>
+            {/* <CardList>
               {visaExpiryList.slice(0, 3).map((emp) => (
                 <CardListItem key={emp.id}>
                   <img
@@ -173,12 +182,12 @@ const Cards = () => {
                   <EmployeeId>{emp.visa_expiry_date}</EmployeeId>
                 </CardListItem>
               ))}
-                 </CardList>
-              <IconWrapper>
+                 </CardList> */}
+              {/* <IconWrapper>
                 <Link to="/employee-Contract-Visa-Expiry">
                   <FiArrowUpRight style={{ color: "#304EB0" }} size={20} />
                 </Link>
-              </IconWrapper>
+              </IconWrapper> */}
 
           </CardContent>
         </CardHeader>
