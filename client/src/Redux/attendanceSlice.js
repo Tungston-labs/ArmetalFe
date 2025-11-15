@@ -92,13 +92,14 @@ const attendanceSlice = createSlice({
         state.attendanceDetail = null;
         state.error = action.payload;
       })
-     .addCase(searchAttendanceEmployees.pending, (state) => {
+      .addCase(searchAttendanceEmployees.pending, (state) => {
         state.searchLoading = true;
       })
       .addCase(searchAttendanceEmployees.fulfilled, (state, action) => {
         state.searchLoading = false;
-        state.searchResults = action.payload;
+        state.searchResults = action.meta.arg === "clear" ? [] : action.payload;
       })
+
       .addCase(searchAttendanceEmployees.rejected, (state) => {
         state.searchLoading = false;
         state.searchResults = [];
