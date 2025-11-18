@@ -91,7 +91,7 @@ const DepartmentCalendar = () => {
   useEffect(() => {
     const updateSliceCount = () => {
       const width = window.innerWidth;
-      if (width < 768) setSliceCount(3), setHolidaySliceCount(2);
+      if (width <= 768) setSliceCount(4), setHolidaySliceCount(4);
      else if (width >= 769 && width <= 1024) {
   setSliceCount(3);
   setHolidaySliceCount(2);

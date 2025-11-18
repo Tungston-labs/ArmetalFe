@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FaPlus } from "react-icons/fa6";
 
 export const Container = styled.div`
-  padding: clamp(1rem, 2vw, 3rem);
+  padding: 20px;
   background: #FFFFFF;
   font-family: Satoshi;
   box-sizing: border-box;

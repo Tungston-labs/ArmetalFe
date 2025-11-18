@@ -62,7 +62,11 @@ import EmployeeHeader from "./Components/EmployeeHeader.jsx";
 
 import AttendanceList from "./Pages/attendance/AttendanceList.jsx"
 import EmployeeTitle from "./Components/EmployeeTitle.jsx"
+import TopCard from "./Components/TopCard.jsx"
+import HomeDashboard from "./Pages/dashboard/HomeDashboard.jsx";
+import ReimbursementList from "./Pages/reimbursement/ReimbursementList.jsx";
 
+import Daily from "./Pages/dailytask/DailyTask.jsx"
 function App() {
   const dispatch = useDispatch();
 
@@ -130,8 +134,7 @@ function App() {
             <Route path="/employee-dashboard" element={<Employeedashboard />} />
             <Route path="/leftcontent" element={<LeftContent />} />
             <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
-
-            <Route path="/reimbursement" element={<Reimbursement />} />
+            <Route path="/reimbursement" element={<ReimbursementList />} />
             <Route path="/reimbursement_detail/:id" element={<Reimbpage />} />
             <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
             <Route path="/finance" element={<FinancePage />} />
@@ -144,7 +147,10 @@ function App() {
 <Route path="/header" element={<EmployeeHeader />}></Route>
           
             <Route path="/title" element={<EmployeeTitle/>}></Route>
- 
+            <Route path ="/topcard" element={<TopCard/>}></Route>
+
+  <Route path ="/homedash" element={<HomeDashboard/>}></Route>
+ <Route path ="/dailytask" element={<Daily/>}></Route>
           </Route>
         </Route>
       </Routes>

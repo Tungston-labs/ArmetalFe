@@ -7,8 +7,9 @@ export const Container = styled.div`
   /* Allow scrolling if content overflows */
   min-height: 100vh;  
   width: 100%;
-  overflow-x: auto; /* horizontal scroll if needed */
-  overflow-y: auto; /* vertical scroll */
+  overflow-x: auto;
+  overflow-y: auto; 
+
  padding-top: 70px;
   @media (min-width: 1440px) {
     padding:1rem;

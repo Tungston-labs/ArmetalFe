@@ -1,256 +1,141 @@
-// ReimbursementDetail.styles.js
 import styled from "styled-components";
 
 export const PageWrapper = styled.div`
-  background: #fff;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  color: #222;
-  @media (min-width: 2560px) {
-    h6 {
-      font-size: 1.5rem;
-    }
-  }
-  @media (min-width: 3840px) {
-    h6 {
-      font-size: 2.5rem;
-    }
-  }
+  padding: 20px 30px;
+  min-height: 100vh;
 `;
 
-export const Header = styled.div`
+export const Card = styled.div`
+background: #f5f7fa;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+  margin-bottom: 25px;
+`;
+
+export const SectionTitle = styled.h3`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px; 
+`;
+
+export const ProfileRow = styled.div`
   display: flex;
-  justify-content: space-between;
+  gap: 20px;
   align-items: center;
-  margin-bottom: 2rem;
-`;
-
-export const HeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
-
-export const HeaderIcon = styled.div`
-  font-size: 2rem;
-  color: #2f52e0;
-`;
-
-export const HeaderTitle = styled.h2`
-  font-size: 1.4rem;
-  margin: 0 0 5px 0;
-  color: #3250b5;
-  font-family: "Satoshi";
-  font-weight: 700;
-  line-height: 1.2;
-
-  @media (min-width: 480px) {
-    /* small tablet */
-    font-size: 0.8rem;
-  }
-
-  @media (min-width: 768px) {
-    /* tablet */
-    font-size: 1rem;
-  }
-
-  @media (min-width: 1024px) {
-    /* desktop */
-    font-size: 1.5rem;
-  }
-
-  @media (min-width: 1440px) {
-    /* large desktop / 2K */
-    font-size: 2rem;
-  }
-
-  @media (min-width: 2560px) {
-    /* 4K */
-    font-size: 3em;
-  }
-
-  @media (min-width: 3840px) {
-    /* 8K */
-    font-size: 4rem;
-  }
-`;
-
-export const HeaderSubtitle = styled.p`
-  // font-size: 1rem;
-  color: #3250b5;
-  margin: 0;
-  font-family: Raleway;
-  font-weight: 300;
-  line-height: 1.2;
-
-  @media (min-width: 480px) {
-    font-size: 0.5rem;
-  }
-
-  @media (min-width: 768px) {
-    font-size: 0.9rem;
-  }
-
-  @media (min-width: 1024px) {
-    font-size: 1rem;
-  }
-
-  @media (min-width: 1440px) {
-    font-size: 0.9rem;
-  }
-
-  @media (min-width: 2560px) {
-    font-size: 1.5rem;
-  }
-
-  @media (min-width: 3840px) {
-    font-size: 2.5rem;
-  }
-`;
-
-export const ProfileSection = styled.div`
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-  // margin-bottom: 1.5rem;
-  @media (min-width: 2560px) {
-    gap: 2rem;
-    padding-block: 2rem;
-    height: 20rem;
-  }
-  @media (min-width: 3840px) {
-    height: 30rem;
-  }
 `;
 
 export const ProfileImage = styled.img`
-  width: 10rem;
-  height: 10rem;
-  //   border-radius: 12px;
+  width: 85px;
+  height: 85px;
+  border-radius: 10%;
   object-fit: cover;
-  @media (min-width: 2560px) {
-    width: 20rem;
-    height: 100%;
-  }
-  @media (min-width: 3840px) {
-    width: 35rem;
-    height: 100%;
-  }
+  border: 3px solid #eee;
 `;
 
 export const ProfileInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 5px;
 `;
 
-export const Row = styled.div`
-  //   display: flex;
-  gap: 1rem;
+export const InfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
 `;
 
 export const Label = styled.div`
-  font-size: 1rem;
-  color: #3352ba;
-  min-width: 100px;
-  margin-bottom: 5px;
-  font-family: Satoshi;
-  font-weight: 400;
-  font-style: Bold;
-  leading-trim: NONE;
-  line-height: 100%;
-  letter-spacing: 0%;
-  @media (min-width: 2560px) {
-    font-size: 1.5rem !important;
-  }
-  @media (min-width: 3840px) {
-    font-size: 2.5rem !important;
-  }
-  
+  width: 130px;        /* FIXED WIDTH FOR PERFECT ALIGNMENT */
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
 `;
 
 export const Value = styled.div`
-  font-size: 1rem;
-  font-weight: 500;
-  @media (min-width: 2560px) {
-    font-size: 2rem;
-  }
-  @media (min-width: 3840px) {
-    font-size: 3rem;
-  }
+  flex: 1;             /* TAKES REMAINING SPACE */
+  text-align: left;    /* OR right IF YOU WANT RIGHT ALIGN */
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
 `;
 
-export const DateSection = styled.div`
-  margin: 1.5rem 0;
+
+export const StatusSelect = styled.select`
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  background: ${(props) => props.statusColor};
+  outline: none;
 `;
 
-export const DescriptionBox = styled.div`
-  border: 1px solid;
-  padding: 1rem;
-  border-radius: 7px;
-  line-height: 1.4;
-  margin-bottom: 1.5rem;
-
-  /* Ensure text wraps and respects line breaks */
-  white-space: pre-wrap; /* preserves line breaks */
-  word-wrap: break-word; /* wraps long words */
-  overflow-wrap: break-word; /* ensures no overflow */
-
-  /* Optional: make scrollable if too long */
-  height: 200px; /* adjust as needed */
-  overflow-y: auto;
-  @media (min-width: 2560px) {
-    font-size: 1.5rem;
-    height: 300px;
-  }
-  @media (min-width: 3840px) {
-    font-size: 2.5rem;
-    height: 600px;
-  }
+export const Divider = styled.div`
+  height: 1px;
+  background: #e5e5e5;
+  margin: 20px 0;
 `;
 
-export const BillsSection = styled.div`
-  margin-top: 1.5rem;
+export const NoteBox = styled.div`
+  background: #f8f9fc;
+  border: 1px solid #e3e6ee;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+  margin-top:10px;
 `;
 
 export const BillsGrid = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.8rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
 `;
+export const BillImageWrapper = styled.div`
+  background: #fafafa;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 180px;           /* increased from 140px */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.09);
+`;
+
 
 export const BillImage = styled.img`
-  width: 120px;
-  height: 150px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  object-fit: cover;
-  @media (min-width: 2560px) {
-    width: 280px;
-    height: 350px;
-  }
-  @media (min-width: 3840px) {
-    width: 400px;
-    height: 550px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;  
+  background: #fff;     
+  padding: 8px;          
+`;
+
+
+export const NoteCard = styled.div`
+  background: #fdfdff;
+  border: 1px solid #e6e9f1;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-top: 10px;
+`;
+
+export const NoteHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+
+  &:hover {
+    opacity: 0.7;
   }
 `;
 
-export const SelectBox = styled.select`
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  @media (min-width: 2560px) {
-    font-size: 1.5rem;
-  }
-  @media (min-width: 3840px) {
-    font-size: 2.5rem;
-  }
-`;
-export const Divider = styled.hr`
-  border: none;
-  border-top: 1px solid #ddd;
-  // margin: 1.5rem 0;
+export const Arrow = styled.span`
+  font-size: 18px;
+  transition: 0.3s;
 `;

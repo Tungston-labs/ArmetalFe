@@ -41,7 +41,7 @@ const DepartmentDetail = () => {
       case "On Hold": return { backgroundColor: "#BA703A", color: "white" };
       case "In Verification": return { backgroundColor: "#DD991D", color: "black" };
       case "Cancel": return { backgroundColor: "#E67B7B", color: "white" };
-      default: return { backgroundColor: "#fff", color: "#000" };
+      default: return { backgroundColor: "#d42727ff", color: "#000" };
     }
   };
 

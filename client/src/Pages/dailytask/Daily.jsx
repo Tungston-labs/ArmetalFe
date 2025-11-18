@@ -19,6 +19,7 @@ import {
   Head,
   NoTaskWrapper,
   TaskLayout,
+  TopSelector,
 } from "./Daily.styles";
 import { getEmployees, getTasks } from "../../Redux/dailyTaskSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
@@ -248,7 +249,7 @@ export default function DailyTask() {
         )}
 
         <DateSelector>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <TopSelector>
             <SearchInput
               placeholder="Search employee"
               value={searchTerm}
@@ -266,8 +267,8 @@ export default function DailyTask() {
                 </option>
               ))}
             </DepartmentDropdown>
-          </div>
-
+        
+  </TopSelector>
           <div className="calendar-header">
             <div className="left">
               <button className="left-lesser" onClick={handlePrevDay}>

@@ -18,6 +18,7 @@ export const Container = styled.div`
   margin: 0 auto;
   padding: 0.8rem;
 
+
   /* 📱 Mobile (stack) */
   @media (max-width: ${breakpoints.tablet}) {
     flex-direction: column;
@@ -611,7 +612,7 @@ export const ChartConatiner = styled.div`
 
   /* 📱 Mobile */
   width: 50%;
-  height: 260px;
+  height: 250px;
 
   /* 📱 Tablets */
   @media (min-width: 768px) {

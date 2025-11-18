@@ -175,13 +175,13 @@ const getWeekDays = (dateStr) => {
         showSearch={false}
         showTabs={false}
       />
-<div style={{ marginTop: "-30px" }}>
+
   <Header
     employee={employee}
     editable={false}
     // onBack={handleBack}
   />
-</div>
+
 
 
 

@@ -18,7 +18,7 @@ export const DepartmentGrid = styled.div`
   // gap: 1.5rem;
 
   @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
   }
 
   @media (max-width: 600px) {
@@ -52,6 +52,25 @@ export const DepartmentHeader = styled.div`
   background-color: #fff;
 `;
 
+export const LeftWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const DepartmentIcon = styled.div`
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #172554;   /* Blue background */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+`;
 
 export const DepartmentName = styled.h2`
   color: #172554;
@@ -86,7 +105,7 @@ export const EmployeeList = styled.ul`
   list-style: none;
   padding: 0.5rem 1rem;
   margin: 0;
-  max-height: 200px;
+  // max-height: 200px;
   overflow-y: auto;
 `;
 export const EmployeeHeader = styled.div`
@@ -117,7 +136,7 @@ export const EmployeeItem = styled.li`
 `;
 export const DropdownHeader = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   background: #3352BA;
   color: white;
   font-weight: 600;
@@ -131,7 +150,7 @@ export const DropdownHeader = styled.div`
 
 export const EmployeeRow = styled.li`
   display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   padding: 0.6rem 1rem;
   border-bottom: 1px solid #eee;
   font-size: 0.95rem;
@@ -159,4 +178,59 @@ export const NoRecordMessage = styled.div`
   font-size: 0.95rem;
   padding: 1rem;
   font-style: italic;
+`;
+export const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: left;
+  gap: 12px;
+  padding: 12px 0;
+  margin-top: 10px;
+`;
+
+export const PageButton = styled.button`
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #304EB0;
+  background: ${(props) => (props.disabled ? "#f3f4f6" : "#304EB0")};
+  color: ${(props) => (props.disabled ? "#9ca3af" : "#ffffffff")};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  font-weight: 500;
+  font-size: 14px;
+
+  &:hover {
+    background: ${(props) => (props.disabled ? "#f3f4f6" : "#4c66bdff")};
+  }
+`;
+
+export const PageInfo = styled.span`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+`
+export const StatusSelect = styled.select`
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: none;
+
+  &.approve {
+    background-color: #16A34A;
+    color: white;
+  }
+
+  &.on-hold {
+    background-color: #FFB020;
+    color: white;
+  }
+
+  &.in-verification {
+    background-color: #3B82F6;
+    color: white;
+  }
+
+  option {
+    background: white !important;
+    color: black !important;
+  }
 `;

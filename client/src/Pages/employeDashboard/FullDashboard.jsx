@@ -70,7 +70,7 @@ const handleBack = () => {
   if (location.state?.from) {
     navigate(location.state.from); // if we have state, go to it
   } else if (window.history.length > 1) {
-    navigate(-1); // go back in browser history
+    navigate("/employee"); // go back in browser history
   } else {
     navigate("/employee"); // fallback
   }

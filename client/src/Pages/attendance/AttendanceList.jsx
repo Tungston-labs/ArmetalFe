@@ -13,6 +13,8 @@ import {
   EmployeeItem,
   EmployeeRow,
   EmployeeCell,
+  LeftWrapper,
+  DepartmentIcon,
 } from "./AttendanceList.Styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
@@ -29,8 +31,11 @@ const AttendanceList = () => {
 
   const [selectedDept, setSelectedDept] = useState(null);
   const [departmentAttendance, setDepartmentAttendance] = useState({});
+  const [pageByDept, setPageByDept] = useState({});
   const [searchText, setSearchText] = useState("");
   const [loadingDept, setLoadingDept] = useState(false);
+
+  const pageSize = 10;
 
   const { list: departmentList = [], loading } = useSelector(
     (state) => state.departments
@@ -40,132 +45,71 @@ const AttendanceList = () => {
     dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
 
+  // ------------------ TIME HELPERS ---------------------
   const formatTime = (datetimeStr) => {
     if (!datetimeStr) return "-";
     try {
       const date = new Date(datetimeStr);
-      if (isNaN(date.getTime())) {
-        // try treat as HH:MM
-        const today = new Date();
-        const maybe = new Date(`${today.toISOString().split("T")[0]}T${datetimeStr}`);
-        if (!isNaN(maybe.getTime())) return maybe.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
-        return "-";
-      }
+      if (isNaN(date.getTime())) return "-";
       return date.toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
-        hour12: true,
       });
     } catch {
       return "-";
     }
   };
 
-  // returns earliest time string formatted for display (existing)
-  const getEarliestTimeIn = (sessions) => {
-    if (!sessions?.length) return "-";
-    const validSessions = sessions.filter((s) => s.time_in);
-    if (!validSessions.length) return "-";
-    // find earliest by timestamp
-    let earliestTs = Infinity;
-    let earliestVal = null;
-    validSessions.forEach((s) => {
-      const ts = parseTimeToTimestamp(s.time_in);
-      if (!isNaN(ts) && ts < earliestTs) {
-        earliestTs = ts;
-        earliestVal = s.time_in;
-      }
-    });
-    return earliestVal ? formatTime(earliestVal) : "-";
-  };
-
-  // helper: parse time string to timestamp (ms). Supports ISO datetimes and "HH:MM" times.
   const parseTimeToTimestamp = (timeStr) => {
-    if (!timeStr) return NaN;
-    // if looks like ISO or contains 'T' or '-' or 'Z'
-    if (/[TtZz\-]/.test(timeStr)) {
-      const d = new Date(timeStr);
-      return isNaN(d.getTime()) ? NaN : d.getTime();
-    }
-    // assume HH:MM (possibly HH:MM:SS)
-    const today = new Date();
-    const iso = `${today.toISOString().split("T")[0]}T${timeStr}${timeStr.includes("Z") ? "" : ""}`;
-    const d = new Date(iso);
+    const d = new Date(timeStr);
     return isNaN(d.getTime()) ? NaN : d.getTime();
   };
 
-  // For sorting: get earliest punch-in timestamp (ms). Return Infinity if none.
   const getEarliestTimestamp = (sessions) => {
-    if (!sessions?.length) return Infinity;
-    const valid = sessions
+    const times = (sessions || [])
       .map((s) => parseTimeToTimestamp(s.time_in))
-      .filter((ts) => !isNaN(ts));
-    if (!valid.length) return Infinity;
-    return Math.min(...valid);
+      .filter((t) => !isNaN(t));
+    return times.length ? Math.min(...times) : Infinity;
+  };
+
+  const getEarliestTimeIn = (sessions) => {
+    const earliest = getEarliestTimestamp(sessions);
+    return isFinite(earliest) ? formatTime(earliest) : "-";
   };
 
   const getConditionalTimeOut = (sessions) => {
-    if (!sessions?.length) return "-";
-    const sorted = [...sessions].sort((a, b) => {
-      const ta = parseTimeToTimestamp(a.time_in) || 0;
-      const tb = parseTimeToTimestamp(b.time_in) || 0;
-      return ta - tb;
-    });
-    const lastSession = sorted[sorted.length - 1];
-    if (lastSession.time_in && !lastSession.time_out) {
-      return "---";
-    }
-    const validOutSessions = sorted.filter((s) => s.time_out);
-    if (!validOutSessions.length) return "-";
-    // latest out
-    let latestTs = -Infinity;
-    let latestVal = null;
-    validOutSessions.forEach((s) => {
-      const ts = parseTimeToTimestamp(s.time_out);
-      if (!isNaN(ts) && ts > latestTs) {
-        latestTs = ts;
-        latestVal = s.time_out;
-      }
-    });
-    return latestVal ? formatTime(latestVal) : "-";
+    const outs = (sessions || [])
+      .map((s) => parseTimeToTimestamp(s.time_out))
+      .filter((t) => !isNaN(t));
+    return outs.length ? formatTime(Math.max(...outs)) : "-";
   };
 
+  const paginate = (items, page) => {
+    const start = (page - 1) * pageSize;
+    return items.slice(start, start + pageSize);
+  };
+
+  // ------------------ DATA LOADERS ---------------------
   const groupByEmployee = (records) => {
     const map = {};
     records.forEach((emp) => {
       const id = emp.employee_id;
-      if (!map[id]) {
-        map[id] = emp;
-      } else {
-        const currentDate = new Date(map[id].date);
-        const newDate = new Date(emp.date);
-        if (newDate > currentDate) map[id] = emp;
-      }
+      if (!map[id]) map[id] = emp;
     });
     return Object.values(map);
   };
 
-  const getTodayDate = () => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
-  };
+  const getTodayDate = () => new Date().toISOString().split("T")[0];
 
-  // load attendance for a department (used by toggle + explicit load button)
   const loadAttendanceForDept = async (deptId) => {
     setLoadingDept(true);
     try {
-      const response = await dispatch(getAttendanceList({ department_id: deptId }));
-      const results = response?.payload?.results || [];
+      const res = await dispatch(getAttendanceList({ department_id: deptId }));
+      const results = res?.payload?.results || [];
       const today = getTodayDate();
-      const todaysRecords = results.filter((emp) => emp.date === today);
-      const filtered = todaysRecords.filter((emp) => {
-        const empDeptId = emp.department_id || emp.department?.id;
-        return !empDeptId || empDeptId === deptId;
-      });
-      const uniqueEmployees = groupByEmployee(filtered);
-      setDepartmentAttendance((prev) => ({ ...prev, [deptId]: uniqueEmployees }));
-    } catch (err) {
-      console.error("Error fetching attendance:", err);
+      const todays = results.filter((e) => e.date === today);
+      const unique = groupByEmployee(todays);
+      setDepartmentAttendance((p) => ({ ...p, [deptId]: unique }));
     } finally {
       setLoadingDept(false);
     }
@@ -177,160 +121,157 @@ const AttendanceList = () => {
       return;
     }
     setSelectedDept(deptId);
-    // fetch only if not loaded
+
+    setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
+
     if (!departmentAttendance[deptId]) {
       await loadAttendanceForDept(deptId);
     }
   };
 
-  const handleRowClick = (id) => {
-    navigate(`/attendance/detail/${id}`);
-  };
+  const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
 
-  // Build data structure that contains employee list filtered by searchText.
-  // Departments are visible if department name matches or any employee matches the search.
-  const filteredData = (departmentList || []).map((dept) => {
-    const employeeList = departmentAttendance[dept.id] || [];
+  // ----------------- FILTER + SORT -----------------------
+  const processedDepartments = (departmentList || []).map((dept) => {
+    const employees = departmentAttendance[dept.id] || [];
 
-    // If search empty -> show all employees (if loaded). If not loaded and no search, show empty employees until expanded.
-    const search = (searchText || "").trim().toLowerCase();
+    const s = searchText.toLowerCase();
+    const matches = employees.filter((e) =>
+      (e.employee_name || "").toLowerCase().includes(s)
+    );
 
-    // matching employees by name (case-insensitive)
-    const matchingEmployees = search
-      ? employeeList.filter((emp) =>
-          (emp.employee_name || "").toLowerCase().includes(search)
-        )
-      : employeeList;
-
-    // whether the department name itself matches search
-    const departmentMatches = (dept.name || "").toLowerCase().includes(search);
-
-    // employees sorted ascending by earliest punch-in time (earliest first).
-    // Employees without punch-in are pushed to the end.
-    const sortedEmployees = [...matchingEmployees].sort((a, b) => {
-      const ta = getEarliestTimestamp(a.sessions || []);
-      const tb = getEarliestTimestamp(b.sessions || []);
-      if (ta === tb) {
+    const sorted = [...matches].sort((a, b) => {
+      const ta = getEarliestTimestamp(a.sessions);
+      const tb = getEarliestTimestamp(b.sessions);
+      if (ta === tb)
         return (a.employee_name || "").localeCompare(b.employee_name || "");
-      }
-      // Infinity (no punch) goes to end
       return ta - tb;
     });
 
-    return {
-      ...dept,
-      employees: sortedEmployees,
-      isVisible:
-        search === "" || departmentMatches || sortedEmployees.length > 0,
-      departmentMatches,
-      hasLoadedEmployees: !!departmentAttendance[dept.id],
-    };
+    return { ...dept, employees: sorted };
   });
-
-  const finalDepartments = filteredData.filter((d) => d.isVisible);
 
   return (
     <PageContainer>
       <EmployeeTitle
         iconSrc={EmployeeIcon}
-        showAddButton={false}
-        showDropdown={false}
-        showBackArrow={false}
         onSearchChange={setSearchText}
+        showAddButton={false}
       />
 
       {loading ? (
         <Loader />
       ) : (
         <DepartmentGrid>
-          {finalDepartments?.length > 0 ? (
-            finalDepartments.map((dept) => {
-              const isOpen = selectedDept === dept.id;
-              const employees = dept.employees || [];
+          {processedDepartments.map((dept) => {
+            const isOpen = selectedDept === dept.id;
+            const employees = dept.employees || [];
 
-              return (
-                <DepartmentCard key={dept.id}>
-                  <DepartmentHeader onClick={() => handleToggle(dept.id)}>
-                    <DepartmentName>{dept.name || "Department"}</DepartmentName>
-                    <EmployeeCount>
-                      {dept.attendance_employee_count ?? 0} Employees
-                    </EmployeeCount>
-                  </DepartmentHeader>
+            // PAGINATION VARIABLES
+            const currentPage = pageByDept[dept.id] || 1;
+            const totalPages = Math.ceil(employees.length / pageSize) || 1;
+            const paginated = paginate(employees, currentPage);
+            const startIndex = (currentPage - 1) * pageSize;
 
-                  {isOpen && (
-                    <DropdownWrapper>
-                      <DropdownHeader>
-                        <span>Name</span>
-                        <span>Employee ID</span>
-                        <span>In Date</span>
-                        <span>In Time</span>
-                        <span>Out Time</span>
-                      </DropdownHeader>
+            return (
+              <DepartmentCard key={dept.id}>
+                <DepartmentHeader onClick={() => handleToggle(dept.id)}>
+                  <LeftWrapper>
+                    <DepartmentIcon>{dept.name[0]}</DepartmentIcon>
+                    <DepartmentName>{dept.name}</DepartmentName>
+                  </LeftWrapper>
+                  <EmployeeCount>
+                    {dept.attendance_employee_count || 0} Employees
+                  </EmployeeCount>
+                </DepartmentHeader>
 
-                      <EmployeeList>
-                        {loadingDept ? (
-                          <EmployeeItem style={{ textAlign: "center", padding: "1rem" }}>
-                            <ClipLoader size={24} color="#003366" />
-                          </EmployeeItem>
-                        ) : employees.length > 0 ? (
-                          employees.map((emp) => {
-                            const sessions = emp.sessions || [];
-                            const timeIn = getEarliestTimeIn(sessions);
-                            const timeOut = getConditionalTimeOut(sessions);
+                {isOpen && (
+                  <DropdownWrapper>
+                    <DropdownHeader>
+                      <span>Sl No</span>
+                      <span>Name</span>
+                      <span>Employee ID</span>
+                      <span>In Date</span>
+                      <span>In Time</span>
+                      <span>Out Time</span>
+                    </DropdownHeader>
 
-                            return (
-                              <EmployeeRow
-                                key={emp.id}
-                                onClick={() => handleRowClick(emp.id)}
-                                style={{ cursor: "pointer" }}
-                              >
-                                <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
-                                <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
-                                <EmployeeCell>{emp.date || "-"}</EmployeeCell>
-                                <EmployeeCell>{timeIn}</EmployeeCell>
-                                <EmployeeCell>{timeOut}</EmployeeCell>
-                              </EmployeeRow>
-                            );
-                          })
-                        ) : (
-                          <EmployeeItem style={{ textAlign: "center", padding: "1rem" }}>
-                            {dept.hasLoadedEmployees ? (
-                              "No attendance record found for today."
-                            ) : searchText.trim() ? (
-                              <div>
-                                <div>No loaded attendance for this department yet.</div>
-                                <div style={{ marginTop: 8 }}>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      loadAttendanceForDept(dept.id);
-                                    }}
-                                    style={{
-                                      padding: "6px 10px",
-                                      borderRadius: 6,
-                                      border: "1px solid #d1d5db",
-                                      background: "#fff",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    Load employees
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              "No attendance record found for today."
-                            )}
-                          </EmployeeItem>
-                        )}
-                      </EmployeeList>
-                    </DropdownWrapper>
-                  )}
-                </DepartmentCard>
-              );
-            })
-          ) : (
-            <p>No departments found.</p>
-          )}
+                    <EmployeeList>
+                      {loadingDept ? (
+                        <EmployeeItem style={{ textAlign: "center" }}>
+                          <ClipLoader size={24} />
+                        </EmployeeItem>
+                      ) : paginated.length > 0 ? (
+                        paginated.map((emp, idx) => {
+                          const tIn = getEarliestTimeIn(emp.sessions);
+                          const tOut = getConditionalTimeOut(emp.sessions);
+
+                          return (
+                            <EmployeeRow
+                              key={emp.id}
+                              onClick={() => handleRowClick(emp.id)}
+                            >
+                              <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
+                              <EmployeeCell>
+                                {emp.employee_name || "-"}
+                              </EmployeeCell>
+                              <EmployeeCell>
+                                {emp.employee_id || "-"}
+                              </EmployeeCell>
+                              <EmployeeCell>{emp.date || "-"}</EmployeeCell>
+                              <EmployeeCell>{tIn}</EmployeeCell>
+                              <EmployeeCell>{tOut}</EmployeeCell>
+                            </EmployeeRow>
+                          );
+                        })
+                      ) : (
+                        <EmployeeItem>No attendance found for today.</EmployeeItem>
+                      )}
+                    </EmployeeList>
+
+                    {/* PAGINATION BUTTONS */}
+                    {employees.length > pageSize && (
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          padding: "10px",
+                        }}
+                      >
+                        <button
+                          disabled={currentPage === 1}
+                          onClick={() =>
+                            setPageByDept((p) => ({
+                              ...p,
+                              [dept.id]: currentPage - 1,
+                            }))
+                          }
+                        >
+                          Prev
+                        </button>
+
+                        <span>
+                          Page {currentPage} / {totalPages}
+                        </span>
+
+                        <button
+                          disabled={currentPage === totalPages}
+                          onClick={() =>
+                            setPageByDept((p) => ({
+                              ...p,
+                              [dept.id]: currentPage + 1,
+                            }))
+                          }
+                        >
+                          Next
+                        </button>
+                      </div>
+                    )}
+                  </DropdownWrapper>
+                )}
+              </DepartmentCard>
+            );
+          })}
         </DepartmentGrid>
       )}
     </PageContainer>

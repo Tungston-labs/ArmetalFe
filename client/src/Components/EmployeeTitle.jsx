@@ -110,7 +110,7 @@ const EmployeeTitle = ({
 {showAddButton && (
   <RightBlock>
     {rightElement ? (
-      rightElement // 👈 Render anything passed from parent
+      rightElement
     ) : (
       <Button onClick={onAddClick || (() => navigate("/basic-details"))}>
         {buttonIcon ? (

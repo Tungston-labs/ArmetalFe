@@ -29,7 +29,8 @@ export const BackArrow = styled(LuArrowLeft)`
 
 export const Container = styled.div`
   background: white;
-  padding: 20px;
+  // padding: 20px;
+    padding: 20px 30px;
   font-family: sans-serif;
 `;
 

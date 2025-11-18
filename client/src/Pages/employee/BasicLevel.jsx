@@ -25,6 +25,9 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import Navbar from "../../Components/Navbar";
 import EmployeeHeader from "../../Components/EmployeeHeader";
 import { ButtonWrapper, NextButton } from "../../Components/JobDetails.Styles";
+import EmployeeTitle from "../../Components/EmployeeTitle";
+import { Divider } from "../reimbursement/Reimb_info.Styles";
+
 
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
@@ -177,22 +180,19 @@ const handleNext = async () => {
       <Container>
         <UnsavedChangesGuard isDirty={isFormDirty} />
 
-        <Header>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
-            <div>
-              <Title>Employee</Title>
-              <Subtitle>Manage your Employee.</Subtitle>
-            </div>
-          </div>
-        </Header>
-
-        <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
+       <EmployeeTitle
+  key={departmentList?.length || 0} // ✅ forces rerender when departmentList changes
+  iconSrc={EmployeeIcon}
+  showAddButton={false}
+   showTabs={false}
+   showSearch={false}
+   showDropdown={false}
+/>
+        <div style={{ display: "flex", justifyContent: "center", padding: "0px" }}>
           <div style={{ width: "50%" }}>
             <Multistep currentStep={currentStep} steps={stepTitles} />
           </div>
         </div>
-
         {/* ✅ Pass validation function to both components */}
         <EmployeeHeader
           formData={formData}
