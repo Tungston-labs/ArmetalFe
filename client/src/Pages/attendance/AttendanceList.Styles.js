@@ -30,17 +30,28 @@ export const DepartmentCard = styled.div`
   background: white;
   border-radius: 10px;
   padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  overflow: hidden; /* Prevent content overflow on animation */
-margin-top:1rem;
+  overflow: hidden;
+  margin-top: 1rem;
+  max-width: 100%; /* ensures it doesn't overflow container */
+
   &:hover {
     transform: translateY(-3px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
 
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+
+  @media (min-width: 2560px) {
+    padding: 2.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    padding: 3rem;
   }
 `;
+
 
 export const DepartmentHeader = styled.div`
   display: flex;
@@ -70,17 +81,66 @@ export const DepartmentIcon = styled.div`
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
+
+  /* Responsive scaling */
+  @media (min-width: 1920px) {
+    width: 60px;
+    height: 60px;
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: 2560px) {
+    width: 75px;
+    height: 75px;
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3840px) {
+    width: 75px;
+    height: 75px;
+    font-size: 2rem;
+  }
 `;
+
 
 export const DepartmentName = styled.h2`
   color: #172554;
   font-size: 1.2rem;
+
+  /* Responsive scaling */
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.8rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 2.5rem;
+  }
 `;
+
 
 export const EmployeeCount = styled.span`
   color: #172554;
   font-weight: 500;
+  font-size: 0.9rem; /* base font size */
+
+  /* Responsive adjustments */
+  @media (min-width: 1920px) {
+    font-size: 1.1rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.3rem;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 1.6rem;
+  }
 `;
+
 
 export const DropdownWrapper = styled.div`
   background: #f9fafb;
@@ -144,20 +204,41 @@ export const DropdownHeader = styled.div`
   padding: 0.75rem 1rem;
   border-bottom: 1px solid #d1d5db;
   border-radius: 8px 8px 0 0;
-  text-align:center;
-  justify-content:center;
+  text-align: center;
+  justify-content: center;
+
+  /* Responsive adjustments */
+  @media (min-width: 1920px) {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    font-size: 1.1rem;
+    padding: 1rem 1.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    font-size: 1.3rem;
+    padding: 1.2rem 2rem;
+  }
+
+  @media (min-width: 3840px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    font-size: 1.6rem;
+    padding: 1.5rem 2.5rem;
+  }
 `;
+
 
 export const EmployeeRow = styled.li`
   display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   padding: 0.6rem 1rem;
   border-bottom: 1px solid #eee;
   font-size: 0.95rem;
   color: #333;
+  text-align: center;
+  justify-content: center;
   transition: background 0.2s ease;
-text-align:center;
-justify-content:center;
+
   &:hover {
     background: #f5f5f5;
   }
@@ -165,7 +246,26 @@ justify-content:center;
   &:last-child {
     border-bottom: none;
   }
+
+  @media (min-width: 1920px) {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    padding: 0.8rem 1.2rem;
+    font-size: 1.1rem;
+  }
+
+  @media (min-width: 2560px) {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    padding: 1rem 1.5rem;
+    font-size: 1.3rem;
+  }
+
+  @media (min-width: 3840px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    padding: 1.2rem 2rem;
+    font-size: 1.5rem;
+  }
 `;
+
 
 export const EmployeeCell = styled.div`
   overflow: hidden;

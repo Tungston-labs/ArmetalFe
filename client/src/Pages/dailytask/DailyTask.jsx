@@ -85,16 +85,13 @@ const Scheduler = () => {
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
 
-  // -------------------------------------
-  // Filter employees by name search
-  // -------------------------------------
-  const filteredEmployees = employees.filter((emp) =>
-    emp.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
-  // -------------------------------------
-  // Generate week dates
-  // -------------------------------------
+const filteredEmployees = employees
+  .filter((emp) =>
+    emp.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+  .sort((a, b) => a.name.localeCompare(b.name));
+
  const generateDates = (baseDate) => {
   const arr = [];
 const today = new Date();
@@ -169,17 +166,14 @@ useEffect(() => {
           showSearch={false}
         />
 
-        {/* Filters */}
+
         <S.Header>
-          {/* Search employee */}
-          <S.Input
+         <S.Input
             type="text"
             placeholder="Search employee name"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-
-          {/* Department Dropdown */}
           <S.Select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
@@ -192,8 +186,6 @@ useEffect(() => {
             ))}
           </S.Select>
         </S.Header>
-
-        {/* Date Header */}
         <S.DateHeaderRow>
           <S.Arrow
            
@@ -241,18 +233,16 @@ useEffect(() => {
 </S.Arrow>
 
         </S.DateHeaderRow>
-
-        {/* Week date tiles */}
         <S.DateGrid>
   {actualDates.map((dateItem, index) => {
-    const isFuture = dateItem.full > new Date(); // check if the date is in future
+    const isFuture = dateItem.full > new Date(); 
     return (
       <S.DateItem
         key={index}
         isSelected={index === selectedDateIndex}
-        isDisabled={isFuture} // pass prop for styling
+        isDisabled={isFuture} 
         onClick={() => {
-          if (!isFuture) handleClickDateTile(index); // prevent selecting future
+          if (!isFuture) handleClickDateTile(index);
         }}
       >
         <div className="day">{dateItem.day}</div>
@@ -264,11 +254,7 @@ useEffect(() => {
     );
   })}
 </S.DateGrid>
-
-
-        {/* Main Layout */}
         <S.MainPanel>
-          {/* Employee Sidebar */}
           <S.EmployeeSidebar>
             <h2>Employees</h2>
 
@@ -288,8 +274,6 @@ useEffect(() => {
               </S.EmployeeItem>
             ))}
           </S.EmployeeSidebar>
-
-          {/* Task Area */}
           <S.TaskArea>
             <h2>Daily Task</h2>
 

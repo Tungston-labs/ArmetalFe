@@ -83,7 +83,7 @@ export const EmployeeSidebar = styled.div`
   background-color: ${WHITE};
   padding: 20px 0;
   overflow-y: auto;
-  max-height: calc(100vh - 300px);
+  max-height: 500px;
 
   /* Scroll Design */
   &::-webkit-scrollbar {
@@ -204,16 +204,6 @@ export const DateHeader = styled.div`
   }
 `;
 
-// export const Arrow = styled.span`
-//   cursor: pointer;
-//   font-size: 30px;
-//   color: #ccc;spaceen
-//   user-select: none;
-//   &:hover {
-//     color: ${DARK_GRAY};
-//   }
-// `;
-
 
 export const CalendarIcon = styled.div`
   width: 22px;
@@ -236,6 +226,9 @@ export const DateGrid = styled.div`
   @media (max-width: ${BREAKPOINTS.mobile}) {
     overflow-x: auto;
     justify-content: initial;
+  }
+    @media (max-width: ${BREAKPOINTS.tablet}) {
+  gap:1rem;
   }
 `;
 export const DateItem = styled.div`
@@ -294,7 +287,7 @@ export const TaskArea = styled.div`
   flex-direction: column;
 
   /* NEW: internal scrolling */
-  max-height: calc(100vh - 300px); 
+  max-height: 500px; 
   overflow-y: auto;
 
   /* Smooth scrollbar */
@@ -578,23 +571,6 @@ letter-spacing: 0%;
   }
 `;
 
-// export const EmptyState = styled.div`
-//   width: 100%;
-//   height: 300px;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-//   gap: 12px;
-//   text-align: center;
-//   padding: 20px;
-
-//   .no-task-img {
-//     width: 150px;
-//     height: auto;
-//     opacity: 0.85;
-//   }
-// `;
 
 export const EmptyStateTitle = styled.h3`
   font-size: 20px;
@@ -602,11 +578,7 @@ export const EmptyStateTitle = styled.h3`
   color: #333;
 `;
 
-// export const EmptyStateText = styled.p`
-//   font-size: 15px;
-//   color: #777;
-//   margin-top: -6px;
-// `;
+
 
 
 

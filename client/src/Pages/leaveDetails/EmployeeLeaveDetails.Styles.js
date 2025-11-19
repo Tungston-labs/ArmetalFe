@@ -21,13 +21,26 @@ export const SectionTitle = styled.h3`
   font-weight: 600;
   color: #2d2d2d;
   margin-bottom: 12px;
+
+  /* ULTRA WIDE (4K) */
+  @media (min-width: 2600px) {
+    font-size: 1.5rem;
+    margin-bottom: 1.8rem;
+  }
 `;
+
 
 
 export const InfoGrid = styled.div`
   display: grid;
-  grid-template-columns: ${({ columns }) => (columns === "2" ? "1fr 1fr" : "1fr 1fr")};
+  grid-template-columns: ${({ columns }) =>
+    columns === "2" ? "1fr 1fr" : "1fr 1fr"};
   gap: 16px;
+
+
+  @media (min-width: 2600px) { /* 4K */
+    gap: 26px;
+  }
 `;
 
 
@@ -42,6 +55,11 @@ export const Label = styled.label`
   color: #555;
   margin-bottom: 4px;
   display: block;
+
+
+  @media (min-width: 2600px) { /* 4K screens */
+    font-size: 1.5rem;
+  }
 `;
 
 
@@ -50,10 +68,17 @@ export const ReadonlyInput = styled.input`
   padding: 10px 14px;
   border-radius: 8px;
   border: 1px solid #d4d7dd;
-  background: #ffffffff;
+  background: #ffffff;
   font-size: 14px;
   color: #444;
+
+
+  @media (min-width: 2600px) { /* 4K */
+    padding:20px 22px;
+    font-size: 1.4rem;
+  }
 `;
+
 
 export const TextArea = styled.textarea`
   width: 100%;
@@ -71,6 +96,21 @@ export const ButtonRow = styled.div`
   justify-content: flex-end;
   padding-top: 15px;
   gap: 12px;
+
+  /* Tablet */
+  @media (min-width: 768px) {
+    gap: 14px;
+  }
+
+  /* Desktop */
+  @media (min-width: 1200px) {
+    gap: 16px;
+  }
+
+  /* 4K */
+  @media (min-width: 2600px) {
+    gap: 20px;
+  }
 `;
 
 export const ApproveButton = styled.button`
@@ -81,7 +121,16 @@ export const ApproveButton = styled.button`
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
+  transition: 0.2s ease;
+
+
+  /* 4K */
+  @media (min-width: 2600px) {
+    font-size: 1.5rem;
+    padding: 16px 34px;
+  }
 `;
+
 export const DeclineButton = styled.button`
   background: #d03434;
   color: #ffffff;
@@ -90,7 +139,17 @@ export const DeclineButton = styled.button`
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
+  transition: 0.2s ease;
+
+
+
+  /* 4K */
+  @media (min-width: 2600px) {
+    font-size: 1.5rem;
+    padding: 16px 34px;
+  }
 `;
+
 
 export const Divider = styled.hr`
   margin: 20px 0;
@@ -114,6 +173,12 @@ export const DropdownHeader = styled.div`
 export const ArrowIcon = styled.span`
   font-size: 14px;
   color: #555;
+
+
+  /* Ultra-wide (4K) */
+  @media (min-width: 2600px) {
+    font-size: 1.5rem;
+  }
 `;
 
 export const ReasonBox = styled.div`
@@ -125,7 +190,14 @@ export const ReasonBox = styled.div`
   color: #444;
   line-height: 1.5;
   white-space: pre-line;
+
+  /* 4K screens */
+  @media (min-width: 2600px) {
+    font-size: 1.4rem;
+    padding: 22px;
+  }
 `;
+
 export const CardWrapper = styled.div`
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -147,4 +219,8 @@ export const CardHeader = styled.div`
 
 export const CardContent = styled.div`
   padding: 16px 20px;
+
+  @media (min-width: 2600px) { /* 4K */
+    padding: 26px 36px;
+  }
 `;

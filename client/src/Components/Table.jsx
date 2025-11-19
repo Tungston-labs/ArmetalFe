@@ -1,3 +1,4 @@
+// Components/Table.jsx (updated)
 import React from "react";
 import {
   Container,
@@ -22,7 +23,7 @@ const ErrorMsg = ({ msg }) =>
   ) : null;
 
 const Table = ({
-  country,  
+  country,
   bankName,
   setBankName,
   swiftCode,
@@ -52,6 +53,7 @@ const Table = ({
   errors = {},
   showNextButton = false,
   handleNext,
+  setBankProofImage, // expect parent to pass this
 }) => {
   return (
     <Container>
@@ -69,7 +71,7 @@ const Table = ({
               value={bankName}
               onChange={(e) => setBankName(e.target.value)}
             />
-         <ErrorMsg msg={errors.bankName} />
+            <ErrorMsg msg={errors.bankName} />
           </FormGroups>
         </Row>
 
@@ -88,7 +90,7 @@ const Table = ({
 
             <FormGroups>
               <Label>Payment Mode</Label>
-         
+
               <Select
                 value={paymentMode}
                 onChange={(e) => setPaymentMode(e.target.value)}
@@ -97,7 +99,7 @@ const Table = ({
                 <option value="online">Online</option>
                 <option value="cheque">Cheque</option>
               </Select>
-                   <ErrorMsg msg={errors.paymentMode} />
+              <ErrorMsg msg={errors.paymentMode} />
             </FormGroups>
           </TwoColumnRows>
         </Row>
@@ -107,28 +109,43 @@ const Table = ({
           <TwoColumnRows>
             <FormGroups>
               <Label>Account Number</Label>
-         
+
               <Input
                 placeholder="Enter Account Number"
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value)}
               />
-                   <ErrorMsg msg={errors.accountNumber} />
+              <ErrorMsg msg={errors.accountNumber} />
             </FormGroups>
 
             {country !== "IN" && (
               <FormGroups>
                 <Label>UAN / EPF Number</Label>
-            
+
                 <Input
                   placeholder="Enter UAN / EPF Account Number"
                   value={uanNumber}
                   onChange={(e) => setUanNumber(e.target.value)}
                 />
-                    <ErrorMsg msg={errors.uanNumber} />
+                <ErrorMsg msg={errors.uanNumber} />
               </FormGroups>
             )}
           </TwoColumnRows>
+        </Row>
+
+        {/* Bank Proof file */}
+        <Row>
+          <FormGroups>
+            <Label>Bank Proof (optional)</Label>
+            <input
+              type="file"
+              accept="image/*,application/pdf"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                if (setBankProofImage) setBankProofImage(file);
+              }}
+            />
+          </FormGroups>
         </Row>
 
         {/* Tax & Compliance */}
@@ -138,66 +155,63 @@ const Table = ({
             {country === "IN" && (
               <FormGroups>
                 <Label>PAN Number</Label>
-              
+
                 <Input
                   placeholder="Enter PAN Number"
                   value={panNumber}
                   onChange={(e) => setPanNumber(e.target.value)}
                 />
-                  <ErrorMsg msg={errors.panNumber} />
+                <ErrorMsg msg={errors.panNumber} />
               </FormGroups>
             )}
 
-          
-              <FormGroups>
-                <Label>Tax Regime</Label>
-                <ErrorMsg msg={errors.taxRegime} />
-                <Select
-                  value={taxRegime}
-                  onChange={(e) => setTaxRegime(e.target.value)}
-                >
-                  <option value="">Select Regime</option>
-                  <option value="old">Old Regime</option>
-                  <option value="new">New Regime</option>
-                </Select>
-                <ErrorMsg msg={errors.taxRegime} />
-              </FormGroups>
-        
+            <FormGroups>
+              <Label>Tax Regime</Label>
+              <ErrorMsg msg={errors.taxRegime} />
+              <Select
+                value={taxRegime}
+                onChange={(e) => setTaxRegime(e.target.value)}
+              >
+                <option value="">Select Regime</option>
+                <option value="old">Old Regime</option>
+                <option value="new">New Regime</option>
+              </Select>
+              <ErrorMsg msg={errors.taxRegime} />
+            </FormGroups>
           </TwoColumnRows>
 
-            <TwoColumnRows>
-              <FormGroups>
-                <Label>TDS Deduction Amount</Label>
-               
-                <Select
-                  value={tdsAmount}
-                  onChange={(e) => setTdsAmount(e.target.value)}
-                >
-                  <option value="">Select TDS %</option>
-                  {[0, 10, 20, 30].map((i) => (
-                    <option key={i} value={i}>
-                      {i}%
-                    </option>
-                  ))}
-                </Select>
-                 <ErrorMsg msg={errors.tdsAmount} />
-              </FormGroups>
+          <TwoColumnRows>
+            <FormGroups>
+              <Label>TDS Deduction Amount</Label>
 
-              <FormGroups>
-                <Label>Declaration under 80C</Label>
-               
-                <Select
-                  value={declaration80C}
-                  onChange={(e) => setDeclaration80C(e.target.value)}
-                >
-                  <option value="">Declaration under 80C?</option>
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </Select>
-                 <ErrorMsg msg={errors.declaration80C} />
-              </FormGroups>
-            </TwoColumnRows>
-     
+              <Select
+                value={tdsAmount}
+                onChange={(e) => setTdsAmount(e.target.value)}
+              >
+                <option value="">Select TDS %</option>
+                {[0, 10, 20, 30].map((i) => (
+                  <option key={i} value={i}>
+                    {i}%
+                  </option>
+                ))}
+              </Select>
+              <ErrorMsg msg={errors.tdsAmount} />
+            </FormGroups>
+
+            <FormGroups>
+              <Label>Declaration under 80C</Label>
+
+              <Select
+                value={declaration80C}
+                onChange={(e) => setDeclaration80C(e.target.value)}
+              >
+                <option value="">Declaration under 80C?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </Select>
+              <ErrorMsg msg={errors.declaration80C} />
+            </FormGroups>
+          </TwoColumnRows>
         </Row>
 
         {/* Salary & Increment */}
@@ -206,18 +220,18 @@ const Table = ({
           <TwoColumnRows>
             <FormGroups>
               <Label>Basic Salary</Label>
-            
+
               <Input
                 placeholder="Enter Basic Salary"
                 value={basicSalary}
                 onChange={(e) => setBasicSalary(e.target.value)}
               />
-                <ErrorMsg msg={errors.basicSalary} />
+              <ErrorMsg msg={errors.basicSalary} />
             </FormGroups>
 
             <FormGroups>
               <Label>Salary Increment</Label>
-           
+
               <Select
                 value={salaryIncrement}
                 onChange={(e) => setSalaryIncrement(e.target.value)}
@@ -229,31 +243,31 @@ const Table = ({
                   </option>
                 ))}
               </Select>
-                 <ErrorMsg msg={errors.salaryIncrement} />
+              <ErrorMsg msg={errors.salaryIncrement} />
             </FormGroups>
           </TwoColumnRows>
 
           <TwoColumnRows>
             <FormGroups>
               <Label>Housing Allowance</Label>
-     
+
               <Input
                 placeholder="Enter Housing Allowance"
                 value={housingAllowance}
                 onChange={(e) => setHousingAllowance(e.target.value)}
               />
-                       <ErrorMsg msg={errors.housingAllowance} />
+              <ErrorMsg msg={errors.housingAllowance} />
             </FormGroups>
 
             <FormGroups>
               <Label>Transportation</Label>
-             
+
               <Input
                 placeholder="Enter Transportation"
                 value={transportation}
                 onChange={(e) => setTransportation(e.target.value)}
               />
-               <ErrorMsg msg={errors.transportation} />
+              <ErrorMsg msg={errors.transportation} />
             </FormGroups>
           </TwoColumnRows>
         </Row>

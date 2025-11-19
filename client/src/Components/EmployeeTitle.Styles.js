@@ -27,7 +27,21 @@ export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Responsive scaling */
+  @media (min-width: 1920px) {
+    padding: 0.8rem;
+  }
+
+  @media (min-width: 2560px) {
+    padding: 1rem;
+  }
+
+  @media (min-width: 3840px) {
+    padding: 1.3rem;
+  }
 `;
+
 
 export const TitleBlock = styled.div`
   display: flex;
@@ -38,27 +52,49 @@ export const TitleBlock = styled.div`
 export const Title = styled.h2`
   margin: 0;
   color: #3250B5;
-  font-size: 1.25rem;
   font-family: "Satoshi";
-font-weight: 700;
-font-style: Bold;
-font-size: 22px;
-line-height: 100%;
-letter-spacing: 0%;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 100%;
+  letter-spacing: 0%;
 
+  /* Responsive scaling */
+  @media (min-width: 1920px) {
+    font-size: 26px;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 30px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 38px;
+  }
 `;
+
 
 export const Subtitle = styled.span`
-  font-size: 0.9rem;
   color: #3250B5;
   font-family: "Raleway";
-font-weight: 300;
-font-style: Light;
-font-size: 16px;
-line-height: 100%;
-letter-spacing: 0%;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
 
+  /* Responsive scaling */
+  @media (min-width: 1920px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 20px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 24px;
+  }
 `;
+
 
 export const RightBlock = styled.div`
   display: flex;
@@ -83,6 +119,25 @@ export const Button = styled.button`
   &:hover {
     background: #1d4ed8;
   }
+
+  /* Responsive adjustments */
+  @media (min-width: 1920px) {
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    padding: 1rem 1.4rem;
+    font-size: 1.15rem;
+    gap: 0.6rem;
+  }
+
+  @media (min-width: 3840px) {
+    padding: 1.2rem 1.8rem;
+    font-size: 1.35rem;
+    gap: 0.75rem;
+  }
 `;
 
 export const SearchSection = styled.div`
@@ -97,7 +152,24 @@ export const SearchSection = styled.div`
     flex-direction: column;
     align-items: stretch;
   }
+
+  /* Large Screens */
+  @media (min-width: 1920px) {
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (min-width: 3840px) {
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
 `;
+
 
 export const SearchWrapper = styled.div`
   display: flex;
@@ -111,31 +183,71 @@ export const SearchWrapper = styled.div`
 
   svg {
     color: #6b7280;
+    font-size: 1rem;
   }
 
   @media (max-width: 768px) {
     width: 100%;
   }
+
+  /* Large Screens */
+  @media (min-width: 1920px) {
+    padding: 0.8rem 1.2rem;
+    max-width: 600px;
+
+    svg {
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (min-width: 2560px) {
+    padding: 1rem 1.4rem;
+    max-width: 700px;
+
+    svg {
+      font-size: 1.4rem;
+    }
+  }
+
+  @media (min-width: 3840px) {
+    padding: 1.2rem 1.6rem;
+    max-width: 800px;
+
+    svg {
+      font-size: 1.6rem;
+    }
+  }
 `;
+
 
 export const Input = styled.input`
   border: none;
   outline: none;
   flex: 1;
-  font-size: 0.9rem;
-  color: #111827;
+  font-family: "Satoshi";
+  font-weight: 300;
+  font-size: 17px;
   background: transparent;
-font-family: "Satoshi";
-font-weight: 300;
-font-style: Light Italic;
-font-size: 17px;
-line-height: 100%;
-letter-spacing: 0%;
+  color: #111827;
 
   &::placeholder {
     color: #9ca3af;
   }
+
+  /* Large Screens */
+  @media (min-width: 1920px) {
+    font-size: 19px;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 21px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 25px;
+  }
 `;
+
 
 export const Dropdown = styled.select`
   border: 1px solid #172554;
@@ -157,14 +269,6 @@ export const Dropdown = styled.select`
   }
 `;
 
-// export const TabsRow = styled.div`
-//   display: grid;
-//   grid-template-columns: repeat(5, 1fr);
-//   gap: 0.8rem;
-//   width: 100%;
-//   margin-top: 0.5rem;
- 
-// `;
 
 export const TabButton = styled.button`
   width: 100%;
@@ -181,14 +285,35 @@ export const TabButton = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background: ${({ active }) => (active ? "#8CA0E2" : "#8CA0E2")};
-    color: ${({ active }) => (active ? "#fff" : "white")};
+    background: #8CA0E2;
+    color: white;
   }
 
+  /* Mobile: show 3 tabs in one row */
   @media (max-width: 769px) {
-    flex: 0 0 calc(100% / 3 - 0.33rem); // show 3 tabs width
+    flex: 0 0 calc(33.33% - 0.33rem);
+  }
+
+  /* 1920px (Full HD) */
+  @media (min-width: 1920px) {
+    padding: 0.9rem 1.3rem;
+    font-size: 1rem;
+  }
+
+  /* 2560px (2K) */
+  @media (min-width: 2560px) {
+    padding: 1.1rem 1.5rem;
+    font-size: 1.3rem;
+  }
+
+  /* 3840px (4K) */
+  @media (min-width: 3840px) {
+    padding: 1.3rem 1.8rem;
+    font-size: 1.8rem;
+    border-radius: 6px;
   }
 `;
+
 
 
 export const TabsRowContainer = styled.div`
@@ -197,7 +322,21 @@ export const TabsRowContainer = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
+
+  /* Spacing for larger screens */
+  @media (min-width: 1920px) {
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    margin-top: 0.8rem;
+  }
+
+  @media (min-width: 3840px) {
+    margin-top: 1rem;
+  }
 `;
+
 
 export const TabsRow = styled.div`
   display: grid;
@@ -206,7 +345,8 @@ export const TabsRow = styled.div`
   width: 100%;
   margin-top: 0.5rem;
 
-  @media (min-width: 768px) and (max-width:1024px) {
+  /* Tablet scroll */
+  @media (min-width: 768px) and (max-width: 1024px) {
     display: flex;
     gap: 0.5rem;
     overflow-x: auto;
@@ -217,29 +357,24 @@ export const TabsRow = styled.div`
       display: none;
     }
   }
+
+  /* 1920px */
+  @media (min-width: 1920px) {
+    gap: 1rem;
+  }
+
+  /* 2560px */
+  @media (min-width: 2560px) {
+    gap: 1.3rem;
+  }
+
+  /* 3840px */
+  @media (min-width: 3840px) {
+    gap: 1.6rem;
+    margin-top: 1rem;
+  }
 `;
 
-// export const TabButton = styled.button`
-//   width: 100%;
-//   padding: 0.5rem 0.8rem;
-//   background-color: ${({ active }) => (active ? "#003366" : "#e0e0e0")};
-//   color: ${({ active }) => (active ? "#fff" : "#000")};
-//   border: none;
-//   border-radius: 6px;
-//   text-align: center;
-//   cursor: pointer;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   min-height: 50px;
-//   white-space: nowrap;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-
-//   @media (max-width: 480px) {
-//     min-height: 40px;
-//   }
-// `;
 
 export const ScrollButton = styled.button`
   position: absolute;

@@ -277,11 +277,11 @@ export const Label = styled.label`
   font-size: clamp(0.85rem, 1vw, 1.3rem);
 
   @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
   }
 
   @media (min-width: 2560px) {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 `;
 
@@ -306,7 +306,7 @@ export const Input = styled.input`
   }
 
   @media (min-width: 2560px) {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     padding: 1rem 1.5rem;
   }
 `;

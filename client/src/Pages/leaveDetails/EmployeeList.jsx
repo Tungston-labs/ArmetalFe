@@ -4,6 +4,7 @@ import {
   Table,
   Pagination,
   TruncatedText,
+
 } from "./EmployeeList.styles";
 import {
   ModalOverlay,
@@ -35,8 +36,6 @@ const EmployeeList = () => {
   const [page, setPage] = useState(1);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  // Employee & Department state
   const { employeeList, pagination, loading } = useSelector(
     (state) => state.employees
   );
@@ -44,22 +43,17 @@ const EmployeeList = () => {
     (state) => state.departments
   );
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" })); // ✅ fixed
+    dispatch(getDepartments({ page: 1, search: "" })); 
   }, [dispatch]);
-  
-
-  // Fetch all employees (only once initially or on filter/page change)
   useEffect(() => {
     dispatch(
       getAllEmployees({
         page,
-        search: "", // we handle filtering locally
+        search: "", 
         department_id: departmentFilter,
       })
     );
   }, [dispatch, page, departmentFilter]);
-
-  // Debounce search text input (wait 300ms before applying)
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(searchText), 300);
     return () => clearTimeout(handler);
@@ -69,7 +63,6 @@ const EmployeeList = () => {
     setSelectedEmployeeId(id);
     setShowDeleteModal(true);
   };
-
   const confirmDelete = async () => {
     await dispatch(deleteEmployeeById(selectedEmployeeId));
     dispatch(
@@ -82,12 +75,10 @@ const EmployeeList = () => {
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-
   const cancelDelete = () => {
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-
   const handlePageChange = (newPage) => {
     dispatch(
       getAllEmployees({
@@ -99,8 +90,6 @@ const EmployeeList = () => {
       setPage(newPage);
     });
   };
-
-  // Local filtering: matches employee name OR employee ID
   const filteredEmployees = Array.isArray(employeeList)
     ? employeeList.filter(
         (emp) =>
@@ -111,14 +100,13 @@ const EmployeeList = () => {
             .includes(debouncedSearch.toLowerCase())
       )
     : [];
-
   return (
     <>
       {loading && <Loader />}
       <Navbar />
       <Container>
       <EmployeeTitle
-  key={departmentList?.length || 0} // ✅ forces rerender when departmentList changes
+  key={departmentList?.length || 0} 
   iconSrc={EmployeeIcon}
   dropdownOptions={departmentList || []}
   dropdownLoading={deptLoading}
@@ -128,10 +116,9 @@ const EmployeeList = () => {
   showBackArrow={false}
   showTabs={true}
 />
-
-
         {!loading && (
           <>
+     
             <Table>
               <thead>
                 <tr>
@@ -201,8 +188,7 @@ const EmployeeList = () => {
                         )}
                         {emp.name}
                       </td>
-
-                      <td>{emp.employee_id}</td>
+                    <td>{emp.employee_id}</td>
                       <td>
                         <TruncatedText title={emp.email}>
                           {emp.email}
@@ -218,8 +204,7 @@ const EmployeeList = () => {
                           {emp.department}
                         </TruncatedText>
                       </td>
-
-                      <td
+                    <td
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteClick(emp.id);
@@ -238,8 +223,8 @@ const EmployeeList = () => {
                 )}
               </tbody>
             </Table>
-
-            <Pagination>
+          
+       <Pagination>
               <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>
                 &larr;
               </span>

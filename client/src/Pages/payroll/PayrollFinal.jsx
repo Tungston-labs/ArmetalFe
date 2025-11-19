@@ -53,6 +53,7 @@ const PayrollTable = () => {
   console.log({ verificationStatus });
 
   const [bulkStatus, setBulkStatus] = useState('');
+const LIMIT = 100;
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -74,6 +75,7 @@ const PayrollTable = () => {
   useEffect(() => {
     dispatch(getPayrollData({
       page,
+     limit: LIMIT,
       search: searchTerm,
       month: selectedMonth,
       year: selectedYear,
@@ -336,7 +338,7 @@ const PayrollTable = () => {
         </BulkActionBar>
 
 
-        <TableWrapper>
+
           <Table>
             <thead>
               <tr>
@@ -375,7 +377,7 @@ const PayrollTable = () => {
                         onChange={() => toggleEmployeeSelect(emp.id)}
                       />
                     </Td>
-                    <Td>{(page - 1) * 10 + index + 1}</Td>
+                    <Td>{(page - 1) * LIMIT + index + 1}</Td>
                        <Td>{emp.employee_name}</Td>
                     <Td>{emp.employee_id}</Td>
 
@@ -461,7 +463,7 @@ const PayrollTable = () => {
               )}
             </tbody>
           </Table>
-        </TableWrapper>
+
 
         <Pagination>
           <span

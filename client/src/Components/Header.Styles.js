@@ -128,9 +128,8 @@ export const RightColumn = styled.div`
 
 export const InputBox = styled.input`
   width: 100%;
-  padding: 12px 14px;
+  padding: 12px 14px;          /* default for mobile */
   border-radius: 10px;
-  // background: #E6ECFF;
   border: 1px solid #d7dce8;
   font-size: 15px;
   transition: 0.2s;
@@ -140,14 +139,37 @@ export const InputBox = styled.input`
     background: #ffffff;
     border-color: #5472ff;
   }
+
+  /* TABLET */
+  @media (min-width: 768px) {
+    padding: 13px 16px;
+    font-size: 16px;
+  }
+
+  /* LAPTOP */
+  @media (min-width: 1200px) {
+    padding: 14px 18px;
+    font-size: 16px;
+  }
+
+  /* LARGE DESKTOP (2K–4K) */
+  @media (min-width: 1800px) {
+    padding: 14px 20px;        
+    font-size: 1.2rempx;
+  }
+
+  /* ULTRA 4K */
+  @media (min-width: 2600px) {
+    padding: 15px 22px;        
+    font-size: 1.2rem;
+  }
 `;
 
 export const BioBox = styled.textarea`
   width: 100%;
-  height: 90px;
+  height: 90px;                
   padding: 12px 14px;
   border-radius: 10px;
-  // background: #f8f9fc;
   border: 1px solid #d7dce8;
   font-size: 15px;
   resize: none;
@@ -158,7 +180,36 @@ export const BioBox = styled.textarea`
     background: #ffffff;
     border-color: #5472ff;
   }
+
+  /* TABLET */
+  @media (min-width: 768px) {
+    padding: 13px 16px;
+    font-size: 16px;
+    height: 110px;
+  }
+
+  /* LAPTOP */
+  @media (min-width: 1200px) {
+    padding: 14px 18px;
+    font-size: 16px;
+    height: 120px;
+  }
+
+  /* LARGE DESKTOP (2K–4K) */
+  @media (min-width: 1800px) {
+    padding: 14px 20px;
+    font-size: 1.2rem;
+    height: 120px;
+  }
+
+  /* ULTRA 4K */
+  @media (min-width: 2600px) {
+    padding: 15px 22px;
+    font-size: 1.5rem;
+    height: 130px;
+  }
 `;
+
 
 export const InfoRow = styled.div`
   display: flex;

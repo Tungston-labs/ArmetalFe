@@ -268,23 +268,24 @@ export const HRManager = styled.div`
   }
 `;
 
-// export const HeaderSection = styled.div`
-//   // display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   flex-wrap: wrap;
-//   gap: 1rem;
-//   // background:yellow;
-// `;
+export const TableWrapper = styled.div`
+  width: 100%;
+  max-height: 60vh;       
+  overflow-y: auto;       
+  overflow-x: hidden;   
 
-// export const TitleSection = styled.div`
-//   display: flex;
-
-//   align-items: center;
-//   // background:red;
-//   // margin-top:3%;
-// `;
-
+  border: 1px solid #eee;
+  border-radius: 10px;
+  border:none;
+  /* Optional: nice scrollbar */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
+`;
 export const Icon = styled.div`
   font-size: 2rem;
   color: #2a2a86;

@@ -371,7 +371,7 @@ const DepartmentList = () => {
 
                       <EmployeeCount>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <div style={{ fontSize: 16, fontWeight: 600 }}>
+                          <div>
                             {dept.employee_count ?? 0}
                           </div>
                           <GoArrowUpRight size={15} style={{ strokeWidth: 2 }} />
@@ -397,10 +397,8 @@ const DepartmentList = () => {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   if (editingDeptId === dept.id) {
-                                    // currently editing => save
                                     handleUpdate(dept.id);
                                   } else {
-                                    // start editing
                                     toggleEdit(dept.id);
                                   }
                                 }}

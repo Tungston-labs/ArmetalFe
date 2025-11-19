@@ -193,10 +193,10 @@ const cancelDelete = () => {
 {formError && <ErrorMessage>{formError}</ErrorMessage>}
 
       <Hr />
+   
+    
 
-      <TableWrapper>
-  <Heading>Holiday List</Heading>   
-
+ <Heading>Holiday List</Heading> 
         <Table>
           <thead>
             <tr>
@@ -241,7 +241,7 @@ const cancelDelete = () => {
 
 
         </Table>
-      </TableWrapper>
+
       {showDeleteModal && (
   <div style={{
     position: "fixed",

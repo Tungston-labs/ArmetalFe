@@ -224,6 +224,25 @@ export const Table = styled.table`
   }
 `;
 
+export const TableWrapper = styled.div`
+  width: 100%;
+  max-height: 60vh;       
+  overflow-y: auto;       
+  overflow-x: hidden;   
+
+  border: 1px solid #eee;
+  border-radius: 10px;
+  border:none;
+  /* Optional: nice scrollbar */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
+`;
+
 export const ProfileImg = styled.img`
   width: 28px;
   height: 28px;
