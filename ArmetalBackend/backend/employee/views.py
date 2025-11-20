@@ -462,7 +462,7 @@ class DashboardSummaryView(APIView):
         ).order_by("date")
 
         # 2. Slice safely when using it
-        upcoming_holidays_list = [
+        upcoming_holidays = [
             {
                 "date": holiday.date,
                 "description": holiday.description,
