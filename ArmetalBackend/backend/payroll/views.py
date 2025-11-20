@@ -68,14 +68,15 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
             return Response({"detail": "Year and month are required."}, status=status.HTTP_400_BAD_REQUEST)
 
         employees = Employee_db.objects.filter(department__company=request.user.company)
+
         existing_records = self.get_queryset()
         existing_emp_ids = existing_records.values_list('employee_id', flat=True)
 
+        # Create missing payroll records
         missing_emps = employees.exclude(id__in=existing_emp_ids)
         for emp in missing_emps:
             bank = getattr(emp, 'bank_details', None)
             if bank:
-                
                 EmployeePayrollRecord.objects.get_or_create(
                     employee=emp,
                     year=year,
@@ -94,9 +95,30 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
                     }
                 )
 
-        queryset = self.filter_queryset(self.get_queryset())  # 👈 this applies search
+        # ⭐ AUTO-SYNC SALARY IF EMPLOYEE BANK DETAILS CHANGED
+        for record in existing_records:
+            bank = getattr(record.employee, 'bank_details', None)
+            if not bank:
+                continue
+
+            if (
+                record.basic_salary != bank.basic_salary or
+                record.salary_increment != bank.salary_increment or
+                record.housing_allowance != bank.housing_allowance or
+                record.transportation != bank.transportation or
+                record.tds_deduction_amount != bank.tds_deduction_amount
+            ):
+                record.basic_salary = bank.basic_salary
+                record.salary_increment = bank.salary_increment
+                record.housing_allowance = bank.housing_allowance
+                record.transportation = bank.transportation
+                record.tds_deduction_amount = bank.tds_deduction_amount
+                record.save()
+
+        queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
 
     @transaction.atomic
     def post(self, request):
