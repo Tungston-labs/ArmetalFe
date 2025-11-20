@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions,filters
 from .models import Department
-from .serializers import DepartmentSerializer
+from .serializers import DepartmentSerializer,DepartmentMiniSerializer
 from user.permissions import IsHRAdmin  
 from django.utils.timezone import now
 from django.utils import timezone
@@ -16,6 +16,23 @@ from employee.models import Employee_db
 from employee.serializers import EmployeeSerializer
 
 # --------------------create ,list department by admin
+
+
+class DepartmentMiniListView(generics.ListAPIView):
+    serializer_class = DepartmentMiniSerializer
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
+
+    def get_queryset(self):
+        return (
+            Department.objects
+            .filter(company=self.request.user.company)
+            .annotate(employee_count=Count("employees", distinct=True))
+            .only("id", "name")  # Fast! Limits selected fields
+        )
+
+
 
 class DepartmentCreateListView(generics.ListCreateAPIView):
     serializer_class = DepartmentSerializer
