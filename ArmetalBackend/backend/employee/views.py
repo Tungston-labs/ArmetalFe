@@ -485,9 +485,12 @@ class DashboardSummaryView(APIView):
         ]
 
         # 6. Upcoming contract expiries
-        upcoming_contract_expiry_qs = employees.filter(
+        # Use the full queryset for filtering
+        upcoming_contract_expiry_qs = employees_qs.filter(
             contract_expiry_date__range=[today, upcoming_range]
         )
+
+        # Slice only when converting to a list
         upcoming_contract_expiry = [
             {
                 "id": emp.id,
@@ -499,6 +502,7 @@ class DashboardSummaryView(APIView):
             }
             for emp in upcoming_contract_expiry_qs.order_by('contract_expiry_date')[:5]
         ]
+
 
         # 7. Active employees today
         active_today_count = Attendance.objects.filter(
