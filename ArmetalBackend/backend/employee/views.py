@@ -459,14 +459,16 @@ class DashboardSummaryView(APIView):
         upcoming_holidays_qs = PublicHoliday.objects.filter(
             company=company,
             date__gte=today
-        ).order_by("date")[:10]
-        upcoming_holidays = [
+        ).order_by("date")
+
+        # 2. Slice safely when using it
+        upcoming_holidays_list = [
             {
                 "date": holiday.date,
                 "description": holiday.description,
                 "holiday_type": holiday.holiday_type,
             }
-            for holiday in upcoming_holidays_qs
+            for holiday in upcoming_holidays_qs[:10]  # slicing here is safe
         ]
 
         # 5a. All company holidays (for calendar)
