@@ -674,7 +674,7 @@ export const DayBoxes = styled.div`
 export const DayBox = styled.div`
   background-color: #f3f3f3;
   padding: 10px;
-  width: 90px;
+  width: 70px;
   text-align: center;
   border-radius: 6px;
   color: ${(props) => (props.isFuture ? "#aaa" : "#000")};

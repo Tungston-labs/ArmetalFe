@@ -6,7 +6,7 @@ export const PageWrapper = styled.div`
 `;
 
 export const Card = styled.div`
-background: #f5f7fa;
+background: #EAEFF4;
   padding: 24px;
   border-radius: 14px;
   box-shadow: 0 3px 10px rgba(0,0,0,0.4);

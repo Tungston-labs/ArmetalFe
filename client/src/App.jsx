@@ -107,7 +107,7 @@ function App() {
             <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard />} />
             <Route path="/add-company" element={<AddCompany />} />
             <Route path="/employee-Contract-Visa-Expiry" element={<Visa />} />
-            <Route path="/daily-task" element={<DailyTask />} />
+            <Route path="/daily-task" element={<Daily />} />
             <Route path="/basic-details" element={<BasicLevel />} />
             <Route path="/bank-payment" element={<BankPayment />} />
             <Route path="/documents" element={<Documents />} />
@@ -150,7 +150,7 @@ function App() {
             <Route path ="/topcard" element={<TopCard/>}></Route>
 
   <Route path ="/homedash" element={<HomeDashboard/>}></Route>
- <Route path ="/dailytask" element={<Daily/>}></Route>
+
           </Route>
         </Route>
       </Routes>

@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Table,
   Pagination,
   TruncatedText,
+  StyledTable,
+  NameCell,
+  Avatar,
+  AvatarFallback,
+  DeleteIconWrapper,
+  TableHead,
+  HeadRow,
+  HeadCell,
+  TableBody,
+  BodyRow,
+  BodyCell,
+  EmptyRow,
 
 } from "./EmployeeList.styles";
 import {
@@ -119,111 +130,81 @@ const EmployeeList = () => {
         {!loading && (
           <>
      
-            <Table>
-              <thead>
-                <tr>
-                  <th>Sl No</th>
-                  <th>Employee name</th>
-                  <th>Employee ID</th>
-                  <th>Email ID</th>
-                  <th>Job Position</th>
-                  <th>Department</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredEmployees.length > 0 ? (
-                  filteredEmployees.map((emp, index) => (
-                    <tr
-                      key={emp.id}
-                      onClick={() =>
-                        navigate(`/fulldashboard/${emp.id}`, {
-                          state: { from: location.pathname },
-                        })
-                      }
-                      style={{
-                        cursor: "pointer",
-                        transition: "background 0.2s ease",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.background = "#f9f9ff")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.background = "transparent")
-                      }
-                    >
-                      <td>{index + 1 + (page - 1) * 20}</td>
-                      <td
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "10px",
-                        }}
-                      >
-                        {emp.profile_pic ? (
-                          <img
-                            src={emp.profile_pic}
-                            alt={emp.name}
-                            style={{
-                              width: "25px",
-                              height: "25px",
-                              borderRadius: "50%",
-                              objectFit: "cover",
-                            }}
-                          />
-                        ) : (
-                          <div
-                            style={{
-                              width: "25px",
-                              height: "25px",
-                              borderRadius: "50%",
-                              backgroundColor: "#f0f0f0",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <PiUserCirclePlusThin size={20} color="#999" />
-                          </div>
-                        )}
-                        {emp.name}
-                      </td>
-                    <td>{emp.employee_id}</td>
-                      <td>
-                        <TruncatedText title={emp.email}>
-                          {emp.email}
-                        </TruncatedText>
-                      </td>
-                      <td>
-                        <TruncatedText title={emp.designation}>
-                          {emp.designation}
-                        </TruncatedText>
-                      </td>
-                      <td>
-                        <TruncatedText title={emp.department}>
-                          {emp.department}
-                        </TruncatedText>
-                      </td>
-                    <td
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteClick(emp.id);
-                        }}
-                      >
-                        <FaTrash color="red" style={{ cursor: "pointer" }} />
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="8" style={{ textAlign: "center" }}>
-                      No employees found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-          
+           <StyledTable>
+ <TableHead>
+  <HeadRow>
+    <HeadCell>Sl No</HeadCell>
+    <HeadCell>Employee name</HeadCell>
+    <HeadCell>Employee ID</HeadCell>
+    <HeadCell>Email ID</HeadCell>
+    <HeadCell>Job Position</HeadCell>
+    <HeadCell>Department</HeadCell>
+    <HeadCell>Delete</HeadCell>
+  </HeadRow>
+</TableHead>
+
+<TableBody>
+  {filteredEmployees.length > 0 ? (
+    filteredEmployees.map((emp, index) => (
+      <BodyRow
+        key={emp.id}
+        onClick={() =>
+          navigate(`/fulldashboard/${emp.id}`, {
+            state: { from: location.pathname },
+          })
+        }
+      >
+        <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
+<BodyCell>
+        <NameCell>
+          {emp.profile_pic ? (
+            <Avatar src={emp.profile_pic} alt={emp.name} />
+          ) : (
+            <AvatarFallback>
+              <PiUserCirclePlusThin size={20} color="#999" />
+            </AvatarFallback>
+          )}
+          {emp.name}
+        </NameCell>
+</BodyCell>
+
+        <BodyCell>{emp.employee_id}</BodyCell>
+
+        <BodyCell>
+          <TruncatedText title={emp.email}>{emp.email}</TruncatedText>
+        </BodyCell>
+
+        <BodyCell>
+          <TruncatedText title={emp.designation}>
+            {emp.designation}
+          </TruncatedText>
+        </BodyCell>
+
+        <BodyCell>
+          <TruncatedText title={emp.department}>
+            {emp.department}
+          </TruncatedText>
+        </BodyCell>
+
+        <DeleteIconWrapper
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDeleteClick(emp.id);
+          }}
+        >
+          <FaTrash color="red" />
+        </DeleteIconWrapper>
+      </BodyRow>
+    ))
+  ) : (
+    <EmptyRow>
+      <td colSpan="8">No employees found.</td>
+    </EmptyRow>
+  )}
+</TableBody>
+
+</StyledTable>
+
        <Pagination>
               <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>
                 &larr;

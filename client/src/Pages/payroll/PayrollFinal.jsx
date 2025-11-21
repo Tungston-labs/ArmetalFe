@@ -352,7 +352,6 @@ const LIMIT = 100;
                 <Th>Sl No</Th>
                  <Th>Name</Th>
                 <Th>Employee ID</Th>
-                <Th>Job Position</Th>
                 <Th>Joining Date</Th>
                 <Th>Email ID</Th>
                 <Th>Salary</Th>
@@ -380,18 +379,6 @@ const LIMIT = 100;
                     <Td>{(page - 1) * LIMIT + index + 1}</Td>
                        <Td>{emp.employee_name}</Td>
                     <Td>{emp.employee_id}</Td>
-
-                    <Td
-                      style={{
-                        maxWidth: "50px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                      }}
-                      title={emp.designation}
-                    >
-                      {emp.designation}
-                    </Td>
                     <Td>{emp.joining_date}</Td>
                     <Td
                       style={{

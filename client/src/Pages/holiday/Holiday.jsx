@@ -36,6 +36,7 @@ import { fetchHolidayTypes } from '../../services/holidayService';
 import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
 import HolidayHeading from "../../Components/HolidayHeading"
+import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from '../leaveDetails/EmployeeList.styles';
 
 const formatDateToISO = (dateStr) => {
   const date = new Date(dateStr);
@@ -193,55 +194,53 @@ const cancelDelete = () => {
 {formError && <ErrorMessage>{formError}</ErrorMessage>}
 
       <Hr />
-   
-    
+    <Heading>Holiday List</Heading> 
+     <StyledTable>
+      
+ <TableHead>
 
- <Heading>Holiday List</Heading> 
-        <Table>
-          <thead>
-            <tr>
-              <Th>Sl No</Th>
-              <Th>Holiday name</Th>
-              <Th>Holiday type</Th>
-              <Th>Date</Th>
-              <Th></Th>
-            </tr>
-          </thead>
-<tbody>
+        
+            <HeadRow>
+       
+              <HeadCell>Sl No</HeadCell>
+              <HeadCell>Holiday name</HeadCell>
+              <HeadCell>Holiday type</HeadCell>
+              <HeadCell>Date</HeadCell>
+              <HeadCell></HeadCell>
+              </HeadRow>
+            
+      </TableHead>
+<TableBody>
   {loading ? (
      <tr>
      <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-       <Loader size="large" /> {/* ✅ Spinner here */}
+       <Loader size="large" /> 
      </Td>
    </tr>
   ) : holidays.length === 0 ? (
     <tr>
-      <Td colSpan="5" style={{ textAlign: "center" }}>
+      <EmptyRow colSpan="5" style={{ textAlign: "center" }}>
         No holidays found.
-      </Td>
+      </EmptyRow>
     </tr>
   ) : (
     holidays.map((item, index) => (
-      <tr key={item.id}>
-        <Td>{(currentPage - 1) * 7 + index + 1}</Td>
-     <Td title={item.description}>{item.description}</Td>
-        <Td>{item.holiday_type_display}</Td>
-        <Td>{item.date}</Td>
-        <Td>
+           <BodyRow key={item.id}>
+        <BodyCell>{(currentPage - 1) * 7 + index + 1}</BodyCell>
+     <BodyCell title={item.description}>{item.description}</BodyCell>
+        <BodyCell>{item.holiday_type_display}</BodyCell>
+        <BodyCell>{item.date}</BodyCell>
+        <BodyCell>
           <FaTrashAlt
             style={{ color: "red", cursor: "pointer" }}
             onClick={() => handleDeleteClick(item.id)}
           />
-        </Td>
-      </tr>
+        </BodyCell>
+      </BodyRow>
     ))
   )}
-</tbody>
-
-
-
-        </Table>
-
+</TableBody>
+</StyledTable>
       {showDeleteModal && (
   <div style={{
     position: "fixed",

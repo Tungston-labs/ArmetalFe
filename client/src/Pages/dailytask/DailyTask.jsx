@@ -1,328 +1,220 @@
-// Scheduler.jsx
-import React, { useState, useEffect, useRef } from "react";
-import * as S from "./DailyTask.Styles";
-import EmployeeTitle from "../../Components/EmployeeTitle";
-import TaskIcon from "../../assets/task.svg";
-import Navbar from "../../Components/Navbar";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { CiCalendarDate } from "react-icons/ci";
-import NoTaskImg from "../../../public/images/dailytask.png";
+import React, { useState } from 'react';
+// Import all necessary styled components from the styles file
+import {
+  ViewContainer,
+  DepartmentPanel,
+  MainContent,
+  ToggleArrow,
+  CardItem,
+  EmployeeContainer,
+  EmployeeItem,
+  PanelContainer,
+  TaskList,
+  DatePickerWrapper,
+  TaskHeader,
+  EmployeePanelWrapper,
+  TaskFooter, 
+  StyledNoSelectionMessage, 
+  TaskLeft, 
+  TaskRight,
+  TaskContent, // <-- NEW: Import TaskContent
+  TaskBottom, // <-- NEW: Import TaskBottom
+  Title,
+  SearchInput,
+  Heading
+} from './DailyTask.Styles';
+import TaskIcon from '../../assets/task.svg';
+// --- DUMMY DATA (UPDATED with timeTaken) ---
+const departments = [
+  { id: 1, name: 'Marketing' },
+  { id: 2, name: 'Sales' },
+  { id: 3, name: 'Engineering' },
+];
 
-import { getDepartments } from "../../Redux/departmentSlice";
-import { getEmployees, getTasks } from "../../Redux/dailyTaskSlice";
+const employeesData = {
+  1: [{ id: 101, name: 'Alice Smith' }, { id: 102, name: 'Bob Johnson' }],
+  2: [{ id: 201, name: 'Charlie Brown' }, { id: 202, name: 'Dana White' }],
+  3: [{ id: 301, name: 'Ethan Hunt' }, { id: 302, name: 'Fiona Green' }],
+};
 
-import { useSelector, useDispatch } from "react-redux";
-
-const Scheduler = () => {
-  const dispatch = useDispatch();
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [selectedDateIndex, setSelectedDateIndex] = useState(0);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-
-  const calendarRef = useRef(null);
-
-  const { employees = [], tasks = [], loading: taskLoading } = useSelector(
-    (state) => state.dailyTask
-  );
-
-  const { list: departments = [], loading: deptLoading } = useSelector(
-    (state) => state.departments
-  );
-
-  // -------------------------------------
-  // Fetch Departments Initially
-  // -------------------------------------
-  useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" }));
-  }, [dispatch]);
-
-  // -------------------------------------
-  // Fetch Employees when department changes
-  // -------------------------------------
-  useEffect(() => {
-    const params = {};
-    if (selectedDepartment) params.department_id = selectedDepartment;
-
-    dispatch(getEmployees(params));
-  }, [dispatch, selectedDepartment]);
-
-  // -------------------------------------
-  // Auto-select first employee
-  // -------------------------------------
-  useEffect(() => {
-    if (employees.length > 0) setSelectedEmployee(employees[0]);
-    else setSelectedEmployee(null);
-  }, [employees]);
-
-  // -------------------------------------
-  // Fetch Tasks when employee or date changes
-  // -------------------------------------
-  useEffect(() => {
-    if (selectedEmployee && selectedDate) {
-      dispatch(
-        getTasks({
-          employeeId: selectedEmployee.id,
-          date: selectedDate.toISOString().split("T")[0],
-        })
-      );
-    }
-  }, [dispatch, selectedEmployee, selectedDate]);
-
- 
-  useEffect(() => {
-    const onDocClick = (e) => {
-      if (calendarRef.current && !calendarRef.current.contains(e.target)) {
-        setShowCalendar(false);
-      }
-    };
-
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, []);
-
-
-const filteredEmployees = employees
-  .filter((emp) =>
-    emp.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-  .sort((a, b) => a.name.localeCompare(b.name));
-
- const generateDates = (baseDate) => {
-  const arr = [];
-const today = new Date();
-  const monday = new Date(baseDate);
-  const day = monday.getDay(); 
-  const mondayOffset = day === 0 ? -6 : 1 - day;
-  monday.setDate(monday.getDate() + mondayOffset);
-
-
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-
-    arr.push({
-      full: d,
-      day: d.toLocaleString("default", { weekday: "short" }), 
-      date: d.getDate(),
-      month: d.toLocaleString("default", { month: "short" }), 
-    });
-  }
-
-  return arr;
+const tasksData = {
+  101: [
+    { id: 't1', taskName: 'Q4 Campaign Launch', projectName: 'Seasonal Marketing', description: 'Finalize creatives and media plan for the product launch.', dueDate: '2025-11-28', dueTime: '10:00', timeTaken: '8 hours' },
+    { id: 't2', taskName: 'Budget Reports', projectName: 'Finance Tracking', description: 'Review Q3 expense reports and allocate budget for Q4.', dueDate: '2025-11-25', dueTime: '14:30', timeTaken: '4 hours' },
+  ],
+  102: [
+    { id: 't3', taskName: 'Team Sync', projectName: 'Internal Operations', description: 'Schedule and lead the weekly Marketing team review meeting.', dueDate: '2025-11-22', dueTime: '09:00', timeTaken: '1 hour' },
+  ],
+  201: [
+    { id: 't4', taskName: 'Q4 Sales Forecast', projectName: 'Revenue Planning', description: 'Submit the projected sales figures for the upcoming quarter.', dueDate: '2025-11-21', dueTime: '17:00', timeTaken: '2 days' },
+    { id: 't5', taskName: 'Client 360 Follow-up', projectName: 'Key Accounts', description: 'Contact key account clients to ensure satisfaction and upsell opportunities.', dueDate: '2025-11-26', dueTime: '11:00', timeTaken: '6 hours' },
+  ],
+  301: [
+    { id: 't6', taskName: 'Feature A Dev', projectName: 'Product Alpha', description: 'Implement the core logic for the new user profile feature.', dueDate: '2025-11-21', dueTime: '16:00', timeTaken: '16 hours' },
+    { id: 't7', taskName: 'Code Review', projectName: 'Engineering Quality', description: 'Review pull requests from the junior development team members.', dueDate: '2025-11-22', dueTime: '13:00', timeTaken: '3 hours' },
+  ],
 };
 
 
-  const actualDates = generateDates(selectedDate);
+// --- Component Helpers (RETAINED) ---
 
-
-  const todayIndex = actualDates.findIndex(
-  (d) => d.full.toDateString() === new Date().toDateString()
+// Component for the Department Card
+const Card = ({ dept, onClick, isActive }) => (
+  <CardItem onClick={onClick} $isActive={isActive}>
+    <strong>{dept.name}</strong>
+  </CardItem>
 );
-useEffect(() => {
-  if (todayIndex !== -1) setSelectedDateIndex(todayIndex);
-}, [actualDates]);
 
-  const getInitials = (name) => {
-    const parts = String(name).trim().split(" ");
-    if (parts.length > 1) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return parts[0] ? parts[0][0].toUpperCase() : "";
-  };
-
-  const handlePickDate = (picked) => {
-    setSelectedDate(picked);
-    setSelectedDateIndex(
-      generateDates(picked).findIndex(
-        (d) => d.full.toDateString() === picked.toDateString()
-      )
-    );
-    setShowCalendar(false);
-  };
-
- const handleClickDateTile = (index) => {
-  const chosen = actualDates[index].full;
-  setSelectedDate(chosen);
-  setSelectedDateIndex(index);
-};
-
+// Component for the Left Panel (Employees)
+const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) => {
+  const employees = employeesData[departmentId] || [];
 
   return (
-    <>
-      <Navbar />
-
-      <S.SchedulerContainer>
-        <EmployeeTitle
-          iconSrc={TaskIcon}
-          title="Daily Task"
-          subtitle="Check daily task details for each employee"
-          showAddButton={false}
-          showBackArrow={false}
-          showDropdown={false}
-          showTabs={false}
-          showSearch={false}
-        />
-
-
-        <S.Header>
-         <S.Input
-            type="text"
-            placeholder="Search employee name"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <S.Select
-            value={selectedDepartment}
-            onChange={(e) => setSelectedDepartment(e.target.value)}
-          >
-            <option value="">All Department</option>
-            {departments.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.name}
-              </option>
-            ))}
-          </S.Select>
-        </S.Header>
-        <S.DateHeaderRow>
-          <S.Arrow
-           
-          >
-            &lt;
-          </S.Arrow>
-
-          <S.DateContent>
-            <div className="calendar-wrapper" ref={calendarRef}>
-              <div
-                className="calendar-icon"
-                onClick={() => setShowCalendar((s) => !s)}
-              >
-                <CiCalendarDate size={26} />
-              </div>
-
-              {showCalendar && (
-                <div className="calendar-popup">
-                <DatePicker
-  selected={selectedDate}
-  onChange={handlePickDate}
-  inline
-  maxDate={new Date()} 
-/>
-
-                </div>
-              )}
-            </div>
-
-            <div className="left-date">{selectedDate.getDate()}</div>
-
-            <div className="right-block">
-              <div className="month">
-                {selectedDate.toLocaleString("default", { month: "long" })}
-              </div>
-              <div className="day">
-                {selectedDate.toLocaleString("default", { weekday: "long" })}
-              </div>
-            </div>
-          </S.DateContent>
-
-          <S.Arrow
->
-  &gt;
-</S.Arrow>
-
-        </S.DateHeaderRow>
-        <S.DateGrid>
-  {actualDates.map((dateItem, index) => {
-    const isFuture = dateItem.full > new Date(); 
-    return (
-      <S.DateItem
-        key={index}
-        isSelected={index === selectedDateIndex}
-        isDisabled={isFuture} 
-        onClick={() => {
-          if (!isFuture) handleClickDateTile(index);
-        }}
-      >
-        <div className="day">{dateItem.day}</div>
-        <div className="right">
-          <div className="date">{dateItem.date}</div>
-          <div className="month">{dateItem.month}</div>
-        </div>
-      </S.DateItem>
-    );
-  })}
-</S.DateGrid>
-        <S.MainPanel>
-          <S.EmployeeSidebar>
-            <h2>Employees</h2>
-
-            {filteredEmployees.map((employee) => (
-              <S.EmployeeItem
-                key={employee.id}
-                isSelected={employee.id === selectedEmployee?.id}
-                onClick={() => setSelectedEmployee(employee)}
-              >
-                <S.EmployeeDetails>
-                  <S.EmployeeAvatar>
-                    {getInitials(employee.name)}
-                  </S.EmployeeAvatar>
-                  {employee.name}
-                </S.EmployeeDetails>
-                <S.TaskIcon>☰</S.TaskIcon>
-              </S.EmployeeItem>
-            ))}
-          </S.EmployeeSidebar>
-          <S.TaskArea>
-            <h2>Daily Task</h2>
-
-            {!selectedEmployee && (
-              <S.EmptyState>
-                <S.EmptyStateText>
-                  Please select an employee to view daily tasks.
-                </S.EmptyStateText>
-              </S.EmptyState>
-            )}
-
-           {selectedEmployee && tasks.length === 0 && !taskLoading && (
-  <S.EmptyState>
-           <img src="/images/dailytask.png" alt="No tasks" />
-    <S.EmptyStateTitle>No Tasks Found</S.EmptyStateTitle>
-  </S.EmptyState>
-)}
-
-
-            {selectedEmployee && tasks.length > 0 && (
-              <>
-                {tasks.map((task, index) => (
-                  <S.TaskCard key={index}>
-                    <div className="left">
-                      <div className="project">
-                        <strong>Project</strong> {task.project}
-                      </div>
-                      <div className="task">
-                        <strong>Task</strong> {task.task}
-                      </div>
-                      <div className="description">{task.description}</div>
-                    </div>
-
-                    <div className="right">
-                      <div className="hours">
-                        {task.time_taken} <span>Hrs</span>
-                      </div>
-                    </div>
-
-                    <div className="time">{new Date(task.updated_at).toLocaleString()}</div>
-                  </S.TaskCard>
-                ))}
-              </>
-            )}
-          </S.TaskArea>
-        </S.MainPanel>
-      </S.SchedulerContainer>
-    </>
+    <EmployeeContainer>
+      <h4>Employees</h4>
+      {employees.map((emp) => (
+        <EmployeeItem
+          key={emp.id}
+          onClick={() => onSelectEmployee(emp.id)}
+          $isActive={emp.id === selectedEmployeeId}
+        >
+          🧑‍💼 {emp.name}
+        </EmployeeItem>
+      ))}
+      {employees.length === 0 && <p>No employees in this department.</p>}
+    </EmployeeContainer>
   );
 };
 
-export default Scheduler;
+
+const TaskPanel = ({ employeeId }) => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState('09:00'); 
+  
+  const tasks = tasksData[employeeId] || [];
+
+  const employeeName = employeeId 
+    ? Object.values(employeesData).flat().find(emp => emp.id === employeeId)?.name 
+    : 'Selected Employee';
+
+  const formatDate = (date) => date.toISOString().split('T')[0];
+
+  return (
+    <PanelContainer>
+      <TaskHeader>
+        <Heading>{employeeId ? `Tasks for ${employeeName}` : 'Select Employee Tasks'}</Heading>
+
+         <DatePickerWrapper>
+          <label htmlFor="task-date">Due Date:</label>
+          <input 
+            id="task-date"
+            type="date" 
+            value={formatDate(selectedDate)} 
+            onChange={(e) => setSelectedDate(new Date(e.target.value))}
+          />
+        </DatePickerWrapper>
+      </TaskHeader>
+      
+      {!employeeId && (
+        <StyledNoSelectionMessage $type="info">
+          <p>Please select an employee to view their daily tasks.</p>
+        </StyledNoSelectionMessage>
+      )}
+
+      {employeeId && tasks.length === 0 && (
+        <StyledNoSelectionMessage $type="warning">
+          <p>No tasks found for this employee on this date.</p>
+        </StyledNoSelectionMessage>
+      )}
+
+      {employeeId && tasks.length > 0 && (
+       <TaskList>
+          {tasks.map((task, index) => (
+            <li key={task.id}>
+              <TaskContent>
+                <TaskLeft>
+                  <span className="task-title">
+                    {task.taskName} 
+                    <small className="project-name"> ({task.projectName})</small>
+                  </span>
+                  <span className="task-desc">{task.description}</span>
+                </TaskLeft>
+              </TaskContent>
+             <TaskBottom>
+  <div className="right-block">
+    <div className="time-taken">
+      <strong>{task.timeTaken}</strong>
+    </div>
+
+    <div className="due-info">
+      <span className="task-date">{task.dueDate}</span>
+      <span className="task-time">{task.dueTime}</span>
+    </div>
+  </div>
+</TaskBottom>
+
+            </li>
+          ))}
+        </TaskList>
+      )}
+    </PanelContainer>
+  );
+};
+
+
+export default function DepartmentView() {
+  const [selectedDeptId, setSelectedDeptId] = useState(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const [isDeptPanelOpen, setIsDeptPanelOpen] = useState(true);
+
+  const handleDepartmentClick = (id) => {
+    setSelectedDeptId(id === selectedDeptId ? null : id);
+    setSelectedEmployeeId(null);
+  };
+
+  const handleToggle = () => {
+    setIsDeptPanelOpen(!isDeptPanelOpen);
+  };
+
+  const isEmployeePanelVisible = selectedDeptId !== null;
+
+  return (
+    <ViewContainer>
+  <DepartmentPanel $isOpen={isDeptPanelOpen}>
+  
+  <Title>
+    <img src={TaskIcon} alt="Task Icon" width={28} height={28} />
+    Daily Task
+  </Title>
+  <SearchInput
+    type="text"
+    placeholder="Search Department..."
+  />
+
+  {departments.map((dept) => (
+    <Card
+      key={dept.id}
+      dept={dept}
+      onClick={() => handleDepartmentClick(dept.id)}
+      isActive={dept.id === selectedDeptId}
+    />
+  ))}
+
+</DepartmentPanel>
+      <ToggleArrow onClick={handleToggle} $isOpen={isDeptPanelOpen}>
+        {isDeptPanelOpen ? '«' : '»'}
+      </ToggleArrow>
+      <MainContent>
+        <EmployeePanelWrapper $visible={isEmployeePanelVisible}>
+          <EmployeeList
+            departmentId={selectedDeptId}
+            onSelectEmployee={setSelectedEmployeeId}
+            selectedEmployeeId={selectedEmployeeId}
+          />
+        </EmployeePanelWrapper>
+
+        <TaskPanel employeeId={selectedEmployeeId} />
+      </MainContent>
+    </ViewContainer>
+  );
+}
