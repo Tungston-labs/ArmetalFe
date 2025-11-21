@@ -18,7 +18,10 @@ class EmployeeMiniSerializer(serializers.ModelSerializer):
         fields = ["employee_id", "name", "profile_pic"]
 
     def get_profile_pic(self, obj):
-        request = self.context.get('request')
-        if obj.profile_pic and request:
-            return request.build_absolute_uri(obj.profile_pic.url)
+        request = self.context.get('request')  # important
+        if obj.profile_pic:                     # check if file exists
+            if request:
+                return request.build_absolute_uri(obj.profile_pic.url)
+            else:
+                return obj.profile_pic.url     # fallback to relative URL
         return None

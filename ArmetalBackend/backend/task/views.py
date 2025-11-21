@@ -94,9 +94,9 @@ class EmployeeByDepartmentView(APIView):
 
         employees = Employee_db.objects.filter(department=department)
 
-        serializer = EmployeeMiniSerializer(employees, many=True)
+        # Pass request in context so profile_pic URLs are correct
+        serializer = EmployeeMiniSerializer(employees, many=True, context={'request': request})
         return Response(serializer.data)
-
 
 # HR:list daily task of particular employee with id
 from datetime import datetime
