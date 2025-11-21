@@ -11,6 +11,14 @@ class DepartmentMiniSerializer(serializers.ModelSerializer):
         model = Department
         fields = ["id", "name", "employee_count"]
 
+class DepartmentAttendanceSerializer(serializers.ModelSerializer):
+    attendance_employee_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Department
+        fields = ["id", "name", "attendance_employee_count"]
+
+
 
 class DepartmentSerializer(serializers.ModelSerializer):
     department_head = EmployeeSerializer(read_only=True)

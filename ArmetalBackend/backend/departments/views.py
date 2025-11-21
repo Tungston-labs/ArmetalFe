@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions,filters
 from .models import Department
-from .serializers import DepartmentSerializer,DepartmentMiniSerializer
+from .serializers import DepartmentSerializer,DepartmentMiniSerializer,DepartmentAttendanceSerializer
 from user.permissions import IsHRAdmin  
 from django.utils.timezone import now
 from django.utils import timezone
@@ -99,7 +99,22 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(company=self.request.user.company)
 
+class DepartmentAttendanceListView(generics.ListAPIView):
+    serializer_class = DepartmentAttendanceSerializer
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
 
+    def get_queryset(self):
+        today = timezone.localdate()
+
+        return (
+            Attendance.objects
+            .filter(employee__department=OuterRef("pk"), date=today)
+            .values("employee__department")
+            .annotate(c=Count("employee", distinct=True))
+            .values("c")[:1]
+        )
 
 
 # -------------------- Retrieve + Update + Delete View by admin
