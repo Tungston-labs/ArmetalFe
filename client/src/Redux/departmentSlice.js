@@ -6,12 +6,31 @@ import {
   updateDepartment,
   deleteDepartment,
   fetchEmployeesByDepartment,
+  fetchDepartmentMin,   // ⬅️ NEW SERVICE IMPORT
 } from "../services/departmentServices";
 
 
+// -------------------------------------------------------------
+// 1️⃣  Minimal Departments (id + name)
+// -------------------------------------------------------------
+export const getDepartmentsMin = createAsyncThunk(
+  "departments/getMin",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await fetchDepartmentMin();
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+
+// -------------------------------------------------------------
+// 2️⃣  Paginated Departments
+// -------------------------------------------------------------
 export const getDepartments = createAsyncThunk(
   "departments/getAll",
-  async ({ page = 1, search = '' }, { rejectWithValue }) => {
+  async ({ page = 1, search = "" }, { rejectWithValue }) => {
     try {
       return await fetchDepartments({ page, search });
     } catch (error) {
@@ -21,8 +40,9 @@ export const getDepartments = createAsyncThunk(
 );
 
 
-
-// Get department by ID
+// -------------------------------------------------------------
+// 3️⃣  Department Detail
+// -------------------------------------------------------------
 export const getDepartmentById = createAsyncThunk(
   "departments/getById",
   async (id, { rejectWithValue }) => {
@@ -34,7 +54,10 @@ export const getDepartmentById = createAsyncThunk(
   }
 );
 
-// Create department
+
+// -------------------------------------------------------------
+// 4️⃣  Create Department
+// -------------------------------------------------------------
 export const createNewDepartment = createAsyncThunk(
   "departments/create",
   async (data, { rejectWithValue, dispatch }) => {
@@ -45,36 +68,20 @@ export const createNewDepartment = createAsyncThunk(
         department_head: data.department_head,
       };
       const result = await createDepartment(payload);
-      // ✅ refresh after success
-      dispatch(getDepartments({ page: 1, search: '' }));
+
+      dispatch(getDepartments({ page: 1, search: "" }));
       return result;
     } catch (error) {
-      // ❌ refresh after failure too
-      dispatch(getDepartments({ page: 1, search: '' }));
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
-// Delete department
-export const deleteDepartmentById = createAsyncThunk(
-  "departments/delete",
-  async (id, { rejectWithValue, dispatch }) => {
-    try {
-      await deleteDepartment(id);
-      // ✅ refresh after success
-      dispatch(getDepartments({ page: 1, search: '' }));
-      return id;
-    } catch (error) {
-      // ❌ refresh after failure too
-      dispatch(getDepartments({ page: 1, search: '' }));
+      dispatch(getDepartments({ page: 1, search: "" }));
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
 
-// Update department
+// -------------------------------------------------------------
+// 5️⃣  Update Department
+// -------------------------------------------------------------
 export const updateDepartmentById = createAsyncThunk(
   "departments/update",
   async ({ id, data }, { rejectWithValue }) => {
@@ -82,7 +89,7 @@ export const updateDepartmentById = createAsyncThunk(
       const payload = {
         name: data.name,
         department_code: data.department_code,
-        department_head_id: data.department_head_id || null,  // ✅ correct field
+        department_head_id: data.department_head_id || null,
       };
       return await updateDepartment(id, payload);
     } catch (error) {
@@ -92,8 +99,27 @@ export const updateDepartmentById = createAsyncThunk(
 );
 
 
+// -------------------------------------------------------------
+// 6️⃣  Delete Department
+// -------------------------------------------------------------
+export const deleteDepartmentById = createAsyncThunk(
+  "departments/delete",
+  async (id, { rejectWithValue, dispatch }) => {
+    try {
+      await deleteDepartment(id);
+      dispatch(getDepartments({ page: 1, search: "" }));
+      return id;
+    } catch (error) {
+      dispatch(getDepartments({ page: 1, search: "" }));
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
-// Get employees by department ID
+
+// -------------------------------------------------------------
+// 7️⃣  Get Employees By Department
+// -------------------------------------------------------------
 export const getEmployeesByDepartment = createAsyncThunk(
   "departments/getEmployeesByDepartment",
   async (departmentId, { rejectWithValue }) => {
@@ -105,15 +131,20 @@ export const getEmployeesByDepartment = createAsyncThunk(
   }
 );
 
+
+// -------------------------------------------------------------
+// Slice
+// -------------------------------------------------------------
 const departmentSlice = createSlice({
   name: "departments",
   initialState: {
     list: [],
+    minList: [],       // ⬅️ NEW — minimal list
     current: null,
     loading: false,
     departmentEmployees: [],
     error: null,
-    pagination: { // ✅ ensure it always exists
+    pagination: {
       total_pages: 0,
       current_page: 1,
       next: null,
@@ -121,28 +152,47 @@ const departmentSlice = createSlice({
       total_items: 0,
     },
   },
+
   reducers: {
     clearCurrentDepartment(state) {
       state.current = null;
     },
   },
+
   extraReducers: (builder) => {
     builder
-      // Get All
+
+      // ---------------------------------------------------------
+      // Minimal Department List
+      // ---------------------------------------------------------
+      .addCase(getDepartmentsMin.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getDepartmentsMin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.minList = action.payload || [];
+        state.error = null;
+      })
+      .addCase(getDepartmentsMin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // ---------------------------------------------------------
+      // Full Department List
+      // ---------------------------------------------------------
       .addCase(getDepartments.pending, (state) => {
         state.loading = true;
       })
       .addCase(getDepartments.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload || [];
-        state.error = null;
-state.list = Array.isArray(action.payload)
-  ? [...action.payload].sort((a, b) => (a.name || a.department_name || "").localeCompare(b.name || b.department_name || ""))
-  : [...action.payload.results].sort((a, b) => (a.name || a.department_name || "").localeCompare(b.name || b.department_name || ""));
 
+        // Keep sorted list clean
+        const departmentData = action.payload.results || [];
+        state.list = departmentData.sort((a, b) =>
+          (a.name || "").localeCompare(b.name || "")
+        );
 
-
-        // ✅ assign pagination from API
         state.pagination = {
           total_pages: action.payload.total_pages,
           current_page: action.payload.current_page,
@@ -156,44 +206,45 @@ state.list = Array.isArray(action.payload)
         state.error = action.payload;
       })
 
-      // Get By ID
+      // ---------------------------------------------------------
+      // Department Detail
+      // ---------------------------------------------------------
       .addCase(getDepartmentById.pending, (state) => {
         state.loading = true;
       })
       .addCase(getDepartmentById.fulfilled, (state, action) => {
         state.loading = false;
         state.current = action.payload;
-        state.error = null;
       })
       .addCase(getDepartmentById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
+      // ---------------------------------------------------------
       // Create
+      // ---------------------------------------------------------
       .addCase(createNewDepartment.pending, (state) => {
         state.loading = true;
       })
-      .addCase(createNewDepartment.fulfilled, (state, action) => {
+      .addCase(createNewDepartment.fulfilled, (state) => {
         state.loading = false;
-        state.list.push(action.payload);
-        state.error = null;
       })
       .addCase(createNewDepartment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      
 
+      // ---------------------------------------------------------
       // Update
+      // ---------------------------------------------------------
       .addCase(updateDepartmentById.pending, (state) => {
         state.loading = true;
       })
       .addCase(updateDepartmentById.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = null;
         const index = state.list.findIndex(
-          (dept) => dept.id === action.payload.id
+          (d) => d.id === action.payload.id
         );
         if (index !== -1) state.list[index] = action.payload;
       })
@@ -202,27 +253,30 @@ state.list = Array.isArray(action.payload)
         state.error = action.payload;
       })
 
+      // ---------------------------------------------------------
       // Delete
+      // ---------------------------------------------------------
       .addCase(deleteDepartmentById.pending, (state) => {
         state.loading = true;
       })
       .addCase(deleteDepartmentById.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = state.list.filter((dept) => dept.id !== action.payload);
-        state.error = null;
+        state.list = state.list.filter((d) => d.id !== action.payload);
       })
       .addCase(deleteDepartmentById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Get Employees by Department
+      // ---------------------------------------------------------
+      // Employees By Department
+      // ---------------------------------------------------------
       .addCase(getEmployeesByDepartment.pending, (state) => {
         state.loading = true;
       })
       .addCase(getEmployeesByDepartment.fulfilled, (state, action) => {
         state.loading = false;
-        state.departmentEmployees = action.payload;
+        state.departmentEmployees = action.payload || [];
       })
       .addCase(getEmployeesByDepartment.rejected, (state, action) => {
         state.loading = false;

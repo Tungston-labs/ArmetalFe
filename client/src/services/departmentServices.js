@@ -13,6 +13,14 @@ export const fetchDepartments = async ({ page = 1, search = '' }) => {
   return response.data; // ✅ should contain results + pagination
 };
 
+export const fetchDepartmentMin = async ({ page = 1, search = '' }) => {
+  const queryParams = new URLSearchParams();
+  if (search) queryParams.append('search', search);
+  if (page) queryParams.append('page', page);
+
+  const response = await API.get(`/deptlist/?${queryParams.toString()}`);
+  return response.data; // ✅ should contain results + pagination
+};
 
 
 // POST: Create a department
