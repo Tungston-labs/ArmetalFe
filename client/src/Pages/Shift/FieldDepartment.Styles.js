@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const PageWrapper = styled.div`
   font-family: "Satoshi", sans-serif;
   background-color: #ffffff;
-  padding: 2rem ;
+  padding: 20px ;
   color: #1e1e1e;
   min-height: 100vh;
   @media (max-width: 768px) {
@@ -424,7 +424,7 @@ export const Table = styled.table`
     }
   }
 `;
-export const TableHeader = styled.th`
+export const HeadCellTableHeader = styled.th`
   background-color: #3f64d7;
   color: white;
   padding: 0.8rem;

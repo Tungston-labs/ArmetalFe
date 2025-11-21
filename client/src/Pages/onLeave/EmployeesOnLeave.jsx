@@ -1,20 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  HeaderSection,
-  Tabs,
-  Tab,
-  Title,
-  TopBar,
-  // SearchInput,
-  HRManager,
-  Subtitle,
-  DropdownMenu,
-  DropdownWrapper,
-  TitleSection,
-  Pagination,
-  TextBlock,
-  EmployeeImage
 } from "../leaveDetails/EmployeeList.styles";
 import {
   CardContainer,
@@ -27,9 +13,6 @@ import {
   DeptInfo,
   CardGrid,
   CardRight,
-  SearchInput,
-  SearchIcon,
-  SearchWrapper
 } from './EmployeesOnLeave.Style';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCirclePlusThin } from "react-icons/pi";

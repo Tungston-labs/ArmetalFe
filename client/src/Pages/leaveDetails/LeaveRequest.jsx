@@ -10,7 +10,6 @@ import {
   Container,
   Table,DepartmentSelect,
   TableRow,
-  TableHead,
   TableCell,
   ProfileImage,
   ActionButtons,
@@ -23,7 +22,6 @@ import {
   HRManager,
   HeaderSection,
   TitleSection,
-  Tabs,
   Title,
   Subtitle,
   ActionArea,
@@ -36,7 +34,7 @@ import {
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Navbar from '../../Components/Navbar';
 import Loader  from "../../Components/Loader"
-import { TextBlock } from './EmployeeList.styles';
+import {TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TextBlock, Avatar, AvatarFallback, NameCell } from './EmployeeList.styles';
 import EmployeeTitle from '../../Components/EmployeeTitle';
 
 export default function LeaveRequest() {
@@ -120,30 +118,33 @@ const isLoading = loading || deptLoading;
        showBackArrow={false}
 />
 
-      <Table>
-        <thead>
-          <TableRow>
-            <TableHead>Employee name</TableHead>
-            <TableHead>Leave type</TableHead>
-            <TableHead>Email ID</TableHead>
-            <TableHead>Department</TableHead>
-            <TableHead>Start date </TableHead> 
-              <TableHead>End date</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </thead>
-        <tbody>
+      <StyledTable>
+         <TableHead>
+       
+      <HeadRow >
+ <HeadCell>Sl No</HeadCell>
+            <HeadCell>Employee name</HeadCell>
+            <HeadCell>Leave type</HeadCell>
+            <HeadCell>Email ID</HeadCell>
+            <HeadCell>Department</HeadCell>
+            <HeadCell>Start date </HeadCell> 
+              <HeadCell>End date</HeadCell>
+            <HeadCell></HeadCell>
+            </HeadRow>
+  </TableHead>
+
+    <TableBody>
   {loading ? (
     <TableRow>
       <TableCell colSpan="7"></TableCell>
     </TableRow>
   ) : filteredLeaves.length === 0 ? (
-    <TableRow>
+    <EmptyRow>
       <TableCell colSpan="7">No matching leave requests found.</TableCell>
-    </TableRow>
+    </EmptyRow>
   ) : (
-    filteredLeaves.map((leave) => (
-      <TableRow
+    filteredLeaves.map((leave,index) => (
+        <BodyRow
         key={leave.id}
         onClick={() => navigate(`/leave-details/${leave.id}`)}
         style={{
@@ -153,25 +154,30 @@ const isLoading = loading || deptLoading;
         onMouseEnter={(e) => (e.currentTarget.style.background = "#f9f9ff")}
         onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
       >
-        <TableCell style={{ alignItems: "center", gap: "10px" }}>
+         <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
+        <BodyCell>
+             <NameCell>
           {leave?.employee?.profile_pic ? (
-            <ProfileImage src={leave.employee.profile_pic} alt="profile" />
+            <Avatar src={leave.employee.profile_pic} alt="profile" />
           ) : (
+               <AvatarFallback>
             <PiUserCirclePlusThin size={40} color="#999" />
+            </AvatarFallback>
           )}
           {leave?.employee?.name || "N/A"}
-        </TableCell>
-        <TableCell>{leave.leave_type}</TableCell>
-        <TableCell>{leave.employee.email}</TableCell>
-        <TableCell>{leave.employee.department}</TableCell>
-        <TableCell>
+          </NameCell>
+        </BodyCell>
+        <BodyCell>{leave.leave_type}</BodyCell>
+        <BodyCell>{leave.employee.email}</BodyCell>
+        <BodyCell>{leave.employee.department}</BodyCell>
+        <BodyCell>
           {leave.from_date} 
-            </TableCell>
-            <TableCell> {leave.to_date}</TableCell>
+            </BodyCell>
+            <BodyCell> {leave.to_date}</BodyCell>
          
       
        
-        <TableCell
+        <BodyCell
           onClick={(e) => {
             e.stopPropagation(); 
           }}
@@ -210,13 +216,14 @@ const isLoading = loading || deptLoading;
 
 
           </ActionButtons>
-        </TableCell>
-      </TableRow>
+        </BodyCell>
+     </BodyRow>
     ))
   )}
-</tbody>
 
-      </Table>
+</TableBody>
+
+</StyledTable>
 
             <Pagination>
         <span

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Table,
-  ProfileImg,
   Pagination,
   LoaderOverlay,
 
@@ -20,6 +18,7 @@ import {
 import Loader from "../../Components/Loader";
 import Navbar from "../../Components/Navbar";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+import { Avatar, AvatarFallback, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, NameCell, StyledTable, TableBody, TableHead } from "../leaveDetails/EmployeeList.styles";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -121,18 +120,18 @@ const EmployeeList = () => {
 
         {/* TABLE */}
 
-        <Table>
-          <thead>
-            <tr>
-              <th>Sl No</th>
-              <th>Employee Name</th>
-              <th>Employee ID</th>
-              <th>Email</th>
-              <th>Expiry Date</th>
-            </tr>
-          </thead>
+        <StyledTable>
+   <TableHead>
+       <HeadRow>
+              <HeadCell>Sl No</HeadCell>
+              <HeadCell>Employee Name</HeadCell>
+              <HeadCell>Employee ID</HeadCell>
+              <HeadCell>Email</HeadCell>
+              <HeadCell>Expiry Date</HeadCell>
+           </HeadRow>
+      </TableHead>
 
-          <tbody>
+        <TableBody>
             {loading ? (
               <tr>
                 <td colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
@@ -141,37 +140,37 @@ const EmployeeList = () => {
               </tr>
             ) : employeeList?.length > 0 ? (
               employeeList.map((emp, index) => (
-                <tr key={emp.id}>
-                  <td>{index + 1 + (currentPage - 1) * 20}</td>
+                  <BodyRow key={emp.id}>
+                  <BodyCell>{index + 1 + (currentPage - 1) * 20}</BodyCell>
+        <BodyCell>
+                 <NameCell>
+                           {emp.profile_pic ? (
+                             <Avatar src={emp.profile_pic} alt={emp.name} />
+                           ) : (
+                             <AvatarFallback>
+                               <PiUserCirclePlusThin size={20} color="#999" />
+                             </AvatarFallback>
+                           )}
+                           {emp.name}
+                         </NameCell>
+</BodyCell>
+                  <BodyCell>{emp.employee_id}</BodyCell>
+                  <BodyCell>{emp.email}</BodyCell>
 
-                  <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    {emp.profile_pic ? (
-                      <ProfileImg src={emp.profile_pic} />
-                    ) : (
-                      <PiUserCirclePlusThin size={40} color="#888" />
-                    )}
-                    {emp.name}
-                  </td>
-
-                  <td>{emp.employee_id}</td>
-                  <td>{emp.email}</td>
-
-                  <td>
+                  <BodyCell>
                     {expiryFilter === "contract"
                       ? emp.contract_expiry_date || "----"
                       : emp.visa_expiry_date || "----"}
-                  </td>
-                </tr>
+                  </BodyCell>
+        </BodyRow>
               ))
             ) : (
-              <tr>
-                <td colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
+                <EmptyRow colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
                   No Employees Found
-                </td>
-              </tr>
+                </EmptyRow>
             )}
-          </tbody>
-        </Table>
+</TableBody>
+   </StyledTable>
 
         {/* PAGINATION */}
         {pagination?.total_pages > 1 && (
