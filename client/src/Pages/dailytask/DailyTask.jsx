@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// Import all necessary styled components from the styles file
 import {
   ViewContainer,
   DepartmentPanel,
@@ -13,18 +12,16 @@ import {
   DatePickerWrapper,
   TaskHeader,
   EmployeePanelWrapper,
-  TaskFooter, 
   StyledNoSelectionMessage, 
   TaskLeft, 
-  TaskRight,
-  TaskContent, // <-- NEW: Import TaskContent
-  TaskBottom, // <-- NEW: Import TaskBottom
+  TaskContent, 
+  TaskBottom,
   Title,
   SearchInput,
   Heading
 } from './DailyTask.Styles';
 import TaskIcon from '../../assets/task.svg';
-// --- DUMMY DATA (UPDATED with timeTaken) ---
+
 const departments = [
   { id: 1, name: 'Marketing' },
   { id: 2, name: 'Sales' },
@@ -56,22 +53,20 @@ const tasksData = {
 };
 
 
-// --- Component Helpers (RETAINED) ---
 
-// Component for the Department Card
 const Card = ({ dept, onClick, isActive }) => (
   <CardItem onClick={onClick} $isActive={isActive}>
     <strong>{dept.name}</strong>
   </CardItem>
 );
 
-// Component for the Left Panel (Employees)
+
 const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) => {
   const employees = employeesData[departmentId] || [];
 
   return (
     <EmployeeContainer>
-      <h4>Employees</h4>
+      <Heading>Employees</Heading>
       {employees.map((emp) => (
         <EmployeeItem
           key={emp.id}
@@ -115,6 +110,8 @@ const TaskPanel = ({ employeeId }) => {
         </DatePickerWrapper>
       </TaskHeader>
       
+
+      
       {!employeeId && (
         <StyledNoSelectionMessage $type="info">
           <p>Please select an employee to view their daily tasks.</p>
@@ -131,6 +128,8 @@ const TaskPanel = ({ employeeId }) => {
        <TaskList>
           {tasks.map((task, index) => (
             <li key={task.id}>
+              
+
               <TaskContent>
                 <TaskLeft>
                   <span className="task-title">
@@ -186,6 +185,8 @@ export default function DepartmentView() {
     <img src={TaskIcon} alt="Task Icon" width={28} height={28} />
     Daily Task
   </Title>
+
+
   <SearchInput
     type="text"
     placeholder="Search Department..."

@@ -80,25 +80,22 @@ export const ViewContainer = styled.div`
 
 export const DepartmentPanel = styled.div`
   width: 320px;
-  min-width: 280px;
-  max-width: 340px;
-
+  min-width: 320px;
   background-color: ${colors.panelBg};
   padding: 30px 20px;
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 4px 0 15px ${colors.shadowMedium};
-  border-right: 3px solid ${colors.primary};
+  border-right: 3px solid ${colors.primary}; 
   overflow-y: auto;
   z-index: 5;
   ${CustomScrollbar}
 
-  img {
+ img {
     width: 28px;
     height: 28px;
     object-fit: contain;
   }
-
-  /* Slide close */
+  /* Slide effect */
   ${(props) =>
     !props.$isOpen &&
     css`
@@ -108,29 +105,7 @@ export const DepartmentPanel = styled.div`
       padding: 0;
       opacity: 0;
     `}
-
-  @media (max-width: 1024px) {
-    width: 260px;
-    min-width: 240px;
-    padding: 25px 18px;
-  }
-
-  @media (max-width: 768px) {
-    width: 200px;
-    min-width: 200px;
-    padding: 22px 16px;
-  }
-
-
-
-  @media (min-width: 2000px) {
-    width: 380px;
-    min-width: 360px;
-    max-width: 400px;
-    padding: 35px 25px;
-  }
 `;
-
 
 export const Title = styled.button`
   display: flex;               /* Enables gap */
@@ -147,8 +122,9 @@ export const Title = styled.button`
 
   background: white;
   border: none;
-  cursor: default;             /* Prevents button click look */
+  cursor: default;            
 `;
+
 export const SearchInput = styled.input`
   width: 100%;
   padding: 10px 14px;
@@ -166,25 +142,47 @@ export const SearchInput = styled.input`
     border-color: ${colors.primary};
     box-shadow: 0 0 0 3px rgba(51, 82, 186, 0.15);
   }
+
+  @media (min-width: 2000px) {
+    padding: 14px 18px;
+    font-size: 1.15rem;
+    margin: 20px 0 25px 0;
+  }
+
+
+  @media (max-width: 1400px) {
+    font-size: 1rem;
+    padding: 11px 16px;
+  }
+
+
+  @media (max-width: 1024px) {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+ 
+  @media (max-width: 767px) {
+    padding: 9px 12px;
+    font-size: 0.85rem;
+    margin: 12px 0 15px 0;
+  }
+
+
+  
 `;
 
-export const ToggleArrow = styled.button`
-  /* Use fixed positioning for stability relative to the viewport */
-  position: fixed; 
-  
-  /* --- BASE / DEFAULT STYLES (Applies to all screens, or screens smaller than 1024px) --- */
-  
-  /* Default Sidebar Width: 200px (Mobile/Tablet Default) */
-  left: ${(props) => (props.$isOpen ? '200px' : '0')};
 
+export const ToggleArrow = styled.button`
+  position: absolute;
+  left: ${(props) => (props.$isOpen ? '320px' : '0')}; 
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-
-  width: 35px; 
+  
+  width: 35px; /* Larger hit area */
   height: 80px;
-
-  background-color: #172554;
+  background-color:#172554 ;
   color: white;
   border: none;
   cursor: pointer;
@@ -193,34 +191,11 @@ export const ToggleArrow = styled.button`
   text-align: center;
   border-radius: 0 10px 10px 0;
   transition: left 0.3s ease-out, background-color 0.2s;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  box-shadow: 2px 0 10px ${colors.shadowMedium};
 
   &:hover {
-    background-color: ${colors.primary};
-  }
-
-  /* --- MEDIA QUERIES (Override default left position) --- */
-
-  /* Tablet/Small Desktop (e.g., 1024px to 1440px)
-     Sidebar Width: 240px 
-  */
-  @media (min-width: 1024px) {
-    left: ${(props) => (props.$isOpen ? '240px' : '0')};
-  }
-  
-  /* Standard Desktop (e.g., 1441px to 1999px)
-     Sidebar Width: 320px 
-  */
-  @media (min-width: 1441px) {
-    left: ${(props) => (props.$isOpen ? '320px' : '0')};
-  }
-
-
-  /* Large Desktop (2000px and up)
-     Sidebar Width: 380px 
-  */
-  @media (min-width: 2000px) {
-    left: ${(props) => (props.$isOpen ? '380px' : '0')};
+    background-color: ${colors.primary}; /* Darker primary on hover */
+    box-shadow: 2px 0 15px ${colors.shadowMedium};
   }
 `;
 
@@ -231,11 +206,8 @@ export const MainContent = styled.div`
   min-width: 0; 
   gap:20px;
 
-    @media (max-width: 768px) {
-    flex-direction: column;
-    padding: 20px;
-    gap: 15px;
-  }
+    @media (min-width: 768px) and (max-width:1300px) {
+flex-direction:column;
 `;
 
 
@@ -272,23 +244,26 @@ export const CardItem = styled.div`
     `}
 
 
-  /* --------------------------------------------------------
-     RESPONSIVE BREAKPOINTS 
-     -------------------------------------------------------- */
-
-  /* Large desktops & 4K */
+  /* 4K / Ultra-wide screens */
   @media (min-width: 2000px) {
-    padding: 28px;
-    margin-bottom: 20px;
+    padding: 12px;
+    margin-bottom: 22px;
 
     > strong {
-      font-size: 1.4em;
+      font-size: 1.45em;
+    }
+  }
+ @media (max-width: 1920px) {
+    padding: 10px;
+
+    > strong {
+      font-size: 1rem;
     }
   }
 
-  /* Laptops / Large tablets */
+  /* Large desktops */
   @media (max-width: 1400px) {
-    padding: 18px;
+    padding: 10px;
 
     > strong {
       font-size: 1.15em;
@@ -297,51 +272,33 @@ export const CardItem = styled.div`
 
   /* Tablets */
   @media (max-width: 1024px) {
-    padding: 16px;
+    padding: 10px;
+    border-radius: 10px;
 
     > strong {
       font-size: 1.1em;
     }
   }
 
-  /* Mobile landscape */
+ 
   @media (max-width: 768px) {
-    padding: 14px;
-    border-radius: 10px;
+    padding: 10px;
 
     > strong {
       font-size: 1em;
     }
   }
 
-  /* Small mobile */
-  @media (max-width: 480px) {
-    padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 8px;
-
-    > strong {
-      font-size: 0.95em;
-    }
-  }
 `;
 
 
 export const EmployeeContainer = styled.div`
-  /* Removed min-width/flex, now controlled by Wrapper */
   background-color: ${colors.panelBg}; 
   border-radius: 12px;
   overflow-y: auto;
   
-  h4 {
-    border-bottom: 1px solid ${colors.borderColor};
-    padding-bottom: 10px;
-    margin-top: 0;
-    color: ${colors.primary};
-  }
 `;
 export const EmployeeListWrapper = styled.div`
-  /* This controls the sliding and width of the Employee List area */
   min-width: 0;
   width: ${(props) => (props.$visible ? '300px' : '0')}; /* Set specific width when visible */
   opacity: ${(props) => (props.$visible ? 1 : 0)};
@@ -350,7 +307,6 @@ export const EmployeeListWrapper = styled.div`
   padding: 0;
   
   > ${EmployeeContainer} {
-    /* Ensure the inner container respects the wrapper's sliding width */
     width: 300px; 
     padding: ${(props) => (props.$visible ? '30px' : '0')};
     height: 100%;
@@ -369,15 +325,13 @@ export const EmployeeListItem = styled.div`
   color: ${colors.text};
   
   &:hover {
-    background-color: ${colors.selectedEmployee}80; /* Lighter hover shade */
+    background-color: ${colors.selectedEmployee}80; 
   }
-
-
   background-color: ${(props) => (props.$isActive ? colors.selectedEmployee : 'transparent')};
   font-weight: ${(props) => (props.$isActive ? '700' : '500')};
   color: ${(props) => (props.$isActive ? colors.text : colors.lightText)};
   border: ${(props) => (props.$isActive ? `2px solid ${colors.secondary}` : 'none')};
-  transform: ${(props) => (props.$isActive ? 'translateX(5px)' : 'none')}; /* Subtle shift */
+  transform: ${(props) => (props.$isActive ? 'translateX(5px)' : 'none')}; 
 `;
 
 export const TaskPanelContainer = styled.div`
@@ -398,13 +352,18 @@ export const DatePickerWrapper = styled.div`
   align-items: center;
   font-weight: 600;
   color: ${colors.lightText};
+  gap: 10px;
+
+  label {
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
 
   input[type="date"] {
     padding: 8px 12px;
-    margin-left: 15px;
     border: 2px solid ${colors.borderColor};
     border-radius: 8px;
-    font-size: 1em;
+    font-size: 0.8rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     font-family: inherit;
@@ -414,7 +373,46 @@ export const DatePickerWrapper = styled.div`
       box-shadow: 0 0 0 3px ${colors.primary}30;
     }
   }
+
+
+  @media (min-width: 1025px) {
+    label {
+      font-size: 0.9rem;
+    }
+    input[type="date"] {
+      font-size: 0.85rem;
+      padding: 9px 14px;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    label {
+      font-size: 0.6rem;
+    }
+    input[type="date"] {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+    }
+  }
+
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+
+    label {
+      font-size: 0.75rem;
+    }
+
+    input[type="date"] {
+      width: 100%;
+      font-size: 0.75rem;
+      padding: 7px 10px;
+    }
+  }
 `;
+
 
 export const TaskList = styled.ul`
   list-style: none;
@@ -486,6 +484,13 @@ export const PanelContainer = styled.div`
     margin-top: 0;
     color: #555;
   }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+    flex: 1.5;
+    min-width: 280px;
+    padding: 18px;
+  }
+
 `;
 export const EmployeeSlidePanel = styled.div`
   position: absolute;
@@ -503,30 +508,45 @@ export const EmployeeSlidePanel = styled.div`
 `;
 export const EmployeePanelWrapper = styled.div`
   min-width: 0;
-  width: ${(props) => (props.$visible ? '300px' : '0')};
+
+  /* PANEL OPEN/CLOSE */
+  width: ${(props) => (props.$visible ? "300px" : "0")};
   opacity: ${(props) => (props.$visible ? 1 : 0)};
-  padding: ${(props) => (props.$visible ? '0 20px 0 0' : '0')};
+  padding: ${(props) => (props.$visible ? "0 20px 0 0" : "0")};
   transition: width 0.4s ease, opacity 0.3s ease, padding 0.4s ease;
   overflow: hidden;
 
+  /* -------------------------
+     EMPLOYEE CONTAINER INSIDE
+     ------------------------- */
   > ${EmployeeContainer} {
     height: 100%;
     width: 300px;
-    box-shadow: 0 6px 20px ${colors.shadowMedium};
     padding: 30px;
+    box-shadow: 0 6px 20px ${colors.shadowMedium};
+
+    @media (min-width: 768px) and (max-width: 1300px) {
+      width: 100%;
+      padding: 15px;
+      box-shadow: 0 8px 24px ${colors.shadowMedium};
+  }
+  
+  }
+ 
+  @media (min-width: 768px) and (max-width: 1300px) {
+    width: ${(props) => (props.$visible ? "100%" : "0")};
+    padding: ${(props) => (props.$visible ? "0 15px 0 0" : "0")};
   }
 
-  /* 👉 FULL WIDTH on devices ≤ 768px */
-  @media (max-width: 768px) {
-    width: ${(props) => (props.$visible ? '100%' : '0')};
-    padding: ${(props) => (props.$visible ? '0 0 15px 0' : '0')};
 
-    > ${EmployeeContainer} {
-      width: 100%;
-      padding: 20px;
-    }
+
+  /* Small mobile 480px */
+  @media (max-width: 480px) {
+    width: ${(props) => (props.$visible ? "100%" : "0")};
+    padding: 0;
   }
 `;
+
 
 export const EmployeeItem = styled.div`
   padding: 10px;
@@ -534,16 +554,34 @@ export const EmployeeItem = styled.div`
   margin-bottom: 5px;
   cursor: pointer;
   transition: background-color 0.1s;
-  
+  font-size: 1rem;
+margin-top:10px;
+  background-color: ${(props) =>
+    props.$isActive ? colors.activeBg : "transparent"};
+  font-weight: ${(props) => (props.$isActive ? "bold" : "normal")};
+  color: ${(props) => (props.$isActive ? colors.primaryDark : colors.text)};
+
   &:hover {
     background-color: ${colors.hoverBg};
   }
+ @media (min-width: 1921px) {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+  }
 
-  /* Active State */
-  background-color: ${(props) => (props.$isActive ? colors.activeBg : 'transparent')};
-  font-weight: ${(props) => (props.$isActive ? 'bold' : 'normal')};
-  color: ${(props) => (props.$isActive ? colors.primaryDark : colors.text)};
+  @media (min-width: 1600px) and (max-width: 1920px) {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+  @media (min-width: 1025px) and (max-width: 1599px) {
+    font-size: 1.05rem;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    font-size: 0.95rem;
+  }
 `;
+
 
 
 export const TaskHeader = styled.div`
@@ -553,15 +591,38 @@ export const TaskHeader = styled.div`
   border-bottom: 1px solid ${colors.borderColor};
   padding-bottom: 15px;
   margin-bottom: 20px;
+`;
 
- `;
 export const Heading = styled.div`
   margin: 0;
-  color:#3352BA;
-  font-size: 1rem;
+  color: ${colors.primaryDark};
   font-weight: 700;
-`
-;
+  font-size: 1rem;
+
+@media (min-width: 2540px) {
+    font-size: 1.4rem;
+  }
+
+   @media (min-width: 1920px) and (max-width: 2539px) {
+    font-size: 1.4rem;
+  }
+ @media (min-width: 1601px) and (max-width: 1919px) {
+    font-size: 1.2rem;
+  }
+
+ @media (min-width: 1025px) and (max-width: 1600px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    font-size: 0.8rem;
+  }
+
+ 
+
+
+`;
+
 
 export const TaskListItemStyled = styled.li`
   padding: 15px;
@@ -646,7 +707,90 @@ export const TaskLeft = styled.div`
     font-size: 0.9em;
     color: ${colors.lightText};
   }
+
+  @media (min-width: 2540px) {
+    .task-title {
+      font-size: 1.5rem;
+    }
+    .task-desc {
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (min-width: 1920px) and (max-width:2539px){
+    .task-title {
+      font-size: 1.1rem;
+    }
+    .task-desc {
+      font-size: 1rem;
+    }
+  }
+
+  @media (min-width: 1600px) and (max-width:1919px) {
+    .task-title {
+      font-size: 1rem;
+    }
+    .task-desc {
+      font-size: 0.9.
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      rem;
+    }
+  }
+
+  @media (min-width: 1025px) and (max-width: 1400px) {
+    .task-title {
+      font-size: 1rem;
+    }
+    .task-desc {
+      font-size: 0.9em;
+    }
+  }
+
+  
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .task-title {
+      font-size: 0.9rem;
+    }
+    .task-desc {
+      font-size: 0.8em;
+    }
+  }
+ 
+
 `;
+
 
 export const TaskRight = styled.div`
   text-align: right;
@@ -661,22 +805,24 @@ export const TaskRight = styled.div`
     color: ${colors.lightText};
   }
 `;
+
 export const TaskBottom = styled.div`
   display: flex;
-  justify-content: flex-end;   /* Send everything to RIGHT side */
+  justify-content: flex-end;
   width: 100%;
   padding-top: 12px;
   border-top: 1px dashed ${colors.borderColor};
 
   .right-block {
     display: flex;
-    flex-direction: column;    
-    align-items: flex-end;     
+    flex-direction: column;
+    align-items: flex-end;
     gap: 16px;
   }
 
   .time-taken {
     font-size: 0.95em;
+
     strong {
       color: ${colors.primaryDark};
       font-weight: 700;
@@ -685,8 +831,7 @@ export const TaskBottom = styled.div`
 
   .due-info {
     display: flex;
-    // flex-direction: column;     
-    align-items: flex-end;      
+    align-items: flex-end;
     gap: 20px;
 
     .task-date {
@@ -697,6 +842,68 @@ export const TaskBottom = styled.div`
     .task-time {
       font-weight: 600;
       color: ${colors.primary};
+    }
+  }
+
+
+    @media (min-width: 2560px) {
+    padding-top: 18px;
+
+    .time-taken {
+      font-size: 1.5rem;
+    }
+
+    .due-info {
+      gap: 28px;
+
+      .task-date,
+      .task-time {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  @media (min-width: 1600px) {
+    padding-top: 18px;
+
+    .time-taken {
+      font-size: 1.15em;
+    }
+
+    .due-info {
+      gap: 28px;
+
+      .task-date,
+      .task-time {
+        font-size: 1.15em;
+      }
+    }
+  }
+
+
+  @media (min-width: 1025px) and (max-width: 1400px) {
+    .time-taken {
+      font-size: 1rem;
+    }
+
+    .due-info .task-date,
+    .due-info .task-time {
+      font-size: 1rem;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .time-taken {
+      font-size: 0.8em;
+    }
+
+    .due-info {
+      gap: 16px;
+
+      .task-date,
+      .task-time {
+        font-size: 0.8rem;
+      }
     }
   }
 `;
