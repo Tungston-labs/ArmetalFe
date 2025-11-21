@@ -108,13 +108,19 @@ class DepartmentAttendanceListView(generics.ListAPIView):
     def get_queryset(self):
         today = timezone.localdate()
 
-        return (
+        attendance_subquery =  (
             Attendance.objects
             .filter(employee__department=OuterRef("pk"), date=today)
             .values("employee__department")
             .annotate(c=Count("employee", distinct=True))
             .values("c")[:1]
+
         )
+        return Department.objects.annotate(
+            attendance_employee_count=Subquery(attendance_subquery, output_field=IntegerField()))
+
+
+
 
 
 # -------------------- Retrieve + Update + Delete View by admin

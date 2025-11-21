@@ -19,8 +19,7 @@ import {
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { getDepartments } from "../../Redux/departmentSlice";
-import { getAttendanceList } from "../../Redux/attendanceSlice";
+import { getAttendanceList,getDepartments } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader";
 import { ClipLoader } from "react-spinners";
@@ -134,6 +133,8 @@ const AttendanceList = () => {
   // ----------------- FILTER + SORT -----------------------
   const processedDepartments = (departmentList || []).map((dept) => {
     const employees = departmentAttendance[dept.id] || [];
+ 
+    
 
     const s = searchText.toLowerCase();
     const matches = employees.filter((e) =>
