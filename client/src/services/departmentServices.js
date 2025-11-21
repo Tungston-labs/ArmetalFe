@@ -14,6 +14,7 @@ export const fetchDepartments = async ({ page = 1, search = '' }) => {
 };
 
 
+
 // POST: Create a department
 export const createDepartment = async (data) => {
   const response = await API.post("/departments/", data);

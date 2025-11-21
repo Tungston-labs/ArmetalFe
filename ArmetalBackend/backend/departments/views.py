@@ -24,13 +24,6 @@ class DepartmentMiniListView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ["name"]
 
-    def get_queryset(self):
-        return (
-            Department.objects
-            .filter(company=self.request.user.company)
-            .annotate(employee_count=Count("employees", distinct=True))
-            .only("id", "name")  # Fast! Limits selected fields
-        )
 
 
 
