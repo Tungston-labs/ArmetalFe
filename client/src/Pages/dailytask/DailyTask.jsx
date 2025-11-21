@@ -29,7 +29,7 @@ const departments = [
 ];
 
 const employeesData = {
-  1: [{ id: 101, name: 'Alice Smith' }, { id: 102, name: 'Bob Johnson' }],
+  1: [{ id: 101, name: 'Alice Smith' }, { id: 102, name: 'Bob Johnson' },{ id: 202, name: 'Dana White' },{ id: 202, name: ' White' }],
   2: [{ id: 201, name: 'Charlie Brown' }, { id: 202, name: 'Dana White' }],
   3: [{ id: 301, name: 'Ethan Hunt' }, { id: 302, name: 'Fiona Green' }],
 };
@@ -73,7 +73,7 @@ const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) =>
           onClick={() => onSelectEmployee(emp.id)}
           $isActive={emp.id === selectedEmployeeId}
         >
-          🧑‍💼 {emp.name}
+          {emp.name}
         </EmployeeItem>
       ))}
       {employees.length === 0 && <p>No employees in this department.</p>}

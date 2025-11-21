@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Headers,
-  EditButton,
   Tabs,
   Tab,
   Section,
@@ -12,15 +10,9 @@ import {
   Select,
   Hr,
   Rowes,
-  Title,
-  Subtitle,
-  Rightside,
-  HeaderWrapper,
-  TitleSection,
   Column,
   FullPageLoaderWrapper,
   FieldGroup,
-  EmployeeImage,
   ResponsiveH3,
 } from "./ViewBasic.Style";
 import { LuArrowLeft } from "react-icons/lu";
@@ -33,6 +25,7 @@ import Loader from "../../Components/Loader";
 import { Label } from "./BasicLevel.Styles";
 import Swal from "sweetalert2";
 import Header from "../../Components/Header";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 
 const ViewBasic = () => {
   const dispatch = useDispatch();
@@ -144,7 +137,6 @@ const handleSubmit = async () => {
     }
   }
 
-  // ✅ Check if employee is head and department is changing
   const oldDept = employeeDetail.department;
   const newDept = payload.department;
   if (employeeDetail.is_head && oldDept !== newDept) {
@@ -160,7 +152,7 @@ const handleSubmit = async () => {
     });
 
     if (!confirmResult.isConfirmed) {
-      return; // stop submission
+      return; 
     }
   }
 
@@ -200,7 +192,6 @@ const handleSubmit = async () => {
   const from = location.state?.from;
 
 const handleImageChange = (file) => {
-  // store the File object in formData for submission
   setFormData((prev) => ({
     ...prev,
     profile_pic: file,
@@ -236,32 +227,18 @@ const handleBack = () => {
   }
   return (
     <Container>
-      <Headers>
-        <HeaderWrapper>
-          <TitleSection>
-            <LuArrowLeft
-              style={{
-                width: 30,
-                height: 30,
-                cursor: "pointer",
-                color: "#304EB0",
-              }}
-              onClick={handleBack}
-            />
-            <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
-            <div>
-              <Title>Employee</Title>
-              <Subtitle>Manage your Employee.</Subtitle>
-            </div>
-          </TitleSection>
-        </HeaderWrapper>
+      <EmployeeTitle
+  key={departmentList?.length || 0}
+  iconSrc={EmployeeIcon}
+  showAddButton={true}
+  showTabs={false}
+  showSearch={false}
+  showDropdown={false}
+  onAddClick={handleSubmit}   
+  buttonText="save"
 
-        <Rightside>
-          <EditButton onClick={handleSubmit}>Save</EditButton>
-        </Rightside>
-      </Headers>
-
-      <Hr />
+/>
+    <Hr />
       <ResponsiveH3>Employee Details</ResponsiveH3>
 
 

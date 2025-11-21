@@ -4,7 +4,7 @@ const colors = {
 primaryDark: '#172554',   
   primary: '#3352BA',     
   secondary: '#3352BA',     
-  background: '#EAEFF4',   
+  background: '#d1d6dbff',   
   panelBg: '#FFFFFF',       
   text: '#212121',
   lightText: '#757575',
@@ -550,16 +550,17 @@ export const EmployeePanelWrapper = styled.div`
 
 export const EmployeeItem = styled.div`
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 10px;
+  border:1px solid #304EB0;
   margin-bottom: 5px;
   cursor: pointer;
   transition: background-color 0.1s;
   font-size: 1rem;
-margin-top:10px;
+  margin-top:10px;
   background-color: ${(props) =>
     props.$isActive ? colors.activeBg : "transparent"};
   font-weight: ${(props) => (props.$isActive ? "bold" : "normal")};
-  color: ${(props) => (props.$isActive ? colors.primaryDark : colors.text)};
+  color: ${(props) => (props.$isActive ? "#3352BA" : colors.text)};
 
   &:hover {
     background-color: ${colors.hoverBg};
