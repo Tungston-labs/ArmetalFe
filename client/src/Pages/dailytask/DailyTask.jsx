@@ -20,7 +20,8 @@ import {
   TaskContent, // <-- NEW: Import TaskContent
   TaskBottom, // <-- NEW: Import TaskBottom
   Title,
-  SearchInput
+  SearchInput,
+  Heading
 } from './DailyTask.Styles';
 import TaskIcon from '../../assets/task.svg';
 // --- DUMMY DATA (UPDATED with timeTaken) ---
@@ -101,7 +102,7 @@ const TaskPanel = ({ employeeId }) => {
   return (
     <PanelContainer>
       <TaskHeader>
-        <h4>{employeeId ? `Tasks for ${employeeName}` : 'Select Employee Tasks'}</h4>
+        <Heading>{employeeId ? `Tasks for ${employeeName}` : 'Select Employee Tasks'}</Heading>
 
          <DatePickerWrapper>
           <label htmlFor="task-date">Due Date:</label>
@@ -113,8 +114,6 @@ const TaskPanel = ({ employeeId }) => {
           />
         </DatePickerWrapper>
       </TaskHeader>
-      
-      {/* -------------------- Main Task List Content -------------------- */}
       
       {!employeeId && (
         <StyledNoSelectionMessage $type="info">
@@ -132,8 +131,6 @@ const TaskPanel = ({ employeeId }) => {
        <TaskList>
           {tasks.map((task, index) => (
             <li key={task.id}>
-              
-              {/* Top Section: Task Name, Project, Description */}
               <TaskContent>
                 <TaskLeft>
                   <span className="task-title">
@@ -189,8 +186,6 @@ export default function DepartmentView() {
     <img src={TaskIcon} alt="Task Icon" width={28} height={28} />
     Daily Task
   </Title>
-
-  {/* 🔍 Search Input */}
   <SearchInput
     type="text"
     placeholder="Search Department..."
@@ -206,14 +201,9 @@ export default function DepartmentView() {
   ))}
 
 </DepartmentPanel>
-
-
-      {/* 2. Toggle Arrow */}
       <ToggleArrow onClick={handleToggle} $isOpen={isDeptPanelOpen}>
         {isDeptPanelOpen ? '«' : '»'}
       </ToggleArrow>
-
-      {/* 3. Main Content (Employee List & Task Panel) */}
       <MainContent>
         <EmployeePanelWrapper $visible={isEmployeePanelVisible}>
           <EmployeeList

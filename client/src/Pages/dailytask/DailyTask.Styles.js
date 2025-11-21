@@ -80,22 +80,25 @@ export const ViewContainer = styled.div`
 
 export const DepartmentPanel = styled.div`
   width: 320px;
-  min-width: 320px;
+  min-width: 280px;
+  max-width: 340px;
+
   background-color: ${colors.panelBg};
   padding: 30px 20px;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease-in-out;
   box-shadow: 4px 0 15px ${colors.shadowMedium};
-  border-right: 3px solid ${colors.primary}; 
+  border-right: 3px solid ${colors.primary};
   overflow-y: auto;
   z-index: 5;
   ${CustomScrollbar}
 
- img {
+  img {
     width: 28px;
     height: 28px;
     object-fit: contain;
   }
-  /* Slide effect */
+
+  /* Slide close */
   ${(props) =>
     !props.$isOpen &&
     css`
@@ -105,7 +108,29 @@ export const DepartmentPanel = styled.div`
       padding: 0;
       opacity: 0;
     `}
+
+  @media (max-width: 1024px) {
+    width: 260px;
+    min-width: 240px;
+    padding: 25px 18px;
+  }
+
+  @media (max-width: 768px) {
+    width: 200px;
+    min-width: 200px;
+    padding: 22px 16px;
+  }
+
+
+
+  @media (min-width: 2000px) {
+    width: 380px;
+    min-width: 360px;
+    max-width: 400px;
+    padding: 35px 25px;
+  }
 `;
+
 
 export const Title = styled.button`
   display: flex;               /* Enables gap */
@@ -144,15 +169,22 @@ export const SearchInput = styled.input`
 `;
 
 export const ToggleArrow = styled.button`
-  position: absolute;
-  left: ${(props) => (props.$isOpen ? '320px' : '0')}; 
+  /* Use fixed positioning for stability relative to the viewport */
+  position: fixed; 
+  
+  /* --- BASE / DEFAULT STYLES (Applies to all screens, or screens smaller than 1024px) --- */
+  
+  /* Default Sidebar Width: 200px (Mobile/Tablet Default) */
+  left: ${(props) => (props.$isOpen ? '200px' : '0')};
+
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  
-  width: 35px; /* Larger hit area */
+
+  width: 35px; 
   height: 80px;
-  background-color:#172554 ;
+
+  background-color: #172554;
   color: white;
   border: none;
   cursor: pointer;
@@ -161,11 +193,34 @@ export const ToggleArrow = styled.button`
   text-align: center;
   border-radius: 0 10px 10px 0;
   transition: left 0.3s ease-out, background-color 0.2s;
-  box-shadow: 2px 0 10px ${colors.shadowMedium};
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
 
   &:hover {
-    background-color: ${colors.primary}; /* Darker primary on hover */
-    box-shadow: 2px 0 15px ${colors.shadowMedium};
+    background-color: ${colors.primary};
+  }
+
+  /* --- MEDIA QUERIES (Override default left position) --- */
+
+  /* Tablet/Small Desktop (e.g., 1024px to 1440px)
+     Sidebar Width: 240px 
+  */
+  @media (min-width: 1024px) {
+    left: ${(props) => (props.$isOpen ? '240px' : '0')};
+  }
+  
+  /* Standard Desktop (e.g., 1441px to 1999px)
+     Sidebar Width: 320px 
+  */
+  @media (min-width: 1441px) {
+    left: ${(props) => (props.$isOpen ? '320px' : '0')};
+  }
+
+
+  /* Large Desktop (2000px and up)
+     Sidebar Width: 380px 
+  */
+  @media (min-width: 2000px) {
+    left: ${(props) => (props.$isOpen ? '380px' : '0')};
   }
 `;
 
@@ -175,21 +230,26 @@ export const MainContent = styled.div`
   padding: 30px;
   min-width: 0; 
   gap:20px;
+
+    @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 20px;
+    gap: 15px;
+  }
 `;
 
 
 export const CardItem = styled.div`
-  padding: 20px; 
+  padding: 20px;
   margin-bottom: 15px;
-  border-radius: 12px; /* Smoother corners */
+  border-radius: 12px;
   background-color: ${colors.panelBg};
-  box-shadow: 0 4px 10px ${colors.shadowLight}; 
+  box-shadow: 0 4px 10px ${colors.shadowLight};
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid transparent; /* Subtle border for definition */
+  border: 1px solid transparent;
 
-  /* Department Name Text */
-  > strong { 
+  > strong {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -202,16 +262,70 @@ export const CardItem = styled.div`
     box-shadow: 0 6px 15px ${colors.shadowLight};
   }
 
-  /* Active/Open State */
   ${(props) =>
     props.$isActive &&
     css`
       border: 1px solid ${colors.primary};
       background-color: ${colors.activeBg};
       box-shadow: 0 8px 20px ${colors.shadowMedium};
-      padding-bottom: 10px; 
+      padding-bottom: 10px;
     `}
+
+
+  /* --------------------------------------------------------
+     RESPONSIVE BREAKPOINTS 
+     -------------------------------------------------------- */
+
+  /* Large desktops & 4K */
+  @media (min-width: 2000px) {
+    padding: 28px;
+    margin-bottom: 20px;
+
+    > strong {
+      font-size: 1.4em;
+    }
+  }
+
+  /* Laptops / Large tablets */
+  @media (max-width: 1400px) {
+    padding: 18px;
+
+    > strong {
+      font-size: 1.15em;
+    }
+  }
+
+  /* Tablets */
+  @media (max-width: 1024px) {
+    padding: 16px;
+
+    > strong {
+      font-size: 1.1em;
+    }
+  }
+
+  /* Mobile landscape */
+  @media (max-width: 768px) {
+    padding: 14px;
+    border-radius: 10px;
+
+    > strong {
+      font-size: 1em;
+    }
+  }
+
+  /* Small mobile */
+  @media (max-width: 480px) {
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+
+    > strong {
+      font-size: 0.95em;
+    }
+  }
 `;
+
 
 export const EmployeeContainer = styled.div`
   /* Removed min-width/flex, now controlled by Wrapper */
@@ -258,7 +372,7 @@ export const EmployeeListItem = styled.div`
     background-color: ${colors.selectedEmployee}80; /* Lighter hover shade */
   }
 
-  /* Active/Selected Employee State */
+
   background-color: ${(props) => (props.$isActive ? colors.selectedEmployee : 'transparent')};
   font-weight: ${(props) => (props.$isActive ? '700' : '500')};
   color: ${(props) => (props.$isActive ? colors.text : colors.lightText)};
@@ -388,20 +502,29 @@ export const EmployeeSlidePanel = styled.div`
   overflow-y: auto;
 `;
 export const EmployeePanelWrapper = styled.div`
-  /* Controls the sliding width/visibility of the employee list panel */
   min-width: 0;
-  width: ${(props) => (props.$visible ? '300px' : '0')}; 
+  width: ${(props) => (props.$visible ? '300px' : '0')};
   opacity: ${(props) => (props.$visible ? 1 : 0)};
-  padding: ${(props) => (props.$visible ? '0 20px 0 0' : '0')}; /* Add padding gap */
+  padding: ${(props) => (props.$visible ? '0 20px 0 0' : '0')};
   transition: width 0.4s ease, opacity 0.3s ease, padding 0.4s ease;
   overflow: hidden;
 
-  /* The inner container should use the flexbox padding/shadow */
   > ${EmployeeContainer} {
     height: 100%;
-    width: 300px; /* Ensure inner content keeps its size */
+    width: 300px;
     box-shadow: 0 6px 20px ${colors.shadowMedium};
     padding: 30px;
+  }
+
+  /* 👉 FULL WIDTH on devices ≤ 768px */
+  @media (max-width: 768px) {
+    width: ${(props) => (props.$visible ? '100%' : '0')};
+    padding: ${(props) => (props.$visible ? '0 0 15px 0' : '0')};
+
+    > ${EmployeeContainer} {
+      width: 100%;
+      padding: 20px;
+    }
   }
 `;
 
@@ -431,13 +554,14 @@ export const TaskHeader = styled.div`
   padding-bottom: 15px;
   margin-bottom: 20px;
 
-  h4 {
-    margin: 0;
-    color: ${colors.primaryDark};
-    font-size: 1.4em;
-    font-weight: 700;
-  }
-`;
+ `;
+export const Heading = styled.div`
+  margin: 0;
+  color:#3352BA;
+  font-size: 1rem;
+  font-weight: 700;
+`
+;
 
 export const TaskListItemStyled = styled.li`
   padding: 15px;
