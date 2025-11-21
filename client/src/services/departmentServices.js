@@ -9,7 +9,7 @@ export const fetchDepartments = async ({ page = 1, search = '' }) => {
   if (search) queryParams.append('search', search);
   if (page) queryParams.append('page', page);
 
-  const response = await API.get(`/deptlist/?${queryParams.toString()}`);
+  const response = await API.get(`/departments/?${queryParams.toString()}`);
   return response.data; // ✅ should contain results + pagination
 };
 
