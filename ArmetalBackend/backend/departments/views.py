@@ -24,6 +24,10 @@ class DepartmentMiniListView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ["name"]
 
+    def get_queryset(self):
+        company = self.request.user.company
+        return Department.objects.filter(company=company)
+
 
 
 
