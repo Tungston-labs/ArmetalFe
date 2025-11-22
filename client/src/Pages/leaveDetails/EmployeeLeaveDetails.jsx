@@ -100,7 +100,7 @@ const EmployeeLeaveForm = () => {
 
         <PageCard>
 
-          {/* --- Job Details Card --- */}
+    
           <CardWrapper>
             <CardHeader onClick={() => setShowJob(!showJob)}>
               <SectionTitle>Job Details</SectionTitle>
