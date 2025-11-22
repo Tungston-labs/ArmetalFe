@@ -15,7 +15,7 @@ class EmployeeMiniSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee_db
-        fields = ["employee_id", "name", "profile_pic"]
+        fields = ["employee_id", "name", "profile_pic","id"]
 
     def get_profile_pic(self, obj):
         request = self.context.get('request')  # important

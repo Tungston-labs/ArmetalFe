@@ -8,12 +8,12 @@ export const fetchEmployees = async (params = {}) => {
 };
 
 // Fetch tasks for a specific employee and date
-export const fetchTasksByEmployeeAndDate = async (employeeId, date) => {
-    const response = await API.get(`/admin/tasks/employee/${employeeId}/`, {
-      params: { date }
-    });
-  
-    // ✅ Extract only the task list from 'results'
-    return response.data.results || [];
-  };
+export const fetchTasksByEmployeeAndDate = async (employeeId, date = null) => {
+  const response = await API.get(`/admin/tasks/employee/${employeeId}/`, {
+    params: date ? { date } : {}   // only send date if selected
+  });
+
+  return response.data.results || [];
+};
+
   

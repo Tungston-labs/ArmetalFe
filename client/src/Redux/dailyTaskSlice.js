@@ -15,13 +15,17 @@ export const getEmployees = createAsyncThunk(
   }
 );
 
-export const getTasks = createAsyncThunk('dailyTask/getTasks', async ({ employeeId, date }, thunkAPI) => {
-  try {
-    return await fetchTasksByEmployeeAndDate(employeeId, date);
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data);
+export const getTasks = createAsyncThunk(
+  'dailyTask/getTasks',
+  async ({ employeeId, date = null }, thunkAPI) => {
+    try {
+      return await fetchTasksByEmployeeAndDate(employeeId, date);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data);
+    }
   }
-});
+);
+
 
 const dailyTaskSlice = createSlice({
   name: 'dailyTask',

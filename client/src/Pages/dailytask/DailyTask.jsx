@@ -73,51 +73,77 @@ const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) =>
 
 // Component for Task Panel
 const TaskPanel = ({ employeeId }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const dispatch = useDispatch();
+  const [selectedDate, setSelectedDate] = useState(null);
+
   const tasks = useSelector((state) => state.dailyTask.tasks || []);
+  const loading = useSelector((state) => state.dailyTask.loading);
 
-  const employeeName = employeeId 
-    ? useSelector((state) => state.departments.departmentEmployeesMini || [])
-        .find(emp => emp.employee_id === employeeId)?.name
-    : 'Selected Employee';
+  const employeeName = useSelector(
+    (state) =>
+      state.departments.departmentEmployeesMini?.find(
+        (emp) => emp.employee_id === employeeId
+      )?.name
+  );
 
-  const formatDate = (date) => date.toISOString().split('T')[0];
+  const formatDate = (d) => d?.toISOString().split("T")[0];
+
+  // Load ALL tasks when employee is selected
+  useEffect(() => {
+    if (employeeId) {
+      dispatch(getTasks({ employeeId, date: null }));
+    }
+  }, [employeeId, dispatch]);
+
+  // Load FILTERED tasks when date changes
+  useEffect(() => {
+    if (employeeId && selectedDate) {
+      dispatch(getTasks({ employeeId, date: formatDate(selectedDate) }));
+    }
+  }, [selectedDate, employeeId, dispatch]);
 
   return (
     <PanelContainer>
       <TaskHeader>
-        <Heading>{employeeId ? `Tasks for ${employeeName}` : 'Select Employee Tasks'}</Heading>
+        <Heading>
+          {employeeId ? `Tasks for ${employeeName}` : "Select Employee Tasks"}
+        </Heading>
+
         <DatePickerWrapper>
-          <label htmlFor="task-date">Due Date:</label>
-          <input 
-            id="task-date"
-            type="date" 
-            value={formatDate(selectedDate)} 
-            onChange={(e) => setSelectedDate(new Date(e.target.value))}
+          <label>Due Date:</label>
+          <input
+            type="date"
+            value={selectedDate ? formatDate(selectedDate) : ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSelectedDate(val ? new Date(val) : null);
+            }}
           />
         </DatePickerWrapper>
       </TaskHeader>
-      
+
       {!employeeId && (
         <StyledNoSelectionMessage $type="info">
-          <p>Please select an employee to view their daily tasks.</p>
+          <p>Please select an employee.</p>
         </StyledNoSelectionMessage>
       )}
 
-      {employeeId && tasks.length === 0 && (
+      {employeeId && loading && <p>Loading tasks...</p>}
+
+      {employeeId && !loading && tasks.length === 0 && (
         <StyledNoSelectionMessage $type="warning">
-          <p>No tasks found for this employee on this date.</p>
+          <p>No tasks found for this employee.</p>
         </StyledNoSelectionMessage>
       )}
 
       {employeeId && tasks.length > 0 && (
-       <TaskList>
+        <TaskList>
           {tasks.map((task) => (
             <li key={task.id}>
               <TaskContent>
                 <TaskLeft>
                   <span className="task-title">
-                    {task.task} <small className="project-name"> ({task.project})</small>
+                    {task.task} <small>({task.project})</small>
                   </span>
                   <span className="task-desc">{task.description}</span>
                 </TaskLeft>
@@ -135,6 +161,8 @@ const TaskPanel = ({ employeeId }) => {
     </PanelContainer>
   );
 };
+
+
 
 // Main Component
 export default function DepartmentView() {
