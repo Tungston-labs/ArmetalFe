@@ -8,6 +8,69 @@ Content-Type: application/json
   "password": "password1234"
 }
 
+# API for creating department.
+###
+POST http://127.0.0.1:8000/api/departments/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzExNjkzLCJpYXQiOjE3NDk3MDgwOTMsImp0aSI6ImZjM2M5ZjlhMWJkOTRkMGZhMmUzZTU0ODM4MjNjOTRiIiwidXNlcl9pZCI6M30.YMx-WBBSHdmilhjQaEdmSfEf81zK4ELDXryDV7FsLAA
+
+{
+  "name": "Manufacturer",
+  "department_code": "M001",
+  "department_head": ""
+}
+
+
+# list departments
+
+###
+GET http://178.248.112.16:8001/api/departments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzNzEyNjI1LCJpYXQiOjE3NjM3MDkwMjUsImp0aSI6IjFhZmNmM2RjNWE0NjRmZjU5ZjgzZDExYTYzMzg3MDE3IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.yrk-LVNrHtI1D3mxwJ1HF-OeCZTWxabq6xS5_ztIbvc
+# list departments
+
+###
+GET http://178.248.112.16:8001/api/deptlist/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzNzIyMTE3LCJpYXQiOjE3NjM3MTg1MTcsImp0aSI6Ijk2NDljNjBlNWZjNTQxOGY5N2I5NWE4MWU4NjQyZmM0IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.uAQskPyzpN3PWbDzr69t3e2_VRUzZ4RUsC0UthkuLnA
+
+# retrieve single department
+###
+GET http://127.0.0.1:8000/api/departments/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTg0MzkwLCJpYXQiOjE3NDg1ODA3OTAsImp0aSI6IjUxNzAyOWQ0YmE5ODRjYWNiYWVjYjA5MmM2NzA0ZjNhIiwidXNlcl9pZCI6M30.-asuZE8TxamUfRkqPdlgge2Xa5tdCRRfEVqFc1r9zDs
+
+# update department details
+
+###
+PUT http://127.0.0.1:8000/api/departments/1/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTg0MzkwLCJpYXQiOjE3NDg1ODA3OTAsImp0aSI6IjUxNzAyOWQ0YmE5ODRjYWNiYWVjYjA5MmM2NzA0ZjNhIiwidXNlcl9pZCI6M30.-asuZE8TxamUfRkqPdlgge2Xa5tdCRRfEVqFc1r9zDs
+
+{
+  "name": "HR and Admin",
+  "department_code": "HR001",
+  "department_head": "Ann Mathew"
+}
+
+# delete department
+
+###
+DELETE http://127.0.0.1:8000/api/departments/5/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTg0MzkwLCJpYXQiOjE3NDg1ODA3OTAsImp0aSI6IjUxNzAyOWQ0YmE5ODRjYWNiYWVjYjA5MmM2NzA0ZjNhIiwidXNlcl9pZCI6M30.-asuZE8TxamUfRkqPdlgge2Xa5tdCRRfEVqFc1r9zDs
+
+
+# api for search department by name
+###
+GET http://127.0.0.1:8000/api/departments/?search=testing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTg4Mjc4LCJpYXQiOjE3NDg1ODQ2NzgsImp0aSI6Ijk4NTIxZTJhYTA2ZDRjZTQ5YjMxYjg4Yzc0MzRmNmI0IiwidXNlcl9pZCI6M30.BJdURp0KOHB_9FzVqeyyJ9ZQuxYXE_fjeFJaYWR0Slk
+
+# api for getiing employees with department id
+###
+GET http://178.248.112.16:8001/api/employees/department/87/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzNzEzNzA5LCJpYXQiOjE3NjM3MTAxMDksImp0aSI6ImJjNjkwNTQ3Yzk1MDRlYzFhMjNmMGRhNTBmNTYwNjAyIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.bT8Bknh4RIEAKfkdRpXmrtalS4wK34wTp0_7LZdNNw4
+###department list with attendance count
+GET http://178.248.112.16:8001/api/dept-attendance/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzNzA4Mzc2LCJpYXQiOjE3NjM3MDQ3NzYsImp0aSI6Ijg3ZmI1NGM5MGRlYzRkOTNiOWY1ODBjN2UwOGViMDRjIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.HjH05Jq2OfRLxgjiRaGHoecmo4Ub-QFq2o3ykhK_GKY
+
+
 # api for getiing employees with department id
 ###
 GET http://178.248.112.16:8001/api/employees/dep/87/

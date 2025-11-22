@@ -44,7 +44,11 @@ const AttendanceList = () => {
     dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
 
-  // ------------------ TIME HELPERS ---------------------
+  const parseTimeToTimestamp = (timeStr) => {
+    const d = new Date(timeStr);
+    return isNaN(d.getTime()) ? NaN : d.getTime();
+  };
+
   const formatTime = (datetimeStr) => {
     if (!datetimeStr) return "-";
     try {
@@ -59,36 +63,11 @@ const AttendanceList = () => {
     }
   };
 
-  const parseTimeToTimestamp = (timeStr) => {
-    const d = new Date(timeStr);
-    return isNaN(d.getTime()) ? NaN : d.getTime();
-  };
-
-  const getEarliestTimestamp = (sessions) => {
-    const times = (sessions || [])
-      .map((s) => parseTimeToTimestamp(s.time_in))
-      .filter((t) => !isNaN(t));
-    return times.length ? Math.min(...times) : Infinity;
-  };
-
-  const getEarliestTimeIn = (sessions) => {
-    const earliest = getEarliestTimestamp(sessions);
-    return isFinite(earliest) ? formatTime(earliest) : "-";
-  };
-
-  const getConditionalTimeOut = (sessions) => {
-    const outs = (sessions || [])
-      .map((s) => parseTimeToTimestamp(s.time_out))
-      .filter((t) => !isNaN(t));
-    return outs.length ? formatTime(Math.max(...outs)) : "-";
-  };
-
   const paginate = (items, page) => {
     const start = (page - 1) * pageSize;
     return items.slice(start, start + pageSize);
   };
 
-  // ------------------ DATA LOADERS ---------------------
   const groupByEmployee = (records) => {
     const map = {};
     records.forEach((emp) => {
@@ -120,7 +99,6 @@ const AttendanceList = () => {
       return;
     }
     setSelectedDept(deptId);
-
     setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
 
     if (!departmentAttendance[deptId]) {
@@ -130,7 +108,7 @@ const AttendanceList = () => {
 
   const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
 
-  // ----------------- FILTER + SORT -----------------------
+  // ----------------- FILTER + SEARCH -----------------------
   const [filteredDepartments, setFilteredDepartments] = useState([]);
 
   useEffect(() => {
@@ -145,7 +123,6 @@ const AttendanceList = () => {
         return;
       }
 
-      // Fetch attendance for all departments not loaded yet
       const promises = departmentList.map(async (dept) => {
         if (!departmentAttendance[dept.id]) {
           await loadAttendanceForDept(dept.id);
@@ -154,16 +131,17 @@ const AttendanceList = () => {
 
       await Promise.all(promises);
 
-      // Filter departments with employees matching the search
       const filtered = departmentList
         .map((dept) => {
           const employees = departmentAttendance[dept.id] || [];
           const matches = employees.filter((e) =>
-            (e.employee_name || "").toLowerCase().includes(searchText.toLowerCase())
+            (e.employee_name || "")
+              .toLowerCase()
+              .includes(searchText.toLowerCase())
           );
           return { ...dept, employees: matches };
         })
-        .filter((dept) => dept.employees.length > 0); // only keep departments with matches
+        .filter((dept) => dept.employees.length > 0);
 
       setFilteredDepartments(filtered);
     };
@@ -171,10 +149,12 @@ const AttendanceList = () => {
     fetchAndFilter();
   }, [searchText, departmentList, departmentAttendance]);
 
-  const departmentsToRender = searchText ? filteredDepartments : departmentList.map((dept) => ({
-    ...dept,
-    employees: departmentAttendance[dept.id] || [],
-  }));
+  const departmentsToRender = searchText
+    ? filteredDepartments
+    : departmentList.map((dept) => ({
+        ...dept,
+        employees: departmentAttendance[dept.id] || [],
+      }));
 
   return (
     <PageContainer>
@@ -207,9 +187,11 @@ const AttendanceList = () => {
                     <DepartmentName>{dept.name}</DepartmentName>
                   </LeftWrapper>
                   <EmployeeCount>
-                    {searchText ? (dept.employees?.length || 0) : (dept.attendance_employee_count || 0)} Employees
+                    {searchText
+                      ? dept.employees?.length || 0
+                      : dept.attendance_employee_count || 0}{" "}
+                    Employees
                   </EmployeeCount>
-
                 </DepartmentHeader>
 
                 {isOpen && (
@@ -230,8 +212,25 @@ const AttendanceList = () => {
                         </EmployeeItem>
                       ) : paginated.length > 0 ? (
                         paginated.map((emp, idx) => {
-                          const tIn = getEarliestTimeIn(emp.sessions);
-                          const tOut = getConditionalTimeOut(emp.sessions);
+                          const sessions = emp.sessions || [];
+
+                          // First punch in
+                          const inTimes = sessions
+                            .map((s) => parseTimeToTimestamp(s.time_in))
+                            .filter((t) => !isNaN(t));
+                          const tIn = inTimes.length
+                            ? formatTime(Math.min(...inTimes))
+                            : "-";
+
+                          // Last punch out or '---' if last action is punch in
+                          let tOut = "-";
+                          if (sessions.length > 0) {
+                            const lastSession = sessions[sessions.length - 1];
+                            tOut =
+                              lastSession.time_out && lastSession.time_out !== ""
+                                ? formatTime(parseTimeToTimestamp(lastSession.time_out))
+                                : "---";
+                          }
 
                           return (
                             <EmployeeRow
@@ -253,11 +252,20 @@ const AttendanceList = () => {
                     </EmployeeList>
 
                     {employees.length > pageSize && (
-                      <div style={{ display: "flex", gap: "10px", padding: "10px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          padding: "10px",
+                        }}
+                      >
                         <button
                           disabled={currentPage === 1}
                           onClick={() =>
-                            setPageByDept((p) => ({ ...p, [dept.id]: currentPage - 1 }))
+                            setPageByDept((p) => ({
+                              ...p,
+                              [dept.id]: currentPage - 1,
+                            }))
                           }
                         >
                           Prev
@@ -268,7 +276,10 @@ const AttendanceList = () => {
                         <button
                           disabled={currentPage === totalPages}
                           onClick={() =>
-                            setPageByDept((p) => ({ ...p, [dept.id]: currentPage + 1 }))
+                            setPageByDept((p) => ({
+                              ...p,
+                              [dept.id]: currentPage + 1,
+                            }))
                           }
                         >
                           Next

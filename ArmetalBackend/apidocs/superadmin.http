@@ -1,0 +1,101 @@
+#api for creating companies
+###
+POST http://127.0.0.1:8000/api/create-company/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyMTI5NzYyLCJpYXQiOjE3NTIxMjYxNjIsImp0aSI6ImM2ODkwYzMzZmI5NTQwNjg4NGM2YjdmMGYwZjZiZGQ2IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.AFTfZyEiETCkhEOrYhVL7r1M_uNa3DygWgPUVSL88bU
+
+{
+  "name": "tns",
+  "address": "xyz street, kochi",
+  "location": "kakanad",
+  "country":"IN",
+  "contact_number": "9996543210",
+  "email": "tns@hgh.com",
+  "modules": {
+  "holiday": true,
+  "payroll": true,
+  "employee": true,
+  "dashboard": true,
+  "daily_task": true,
+  "department": true
+}
+}
+
+
+
+# list companies
+
+### 
+GET http://127.0.0.1:8000/api/companies/list/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODAwMTg4LCJpYXQiOjE3NDk3OTY1ODgsImp0aSI6IjUwN2U3ZDY2YWM1OTQ1MGM4Zjc0N2U1ODIwMTkzMzcyIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.jRqwHu5Nf9LbyWS4wokIbEwQ2LBxhBMtsQ5BqKVXtJo
+
+# search comapny by name
+###
+GET http://127.0.0.1:8000/api/companies/list/?search=lumi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODA0NzEwLCJpYXQiOjE3NDk4MDExMTAsImp0aSI6Ijg5MjM0NzczMWU3NDRmMzk5NzkwZmQwZjE0ZmI1ZjQwIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.aejv_GUBd-7esQC2AUjn_rNdnR7LA-Bs800v8ncgb00
+
+
+
+### Get details of a single company (replace 1 with actual ID)
+GET http://127.0.0.1:8000/api/companies/2/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNDAzMjM3LCJpYXQiOjE3NTAzOTk2MzcsImp0aSI6IjA1NjU3OWYyMjkxNjRhNGRhYzIzMWRlODIyMzZkMDE4IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.-igFKB4tGpVq37ZC8N_m-HSpjnN6OuiEXLbTxUesZQI
+
+
+
+
+### Update a company (replace 1 with actual ID)
+PUT http://127.0.0.1:8000/api/companies/6/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNjI4NTYyLCJpYXQiOjE3NTE2MjQ5NjIsImp0aSI6Ijk5NWQ0NjlmNWY0NDQ5NjVhNDBhZmM3MDI0MWMyZDgxIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.J7mnzgwazpV3_2ebP-qO6pUh_dlsexFSEbXLIQQoipE
+
+{
+  "name": "XZY",
+  "address": "xyz street, kochi",
+  "location": "kakanad",
+  "country":"IN",
+  "contact_number": "9876543210",
+  "email": "XYZ@hgh.com",
+  "modules": {
+  "holiday": true,
+  "payroll": true,
+  "employee": true,
+  "dashboard": true,
+  "daily_task": true,
+  "department": true
+}
+}
+
+
+
+### Delete a company with id
+DELETE http://127.0.0.1:8000/api/companies/4/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NTExODIwLCJpYXQiOjE3NDg1MDgyMjAsImp0aSI6ImMyYmMxZmRhNTMyNDQ3YjU5MmZlNmE0MzUxYmVlZThiIiwidXNlcl9pZCI6Mn0.3FUWk6avJUq1AmfRGZrip8RG9Bj5shf5Fw_u-HERfLw
+
+
+# list subscription plan for comapany
+###
+GET http://127.0.0.1:8000/api/subscriptions/6/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNTYyMzA4LCJpYXQiOjE3NTI1NTg3MDgsImp0aSI6ImQ4NDhmOTY0ODEwYzRhZTdiMWM4OWUyNzczY2M2ZGEyIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.YKA6eEG-JqtDbyd1rlCMExqDJSRx-kKvOoFK06TWnNk
+# update subscription status for company
+###
+PUT http://localhost:8000/api/subscriptions/mark-paid/5/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNDA5NzE3LCJpYXQiOjE3NTA0MDYxMTcsImp0aSI6IjMwYzM4NmQ0ZDcwZjRlZmNhMmYwMjk2ODA1Mzk0ZjJiIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.9jO_r8Uiwrw9vmGLIAS6oB-kEy919wlv1AEuV4o7H-c
+
+# api for email
+###
+POST http://localhost:8000/api/invoice/send-email/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwODI5NDYwLCJpYXQiOjE3NTA4MjU4NjAsImp0aSI6IjY4ZjcyZmQ3Njk5ZjRmOWM5ZTExNjY0ZGQ4ZGM4NDlhIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2V9.b9dwwb6DH9V6rNeSej61dbXpXuGcGCySAz16wtjToDo
+Content-Type: application/json
+
+{
+  "entry": {
+    "month_display": "June",
+    "year": 2025,
+    "amount": 299.99,
+    "status": "Paid",
+    "paid_date": "2025-06-20",
+    "currency": "USD"
+  },
+  "email": "customer@example.com",
+  "company_name": "Tungston Labs"
+}
