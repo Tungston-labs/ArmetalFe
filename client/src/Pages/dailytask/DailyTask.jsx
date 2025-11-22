@@ -49,8 +49,8 @@ const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) =>
   {employeesData.map((emp) => (
     <EmployeeItem
       key={emp.employee_id}
-      onClick={() => onSelectEmployee(emp.employee_id)}
-      $isActive={emp.employee_id === selectedEmployeeId}
+      onClick={() => onSelectEmployee(emp.id)}
+      $isActive={emp.id === selectedEmployeeId}
     >
       <img
         src={emp.profile_pic}         // profile picture URL
@@ -82,9 +82,10 @@ const TaskPanel = ({ employeeId }) => {
   const employeeName = useSelector(
     (state) =>
       state.departments.departmentEmployeesMini?.find(
-        (emp) => emp.employee_id === employeeId
+        (emp) => emp.id === employeeId
       )?.name
   );
+  
 
   const formatDate = (d) => d?.toISOString().split("T")[0];
 

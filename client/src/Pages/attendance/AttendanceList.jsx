@@ -155,8 +155,9 @@ const AttendanceList = () => {
     <PageContainer>
       <EmployeeTitle
         iconSrc={EmployeeIcon}
-        onSearchChange={setSearchText}
         showAddButton={false}
+        showDropdown={false}
+        onSearchChange={setSearchText} 
         showBackArrow={false}
       />
 
