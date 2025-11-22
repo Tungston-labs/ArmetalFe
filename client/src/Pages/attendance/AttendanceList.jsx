@@ -36,7 +36,6 @@ const AttendanceList = () => {
   const [loadingDept, setLoadingDept] = useState(false);
 
   const pageSize = 10;
-
   const { list: departmentList = [], loading } = useSelector(
     (state) => state.departments
   );
@@ -121,6 +120,7 @@ const AttendanceList = () => {
       return;
     }
     setSelectedDept(deptId);
+
     setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
 
     if (!departmentAttendance[deptId]) {
@@ -131,30 +131,50 @@ const AttendanceList = () => {
   const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
 
   // ----------------- FILTER + SORT -----------------------
-  // Only show departments that have at least one matching employee if search is active
-  const processedDepartments = (departmentList || [])
-    .map((dept) => {
-      const employees = departmentAttendance[dept.id] || [];
-      const filteredEmployees = searchText
-        ? employees.filter((e) =>
-            (e.employee_name || "")
-              .toLowerCase()
-              .includes(searchText.toLowerCase())
-          )
-        : employees;
+  const [filteredDepartments, setFilteredDepartments] = useState([]);
 
-      // Sort employees by earliest check-in time
-      const sorted = [...filteredEmployees].sort((a, b) => {
-        const ta = getEarliestTimestamp(a.sessions);
-        const tb = getEarliestTimestamp(b.sessions);
-        if (ta === tb)
-          return (a.employee_name || "").localeCompare(b.employee_name || "");
-        return ta - tb;
+  useEffect(() => {
+    const fetchAndFilter = async () => {
+      if (!searchText) {
+        setFilteredDepartments(
+          departmentList.map((dept) => ({
+            ...dept,
+            employees: departmentAttendance[dept.id] || [],
+          }))
+        );
+        return;
+      }
+
+      // Fetch attendance for all departments not loaded yet
+      const promises = departmentList.map(async (dept) => {
+        if (!departmentAttendance[dept.id]) {
+          await loadAttendanceForDept(dept.id);
+        }
       });
 
-      return { ...dept, employees: sorted };
-    })
-    .filter((dept) => !searchText || dept.employees.length > 0);
+      await Promise.all(promises);
+
+      // Filter departments with employees matching the search
+      const filtered = departmentList
+        .map((dept) => {
+          const employees = departmentAttendance[dept.id] || [];
+          const matches = employees.filter((e) =>
+            (e.employee_name || "").toLowerCase().includes(searchText.toLowerCase())
+          );
+          return { ...dept, employees: matches };
+        })
+        .filter((dept) => dept.employees.length > 0); // only keep departments with matches
+
+      setFilteredDepartments(filtered);
+    };
+
+    fetchAndFilter();
+  }, [searchText, departmentList, departmentAttendance]);
+
+  const departmentsToRender = searchText ? filteredDepartments : departmentList.map((dept) => ({
+    ...dept,
+    employees: departmentAttendance[dept.id] || [],
+  }));
 
   return (
     <PageContainer>
@@ -170,114 +190,96 @@ const AttendanceList = () => {
         <Loader />
       ) : (
         <DepartmentGrid>
-          {processedDepartments.length > 0 ? (
-            processedDepartments.map((dept) => {
-              const isOpen = selectedDept === dept.id;
-              const employees = dept.employees || [];
+          {departmentsToRender.map((dept) => {
+            const isOpen = selectedDept === dept.id;
+            const employees = dept.employees || [];
 
-              const currentPage = pageByDept[dept.id] || 1;
-              const totalPages = Math.ceil(employees.length / pageSize) || 1;
-              const paginated = paginate(employees, currentPage);
-              const startIndex = (currentPage - 1) * pageSize;
+            const currentPage = pageByDept[dept.id] || 1;
+            const totalPages = Math.ceil(employees.length / pageSize) || 1;
+            const paginated = paginate(employees, currentPage);
+            const startIndex = (currentPage - 1) * pageSize;
 
-              return (
-                <DepartmentCard key={dept.id}>
-                  <DepartmentHeader onClick={() => handleToggle(dept.id)}>
-                    <LeftWrapper>
-                      <DepartmentIcon>{dept.name[0]}</DepartmentIcon>
-                      <DepartmentName>{dept.name}</DepartmentName>
-                    </LeftWrapper>
-                    <EmployeeCount>
-                      {employees.length} Employees
-                    </EmployeeCount>
-                  </DepartmentHeader>
+            return (
+              <DepartmentCard key={dept.id}>
+                <DepartmentHeader onClick={() => handleToggle(dept.id)}>
+                  <LeftWrapper>
+                    <DepartmentIcon>{dept.name[0]}</DepartmentIcon>
+                    <DepartmentName>{dept.name}</DepartmentName>
+                  </LeftWrapper>
+                  <EmployeeCount>
+                    {searchText ? (dept.employees?.length || 0) : (dept.attendance_employee_count || 0)} Employees
+                  </EmployeeCount>
 
-                  {isOpen && (
-                    <DropdownWrapper>
-                      <DropdownHeader>
-                        <span>Sl No</span>
-                        <span>Name</span>
-                        <span>Employee ID</span>
-                        <span>In Date</span>
-                        <span>In Time</span>
-                        <span>Out Time</span>
-                      </DropdownHeader>
+                </DepartmentHeader>
 
-                      <EmployeeList>
-                        {loadingDept ? (
-                          <EmployeeItem style={{ textAlign: "center" }}>
-                            <ClipLoader size={24} />
-                          </EmployeeItem>
-                        ) : paginated.length > 0 ? (
-                          paginated.map((emp, idx) => {
-                            const tIn = getEarliestTimeIn(emp.sessions);
-                            const tOut = getConditionalTimeOut(emp.sessions);
+                {isOpen && (
+                  <DropdownWrapper>
+                    <DropdownHeader>
+                      <span>Sl No</span>
+                      <span>Name</span>
+                      <span>Employee ID</span>
+                      <span>In Date</span>
+                      <span>In Time</span>
+                      <span>Out Time</span>
+                    </DropdownHeader>
 
-                            return (
-                              <EmployeeRow
-                                key={emp.id}
-                                onClick={() => handleRowClick(emp.id)}
-                              >
-                                <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
-                                <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
-                                <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
-                                <EmployeeCell>{emp.date || "-"}</EmployeeCell>
-                                <EmployeeCell>{tIn}</EmployeeCell>
-                                <EmployeeCell>{tOut}</EmployeeCell>
-                              </EmployeeRow>
-                            );
-                          })
-                        ) : (
-                          <EmployeeItem>No attendance found for today.</EmployeeItem>
-                        )}
-                      </EmployeeList>
+                    <EmployeeList>
+                      {loadingDept ? (
+                        <EmployeeItem style={{ textAlign: "center" }}>
+                          <ClipLoader size={24} />
+                        </EmployeeItem>
+                      ) : paginated.length > 0 ? (
+                        paginated.map((emp, idx) => {
+                          const tIn = getEarliestTimeIn(emp.sessions);
+                          const tOut = getConditionalTimeOut(emp.sessions);
 
-                      {/* PAGINATION */}
-                      {employees.length > pageSize && (
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "10px",
-                            padding: "10px",
-                          }}
-                        >
-                          <button
-                            disabled={currentPage === 1}
-                            onClick={() =>
-                              setPageByDept((p) => ({
-                                ...p,
-                                [dept.id]: currentPage - 1,
-                              }))
-                            }
-                          >
-                            Prev
-                          </button>
-
-                          <span>
-                            Page {currentPage} / {totalPages}
-                          </span>
-
-                          <button
-                            disabled={currentPage === totalPages}
-                            onClick={() =>
-                              setPageByDept((p) => ({
-                                ...p,
-                                [dept.id]: currentPage + 1,
-                              }))
-                            }
-                          >
-                            Next
-                          </button>
-                        </div>
+                          return (
+                            <EmployeeRow
+                              key={emp.id}
+                              onClick={() => handleRowClick(emp.id)}
+                            >
+                              <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
+                              <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
+                              <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
+                              <EmployeeCell>{emp.date || "-"}</EmployeeCell>
+                              <EmployeeCell>{tIn}</EmployeeCell>
+                              <EmployeeCell>{tOut}</EmployeeCell>
+                            </EmployeeRow>
+                          );
+                        })
+                      ) : (
+                        <EmployeeItem>No attendance found for today.</EmployeeItem>
                       )}
-                    </DropdownWrapper>
-                  )}
-                </DepartmentCard>
-              );
-            })
-          ) : (
-            <p>No matching employees found.</p>
-          )}
+                    </EmployeeList>
+
+                    {employees.length > pageSize && (
+                      <div style={{ display: "flex", gap: "10px", padding: "10px" }}>
+                        <button
+                          disabled={currentPage === 1}
+                          onClick={() =>
+                            setPageByDept((p) => ({ ...p, [dept.id]: currentPage - 1 }))
+                          }
+                        >
+                          Prev
+                        </button>
+                        <span>
+                          Page {currentPage} / {totalPages}
+                        </span>
+                        <button
+                          disabled={currentPage === totalPages}
+                          onClick={() =>
+                            setPageByDept((p) => ({ ...p, [dept.id]: currentPage + 1 }))
+                          }
+                        >
+                          Next
+                        </button>
+                      </div>
+                    )}
+                  </DropdownWrapper>
+                )}
+              </DepartmentCard>
+            );
+          })}
         </DepartmentGrid>
       )}
     </PageContainer>
