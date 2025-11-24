@@ -1,66 +1,78 @@
-import React from "react";
-import styled from "styled-components";
-import ContractExpiryList from "../../Components/ContractExpiryList";
-import CalendarSection from "../../Components/CalendarSection";
-import TopCard from "../../Components/TopCard";
+// Dashboard.jsx
+import React, { useState } from "react";
+import { Container, ContentWrapper, TwoColumn, LeftBox, RightBox, ThreeBox, ThreeColumnRow } from "./HomeDashboard.Styles";
 
-const employeesMock = [
-  { name: "Employee", empId: "1254125", department: "Department" },
-  { name: "Employee", empId: "1254125", department: "Department" },
-  { name: "Employee", empId: "1254125", department: "Department" },
-  { name: "Employee", empId: "1254125", department: "Department" }
+import HeaderBar from "../../Components/homepage/HeaderBar";
+import StatsGrid from "../../Components/homepage/StatsGrid";
+import RightModal from "../../Components/homepage/RightModal";
+import ProjectChart from "../../Components/homepage/ProjectChart";
+import ReimbursementSummary from "../../Components/homepage/ReimbursementSummary";
+import DepartmentSummary from "../../Components/homepage/DepartmentSummary";
+import UpcomingHolidays from "../../Components/homepage/UpcomingHolidays";
+
+const Dashboard = () => {
+  const [open, setOpen] = useState(false);
+const departmentList = [
+  { name: "HR", createdAt: "2025-01-10" },
+  { name: "Finance", createdAt: "2025-01-08" },
+ 
+];
+const holidays = [
+  { name: "sample", date: "2025-11-25", type: "National" },
+  { name: "testing", date: "2025-12-2", type: "National" },
+  { name: "X-mas", date: "2025-12-25", type: "National" },
+  { name: "New Year", date: "2026-01-01", type: "National" },
+  { name: "Republic Day", date: "2026-01-26", type: "National" }
 ];
 
-const TopCardsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1.5rem;
-
-`;
 
 
-/* Two-column layout:
-   - left column: flexible (1fr)
-   - right column: fixed width (360px)
-   On small screens it becomes a single column (stacked) — no horizontal scroll.
-*/
-const TwoColumn = styled.div`
-  margin-top: 2rem;
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 1.5rem;
-  align-items: flex-start;
+<DepartmentSummary departments={departmentList} />;
 
-
-  /* allow children to shrink to avoid forcing horizontal scroll */
-  > * {
-    min-width: 0;
-  }
-
-  /* breakpoint: stack columns vertically on small screens */
-  @media (max-width: 880px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-export default function HomeDashboard() {
   return (
-    <>
+    <Container>
+      <ContentWrapper className={open ? "shrink" : ""}>
+        <HeaderBar onOpen={() => setOpen(true)} />
 
-      <TopCardsGrid>
-        <TopCard icon="👨‍💼" title="Total Employees" count={12} employees={employeesMock} />
-        <TopCard icon="🧾" title="Employee Leave Request" count={12} employees={employeesMock} />
-        <TopCard icon="🛂" title="Employee Visa Expiry" count={12} employees={employeesMock} />
-      </TopCardsGrid>
+        <StatsGrid />
 
-      <TwoColumn>
-        {/* LEFT SIDE */}
-        <ContractExpiryList />
 
-        {/* RIGHT SIDE */}
-        <CalendarSection />
-      </TwoColumn>
-    
-    </>
+        <TwoColumn>
+          <LeftBox>
+              <ReimbursementSummary
+/>
+
+          </LeftBox>
+
+          <RightBox>
+              <ProjectChart site={120} variant={80} bench={20} />
+          </RightBox>
+        </TwoColumn>
+
+       <ThreeColumnRow>
+
+  <ThreeBox>
+    <DepartmentSummary departments={departmentList} />
+  </ThreeBox>
+
+ <ThreeBox>
+  <UpcomingHolidays
+    holidays={holidays}
+    showCount={4}
+    onViewAll={() => console.log("open holidays page")}
+  />
+</ThreeBox>
+
+  <ThreeBox>
+
+  </ThreeBox>
+
+</ThreeColumnRow>
+      </ContentWrapper>
+
+      <RightModal open={open} onClose={() => setOpen(false)} />
+    </Container>
   );
-}
+};
+
+export default Dashboard;

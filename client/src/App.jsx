@@ -65,6 +65,9 @@ import ReimbursementList from "./Pages/reimbursement/ReimbursementList.jsx";
 
 import Daily from "./Pages/dailytask/DailyTask.jsx"
 import ViewLayout from "./Pages/employee/layout/ViewLayout.jsx";
+
+import HomeDashboard from "./Pages/dashboard/HomeDashboard.jsx"
+
 function App() {
   const dispatch = useDispatch();
 
@@ -142,7 +145,8 @@ function App() {
 
             
 <Route path="/layout" element={<ViewLayout/>}/>
- 
+             
+<Route path="/home-dashboard" element={<HomeDashboard/>}/>
           
 
 
