@@ -21,6 +21,7 @@ const ViewBasicLayout = ({
   formData,
   handleChange,
   handleImageChange,
+  isIndianCompany, // <-- FIX ADDED HERE
 }) => {
   const location = useLocation();
   const rowRef = useRef(null);
@@ -44,6 +45,8 @@ const ViewBasicLayout = ({
           onAddClick={handleSubmit}
           buttonText="Save"
         />
+
+        {/* Header with employee basic info */}
         <Header
           employee={formData}
           editable={true}
@@ -51,20 +54,26 @@ const ViewBasicLayout = ({
           onImageChange={handleImageChange}
         />
 
-        {/* Scrollable Tabs */}
+        {/* Tabs */}
         <TabsRowContainer>
           <TabsRow ref={rowRef}>
             {tabs.map((tab) => (
-              <NavLink key={tab.path} to={tab.path} style={{ textDecoration: "none" }}>
-                <TabButton active={location.pathname === tab.path}>{tab.label}</TabButton>
+              <NavLink
+                key={tab.path}
+                to={tab.path}
+                style={{ textDecoration: "none" }}
+              >
+                <TabButton active={location.pathname === tab.path}>
+                  {tab.label}
+                </TabButton>
               </NavLink>
             ))}
           </TabsRow>
         </TabsRowContainer>
       </TopSection>
 
-      {/* Dynamic Form Section */}
-      <FormSection>{children}</FormSection>
+    <FormSection>{children}</FormSection>
+
     </Container>
   );
 };

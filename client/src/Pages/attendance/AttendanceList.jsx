@@ -77,12 +77,22 @@ const AttendanceList = () => {
     return isFinite(earliest) ? formatTime(earliest) : "-";
   };
 
-  const getConditionalTimeOut = (sessions) => {
-    const outs = (sessions || [])
-      .map((s) => parseTimeToTimestamp(s.time_out))
-      .filter((t) => !isNaN(t));
-    return outs.length ? formatTime(Math.max(...outs)) : "-";
-  };
+const getConditionalTimeOut = (sessions) => {
+  if (!sessions || sessions.length === 0) return "-";
+
+  // find session with latest time_in
+  const latestInSession = sessions.reduce((latest, current) => {
+    const latestIn = parseTimeToTimestamp(latest.time_in);
+    const currentIn = parseTimeToTimestamp(current.time_in);
+    return currentIn > latestIn ? current : latest;
+  });
+
+  // return that session's time_out only
+  return latestInSession.time_out
+    ? formatTime(latestInSession.time_out)
+    : "-";
+};
+
 
   const paginate = (items, page) => {
     const start = (page - 1) * pageSize;
@@ -155,8 +165,9 @@ const AttendanceList = () => {
     <PageContainer>
       <EmployeeTitle
         iconSrc={EmployeeIcon}
-        onSearchChange={setSearchText}
         showAddButton={false}
+        showDropdown={false}
+        onSearchChange={setSearchText} 
         showBackArrow={false}
       />
 

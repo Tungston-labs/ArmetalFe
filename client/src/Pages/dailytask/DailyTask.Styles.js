@@ -549,7 +549,7 @@ export const EmployeePanelWrapper = styled.div`
 
 
 export const EmployeeItem = styled.div`
-  padding: 10px;
+  padding: 8px 10px;
   border-radius: 10px;
   border:1px solid #304EB0;
   margin-bottom: 5px;

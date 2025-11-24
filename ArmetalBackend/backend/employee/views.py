@@ -381,7 +381,14 @@ class DashboardSummaryView(APIView):
         company = request.user.company  # HR admin's company
 
         # 1. Total employees list with department name
-        employees = Employee_db.objects.filter(department__company=company)
+        employees_qs = Employee_db.objects.filter(
+            department__company=company
+        )
+
+        total_employees_count = employees_qs.count()
+
+        employees = employees_qs.order_by('-id')[:5]
+
         employee_list = [
             {
                 "id": emp.id,
@@ -393,12 +400,16 @@ class DashboardSummaryView(APIView):
             }
             for emp in employees
         ]
+
         total_employees_count = employees.count()
 
         # 2. Upcoming visa expiries
-        upcoming_visa_expiry_qs = employees.filter(
+        upcoming_visa_expiry_qs = employees_qs.filter(
             visa_expiry_date__range=[today, upcoming_range]
         )
+
+        upcoming_visa_count = upcoming_visa_expiry_qs.count()
+
         upcoming_visa_expiry = [
             {
                 "id": emp.id,
@@ -407,8 +418,9 @@ class DashboardSummaryView(APIView):
                 "visa_expiry_date": emp.visa_expiry_date,
                 "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
-            for emp in upcoming_visa_expiry_qs
+            for emp in upcoming_visa_expiry_qs.order_by('visa_expiry_date')[:5]
         ]
+
 
         # 3. Pending leave requests
         pending_leaves_qs = LeaveRequest.objects.filter(
@@ -426,7 +438,7 @@ class DashboardSummaryView(APIView):
                 "to_date": leave.to_date,
                 "reason": leave.reason,
             }
-            for leave in pending_leaves_qs
+            for leave in pending_leaves_qs.order_by('-id')[:5]
         ]
 
         # 4. Department list with employee count
@@ -447,14 +459,16 @@ class DashboardSummaryView(APIView):
         upcoming_holidays_qs = PublicHoliday.objects.filter(
             company=company,
             date__gte=today
-        ).order_by("date")[:10]
+        ).order_by("date")
+
+        # 2. Slice safely when using it
         upcoming_holidays = [
             {
                 "date": holiday.date,
                 "description": holiday.description,
                 "holiday_type": holiday.holiday_type,
             }
-            for holiday in upcoming_holidays_qs
+            for holiday in upcoming_holidays_qs[:10]  # slicing here is safe
         ]
 
         # 5a. All company holidays (for calendar)
@@ -471,9 +485,12 @@ class DashboardSummaryView(APIView):
         ]
 
         # 6. Upcoming contract expiries
-        upcoming_contract_expiry_qs = employees.filter(
+        # Use the full queryset for filtering
+        upcoming_contract_expiry_qs = employees_qs.filter(
             contract_expiry_date__range=[today, upcoming_range]
         )
+
+        # Slice only when converting to a list
         upcoming_contract_expiry = [
             {
                 "id": emp.id,
@@ -483,8 +500,9 @@ class DashboardSummaryView(APIView):
                 "employee_id": emp.employee_id,
                 "profile_pic": request.build_absolute_uri(emp.profile_pic.url) if emp.profile_pic else None,
             }
-            for emp in upcoming_contract_expiry_qs
+            for emp in upcoming_contract_expiry_qs.order_by('contract_expiry_date')[:5]
         ]
+
 
         # 7. Active employees today
         active_today_count = Attendance.objects.filter(

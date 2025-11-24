@@ -1,7 +1,12 @@
 // redux/attendanceSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchAttendanceList,fetchAttendanceDetail } from '../services/attendanceService';
+import { fetchAttendanceList, fetchAttendanceDetail,fetchDepartmentsAttendance } from '../services/attendanceService';
 
+
+
+// ============================================
+// 1️⃣ Get Attendance List
+// ============================================
 export const getAttendanceList = createAsyncThunk(
   'attendance/getList',
   async (params, thunkAPI) => {
@@ -15,6 +20,9 @@ export const getAttendanceList = createAsyncThunk(
 );
 
 
+// ============================================
+// 2️⃣ Get Attendance Detail
+// ============================================
 export const getAttendanceDetail = createAsyncThunk(
   'attendance/getDetail',
   async ({ attendanceId, date }, thunkAPI) => {
@@ -28,11 +36,41 @@ export const getAttendanceDetail = createAsyncThunk(
 );
 
 
+// ============================================
+// 3️⃣ NEW: Get Department List (Attendance View Only)
+// ============================================
+export const getDepartments = createAsyncThunk(
+  'attendance/getDepartments',
+  async (params, thunkAPI) => {
+    try {
+      const data = await fetchDepartmentsAttendance(params);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Department fetch failed');
+    }
+  }
+);
+
+
+// ============================================
+// Slice
+// ============================================
 const attendanceSlice = createSlice({
   name: 'attendance',
   initialState: {
     attendanceList: [],
     attendanceDetail: null,
+
+    // NEW STATE
+    departmentsAttendance: [],
+    departmentsPagination: {
+      total_pages: 1,
+      current_page: 1,
+      total_items: 0,
+      next: null,
+      previous: null,
+    },
+
     loading: false,
     error: null,
     pagination: {
@@ -43,9 +81,14 @@ const attendanceSlice = createSlice({
       previous: null,
     },
   },
+
   reducers: {},
+
   extraReducers: (builder) => {
     builder
+      // ===================================================
+      //  Attendance List
+      // ===================================================
       .addCase(getAttendanceList.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -65,6 +108,10 @@ const attendanceSlice = createSlice({
         state.loading = false;
         state.error = action.payload || 'Failed to fetch attendance data';
       })
+
+      // ===================================================
+      //  Attendance Detail
+      // ===================================================
       .addCase(getAttendanceDetail.pending, (state) => {
         state.detailLoading = true;
         state.attendanceDetail = null;
@@ -77,6 +124,30 @@ const attendanceSlice = createSlice({
         state.detailLoading = false;
         state.attendanceDetail = null;
         state.error = action.payload;
+      })
+
+      // ===================================================
+      //  NEW: Department List (for Attendance Page)
+      // ===================================================
+      .addCase(getDepartments.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getDepartments.fulfilled, (state, action) => {
+        state.loading = false;
+        state.departmentsAttendance = action.payload.results;
+
+        state.departmentsPagination = {
+          total_pages: Math.ceil(action.payload.count / 10),
+          current_page: action.meta.arg.page || 1,
+          total_items: action.payload.count,
+          next: action.payload.next,
+          previous: action.payload.previous,
+        };
+      })
+      .addCase(getDepartments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to fetch department attendance data';
       });
   },
 });

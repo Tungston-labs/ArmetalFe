@@ -19,11 +19,6 @@ class SafeDateField(serializers.DateField):
             return value.date().isoformat()
         return super().to_representation(value)
 
-
-
-
-
-
 class EmployeeSerializer(serializers.ModelSerializer):
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)

@@ -103,15 +103,9 @@ const country = user?.company?.country || "IN";
 
   // PAN is required only for India
   if (country === "IN") {
-    if (!panNumber.trim()) errors.panNumber = "PAN Number is required.";
-  } else {
-    if (!uanNumber.trim()) errors.uanNumber = "UAN / EPF is required.";
-    if (!taxRegime.trim()) errors.taxRegime = "Tax Regime is required.";
-    if (!tdsAmount || !isDecimal(tdsAmount)) errors.tdsAmount = "TDS Amount must be valid number.";
-    if (!declaration80C.trim()) errors.declaration80C = "Declaration 80C is required.";
-  }
-
-  // Fields always required
+  if (!panNumber.trim()) errors.panNumber = "PAN Number is required.";
+}
+// Fields always required
   if (!bankName.trim()) errors.bankName = "Bank Name is required.";
   if (!paymentMode.trim()) errors.paymentMode = "Payment Mode is required.";
   if (!accountNumber.trim()) errors.accountNumber = "Account Number is required.";

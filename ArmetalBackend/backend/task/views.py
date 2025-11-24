@@ -72,6 +72,32 @@ class HRDailyTaskListView(generics.ListAPIView):
     serializer_class = DailyTaskSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from departments.models import Department
+from .serializers import EmployeeMiniSerializer
+from employee.models import Employee_db
+from rest_framework.response import Response
+
+class EmployeeByDepartmentView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def get(self, request, department_id):
+        # Validate department belongs to the same company
+        try:
+            department = Department.objects.get(
+                pk=department_id, 
+                company=request.user.company
+            )
+        except Department.DoesNotExist:
+            return Response({"detail": "Department not found."}, status=404)
+
+        employees = Employee_db.objects.filter(department=department)
+
+        # Pass request in context so profile_pic URLs are correct
+        serializer = EmployeeMiniSerializer(employees, many=True, context={'request': request})
+        return Response(serializer.data)
+
 # HR:list daily task of particular employee with id
 from datetime import datetime
 

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions,filters
 from .models import Department
-from .serializers import DepartmentSerializer
+from .serializers import DepartmentSerializer,DepartmentMiniSerializer,DepartmentAttendanceSerializer
 from user.permissions import IsHRAdmin  
 from django.utils.timezone import now
 from django.utils import timezone
@@ -16,6 +16,20 @@ from employee.models import Employee_db
 from employee.serializers import EmployeeSerializer
 
 # --------------------create ,list department by admin
+
+
+class DepartmentMiniListView(generics.ListAPIView):
+    serializer_class = DepartmentMiniSerializer
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
+
+    def get_queryset(self):
+        company = self.request.user.company
+        return Department.objects.filter(company=company)
+
+
+
 
 class DepartmentCreateListView(generics.ListCreateAPIView):
     serializer_class = DepartmentSerializer
@@ -81,6 +95,27 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(company=self.request.user.company)
+
+class DepartmentAttendanceListView(generics.ListAPIView):
+    serializer_class = DepartmentAttendanceSerializer
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
+
+    def get_queryset(self):
+        today = timezone.localdate()
+
+        attendance_subquery =  (
+            Attendance.objects
+            .filter(employee__department=OuterRef("pk"), date=today)
+            .values("employee__department")
+            .annotate(c=Count("employee", distinct=True))
+            .values("c")[:1]
+
+        )
+        return Department.objects.annotate(
+            attendance_employee_count=Subquery(attendance_subquery, output_field=IntegerField()))
+
 
 
 

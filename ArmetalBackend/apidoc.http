@@ -169,7 +169,7 @@ Content-Type: application/json
 
 {
   "username": "snv_arm_kak_117",     
-  "password": "password123"  
+  "password": "password1234"  
 }
 
 
@@ -192,8 +192,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 GET http://178.248.112.16:8001/api/departments/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxOTc0Mjc2LCJpYXQiOjE3NjE5NzA2NzYsImp0aSI6IjU4ZWRjYTIzNWU5MTQyOWViYmI3ODdlMWViNDY4MzljIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.Qupfi-VnORcmF7vBJpJmc3T2WNz-I8i6HXmRreop9UU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzNzEyNjI1LCJpYXQiOjE3NjM3MDkwMjUsImp0aSI6IjFhZmNmM2RjNWE0NjRmZjU5ZjgzZDExYTYzMzg3MDE3IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.yrk-LVNrHtI1D3mxwJ1HF-OeCZTWxabq6xS5_ztIbvc
+# list departments
 
+###
+GET http://178.248.112.16:8001/api/deptlist/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzNzIyMTE3LCJpYXQiOjE3NjM3MTg1MTcsImp0aSI6Ijk2NDljNjBlNWZjNTQxOGY5N2I5NWE4MWU4NjQyZmM0IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.uAQskPyzpN3PWbDzr69t3e2_VRUzZ4RUsC0UthkuLnA
 
 # retrieve single department
 ###
@@ -227,9 +231,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 # api for getiing employees with department id
 ###
-GET http://127.0.0.1:8000/api/employees/department/4/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMDY2Nzg4LCJpYXQiOjE3NTAwNjMxODgsImp0aSI6ImI2Mjk1MGFlOWE5NzQyZmNhMTkxMjIxMDg3NzQ0MmQ5IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.VLVVTVqe49ENkC_a0B6xrmozoNYG4RjHluPhpgm8GrE
-
+GET http://178.248.112.16:8001/api/employees/department/87/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzNzEzNzA5LCJpYXQiOjE3NjM3MTAxMDksImp0aSI6ImJjNjkwNTQ3Yzk1MDRlYzFhMjNmMGRhNTBmNTYwNjAyIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.bT8Bknh4RIEAKfkdRpXmrtalS4wK34wTp0_7LZdNNw4
+###
+GET http://178.248.112.16:8001/api/dept-attendance/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzNzA4Mzc2LCJpYXQiOjE3NjM3MDQ3NzYsImp0aSI6Ijg3ZmI1NGM5MGRlYzRkOTNiOWY1ODBjN2UwOGViMDRjIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.HjH05Jq2OfRLxgjiRaGHoecmo4Ub-QFq2o3ykhK_GKY
 # create employee
 
 
@@ -325,7 +331,7 @@ Content-Type: application/json
 
 {
   "username": "snv_arm_kak_117",     
-  "password": "password123"  
+  "password": "password1234"  
 }
 
 
@@ -495,8 +501,8 @@ GET http://127.0.0.1:8000/api/admin/tasks/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4ODU5OTEyLCJpYXQiOjE3NDg4NTYzMTIsImp0aSI6ImNmYTViNGEyZDg4YzQxZTJiNzM2ODMyNzM5ZWIzNzdmIiwidXNlcl9pZCI6M30.fUCQkANJ3_SYvBIB8djOGCrNaH1HvGqvcc5l98wKZoU
 
 ### HR Admin: List Tasks by Employee ID
-GET http://178.248.112.16:8001/api/admin/tasks/employee/10/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMTQ3MDE0LCJpYXQiOjE3NTAxNDM0MTQsImp0aSI6IjJlZTc2N2ZlYzkyMjRlNzg4Y2VmN2Y4NDg1YWQzZTdlIiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.LGltLB6FrNheMhXJ8CUmWSlwPnB-MNEtp4rvn8Kt4t4
+GET http://178.248.112.16:8001/api/admin/tasks/employee/343/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzNzE2MDIxLCJpYXQiOjE3NjM3MTI0MjEsImp0aSI6IjdjOGFiZmNjZDRmZTQwODQ4YTYxYTc1NGJhMGZlOTQ4IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.wYZM2eXxTse9yNgQrkq9Yi_yxJsVsAWUh--sVdF3M14
 
 # -------------employee attendance------------------
 

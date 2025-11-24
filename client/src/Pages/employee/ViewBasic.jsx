@@ -191,6 +191,11 @@ const ViewBasic = () => {
                 <Label>Joining Date</Label>
                 <Input name="joining_date" value={formData.joining_date || ""} onChange={handleChange} />
               </FieldGroup>
+      <FieldGroup>
+                <Label>Employment Type</Label>
+                <Input name="employment_type" value={formData.employment_type || ""} onChange={handleChange} />
+              </FieldGroup>
+
             </Rowes>
             <Rowes>
               <FieldGroup>
@@ -204,13 +209,7 @@ const ViewBasic = () => {
                   ))}
                 </Select>
               </FieldGroup>
-              <FieldGroup>
-                <Label>Employment Type</Label>
-                <Input name="employment_type" value={formData.employment_type || ""} onChange={handleChange} />
-              </FieldGroup>
-            </Rowes>
-            <Rowes>
-              <FieldGroup>
+  <FieldGroup>
                 <Label>Total Leaves</Label>
                 <Input
                   type="number"
@@ -222,7 +221,7 @@ const ViewBasic = () => {
                   onWheel={(e) => e.target.blur()}
                 />
               </FieldGroup>
-              <FieldGroup>
+    <FieldGroup>
                 <Label>Paid Leave</Label>
                 <Input
                   type="number"
@@ -234,13 +233,20 @@ const ViewBasic = () => {
                   onWheel={(e) => e.target.blur()}
                 />
               </FieldGroup>
+
+        
             </Rowes>
+          
+            
+          
+        
           </CardContent>
         </Card>
         <Card>
           <CardHeader>Employee Legal & ID Information</CardHeader>
           <CardContent>
             <Column>
+              <Rowes>
               <FieldGroup>
                 <Label>Phone Number</Label>
                 <Input name="phno" value={formData.phno || ""} onChange={handleChange} />
@@ -249,6 +255,26 @@ const ViewBasic = () => {
                 <Label>Passport Number</Label>
                 <Input name="passport_number" value={formData.passport_number || ""} onChange={handleChange} />
               </FieldGroup>
+ <FieldGroup>
+                <Label>Role</Label>
+                <Select name="role" value={formData.role || ""} onChange={handleChange}>
+                  <option value="">Select Role</option>
+                  <option value="employee">Employee</option>
+                  <option value="hr">HR</option>
+                  <option value="manager">Manager</option>
+                </Select>
+              </FieldGroup>
+
+</Rowes>
+ <Rowes>
+
+
+
+              <FieldGroup>
+                <Label>Contract Expiry Date</Label>
+                <Input type="date" name="contract_expiry_date" value={formData.contract_expiry_date || ""} onChange={handleChange} />
+              </FieldGroup>
+
 
               {formData?.company?.country === "IN" ? (
                 <FieldGroup>
@@ -272,20 +298,8 @@ const ViewBasic = () => {
                 </>
               )}
 
-              <FieldGroup>
-                <Label>Role</Label>
-                <Select name="role" value={formData.role || ""} onChange={handleChange}>
-                  <option value="">Select Role</option>
-                  <option value="employee">Employee</option>
-                  <option value="hr">HR</option>
-                  <option value="manager">Manager</option>
-                </Select>
-              </FieldGroup>
-
-              <FieldGroup>
-                <Label>Contract Expiry Date</Label>
-                <Input type="date" name="contract_expiry_date" value={formData.contract_expiry_date || ""} onChange={handleChange} />
-              </FieldGroup>
+              </Rowes>
+  
 
               <FieldGroup>
                 <Label>ID Card</Label>

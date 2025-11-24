@@ -82,8 +82,9 @@ export const Card = styled.div`
 
 export const CardHeader = styled.div`
   font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 15px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #304EB0;
 `;
 
 export const CardContent = styled.div`

@@ -1,21 +1,11 @@
 // pages/ViewBankpayment.jsx
 import React, { useEffect, useState } from "react";
 import {
-  Container,
-  Headers,
-  Rightside,
-  EditButton,
-  Hr,
-  TitleSection,
-  EmployeeImage,
-  HeaderWrapper,
   Section,
-  Tabs,
-  Tab,
 } from "./ViewBankpayment.Styles";
 
 import { LuArrowLeft } from "react-icons/lu";
-import Table from "../../Components/Table";
+import ViewTableBank from "./ViewTableBank";
 import { useParams, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -26,9 +16,6 @@ import {
 } from "../../Redux/employeeSlice";
 
 import SyncLoader from "../../Components/Loder";
-import EmployeeIcon from "../../assets/employeeicon.svg";
-import { ResponsiveH3 } from "./ViewDocument.Styles";
-import Header from "../../Components/Header";
 import Swal from "sweetalert2";
 import ViewBasicLayout from "./layout/ViewLayout";
 
@@ -162,7 +149,7 @@ const ViewBankPayment = () => {
     >
 
         <Section>
-          <Table
+          <ViewTableBank
             isEditMode={true}
             setBankProofImage={setBankProofImage}
             bankName={bankName}
