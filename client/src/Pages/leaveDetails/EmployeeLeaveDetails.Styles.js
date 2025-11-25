@@ -14,6 +14,7 @@ export const PageCard = styled.div`
   border-radius: 12px;
   border: 1px solid #ebebebff;
   // border:none;
+  margin-top:20px;
   width: 100%;
 `;
 export const SectionTitle = styled.h3`

@@ -1,4 +1,4 @@
-// ProjectChart.jsx
+
 import React from "react";
 import {
   ResponsiveContainer,
@@ -16,7 +16,6 @@ import {
   TooltipBox
 } from "./ProjectChart.Styles";
 
-// Custom Tooltip (Cleaned)
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
@@ -39,8 +38,7 @@ const ProjectChart = ({ site, variant, bench }) => {
   return (
     <ChartCard>
       <ChartTitle>Project Summary</ChartTitle>
-
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={300}>
         <BarChart 
           data={data}
           margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
@@ -63,7 +61,7 @@ const ProjectChart = ({ site, variant, bench }) => {
 
           <Tooltip content={<CustomTooltip />} />
 
-          {/* Gradient */}
+
           <defs>
             <linearGradient id="barColor" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#3b5bff" stopOpacity={0.9} />
@@ -76,7 +74,7 @@ const ProjectChart = ({ site, variant, bench }) => {
             fill="url(#barColor)"
             radius={[10, 10, 0, 0]}
             barSize={50}
-            animationDuration={900}
+       animationDuration={4000}
           />
         </BarChart>
       </ResponsiveContainer>

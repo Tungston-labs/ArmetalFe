@@ -8,6 +8,7 @@ import {
     Tooltip,
     ResponsiveContainer
 } from "recharts";
+import { ChartWrapper, ChartTitle } from "./ReimbursementSummary.Styles";
 
 const data = [
     { month: "Jan", amount: 20 },
@@ -26,23 +27,28 @@ const data = [
 
 const ReimbursementLineChart = () => {
     return (
-        <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="month" stroke="#475569" />
-                <YAxis stroke="#475569" />
-                <Tooltip />
+        <ChartWrapper>
+            <ChartTitle> Reimbursement Summary</ChartTitle>
 
-                <Line
-                    type="monotone"
-                    dataKey="amount"
-                    stroke="#2563eb"
-                    strokeWidth={3}
-                    dot={{ r: 4, fill: "#2563eb" }}
-                    activeDot={{ r: 6 }}
-                />
-            </LineChart>
-        </ResponsiveContainer>
+            <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="month" stroke="#475569" />
+                    <YAxis stroke="#475569" />
+                    <Tooltip />
+
+                    <Line
+                        type="monotone"
+                        dataKey="amount"
+                        stroke="#2563eb"
+                        strokeWidth={3}
+                        dot={{ r: 4, fill: "#2563eb" }}
+                        activeDot={{ r: 6 }}
+                        animationDuration={5000}
+                    />
+                </LineChart>
+            </ResponsiveContainer>
+        </ChartWrapper>
     );
 };
 

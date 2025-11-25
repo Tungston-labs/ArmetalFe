@@ -57,8 +57,8 @@ export const DepartmentHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // padding: 0.8rem 1rem;
-  border-bottom: 1px solid #ddd; 
+  padding: 0.5rem;           
+  border-bottom: 1px solid #ddd;
   cursor: pointer;
   background-color: #fff;
 `;
@@ -73,7 +73,7 @@ export const DepartmentIcon = styled.div`
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: #172554;   /* Blue background */
+  background-color: #172554;   
   color: white;
   display: flex;
   align-items: center;

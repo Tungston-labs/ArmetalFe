@@ -1,0 +1,167 @@
+import styled from "styled-components";
+
+export const Wrapper = styled.div`
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+
+  @media (min-width: 1920px) {
+    padding: 20px;
+  }
+`;
+
+export const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+
+  @media (min-width: 1920px) {
+    margin-bottom: 20px;
+  }
+`;
+
+export const Title = styled.h4`
+  margin: 0;
+  font-size: 17px;
+  color: #0f172a;
+  font-weight: 700;
+
+  @media (max-width: 600px) {
+    font-size: 15px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 22px;
+  }
+`;
+
+export const List = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media (min-width: 1920px) {
+    gap: 20px;
+  }
+`;
+
+export const ListItem = styled.div`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  @media (max-width: 600px) {
+    gap: 10px;
+  }
+
+  @media (min-width: 1920px) {
+    gap: 24px;
+  }
+`;
+
+export const ExpiryBox = styled.div`
+  width: 70px;
+  padding: 10px 0;
+  border-radius: 12px;
+  text-align: center;
+  background: ${({ highlight }) =>
+    highlight ? "linear-gradient(180deg,#fee2e2,#fecaca)" : "#f1f5f9"};
+  border: ${({ highlight }) =>
+    highlight ? "1px solid #dc2626" : "1px solid #e2e8f0"};
+  color: ${({ highlight }) => (highlight ? "#7f1d1d" : "#0f172a")};
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .day {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 2px;
+
+    @media (max-width: 600px) {
+      font-size: 16px;
+    }
+
+    @media (min-width: 1920px) {
+      font-size: 26px;
+    }
+  }
+
+  .month {
+    font-size: 12px;
+    text-transform: uppercase;
+
+    @media (max-width: 600px) {
+      font-size: 10px;
+    }
+
+    @media (min-width: 1920px) {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    width: 55px;
+    padding: 6px 0;
+  }
+
+  @media (min-width: 1920px) {
+    width: 90px;
+    padding: 14px 0;
+  }
+`;
+
+export const Info = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  @media (min-width: 1920px) {
+    gap: 6px;
+  }
+`;
+
+export const Name = styled.span`
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 15px;
+
+  @media (max-width: 600px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 20px;
+  }
+`;
+
+export const IdText = styled.span`
+  color: #64748b;
+  font-size: 13px;
+
+  @media (max-width: 600px) {
+    font-size: 11px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 16px;
+  }
+`;
+
+export const NoData = styled.div`
+  text-align: center;
+  padding: 20px 0;
+  color: #94a3b8;
+  font-size: 14px;
+
+  @media (max-width: 600px) {
+    font-size: 12px;
+    padding: 12px 0;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 18px;
+    padding: 28px 0;
+  }
+`;

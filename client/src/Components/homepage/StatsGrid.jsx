@@ -12,14 +12,14 @@ const StatsGrid = () => {
         number="142" 
         label="Total Employees" 
         icon={FaUsers}
-        route="/employees"
+        route="/employee"
       />
 
       <StatsCard 
         number="12" 
         label="Leave Requests" 
         icon={MdPendingActions}
-        route="/leave-requests"
+        route="/employee-leave-request"
       />
 
       <StatsCard 
@@ -27,13 +27,13 @@ const StatsGrid = () => {
         label="Visa Expiring /
          Contract Expiring" 
         icon={FaPassport}
-        route="/visa-expiry"
+        route="/employee-Contract-Visa-Expiry"
       />
         <StatsCard 
         number="8" 
         label="Attendance" 
         icon={FaFileContract}
-        route="/contract-expiry"
+        route="/employee-attendance"
       />
     </Grid>
   );

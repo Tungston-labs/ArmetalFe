@@ -11,25 +11,20 @@ import {
 } from "./ReimbursementSummary.Styles";
 
 import ReimbursementLineChart from "./ReimbursementLineChart"; 
-// <-- Your line graph component
 
 const ReimbursementSummary = () => {
   return (
     <MainWrapper>
-
-      {/* LEFT SIDE – LINE GRAPH */}
       <LeftChart>
         <ReimbursementLineChart />
       </LeftChart>
-
-      {/* RIGHT SIDE – 4 CARDS */}
       <RightCards>
      <CardGrid>
 
   <CardBox style={{borderTopColor:"#3352BA"}} >
     <Title>Total Requests</Title>
     <Count>120</Count>
-    <Subtext>Overall reimbursement raised</Subtext>
+    <Subtext>Overall Request raised</Subtext>
   </CardBox>
 
   <CardBox  style={{borderTopColor:"#f59e0b"}}>

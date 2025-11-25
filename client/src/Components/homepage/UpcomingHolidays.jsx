@@ -1,10 +1,11 @@
-// UpcomingHolidays.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom"; // import this
 import {
   Wrapper,
   Header,
   Title,
   SmallMeta,
+  CalendarIcon,
   List,
   ListItem,
   DayBox,
@@ -29,16 +30,32 @@ function daysFromToday(dateStr) {
   return Math.round(diff / (1000 * 60 * 60 * 24));
 }
 
-const UpcomingHolidays = ({ holidays = [], showCount = 5, onViewAll }) => {
+const UpcomingHolidays = ({ holidays = [], showCount = 5, onCalendarClick }) => {
+  const navigate = useNavigate(); // initialize navigate
 
   const sorted = [...holidays].sort((a,b) => new Date(a.date) - new Date(b.date));
   const list = sorted.slice(0, showCount);
+
+  // Today's date
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.toLocaleString("en-US", { month: "short" }).toUpperCase();
+
+  const handleViewAll = () => {
+    navigate("/holiday"); // set the route you want
+  };
 
   return (
     <Wrapper>
       <Header>
         <Title>Upcoming Holidays</Title>
-        <SmallMeta>{holidays.length} total</SmallMeta>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <CalendarIcon onClick={onCalendarClick}>
+            <img src="/images/calendar.png" alt="calendar" className="cal-img" />
+            <span className="cal-month">{month}</span>
+            <span className="cal-day">{day}</span>
+          </CalendarIcon>
+        </div>
       </Header>
 
       <List>
@@ -65,7 +82,7 @@ const UpcomingHolidays = ({ holidays = [], showCount = 5, onViewAll }) => {
         })}
       </List>
 
-      {onViewAll && <ViewAll onClick={onViewAll}>View all holidays</ViewAll>}
+      <ViewAll onClick={handleViewAll}>View all holidays</ViewAll>
     </Wrapper>
   );
 };

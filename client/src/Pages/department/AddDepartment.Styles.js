@@ -74,7 +74,7 @@ export const Title = styled.h2`
 `;
 
 export const Form = styled.form`
-  display: flex;
+  // display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
 
@@ -119,7 +119,7 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #fa1212ff;
   border-radius: 6px;
   font-size: 16px;
   outline: none;
