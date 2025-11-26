@@ -4,7 +4,7 @@ const colors = {
 primaryDark: '#172554',   
   primary: '#3352BA',     
   secondary: '#3352BA',     
-  background: '#d1d6dbff',   
+  background: ' #f4f8ff;',   
   panelBg: '#FFFFFF',       
   text: '#212121',
   lightText: '#757575',
@@ -206,7 +206,7 @@ export const MainContent = styled.div`
   min-width: 0; 
   gap:20px;
 
-    @media (min-width: 768px) and (max-width:1300px) {
+    @media (min-width: 768px) and (max-width:1024px) {
 flex-direction:column;
 `;
 
@@ -425,7 +425,7 @@ export const TaskList = styled.ul`
   li {
     padding: 15px;
     margin-bottom: 12px;
-    background-color: ${colors.background};
+    background-color: #f4f8ff;
     border-radius: 10px;
     color: ${colors.text};
     box-shadow: 0 2px 4px ${colors.shadowLight};
@@ -470,7 +470,7 @@ export const EmployeePanel = styled.div`
 `;
 
 export const PanelContainer = styled.div`
-  flex: 2; /* Wider panel */
+  flex: 2; /
   min-width: 350px;
   padding: 15px;
   border-radius: 8px;
@@ -525,7 +525,12 @@ export const EmployeePanelWrapper = styled.div`
     padding: 30px;
     box-shadow: 0 6px 20px ${colors.shadowMedium};
 
-    @media (min-width: 768px) and (max-width: 1300px) {
+@media (min-width: 1200px) and (max-width: 1300px) {
+      width: 200px;
+      padding: 15px;
+      box-shadow: 0 8px 24px ${colors.shadowMedium};
+  }
+    @media (min-width: 768px) and (max-width: 1119px) {
       width: 100%;
       padding: 15px;
       box-shadow: 0 8px 24px ${colors.shadowMedium};
@@ -533,7 +538,7 @@ export const EmployeePanelWrapper = styled.div`
   
   }
  
-  @media (min-width: 768px) and (max-width: 1300px) {
+  @media (min-width: 768px) and (max-width: 1024px) {
     width: ${(props) => (props.$visible ? "100%" : "0")};
     padding: ${(props) => (props.$visible ? "0 15px 0 0" : "0")};
   }

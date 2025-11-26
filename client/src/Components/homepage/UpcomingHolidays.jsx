@@ -3,18 +3,17 @@ import { useNavigate } from "react-router-dom"; // import this
 import {
   Wrapper,
   Header,
-  Title,
   SmallMeta,
   CalendarIcon,
   List,
   ListItem,
   DayBox,
   Info,
-  Name,
   Type,
   ViewAll,
   NoData
 } from "./UpcomingHolidays.styles";
+import { Name, Title } from "./RecentlyAddedEmployees.styles";
 
 function formatDateShort(dateStr) {
   const d = new Date(dateStr);

@@ -2,15 +2,13 @@ import React from "react";
 import {
   Wrapper,
   Header,
-  Title,
   List,
   ListItem,
   ExpiryBox,
   Info,
-  Name,
-  IdText,
   NoData
 } from "./EmployeeContractExpiry.styles";
+import { IdText, Name, Title } from "./RecentlyAddedEmployees.styles";
 
 function daysLeft(dateStr) {
   const today = new Date();

@@ -96,7 +96,7 @@ function App() {
         <Route path="/payrolls" element={<Payroll1 />} />
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />}>
-            <Route index element={<DashboardNew />} />
+            <Route index element={<HomeDashboard />} />
             <Route path="/department" element={<DepartmentList />} />
             <Route path="/departments/:id" element={<DepartmentDetails />} />
             <Route path="/employee" element={<EmployeeList />} />

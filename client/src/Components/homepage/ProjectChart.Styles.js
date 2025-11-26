@@ -4,26 +4,31 @@ export const ChartCard = styled.div`
   background: white;
   border-radius: 16px;
   padding: 20px;
+  width: 100%;
+  max-width: 100%;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 
   @media (max-width: 992px) {
-    padding: 18px;
+    padding: 16px;
     border-radius: 14px;
   }
 
   @media (max-width: 600px) {
-    padding: 14px;
+    padding: 12px;
     border-radius: 12px;
   }
 
+  /* Large screen improvements */
   @media (min-width: 1920px) {
     padding: 28px;
-    border-radius: 20px;
   }
 
   @media (min-width: 2560px) {
-    padding: 58px;
-    border-radius: 24px;
+    padding: 40px;
+  }
+
+  @media (min-width: 3840px) {
+    padding: 60px;
   }
 `;
 
@@ -46,7 +51,11 @@ export const ChartTitle = styled.h3`
   }
 
   @media (min-width: 2560px) {
-    font-size: 26px;
+    font-size: 28px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 34px;
   }
 `;
 
@@ -55,7 +64,6 @@ export const TooltipBox = styled.div`
   padding: 10px 14px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  border: 1px solid #e2e8f0;
 
   .label {
     margin: 0;
@@ -68,17 +76,20 @@ export const TooltipBox = styled.div`
     }
 
     @media (min-width: 1920px) {
-      font-size: 16px;
+      font-size: 18px;
     }
 
     @media (min-width: 2560px) {
-      font-size: 18px;
+      font-size: 20px;
+    }
+
+    @media (min-width: 3840px) {
+      font-size: 24px;
     }
   }
 
   .value {
-    margin: 0;
-    margin-top: 4px;
+    margin: 4px 0 0;
     color: #3b5bff;
     font-weight: 500;
     font-size: 14px;
@@ -88,23 +99,42 @@ export const TooltipBox = styled.div`
     }
 
     @media (min-width: 1920px) {
-      font-size: 16px;
+      font-size: 18px;
     }
 
     @media (min-width: 2560px) {
-      font-size: 18px;
+      font-size: 20px;
+    }
+
+    @media (min-width: 3840px) {
+      font-size: 24px;
     }
   }
+`;
+export const ChartWrapper = styled.div`
+  width: 100%;
+  height: 300px;     
 
-  @media (max-width: 600px) {
-    padding: 8px 10px;
+  /* Tablets */
+  @media (max-width: 1024px) {
+    height: 300px;
   }
 
+
+
+  /* Large screens (1920p) */
   @media (min-width: 1920px) {
-    padding: 12px 16px;
+    height: 280px;
   }
+
 
   @media (min-width: 2560px) {
-    padding: 16px 20px;
+    height: 335px;
+  }
+
+  /* 4K screens */
+  @media (min-width: 3840px) {
+    height: 26vh;
   }
 `;
+
