@@ -36,7 +36,6 @@ const AttendanceList = () => {
   const [loadingDept, setLoadingDept] = useState(false);
 
   const pageSize = 10;
-
   const { list: departmentList = [], loading } = useSelector(
     (state) => state.departments
   );
@@ -45,7 +44,11 @@ const AttendanceList = () => {
     dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
 
-  // ------------------ TIME HELPERS ---------------------
+  const parseTimeToTimestamp = (timeStr) => {
+    const d = new Date(timeStr);
+    return isNaN(d.getTime()) ? NaN : d.getTime();
+  };
+
   const formatTime = (datetimeStr) => {
     if (!datetimeStr) return "-";
     try {
@@ -60,46 +63,11 @@ const AttendanceList = () => {
     }
   };
 
-  const parseTimeToTimestamp = (timeStr) => {
-    const d = new Date(timeStr);
-    return isNaN(d.getTime()) ? NaN : d.getTime();
-  };
-
-  const getEarliestTimestamp = (sessions) => {
-    const times = (sessions || [])
-      .map((s) => parseTimeToTimestamp(s.time_in))
-      .filter((t) => !isNaN(t));
-    return times.length ? Math.min(...times) : Infinity;
-  };
-
-  const getEarliestTimeIn = (sessions) => {
-    const earliest = getEarliestTimestamp(sessions);
-    return isFinite(earliest) ? formatTime(earliest) : "-";
-  };
-
-const getConditionalTimeOut = (sessions) => {
-  if (!sessions || sessions.length === 0) return "-";
-
-  // find session with latest time_in
-  const latestInSession = sessions.reduce((latest, current) => {
-    const latestIn = parseTimeToTimestamp(latest.time_in);
-    const currentIn = parseTimeToTimestamp(current.time_in);
-    return currentIn > latestIn ? current : latest;
-  });
-
-  // return that session's time_out only
-  return latestInSession.time_out
-    ? formatTime(latestInSession.time_out)
-    : "-";
-};
-
-
   const paginate = (items, page) => {
     const start = (page - 1) * pageSize;
     return items.slice(start, start + pageSize);
   };
 
-  // ------------------ DATA LOADERS ---------------------
   const groupByEmployee = (records) => {
     const map = {};
     records.forEach((emp) => {
@@ -131,7 +99,6 @@ const getConditionalTimeOut = (sessions) => {
       return;
     }
     setSelectedDept(deptId);
-
     setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
 
     if (!departmentAttendance[deptId]) {
@@ -141,25 +108,53 @@ const getConditionalTimeOut = (sessions) => {
 
   const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
 
-  // ----------------- FILTER + SORT -----------------------
-  const processedDepartments = (departmentList || []).map((dept) => {
-    const employees = departmentAttendance[dept.id] || [];
+  // ----------------- FILTER + SEARCH -----------------------
+  const [filteredDepartments, setFilteredDepartments] = useState([]);
 
-    const s = searchText.toLowerCase();
-    const matches = employees.filter((e) =>
-      (e.employee_name || "").toLowerCase().includes(s)
-    );
+  useEffect(() => {
+    const fetchAndFilter = async () => {
+      if (!searchText) {
+        setFilteredDepartments(
+          departmentList.map((dept) => ({
+            ...dept,
+            employees: departmentAttendance[dept.id] || [],
+          }))
+        );
+        return;
+      }
 
-    const sorted = [...matches].sort((a, b) => {
-      const ta = getEarliestTimestamp(a.sessions);
-      const tb = getEarliestTimestamp(b.sessions);
-      if (ta === tb)
-        return (a.employee_name || "").localeCompare(b.employee_name || "");
-      return ta - tb;
-    });
+      const promises = departmentList.map(async (dept) => {
+        if (!departmentAttendance[dept.id]) {
+          await loadAttendanceForDept(dept.id);
+        }
+      });
 
-    return { ...dept, employees: sorted };
-  });
+      await Promise.all(promises);
+
+      const filtered = departmentList
+        .map((dept) => {
+          const employees = departmentAttendance[dept.id] || [];
+          const matches = employees.filter((e) =>
+            (e.employee_name || "")
+              .toLowerCase()
+              .includes(searchText.toLowerCase())
+          );
+          return { ...dept, employees: matches };
+        })
+        .filter((dept) => dept.employees.length > 0);
+
+      setFilteredDepartments(filtered);
+    };
+
+    fetchAndFilter();
+  }, [searchText, departmentList, departmentAttendance]);
+
+  const departmentsToRender = searchText
+    ? filteredDepartments
+    : departmentList.map((dept) => ({
+        ...dept,
+        employees: departmentAttendance[dept.id] || [],
+      }));
 
   return (
     <PageContainer>
@@ -167,7 +162,7 @@ const getConditionalTimeOut = (sessions) => {
         iconSrc={EmployeeIcon}
         showAddButton={false}
         showDropdown={false}
-        onSearchChange={setSearchText} 
+        onSearchChange={setSearchText}
         showBackArrow={false}
       />
 
@@ -175,11 +170,10 @@ const getConditionalTimeOut = (sessions) => {
         <Loader />
       ) : (
         <DepartmentGrid>
-          {processedDepartments.map((dept) => {
+          {departmentsToRender.map((dept) => {
             const isOpen = selectedDept === dept.id;
             const employees = dept.employees || [];
 
-            // PAGINATION VARIABLES
             const currentPage = pageByDept[dept.id] || 1;
             const totalPages = Math.ceil(employees.length / pageSize) || 1;
             const paginated = paginate(employees, currentPage);
@@ -193,7 +187,10 @@ const getConditionalTimeOut = (sessions) => {
                     <DepartmentName>{dept.name}</DepartmentName>
                   </LeftWrapper>
                   <EmployeeCount>
-                    {dept.attendance_employee_count || 0} Employees
+                    {searchText
+                      ? dept.employees?.length || 0
+                      : dept.attendance_employee_count || 0}{" "}
+                    Employees
                   </EmployeeCount>
                 </DepartmentHeader>
 
@@ -215,8 +212,25 @@ const getConditionalTimeOut = (sessions) => {
                         </EmployeeItem>
                       ) : paginated.length > 0 ? (
                         paginated.map((emp, idx) => {
-                          const tIn = getEarliestTimeIn(emp.sessions);
-                          const tOut = getConditionalTimeOut(emp.sessions);
+                          const sessions = emp.sessions || [];
+
+                          // First punch in
+                          const inTimes = sessions
+                            .map((s) => parseTimeToTimestamp(s.time_in))
+                            .filter((t) => !isNaN(t));
+                          const tIn = inTimes.length
+                            ? formatTime(Math.min(...inTimes))
+                            : "-";
+
+                          // Last punch out or '---' if last action is punch in
+                          let tOut = "-";
+                          if (sessions.length > 0) {
+                            const lastSession = sessions[sessions.length - 1];
+                            tOut =
+                              lastSession.time_out && lastSession.time_out !== ""
+                                ? formatTime(parseTimeToTimestamp(lastSession.time_out))
+                                : "---";
+                          }
 
                           return (
                             <EmployeeRow
@@ -224,12 +238,8 @@ const getConditionalTimeOut = (sessions) => {
                               onClick={() => handleRowClick(emp.id)}
                             >
                               <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
-                              <EmployeeCell>
-                                {emp.employee_name || "-"}
-                              </EmployeeCell>
-                              <EmployeeCell>
-                                {emp.employee_id || "-"}
-                              </EmployeeCell>
+                              <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
+                              <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.date || "-"}</EmployeeCell>
                               <EmployeeCell>{tIn}</EmployeeCell>
                               <EmployeeCell>{tOut}</EmployeeCell>
@@ -241,7 +251,6 @@ const getConditionalTimeOut = (sessions) => {
                       )}
                     </EmployeeList>
 
-                    {/* PAGINATION BUTTONS */}
                     {employees.length > pageSize && (
                       <div
                         style={{
@@ -261,11 +270,9 @@ const getConditionalTimeOut = (sessions) => {
                         >
                           Prev
                         </button>
-
                         <span>
                           Page {currentPage} / {totalPages}
                         </span>
-
                         <button
                           disabled={currentPage === totalPages}
                           onClick={() =>

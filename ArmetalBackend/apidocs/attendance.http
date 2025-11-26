@@ -1,0 +1,65 @@
+# -------------employee attendance------------------
+
+
+
+# list out employee attendance for admin
+###
+GET http://178.248.112.16:8001/api/admin/attendance/?department_id=92
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxODkyNzE4LCJpYXQiOjE3NjE4ODkxMTgsImp0aSI6ImUzOGI5MjA5MGQ0NTRiZWE4MDY1M2YzYTVjNmEyYTJiIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.KjKa2eImLmI8W5taRNDhhiLElAuh10oyWwQFFWgdIjU
+
+# lst todays punch in punch outs
+###
+GET http://127.0.0.1:8000/api/attendance/today/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMjQxOTQ1LCJpYXQiOjE3NTAyMzgzNDUsImp0aSI6IjI4MWQ5ODZjNjZhZTQyZWY5ODUyYzNkOGUyNWM4ZjM3IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.BTsFlZA1_afrz9BSRQliKToGjCpLKMnhKw8127TDsS0
+
+
+# attendance detail view(hr admin)
+
+###
+# GET http://178.248.112.16:8001/api/admin/attendance/31/
+GET http://178.248.112.16:8001/api/admin/attendance/156/?date=2025-11-02
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMTUyNTk2LCJpYXQiOjE3NjIxNDg5OTYsImp0aSI6IjdiYjU2OTgzNmNjNjQ5YTRiY2JmMTkzNDY5OTM5ZjY0IiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.J8Z9bOf_WAaoupZ8v0RVywdM8uJfGBSSqbM5WI0YOSs
+
+# list out employee attendance for admin
+###
+GET http://127.0.0.1:8000/api/admin/attendance/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MTU0MTE1LCJpYXQiOjE3NTUxNTA1MTUsImp0aSI6ImQ5MDg5YTlmOTMzNzQ3YmJiZGEyMjM1ZWM1YmYyYTMxIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.xUTauo3dU-UttK9xeeHTnXbeApDWsWcTH423zNSxf4c
+
+#================================MOBILE  APP==========
+
+### Swipe (Punch In/Out) -FOR EMPLOYEE
+
+
+POST http://178.248.112.16:8001/api/attendance/swipe/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMzMzODQwLCJpYXQiOjE3NjAzMzAyNDAsImp0aSI6IjUxYzNkNzc0YTY2NDQ5ODc5MGRiNmU2M2YxZTFkOTNhIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.nAne_hHjZPwJGrEEyWqW3hRIfUfF74NDPFGy6aybjDA
+Content-Type: application/json
+
+{
+  "latitude": 10.1060,
+  "longitude": 76.4730
+}
+
+
+# list todays punch in punch outs
+###
+GET http://178.248.112.16:8001/api/attendance/today/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0ODk4MzE1LCJpYXQiOjE3NTQ4OTQ3MTUsImp0aSI6ImNmZWFjNmJiNTRmOTRmODg4NmM4YjJiYzIwZjZiZGUwIiwidXNlcl9pZCI6NzMsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.RgcG8gjGcZF_bnv2OQNxlZu27n9FtO8OlBRpSoQ8g0I
+
+#api for getting employees attendance details
+### 
+GET http://localhost:8000/api/attendance/summary/?month=2025-07
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODY1MzQ1LCJpYXQiOjE3NTM4NjE3NDUsImp0aSI6ImZkMGI2ZWQwMmYwNDRmMjM5YTNmNjExMjNlNjA0MzNjIiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.YI9aiNaDDaX_uz1XpPTGxfIYdPVkggdib5yRDZeR1qA
+
+###punchout note
+PATCH http://localhost:8000/api/attendance/add-note/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
+
+{
+  "note": "Left early due to a dentist appointment"
+}
+
+###
+GET http://178.248.112.16:8001/api/admin/attendance/53/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MDY5NDE5LCJpYXQiOjE3NTUwNjU4MTksImp0aSI6IjFmOTQ1MTI4MTljMTQxNGM4MGZhMzUyZGNkNmZlZmQ4IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlfQ.lfUVZax20FJm_OsHmNEI0SSZBalit5RwZ0bSWJuG7O8
+
