@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
 import { FiPlus } from "react-icons/fi";
+import { GoArrowLeft } from "react-icons/go";
+import { PiUserCirclePlusThin } from "react-icons/pi";
 import {
   ProfileContainer,
   ProfileCard,
@@ -13,10 +15,9 @@ import {
   BioBox,
   InfoRow,
   BackArrowWrapper,
-  UserIconWrapper, 
+  UserIconWrapper,
 } from "./Header.Styles";
-import { GoArrowLeft } from "react-icons/go";
-import { PiUserCirclePlusThin } from "react-icons/pi";
+
 const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBack }) => {
   const fileInputRef = useRef(null);
 
@@ -29,58 +30,61 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && onImageChange) {
-      onImageChange(file); // only pass File, not URL
+      onImageChange(file);
     }
   };
 
   return (
     <ProfileContainer>
       <ProfileCard>
+        {/* Back Button */}
         {onBack && (
           <BackArrowWrapper onClick={onBack}>
-        <GoArrowLeft   style={{  color: "#1034ad"}}/>
+            <GoArrowLeft size={24} color="#1034ad" />
           </BackArrowWrapper>
         )}
 
-<ProfileImageWrapper>
-  {employee?.profile_pic ? (
-    <ProfileImage
-      src={
-        employee.profile_pic instanceof File
-          ? URL.createObjectURL(employee.profile_pic)
-          : employee.profile_pic
-      }
-      alt="Employee Profile"
-      onClick={handleImageClick}
-      editable={editable}
-    />
-  ) : (
-    <UserIconWrapper onClick={handleImageClick} editable={editable}>
-      <PiUserCirclePlusThin size={120} />
-    </UserIconWrapper>
-  )}
+        {/* Profile Image */}
+        <ProfileImageWrapper>
+          {employee?.profile_pic ? (
+            <ProfileImage
+              src={
+                employee.profile_pic instanceof File
+                  ? URL.createObjectURL(employee.profile_pic)
+                  : employee.profile_pic
+              }
+              alt="Employee Profile"
+              onClick={handleImageClick}
+              editable={editable}
+            />
+          ) : (
+            <UserIconWrapper onClick={handleImageClick} editable={editable}>
+              <PiUserCirclePlusThin size={120} color="#ccc" />
+            </UserIconWrapper>
+          )}
 
-  {editable && (
-    <PlusIconWrapper onClick={handleImageClick}>
-      <FiPlus size={24} />
-    </PlusIconWrapper>
-  )}
+          {editable && (
+            <PlusIconWrapper onClick={handleImageClick}>
+              <FiPlus size={24} color="#fff" />
+            </PlusIconWrapper>
+          )}
 
-  <input
-    type="file"
-    accept="image/*"
-    ref={fileInputRef}
-    onChange={handleFileChange}
-    style={{ display: "none" }}
-  />
-</ProfileImageWrapper>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
+        </ProfileImageWrapper>
 
-
+        {/* Employee Info */}
         <ContentArea>
           <LeftColumn>
             <InputBox
               type="text"
               name="name"
+              placeholder="Full Name"
               value={employee.name || ""}
               readOnly={!editable}
               onChange={onChange}
@@ -88,6 +92,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
             <InputBox
               type="text"
               name="employee_id"
+              placeholder="Employee ID"
               value={employee.employee_id || ""}
               readOnly={!editable}
               onChange={onChange}
@@ -95,6 +100,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
             <InputBox
               type="email"
               name="email"
+              placeholder="Email"
               value={employee.email || ""}
               readOnly={!editable}
               onChange={onChange}
@@ -104,6 +110,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
           <RightColumn>
             <BioBox
               name="address"
+              placeholder="Address"
               value={employee.address || ""}
               readOnly={!editable}
               onChange={onChange}
@@ -112,6 +119,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
               <InputBox
                 type="text"
                 name="dob"
+                placeholder="Date of Birth"
                 value={employee.dob || ""}
                 readOnly={!editable}
                 onChange={onChange}
@@ -119,6 +127,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
               <InputBox
                 type="text"
                 name="gender"
+                placeholder="Gender"
                 value={employee.gender || ""}
                 readOnly={!editable}
                 onChange={onChange}
@@ -127,7 +136,6 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
           </RightColumn>
         </ContentArea>
       </ProfileCard>
-      <hr />
     </ProfileContainer>
   );
 };

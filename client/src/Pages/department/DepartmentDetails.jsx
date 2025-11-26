@@ -250,9 +250,7 @@ const handleUpdate = async () => {
 
           <ActionArea>
             <ButtonGroup>
-            {/* <DeleteButton onClick={handleDeleteDepartment}>
-              <FaTrash style={{ width: "14px", height: "14px" }} /> Delete
-            </DeleteButton> */}
+          
 
             <AddButton
               onClick={() => {

@@ -1,0 +1,165 @@
+import styled from "styled-components";
+
+export const Wrapper = styled.div`
+  width: 100%;
+  background: #ffffff;
+  padding: 12px;
+  box-sizing: border-box;
+
+  @media (min-width: 1920px) {
+    padding: 20px;
+  }
+`;
+
+export const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+`;
+
+export const Title = styled.h4`
+  margin: 0;
+  font-size: 16px;
+  color: #0f172a;
+  font-weight: 700;
+
+  @media (max-width: 600px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 20px;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 22px;
+  }
+`;
+
+export const List = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @media (min-width: 1920px) {
+    gap: 16px;
+  }
+`;
+
+export const ListItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: background 0.2s, transform 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background: #f8fafc;
+    transform: translateY(-2px);
+  }
+
+  @media (min-width: 1920px) {
+    padding: 14px 16px;
+    border-radius: 12px;
+  }
+`;
+
+export const Avatar = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  @media (min-width: 1920px) {
+    width: 50px;
+    height: 50px;
+  }
+`;
+
+export const Info = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0; /* for text overflow */
+`;
+
+export const Name = styled.span`
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 600px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 18px;
+  }
+`;
+
+export const Dept = styled.span`
+  color: #475569;
+  font-size: 13px;
+  margin-top: 2px;
+
+  @media (max-width: 600px) {
+    font-size: 11px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 15px;
+  }
+`;
+
+export const IdText = styled.span`
+  color: #94a3b8;
+  font-size: 12px;
+  margin-top: 2px;
+
+  @media (max-width: 600px) {
+    font-size: 10px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 13px;
+  }
+`;
+
+export const DateBox = styled.div`
+  min-width: 90px;
+  text-align: center;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-weight: 600;
+  font-size: 12px;
+
+  @media (max-width: 600px) {
+    font-size: 10px;
+    padding: 4px 6px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 14px;
+    min-width: 110px;
+    padding: 8px 10px;
+  }
+`;
+
+export const NoData = styled.div`
+  text-align: center;
+  color: #94a3b8;
+  padding: 12px;
+
+  @media (min-width: 1920px) {
+    padding: 16px;
+    font-size: 15px;
+  }
+`;

@@ -44,11 +44,11 @@ import LeaveList from "./Pages/onLeave/LeaveList.jsx";
 import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
 import NewDashboard from "./Pages/dashboard/NewDashboard.jsx";
 import DashboardNew from "./Pages/dashboard/DashboardNew.jsx";
-import Reimbursement from "./Pages/reimbursement/Reimb_Department.jsx"
+
 import Reimbpage from "./Pages/reimbursement/ReimbPage.jsx"
 import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
 import FinancePage from "./Pages/finance/FinancePage.jsx"
-import Dashboard from "./Pages/employeDashboard/LeftContent.jsx";
+
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./Redux/authSlice";
@@ -56,17 +56,18 @@ import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
 import FieldShift from "./Pages/Shift/FieldShift.jsx"
 import FieldDepartment from "./Pages/Shift/FieldDepartment.jsx"
 import FieldInfo from "./Pages/Shift/FieldInfo.jsx";
-import JobDetails from "./Components/JobDetails.jsx";
-import EmployeeHeader from "./Components/EmployeeHeader.jsx";
+
 
 
 import AttendanceList from "./Pages/attendance/AttendanceList.jsx"
-import EmployeeTitle from "./Components/EmployeeTitle.jsx"
-import TopCard from "./Components/TopCard.jsx"
-import HomeDashboard from "./Pages/dashboard/HomeDashboard.jsx";
+
 import ReimbursementList from "./Pages/reimbursement/ReimbursementList.jsx";
 
 import Daily from "./Pages/dailytask/DailyTask.jsx"
+import ViewLayout from "./Pages/employee/layout/ViewLayout.jsx";
+
+import HomeDashboard from "./Pages/dashboard/HomeDashboard.jsx"
+
 function App() {
   const dispatch = useDispatch();
 
@@ -141,15 +142,15 @@ function App() {
             <Route path="/project" element={<FieldShift />} />
             <Route path="/project-department/:id/" element={<FieldDepartment />} />
 <Route path="/project/:id" element={<FieldInfo />} />
-            <Route path="/card" element={<Dashboard />}/>
-            
-<Route path="/job" element={<JobDetails />}></Route>
-<Route path="/header" element={<EmployeeHeader />}></Route>
-          
-            <Route path="/title" element={<EmployeeTitle/>}></Route>
-            <Route path ="/topcard" element={<TopCard/>}></Route>
 
-  <Route path ="/homedash" element={<HomeDashboard/>}></Route>
+            
+<Route path="/layout" element={<ViewLayout/>}/>
+             
+<Route path="/home-dashboard" element={<HomeDashboard/>}/>
+          
+
+
+
 
           </Route>
         </Route>

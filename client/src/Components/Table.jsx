@@ -53,7 +53,7 @@ const Table = ({
   errors = {},
   showNextButton = false,
   handleNext,
-  setBankProofImage, // expect parent to pass this
+  setBankProofImage, 
 }) => {
   return (
     <Container>
@@ -103,8 +103,6 @@ const Table = ({
             </FormGroups>
           </TwoColumnRows>
         </Row>
-
-        {/* Account Info */}
         <Row>
           <TwoColumnRows>
             <FormGroups>

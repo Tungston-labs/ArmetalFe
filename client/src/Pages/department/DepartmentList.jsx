@@ -610,12 +610,14 @@ const DepartmentList = () => {
                 >
                   <FormGroup>
                     <Label>Department Name</Label>
-                    <Input type="text" name="name" value={newDeptForm.name} onChange={handleNewDeptChange} placeholder="Department name" required />
+                    <Input style={{border:"1px solid lightgray"}}
+                    type="text" name="name" value={newDeptForm.name} onChange={handleNewDeptChange} placeholder="Enter the Name" required />
                   </FormGroup>
 
                   <FormGroup>
                     <Label>Department Code</Label>
-                    <Input type="text" name="department_code" value={newDeptForm.department_code} onChange={handleNewDeptChange} placeholder="Eg: HR" required />
+                  <Input style={{border:"1px solid lightgray"}}
+                    type="text" name="department_code" value={newDeptForm.department_code} onChange={handleNewDeptChange} placeholder="Eg: HR" required />
                   </FormGroup>
 
                   {newDeptError && <p style={{ color: "red" }}>{newDeptError}</p>}

@@ -271,7 +271,7 @@ export const SearchInput = styled.input`
 `;
 export const Label = styled.label`
   color: gray;
-  // margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 
  
   font-size: clamp(0.85rem, 1vw, 1.3rem);
@@ -288,7 +288,7 @@ export const Label = styled.label`
 export const Input = styled.input`
   background: white;
   // border: 1px solid #052db4;
-  // border-radius: 4px;
+  border-radius: 4px;
   border:none;
   width: 50%;
 

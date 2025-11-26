@@ -13,12 +13,10 @@ import {
   DatePickerWrapper,
   TaskHeader,
   EmployeePanelWrapper,
-  TaskFooter, 
   StyledNoSelectionMessage, 
   TaskLeft, 
-  TaskRight,
   TaskContent, 
-  TaskBottom, 
+  TaskBottom,
   Title,
   SearchInput,
   Heading
@@ -30,7 +28,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDepartmentsMin, getEmployeesByDepartmentMini } from "../../Redux/departmentSlice";
 import { getTasks } from "../../Redux/dailyTaskSlice";
 
-// Component for the Department Card
 const Card = ({ dept, onClick, isActive }) => (
   <CardItem onClick={onClick} $isActive={isActive}>
     <strong>{dept.name}</strong>
@@ -43,18 +40,32 @@ const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) =>
     (state) => state.departments.departmentEmployeesMini || []
   );
 
+    const [employeeSearch, setEmployeeSearch] = useState("");
+
+
+  const filteredEmployees = employeesData.filter((emp) =>
+    emp.name.toLowerCase().includes(employeeSearch.toLowerCase())
+  );
+
   return (
     <EmployeeContainer>
-  <h4>Employees</h4>
-  {employeesData.map((emp) => (
+  <Heading>Employees</Heading>
+  <SearchInput
+        type="text"
+        placeholder="Search Employee..."
+        value={employeeSearch}
+        onChange={(e) => setEmployeeSearch(e.target.value)}
+        style={{ marginBottom: "10px" }}
+      />
+     {filteredEmployees.map((emp) => (
     <EmployeeItem
       key={emp.employee_id}
       onClick={() => onSelectEmployee(emp.id)}
       $isActive={emp.id === selectedEmployeeId}
     >
       <img
-        src={emp.profile_pic}         // profile picture URL
-        alt={emp.name}                // alt text
+        src={emp.profile_pic}       
+        alt={emp.name}              
         style={{
           width: 26,
           height: 26,
@@ -62,7 +73,7 @@ const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) =>
           marginRight: 8,
         }}
       />
-      {emp.name}                     {/* employee name */}
+      {emp.name}                    
     </EmployeeItem>
   ))}
   {employeesData.length === 0 && <p>No employees in this department.</p>}
@@ -122,7 +133,6 @@ const TaskPanel = ({ employeeId }) => {
           />
         </DatePickerWrapper>
       </TaskHeader>
-
       {!employeeId && (
         <StyledNoSelectionMessage $type="info">
           <p>Please select an employee.</p>
@@ -141,6 +151,8 @@ const TaskPanel = ({ employeeId }) => {
         <TaskList>
           {tasks.map((task) => (
             <li key={task.id}>
+              
+
               <TaskContent>
                 <TaskLeft>
                   <span className="task-title">

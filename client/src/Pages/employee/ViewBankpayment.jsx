@@ -1,21 +1,11 @@
 // pages/ViewBankpayment.jsx
 import React, { useEffect, useState } from "react";
 import {
-  Container,
-  Headers,
-  Rightside,
-  EditButton,
-  Hr,
-  TitleSection,
-  EmployeeImage,
-  HeaderWrapper,
   Section,
-  Tabs,
-  Tab,
 } from "./ViewBankpayment.Styles";
 
 import { LuArrowLeft } from "react-icons/lu";
-import Table from "../../Components/Table";
+import ViewTableBank from "./ViewTableBank";
 import { useParams, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -26,10 +16,8 @@ import {
 } from "../../Redux/employeeSlice";
 
 import SyncLoader from "../../Components/Loder";
-import EmployeeIcon from "../../assets/employeeicon.svg";
-import { ResponsiveH3 } from "./ViewDocument.Styles";
-import Header from "../../Components/Header";
 import Swal from "sweetalert2";
+import ViewBasicLayout from "./layout/ViewLayout";
 
 const ViewBankPayment = () => {
   const { id } = useParams();
@@ -152,67 +140,16 @@ const ViewBankPayment = () => {
     <>
       {loading && <SyncLoader />}
 
-      <Container>
-        <Headers>
-          <HeaderWrapper>
-            <TitleSection>
-              <LuArrowLeft
-                style={{
-                  width: "30px",
-                  height: 30,
-                  cursor: "pointer",
-                  color: "#304EB0",
-                }}
-                onClick={() => navigate("/employee")}
-              />
-              <EmployeeImage src={EmployeeIcon} alt="employeeIcon" />
-              <div>
-                <h3>Employee</h3>
-                <p style={{ color: "#304EB0" }}>Manage your Employee.</p>
-              </div>
-            </TitleSection>
-          </HeaderWrapper>
-
-          {/* ONLY SAVE BUTTON NOW */}
-          <Rightside>
-            <EditButton onClick={handleSave}>Save</EditButton>
-          </Rightside>
-        </Headers>
-
-        <Hr />
-
-        <ResponsiveH3>Bank & Payment Details</ResponsiveH3>
-        <Header employee={employeeDetail} />
+        <ViewBasicLayout
+      id={id}
+      handleSubmit={handleSave}
+      formData={employeeDetail}
+      handleChange={() => {}}
+      handleImageChange={() => {}}
+    >
 
         <Section>
-          <Tabs>
-            <NavLink to={`/ViewBasic/${id}`} style={{ textDecoration: "none" }}>
-              <Tab active={location.pathname === `/ViewBasic/${id}`}>
-                Basic Details
-              </Tab>
-            </NavLink>
-
-            <NavLink
-              to={`/ViewBasic/${id}/bank`}
-              style={{ textDecoration: "none" }}
-            >
-              <Tab active={location.pathname === `/ViewBasic/${id}/bank`}>
-                Bank and Payment Details
-              </Tab>
-            </NavLink>
-
-            <NavLink
-              to={`/ViewBasic/${id}/documents`}
-              style={{ textDecoration: "none" }}
-            >
-              <Tab active={location.pathname === `/ViewBasic/${id}/documents`}>
-                Documents
-              </Tab>
-            </NavLink>
-          </Tabs>
-
-          {/* Always Edit Mode */}
-          <Table
+          <ViewTableBank
             isEditMode={true}
             setBankProofImage={setBankProofImage}
             bankName={bankName}
@@ -245,7 +182,7 @@ const ViewBankPayment = () => {
             showNextButton={false}
           />
         </Section>
-      </Container>
+  </ViewBasicLayout>
     </>
   );
 };
