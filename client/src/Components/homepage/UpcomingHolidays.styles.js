@@ -31,6 +31,12 @@ export const Title = styled.h4`
   @media (min-width: 1920px) {
     font-size: 22px;
   }
+      @media (min-width: 2560px) {
+    font-size: 22px;
+  }
+     @media (min-width: 3840px) {
+    font-size: 30px;
+  }
 `;
 
 export const SmallMeta = styled.span`
@@ -55,6 +61,12 @@ export const List = styled.div`
   @media (min-width: 1920px) {
     gap: 16px;
   }
+       @media (min-width: 2560px) {
+     gap: 16px;
+  }
+     @media (min-width: 3840px) {
+     gap: 30px;
+  }
 `;
 
 export const ListItem = styled.div`
@@ -68,6 +80,12 @@ export const ListItem = styled.div`
 
   @media (min-width: 1920px) {
     gap: 20px;
+  }
+       @media (min-width: 2560px) {
+     gap: 16px;
+  }
+     @media (min-width: 3840px) {
+     gap: 25px;
   }
 `;
 
@@ -97,6 +115,12 @@ export const DayBox = styled.div`
     @media (min-width: 1920px) {
       font-size: 18px;
     }
+              @media (min-width: 2560px) {
+    font-size: 26px;
+  }
+    @media (min-width: 3840px) {
+    font-size: 30px;
+  }
   }
 
   .days {
@@ -111,6 +135,12 @@ export const DayBox = styled.div`
     @media (min-width: 1920px) {
       font-size: 14px;
     }
+              @media (min-width: 2560px) {
+    font-size: 16px;
+  }
+    @media (min-width: 3840px) {
+    font-size: 23px;
+  }
   }
 
   @media (max-width: 600px) {
@@ -121,6 +151,14 @@ export const DayBox = styled.div`
   @media (min-width: 1920px) {
     min-width: 90px;
     padding: 14px 10px;
+  }
+          @media (min-width: 2560px) {
+  width: 90px;
+    padding: 14px 0;
+  }
+    @media (min-width: 3840px) {
+   width: 120px;
+    padding: 20px 0;
   }
 `;
 
@@ -144,6 +182,12 @@ export const Name = styled.span`
   @media (min-width: 1920px) {
     font-size: 20px;
   }
+          @media (min-width: 2560px) {
+    font-size: 20px;
+  }
+     @media (min-width: 3840px) {
+    font-size: 25px;
+  }
 `;
 
 export const Type = styled.span`
@@ -157,6 +201,12 @@ export const Type = styled.span`
 
   @media (min-width: 1920px) {
     font-size: 16px;
+  }
+      @media (min-width: 2560px) {
+    font-size: 16px;
+  }
+    @media (min-width: 3840px) {
+    font-size: 25px;
   }
 `;
 
@@ -184,6 +234,14 @@ export const ViewAll = styled.button`
   @media (min-width: 1920px) {
     padding: 12px 0;
     font-size: 18px;
+  }
+      @media (min-width: 2560px) {
+      padding: 12px 0;
+    font-size: 18px;
+  }
+    @media (min-width: 3840px) {
+       padding: 16px 0;
+    font-size: 30px;
   }
 `;
 

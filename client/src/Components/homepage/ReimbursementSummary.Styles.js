@@ -5,11 +5,27 @@ export const MainWrapper = styled.div`
   grid-template-columns: 2fr 1fr;
   gap: 20px;
 
-  /* Large screens up to 4K */
+  /* ---------- LARGE SCREENS ---------- */
+
+  /* 1920px full HD */
   @media (min-width: 1920px) {
     grid-template-columns: 2.2fr 1fr;
     gap: 30px;
   }
+
+  /* 2560px (2K monitors) */
+  @media (min-width: 2560px) {
+    grid-template-columns: 2.2fr 1fr;
+    gap: 35px;
+  }
+
+  /* 3840px (4K monitors) */
+  @media (min-width: 3840px) {
+    grid-template-columns: 2.3fr 1fr;
+    gap: 40px;
+  }
+
+  /* ---------- MEDIUM SCREENS ---------- */
 
   @media (max-width: 1600px) {
     grid-template-columns: 2fr 1fr;
@@ -18,11 +34,14 @@ export const MainWrapper = styled.div`
 
   @media (max-width: 1200px) {
     grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
   }
+
+  /* ---------- SMALL SCREENS ---------- */
 
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 18px;
   }
 `;
 
@@ -59,6 +78,20 @@ export const CardGrid = styled.div`
   gap: 20px;
   width: 100%;
 
+  @media (min-width: 1920px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+
+  @media (min-width: 2560px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 35px;
+  }
+  @media (min-width: 3840px) {
+   grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+ 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -91,6 +124,10 @@ export const CardBox = styled.div`
     height: 220px;
     padding: 28px;
   }
+      @media (min-width: 3840px) {
+    height: 345px;
+    padding: 35px;
+  }
 `;
 
 export const Title = styled.h4`
@@ -100,6 +137,9 @@ export const Title = styled.h4`
 
   @media (min-width: 2560px) {
     font-size: 18px;
+  }
+     @media (min-width: 3840px) {
+    font-size: 30px;
   }
 `;
 
@@ -112,6 +152,9 @@ export const Count = styled.h2`
   @media (min-width: 2560px) {
     font-size: 42px;
   }
+     @media (min-width: 3840px) {
+    font-size: 48px;
+  }
 `;
 
 export const Subtext = styled.p`
@@ -121,6 +164,9 @@ export const Subtext = styled.p`
 
   @media (min-width: 2560px) {
     font-size: 16px;
+  }
+     @media (min-width: 3840px) {
+    font-size: 28px;
   }
 `;
 
@@ -133,20 +179,57 @@ export const Heading = styled.h3`
   @media (min-width: 2560px) {
     font-size: 22px;
   }
+     @media (min-width: 2560px) {
+    font-size: 25px;
+  }
 `;
 
+
 export const ChartWrapper = styled.div`
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
   width: 100%;
 `;
 
 export const ChartTitle = styled.h3`
-  text-align: left;
-  margin-bottom: 10px;
   font-size: 18px;
   font-weight: 600;
   color: #1e293b;
+  margin-bottom: 12px;
 
-  @media (min-width: 2560px) {
+  @media (max-width: 600px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 1920px) {
     font-size: 22px;
   }
 `;
+
+export const ChartContainer = styled.div`
+  width: 100%;
+  height: 250px;     
+
+  /* Tablets */
+  @media (max-width: 1024px) {
+    height: 250px;
+  }
+
+
+
+  /* Large screens (1920p) */
+  @media (min-width: 1920px) {
+    height: 10vh;
+  }
+
+
+  @media (min-width: 2560px) {
+    height: 335px;
+  }
+
+  /* 4K screens */
+  @media (min-width: 3840px) {
+    height: 25vh;
+  }
+`

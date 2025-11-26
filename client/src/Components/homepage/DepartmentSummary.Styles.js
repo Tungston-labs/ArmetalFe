@@ -82,6 +82,12 @@ export const CountCard = styled.div`
   @media (min-width: 1920px) {
     padding: 40px 30px;
   }
+     @media (min-width: 2560px) {
+    padding: 40px 30px;
+  }
+     @media (min-width: 3840px) {
+    padding: 50px 40px;
+  }
 `;
 
 export const CountNumber = styled.h1`
@@ -100,6 +106,12 @@ export const CountNumber = styled.h1`
   @media (min-width: 1920px) {
     font-size: 64px;
   }
+      @media (min-width: 2560px) {
+    font-size: 64px;
+  }
+      @media (min-width: 3840px) {
+    font-size: 6rem;
+  }
 `;
 
 export const CountLabel = styled.p`
@@ -117,6 +129,12 @@ export const CountLabel = styled.p`
 
   @media (min-width: 1920px) {
     font-size: 20px;
+  }
+      @media (min-width: 2560px) {
+    font-size: 20px;
+  }
+      @media (min-width: 3840px) {
+    font-size: 2rem;
   }
 `;
 
@@ -138,6 +156,12 @@ export const LatestCard = styled.div`
 
   @media (min-width: 1920px) {
     padding: 32px 36px;
+  }
+      @media (min-width: 2560px) {
+     padding: 32px 36px;
+  }
+      @media (min-width: 3840px) {
+     padding: 38px 39px;
   }
 `;
 
@@ -161,6 +185,12 @@ export const LatestHeader = styled.h3`
     font-size: 24px;
     margin-bottom: 20px;
   }
+    @media (min-width: 2560px) {
+       font-size: 24px;
+  }
+      @media (min-width: 3840px) {
+       font-size: 28px;
+  } 
 `;
 
 export const LatestItem = styled.div`
@@ -190,6 +220,7 @@ export const LatestItem = styled.div`
     padding: 16px 20px;
     gap: 8px;
   }
+    
 `;
 
 export const DeptInfo = styled.div`
@@ -209,6 +240,13 @@ export const DeptName = styled.span`
   @media (min-width: 1920px) {
     font-size: 20px;
   }
+     @media (min-width: 2560px) {
+    font-size: 22px;
+  }
+     @media (min-width: 3840px) {
+    font-size: 28px;
+
+  }
 `;
 
 export const DeptDate = styled.span`
@@ -221,6 +259,13 @@ export const DeptDate = styled.span`
 
   @media (min-width: 1920px) {
     font-size: 16px;
+  }
+     @media (min-width: 2560px) {
+    font-size: 18px;
+
+  }
+     @media (min-width: 3840px) {
+    font-size: 30px;
   }
 `;
 
@@ -238,5 +283,13 @@ export const NoData = styled.div`
   @media (min-width: 1920px) {
     font-size: 18px;
     padding: 16px 0;
+  }
+     @media (min-width: 2560px) {
+    font-size: 18px;
+    padding: 16px 0;
+  }
+     @media (min-width: 3840px) {
+    font-size: 30px;
+    padding: 26px 0;
   }
 `;

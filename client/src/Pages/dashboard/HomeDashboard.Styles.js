@@ -22,12 +22,41 @@ export const ContentWrapper = styled.div`
     margin-right: 300px;
     transform: scale(0.97);
 
+    @media (max-width: 1600px) {
+      margin-right: 300px;
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 1200px) {
+      margin-right: 180px;
+      transform: scale(0.99);
+    }
+
+   
     @media (max-width: 1024px) {
       margin-right: 0;
       transform: scale(1);
     }
+
+   
+    @media (min-width: 1920px) {
+      margin-right: 350px;
+      transform: scale(0.96);
+    }
+
+   
+    @media (min-width: 2560px) {
+      margin-right: 310px;
+      transform: scale(0.95);
+    }
+
+    @media (min-width: 3840px) {
+      margin-right: 350px;
+      transform: scale(0.94);
+    }
   }
 
+  /* Center content on large screens */
   @media (min-width: 1920px) {
     max-width: 1600px;
     margin: 0 auto;
@@ -39,10 +68,12 @@ export const ContentWrapper = styled.div`
   }
 
   @media (min-width: 3840px) {
-    max-width: 3200px;
+    max-width: 3000px;
     margin: 0 auto;
   }
 `;
+
+
 
 export const TwoColumn = styled.div`
   display: flex;
@@ -52,6 +83,15 @@ export const TwoColumn = styled.div`
 
   @media (max-width: 992px) {
     flex-direction: column;
+  }
+    @media (min-width: 2560px) {
+  
+  }
+
+  @media (min-width: 3840px) {
+   margin-bottom:3rem;
+   margin-top:3rem;
+   gap:40px;
   }
 `;
 
@@ -94,6 +134,7 @@ export const ThreeColumnRow = styled.div`
   @media (min-width: 3840px) {
     max-width: 3200px;
     margin: 0 auto;
+    gap: 30px;
   }
 `;
 
@@ -119,6 +160,6 @@ export const ThreeBox = styled.div`
   }
 
   @media (min-width: 3840px) {
-    padding: 32px;
+    padding: 39px;
   }
 `;

@@ -13,6 +13,7 @@ import {
 import {
   ChartCard,
   ChartTitle,
+  ChartWrapper,
   TooltipBox
 } from "./ProjectChart.Styles";
 
@@ -38,7 +39,8 @@ const ProjectChart = ({ site, variant, bench }) => {
   return (
     <ChartCard>
       <ChartTitle>Project Summary</ChartTitle>
-      <ResponsiveContainer width="100%" height={300}>
+ <ChartWrapper>
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart 
           data={data}
           margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
@@ -78,6 +80,7 @@ const ProjectChart = ({ site, variant, bench }) => {
           />
         </BarChart>
       </ResponsiveContainer>
+       </ChartWrapper>
     </ChartCard>
   );
 };

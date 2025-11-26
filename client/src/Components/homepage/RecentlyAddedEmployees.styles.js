@@ -34,6 +34,9 @@ export const Title = styled.h4`
   @media (min-width: 2560px) {
     font-size: 22px;
   }
+     @media (min-width: 3840px) {
+    font-size: 38px;
+  }
 `;
 
 export const List = styled.div`
@@ -43,6 +46,12 @@ export const List = styled.div`
 
   @media (min-width: 1920px) {
     gap: 16px;
+  }
+     @media (min-width: 2560px) {
+     gap: 16px;
+  }
+     @media (min-width: 3840px) {
+     gap: 30px;
   }
 `;
 
@@ -64,6 +73,12 @@ export const ListItem = styled.div`
   @media (min-width: 1920px) {
     padding: 14px 16px;
     border-radius: 12px;
+  }
+       @media (min-width: 2560px) {
+     gap: 16px;
+  }
+     @media (min-width: 3840px) {
+     gap: 25px;
   }
 `;
 
@@ -101,6 +116,12 @@ export const Name = styled.span`
   @media (min-width: 1920px) {
     font-size: 18px;
   }
+     @media (min-width: 2560px) {
+    font-size: 18px;
+  }
+     @media (min-width: 3840px) {
+    font-size: 30px;
+  }
 `;
 
 export const Dept = styled.span`
@@ -115,6 +136,12 @@ export const Dept = styled.span`
   @media (min-width: 1920px) {
     font-size: 15px;
   }
+    @media (min-width: 2560px) {
+    font-size: 15px;
+  }
+    @media (min-width: 3840px) {
+    font-size: 28px;
+  }
 `;
 
 export const IdText = styled.span`
@@ -128,6 +155,12 @@ export const IdText = styled.span`
 
   @media (min-width: 1920px) {
     font-size: 13px;
+  }
+       @media (min-width: 2560px) {
+    font-size: 15px;
+  }
+    @media (min-width: 3840px) {
+    font-size: 25px;
   }
 `;
 
@@ -150,6 +183,16 @@ export const DateBox = styled.div`
     font-size: 14px;
     min-width: 110px;
     padding: 8px 10px;
+  }
+       @media (min-width: 2560px) {
+   font-size: 14px;
+    min-width: 110px;
+    padding: 8px 10px;
+  }
+    @media (min-width: 3840px) {
+    font-size: 22px;
+     padding: 10px 12px;
+       min-width: 150px;
   }
 `;
 

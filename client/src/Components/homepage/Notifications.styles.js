@@ -33,6 +33,14 @@ export const NotificationTitle = styled.div`
     font-size: 20px;
     margin-bottom: 12px;
   }
+     @media (min-width: 2560px) {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+     @media (min-width: 3840px) {
+    font-size: 40px;
+    margin-bottom: 15px;
+  }
 `;
 
 export const NotificationItem = styled.div`
@@ -62,6 +70,14 @@ export const NotificationItem = styled.div`
     padding: 14px 16px;
     font-size: 16px;
   }
+    @media (min-width: 2560px) {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
+    @media (min-width: 3840px) {
+    padding: 14px 16px;
+    font-size: 22px;
+  }
 `;
 
 export const NotificationText = styled.div`
@@ -88,6 +104,12 @@ export const NotificationTime = styled.div`
   @media (min-width: 1920px) {
     font-size: 14px;
   }
+      @media (min-width: 2560px) {
+    font-size: 14px;
+  }
+      @media (min-width: 3840px) {
+    font-size: 22px;
+  }
 `;
 
 export const NoNotification = styled.div`
@@ -104,6 +126,14 @@ export const NoNotification = styled.div`
 
   @media (min-width: 1920px) {
     font-size: 16px;
+    padding: 20px 0;
+  }
+    @media (min-width: 2560px) {
+    font-size: 16px;
+    padding: 20px 0;
+  }
+    @media (min-width: 3840px) {
+    font-size: 22px;
     padding: 20px 0;
   }
 `;

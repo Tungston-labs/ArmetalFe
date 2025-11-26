@@ -28,7 +28,7 @@ export const CardBox = styled.div`
   }
 
   @media (min-width: 3840px) {
-    padding: 36px;
+    padding: 50px;
   }
 `;
 
@@ -64,8 +64,8 @@ export const IconBox = styled.div`
   }
 
   @media (min-width: 3840px) {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
   }
 `;
 
@@ -92,7 +92,7 @@ export const StatLabel = styled.div`
   }
 
   @media (min-width: 3840px) {
-    font-size: 20px;
+    font-size: 30px;
   }
 `;
 
@@ -106,6 +106,6 @@ export const Arrow = styled.div`
   }
 
   @media (min-width: 3840px) {
-    font-size: 32px;
+    font-size: 40px;
   }
 `;
