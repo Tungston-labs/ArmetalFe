@@ -58,17 +58,16 @@ export const ContentWrapper = styled.div`
 
   /* Center content on large screens */
   @media (min-width: 1920px) {
-    max-width: 1600px;
+
     margin: 0 auto;
   }
 
   @media (min-width: 2560px) {
-    max-width: 2000px;
     margin: 0 auto;
   }
 
   @media (min-width: 3840px) {
-    max-width: 3000px;
+
     margin: 0 auto;
   }
 `;
@@ -122,12 +121,10 @@ export const ThreeColumnRow = styled.div`
 
 
   @media (min-width: 1920px) {
-    max-width: 1600px;
     margin: 0 auto;
   }
 
   @media (min-width: 2560px) {
-    max-width: 2000px;
     margin: 0 auto;
   }
 

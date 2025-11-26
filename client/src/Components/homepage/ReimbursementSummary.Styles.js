@@ -209,26 +209,26 @@ export const ChartTitle = styled.h3`
 
 export const ChartContainer = styled.div`
   width: 100%;
-  height: 250px;     
+  height: 200px;     
 
-  /* Tablets */
-  @media (max-width: 1024px) {
+ 
+  @media (min-width: 1024px) {
     height: 250px;
   }
 
-
-
-  /* Large screens (1920p) */
-  @media (min-width: 1920px) {
-    height: 10vh;
+ @media (min-width: 1440px) {
+    height: 250px;
   }
 
+  @media (min-width: 1920px) {
+    height: 250px;
+  }
 
+ 
   @media (min-width: 2560px) {
     height: 335px;
   }
 
-  /* 4K screens */
   @media (min-width: 3840px) {
     height: 25vh;
   }

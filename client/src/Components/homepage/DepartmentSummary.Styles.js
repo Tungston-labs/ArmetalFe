@@ -27,7 +27,14 @@ export const SectionTitle = styled.h2`
   }
 
   @media (min-width: 1920px) {
-    font-size: 28px;
+    font-size: 20px;
+  }
+    @media (min-width: 2560px) {
+    font-size: 22px;
+    margin-bottom: 30px;
+  }
+    @media (min-width: 3840px) {
+    font-size: 25px;
     margin-bottom: 30px;
   }
 `;
@@ -80,7 +87,7 @@ export const CountCard = styled.div`
   }
 
   @media (min-width: 1920px) {
-    padding: 40px 30px;
+    padding: 18px 12px;
   }
      @media (min-width: 2560px) {
     padding: 40px 30px;
@@ -153,16 +160,7 @@ export const LatestCard = styled.div`
   @media (max-width: 600px) {
     padding: 12px 14px;
   }
-
-  @media (min-width: 1920px) {
-    padding: 32px 36px;
-  }
-      @media (min-width: 2560px) {
-     padding: 32px 36px;
-  }
-      @media (min-width: 3840px) {
-     padding: 38px 39px;
-  }
+ 
 `;
 
 export const LatestHeader = styled.h3`
@@ -197,7 +195,6 @@ export const LatestItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 14px;
   border-radius: 10px;
   transition: background 0.2s;
 
@@ -216,11 +213,7 @@ export const LatestItem = styled.div`
     gap: 4px;
   }
 
-  @media (min-width: 1920px) {
-    padding: 16px 20px;
-    gap: 8px;
-  }
-    
+   
 `;
 
 export const DeptInfo = styled.div`
