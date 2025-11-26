@@ -7,31 +7,25 @@ export const Wrapper = styled.div`
 `;
 
 export const SectionTitle = styled.h2`
-  font-size: 20px;
-  font-weight: 700;
+   margin: 0;
+  font-size: 16px;
   color: #0f172a;
-  margin-bottom: 20px;
+  font-weight: 700;
+  margin-bottom:20px;
 
-  @media (max-width: 1024px) {
-    font-size: 18px;
-    margin-bottom: 16px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-    margin-bottom: 14px;
+  @media (max-width: 600px) {
+    font-size: 14px;
   }
 
   @media (min-width: 1920px) {
     font-size: 20px;
   }
-    @media (min-width: 2560px) {
+
+  @media (min-width: 2560px) {
     font-size: 22px;
-    margin-bottom: 30px;
   }
-    @media (min-width: 3840px) {
-    font-size: 25px;
-    margin-bottom: 30px;
+     @media (min-width: 3840px) {
+    font-size: 38px;
   }
 `;
 

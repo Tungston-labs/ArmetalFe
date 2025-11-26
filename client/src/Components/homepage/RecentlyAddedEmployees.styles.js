@@ -3,12 +3,9 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
   width: 100%;
   background: #ffffff;
-  padding: 12px;
   box-sizing: border-box;
 
-  @media (min-width: 1920px) {
-    padding: 20px;
-  }
+ 
 `;
 
 export const Header = styled.div`
@@ -43,9 +40,7 @@ export const List = styled.div`
   display: flex;
   flex-direction: column;
 
-     @media (min-width: 2560px) {
-     gap: 16px;
-  }
+
      @media (min-width: 3840px) {
      gap: 30px;
   }
@@ -113,7 +108,7 @@ export const Name = styled.span`
     font-size: 18px;
   }
      @media (min-width: 2560px) {
-    font-size: 18px;
+    font-size: 22px;
   }
      @media (min-width: 3840px) {
     font-size: 30px;
@@ -133,7 +128,7 @@ export const Dept = styled.span`
     font-size: 15px;
   }
     @media (min-width: 2560px) {
-    font-size: 15px;
+    font-size: 20px;
   }
     @media (min-width: 3840px) {
     font-size: 28px;
@@ -153,7 +148,7 @@ export const IdText = styled.span`
     font-size: 13px;
   }
        @media (min-width: 2560px) {
-    font-size: 15px;
+    font-size: 18px;
   }
     @media (min-width: 3840px) {
     font-size: 25px;

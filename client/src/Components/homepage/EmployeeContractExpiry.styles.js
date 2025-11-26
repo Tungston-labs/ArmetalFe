@@ -2,12 +2,8 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   width: 100%;
-  padding: 10px;
   box-sizing: border-box;
 
-  @media (min-width: 1920px) {
-    padding: 20px;
-  }
 `;
 
 export const Header = styled.div`

@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   width: 100%;
-  padding: 10px;
   box-sizing: border-box;
 
 `;
@@ -10,12 +9,9 @@ export const Wrapper = styled.div`
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
 
-  @media (min-width: 1920px) {
-    margin-bottom: 20px;
-  }
+
+ 
 `;
 
 export const Title = styled.h4`
@@ -113,13 +109,13 @@ export const DayBox = styled.div`
     }
 
     @media (min-width: 1920px) {
-      font-size: 18px;
+      font-size: 12px;
     }
               @media (min-width: 2560px) {
-    font-size: 26px;
+    font-size: 20px;
   }
     @media (min-width: 3840px) {
-    font-size: 30px;
+    font-size: 25px;
   }
   }
 
@@ -128,14 +124,14 @@ export const DayBox = styled.div`
     color: rgba(15,23,42,0.7);
     margin-top: 4px;
 
-    @media (max-width: 600px) {
+   @media (max-width: 600px) {
       font-size: 10px;
     }
 
     @media (min-width: 1920px) {
-      font-size: 14px;
+      font-size: 12px;
     }
-              @media (min-width: 2560px) {
+        @media (min-width: 2560px) {
     font-size: 16px;
   }
     @media (min-width: 3840px) {
@@ -200,10 +196,10 @@ export const Type = styled.span`
   }
 
   @media (min-width: 1920px) {
-    font-size: 16px;
+    font-size: 15px;
   }
       @media (min-width: 2560px) {
-    font-size: 16px;
+    font-size: 18px;
   }
     @media (min-width: 3840px) {
     font-size: 25px;
@@ -279,8 +275,8 @@ export const CalendarIcon = styled.div`
   }
 
   .cal-img {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 90%;
     object-fit: contain;
     position: absolute;
     top: 0;
@@ -293,7 +289,7 @@ export const CalendarIcon = styled.div`
     top: 15px;
     width: 100%;
     text-align: center;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     color: #e11d1dff;
     z-index: 5;
@@ -305,17 +301,17 @@ export const CalendarIcon = styled.div`
     }
 
     @media (min-width: 1920px) {
-      font-size: 16px;
+      font-size: 12px;
       top: 20px;
     }
   }
 
   .cal-day {
     position: absolute;
-    bottom: 4px;
+    bottom: 10px;
     width: 100%;
     text-align: center;
-    font-size: 16px;
+    font-size: 10px;
     font-weight: 800;
     color: #0f172a;
     z-index: 5;
@@ -327,8 +323,11 @@ export const CalendarIcon = styled.div`
     }
 
     @media (min-width: 1920px) {
-      font-size: 24px;
-      bottom: 6px;
+      font-size: 12px;
+      bottom: 20px;
     }
+    
+
+    
   }
 `;
