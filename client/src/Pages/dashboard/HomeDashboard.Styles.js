@@ -22,7 +22,7 @@ export const ContentWrapper = styled.div`
     margin-right: 300px;
     transform: scale(0.97);
 
-    @media (max-width: 1600px) {
+    @media (min-width: 1600px) {
       margin-right: 300px;
       transform: scale(0.98);
     }
@@ -40,7 +40,7 @@ export const ContentWrapper = styled.div`
 
    
     @media (min-width: 1920px) {
-      margin-right: 350px;
+      margin-right: 100px;
       transform: scale(0.96);
     }
 
@@ -63,6 +63,7 @@ export const ContentWrapper = styled.div`
   }
 
   @media (min-width: 2560px) {
+
     margin: 0 auto;
   }
 
@@ -119,20 +120,6 @@ export const ThreeColumnRow = styled.div`
     flex-direction: column;
   }
 
-
-  @media (min-width: 1920px) {
-    margin: 0 auto;
-  }
-
-  @media (min-width: 2560px) {
-    margin: 0 auto;
-  }
-
-  @media (min-width: 3840px) {
-    max-width: 3200px;
-    margin: 0 auto;
-    gap: 30px;
-  }
 `;
 
 export const ThreeBox = styled.div`
@@ -148,15 +135,5 @@ export const ThreeBox = styled.div`
     width: 100%;
   }
 
-  @media (min-width: 1920px) {
-    padding: 20px;
-  }
-
-  @media (min-width: 2560px) {
-    padding: 24px;
-  }
-
-  @media (min-width: 3840px) {
-    padding: 39px;
-  }
+  
 `;

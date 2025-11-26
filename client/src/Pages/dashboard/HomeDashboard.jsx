@@ -20,7 +20,6 @@ const departmentList = [
  
 ];
 const holidays = [
-  { name: "sample", date: "2025-11-25", type: "National" },
   { name: "testing", date: "2025-12-2", type: "National" },
   { name: "X-mas", date: "2025-12-25", type: "National" },
 ];

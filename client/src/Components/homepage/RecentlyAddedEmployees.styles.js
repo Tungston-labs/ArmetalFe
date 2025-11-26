@@ -42,11 +42,7 @@ export const Title = styled.h4`
 export const List = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
 
-  @media (min-width: 1920px) {
-    gap: 16px;
-  }
      @media (min-width: 2560px) {
      gap: 16px;
   }

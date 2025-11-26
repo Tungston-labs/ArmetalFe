@@ -2,12 +2,8 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   width: 100%;
-  padding: 10px;
   box-sizing: border-box;
 
-  @media (min-width: 1920px) {
-    padding: 20px 40px;
-  }
 `;
 
 export const SectionTitle = styled.h2`
@@ -44,6 +40,11 @@ export const GridBox = styled.div`
   grid-template-columns: 1fr 1.5fr;
   gap: 24px;
 
+  @media (max-width: 1920px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
   @media (max-width: 1440px) {
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -60,7 +61,7 @@ export const GridBox = styled.div`
 
   @media (min-width: 1920px) {
     grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
+    gap: 10px;
   }
 `;
 
@@ -180,7 +181,7 @@ export const LatestHeader = styled.h3`
   }
 
   @media (min-width: 1920px) {
-    font-size: 24px;
+    font-size: 20px;
     margin-bottom: 20px;
   }
     @media (min-width: 2560px) {

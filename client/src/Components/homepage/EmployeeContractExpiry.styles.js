@@ -102,7 +102,7 @@ export const ExpiryBox = styled.div`
     }
 
     @media (min-width: 1920px) {
-      font-size: 26px;
+      font-size: 20px;
     }
         @media (min-width: 2560px) {
     font-size: 26px;
@@ -121,7 +121,7 @@ export const ExpiryBox = styled.div`
     }
 
     @media (min-width: 1920px) {
-      font-size: 16px;
+      font-size: 12px;
     }
         @media (min-width: 2560px) {
     font-size: 16px;
