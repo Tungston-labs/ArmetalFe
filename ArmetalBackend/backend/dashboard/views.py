@@ -326,3 +326,33 @@ class HolidaySummaryAPI(APIView):
                 "list": all_holidays
             }
         })
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.db.models import Count
+from project.models import Project
+
+class ProjectEmployeeCountView(APIView):
+    def get(self, request):
+        company = request.user.company
+
+        # Get all projects belonging to the company
+        projects = Project.objects.filter(company=company)
+
+        # Count employees per punch type
+        counts = {
+            "on_site": projects.filter(punch_type="on_site")
+                               .aggregate(count=Count("employees", distinct=True))["count"] or 0,
+
+            "variant": projects.filter(punch_type="variant")
+                               .aggregate(count=Count("employees", distinct=True))["count"] or 0,
+
+            "bench": projects.filter(punch_type="bench")
+                             .aggregate(count=Count("employees", distinct=True))["count"] or 0,
+        }
+
+        # Add total employee count across all categories
+        counts["total"] = sum(counts.values())
+
+        return Response(counts)

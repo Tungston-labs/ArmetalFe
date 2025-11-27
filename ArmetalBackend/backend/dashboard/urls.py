@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import DashboardCountsView, ReimbursementCountsView,RecentEmployeesView,ContractExpiry30DaysView,SimpleNotificationsAPI,TodayEmployeeStatsAPI,HolidaySummaryAPI,ReimbursementMonthWiseCountView,DepartmentDashboardSummaryView
+from .views import DashboardCountsView, ReimbursementCountsView,RecentEmployeesView,ContractExpiry30DaysView,SimpleNotificationsAPI,TodayEmployeeStatsAPI,HolidaySummaryAPI,ReimbursementMonthWiseCountView,DepartmentDashboardSummaryView,ProjectEmployeeCountView
 urlpatterns = [
  
     path('counts/', DashboardCountsView.as_view(), name='dashboard-counts'),
@@ -11,5 +11,6 @@ urlpatterns = [
     path("simple-notifications/", SimpleNotificationsAPI.as_view(), name="simple-notifications"),
     path("today-employee-stats/", TodayEmployeeStatsAPI.as_view(), name="today-employee-stats"),
     path("holiday-summary/", HolidaySummaryAPI.as_view(), name="holiday-summary"),
+    path('project/employee-count/',ProjectEmployeeCountView.as_view(),name='project-employee-count'),
 
 ]
