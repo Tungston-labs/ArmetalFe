@@ -128,12 +128,14 @@ export const Button = styled.button`
   }
 
   @media (min-width: 2560px) {
+    margin-top: 2rem;
     padding: 1rem 1.4rem;
     font-size: 1.15rem;
     gap: 0.6rem;
   }
 
   @media (min-width: 3840px) {
+      margin-top: 5rem;
     padding: 1.2rem 1.8rem;
     font-size: 1.35rem;
     gap: 0.75rem;

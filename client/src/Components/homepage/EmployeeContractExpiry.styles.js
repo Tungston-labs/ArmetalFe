@@ -2,12 +2,8 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   width: 100%;
-  padding: 10px;
   box-sizing: border-box;
 
-  @media (min-width: 1920px) {
-    padding: 20px;
-  }
 `;
 
 export const Header = styled.div`
@@ -16,7 +12,7 @@ export const Header = styled.div`
   margin-bottom: 14px;
 
   @media (min-width: 1920px) {
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
   }
 `;
 
@@ -50,10 +46,10 @@ export const List = styled.div`
     gap: 20px;
   }
        @media (min-width: 2560px) {
-     gap: 16px;
+     gap: 35px;
   }
      @media (min-width: 3840px) {
-     gap: 30px;
+     gap: 35px;
   }
 `;
 
@@ -102,7 +98,7 @@ export const ExpiryBox = styled.div`
     }
 
     @media (min-width: 1920px) {
-      font-size: 26px;
+      font-size: 20px;
     }
         @media (min-width: 2560px) {
     font-size: 26px;
@@ -121,7 +117,7 @@ export const ExpiryBox = styled.div`
     }
 
     @media (min-width: 1920px) {
-      font-size: 16px;
+      font-size: 12px;
     }
         @media (min-width: 2560px) {
     font-size: 16px;
@@ -153,7 +149,7 @@ export const ExpiryBox = styled.div`
 export const Info = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 5px;
 
   @media (min-width: 1920px) {
     gap: 6px;

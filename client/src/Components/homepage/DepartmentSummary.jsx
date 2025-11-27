@@ -12,8 +12,11 @@ import {
   DeptInfo,
   DeptName,
   DeptDate,
-  NoData
+  NoData,
+  Container
 } from "./DepartmentSummary.Styles";
+import { FiChevronRight } from "react-icons/fi";
+
 
 const DepartmentSummary = ({ departments = [] }) => {
   const totalDepartments = departments.length;
@@ -25,6 +28,7 @@ const DepartmentSummary = ({ departments = [] }) => {
     <Wrapper>
       <SectionTitle>Department Overview</SectionTitle>
 
+<Container>
       <GridBox>
         <CountCard>
           <CountNumber>{totalDepartments}</CountNumber>
@@ -47,6 +51,9 @@ const DepartmentSummary = ({ departments = [] }) => {
                     })}
                   </DeptDate>
                 </DeptInfo>
+                <div className="right-icon">
+                  <FiChevronRight/>
+                </div>
               </LatestItem>
             ))
           ) : (
@@ -54,6 +61,7 @@ const DepartmentSummary = ({ departments = [] }) => {
           )}
         </LatestCard>
       </GridBox>
+      </Container>
     </Wrapper>
   );
 };

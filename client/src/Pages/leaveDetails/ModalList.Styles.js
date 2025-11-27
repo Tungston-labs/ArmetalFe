@@ -13,7 +13,7 @@ export const ModalOverlay = styled.div`
 
 export const ModalContainer = styled.div`
   background: white;
-  width: 90%;
+  width: 80%;
   /* max-width: 1200px; */
   padding: clamp(16px, 2vw, 40px);
   border-radius: 10px;
@@ -37,20 +37,46 @@ export const ModalContainer = styled.div`
 `;
 
 export const ModalHeader = styled.div`
-  font-size: clamp(1rem, 2vw, 2rem);
   font-weight: bold;
   margin-bottom: 1.5rem;
 
-  /* 4K override */
-  @media (min-width: 3840px) {
-    font-size: 2.5rem;
+  /* Default size for mobile */
+  font-size: 1rem;
+
+  /* Tablet */
+  @media (min-width: 576px) {
+    font-size: 1.25rem;
   }
 
-  /* 8K override */
+  /* Small laptop */
+  @media (min-width: 768px) {
+    font-size: 0.8rem;
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    font-size: 0.8rem;
+  }
+
+  /* Large screens (1440p) */
+  @media (min-width: 1440px) {
+    font-size: 1rem;
+  }
+
+@media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+  /* 4K */
+  @media (min-width: 3840px) {
+    font-size: 1.5rem;
+  }
+
+  /* 8K */
   @media (min-width: 7680px) {
     font-size: 3.5rem;
   }
 `;
+
 
 export const FieldRow = styled.div`
   display: flex;

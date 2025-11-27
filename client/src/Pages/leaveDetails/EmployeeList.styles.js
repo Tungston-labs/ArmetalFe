@@ -63,12 +63,12 @@ export const BodyCell = styled.td`
     font-size: 1rem;
   }
      @media (min-width: 2560px) {
-    padding: 12px;
-    font-size: 1.3rem;
+    padding: 15px;
+    font-size: 1.5rem;
   }
      @media (min-width: 3820px) {
-    padding: 12px;
-    font-size: 1.5rem;
+    padding: 15px;
+    font-size: 1.8rem;
   }
 `;
 
@@ -110,19 +110,27 @@ export const HeadCell = styled.th`
     font-size: 1rem;
   }
      @media (min-width: 2560px) {
-    padding: 12px;
-    font-size: 22px;
+    padding: 15px;
+    font-size: 2rem;
   }
      @media (min-width: 3820px) {
-    padding: 12px;
-    font-size: 25px;
+    padding: 15px;
+    font-size: 2rem;
   }
 `;
-
 export const NameCell = styled.td`
   display: flex;
   align-items: center;
   gap: 10px;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+  }
+
+  /* Large Screens */
+  @media (min-width: 1400px) {
+    gap: 14px;
+  }
 `;
 
 export const Avatar = styled.img`
@@ -131,6 +139,19 @@ export const Avatar = styled.img`
   border-radius: 50%;
   object-fit: cover;
 
+  @media (max-width: 768px) {
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (min-width: 1400px) {
+    width: 32px;
+    height: 32px;
+  }
+  @media (min-width: 2560px) {
+    width: 50px;
+    height: 50px;
+  }
 `;
 
 export const AvatarFallback = styled.div`
@@ -141,7 +162,19 @@ export const AvatarFallback = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (min-width: 1400px) {
+    width: 32px;
+    height: 32px;
+  }
 `;
+
+
 
 export const DeleteIconWrapper = styled.td`
   cursor: pointer;
@@ -202,23 +235,23 @@ export const Pagination = styled.div`
 
     @media (min-width: 3500px) {
       padding: 0.8rem 1.5;
-      font-size: 2.5rem;
+      font-size: 1.5rem;
     }
     @media (min-width: 2000px) {
       padding: 0.6rem 0.8rem;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
     }
   }
   @media (min-width: 2560px) {
     span{
-      font-size: 2rem;
+      font-size: 1.5rem;
     padding: 0.5rem 1.5rem;
     }
     gap: 0.5rem;
   }
   @media (min-width: 3840px) {
     span{
-      font-size: 2.5rem;
+      font-size: 1.5rem;
     }
     gap: 1rem;
   }

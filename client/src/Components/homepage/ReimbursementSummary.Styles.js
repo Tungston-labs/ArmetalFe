@@ -40,7 +40,7 @@ export const MainWrapper = styled.div`
   /* ---------- SMALL SCREENS ---------- */
 
   @media (max-width: 992px) {
-    grid-template-columns: 1fr;
+    /* grid-template-columns: 1fr; */
     gap: 18px;
   }
 `;
@@ -121,12 +121,12 @@ export const CardBox = styled.div`
   }
 
   @media (min-width: 2560px) {
-    height: 220px;
+    height: 250px;
     padding: 28px;
   }
       @media (min-width: 3840px) {
     height: 345px;
-    padding: 35px;
+    /* padding: 35px; */
   }
 `;
 
@@ -136,10 +136,10 @@ export const Title = styled.h4`
   margin-bottom: 8px;
 
   @media (min-width: 2560px) {
-    font-size: 18px;
+    font-size: 1.5rem;
   }
      @media (min-width: 3840px) {
-    font-size: 30px;
+    font-size: 2rem;
   }
 `;
 
@@ -150,10 +150,10 @@ export const Count = styled.h2`
   color: #3352BA;
 
   @media (min-width: 2560px) {
-    font-size: 42px;
+    font-size: 2.8rem;
   }
      @media (min-width: 3840px) {
-    font-size: 48px;
+    font-size: 2.8rem;
   }
 `;
 
@@ -163,10 +163,10 @@ export const Subtext = styled.p`
   margin-top: 10px;
 
   @media (min-width: 2560px) {
-    font-size: 16px;
+    font-size: 1.5rem;
   }
      @media (min-width: 3840px) {
-    font-size: 28px;
+    font-size: 1.5rem;
   }
 `;
 
@@ -205,30 +205,33 @@ export const ChartTitle = styled.h3`
   @media (min-width: 1920px) {
     font-size: 22px;
   }
+    @media (min-width: 2540px) {
+    font-size: 2rem;
+  }
 `;
 
 export const ChartContainer = styled.div`
   width: 100%;
-  height: 250px;     
+  height: 200px;     
 
-  /* Tablets */
-  @media (max-width: 1024px) {
+ 
+  @media (min-width: 1024px) {
     height: 250px;
   }
 
+ @media (min-width: 1440px) {
+    height: 250px;
+  }
 
-
-  /* Large screens (1920p) */
   @media (min-width: 1920px) {
-    height: 10vh;
+    height: 250px;
   }
 
-
+ 
   @media (min-width: 2560px) {
-    height: 335px;
+    height: 25vh;
   }
 
-  /* 4K screens */
   @media (min-width: 3840px) {
     height: 25vh;
   }

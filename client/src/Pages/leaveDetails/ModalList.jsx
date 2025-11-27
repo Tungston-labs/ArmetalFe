@@ -119,20 +119,6 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
                     <TableData>
                       {emp.from_date}({emp.from_date_type}) to {emp.to_date}({emp.to_date_type})
                     </TableData>
-                    <TableData>
-                      {/* <ApproveButton
-                        onClick={() => openConfirmModal(emp.id, "approve")}
-                      >
-                        Approve
-                      </ApproveButton>
-                      <DeclineButton
-                        onClick={() => openConfirmModal(emp.id, "reject")}
-                      >
-                        Reject
-                      </DeclineButton> */}
-
-
-                    </TableData>
                   </TableRow>
                 ))
               )}

@@ -23,9 +23,9 @@ export const Panel = styled.div`
     width: 350px;
   }
   @media (min-width: 2560px) {
-    width: 350px;
+    width: 380px;
   }  @media (min-width: 3840px) {
-    width: 420px;
+    width: 380px;
   }
   /* Tablets */
   @media (max-width: 992px) {
@@ -72,5 +72,9 @@ export const Columns = styled.div`
   /* Add spacing adjustments for mobile */
   @media (max-width: 600px) {
     margin: 15px 0;
+  }
+
+    @media (min-width: 2540px) {
+margin-bottom: 4rem;
   }
 `;

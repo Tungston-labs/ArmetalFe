@@ -324,10 +324,9 @@ export const DeclineButton = styled.button`
 `;
 
 export const ApproveButton = styled.button`
-  // background-color: #94a3b8;
+
   color: white;
   padding: 0.4rem 0.8rem;
-  // border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -335,7 +334,7 @@ export const ApproveButton = styled.button`
   border: 1px solid #172554;
   background: #304eb0;
   &:hover {
-    background-color: #64748b; /* darker bluish-gray */
+    background-color: #64748b; 
     transform: scale(1.02);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   }

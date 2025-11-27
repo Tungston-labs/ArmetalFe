@@ -22,7 +22,7 @@ export const ContentWrapper = styled.div`
     margin-right: 300px;
     transform: scale(0.97);
 
-    @media (max-width: 1600px) {
+    @media (min-width: 1600px) {
       margin-right: 300px;
       transform: scale(0.98);
     }
@@ -40,7 +40,7 @@ export const ContentWrapper = styled.div`
 
    
     @media (min-width: 1920px) {
-      margin-right: 350px;
+      margin-right: 100px;
       transform: scale(0.96);
     }
 
@@ -58,22 +58,32 @@ export const ContentWrapper = styled.div`
 
   /* Center content on large screens */
   @media (min-width: 1920px) {
-    max-width: 1600px;
+
     margin: 0 auto;
   }
 
   @media (min-width: 2560px) {
-    max-width: 2000px;
+
     margin: 0 auto;
   }
 
   @media (min-width: 3840px) {
-    max-width: 3000px;
+
     margin: 0 auto;
   }
 `;
 
+export const TopCard = styled.div`
 
+   @media (min-width: 2560px) {
+   min-height:10vh;
+  }
+
+  @media (min-width: 3800px) {
+  min-height:10vh;
+
+  }
+`
 
 export const TwoColumn = styled.div`
   display: flex;
@@ -85,10 +95,12 @@ export const TwoColumn = styled.div`
     flex-direction: column;
   }
     @media (min-width: 2560px) {
-  
+   min-height:38vh;
+     gap: 35px;
   }
 
-  @media (min-width: 3840px) {
+  @media (min-width: 3800px) {
+  min-height:38vh;
    margin-bottom:3rem;
    margin-top:3rem;
    gap:40px;
@@ -116,25 +128,19 @@ export const ThreeColumnRow = styled.div`
   margin-top: 20px;
   flex-wrap: wrap;
 
-  @media (max-width: 992px) {
+  @media (max-width: 600px) {
     flex-direction: column;
   }
-
-
-  @media (min-width: 1920px) {
-    max-width: 1600px;
-    margin: 0 auto;
+   @media (min-width: 1024px) and (max-width: 1440px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (min-width: 2560px) {
-    max-width: 2000px;
-    margin: 0 auto;
+ @media (min-width: 2560px) {
+  min-height:35vh;
   }
-
-  @media (min-width: 3840px) {
-    max-width: 3200px;
-    margin: 0 auto;
-    gap: 30px;
+   @media (min-width: 3840px) {
+  min-height:35vh;
   }
 `;
 
@@ -150,16 +156,9 @@ export const ThreeBox = styled.div`
   @media (max-width: 768px) {
     width: 100%;
   }
-
-  @media (min-width: 1920px) {
-    padding: 20px;
+    @media (min-width: 1024px) and (max-width: 1440px) {
+    width: 100%;
   }
 
-  @media (min-width: 2560px) {
-    padding: 24px;
-  }
-
-  @media (min-width: 3840px) {
-    padding: 39px;
-  }
+  
 `;

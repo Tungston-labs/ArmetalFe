@@ -51,7 +51,7 @@ export const ChartTitle = styled.h3`
   }
 
   @media (min-width: 2560px) {
-    font-size: 28px;
+    font-size: 2rem;
   }
 
   @media (min-width: 3840px) {
@@ -111,30 +111,60 @@ export const TooltipBox = styled.div`
     }
   }
 `;
+
 export const ChartWrapper = styled.div`
   width: 100%;
   height: 300px;     
 
-  /* Tablets */
   @media (max-width: 1024px) {
     height: 300px;
   }
 
-
-
-  /* Large screens (1920p) */
   @media (min-width: 1920px) {
     height: 280px;
   }
 
 
   @media (min-width: 2560px) {
-    height: 335px;
+    height: 28vh;
+  
   }
 
-  /* 4K screens */
   @media (min-width: 3840px) {
-    height: 26vh;
+    height: 560px;
   }
 `;
+
+
+export const getXAxisTickStyle = () => {
+  const width = window.innerWidth;
+
+  return {
+    fill: "#334155",
+    fontWeight: 500,
+    fontSize:
+      width >= 3840 ? 32 :  
+      width >= 2560 ? 24 :   
+      width >= 1920 ? 18 :  
+      width >= 1024 ? 16 :   
+      width >= 600  ? 14 :   
+      12,                    
+  };
+};
+
+export const getYAxisTickStyle = () => {
+  const width = window.innerWidth;
+
+  return {
+    fill: "#64748b",
+    fontSize:
+      width >= 3840 ? 30 :
+      width >= 2560 ? 20 :
+      width >= 1920 ? 16 :
+      width >= 1024 ? 14 :
+      width >= 600  ? 13 :
+      11,
+  };
+};
+
 

@@ -39,17 +39,15 @@ const AttendanceCircle = ({ present = 70, leave = 30 }) => {
   <Doughnut data={data} options={options} />
 </DoughnutWrapper>
 
-
-      {/* Custom Legend */}
       <LegendBox>
         <LegendItem>
           <ColorDot color="#3352BA" />
-          Present: {present}%
+          Present:70%
         </LegendItem>
 
         <LegendItem>
           <ColorDot color="#f6413b" />
-          Leave: {leave}%
+          Leave:30%
         </LegendItem>
       </LegendBox>
     </Wrapper>

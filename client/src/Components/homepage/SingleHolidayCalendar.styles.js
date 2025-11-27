@@ -9,6 +9,7 @@ export const CalendarWrapper = styled.div`
   background: #fff;
   box-shadow: 0 3px 12px rgba(0,0,0,0.3);
 
+  ;
   @media (min-width: 1920px) { max-width: 350px; padding: 14px; }
   @media (min-width: 2560px) { max-width: 420px; padding: 18px; }
   @media (min-width: 3840px) { max-width: 500px; padding: 24px; }

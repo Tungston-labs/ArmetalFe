@@ -17,18 +17,20 @@ export const CardBox = styled.div`
     box-shadow: 0 6px 15px rgba(0,0,0,0.12);
   }
 
+
+  
   @media (max-width: 1024px) {
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: flex-start;
-    gap: 12px;
+    /* gap: 12px; */
   }
 
   @media (min-width: 2560px) {
-    padding: 28px;
+    padding: 30px;
   }
 
   @media (min-width: 3840px) {
-    padding: 50px;
+    padding: 30px;
   }
 `;
 
@@ -59,13 +61,13 @@ export const IconBox = styled.div`
   color: #3352BA;
 
   @media (min-width: 2560px) {
-    width: 60px;
-    height: 60px;
+    width: 90px;
+    height: 100px;
   }
 
-  @media (min-width: 3840px) {
-    width: 80px;
-    height: 80px;
+   @media (min-width: 3840px) {
+    width: 90px;
+    height: 100px;
   }
 `;
 
@@ -75,20 +77,21 @@ export const StatNumber = styled.div`
   color: #3352BA;
 
   @media (min-width: 2560px) {
-    font-size: 36px;
+    font-size: 2.5rem;
   }
 
   @media (min-width: 3840px) {
-    font-size: 44px;
+    font-size: 2.5rem;
   }
 `;
 
 export const StatLabel = styled.div`
   font-size: 15px;
   color: #202020ff;
+  margin-top: 10px;
 
   @media (min-width: 2560px) {
-    font-size: 18px;
+    font-size: 1.5rem
   }
 
   @media (min-width: 3840px) {

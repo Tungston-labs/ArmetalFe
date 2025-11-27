@@ -14,7 +14,7 @@ export const MainWrapper = styled.div`
 export const Container = styled.div`
   padding: 10px;
   display: flex;
-  background-color: #f4f4f4;
+  background: #f4f8ff;
   width: 100%;
   box-sizing: border-box;
 
@@ -162,7 +162,7 @@ export const CardLink = styled.div`
 
 /* Department section responsive */
 export const DepartmentBox = styled.div`
-  background: #f4f4f4;
+  background: #f4f8ff;
   // border-radius: 9px;
   // border: 0.2px solid gray;
   margin-bottom: 24px;

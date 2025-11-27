@@ -200,17 +200,21 @@ export const ToggleArrow = styled.button`
 `;
 
 export const MainContent = styled.div`
+width:100%;
   flex-grow: 1; 
   display: flex;
   padding: 30px;
   min-width: 0; 
   gap:20px;
 
-    @media (min-width: 768px) and (max-width:1024px) {
-flex-direction:column;
+     @media (min-width: 768px) and (max-width: 1024px) {
+    flex-direction: column;
+    height: 100vh;     
+    min-height: 0;     
+    padding: 16px;
+    gap: 12px;
+  }
 `;
-
-
 export const CardItem = styled.div`
   padding: 20px;
   margin-bottom: 15px;
@@ -413,12 +417,13 @@ export const DatePickerWrapper = styled.div`
   }
 `;
 
-
-export const TaskList = styled.ul`
+export const 
+TaskList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
-  flex-grow: 1;
+  flex-grow: 1;        
+  min-height: 0;      
   overflow-y: auto;
   ${CustomScrollbar};
 
@@ -430,6 +435,13 @@ export const TaskList = styled.ul`
     color: ${colors.text};
     box-shadow: 0 2px 4px ${colors.shadowLight};
     display: flex;
+    flex-direction: column;  
+  align-items: flex-start;  
+  gap: 8px;                  
+  width: 100%;
+  word-break: break-word;   
+  white-space: normal;      
+  overflow: hidden;   
     justify-content: space-between;
     align-items: flex-start;
     font-size: 1em;
@@ -470,14 +482,16 @@ export const EmployeePanel = styled.div`
 `;
 
 export const PanelContainer = styled.div`
-  flex: 2; /
-  min-width: 350px;
+  flex: 2 1 auto;
+  min-width: 0;        
+  min-height: 0;     
   padding: 15px;
   border-radius: 8px;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  width: calc(100% - 300px);
 
   h4 {
     padding-bottom: 10px;
@@ -485,13 +499,12 @@ export const PanelContainer = styled.div`
     color: #555;
   }
 
-    @media (min-width: 768px) and (max-width: 1024px) {
-    flex: 1.5;
-    min-width: 280px;
-    padding: 18px;
+  @media (min-width: 768px) and (max-width: 1024px) {
+    flex: 1 1 auto;    
+    padding: 12px;
   }
-
 `;
+
 export const EmployeeSlidePanel = styled.div`
   position: absolute;
   left: 0;
@@ -737,41 +750,7 @@ export const TaskLeft = styled.div`
       font-size: 1rem;
     }
     .task-desc {
-      font-size: 0.9.
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      rem;
+      font-size: 0.9rem;
     }
   }
 
@@ -919,5 +898,5 @@ export const TaskContent = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
-  margin-bottom: 10px; /* Space above the footer */
+  margin-bottom: 10px; 
 `;

@@ -2,40 +2,41 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   width: 100%;
-  padding: 10px;
   box-sizing: border-box;
-
-  @media (min-width: 1920px) {
-    padding: 20px 40px;
-  }
 `;
 
 export const SectionTitle = styled.h2`
-  font-size: 20px;
+   margin: 0;
+  font-size: 16px;
+  color: #0b2d7cff;
   font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 20px;
+  margin-bottom:20px;
 
-  @media (max-width: 1024px) {
-    font-size: 18px;
-    margin-bottom: 16px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-    margin-bottom: 14px;
+ @media (max-width: 600px) {
+    font-size: 14px;
   }
 
   @media (min-width: 1920px) {
-    font-size: 28px;
-    margin-bottom: 30px;
+    font-size: 20px;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 2.2rem;
+  }
+     @media (min-width: 3840px) {
+    font-size: 2.2rem;
   }
 `;
 
 export const GridBox = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
+
+  @media (max-width: 1920px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
 
   @media (max-width: 1440px) {
     grid-template-columns: 1fr 1fr;
@@ -51,9 +52,13 @@ export const GridBox = styled.div`
     gap: 12px;
   }
 
-  @media (min-width: 1920px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
+
+  @media (min-width: 2560px) {
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 3840px) {
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -80,10 +85,11 @@ export const CountCard = styled.div`
   }
 
   @media (min-width: 1920px) {
-    padding: 40px 30px;
+    padding: 18px 12px;
   }
      @media (min-width: 2560px) {
     padding: 40px 30px;
+   
   }
      @media (min-width: 3840px) {
     padding: 50px 40px;
@@ -153,16 +159,7 @@ export const LatestCard = styled.div`
   @media (max-width: 600px) {
     padding: 12px 14px;
   }
-
-  @media (min-width: 1920px) {
-    padding: 32px 36px;
-  }
-      @media (min-width: 2560px) {
-     padding: 32px 36px;
-  }
-      @media (min-width: 3840px) {
-     padding: 38px 39px;
-  }
+ 
 `;
 
 export const LatestHeader = styled.h3`
@@ -182,22 +179,20 @@ export const LatestHeader = styled.h3`
   }
 
   @media (min-width: 1920px) {
-    font-size: 24px;
+    font-size: 20px;
     margin-bottom: 20px;
   }
     @media (min-width: 2560px) {
-       font-size: 24px;
+       font-size: 1.8rem;
   }
       @media (min-width: 3840px) {
-       font-size: 28px;
+         font-size: 1.8rem;
   } 
 `;
-
 export const LatestItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 14px;
   border-radius: 10px;
   transition: background 0.2s;
 
@@ -209,23 +204,40 @@ export const LatestItem = styled.div`
     margin-bottom: 8px;
   }
 
-  @media (max-width: 768px) {
-    padding: 10px 12px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
+  .right-icon {
+    display: none;        
+    font-size: 20px;
+    color: #475569;
   }
 
+
   @media (min-width: 1920px) {
-    padding: 16px 20px;
-    gap: 8px;
+    .right-icon {
+      display: block;
+    }
   }
-    
+
+  @media (min-width: 2560px) {
+    .right-icon {
+      display: block;
+      font-size: 26px;
+    }
+  }
+
+  @media (min-width: 3840px) {
+    .right-icon {
+      display: block;
+      font-size: 32px;
+    }
+  }
 `;
+
 
 export const DeptInfo = styled.div`
   display: flex;
+  padding: 10px;
   flex-direction: column;
+  margin-bottom: 20px;
 `;
 
 export const DeptName = styled.span`
@@ -241,10 +253,10 @@ export const DeptName = styled.span`
     font-size: 20px;
   }
      @media (min-width: 2560px) {
-    font-size: 22px;
+    font-size: 1.5rem;
   }
      @media (min-width: 3840px) {
-    font-size: 28px;
+  font-size: 1.5rem;
 
   }
 `;
@@ -261,11 +273,11 @@ export const DeptDate = styled.span`
     font-size: 16px;
   }
      @media (min-width: 2560px) {
-    font-size: 18px;
+    font-size: 1.2rem;
 
   }
      @media (min-width: 3840px) {
-    font-size: 30px;
+   font-size: 1.2rem;
   }
 `;
 
@@ -293,3 +305,17 @@ export const NoData = styled.div`
     padding: 26px 0;
   }
 `;
+ export const Container = styled.div`
+
+
+  @media (min-width: 2560px) {
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 3840px) {
+    width: 70%;
+    margin: 0 auto;
+  }
+ 
+ `;

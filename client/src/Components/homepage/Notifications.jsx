@@ -14,6 +14,7 @@ const notifications = [
   { id: 3, text: "Payroll processing failed", time: "3h ago", type: "error" },
   { id: 4, text: "Payroll processing failed", time: "3h ago", type: "success" },
   { id: 5, text: "Payroll processing failed", time: "3h ago", type: "warning" },
+   { id: 6, text: "New employee added: Jane Doe", time: "1d ago", type: "success" },
 ];
 
 const Notifications = () => {

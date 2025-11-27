@@ -319,7 +319,7 @@ export const TaskContent = styled.div`
     gap: 2px;
     text-align: center;
     align-items: center;
-  }1024
+  }
 `;
 
 export const TaskRole = styled.div`
@@ -497,8 +497,7 @@ export const TableCell = styled.td`
   color: #333;
   vertical-align: middle;
   padding: 0.6rem;
-border-bottom:8px solid #F4F4F4;
-
+border-bottom:8px solid #f4f8ff;
   @media (min-width: 2200px) {
     font-size: 34px;
     padding-top: 20px;
