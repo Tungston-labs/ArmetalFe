@@ -194,7 +194,7 @@ class SimpleNotificationsAPI(APIView):
         # ✅ 1. Leave Requests (Pending)
         pending_leaves = LeaveRequest.objects.filter(
             employee__department__company=company,
-            status="Pending"
+            status="pending"
         ).order_by('-created_at')[:10]
 
         for leave in pending_leaves:
@@ -206,7 +206,7 @@ class SimpleNotificationsAPI(APIView):
         # ✅ 2. Reimbursement Requests (Pending)
         pending_reimbursements = Reimbursement.objects.filter(
             employee__department__company=company,
-            status="Pending"
+            status="On Hold"
         ).order_by('-created_at')[:10]
 
         for r in pending_reimbursements:
