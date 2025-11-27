@@ -14,7 +14,7 @@ export const Grid = styled.div`
 
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
  

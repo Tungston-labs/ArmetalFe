@@ -1,5 +1,3 @@
-
-import React from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -7,14 +5,16 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid
+  CartesianGrid,
 } from "recharts";
 
 import {
   ChartCard,
   ChartTitle,
   ChartWrapper,
-  TooltipBox
+  TooltipBox,
+   getXAxisTickStyle,
+  getYAxisTickStyle
 } from "./ProjectChart.Styles";
 
 const CustomTooltip = ({ active, payload }) => {
@@ -39,7 +39,7 @@ const ProjectChart = ({ site, variant, bench }) => {
   return (
     <ChartCard>
       <ChartTitle>Project Summary</ChartTitle>
- <ChartWrapper>
+      <ChartWrapper>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart 
           data={data}
@@ -48,18 +48,20 @@ const ProjectChart = ({ site, variant, bench }) => {
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
 
-          <XAxis 
-            dataKey="name"
-            tick={{ fill: "#334155", fontSize: 14, fontWeight: 500 }}
-            axisLine={false}
-            tickLine={false}
-          />
+     <XAxis
+  dataKey="name"
+  tick={getXAxisTickStyle()}
+  axisLine={false}
+  tickLine={false}
+/>
 
-          <YAxis
-            tick={{ fill: "#64748b" }}
-            axisLine={false}
-            tickLine={false}
-          />
+<YAxis
+  tick={getYAxisTickStyle()}
+  axisLine={false}
+  tickLine={false}
+/>
+
+
 
           <Tooltip content={<CustomTooltip />} />
 
@@ -71,13 +73,23 @@ const ProjectChart = ({ site, variant, bench }) => {
             </linearGradient>
           </defs>
 
-          <Bar
-            dataKey="value"
-            fill="url(#barColor)"
-            radius={[10, 10, 0, 0]}
-            barSize={50}
-       animationDuration={4000}
-          />
+         <Bar
+  dataKey="value"
+  fill="url(#barColor)"
+  radius={[10, 10, 0, 0]}
+  animationDuration={3000}
+
+ 
+  barSize={
+    window.innerWidth >= 3840 ? 150 :     
+    window.innerWidth >= 2560 ? 80 :     
+    window.innerWidth >= 1920 ? 55 :    
+    window.innerWidth >= 1024 ? 40 :    
+    window.innerWidth >= 600 ? 30 :      
+    22                                  
+  }
+/>
+
         </BarChart>
       </ResponsiveContainer>
        </ChartWrapper>

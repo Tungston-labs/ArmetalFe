@@ -44,11 +44,11 @@ export const DepartmentCard = styled.div`
 
 
   @media (min-width: 2560px) {
-    padding: 2.5rem;
+    padding: 2rem;
   }
 
   @media (min-width: 3840px) {
-    padding: 3rem;
+    padding: 2rem;
   }
 `;
 
@@ -70,8 +70,8 @@ export const LeftWrapper = styled.div`
 `;
 
 export const DepartmentIcon = styled.div`
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: #172554;   
   color: white;
@@ -82,7 +82,6 @@ export const DepartmentIcon = styled.div`
   font-size: 1rem;
   text-transform: uppercase;
 
-  /* Responsive scaling */
   @media (min-width: 1920px) {
     width: 60px;
     height: 60px;
@@ -90,14 +89,14 @@ export const DepartmentIcon = styled.div`
   }
 
   @media (min-width: 2560px) {
-    width: 75px;
-    height: 75px;
-    font-size: 1.5rem;
+     width: 60px;
+    height: 60px;
+    font-size: 2rem;
   }
 
   @media (min-width: 3840px) {
-    width: 75px;
-    height: 75px;
+    width: 60px;
+    height: 60px;
     font-size: 2rem;
   }
 `;
@@ -238,7 +237,7 @@ export const EmployeeRow = styled.li`
   text-align: center;
   justify-content: center;
   transition: background 0.2s ease;
-
+background: #f4f8ff;
   &:hover {
     background: #f5f5f5;
   }
@@ -315,17 +314,18 @@ export const StatusSelect = styled.select`
   border: none;
 
   &.approve {
-    background-color: #16A34A;
+    background-color: #5abe7fff;
     color: white;
+    border-color: #16A34A ;
   }
 
   &.on-hold {
-    background-color: #FFB020;
+    background-color: #fac25bff;
     color: white;
   }
 
   &.in-verification {
-    background-color: #3B82F6;
+    background-color: #77abffff;
     color: white;
   }
 

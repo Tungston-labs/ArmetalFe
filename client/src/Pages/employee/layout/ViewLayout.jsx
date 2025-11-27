@@ -46,7 +46,6 @@ const ViewBasicLayout = ({
           buttonText="Save"
         />
 
-        {/* Header with employee basic info */}
         <Header
           employee={formData}
           editable={true}

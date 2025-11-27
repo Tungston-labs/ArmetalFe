@@ -8,7 +8,6 @@ export const Wrapper = styled.div`
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-
   @media (max-width: 768px) {
     max-width: 220px;
     padding: 10px;
@@ -17,6 +16,11 @@ export const Wrapper = styled.div`
   @media (min-width: 1920px) {
     max-width: 350px;
     padding: 16px;
+  }
+
+   @media (min-width: 2560px) {
+    max-width: 370px;
+    padding: 18px;
   }
 `;
 
@@ -30,6 +34,9 @@ export const Title = styled.h3`
 
   @media (min-width: 1920px) {
     font-size: 22px;
+  }
+   @media (min-width: 2540px) {
+    font-size: 2rem;
   }
 `;
 

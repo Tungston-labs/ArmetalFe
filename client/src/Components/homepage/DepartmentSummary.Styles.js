@@ -3,17 +3,16 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
-
 `;
 
 export const SectionTitle = styled.h2`
    margin: 0;
   font-size: 16px;
-  color: #0f172a;
+  color: #0b2d7cff;
   font-weight: 700;
   margin-bottom:20px;
 
-  @media (max-width: 600px) {
+ @media (max-width: 600px) {
     font-size: 14px;
   }
 
@@ -22,16 +21,16 @@ export const SectionTitle = styled.h2`
   }
 
   @media (min-width: 2560px) {
-    font-size: 22px;
+    font-size: 2.2rem;
   }
      @media (min-width: 3840px) {
-    font-size: 38px;
+    font-size: 2.2rem;
   }
 `;
 
 export const GridBox = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
 
   @media (max-width: 1920px) {
@@ -53,9 +52,13 @@ export const GridBox = styled.div`
     gap: 12px;
   }
 
-  @media (min-width: 1920px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+
+  @media (min-width: 2560px) {
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 3840px) {
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -86,6 +89,7 @@ export const CountCard = styled.div`
   }
      @media (min-width: 2560px) {
     padding: 40px 30px;
+   
   }
      @media (min-width: 3840px) {
     padding: 50px 40px;
@@ -179,13 +183,12 @@ export const LatestHeader = styled.h3`
     margin-bottom: 20px;
   }
     @media (min-width: 2560px) {
-       font-size: 24px;
+       font-size: 1.8rem;
   }
       @media (min-width: 3840px) {
-       font-size: 28px;
+         font-size: 1.8rem;
   } 
 `;
-
 export const LatestItem = styled.div`
   display: flex;
   justify-content: space-between;
@@ -201,19 +204,40 @@ export const LatestItem = styled.div`
     margin-bottom: 8px;
   }
 
-  @media (max-width: 768px) {
-    padding: 10px 12px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
+  .right-icon {
+    display: none;        
+    font-size: 20px;
+    color: #475569;
   }
 
-   
+
+  @media (min-width: 1920px) {
+    .right-icon {
+      display: block;
+    }
+  }
+
+  @media (min-width: 2560px) {
+    .right-icon {
+      display: block;
+      font-size: 26px;
+    }
+  }
+
+  @media (min-width: 3840px) {
+    .right-icon {
+      display: block;
+      font-size: 32px;
+    }
+  }
 `;
+
 
 export const DeptInfo = styled.div`
   display: flex;
+  padding: 10px;
   flex-direction: column;
+  margin-bottom: 20px;
 `;
 
 export const DeptName = styled.span`
@@ -229,10 +253,10 @@ export const DeptName = styled.span`
     font-size: 20px;
   }
      @media (min-width: 2560px) {
-    font-size: 22px;
+    font-size: 1.5rem;
   }
      @media (min-width: 3840px) {
-    font-size: 28px;
+  font-size: 1.5rem;
 
   }
 `;
@@ -249,11 +273,11 @@ export const DeptDate = styled.span`
     font-size: 16px;
   }
      @media (min-width: 2560px) {
-    font-size: 18px;
+    font-size: 1.2rem;
 
   }
      @media (min-width: 3840px) {
-    font-size: 30px;
+   font-size: 1.2rem;
   }
 `;
 
@@ -281,3 +305,17 @@ export const NoData = styled.div`
     padding: 26px 0;
   }
 `;
+ export const Container = styled.div`
+
+
+  @media (min-width: 2560px) {
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 3840px) {
+    width: 70%;
+    margin: 0 auto;
+  }
+ 
+ `;

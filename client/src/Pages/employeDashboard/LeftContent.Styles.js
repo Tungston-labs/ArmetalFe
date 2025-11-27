@@ -111,7 +111,8 @@ export const ImageWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 200px;
-background-color: lightgray;
+  
+background-color: #fcfcfcff;
   @media (max-width: 480px) {
     height: 100px;
   }
@@ -474,7 +475,7 @@ export const Container = styled.div`
   flex-direction: column;
   padding: 10px;
   gap: 20px;
-  background: #f4f4f4;
+  background: #f4f8ff;
   width: 100%;
   box-sizing: border-box;
 

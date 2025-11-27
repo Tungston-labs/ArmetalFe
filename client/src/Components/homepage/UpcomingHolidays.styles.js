@@ -58,7 +58,7 @@ export const List = styled.div`
     gap: 16px;
   }
        @media (min-width: 2560px) {
-     gap: 16px;
+     gap: 35px;
   }
      @media (min-width: 3840px) {
      gap: 30px;
@@ -78,7 +78,7 @@ export const ListItem = styled.div`
     gap: 20px;
   }
        @media (min-width: 2560px) {
-     gap: 16px;
+     gap: 25px;
   }
      @media (min-width: 3840px) {
      gap: 25px;
@@ -199,7 +199,7 @@ export const Type = styled.span`
     font-size: 15px;
   }
       @media (min-width: 2560px) {
-    font-size: 18px;
+    font-size: 1.5rem;
   }
     @media (min-width: 3840px) {
     font-size: 25px;
@@ -233,11 +233,11 @@ export const ViewAll = styled.button`
   }
       @media (min-width: 2560px) {
       padding: 12px 0;
-    font-size: 18px;
+    font-size: 1.5rem;
   }
     @media (min-width: 3840px) {
        padding: 16px 0;
-    font-size: 30px;
+       font-size: 1.5rem;
   }
 `;
 

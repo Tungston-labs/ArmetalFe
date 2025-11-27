@@ -203,8 +203,8 @@ const isLoading = loading || deptLoading;
   }}
   style={{
     backgroundColor: new Date(leave.to_date) < new Date().setHours(0, 0, 0, 0)
-      ? "#ccc"
-      : "#003366",
+      ? "#fa8e8e"
+      : "#074583",
     cursor: new Date(leave.to_date) < new Date().setHours(0, 0, 0, 0)
       ? "not-allowed"
       : "pointer",

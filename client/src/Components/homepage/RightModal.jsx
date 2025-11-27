@@ -22,7 +22,7 @@ const RightModal = ({ open, onClose }) => {
         <Notifications />
             </Columns>
           <Columns>
-           <AttendanceCircle present={55} leave={12} />
+           <AttendanceCircle present={70} leave={30} />
              </Columns>
  
      <Columns>

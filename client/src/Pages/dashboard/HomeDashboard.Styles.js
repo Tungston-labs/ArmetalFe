@@ -73,7 +73,17 @@ export const ContentWrapper = styled.div`
   }
 `;
 
+export const TopCard = styled.div`
 
+   @media (min-width: 2560px) {
+   min-height:10vh;
+  }
+
+  @media (min-width: 3800px) {
+  min-height:10vh;
+
+  }
+`
 
 export const TwoColumn = styled.div`
   display: flex;
@@ -85,10 +95,12 @@ export const TwoColumn = styled.div`
     flex-direction: column;
   }
     @media (min-width: 2560px) {
-  
+   min-height:38vh;
+     gap: 35px;
   }
 
-  @media (min-width: 3840px) {
+  @media (min-width: 3800px) {
+  min-height:38vh;
    margin-bottom:3rem;
    margin-top:3rem;
    gap:40px;
@@ -116,10 +128,20 @@ export const ThreeColumnRow = styled.div`
   margin-top: 20px;
   flex-wrap: wrap;
 
-  @media (max-width: 992px) {
+  @media (max-width: 600px) {
     flex-direction: column;
   }
+   @media (min-width: 1024px) and (max-width: 1440px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
 
+ @media (min-width: 2560px) {
+  min-height:35vh;
+  }
+   @media (min-width: 3840px) {
+  min-height:35vh;
+  }
 `;
 
 export const ThreeBox = styled.div`
@@ -132,6 +154,9 @@ export const ThreeBox = styled.div`
   overflow: hidden;
 
   @media (max-width: 768px) {
+    width: 100%;
+  }
+    @media (min-width: 1024px) and (max-width: 1440px) {
     width: 100%;
   }
 

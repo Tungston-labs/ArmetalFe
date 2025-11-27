@@ -12,12 +12,18 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 16px;
+
+
+  @media (min-width: 2540px) {
+  margin-bottom: 2rem;
+  }
+  
 `;
 
 export const Title = styled.h4`
   margin: 0;
   font-size: 16px;
-  color: #0f172a;
+  color: #0b2d7cff;
   font-weight: 700;
 
   @media (max-width: 600px) {
@@ -29,10 +35,10 @@ export const Title = styled.h4`
   }
 
   @media (min-width: 2560px) {
-    font-size: 22px;
+    font-size: 2.2rem;
   }
      @media (min-width: 3840px) {
-    font-size: 38px;
+    font-size: 2.2rem;
   }
 `;
 
@@ -54,7 +60,7 @@ export const ListItem = styled.div`
   padding: 10px 12px;
   border-radius: 10px;
   transition: background 0.2s, transform 0.2s;
-  cursor: pointer;
+   cursor: pointer;
 
   &:hover {
     background: #f8fafc;
@@ -66,10 +72,12 @@ export const ListItem = styled.div`
     border-radius: 12px;
   }
        @media (min-width: 2560px) {
-     gap: 16px;
+     gap: 20px;
+     margin-bottom: 15px;
   }
      @media (min-width: 3840px) {
-     gap: 25px;
+     gap: 20px;
+     margin-bottom: 15px;
   }
 `;
 
@@ -108,10 +116,10 @@ export const Name = styled.span`
     font-size: 18px;
   }
      @media (min-width: 2560px) {
-    font-size: 22px;
+    font-size: 1.8rem;
   }
      @media (min-width: 3840px) {
-    font-size: 30px;
+    font-size: 1.8rem;
   }
 `;
 
@@ -128,10 +136,10 @@ export const Dept = styled.span`
     font-size: 15px;
   }
     @media (min-width: 2560px) {
-    font-size: 20px;
+    font-size: 25px;
   }
     @media (min-width: 3840px) {
-    font-size: 28px;
+    font-size: 25px;
   }
 `;
 
@@ -148,10 +156,10 @@ export const IdText = styled.span`
     font-size: 13px;
   }
        @media (min-width: 2560px) {
-    font-size: 18px;
+    font-size: 22px;
   }
     @media (min-width: 3840px) {
-    font-size: 25px;
+    font-size: 22px;
   }
 `;
 
@@ -176,12 +184,12 @@ export const DateBox = styled.div`
     padding: 8px 10px;
   }
        @media (min-width: 2560px) {
-   font-size: 14px;
+   font-size: 1.2rem;
     min-width: 110px;
     padding: 8px 10px;
   }
     @media (min-width: 3840px) {
-    font-size: 22px;
+     font-size: 1.2rem;
      padding: 10px 12px;
        min-width: 150px;
   }

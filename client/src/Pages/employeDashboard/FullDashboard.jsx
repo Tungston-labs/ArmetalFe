@@ -9,7 +9,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import Navbar from "../../Components/Navbar";
 
 const Wrapper = styled.div`
-  background: #f4f4f4;
+  background: #f4f8ff;
   min-height: 100vh;
   height: auto;
   padding: 2rem;
