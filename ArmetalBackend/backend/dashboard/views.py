@@ -55,8 +55,9 @@ class ReimbursementCountsView(APIView):
 
         data = {
             "total_requests": qs.count(),
-            "pending_count": qs.filter(status="pending").count(),
-            "verified_count": qs.filter(status="verified").count(),
+            "pending_count": qs.filter(status="On Hold").count(),
+            "verified_count": qs.filter(status="Approve").count(),
+            "rejected_count": qs.filter(status="Reject").count(),
         }
 
         return Response(data)
