@@ -48,7 +48,6 @@ class AttendanceSwipeView(APIView):
             project = Project.objects.filter(employees=employee).first()
             punch_type = project.punch_type.lower() if project else "company"
 
-            # ✅ Step 2: Validate distance
 
             # ✅ Step 2: Validate distance based on punch type
             if punch_type == "onsite":
@@ -68,6 +67,17 @@ class AttendanceSwipeView(APIView):
                                 f"Must be within 50m of either."},
                         status=400
                     )
+                
+            elif punch_type == "bench":
+                company = employee.department.company
+                company_location = (float(company.latitude), float(company.longitude))
+                employee_location = (emp_lat, emp_lon)
+                distance = geodesic(employee_location, company_location).meters
+                if distance > 50:
+                    return Response(
+                        {"error": f"Bench employees must punch from company location ({int(distance)}m). Allowed within 50m."},
+                        status=400
+                    )    
 
             elif punch_type == "company":
                 company = employee.department.company

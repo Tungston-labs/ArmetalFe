@@ -6,6 +6,7 @@ class Project(models.Model):
     PUNCH_TYPE_CHOICES = [
         ('on_site', 'On Site'),
         ('variant', 'Variant'),
+        ('bench', 'Bench'),
     ]
 
     name = models.CharField(max_length=255)
