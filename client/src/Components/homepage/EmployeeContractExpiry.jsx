@@ -38,7 +38,7 @@ const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) => {
 
         {list.map((emp, idx) => {
           const days = daysLeft(emp.expiryDate);
-          const isSoon = days >= 0 && days <= 30;
+          const isSoon = days >= 0 && days <= 5;
 
           return (
             <ListItem key={idx} highlight={isSoon}>
