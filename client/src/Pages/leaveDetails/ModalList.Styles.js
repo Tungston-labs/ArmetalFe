@@ -120,11 +120,6 @@ export const TableHeader = styled.thead`
   background-color: #2f43b8;
   color: white;
 
-  th {
-    padding: clamp(8px, 1vw, 16px);
-    text-align: left;
-    font-size: 1.5rem;
-  }
 `;
 
 export const TableRow = styled.tr`
