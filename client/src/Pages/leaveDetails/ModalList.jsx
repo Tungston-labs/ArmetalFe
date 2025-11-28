@@ -18,6 +18,7 @@ import {
 import ConfirmLeaveModal from "../../Components/ConfirmLeaveModal";
 import { useDispatch } from "react-redux";
 import { patchLeaveStatus } from "../../Redux/leaveSlice";
+import { BodyCell, BodyRow, HeadCell, HeadRow, StyledTable, TableBody } from "./EmployeeList.styles";
 
 const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -82,18 +83,18 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
             <h2>Employee Leave Details</h2>
           </ModalHeader>
 
-          <TableContainer>
+          <StyledTable>
             <TableHeader>
-              <tr>
-                <th>Employee name</th>
-                <th>Leave type</th>
-                <th>Email ID</th>
-                <th>Contact number</th>
-                <th>Start date to end date</th>
-                <th></th>
-              </tr>
+              <HeadRow>
+                <HeadCell>Employee name</HeadCell>
+                <HeadCell>Leave type</HeadCell>
+                <HeadCell>Email ID</HeadCell>
+                <HeadCell>Contact number</HeadCell>
+                <HeadCell>Start date to end date</HeadCell>
+                <HeadCell></HeadCell>
+              </HeadRow>
             </TableHeader>
-            <tbody>
+            <TableBody>
               {loading ? (
                 <tr>
                   <td colSpan="6" style={{ textAlign: "center" }}>
@@ -108,22 +109,22 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
                 </tr>
               ) : (
                 employeesOnLeave.map((emp, index) => (
-                  <TableRow key={index} $highlighted={index % 2 !== 0}>
-                    <TableData>
+                  <BodyRow key={index} $highlighted={index % 2 !== 0}>
+                    <BodyCell>
                       {/* <ProfileImg src="/images/profile.png" alt="profile" /> */}
                       {emp.employee_name}
-                    </TableData>
-                    <TableData>{emp.leave_type}</TableData>
-                    <TableData>{emp.email}</TableData>
-                    <TableData>{emp.phone}</TableData>
-                    <TableData>
+                    </BodyCell>
+                    <BodyCell>{emp.leave_type}</BodyCell>
+                    <BodyCell>{emp.email}</BodyCell>
+                    <BodyCell>{emp.phone}</BodyCell>
+                    <BodyCell>
                       {emp.from_date}({emp.from_date_type}) to {emp.to_date}({emp.to_date_type})
-                    </TableData>
-                  </TableRow>
+                    </BodyCell>
+                  </BodyRow>
                 ))
               )}
-            </tbody>
-          </TableContainer>
+            </TableBody>
+          </StyledTable>
 
           <ActionButtons>
             <DeclineButton onClick={onClose}>Close</DeclineButton>
