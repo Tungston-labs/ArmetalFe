@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import DashboardCountsView, ReimbursementCountsView,RecentEmployeesView,ContractExpiry30DaysView,SimpleNotificationsAPI,TodayEmployeeStatsAPI,HolidaySummaryAPI,ReimbursementMonthWiseCountView,DepartmentDashboardSummaryView,ProjectEmployeeCountView
+from .views import DashboardCountsView, ReimbursementCountsView,RecentEmployeesView,ContractExpiry30DaysView,SimpleNotificationsAPI,TodayEmployeeStatsAPI,HolidaySummaryAPI,ReimbursementMonthWiseAmountView,DepartmentDashboardSummaryView,ProjectEmployeeCountView
 urlpatterns = [
  
     path('counts/', DashboardCountsView.as_view(), name='dashboard-counts'),
     path('reimbursement/counts/', ReimbursementCountsView.as_view(), name='reimbursement-counts'),
-    path('reimbursement/monthwise/', ReimbursementMonthWiseCountView.as_view(), name='reimbursement-monthwise'),
+    path('reimbursement/monthwise/', ReimbursementMonthWiseAmountView.as_view(), name='reimbursement-monthwise'),
     path('department/',DepartmentDashboardSummaryView.as_view(),name='department-dashboard'),
     path('recentemployees/',RecentEmployeesView.as_view(),name='recent-employees'),
     path("contract-expiry/30-days/", ContractExpiry30DaysView.as_view(),name="contract-expiry-30-days"),
