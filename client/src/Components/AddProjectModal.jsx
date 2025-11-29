@@ -125,6 +125,7 @@ const AddProjectModal = ({ isOpen, onClose }) => {
                 <Option value="" disabled>Select type</Option>
                 <Option value="on_site">On Site</Option>
                 <Option value="variant">Variant</Option>
+                <Option value="bench">Bench</Option>
               </SelectField>
               <DropdownIcon />
             </SelectWrapper>

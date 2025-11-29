@@ -6,16 +6,32 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Wrapper, Title, LegendBox, LegendItem, ColorDot,DoughnutWrapper } from "./AttendanceCircle.styles";
+
+import {
+  Wrapper,
+  Title,
+  LegendBox,
+  LegendItem,
+  ColorDot,
+  DoughnutWrapper
+} from "./AttendanceCircle.styles";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const AttendanceCircle = ({ present = 70, leave = 30 }) => {
+const AttendanceCircle = ({ present = 0, leave = 0 }) => {
+  // Convert values to numbers (API sometimes sends strings)
+  const presentVal = Number(present) || 0;
+  const leaveVal = Number(leave) || 0;
+
+  // Avoid empty donut when both values are zero
+  const safeData =
+    presentVal === 0 && leaveVal === 0 ? [1, 0] : [presentVal, leaveVal];
+
   const data = {
     labels: ["Present", "Leave"],
     datasets: [
       {
-        data: [present, leave],
+        data: safeData,
         backgroundColor: ["#3352BA", "#f6413b"],
         borderWidth: 0,
         cutout: "70%",
@@ -25,9 +41,9 @@ const AttendanceCircle = ({ present = 70, leave = 30 }) => {
 
   const options = {
     rotation: -90,
-    circumference: 180,
+    circumference: 180, // Half donut
     plugins: {
-      legend: { display: false }, 
+      legend: { display: false },
     },
   };
 
@@ -35,19 +51,19 @@ const AttendanceCircle = ({ present = 70, leave = 30 }) => {
     <Wrapper>
       <Title>Today's Attendance</Title>
 
-<DoughnutWrapper>
-  <Doughnut data={data} options={options} />
-</DoughnutWrapper>
+      <DoughnutWrapper>
+        <Doughnut data={data} options={options} />
+      </DoughnutWrapper>
 
       <LegendBox>
         <LegendItem>
           <ColorDot color="#3352BA" />
-          Present:70%
+          Present: {presentVal}%
         </LegendItem>
 
         <LegendItem>
           <ColorDot color="#f6413b" />
-          Leave:30%
+          Leave: {leaveVal}%
         </LegendItem>
       </LegendBox>
     </Wrapper>

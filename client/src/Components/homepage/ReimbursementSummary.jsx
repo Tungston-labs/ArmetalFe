@@ -1,4 +1,5 @@
 import React from "react";
+import ReimbursementLineChart from "./ReimbursementLineChart";
 import {
   MainWrapper,
   LeftChart,
@@ -10,45 +11,44 @@ import {
   Subtext
 } from "./ReimbursementSummary.Styles";
 
-import ReimbursementLineChart from "./ReimbursementLineChart"; 
+const ReimbursementSummary = ({ reimbursements, reimbursementMonthwise }) => {
+  if (!reimbursements || !reimbursementMonthwise) {
+    return <p style={{ textAlign: "center" }}>Loading...</p>;
+  }
 
-const ReimbursementSummary = () => {
   return (
     <MainWrapper>
       <LeftChart>
-        <ReimbursementLineChart />
+        <ReimbursementLineChart data={reimbursementMonthwise} />
       </LeftChart>
+
       <RightCards>
-     <CardGrid>
+        <CardGrid>
+          <CardBox style={{ borderTopColor: "#3352BA" }}>
+            <Title>Total Requests</Title>
+            <Count>{reimbursements.total_requests || 0}</Count>
+            <Subtext>Overall Request raised</Subtext>
+          </CardBox>
 
-  <CardBox style={{borderTopColor:"#3352BA"}} >
-    <Title>Total Requests</Title>
-    <Count>120</Count>
-    <Subtext>Overall Request raised</Subtext>
-  </CardBox>
+          <CardBox style={{ borderTopColor: "#f59e0b" }}>
+            <Title>Pending</Title>
+            <Count>{reimbursements.pending_count || 0}</Count>
+            <Subtext>Waiting for approval</Subtext>
+          </CardBox>
 
-  <CardBox  style={{borderTopColor:"#f59e0b"}}>
-    <Title>Pending</Title>
-    <Count>45</Count>
-    <Subtext>Waiting for approval</Subtext>
-  </CardBox>
+          <CardBox style={{ borderTopColor: "#10b981" }}>
+            <Title>Verified</Title>
+            <Count>{reimbursements.verified_count || 0}</Count>
+            <Subtext>Verified by Accounts</Subtext>
+          </CardBox>
 
-  <CardBox style={{borderTopColor:"#10b981"}}>
-    <Title>Verified</Title>
-    <Count>60</Count>
-    <Subtext>Verified by Accounts</Subtext>
-  </CardBox>
-
-  <CardBox style={{borderTopColor:"#ef4444"}} >
-    <Title>Rejected</Title>
-    <Count>15</Count>
-    <Subtext>Rejected due to mismatch</Subtext>
-  </CardBox>
-
-</CardGrid>
-
+          <CardBox style={{ borderTopColor: "#ef4444" }}>
+            <Title>Rejected</Title>
+            <Count>{reimbursements.rejected_count || 0}</Count>
+            <Subtext>Rejected due to mismatch</Subtext>
+          </CardBox>
+        </CardGrid>
       </RightCards>
-
     </MainWrapper>
   );
 };

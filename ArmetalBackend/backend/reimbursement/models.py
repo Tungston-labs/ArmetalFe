@@ -19,6 +19,7 @@ class Reimbursement(models.Model):
         ("On Hold", " On Hold"),
         ("In Verification", "In Verification"),
         ("Approve", "Approve"),
+        ("Reject", "Reject"),
         
     ]
 

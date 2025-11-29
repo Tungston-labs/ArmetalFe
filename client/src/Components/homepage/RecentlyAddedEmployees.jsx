@@ -32,14 +32,20 @@ const RecentlyAddedEmployees = ({ employees = [], showCount = 5 }) => {
 
         {list.map((emp, idx) => (
           <ListItem key={idx}>
-            <Avatar src={emp.avatar || ""} alt={emp.name} />
+            {/* Use null if no avatar, or a default image */}
+            <Avatar
+              src={emp.avatar || null} 
+              alt={emp.name || "Employee"} 
+            />
             <Info>
               <Name>{emp.name}</Name>
               <Dept>{emp.department}</Dept>
               <IdText>ID: {emp.empId}</IdText>
             </Info>
             <DateBox>
-              {new Date(emp.joiningDate).toLocaleDateString("en-IN")}
+              {emp.joiningDate
+                ? new Date(emp.joiningDate).toLocaleDateString("en-IN")
+                : "-"}
             </DateBox>
           </ListItem>
         ))}

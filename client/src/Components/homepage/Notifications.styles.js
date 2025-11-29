@@ -7,16 +7,43 @@ export const NotificationWrapper = styled.div`
   padding: 10px;
   box-sizing: border-box;
 
+  /* 👉 Enable scroll */
+  max-height: 250px;     /* Adjust if you want more/less */
+  overflow-y: auto;
+
+  /* 👉 Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #cfcfcf;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   @media (max-width: 768px) {
     max-width: 100%;
     padding: 8px;
+    max-height: 220px;   /* smaller screens */
   }
 
   @media (min-width: 1920px) {
     max-width: 350px;
     padding: 16px;
+    max-height: 300px;
+  }
+
+  @media (min-width: 2560px) {
+    max-height: 350px;
+  }
+
+  @media (min-width: 3840px) {
+    max-height: 450px;
   }
 `;
+
 
 export const NotificationTitle = styled.div`
   font-weight: 600;

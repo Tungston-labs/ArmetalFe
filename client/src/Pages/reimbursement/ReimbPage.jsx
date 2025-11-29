@@ -35,15 +35,18 @@ const DepartmentDetail = () => {
   });
 
   // ✅ Status color mapping
+
   const getStatusStyle = (status) => {
     switch (status) {
       case "Approve": return { backgroundColor: "#4B976D", color: "white" };
       case "On Hold": return { backgroundColor: "#BA703A", color: "white" };
       case "In Verification": return { backgroundColor: "#DD991D", color: "black" };
       case "Cancel": return { backgroundColor: "#E67B7B", color: "white" };
+      case "Reject": return { backgroundColor: "#FF4B4B", color: "white" };
       default: return { backgroundColor: "#d42727ff", color: "#000" };
     }
   };
+
 
   // 🔹 Fetch reimbursements for department
   useEffect(() => {
@@ -121,7 +124,7 @@ const DepartmentDetail = () => {
 
   return (
     <>
-      <Navbar/>
+      <Navbar />
       {loading && <Loader text="Loading Department..." />}
       {!loading && (
         <Container>
@@ -227,8 +230,6 @@ const DepartmentDetail = () => {
                         style={{
                           ...getStatusStyle(emp.status),
                           appearance: "none",
-                          WebkitAppearance: "none",
-                          MozAppearance: "none",
                           padding: "5px 10px",
                           borderRadius: "6px",
                           fontWeight: "bold",
@@ -239,7 +240,9 @@ const DepartmentDetail = () => {
                         <option value="Approve">Approved</option>
                         <option value="On Hold">On Hold</option>
                         <option value="In Verification">In Verification</option>
+                        <option value="Reject">Reject</option>
                       </select>
+
                     </td>
                   </tr>
                 ))}

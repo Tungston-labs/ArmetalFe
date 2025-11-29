@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   CalendarWrapper,
   Header,
@@ -21,8 +21,26 @@ const SingleHolidayCalendar = ({ holidays = [] }) => {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
 
-  const holidayMap = {};
-  holidays.forEach((h) => (holidayMap[h.date] = h.name));
+  // --------------------------------------------------------
+  // 🔥 CREATE HOLIDAY MAP LIKE:
+  // { "2025-12-25": { name: "xmas", type: "religious" } }
+  // --------------------------------------------------------
+  const holidayMap = useMemo(() => {
+    const map = {};
+    holidays.forEach((h) => {
+      map[h.date] = {
+        name: h.description,
+        type: h.holiday_type
+      };
+    });
+    return map;
+  }, [holidays]);
+
+  // --------------------------------------------------------
+  // 🔥 Auto-mark Sundays (or Fridays) as holiday if
+  // "company_off_day" exists in holiday list
+  // --------------------------------------------------------
+  const hasCompanyOffDay = holidays.some(h => h.holiday_type === "company_off_day");
 
   const firstDay = new Date(year, month, 1).getDay();
   const totalDays = new Date(year, month + 1, 0).getDate();
@@ -41,40 +59,54 @@ const SingleHolidayCalendar = ({ holidays = [] }) => {
     } else setMonth(month + 1);
   };
 
-const renderDays = () => {
-  const list = [];
+  const renderDays = () => {
+    const list = [];
 
-  // Empty spaces before starting
-  for (let i = 0; i < firstDay; i++) list.push(<Day key={"e" + i} />);
+    // Empty cells before month start
+    for (let i = 0; i < firstDay; i++) list.push(<Day key={"e" + i} />);
 
-  // Actual days
-  for (let d = 1; d <= totalDays; d++) {
-    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-      d
-    ).padStart(2, "0")}`;
+    // Day cells
+    for (let d = 1; d <= totalDays; d++) {
+      const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
+        d
+      ).padStart(2, "0")}`;
 
-    const isHoliday = holidayMap[dateStr];
+      const currentDate = new Date(year, month, d);
+      const weekday = currentDate.getDay(); // 0 = Sunday
 
-    // Check if today
-    const isToday =
-      d === today.getDate() &&
-      month === today.getMonth() &&
-      year === today.getFullYear();
+      let isHoliday = holidayMap[dateStr] || null;
 
-    let className = "";
-    if (isHoliday) className = "holiday";
-    if (isToday) className += " today";
+      // Auto-mark Sundays as holiday
+      if (!isHoliday && hasCompanyOffDay && weekday === 0) {
+        isHoliday = {
+          name: "Company Off Day",
+          type: "company_off_day"
+        };
+      }
 
-    list.push(
-      <Day key={d} className={className} title={isHoliday || ""}>
-        {d}
-      </Day>
-    );
-  }
+      // Check today
+      const isToday =
+        d === today.getDate() &&
+        month === today.getMonth() &&
+        year === today.getFullYear();
 
-  return list;
-};
+      let className = "";
+      if (isHoliday) className = "holiday";
+      if (isToday) className += " today";
 
+      const tooltip = isHoliday
+        ? `${isHoliday.name} (${isHoliday.type})`
+        : "";
+
+      list.push(
+        <Day key={d} className={className} title={tooltip}>
+          {d}
+        </Day>
+      );
+    }
+
+    return list;
+  };
 
   return (
     <CalendarWrapper>
@@ -92,7 +124,6 @@ const renderDays = () => {
         {weekdays.map((w) => (
           <Weekday key={w}>{w}</Weekday>
         ))}
-
         {renderDays()}
       </Grid>
     </CalendarWrapper>

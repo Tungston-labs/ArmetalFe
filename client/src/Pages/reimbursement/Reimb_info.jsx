@@ -40,16 +40,20 @@ const getStatusStyle = (status) => {
       return "#FF9800";
     case "In Verification":
       return "#FFC107";
+    case "Reject":
+      return "#E57373";
     default:
       return "#E0E0E0";
   }
 };
 
+
+
 const ReimbursementDetail = () => {
   const { id } = useParams();
   const [reimbursement, setReimbursement] = useState(null);
   const [loading, setLoading] = useState(true);
-const [showNote, setShowNote] = useState(false);
+  const [showNote, setShowNote] = useState(false);
 
   // Fetch on load
   useEffect(() => {
@@ -104,22 +108,24 @@ const [showNote, setShowNote] = useState(false);
               <option value="Approve">Approved</option>
               <option value="On Hold">On Hold</option>
               <option value="In Verification">In Verification</option>
+              <option value="Reject">Reject</option> 
             </StatusSelect>
+
           }
         />
 
         {/* Profile Card */}
         <Card>
           <SectionTitle>Employee Information</SectionTitle>
-              <Divider />
+          <Divider />
           <ProfileRow>
             <ProfileImage
               src={
                 reimbursement.profile_pic
                   ? reimbursement.profile_pic
                   : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      reimbursement.employee_name
-                    )}&background=random`
+                    reimbursement.employee_name
+                  )}&background=random`
               }
             />
             <ProfileInfo>
@@ -142,7 +148,7 @@ const [showNote, setShowNote] = useState(false);
         {/* Date & Amount Card */}
         <Card>
           <SectionTitle>Reimbursement Details</SectionTitle>
-    <Divider />
+          <Divider />
           <InfoRow>
             <Label>Date:</Label>
             <Value>{reimbursement.date}</Value>
@@ -157,14 +163,14 @@ const [showNote, setShowNote] = useState(false);
 
           <Divider />
 
-        <NoteCard>
-  <NoteHeader onClick={() => setShowNote(!showNote)}>
-    <span>Note</span>
-    <Arrow>{showNote ? "▲" : "▼"}</Arrow>
-  </NoteHeader>
+          <NoteCard>
+            <NoteHeader onClick={() => setShowNote(!showNote)}>
+              <span>Note</span>
+              <Arrow>{showNote ? "▲" : "▼"}</Arrow>
+            </NoteHeader>
 
-  {showNote && <NoteBox>{reimbursement.note}</NoteBox>}
-</NoteCard>
+            {showNote && <NoteBox>{reimbursement.note}</NoteBox>}
+          </NoteCard>
         </Card>
 
         {/* Bills */}
