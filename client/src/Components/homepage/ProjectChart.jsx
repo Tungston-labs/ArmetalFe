@@ -42,6 +42,15 @@ const ProjectChart = ({ projectEmployeeCount }) => {
     { name: "Bench", value: bench || 0 }
   ];
 
+  // 🔥 Dynamic Y Axis Logic
+  const maxValue = Math.max(on_site || 0, variant || 0, bench || 0);
+  const roundedMax = Math.ceil(maxValue / 10) * 10 + 10;
+
+  const ticks = [];
+  for (let i = 0; i <= roundedMax; i += roundedMax / 6) {
+    ticks.push(Math.round(i));
+  }
+
   return (
     <ChartCard>
       <ChartTitle>Project Summary</ChartTitle>
@@ -65,10 +74,9 @@ const ProjectChart = ({ projectEmployeeCount }) => {
               tick={getYAxisTickStyle()}
               axisLine={false}
               tickLine={false}
-              domain={[0, 15]}   // fixed max value
-              ticks={[0, 5, 10, 15]}
+              domain={[0, roundedMax]}
+              ticks={ticks}
             />
-
 
             <Tooltip content={<CustomTooltip />} />
 
@@ -84,13 +92,6 @@ const ProjectChart = ({ projectEmployeeCount }) => {
               fill="url(#barColor)"
               radius={[10, 10, 0, 0]}
               animationDuration={3000}
-              barSize={
-                window.innerWidth >= 3840 ? 150 :
-                  window.innerWidth >= 2560 ? 80 :
-                    window.innerWidth >= 1920 ? 55 :
-                      window.innerWidth >= 1024 ? 40 :
-                        window.innerWidth >= 600 ? 30 : 22
-              }
             />
           </BarChart>
         </ResponsiveContainer>
@@ -98,5 +99,6 @@ const ProjectChart = ({ projectEmployeeCount }) => {
     </ChartCard>
   );
 };
+
 
 export default ProjectChart;
