@@ -41,13 +41,14 @@ const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) => {
           const isSoon = days >= 0 && days <= 5;
 
           return (
-            <ListItem key={idx} highlight={isSoon}>
-              <ExpiryBox highlight={isSoon}>
-                <span className="day">{new Date(emp.expiryDate).getDate()}</span>
-                <span className="month">
-                  {new Date(emp.expiryDate).toLocaleString("en-IN", { month: "short" })}
-                </span>
-              </ExpiryBox>
+            <ListItem key={idx} $highlight={isSoon}>
+              <ExpiryBox $highlight={isSoon}>
+  <span className="day">{new Date(emp.expiryDate).getDate()}</span>
+  <span className="month">
+    {new Date(emp.expiryDate).toLocaleString("en-IN", { month: "short" })}
+  </span>
+</ExpiryBox>
+
 
               <Info>
                 <Name>{emp.name}</Name>

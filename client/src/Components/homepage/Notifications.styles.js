@@ -50,7 +50,7 @@ export const NotificationTitle = styled.div`
   font-size: 16px;
   color: #111111;
   margin-bottom: 10px;
-
+font-family: "Satoshi", sans-serif;
   @media (max-width: 768px) {
     font-size: 14px;
     margin-bottom: 8px;
@@ -71,6 +71,7 @@ export const NotificationTitle = styled.div`
 `;
 
 export const NotificationItem = styled.div`
+font-family: "Satoshi", sans-serif;
   background: #ffffff;
   border-left: 4px solid
     ${(props) =>
@@ -112,6 +113,7 @@ export const NotificationItem = styled.div`
 export const NotificationText = styled.div`
   flex: 1;
   margin-right: 8px;
+font-family: "Satoshi", sans-serif;
 
   @media (max-width: 768px) {
     margin-right: 6px;
@@ -125,6 +127,7 @@ export const NotificationText = styled.div`
 export const NotificationTime = styled.div`
   font-size: 12px;
   color: #000000;
+font-family: "Satoshi", sans-serif;
 
   @media (max-width: 768px) {
     font-size: 11px;
@@ -146,7 +149,7 @@ export const NoNotification = styled.div`
   color: #64748b;
   font-size: 14px;
   padding: 15px 0;
-  font-style: italic;
+font-family: "Satoshi", sans-serif;
 
   @media (max-width: 768px) {
     font-size: 13px;

@@ -52,15 +52,17 @@ export const List = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 5px;
 
   @media (min-width: 1920px) {
     gap: 16px;
   }
        @media (min-width: 2560px) {
      gap: 35px;
+      margin-bottom: 15px;
   }
      @media (min-width: 3840px) {
+        margin-bottom: 15px;
      gap: 30px;
   }
 `;
@@ -69,7 +71,12 @@ export const ListItem = styled.div`
   display: flex;
   gap: 12px;
   align-items: center;
+   cursor: pointer;
 
+    &:hover {
+      background-color: #fdfcf7ff;
+    transform: translateY(-2px);
+    }
   @media (max-width: 600px) {
     gap: 8px;
   }
@@ -143,7 +150,10 @@ export const DayBox = styled.div`
     min-width: 60px;
     padding: 6px 6px;
   }
-
+  @media (min-width: 1400px) {
+    min-width: 85px;
+    padding: 9px 0px;
+  }
   @media (min-width: 1920px) {
     min-width: 90px;
     padding: 14px 10px;
