@@ -23,12 +23,12 @@ class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
             from django.utils.dateparse import parse_date
             date = parse_date(date_str)
             if date:
-                queryset = queryset.filter(created_at__date=date)  # 👈 use created_at
+                queryset = queryset.filter(created_at__date=date)  
         return queryset.order_by("-created_at")
 
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
-        today = timezone.localdate()  # 👈 timezone aware "today"
+        today = timezone.localdate()  
 
         # Aggregate today's total hours based on created_at
         agg = DailyTask.objects.filter(
