@@ -67,6 +67,8 @@ import Daily from "./Pages/dailytask/DailyTask.jsx"
 import ViewLayout from "./Pages/employee/layout/ViewLayout.jsx";
 
 import HomeDashboard from "./Pages/dashboard/HomeDashboard.jsx"
+import ErrorSomething from "./Pages/error/ErrorSomething.jsx";
+import ErrorBoundary from "./Components/ErrorBoundary.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -87,6 +89,7 @@ function App() {
 
   return (
     <>
+        <ErrorBoundary>
       <Routes>
         <Route path="/loader" element={<Loder />} />
         <Route path="/login" element={<LoginForm />} />
@@ -146,8 +149,8 @@ function App() {
             
 <Route path="/layout" element={<ViewLayout/>}/>
              
-<Route path="/home-dashboard" element={<HomeDashboard/>}/>
-          
+
+  <Route path="*" element={<ErrorSomething />} />
 
 
 
@@ -155,6 +158,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+            </ErrorBoundary>
     </>
   );
 }

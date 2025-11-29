@@ -95,10 +95,12 @@ const DepartmentList = () => {
 
   // fetch departments on mount
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" }));
+    dispatch(getDepartments({ page: 1, search: "" })).then((res)=>{
+          console.log("Department list refreshed", res);
+        })
   }, [dispatch]);
 
-  // search filtering
+
   const filteredDepartments = useMemo(() => {
     if (!search.trim()) return departments || [];
     const q = search.toLowerCase();
@@ -342,7 +344,6 @@ const DepartmentList = () => {
               filteredDepartments.map((dept) => {
                 const isOpen = selectedDept === dept.id;
                 const employees = deptEmployees[dept.id] || [];
-                // <-- sort employees A → Z by name (non-mutating)
                 const sortedEmployees = (employees || [])
                   .slice()
                   .sort((a, b) =>
@@ -585,7 +586,7 @@ const DepartmentList = () => {
               <p>No departments found.</p>
             )}
           </DepartmentGrid>
-        )}
+        )} 
 
         {showAddModal && (
           <ModalOverlay>
