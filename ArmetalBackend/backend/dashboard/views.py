@@ -64,29 +64,37 @@ class ReimbursementCountsView(APIView):
     
 
 from django.db.models.functions import TruncMonth
-from django.db.models import Count
+from django.db.models import Sum
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-class ReimbursementMonthWiseCountView(APIView):
+class ReimbursementMonthWiseAmountView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
     def get(self, request):
         company = request.user.company
 
-        qs = Reimbursement.objects.filter(
-            employee__department__company=company
-        ).annotate(
-            month=TruncMonth('created_at')  # adjust field if different
-        ).values('month').annotate(
-            count=Count('id')
-        ).order_by('month')
+        qs = (
+            Reimbursement.objects.filter(
+                employee__department__company=company,
+                status="Approve" 
+            )
+            .annotate(month=TruncMonth("created_at"))
+            .values("month")
+            .annotate(total_amount=Sum("amount"))  # ✅ Sum amount instead of Count
+            .order_by("month")
+        )
 
-        # Format response as "YYYY-MM": count
+        # Format output
         data = {
-            item['month'].strftime("%Y-%m"): item['count']
+            item["month"].strftime("%Y-%m"): float(item["total_amount"] or 0)
             for item in qs
         }
 
         return Response(data)
+
+    
+
 class DepartmentDashboardSummaryView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
