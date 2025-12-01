@@ -7,9 +7,10 @@ export const Wrapper = styled.div`
 `;
 
 export const Header = styled.div`
-  display: flex;
+   display: flex;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  align-items: center;
 
   @media (min-width: 1920px) {
     margin-bottom: 2rem;

@@ -66,8 +66,8 @@ const ReimbursementList = () => {
         return { backgroundColor: "#FFB020", color: "white" };
       case "In Verification":
         return { backgroundColor: "#3B82F6", color: "white" };
-      case "Cancel":
-        return { backgroundColor: "#E67B7B", color: "white" };
+      case "Reject":
+        return { backgroundColor: "#f17979", color: "white" };
       default:
         return { backgroundColor: "#fff", color: "#000" };
     }
@@ -264,6 +264,7 @@ const ReimbursementList = () => {
   <option value="Approve">Approved</option>
   <option value="On Hold">On Hold</option>
   <option value="In Verification">In Verification</option>
+    <option value="Reject">Reject</option>
 </StatusSelect>
 
                               </EmployeeCell>

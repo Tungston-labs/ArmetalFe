@@ -47,17 +47,8 @@ export const MainWrapper = styled.div`
 
 export const LeftChart = styled.div`
   background: #fff;
-  padding: 25px;
   border-radius: 14px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-
-  @media (max-width: 992px) {
-    padding: 20px;
-  }
-
-  @media (max-width: 600px) {
-    padding: 15px;
-  }
 `;
 
 export const RightCards = styled.div`
@@ -198,6 +189,9 @@ export const ChartTitle = styled.h3`
   color: #1e293b;
   margin-bottom: 12px;
 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   @media (max-width: 600px) {
     font-size: 16px;
   }
@@ -207,6 +201,22 @@ export const ChartTitle = styled.h3`
   }
     @media (min-width: 2540px) {
     font-size: 2rem;
+  }
+`;
+export const IconButton = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  svg {
+    color: #3352ba;
+    font-size: 22px;
+  }
+
+  &:hover svg {
+    opacity: 0.8;
+    transform: scale(1.05);
+    transition: 0.2s;
   }
 `;
 

@@ -328,7 +328,10 @@ export const StatusSelect = styled.select`
     background-color: #77abffff;
     color: white;
   }
-
+  &.reject {
+    background-color: #f17979;
+    color: white;
+  }
   option {
     background: white !important;
     color: black !important;

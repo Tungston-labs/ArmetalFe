@@ -15,6 +15,7 @@ import {
   CustomLink,
   TopSection,
   LinkIcon,
+  BottomText,
 } from './Sidebar.styles';
 import API from '../services/api';
 import { NavLink } from "react-router-dom";
@@ -140,10 +141,15 @@ export default function Sidebar() {
               </CustomLink>
             )}
 
+
           </>
         )}
       
       </Nav>
+
+<BottomText className={collapsed ? "collapsed" : ""}>
+  Powered by <span>REKORY</span>
+</BottomText>
     </SidebarContainer>
   );
 }

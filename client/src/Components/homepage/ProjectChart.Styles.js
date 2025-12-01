@@ -37,6 +37,9 @@ export const ChartTitle = styled.h3`
   font-size: 18px;
   font-weight: 600;
   color: #1e293b;
+   display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   @media (max-width: 992px) {
     font-size: 16px;
@@ -168,3 +171,19 @@ export const getYAxisTickStyle = () => {
 };
 
 
+export const IconButton = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  svg {
+    color: #3352ba;
+    font-size: 22px;
+  }
+
+  &:hover svg {
+    opacity: 0.8;
+    transform: scale(1.05);
+    transition: 0.2s ease;
+  }
+`;

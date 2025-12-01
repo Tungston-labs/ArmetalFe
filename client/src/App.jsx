@@ -69,7 +69,7 @@ import ViewLayout from "./Pages/employee/layout/ViewLayout.jsx";
 import HomeDashboard from "./Pages/dashboard/HomeDashboard.jsx"
 import ErrorSomething from "./Pages/error/ErrorSomething.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";
-
+import Parent from "./Pages/employeDashboard/Parent.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -145,7 +145,7 @@ function App() {
             <Route path="/project" element={<FieldShift />} />
             <Route path="/project-department/:id/" element={<FieldDepartment />} />
 <Route path="/project/:id" element={<FieldInfo />} />
-
+<Route path="/parent" element={<Parent />} />
             
 <Route path="/layout" element={<ViewLayout/>}/>
              

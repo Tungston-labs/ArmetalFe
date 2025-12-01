@@ -290,7 +290,7 @@ export const CalendarIcon = styled.div`
     object-fit: contain;
     position: absolute;
     top: 0;
-    left: 0;
+    left: 2px;
     z-index: 1; /* Image stays behind */
   }
 

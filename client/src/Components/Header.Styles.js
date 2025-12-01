@@ -291,7 +291,7 @@ export const InfoRow = styled.div`
   display: flex;
   gap: 10px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1250px) {
     flex-direction: column;
     gap: 8px;
   }
