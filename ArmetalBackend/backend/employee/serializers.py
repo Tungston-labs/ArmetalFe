@@ -178,7 +178,6 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.idcard.url) if request else obj.idcard.url
         return None
 
-
 from rest_framework import serializers
 from datetime import date, timedelta
 from calendar import day_name
@@ -223,54 +222,48 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             "task_graph",
         ]
 
-    # -----------------------------------------------------
-    #    SALARY FROM BANK MODEL
-    # -----------------------------------------------------
+    # --------------------------------------
+    #   SALARY FROM BANK DETAILS MODEL
+    # --------------------------------------
     def get_salary(self, obj):
         if hasattr(obj, "bank_details") and obj.bank_details:
             return float(obj.bank_details.basic_salary)
         return None
 
-    # -----------------------------------------------------
-    #    CONTRACT (YOU WANT CONTRACT EXPIRY DATE)
-    # -----------------------------------------------------
+    # --------------------------------------
+    #   CONTRACT EXPIRY DATE
+    # --------------------------------------
     def get_contract(self, obj):
         return obj.contract_expiry_date
 
-    # -----------------------------------------------------
-    #    LEAVE TAKEN (APPROVED LEAVES)
-    # -----------------------------------------------------
+    # --------------------------------------
+    #   TOTAL APPROVED LEAVES
+    # --------------------------------------
     def get_leave_taken(self, obj):
         approved = LeaveRequest.objects.filter(employee=obj, status="approved")
-
         taken = 0
         for leave in approved:
             taken += leave.calculate_leave_days()
-
         return float(taken)
 
-    # -----------------------------------------------------
-    #    PENDING LEAVE (CURRENT BALANCE)
-    # -----------------------------------------------------
+    # --------------------------------------
+    #   PENDING LEAVES
+    # --------------------------------------
     def get_pending_leave(self, obj):
         return float(obj.total_leave or 0)
 
-    # -----------------------------------------------------
-    #    PROJECT LIST BASED ON DAILY TASKS
-    # -----------------------------------------------------
+    # --------------------------------------
+    #   PROJECT LIST FROM M2M RELATION
+    # --------------------------------------
     def get_projects(self, obj):
-        projects = (
-            obj.tasks.values_list("project", flat=True)
-            .distinct()
-        )
-        return list(projects)
+        return obj.projects.values_list("name", flat=True).distinct()
 
-    # -----------------------------------------------------
-    #    WEEKLY ATTENDANCE GRAPH
-    # -----------------------------------------------------
+    # --------------------------------------
+    #   WEEKLY ATTENDANCE GRAPH
+    # --------------------------------------
     def get_attendance_graph(self, obj):
         today = date.today()
-        start_week = today - timedelta(days=today.weekday())  # Monday
+        start_week = today - timedelta(days=today.weekday())
         end_week = start_week + timedelta(days=6)
 
         graph = {day: 0 for day in day_name}
@@ -282,13 +275,13 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
 
         for att in attendance:
             weekday = day_name[att.date.weekday()]
-            graph[weekday] = float(att.total_hours or 0)
+            graph[weekday] += float(att.total_hours or 0)   # FIXED
 
         return graph
 
-    # -----------------------------------------------------
-    #    WEEKLY TASK GRAPH
-    # -----------------------------------------------------
+    # --------------------------------------
+    #   WEEKLY TASK GRAPH
+    # --------------------------------------
     def get_task_graph(self, obj):
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
@@ -306,6 +299,7 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             graph[weekday] += float(task.time_taken or 0)
 
         return graph
+
 
 
 
