@@ -187,8 +187,8 @@ from attendance.models import Attendance
 from task.models import DailyTask
 from leave.models import LeaveRequest
 
-
 class EmployeeDashboardSerializer(serializers.ModelSerializer):
+    profile_pic = serializers.SerializerMethodField()
     department = serializers.CharField(source="department.name", read_only=True)
     contract = serializers.SerializerMethodField()
     salary = serializers.SerializerMethodField()
@@ -222,23 +222,23 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             "task_graph",
         ]
 
-    # --------------------------------------
-    #   SALARY FROM BANK DETAILS MODEL
-    # --------------------------------------
+    # -------------------------
+    #  FULL PROFILE PIC URL
+    # -------------------------
+    def get_profile_pic(self, obj):
+        request = self.context.get("request")
+        if obj.profile_pic:
+            return request.build_absolute_uri(obj.profile_pic.url)
+        return None
+
     def get_salary(self, obj):
         if hasattr(obj, "bank_details") and obj.bank_details:
             return float(obj.bank_details.basic_salary)
         return None
 
-    # --------------------------------------
-    #   CONTRACT EXPIRY DATE
-    # --------------------------------------
     def get_contract(self, obj):
         return obj.contract_expiry_date
 
-    # --------------------------------------
-    #   TOTAL APPROVED LEAVES
-    # --------------------------------------
     def get_leave_taken(self, obj):
         approved = LeaveRequest.objects.filter(employee=obj, status="approved")
         taken = 0
@@ -246,21 +246,12 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             taken += leave.calculate_leave_days()
         return float(taken)
 
-    # --------------------------------------
-    #   PENDING LEAVES
-    # --------------------------------------
     def get_pending_leave(self, obj):
         return float(obj.total_leave or 0)
 
-    # --------------------------------------
-    #   PROJECT LIST FROM M2M RELATION
-    # --------------------------------------
     def get_projects(self, obj):
-        return obj.projects.values("name","punch_type")
+        return obj.projects.values("name", "punch_type")
 
-    # --------------------------------------
-    #   WEEKLY ATTENDANCE GRAPH
-    # --------------------------------------
     def get_attendance_graph(self, obj):
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
@@ -275,13 +266,10 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
 
         for att in attendance:
             weekday = day_name[att.date.weekday()]
-            graph[weekday] += float(att.total_hours or 0)   # FIXED
+            graph[weekday] += float(att.total_hours or 0)
 
         return graph
 
-    # --------------------------------------
-    #   WEEKLY TASK GRAPH
-    # --------------------------------------
     def get_task_graph(self, obj):
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
@@ -299,7 +287,6 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             graph[weekday] += float(task.time_taken or 0)
 
         return graph
-
 
 
 

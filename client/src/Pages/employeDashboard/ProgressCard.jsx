@@ -12,37 +12,39 @@ import {
   Tooltip
 } from "./ProgressCard.styles";
 
-const ProgressCard = () => {
-  const days = ["S", "M", "T", "W", "T", "F", "S"];
-  const workHours = ["1h", "3h", "2.5h", "2h", "1.5h", "5.22h", "1h"];
-  const hoursData = [1, 3, 2.5, 2, 1.5, 5.22, 1]; 
-  const [hoverIndex, setHoverIndex] = useState(null);
+const ProgressCard = ({ attendanceGraph }) => {
+  const days = Object.keys(attendanceGraph);
+  const hoursData = Object.values(attendanceGraph);
 
-  const maxHours = Math.max(...hoursData); 
-  const maxBarHeight = 100; 
+  const [hoverIndex, setHoverIndex] = useState(null);
+  const maxHours = Math.max(...hoursData);
+  const maxBarHeight = 100;
+
+  const totalHours = hoursData.reduce((a, b) => a + b, 0).toFixed(1);
 
   return (
     <Card>
       <Header>
         <div>
           <Title>Progress</Title>
-          <Hours>6.1h</Hours>
-          <SubTitle>Work Time this week</SubTitle>
+          <Hours>{totalHours}h</Hours>
+          <SubTitle>Work Time This Week</SubTitle>
         </div>
       </Header>
 
       <BarWrapper>
-        {days.map((d, i) => {
+        {days.map((day, i) => {
           const height = (hoursData[i] / maxHours) * maxBarHeight + "px";
+
           return (
             <BarContainer
               key={i}
               onMouseEnter={() => setHoverIndex(i)}
               onMouseLeave={() => setHoverIndex(null)}
             >
-              {hoverIndex === i && <Tooltip>{workHours[i]}</Tooltip>}
+              {hoverIndex === i && <Tooltip>{hoursData[i]}h</Tooltip>}
               <Bar height={height} highlight={i === 5} />
-              <Day>{d}</Day>
+              <Day>{day.slice(0, 1)}</Day>
             </BarContainer>
           );
         })}

@@ -16,27 +16,27 @@ const EmployeeCards = ({ employee }) => {
   const cardData = [
     {
       title: "Salary",
-      value: `₹ ${employee.basic_salary || "0"}`,
+      value: `₹ ${employee.salary || "0"}`,
       icon: <FaMoneyBillWave color="#e53935" />,
       bg: "#ffe0e0",
     },
     {
-      title: "Payslip",
-      value: employee.payslipMonth || "—",
-      icon: <FaFileInvoice color="#1e88e5" />,
-      bg: "#e0f0ff",
-    },
-    {
       title: "Contract / Visa Expiry",
-      value: employee.contract_expiry_date || "—",
+      value: employee.contract || employee.visa_expiry_date || "—",
       icon: <FaCalendarAlt color="#ff9800" />,
       bg: "#fff3e0",
     },
     {
       title: "Leave Taken",
-      value: employee.total_leave || "0",
+      value: employee.leave_taken || "0",
       icon: <FaUserCheck color="#43a047" />,
       bg: "#e0ffe0",
+    },
+    {
+      title: "Pending Leave",
+      value: employee.pending_leave || "0",
+      icon: <FaUserCheck color="#1e88e5" />,
+      bg: "#e0f0ff",
     },
   ];
 

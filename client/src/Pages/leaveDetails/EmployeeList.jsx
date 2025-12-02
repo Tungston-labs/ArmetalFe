@@ -255,14 +255,14 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
             </ModalContainer>
           </ModalOverlay>
         )}
-        {openModal && (
+ {openModal && (
   <RightSideModal
     isOpen={openModal}
     onClose={() => setOpenModal(false)}
-    employee={selectedEmployee}
-    onEdit={() => alert("Edit clicked")}
+    employeeId={selectedEmployee?.id}
   />
 )}
+
 
       </Container>
     </>

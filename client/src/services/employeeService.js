@@ -187,3 +187,9 @@ export const listEmployeeDash = async (id) => {
   const response = await API.get(`/dashboard/employee/${id}/`);
   return response.data;
 };
+
+
+export const fetchEmployeeDashboard = async (id) => {
+  const response = await API.get(`/dashboard/employee/${id}/`);
+  return response.data;
+};

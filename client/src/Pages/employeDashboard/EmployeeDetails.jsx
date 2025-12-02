@@ -35,23 +35,29 @@ const [openMailModal, setOpenMailModal] = useState(false);
   }, []);
 
   const fields = [
-    { label: "Employee ID", value: employee.employee_id, icon: <FaIdBadge size={14} /> },
-    { label: "Department", value: employee.department, icon: <FaBuilding size={14} /> },
-    { label: "Email", value: employee.email, icon: <MdAttachEmail size={14} /> },
-    { label: "Role", value: employee.role, icon: <FaUserTie size={14} /> },
-    { label: "Joining Date", value: employee.joining_date, icon: <FaCalendarAlt size={14} /> },
-    
-    { label: " Working Project", value: employee.workingProject, icon: <FaProjectDiagram size={14} /> },
-  ...(employee.isOnLeave
+  { label: "Employee ID", value: employee.employee_id, icon: <FaIdBadge size={14} /> },
+  { label: "Department", value: employee.department, icon: <FaBuilding size={14} /> },
+  { label: "Email", value: employee.email, icon: <MdAttachEmail size={14} /> },
+  { label: "Role", value: employee.role, icon: <FaUserTie size={14} /> },
+  { label: "Joining Date", value: employee.joining_date, icon: <FaCalendarAlt size={14} /> },
+
+  {
+    label: "Working Projects",
+    value: employee.projects?.map((p) => p.name).join(", ") || "—",
+    icon: <FaProjectDiagram size={14} />
+  },
+
+  ...(employee.leave_taken > 0
     ? [
         {
-          label: "Leave Status",
-          value: "Employee is on leave",
-          icon: <BsPersonFillExclamation size={14} />
+          label: "Leave Taken",
+          value: employee.leave_taken,
+          icon: <BsPersonFillExclamation size={14} />,
         }
       ]
     : []),
 ];
+
 
   return (
     <DetailsWrapper>
