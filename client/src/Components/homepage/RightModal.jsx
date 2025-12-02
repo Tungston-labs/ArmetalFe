@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Panel, CloseIcon, Columns } from "./RightModal.Styles";
+import { Panel, CloseIcon, Columns, BottomActions, ActionButton, LogoutButton } from "./RightModal.Styles";
 import AttendanceCircle from "./AttendanceCircle";
 import SingleHolidayCalendar from "./SingleHolidayCalendar.jsx";
 import Notifications from "./Notifications";
@@ -29,8 +29,6 @@ const RightModal = ({ open, onClose }) => {
   return (
     <Panel className={open ? "open" : ""}>
       <CloseIcon onClick={onClose}>×</CloseIcon>
-
-      {/* NOTIFICATIONS SECTION */}
       <Columns>
         {loading.notifications ? (
           <p>Loading notifications...</p>
@@ -38,8 +36,6 @@ const RightModal = ({ open, onClose }) => {
           <Notifications items={notifications?.notifications || []} />
         )}
       </Columns>
-
-      {/* TODAY STATS SECTION */}
       <Columns>
         {loading.todayStats ? (
           <p>Loading attendance...</p>
@@ -53,8 +49,6 @@ const RightModal = ({ open, onClose }) => {
           <p>No stats found</p>
         )}
       </Columns>
-
-      {/* HOLIDAY SUMMARY SECTION */}
       <Columns>
         {loading.holidaySummary ? (
           <p>Loading holidays...</p>
@@ -66,6 +60,15 @@ const RightModal = ({ open, onClose }) => {
           <p>No holidays found</p>
         )}
       </Columns>
+      <BottomActions>
+  <ActionButton onClick={() => console.log("Change password clicked")}>
+    Change Password
+  </ActionButton>
+  <LogoutButton onClick={() => console.log("Logout clicked")}>
+    Logout
+  </LogoutButton>
+</BottomActions>
+
     </Panel>
   );
 };

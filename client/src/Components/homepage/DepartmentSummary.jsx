@@ -15,20 +15,27 @@ import {
   NoData,
   Container
 } from "./DepartmentSummary.Styles";
+import { useNavigate } from "react-router-dom";
 import { FiChevronRight } from "react-icons/fi";
-
+import { Header, IconButton, Title } from "./RecentlyAddedEmployees.styles";
+import { BsArrowUpRightCircleFill } from "react-icons/bs";
 const DepartmentSummary = ({ departments = [] }) => {
+  const navigate = useNavigate();
   const totalDepartments = departments.length;
-
-  // 🔥 Only the latest 2 departments
   const latestDepartments = [...departments]
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .slice(0, 2);
 
   return (
     <Wrapper>
-      <SectionTitle>Department Overview</SectionTitle>
+         <Header>
+      <Title>Department Overview</Title>
+ <IconButton onClick={() => navigate("/department")}>
+            <BsArrowUpRightCircleFill />
+          </IconButton>
 
+
+</Header>
       <Container>
         <GridBox>
           <CountCard>

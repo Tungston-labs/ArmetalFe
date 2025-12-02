@@ -37,14 +37,11 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
   return (
     <ProfileContainer>
       <ProfileCard>
-        {/* Back Button */}
         {onBack && (
           <BackArrowWrapper onClick={onBack}>
             <GoArrowLeft size={24} color="#1034ad" />
           </BackArrowWrapper>
         )}
-
-        {/* Profile Image */}
         <ProfileImageWrapper>
           {employee?.profile_pic ? (
             <ProfileImage
@@ -77,8 +74,6 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
             style={{ display: "none" }}
           />
         </ProfileImageWrapper>
-
-        {/* Employee Info */}
         <ContentArea>
           <LeftColumn>
             <InputBox

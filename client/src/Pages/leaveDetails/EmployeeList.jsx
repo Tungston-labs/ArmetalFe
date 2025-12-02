@@ -32,14 +32,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import Navbar from "../../Components/Navbar";
+// import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
-
+import RightSideModal from "../employeDashboard/RightSideModal";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+const [openModal, setOpenModal] = useState(false);
+const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [searchText, setSearchText] = useState("");
@@ -114,7 +116,7 @@ const EmployeeList = () => {
   return (
     <>
       {loading && <Loader />}
-      <Navbar />
+      {/* <Navbar /> */}
       <Container>
       <EmployeeTitle
   key={departmentList?.length || 0} 
@@ -148,11 +150,11 @@ const EmployeeList = () => {
     filteredEmployees.map((emp, index) => (
       <BodyRow
         key={emp.id}
-        onClick={() =>
-          navigate(`/fulldashboard/${emp.id}`, {
-            state: { from: location.pathname },
-          })
-        }
+        onClick={() => {
+  setSelectedEmployee(emp);
+  setOpenModal(true);
+}}
+
       >
         <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
 <BodyCell>
@@ -253,6 +255,15 @@ const EmployeeList = () => {
             </ModalContainer>
           </ModalOverlay>
         )}
+        {openModal && (
+  <RightSideModal
+    isOpen={openModal}
+    onClose={() => setOpenModal(false)}
+    employee={selectedEmployee}
+    onEdit={() => alert("Edit clicked")}
+  />
+)}
+
       </Container>
     </>
   );

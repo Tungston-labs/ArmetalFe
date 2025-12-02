@@ -1,8 +1,7 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // import this
+import React, {useState} from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Wrapper,
-  Header,
   SmallMeta,
   CalendarIcon,
   List,
@@ -13,7 +12,9 @@ import {
   ViewAll,
   NoData
 } from "./UpcomingHolidays.styles";
-import { Name, Title } from "./RecentlyAddedEmployees.styles";
+
+import { Header, IconButton, Name, Title } from "./RecentlyAddedEmployees.styles";
+import { BsArrowUpRightCircleFill } from "react-icons/bs";
 
 function formatDateShort(dateStr) {
   const d = new Date(dateStr);
@@ -29,32 +30,25 @@ function daysFromToday(dateStr) {
   return Math.round(diff / (1000 * 60 * 60 * 24));
 }
 
-const UpcomingHolidays = ({ holidays = [], showCount = 5, onCalendarClick }) => {
-  const navigate = useNavigate(); // initialize navigate
+const UpcomingHolidays = ({ holidays = [], showCount = 5 }) => {
+  const navigate = useNavigate();
 
-  const sorted = [...holidays].sort((a,b) => new Date(a.date) - new Date(b.date));
+  const sorted = [...holidays].sort((a, b) => new Date(a.date) - new Date(b.date));
   const list = sorted.slice(0, showCount);
 
-  // Today's date
-  const today = new Date();
-  const day = today.getDate();
-  const month = today.toLocaleString("en-US", { month: "short" }).toUpperCase();
-
   const handleViewAll = () => {
-    navigate("/holiday"); // set the route you want
+    navigate("/holiday");
   };
 
   return (
     <Wrapper>
       <Header>
         <Title>Upcoming Holidays</Title>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <CalendarIcon onClick={onCalendarClick}>
-            <img src="/images/calendar.png" alt="calendar" className="cal-img" />
-            <span className="cal-month">{month}</span>
-            <span className="cal-day">{day}</span>
-          </CalendarIcon>
-        </div>
+
+        {/* ✅ Icon on right side */}
+        <IconButton onClick={() => navigate("/holiday")}>
+          <BsArrowUpRightCircleFill />
+        </IconButton>
       </Header>
 
       <List>
@@ -63,6 +57,7 @@ const UpcomingHolidays = ({ holidays = [], showCount = 5, onCalendarClick }) => 
         {list.map((h, idx) => {
           const days = daysFromToday(h.date);
           const isSoon = days >= 0 && days <= 30;
+
           return (
             <ListItem key={idx}>
               <DayBox highlight={isSoon}>

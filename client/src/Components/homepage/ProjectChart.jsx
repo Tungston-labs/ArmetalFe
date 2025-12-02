@@ -12,12 +12,16 @@ import {
   ChartCard,
   ChartTitle,
   ChartWrapper,
+  IconButton,
   TooltipBox,
   getXAxisTickStyle,
   getYAxisTickStyle
 } from "./ProjectChart.Styles";
+import { BsArrowUpRightCircleFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 const CustomTooltip = ({ active, payload }) => {
+
   if (active && payload && payload.length) {
     return (
       <TooltipBox>
@@ -30,6 +34,8 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 const ProjectChart = ({ projectEmployeeCount }) => {
+  const navigate = useNavigate();
+
   if (!projectEmployeeCount) {
     return <p style={{ textAlign: "center" }}>Loading...</p>;
   }
@@ -53,7 +59,13 @@ const ProjectChart = ({ projectEmployeeCount }) => {
 
   return (
     <ChartCard>
-      <ChartTitle>Project Summary</ChartTitle>
+      <ChartTitle>
+          <span>Project Summary</span>
+          <IconButton onClick={() => navigate("/project")}>
+    <BsArrowUpRightCircleFill />
+  </IconButton>
+      </ChartTitle>
+
       <ChartWrapper>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart

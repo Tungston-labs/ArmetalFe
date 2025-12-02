@@ -12,7 +12,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 16px;
-
+  align-items: center;
 
   @media (min-width: 2540px) {
   margin-bottom: 2rem;
@@ -68,7 +68,7 @@ export const ListItem = styled.div`
   }
 
   @media (min-width: 1920px) {
-    padding: 14px 16px;
+    padding: 10px 16px;
     border-radius: 12px;
   }
        @media (min-width: 2560px) {
@@ -203,5 +203,23 @@ export const NoData = styled.div`
   @media (min-width: 1920px) {
     padding: 16px;
     font-size: 15px;
+  }
+`;
+export const IconButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+
+  svg {
+    font-size: 20px;
+    color: #3352BA;
+  }
+
+  &:hover svg {
+    transform: scale(1.1);
+    transition: 0.2s;
   }
 `;

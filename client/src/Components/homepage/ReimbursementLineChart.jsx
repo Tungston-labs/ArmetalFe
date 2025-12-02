@@ -9,7 +9,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import { ChartWrapper, ChartTitle, ChartContainer } from "./ReimbursementSummary.Styles";
+import { useNavigate } from "react-router-dom";
+import { BsArrowUpRightCircleFill } from "react-icons/bs";
+
+
+import { ChartWrapper, ChartTitle, ChartContainer, IconButton } from "./ReimbursementSummary.Styles";
 
 const monthNames = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -36,27 +40,30 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const ReimbursementLineChart = ({ data }) => {
-  // Convert response to: { 1:count, 2:count, ... }
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/reimbursement"); // <--- change to your page route
+  };
+
   const dataMap = {};
 
   if (data) {
     Object.entries(data).forEach(([yearMonth, count]) => {
       const [year, month] = yearMonth.split("-");
-      const monthIndex = parseInt(month); // 1-12
+      const monthIndex = parseInt(month);
       dataMap[monthIndex] = count;
     });
   }
 
-  // Build chart data for 12 months
   const chartData = monthNames.map((name, index) => {
-    const monthIndex = index + 1; // 1-12
+    const monthIndex = index + 1;
     return {
       month: name,
       count: dataMap[monthIndex] || 0,
     };
   });
 
-  // Check if everything is zero
   const allZero = chartData.every((item) => item.count === 0);
   if (!data || allZero) {
     return <p style={{ textAlign: "center" }}>No data found</p>;
@@ -64,7 +71,15 @@ const ReimbursementLineChart = ({ data }) => {
 
   return (
     <ChartWrapper>
-      <ChartTitle>Reimbursement Summary</ChartTitle>
+      {/* TITLE + ARROW ICON */}
+     <ChartTitle>
+  <span>Reimbursement Summary</span>
+
+  <IconButton onClick={handleNavigate}>
+    <BsArrowUpRightCircleFill />
+  </IconButton>
+</ChartTitle>
+
 
       <ChartContainer>
         <ResponsiveContainer width="100%" height="100%">

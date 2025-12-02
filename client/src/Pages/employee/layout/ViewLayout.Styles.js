@@ -39,7 +39,7 @@ export const TabsRowContainer = styled.div`
 
 export const TabsRow = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 450px); 
+  grid-template-columns: repeat(3, 1fr); 
   gap: 20px;
   margin-top: 0.5rem;
  margin: 0 auto;              
@@ -47,7 +47,7 @@ export const TabsRow = styled.div`
   /* Tablet scroll for smaller screens */
   @media (max-width: 1024px) {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
     overflow-x: auto;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -60,7 +60,7 @@ export const TabsRow = styled.div`
 
 export const TabButton = styled.button`
   width: 100%; 
-  padding: 12px 0;
+  padding: 12px 10px;
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;

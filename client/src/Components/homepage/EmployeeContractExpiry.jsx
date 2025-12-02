@@ -8,7 +8,10 @@ import {
   Info,
   NoData
 } from "./EmployeeContractExpiry.styles";
+import { useNavigate } from "react-router-dom";
 import { IdText, Name, Title } from "./RecentlyAddedEmployees.styles";
+import { IconButton } from "./ProjectChart.Styles";
+import { BsArrowUpRightCircleFill } from "react-icons/bs";
 
 function daysLeft(dateStr) {
   const today = new Date();
@@ -21,6 +24,7 @@ function daysLeft(dateStr) {
 }
 
 const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) => {
+  const navigate = useNavigate();
   const sorted = [...employees].sort(
     (a, b) => new Date(a.expiryDate) - new Date(b.expiryDate)
   );
@@ -31,6 +35,11 @@ const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) => {
     <Wrapper>
       <Header>
         <Title>Contract Expiry</Title>
+
+        {/* 🔥 Icon on Right side */}
+               <IconButton onClick={() => navigate("/employee")}>
+          <BsArrowUpRightCircleFill />
+        </IconButton>
       </Header>
 
       <List>
@@ -41,8 +50,9 @@ const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) => {
           const isSoon = days >= 0 && days <= 5;
 
           return (
-            <ListItem key={idx} highlight={isSoon}>
-              <ExpiryBox highlight={isSoon}>
+            <ListItem key={idx} $highlight={isSoon}>
+              
+              <ExpiryBox $highlight={isSoon}>
                 <span className="day">{new Date(emp.expiryDate).getDate()}</span>
                 <span className="month">
                   {new Date(emp.expiryDate).toLocaleString("en-IN", { month: "short" })}

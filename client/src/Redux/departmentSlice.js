@@ -10,9 +10,7 @@ import {
   fetchEmployeesByDepartmentMini,
 } from "../services/departmentServices";
 
-// -------------------------------------------------------------
-// 1️⃣ Minimal Departments (id + name)
-// -------------------------------------------------------------
+
 export const getDepartmentsMin = createAsyncThunk(
   "departments/getMin",
   async (_, { rejectWithValue }) => {
@@ -24,16 +22,15 @@ export const getDepartmentsMin = createAsyncThunk(
   }
 );
 
-// -------------------------------------------------------------
-// 2️⃣ Paginated Departments
-// -------------------------------------------------------------
+
 export const getDepartments = createAsyncThunk(
   "departments/getAll",
   async ({ page = 1, search = "" }, { rejectWithValue }) => {
     try {
       return await fetchDepartments({ page, search });
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      console.error("Error fetching departments:", error.response);
+      return rejectWithValue(error.response);
     }
   }
 );

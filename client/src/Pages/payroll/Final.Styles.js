@@ -70,12 +70,13 @@ export const TitleSection = styled.div`
   display: flex;
   justify-content: space-between; /* left group + right select */
   align-items: center;
-  flex-wrap: nowrap; /* keep them on one line */
+  flex-wrap: nowrap;
   gap: clamp(8px, 1vw, 20px);
   width: 100%;
 margin: 10px;
+margin-top: 30px;
   @media (max-width: 767px) {
-    flex-direction: column; /* stack vertically on mobile */
+    flex-direction: column; 
     align-items: flex-start;
     gap: 12px;
   }
@@ -382,16 +383,16 @@ export const Th = styled.th`
     padding: 8px;
     cursor:pointer;
  @media (min-width: 3840px) {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
   @media (min-width: 2560px)and (max-width: 3839px) {
-    font-size: 22px;
+    font-size: 1.5rem;
   }
   @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 20px;
+    font-size: 1.2rem;
   }
   @media (max-width: 1023px) {
-    font-size: 13px;
+    font-size: 1rem;
   }
   @media (max-width: 767px) {
     font-size: 12px;

@@ -11,10 +11,14 @@ import {
   Dept,
   IdText,
   DateBox,
-  NoData
+  NoData,
+  IconButton
 } from "./RecentlyAddedEmployees.styles";
-
+import { useNavigate } from "react-router-dom";
+import { BsArrowUpRightCircleFill } from "react-icons/bs";
 const RecentlyAddedEmployees = ({ employees = [], showCount = 5 }) => {
+  const navigate = useNavigate();
+
   const sorted = [...employees].sort(
     (a, b) => new Date(b.joiningDate) - new Date(a.joiningDate)
   );
@@ -24,7 +28,11 @@ const RecentlyAddedEmployees = ({ employees = [], showCount = 5 }) => {
   return (
     <Wrapper>
       <Header>
-        <Title>Recently Added Employees</Title>
+        <Title>Recently Added Employees  </Title>
+          <IconButton onClick={() => navigate("/employee")}>
+            <BsArrowUpRightCircleFill />
+          </IconButton>
+      
       </Header>
 
       <List>

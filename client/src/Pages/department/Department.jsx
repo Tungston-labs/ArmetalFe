@@ -96,7 +96,11 @@ const Department = () => {
         setShowModal(false);
         setFormData({ name: '', department_code: '' });
         setFormError("");
-        dispatch(getDepartments({ page: 1, search: '' })); // refresh list once
+        dispatch(getDepartments({ page: 1, search: '' })).then((res)=>{
+          console.log("Department list refreshed", res);
+        }).catch((err)=>{
+          console.error("Failed to refresh department list", err.response.status);
+        })
       } else {
         const errorMessage =
           result?.payload?.detail ||

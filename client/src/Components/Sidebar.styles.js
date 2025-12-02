@@ -1,14 +1,13 @@
-// src/Components/Sidebar.styles.js
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const SidebarContainer = styled.div`
   width: 350px;
   min-width: 60px;
-  // height: 100vh;
+  /* height: 100vh; */
   background: linear-gradient(181deg, rgba(23, 37, 84, 1) 20%, rgba(51, 82, 186, 1) 100%);
   color: white;
-  // display: flex;
+   display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
   top: 0;
@@ -157,7 +156,6 @@ export const BottomSection = styled.div`
   align-items: center;
 `;
 
-// Logout icon/button
 export const LogoutButton = styled.button`
   font-size: 28px;
   color: red;
@@ -168,7 +166,6 @@ export const LogoutButton = styled.button`
   align-items: center;
 `;
 
-// Change Password link
 export const ChangePasswordLink = styled(Link)`
   font-size: 14px;
   color: white;
@@ -179,7 +176,6 @@ margin-left:30px;
     color:blue;
     
   }
-  
 `;
 
 export const ToggleButton = styled.button`
@@ -222,11 +218,7 @@ export const CustomLink = styled(Link)`
 @media (min-width: 2560px) and (max-width:3840px) {
      min-width: 20px; 
     height: 35px;
-  }
-
-
-    
-  }
+  } }
 
   span {
     flex-grow: 1;
@@ -287,8 +279,6 @@ export const CustomLink = styled(Link)`
       margin-right: 0;
     }
   }
-
-  /* Hide text between 768px–1024px */
   @media (min-width: 768px) and (max-width: 1024px) {
     justify-content: center;
     gap: 0;
@@ -302,23 +292,18 @@ export const CustomLink = styled(Link)`
       margin-right: 0;
     }
   }
-
-  /* Small devices (below 768px) - keep text visible */
   @media (max-width: 767px) {
     justify-content: flex-start;
     gap: 10px;
   }
-
-  /* Ultra-wide screens */
   @media (min-width: 2560px) {
-    font-size: 2rem;
+    font-size: 1.5rem;
     padding: 1rem 1.5rem;
     border-radius: 1rem;
     gap: 1.5rem;
   }
-
   @media (min-width: 3840px) {
-    font-size: 3rem;
+    font-size: 2rem;
     padding: 1.5rem 2rem;
     border-radius: 2rem;
     gap: 2rem;
@@ -339,3 +324,37 @@ export const LinkIcon = styled.img`
 `;
 
 
+export const BottomText = styled.div`
+  width: 100%;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 14px;
+  color: #ffffffaa;
+  font-weight: 500;
+  margin-top: auto;
+
+  span {
+    color: #ffffff;
+    font-weight: 700;
+  }
+  &.collapsed {
+    font-size: 12px;
+    padding: 10px 0;
+
+    span {
+      display: none;
+    }
+
+    &:after {
+      content: "R";
+      font-weight: 700;
+      color: #fff;
+      font-size: 14px;
+      margin-left: 4px;
+    }
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+`;

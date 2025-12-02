@@ -38,9 +38,6 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
-  // ---------------------------------------------
-  // 🟩 SELECT ONLY WHAT YOU NEED
-  // ---------------------------------------------
   const counts = useSelector((state) => state.dashboard.counts);
   const reimbursements = useSelector((state) => state.dashboard.reimbursements);
   const reimbursementMonthwise = useSelector(
@@ -61,9 +58,6 @@ const Dashboard = () => {
   );
   const todayStats = useSelector((state) => state.dashboard.todayStats);
 
-  // ---------------------------------------------
-  // 🟩 FIX: RUN API CALLS ONLY ONCE
-  // ---------------------------------------------
   useEffect(() => {
     dispatch(getDashCounts());
     dispatch(getReimbursementCounts());
@@ -92,10 +86,6 @@ const Dashboard = () => {
         <TopCard>
           <StatsGrid counts={counts} todayStats={todayStats} />
         </TopCard>
-
-        {/* --------------------- */}
-        {/* TWO COLUMN SECTION   */}
-        {/* --------------------- */}
         <TwoColumn>
           <LeftBox>
             <ReimbursementSummary
@@ -109,9 +99,6 @@ const Dashboard = () => {
           </RightBox>
         </TwoColumn>
 
-        {/* --------------------- */}
-        {/*  THREE COLUMN SECTION */}
-        {/* --------------------- */}
         <ThreeColumnRow>
           {/* Departments */}
           <ThreeBox>

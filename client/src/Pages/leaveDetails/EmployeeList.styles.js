@@ -111,11 +111,11 @@ export const HeadCell = styled.th`
   }
      @media (min-width: 2560px) {
     padding: 15px;
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
      @media (min-width: 3820px) {
     padding: 15px;
-    font-size: 2rem;
+      font-size: 1.5rem;
   }
 `;
 export const NameCell = styled.td`

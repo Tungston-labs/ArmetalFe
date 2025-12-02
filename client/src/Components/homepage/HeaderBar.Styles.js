@@ -4,7 +4,18 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+
+
+  @media (min-width: 1920px) {
+     margin-bottom: 20px;
+  }
+
+  @media (min-width: 2560px) {
+    margin-bottom: 20px;
+  }
+     @media (min-width: 3840px) {
+     margin-bottom: 20px;
+  }
 `;
 
 export const Title = styled.h2`
