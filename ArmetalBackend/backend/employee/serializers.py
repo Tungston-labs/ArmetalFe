@@ -256,7 +256,7 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
     #   PROJECT LIST FROM M2M RELATION
     # --------------------------------------
     def get_projects(self, obj):
-        return obj.projects.values_list("name", flat=True).distinct()
+        return obj.projects.values("name","punch_type")
 
     # --------------------------------------
     #   WEEKLY ATTENDANCE GRAPH
