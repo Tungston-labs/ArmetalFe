@@ -207,7 +207,7 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             "profile_pic",
             "name",
             "address",
-            "phone",
+            "phno",
             "email",
             "employee_id",
             "designation",
