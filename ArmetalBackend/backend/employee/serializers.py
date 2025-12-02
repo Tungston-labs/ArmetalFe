@@ -187,6 +187,7 @@ from attendance.models import Attendance
 from task.models import DailyTask
 from leave.models import LeaveRequest
 
+
 class EmployeeDashboardSerializer(serializers.ModelSerializer):
     profile_pic = serializers.SerializerMethodField()
     department = serializers.CharField(source="department.name", read_only=True)

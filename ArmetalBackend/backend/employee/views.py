@@ -368,8 +368,9 @@ class EmployeeDashboardAPIView(APIView):
         except Employee_db.DoesNotExist:
             return Response({'detail': 'Employee not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = EmployeeDashboardSerializer(employee)
+        serializer = EmployeeDashboardSerializer(employee, context={"request": request})
         return Response(serializer.data)
+
 
 # ------------------------dashboard for web application
 class DashboardSummaryView(APIView):
