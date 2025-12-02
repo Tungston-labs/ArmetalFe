@@ -371,6 +371,40 @@ class EmployeeDashboardAPIView(APIView):
         serializer = EmployeeDashboardSerializer(employee, context={"request": request})
         return Response(serializer.data)
 
+class SendEmailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        to_email = request.data.get("to")
+        subject = request.data.get("subject")
+        message = request.data.get("body")
+
+        if not to_email or not subject or not message:
+            return Response(
+                {"detail": "Fields 'to', 'subject', and 'body' are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Include info about sender
+        email_body = f"""
+        Message from: {request.user.email}
+
+        {message}
+        """
+
+        try:
+            send_mail(
+                subject,
+                email_body,
+                settings.DEFAULT_FROM_EMAIL,   # ALWAYS USE THIS
+                [to_email],
+                fail_silently=False,
+            )
+            return Response({"detail": "Email sent successfully!"})
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 # ------------------------dashboard for web application
 class DashboardSummaryView(APIView):

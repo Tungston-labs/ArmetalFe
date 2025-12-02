@@ -31,6 +31,8 @@ urlpatterns = [
 
     path('dashboard/employee/<int:id>/', views.EmployeeDashboardAPIView.as_view(), name='employee-dashboard'),
     path("employees/upcoming-expiry/", views.UpcomingExpiryEmployeeListView.as_view(), name="upcoming-expiry"),
+    path("email/send/", views.SendEmailAPIView.as_view(), name="send_email"),
+
 
 
     # mobile application
