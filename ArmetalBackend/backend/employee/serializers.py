@@ -182,7 +182,6 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
 from rest_framework import serializers
 from datetime import date, timedelta
 from calendar import day_name
-from django.db.models import Sum
 
 from employee.models import Employee_db
 from attendance.models import Attendance
@@ -192,8 +191,8 @@ from leave.models import LeaveRequest
 
 class EmployeeDashboardSerializer(serializers.ModelSerializer):
     department = serializers.CharField(source="department.name", read_only=True)
-
-    # Extra fields to match requirement
+    contract = serializers.SerializerMethodField()
+    salary = serializers.SerializerMethodField()
     pending_leave = serializers.SerializerMethodField()
     leave_taken = serializers.SerializerMethodField()
     projects = serializers.SerializerMethodField()
@@ -224,9 +223,23 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             "task_graph",
         ]
 
-    # -------------------------------
-    #    LEAVE SUMMARY
-    # -------------------------------
+    # -----------------------------------------------------
+    #    SALARY FROM BANK MODEL
+    # -----------------------------------------------------
+    def get_salary(self, obj):
+        if hasattr(obj, "bank_details") and obj.bank_details:
+            return float(obj.bank_details.basic_salary)
+        return None
+
+    # -----------------------------------------------------
+    #    CONTRACT (YOU WANT CONTRACT EXPIRY DATE)
+    # -----------------------------------------------------
+    def get_contract(self, obj):
+        return obj.contract_expiry_date
+
+    # -----------------------------------------------------
+    #    LEAVE TAKEN (APPROVED LEAVES)
+    # -----------------------------------------------------
     def get_leave_taken(self, obj):
         approved = LeaveRequest.objects.filter(employee=obj, status="approved")
 
@@ -234,72 +247,54 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
         for leave in approved:
             taken += leave.calculate_leave_days()
 
-        return taken
+        return float(taken)
 
+    # -----------------------------------------------------
+    #    PENDING LEAVE (CURRENT BALANCE)
+    # -----------------------------------------------------
     def get_pending_leave(self, obj):
-        """pending_leave = obj.total_leave (current balance in DB)"""
-        return obj.total_leave or 0
+        return float(obj.total_leave or 0)
 
-    # -------------------------------
-    #    PROJECT LIST
-    # -------------------------------
+    # -----------------------------------------------------
+    #    PROJECT LIST BASED ON DAILY TASKS
+    # -----------------------------------------------------
     def get_projects(self, obj):
-        """
-        Each DailyTask has a project name — return unique project names.
-        """
-        return (
+        projects = (
             obj.tasks.values_list("project", flat=True)
             .distinct()
         )
+        return list(projects)
 
-    # -------------------------------
+    # -----------------------------------------------------
     #    WEEKLY ATTENDANCE GRAPH
-    # -------------------------------
+    # -----------------------------------------------------
     def get_attendance_graph(self, obj):
-        """
-        Return dict:
-        {
-            'Monday': 8.5,
-            'Tuesday': 9.0,
-            ...
-        }
-        """
-
         today = date.today()
-        start_week = today - timedelta(days=today.weekday())   # Monday
+        start_week = today - timedelta(days=today.weekday())  # Monday
         end_week = start_week + timedelta(days=6)
 
-        data = {day: 0 for day in day_name}  # Monday–Sunday initialized
+        graph = {day: 0 for day in day_name}
 
-        records = Attendance.objects.filter(
+        attendance = Attendance.objects.filter(
             employee=obj,
             date__range=[start_week, end_week]
         )
 
-        for att in records:
-            weekday = day_name[att.date.weekday()]  # Convert to Monday, Tuesday, etc.
-            data[weekday] += float(att.total_hours or 0)
+        for att in attendance:
+            weekday = day_name[att.date.weekday()]
+            graph[weekday] = float(att.total_hours or 0)
 
-        return data
+        return graph
 
-    # -------------------------------
+    # -----------------------------------------------------
     #    WEEKLY TASK GRAPH
-    # -------------------------------
+    # -----------------------------------------------------
     def get_task_graph(self, obj):
-        """
-        Return dict:
-        {
-            'Monday': 3.5,
-            'Tuesday': 2.0,
-            ...
-        }
-        """
-
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
         end_week = start_week + timedelta(days=6)
 
-        data = {day: 0 for day in day_name}
+        graph = {day: 0 for day in day_name}
 
         tasks = DailyTask.objects.filter(
             employee=obj,
@@ -308,9 +303,9 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
 
         for task in tasks:
             weekday = day_name[task.created_at.weekday()]
-            data[weekday] += float(task.time_taken or 0)
+            graph[weekday] += float(task.time_taken or 0)
 
-        return data
+        return graph
 
 
 
