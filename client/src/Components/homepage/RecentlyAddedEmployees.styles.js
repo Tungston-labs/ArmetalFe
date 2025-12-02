@@ -68,7 +68,7 @@ export const ListItem = styled.div`
   }
 
   @media (min-width: 1920px) {
-    padding: 14px 16px;
+    padding: 10px 16px;
     border-radius: 12px;
   }
        @media (min-width: 2560px) {

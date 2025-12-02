@@ -11,10 +11,6 @@ export const Header = styled.div`
   justify-content: space-between;
   margin-bottom: 16px;
   align-items: center;
-
-  @media (min-width: 1920px) {
-    margin-bottom: 2rem;
-  }
 `;
 
 export const Title = styled.h4`
@@ -44,7 +40,7 @@ export const List = styled.div`
   gap: 16px;
 
   @media (min-width: 1920px) {
-    gap: 20px;
+    gap: 10px;
   }
        @media (min-width: 2560px) {
      gap: 35px;

@@ -76,5 +76,64 @@ export const Columns = styled.div`
 
     @media (min-width: 2540px) {
 margin-bottom: 4rem;
+
+  }
+`;
+export const BottomActions = styled.div`
+  position: fixed;
+  bottom: 15px;
+  right: 0;
+  width: 320px; 
+  background: #f4f8ffff;
+  padding: 12px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid #ddd;
+  z-index: 3000;
+
+  @media (min-width: 1920px) {
+    width: 350px;
+  }
+  @media (min-width: 2560px) {
+    width: 380px;
+  }
+  @media (min-width: 3840px) {
+    width: 380px;
+  }
+
+  /* Mobile full width */
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 15px 20px;
+  }
+`;
+
+export const ActionButton = styled.button`
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #e8edf8;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  &:hover {
+    background: #d5def6;
+  }
+
+  @media (max-width: 600px) {
+    padding: 14px;
+  }
+`;
+
+export const LogoutButton = styled(ActionButton)`
+  background: #ffebee;
+  color: #b71c1c;
+
+  &:hover {
+    background: #ffcdd2;
   }
 `;

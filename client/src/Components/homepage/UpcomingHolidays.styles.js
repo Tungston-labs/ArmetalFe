@@ -55,7 +55,7 @@ export const List = styled.div`
   margin-bottom: 5px;
 
   @media (min-width: 1920px) {
-    gap: 16px;
+    gap: 10px;
   }
        @media (min-width: 2560px) {
      gap: 35px;
