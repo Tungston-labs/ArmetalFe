@@ -27,7 +27,7 @@ import cardBg from "../../assets/shift.svg";
 import AddProjectModal from "../../Components/AddProjectModal";
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import TagIcon from "../../assets/downicon.svg";
-import Navbar from "../../Components/Navbar";
+// import Navbar from "../../Components/Navbar";
 import { FaPlus } from "react-icons/fa";
 import { getProjects } from "../../Redux/fieldShiftSlice";
 import Loader from "../../Components/Loader";
@@ -54,7 +54,7 @@ const DepartmentPage = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <PageWrapper>
         <EmployeeTitle
   iconSrc={FieldShiftIcon}

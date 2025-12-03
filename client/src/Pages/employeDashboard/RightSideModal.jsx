@@ -12,9 +12,7 @@ import {
 } from "./RightSideModal.styles";
 import { CiEdit } from "react-icons/ci";
 import EmployeeDetails from "./EmployeeDetails";
-import EmployeeCards from "./EmployeeCards";
 import ProgressCard from "./ProgressCard";
-import DepartmentEmployeeTable from "./DepartmentEmployeeTable";
 import WeeklyTaskGraph from "./WeeklyTaskGraph";
 import { useNavigate } from "react-router-dom";
 
@@ -35,8 +33,6 @@ const RightSideModal = ({ isOpen, onClose, onEdit, employee }) => {
       <Overlay isOpen={isOpen} onClick={onClose} />
 
       <ModalWrapper isOpen={isOpen}>
-        
-        {/* NOT SCROLLING PART */}
         <HeaderBar>
           <BackButton onClick={onClose}>← Back</BackButton>
      <EditButton onClick={() => navigate(`/ViewBasic/${employee?.id}`)}>
@@ -46,7 +42,7 @@ const RightSideModal = ({ isOpen, onClose, onEdit, employee }) => {
         </HeaderBar>
  <ContentArea>
         <EmployeeDetails employee={employee} />
-        <EmployeeCards employee={employee} />
+     
 
        
    <TwoColumnWrapper>

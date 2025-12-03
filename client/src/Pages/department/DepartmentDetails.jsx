@@ -30,7 +30,7 @@ import { deleteEmployeeById } from '../../Redux/employeeSlice';
 import Employee from "../../assets/employee.svg";
 import { HiArrowLeft } from 'react-icons/hi'; 
 import { FaUserCircle } from "react-icons/fa"; 
-import Navbar from '../../Components/Navbar';
+// import Navbar from '../../Components/Navbar';
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader"
 
@@ -234,7 +234,7 @@ const handleUpdate = async () => {
 
   return (
     <>
-      <Navbar/>
+      {/* <Navbar/> */}
       <Container>
 
         <HeaderSection>

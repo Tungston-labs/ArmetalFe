@@ -56,7 +56,7 @@ import {
 } from "../department/DepartmentDetails.Styles";
 import Loader from "../../Components/Loader.jsx";
 import { ClipLoader } from "react-spinners";
-import Navbar from "../../Components/Navbar.jsx";
+// import Navbar from "../../Components/Navbar.jsx";
 import EmployeeTitle from "../../Components/EmployeeTitle.jsx";
 import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
 import { GoArrowUpRight } from "react-icons/go";
@@ -319,7 +319,7 @@ const DepartmentList = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <PageContainer>
         <EmployeeTitle
           iconSrc={EmployeeIcon}

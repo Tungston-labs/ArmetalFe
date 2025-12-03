@@ -20,7 +20,7 @@ import { clearBankPayment } from '../../Redux/employeeSlice';
 import Loader from "../../Components/Loader"
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { EmployeeImage } from './BasicLevel.Styles';
-import Navbar from '../../Components/Navbar';
+// import Navbar from '../../Components/Navbar';
 import { Divider } from '../reimbursement/Reimb_info.Styles';
 import EmployeeTitle from '../../Components/EmployeeTitle';
 export default function BankPaymentForm() {
@@ -160,7 +160,7 @@ const country = user?.company?.country || "IN";
 
   return (
      <>
-     <Navbar/>
+     {/* <Navbar/> */}
     {loading && <Loader  />}
     <Container>
        <EmployeeTitle

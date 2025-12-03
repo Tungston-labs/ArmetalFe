@@ -16,7 +16,7 @@ export const Card = styled.div`
   border-radius: 20px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   font-family: "Inter", sans-serif;
-
+cursor: pointer;
   @media (min-width: 2540px) {
     padding: 40px;
     border-radius: 28px;

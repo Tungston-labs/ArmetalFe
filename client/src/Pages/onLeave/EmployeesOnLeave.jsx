@@ -22,7 +22,7 @@ import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
-import Navbar from "../../Components/Navbar";
+// import Navbar from "../../Components/Navbar";
 import { FiSearch } from "react-icons/fi";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 const EmployeeList = () => {
@@ -52,7 +52,7 @@ const EmployeeList = () => {
 
   return (
     <>
-        <Navbar/>
+        {/* <Navbar/> */}
        
     <Container>
       {loading && ( <Loader /> )}

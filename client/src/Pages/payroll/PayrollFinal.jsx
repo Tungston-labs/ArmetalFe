@@ -19,7 +19,7 @@ import {
   verifyEmployeePayroll
 } from '../../Redux/payrollSlice';
 import { getDepartments } from '../../Redux/departmentSlice';
-import Navbar from '../../Components/Navbar';
+// import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
 import VerificationCircles from '../../Components/VerificationCircle';
@@ -279,7 +279,7 @@ const LIMIT = 100;
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <Container>
         
         <Header>
@@ -353,7 +353,7 @@ const LIMIT = 100;
                  <Th>Name</Th>
                 <Th>Employee ID</Th>
                 <Th>Joining Date</Th>
-                <Th>Email ID</Th>
+                {/* <Th>Email ID</Th> */}
                 <Th>Salary</Th>
                 <Th>Info</Th>
                 <Th>Verification</Th>
@@ -380,7 +380,7 @@ const LIMIT = 100;
                        <Td>{emp.employee_name}</Td>
                     <Td>{emp.employee_id}</Td>
                     <Td>{emp.joining_date}</Td>
-                    <Td
+                    {/* <Td
                       style={{
                         maxWidth: "50px",
                         whiteSpace: "nowrap",
@@ -390,7 +390,7 @@ const LIMIT = 100;
                       title={emp.email}
                     >
                       {emp.email}
-                    </Td>
+                    </Td> */}
                     <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
                     <Td>
                       <Link to={`/payrolldetails/${emp.id}`}>

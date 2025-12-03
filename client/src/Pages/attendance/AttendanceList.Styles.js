@@ -35,13 +35,15 @@ export const DepartmentCard = styled.div`
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
   margin-top: 1rem;
-  max-width: 100%; /* ensures it doesn't overflow container */
+  max-width: 100%; 
 
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   }
-
+@media (max-width: 768px) {
+  padding: 0.8rem;
+  }
 
   @media (min-width: 2560px) {
     padding: 2rem;
@@ -106,6 +108,10 @@ export const DepartmentName = styled.h2`
   color: #172554;
   font-size: 1.2rem;
 
+@media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+
   /* Responsive scaling */
   @media (min-width: 1920px) {
     font-size: 1.5rem;
@@ -125,7 +131,9 @@ export const EmployeeCount = styled.span`
   color: #172554;
   font-weight: 500;
   font-size: 0.9rem; /* base font size */
-
+@media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
   /* Responsive adjustments */
   @media (min-width: 1920px) {
     font-size: 1.1rem;
@@ -195,7 +203,7 @@ export const EmployeeItem = styled.li`
 `;
 export const DropdownHeader = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+grid-template-columns: repeat(6, 1fr);
   background: #3352BA;
   color: white;
   font-weight: 600;
@@ -229,7 +237,8 @@ export const DropdownHeader = styled.div`
 
 export const EmployeeRow = styled.li`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+grid-template-columns: repeat(6, 1fr);
+
   padding: 0.6rem 1rem;
   border-bottom: 1px solid #eee;
   font-size: 0.95rem;
@@ -245,7 +254,11 @@ background: #f4f8ff;
   &:last-child {
     border-bottom: none;
   }
-
+  @media (min-width: 768px) {
+  
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+  }
   @media (min-width: 1920px) {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     padding: 0.8rem 1.2rem;

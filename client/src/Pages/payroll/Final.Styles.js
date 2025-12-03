@@ -394,8 +394,9 @@ export const Th = styled.th`
   @media (max-width: 1023px) {
     font-size: 1rem;
   }
-  @media (max-width: 767px) {
-    font-size: 12px;
+  @media (max-width: 768px) {
+        padding: 10px;
+        font-size: 0.7rem;
   }
 `;
 

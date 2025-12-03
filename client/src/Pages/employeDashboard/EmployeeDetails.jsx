@@ -1,109 +1,166 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  DetailsWrapper,
-  LeftSection,
-  ProfileCard,
-  ProfileImage,
-  RightSection,
-  GridContainer,
-  DetailCard,
-  CardHeader,
-  CardLabel,
-  CardValue,
-  MailRow,
+  Wrapper,
+  HeaderRow,
+  LeftHeader,
+  Status,
   MailButton,
-  IconWrapper
+  TopSection,
+  ProfileLeft,
+  ProfileSection,
+  Avatar,
+  Info,
+  Name,
+  Role,
+  RightCards,
+  StatsGrid,
+  StatCard,
+  StatNumber,
+  StatLabel,
+  IconRight,
+  Tabs,
+  TabButton,
+  ContentSection,
+  InfoGrid,
+  InfoRow,
+  InfoTitle,
+  InfoValue,
+  Title
 } from "./EmployeeDetails.styles";
 
-import { FaEnvelope, FaIdBadge, FaUserTie, FaBuilding, FaCalendarAlt } from "react-icons/fa";
-import { MdAttachEmail } from "react-icons/md";
-import { FaProjectDiagram } from "react-icons/fa";
-import { BsPersonFillExclamation } from "react-icons/bs";
+import { PiUsersThreeLight } from "react-icons/pi";
+import { CiAlarmOn } from "react-icons/ci";
+import { TbReportSearch } from "react-icons/tb";
+import { LuFileCheck } from "react-icons/lu";
 import MailModal from "./MailModal";
-const EmployeeDetails = ({ employee }) => {
 
-  if (!employee) return <div>No employee data found</div>;
+const EmployeeDetails = () => {
+  const [activeTab, setActiveTab] = useState("work");
 
-  const [isMobile, setIsMobile] = useState(false);
-const [openMailModal, setOpenMailModal] = useState(false);
+  // ⭐ MODAL STATE
+  const [isMailOpen, setIsMailOpen] = useState(false);
 
-  useEffect(() => {
-    const checkScreen = () => setIsMobile(window.innerWidth <= 1439);
-    checkScreen();
-    window.addEventListener("resize", checkScreen);
-    return () => window.removeEventListener("resize", checkScreen);
-  }, []);
+  // ⭐ Stats Data
+  const statsData = [
+    { number: "04", label: "Balance Leaves", icon: <PiUsersThreeLight size={22} /> },
+    { number: "02", label: "Leaves Taken", icon: <CiAlarmOn size={22} /> },
+    { number: "02", label: "Ongoing Projects", icon: <TbReportSearch size={22} /> },
+    { number: "07", label: "Completed Projects", icon: <LuFileCheck size={22} /> }
+  ];
 
-  const fields = [
-    { label: "Employee ID", value: employee.employee_id, icon: <FaIdBadge size={14} /> },
-    { label: "Department", value: employee.department, icon: <FaBuilding size={14} /> },
-    { label: "Email", value: employee.email, icon: <MdAttachEmail size={14} /> },
-    { label: "Role", value: employee.role, icon: <FaUserTie size={14} /> },
-    { label: "Joining Date", value: employee.joining_date, icon: <FaCalendarAlt size={14} /> },
-    
-    { label: " Working Project", value: employee.workingProject, icon: <FaProjectDiagram size={14} /> },
-  ...(employee.isOnLeave
-    ? [
-        {
-          label: "Leave Status",
-          value: "Employee is on leave",
-          icon: <BsPersonFillExclamation size={14} />
-        }
-      ]
-    : []),
-];
+  // ⭐ Work Info
+  const workInfo = [
+    { title: "Job Title :", value: "Software Developer", title2: "Salary:", value2: "10000" },
+    { title: "Employee ID :", value: "TUNDEVTV", title2: "Email Id :", value2: "ajaytungstonlabs@gmail.com" },
+    { title: "Department :", value: "Development", title2: "Joining Date :", value2: "17-02-2025" },
+    { title: "Role :", value: "Employee", title2: "Contract VISA Expiry :", value2: "11-02-2027" }
+  ];
+
+  // ⭐ Personal Info
+  const personalInfo = [
+    { title: "Date Of Birth :", value: "17-02-2025", title2: "Contact Number :", value2: "9585242423263" },
+    { title: "Aadhaar Number :", value: "0000000000", title2: "PAN Number :", value2: "00000000" },
+    { title: "Account Number :", value: "0000000000", title2: "Passport Number :", value2: "00000000" },
+    { title: "Address :", value: "oooooooooo ooooooo oooooo", title2: "", value2: "" }
+  ];
 
   return (
-    <DetailsWrapper>
-      <LeftSection>
-        <ProfileCard>
-          <ProfileImage
-            src={employee.profile_pic || "https://via.placeholder.com/150"}
-            alt="Profile"
-          />
-          <CardValue >
-            {employee.name}
-          </CardValue>
-          <CardLabel>
-            {employee.designation}
-          </CardLabel>
-        </ProfileCard>
-      </LeftSection>
-      <RightSection>
-        <GridContainer>
-          {fields.map((field, index) => (
-            <DetailCard key={index}>
-              <CardHeader>
-                <IconWrapper>{field.icon}</IconWrapper>
-                <CardLabel>{field.label}</CardLabel>
-              </CardHeader>
-     <CardValue>
-  {isMobile
-    ? String(field.value)?.length > 10
-      ? String(field.value)?.slice(0, 10) + "..."
-      : field.value
-    : field.value}
-</CardValue>
+    <Wrapper>
+      <HeaderRow>
+        <LeftHeader>
+          <h3>Profile</h3>
+          <Status>
+            <span className="dot"></span> Active
+          </Status>
+        </LeftHeader>
 
+        {/* ⭐ OPEN MODAL */}
+        <MailButton onClick={() => setIsMailOpen(true)}>Send Mail</MailButton>
+      </HeaderRow>
 
-            </DetailCard>
-          ))}
-        </GridContainer>
+      <TopSection>
+        <ProfileLeft>
+          <ProfileSection>
+            <Avatar />
+            <Info>
+              <Name>Ajay Kumar</Name>
+              <Role>Software Developer</Role>
+            </Info>
+          </ProfileSection>
+        </ProfileLeft>
 
-        <MailRow>
-         <MailButton onClick={() => setOpenMailModal(true)}>
-  Send Mail
-</MailButton>
+        <RightCards>
+          <StatsGrid>
+            {statsData.map((item, index) => (
+              <StatCard key={index}>
+                <StatNumber>{item.number}</StatNumber>
+                <StatLabel>{item.label}</StatLabel>
+                <IconRight>{item.icon}</IconRight>
+              </StatCard>
+            ))}
+          </StatsGrid>
+        </RightCards>
+      </TopSection>
 
-        </MailRow>
-      </RightSection>
+      {/* ⭐ TABS */}
+      <Tabs>
+        <TabButton active={activeTab === "work"} onClick={() => setActiveTab("work")}>
+          Work Info
+        </TabButton>
+
+        <TabButton active={activeTab === "personal"} onClick={() => setActiveTab("personal")}>
+          Personal Details
+        </TabButton>
+      </Tabs>
+
+      {/* ⭐ CONTENT */}
+      <ContentSection>
+        {activeTab === "work" && (
+          <>
+            <Title>Work Info</Title>
+            <InfoGrid>
+              {workInfo.map((row, index) => (
+                <InfoRow key={index}>
+                  <InfoTitle>{row.title}</InfoTitle>
+                  <InfoValue>{row.value}</InfoValue>
+
+                  <InfoTitle>{row.title2}</InfoTitle>
+                  <InfoValue>{row.value2}</InfoValue>
+                </InfoRow>
+              ))}
+            </InfoGrid>
+          </>
+        )}
+
+        {activeTab === "personal" && (
+          <>
+            <Title>Personal Details</Title>
+            <InfoGrid>
+              {personalInfo.map((row, index) => (
+                <InfoRow key={index}>
+                  <InfoTitle>{row.title}</InfoTitle>
+                  <InfoValue>{row.value}</InfoValue>
+
+                  {row.title2 && (
+                    <>
+                      <InfoTitle>{row.title2}</InfoTitle>
+                      <InfoValue>{row.value2}</InfoValue>
+                    </>
+                  )}
+                </InfoRow>
+              ))}
+            </InfoGrid>
+          </>
+        )}
+      </ContentSection>
+
+      {/* ⭐ MAIL MODAL RENDERED HERE */}
       <MailModal
-  isOpen={openMailModal}
-  onClose={() => setOpenMailModal(false)}
-  employee={employee}
-/>
-
-    </DetailsWrapper>
+        isOpen={isMailOpen}
+        onClose={() => setIsMailOpen(false)}
+        employee={{ email: "ajaytungstonlabs@gmail.com" }}
+      />
+    </Wrapper>
   );
 };
 
