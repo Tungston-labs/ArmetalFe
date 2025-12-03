@@ -83,7 +83,7 @@ export const BottomActions = styled.div`
   position: fixed;
   bottom: 15px;
   right: 0;
-  width: 320px; 
+  width: 300px; 
   background: #f4f8ffff;
   padding: 12px 15px;
   display: flex;
