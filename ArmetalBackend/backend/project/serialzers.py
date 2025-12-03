@@ -47,7 +47,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'company', 'employees']
+        fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'company', 'employees','status']
         read_only_fields = ['company']
 
     def update(self, instance, validated_data):
@@ -66,7 +66,7 @@ class ProjectReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'company', 'employees']
+        fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'company', 'employees','status']
 
     def get_employees(self, obj):
         """Include employee details with full profile picture URLs"""
@@ -83,7 +83,7 @@ class ProjectWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'employees']
+        fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'employees','status']
 
     def update(self, instance, validated_data):
         employees = validated_data.pop('employees', None)
