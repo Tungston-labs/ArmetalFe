@@ -125,8 +125,10 @@ export const Avatar = styled.div`
   width: 130px;
   height: 130px;
   border-radius: 50%;
-  background: url("https://cdn-icons-png.flaticon.com/512/4140/4140037.png")
-    no-repeat center/cover;
+  background-image: url(${props => props.src || "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
   @media (max-width: 480px) {
     width: 100px;

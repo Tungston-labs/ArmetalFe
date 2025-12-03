@@ -12,6 +12,7 @@ import {
 } from "./RightSideModal.styles";
 import { CiEdit } from "react-icons/ci";
 import EmployeeDetails from "./EmployeeDetails";
+import EmployeeCards from "./EmployeeCards"; // adjust the path if needed
 import ProgressCard from "./ProgressCard";
 import WeeklyTaskGraph from "./WeeklyTaskGraph";
 import { useNavigate } from "react-router-dom";
@@ -46,49 +47,40 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
   return (
     <>
       <Overlay isOpen={isOpen} onClick={onClose} />
+<ModalWrapper isOpen={isOpen}>
+  <HeaderBar>
+    <BackButton onClick={onClose}>← Back</BackButton>
+    <EditButton onClick={() => navigate(`/ViewBasic/${employeeId}`)}>
+      Edit <CiEdit />
+    </EditButton>
+  </HeaderBar>
 
-      <ModalWrapper isOpen={isOpen}>
-        <HeaderBar>
-          <BackButton onClick={onClose}>← Back</BackButton>
+  <ContentArea>
+    {loading && <p>Loading...</p>}
 
-          <EditButton onClick={() => navigate(`/ViewBasic/${employeeId}`)}>
-            Edit <CiEdit />
-          </EditButton>
-        </HeaderBar>
-        <EmployeeDetails employee={employee} />
-     
+    {empData && (
+      <>
+        <EmployeeDetails employee={empData} />
+        <EmployeeCards employee={empData} />
 
-        <ContentArea>
-          {/* LOADING */}
-          {loading && <p>Loading...</p>}
+        <TwoColumnWrapper>
+          <LeftSide>
+            <ProgressCard attendanceGraph={empData.attendance_graph} />
+          </LeftSide>
 
-          {/* DATA LOADED */}
-          {empData && (
-            <>
-              <EmployeeDetails employee={empData} />
-              <EmployeeCards employee={empData} />
+          <RightSide>
+            <WeeklyTaskGraph
+              weeklyData={Object.entries(empData.task_graph).map(
+                ([day, value]) => ({ day, tasksCompleted: value })
+              )}
+            />
+          </RightSide>
+        </TwoColumnWrapper>
+      </>
+    )}
+  </ContentArea>
+</ModalWrapper>
 
-              <TwoColumnWrapper>
-                <LeftSide>
-                  <ProgressCard attendanceGraph={empData.attendance_graph} />
-                </LeftSide>
-
-                <RightSide>
-                  <WeeklyTaskGraph
-                    weeklyData={Object.entries(empData.task_graph).map(
-                      ([day, value]) => ({
-                        day,
-                        tasksCompleted: value,
-                      })
-                    )}
-                  />
-                </RightSide>
-              </TwoColumnWrapper>
-            </>
-          )}
-        </ContentArea>
-
-      </ModalWrapper>
     </>
   );
 };

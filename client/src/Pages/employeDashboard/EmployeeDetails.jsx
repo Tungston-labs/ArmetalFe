@@ -34,36 +34,33 @@ import { TbReportSearch } from "react-icons/tb";
 import { LuFileCheck } from "react-icons/lu";
 import MailModal from "./MailModal";
 
-const EmployeeDetails = () => {
+const EmployeeDetails = ({ employee }) => {
   const [activeTab, setActiveTab] = useState("work");
-
-  // ⭐ MODAL STATE
   const [isMailOpen, setIsMailOpen] = useState(false);
 
-  // ⭐ Stats Data
+  if (!employee) return null; // avoid rendering if data not loaded
+
+  // Stats data
   const statsData = [
-    { number: "04", label: "Balance Leaves", icon: <PiUsersThreeLight size={22} /> },
-    { number: "02", label: "Leaves Taken", icon: <CiAlarmOn size={22} /> },
-    { number: "02", label: "Ongoing Projects", icon: <TbReportSearch size={22} /> },
-    { number: "07", label: "Completed Projects", icon: <LuFileCheck size={22} /> }
+    { number: employee.pending_leave || 0, label: "Balance Leaves", icon: <PiUsersThreeLight size={22} /> },
+    { number: employee.leave_taken || 0, label: "Leaves Taken", icon: <CiAlarmOn size={22} /> },
+    { number: employee.projects?.length || 0, label: "Ongoing Projects", icon: <TbReportSearch size={22} /> },
+    { number: 0, label: "Completed Projects", icon: <LuFileCheck size={22} /> } // adjust if available
   ];
 
-  // ⭐ Work Info
+  // Work info
   const workInfo = [
-    { title: "Job Title :", value: "Software Developer", title2: "Salary:", value2: "10000" },
-    { title: "Employee ID :", value: "TUNDEVTV", title2: "Email Id :", value2: "ajaytungstonlabs@gmail.com" },
-    { title: "Department :", value: "Development", title2: "Joining Date :", value2: "17-02-2025" },
-    { title: "Role :", value: "Employee", title2: "Contract VISA Expiry :", value2: "11-02-2027" }
+    { title: "Job Title :", value: employee.designation, title2: "Salary:", value2: employee.salary },
+    { title: "Employee ID :", value: employee.employee_id, title2: "Email Id :", value2: employee.email },
+    { title: "Department :", value: employee.department, title2: "Joining Date :", value2: employee.joining_date },
+    { title: "Role :", value: employee.role, title2: "Contract VISA Expiry :", value2: employee.contract }
   ];
 
-  // ⭐ Personal Info
+  // Personal info
   const personalInfo = [
-    { title: "Date Of Birth :", value: "17-02-2025", title2: "Contact Number :", value2: "9585242423263" },
-    { title: "Aadhaar Number :", value: "0000000000", title2: "PAN Number :", value2: "00000000" },
-    { title: "Account Number :", value: "0000000000", title2: "Passport Number :", value2: "00000000" },
-    { title: "Address :", value: "oooooooooo ooooooo oooooo", title2: "", value2: "" }
+    { title: "Date Of Birth :", value: "-", title2: "Contact Number :", value2: employee.phno },
+    { title: "Address :", value: employee.address, title2: "", value2: "" }
   ];
-
 
   return (
     <Wrapper>
@@ -75,17 +72,16 @@ const EmployeeDetails = () => {
           </Status>
         </LeftHeader>
 
-        {/* ⭐ OPEN MODAL */}
         <MailButton onClick={() => setIsMailOpen(true)}>Send Mail</MailButton>
       </HeaderRow>
 
       <TopSection>
         <ProfileLeft>
           <ProfileSection>
-            <Avatar />
+            <Avatar src={employee?.profile_pic} />
             <Info>
-              <Name>Ajay Kumar</Name>
-              <Role>Software Developer</Role>
+              <Name>{employee.name}</Name>
+              <Role>{employee.designation}</Role>
             </Info>
           </ProfileSection>
         </ProfileLeft>
@@ -103,18 +99,17 @@ const EmployeeDetails = () => {
         </RightCards>
       </TopSection>
 
-      {/* ⭐ TABS */}
+      {/* Tabs */}
       <Tabs>
         <TabButton active={activeTab === "work"} onClick={() => setActiveTab("work")}>
           Work Info
         </TabButton>
-
         <TabButton active={activeTab === "personal"} onClick={() => setActiveTab("personal")}>
           Personal Details
         </TabButton>
       </Tabs>
 
-      {/* ⭐ CONTENT */}
+      {/* Content */}
       <ContentSection>
         {activeTab === "work" && (
           <>
@@ -155,11 +150,11 @@ const EmployeeDetails = () => {
         )}
       </ContentSection>
 
-      {/* ⭐ MAIL MODAL RENDERED HERE */}
+      {/* Mail Modal */}
       <MailModal
         isOpen={isMailOpen}
         onClose={() => setIsMailOpen(false)}
-        employee={{ email: "ajaytungstonlabs@gmail.com" }}
+        employee={{ email: employee.email }}
       />
     </Wrapper>
   );
