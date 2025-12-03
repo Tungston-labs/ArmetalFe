@@ -57,11 +57,7 @@ const EmployeeDetails = ({employee}) => {
     { title: "Address :", value: employee.address, title2: "", value2: "" }
   ];
 
-  // Personal info
-  const personalInfo = [
-    { title: "Date Of Birth :", value: "-", title2: "Contact Number :", value2: employee.phno },
-    { title: "Address :", value: employee.address, title2: "", value2: "" }
-  ];
+
 
   return (
     <Wrapper>

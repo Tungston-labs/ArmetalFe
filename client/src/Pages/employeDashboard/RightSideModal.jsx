@@ -60,7 +60,6 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
     {empData && (
       <>
         <EmployeeDetails employee={empData} />
-        <EmployeeCards employee={empData} />
 
         <TwoColumnWrapper>
           <LeftSide>
