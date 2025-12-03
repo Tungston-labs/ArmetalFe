@@ -38,6 +38,7 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
       let punchType = projectData.punchInType?.toLowerCase();
       if (punchType === "on site") punchType = "on_site";
       if (punchType === "variant") punchType = "variant";
+         if (punchType === "bench") punchType = "bench";
 
       setFormData({
         projectName: projectData.projectName || '',
@@ -106,6 +107,7 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
                 <Option value="" disabled>Select type</Option>
                 <Option value="on_site">On Site</Option>
                 <Option value="variant">Variant</Option>
+                  <Option value="bench">Bench</Option>
               </SelectField>
               <DropdownIcon />
             </SelectWrapper>

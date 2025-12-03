@@ -253,7 +253,7 @@ export const ButtonWrapper = styled.div`
   min-width: 120px;
   margin-top: 2rem;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: flex-end;
 
   /* 4K Screens - Large spacing */
   @media (min-width: 2560px) {
@@ -464,7 +464,6 @@ export const EmployeeHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
   flex-wrap: wrap;
   gap: 1rem;
 
@@ -585,7 +584,6 @@ export const AddButton = styled.button`
     padding: 0.7rem 1.4rem;
   }
 
-  /* Small Phones (480px) */
   @media (max-width: 480px) {
     width: 100%;
     font-size: 0.85rem;
@@ -593,4 +591,37 @@ export const AddButton = styled.button`
   }
 `;
 
+export const StatusRow = styled.div`
+  display: flex;
+  justify-content:flex-start;
+  align-items: center;
+  margin-top: 1rem;
+`;
+
+export const StatusWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+`;
+
+export const StatusSelect = styled.select`
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-family: "Poppins";
+  border: 1px solid #ccc;
+  width: 200px;
+  font-weight: ${(props) => (props.selected ? "bold" : "normal")};
+  color: ${(props) => (props.selected ? "#fff" : "#000")};
+  background-color: ${(props) =>
+    props.selected ? props.bgcolor : "#fff"};
+
+  option {
+    background: white !important; // always white
+    color: black !important;       // always black
+  }
+`;
 

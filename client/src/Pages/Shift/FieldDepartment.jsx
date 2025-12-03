@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import EmployeeModal from "../../Components/EmployeeModal";
 import EditProjectModal from "../../Components/EditProjectModal";
-// import Navbar from "../../Components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProjectById, updateProject, deleteProject, removeEmployeeFromProject } from "../../Redux/fieldShiftSlice";
 import {
   PageWrapper,
-  Header,
-  BackButton,
   FormContainer,
   FormRow,
   InputField,
@@ -17,18 +14,12 @@ import {
   AddButton,
   ButtonWrapper,
   EmployeeHeader,
+  StatusRow,
+  StatusSelect,
+  StatusWrapper,
 } from "./FieldDepartment.Styles";
-import {
-  IconWrapper,
-  Subtitle,
-  TitleSection,
-  Title,
-  TextGroup,
-} from "./FieldShift.Styles";
 import FieldShiftIcon from "../../assets/projecticon.svg";
-import { GoInfo } from "react-icons/go";
 import { FaPlus, FaTrash } from "react-icons/fa";
-import { LuArrowLeft } from "react-icons/lu";
 import { BiEditAlt } from "react-icons/bi";
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader";
@@ -49,6 +40,7 @@ const FieldShift = () => {
     punchType: "",
     latitude: "",
     longitude: "",
+      status: "",
   });
   const [employees, setEmployees] = useState([]);
   useEffect(() => {
@@ -62,6 +54,7 @@ const FieldShift = () => {
         punchType: project.punch_type || "",
         latitude: project.latitude || "",
         longitude: project.longitude || "",
+          status: project.status || "In Progress",
       });
 
       setEmployees(
@@ -151,6 +144,11 @@ const FieldShift = () => {
     });
   };
 
+const statusColors = {
+  "In Progress": "#f0ad4e", 
+  "Completed": "#5cb85c",  
+  "Pending": "#d9534f",    
+};
 
   const handleSaveFromModal = async (updatedData) => {
     const updatedProject = {
@@ -172,7 +170,7 @@ const FieldShift = () => {
       });
 
       setIsEditModalOpen(false);
-      dispatch(getProjectById(id)); // refresh project data
+      dispatch(getProjectById(id)); 
     } catch (err) {
       Swal.fire({
         title: "Error!",
@@ -185,7 +183,6 @@ const FieldShift = () => {
   if (loading) {
     return (
       <>
-        {/* <Navbar /> */}
         <PageWrapper>
         <Loader/>
         </PageWrapper>
@@ -196,7 +193,6 @@ const FieldShift = () => {
   if (error) {
     return (
       <>
-        {/* <Navbar /> */}
         <PageWrapper>
           <h3 style={{ color: "red" }}>Failed to load project: {error}</h3>
         </PageWrapper>
@@ -206,7 +202,6 @@ const FieldShift = () => {
 
   return (
     <>
-      {/* <Navbar /> */}
       <PageWrapper>
            <EmployeeTitle
   iconSrc={FieldShiftIcon}
@@ -219,6 +214,16 @@ const FieldShift = () => {
 />
         {!isDeleted ? (
           <>
+          <ButtonWrapper>
+  <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
+    <BiEditAlt style={{ marginRight: "6px" }} />
+    Edit
+  </ActionButton>
+  <ActionButton color="delete" onClick={handleDelete}>
+    <FaTrash style={{ marginRight: "6px" }} />
+    Delete
+  </ActionButton>
+</ButtonWrapper>
             <FormContainer>
               <div
                 style={{
@@ -226,7 +231,6 @@ const FieldShift = () => {
                   gap: "10rem",
                 }}
               >
-                {/* Left side form */}
                 <div style={{ flex: "1" }}>
                   <FormRow>
                     <div>
@@ -251,18 +255,30 @@ const FieldShift = () => {
                   </FormRow>
                 </div>
 
-              
-                  <ButtonWrapper>
-                  <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
-                    <BiEditAlt style={{ marginRight: "6px" }} />
-                    Edit
-                  </ActionButton>
-                  <ActionButton color="delete" onClick={handleDelete}>
-                    <FaTrash style={{ marginRight: "6px" }} />
-                    Delete
-                  </ActionButton>
-                  </ButtonWrapper>
+<StatusRow>
+    <StatusWrapper>
+    <label>Project Status</label>
+    <StatusSelect
+      value={formData.status}
+      selected={!!formData.status} 
+      bgcolor={statusColors[formData.status]} 
+      onChange={(e) =>
+        setFormData({ ...formData, status: e.target.value })
+      }
+    >
+      <option value="">Select Status</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+      <option value="Pending">Pending</option>
+    </StatusSelect>
+  </StatusWrapper>
+</StatusRow>
+
+
+
+
                 </div>
+                
             </FormContainer>
 
             <EmployeesSection>

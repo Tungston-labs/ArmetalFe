@@ -21,6 +21,7 @@ import {
   TextGroup,
   SearchContainer,
   SearchIcon,
+  StatusTag,
 } from "./FieldShift.Styles";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import cardBg from "../../assets/shift.svg";
@@ -40,6 +41,11 @@ const DepartmentPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { projects, isLoading } = useSelector((state) => state.projects);
+const statusColors = {
+  "In Progress": "#fac25b", 
+  Completed: "#5abe7f",     
+  Pending: "#e07777",       
+};
 
   // Fetch projects from API
   useEffect(() => {
@@ -96,12 +102,21 @@ const DepartmentPage = () => {
           <span className="employee-count">{project.employees?.length || 0}</span>
         </CardText>
 
-        <CardFooter>
-          <Tag>
-            <img src={TagIcon} alt="Tag icon" />
-            {project.punch_type || "N/A"}
-          </Tag>
-        </CardFooter>
+  <CardFooter>
+  <Tag>
+    <img src={TagIcon} alt="Tag icon" />
+    {project.punch_type || "N/A"}
+  </Tag>
+
+  {/* Status tag */}
+  
+  <StatusTag bgcolor={statusColors[project.status]}>
+    {project.status || "Pending"}
+  </StatusTag>
+</CardFooter>
+
+
+        
       </Card>
     ))
   )}

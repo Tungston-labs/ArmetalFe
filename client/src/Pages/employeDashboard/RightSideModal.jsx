@@ -12,7 +12,6 @@ import {
 } from "./RightSideModal.styles";
 import { CiEdit } from "react-icons/ci";
 import EmployeeDetails from "./EmployeeDetails";
-import EmployeeCards from "./EmployeeCards"; // adjust the path if needed
 import ProgressCard from "./ProgressCard";
 import WeeklyTaskGraph from "./WeeklyTaskGraph";
 import { useNavigate } from "react-router-dom";

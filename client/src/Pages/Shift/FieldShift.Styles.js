@@ -553,7 +553,7 @@ export const CardFooter = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 0.6rem;
-
+justify-content: space-between;
   @media (max-width: 768px) {
     gap: 0.4rem;
   }
@@ -631,3 +631,13 @@ export const Tag = styled.div`
   }
 `;
 
+export const StatusTag = styled.span`
+  background-color: ${(props) => props.bgcolor || "#c4e2fdff"};
+  color: white;
+  margin-left: 0.5rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+`;

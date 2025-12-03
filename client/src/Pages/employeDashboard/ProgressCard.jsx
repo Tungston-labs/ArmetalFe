@@ -43,8 +43,9 @@ const ProgressCard = ({ attendanceGraph }) => {
               onMouseLeave={() => setHoverIndex(null)}
             >
               {hoverIndex === i && <Tooltip>{hoursData[i]}h</Tooltip>}
-              <Bar height={height} highlight={i === 5} />
-              <Day>{day.slice(0, 1)}</Day>
+              <Bar height={height} 
+              highlight={i === 5} />
+              <Day>{day.slice(0, 3)}</Day>
             </BarContainer>
           );
         })}
