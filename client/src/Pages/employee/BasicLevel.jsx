@@ -22,7 +22,7 @@ import { PiUserCirclePlusThin } from "react-icons/pi";
 import JobDetails from "../../Components/JobDetails";
 import Loader from "../../Components/Loader";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import Navbar from "../../Components/Navbar";
+// import Navbar from "../../Components/Navbar";
 import EmployeeHeader from "../../Components/EmployeeHeader";
 import { ButtonWrapper, NextButton } from "../../Components/JobDetails.Styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
@@ -175,13 +175,13 @@ const handleNext = async () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       {loading && <Loader />}
       <Container>
         <UnsavedChangesGuard isDirty={isFormDirty} />
 
        <EmployeeTitle
-  key={departmentList?.length || 0} // ✅ forces rerender when departmentList changes
+  key={departmentList?.length || 0} 
   iconSrc={EmployeeIcon}
   showAddButton={false}
    showTabs={false}

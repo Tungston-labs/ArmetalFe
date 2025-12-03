@@ -201,7 +201,7 @@ export const InputsWrapper = styled.div`
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
-  width: 80%;     /* LEFT SIDE 80% width */
+  width: 80%;    
 `;
 
 // Right side button container
@@ -290,7 +290,7 @@ export const Input = styled.input`
   // border: 1px solid #052db4;
   border-radius: 4px;
   border:none;
-  width: 50%;
+  /* width: 50%; */
 
 
   padding: clamp(0.4rem, 0.8vw, 0.75rem) clamp(0.6rem, 1vw, 1rem);

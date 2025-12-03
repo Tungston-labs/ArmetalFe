@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import EmployeeModal from "../../Components/EmployeeModal";
 import EditProjectModal from "../../Components/EditProjectModal";
-import Navbar from "../../Components/Navbar";
+// import Navbar from "../../Components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProjectById, updateProject, deleteProject, removeEmployeeFromProject } from "../../Redux/fieldShiftSlice";
@@ -185,7 +185,7 @@ const FieldShift = () => {
   if (loading) {
     return (
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <PageWrapper>
         <Loader/>
         </PageWrapper>
@@ -196,7 +196,7 @@ const FieldShift = () => {
   if (error) {
     return (
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <PageWrapper>
           <h3 style={{ color: "red" }}>Failed to load project: {error}</h3>
         </PageWrapper>
@@ -206,7 +206,7 @@ const FieldShift = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <PageWrapper>
            <EmployeeTitle
   iconSrc={FieldShiftIcon}
@@ -222,8 +222,6 @@ const FieldShift = () => {
             <FormContainer>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
                   alignItems: "flex-start",
                   gap: "10rem",
                 }}

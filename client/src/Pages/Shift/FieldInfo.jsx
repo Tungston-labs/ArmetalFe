@@ -28,7 +28,7 @@ import {
 
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import TimeTable from "./TimeTable";
-import Navbar from "../../Components/Navbar";
+// import Navbar from "../../Components/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getFieldInfo } from "../../Redux/fieldShiftSlice";
@@ -138,7 +138,7 @@ const FieldInfo = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <PageWrapper>
         <EmployeeTitle
           iconSrc={FieldShiftIcon}

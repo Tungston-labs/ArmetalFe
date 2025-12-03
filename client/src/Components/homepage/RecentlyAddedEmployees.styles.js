@@ -35,10 +35,10 @@ export const Title = styled.h4`
   }
 
   @media (min-width: 2560px) {
-    font-size: 2.2rem;
+    font-size: 1.5rem;
   }
      @media (min-width: 3840px) {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
 `;
 
@@ -116,7 +116,7 @@ export const Name = styled.span`
     font-size: 18px;
   }
      @media (min-width: 2560px) {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
      @media (min-width: 3840px) {
     font-size: 1.8rem;
@@ -136,7 +136,7 @@ export const Dept = styled.span`
     font-size: 15px;
   }
     @media (min-width: 2560px) {
-    font-size: 25px;
+    font-size: 20px;
   }
     @media (min-width: 3840px) {
     font-size: 25px;
@@ -156,7 +156,7 @@ export const IdText = styled.span`
     font-size: 13px;
   }
        @media (min-width: 2560px) {
-    font-size: 22px;
+    font-size: 18px;
   }
     @media (min-width: 3840px) {
     font-size: 22px;
