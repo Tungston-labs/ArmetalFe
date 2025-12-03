@@ -20,16 +20,35 @@ export const ModalWrapper = styled.div`
   background: #f4f8ff;
   box-shadow: -4px 0 20px rgba(0,0,0,0.15);
   transform: ${({ isOpen }) => (isOpen ? "translateX(0)" : "translateX(100%)")};
-  transition: transform 0.35s ease-in-out;
+  transition: transform 0.4s cubic-bezier(0.22, 0.68, 0, 1.12);
   z-index: 100;
   padding: 0;
   display: flex;
   flex-direction: column;
 
+  /* ⭐ When modal opens → play animation */
+  ${({ isOpen }) =>
+    isOpen &&
+    `
+    animation: slideIn 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  `}
+
   @media (max-width: 480px) {
     width: 95%;
   }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(120px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
 `;
+
 
 export const HeaderBar = styled.div`
   display: flex;

@@ -41,7 +41,7 @@ import {
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
-import Navbar from '../../Components/Navbar.jsx';
+// import Navbar from '../../Components/Navbar.jsx';
 import Loader from "../../Components/Loader.jsx";
 import EmployeeTitle from '../../Components/EmployeeTitle.jsx';
 
@@ -121,7 +121,7 @@ const Department = () => {
   if (loading) {
     return (
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <div style={{
           display: "flex",
           justifyContent: "center",

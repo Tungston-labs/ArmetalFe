@@ -6,7 +6,7 @@ import {
   updateReimbursementStatus,
 } from "../../services/reimbursement";
 
-import Navbar from "../../Components/Navbar";
+// import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import RemiIcon from "../../assets/remi.svg";
@@ -89,7 +89,7 @@ const ReimbursementDetail = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <PageWrapper>
         <EmployeeTitle

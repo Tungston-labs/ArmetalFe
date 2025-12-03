@@ -333,7 +333,9 @@ export const CardsGrid = styled.div`
   @media (min-width: 1440px) {
     grid-template-columns: repeat(4, 1fr);
   }
-
+ @media (max-width: 1439px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
   @media (max-width: 1024px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -458,6 +460,9 @@ export const CardTitle = styled.h2`
   }
 
   @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+   @media (min-width: 1025px) {
     font-size: 1rem;
   }
   @media (min-width: 1440px) {

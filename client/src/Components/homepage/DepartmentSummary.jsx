@@ -24,7 +24,7 @@ const DepartmentSummary = ({ departments = [] }) => {
   const totalDepartments = departments.length;
   const latestDepartments = [...departments]
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, 2);
+    .slice(0, 1);
 
   return (
     <Wrapper>

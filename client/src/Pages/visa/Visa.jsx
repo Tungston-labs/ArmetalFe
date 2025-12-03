@@ -16,7 +16,7 @@ import {
 } from "../../Redux/employeeSlice";
 
 import Loader from "../../Components/Loader";
-import Navbar from "../../Components/Navbar";
+// import Navbar from "../../Components/Navbar";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import { Avatar, AvatarFallback, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, NameCell, StyledTable, TableBody, TableHead } from "../leaveDetails/EmployeeList.styles";
 
@@ -93,7 +93,7 @@ const EmployeeList = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <Container>
         {loading && (

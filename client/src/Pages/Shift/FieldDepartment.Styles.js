@@ -511,9 +511,9 @@ export const EmployeeHeader = styled.div`
     }
   }
 
-  /* Tablets & smaller screens (768px) */
+
   @media (max-width: 1023px) {
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: center;
     h2 {
       font-size: 1.4rem;
@@ -549,43 +549,38 @@ export const AddButton = styled.button`
     transform: translateY(-2px);
   }
 
-  /* Base padding and font size */
   padding: 0.7rem 1.5rem;
   font-size: 0.95rem;
 
-  /* Ultra 4K Screens */
   @media (min-width: 3840px) {
     font-size: 1.4rem;
     padding: 1.2rem 2.5rem;
   }
 
-  /* QHD Screens (2560px) */
+
   @media (max-width: 3839px) and (min-width: 2560px) {
     font-size: 1.3rem;
     padding: 1.1rem 2.2rem;
   }
 
-  /* Large Desktop (1940px) */
   @media (max-width: 2559px) and (min-width: 1940px) {
     font-size: 1.3rem;
     padding: 1rem 2rem;
   }
 
-  /* Standard Desktop (1440px) */
+
   @media (max-width: 1939px) and (min-width: 1440px) {
     font-size: 1.1rem;
     padding: 0.5rem 1.5rem;
   }
 
-  /* Laptops/Tablets (1024px) */
   @media (max-width: 1439px) and (min-width: 1024px) {
     font-size: 1rem;
     padding: 0.8rem 1.5rem;
   }
 
-  /* Tablets & smaller screens (768px) */
   @media (max-width: 1023px) {
-    width: 80%;
+    width: 20%;
     font-size: 0.95rem;
     padding: 0.7rem 1.4rem;
   }

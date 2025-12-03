@@ -32,7 +32,7 @@ import {
   EmployeeImage
 } from './LeaveRequest.Styles';
 import { PiUserCirclePlusThin } from "react-icons/pi";
-import Navbar from '../../Components/Navbar';
+// import Navbar from '../../Components/Navbar';
 import Loader  from "../../Components/Loader"
 import {TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TextBlock, Avatar, AvatarFallback, NameCell } from './EmployeeList.styles';
 import EmployeeTitle from '../../Components/EmployeeTitle';
@@ -105,7 +105,7 @@ const isLoading = loading || deptLoading;
 
   return (
     <>
-    <Navbar/>
+    {/* <Navbar/> */}
       {loading && <Loader />}
     <Container>
   <EmployeeTitle
@@ -125,7 +125,7 @@ const isLoading = loading || deptLoading;
  <HeadCell>Sl No</HeadCell>
             <HeadCell>Employee name</HeadCell>
             <HeadCell>Leave type</HeadCell>
-            <HeadCell>Email ID</HeadCell>
+            {/* <HeadCell>Email ID</HeadCell> */}
             <HeadCell>Department</HeadCell>
             <HeadCell>Start date </HeadCell> 
               <HeadCell>End date</HeadCell>
@@ -168,7 +168,7 @@ const isLoading = loading || deptLoading;
           </NameCell>
         </BodyCell>
         <BodyCell>{leave.leave_type}</BodyCell>
-        <BodyCell>{leave.employee.email}</BodyCell>
+        {/* <BodyCell>{leave.employee.email}</BodyCell> */}
         <BodyCell>{leave.employee.department}</BodyCell>
         <BodyCell>
           {leave.from_date} 

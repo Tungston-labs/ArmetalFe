@@ -9,7 +9,7 @@ import {
   NoData
 } from "./EmployeeContractExpiry.styles";
 import { useNavigate } from "react-router-dom";
-import { IdText, Name, Title } from "./RecentlyAddedEmployees.styles";
+import { Dept, IdText, Name, Title } from "./RecentlyAddedEmployees.styles";
 import { IconButton } from "./ProjectChart.Styles";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
 
@@ -61,7 +61,7 @@ const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) => {
 
               <Info>
                 <Name>{emp.name}</Name>
-                <IdText>Emp ID: {emp.empId}</IdText>
+                <Dept>ID: {emp.empId}</Dept>
                 <IdText>
                   {days === 0
                     ? "Expires Today"

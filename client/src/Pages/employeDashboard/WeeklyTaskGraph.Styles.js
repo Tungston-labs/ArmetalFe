@@ -31,7 +31,7 @@ export const TasksProgressCard = styled.div`
   flex-direction: column;
   gap: 20px;
   width: 100%;
-
+cursor: pointer;
   /* 2K screens */
   @media (min-width: 2540px) {
     padding: 40px;

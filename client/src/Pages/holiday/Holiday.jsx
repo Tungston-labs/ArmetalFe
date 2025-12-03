@@ -33,7 +33,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getHolidays, addHoliday, removeHoliday } from '../../Redux/holidaySlice';
 import { fetchHolidayTypes } from '../../services/holidayService';
 // import SyncLoader from 'react-spinners/SyncLoader';
-import Navbar from '../../Components/Navbar';
+// import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
 import HolidayHeading from "../../Components/HolidayHeading"
 import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from '../leaveDetails/EmployeeList.styles';
@@ -143,7 +143,7 @@ const cancelDelete = () => {
 
   return (
     <>
-       <Navbar/>
+       {/* <Navbar/> */}
     <Container>
 
 <HolidayHeading/>
