@@ -44,9 +44,19 @@ class AttendanceSwipeView(APIView):
 
             emp_lat, emp_lon = float(emp_lat), float(emp_lon)
 
-            # ✅ Step 1: Get punch type (company/onsite)
+            # ✅ Step 1: Get project & validate status
             project = Project.objects.filter(employees=employee).first()
-            punch_type = project.punch_type.lower() if project else "company"
+
+            if project:
+                if project.status != "in_progress":
+                    return Response(
+                        {"error": f"Your project '{project.name}' is not active (status: {project.status}). Punching is not allowed."},
+                        status=400
+                    )
+                punch_type = project.punch_type.lower()
+            else:
+                punch_type = "company"  # No project → company punch rules
+
 
 
             # ✅ Step 2: Validate distance based on punch type

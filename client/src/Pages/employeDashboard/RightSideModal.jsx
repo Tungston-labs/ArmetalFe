@@ -46,48 +46,39 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
   return (
     <>
       <Overlay isOpen={isOpen} onClick={onClose} />
+<ModalWrapper isOpen={isOpen}>
+  <HeaderBar>
+    <BackButton onClick={onClose}>← Back</BackButton>
+    <EditButton onClick={() => navigate(`/ViewBasic/${employeeId}`)}>
+      Edit <CiEdit />
+    </EditButton>
+  </HeaderBar>
 
-      <ModalWrapper isOpen={isOpen}>
-        
-        <HeaderBar>
-          <BackButton onClick={onClose}>← Back</BackButton>
+  <ContentArea>
+    {loading && <p>Loading...</p>}
 
-          <EditButton onClick={() => navigate(`/ViewBasic/${employeeId}`)}>
-            Edit <CiEdit />
-          </EditButton>
-        </HeaderBar>
+    {empData && (
+      <>
+        <EmployeeDetails employee={empData} />
 
-        <ContentArea>
-          {/* LOADING */}
-          {loading && <p>Loading...</p>}
+        <TwoColumnWrapper>
+          <LeftSide>
+            <ProgressCard attendanceGraph={empData.attendance_graph} />
+          </LeftSide>
 
-          {/* DATA LOADED */}
-          {empData && (
-            <>
-              <EmployeeDetails employee={empData} />
-              {/* <EmployeeCards employee={empData} /> */}
+          <RightSide>
+            <WeeklyTaskGraph
+              weeklyData={Object.entries(empData.task_graph).map(
+                ([day, value]) => ({ day, tasksCompleted: value })
+              )}
+            />
+          </RightSide>
+        </TwoColumnWrapper>
+      </>
+    )}
+  </ContentArea>
+</ModalWrapper>
 
-              <TwoColumnWrapper>
-                <LeftSide>
-                  <ProgressCard attendanceGraph={empData.attendance_graph} />
-                </LeftSide>
-
-                <RightSide>
-                  <WeeklyTaskGraph
-                    weeklyData={Object.entries(empData.task_graph).map(
-                      ([day, value]) => ({
-                        day,
-                        tasksCompleted: value,
-                      })
-                    )}
-                  />
-                </RightSide>
-              </TwoColumnWrapper>
-            </>
-          )}
-        </ContentArea>
-
-      </ModalWrapper>
     </>
   );
 };

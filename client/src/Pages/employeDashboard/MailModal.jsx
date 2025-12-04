@@ -13,17 +13,19 @@ import {
 import { sendEmail } from "../../services/employeeService";
 
 const MailModal = ({ isOpen, onClose, employee }) => {
-  const [form, setForm] = useState({ to: "", subject: "", body: "" });
+  const initialFormState = {
+    to: employee?.email || "",
+    subject: "",
+    body: "",
+  };
+
+  const [form, setForm] = useState(initialFormState);
   const [loading, setLoading] = useState(false);
 
-  // Reset form whenever modal opens
+  // RESET THE MODAL EVERY TIME IT OPENS
   useEffect(() => {
     if (isOpen) {
-      setForm({
-        to: employee?.email || "",
-        subject: "",
-        body: "",
-      });
+      setForm(initialFormState);
     }
   }, [isOpen, employee]);
 
@@ -44,12 +46,11 @@ const MailModal = ({ isOpen, onClose, employee }) => {
       setLoading(true);
       await sendEmail(form);
       alert("Email sent successfully!");
-      // Reset form after sending
-      setForm({
-        to: employee?.email || "",
-        subject: "",
-        body: "",
-      });
+
+      // AUTO CLOSE + RESET MODAL
+      setForm(initialFormState);
+      onClose();
+
     } catch (err) {
       console.error(err);
       alert("Failed to send email!");

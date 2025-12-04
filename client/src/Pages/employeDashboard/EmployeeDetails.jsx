@@ -51,11 +51,12 @@ const EmployeeDetails = ({employee}) => {
     { title: "Role :", value: employee.role, title2: "Contract Expiry :", value2: employee.contract }
   ];
   const personalInfo = [
-    { title: "Date Of Birth :", value: "17-02-2025", title2: "Contact Number :", value2:employee.phno },
-    { title: "Aadhaar Number :", value: "0000000000", title2: "PAN Number :", value2: "00000000" },
-    { title: "Account Number :", value: "0000000000", title2: "Passport Number :", value2: "00000000" },
+    { title: "Date Of Birth :", value: employee.dob, title2: "Contact Number :", value2:employee.phno },
+    { title: "Aadhaar Number :", value: employee.aadar_number, title2: "PAN Number :", value2: employee.pan_number},
+    { title: "Account Number :", value: employee.account_number, title2: "Passport Number :", value2: employee.passport_number },
     { title: "Address :", value: employee.address, title2: "", value2: "" }
   ];
+
 
 
   return (

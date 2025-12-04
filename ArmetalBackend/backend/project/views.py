@@ -54,6 +54,12 @@ class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         project = self.get_object()
         data = request.data.copy()
 
+        # Convert "" → None for latitude & longitude
+        if data.get("latitude") in ["", None]:
+            data["latitude"] = None
+        if data.get("longitude") in ["", None]:
+            data["longitude"] = None
+
         # Add new employees
         employee_ids = data.pop("employees", None)
         if employee_ids is not None:
@@ -65,9 +71,9 @@ class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        # Return full project details with employee info
         read_serializer = ProjectReadSerializer(project, context={'request': request})
         return Response(read_serializer.data)
+
 
 
 # ============================================================

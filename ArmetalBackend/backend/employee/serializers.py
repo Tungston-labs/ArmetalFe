@@ -199,6 +199,13 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
     attendance_graph = serializers.SerializerMethodField()
     task_graph = serializers.SerializerMethodField()
 
+    # NEW FIELDS REQUESTED
+    aadar_number = serializers.SerializerMethodField()
+    iqama_number = serializers.SerializerMethodField()
+    pan_number = serializers.SerializerMethodField()
+    account_number = serializers.SerializerMethodField()
+    passport_number = serializers.SerializerMethodField()
+
     class Meta:
         model = Employee_db
         fields = [
@@ -211,6 +218,12 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             "employee_id",
             "designation",
             "joining_date",
+            "dob",                             # NEW
+            "aadar_number",                     # NEW
+            "iqama_number",                     # NEW
+            "pan_number",                       # NEW
+            "account_number",                   # NEW
+            "passport_number",                  # NEW
             "department",
             "role",
             "salary",
@@ -232,27 +245,72 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.profile_pic.url)
         return None
 
+    # -------------------------
+    #  BANK DETAILS
+    # -------------------------
     def get_salary(self, obj):
         if hasattr(obj, "bank_details") and obj.bank_details:
             return float(obj.bank_details.basic_salary)
         return None
 
+    def get_account_number(self, obj):
+        if hasattr(obj, "bank_details") and obj.bank_details:
+            return obj.bank_details.account_number
+        return None
+
+    def get_pan_number(self, obj):
+        if hasattr(obj, "bank_details") and obj.bank_details:
+            return obj.bank_details.pan_number
+        return None
+
+    # -------------------------
+    #  PERSONAL FIELDS
+    # -------------------------
+    def get_aadar_number(self, obj):
+        return obj.aadar_number
+
+    def get_iqama_number(self, obj):
+        return obj.iqama_number
+
+    def get_passport_number(self, obj):
+        return obj.passport_number
+
+    # -------------------------
+    #  CONTRACT
+    # -------------------------
     def get_contract(self, obj):
         return obj.contract_expiry_date
 
+    # -------------------------
+    #  LEAVES
+    # -------------------------
     def get_leave_taken(self, obj):
         approved = LeaveRequest.objects.filter(employee=obj, status="approved")
-        taken = 0
-        for leave in approved:
-            taken += leave.calculate_leave_days()
+        taken = sum([leave.calculate_leave_days() for leave in approved])
         return float(taken)
 
     def get_pending_leave(self, obj):
         return float(obj.total_leave or 0)
 
+    # -------------------------
+    #  PROJECTS
+    # -------------------------
     def get_projects(self, obj):
-        return obj.projects.values("name", "punch_type")
+        projects = obj.projects.all()
 
+        ongoing_count = projects.filter(status="in_progress").count()
+        completed_count = projects.filter(status="completed").count()
+
+        return {
+            "ongoing_count": ongoing_count,
+            "completed_count": completed_count
+        }
+
+
+
+    # -------------------------
+    #  ATTENDANCE GRAPH
+    # -------------------------
     def get_attendance_graph(self, obj):
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
@@ -271,6 +329,9 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
 
         return graph
 
+    # -------------------------
+    #  TASK GRAPH
+    # -------------------------
     def get_task_graph(self, obj):
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
@@ -288,7 +349,6 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             graph[weekday] += float(task.time_taken or 0)
 
         return graph
-
 
 
 # class EmployeeDashboardSerializer(serializers.ModelSerializer):
