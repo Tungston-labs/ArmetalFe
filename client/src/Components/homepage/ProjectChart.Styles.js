@@ -7,7 +7,7 @@ export const ChartCard = styled.div`
   width: 100%;
   max-width: 100%;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-
+height: 100%;
   @media (max-width: 992px) {
     padding: 16px;
     border-radius: 14px;
@@ -24,7 +24,7 @@ export const ChartCard = styled.div`
   }
 
   @media (min-width: 2560px) {
-    padding: 40px;
+    padding: 45px;
   }
 
   @media (min-width: 3840px) {
@@ -117,7 +117,7 @@ export const TooltipBox = styled.div`
 
 export const ChartWrapper = styled.div`
   width: 100%;
-  height: 300px;     
+  height: 100%;
 
   @media (max-width: 1024px) {
     height: 300px;
@@ -128,14 +128,13 @@ export const ChartWrapper = styled.div`
   }
 
 
-  @media (min-width: 2560px) {
-    height: 28vh;
-  
+ /* @media (min-width: 2560px) {
+    height: 27vh;
   }
 
   @media (min-width: 3840px) {
-    height: 560px;
-  }
+    height: 26vh;
+  } */
 `;
 
 

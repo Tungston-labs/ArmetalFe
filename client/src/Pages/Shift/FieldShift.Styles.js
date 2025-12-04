@@ -326,6 +326,8 @@ export const CardsGrid = styled.div`
   gap: 1.5rem;
   grid-template-columns: repeat(2, 1fr);
 
+
+
   @media (min-width: 1940px) {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -346,6 +348,10 @@ export const CardsGrid = styled.div`
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
+  }
+  
+      @media (min-width: 2560px) {
+    grid-template-columns: repeat(5, 1fr);
   }
 `;
 
@@ -470,10 +476,10 @@ export const CardTitle = styled.h2`
   }
 
   @media (min-width: 2560px) {
-    font-size: 2rem;
+    font-size: 1.3rem;
   }
     @media (min-width:3840px) {
-    font-size: 3rem;
+    font-size: 1.5rem;
     padding: 1rem;
   }
 `;
@@ -543,7 +549,7 @@ export const CardText = styled.p`
   }
 
   @media (min-width: 2560px) {
-    font-size: 2rem;
+    font-size: 1.2rem;
   }
 `;
 

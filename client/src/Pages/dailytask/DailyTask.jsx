@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// Import all necessary styled components from the styles file
 import {
   ViewContainer,
   DepartmentPanel,
@@ -22,8 +21,6 @@ import {
   Heading
 } from './DailyTask.Styles';
 import TaskIcon from '../../assets/task.svg';
-
-// Redux imports
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartmentsMin, getEmployeesByDepartmentMini } from "../../Redux/departmentSlice";
 import { getTasks } from "../../Redux/dailyTaskSlice";
@@ -34,7 +31,7 @@ const Card = ({ dept, onClick, isActive }) => (
   </CardItem>
 );
 
-// Component for Employees Panel
+
 const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) => {
   const employeesData = useSelector(
     (state) => state.departments.departmentEmployeesMini || []
@@ -81,8 +78,6 @@ const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) =>
 
   );
 };
-
-// Component for Task Panel
 const TaskPanel = ({ employeeId }) => {
   const dispatch = useDispatch();
   const [selectedDate, setSelectedDate] = useState(null);
@@ -99,15 +94,11 @@ const TaskPanel = ({ employeeId }) => {
   
 
   const formatDate = (d) => d?.toISOString().split("T")[0];
-
-  // Load ALL tasks when employee is selected
   useEffect(() => {
     if (employeeId) {
       dispatch(getTasks({ employeeId, date: null }));
     }
   }, [employeeId, dispatch]);
-
-  // Load FILTERED tasks when date changes
   useEffect(() => {
     if (employeeId && selectedDate) {
       dispatch(getTasks({ employeeId, date: formatDate(selectedDate) }));
@@ -175,9 +166,6 @@ const TaskPanel = ({ employeeId }) => {
   );
 };
 
-
-
-// Main Component
 export default function DepartmentView() {
   const dispatch = useDispatch();
 
@@ -187,16 +175,11 @@ export default function DepartmentView() {
   const [searchDept, setSearchDept] = useState("");
 
   const departments = useSelector((state) => state.departments.minList || []);
-
-  // Load minimal departments
   useEffect(() => {
     dispatch(getDepartmentsMin()).then((res) => {
-      console.log("Departments API response:", res); // Check payload here
+      console.log("Departments API response:", res); 
     });
   }, [dispatch]);
-  
-
-  // Load employees when department changes
   useEffect(() => {
     if (selectedDeptId) {
       dispatch(getEmployeesByDepartmentMini(selectedDeptId));
