@@ -296,16 +296,16 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
     #  PROJECTS
     # -------------------------
     def get_projects(self, obj):
-        # Employee belongs to project via ManyToMany → obj.projects.all()
         projects = obj.projects.all()
 
-        ongoing = projects.filter(status="in_progress").values("id", "name", "punch_type", "status")
-        completed = projects.filter(status="completed").values("id", "name", "punch_type", "status")
+        ongoing_count = projects.filter(status="in_progress").count()
+        completed_count = projects.filter(status="completed").count()
 
         return {
-            "ongoing": ongoing,
-            "completed": completed
+            "ongoing_count": ongoing_count,
+            "completed_count": completed_count
         }
+
 
 
     # -------------------------
