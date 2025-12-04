@@ -28,15 +28,16 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
     punchInType: '',
     latitude: '',
     longitude: '',
-    status: '',   // <-- NEW FIELD ADDED
+    status: '',
   });
 
   const [errors, setErrors] = useState({});
 
-  // Pre-fill form
+  // Prefill form
   useEffect(() => {
     if (projectData) {
       let punchType = projectData.punchInType?.toLowerCase();
+
       if (punchType === "on site") punchType = "on_site";
       if (punchType === "variant") punchType = "variant";
       if (punchType === "bench") punchType = "bench";
@@ -46,7 +47,7 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
         punchInType: punchType || '',
         latitude: projectData.latitude || '',
         longitude: projectData.longitude || '',
-        status: projectData.status || 'in_progress',  // <-- PREFILL STATUS
+        status: projectData.status || 'in_progress',
       });
     }
   }, [projectData]);
@@ -57,6 +58,7 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
     setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
+  // Validation (NO latitude/longitude validation)
   const validate = () => {
     const newErrors = {};
 
@@ -66,14 +68,6 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
     if (!formData.punchInType)
       newErrors.punchInType = "Punch in type is required";
 
-    // Latitude & Longitude required ONLY if NOT bench
-    if (formData.punchInType !== "bench") {
-      if (!formData.latitude)
-        newErrors.latitude = "Latitude is required";
-      if (!formData.longitude)
-        newErrors.longitude = "Longitude is required";
-    }
-
     if (!formData.status)
       newErrors.status = "Status is required";
 
@@ -81,20 +75,19 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-
   const handleSave = () => {
-  if (!validate()) return;
+    if (!validate()) return;
 
-  const payload = {
-    ...formData,
-    latitude: formData.punchInType === "bench" ? null : formData.latitude,
-    longitude: formData.punchInType === "bench" ? null : formData.longitude,
+    const payload = {
+      ...formData,
+      // Remove lat/long if bench
+      latitude: formData.punchInType === "bench" ? null : formData.latitude,
+      longitude: formData.punchInType === "bench" ? null : formData.longitude,
+    };
+
+    onSave(payload);
+    onClose();
   };
-
-  onSave(payload);
-  onClose();
-};
-
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -150,10 +143,8 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
               placeholder="Enter latitude"
               value={formData.latitude}
               onChange={handleChange}
-              disabled={formData.punchInType === "bench"}   // <--- Disable
+              disabled={formData.punchInType === "bench"}   
             />
-
-            {errors.latitude && <span style={{ color: 'red' }}>{errors.latitude}</span>}
           </FieldGroup>
 
           {/* LONGITUDE */}
@@ -165,13 +156,11 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
               placeholder="Enter longitude"
               value={formData.longitude}
               onChange={handleChange}
-              disabled={formData.punchInType === "bench"}   // <--- Disable
+              disabled={formData.punchInType === "bench"}   
             />
-
-            {errors.longitude && <span style={{ color: 'red' }}>{errors.longitude}</span>}
           </FieldGroup>
 
-          {/* STATUS (NEW FIELD) */}
+          {/* STATUS */}
           <FieldGroup>
             <Label>Status</Label>
             <SelectWrapper>
