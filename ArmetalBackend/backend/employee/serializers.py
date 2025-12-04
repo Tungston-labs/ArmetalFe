@@ -296,7 +296,17 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
     #  PROJECTS
     # -------------------------
     def get_projects(self, obj):
-        return obj.projects.values("name", "punch_type")
+        # Employee belongs to project via ManyToMany → obj.projects.all()
+        projects = obj.projects.all()
+
+        ongoing = projects.filter(status="in_progress").values("id", "name", "punch_type", "status")
+        completed = projects.filter(status="completed").values("id", "name", "punch_type", "status")
+
+        return {
+            "ongoing": ongoing,
+            "completed": completed
+        }
+
 
     # -------------------------
     #  ATTENDANCE GRAPH
