@@ -45,10 +45,14 @@ class ProjectSerializer(serializers.ModelSerializer):
     )
     company = serializers.StringRelatedField(read_only=True)
 
+    latitude = serializers.FloatField(required=False, allow_null=True)
+    longitude = serializers.FloatField(required=False, allow_null=True)
+
     class Meta:
         model = Project
         fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'company', 'employees','status']
         read_only_fields = ['company']
+
 
     def update(self, instance, validated_data):
         employees = validated_data.pop('employees', None)
@@ -81,9 +85,13 @@ class ProjectWriteSerializer(serializers.ModelSerializer):
         required=False
     )
 
+    latitude = serializers.FloatField(required=False, allow_null=True)
+    longitude = serializers.FloatField(required=False, allow_null=True)
+
     class Meta:
         model = Project
         fields = ['id', 'name', 'punch_type', 'latitude', 'longitude', 'employees','status']
+
 
     def update(self, instance, validated_data):
         employees = validated_data.pop('employees', None)

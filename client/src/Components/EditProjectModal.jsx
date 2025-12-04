@@ -75,19 +75,24 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
-    if (!validate()) return;
+const handleSave = () => {
+  if (!validate()) return;
 
-    const payload = {
-      ...formData,
-      // Remove lat/long if bench
-      latitude: formData.punchInType === "bench" ? null : formData.latitude,
-      longitude: formData.punchInType === "bench" ? null : formData.longitude,
-    };
-
-    onSave(payload);
-    onClose();
+  const payload = {
+    ...formData,
+    latitude:
+      formData.punchInType === "bench" || formData.punchInType === "variant"
+        ? null
+        : formData.latitude || null,
+    longitude:
+      formData.punchInType === "bench" || formData.punchInType === "variant"
+        ? null
+        : formData.longitude || null,
   };
+
+  onSave(payload);
+  onClose();
+};
 
   return (
     <ModalOverlay onClick={onClose}>
