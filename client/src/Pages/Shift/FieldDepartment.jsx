@@ -40,8 +40,15 @@ const FieldShift = () => {
     punchType: "",
     latitude: "",
     longitude: "",
-      status: "",
+    status: "",
   });
+  const statusColors = {
+    in_progress: "#f0ad4e",
+    completed: "#5cb85c",
+    on_hold: "#5bc0de",
+    cancelled: "#d9534f",
+  };
+
   const [employees, setEmployees] = useState([]);
   useEffect(() => {
     if (id) dispatch(getProjectById(id));
@@ -54,8 +61,9 @@ const FieldShift = () => {
         punchType: project.punch_type || "",
         latitude: project.latitude || "",
         longitude: project.longitude || "",
-          status: project.status || "In Progress",
+        status: project.status || "in_progress",   // <-- FIXED
       });
+
 
       setEmployees(
         project.employees?.map((emp) => ({
@@ -72,7 +80,7 @@ const FieldShift = () => {
 
   const handleInfoClick = (employeeId) => {
     console.log("Navigating to employee info for ID:", employeeId);
-    
+
     navigate(`/project/${employeeId}`, { state: { employeeId } });
   };
 
@@ -144,19 +152,17 @@ const FieldShift = () => {
     });
   };
 
-const statusColors = {
-  "In Progress": "#f0ad4e", 
-  "Completed": "#5cb85c",  
-  "Pending": "#d9534f",    
-};
+
 
   const handleSaveFromModal = async (updatedData) => {
     const updatedProject = {
-      name: updatedData.projectName,
-      punch_type: updatedData.punchInType,
-      latitude: updatedData.latitude,
-      longitude: updatedData.longitude,
-    };
+  name: updatedData.projectName,
+  punch_type: updatedData.punchInType,
+  latitude: updatedData.latitude,
+  longitude: updatedData.longitude,
+  status: updatedData.status,   
+};
+
 
     try {
       await dispatch(updateProject({ id, projectData: updatedProject })).unwrap();
@@ -170,7 +176,7 @@ const statusColors = {
       });
 
       setIsEditModalOpen(false);
-      dispatch(getProjectById(id)); 
+      dispatch(getProjectById(id));
     } catch (err) {
       Swal.fire({
         title: "Error!",
@@ -184,7 +190,7 @@ const statusColors = {
     return (
       <>
         <PageWrapper>
-        <Loader/>
+          <Loader />
         </PageWrapper>
       </>
     );
@@ -203,27 +209,27 @@ const statusColors = {
   return (
     <>
       <PageWrapper>
-           <EmployeeTitle
-  iconSrc={FieldShiftIcon}
-  title="Project"
-  subtitle="Manage all Project within the organization"
-  showDropdown={false}
-  showTabs={false}
-  showAddButton={false}
-  showSearch={false}
-/>
+        <EmployeeTitle
+          iconSrc={FieldShiftIcon}
+          title="Project"
+          subtitle="Manage all Project within the organization"
+          showDropdown={false}
+          showTabs={false}
+          showAddButton={false}
+          showSearch={false}
+        />
         {!isDeleted ? (
           <>
-          <ButtonWrapper>
-  <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
-    <BiEditAlt style={{ marginRight: "6px" }} />
-    Edit
-  </ActionButton>
-  <ActionButton color="delete" onClick={handleDelete}>
-    <FaTrash style={{ marginRight: "6px" }} />
-    Delete
-  </ActionButton>
-</ButtonWrapper>
+            <ButtonWrapper>
+              <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
+                <BiEditAlt style={{ marginRight: "6px" }} />
+                Edit
+              </ActionButton>
+              <ActionButton color="delete" onClick={handleDelete}>
+                <FaTrash style={{ marginRight: "6px" }} />
+                Delete
+              </ActionButton>
+            </ButtonWrapper>
             <FormContainer>
               <div
                 style={{
@@ -255,21 +261,24 @@ const statusColors = {
                   </FormRow>
                 </div>
 
-<StatusRow>
-    <StatusWrapper>
+            <StatusRow>
+  <StatusWrapper>
     <label>Project Status</label>
+
     <StatusSelect
       value={formData.status}
-      selected={!!formData.status} 
-      bgcolor={statusColors[formData.status]} 
+      selected={!!formData.status}
+      bgcolor={statusColors[formData.status]}
       onChange={(e) =>
         setFormData({ ...formData, status: e.target.value })
       }
     >
       <option value="">Select Status</option>
-      <option value="In Progress">In Progress</option>
-      <option value="Completed">Completed</option>
-      <option value="Pending">Pending</option>
+
+      <option value="in_progress">In Progress</option>
+      <option value="completed">Completed</option>
+      <option value="on_hold">On Hold</option>
+      <option value="cancelled">Cancelled</option>
     </StatusSelect>
   </StatusWrapper>
 </StatusRow>
@@ -277,63 +286,64 @@ const statusColors = {
 
 
 
-                </div>
-                
+
+              </div>
+
             </FormContainer>
 
             <EmployeesSection>
-             <EmployeeHeader>
-  <h2>Employees</h2>
-  <AddButton onClick={() => setShowEmployeeModal(true)}>
-    <FaPlus /> Add
-  </AddButton>
-</EmployeeHeader>
+              <EmployeeHeader>
+                <h2>Employees</h2>
+                <AddButton onClick={() => setShowEmployeeModal(true)}>
+                  <FaPlus /> Add
+                </AddButton>
+              </EmployeeHeader>
 
 
-             
-                     <StyledTable>
-                   <TableHead>
-                       <HeadRow>
-                      <HeadCell>Sl No</HeadCell>
-                      <HeadCell>Employee Name</HeadCell>
-                      <HeadCell>Employee ID</HeadCell>
-                      <HeadCell>Email ID</HeadCell>
-                      <HeadCell>Job Position</HeadCell>
-                      <HeadCell>Department</HeadCell>
-                      <HeadCell>Delete</HeadCell>
-                   </HeadRow>
-                      </TableHead>
-                 
-                   <TableBody>
-  {employees.map((emp, i) => (
-    <BodyRow
-      key={emp.id}
-      className={i % 2 === 0 ? "even" : ""}
-      onClick={() => navigate(`/project/${emp.id}`)} 
-      style={{ cursor: "pointer" }} // show hand cursor
-    >
-      <BodyCell>{i + 1}</BodyCell>
-      <BodyCell>{emp.name}</BodyCell>
-      <BodyCell>{emp.employeeId}</BodyCell>
-      <BodyCell>{emp.email}</BodyCell>
-      <BodyCell>{emp.position}</BodyCell>
-      <BodyCell>{emp.department_name}</BodyCell>
+
+              <StyledTable>
+                <TableHead>
+                  <HeadRow>
+                    <HeadCell>Sl No</HeadCell>
+                    <HeadCell>Employee Name</HeadCell>
+                    <HeadCell>Employee ID</HeadCell>
+                    <HeadCell>Email ID</HeadCell>
+                    <HeadCell>Job Position</HeadCell>
+                    <HeadCell>Department</HeadCell>
+                    <HeadCell>Delete</HeadCell>
+                  </HeadRow>
+                </TableHead>
+
+                <TableBody>
+                  {employees.map((emp, i) => (
+                    <BodyRow
+                      key={emp.id}
+                      className={i % 2 === 0 ? "even" : ""}
+                      onClick={() => navigate(`/project/${emp.id}`)}
+                      style={{ cursor: "pointer" }} // show hand cursor
+                    >
+                      <BodyCell>{i + 1}</BodyCell>
+                      <BodyCell>{emp.name}</BodyCell>
+                      <BodyCell>{emp.employeeId}</BodyCell>
+                      <BodyCell>{emp.email}</BodyCell>
+                      <BodyCell>{emp.position}</BodyCell>
+                      <BodyCell>{emp.department_name}</BodyCell>
 
 
-      <BodyCell
-        onClick={(e) => {
-          e.stopPropagation(); 
-          handleEmployeeDelete(emp.id);
-        }}
-      >
-        <FaTrash color="red" style={{ cursor: "pointer" }} />
-      </BodyCell>
-    </BodyRow>
-  ))}
-</TableBody>
+                      <BodyCell
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEmployeeDelete(emp.id);
+                        }}
+                      >
+                        <FaTrash color="red" style={{ cursor: "pointer" }} />
+                      </BodyCell>
+                    </BodyRow>
+                  ))}
+                </TableBody>
 
-             </StyledTable>
-              
+              </StyledTable>
+
             </EmployeesSection>
 
             {showEmployeeModal && (
@@ -356,7 +366,7 @@ const statusColors = {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           onSave={handleSaveFromModal}
-          projectData={{ ...formData, punchInType: formData.punchType }}
+          projectData={{ ...formData, punchInType: formData.punchType, status: formData.status,}}
         />
       )}
     </>
