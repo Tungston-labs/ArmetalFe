@@ -27,12 +27,11 @@ const WeeklyTaskGraph = ({ weeklyData }) => {
 
         <SummarySection>
           <SummaryItem>
-            <SummaryLabel>Total Tasks</SummaryLabel>
+            <SummaryLabel>Weekly Task Hours</SummaryLabel>
             <SummaryValueContainer>
               <SummaryValue>
                 {weeklyData.reduce((sum, d) => sum + d.tasksCompleted, 0)}
               </SummaryValue>
-              <PercentageTag>100%</PercentageTag>
             </SummaryValueContainer>
           </SummaryItem>
         </SummarySection>
