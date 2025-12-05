@@ -15,7 +15,7 @@ import logging
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from project.models import Project  # Import your Project model
+from project.models import Project
 from django.db.models import Q
 from geopy.geocoders import Nominatim
 from django.utils import timezone
@@ -55,7 +55,7 @@ class AttendanceSwipeView(APIView):
                     )
                 punch_type = project.punch_type.lower()
             else:
-                punch_type = "company"  # No project → company punch rules
+                punch_type = "company"  # No project then company punch rules
 
 
 

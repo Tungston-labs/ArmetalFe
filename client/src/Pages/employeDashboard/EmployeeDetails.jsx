@@ -38,12 +38,13 @@ const EmployeeDetails = ({employee}) => {
   const [activeTab, setActiveTab] = useState("work");
   const [isMailOpen, setIsMailOpen] = useState(false);
   if (!employee) return <p>Loading...</p>;
-  const statsData = [
-    { number: employee.pending_leave ?? "00", label: "Balance Leaves", icon: <PiUsersThreeLight size={22} /> },
-    { number: employee.leave_taken ?? "00", label: "Leaves Taken", icon: <CiAlarmOn size={22} /> },
-    { number: employee.projects?.length ?? 0, label: "Ongoing Projects", icon: <TbReportSearch size={22} /> },
-    { number: "00", label: "Completed Projects", icon: <LuFileCheck size={22} /> }
-  ];
+ const statsData = [
+  { number: employee.pending_leave ?? "00", label: "Balance Leaves", icon: <PiUsersThreeLight size={22} /> },
+  { number: employee.leave_taken ?? "00", label: "Leaves Taken", icon: <CiAlarmOn size={22} /> },
+  { number: employee.projects?.ongoing_count ?? 0, label: "Ongoing Projects", icon: <TbReportSearch size={22} /> },
+  { number: employee.projects?.completed_count ?? 0, label: "Completed Projects", icon: <LuFileCheck size={22} /> }
+];
+
   const workInfo = [
     { title: "Job Title :", value: employee.designation, title2: "Salary :", value2: employee.salary },
     { title: "Employee ID :", value: employee.employee_id, title2: "Email Id :", value2: employee.email },
