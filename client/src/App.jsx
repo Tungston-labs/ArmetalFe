@@ -70,6 +70,7 @@ import HomeDashboard from "./Pages/dashboard/HomeDashboard.jsx"
 import ErrorSomething from "./Pages/error/ErrorSomething.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";
 import Parent from "./Pages/employeDashboard/Parent.jsx";
+import ProgressModal from "./Components/ProgressModal.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -149,7 +150,7 @@ function App() {
             
 <Route path="/layout" element={<ViewLayout/>}/>
              
-
+<Route path="/modal" element={<ProgressModal/>}/>
   <Route path="*" element={<ErrorSomething />} />
 
 

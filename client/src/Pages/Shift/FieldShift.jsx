@@ -3,12 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   PageWrapper,
-  HeaderSection,
-  TitleSection,
-  Title,
-  Subtitle,
-  SearchBar,
-  AddFieldButton,
   CardsGrid,
   Card,
   CardHeader,
@@ -17,10 +11,6 @@ import {
   CardFooter,
   Tag,
   CardTitleSection,
-  IconWrapper,
-  TextGroup,
-  SearchContainer,
-  SearchIcon,
   StatusTag,
 } from "./FieldShift.Styles";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
@@ -28,24 +18,26 @@ import cardBg from "../../assets/shift.svg";
 import AddProjectModal from "../../Components/AddProjectModal";
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import TagIcon from "../../assets/downicon.svg";
-// import Navbar from "../../Components/Navbar";
 import { FaPlus } from "react-icons/fa";
 import { getProjects } from "../../Redux/fieldShiftSlice";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+
 
 const DepartmentPage = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();  
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [open, setOpen] = useState(true);
+  const [step, setStep] = useState(0);
   const { projects, isLoading } = useSelector((state) => state.projects);
 const statusColors = {
   "In Progress": "#fac25b", 
   Completed: "#5abe7f",     
   Pending: "#e07777",       
 };
+
 
   // Fetch projects from API
   useEffect(() => {
@@ -55,12 +47,11 @@ const statusColors = {
   const handleSaveProject = (data) => {
     console.log("New Project Added:", data);
     setIsModalOpen(false);
-    dispatch(getProjects()); // refresh project list
+    dispatch(getProjects());
   };
 
   return (
     <>
-      {/* <Navbar /> */}
       <PageWrapper>
         <EmployeeTitle
   iconSrc={FieldShiftIcon}
@@ -106,12 +97,9 @@ const statusColors = {
   <Tag>
     <img src={TagIcon} alt="Tag icon" />
     {project.punch_type || "N/A"}
-  </Tag>
-
-  {/* Status tag */}
-  
+  </Tag> 
   <StatusTag bgcolor={statusColors[project.status]}>
-    {project.status || "Pending"}
+    {project.status || "i"}
   </StatusTag>
 </CardFooter>
 
@@ -127,7 +115,7 @@ const statusColors = {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSaveProject}
-        />
+        />      
       </PageWrapper>
     </>
   );

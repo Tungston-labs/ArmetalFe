@@ -641,10 +641,6 @@ export const DateDetails = styled.div`
   }
 `;
 
-
-
-
-
 export const DayBoxes = styled.div`
   display: flex;
   align-items: center;

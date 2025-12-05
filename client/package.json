@@ -17,6 +17,7 @@
     "axios": "^1.9.0",
     "classnames": "^2.5.1",
     "emailjs-com": "^3.2.0",
+    "framer-motion": "^12.23.25",
     "hijri-date": "^0.2.2",
     "html2pdf.js": "^0.10.3",
     "jspdf": "^3.0.1",

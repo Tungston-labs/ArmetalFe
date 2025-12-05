@@ -1,19 +1,19 @@
 import styled, { css } from 'styled-components';
 
 const colors = {
-primaryDark: '#172554',   
-  primary: '#3352BA',     
-  secondary: '#3352BA',     
-  background: ' #f4f8ff;',   
-  panelBg: '#FFFFFF',       
+  primaryDark: '#172554',
+  primary: '#3352BA',
+  secondary: '#3352BA',
+  background: ' #f4f8ff;',
+  panelBg: '#FFFFFF',
   text: '#212121',
   lightText: '#757575',
   borderColor: '#E0E0E0',
   shadowLight: 'rgba(0, 0, 0, 0.08)',
   shadowMedium: 'rgba(0, 0, 0, 0.2)',
-  activeBg: '#E8EBF5',      
-  hoverBg: '#F5F5F5',
-  selectedEmployee: '#f5f7fa', 
+  activeBg: '#E8EBF5',
+  hoverBg: '#f1f7ffff',
+  selectedEmployee: '#e9f2ffff',
   warningBg: '#FFF3E0',
   warningText: '#FF9800',
   infoText: '#3352BA',
@@ -81,7 +81,7 @@ export const DepartmentPanel = styled.div`
   background-color: ${colors.panelBg};
   padding: 30px 20px;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 4px 0 15px ${colors.shadowMedium};
+  box-shadow: 4px 0 20px ${colors.shadowMedium};
   border-right: 3px solid ${colors.primary}; 
   overflow-y: auto;
   z-index: 5;
@@ -408,8 +408,8 @@ export const DatePickerWrapper = styled.div`
   }
 `;
 
-export const 
-TaskList = styled.ul`
+export const
+  TaskList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
@@ -561,12 +561,13 @@ export const EmployeeItem = styled.div`
   font-size: 1rem;
   margin-top:10px;
   background-color: ${(props) =>
-    props.$isActive ? colors.activeBg : "transparent"};
+   props.$isActive ? colors.activeBg : "transparent"};
   font-weight: ${(props) => (props.$isActive ? "bold" : "normal")};
   color: ${(props) => (props.$isActive ? "#3352BA" : colors.text)};
 
   &:hover {
     background-color: ${colors.hoverBg};
+
   }
  @media (min-width: 1921px) {
     font-size: 1.3rem;
