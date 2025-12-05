@@ -34,16 +34,16 @@ import { TbReportSearch } from "react-icons/tb";
 import { LuFileCheck } from "react-icons/lu";
 import MailModal from "./MailModal";
 
-const EmployeeDetails = ({employee}) => {
+const EmployeeDetails = ({ employee }) => {
   const [activeTab, setActiveTab] = useState("work");
   const [isMailOpen, setIsMailOpen] = useState(false);
   if (!employee) return <p>Loading...</p>;
- const statsData = [
-  { number: employee.pending_leave ?? "00", label: "Balance Leaves", icon: <PiUsersThreeLight size={22} /> },
-  { number: employee.leave_taken ?? "00", label: "Leaves Taken", icon: <CiAlarmOn size={22} /> },
-  { number: employee.projects?.ongoing_count ?? 0, label: "Ongoing Projects", icon: <TbReportSearch size={22} /> },
-  { number: employee.projects?.completed_count ?? 0, label: "Completed Projects", icon: <LuFileCheck size={22} /> }
-];
+  const statsData = [
+    { number: employee.pending_leave ?? "00", label: "Balance Leaves", icon: <PiUsersThreeLight size={22} /> },
+    { number: employee.leave_taken ?? "00", label: "Leaves Taken", icon: <CiAlarmOn size={22} /> },
+    { number: employee.projects?.ongoing_count ?? 0, label: "Ongoing Projects", icon: <TbReportSearch size={22} /> },
+    { number: employee.projects?.completed_count ?? 0, label: "Completed Projects", icon: <LuFileCheck size={22} /> }
+  ];
 
   const workInfo = [
     { title: "Job Title :", value: employee.designation, title2: "Salary :", value2: employee.salary },
@@ -52,8 +52,8 @@ const EmployeeDetails = ({employee}) => {
     { title: "Role :", value: employee.role, title2: "Contract Expiry :", value2: employee.contract }
   ];
   const personalInfo = [
-    { title: "Date Of Birth :", value: employee.dob, title2: "Contact Number :", value2:employee.phno },
-    { title: "Aadhaar Number :", value: employee.aadar_number, title2: "PAN Number :", value2: employee.pan_number},
+    { title: "Date Of Birth :", value: employee.dob, title2: "Contact Number :", value2: employee.phno },
+    { title: "Aadhaar Number :", value: employee.aadar_number, title2: "PAN Number :", value2: employee.pan_number },
     { title: "Account Number :", value: employee.account_number, title2: "Passport Number :", value2: employee.passport_number },
     { title: "Address :", value: employee.address, title2: "", value2: "" }
   ];
@@ -66,8 +66,16 @@ const EmployeeDetails = ({employee}) => {
         <LeftHeader>
           <h3>Profile</h3>
           <Status>
-            <span className="dot"></span> Active
+            <span
+              className="dot"
+              style={{
+                backgroundColor: employee.is_active ? "green" : "red"
+              }}
+            ></span>
+
+            {employee.is_active ? "Active" : "Inactive"}
           </Status>
+
         </LeftHeader>
         <MailButton onClick={() => setIsMailOpen(true)}>Send Mail</MailButton>
       </HeaderRow>
@@ -75,7 +83,7 @@ const EmployeeDetails = ({employee}) => {
       <TopSection>
         <ProfileLeft>
           <ProfileSection>
-             <Avatar style={{ backgroundImage: `url(${employee.profile_pic})` }} />
+            <Avatar style={{ backgroundImage: `url(${employee.profile_pic})` }} />
             <Info>
               <Name>{employee.name}</Name>
               <Role>{employee.designation}</Role>
