@@ -146,6 +146,7 @@ class EmployeeDocumentSummarySerializer(serializers.ModelSerializer):
     id_card_image_url = serializers.SerializerMethodField()
     employee_id = serializers.IntegerField(source='id')
 
+
     class Meta:
         model = Employee_db
         fields = [
@@ -205,6 +206,8 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
     pan_number = serializers.SerializerMethodField()
     account_number = serializers.SerializerMethodField()
     passport_number = serializers.SerializerMethodField()
+    is_active = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Employee_db
@@ -234,6 +237,7 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             "projects",
             "attendance_graph",
             "task_graph",
+            "is_active",
         ]
 
     # -------------------------
@@ -349,142 +353,21 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             graph[weekday] += float(task.time_taken or 0)
 
         return graph
-
-
-# class EmployeeDashboardSerializer(serializers.ModelSerializer):
-#     bank_details = EmpBankPaymentSerializer(read_only=True)
-#     company_days = serializers.SerializerMethodField()
-#     leave_summary = serializers.SerializerMethodField()
-#     attendance_summary = serializers.SerializerMethodField()
-#     department_employees = serializers.SerializerMethodField()
-#     daily_tasks = serializers.SerializerMethodField()
-#     today_sessions = serializers.SerializerMethodField()
-#     department_head = serializers.SerializerMethodField()
-#     dob = serializers.DateField(required=False)
-#     joining_date = serializers.DateField(required=False)
-#     visa_expiry_date = serializers.DateField(required=False)
-
-#     department_id = serializers.PrimaryKeyRelatedField(
-#         source='department',
-#         queryset=Department.objects.all(),
-#         write_only=True
-#     )
-#     department = serializers.CharField(source='department.name', read_only=True)
-
-#     class Meta:
-#         model = Employee_db
-#         exclude = ['user', 'password']
-
-#     def get_company_days(self, obj):
-#         return (date.today() - obj.joining_date).days if obj.joining_date else 0
-
-#     def get_leave_summary(self, obj):
-#         """
-#         Calculate leave summary properly:
-#         - total_leave: current available leave balance from Employee_db
-#         - leave_taken: total days from approved leave requests
-#         - pending_leave: same as total_leave (already updated in DB)
-#         """
-#         total_leave = obj.total_leave or 0
-
-#         # ✅ Sum up all approved leave days
-#         approved_leaves = LeaveRequest.objects.filter(employee=obj, status='approved')
-#         leave_days_taken = 0
-
-#         for leave in approved_leaves:
-#             if leave.from_date and leave.to_date:
-#                 # ✅ Use model method to correctly account for half days
-#                 leave_days_taken += leave.calculate_leave_days()
-
-
-#         return {
-#             'total_leave': total_leave,         # current balance from DB
-#             'leave_taken': leave_days_taken,    # sum of days, not count of requests
-#             'pending_leave': total_leave        # same as balance
-#         }
-
-
-#     def get_attendance_summary(self, obj):
-#         today = date.today()
-
-#         # ✅ Month boundaries
-#         start_month = today.replace(day=1)
-#         _, last_day = monthrange(today.year, today.month)
-#         end_month = today.replace(day=last_day)
-
-#         # ✅ Determine which week of the month today belongs to (1–7, 8–14, 15–21, 22–28, 29–end)
-#         day_of_month = today.day
-#         week_number = (day_of_month - 1) // 7 + 1
-
-#         start_week = start_month + timedelta(days=(week_number - 1) * 7)
-#         end_week = min(start_week + timedelta(days=6), end_month)
-
-#         # ✅ Fetch attendance data for week and month
-#         week_attendance = Attendance.objects.filter(employee=obj, date__range=[start_week, end_week])
-#         month_attendance = Attendance.objects.filter(employee=obj, date__range=[start_month, end_month])
-
-#         # ✅ Format hours from float (e.g. 9.65 → "09:39")
-#         def format_hours(hours):
-#             hours = float(hours or 0)
-#             h = int(hours)
-#             m = int(round((hours - h) * 60))
-#             return f"{h:02d}:{m:02d}"
-
-#         weekly_total = week_attendance.aggregate(total=Sum('total_hours'))['total'] or 0
-#         monthly_total = month_attendance.aggregate(total=Sum('total_hours'))['total'] or 0
-
-#         return {
-#             "weekly_working_hours": format_hours(weekly_total),
-#             "weekly_days": week_attendance.count(),
-#             "monthly_working_hours": format_hours(monthly_total),
-#             "monthly_days": month_attendance.count(),
-#             "week_range": f"{start_week.strftime('%d %b')} - {end_week.strftime('%d %b')}"
-#         }
     
-#     def get_department_head(self, obj):
-#         head = obj.department.department_head
-#         if head:
-#             return {
-#                 "id": head.id,
-#                 "name": head.name,
-#                 "designation": head.designation,
-#                 "profile_pic": head.profile_pic.url if head.profile_pic else None,
-#             }
-#         return None
+    #------------------ IS ACTIVE STATUS ------------------------------------
+    
+    def get_is_active(self, obj):
+        today = date.today()
 
-#     def get_department_employees(self, obj):
-#         employees = Employee_db.objects.filter(department=obj.department)
-#         return {
-#             'count': employees.count(),
-#             'employees': [{'id': emp.id, 'name': emp.name, 'designation': emp.designation, 'profile_pic': emp.profile_pic.url if emp.profile_pic else None
-#              } for emp in employees]
-#         }
+        attendance = Attendance.objects.filter(employee=obj, date=today).first()
+        if not attendance:
+            return False
 
-#     def get_daily_tasks(self, obj):
-#         today = date.today()
-#         tasks = DailyTask.objects.filter(employee=obj, created_at__date=today)
-#         return [
-#             {
-#                 'project': task.project,
-#                 'task': task.task,
-#                 'time_taken': float(task.time_taken),
-#                 'date':today
-#             } for task in tasks
-#         ]
+        # Employee is active if any session has punch in but no punch-out
+        return attendance.sessions.filter(time_in__isnull=False, time_out__isnull=True).exists()
 
-#     def get_today_sessions(self, obj):
-#         today = date.today()
-#         try:
-#             attendance = Attendance.objects.get(employee=obj, date=today)
-#             return [
-#                 {
-#                     'time_in': session.time_in,
-#                     'time_out': session.time_out,
-#                     'note': session.note
-#                 } for session in attendance.sessions.all()
-#             ]
-#         except Attendance.DoesNotExist:
-#             return []
+
+
 
 
 class ScheduleReminderSerializer(serializers.ModelSerializer):

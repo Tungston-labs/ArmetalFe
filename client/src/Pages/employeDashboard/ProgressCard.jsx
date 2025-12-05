@@ -27,7 +27,7 @@ const ProgressCard = ({ attendanceGraph }) => {
       <Header>
         <div>
           <Title>Progress</Title>
-          <Hours>{totalHours}h</Hours>
+          <Hours>{totalHours} hours</Hours>
           <SubTitle>Work Time This Week</SubTitle>
         </div>
       </Header>

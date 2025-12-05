@@ -260,6 +260,7 @@ export const SummaryValue = styled.span`
   font-size: 1.1rem;
   font-weight: 600;
   color: ${$textColorDark};
+  padding-left :50px;
 
   @media (min-width: 2540px) {
     font-size: 1.5rem;
