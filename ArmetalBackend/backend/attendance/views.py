@@ -341,6 +341,10 @@ class AttendanceDetailByDateView(APIView):
     def get(self, request):
         user = request.user
         employee = getattr(user, 'employee_db', None)
+        print("USER ID:", request.user.id)
+        print("USERNAME:", request.user.username)
+        print("HAS EMPLOYEE:", hasattr(request.user, "employee_db"))
+
 
         if not employee:
             return Response(
