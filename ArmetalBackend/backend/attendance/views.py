@@ -306,6 +306,35 @@ class AttendanceAdminListView(generics.ListAPIView):
 # -----------------------------------------------------attendance detail view group by date(admin)
 
 
+# class AttendanceDetailByDateView(APIView):
+#     permission_classes = [IsAuthenticated, IsHRorIsEmployee]
+
+#     def get(self, request):
+#         user = request.user
+#         employee = getattr(user, 'employee_db', None)
+
+#         if not employee:
+#             return Response({'detail': 'Employee not found.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Use today's date by default
+#         date_str = request.query_params.get('date')
+#         if date_str:
+#             try:
+#                 selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+#             except ValueError:
+#                 return Response({'detail': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             selected_date = timezone.localdate()
+
+#         try:
+#             attendance = Attendance.objects.get(employee=employee, date=selected_date)
+#             serializer = AttendanceDetailSerializer(attendance)
+#             return Response(serializer.data)
+#         except Attendance.DoesNotExist:
+#             return Response({'detail': f'No attendance recorded on {selected_date}.'}, status=status.HTTP_404_NOT_FOUND)
+
+from django.utils.dateparse import parse_date, parse_datetime
+
 class AttendanceDetailByDateView(APIView):
     permission_classes = [IsAuthenticated, IsHRorIsEmployee]
 
@@ -314,24 +343,49 @@ class AttendanceDetailByDateView(APIView):
         employee = getattr(user, 'employee_db', None)
 
         if not employee:
-            return Response({'detail': 'Employee not found.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': 'Employee not found.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Use today's date by default
-        date_str = request.query_params.get('date')
-        if date_str:
-            try:
-                selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                return Response({'detail': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
+        date_param = request.query_params.get('date')
+
+        if date_param:
+            # Handle both date & datetime formats (iOS safe)
+            parsed_date = parse_date(date_param)
+
+            if not parsed_date:
+                parsed_datetime = parse_datetime(date_param)
+                if parsed_datetime:
+                    parsed_date = parsed_datetime.date()
+
+            if not parsed_date:
+                return Response(
+                    {'detail': 'Invalid date format.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            selected_date = parsed_date
         else:
             selected_date = timezone.localdate()
 
-        try:
-            attendance = Attendance.objects.get(employee=employee, date=selected_date)
-            serializer = AttendanceDetailSerializer(attendance)
-            return Response(serializer.data)
-        except Attendance.DoesNotExist:
-            return Response({'detail': f'No attendance recorded on {selected_date}.'}, status=status.HTTP_404_NOT_FOUND)
+        attendance = Attendance.objects.filter(
+            employee=employee,
+            date=selected_date
+        ).first()
+
+        if not attendance:
+            return Response(
+                {
+                    'detail': 'No attendance found',
+                    'date': selected_date
+                },
+                status=status.HTTP_200_OK  # IMPORTANT for mobile
+            )
+
+        serializer = AttendanceDetailSerializer(attendance)
+        return Response(serializer.data)
+
 
 # -----------------------------------------------------attendance list view (for admin)
 class AttendanceAdminDetailView(RetrieveAPIView):
