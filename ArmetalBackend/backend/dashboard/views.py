@@ -203,24 +203,31 @@ class RecentEmployeesView(APIView):
 # --------------------------------------------------------------------
 # 6. CONTRACT EXPIRY WITHIN 30 DAYS
 # --------------------------------------------------------------------
+
+
 class ContractExpiry30DaysView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
     def get(self, request):
-        try:
-            today = timezone.now().date()
-            next_30 = today + timedelta(days=30)
+        company = getattr(request.user, "company", None)
 
-            qs = Employee_db.objects.filter(
-                contract_expiry_date__isnull=False,
-                contract_expiry_date__range=[today, next_30]
-            ).order_by("contract_expiry_date")
+        if not company:
+            return Response(
+                {"error": "Company not associated with user"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-            serializer = ContractExpirySerializer(qs, many=True)
-            return Response(serializer.data)
+        today = timezone.now().date()
+        next_30 = today + timedelta(days=30)
 
-        except Exception as e:
-            return error(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+        qs = Employee_db.objects.filter(
+            contract_expiry_date__isnull=False,
+            contract_expiry_date__range=(today, next_30),
+            department__company=company   
+        ).order_by("contract_expiry_date")
+
+        serializer = ContractExpirySerializer(qs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # --------------------------------------------------------------------
