@@ -4,16 +4,22 @@ import { Link } from 'react-router-dom';
 export const SidebarContainer = styled.div`
   width: 350px;
   min-width: 60px;
-  /* height: 100vh; */
   background: linear-gradient(181deg, rgba(23, 37, 84, 1) 20%, rgba(51, 82, 186, 1) 100%);
   color: white;
-   display: flex;
+  display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
   top: 0;
   left: 0;
   z-index: 100;
-  overflow-y: auto;
+  overflow-y: auto; /* allow scrolling */
+  scrollbar-width: none; /* Firefox: hide scrollbar */
+  -ms-overflow-style: none;  /* IE 10+ */
+
+  &::-webkit-scrollbar {
+    width: 0px; /* hide scrollbar in Chrome, Safari */
+    background: transparent; /* optional: just to be safe */
+  }
 
   &.collapsed {
     width: 60px;
@@ -21,7 +27,6 @@ export const SidebarContainer = styled.div`
 
   @media (max-width: 1024px) {
     width: 200px;
-
     &.collapsed {
       width: 60px;
     }
@@ -30,16 +35,18 @@ export const SidebarContainer = styled.div`
   @media (min-width: 768px) and (max-width:1024px) {
     width: 80px;
   }
-      @media (min-width: 1025px) and (max-width:1439px) {
+
+  @media (min-width: 1025px) and (max-width:1439px) {
     width: 18%;
   }
-   @media (min-width: 1440px) and (max-width:1920px) {
+  @media (min-width: 1440px) and (max-width:1920px) {
     width: 20%;
   }
-    @media (min-width: 2560px) {
+  @media (min-width: 2560px) {
     width: 20%;
   }
 `;
+
 
 
 export const TopSection = styled.div`

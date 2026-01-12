@@ -64,6 +64,7 @@ const statusColors = {
   showDropdown={false}
   showBackArrow={false}
   showTabs={false}
+  searchPlaceholder="Search Project Name"
 />
        
 

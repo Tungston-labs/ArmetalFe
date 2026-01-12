@@ -41,6 +41,7 @@ const EmployeeTitle = ({
   title = "Employee",
   subtitle = "Manage your employees",
   buttonText = "Add Employee",
+    searchPlaceholder = "Search by name or ID",
   tabs = [
     { path: "/employee", label: "Total Employee" },
     { path: "/employee-leave-request", label: "Employee Leave Request" },
@@ -136,9 +137,10 @@ const EmployeeTitle = ({
           {showSearch && (
             <SearchWrapper>
               <Input
-                placeholder="Search by name or ID"
-                onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-              />
+  placeholder={searchPlaceholder}
+  onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+/>
+
             </SearchWrapper>
           )}
 {showDropdown && (

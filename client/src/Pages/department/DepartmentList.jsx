@@ -293,10 +293,7 @@ const DepartmentList = () => {
     setSavingDept(true);
 
     try {
-      // use unwrap to throw on rejected thunk
       const created = await dispatch(createNewDepartment(newDeptForm)).unwrap();
-
-      // success: close modal, reset form and refresh list
       setShowAddModal(false);
       setNewDeptForm({ name: "", department_code: "" });
       setNewDeptError("");
@@ -304,7 +301,6 @@ const DepartmentList = () => {
 
       console.debug("Department created:", created);
     } catch (err) {
-      // Extract error message from common shapes
       const message =
         err?.payload?.detail ||
         err?.payload?.message ||
@@ -319,7 +315,6 @@ const DepartmentList = () => {
 
   return (
     <>
-      {/* <Navbar /> */}
       <PageContainer>
         <EmployeeTitle
           iconSrc={EmployeeIcon}
@@ -332,6 +327,7 @@ const DepartmentList = () => {
           showDropdown={false}
           showBackArrow={false}
           showTabs={false}
+          searchPlaceholder="Search  Department Name"
         />
 
         {loading ? (

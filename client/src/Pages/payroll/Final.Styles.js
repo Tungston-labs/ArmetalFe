@@ -459,51 +459,41 @@ padding: 3px;
 export const Tr = styled.tr`
   box-shadow: 0 0 0 1px #00000047;
 `;
-
 export const Select = styled.select`
-   margin: 4px;
+  margin: 4px;
   padding: 6px 10px 6px 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: "Satoshi", sans-serif;
   font-weight: 300;
   font-style: italic;
-  font-size: 1rem;;
+  font-size: 1rem;
   appearance: none;
-  background: url("data:image/svg+xml;utf8,<svg fill='black' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
-    no-repeat right 10px center;
-  background-color: white;
+
+  /* Only the selected value background */
+  background-color: ${(props) => props.$bg || "white"};
+  color: ${(props) => props.$color || "black"};
+
+  /* Default dropdown arrow */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
   background-size: 16px;
 
-  /* 📱 Mobile screens */
+  option {
+    background: white !important;   /* ALWAYS white */
+    color: black !important;        /* ALWAYS black */
+  }
+
   @media (max-width: 768px) {
     width: 100%;
     font-size: 0.85rem;
     padding: 5px 14px 5px 8px;
     background-size: 12px;
   }
-
-  /* 💻 Medium screens (laptops/desktops) */
-  @media (min-width: 769px) and (max-width: 1440px) {
-    font-size: 1rem;
-    padding: 6px 20px 6px 10px;
-    background-size: 16px;
-  }
-
-  /* 🖥️ Large screens (2K) */
-  @media (min-width: 1441px) and (max-width: 2560px) {
-    font-size: 1.1rem;
-    padding: 8px 20px 8px 12px;
-    background-size: 18px;
-  }
-
-  /* 🖥️ 4K and above */
-  @media (min-width: 2561px) {
-    font-size: 1.3rem;
-    padding: 10px 28px 10px 14px;
-    background-size: 20px;
-  }
 `;
+
+
 
 
 export const EmployeeImage = styled.img`

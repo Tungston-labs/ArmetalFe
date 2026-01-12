@@ -150,6 +150,14 @@ export const ChartColumn = styled.div`
   flex: 1;
 `;
 
+export const HourLabel = styled.div`
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 6px;
+  color: #333;
+`;
+
 // BAR HEIGHT INCREASE FOR BIG SCREEN
 export const BarWrapper = styled.div`
   display: flex;
@@ -176,11 +184,11 @@ export const BarFill = styled.div`
   width: 100%;
   background: linear-gradient(to top, ${$primaryPurple}, ${$lightPurple});
   border-radius: 4px;
-
   height: var(--final-height);
   animation: ${growAnimation} 1.9s ease-out;
   --final-height: ${(props) => props.$percentage || 0}%;
 `;
+
 
 export const XAxisLabel = styled.div`
   margin-top: 8px;
