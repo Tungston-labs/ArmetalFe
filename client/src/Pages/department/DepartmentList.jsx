@@ -293,10 +293,7 @@ const DepartmentList = () => {
     setSavingDept(true);
 
     try {
-      // use unwrap to throw on rejected thunk
       const created = await dispatch(createNewDepartment(newDeptForm)).unwrap();
-
-      // success: close modal, reset form and refresh list
       setShowAddModal(false);
       setNewDeptForm({ name: "", department_code: "" });
       setNewDeptError("");
@@ -304,7 +301,6 @@ const DepartmentList = () => {
 
       console.debug("Department created:", created);
     } catch (err) {
-      // Extract error message from common shapes
       const message =
         err?.payload?.detail ||
         err?.payload?.message ||
@@ -319,7 +315,6 @@ const DepartmentList = () => {
 
   return (
     <>
-      {/* <Navbar /> */}
       <PageContainer>
         <EmployeeTitle
           iconSrc={EmployeeIcon}
@@ -332,6 +327,7 @@ const DepartmentList = () => {
           showDropdown={false}
           showBackArrow={false}
           showTabs={false}
+          searchPlaceholder="Search  Department Name"
         />
 
         {loading ? (
@@ -612,13 +608,13 @@ const DepartmentList = () => {
                   <FormGroup>
                     <Label>Department Name</Label>
                     <Input style={{border:"1px solid lightgray"}}
-                    type="text" name="name" value={newDeptForm.name} onChange={handleNewDeptChange} placeholder="Enter the Name" required />
+                    type="text" name="name" value={newDeptForm.name} onChange={handleNewDeptChange} placeholder="Development" required />
                   </FormGroup>
 
                   <FormGroup>
                     <Label>Department Code</Label>
                   <Input style={{border:"1px solid lightgray"}}
-                    type="text" name="department_code" value={newDeptForm.department_code} onChange={handleNewDeptChange} placeholder="Eg: HR" required />
+                    type="text" name="department_code" value={newDeptForm.department_code} onChange={handleNewDeptChange} placeholder="Eg:Dev_00" required />
                   </FormGroup>
 
                   {newDeptError && <p style={{ color: "red" }}>{newDeptError}</p>}

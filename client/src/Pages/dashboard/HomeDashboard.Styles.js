@@ -40,18 +40,18 @@ export const ContentWrapper = styled.div`
 
    
     @media (min-width: 1920px) {
-      margin-right: 100px;
+      margin-right: 320px;
       transform: scale(0.96);
     }
 
    
     @media (min-width: 2560px) {
-      margin-right: 310px;
+      margin-right: 400px;
       transform: scale(0.95);
     }
 
     @media (min-width: 3840px) {
-      margin-right: 350px;
+      margin-right: 420px;
       transform: scale(0.94);
     }
   }
@@ -95,12 +95,12 @@ export const TwoColumn = styled.div`
     flex-direction: column;
   }
     @media (min-width: 2560px) {
-   min-height:38vh;
+   /* min-height:38vh; */
      gap: 35px;
   }
 
   @media (min-width: 3800px) {
-  min-height:38vh;
+  /* min-height:38vh; */
    margin-bottom:3rem;
    margin-top:3rem;
    gap:40px;
@@ -111,14 +111,29 @@ export const LeftBox = styled.div`
   flex: 2;
   display: flex;
   flex-direction: column;
-  height: 100%; 
-`;
+  /* height: 420px;  
+  
+  @media (min-width: 2560px) {
+    height: 550px; 
+  }
 
+  @media (min-width: 3840px) {
+    height: 700px;
+  } */
+`;
 export const RightBox = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%; 
+  /* height: 420px;   */
+
+  /* @media (min-width: 2560px) {
+    height: 550px;  
+  }
+
+  @media (min-width: 3840px) {
+    height: 700px;
+  } */
 `;
 
 

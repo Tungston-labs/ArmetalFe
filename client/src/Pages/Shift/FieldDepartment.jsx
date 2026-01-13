@@ -15,8 +15,13 @@ import {
   ButtonWrapper,
   EmployeeHeader,
   StatusRow,
-  StatusSelect,
-  StatusWrapper,
+  NewStatusBadge,
+  NewStatusDot,
+  StatusContainer,
+  StatusLabel,
+  ProgressContainer,
+  LeftSide,
+  RightSide,
 } from "./FieldDepartment.Styles";
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import { FaPlus, FaTrash } from "react-icons/fa";
@@ -25,6 +30,7 @@ import Swal from "sweetalert2";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import { BodyCell, BodyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from "../leaveDetails/EmployeeList.styles";
+import ProgressModal from "../../Components/ProgressModal";
 const FieldShift = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,13 +48,18 @@ const FieldShift = () => {
     longitude: "",
     status: "",
   });
-  const statusColors = {
-    in_progress: "#f0ad4e",
-    completed: "#5cb85c",
-    on_hold: "#5bc0de",
-    cancelled: "#d9534f",
-  };
-
+const statusText = {
+  in_progress: "In Progress",
+  completed: "Completed",
+  on_hold: "On Hold",
+  cancelled: "Cancelled",
+};
+const statusColors = {
+  in_progress: "#f59e0b",   // yellow
+  completed: "#10b981",     // green
+  on_hold: "#3b82f6",       // blue
+  cancelled: "#ef4444",     // red
+};
   const [employees, setEmployees] = useState([]);
   useEffect(() => {
     if (id) dispatch(getProjectById(id));
@@ -61,7 +72,7 @@ const FieldShift = () => {
         punchType: project.punch_type || "",
         latitude: project.latitude || "",
         longitude: project.longitude || "",
-        status: project.status || "in_progress",   // <-- FIXED
+        status: project.status || "in_progress",  
       });
 
 
@@ -220,16 +231,25 @@ const FieldShift = () => {
         />
         {!isDeleted ? (
           <>
-            <ButtonWrapper>
-              <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
-                <BiEditAlt style={{ marginRight: "6px" }} />
-                Edit
-              </ActionButton>
-              <ActionButton color="delete" onClick={handleDelete}>
-                <FaTrash style={{ marginRight: "6px" }} />
-                Delete
-              </ActionButton>
-            </ButtonWrapper>
+<ProgressContainer>
+  <LeftSide>
+<ProgressModal isOpen={true} status={formData.status} />
+  </LeftSide>
+
+  <RightSide>
+    <ButtonWrapper>
+      <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
+        <BiEditAlt style={{ marginRight: "6px" }} />
+        Edit
+      </ActionButton>
+
+      <ActionButton color="delete" onClick={handleDelete}>
+        <FaTrash style={{ marginRight: "6px" }} />
+        Delete
+      </ActionButton>
+    </ButtonWrapper>
+  </RightSide>
+</ProgressContainer>
             <FormContainer>
               <div
                 style={{
@@ -260,33 +280,6 @@ const FieldShift = () => {
                     </div>
                   </FormRow>
                 </div>
-
-            <StatusRow>
-  <StatusWrapper>
-    <label>Project Status</label>
-
-    <StatusSelect
-      value={formData.status}
-      selected={!!formData.status}
-      bgcolor={statusColors[formData.status]}
-      onChange={(e) =>
-        setFormData({ ...formData, status: e.target.value })
-      }
-    >
-      <option value="">Select Status</option>
-
-      <option value="in_progress">In Progress</option>
-      <option value="completed">Completed</option>
-      <option value="on_hold">On Hold</option>
-      <option value="cancelled">Cancelled</option>
-    </StatusSelect>
-  </StatusWrapper>
-</StatusRow>
-
-
-
-
-
               </div>
 
             </FormContainer>
@@ -360,6 +353,8 @@ const FieldShift = () => {
           </div>
         )}
       </PageWrapper>
+
+
 
       {isEditModalOpen && (
         <EditProjectModal

@@ -58,7 +58,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
   const validateForm = () => {
     const newErrors = {};
     const now = new Date().toISOString().split("T")[0];
-    const baseRequired = ["designation","joining_date","department_id","employment_type","total_leave","phno","email","dob","role","passport_number"];
+    const baseRequired = ["designation","joining_date","department_id","employment_type","total_leave","phno","email","dob","role",];
 
     if (country === "IN") baseRequired.push("aadar_number");
     else baseRequired.push("visa_expiry_date","insurance_number","iqama_number");
@@ -97,13 +97,13 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       <FormRow>
         <FormGroup>
           <Label>Designation</Label>
-          <Input name="designation" value={formData.designation} onChange={handleChange} placeholder="Enter Designation" />
+          <Input name="designation" value={formData.designation} onChange={handleChange} placeholder="Enter Designation" autoComplete="off"/>
           {renderError("designation")}
         </FormGroup>
 
         <FormGroup>
           <Label>Joining Date</Label>
-          <Input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} />
+          <Input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} autoComplete="off" />
           {renderError("joining_date")}
         </FormGroup>
       </FormRow>
@@ -111,7 +111,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       <FormRow>
         <FormGroup>
           <Label>Department</Label>
-          <Select name="department_id" value={formData.department_id} onChange={handleChange}>
+          <Select name="department_id" value={formData.department_id} onChange={handleChange}  >
             <option value="">Select Department</option>
             {departmentList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
           </Select>
@@ -120,7 +120,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
 
         <FormGroup>
           <Label>Employment Type</Label>
-          <Select name="employment_type" value={formData.employment_type} onChange={handleChange}>
+          <Select name="employment_type" value={formData.employment_type} onChange={handleChange} >
             <option value="">Select Type</option>
             <option value="Full-time">Full-time</option>
             <option value="Part-time">Part-time</option>
@@ -134,7 +134,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         <FormGroup>
           <Label>Total Leave</Label>
           <Input type="number" name="total_leave" value={formData.total_leave} onChange={handleChange} step="0.1" min="0" onWheel={e => e.target.blur()}
-          placeholder="Enter Total Leave" />
+          placeholder="Enter Total Leave"  autoComplete="off" />
           {renderError("total_leave")}
         </FormGroup>
 
@@ -155,13 +155,13 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       <FormRow>
         <FormGroup>
           <Label>Phone Number</Label>
-          <Input name="phno" value={formData.phno} onChange={handleChange} placeholder="Enter Phone number" />
+          <Input name="phno" value={formData.phno} onChange={handleChange} placeholder="Enter Phone number" autoComplete="off" />
           {renderError("phno")}
         </FormGroup>
 
         <FormGroup>
           <Label>Passport Number</Label>
-          <Input name="passport_number" value={formData.passport_number} onChange={handleChange} placeholder="Enter Passport number" />
+          <Input name="passport_number" value={formData.passport_number} onChange={handleChange} placeholder="Enter Passport number" autoComplete="off" />
           {renderError("passport_number")}
         </FormGroup>
       </FormRow>
@@ -169,19 +169,19 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       <FormRow>
         <FormGroup>
           <Label>Employee Contract</Label>
-          <Input name="employeeContract" value={formData.employeeContract} onChange={handleChange} placeholder="Enter Contract Name" />
+          <Input name="employeeContract" value={formData.employeeContract} onChange={handleChange} placeholder="Enter Contract Name" autoComplete="off" />
         </FormGroup>
 
         <FormGroup>
           <Label>Work Permit</Label>
-          <Input name="workPermit" value={formData.workPermit} onChange={handleChange} placeholder="Enter Work Permit" />
+          <Input name="workPermit" value={formData.workPermit} onChange={handleChange} placeholder="Enter Work Permit" autoComplete="off" />
         </FormGroup>
       </FormRow>
 
       <FormRow>
         <FormGroup>
           <Label>Insurance Number</Label>
-          <Input name="insurance_number" value={formData.insurance_number} onChange={handleChange} placeholder="Enter Insurance Number" />
+          <Input name="insurance_number" value={formData.insurance_number} onChange={handleChange} placeholder="Enter Insurance Number"  autoComplete="off"/>
           {renderError("insurance_number")}
         </FormGroup>
 
@@ -196,13 +196,13 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         <FormRow>
           <FormGroup>
             <Label>Aadhaar Number</Label>
-            <Input name="aadar_number" value={formData.aadar_number} onChange={handleChange} placeholder="Enter Aadhaar Number" />
+            <Input name="aadar_number" value={formData.aadar_number} onChange={handleChange} placeholder="Enter Aadhaar Number" autoComplete="off" />
             {renderError("aadar_number")}
           </FormGroup>
 
           <FormGroup>
             <Label>Contract Expiry Date</Label>
-            <Input type="date" name="contract_expiry_date" value={formData.contract_expiry_date} onChange={handleChange} />
+            <Input type="date" name="contract_expiry_date" value={formData.contract_expiry_date} onChange={handleChange} autoComplete="off" />
             {renderError("contract_expiry_date")}
           </FormGroup>
         </FormRow>
@@ -210,13 +210,13 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         <FormRow>
           <FormGroup>
             <Label>Iqama Number</Label>
-            <Input name="iqama_number" value={formData.iqama_number} onChange={handleChange} placeholder=" Enter Iqama Number" />
+            <Input name="iqama_number" value={formData.iqama_number} onChange={handleChange} placeholder=" Enter Iqama Number" autoComplete="off"/>
             {renderError("iqama_number")}
           </FormGroup>
 
           <FormGroup>
             <Label>Visa Expiry Date</Label>
-            <Input type="date" name="visa_expiry_date" value={formData.visa_expiry_date} onChange={handleChange} />
+            <Input type="date" name="visa_expiry_date" value={formData.visa_expiry_date} onChange={handleChange} autoComplete="off" />
             {renderError("visa_expiry_date")}
           </FormGroup>
         </FormRow>

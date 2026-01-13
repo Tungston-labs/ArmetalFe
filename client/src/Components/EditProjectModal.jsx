@@ -178,7 +178,6 @@ const handleSave = () => {
                 <Option value="in_progress">In Progress</Option>
                 <Option value="completed">Completed</Option>
                 <Option value="on_hold">On Hold</Option>
-                <Option value="cancelled">Cancelled</Option>
               </SelectField>
               <DropdownIcon />
             </SelectWrapper>

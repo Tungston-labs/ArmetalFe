@@ -47,7 +47,7 @@ const CompanyViewPage = () => {
   <Navbar/>
     <FormWrapper>
        <TitleSection>
-                <LuArrowLeft style={{ width: "30px", height: 30,cursor:"pointer" }} onClick={() => navigate(-1)} />
+                <LuArrowLeft style={{ width: "30px", height: 30,cursor:"pointer" }} onClick={() => navigate("/superadmin")} />
                 <img src="/images/superadminlogo.png" alt="Payroll Icon" style={{ height: "50px" }} />
                 <div>
                   <Title>Super admin</Title>

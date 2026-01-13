@@ -1,19 +1,19 @@
 import styled, { css } from 'styled-components';
 
 const colors = {
-primaryDark: '#172554',   
-  primary: '#3352BA',     
-  secondary: '#3352BA',     
-  background: ' #f4f8ff;',   
-  panelBg: '#FFFFFF',       
+  primaryDark: '#172554',
+  primary: '#3352BA',
+  secondary: '#3352BA',
+  background: ' #f4f8ff;',
+  panelBg: '#FFFFFF',
   text: '#212121',
   lightText: '#757575',
   borderColor: '#E0E0E0',
   shadowLight: 'rgba(0, 0, 0, 0.08)',
   shadowMedium: 'rgba(0, 0, 0, 0.2)',
-  activeBg: '#E8EBF5',      
-  hoverBg: '#F5F5F5',
-  selectedEmployee: '#f5f7fa', 
+  activeBg: '#E8EBF5',
+  hoverBg: '#f1f7ffff',
+  selectedEmployee: '#e9f2ffff',
   warningBg: '#FFF3E0',
   warningText: '#FF9800',
   infoText: '#3352BA',
@@ -33,7 +33,6 @@ const CustomScrollbar = css`
   }
 `;
 export const StyledNoSelectionMessage = styled.div`
-  /* Base Style for No Task / No Employee selected */
   padding: 40px 20px;
   border-radius: 10px;
   margin-top: 20px;
@@ -48,7 +47,6 @@ export const StyledNoSelectionMessage = styled.div`
 
   }
 
-  /* 2. Style for No Employee Selected (Info State) */
   ${(props) =>
     props.$type === 'info' &&
     css`
@@ -58,7 +56,6 @@ export const StyledNoSelectionMessage = styled.div`
       box-shadow: 0 4px 10px rgba(7, 29, 90, 0.2);
     `}
 
-  /* 3. Style for No Tasks Found (Warning State) */
   ${(props) =>
     props.$type === 'warning' &&
     css`
@@ -84,7 +81,7 @@ export const DepartmentPanel = styled.div`
   background-color: ${colors.panelBg};
   padding: 30px 20px;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 4px 0 15px ${colors.shadowMedium};
+  box-shadow: 4px 0 20px ${colors.shadowMedium};
   border-right: 3px solid ${colors.primary}; 
   overflow-y: auto;
   z-index: 5;
@@ -95,7 +92,6 @@ export const DepartmentPanel = styled.div`
     height: 28px;
     object-fit: contain;
   }
-  /* Slide effect */
   ${(props) =>
     !props.$isOpen &&
     css`
@@ -108,9 +104,9 @@ export const DepartmentPanel = styled.div`
 `;
 
 export const Title = styled.button`
-  display: flex;               /* Enables gap */
-  align-items: center;         /* Vertically centers icon + text */
-  gap: 12px;                   /* SPACE between image and text */
+  display: flex;             
+  align-items: center;      
+  gap: 12px;                   
 
   margin-top: 0;
   padding-bottom: 15px;
@@ -180,7 +176,7 @@ export const ToggleArrow = styled.button`
   transform: translateY(-50%);
   z-index: 10;
   
-  width: 35px; /* Larger hit area */
+  width: 35px; 
   height: 80px;
   background-color:#172554 ;
   color: white;
@@ -194,7 +190,7 @@ export const ToggleArrow = styled.button`
   box-shadow: 2px 0 10px ${colors.shadowMedium};
 
   &:hover {
-    background-color: ${colors.primary}; /* Darker primary on hover */
+    background-color: ${colors.primary}; 
     box-shadow: 2px 0 15px ${colors.shadowMedium};
   }
 `;
@@ -246,9 +242,6 @@ export const CardItem = styled.div`
       box-shadow: 0 8px 20px ${colors.shadowMedium};
       padding-bottom: 10px;
     `}
-
-
-  /* 4K / Ultra-wide screens */
   @media (min-width: 2000px) {
     padding: 12px;
     margin-bottom: 22px;
@@ -265,7 +258,6 @@ export const CardItem = styled.div`
     }
   }
 
-  /* Large desktops */
   @media (max-width: 1400px) {
     padding: 10px;
 
@@ -274,7 +266,6 @@ export const CardItem = styled.div`
     }
   }
 
-  /* Tablets */
   @media (max-width: 1024px) {
     padding: 10px;
     border-radius: 10px;
@@ -304,7 +295,7 @@ export const EmployeeContainer = styled.div`
 `;
 export const EmployeeListWrapper = styled.div`
   min-width: 0;
-  width: ${(props) => (props.$visible ? '300px' : '0')}; /* Set specific width when visible */
+  width: ${(props) => (props.$visible ? '300px' : '0')}; 
   opacity: ${(props) => (props.$visible ? 1 : 0)};
   transition: width 0.4s ease, opacity 0.3s ease;
   overflow: hidden;
@@ -315,7 +306,7 @@ export const EmployeeListWrapper = styled.div`
     padding: ${(props) => (props.$visible ? '30px' : '0')};
     height: 100%;
     box-shadow: 0 6px 20px ${colors.shadowMedium};
-    margin: 0; /* Remove redundant margin/padding */
+    margin: 0; 
   }
 `;
 
@@ -417,8 +408,8 @@ export const DatePickerWrapper = styled.div`
   }
 `;
 
-export const 
-TaskList = styled.ul`
+export const
+  TaskList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
@@ -491,7 +482,7 @@ export const PanelContainer = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  width: calc(100% - 300px);
+  /* width: calc(100% - 300px)'' */
 
   h4 {
     padding-bottom: 10px;
@@ -502,6 +493,10 @@ export const PanelContainer = styled.div`
   @media (min-width: 768px) and (max-width: 1024px) {
     flex: 1 1 auto;    
     padding: 12px;
+  }
+
+ @media (min-width: 1440px)  {
+     width: calc(100% - 300px);
   }
 `;
 
@@ -515,23 +510,17 @@ export const EmployeeSlidePanel = styled.div`
   box-shadow: 4px 0 10px rgba(0,0,0,0.1);
   transform: translateX(${(p) => (p.$visible ? "0" : "-100%")});
   transition: transform 0.4s ease;
-  z-index: 2;  /* Behind department panel */
+  z-index: 2;
   padding: 20px;
   overflow-y: auto;
 `;
 export const EmployeePanelWrapper = styled.div`
   min-width: 0;
-
-  /* PANEL OPEN/CLOSE */
   width: ${(props) => (props.$visible ? "300px" : "0")};
   opacity: ${(props) => (props.$visible ? 1 : 0)};
   padding: ${(props) => (props.$visible ? "0 20px 0 0" : "0")};
   transition: width 0.4s ease, opacity 0.3s ease, padding 0.4s ease;
   overflow: hidden;
-
-  /* -------------------------
-     EMPLOYEE CONTAINER INSIDE
-     ------------------------- */
   > ${EmployeeContainer} {
     height: 100%;
     width: 300px;
@@ -555,10 +544,6 @@ export const EmployeePanelWrapper = styled.div`
     width: ${(props) => (props.$visible ? "100%" : "0")};
     padding: ${(props) => (props.$visible ? "0 15px 0 0" : "0")};
   }
-
-
-
-  /* Small mobile 480px */
   @media (max-width: 480px) {
     width: ${(props) => (props.$visible ? "100%" : "0")};
     padding: 0;
@@ -576,12 +561,13 @@ export const EmployeeItem = styled.div`
   font-size: 1rem;
   margin-top:10px;
   background-color: ${(props) =>
-    props.$isActive ? colors.activeBg : "transparent"};
+   props.$isActive ? colors.activeBg : "transparent"};
   font-weight: ${(props) => (props.$isActive ? "bold" : "normal")};
   color: ${(props) => (props.$isActive ? "#3352BA" : colors.text)};
 
   &:hover {
     background-color: ${colors.hoverBg};
+
   }
  @media (min-width: 1921px) {
     font-size: 1.3rem;
@@ -652,14 +638,13 @@ export const TaskListItemStyled = styled.li`
   display: flex;
   align-items: flex-start;
   transition: background-color 0.2s, transform 0.2s;
-  border-left: 5px solid ${colors.secondary}; /* Accent bar */
+  border-left: 5px solid ${colors.secondary}; 
   
   &:hover {
     background-color: ${colors.hoverBg};
     transform: translateY(-2px);
   }
   
-  /* Task Completion Icon/Indicator */
   &:before {
     content: '✅'; 
     font-size: 1.2em;
@@ -701,15 +686,11 @@ export const TaskDetails = styled.div`
 
 export const TaskFooter = styled.div`
   display: flex;
-  justify-content: flex-end; /* Align to the right */
+  justify-content: flex-end; 
   gap: 20px;
   padding-top: 20px;
   margin-top: 20px;
   border-top: 1px solid ${colors.borderColor};
-  /* Optional: Add a light background for emphasis */
-  /* background-color: ${colors.activeBg}; 
-  padding: 20px 0;
-  margin: 0 -30px -30px -30px; */
 `;
 
 export const TaskLeft = styled.div`

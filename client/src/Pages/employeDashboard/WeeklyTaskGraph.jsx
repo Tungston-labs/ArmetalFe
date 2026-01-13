@@ -15,6 +15,7 @@ import {
   SummaryValueContainer,
   SummaryValue,
   PercentageTag,
+  HourLabel,
 } from "./WeeklyTaskGraph.Styles";
 
 const WeeklyTaskGraph = ({ weeklyData }) => {
@@ -30,7 +31,7 @@ const WeeklyTaskGraph = ({ weeklyData }) => {
             <SummaryLabel>Weekly Task Hours</SummaryLabel>
             <SummaryValueContainer>
               <SummaryValue>
-                {weeklyData.reduce((sum, d) => sum + d.tasksCompleted, 0)}
+                {weeklyData.reduce((sum, d) => sum + d.tasksCompleted, 0)} hours
               </SummaryValue>
             </SummaryValueContainer>
           </SummaryItem>
@@ -43,8 +44,12 @@ const WeeklyTaskGraph = ({ weeklyData }) => {
             const fillPercent = (d.tasksCompleted / Y_AXIS_MAX) * 100;
             return (
               <ChartColumn key={i}>
+                  <HourLabel>{d.tasksCompleted} hrs</HourLabel>
                 <BarWrapper>
-                  <BarFill $percentage={fillPercent} />
+                <BarFill 
+  $percentage={fillPercent}
+/>
+
                 </BarWrapper>
                 <XAxisLabel>{d.day.slice(0, 1)}</XAxisLabel>
               </ChartColumn>

@@ -94,12 +94,12 @@ export const CardGrid = styled.div`
 
 export const CardBox = styled.div`
   border-radius: 14px;
-  padding: 22px;
+  padding: 25px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
   border: 1px solid #eaeaea;
   transition: 0.3s ease;
   border-top: 6px solid #3352BA;
-  height: 175px;
+  /* height: 175px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -111,14 +111,12 @@ export const CardBox = styled.div`
     padding: 18px;
   }
 
-  @media (min-width: 2560px) {
-    height: 250px;
-    padding: 28px;
+  /* @media (min-width: 2560px) { 
   }
       @media (min-width: 3840px) {
     height: 345px;
-    /* padding: 35px; */
-  }
+  
+  } */
 `;
 
 export const Title = styled.h4`
@@ -181,6 +179,11 @@ export const ChartWrapper = styled.div`
   border-radius: 16px;
   padding: 20px;
   width: 100%;
+
+
+  @media (min-width:2560px) {
+   padding: 20px;
+  }
 `;
 
 export const ChartTitle = styled.h3`
@@ -240,13 +243,13 @@ export const ChartContainer = styled.div`
   }
 
  
-  @media (min-width: 2560px) {
+  /* @media (min-width: 2560px) {
     height: 25vh;
   }
 
   @media (min-width: 3840px) {
-    height: 25vh;
-  }
+    height: 28vh;
+  } */
 `
 const MonthTickText = styled.text`
   fill: #475569;

@@ -23,8 +23,9 @@ export const Panel = styled.div`
     width: 350px;
   }
   @media (min-width: 2560px) {
-    width: 380px;
-  }  @media (min-width: 3840px) {
+    width: 450px;
+  }
+    @media (min-width: 3840px) {
     width: 380px;
   }
   /* Tablets */
@@ -80,10 +81,9 @@ margin-bottom: 4rem;
   }
 `;
 export const BottomActions = styled.div`
-  position: fixed;
-  bottom: 15px;
+  position: sticky;
+  bottom: 0px;
   right: 0;
-  width: 300px; 
   background: #f4f8ffff;
   padding: 12px 15px;
   display: flex;
@@ -93,10 +93,10 @@ export const BottomActions = styled.div`
   z-index: 3000;
 
   @media (min-width: 1920px) {
-    width: 350px;
+    width: 300px;
   }
   @media (min-width: 2560px) {
-    width: 380px;
+    width: 350px;
   }
   @media (min-width: 3840px) {
     width: 380px;

@@ -21,14 +21,14 @@ import {
   IconButton,
 } from "./ReimbursementSummary.Styles";
 
-// ✅ Styled Month Label
+
 const MonthTickText = styled.text`
   fill: #475569;
   font-weight: 600;
-  letter-spacing: 0.3px;
-  font-size: 12px;
+  letter-spacing: 0.2px;
+  font-size: 15px;
 
-  @media (min-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 10px;
   }
 `;
@@ -126,7 +126,7 @@ const ReimbursementLineChart = ({ data }) => {
         </ResponsiveContainer>
       </ChartContainer>
     </ChartWrapper>
-  );
+  ); 
 };
 
 export default ReimbursementLineChart;

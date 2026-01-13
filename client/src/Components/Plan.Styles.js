@@ -51,7 +51,6 @@ export const PlanDetails = styled.div`
 font-weight: 700;
 font-style: Bold;
 font-size: 1.4rem;
-leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
 color:#3352BA;
@@ -64,7 +63,6 @@ color:#3352BA;
 font-weight: 400;
 font-style: Regular;
 font-size: 0.9rem;
-leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
 color:#3352BA;

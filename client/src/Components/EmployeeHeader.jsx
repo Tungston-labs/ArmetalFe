@@ -64,6 +64,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors }) => {
               placeholder="Enter full name"
               value={formData.name}
               onChange={handleChange}
+              autoComplete="off"
             />
             {errors?.name && <ErrorText>{errors.name}</ErrorText>}
           </FieldGroup>
@@ -104,6 +105,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors }) => {
               placeholder="Enter email address"
               value={formData.email}
               onChange={handleChange}
+              autoComplete="off"
             />
             {errors?.email && <ErrorText>{errors.email}</ErrorText>}
           </FieldGroup>
@@ -115,6 +117,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors }) => {
               placeholder="Enter full address"
               value={formData.address}
               onChange={handleChange}
+              autoComplete="off"
             />
             {errors?.address && <ErrorText>{errors.address}</ErrorText>}
           </FieldGroup>

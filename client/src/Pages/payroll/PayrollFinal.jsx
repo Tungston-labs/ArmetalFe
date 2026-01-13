@@ -19,7 +19,6 @@ import {
   verifyEmployeePayroll
 } from '../../Redux/payrollSlice';
 import { getDepartments } from '../../Redux/departmentSlice';
-// import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
 import VerificationCircles from '../../Components/VerificationCircle';
@@ -58,20 +57,15 @@ const LIMIT = 100;
   const getStatusColor = (status) => {
     switch (status) {
       case 'Paid': return '#4B976D';
-      case 'OnHold': return '#BA703A';
-      case 'Pending': return '#DD991D';
+      case 'OnHold': return '#3750c0';
+      case 'Pending': return '#ffb833';
       case 'Cancelled': return '#E67B7B';
       default: return '#000';
     }
   };
-  
-
-  // Fetch departments
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: '' }));
   }, [dispatch]);
-
-  // Fetch payroll data
   useEffect(() => {
     dispatch(getPayrollData({
       page,
@@ -82,8 +76,6 @@ const LIMIT = 100;
       department: selectedDepartment
     })).unwrap().catch(err => console.error("Error fetching payroll data:", err));
   }, [dispatch, page, searchTerm, selectedMonth, selectedYear, selectedDepartment]);
-
-  // Persist verification status
   useEffect(() => {
     if (data?.length) {
       const initialStatus = {};
@@ -132,7 +124,7 @@ const LIMIT = 100;
 
     try {
       await dispatch(updatePayrollStatus({
-        employeeId: employeeId.employee, // already employee_id
+        employeeId: employeeId.employee,
         month: selectedMonth,
         year: selectedYear,
         status: newStatus,
@@ -190,7 +182,7 @@ const LIMIT = 100;
       });
 
       setBulkStatus('');
-      setSelectedEmployees([]); // reset selection
+      setSelectedEmployees([]); 
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -209,14 +201,10 @@ const LIMIT = 100;
 
     const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
     if (!user) return;
-
-    // Already verified by this type
     if (verificationStatus[employee.id]?.[type]) {
       Swal.fire({ icon: "info", title: "Already Verified", text: "This was already verified." });
       return;
     }
-
-    // Same HR cannot verify twice
     if (employee.hr1_verified_by === user.username || employee.hr2_verified_by === user.username) {
       Swal.fire({ icon: "warning", title: "Cannot Verify", text: "You cannot verify the same payroll twice." });
       return;
@@ -228,14 +216,10 @@ const LIMIT = 100;
         month: selectedMonth,
         year: selectedYear,
       })).unwrap();
-
-      // Update verificationStatus locally
       setVerificationStatus(prev => ({
         ...prev,
         [employee.id]: { ...prev[employee.id], [type]: true },
       }));
-
-      // Refresh payroll data
       await dispatch(getPayrollData({
         page,
         search: searchTerm,
@@ -253,14 +237,11 @@ const LIMIT = 100;
       });
     } catch (err) {
       console.error("Verify payroll error:", err);
-
-      // Show friendly alert
       Swal.fire({
         icon: "warning",
         title: "Verification Failed",
         text: "Cannot verify payroll: Same HR cannot verify twice.",
       }).then(() => {
-        // Refresh payroll listing
         dispatch(getPayrollData({
           page,
           search: searchTerm,
@@ -279,7 +260,6 @@ const LIMIT = 100;
 
   return (
     <>
-      {/* <Navbar /> */}
       <Container>
         
         <Header>
@@ -353,7 +333,6 @@ const LIMIT = 100;
                  <Th>Name</Th>
                 <Th>Employee ID</Th>
                 <Th>Joining Date</Th>
-                {/* <Th>Email ID</Th> */}
                 <Th>Salary</Th>
                 <Th>Info</Th>
                 <Th>Verification</Th>
@@ -380,17 +359,6 @@ const LIMIT = 100;
                        <Td>{emp.employee_name}</Td>
                     <Td>{emp.employee_id}</Td>
                     <Td>{emp.joining_date}</Td>
-                    {/* <Td
-                      style={{
-                        maxWidth: "50px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                      }}
-                      title={emp.email}
-                    >
-                      {emp.email}
-                    </Td> */}
                     <Td>₹{emp.basic_salary ?? 'N/A'}</Td>
                     <Td>
                       <Link to={`/payrolldetails/${emp.id}`}>
@@ -406,45 +374,22 @@ const LIMIT = 100;
 </Td>
 
                     <Td>
-                    <Select
-  value={emp.status || ''}
+<Select
+  value={emp.status || ""}
   onChange={(e) => handleSingleStatusChange(emp, e.target.value)}
-  style={{
-    backgroundColor: getStatusColor(emp.status),
-    color: emp.status === 'Pending' ? 'black' : 'white',
-  }}
+  $bg={emp.status ? getStatusColor(emp.status) : "white"} 
+  $color={emp.status === "Pending" || !emp.status ? "black" : "white"}
 >
-  <option value="">Select</option>
-  <option
-    value="OnHold"
-    style={{ backgroundColor: "#BA703A", color: "white" }}
-  >
-    On Hold
-  </option>
-  <option
-    value="Cancelled"
-    style={{ backgroundColor: "#E67B7B", color: "white" }}
-  >
-    Cancelled
-  </option>
-  <option
-    value="Pending"
-    style={{ backgroundColor: "#DD991D", color: "black" }}
-  >
-    Pending
-  </option>
-  <option
-    value="Paid"
-    style={{ backgroundColor: "#4B976D", color: "white" }}
-  >
-    Paid
-  </option>
+  <option value="OnHold">On Hold</option>
+  <option value="Cancelled">Cancelled</option>
+  <option value="Pending">Pending</option>
+  <option value="Paid">Paid</option>
 </Select>
 
 
-                    </Td>
-                  </tr>
-                ))
+ </Td>
+  </tr>
+              ))
               ) : (
                 <tr><Td colSpan="11">No data found</Td></tr>
               )}

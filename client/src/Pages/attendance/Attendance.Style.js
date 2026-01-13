@@ -641,10 +641,6 @@ export const DateDetails = styled.div`
   }
 `;
 
-
-
-
-
 export const DayBoxes = styled.div`
   display: flex;
   align-items: center;
@@ -683,17 +679,12 @@ export const DayBox = styled.div`
     font-weight: 600;
     font-size: 16px;
     color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
-    /* 2K / QHD */
     @media (min-width: 2560px) {
-      font-size: 1.8rem;
+      font-size: 1.3rem;
     }
-
-    /* 4K */
     @media (min-width: 3840px) {
       font-size: 2rem;
     }
-
-    /* 8K */
     @media (min-width: 7680px) {
       font-size: 2.5rem;
     }
@@ -704,9 +695,8 @@ export const DayBox = styled.div`
     margin-bottom:0.3rem;
     font-size: 14px;
 color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
-    /* 2K / QHD */
     @media (min-width: 2560px) {
-      font-size: 1.8rem;
+      font-size: 1.3rem;
       margin-top: 0.8rem;
     }
 
@@ -728,11 +718,11 @@ color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
     color: #525252ff;
     color: ${(props) => (props.isFuture ? "#aaa" : "#525252")};
     @media (min-width: 2560px) {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
     }
 
     @media (min-width: 3840px) {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
     }
 
     @media (min-width: 7680px) {
@@ -741,13 +731,13 @@ color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
   }
 
   @media (min-width: 2560px) {
-    width: 150px;
-    padding: 1rem;
+    width: 120px;
+    /* padding: 1rem; */
   }
 
   @media (min-width: 3840px) {
-    width: 180px;
-    padding: 1.8rem;
+    width: 150px;
+    /* padding: 1.8rem; */
   }
 
   @media (min-width: 7680px) {
