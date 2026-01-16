@@ -1,15 +1,13 @@
 import styled from "styled-components";
 
-
 export const Wrapper = styled.div`
   width: 100%;
   padding: 20px;
-cursor: pointer;
+  cursor: pointer;
   @media (max-width: 768px) {
     padding: 10px;
   }
 `;
-
 
 export const HeaderRow = styled.div`
   display: flex;
@@ -31,12 +29,12 @@ export const LeftHeader = styled.div`
   h3 {
     margin: 0;
 
-     @media (min-width: 2560px) {
-    font-size: 1.2rem;
-  }
+    @media (min-width: 2560px) {
+      font-size: 1.2rem;
+    }
     @media (min-width: 3840px) {
-    font-size: 1.8rem;
-  }
+      font-size: 1.8rem;
+    }
   }
 `;
 
@@ -57,10 +55,10 @@ export const Status = styled.div`
     background: #22c55e;
     border-radius: 50%;
   }
-   @media (min-width: 2560px) {
+  @media (min-width: 2560px) {
     font-size: 1.2rem;
   }
-    @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     font-size: 1.8rem;
   }
 `;
@@ -80,12 +78,11 @@ export const MailButton = styled.button`
     padding: 10px 18px;
     font-size: 1.2rem;
   }
-   @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     padding: 12px 18px;
     font-size: 1.5rem;
   }
 `;
-
 
 export const TopSection = styled.div`
   display: flex;
@@ -101,7 +98,6 @@ export const TopSection = styled.div`
     gap: 30px;
   }
 `;
-
 
 export const ProfileLeft = styled.div`
   width: 28%;
@@ -147,11 +143,11 @@ export const Name = styled.h2`
   @media (max-width: 480px) {
     font-size: 1.2rem;
   }
-   @media (min-width: 2560px) {
-    font-size: 1.6rem;
+  @media (max-width: 1024px) {
+    font-size: 1rem;
   }
-    @media (min-width: 3840px) {
-    font-size: 2rem;
+  @media (min-width: 2560px) {
+    font-size: 1.6rem;
   }
 `;
 
@@ -160,14 +156,16 @@ export const Role = styled.p`
   color: gray;
   font-family: "Poppins";
 
-   @media (min-width: 2560px) {
+  @media (max-width: 1024px) {
+    font-size: 0.9rem;
+  }
+  @media (min-width: 2560px) {
     font-size: 1.3rem;
   }
-    @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     font-size: 1.5rem;
   }
 `;
-
 
 export const RightCards = styled.div`
   width: 72%;
@@ -185,7 +183,7 @@ export const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 18px;
-cursor: pointer;
+  cursor: pointer;
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
   }
@@ -197,11 +195,11 @@ export const StatCard = styled.div`
   border-radius: 12px;
   position: relative;
 
-   @media (min-width: 2560px) {
-   padding: 20px;
+  @media (min-width: 2560px) {
+    padding: 20px;
   }
-        @media (min-width: 3840px) {
-     padding: 30px;
+  @media (min-width: 3840px) {
+    padding: 30px;
   }
 `;
 
@@ -209,10 +207,13 @@ export const StatNumber = styled.h2`
   margin: 0;
   font-family: "Poppins";
 
-   @media (min-width: 2560px) {
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (min-width: 2560px) {
     font-size: 1.8rem;
   }
-        @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     font-size: 2rem;
   }
 `;
@@ -222,10 +223,13 @@ export const StatLabel = styled.p`
   color: gray;
   font-family: "Poppins";
 
-    @media (min-width: 2560px) {
+  @media (max-width: 1024px) {
+    font-size: 0.9rem;
+  }
+  @media (min-width: 2560px) {
     font-size: 1.5rem;
   }
-        @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     font-size: 1.8rem;
   }
 `;
@@ -236,7 +240,6 @@ export const IconRight = styled.div`
   top: 18px;
   opacity: 0.7;
 `;
-
 
 export const Tabs = styled.div`
   display: flex;
@@ -251,11 +254,11 @@ export const Tabs = styled.div`
     gap: 15px;
     flex-wrap: wrap;
   }
-  
+
   @media (min-width: 2560px) {
     padding: 10px 15px;
   }
-   
+
   @media (min-width: 3840px) {
     padding: 20px 15px;
   }
@@ -274,21 +277,22 @@ export const TabButton = styled.button`
   @media (max-width: 480px) {
     padding: 8px 15px;
   }
-       @media (min-width: 2560px) {
-    font-size: 1.5rem;
-  padding: 12px 25px;
+  @media (max-width: 1024px) {
+    font-size: 0.8rem;
   }
-          @media (min-width: 3840px) {
+  @media (min-width: 2560px) {
+    font-size: 1.5rem;
+    padding: 12px 25px;
+  }
+  @media (min-width: 3840px) {
     font-size: 1.8rem;
-      padding: 18px 25px;
+    padding: 18px 25px;
   }
 `;
-
 
 export const ContentSection = styled.div`
   padding: 20px 5px;
 `;
-
 
 export const InfoGrid = styled.div`
   display: grid;
@@ -296,23 +300,21 @@ export const InfoGrid = styled.div`
   cursor: pointer;
 `;
 
-
 export const InfoRow = styled.div`
   display: grid;
   grid-template-columns: 180px 1fr 180px 1fr;
   padding: 8px 0;
   align-items: center;
 
-
- @media (min-width: 3840px) {
-  grid-template-columns: 270px 1fr 270px 1fr;
+  @media (min-width: 3840px) {
+    grid-template-columns: 270px 1fr 270px 1fr;
     row-gap: 10px;
   }
- @media (min-width: 2560px) {
-  grid-template-columns: 270px 1fr 270px 1fr;
+  @media (min-width: 2560px) {
+    grid-template-columns: 270px 1fr 270px 1fr;
     row-gap: 10px;
   }
- @media (max-width: 1600px) {
+  @media (max-width: 1600px) {
     grid-template-columns: 1fr 1fr;
     row-gap: 10px;
   }
@@ -322,10 +324,9 @@ export const InfoRow = styled.div`
     row-gap: 10px;
   }
 
-
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 6px;
+    /* grid-template-columns: 1fr; */
+    gap: 8px;
 
     padding: 10px 0;
     background: #fafafa;
@@ -342,10 +343,13 @@ export const InfoTitle = styled.div`
   @media (max-width: 480px) {
     font-size: 0.9rem;
   }
-    @media (min-width: 2560px) {
+  @media (max-width: 1024px) {
+     font-size: 0.8rem;
+  }
+  @media (min-width: 2560px) {
     font-size: 1.3rem;
   }
-          @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     font-size: 1.8rem;
   }
 `;
@@ -359,24 +363,26 @@ export const InfoValue = styled.div`
     font-size: 0.9rem;
     color: #111;
   }
-      @media (min-width: 2560px) {
+  @media (max-width: 1024px) {
+    font-size: 0.8rem;
+  }
+  @media (min-width: 2560px) {
     font-size: 1.3rem;
   }
-          @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     font-size: 1.7rem;
   }
 `;
-
 
 export const Title = styled.h3`
   font-weight: 600;
   font-size: 1.2rem;
   font-family: "Poppins";
 
-       @media (min-width: 2560px) {
+  @media (min-width: 2560px) {
     font-size: 1.4rem;
   }
-        @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     font-size: 1.8rem;
   }
 `;

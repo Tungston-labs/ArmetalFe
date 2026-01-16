@@ -233,7 +233,10 @@ const statusColors = {
           <>
 <ProgressContainer>
   <LeftSide>
-<ProgressModal isOpen={true} status={formData.status} />
+<ProgressModal
+  isOpen={!showEmployeeModal}
+  status={formData.status}
+/>
   </LeftSide>
 
   <RightSide>
@@ -313,7 +316,7 @@ const statusColors = {
                       key={emp.id}
                       className={i % 2 === 0 ? "even" : ""}
                       onClick={() => navigate(`/project/${emp.id}`)}
-                      style={{ cursor: "pointer" }} // show hand cursor
+                      style={{ cursor: "pointer" }}     
                     >
                       <BodyCell>{i + 1}</BodyCell>
                       <BodyCell>{emp.name}</BodyCell>

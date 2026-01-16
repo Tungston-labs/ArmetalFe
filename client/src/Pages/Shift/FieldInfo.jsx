@@ -138,7 +138,7 @@ const FieldInfo = () => {
 
   return (
     <>
-      {/* <Navbar /> */}
+
       <PageWrapper>
         <EmployeeTitle
           iconSrc={FieldShiftIcon}
@@ -167,7 +167,6 @@ const FieldInfo = () => {
         />
 
         <ContainerGrid>
-          {/* Profile Section */}
           <ProfileRow>
             <Avatar>
               {profile?.profile_pic ? (
@@ -210,12 +209,11 @@ const FieldInfo = () => {
             </ProfileDetails>
           </ProfileRow>
 
-          {/* Summary Section */}
           <SummaryRow>
             <SummaryCol>
               <SmallRow>
                 <span>Monthly Working Hours</span>
-                <strong>{fieldInfo?.monthly_hours_formatted || "00:00"} </strong>
+                <strong> {fieldInfo?.monthly_hours_formatted || "00:00"} </strong>
               </SmallRow>
               <SmallRow>
                 <span>Total Monthly Working Hours</span>

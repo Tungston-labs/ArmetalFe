@@ -215,7 +215,7 @@ export const InputBox = styled.input`
 
   /* 🖥 Full HD (1920px) */
   @media (min-width: 1920px) {
-    font-size: 1.1rem;
+    font-size: 1rem;
     padding: 12px 14px;
   }
 

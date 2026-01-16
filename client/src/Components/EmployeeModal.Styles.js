@@ -216,7 +216,7 @@ export const TableWrapper = styled.div`
   margin-top: 0.5rem;
   scrollbar-width: thin;
   scrollbar-color: #c1c1c1 #f1f1f1;
-
+  -webkit-overflow-scrolling: touch;
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -246,12 +246,6 @@ export const Table = styled.table`
   font-family: "Satoshi";
   overflow-x: auto;
 
-  td, th {
-    font-size: clamp(0.8rem, 1vw, 1.5rem);
-    padding: clamp(4px, 0.5vw, 12px);
-    white-space: nowrap;
-  }
-
   th {
     background-color: #304eb0;
     color: white;
@@ -272,19 +266,9 @@ export const Table = styled.table`
     background-color: #f5f5f5;
   }
 
-  @media (min-width: 2560px) {
-    td, th {
-      font-size: clamp(1.2rem, 1.5vw, 1.8rem);
-      padding: clamp(8px, 1vw, 24px);
-    }
-  }
+ 
 
-  @media (min-width: 3840px) {
-    td, th {
-      font-size: clamp(1.5rem, 2vw, 2rem);
-      padding: clamp(10px, 2vw, 32px);
-    }
-  }
+ 
 `;
 
 export const Checkbox = styled.input`
@@ -340,7 +324,7 @@ export const ButtonRow = styled.div`
   }
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: stretch;
     gap: 0.8rem;
   }
@@ -390,5 +374,93 @@ export const Button = styled.button`
     width: 100%;
     text-align: center;
   }
+`;
+export const StyledTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+
+  @media (min-width: 1440px) {
+    min-width: 800px;
+  }
+
+  @media (min-width: 2560px) {
+    min-width: 1000px;
+  }
+`;
+
+export const Thead = styled.thead`
+   background-color: #304eb0;
+   color:white;
+`;
+
+export const Th = styled.th`
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+
+  font-size: 12px;
+
+  @media (min-width: 768px) {
+    font-size: 13px;
+    padding: 12px;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 18px;
+    padding: 16px;
+  }
+`;
+
+export const Tr = styled.tr`
+  &:hover {
+    background-color: #fafafa;
+  }
+`;
+
+export const Td = styled.td`
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+
+  font-size: 12px;
+
+  @media (min-width: 768px) {
+    font-size: 13px;
+    padding: 12px;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 1920px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 18px;
+    padding: 16px;
+  }
+`;
+
+export const CenterText = styled.p`
+  text-align: center;
+  padding: 1rem;
+  font-size: 14px;
+`;
+
+export const EmptyRowText = styled.td`
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 14px;
 `;
 

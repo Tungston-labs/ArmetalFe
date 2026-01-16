@@ -119,7 +119,9 @@ export const Button = styled.button`
   &:hover {
     background: #1d4ed8;
   }
-
+   @media (max-width: 1024px) {
+    font-size: 0.8rem;
+  }
   /* Responsive adjustments */
   @media (min-width: 1920px) {
     padding: 0.8rem 1.2rem;
@@ -189,7 +191,7 @@ export const SearchWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 100%;
+    width: 100%;  
   }
 
   /* Large Screens */
@@ -294,6 +296,7 @@ export const TabButton = styled.button`
   /* Mobile: show 3 tabs in one row */
   @media (max-width: 769px) {
     flex: 0 0 calc(33.33% - 0.33rem);
+        font-size: 0.7rem;
   }
 
   /* 1920px (Full HD) */

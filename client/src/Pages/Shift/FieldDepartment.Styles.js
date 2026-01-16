@@ -183,11 +183,11 @@ export const FormRow = styled.div`
 `;
 
 export const InputField = styled.input`
-  width: 100%;
-  padding: 0.7rem;
+  width: 90%;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 17px;
+  font-size: 1rem;
   font-family: "Satoshi", sans-serif;
   font-weight: 400;
   color: #333;
@@ -208,34 +208,34 @@ export const InputField = styled.input`
 
   @media (min-width: 3840px) {
     font-size: 2rem;
-    padding: 1.2rem;
+    /* padding: 1.2rem; */
     border-radius: 10px;
   }
 
 
   @media (max-width: 2560px) {
     font-size: 20px;
-    padding: 1rem;
+    /* padding: 1rem; */
   }
  @media (max-width: 1940px) {
-    font-size: 1rem;
-    padding: 1rem;
+    font-size: 0.9rem;
+    /* padding: 1rem; */
   }
 
   @media (max-width: 1440px) {
     font-size: 0.9rem;
-    padding: 0.8rem;
+    /* padding: 0.8rem; */
   }
 
 
   @media (max-width: 1024px) {
-    font-size: 16px;
-    padding: 0.75rem;
+    font-size: 0.9rem;
+    /* padding: 0.75rem; */
   }
 
   @media (max-width: 768px) {
-    font-size: 15px;
-    padding: 0.6rem;
+    font-size: 0.7rem;
+    /* padding: 0.6rem; */
   }
 
 
@@ -313,7 +313,7 @@ export const ActionButton = styled.button`
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 0.6rem 1.2rem;
+  padding:12px;
   cursor: pointer;
   font-size: 16px;
   font-family: "Satoshi", sans-serif;
@@ -329,43 +329,43 @@ export const ActionButton = styled.button`
   }
   @media (min-width: 3840px) {
     font-size: 2rem;
-    padding: 1rem 2rem;
+
     border-radius: 10px;
   }
   @media (max-width: 2561px) {
     font-size: 1.2rem;
-    padding: 1rem 2rem;
+
     border-radius: 10px;
   }
  @media (max-width: 2560px) {
     font-size: 1.2rem;
-    padding: 1rem 2rem;
+
     border-radius: 10px;
   }
   /* QHD Screens (1440px - 2560px) */
   @media (max-width: 1940px) and (min-width: 1440px) {
     font-size: 15px;
-    padding: 0.8rem 1.6rem;
+
   }
 
   /* Standard Laptop / Tablet */
   @media (max-width: 1024px) {
     font-size: 16px;
-    padding: 0.7rem 1.3rem;
+
   }
 
   /* Tablets & Smaller Screens */
   @media (max-width: 768px) {
     width: 80%;
     font-size: 15px;
-    padding: 0.8rem;
+
   }
 
   /* Small Phones */
   @media (max-width: 480px) {
     width: 100%;
     font-size: 14px;
-    padding: 0.7rem;
+
   }
 `;
 
@@ -568,46 +568,46 @@ export const AddButton = styled.button`
     transform: translateY(-2px);
   }
 
-  padding: 0.7rem 1.5rem;
-  font-size: 0.95rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
 
   @media (min-width: 3840px) {
     font-size: 1.4rem;
-    padding: 1.2rem 2.5rem;
+
   }
 
 
   @media (max-width: 3839px) and (min-width: 2560px) {
     font-size: 1.3rem;
-    padding: 1.1rem 2.2rem;
+
   }
 
   @media (max-width: 2559px) and (min-width: 1940px) {
     font-size: 1.3rem;
-    padding: 1rem 2rem;
+   
   }
 
 
   @media (max-width: 1939px) and (min-width: 1440px) {
-    font-size: 1.1rem;
-    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+  
   }
 
   @media (max-width: 1439px) and (min-width: 1024px) {
-    font-size: 1rem;
-    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+ 
   }
 
   @media (max-width: 1023px) {
-    width: 20%;
-    font-size: 0.95rem;
-    padding: 0.7rem 1.4rem;
+    /* width: 20%; */
+    font-size: 0.8rem;
+  
   }
 
   @media (max-width: 480px) {
     width: 100%;
     font-size: 0.85rem;
-    padding: 0.6rem 1rem;
+  
   }
 `;
 

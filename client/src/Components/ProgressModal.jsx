@@ -33,7 +33,7 @@ const steps = [
 const ProgressModal = ({ isOpen, status }) => {
   if (!isOpen || !status) return null;
 
-  // match backend status
+
   const step = steps.find((s) => s.key === status) || steps[0];
 
   return (
