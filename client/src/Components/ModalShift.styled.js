@@ -20,6 +20,17 @@ export const Overlay = styled.div`
   align-items: stretch;
   z-index: 2999;
 `;
+ export const CalendarIconWrapper = styled.div`
+  margin-left: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #304eb0;   // optional, icon color
+  &:hover {
+    color: #1a3a8a; // darker on hover
+  }
+`;
 
 export const ModalWrapper = styled.div`
   background: #fff;
