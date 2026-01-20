@@ -11,6 +11,7 @@ export const TopSection = styled.div`
   flex-direction: column;
   gap: 20px;
    margin-bottom:20px;
+  
 `;
 
 export const FormSection = styled.div`

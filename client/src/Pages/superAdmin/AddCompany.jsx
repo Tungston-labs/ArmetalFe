@@ -27,6 +27,7 @@ const AddCompanyModal = ({
   onClose,
   isEdit = false,
   selectedCompany = null,
+    showPrivileges = true,
 }) => {
   const dispatch = useDispatch();
   const fileInputRef = useRef();
@@ -138,14 +139,13 @@ const handleLogoChange = (e) => {
     setFormData((prev) => ({ ...prev, logo: file }));
     setLogoPreview(URL.createObjectURL(file));
   } else {
-    // SweetAlert2 alert instead of default alert
     Swal.fire({
       icon: "error",
       title: "Invalid file type",
       text: "Only PNG or SVG files are allowed.",
       confirmButtonColor: "#3250B5",
     });
-    fileInputRef.current.value = ""; // reset file input
+    fileInputRef.current.value = ""; 
   }
 };
 
@@ -188,8 +188,10 @@ const handleLogoChange = (e) => {
       errors.contact_number = "Phone must be 7 to 12 digits.";
     }
 
-    if (formData.modules.length === 0)
-      errors.modules = "Select at least one module.";
+if (showPrivileges && formData.modules.length === 0) {
+  errors.modules = "Select at least one module.";
+}
+
 
     setFormErrors(errors);
     if (Object.keys(errors).length > 0) return;
@@ -211,7 +213,10 @@ const handleLogoChange = (e) => {
       "contact_number",
       `${formData.country_code}${formData.contact_number}`
     );
-    payload.append("modules", JSON.stringify(modulesObject));
+if (showPrivileges) {
+  payload.append("modules", JSON.stringify(modulesObject));
+}
+
     if (formData.logo) payload.append("logo", formData.logo);
 
     try {
@@ -429,25 +434,33 @@ const handleLogoChange = (e) => {
           </div>
         </FormSection>
 
-        <h4>Privileges</h4>
-        <CheckboxGroup>
-          {allModules.map((mod) => (
-            <CheckboxLabel key={mod}>
-              <input
-                type="checkbox"
-                value={mod}
-                checked={formData.modules.includes(mod)}
-                onChange={handleModuleChange}
-              />
-              {mod.charAt(0).toUpperCase() + mod.slice(1).replace("_", " ")}
-            </CheckboxLabel>
-          ))}
-        </CheckboxGroup>
-        {formErrors.modules && (
-          <p style={{ color: "blue" }}>{formErrors.modules}</p>
-        )}
+      {showPrivileges && (
+  <>
+    <h4>Privileges</h4>
 
-        <Hr />
+    <CheckboxGroup>
+      {allModules.map((mod) => (
+        <CheckboxLabel key={mod}>
+          <input
+            type="checkbox"
+            value={mod}
+            checked={formData.modules.includes(mod)}
+            onChange={handleModuleChange}
+          />
+          {mod.charAt(0).toUpperCase() +
+            mod.slice(1).replace("_", " ")}
+        </CheckboxLabel>
+      ))}
+    </CheckboxGroup>
+
+    {formErrors.modules && (
+      <p style={{ color: "blue" }}>{formErrors.modules}</p>
+    )}
+
+    <Hr />
+  </>
+)}
+
 
         <ButtonGroup>
           <Button type="button" cancel onClick={onClose}>

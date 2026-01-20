@@ -45,7 +45,7 @@ const UpcomingHolidays = ({ holidays = [], showCount = 5 }) => {
       <Header>
         <Title>Upcoming Holidays</Title>
 
-        {/* ✅ Icon on right side */}
+
         <IconButton onClick={() => navigate("/holiday")}>
           <BsArrowUpRightCircleFill />
         </IconButton>
@@ -76,7 +76,7 @@ const UpcomingHolidays = ({ holidays = [], showCount = 5 }) => {
         })}
       </List>
 
-      <ViewAll onClick={handleViewAll}>View all holidays</ViewAll>
+      {/* <ViewAll onClick={handleViewAll}>View all holidays</ViewAll> */}
     </Wrapper>
   );
 };

@@ -63,27 +63,29 @@ const ReimbursementLineChart = ({ data }) => {
   const handleNavigate = () => {
     navigate("/reimbursement");
   };
+  const currentYear = new Date().getFullYear();
 
-  // Convert backend data
+ 
   const dataMap = {};
   if (data) {
     Object.entries(data).forEach(([yearMonth, count]) => {
-      const [, month] = yearMonth.split("-");
-      dataMap[parseInt(month)] = count;
+      const [year, month] = yearMonth.split("-");
+      if (parseInt(year, 10) === currentYear) {
+        dataMap[parseInt(month, 10)] = count;
+      }
     });
   }
 
   const chartData = monthNames.map((name, index) => ({
     month: name,
-    count: dataMap[index + 1] || 0,
+    count: dataMap[index + 1] || 0, 
   }));
 
   const allZero = chartData.every((item) => item.count === 0);
-  if (!data || allZero) {
-    return <p style={{ textAlign: "center" }}>No data found</p>;
-  }
+  // if (!data || allZero) {
+  //   return <p style={{ textAlign: "center" }}>No data found for {currentYear}</p>;
+  // }
 
-  // ✅ Custom Tick Component
   const CustomMonthTick = ({ x, y, payload }) => (
     <MonthTickText x={x} y={y + 10} textAnchor="middle">
       {payload.value}
@@ -93,7 +95,7 @@ const ReimbursementLineChart = ({ data }) => {
   return (
     <ChartWrapper>
       <ChartTitle>
-        <span>Reimbursement Summary</span>
+        <span>Reimbursement Summary - {currentYear}</span>
         <IconButton onClick={handleNavigate}>
           <BsArrowUpRightCircleFill />
         </IconButton>
@@ -103,30 +105,16 @@ const ReimbursementLineChart = ({ data }) => {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
-
-            {/* ✅ Custom Month Styling */}
-            <XAxis
-              dataKey="month"
-              interval={0}
-              tick={<CustomMonthTick />}
-              tickLine={false}
-              axisLine={false}
-            />
-
+            <XAxis dataKey="month" interval={0} tick={<CustomMonthTick />} tickLine={false} axisLine={false} />
             <YAxis allowDecimals={false} />
             <Tooltip content={<CustomTooltip />} />
-
-            <Line
-              type="monotone"
-              dataKey="count"
-              stroke="#2563eb"
-              strokeWidth={3}
-            />
+            <Line type="monotone" dataKey="count" stroke="#2563eb" strokeWidth={3} />
           </LineChart>
         </ResponsiveContainer>
       </ChartContainer>
     </ChartWrapper>
-  ); 
+  );
 };
+
 
 export default ReimbursementLineChart;

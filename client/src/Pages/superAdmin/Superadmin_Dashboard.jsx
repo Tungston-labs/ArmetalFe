@@ -94,7 +94,6 @@ console.log({overview});
         <TableHeader>
           <div>
             <h2>Pending payment details</h2>
-            <p>Pending payment details List</p>
           </div>
           <span>{payments.length}</span>
         </TableHeader>

@@ -47,11 +47,11 @@ export const Status = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: 1rem;
 
   .dot {
-    width: 9px;
-    height: 9px;
+    width: 15px;
+    height: 15px;
     background: #22c55e;
     border-radius: 50%;
   }
@@ -249,6 +249,7 @@ export const Tabs = styled.div`
   border-radius: 10px;
   padding: 5px;
   gap: 50px;
+  justify-content: center;
 
   @media (max-width: 600px) {
     gap: 15px;
@@ -296,7 +297,6 @@ export const ContentSection = styled.div`
 
 export const InfoGrid = styled.div`
   display: grid;
-  gap: 15px;
   cursor: pointer;
 `;
 
@@ -305,7 +305,7 @@ export const InfoRow = styled.div`
   grid-template-columns: 180px 1fr 180px 1fr;
   padding: 8px 0;
   align-items: center;
-
+  row-gap: 10px;
   @media (min-width: 3840px) {
     grid-template-columns: 270px 1fr 270px 1fr;
     row-gap: 10px;
@@ -336,7 +336,7 @@ export const InfoRow = styled.div`
 
 export const InfoTitle = styled.div`
   color: #6b7280;
-  font-weight: 600;
+
   font-size: 1rem;
   font-family: "Poppins";
 
@@ -345,6 +345,9 @@ export const InfoTitle = styled.div`
   }
   @media (max-width: 1024px) {
      font-size: 0.8rem;
+  }
+    @media (max-width: 1440px) {
+     font-size: 0.9rem;
   }
   @media (min-width: 2560px) {
     font-size: 1.3rem;
@@ -355,8 +358,8 @@ export const InfoTitle = styled.div`
 `;
 
 export const InfoValue = styled.div`
-  font-weight: 500;
-  font-size: 0.95rem;
+ 
+  font-size: 0.9rem;
   font-family: "Poppins";
 
   @media (max-width: 480px) {
@@ -364,6 +367,9 @@ export const InfoValue = styled.div`
     color: #111;
   }
   @media (max-width: 1024px) {
+    font-size: 0.8rem;
+  }
+   @media (max-width: 1024px) {
     font-size: 0.8rem;
   }
   @media (min-width: 2560px) {

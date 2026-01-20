@@ -57,9 +57,6 @@ const EmployeeDetails = ({ employee }) => {
     { title: "Account Number :", value: employee.account_number, title2: "Passport Number :", value2: employee.passport_number },
     { title: "Address :", value: employee.address, title2: "", value2: "" }
   ];
-
-
-
   return (
     <Wrapper>
       <HeaderRow>
@@ -70,8 +67,7 @@ const EmployeeDetails = ({ employee }) => {
               className="dot"
               style={{
                 backgroundColor: employee.is_active ? "green" : "red"
-              }}
-            ></span>
+              }}></span>
 
             {employee.is_active ? "Active" : "Inactive"}
           </Status>
@@ -121,7 +117,7 @@ const EmployeeDetails = ({ employee }) => {
                 <InfoRow key={index}>
                   <InfoTitle>{row.title}</InfoTitle>
                   <InfoValue>{row.value}</InfoValue>
-
+  
                   <InfoTitle>{row.title2}</InfoTitle>
                   <InfoValue>{row.value2}</InfoValue>
                 </InfoRow>

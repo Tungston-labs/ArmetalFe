@@ -167,7 +167,7 @@ const ViewDocument = () => {
       formData={employeeDetail}
       handleChange={() => {}}
       handleImageChange={() => {}}
-    >
+    >  
       <Hr />
 
       <SectionTitle>Documents</SectionTitle>

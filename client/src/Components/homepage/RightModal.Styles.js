@@ -7,7 +7,7 @@ export const Panel = styled.div`
   width: 320px;
   height: 100vh;
   background: #f4f8ffff;
-  box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
   transition: right 0.3s ease;
   padding: 20px;
   z-index: 2000;
@@ -25,7 +25,7 @@ export const Panel = styled.div`
   @media (min-width: 2560px) {
     width: 450px;
   }
-    @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     width: 380px;
   }
   /* Tablets */
@@ -35,7 +35,7 @@ export const Panel = styled.div`
 
   /* Mobile screens */
   @media (max-width: 600px) {
-    width: 100%; 
+    width: 100%;
     right: -100%;
     border-radius: 0;
 
@@ -75,9 +75,8 @@ export const Columns = styled.div`
     margin: 15px 0;
   }
 
-    @media (min-width: 2540px) {
-margin-bottom: 4rem;
-
+  @media (min-width: 2540px) {
+    margin-bottom: 4rem;
   }
 `;
 export const BottomActions = styled.div`
@@ -135,5 +134,33 @@ export const LogoutButton = styled(ActionButton)`
 
   &:hover {
     background: #ffcdd2;
+  }
+`;
+
+export const TopActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+export const EditProfileButton = styled.button`
+  background: #3352ba;
+  color: #e0f2fe;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  &:hover {
+    background: #556dd6ff;
+  }
+
+  @media (max-width: 600px) {
+    padding: 8px 14px;
+    font-size: 14px;
   }
 `;

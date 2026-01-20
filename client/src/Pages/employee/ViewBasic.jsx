@@ -21,7 +21,6 @@ import {
   Label,
 } from "./ViewBasic.Style";
 
-
 const ViewBasic = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -33,7 +32,9 @@ const ViewBasic = () => {
   const [formData, setFormData] = useState({});
   const [isEdited, setIsEdited] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
+  const user =
+    JSON.parse(localStorage.getItem("user")) ||
+    JSON.parse(sessionStorage.getItem("user"));
 
   useEffect(() => {
     if (departmentList.length === 0) {
@@ -53,7 +54,9 @@ const ViewBasic = () => {
 
     let deptId = "";
     if (typeof employeeDetail.department === "string") {
-      const match = departmentList.find((d) => d.name === employeeDetail.department);
+      const match = departmentList.find(
+        (d) => d.name === employeeDetail.department,
+      );
       deptId = match ? match.id : "";
     } else if (typeof employeeDetail.department === "number") {
       deptId = employeeDetail.department;
@@ -73,7 +76,8 @@ const ViewBasic = () => {
       role: employeeDetail.role || "",
       idcard: employeeDetail.idcard || "",
       company,
-      aadar_number: employeeDetail.aadar_number || employeeDetail.aadhaar_number || "",
+      aadar_number:
+        employeeDetail.aadar_number || employeeDetail.aadhaar_number || "",
     };
 
     if (!formData.id || formData.id !== employeeDetail.id) {
@@ -96,7 +100,12 @@ const ViewBasic = () => {
   const handleSubmit = async () => {
     let payload = { ...formData };
     Object.keys(payload).forEach((key) => {
-      if (payload[key] === "" || payload[key] === null || payload[key] === undefined) delete payload[key];
+      if (
+        payload[key] === "" ||
+        payload[key] === null ||
+        payload[key] === undefined
+      )
+        delete payload[key];
     });
 
     const country = formData?.company?.country;
@@ -105,12 +114,16 @@ const ViewBasic = () => {
       delete payload.insurance_number;
       delete payload.visa_expiry_date;
 
-      if (!payload.aadar_number?.trim()) return alert("Aadhaar number is required for India");
-      if (payload.aadar_number.length !== 12) return alert("Aadhaar number must be 12 digits");
+      if (!payload.aadar_number?.trim())
+        return alert("Aadhaar number is required for India");
+      if (payload.aadar_number.length !== 12)
+        return alert("Aadhaar number must be 12 digits");
     } else {
       delete payload.aadar_number;
-      if (!payload.iqama_number?.trim()) return alert("Iqama number is required");
-      if (payload.iqama_number.length !== 12) return alert("Iqama number must be 12 digits");
+      if (!payload.iqama_number?.trim())
+        return alert("Iqama number is required");
+      if (payload.iqama_number.length !== 12)
+        return alert("Iqama number must be 12 digits");
     }
 
     const oldDept = employeeDetail.department;
@@ -170,14 +183,14 @@ const ViewBasic = () => {
 
   return (
     <ViewBasicLayout
-     id={id}
-  handleTabNavigation={handleTabNavigation}
-  departmentList={departmentList}
-  handleSubmit={handleSubmit}
-  formData={formData}          
-  handleChange={handleChange}  
-  handleImageChange={handleImageChange} 
-    > 
+      id={id}
+      handleTabNavigation={handleTabNavigation}
+      departmentList={departmentList}
+      handleSubmit={handleSubmit}
+      formData={formData}
+      handleChange={handleChange}
+      handleImageChange={handleImageChange}
+    >
       <Section>
         <Card>
           <CardHeader>Job Details</CardHeader>
@@ -185,22 +198,37 @@ const ViewBasic = () => {
             <Rowes>
               <FieldGroup>
                 <Label>Designation</Label>
-                <Input name="designation" value={formData.designation || ""} onChange={handleChange} />
+                <Input
+                  name="designation"
+                  value={formData.designation || ""}
+                  onChange={handleChange}
+                />
               </FieldGroup>
               <FieldGroup>
                 <Label>Joining Date</Label>
-                <Input name="joining_date" value={formData.joining_date || ""} onChange={handleChange} />
+                <Input
+                  name="joining_date"
+                  value={formData.joining_date || ""}
+                  onChange={handleChange}
+                />
               </FieldGroup>
-      <FieldGroup>
+              <FieldGroup>
                 <Label>Employment Type</Label>
-                <Input name="employment_type" value={formData.employment_type || ""} onChange={handleChange} />
+                <Input
+                  name="employment_type"
+                  value={formData.employment_type || ""}
+                  onChange={handleChange}
+                />
               </FieldGroup>
-
             </Rowes>
             <Rowes>
               <FieldGroup>
                 <Label>Department</Label>
-                <Select name="department" value={formData.department || ""} onChange={handleChange}>
+                <Select
+                  name="department"
+                  value={formData.department || ""}
+                  onChange={handleChange}
+                >
                   <option value="">Select Department</option>
                   {departmentList.map((dept) => (
                     <option key={dept.id} value={dept.id}>
@@ -209,7 +237,7 @@ const ViewBasic = () => {
                   ))}
                 </Select>
               </FieldGroup>
-  <FieldGroup>
+              <FieldGroup>
                 <Label>Total Leaves</Label>
                 <Input
                   type="number"
@@ -221,7 +249,7 @@ const ViewBasic = () => {
                   onWheel={(e) => e.target.blur()}
                 />
               </FieldGroup>
-    <FieldGroup>
+              <FieldGroup>
                 <Label>Paid Leave</Label>
                 <Input
                   type="number"
@@ -233,13 +261,7 @@ const ViewBasic = () => {
                   onWheel={(e) => e.target.blur()}
                 />
               </FieldGroup>
-
-        
             </Rowes>
-          
-            
-          
-        
           </CardContent>
         </Card>
         <Card>
@@ -247,71 +269,109 @@ const ViewBasic = () => {
           <CardContent>
             <Column>
               <Rowes>
-              <FieldGroup>
-                <Label>Phone Number</Label>
-                <Input name="phno" value={formData.phno || ""} onChange={handleChange} />
-              </FieldGroup>
-              <FieldGroup>
-                <Label>Passport Number</Label>
-                <Input name="passport_number" value={formData.passport_number || ""} onChange={handleChange} />
-              </FieldGroup>
- <FieldGroup>
-                <Label>Role</Label>
-                <Select name="role" value={formData.role || ""} onChange={handleChange}>
-                  <option value="">Select Role</option>
-                  <option value="employee">Employee</option>
-                  <option value="hr">HR</option>
-                  <option value="manager">Manager</option>
-                </Select>
-              </FieldGroup>
-
-</Rowes>
- <Rowes>
-
-
-
-              <FieldGroup>
-                <Label>Contract Expiry Date</Label>
-                <Input type="date" name="contract_expiry_date" value={formData.contract_expiry_date || ""} onChange={handleChange} />
-              </FieldGroup>
-
-
-              {formData?.company?.country === "IN" ? (
                 <FieldGroup>
-                  <Label>Aadhaar Number</Label>
-                  <Input name="aadar_number" value={formData.aadar_number || ""} onChange={handleChange} />
+                  <Label>Phone Number</Label>
+                  <Input
+                    name="phno"
+                    value={formData.phno || ""}
+                    onChange={handleChange}
+                  />
                 </FieldGroup>
-              ) : (
-                <>
-                  <FieldGroup>
-                    <Label>Visa Expiry Date</Label>
-                    <Input type="date" name="visa_expiry_date" value={formData.visa_expiry_date || ""} onChange={handleChange} />
-                  </FieldGroup>
-                  <FieldGroup>
-                    <Label>Iqama Number</Label>
-                    <Input name="iqama_number" value={formData.iqama_number || ""} onChange={handleChange} />
-                  </FieldGroup>
-                  <FieldGroup>
-                    <Label>Insurance Number</Label>
-                    <Input name="insurance_number" value={formData.insurance_number || ""} onChange={handleChange} />
-                  </FieldGroup>
-                </>
-              )}
-
+                <FieldGroup>
+                  <Label>Passport Number</Label>
+                  <Input
+                    name="passport_number"
+                    value={formData.passport_number || ""}
+                    onChange={handleChange}
+                  />
+                </FieldGroup>
+                <FieldGroup>
+                  <Label>Role</Label>
+                  <Select
+                    name="role"
+                    value={formData.role || ""}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Role</option>
+                    <option value="employee">Employee</option>
+                    <option value="hr">HR</option>
+                    <option value="manager">Manager</option>
+                  </Select>
+                </FieldGroup>
               </Rowes>
-  
+              <Rowes>
+                <FieldGroup>
+                  <Label>Contract Expiry Date</Label>
+                  <Input
+                    type="date"
+                    name="contract_expiry_date"
+                    value={formData.contract_expiry_date || ""}
+                    onChange={handleChange}
+                  />
+                </FieldGroup>
+
+                {formData?.company?.country === "IN" ? (
+                  <FieldGroup>
+                    <Label>Aadhaar Number</Label>
+                    <Input
+                      name="aadar_number"
+                      value={formData.aadar_number || ""}
+                      onChange={handleChange}
+                    />
+                  </FieldGroup>
+                ) : (
+                  <>
+                    <FieldGroup>
+                      <Label>Visa Expiry Date</Label>
+                      <Input
+                        type="date"
+                        name="visa_expiry_date"
+                        value={formData.visa_expiry_date || ""}
+                        onChange={handleChange}
+                      />
+                    </FieldGroup>
+                    <FieldGroup>
+                      <Label>Iqama Number</Label>
+                      <Input
+                        name="iqama_number"
+                        value={formData.iqama_number || ""}
+                        onChange={handleChange}
+                      />
+                    </FieldGroup>
+                    <FieldGroup>
+                      <Label>Insurance Number</Label>
+                      <Input
+                        name="insurance_number"
+                        value={formData.insurance_number || ""}
+                        onChange={handleChange}
+                      />
+                    </FieldGroup>
+                  </>
+                )}
+              </Rowes>
 
               <FieldGroup>
                 <Label>ID Card</Label>
                 <div>
                   {formData.idcard && (
                     <img
-                      src={formData.idcard instanceof File ? URL.createObjectURL(formData.idcard) : formData.idcard}
+                      src={
+                        formData.idcard instanceof File
+                          ? URL.createObjectURL(formData.idcard)
+                          : formData.idcard
+                      }
                       alt="ID Card"
                       style={{ width: 120, height: "auto", marginBottom: 10 }}
                     />
                   )}
-                  <input type="file" accept="image/*" name="idcard" onChange={(e) => setFormData({ ...formData, idcard: e.target.files[0] })} />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    name="idcard"
+                    onChange={(e) =>
+                      setFormData({ ...formData, idcard: e.target.files[0] })
+                    }
+                  />
                 </div>
               </FieldGroup>
             </Column>

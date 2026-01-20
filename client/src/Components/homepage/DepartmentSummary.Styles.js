@@ -292,18 +292,15 @@ export const NoData = styled.div`
     padding: 10px 0;
   }
 
+   @media (min-width: 1024px) {
+    font-size: 12px;
+    padding: 10px 0;
+  }
   @media (min-width: 1920px) {
-    font-size: 18px;
+    font-size: 16px;
     padding: 16px 0;
   }
-     @media (min-width: 2560px) {
-    font-size: 18px;
-    padding: 16px 0;
-  }
-     @media (min-width: 3840px) {
-    font-size: 30px;
-    padding: 26px 0;
-  }
+ 
 `;
  export const Container = styled.div`
 

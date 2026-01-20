@@ -8,8 +8,8 @@ import { getDashboardSummary } from "../../Redux/dashboardSlice";
 import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader";
 
-const Cards = React.lazy(() => import("../../Components/Cards"));
-const DepartmentCalendar = React.lazy(() => import("../../Components/DepartmentCalender"));
+// const Cards = React.lazy(() => import("../../Components/Cards"));
+// const DepartmentCalendar = React.lazy(() => import("../../Components/DepartmentCalender"));
 
 const CardsOnly = () => {
   const dispatch = useDispatch();
@@ -60,7 +60,7 @@ const CardsOnly = () => {
             </div>
           }
         >
-          <Cards summary={summary} loading={loading} />
+          {/* <Cards summary={summary} loading={loading} /> */}
         </Suspense>
 
         <Suspense
@@ -71,7 +71,7 @@ const CardsOnly = () => {
             </div>
           }
         >
-          <DepartmentCalendar holidays={holidays} />
+          {/* <DepartmentCalendar holidays={holidays} /> */}
         </Suspense>
       </Container>
     </>

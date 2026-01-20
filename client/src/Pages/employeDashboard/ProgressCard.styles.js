@@ -12,7 +12,7 @@ const growAnimation = keyframes`
 
 export const Card = styled.div`
   background: #fff;
-  padding: 25px;
+  padding: 30px;
   border-radius: 20px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   font-family: "Inter", sans-serif;

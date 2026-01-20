@@ -129,7 +129,7 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
   showBackArrow={false}
   showTabs={true}
 />
-        {!loading && (
+        {!loading &&  (
           <>
      
            <StyledTable>

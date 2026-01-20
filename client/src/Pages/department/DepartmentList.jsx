@@ -41,6 +41,7 @@ import {
   FormGroup,
   ButtonRow,
   SaveButton,
+  Title,
 } from "../department/AddDepartment.Styles.js";
 
 import {
@@ -59,7 +60,7 @@ import { ClipLoader } from "react-spinners";
 // import Navbar from "../../Components/Navbar.jsx";
 import EmployeeTitle from "../../Components/EmployeeTitle.jsx";
 import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
-import { GoArrowUpRight } from "react-icons/go";
+import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
 import { fetchDepartmentById } from "../../services/departmentServices"; // you used this in DepartmentDetail
 
 const DepartmentList = () => {
@@ -75,7 +76,7 @@ const DepartmentList = () => {
 
   // Redux departments list + loading
   const { list: departments = [], loading } = useSelector(
-    (state) => state.departments
+    (state) => state.departments,
   );
 
   // Local UI state
@@ -95,11 +96,10 @@ const DepartmentList = () => {
 
   // fetch departments on mount
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" })).then((res)=>{
-          console.log("Department list refreshed", res);
-        })
+    dispatch(getDepartments({ page: 1, search: "" })).then((res) => {
+      console.log("Department list refreshed", res);
+    });
   }, [dispatch]);
-
 
   const filteredDepartments = useMemo(() => {
     if (!search.trim()) return departments || [];
@@ -107,7 +107,7 @@ const DepartmentList = () => {
     return (departments || []).filter(
       (d) =>
         (d.name || "").toLowerCase().includes(q) ||
-        (d.department_code || "").toLowerCase().includes(q)
+        (d.department_code || "").toLowerCase().includes(q),
     );
   }, [departments, search]);
 
@@ -136,7 +136,9 @@ const DepartmentList = () => {
     setLoadingDept(true);
     try {
       // 1) fetch employees in department (redux thunk)
-      const employeesRes = await dispatch(getEmployeesByDepartment(deptId)).unwrap();
+      const employeesRes = await dispatch(
+        getEmployeesByDepartment(deptId),
+      ).unwrap();
       // store as-is (we'll sort on render), but ensure it's an array
       setDeptEmployees((prev) => ({ ...prev, [deptId]: employeesRes || [] }));
 
@@ -190,9 +192,15 @@ const DepartmentList = () => {
       try {
         await dispatch(deleteEmployeeById(employeeId)).unwrap();
         // re-fetch employees for this department
-        const updated = await dispatch(getEmployeesByDepartment(deptId)).unwrap();
+        const updated = await dispatch(
+          getEmployeesByDepartment(deptId),
+        ).unwrap();
         setDeptEmployees((prev) => ({ ...prev, [deptId]: updated || [] }));
-        Swal.fire("Deleted!", `Employee "${employeeName}" has been deleted.`, "success");
+        Swal.fire(
+          "Deleted!",
+          `Employee "${employeeName}" has been deleted.`,
+          "success",
+        );
       } catch (err) {
         console.error(err);
         Swal.fire("Error", "Failed to delete employee.", "error");
@@ -227,7 +235,9 @@ const DepartmentList = () => {
     const payload = {
       name: form.name,
       department_code: form.department_code,
-      department_head_id: form.department_head_id ? parseInt(form.department_head_id, 10) : null,
+      department_head_id: form.department_head_id
+        ? parseInt(form.department_head_id, 10)
+        : null,
     };
 
     if (!payload.department_head_id) {
@@ -241,7 +251,9 @@ const DepartmentList = () => {
     }
 
     try {
-      await dispatch(updateDepartmentById({ id: deptId, data: payload })).unwrap();
+      await dispatch(
+        updateDepartmentById({ id: deptId, data: payload }),
+      ).unwrap();
 
       // re-fetch details and employees to reflect changes
       const updatedDept = await fetchDepartmentById(deptId);
@@ -262,7 +274,11 @@ const DepartmentList = () => {
       setEditingDeptId(null);
     } catch (err) {
       console.error("Update failed:", err);
-      Swal.fire("Error", "Something went wrong while updating department.", "error");
+      Swal.fire(
+        "Error",
+        "Something went wrong while updating department.",
+        "error",
+      );
     }
   };
 
@@ -331,7 +347,9 @@ const DepartmentList = () => {
         />
 
         {loading ? (
-          <div style={{ display: "flex", justifyContent: "center", padding: 40 }}>
+          <div
+            style={{ display: "flex", justifyContent: "center", padding: 40 }}
+          >
             <Loader size={32} color="#3352BA" />
           </div>
         ) : (
@@ -340,18 +358,23 @@ const DepartmentList = () => {
               filteredDepartments.map((dept) => {
                 const isOpen = selectedDept === dept.id;
                 const employees = deptEmployees[dept.id] || [];
-                const sortedEmployees = (employees || [])
-                  .slice()
-                  .sort((a, b) =>
-                    (a?.name || "").localeCompare(b?.name || "", undefined, {
-                      sensitivity: "base",
-                    })
-                  );
+                const sortedEmployees = (employees || []).slice().sort((a, b) =>
+                  (a?.name || "").localeCompare(b?.name || "", undefined, {
+                    sensitivity: "base",
+                  }),
+                );
 
                 // pagination calculations for this department
                 const currentPage = pageByDept[dept.id] || 1;
-                const totalPages = Math.max(1, Math.ceil(sortedEmployees.length / pageSize));
-                const paginatedEmployees = paginate(sortedEmployees, currentPage, pageSize);
+                const totalPages = Math.max(
+                  1,
+                  Math.ceil(sortedEmployees.length / pageSize),
+                );
+                const paginatedEmployees = paginate(
+                  sortedEmployees,
+                  currentPage,
+                  pageSize,
+                );
                 const startIndex = (currentPage - 1) * pageSize;
                 const hasNextPage = currentPage < totalPages;
 
@@ -367,11 +390,18 @@ const DepartmentList = () => {
                       </LeftWrapper>
 
                       <EmployeeCount>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <div>
-                            {dept.employee_count ?? 0}
-                          </div>
-                          <GoArrowUpRight size={15} style={{ strokeWidth: 2 }} />
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                          }}
+                        >
+                          <div>{dept.employee_count ?? 0}</div>
+                          <GoArrowUpRight
+                            size={15}
+                            style={{ strokeWidth: 2 }}
+                          />
                         </div>
                       </EmployeeCount>
                     </DepartmentHeader>
@@ -406,13 +436,27 @@ const DepartmentList = () => {
                                   padding: "6px 10px",
                                   borderRadius: 6,
                                   border: "1px solid #d1d5db",
-                                  background: editingDeptId === dept.id ? "#3352BA" : "transparent",
-                                  color: editingDeptId === dept.id ? "#fff" : "#111827",
+                                  background:
+                                    editingDeptId === dept.id
+                                      ? "#3352BA"
+                                      : "transparent",
+                                  color:
+                                    editingDeptId === dept.id
+                                      ? "#fff"
+                                      : "#111827",
                                   cursor: "pointer",
                                 }}
-                                aria-label={editingDeptId === dept.id ? "Save department" : "Edit department"}
+                                aria-label={
+                                  editingDeptId === dept.id
+                                    ? "Save department"
+                                    : "Edit department"
+                                }
                               >
-                                {editingDeptId === dept.id ? <FaSave /> : <FaEdit />}
+                                {editingDeptId === dept.id ? (
+                                  <FaSave />
+                                ) : (
+                                  <FaEdit />
+                                )}
                                 {editingDeptId === dept.id ? "Save" : "Edit"}
                               </button>
                             </div>
@@ -426,9 +470,17 @@ const DepartmentList = () => {
                                   <Input
                                     name="name"
                                     value={form.name ?? ""}
-                                    onChange={(e) => handleFormChange(dept.id, e)}
+                                    autoComplete='off'
+                                    onChange={(e) =>
+                                      handleFormChange(dept.id, e)
+                                    }
                                     disabled={editingDeptId !== dept.id}
-                                    style={{ cursor: editingDeptId === dept.id ? "text" : "default" }}
+                                    style={{
+                                      cursor:
+                                        editingDeptId === dept.id
+                                          ? "text"
+                                          : "default",
+                                    }}
                                   />
                                 </InputGroup>
 
@@ -437,9 +489,17 @@ const DepartmentList = () => {
                                   <Input
                                     name="department_code"
                                     value={form.department_code ?? ""}
-                                    onChange={(e) => handleFormChange(dept.id, e)}
+                                    autoComplete='off'
+                                    onChange={(e) =>
+                                      handleFormChange(dept.id, e)
+                                    }
                                     disabled={editingDeptId !== dept.id}
-                                    style={{ cursor: editingDeptId === dept.id ? "text" : "default" }}
+                                    style={{
+                                      cursor:
+                                        editingDeptId === dept.id
+                                          ? "text"
+                                          : "default",
+                                    }}
                                   />
                                 </InputGroup>
 
@@ -449,7 +509,9 @@ const DepartmentList = () => {
                                     <select
                                       name="department_head_id"
                                       value={form.department_head_id ?? ""}
-                                      onChange={(e) => handleFormChange(dept.id, e)}
+                                      onChange={(e) =>
+                                        handleFormChange(dept.id, e)
+                                      }
                                       style={{
                                         padding: "10px",
                                         borderRadius: "8px",
@@ -458,15 +520,26 @@ const DepartmentList = () => {
                                         cursor: "pointer",
                                       }}
                                     >
-                                      <option value="">-- Select Department Head --</option>
-                                      {(deptEmployees[dept.id] || []).map((emp) => (
-                                        <option key={emp.id} value={emp.id}>
-                                          {emp.name}
-                                        </option>
-                                      ))}
+                                      <option value="">
+                                        -- Select Department Head --
+                                      </option>
+                                      {(deptEmployees[dept.id] || []).map(
+                                        (emp) => (
+                                          <option key={emp.id} value={emp.id}>
+                                            {emp.name}
+                                          </option>
+                                        ),
+                                      )}
                                     </select>
                                   ) : (
-                                    <Input name="department_head" value={details.department_head?.name || "Not Assigned"} disabled />
+                                    <Input
+                                      name="department_head"
+                                      value={
+                                        details.department_head?.name ||
+                                        "Not Assigned"
+                                      }
+                                      disabled
+                                    />
                                   )}
                                 </InputGroup>
                               </InputsWrapper>
@@ -491,27 +564,52 @@ const DepartmentList = () => {
 
                         <DropdownWrapper>
                           {loadingDept ? (
-                            <div style={{ textAlign: "center", padding: "1rem" }}>
+                            <div
+                              style={{ textAlign: "center", padding: "1rem" }}
+                            >
                               <ClipLoader size={24} color="#003366" />
                             </div>
                           ) : paginatedEmployees.length > 0 ? (
                             <>
                               <DropdownHeader>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Sl No</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Name</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Employee ID</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Email</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Job Position</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700, textAlign: "center" }}>Delete</EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Sl No
+                                </EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Name
+                                </EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Employee ID
+                                </EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Email
+                                </EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Job Position
+                                </EmployeeCell>
+                                <EmployeeCell
+                                  style={{
+                                    fontWeight: 700,
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  Delete
+                                </EmployeeCell>
                               </DropdownHeader>
 
                               {paginatedEmployees.map((emp, idx) => (
                                 <EmployeeRow
-                                  key={emp.id ?? emp.employee_id ?? `${dept.id}-${startIndex + idx}`}
+                                  key={
+                                    emp.id ??
+                                    emp.employee_id ??
+                                    `${dept.id}-${startIndex + idx}`
+                                  }
                                   // onClick={() => navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })}
                                   // style={{ cursor: "pointer" }}
                                 >
-                                  <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
+                                  <EmployeeCell>
+                                    {startIndex + idx + 1}
+                                  </EmployeeCell>
 
                                   <EmployeeCell>{emp.name}</EmployeeCell>
 
@@ -523,9 +621,18 @@ const DepartmentList = () => {
                                     <button
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        handleDeleteEmployee(emp.id, emp.name, dept.id);
+                                        handleDeleteEmployee(
+                                          emp.id,
+                                          emp.name,
+                                          dept.id,
+                                        );
                                       }}
-                                      style={{ border: "none", background: "transparent", cursor: "pointer", color: "red" }}
+                                      style={{
+                                        border: "none",
+                                        background: "transparent",
+                                        cursor: "pointer",
+                                        color: "red",
+                                      }}
                                       aria-label={`Delete ${emp.name}`}
                                     >
                                       <FaTrash />
@@ -535,13 +642,17 @@ const DepartmentList = () => {
                               ))}
                             </>
                           ) : (
-                            <NoRecordMessage>No employees found.</NoRecordMessage>
+                            <NoRecordMessage>
+                              No employees found.
+                            </NoRecordMessage>
                           )}
                         </DropdownWrapper>
 
                         {/* Pagination for employees inside the expanded department */}
                         {sortedEmployees.length > pageSize && (
-                          <PaginationWrapper onClick={(e) => e.stopPropagation()}>
+                          <PaginationWrapper
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <PageButton
                               disabled={currentPage === 1}
                               onClick={(e) => {
@@ -565,7 +676,10 @@ const DepartmentList = () => {
                                 e.stopPropagation();
                                 setPageByDept((prev) => ({
                                   ...prev,
-                                  [dept.id]: Math.min(totalPages, currentPage + 1),
+                                  [dept.id]: Math.min(
+                                    totalPages,
+                                    currentPage + 1,
+                                  ),
                                 }));
                               }}
                             >
@@ -582,21 +696,27 @@ const DepartmentList = () => {
               <p>No departments found.</p>
             )}
           </DepartmentGrid>
-        )} 
+        )}
 
         {showAddModal && (
           <ModalOverlay>
             <ModalContent>
               <Container style={{ position: "relative" }}>
-                <CloseButton onClick={() => setShowAddModal(false)} aria-label="Close">
+                <CloseButton
+                  onClick={() => setShowAddModal(false)}
+                  aria-label="Close"
+                >
                   <FaTimes />
                 </CloseButton>
 
                 <TitleRow>
-                  <BackArrow onClick={() => setShowAddModal(false)} aria-label="Back">
-                    <FaArrowLeft />
+                  <BackArrow
+                    onClick={() => setShowAddModal(false)}
+                    aria-label="Back"
+                  >
+                <GoArrowLeft />
                   </BackArrow>
-                  <h2>Add Department</h2>
+                  <Title>Add Department</Title>
                 </TitleRow>
 
                 <Form
@@ -607,20 +727,41 @@ const DepartmentList = () => {
                 >
                   <FormGroup>
                     <Label>Department Name</Label>
-                    <Input style={{border:"1px solid lightgray"}}
-                    type="text" name="name" value={newDeptForm.name} onChange={handleNewDeptChange} placeholder="Development" required />
+                    <Input
+                      style={{ border: "1px solid lightgray" }}
+                      type="text"
+                      name="name"
+                      value={newDeptForm.name}
+                      onChange={handleNewDeptChange}
+                      placeholder="Eg:Development"
+                           autoComplete="off"
+                      required
+                    />
                   </FormGroup>
 
                   <FormGroup>
                     <Label>Department Code</Label>
-                  <Input style={{border:"1px solid lightgray"}}
-                    type="text" name="department_code" value={newDeptForm.department_code} onChange={handleNewDeptChange} placeholder="Eg:Dev_00" required />
+                    <Input
+                      style={{ border: "1px solid lightgray" }}
+                      type="text"
+                      name="department_code"
+                      value={newDeptForm.department_code}
+                      onChange={handleNewDeptChange}
+                      placeholder="Eg:Dev_00"
+                      autoComplete="off"
+                      required
+                    />
                   </FormGroup>
 
-                  {newDeptError && <p style={{ color: "red" }}>{newDeptError}</p>}
+                  {newDeptError && (
+                    <p style={{ color: "red" }}>{newDeptError}</p>
+                  )}
 
                   <ButtonRow>
-                    <CancelButton type="button" onClick={() => setShowAddModal(false)}>
+                    <CancelButton
+                      type="button"
+                      onClick={() => setShowAddModal(false)}
+                    >
                       Cancel
                     </CancelButton>
                     <SaveButton type="submit">Save</SaveButton>

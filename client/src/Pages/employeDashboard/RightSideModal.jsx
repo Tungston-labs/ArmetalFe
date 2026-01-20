@@ -23,7 +23,6 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
   const [empData, setEmpData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // ---- Fetch data when modal opens ----
  useEffect(() => {
   if (!isOpen || !employeeId) return;
 
@@ -31,7 +30,7 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
 
   fetchEmployeeDashboard(employeeId)
     .then((res) => {
-      console.log("📌 EMPLOYEE DASHBOARD DATA:", res);  // <-- HERE
+      console.log("📌 EMPLOYEE DASHBOARD DATA:", res);  
       setEmpData(res);
     })
     .catch((err) => {

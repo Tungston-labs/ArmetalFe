@@ -738,60 +738,53 @@ export const LabelRow = styled.div`
 export const UploadButton = styled.button`
   background-color: #1e40af;
   color: #fff;
-  padding: clamp(0.5rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 2rem);
   border: none;
-  width: clamp(80px, 15%, 200px);
-  height: clamp(50px, 10vw, 120px);
-  font-size: clamp(0.9rem, 1vw, 1.2rem);
   border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
+
+  padding: 8px 14px;
+  width: 90px;
+  height: 40px;
+  font-size: 0.9rem;
 
   &:hover {
     background-color: #1c3aa9;
   }
 
+  /* Tablets */
+  @media (min-width: 768px) {
+    padding: 10px 18px;
+    width: 120px;
+    height: 50px;
+   font-size: 0.9rem;
+  }
+
+  /* Small laptops */
+  @media (min-width: 1024px) {
+    padding: 12px 22px;
+    width: 140px;
+    height: 60px;
+    font-size: 0.9rem;
+  }
+
+  /* Large screens */
   @media (min-width: 1440px) {
-    font-size: 1.3rem;
-    width: 150px;
+    padding: 14px 26px;
+    width: 160px;
     height: 70px;
+    font-size: 0.9rem;
   }
-  @media (min-width: 1960px) {
-    font-size: 1.5rem;
-    width: 170px;
-    height: 80px;
-  }
+
+  /* Very large displays (4K) */
   @media (min-width: 2560px) {
-    font-size: 1.9rem;
-    width: 220px;
-    height: 150px;
-  }
-  @media (min-width: 3840px) {
-    font-size: 2.2rem;
-    width: 240px;
-    height: 180px;
-  }
-  @media (min-width: 7680px) {
-    font-size: 2.5rem;
-    width: 260px;
-    height: 200px;
+    padding: 18px 30px;
+    width: 200px;
+    height: 90px;
+    font-size: 1.4rem;
   }
 `;
 
-// export const ImagePreviewRow = styled.div`
-//   display: flex;
-//   gap: 0.8rem;
-// `;
-
-// export const ImageBox = styled.div`
-//   width: 117px;
-//   height: 80px;
-//   background: #f0f0f0;
-//   border-radius: 4px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// `;
 
 export const InlineUploadRow = styled.div`
   display: flex;

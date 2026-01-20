@@ -165,7 +165,6 @@ const Table = ({
 
             <FormGroups>
               <Label>Tax Regime</Label>
-              <ErrorMsg msg={errors.taxRegime} />
               <Select
                 value={taxRegime}
                 onChange={(e) => setTaxRegime(e.target.value)}

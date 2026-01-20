@@ -48,7 +48,6 @@ const ProjectChart = ({ projectEmployeeCount }) => {
     { name: "Bench", value: bench || 0 }
   ];
 
-  // 🔥 Dynamic Y Axis Logic
   const maxValue = Math.max(on_site || 0, variant || 0, bench || 0);
   const roundedMax = Math.ceil(maxValue / 10) * 10 + 10;
 

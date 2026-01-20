@@ -197,12 +197,18 @@ export const DateBox = styled.div`
 
 export const NoData = styled.div`
   text-align: center;
+  padding: 20px 0;
   color: #94a3b8;
-  padding: 12px;
+  font-size: 14px;
+
+  @media (max-width: 600px) {
+    font-size: 12px;
+    padding: 12px 0;
+  }
 
   @media (min-width: 1920px) {
-    padding: 16px;
-    font-size: 15px;
+    font-size: 18px;
+    padding: 28px 0;
   }
 `;
 export const IconButton = styled.button`

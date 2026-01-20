@@ -36,7 +36,7 @@ const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) => {
       <Header>
         <Title>Contract Expiry</Title>
 
-        {/* 🔥 Icon on Right side */}
+
                <IconButton onClick={() => navigate("/employee")}>
           <BsArrowUpRightCircleFill />
         </IconButton>

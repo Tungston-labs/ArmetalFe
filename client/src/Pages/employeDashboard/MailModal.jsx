@@ -11,7 +11,7 @@ import {
   Label
 } from "./MailModal.styles";
 import { sendEmail } from "../../services/employeeService";
-
+import Swal from "sweetalert2";
 const MailModal = ({ isOpen, onClose, employee }) => {
   const initialFormState = {
     to: employee?.email || "",
@@ -36,28 +36,52 @@ const MailModal = ({ isOpen, onClose, employee }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSend = async () => {
-    if (!form.to || !form.subject || !form.body) {
-      alert("Please fill all fields!");
-      return;
-    }
+ const handleSend = async () => {
+  if (!form.to || !form.subject || !form.body) {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing fields",
+      text: "Please fill all fields!",
+      confirmButtonColor: "#2563eb",
+    });
+    return;
+  }
 
-    try {
-      setLoading(true);
-      await sendEmail(form);
-      alert("Email sent successfully!");
+  try {
+    setLoading(true);
+    Swal.fire({
+      title: "Sending email...",
+      text: "Please wait",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
-      // AUTO CLOSE + RESET MODAL
-      setForm(initialFormState);
-      onClose();
+    await sendEmail(form);
 
-    } catch (err) {
-      console.error(err);
-      alert("Failed to send email!");
-    } finally {
-      setLoading(false);
-    }
-  };
+    Swal.fire({
+      icon: "success",
+      title: "Sent!",
+      text: "Email sent successfully",
+      confirmButtonColor: "#16a34a",
+    });
+
+    setForm(initialFormState);
+    onClose();
+  } catch (err) {
+    console.error(err);
+
+    Swal.fire({
+      icon: "error",
+      title: "Failed",
+      text: "Failed to send email!",
+      confirmButtonColor: "#dc2626",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -74,6 +98,7 @@ const MailModal = ({ isOpen, onClose, employee }) => {
             name="to"
             value={form.to}
             onChange={handleChange}
+              autoComplete="off"
           />
         </Row>
 
@@ -84,17 +109,18 @@ const MailModal = ({ isOpen, onClose, employee }) => {
             name="subject"
             value={form.subject}
             onChange={handleChange}
+            autoComplete="off"
             placeholder="Enter subject"
           />
         </Row>
 
         <Row>
-          <Label>Message</Label>
           <TextArea
             name="body"
             value={form.body}
             onChange={handleChange}
-            placeholder="Write your message..."
+              autoComplete="off"
+            placeholder="Write your message......"
           />
         </Row>
 

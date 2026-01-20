@@ -21,7 +21,7 @@ const ViewBasicLayout = ({
   formData,
   handleChange,
   handleImageChange,
-  isIndianCompany, // <-- FIX ADDED HERE
+  isIndianCompany, 
 }) => {
   const location = useLocation();
   const rowRef = useRef(null);
@@ -51,9 +51,10 @@ const ViewBasicLayout = ({
           editable={true}
           onChange={handleChange}
           onImageChange={handleImageChange}
+        
         />
 
-        {/* Tabs */}
+ 
         <TabsRowContainer>
           <TabsRow ref={rowRef}>
             {tabs.map((tab) => (

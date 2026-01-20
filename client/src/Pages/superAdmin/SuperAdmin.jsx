@@ -258,6 +258,7 @@ const CompanyTable = () => {
             <AddCompanyModal
               isEdit={isEditMode}
               selectedCompany={selectedCompany}
+                showPrivileges={true}
               onClose={() => setShowCompanyModal(false)}
             />
           </div>
