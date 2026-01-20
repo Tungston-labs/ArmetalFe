@@ -429,3 +429,31 @@ export const ActionText = styled.p`
     font-size: 22px;
   }
 `;
+export const PasswordWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const EyeIcon = styled.span`
+  position: absolute;
+  right: 12px;
+  top: 35%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+
+  &:hover {
+    color: #000;
+  }
+`;
+
+export const ErrorText = styled.p`
+  color: red;
+  margin-top: 0.5rem;
+`;
+
+export const SuccessText = styled.p`
+  color: green;
+  margin-top: 0.5rem;
+`;

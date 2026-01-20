@@ -38,8 +38,6 @@ const statusColors = {
   Pending: "#e07777",       
 };
 
-
-  // Fetch projects from API
   useEffect(() => {
     dispatch(getProjects({ search: searchTerm }));
   }, [dispatch, searchTerm]);
