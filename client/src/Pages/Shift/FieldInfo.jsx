@@ -47,6 +47,7 @@ import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import { getAccessToken } from "../../hooks/useAccessToken";
 import { LuArrowLeft } from "react-icons/lu";
+import ActivityLogModal from "../../Components/ModalShift";
 
 const FieldInfo = () => {
   const navigate = useNavigate();
