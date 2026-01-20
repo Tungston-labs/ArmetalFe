@@ -306,32 +306,90 @@ class AttendanceAdminListView(generics.ListAPIView):
 # -----------------------------------------------------attendance detail view group by date(admin)
 
 
+# class AttendanceDetailByDateView(APIView):
+#     permission_classes = [IsAuthenticated, IsHRorIsEmployee]
+
+#     def get(self, request):
+#         user = request.user
+#         employee = getattr(user, 'employee_db', None)
+
+#         if not employee:
+#             return Response({'detail': 'Employee not found.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Use today's date by default
+#         date_str = request.query_params.get('date')
+#         if date_str:
+#             try:
+#                 selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+#             except ValueError:
+#                 return Response({'detail': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             selected_date = timezone.localdate()
+
+#         try:
+#             attendance = Attendance.objects.get(employee=employee, date=selected_date)
+#             serializer = AttendanceDetailSerializer(attendance)
+#             return Response(serializer.data)
+#         except Attendance.DoesNotExist:
+#             return Response({'detail': f'No attendance recorded on {selected_date}.'}, status=status.HTTP_404_NOT_FOUND)
+
+from django.utils.dateparse import parse_date, parse_datetime
+
 class AttendanceDetailByDateView(APIView):
     permission_classes = [IsAuthenticated, IsHRorIsEmployee]
 
     def get(self, request):
         user = request.user
         employee = getattr(user, 'employee_db', None)
+        print("USER ID:", request.user.id)
+        print("USERNAME:", request.user.username)
+        print("HAS EMPLOYEE:", hasattr(request.user, "employee_db"))
+
 
         if not employee:
-            return Response({'detail': 'Employee not found.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': 'Employee not found.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Use today's date by default
-        date_str = request.query_params.get('date')
-        if date_str:
-            try:
-                selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                return Response({'detail': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
+        date_param = request.query_params.get('date')
+
+        if date_param:
+            # Handle both date & datetime formats (iOS safe)
+            parsed_date = parse_date(date_param)
+
+            if not parsed_date:
+                parsed_datetime = parse_datetime(date_param)
+                if parsed_datetime:
+                    parsed_date = parsed_datetime.date()
+
+            if not parsed_date:
+                return Response(
+                    {'detail': 'Invalid date format.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            selected_date = parsed_date
         else:
             selected_date = timezone.localdate()
 
-        try:
-            attendance = Attendance.objects.get(employee=employee, date=selected_date)
-            serializer = AttendanceDetailSerializer(attendance)
-            return Response(serializer.data)
-        except Attendance.DoesNotExist:
-            return Response({'detail': f'No attendance recorded on {selected_date}.'}, status=status.HTTP_404_NOT_FOUND)
+        attendance = Attendance.objects.filter(
+            employee=employee,
+            date=selected_date
+        ).first()
+
+        if not attendance:
+            return Response(
+                {
+                    'detail': 'No attendance found',
+                    'date': selected_date
+                },
+                status=status.HTTP_200_OK  # IMPORTANT for mobile
+            )
+
+        serializer = AttendanceDetailSerializer(attendance)
+        return Response(serializer.data)
+
 
 # -----------------------------------------------------attendance list view (for admin)
 class AttendanceAdminDetailView(RetrieveAPIView):
@@ -434,3 +492,98 @@ class AttendanceLocationUpdateView(APIView):
             "detail": "Location updated successfully.",
             "locations": attendance.locations
         })
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from django.utils.dateparse import parse_date
+from django.utils import timezone
+from datetime import datetime, time
+
+from employee.models import Employee_db
+from .models import HourlyLocationLog
+from .serializers import HourlyLocationLogSerializer
+from .utils.geocoding_utils import get_location_name_sync
+from shared.pagination import HourlyLocationLogPagination  # Import the pagination class
+
+class BackgroundLocationUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, employee_id):
+        """
+        Return background location logs for the given employee filtered by date
+        with pagination.
+        """
+        try:
+            employee = Employee_db.objects.get(id=employee_id)
+        except Employee_db.DoesNotExist:
+            return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        logs_qs = HourlyLocationLog.objects.filter(employee=employee).order_by("-logged_at")
+
+        # Filter by date, from_date, to_date
+        date_str = request.query_params.get("date")
+        from_date_str = request.query_params.get("from_date")
+        to_date_str = request.query_params.get("to_date")
+
+        try:
+            if date_str:
+                date_obj = parse_date(date_str)
+                if date_obj:
+                    start = timezone.make_aware(datetime.combine(date_obj, time.min))
+                    end = timezone.make_aware(datetime.combine(date_obj, time.max))
+                    logs_qs = logs_qs.filter(logged_at__gte=start, logged_at__lte=end)
+            
+            elif from_date_str or to_date_str:
+                if from_date_str:
+                    from_date = parse_date(from_date_str)
+                    if from_date:
+                        start = timezone.make_aware(datetime.combine(from_date, time.min))
+                        logs_qs = logs_qs.filter(logged_at__gte=start)
+                if to_date_str:
+                    to_date = parse_date(to_date_str)
+                    if to_date:
+                        end = timezone.make_aware(datetime.combine(to_date, time.max))
+                        logs_qs = logs_qs.filter(logged_at__lte=end)
+        except Exception:
+            return Response(
+                {"error": "Invalid date format. Use YYYY-MM-DD"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Pagination
+        paginator = HourlyLocationLogPagination()
+        page = paginator.paginate_queryset(logs_qs, request)
+        serializer = HourlyLocationLogSerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+    def post(self, request, employee_id):
+        """
+        Save background location updates from mobile app.
+        Reverse geocode latitude & longitude to get location_name.
+        """
+        try:
+            employee = Employee_db.objects.get(id=employee_id)
+        except Employee_db.DoesNotExist:
+            return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        data = request.data.copy()
+        data["employee"] = employee.id
+
+        serializer = HourlyLocationLogSerializer(data=data)
+        if serializer.is_valid():
+            obj = serializer.save()
+            print(f"🌍 Calling geocoding for lat={obj.latitude}, lon={obj.longitude}")
+
+            if obj.latitude is not None and obj.longitude is not None:
+                try:
+                    obj.location_name = get_location_name_sync(obj.latitude, obj.longitude)
+                    obj.save(update_fields=["location_name"])
+                    print(f" Saved location_name '{obj.location_name}' for employee {employee_id}")
+                except Exception as e:
+                    print(f"⚠️ Geocoding failed for employee {employee_id}: {e}")
+
+            return Response({"status": "success"}, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

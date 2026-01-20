@@ -160,3 +160,15 @@ class AttendanceSession(models.Model):
             return dt_or_time
             
         return None
+# attendance/models.py
+from employee.models import Employee_db
+
+class HourlyLocationLog(models.Model):
+    employee = models.ForeignKey(Employee_db, on_delete=models.CASCADE)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    location_name = models.CharField(max_length=255, blank=True, null=True)
+    logged_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-logged_at']

@@ -40,10 +40,10 @@ class Employee_db(TimeStampedModel):
     employment_type = models.CharField(max_length=20, choices=[
         ('Full-time', 'Full-time'), ('Part-time', 'Part-time'), ('Contract', 'Contract')
     ])
-    passport_number = EncryptedCharField(max_length=500)
+    passport_number = EncryptedCharField(max_length=500,blank=True, null=True,unique=True)
     iqama_number = EncryptedCharField(max_length=500,blank=True, null=True,unique=True)
     aadar_number = EncryptedCharField(max_length=500,blank=True, null=True,unique=True)
-    insurance_number = EncryptedCharField(max_length=500)
+    insurance_number = EncryptedCharField(max_length=500,blank=True, null=True)
     visa_expiry_date = models.DateField(blank=True, null=True)
     contract_expiry_date = models.DateField(blank=True,null=True)
     total_leave = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)

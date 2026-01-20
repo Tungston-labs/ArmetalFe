@@ -37,7 +37,7 @@ class CompanyListView(generics.ListAPIView):
 class CompanyDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanyCreateSerializer
-    permission_classes = [IsSuperAdmin]
+    permission_classes = [IsAuthenticated]
 
 
     

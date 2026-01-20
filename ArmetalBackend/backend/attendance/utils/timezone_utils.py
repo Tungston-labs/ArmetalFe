@@ -199,3 +199,4 @@ def validate_punch_times(time_in, time_out, company_tz):
     except Exception as e:
         logger.error(f"Error validating punch times: {e}")
         return False, f"Error validating times: {str(e)}"
+

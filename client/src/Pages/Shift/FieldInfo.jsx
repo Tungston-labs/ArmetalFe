@@ -24,6 +24,14 @@ import {
   DayLabel,
   DayDate,
   DayMonth,
+  Header,
+  LeftSection,
+  BackButton,
+  TitleSection,
+  IconWrapper,
+  TextGroup,
+  Title,
+  Subtitle,
 } from "./FieldInfo.Styles";
 
 import FieldShiftIcon from "../../assets/projecticon.svg";
@@ -36,15 +44,17 @@ import CalendarModal from "../../Components/CalendarModal";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+import { getAccessToken } from "../../hooks/useAccessToken";
+import { LuArrowLeft } from "react-icons/lu";
+import ActivityLogModal from "../../Components/ModalShift";
 
 const FieldInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const todayDate = new Date(); // today for comparison
+    const todayDate = new Date(); // today for comparison
   const todayISO = todayDate.toISOString().split("T")[0];
-
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayISO);
   const [selectedDay, setSelectedDay] = useState(() => {
@@ -54,8 +64,8 @@ const FieldInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { fieldInfo, isLoading } = useSelector((state) => state.projects);
-
-  // Fetch field info whenever selectedDate changes
+      const accessToken = getAccessToken();
+  
   useEffect(() => {
     if (id && selectedDate) {
       dispatch(getFieldInfo({ employeeId: id, date: selectedDate }));
@@ -72,7 +82,6 @@ const FieldInfo = () => {
   const profile = fieldInfo?.employee;
   const sessions = fieldInfo?.sessions || [];
 
-  // Format session times
   const formattedSessions = useMemo(
     () =>
       sessions.map((s) => ({
@@ -91,6 +100,48 @@ const FieldInfo = () => {
       })),
     [sessions]
   );
+useEffect(() => {
+    if (id && selectedDate) {
+      dispatch(getFieldInfo({ employeeId: id, date: selectedDate }));
+    }
+  }, [id, selectedDate, dispatch]);
+
+const [hourlyLocationData, setHourlyLocationData] = useState([]);
+useEffect(() => {
+  if (!id || !selectedDate) return;
+
+  let intervalId;
+
+  const fetchEmployeeLocations = async () => {
+    try {
+      const token = await getAccessToken();
+      if (!token) return;
+
+      const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
+
+      const response = await fetch(
+        `http://178.248.112.16:8001/api/background-location/${id}/?date=${formattedDate}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (!response.ok) throw new Error("Failed to fetch");
+
+      const json = await response.json();
+      setHourlyLocationData(json?.results || []);
+    } catch (err) {
+      console.error("Error fetching location for date:", err);
+    }
+  };
+
+  // Fetch immediately once
+  fetchEmployeeLocations();
+
+  intervalId = setInterval(fetchEmployeeLocations, 150000);
+
+  return () => clearInterval(intervalId); // cleanup
+}, [id, selectedDate]);
+
+
 
   // Generate week days starting from Monday
   const getWeekDays = (baseDate) => {
@@ -139,7 +190,8 @@ const FieldInfo = () => {
     <>
 
       <PageWrapper>
-        <EmployeeTitle
+        {/* Header */}
+         <EmployeeTitle
           iconSrc={FieldShiftIcon}
           title="Project"
           subtitle="Manage all Project within the organization"
@@ -148,19 +200,45 @@ const FieldInfo = () => {
           showSearch={false}
           rightElement={
             <>
-              <ButtonContainer>
-                <ButtonAct onClick={() => setIsModalOpen(true)}>
-                  Activity Log
-                </ButtonAct>
-              </ButtonContainer>
+        <Header>
+  <LeftSection>
+    <BackButton onClick={() => navigate("/project-department/id")}>
+      <LuArrowLeft />
+    </BackButton>
 
-              {isModalOpen && (
-                <Modal
-                  onClose={() => setIsModalOpen(false)}
-                  data={fieldInfo?.locations || []}
-                  date={selectedDate}
-                />
-              )}
+    <TitleSection>
+      <IconWrapper>
+        <img src={FieldShiftIcon} alt="FieldShift" />
+      </IconWrapper>
+      <TextGroup>
+        <Title>Project</Title>
+        <Subtitle>Manage all departments within the organization.</Subtitle>
+      </TextGroup>
+    </TitleSection>
+  </LeftSection>
+
+  <ButtonContainer>
+    <ButtonAct onClick={() => setIsModalOpen(true)}>
+      Activity Log
+    </ButtonAct>
+  </ButtonContainer>
+
+ {isModalOpen && (
+  <ActivityLogModal
+    date={selectedDate}
+    hourlyLocationData={hourlyLocationData} 
+    liveLocationData={[]} 
+    onClose={() => setIsModalOpen(false)}
+    onDateChange={(newDate) => {
+      setSelectedDate(newDate);
+      dispatch(getFieldInfo({ employeeId: id, date: newDate }));
+    }}
+  />
+)}
+
+</Header>
+
+          
             </>
           }
         />
