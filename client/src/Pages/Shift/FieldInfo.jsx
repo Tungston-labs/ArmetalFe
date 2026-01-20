@@ -82,7 +82,6 @@ const FieldInfo = () => {
   const profile = fieldInfo?.employee;
   const sessions = fieldInfo?.sessions || [];
 
-  // Format session times
   const formattedSessions = useMemo(
     () =>
       sessions.map((s) => ({
@@ -107,7 +106,6 @@ useEffect(() => {
     }
   }, [id, selectedDate, dispatch]);
 
-  //  WebSocket for live location (admin view)
 const [hourlyLocationData, setHourlyLocationData] = useState([]);
 useEffect(() => {
   if (!id || !selectedDate) return;
@@ -225,27 +223,22 @@ useEffect(() => {
     </ButtonAct>
   </ButtonContainer>
 
-  {isModalOpen && (
- <Modal
-    date={selectedDate}                   // <-- parent state
-    hourlyLocationData={hourlyLocationData}
+ {isModalOpen && (
+  <ActivityLogModal
+    date={selectedDate}
+    hourlyLocationData={hourlyLocationData} 
+    liveLocationData={[]} 
     onClose={() => setIsModalOpen(false)}
     onDateChange={(newDate) => {
-      setSelectedDate(newDate);           // <-- updates parent state
-      dispatch(getFieldInfo({ employeeId: id, date: newDate })); // fetch new field info
+      setSelectedDate(newDate);
+      dispatch(getFieldInfo({ employeeId: id, date: newDate }));
     }}
   />
+)}
 
-  )}
 </Header>
 
-              {isModalOpen && (
-                <Modal
-                  onClose={() => setIsModalOpen(false)}
-                  data={fieldInfo?.locations || []}
-                  date={selectedDate}
-                />
-              )}
+          
             </>
           }
         />
