@@ -21,7 +21,7 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+ASGI_APPLICATION = 'backend.asgi.application'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'dashboard',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +79,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],   # 👈 very important
+        "DIRS": [BASE_DIR / "templates"],   
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -93,7 +94,12 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'backend.wsgi.application'
-
+ASGI_APPLICATION = 'backend.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -105,7 +111,7 @@ DATABASES = {
         'NAME': 'db_armetal',         
         'USER': 'postgres',
         'PASSWORD': 'password@123',
-        'HOST': 'localhost',
+        'HOST': '178.248.112.16',
         'PORT': '5432',                
     }
 }
@@ -199,7 +205,9 @@ CORS_ALLOW_ALL_ORIGINS = True  # 👈 Use this instead of CORS_ALLOWED_ORIGINS
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://192.168.29.146:5173",  # Access from phone browser
-    "http://192.168.29.146:3000", 
+    "http://192.168.29.146:3000",
+    "http://192.168.29.194:8001",
+
 ]
 
 EMAIL_BACKEND = config("EMAIL_BACKEND")

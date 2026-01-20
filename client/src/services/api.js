@@ -46,18 +46,18 @@ API.interceptors.response.use(
         });
 
         const newAccessToken = res.data.access;
-        const newRefreshToken = res.data.refresh; // 👈 important
+        const newRefreshToken = res.data.refresh; 
 
         if(localStorage.getItem("refreshToken")){
         // Store both tokens
         localStorage.setItem("accessToken", newAccessToken);
         if (newRefreshToken) {
-          localStorage.setItem("refreshToken", newRefreshToken); // 👈 overwrite old refresh token
+          localStorage.setItem("refreshToken", newRefreshToken);
         }
       }else{
         sessionStorage.setItem("accessToken", newAccessToken);
         if (newRefreshToken) {
-          sessionStorage.setItem("refreshToken", newRefreshToken); // 👈 overwrite old refresh token
+          sessionStorage.setItem("refreshToken", newRefreshToken);
         }
       }
 
