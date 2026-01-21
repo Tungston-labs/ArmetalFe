@@ -357,7 +357,7 @@ export default function DailyTask() {
                   active={emp.id === selectedEmployee?.id}
                 >
                   {emp.profile_pic ? (
-                    <img src={emp.profile_pic} alt={emp.name} />
+                    <img src={emp.profile_pic} />
                   ) : (
                     <PiUserCirclePlusThin size={40} color="#999" />
                   )}

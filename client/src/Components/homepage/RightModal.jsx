@@ -21,7 +21,7 @@ import {
   getTodayEmployeeStats,
   getSimpleNotifications,
 } from "../../Redux/dashboardSlice";
-import AddCompanyModal from "../../Pages/superAdmin/AddCompany.jsx";
+import EditProfileModal from "../../Components/homepage/EditProfileModal.jsx";
 
 const RightModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
@@ -237,7 +237,7 @@ const RightModal = ({ open, onClose }) => {
               overflowY: "auto",
             }}
           >
-            <AddCompanyModal
+            <EditProfileModal
               isEdit={isEditMode}
               selectedCompany={selectedCompany}
                 showPrivileges={false}

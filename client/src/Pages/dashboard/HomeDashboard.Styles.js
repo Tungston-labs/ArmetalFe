@@ -94,7 +94,7 @@ export const TwoColumn = styled.div`
   margin: 20px 0;
   align-items: stretch; 
 
-  @media (max-width: 992px) {
+  @media (max-width: 1024px) {
     flex-direction: column;
   }
     @media (min-width: 2560px) {

@@ -61,8 +61,7 @@ const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) =>
       $isActive={emp.id === selectedEmployeeId}
     >
       <img
-        src={emp.profile_pic}       
-        alt={emp.name}              
+        src={emp.profile_pic}                   
         style={{
           width: 26,
           height: 26,

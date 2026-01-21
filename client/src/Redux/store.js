@@ -11,6 +11,7 @@ import attendanceReducer from '../Redux/attendanceSlice';
 import dashboardReducer from '../Redux/dashboardSlice';
 import payrollReducer from '../Redux/payrollSlice';
 import projectReducer from '../Redux/fieldShiftSlice'; 
+import companyReducer from "../Redux/companySlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -25,5 +26,6 @@ export const store = configureStore({
     dashboard: dashboardReducer,
     payroll: payrollReducer,
     projects: projectReducer,
+    company: companyReducer,
   },
 });

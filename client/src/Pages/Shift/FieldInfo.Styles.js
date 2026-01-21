@@ -169,7 +169,7 @@ export const ProfileRow = styled.div`
   gap: 18px;
   align-items: stretch;
 
-  border-bottom: 1px solid #00000054;
+  /* border-bottom: 1px solid #00000054; */
   @media (max-width: 560px) {
     flex-direction: column;
     align-items: center;
@@ -182,7 +182,7 @@ export const Avatar = styled.div`
   border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid #052db4;
+  border: 1px solid #bebfc2ff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -299,7 +299,7 @@ export const InputRow = styled.div`
 
 export const InfoInput = styled.input`
   border-radius: 6px;
-  border: 1px solid #052db4;
+  border: 1px solid #bebfc2ff;
   padding: 10px 12px;
   font-size: 14px;
   background: #fff;

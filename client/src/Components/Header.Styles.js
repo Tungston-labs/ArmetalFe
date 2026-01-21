@@ -188,7 +188,7 @@ export const InputBox = styled.input`
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1rem;
-
+ color: #111111ff;
   &:focus {
     outline: none;
     border-color: #1034ad;
@@ -212,7 +212,10 @@ export const InputBox = styled.input`
     font-size: 0.95rem;
     padding: 10px 12px;
   }
-
+  @media (min-width: 1025px) {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
   /* 🖥 Full HD (1920px) */
   @media (min-width: 1920px) {
     font-size: 1rem;
@@ -241,7 +244,7 @@ export const BioBox = styled.textarea`
   min-height: 90px;
   resize: vertical;
   font-size: 1rem;
-
+  color: #111111ff;
   &:focus {
     outline: none;
     border-color: #1034ad;
@@ -263,7 +266,10 @@ export const BioBox = styled.textarea`
     padding: 10px 12px;
     min-height: 85px;
   }
-
+  @media (min-width: 1025px) {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
   /* 🖥 Full HD (1920px) */
   @media (min-width: 1920px) {
     font-size: 1.1rem;
