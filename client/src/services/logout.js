@@ -14,7 +14,7 @@ export const useLogout = () => {
         return;
       }
 
-      await API.post("http://178.248.112.16:8001/api/logout/", {
+      await API.post("/logout/", {
         refresh: refreshToken,
       });
 

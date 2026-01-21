@@ -63,7 +63,7 @@
     const handlePasswordChange = async () => {
       setLoading(true);
       try {
-        await API.post("http://178.248.112.16:8001/api/change-password/", {
+        await API.post("/change-password/", {
           old_password: oldPassword,
           new_password: newPassword,
         });

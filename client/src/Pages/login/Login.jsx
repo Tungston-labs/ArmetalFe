@@ -28,6 +28,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import "@fontsource/anek-malayalam/400.css";
 import "@fontsource/anek-malayalam/700.css";
+import { BASE_URL } from "../../services/api";
 
 const PoweredBy = ({ company = "REKORY" }) => (
   <p
@@ -82,7 +83,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(
-        "http://178.248.112.16:8001/api/token/",
+        `${BASE_URL}/api/token/`,
         {
           username: formData.username,
           password: formData.password,
@@ -131,7 +132,7 @@ const LoginForm = () => {
       const token = localStorage.getItem("accessToken");
 
       await axios.post(
-        "http://178.248.112.16:8000/api/change-password/",
+        `${BASE_URL}/api/change-password/`,
         {
           old_password: formData.old_password,
           new_password: formData.new_password,

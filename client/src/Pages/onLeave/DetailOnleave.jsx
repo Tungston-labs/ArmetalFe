@@ -32,6 +32,7 @@ import { getOnLeaveEmployees } from "../../Redux/leaveSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
 import { GoInfo } from "react-icons/go";
+import { BASE_URL } from "../../services/api";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -229,7 +230,7 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
         <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           {emp.profile_pic ? (
             <img
-              src={`http://178.248.112.16:8001${emp.profile_pic}`}
+              src={`${BASE_URL}${emp.profile_pic}`}
               alt={emp.name}
               style={{
                 width: "25px",

@@ -33,6 +33,7 @@ import { FaUserCircle } from "react-icons/fa";
 // import Navbar from '../../Components/Navbar';
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader"
+import { BASE_URL } from '../../services/api';
 
 
 const DepartmentDetail = () => {
@@ -375,7 +376,7 @@ const handleUpdate = async () => {
         <td style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           {emp.profile_pic ? (
             <img
-              src={`http://178.248.112.16:8001${emp.profile_pic}`}
+              src={`${BASE_URL}/api/${emp.profile_pic}`}
               alt={emp.name}
               style={{
                 width: "32px",

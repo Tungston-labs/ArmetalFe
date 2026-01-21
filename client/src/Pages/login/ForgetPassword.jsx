@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import PunchLoader from "../../Components/Loader"; // ✅ adjust path if needed
 import "@fontsource/anek-malayalam/400.css"; // Regular
 import "@fontsource/anek-malayalam/700.css"; // Bold
+import { BASE_URL } from "../../services/api";
 
 const ForgotPasswordPage = () => {
   const [formData, setFormData] = useState({ email: "" });
@@ -44,7 +45,7 @@ const ForgotPasswordPage = () => {
 
     try {
       await axios.post(
-        "http://178.248.112.16:8001/api/forgot-password/send-otp/",
+        `${BASE_URL}/api/forgot-password/send-otp/`,
         {
           email: formData.email,
         }

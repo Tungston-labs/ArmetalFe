@@ -2,10 +2,9 @@
 import axios from "axios";
 import {toast} from "react-toastify";
 
-
+export const BASE_URL=import.meta.env.VITE_API_BASE_URL
 const API = axios.create({
-  baseURL: "http://178.248.112.16:8001/api",
-  // baseURL: "http://localhost:8000/api",
+  baseURL: `${BASE_URL}/api`,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -41,7 +40,7 @@ API.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem("refreshToken")|| sessionStorage.getItem("refreshToken");
 
-        const res = await axios.post("http://178.248.112.16:8001/api/token/refresh/", {
+        const res = await axios.post(`${BASE_URL}/api/token/refresh/`, {
           refresh: refreshToken,
         });
 

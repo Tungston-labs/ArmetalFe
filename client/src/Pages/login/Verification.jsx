@@ -22,6 +22,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import PunchLoader from "../../Components/Loader"; // ✅ adjust path if needed
 import { FaChevronLeft } from "react-icons/fa6";
+import { BASE_URL } from "../../services/api";
 const VerifyCodePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const VerifyCodePage = () => {
     setLoading(true); // show loader
     try {
       await axios.post(
-        "http://178.248.112.16:8001/api/forgot-password/verify-otp/",
+        `${BASE_URL}/api/forgot-password/verify-otp/`,
         {
           email,
           otp: fullCode,
@@ -164,7 +165,7 @@ const VerifyCodePage = () => {
                 try {
                   setLoading(true); // optional: show loader
                   await axios.post(
-                    "http://178.248.112.16:8001/api/forgot-password/send-otp/",
+                    `${BASE_URL}/api/forgot-password/send-otp/`,
                     { email }
                   );
                   setMessage("A new OTP has been sent!");

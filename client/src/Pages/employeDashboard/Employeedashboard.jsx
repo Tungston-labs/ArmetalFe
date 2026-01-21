@@ -41,6 +41,7 @@ import { fetchEmployeeDash } from "../../Redux/authSlice";
 import punchTime from "../../assets/puchtime.svg";
 import { useNavigate } from "react-router-dom";
 import { Spin } from "antd";
+import { BASE_URL } from "../../services/api";
 const TimeLogDashboard = () => {
   const { employeeId } = useParams();
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const TimeLogDashboard = () => {
     }
   }, [employeeId, dispatch]);
 
-  const baseUrl = "http://178.248.112.16:8001";
+  const baseUrl =BASE_URL;
 
   if (loadingEmployeeDash) {
  
@@ -174,67 +175,6 @@ const formatUTCToLocal = (utcTimeStr) => {
             ))}
           </MemberList>
         </DepartmentBox>
-
-        {/* Time Log Table */}
-        {/* <DateHeading>
-  {new Date().toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  })}
-
-</DateHeading> */}
-
-     {/* <TimeLogContainer>
-  <ScrollableTableWrapper>
-    {employeeDashData?.today_sessions?.length > 0 ? (
-      <Table>
-        <thead>
-          <TableRow>
-            <TableHeader green style={{ textAlign: "left" }}>
-              Time In
-            </TableHeader>
-            <TableHeader style={{ textAlign: "center" }}>To</TableHeader>
-            <TableHeader red style={{ textAlign: "right" }}>
-              Time Out
-            </TableHeader>
-          </TableRow>
-        </thead>
-        <tbody>
-          {employeeDashData.today_sessions.map((session, index) => (
-            <TableRow key={index}>
-           <TableCell align="left">
-  <Icon>
-    <BiTimeFive />
-  </Icon>
-  {formatUTCToLocal(session.time_in)}
-</TableCell>
-
-<TableCell align="center" className="separator">To</TableCell>
-
-<TableCell align="right">
-  <Icon>
-    <BiTimeFive />
-  </Icon>
-  {formatUTCToLocal(session.time_out)}
-</TableCell>
-            </TableRow>
-          ))}
-        </tbody>
-      </Table>
-    ) : (
-      <div style={{ textAlign: "center", padding: "20px" }}>
-        <img
-          src={punchTime}
-          alt="No logs"
-          style={{ width: "430px", height: "auto", opacity: 0.8 }}
-        />
-        <p style={{ marginTop: "10px", color: "#666" }}>No time logs found</p>
-      </div>
-    )}
-  </ScrollableTableWrapper>
-</TimeLogContainer> */}
-
     </MainWrapper>
     </Container>
   );

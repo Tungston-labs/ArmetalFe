@@ -22,6 +22,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaChevronLeft } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { BASE_URL } from "../../services/api";
 const ChangePasswordPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     try {
       await axios.post(
-        "http://178.248.112.16:8001/api/forgot-password/reset/",
+        `${BASE_URL}/api/forgot-password/reset/`,
         {
           email,
           new_password: newPassword,
