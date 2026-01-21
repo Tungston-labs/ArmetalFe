@@ -163,3 +163,43 @@ class CompanyOverviewView(APIView):
         }
         return Response(data)
 
+# views/company_views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+from .models import Company
+from .serializers import CompanySelfUpdateSerializer
+
+class CompanySelfView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        company = request.user.company
+        serializer = CompanySelfUpdateSerializer(company)
+        return Response(serializer.data)
+
+    def put(self, request):
+        company = request.user.company
+        serializer = CompanySelfUpdateSerializer(
+            company,
+            data=request.data,
+            partial=False
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request):
+        company = request.user.company
+        serializer = CompanySelfUpdateSerializer(
+            company,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
