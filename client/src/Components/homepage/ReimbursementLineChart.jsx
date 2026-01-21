@@ -28,7 +28,7 @@ const MonthTickText = styled.text`
   letter-spacing: 0.2px;
   font-size: 15px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1440px) {
     font-size: 10px;
   }
 `;

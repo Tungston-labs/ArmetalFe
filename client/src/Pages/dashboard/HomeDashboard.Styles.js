@@ -26,15 +26,18 @@ export const ContentWrapper = styled.div`
       margin-right: 300px;
       transform: scale(0.98);
     }
-
-    @media (max-width: 1200px) {
-      margin-right: 180px;
+ @media (max-width: 1599px) {
+      margin-right: 250px;
       transform: scale(0.99);
+    }
+    @media (max-width: 1200px) {
+      margin-right: 250px;
+      transform: scale(0.99);    
     }
 
    
     @media (max-width: 1024px) {
-      margin-right: 0;
+      margin-right:0;
       transform: scale(1);
     }
 

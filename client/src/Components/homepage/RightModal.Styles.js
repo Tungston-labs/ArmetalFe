@@ -28,7 +28,11 @@ export const Panel = styled.div`
   @media (min-width: 3840px) {
     width: 380px;
   }
-  /* Tablets */
+
+@media (min-width: 1000px) {
+    width: 300px;
+  }
+
   @media (max-width: 992px) {
     width: 300px;
   }
