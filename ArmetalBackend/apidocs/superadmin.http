@@ -99,3 +99,19 @@ Content-Type: application/json
   "email": "customer@example.com",
   "company_name": "Tungston Labs"
 }
+
+###get company details
+GET http://localhost:8000/api/company/self/
+Authorization: Bearer <token>
+
+###update company
+PATCH http://localhost:8000/api/company/self/
+Authorization: Bearer <token>
+Content-Type: multipart/form-data
+{
+  "name": "Tungston Labs",
+  "location": "Kakkanad",
+  "latitude": 10.0159,
+  "longitude": 76.3419,
+  "country": "IN"
+}

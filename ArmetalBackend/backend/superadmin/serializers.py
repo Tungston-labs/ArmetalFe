@@ -185,3 +185,25 @@ class CompanyListSerializer(serializers.ModelSerializer):
         days_in_next_month = calendar.monthrange(next_year, next_month)[1]
         next_day = min(day, days_in_next_month)
         return date(next_year, next_month, next_day).isoformat()
+
+
+
+class CompanySelfUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = [
+            "name",
+            "address",
+            "location",
+            "latitude",
+            "longitude",
+            "country",
+            "contact_number",
+            "email",
+            "modules",
+            "logo",
+        ]
+        extra_kwargs = {
+            "email": {"required": False},
+            "modules": {"required": False},
+        }
