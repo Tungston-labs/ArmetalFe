@@ -194,6 +194,7 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", cast=bool, default=False)
+
 CORS_ALLOW_CREDENTIALS = config("CORS_ALLOW_CREDENTIALS", cast=bool, default=False)
 
 CSRF_TRUSTED_ORIGINS = config(
@@ -202,9 +203,20 @@ CSRF_TRUSTED_ORIGINS = config(
     default=[]
 )
 
+
 CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", cast=bool, default=False)
 SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", cast=bool, default=False)
 CSRF_COOKIE_HTTPONLY = config("CSRF_COOKIE_HTTPONLY", cast=bool, default=False)
+
+
+CORS_ALLOWED_ORIGINS = config(
+    "CORS_ALLOWED_ORIGINS",
+    cast=lambda v: [s.strip() for s in v.split(",")],
+    default=[]
+)
+
+CORS_ALLOW_CREDENTIALS = config("CORS_ALLOW_CREDENTIALS", cast=bool, default=False)
+
 
 EMAIL_BACKEND = config("EMAIL_BACKEND")
 EMAIL_HOST = config("EMAIL_HOST")
