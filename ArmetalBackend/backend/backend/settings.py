@@ -25,13 +25,14 @@ ASGI_APPLICATION = 'backend.asgi.application'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y0q%ezuk#2m=o%-o9!*9b+64b)2y(skeqea%!k7a&87n--t#52'
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', cast=bool)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='*',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
 
 
 # Application definition
@@ -107,12 +108,12 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_armetal',         
-        'USER': 'postgres',
-        'PASSWORD': 'password@123',
-        'HOST': '178.248.112.16',
-        'PORT': '5432',                
+        'ENGINE': config('DB_ENGINE'),
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', cast=int),
     }
 }
 
@@ -192,23 +193,30 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_ALL_ORIGINS = True  # 👈 Use this instead of CORS_ALLOWED_ORIGINS
+CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", cast=bool, default=False)
+
+CORS_ALLOW_CREDENTIALS = config("CORS_ALLOW_CREDENTIALS", cast=bool, default=False)
+
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS",
+    cast=lambda v: [s.strip() for s in v.split(",")],
+    default=[]
+)
 
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5173",  # React admin app
-#     "http://192.168.29.146:5173",  # Access from phone browser
-#     "http://192.168.29.146:3000",  # Create React App
-# ]
+CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", cast=bool, default=False)
+SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", cast=bool, default=False)
+CSRF_COOKIE_HTTPONLY = config("CSRF_COOKIE_HTTPONLY", cast=bool, default=False)
 
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://192.168.29.146:5173",  # Access from phone browser
-    "http://192.168.29.146:3000",
-    "http://192.168.29.194:8001",
+CORS_ALLOWED_ORIGINS = config(
+    "CORS_ALLOWED_ORIGINS",
+    cast=lambda v: [s.strip() for s in v.split(",")],
+    default=[]
+)
 
-]
+CORS_ALLOW_CREDENTIALS = config("CORS_ALLOW_CREDENTIALS", cast=bool, default=False)
+
 
 EMAIL_BACKEND = config("EMAIL_BACKEND")
 EMAIL_HOST = config("EMAIL_HOST")
@@ -220,10 +228,10 @@ FERNET_KEY = config("FERNET_KEY")
 
 
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Use your Redis URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+CELERY_BROKER_URL = config('REDIS_URL') + '/0'
+CELERY_RESULT_BACKEND = config('REDIS_URL') + '/1'
 
 
 
@@ -237,5 +245,4 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': 60.0,
     },
 }
-
 
