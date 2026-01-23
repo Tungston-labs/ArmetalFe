@@ -15,6 +15,7 @@ import {
   BodyRow,
   BodyCell,
   EmptyRow,
+  PageLoaderOverlay,
 
 } from "./EmployeeList.styles";
 import {
@@ -32,7 +33,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-// import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import RightSideModal from "../employeDashboard/RightSideModal";
@@ -115,8 +115,12 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
     : [];
   return (
     <>
-      {loading && <Loader />}
-      {/* <Navbar /> */}
+ {loading && (
+  <PageLoaderOverlay>
+    <Loader />
+  </PageLoaderOverlay>
+)}
+
       <Container>
       <EmployeeTitle
   key={departmentList?.length || 0} 
@@ -200,7 +204,7 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
     ))
   ) : (
     <EmptyRow>
-      <td colSpan="8">No employees found.</td>
+      <td colSpan="7">No employees found.</td>
     </EmptyRow>
   )}
 </TableBody>

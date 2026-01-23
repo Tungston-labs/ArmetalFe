@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import AddCompanyModal from '../superAdmin/AddCompany'; 
+import React, { useEffect, useState } from "react";
+import AddCompanyModal from "../superAdmin/AddCompany";
 import {
   Container,
-  Header,
   Title,
   Subtitle,
   TopBar,
@@ -13,34 +12,31 @@ import {
   Th,
   Td,
   IconButton,
-  ImpersonateButton,
   Pagination,
   HeaderSection,
   TitleSection,
-  Icon,
   ActionArea,
-  HRManager,SearchIcon,SearchWrapper
-} from './SuperAdmin.Styles';
-import { FiSearch } from "react-icons/fi";
-
-
+  SearchIcon,
+  SearchWrapper,
+} from "./SuperAdmin.Styles";
+import Loader from "../../Components/Loader"
 import { LuArrowLeft } from "react-icons/lu";
-import { FaTrashAlt, FaPlus } from 'react-icons/fa';
+import { FaTrashAlt, FaPlus } from "react-icons/fa";
 import { TbPencilMinus } from "react-icons/tb";
-import { useDispatch, useSelector } from 'react-redux';
-import { getCompanies, removeCompany } from '../../Redux/superAdminSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { getCompanies, removeCompany } from "../../Redux/superAdminSlice";
 import { IoInformationCircleOutline } from "react-icons/io5";
-import { useNavigate } from 'react-router-dom';
-import Navbar from "../../Components/Navbar"
-
+import { useNavigate } from "react-router-dom";
 
 const CompanyTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { companies, loading, pagination } = useSelector((state) => state.superAdmin);
+  const { companies, loading, pagination } = useSelector(
+    (state) => state.superAdmin,
+  );
 
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -88,15 +84,15 @@ const CompanyTable = () => {
 
   return (
     <Container>
-      <TopBar>
-        <div />
-        <Navbar/>
-      </TopBar>
-
+        {loading && <Loader />}
       <HeaderSection>
         <TitleSection>
           <LuArrowLeft style={{ width: "30px", height: 30 }} />
-          <img src="/images/superadminlogo.png" alt="Payroll Icon" style={{ height: "50px" }} />
+          <img
+            src="/images/superadminlogo.png"
+            alt="Payroll Icon"
+            style={{ height: "50px" }}
+          />
           <div>
             <Title>Super admin</Title>
             <Subtitle>Manage all departments within the organization.</Subtitle>
@@ -108,17 +104,17 @@ const CompanyTable = () => {
           </AddButton>
 
           <SearchWrapper>
-  <SearchIcon />
-  <SearchInput
-    type="text"
-    placeholder="Search by Company ID"
-    value={search}
-    onChange={(e) => {
-      setSearch(e.target.value);
-      setPage(1);
-    }}
-  />
-</SearchWrapper>
+            <SearchIcon />
+            <SearchInput
+              type="text"
+              placeholder="Search by Company ID"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+            />
+          </SearchWrapper>
         </ActionArea>
       </HeaderSection>
 
@@ -135,7 +131,6 @@ const CompanyTable = () => {
               <Th>Info</Th>
               <Th>Edit</Th>
               <Th>Delete</Th>
-              {/* <Th>Impersonate</Th> */}
             </tr>
           </thead>
           <tbody>
@@ -150,10 +145,12 @@ const CompanyTable = () => {
                   <Td>{item.number_of_employees}</Td>
 
                   {/* ✅ Navigate with company_id */}
-                  <Td onClick={() => navigate(`/superadmin/view/${item.id}`)} style={{ cursor: 'pointer' }}>
-  <IoInformationCircleOutline />
-</Td>
-
+                  <Td
+                    onClick={() => navigate(`/superadmin/view/${item.id}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <IoInformationCircleOutline />
+                  </Td>
 
                   <Td>
                     <IconButton onClick={() => handleEdit(item)}>
@@ -172,7 +169,7 @@ const CompanyTable = () => {
               ))
             ) : (
               <tr>
-                <Td colSpan="10" style={{ textAlign: 'center' }}>
+                <Td colSpan="10" style={{ textAlign: "center" }}>
                   {loading ? "Loading..." : "No companies found"}
                 </Td>
               </tr>
@@ -183,23 +180,30 @@ const CompanyTable = () => {
 
       {/* Delete Modal */}
       {showDeleteModal && (
-        <div style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 1000
-        }}>
-          <div style={{
-            background: "white",
-            padding: "2rem",
-            borderRadius: "10px",
-            textAlign: "center",
-            maxWidth: "400px",
-            width: "100%"
-          }}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "white",
+              padding: "2rem",
+              borderRadius: "10px",
+              textAlign: "center",
+              maxWidth: "400px",
+              width: "100%",
+            }}
+          >
             <h3>Confirm Deletion</h3>
             <p>Are you sure you want to delete this company?</p>
             <div style={{ marginTop: "1rem" }}>
@@ -212,7 +216,7 @@ const CompanyTable = () => {
                   border: "none",
                   padding: "0.5rem 1rem",
                   borderRadius: "5px",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
               >
                 Delete
@@ -225,7 +229,7 @@ const CompanyTable = () => {
                   border: "none",
                   padding: "0.5rem 1rem",
                   borderRadius: "5px",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
               >
                 Cancel
@@ -237,28 +241,35 @@ const CompanyTable = () => {
 
       {/* Add/Edit Company Modal */}
       {showCompanyModal && (
-        <div style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 1000
-        }}>
-          <div style={{
-            background: "white",
-            padding: "2rem",
-            borderRadius: "10px",
-            maxWidth: "900px",
-            width: "90%",
-            maxHeight: "90vh",
-            overflowY: "auto"
-          }}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "white",
+              padding: "2rem",
+              borderRadius: "10px",
+              maxWidth: "900px",
+              width: "90%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+            }}
+          >
             <AddCompanyModal
               isEdit={isEditMode}
               selectedCompany={selectedCompany}
-                showPrivileges={true}
+              showPrivileges={true}
               onClose={() => setShowCompanyModal(false)}
             />
           </div>
@@ -267,29 +278,32 @@ const CompanyTable = () => {
 
       {/* Pagination */}
 
-          <Pagination>
-  <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>&larr;</span>
-  {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
-    (pageNumber) => (
-      <span
-        key={pageNumber}
-        onClick={() => handlePageChange(pageNumber)}
-        className={page === pageNumber ? "active" : ""}
-      >
-        {pageNumber}
-      </span>
-    )
-  )}
-  <span
-    onClick={() => {
-      if (page < (pagination?.total_pages || 1)) {
-        handlePageChange(page + 1);
-      }
-    }}
-  >
-    &rarr;
-  </span>
-</Pagination>
+      <Pagination>
+        <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>
+          &larr;
+        </span>
+        {Array.from(
+          { length: pagination?.total_pages || 1 },
+          (_, i) => i + 1,
+        ).map((pageNumber) => (
+          <span
+            key={pageNumber}
+            onClick={() => handlePageChange(pageNumber)}
+            className={page === pageNumber ? "active" : ""}
+          >
+            {pageNumber}
+          </span>
+        ))}
+        <span
+          onClick={() => {
+            if (page < (pagination?.total_pages || 1)) {
+              handlePageChange(page + 1);
+            }
+          }}
+        >
+          &rarr;
+        </span>
+      </Pagination>
     </Container>
   );
 };

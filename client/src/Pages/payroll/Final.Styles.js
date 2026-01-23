@@ -290,7 +290,6 @@ export const BulkActionBar = styled.div`
     }
   }
 
-  /* 🖥️ 4K and above */
   @media (min-width: 2561px) {
     strong {
       font-size: 1.3rem;
@@ -299,7 +298,7 @@ export const BulkActionBar = styled.div`
     select {
       font-size: 1.3rem;
       padding: 10px 14px;
-    }
+    }   
 
     input[type="checkbox"] {
       transform: scale(1.2);
@@ -497,29 +496,22 @@ export const Select = styled.select`
 
 
 export const EmployeeImage = styled.img`
-  height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */
-  width: auto; /* maintain aspect ratio */
-  
+  width: auto;
+  height: 50px; 
+
   @media (min-width: 768px) {
-    height: clamp(20px, 6vw, 20px);
+    height: 50px;
   }
 
   @media (min-width: 1024px) {
-    height: clamp(20px, 4vw, 50px);
+    height: 50px;
   }
 
   @media (min-width: 1440px) {
-    height: clamp(50px, 1vw, 80px);
-  }
-
-  @media (min-width: 2560px) {
-    height: clamp(80px, 1vw, 100px);
-  }
-
-  @media (min-width: 3840px) {
-    height: clamp(100px, 3vw, 200px);
+    height: 50px;
   }
 `;
+
 
 export const TextBlock = styled.div`
   display: flex;
@@ -528,7 +520,7 @@ export const TextBlock = styled.div`
   margin-left: 10px;
 `;
 
-// styles.js or your styled-components file
+
 export const Pagination = styled.div`
   display: flex;
   justify-content: flex-start;

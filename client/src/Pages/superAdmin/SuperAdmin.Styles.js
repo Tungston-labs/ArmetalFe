@@ -1,21 +1,28 @@
 // src/Components/CompanyTable.styles.js
-import styled from 'styled-components';
+import styled from "styled-components";
 import { FiSearch } from "react-icons/fi";
 
-
 export const Container = styled.div`
-  padding: 20px;
-  font-family: 'Segoe UI', sans-serif;
-background: white;
+  padding: clamp(16px, 2vw, 32px);
+  font-family: "Segoe UI", sans-serif;
+  background: white;
   min-height: 100vh;
+  max-width: 1600px; /* prevents over-stretching on large screens */
+  margin: 0 auto;
 `;
+
 export const HeaderSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   gap: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
+
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -37,21 +44,26 @@ export const Header = styled.div`
 `;
 export const Icon = styled.div`
   font-size: 1rem;
- 
 `;
+
 export const ActionArea = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: end;
+  align-items: flex-end;
   gap: 1rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    align-items: stretch;
+  }
 `;
 export const TitleGroup = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
 
-   h2 {
-    font-family: 'Satoshi';
+  h2 {
+    font-family: "Satoshi";
     font-weight: 700;
     font-size: 22px;
     margin: 0;
@@ -60,17 +72,16 @@ export const TitleGroup = styled.div`
   p {
     margin: 0;
     font-size: 16px;
-      font-family: 'Raleway';
-  
+    font-family: "Raleway";
   }
 `;
 export const HRManager = styled.div`
   display: flex;
-  height:30px;
- 
+  height: 30px;
+
   align-items: center;
   gap: 0.75rem;
-  padding: 0.3rem ;
+  padding: 0.3rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
@@ -93,7 +104,7 @@ export const Title = styled.h2`
   font-size: 24px;
   margin: 0;
   margin-left: 10px;
-  font-family: 'Satoshi', sans-serif;
+  font-family: "Satoshi", sans-serif;
   font-weight: 700; /* 700 = Bold */
 `;
 
@@ -102,7 +113,7 @@ export const Subtitle = styled.p`
   color: #555;
   margin-left: 10px;
   margin-top: -1px;
-  font-family: 'Raleway', sans-serif;
+  font-family: "Raleway", sans-serif;
   font-weight: 300; /* normal weight */
 `;
 
@@ -117,12 +128,11 @@ export const TopBar = styled.div`
   margin-bottom: 4rem;
 `;
 
-
 export const AddButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(to right, #2a2a86,rgb(55, 90, 227));
+  background: linear-gradient(to right, #2a2a86, rgb(55, 90, 227));
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -131,14 +141,17 @@ export const AddButton = styled.button`
   cursor: pointer;
 `;
 
-
 // Wrapper for input + icon
 export const SearchWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   max-width: 300px;
-  flex: 1;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 export const SearchInput = styled.input`
@@ -158,40 +171,43 @@ export const SearchIcon = styled(FiSearch)`
 `;
 
 export const TableWrapper = styled.div`
-  // overflow-x: auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: 10px;
 `;
 
 export const Table = styled.table`
-width: 100%;
+  width: 100%;
   border-collapse: separate;
-  border-spacing: 0 10px; 
+  border-spacing: 0 10px;
   margin-top: 1rem;
-  font-size:19px;
-  font-family: 'Satoshi', sans-serif;
-  font-weight: 500; /* 700 = Bold */
+  font-size: 19px;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 500;
 
-  th, td {
-    text-align: left;
-    padding: 0.5rem;
+  th,
+  td {
+    text-align: center;
+    padding: 0.2rem;
     white-space: nowrap;
     background-color: white;
-    border: none; /* remove cell borders */
+    border: none; 
   }
 
   th {
-    background-color:#3352BA;
-  color: white;             /* white text */
-    font-family:raleway;
-      padding: 0.7+rem;
+    background-color: #3352ba;
+    color: white;
+    font-family: "raleway";
+    padding: 0.8rem;
+        text-align: center;
   }
 
- tbody tr {
-  box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-  font-family:satoshi;
+  tbody tr {
+    box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
+    font-family: "satoshi";
   }
 
-  /* Optional: radius for only first and last td of each row */
+ 
   tbody tr td:first-child {
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
@@ -207,35 +223,32 @@ width: 100%;
   }
 `;
 
-
 export const Th = styled.th`
-  text-align: center;       /* horizontally center */
+  text-align: center; 
   vertical-align: middle;
   padding: 12px;
-  background-color: #3352BA; /* dark blue */
-  color: white;             /* white text */
+  background-color: #3352ba; 
+  color: white; 
   font-size: 14px;
-  font-family: 'Raleway', sans-serif;
-  font-weight: 600;         /* optional: bold */
+  font-family: "Raleway", sans-serif;
+  font-weight: 600;
 `;
-
 
 export const Td = styled.td`
   padding: 12px;
   background: #fff;
   font-size: 14px;
   white-space: nowrap;
-  text-align: center;       // ← horizontally center the text
-  vertical-align: middle;   // ← vertically center the content (optional)
+  text-align: center;
+  vertical-align: middle;
 `;
-
 
 export const IconButton = styled.button`
   background: inherit;
-  color: ${({ danger }) => (danger ? 'red' : '#1e293b')};
+  color: ${({ danger }) => (danger ? "red" : "#1e293b")};
   border: none;
   padding: 8px;
-  font-size:1rem;
+  font-size: 1rem;
   border-radius: 6px;
   cursor: pointer;
 
@@ -259,7 +272,7 @@ export const ImpersonateButton = styled.button`
 
 export const Pagination = styled.div`
   display: flex;
-  justify-content: flex-start; /* changed from flex-end to flex-start */
+  justify-content: flex-start; 
   gap: 0.3rem;
   margin-top: 1.5rem;
   // padding: 0.6rem;
@@ -278,4 +291,3 @@ export const Pagination = styled.div`
     border-color: #1e3a8a;
   }
 `;
-

@@ -68,19 +68,19 @@ export const Logo = styled.div`
     transition: width 0.3s ease;
   }
 
-  img.default-logo {
+ img.default-logo {
     width: 300px;
     max-height: 110px;
-  }
+  } 
 
   /* Adjust logo for smaller screens */
   @media (max-width: 1024px) {
     img {
       width: 120px;
 
-    img.default-logo {
+   img.default-logo {
       width: 120px;
-    }
+    } 
   }
   }
   /* Hide logo on very small screens */
@@ -94,40 +94,36 @@ export const Logo = styled.div`
 
  @media (min-width: 1025px) {
     img{
-    min-height: 150px;
-   
+    min-height: 150px;  
     width: 150px;
     }
+
+     img.default-logo {
+      width: 120px;
+    } 
    }
 
  @media (min-width: 1440px) {
     img{
-    min-height: 150px;
-   
+    min-height: 150px;   
     width: 150px;
     }
+
+     img.default-logo {
+      width: 120px;
+    } 
    }
   @media (min-width: 1920px) {
     img{
     min-height: 150px;
-  
     width: 200px;
     }
+     img.default-logo {
+      width: 120px;
+    } 
    }
-   @media (min-width: 2560px) {
-    img{
-    min-height: 150px;
-    width: 300px;
-   margin-block: 2rem;
-    }
-   }
-   @media (min-width: 3840px) {
-    img{
-    min-height: 250px;
-    margin-block: 2rem;
-    width: 450px;
-    }
-   }
+ 
+  
 `;
 
 
