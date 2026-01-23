@@ -97,7 +97,7 @@ export const HeadCell = styled.th`
 
   @media (min-width: 1024px) {
     padding:10px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   @media (min-width: 1440px) {

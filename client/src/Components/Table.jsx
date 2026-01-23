@@ -53,7 +53,7 @@ const Table = ({
   errors = {},
   showNextButton = false,
   handleNext,
-  setBankProofImage, 
+  // setBankProofImage, 
 }) => {
   return (
     <Container>
@@ -132,7 +132,7 @@ const Table = ({
         </Row>
 
         {/* Bank Proof file */}
-        <Row>
+        {/* <Row>
           <FormGroups>
             <Label>Bank Proof (optional)</Label>
             <input
@@ -144,7 +144,7 @@ const Table = ({
               }}
             />
           </FormGroups>
-        </Row>
+        </Row> */}
 
         {/* Tax & Compliance */}
         <SectionTitle>Tax and Compliance</SectionTitle>

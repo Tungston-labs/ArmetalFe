@@ -128,6 +128,7 @@ const handleSave = () => {
                 name="punchInType"
                 value={formData.punchInType}
                 onChange={handleChange}
+                autoComplete='off'
               >
                 <Option value="" disabled>Select type</Option>
                 <Option value="on_site">On Site</Option>
@@ -148,7 +149,9 @@ const handleSave = () => {
               placeholder="Enter latitude"
               value={formData.latitude}
               onChange={handleChange}
+                autoComplete='off'
               disabled={formData.punchInType === "bench"}   
+  
             />
           </FieldGroup>
 
@@ -161,7 +164,9 @@ const handleSave = () => {
               placeholder="Enter longitude"
               value={formData.longitude}
               onChange={handleChange}
+                autoComplete='off'
               disabled={formData.punchInType === "bench"}   
+              
             />
           </FieldGroup>
 

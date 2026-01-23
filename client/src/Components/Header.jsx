@@ -83,6 +83,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
               value={employee.name || ""}
               readOnly={!editable}
               onChange={onChange}
+              autoComplete="off"
             />
             <InputBox
               type="text"
@@ -91,6 +92,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
               value={employee.employee_id || ""}
               readOnly={!editable}
               onChange={onChange}
+              autoComplete="off"
             />
             <InputBox
               type="email"
@@ -99,6 +101,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
               value={employee.email || ""}
               readOnly={!editable}
               onChange={onChange}
+              autoComplete="off"
             />
           </LeftColumn>
 
@@ -109,6 +112,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
               value={employee.address || ""}
               readOnly={!editable}
               onChange={onChange}
+              autoComplete="off"
             />
             <InfoRow>
               <InputBox
@@ -118,6 +122,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
                 value={employee.dob || ""}
                 readOnly={!editable}
                 onChange={onChange}
+                autoComplete="off"
               />
               <InputBox
                 type="text"
@@ -126,6 +131,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
                 value={employee.gender || ""}
                 readOnly={!editable}
                 onChange={onChange}
+                autoComplete="off"
               />
             </InfoRow>
           </RightColumn>

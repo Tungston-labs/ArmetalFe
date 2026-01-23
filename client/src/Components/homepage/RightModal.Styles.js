@@ -18,7 +18,10 @@ export const Panel = styled.div`
   &.open {
     right: 0;
   }
-
+  
+  body.swal2-shown & {
+    z-index: 900;
+  }
   @media (min-width: 1920px) {
     width: 350px;
   }

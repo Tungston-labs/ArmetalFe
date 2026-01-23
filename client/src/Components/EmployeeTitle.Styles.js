@@ -4,7 +4,6 @@ export const Container = styled.div`
   width: 100%;
   background: #fff;
   font-family: "Inter", sans-serif;
-
 `;
 
 export const TopSection = styled.div`
@@ -14,7 +13,7 @@ export const TopSection = styled.div`
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
-  margin-top:1rem;
+  margin-top: 1rem;
 `;
 
 export const LeftBlock = styled.div`
@@ -42,7 +41,6 @@ export const IconWrapper = styled.div`
   }
 `;
 
-
 export const TitleBlock = styled.div`
   display: flex;
   flex-direction: column;
@@ -51,7 +49,7 @@ export const TitleBlock = styled.div`
 
 export const Title = styled.h2`
   margin: 0;
-  color: #3250B5;
+  color: #3250b5;
   font-family: "Satoshi";
   font-weight: 700;
   font-size: 22px;
@@ -72,9 +70,8 @@ export const Title = styled.h2`
   }
 `;
 
-
 export const Subtitle = styled.span`
-  color: #3250B5;
+  color: #3250b5;
   font-family: "Raleway";
   font-weight: 300;
   font-size: 16px;
@@ -95,7 +92,6 @@ export const Subtitle = styled.span`
   }
 `;
 
-
 export const RightBlock = styled.div`
   display: flex;
   align-items: center;
@@ -106,7 +102,7 @@ export const Button = styled.button`
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: #304EB0;
+  background: #304eb0;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -119,7 +115,7 @@ export const Button = styled.button`
   &:hover {
     background: #1d4ed8;
   }
-   @media (max-width: 1024px) {
+  @media (max-width: 1024px) {
     font-size: 0.8rem;
   }
   /* Responsive adjustments */
@@ -137,7 +133,7 @@ export const Button = styled.button`
   }
 
   @media (min-width: 3840px) {
-      margin-top: 5rem;
+    margin-top: 5rem;
     padding: 1.2rem 1.8rem;
     font-size: 1.35rem;
     gap: 0.75rem;
@@ -174,12 +170,11 @@ export const SearchSection = styled.div`
   }
 `;
 
-
 export const SearchWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  border: 1px solid #172554;
+  border: 1px solid #CCC;
   border-radius: 6px;
   padding: 0.6rem 1rem;
   flex: 1;
@@ -191,10 +186,19 @@ export const SearchWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 100%;  
+    width: 100%;
+    padding: 0.4rem;
   }
 
-  /* Large Screens */
+  @media (min-width: 1024px) {
+    padding: 0.5rem 1rem;
+    max-width: 450px;
+
+    svg {
+      font-size: 1.2rem;
+    }
+  }
+
   @media (min-width: 1920px) {
     padding: 0.8rem 1.2rem;
     max-width: 600px;
@@ -222,7 +226,6 @@ export const SearchWrapper = styled.div`
     }
   }
 `;
-
 
 export const Input = styled.input`
   border: none;
@@ -252,7 +255,6 @@ export const Input = styled.input`
   }
 `;
 
-
 export const Dropdown = styled.select`
   border: 1px solid #172554;
   padding: 0.6rem 0.9rem;
@@ -269,10 +271,45 @@ export const Dropdown = styled.select`
   }
 
   @media (max-width: 768px) {
-    width: 100%;
+    width: 80%;
+    padding: 0.5rem 1rem;
   }
-`;
+  @media (min-width: 1024px) {
+    padding: 0.5rem 1rem;
 
+    svg {
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (min-width: 1920px) {
+    padding: 0.8rem 1.2rem;
+
+
+    svg {
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (min-width: 2560px) {
+    padding: 1rem 1.4rem;
+
+
+    svg {
+      font-size: 1.4rem;
+    }
+  }
+
+  @media (min-width: 3840px) {
+    padding: 1.2rem 1.6rem;
+
+
+    svg {
+      font-size: 1.6rem;
+    }
+  }
+
+`;
 
 export const TabButton = styled.button`
   width: 100%;
@@ -289,16 +326,19 @@ export const TabButton = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background: #8CA0E2;
+    background: #8ca0e2;
     color: white;
   }
 
   /* Mobile: show 3 tabs in one row */
-  @media (max-width: 769px) {
+  @media (max-width: 1023px) {
     flex: 0 0 calc(33.33% - 0.33rem);
-        font-size: 0.7rem;
+    font-size: 0.8rem;
   }
-
+ @media (min-width: 1024px) {
+    padding: 0.9rem 1.3rem;
+    font-size: 0.8rem;
+  }
   /* 1920px (Full HD) */
   @media (min-width: 1920px) {
     padding: 0.9rem 1.3rem;
@@ -318,8 +358,6 @@ export const TabButton = styled.button`
     border-radius: 6px;
   }
 `;
-
-
 
 export const TabsRowContainer = styled.div`
   display: flex;
@@ -342,7 +380,6 @@ export const TabsRowContainer = styled.div`
   }
 `;
 
-
 export const TabsRow = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -350,7 +387,7 @@ export const TabsRow = styled.div`
   width: 100%;
   margin-top: 0.5rem;
 
-  /* Tablet scroll */
+
   @media (min-width: 768px) and (max-width: 1024px) {
     display: flex;
     gap: 0.5rem;
@@ -379,7 +416,6 @@ export const TabsRow = styled.div`
     margin-top: 1rem;
   }
 `;
-
 
 export const ScrollButton = styled.button`
   position: absolute;
@@ -426,7 +462,7 @@ export const BackArrow = styled.div`
   justify-content: center;
   /* margin-right: 12px; */
   cursor: pointer;
-  color: #3352BA;
+  color: #3352ba;
   transition: 0.2s ease;
 
   &:hover {

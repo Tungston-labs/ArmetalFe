@@ -16,9 +16,9 @@ export const ModalOverlay = styled.div`
   right: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0,0,0,0.45);
   display: flex;
-  justify-content: flex-end; /* push content to right */
+  justify-content: flex-end;
   z-index: 2000;
 `;
 
@@ -31,7 +31,7 @@ export const ModalContent = styled.div`
   padding: 1.5rem;
   box-shadow: -2px 0 6px rgba(0, 0, 0, 0.2);
 
-  animation: ${slideIn} 0.3s ease-out; /* smooth slide in */
+  animation: ${slideIn} 0.3s ease-out; 
   @media (min-width: 2560px) {
     width: 40%;
     max-width: none;

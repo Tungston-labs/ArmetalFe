@@ -67,12 +67,11 @@ export default function AddEmployeeForm() {
     contract_expiry_date: "",
     idcard: null,
   });
-
-  useEffect(() => {
-    if (departmentList.length === 0) {
-      dispatch(getDepartments({ page: 1, search: "" }));
-    }
-  }, [dispatch, departmentList]);
+useEffect(() => {
+  if (departmentList.length === 0) {
+    dispatch(getDepartments({ page: 1, search: "" }));
+  }
+}, [dispatch, departmentList.length]);
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;

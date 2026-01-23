@@ -83,8 +83,11 @@ const Circle = styled.div`
   }
 `;
 
-
-const VerificationCircles = ({ emp, verificationStatus, handleCircleClick }) => (
+const VerificationCircles = ({
+  emp,
+  verificationStatus,
+  handleCircleClick,
+}) => (
   <CircleContainer>
     <Circle
       disabled={verificationStatus[emp.id]?.first}
@@ -92,15 +95,20 @@ const VerificationCircles = ({ emp, verificationStatus, handleCircleClick }) => 
         !verificationStatus[emp.id]?.first && handleCircleClick(e, emp, "first")
       }
     >
-      {verificationStatus[emp.id]?.first && <FaCheck style={{ color: "blue" }} />}
+      {verificationStatus[emp.id]?.first && (
+        <FaCheck style={{ color: "blue" }} />
+      )}
     </Circle>
     <Circle
       disabled={verificationStatus[emp.id]?.second}
       onClick={(e) =>
-        !verificationStatus[emp.id]?.second && handleCircleClick(e, emp, "second")
+        !verificationStatus[emp.id]?.second &&
+        handleCircleClick(e, emp, "second")
       }
     >
-      {verificationStatus[emp.id]?.second && <FaCheck style={{ color: "blue" }} />}
+      {verificationStatus[emp.id]?.second && (
+        <FaCheck style={{ color: "blue" }} />
+      )}
     </Circle>
   </CircleContainer>
 );

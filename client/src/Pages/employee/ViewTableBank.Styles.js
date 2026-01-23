@@ -63,9 +63,9 @@ export const ErrorText = styled.p`
   margin-top: 3px;
 `;
 
-export const FileInput = styled.input`
-  margin-top: 0.5rem;
-`;
+// export const FileInput = styled.input`
+//   margin-top: 0.5rem;
+// `;
 
 export const SaveButton = styled.button`
   padding: 10px 16px;
@@ -76,4 +76,50 @@ export const SaveButton = styled.button`
   cursor: pointer;
   font-weight: 600;
   margin-top: 1rem;
+`;
+
+export const PreviewBox = styled.div`
+  margin: 8px 0;
+  width: 220px;
+  min-height: 120px;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+`;
+
+export const PreviewImage = styled.img`
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+`;
+
+export const PdfLink = styled.a`
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1d4ed8;
+  text-decoration: underline;
+`;
+
+export const UploadButton = styled.label`
+  display: inline-block;
+  padding: 8px 14px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  width: fit-content;
+
+  &:hover {
+    background: #020617;
+  }
+`;
+
+export const FileInput = styled.input`
+  display: none;
 `;

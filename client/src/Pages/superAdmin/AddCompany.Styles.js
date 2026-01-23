@@ -90,12 +90,12 @@ export const ButtonGroup = styled.div`
 export const Button = styled.button`
   padding: 10px 25px;
   border: none;
-  border: 2px solid ${props => (props.cancel ? '#FF2304' : '#172554')}; /* border added */
+  border: 2px solid ${props => (props.cancel ? '#FF2304' : '#0c236dff')}; /* border added */
   border-radius: 6px;
   font-weight: 500;
   color: #fff;
   cursor: pointer;
-  background-color: ${props => props.cancel ? '#FF230480' : '#A2A8BB'};
+  background-color: ${props => props.cancel ? '#FF230480' : '#3450adff'};
 
   &:hover {
     opacity: 0.9;

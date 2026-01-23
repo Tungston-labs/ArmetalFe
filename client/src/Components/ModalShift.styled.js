@@ -266,34 +266,28 @@ export const TableRow = styled.div`
 export const TableCell = styled.div`
   padding: 4px 8px;
   word-break: break-word;
-  font-size: 16px;
+  font-size: 0.8rem;
 
   @media (max-width: 768px) {
-    font-size: 12px;
+     font-size: 0.7rem;
   }
 
   @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 12px;
+    font-size: 0.7rem;
   }
 
   @media (min-width: 1025px) and (max-width: 1440px) {
-    font-size: 14px;
+   font-size: 0.7rem;
   }
   @media (min-width: 1441px) and (max-width: 1700px) {
-    font-size: 16px;
+    font-size: 0.7rem;
   }
 
   @media (min-width: 1701px) and (max-width: 2060px) {
-    font-size: 18px;
+   font-size: 0.8rem;
   }
   @media (min-width: 2060px) and (max-width: 2600px) {
-    font-size: 22px;
+    font-size: 1rem;
   }
-  @media (min-width: 2561px) and (max-width: 3840px) {
-    font-size: 24px;
-  }
-
-  @media (min-width: 3841px) {
-    font-size: 28px;
-  }
+ 
 `;
