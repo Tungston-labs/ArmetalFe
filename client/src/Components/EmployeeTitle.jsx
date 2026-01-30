@@ -26,6 +26,7 @@ import { IoArrowBackOutline } from "react-icons/io5";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
+
 const EmployeeTitle = ({
   showIcon = true,
   showTitle = true,
@@ -42,6 +43,8 @@ const EmployeeTitle = ({
   subtitle = "Manage your employees",
   buttonText = "Add Employee",
   searchPlaceholder = "Search by name or ID",
+  searchValue = "",
+
   tabs = [
     { path: "/employee", label: "Total Employee" },
     { path: "/employee-leave-request", label: "Employee Leave Request" },
@@ -53,12 +56,16 @@ const EmployeeTitle = ({
     { path: "/employee-on-leave", label: "Employees on Leave" },
   ],
 
+  /* Dropdown props (added) */
   dropdownOptions = [],
   dropdownLoading = false,
+  selectedDropdownValue = "",      // controlled value for dropdown
+  dropdownPlaceholder = "All",     // placeholder label
+  onDropdownChange,                // handler: (value) => void
 
+  /* callbacks */
   onAddClick,
   onSearchChange,
-  onDropdownChange,
   onTabChange,
 }) => {
   const navigate = useNavigate();
@@ -67,11 +74,13 @@ const EmployeeTitle = ({
   const rowRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+
   const handleTabClick = (path) => {
     setActiveTab(path);
     onTabChange && onTabChange(path);
     navigate(path);
   };
+
   const checkScroll = () => {
     const el = rowRef.current;
     if (!el) return;
@@ -80,14 +89,42 @@ const EmployeeTitle = ({
   };
 
   const scrollLeft = () => {
+    if (!rowRef.current) return;
     rowRef.current.scrollBy({ left: -150, behavior: "smooth" });
-    setTimeout(checkScroll, 100);
+    setTimeout(checkScroll, 120);
   };
 
   const scrollRight = () => {
+    if (!rowRef.current) return;
     rowRef.current.scrollBy({ left: 150, behavior: "smooth" });
-    setTimeout(checkScroll, 100);
+    setTimeout(checkScroll, 120);
   };
+
+  // helper to render flexible option shapes
+  const renderOption = (option, index) => {
+    if (typeof option === "string" || typeof option === "number") {
+      return (
+        <option key={index} value={String(option)}>
+          {String(option)}
+        </option>
+      );
+    }
+
+    // handle common object shapes: { id, name }, { key, label }, { value, text }
+    const value = option.id ?? option.key ?? option.value ?? option._id ?? "";
+    const label =
+      option.name ?? option.label ?? option.text ?? option.title ?? String(value);
+
+    // fallback to index if no stable id/value
+    const key = value || index;
+
+    return (
+      <option key={key} value={String(value)}>
+        {label}
+      </option>
+    );
+  };
+
   return (
     <Container>
       <TopSection>
@@ -115,9 +152,7 @@ const EmployeeTitle = ({
             {rightElement ? (
               rightElement
             ) : (
-              <Button
-                onClick={onAddClick || (() => navigate("/basic-details"))}
-              >
+              <Button onClick={onAddClick || (() => navigate("/basic-details"))}>
                 {buttonIcon ? (
                   <img
                     src={buttonIcon}
@@ -145,29 +180,25 @@ const EmployeeTitle = ({
               <FiSearch />
               <Input
                 placeholder={searchPlaceholder}
-                onChange={(e) =>
-                  onSearchChange && onSearchChange(e.target.value)
-                }
+                value={searchValue}
+                onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
               />
             </SearchWrapper>
           )}
+
           {showDropdown && (
             <Dropdown
-              onChange={(e) =>
-                onDropdownChange && onDropdownChange(e.target.value)
-              }
+              value={selectedDropdownValue ?? ""}
+              onChange={(e) => onDropdownChange && onDropdownChange(e.target.value)}
             >
-              <option value="">All Departments</option>
+              <option value="">{dropdownPlaceholder}</option>
+
               {dropdownLoading ? (
-                <option>Loading...</option>
-              ) : dropdownOptions.length > 0 ? (
-                dropdownOptions.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))
+                <option disabled>Loading...</option>
+              ) : dropdownOptions && dropdownOptions.length > 0 ? (
+                dropdownOptions.map((opt, idx) => renderOption(opt, idx))
               ) : (
-                <option>No departments found</option>
+                <option disabled>No options available</option>
               )}
             </Dropdown>
           )}
@@ -177,19 +208,15 @@ const EmployeeTitle = ({
       {showTabs && (
         <>
           <TabsRowContainer>
+            {canScrollLeft && <ScrollLeft onClick={scrollLeft}><FaChevronLeft /></ScrollLeft>}
             <TabsRow ref={rowRef} onScroll={checkScroll}>
               {tabs.map((tab) => (
-                <NavLink
-                  key={tab.path}
-                  to={tab.path}
-                  style={{ textDecoration: "none" }}
-                >
-                  <TabButton active={location.pathname === tab.path}>
-                    {tab.label}
-                  </TabButton>
+                <NavLink key={tab.path} to={tab.path} style={{ textDecoration: "none" }}>
+                  <TabButton active={location.pathname === tab.path}>{tab.label}</TabButton>
                 </NavLink>
               ))}
             </TabsRow>
+            {/* {canScrollRight && <ScrollRight onClick={scrollRight}></ScrollRight>} */}
           </TabsRowContainer>
 
           <Divider />

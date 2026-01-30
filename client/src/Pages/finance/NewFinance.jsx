@@ -12,13 +12,14 @@ import {
   Button,
   Label,
   CloseButton,
+  Select,
 } from "./NewFinance.Styles";
 import { FaArrowLeft } from "react-icons/fa6";
 
 const FinanceModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     category: "",
-    subCategory: "",
+    date: "",
     paymentType: "",
     moneyInOut: "",
     amount1: "",
@@ -59,41 +60,30 @@ const FinanceModal = ({ isOpen, onClose }) => {
               />
             </div>
             <div>
-              <Label>Sub Category</Label>
+              <Label>Date</Label>
               <Input
-                type="text"
-                name="subCategory"
-                placeholder="Enter Category"
-                value={formData.subCategory}
+                type="date"
+                name="date"
+                placeholder="Enter date"
+                value={formData.date}
                 onChange={handleChange}
               />
             </div>
           </FormRow>
 
           <FormRow>
-            <div>
-              <Label>Payment type</Label>
-              <Input
-                type="text"
-                name="paymentType"
-                placeholder="Enter Category"
-                value={formData.paymentType}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <Label>Money in or out</Label>
-              <Input
-                type="text"
-                name="moneyInOut"
-                placeholder="Enter Category"
-                value={formData.moneyInOut}
-                onChange={handleChange}
-              />
-            </div>
-          </FormRow>
-
-          <FormRow>
+           <div>
+  <Label>Payment type</Label>
+  <Select
+    name="paymentType"
+    value={formData.paymentType}
+    onChange={handleChange}
+  >
+    <option value="">Select Payment Type</option>
+    <option value="Payment In">Payment In</option>
+    <option value="Payment Out">Payment Out</option>
+  </Select>
+</div>
             <div>
               <Label>Enter amount</Label>
               <Input
@@ -104,18 +94,7 @@ const FinanceModal = ({ isOpen, onClose }) => {
                 onChange={handleChange}
               />
             </div>
-            <div>
-              <Label>Enter amount</Label>
-              <Input
-                type="number"
-                name="amount2"
-                placeholder="Enter amount"
-                value={formData.amount2}
-                onChange={handleChange}
-              />
-            </div>
           </FormRow>
-
           <div>
             <Label>Note</Label>
             <TextArea

@@ -1,195 +1,146 @@
 import React, { useState } from "react";
 import {
   Container,
-  HeaderSection,
-  Title,
-  Subtitle,
-  TitleSection,
-  ActionArea,
-  AddButton,
   TableWrapper,
   StyledTable,
-  SearchInput,
-  Tabs,
-  TabButton,
-  FilterInput,
+  Th,
+  Td,
+  Tr,
+  TopBar,
 } from "../finance/FinancePage.Styles";
-import { HiArrowLeft } from "react-icons/hi";
 import EmployeeIcon from "../../assets/employee.svg";
-import NewFinance from "./NewFinance";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+import FinanceModal from "./NewFinance";
 
 const DepartmentDetail = () => {
-  const [activeTab, setActiveTab] = useState("inout");
   const [isOpen, setIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
-  // Search states
-  const [searchText, setSearchText] = useState("");   // for name/note search
-  const [filterCategory, setFilterCategory] = useState("");
+  // payment options (no "All" here — placeholder handles it)
+  const paymentOptions = ["Payment In", "Payment Out"];
+  const [selectedPayment, setSelectedPayment] = useState(""); // "" => All
 
-  // Dummy static data
-  const departmentEmployees = [
+  // make rows stateful so new entries can be added
+  const [departmentEmployees, setDepartmentEmployees] = useState([
     {
       id: 1,
-      date: "12 January",
+      date: "2026-01-12",
       category: "Travel",
-      sub_category: "Taxi",
       note: "Airport trip",
       payment_type: "Cash",
-      amount: "$50",
+      amount: "50",
+      type: "in",
     },
     {
       id: 2,
-      date: "12 January",
+      date: "2026-01-12",
       category: "Food",
-      sub_category: "Lunch",
       note: "Team outing",
       payment_type: "Card",
-      amount: "$120",
+      amount: "120",
+      type: "out",
     },
     {
       id: 3,
-      date: "12 January",
+      date: "2026-01-12",
       category: "Office",
-      sub_category: "Stationery",
       note: "Notebooks & Pens",
       payment_type: "UPI",
-      amount: "$30",
+      amount: "30",
+      type: "in",
     },
-  ];
+  ]);
 
-  // Filtering logic
   const filteredEmployees = departmentEmployees.filter((emp) => {
+    const search = searchText.trim().toLowerCase();
     const matchesSearch =
-      emp.note.toLowerCase().includes(searchText.toLowerCase()) ||
-      emp.sub_category.toLowerCase().includes(searchText.toLowerCase());
-    const matchesCategory =
-      filterCategory === "" ||
-      emp.category.toLowerCase().includes(filterCategory.toLowerCase());
-    return matchesSearch && matchesCategory;
+      search === "" ||
+      (emp.note || "").toLowerCase().includes(search) ||
+      (emp.category || "").toLowerCase().includes(search);
+    const matchesPayment =
+      selectedPayment === "" ||
+      (selectedPayment === "Payment In" && emp.type === "in") ||
+      (selectedPayment === "Payment Out" && emp.type === "out");
+
+    return matchesSearch && matchesPayment;
   });
+
+  const handleAddFinance = (newEntry) => {
+    const type = newEntry.paymentType === "Payment In" ? "in" : "out";
+    const amountValue = newEntry.amount1 || newEntry.amount2 || "0";
+
+    const formattedEntry = {
+      id: Date.now(),
+      date: newEntry.date || new Date().toISOString().split("T")[0],
+      category: newEntry.category || "Misc",
+      note: newEntry.note || "",
+      payment_type: newEntry.paymentTypeDisplay || newEntry.paymentType || "",
+      amount: String(amountValue).replace(/^\$/, ""), // store as plain number string
+      type,
+    };
+
+    setDepartmentEmployees((prev) => [...prev, formattedEntry]);
+    setIsOpen(false);
+  };
 
   return (
     <>
-         <Container>
-<EmployeeTitle
-  iconSrc={EmployeeIcon}
-  title="Departments"
-  subtitle="Manage your departments"
-  buttonText="Add Department"
-  // searchValue={search}
-  // onSearchChange={setSearch}
-  // onAddClick={() => setShowModal(true)} 
-  showDropdown={false}
-  showBackArrow={false}
-  showTabs={false}
-/>
- 
-        <HeaderSection>
-          <TitleSection>
-            <HiArrowLeft
-              style={{
-                width: "24px",
-                height: "24px",
-                cursor: "pointer",
-                color: "#3250B5",
-              }}
-            />
-            {/* <img src={Employee} alt="employee icon" /> */}
-            <div>
-              <Title>Finance</Title>
-              <Subtitle>
-                Manage all departments within the organization.
-              </Subtitle>
-            </div>
-          </TitleSection>
-
-          <ActionArea>
-            <div>
-              <AddButton onClick={() => setIsOpen(true)}>+ Add </AddButton>
-              <NewFinance isOpen={isOpen} onClose={() => setIsOpen(false)} />
-            </div>
-          </ActionArea>
-        </HeaderSection>
-
-        {/* Search & Filter */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            gap: "1rem",
-          }}
-        >
-          {/* Search Input */}
-          <SearchInput
-            placeholder="Search "
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+      <Container>
+        <TopBar>
+          <EmployeeTitle
+            iconSrc={EmployeeIcon}
+            title="Finance"
+            subtitle="Manage your Finance "
+            buttonText="Add Finance"
+            searchValue={searchText}
+            onSearchChange={setSearchText}
+            onAddClick={() => setIsOpen(true)}
+            showDropdown={true}
+            dropdownOptions={paymentOptions}
+            selectedDropdownValue={selectedPayment}
+            dropdownPlaceholder="All Payments"
+            onDropdownChange={setSelectedPayment}
+            showBackArrow={false}
+            showTabs={false}
+            searchPlaceholder="Search Category Name"
           />
-
-          {/* Filter Input */}
-          <FilterInput
-            placeholder="Filter By Category "
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-          />
-        </div>
-
-        {/* Tabs */}
-        <Tabs>
-          <TabButton
-            active={activeTab === "inout"}
-            onClick={() => setActiveTab("inout")}
-          >
-            Payment in and out
-          </TabButton>
-          <TabButton
-            active={activeTab === "pending"}
-            onClick={() => setActiveTab("pending")}
-          >
-            Pending payment
-          </TabButton>
-        </Tabs>
-
-        {/* Table */}
+        </TopBar>
         <TableWrapper>
           <StyledTable>
             <thead>
-              <tr>
-                <th>Sl No</th>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Sub Category</th>
-                <th>Note</th>
-                <th>Payment type</th>
-                <th>Amount</th>
-              </tr>
+              <Tr>
+                <Th>Sl No</Th>
+                <Th>Date</Th>
+                <Th>Category</Th>
+                <Th>Note</Th>
+                <Th>Payment type</Th>
+                <Th>Amount</Th>
+              </Tr>
             </thead>
             <tbody>
               {filteredEmployees.length > 0 ? (
                 filteredEmployees.map((emp, index) => (
-                  <tr key={emp.id}>
-                    <td>{String(index + 1).padStart(3, "0")}</td>
-                    <td>{emp.date}</td>
-                    <td>{emp.category}</td>
-                    <td>{emp.sub_category}</td>
-                    <td>{emp.note}</td>
-                    <td>{emp.payment_type}</td>
-                    <td>{emp.amount}</td>
-                  </tr>
+                  <Tr key={emp.id}>
+                    <Td>{String(index + 1).padStart(3, "0")}</Td>
+                    <Td>{emp.date}</Td>
+                    <Td>{emp.category}</Td>
+                    <Td>{emp.note}</Td>
+                    <Td>{emp.payment_type}</Td>
+                    <Td>{emp.amount}</Td>
+                  </Tr>
                 ))
               ) : (
-                <tr>
-                  <td colSpan="7" style={{ textAlign: "center", padding: "1rem" }}>
+                <Tr>
+                  <Td colSpan="6" style={{ textAlign: "center", padding: "1rem" }}>
                     No results found
-                  </td>
-                </tr>
+                  </Td>
+                </Tr>
               )}
             </tbody>
           </StyledTable>
         </TableWrapper>
       </Container>
+      <FinanceModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSave={handleAddFinance} />
     </>
   );
 };

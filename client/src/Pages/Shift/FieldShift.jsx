@@ -30,7 +30,9 @@ const DepartmentPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(true);
   const [step, setStep] = useState(0);
-  const { projects, isLoading } = useSelector((state) => state.projects);
+const { projects = [], isLoading = false } = useSelector(
+  (state) => state.projects || {}
+);
   const statusColors = {
     "In Progress": "#fac25b",
     Completed: "#5abe7f",
@@ -63,50 +65,49 @@ const DepartmentPage = () => {
           showTabs={false}
           searchPlaceholder="Search Project Name"
         />
+<CardsGrid>
+  {isLoading ? (
+    <Loader />
+  ) : projects.length === 0 ? (
+    <p>No projects found.</p>
+  ) : (
+    projects.map((project) => (
+      <Card
+        key={project.id}
+        style={{ backgroundImage: `url(${cardBg})`, cursor: "pointer" }}
+        onClick={() =>
+          navigate(`/project-department/${project.id}`, {
+            state: { projectName: project.name },
+          })
+        }
+      >
+        <CardHeader>
+          <CardTitleSection>
+            <CardTitle>{project.name}</CardTitle>
+          </CardTitleSection>
+          <HiOutlineDotsHorizontal className="menu-icon" />
+        </CardHeader>
 
-        <CardsGrid>
-          {isLoading ? (
-            <Loader />
-          ) : projects.length === 0 ? (
-            <p>No projects found.</p>
-          ) : (
-            projects.map((project) => (
-              <Card
-                key={project.id}
-                style={{ backgroundImage: `url(${cardBg})`, cursor: "pointer" }}
-                onClick={() =>
-                  navigate(`/project-department/${project.id}`, {
-                    state: { projectName: project.name },
-                  })
-                }
-              >
-                <CardHeader>
-                  <CardTitleSection>
-                    <CardTitle>{project.name}</CardTitle>
-                  </CardTitleSection>
-                  <HiOutlineDotsHorizontal className="menu-icon" />
-                </CardHeader>
+        <CardText>
+          <span>Total employees</span>
+          <span className="employee-count">
+            {project.employees?.length || 0}
+          </span>
+        </CardText>
 
-                <CardText>
-                  <span>Total employees</span>
-                  <span className="employee-count">
-                    {project.employees?.length || 0}
-                  </span>
-                </CardText>
-
-                <CardFooter>
-                  <Tag>
-                    <img src={TagIcon} alt="Tag icon" />
-                    {project.punch_type || "N/A"}
-                  </Tag>
-                  <StatusTag bgcolor={statusColors[project.status]}>
-                    {project.status || "i"}
-                  </StatusTag>
-                </CardFooter>
-              </Card>
-            ))
-          )}
-        </CardsGrid>
+        <CardFooter>
+          <Tag>
+            <img src={TagIcon} alt="Tag icon" />
+            {project.punch_type || "N/A"}
+          </Tag>
+          <StatusTag bgcolor={statusColors[project.status]}>
+            {project.status || "i"}
+          </StatusTag>
+        </CardFooter>
+      </Card>
+    ))
+  )}
+</CardsGrid>
 
         <AddProjectModal
           isOpen={isModalOpen}

@@ -50,7 +50,13 @@ const formatDateToISO = (dateStr) => {
 const HolidayManager = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const { list: holidays, loading, error,totalPages, currentPage } = useSelector(state => state.holidays);
+const {
+  list: holidays = [],
+  loading,
+  error,
+  totalPages = 1,
+  currentPage = 1
+} = useSelector(state => state.holidays);
 const [formError, setFormError] = useState("");
 
   const [formData, setFormData] = useState({ name: "", type: "", date: "" });
@@ -59,9 +65,11 @@ const [formError, setFormError] = useState("");
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [selectedIdToDelete, setSelectedIdToDelete] = React.useState(null);
 
-  useEffect(() => {
-    fetchHolidayTypes().then(data => setTypeOptions(data));
-  }, []);
+useEffect(() => {
+  fetchHolidayTypes().then(data => {
+    setTypeOptions(data?.holiday_types || []);
+  });
+}, []);
 
   useEffect(() => {
     dispatch(getHolidays(page));
@@ -165,14 +173,14 @@ const cancelDelete = () => {
 
   <FieldWrapper>
     <Label>Type</Label>
-    <Select name="type" value={formData.type} onChange={handleChange}>
-      <option value="">Select</option>
-      {typeOptions.map(({ key, label }) => (
-        <option key={key} value={key}>
-          {label}
-        </option>
-      ))}
-    </Select>
+<Select name="type" value={formData.type} onChange={handleChange}>
+  <option value="">Select</option>
+  {typeOptions.map(({ key, label }) => (
+    <option key={key} value={key}>
+      {label}
+    </option>
+  ))}
+</Select>
   </FieldWrapper>
 
   <FieldWrapper>

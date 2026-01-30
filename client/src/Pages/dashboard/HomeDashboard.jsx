@@ -114,16 +114,16 @@ const Dashboard = () => {
 
           {/* Contract Expiry */}
           <ThreeBox>
-            <EmployeeContractExpiry
-              employees={
-                contractExpiry?.map((emp) => ({
-                  ...emp,
-                  expiryDate: emp.contract_expiry_date,
-                  empId: emp.employee_id,
-                })) || []
-              }
-              showCount={4}
-            />
+          <EmployeeContractExpiry
+  employees={
+    (contractExpiry?.contract_expiry || []).map((emp) => ({
+      ...emp,
+      expiryDate: emp.contract_expiry_date,
+      empId: emp.employee_id,
+    }))
+  }
+  showCount={4}
+/>+
           </ThreeBox>
 
           {/* Upcoming Holidays */}
