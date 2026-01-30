@@ -40,7 +40,7 @@ const CompanyViewPage = () => {
 
   if (!selectedCompany) return <p>Loading...</p>;
 
-  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement","project"];
+  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement","project","finance"];
   const enabledModules = allModules.filter(mod => selectedCompany.modules?.[mod]);
 
   return (<>

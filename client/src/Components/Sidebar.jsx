@@ -115,6 +115,11 @@ export default function Sidebar() {
                 <FaTasks /><span>Daily Task</span>
               </CustomLink>
             )}
+             {modules.finance && (
+              <CustomLink to="/finance" className={`${collapsed ? 'collapsed' : ''} ${isActive("/finance")}`}>
+                <FaReceipt /><span>Finance</span>
+              </CustomLink>
+            )}
             {modules.payroll && (
               <CustomLink to="/payrolldetails" className={`${collapsed ? 'collapsed' : ''} ${isActive("/payrolldetails")}`}>
                 <FaMoneyCheckAlt /><span>Payroll</span>

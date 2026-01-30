@@ -264,9 +264,6 @@ const CompanyTable = () => {
           </div>
         </div>
       )}
-
-      {/* Pagination */}
-
           <Pagination>
   <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>&larr;</span>
   {Array.from({ length: pagination?.total_pages || 1 }, (_, i) => i + 1).map(
