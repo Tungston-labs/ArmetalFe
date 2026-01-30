@@ -16,7 +16,6 @@ import {
 } from "../finance/FinancePage.Styles";
 import { HiArrowLeft } from "react-icons/hi";
 import Employee from "../../assets/employee.svg";
-import Navbar from "../../Components/Navbar";
 import NewFinance from "./NewFinance";
 
 const DepartmentDetail = () => {
@@ -71,9 +70,8 @@ const DepartmentDetail = () => {
 
   return (
     <>
-      <Navbar />
+
       <Container>
-        {/* Header */}
         <HeaderSection>
           <TitleSection>
             <HiArrowLeft

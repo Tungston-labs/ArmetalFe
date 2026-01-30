@@ -68,6 +68,7 @@ const AddCompanyModal = ({
     "holiday",
     "reimbursement",
     "project",
+    "finance",
   ];
 
   const [formData, setFormData] = useState({
