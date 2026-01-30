@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'holidays',
     'payroll',
     'reimbursement',
+    'finance',
     'rest_framework',
     'project',
     'dashboard',
