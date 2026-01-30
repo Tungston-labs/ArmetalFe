@@ -86,19 +86,22 @@ const RightModal = ({ open, onClose }) => {
             class="swal2-input"
             style="margin-top:6px"
             placeholder="Enter old password"
+              autoComplete="off"
           />
         </div>
 
-        <div>
-          <label style="font-size:1rem; font-weight:500;">New Password:</label>
-          <input 
-            type="password" 
-            id="newPassword" 
-            class="swal2-input"
-            style="margin-top:6px"
-            placeholder="Enter new password"
-          />
-        </div>
+<div>
+  <label style="font-size:1rem; font-weight:500;">New Password:</label>
+  <input 
+    type="password"
+    id="newPassword"
+    class="swal2-input"
+    style="margin-top:6px"
+    placeholder="Enter new password"
+    autocomplete="new-password"
+  />
+</div>
+
       </div>
     `,
 

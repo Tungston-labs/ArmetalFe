@@ -23,7 +23,6 @@ export const Subtitle = styled.p`
   margin: 0.25rem 0 0;
 `;
 
-
 export const BlueBanner = styled.section`
   background: url(${bannerBg}) no-repeat center;
   background-size: cover;
@@ -48,46 +47,92 @@ export const BannerHeader = styled.div`
   margin-bottom: 5rem;
 
   h2 {
-    font-size: clamp(1.25rem, 2vw, 1.75rem);
-    margin: 0;
+    margin: 0 0 15px 0;
     font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 32px;
-line-height: 100%;
-letter-spacing: 0%;
-margin-bottom: 15px;
+    font-weight: 700;
+    line-height: 100%;
+    letter-spacing: 0%;
+    font-size: 1.8rem; 
   }
 
   p {
-    font-size: clamp(0.8rem, 1vw, 1rem);
     margin: 0.25rem 0 0;
     font-family: Satoshi;
-font-weight: 400;
-font-style: Regular;
-font-size: 24px;
-line-height: 100%;
-letter-spacing: 0%;
-
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: 0%;
+    font-size: 1.4rem; 
   }
 
   span {
-    font-size: clamp(1.2rem, 2vw, 1.5rem);
-    font-weight: bold;
     font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 32px;
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+    font-weight: 700;
+    line-height: 100%;
+    letter-spacing: 0%;
+    font-size:1.4rem; 
+  }
 
+  @media (max-width: 1440px) {
+    h2 {
+      font-size: 28px;
+    }
+
+    p {
+      font-size: 20px;
+    }
+
+    span {
+      font-size: 28px;
+    }
+  }
+  @media (max-width: 1024px) {
+    h2 {
+      font-size: 28px;
+    }
+
+    p {
+      font-size: 20px;
+    }
+
+    span {
+      font-size: 28px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 22px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+
+    span {
+      font-size: 22px;
+    }
+  }
+
+
+  @media (max-width: 480px) {
+    h2 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    span {
+      font-size: 18px;
+    }
   }
 `;
 
+
 export const CardContainer = styled.div`
-  position: absolute; 
-  bottom: -3rem;    
+  position: absolute;
+  bottom: -3rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -95,11 +140,10 @@ export const CardContainer = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   width: 95%;
-  box-sizing: border-box; 
-    overflow: hidden;   
-  z-index: 2;        
+  box-sizing: border-box;
+  overflow: hidden;
+  z-index: 2;
 `;
-
 
 export const CardSlider = styled.div`
   display: flex;
@@ -120,7 +164,6 @@ export const CardSlider = styled.div`
   }
 `;
 
-
 export const CompanyCard = styled.div`
   flex: 0 0 auto;
   background: #fff;
@@ -139,7 +182,7 @@ export const CompanyCard = styled.div`
   .company-logo {
     width: 50px;
     height: 50px;
-    border-radius: 50%; 
+    border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
   }
@@ -165,7 +208,6 @@ export const CompanyCard = styled.div`
   }
 `;
 
-
 export const CardContent = styled.div`
   display: flex;
   align-items: center;
@@ -175,11 +217,11 @@ export const CardContent = styled.div`
 export const CompanyLogo = styled.img`
   width: 90px;
   height: 90px;
-  object-fit: contain;       /* fit entire image inside box */
+  object-fit: contain; /* fit entire image inside box */
   flex-shrink: 0;
-  border-radius: 6px;       /* optional: match card style */
-  background-color: #fff;    /* optional: for transparent logos */
-  padding: 4px;             /* optional: give some spacing inside */
+  border-radius: 6px; /* optional: match card style */
+  background-color: #fff; /* optional: for transparent logos */
+  padding: 4px; /* optional: give some spacing inside */
 `;
 
 export const CardTitle = styled.h3`
@@ -213,12 +255,12 @@ export const TableHeader = styled.div`
     margin: 0;
     font-size: clamp(1rem, 2vw, 1.5rem);
     font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 32px;
-line-height: 100%;
-letter-spacing: 0%;
-margin-bottom: 20px;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 32px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-bottom: 20px;
   }
 
   p {
@@ -226,12 +268,11 @@ margin-bottom: 20px;
     color: #666;
     font-size: 0.9rem;
     font-family: Satoshi;
-font-weight: 400;
-font-style: Regular;
-font-size: 24px;
-line-height: 100%;
-letter-spacing: 0%;
-
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 24px;
+    line-height: 100%;
+    letter-spacing: 0%;
   }
 
   span {
@@ -239,12 +280,11 @@ letter-spacing: 0%;
     font-weight: bold;
     color: #000;
     font-family: Satoshi;
-font-weight: 700;
-font-style: Bold;
-font-size: 32px;
-line-height: 100%;
-letter-spacing: 0%;
-
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 32px;
+    line-height: 100%;
+    letter-spacing: 0%;
   }
 `;
 
@@ -253,7 +293,6 @@ export const TableWrapper = styled.div`
   padding: 10px;
   border-radius: 7px;
   box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
-
 `;
 
 export const StyledTable = styled.table`
@@ -266,7 +305,9 @@ export const StyledTable = styled.table`
     padding: 0.75rem;
     text-align: left;
     font-size: clamp(0.8rem, 1vw, 0.95rem);
-    transition: background 0.3s, color 0.3s; /* smooth transition */
+    transition:
+      background 0.3s,
+      color 0.3s; /* smooth transition */
   }
 
   thead {
@@ -280,8 +321,7 @@ export const StyledTable = styled.table`
 
   /* Hover effect */
   tbody tr td:hover {
-    color:  #2a5bd7;          /* white text for contrast */
+    color: #2a5bd7; /* white text for contrast */
     cursor: pointer;
-
   }
 `;

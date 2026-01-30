@@ -97,7 +97,7 @@ export const HeadCell = styled.th`
 
   @media (min-width: 1024px) {
     padding:10px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   @media (min-width: 1440px) {
@@ -289,4 +289,13 @@ export const TruncatedText = styled.div`
    @media (min-width: 1025px) and (max-width: 1440px) {
     max-width: 80px; 
   }
+`;
+export const PageLoaderOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 `;

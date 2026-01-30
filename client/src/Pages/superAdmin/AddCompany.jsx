@@ -285,6 +285,7 @@ if (showPrivileges) {
                 value={formData.address}
                 onChange={handleChange}
                 placeholder="Company Address"
+                           autoComplete="off"
               />
               {formErrors.address && (
                 <p style={{ color: "red" }}>{formErrors.address}</p>
@@ -381,6 +382,7 @@ if (showPrivileges) {
                   onChange={handleChange}
                   placeholder="Phone number"
                   style={{ width: "65%" }}
+                             autoComplete="off"
                 />
               </div>
               {formErrors.contact_number && (
@@ -395,6 +397,7 @@ if (showPrivileges) {
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
+                           autoComplete="off"
               >
                 <option value="">Select country</option>
                 {COUNTRY_CHOICES.map((item) => (

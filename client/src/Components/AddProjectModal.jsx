@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
   ModalOverlay,
   ModalContainer,
@@ -18,32 +18,32 @@ import {
   CancelButton,
   SaveButton,
   SelectWrapper,
-  DropdownIcon
-} from './AddProjectModalStyles';
-import { createProject, getProjects } from '../Redux/fieldShiftSlice';
+  DropdownIcon,
+} from "./AddProjectModalStyles";
+import { createProject, getProjects } from "../Redux/fieldShiftSlice";
 
 const AddProjectModal = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
 
   const initialForm = {
-    projectName: '',
-    punchInType: '',
-    latitude: '',
-    longitude: '',
+    projectName: "",
+    punchInType: "",
+    latitude: "",
+    longitude: "",
     employees: [],
   };
 
   const [formData, setFormData] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
-  const [apiError, setApiError] = useState('');
+  const [apiError, setApiError] = useState("");
 
   // Reset form every time modal opens
   useEffect(() => {
     if (isOpen) {
       setFormData(initialForm);
       setErrors({});
-      setApiError('');
+      setApiError("");
     }
   }, [isOpen]);
 
@@ -51,10 +51,14 @@ const AddProjectModal = ({ isOpen, onClose }) => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.projectName.trim()) newErrors.projectName = 'Project name is required';
-    if (!formData.punchInType) newErrors.punchInType = 'Punch in type is required';
-    if (formData.latitude && isNaN(Number(formData.latitude))) newErrors.latitude = 'Latitude must be a number';
-    if (formData.longitude && isNaN(Number(formData.longitude))) newErrors.longitude = 'Longitude must be a number';
+    if (!formData.projectName.trim())
+      newErrors.projectName = "Project name is required";
+    if (!formData.punchInType)
+      newErrors.punchInType = "Punch in type is required";
+    if (formData.latitude && isNaN(Number(formData.latitude)))
+      newErrors.latitude = "Latitude must be a number";
+    if (formData.longitude && isNaN(Number(formData.longitude)))
+      newErrors.longitude = "Longitude must be a number";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -62,13 +66,13 @@ const AddProjectModal = ({ isOpen, onClose }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: '' }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSave = async () => {
     if (!validate()) return;
     setIsSaving(true);
-    setApiError('');
+    setApiError("");
 
     try {
       const payload = {
@@ -81,10 +85,10 @@ const AddProjectModal = ({ isOpen, onClose }) => {
 
       await dispatch(createProject(payload)).unwrap();
       await dispatch(getProjects());
-      setFormData(initialForm); // ✅ reset after save
+      setFormData(initialForm);  
       onClose();
     } catch (err) {
-      setApiError(err.message || 'Failed to save project');
+      setApiError(err.message || "Failed to save project");
     } finally {
       setIsSaving(false);
     }
@@ -97,7 +101,9 @@ const AddProjectModal = ({ isOpen, onClose }) => {
           <BackButton onClick={onClose}>&larr;</BackButton>
           <HeaderContent>
             <HeaderTitle>Add Project</HeaderTitle>
-            <HeaderSubtitle>Manage all projects within the organization.</HeaderSubtitle>
+            <HeaderSubtitle>
+              Manage all projects within the organization.
+            </HeaderSubtitle>
           </HeaderContent>
         </ModalHeader>
 
@@ -110,8 +116,11 @@ const AddProjectModal = ({ isOpen, onClose }) => {
               placeholder="Project name"
               value={formData.projectName}
               onChange={handleChange}
+              autoComplete="off"
             />
-            {errors.projectName && <span style={{ color: 'red' }}>{errors.projectName}</span>}
+            {errors.projectName && (
+              <span style={{ color: "red" }}>{errors.projectName}</span>
+            )}
           </FieldGroup>
 
           <FieldGroup>
@@ -121,15 +130,20 @@ const AddProjectModal = ({ isOpen, onClose }) => {
                 name="punchInType"
                 value={formData.punchInType}
                 onChange={handleChange}
+                autoComplete="off"
               >
-                <Option value="" disabled>Select type</Option>
+                <Option value="" disabled>
+                  Select type
+                </Option>
                 <Option value="on_site">On Site</Option>
                 <Option value="variant">Variant</Option>
                 <Option value="bench">Bench</Option>
               </SelectField>
               <DropdownIcon />
             </SelectWrapper>
-            {errors.punchInType && <span style={{ color: 'red' }}>{errors.punchInType}</span>}
+            {errors.punchInType && (
+              <span style={{ color: "red" }}>{errors.punchInType}</span>
+            )}
           </FieldGroup>
 
           <FieldGroup>
@@ -140,8 +154,11 @@ const AddProjectModal = ({ isOpen, onClose }) => {
               placeholder="Enter latitude"
               value={formData.latitude}
               onChange={handleChange}
+              autoComplete="off"
             />
-            {errors.latitude && <span style={{ color: 'red' }}>{errors.latitude}</span>}
+            {errors.latitude && (
+              <span style={{ color: "red" }}>{errors.latitude}</span>
+            )}
           </FieldGroup>
 
           <FieldGroup>
@@ -152,17 +169,22 @@ const AddProjectModal = ({ isOpen, onClose }) => {
               placeholder="Enter longitude"
               value={formData.longitude}
               onChange={handleChange}
+              autoComplete="off"
             />
-            {errors.longitude && <span style={{ color: 'red' }}>{errors.longitude}</span>}
+            {errors.longitude && (
+              <span style={{ color: "red" }}>{errors.longitude}</span>
+            )}
           </FieldGroup>
         </FormGrid>
 
-        {apiError && <p style={{ color: 'red', marginTop: '10px' }}>{apiError}</p>}
+        {apiError && (
+          <p style={{ color: "red", marginTop: "10px" }}>{apiError}</p>
+        )}
 
         <ButtonContainer>
           <CancelButton onClick={onClose}>Cancel</CancelButton>
           <SaveButton onClick={handleSave} disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save'}
+            {isSaving ? "Saving..." : "Save"}
           </SaveButton>
         </ButtonContainer>
       </ModalContainer>

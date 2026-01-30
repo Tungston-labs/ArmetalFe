@@ -25,7 +25,7 @@ import { LuCirclePlus } from "react-icons/lu";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-
+import { FiSearch } from "react-icons/fi";
 const EmployeeTitle = ({
   showIcon = true,
   showTitle = true,
@@ -142,6 +142,7 @@ const EmployeeTitle = ({
         <SearchSection>
           {showSearch && (
             <SearchWrapper>
+              <FiSearch />
               <Input
                 placeholder={searchPlaceholder}
                 onChange={(e) =>

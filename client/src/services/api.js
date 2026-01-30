@@ -39,7 +39,6 @@ API.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem("refreshToken")|| sessionStorage.getItem("refreshToken");
-
         const res = await axios.post(`${BASE_URL}/api/token/refresh/`, {
           refresh: refreshToken,
         });
@@ -48,7 +47,6 @@ API.interceptors.response.use(
         const newRefreshToken = res.data.refresh; 
 
         if(localStorage.getItem("refreshToken")){
-        // Store both tokens
         localStorage.setItem("accessToken", newAccessToken);
         if (newRefreshToken) {
           localStorage.setItem("refreshToken", newRefreshToken);
@@ -59,8 +57,6 @@ API.interceptors.response.use(
           sessionStorage.setItem("refreshToken", newRefreshToken);
         }
       }
-
-        // Retry the original request
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return API(originalRequest);
       } catch (refreshErr) {
@@ -70,7 +66,6 @@ API.interceptors.response.use(
         return Promise.reject(refreshErr);
       }
     }
-
     return Promise.reject(error);
   }
 );

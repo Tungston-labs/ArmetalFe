@@ -22,7 +22,7 @@ const SuccessModal = ({ onClose, onAddAnother, navigate }) => {
             variant="dark"
             onClick={() => {
               onClose();
-              navigate('/employee'); // 👈 Navigate to employee list
+              navigate('/employee'); 
             }}
           >
             Close
@@ -31,7 +31,7 @@ const SuccessModal = ({ onClose, onAddAnother, navigate }) => {
             variant="light"
             onClick={() => {
               onAddAnother();
-              navigate('/employee'); // 👈 Navigate to add-basic-form
+              navigate('/employee'); 
             }}
           >
             Add another

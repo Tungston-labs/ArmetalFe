@@ -92,3 +92,64 @@ export const CardContent = styled.div`
   flex-direction: column;
   gap: 15px;
 `;
+export const UploadWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+// export const Label = styled.label`
+//   font-size: 0.9rem;
+//   font-weight: 600;
+//   color: #334155;
+// `;
+
+export const PreviewBox = styled.div`
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+
+  @media (max-width: 768px) {
+    width: 100px;
+    height: 70px;
+  }
+`;
+
+export const PreviewImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+export const UploadButton = styled.label`
+  display: inline-block;
+  padding: 8px 14px;
+  background: #1e293b;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  width: fit-content;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #0f172a;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+`;
+
+export const HiddenInput = styled.input`
+  display: none;
+`;
