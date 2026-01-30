@@ -15,8 +15,9 @@ import {
   FilterInput,
 } from "../finance/FinancePage.Styles";
 import { HiArrowLeft } from "react-icons/hi";
-import Employee from "../../assets/employee.svg";
+import EmployeeIcon from "../../assets/employee.svg";
 import NewFinance from "./NewFinance";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 
 const DepartmentDetail = () => {
   const [activeTab, setActiveTab] = useState("inout");
@@ -70,8 +71,20 @@ const DepartmentDetail = () => {
 
   return (
     <>
-
-      <Container>
+         <Container>
+<EmployeeTitle
+  iconSrc={EmployeeIcon}
+  title="Departments"
+  subtitle="Manage your departments"
+  buttonText="Add Department"
+  // searchValue={search}
+  // onSearchChange={setSearch}
+  // onAddClick={() => setShowModal(true)} 
+  showDropdown={false}
+  showBackArrow={false}
+  showTabs={false}
+/>
+ 
         <HeaderSection>
           <TitleSection>
             <HiArrowLeft
@@ -82,7 +95,7 @@ const DepartmentDetail = () => {
                 color: "#3250B5",
               }}
             />
-            <img src={Employee} alt="employee icon" />
+            {/* <img src={Employee} alt="employee icon" /> */}
             <div>
               <Title>Finance</Title>
               <Subtitle>

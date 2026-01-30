@@ -1,4 +1,3 @@
-// src/utils/API.js or wherever you saved it
 import axios from "axios";
 import {toast} from "react-toastify";
 
@@ -12,7 +11,6 @@ const API = axios.create({
   },
 });
 
-// Request Interceptor: Attach access token
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
@@ -24,7 +22,6 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Refresh token on 401
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -49,7 +46,6 @@ API.interceptors.response.use(
         const newRefreshToken = res.data.refresh; 
 
         if(localStorage.getItem("refreshToken")){
-        // Store both tokens
         localStorage.setItem("accessToken", newAccessToken);
         if (newRefreshToken) {
           localStorage.setItem("refreshToken", newRefreshToken);
@@ -60,8 +56,6 @@ API.interceptors.response.use(
           sessionStorage.setItem("refreshToken", newRefreshToken);
         }
       }
-
-        // Retry the original request
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return API(originalRequest);
       } catch (refreshErr) {
@@ -71,7 +65,6 @@ API.interceptors.response.use(
         return Promise.reject(refreshErr);
       }
     }
-
     return Promise.reject(error);
   }
 );
