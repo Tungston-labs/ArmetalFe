@@ -63,11 +63,22 @@ const ActivityLogModal = ({
     }));
   }, [liveLocationData]);
 
-  const allLocations = useMemo(() => {
+ const allLocations = useMemo(() => {
     const merged = [...formattedLive, ...formattedLogs];
-    return merged.sort(
+    
+    const sorted = merged.sort(
       (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-    ); // sort latest → oldest
+    );
+
+    const uniqueByTime = new Map();
+    
+    sorted.forEach((item) => {
+      if (!uniqueByTime.has(item.time)) {
+        uniqueByTime.set(item.time, item);
+      }
+    });
+
+    return Array.from(uniqueByTime.values());
   }, [formattedLive, formattedLogs]);
 
   useEffect(() => {
