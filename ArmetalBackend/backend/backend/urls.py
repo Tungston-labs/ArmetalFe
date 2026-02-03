@@ -34,6 +34,8 @@ urlpatterns = [
     path('api/reimbursements/',include('reimbursement.urls')),
     path('api/project/',include('project.urls')),
     path('api/admindashboard/',include('dashboard.urls')),
+    path('api/finance/',include('finance.urls')),
+
 
 
     

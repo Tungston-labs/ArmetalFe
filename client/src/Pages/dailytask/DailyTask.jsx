@@ -176,7 +176,6 @@ export default function DepartmentView() {
   const departments = useSelector((state) => state.departments.minList || []);
   useEffect(() => {
     dispatch(getDepartmentsMin()).then((res) => {
-      console.log("Departments API response:", res); 
     });
   }, [dispatch]);
   useEffect(() => {

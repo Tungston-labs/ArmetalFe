@@ -135,20 +135,20 @@ useEffect(() => {
   };
 
   const handleNext = async () => {
-    console.log("Next clicked");
+
 
     const isBasicValid = validateForm(); // this triggers setErrors
-    console.log("Basic Valid:", isBasicValid);
+
 
     const jobComp = jobref.current;
-    console.log("JobDetails ref:", jobComp);
+
 
     const isJobValid = jobComp?.validate?.();
-    console.log("Job Valid:", isJobValid);
+
     setErrors((prev) => ({ ...prev }));
 
     if (!isBasicValid || !isJobValid) {
-      console.log("Validation failed, staying on page");
+
       return;
     }
 

@@ -43,7 +43,6 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
         setPaymentData(res.data);
       }
     } catch (error) {
-      console.error("Failed to fetch payment data:", error);
     }
   };
   const fetchCompanyName = async (id) => {
@@ -56,7 +55,6 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
         setCompanyName(res.data.name);
       }
     } catch (error) {
-      console.error("Failed to fetch company name:", error);
     }
   };
 
@@ -73,7 +71,6 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
       );
       await fetchPaymentData(companyId);
     } catch (error) {
-      console.error("Failed to update status:", error);
     }
   };
 const handleDownload = (entry) => {
@@ -149,7 +146,6 @@ const handleDownload = (entry) => {
 
       alert("Invoice email sent successfully.");
     } catch (error) {
-      console.error("Email send failed:", error);
       alert("Failed to send invoice email.");
     }
   };

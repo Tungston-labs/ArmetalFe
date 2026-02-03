@@ -70,7 +70,6 @@ const MailModal = ({ isOpen, onClose, employee }) => {
     setForm(initialFormState);
     onClose();
   } catch (err) {
-    console.error(err);
 
     Swal.fire({
       icon: "error",

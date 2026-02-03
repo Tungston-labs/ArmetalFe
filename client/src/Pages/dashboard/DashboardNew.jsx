@@ -41,7 +41,6 @@ const CardsOnly = () => {
         setHolidays(formatted);
         localStorage.setItem("publicHolidays2025", JSON.stringify(formatted));
       } catch (error) {
-        console.error("Holiday fetch failed:", error);
       }
     })();
   }, []);

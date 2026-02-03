@@ -22,8 +22,7 @@ export const fetchReimbursementCounts = async () => {
 
 export const fetchReimbursementMonthwise = async () => {
   const response = await API.get(`${BASE}reimbursement/monthwise/`);
-  console.log("API Response:", response);
-  
+
   return response.data;
 };
 

@@ -95,9 +95,7 @@ const Department = () => {
         setFormData({ name: '', department_code: '' });
         setFormError("");
         dispatch(getDepartments({ page: 1, search: '' })).then((res)=>{
-          console.log("Department list refreshed", res);
         }).catch((err)=>{
-          console.error("Failed to refresh department list", err.response.status);
         })
       } else {
         const errorMessage =
@@ -107,7 +105,6 @@ const Department = () => {
         setFormError(errorMessage);
       }
     } catch (err) {
-      console.error("Unexpected error:", err);
       setFormError("Something went wrong. Please try again later.");
     }
   };

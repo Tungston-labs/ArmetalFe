@@ -19,7 +19,6 @@ const useRefreshToken = () => {
 
       return null;
     } catch (error) {
-      console.error("Token refresh failed:", error);
       dispatch(logout()); // clear Redux state
       localStorage.removeItem("accessToken");
       return null;

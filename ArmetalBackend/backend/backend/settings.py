@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'holidays',
     'payroll',
     'reimbursement',
+    'finance',
     'rest_framework',
     'project',
     'dashboard',
@@ -247,9 +248,9 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 # Trust Nginx SSL termination
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-USE_X_FORWARDED_HOST = True
+SECURE_SSL_REDIRECT = False
+SECURE_PROXY_SSL_HEADER = None
+USE_X_FORWARDED_HOST = False
 
-SECURE_SSL_REDIRECT = True
 
 

@@ -21,7 +21,6 @@ const ConfirmLeaveModal = ({
   const navigate = useNavigate(); // ✅ initialize navigate
  if (!show) return null;
   if (!leaveId) {
-    console.error("Leave ID not provided to ConfirmLeaveModal!");
     return null;
   }
 

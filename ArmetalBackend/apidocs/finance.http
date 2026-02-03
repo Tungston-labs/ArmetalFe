@@ -1,0 +1,24 @@
+###LOGIN TO OBTAIN THE TOKEN PAIRS-FOR COMAPNY
+
+POST http://178.248.112.16:8001/api/token/
+Content-Type: application/json
+
+{
+  "username": "snv_arm_kak_117",
+  "password": "password1234"
+}
+
+
+###create finance record
+
+POST http://178.248.112.16:8001/api/finance/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY5Nzc0MTI3LCJpYXQiOjE3Njk3NzA1MjcsImp0aSI6IjZlNWQ4NjZlYzZhNDQxNzBhMmUxYWU3ZWFkNDEwZmFjIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.QxleBp8LjltAdavyCF-cAK2Cm2l8z5nIiuA2yFNOvOA
+Content-Type: application/json
+
+{
+  "date": "2026-01-25",
+  "amount": 1500,
+  "payment_type": "OUT",
+  "category": "FOOD",
+  "note": "Team lunch"
+}

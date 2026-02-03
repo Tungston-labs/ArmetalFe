@@ -33,7 +33,6 @@ export default function Sidebar() {
   const modules = user?.company_modules || {};
 
   useEffect(() => {
-    console.log("Sidebar user updated:", user);
   }, [user]);
 
   const handleLogout = async () => {
@@ -47,7 +46,6 @@ export default function Sidebar() {
       sessionStorage.clear();
       navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error.response?.data || error.message);
     }
   };
 

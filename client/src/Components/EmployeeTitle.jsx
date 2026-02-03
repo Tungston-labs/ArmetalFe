@@ -53,17 +53,15 @@ const EmployeeTitle = ({
       path: "/employee-Contract-Visa-Expiry",
       label: "Employee Contract & Visa Expiry",
     },
-    { path: "/employee-on-leave", label: "Employees on Leave" },
+    { path: "/attendance-report", label: "Employee Attendance Report" },
   ],
 
-  /* Dropdown props (added) */
+
   dropdownOptions = [],
   dropdownLoading = false,
-  selectedDropdownValue = "",      // controlled value for dropdown
-  dropdownPlaceholder = "All",     // placeholder label
-  onDropdownChange,                // handler: (value) => void
-
-  /* callbacks */
+  selectedDropdownValue = "",    
+  dropdownPlaceholder = "All",     
+  onDropdownChange,               
   onAddClick,
   onSearchChange,
   onTabChange,
@@ -100,7 +98,6 @@ const EmployeeTitle = ({
     setTimeout(checkScroll, 120);
   };
 
-  // helper to render flexible option shapes
   const renderOption = (option, index) => {
     if (typeof option === "string" || typeof option === "number") {
       return (
@@ -109,13 +106,9 @@ const EmployeeTitle = ({
         </option>
       );
     }
-
-    // handle common object shapes: { id, name }, { key, label }, { value, text }
     const value = option.id ?? option.key ?? option.value ?? option._id ?? "";
     const label =
       option.name ?? option.label ?? option.text ?? option.title ?? String(value);
-
-    // fallback to index if no stable id/value
     const key = value || index;
 
     return (
@@ -216,7 +209,6 @@ const EmployeeTitle = ({
                 </NavLink>
               ))}
             </TabsRow>
-            {/* {canScrollRight && <ScrollRight onClick={scrollRight}></ScrollRight>} */}
           </TabsRowContainer>
 
           <Divider />
