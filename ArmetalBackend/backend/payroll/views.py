@@ -217,6 +217,16 @@ class PayrollVerifyView(APIView):
 
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from payroll.models import EmployeePayrollRecord
+from finance.models import FinanceRecord
+from payroll.serializers import EmployeePayrollRecordSerializer
+
+
 class PayrollStatusUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -234,18 +244,49 @@ class PayrollStatusUpdateView(APIView):
 
         # ✅ Block update unless fully verified
         if not record.is_fully_verified():
-            return Response({"error": "Both HRs must verify before updating status."}, status=400)
+            return Response(
+                {"error": "Both HRs must verify before updating status."},
+                status=400
+            )
 
         if new_status not in dict(EmployeePayrollRecord.STATUS_CHOICES):
             return Response({"error": "Invalid status"}, status=400)
 
+        previous_status = record.status
         record.status = new_status
         record.save()
 
-        serializer = EmployeePayrollRecordSerializer(record,context={'request': request})
+        # ✅ Create Finance record ONLY when status becomes PAID
+        if previous_status != "PAID" and new_status == "PAID":
+
+            # 🔒 Prevent duplicate salary entries
+            already_exists = FinanceRecord.objects.filter(
+                category="SALARY",
+                payment_type="OUT",
+                note__icontains=f"{record.employee.id}",
+                date__month=month,
+                date__year=year
+            ).exists()
+
+            if not already_exists:
+                FinanceRecord.objects.create(
+                    date=timezone.now().date(),
+                    amount=record.net_salary,  # uses frozen payroll
+                    payment_type="OUT",
+                    category="SALARY",
+                    note=(
+                        f"Salary paid to {record.employee.name} "
+                        f"(Employee ID: {record.employee.id}) "
+                        f"for {month}/{year}"
+                    )
+                )
+
+        serializer = EmployeePayrollRecordSerializer(
+            record,
+            context={"request": request}
+        )
         return Response(serializer.data)
 
-    
 
     # payroll (payslip) view
 
