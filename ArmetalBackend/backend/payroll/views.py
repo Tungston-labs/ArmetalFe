@@ -97,9 +97,14 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
 
         # ⭐ AUTO-SYNC SALARY IF EMPLOYEE BANK DETAILS CHANGED
         for record in existing_records:
+            # 🔒 Do not touch verified payrolls
+            if record.is_fully_verified():
+                continue
+
             bank = getattr(record.employee, 'bank_details', None)
             if not bank:
                 continue
+
 
             if (
                 record.basic_salary != bank.basic_salary or
@@ -187,8 +192,20 @@ class PayrollVerifyView(APIView):
             record.hr1_verified_by = user
             record.hr1_verified_at = now()
         elif record.hr2_verified_by is None and record.hr1_verified_by != user:
+            # 🔒 Freeze payroll snapshot on final verification
+            serializer = EmployeePayrollRecordSerializer(
+                record, context={"request": request}
+            )
+            data = serializer.data
+
+            record.working_days = data.get("working_days")
+            record.days_present = data.get("days_present")
+            record.lop_days = data.get("lop_days")
+            record.lop_amount = data.get("lop_amount")
+
             record.hr2_verified_by = user
             record.hr2_verified_at = now()
+
         else:
             return Response({"error": "Already verified or duplicate HR"}, status=400)
 

@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .utils import send_reimbursement_email
+from finance.models import FinanceRecord
 
 # --- List & Create for Employee ---
 
@@ -34,8 +35,22 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
         return ReimbursementDetailSerializer
 
     def perform_create(self, serializer):
-        reimbursement = serializer.save(employee=self.request.user.employee_db)
-        # send_reimbursement_email(reimbursement)
+        reimbursement = serializer.save(
+            employee=self.request.user.employee_db
+        )
+
+        employee = reimbursement.employee
+        employee_name = employee.name if hasattr(employee, "name") else str(employee)
+        employee_id = employee.employee_id if hasattr(employee, "employee_id") else employee.id
+
+        FinanceRecord.objects.create(
+            date=reimbursement.date,
+            amount=reimbursement.amount,
+            payment_type="OUT",
+            category="REIMBURSEMENT",
+            note=f"Reimbursement by {employee_name} ({employee_id})"
+        )
+
 
 
 # --- Retrieve, Update, Delete single reimbursement ---
