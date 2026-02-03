@@ -97,7 +97,6 @@ const DepartmentList = () => {
   // fetch departments on mount
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: "" })).then((res) => {
-      console.log("Department list refreshed", res);
     });
   }, [dispatch]);
 
@@ -170,7 +169,6 @@ const DepartmentList = () => {
         }));
       }
     } catch (err) {
-      console.error("Failed to load employees or details:", err);
       Swal.fire("Error", "Failed to load department data.", "error");
     } finally {
       setLoadingDept(false);
@@ -202,7 +200,6 @@ const DepartmentList = () => {
           "success",
         );
       } catch (err) {
-        console.error(err);
         Swal.fire("Error", "Failed to delete employee.", "error");
       }
     });
@@ -273,7 +270,6 @@ const DepartmentList = () => {
       Swal.fire("Updated!", "Department updated successfully.", "success");
       setEditingDeptId(null);
     } catch (err) {
-      console.error("Update failed:", err);
       Swal.fire(
         "Error",
         "Something went wrong while updating department.",
@@ -314,8 +310,6 @@ const DepartmentList = () => {
       setNewDeptForm({ name: "", department_code: "" });
       setNewDeptError("");
       dispatch(getDepartments({ page: 1, search: "" }));
-
-      console.debug("Department created:", created);
     } catch (err) {
       const message =
         err?.payload?.detail ||
@@ -323,7 +317,6 @@ const DepartmentList = () => {
         err?.message ||
         "Something went wrong. Please try again later.";
       setNewDeptError(message);
-      console.error("Create department failed:", err);
     } finally {
       setSavingDept(false);
     }

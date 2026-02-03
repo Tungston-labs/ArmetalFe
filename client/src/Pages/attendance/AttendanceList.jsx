@@ -1,4 +1,3 @@
-// src/pages/attendance/AttendanceList.jsx
 import React, { useState, useEffect } from "react";
 import {
   PageContainer,
@@ -107,8 +106,6 @@ const AttendanceList = () => {
   };
 
   const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
-
-  // ----------------- FILTER + SEARCH -----------------------
   const [filteredDepartments, setFilteredDepartments] = useState([]);
 
   useEffect(() => {
@@ -221,8 +218,6 @@ const AttendanceList = () => {
                           const tIn = inTimes.length
                             ? formatTime(Math.min(...inTimes))
                             : "-";
-
-                          // Last punch out or '---' if last action is punch in
                           let tOut = "-";
                           if (sessions.length > 0) {
                             const lastSession = sessions[sessions.length - 1];

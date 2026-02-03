@@ -30,11 +30,9 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
 
   fetchEmployeeDashboard(employeeId)
     .then((res) => {
-      console.log("📌 EMPLOYEE DASHBOARD DATA:", res);  
       setEmpData(res);
     })
     .catch((err) => {
-      console.error("Dashboard fetch failed:", err);
     })
     .finally(() => setLoading(false));
 }, [isOpen, employeeId]);

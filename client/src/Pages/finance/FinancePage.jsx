@@ -1,184 +1,157 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
-  HeaderSection,
-  Title,
-  Subtitle,
-  TitleSection,
-  ActionArea,
-  AddButton,
   TableWrapper,
   StyledTable,
-  SearchInput,
-  Tabs,
-  TabButton,
-  FilterInput,
+  Th,
+  Td,
+  Tr,
+  TopBar,
 } from "../finance/FinancePage.Styles";
-import { HiArrowLeft } from "react-icons/hi";
-import Employee from "../../assets/employee.svg";
-import NewFinance from "./NewFinance";
+import EmployeeIcon from "../../assets/employee.svg";
+import EmployeeTitle from "../../Components/EmployeeTitle";
+import FinanceModal from "./NewFinance";
+import { createFinance, fetchFinanceList } from "../../Redux/financeThunks";
 
-const DepartmentDetail = () => {
-  const [activeTab, setActiveTab] = useState("inout");
+/* =====================
+   Display label maps
+   ===================== */
+const PAYMENT_TYPE_LABELS = {
+  IN: "Income",
+  OUT: "Expense",
+};
+
+const CATEGORY_LABELS = {
+  SALARY: "Salary",
+  REIMBURSEMENT: "Reimbursement",
+  TRAVEL: "Travel",
+  FOOD: "Food",
+  OTHER: "Other",
+};
+
+const FinanceDetail = () => {
+  const dispatch = useDispatch();
+  const { list = [], loading } = useSelector((state) => state.finance);
   const [isOpen, setIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState("");
 
-  // Search states
-  const [searchText, setSearchText] = useState("");   // for name/note search
-  const [filterCategory, setFilterCategory] = useState("");
-
-  // Dummy static data
-  const departmentEmployees = [
-    {
-      id: 1,
-      date: "12 January",
-      category: "Travel",
-      sub_category: "Taxi",
-      note: "Airport trip",
-      payment_type: "Cash",
-      amount: "$50",
-    },
-    {
-      id: 2,
-      date: "12 January",
-      category: "Food",
-      sub_category: "Lunch",
-      note: "Team outing",
-      payment_type: "Card",
-      amount: "$120",
-    },
-    {
-      id: 3,
-      date: "12 January",
-      category: "Office",
-      sub_category: "Stationery",
-      note: "Notebooks & Pens",
-      payment_type: "UPI",
-      amount: "$30",
-    },
+  const paymentOptions = [
+    { label: "Income", value: "IN" },
+    { label: "Expense", value: "OUT" },
   ];
+const FALLBACK = "----";
 
-  // Filtering logic
-  const filteredEmployees = departmentEmployees.filter((emp) => {
+  useEffect(() => {
+    dispatch(fetchFinanceList());
+  }, [dispatch]);
+
+  const filteredEmployees = list.filter((emp) => {
+    const search = searchText.trim().toLowerCase();
+
     const matchesSearch =
-      emp.note.toLowerCase().includes(searchText.toLowerCase()) ||
-      emp.sub_category.toLowerCase().includes(searchText.toLowerCase());
-    const matchesCategory =
-      filterCategory === "" ||
-      emp.category.toLowerCase().includes(filterCategory.toLowerCase());
-    return matchesSearch && matchesCategory;
+      search === "" ||
+      emp.note?.toLowerCase().includes(search) ||
+      CATEGORY_LABELS[emp.category]?.toLowerCase().includes(search);
+
+    const matchesPayment =
+      selectedPayment === "" ||
+      emp.payment_type === selectedPayment;
+
+    return matchesSearch && matchesPayment;
   });
+  const handleAddFinance = (formData) => {
+    const payload = {
+      category: formData.category,
+      date: formData.date,
+      note: formData.note,
+      payment_type: formData.paymentType, // IN | OUT
+      amount: formData.amount1,
+    };
+
+    dispatch(createFinance(payload)).then(() => {
+      setIsOpen(false);
+    });
+  };
 
   return (
     <>
-
       <Container>
-        <HeaderSection>
-          <TitleSection>
-            <HiArrowLeft
-              style={{
-                width: "24px",
-                height: "24px",
-                cursor: "pointer",
-                color: "#3250B5",
-              }}
-            />
-            <img src={Employee} alt="employee icon" />
-            <div>
-              <Title>Finance</Title>
-              <Subtitle>
-                Manage all departments within the organization.
-              </Subtitle>
-            </div>
-          </TitleSection>
-
-          <ActionArea>
-            <div>
-              <AddButton onClick={() => setIsOpen(true)}>+ Add </AddButton>
-              <NewFinance isOpen={isOpen} onClose={() => setIsOpen(false)} />
-            </div>
-          </ActionArea>
-        </HeaderSection>
-
-        {/* Search & Filter */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            gap: "1rem",
-          }}
-        >
-          {/* Search Input */}
-          <SearchInput
-            placeholder="Search "
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+        <TopBar>
+          <EmployeeTitle
+            iconSrc={EmployeeIcon}
+            title="Finance"
+            subtitle="Manage your Finance"
+            buttonText="Add Finance"
+            searchValue={searchText}
+            onSearchChange={setSearchText}
+            onAddClick={() => setIsOpen(true)}
+            showDropdown
+            dropdownOptions={paymentOptions}
+            selectedDropdownValue={selectedPayment}
+            dropdownPlaceholder="All Payments"
+            onDropdownChange={setSelectedPayment}
+            showBackArrow={false}
+            showTabs={false}
+            searchPlaceholder="Search Category / Note"
           />
+        </TopBar>
 
-          {/* Filter Input */}
-          <FilterInput
-            placeholder="Filter By Category "
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-          />
-        </div>
-
-        {/* Tabs */}
-        <Tabs>
-          <TabButton
-            active={activeTab === "inout"}
-            onClick={() => setActiveTab("inout")}
-          >
-            Payment in and out
-          </TabButton>
-          <TabButton
-            active={activeTab === "pending"}
-            onClick={() => setActiveTab("pending")}
-          >
-            Pending payment
-          </TabButton>
-        </Tabs>
-
-        {/* Table */}
         <TableWrapper>
           <StyledTable>
             <thead>
-              <tr>
-                <th>Sl No</th>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Sub Category</th>
-                <th>Note</th>
-                <th>Payment type</th>
-                <th>Amount</th>
-              </tr>
+              <Tr>
+                <Th>Sl No</Th>
+                <Th>Date</Th>
+                <Th>Category</Th>
+                <Th>Note</Th>
+                <Th>Payment Type</Th>
+                <Th>Amount</Th>
+              </Tr>
             </thead>
-            <tbody>
-              {filteredEmployees.length > 0 ? (
-                filteredEmployees.map((emp, index) => (
-                  <tr key={emp.id}>
-                    <td>{String(index + 1).padStart(3, "0")}</td>
-                    <td>{emp.date}</td>
-                    <td>{emp.category}</td>
-                    <td>{emp.sub_category}</td>
-                    <td>{emp.note}</td>
-                    <td>{emp.payment_type}</td>
-                    <td>{emp.amount}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" style={{ textAlign: "center", padding: "1rem" }}>
-                    No results found
-                  </td>
-                </tr>
-              )}
-            </tbody>
+           <tbody>
+  {loading ? (
+    <Tr>
+      <Td colSpan="6" style={{ textAlign: "center" }}>
+        Loading...
+      </Td>
+    </Tr>
+  ) : filteredEmployees.length > 0 ? (
+    filteredEmployees.map((emp, index) => (
+      <Tr key={emp.id}>
+        <Td>{String(index + 1).padStart(3, "0")}</Td>
+        <Td>{emp.date || FALLBACK}</Td>
+        <Td>{CATEGORY_LABELS[emp.category] || FALLBACK}</Td>
+        <Td>{emp.note || FALLBACK}</Td>
+        <Td>{PAYMENT_TYPE_LABELS[emp.payment_type] || FALLBACK}</Td>
+        <Td>
+          {emp.amount !== null && emp.amount !== undefined
+            ? emp.amount
+            : FALLBACK}
+        </Td>
+      </Tr>
+    ))
+  ) : (
+    <Tr>
+      <Td colSpan="6" style={{ textAlign: "center" }}>
+        No results found
+      </Td>
+    </Tr>
+  )}
+</tbody>
+
           </StyledTable>
         </TableWrapper>
       </Container>
+
+      <FinanceModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onSave={handleAddFinance}
+      />
     </>
   );
 };
 
-export default DepartmentDetail;
+export default FinanceDetail;

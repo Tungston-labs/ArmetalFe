@@ -49,8 +49,6 @@ const TimeLogDashboard = () => {
 
   const { employeeDashData, loadingEmployeeDash, employeeDashError } =
     useSelector((state) => state.auth);
-
-    console.log({employeeDashData});
     
 
   useEffect(() => {

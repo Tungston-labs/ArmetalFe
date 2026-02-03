@@ -7,7 +7,6 @@ export const fetchPayrollData = async (month, year, search = "", page = 1, depar
     const response = await API.get("/payroll/", {
       params: { month, year, search, page, department }, // 👈 include department
     });
-    console.log("✅ Payroll API Response:", response.data);
     return response.data;
   } catch (error) {
     const msg = error.response?.data?.error || error.message || "Something went wrong while fetching payroll!";

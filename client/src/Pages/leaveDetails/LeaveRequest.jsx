@@ -64,7 +64,7 @@ export default function LeaveRequest() {
   }, [pagination]);
 
   const leaveData = leaves || [];
-  console.log(leaveData);
+ 
   
     const { list: departmentList, loading: deptLoading } = useSelector(
       (state) => state.departments
@@ -87,7 +87,6 @@ const isLoading = loading || deptLoading;
       await dispatch(patchLeaveStatus({ leaveId: selectedLeave.id, status }));
       dispatch(getLeaveRequests(page)); // Refresh current page
     } catch (error) {
-      console.error('Error updating leave status:', error);
     } finally {
       setShowModal(false);
       setSelectedLeave(null);

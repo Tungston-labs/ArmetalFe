@@ -168,7 +168,6 @@ const handleDeleteEmployee = (employeeId, employeeName) => {
           department_head_id: data.department_head?.id || ''
         });
       } catch (err) {
-        console.error('Error fetching department:', err);
       }
     };
     getDepartment();

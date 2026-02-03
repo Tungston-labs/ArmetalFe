@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { HiOutlinePencilSquare } from 'react-icons/hi2';
 export const Container = styled.div`
-  padding: 2rem;
+  padding: 20px;
   background: white;
 
 `;
@@ -27,12 +27,6 @@ export const TitleSection = styled.div`
   img {
     height: 51px;
   }
-
-  // Prevent every div from becoming a column (remove this block ↓)
-  // div {
-  //   display: flex;
-  //   flex-direction: column;
-  // }
 `;
 
 export const Title = styled.h2`
@@ -57,11 +51,7 @@ font-style: normal;
 font-weight: 300;
 line-height: normal;
 `;
-// export const SubTitle = styled.p`
-//   font-size: 0.9rem;
-//   color: #666;
-//   font-family:raleway;
-// `;
+
 export const FormSection = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -131,9 +121,11 @@ border: 1px solid #052DB4;
 `;
 
 export const TableWrapper = styled.div`
-//   overflow-x: auto;
-  background-color:white;
-
+  width: 100%;
+  background-color: white;
+  padding: 6px;
+  border-radius: 8px;
+  overflow-x: auto; /* horizontal scroll for small screens */
 `;
 
 export const StyledTable = styled.table`
@@ -141,43 +133,38 @@ export const StyledTable = styled.table`
   border-collapse: separate;
   border-spacing: 0 10px; 
   margin-top: 1rem;
+`;
 
- td {
-    text-align: center;
-    padding: 0.3rem;
-    white-space: nowrap;
-    background-color: white;
-    border: none; /* remove cell borders */
-  }
 
-  th {
-    background-color: #304EB0;
-    color: white;\
-    padding: 0.75rem;
-    
-  }
-  /* ✅ Background color for even rows */
-  tbody tr:nth-child(even) td {
-    background-color: #E6ECFF;
-  }
-  /* ✅ Apply box-shadow only to tbody rows */
-  tbody tr {
- box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-  }
+export const Th = styled.th`
+  background-color: #304EB0;
+  color: white;
+  padding: 0.75rem;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+`;
 
-  /* Optional: radius for only first and last td of each row */
-  tbody tr td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-  }
 
-  tbody tr td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-  }
+export const Td = styled.td`
+  text-align: center;
+  padding: 0.5rem;
+  white-space: nowrap;
+  background-color: white;
+  border: none;
+`;
 
-  tbody tr:hover td {
+
+export const Tr = styled.tr`
+  box-shadow: 0px 0px 2.7px rgba(0, 0, 0, 0.28);
+
+
+  &:hover ${Td} {
     background-color: #f5f5f5;
+  }
+  &:nth-child(even) ${Td} {
+    background-color: #E6ECFF;
   }
 `;
 
@@ -200,12 +187,12 @@ export const IconButton = styled.button`
     opacity: 0.8;
   }
 `;
-export const TopBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-`;
+// export const TopBar = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   margin-bottom: 1.5rem;
+// `;
 
 export const HRManager = styled.div`
   display: flex;
@@ -263,30 +250,30 @@ export const DropdownMenu = styled.div`
     }
   }
 `;
-export const Tabs = styled.div`
-  display: flex;
-  gap: 15px;
-  margin-bottom: 1rem;
-`;
 
-export const TabButton = styled.button`
-  padding: 0.6rem 5.5rem;
-  border: none;
+export const FilterButton = styled.button`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #3352BA;
+  color: white;
+  padding: 8px 16px;
   border-radius: 6px;
-  font-weight: 500;
+  border: none;
+  font-size: 0.95rem;
+  font-family: Satoshi;
   cursor: pointer;
-  background: ${({ active }) => (active ? "#BCC8F2" : "#f2f2f2")};
-  color: ${({ active }) => (active ? "black" : "#333")};
-  transition: background 0.2s, box-shadow 0.2s;
-
-  ${({ active }) =>
-    active &&
-    `
-      box-shadow: 0px 0px 4.5px 0px #00000040;
-      border: 0.2px solid #000000;
-    `}
+  height: 40px;
 
   &:hover {
-    background: ${({ active }) => (active ? "#BCC8F2" : "#e0e0e0")};
+    background-color: #243d8f;
   }
+`;
+
+export const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  /* gap: 10px; */
+  position: relative; 
 `;

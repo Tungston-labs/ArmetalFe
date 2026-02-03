@@ -181,11 +181,6 @@ const getWeekDays = (dateStr) => {
     editable={false}
     // onBack={handleBack}
   />
-
-
-
-
-      {/* Date Wrapper */}
       <DateWrapper>
         <WorkingInfo>
           <div>
@@ -206,8 +201,6 @@ const getWeekDays = (dateStr) => {
             style={{ cursor: "pointer" }}
             onClick={handlePreviousDay}
           />
-
-          {/* ✅ React DatePicker */}
           <div className="date-block" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <DatePicker
               selected={selectedDateObj}

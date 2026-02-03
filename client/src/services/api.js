@@ -1,8 +1,9 @@
-// src/utils/API.js or wherever you saved it
 import axios from "axios";
 import {toast} from "react-toastify";
 
 export const BASE_URL=import.meta.env.VITE_API_BASE_URL
+console.log(BASE_URL);
+
 const API = axios.create({
   baseURL: `${BASE_URL}/api`,
   withCredentials: true,
@@ -11,7 +12,6 @@ const API = axios.create({
   },
 });
 
-// Request Interceptor: Attach access token
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
@@ -23,7 +23,6 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Refresh token on 401
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
