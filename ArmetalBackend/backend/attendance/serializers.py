@@ -85,7 +85,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
             'total_hours',
             'total_hours_formatted',
             'remark',
-            'sessions'
+            'sessions',
+            'attendance_today'
         ]
 
     def get_total_hours_formatted(self, obj):
