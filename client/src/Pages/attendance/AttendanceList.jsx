@@ -30,11 +30,13 @@ const AttendanceList = () => {
 
   const [selectedDept, setSelectedDept] = useState(null);
   const [departmentAttendance, setDepartmentAttendance] = useState({});
+  const [departmentCounts, setDepartmentCounts] = useState({});
   const [pageByDept, setPageByDept] = useState({});
   const [searchText, setSearchText] = useState("");
   const [loadingDept, setLoadingDept] = useState(false);
 
   const pageSize = 10;
+
   const { list: departmentList = [], loading } = useSelector(
     (state) => state.departments
   );
@@ -67,26 +69,25 @@ const AttendanceList = () => {
     return items.slice(start, start + pageSize);
   };
 
-  const groupByEmployee = (records) => {
-    const map = {};
-    records.forEach((emp) => {
-      const id = emp.employee_id;
-      if (!map[id]) map[id] = emp;
-    });
-    return Object.values(map);
-  };
-
-  const getTodayDate = () => new Date().toISOString().split("T")[0];
-
+  // ✅ LOAD attendance using NEW API response
   const loadAttendanceForDept = async (deptId) => {
     setLoadingDept(true);
     try {
       const res = await dispatch(getAttendanceList({ department_id: deptId }));
-      const results = res?.payload?.results || [];
-      const today = getTodayDate();
-      const todays = results.filter((e) => e.date === today);
-      const unique = groupByEmployee(todays);
-      setDepartmentAttendance((p) => ({ ...p, [deptId]: unique }));
+      const data = res?.payload || {};
+
+      setDepartmentAttendance((p) => ({
+        ...p,
+        [deptId]: data.results || [],
+      }));
+
+      setDepartmentCounts((p) => ({
+        ...p,
+        [deptId]: {
+          swiped: data.swiped_employee_count || 0,
+          total: data.total_employee_count || 0,
+        },
+      }));
     } finally {
       setLoadingDept(false);
     }
@@ -97,6 +98,7 @@ const AttendanceList = () => {
       setSelectedDept(null);
       return;
     }
+
     setSelectedDept(deptId);
     setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
 
@@ -106,52 +108,12 @@ const AttendanceList = () => {
   };
 
   const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
-  const [filteredDepartments, setFilteredDepartments] = useState([]);
 
-  useEffect(() => {
-    const fetchAndFilter = async () => {
-      if (!searchText) {
-        setFilteredDepartments(
-          departmentList.map((dept) => ({
-            ...dept,
-            employees: departmentAttendance[dept.id] || [],
-          }))
-        );
-        return;
-      }
-
-      const promises = departmentList.map(async (dept) => {
-        if (!departmentAttendance[dept.id]) {
-          await loadAttendanceForDept(dept.id);
-        }
-      });
-
-      await Promise.all(promises);
-
-      const filtered = departmentList
-        .map((dept) => {
-          const employees = departmentAttendance[dept.id] || [];
-          const matches = employees.filter((e) =>
-            (e.employee_name || "")
-              .toLowerCase()
-              .includes(searchText.toLowerCase())
-          );
-          return { ...dept, employees: matches };
-        })
-        .filter((dept) => dept.employees.length > 0);
-
-      setFilteredDepartments(filtered);
-    };
-
-    fetchAndFilter();
-  }, [searchText, departmentList, departmentAttendance]);
-
-  const departmentsToRender = searchText
-    ? filteredDepartments
-    : departmentList.map((dept) => ({
-        ...dept,
-        employees: departmentAttendance[dept.id] || [],
-      }));
+  const departmentsToRender = departmentList.map((dept) => ({
+    ...dept,
+    employees: departmentAttendance[dept.id] || [],
+    counts: departmentCounts[dept.id] || { swiped: 0, total: 0 },
+  }));
 
   return (
     <PageContainer>
@@ -183,11 +145,10 @@ const AttendanceList = () => {
                     <DepartmentIcon>{dept.name[0]}</DepartmentIcon>
                     <DepartmentName>{dept.name}</DepartmentName>
                   </LeftWrapper>
+
+                  {/* ✅ Show swiped / total count */}
                   <EmployeeCount>
-                    {searchText
-                      ? dept.employees?.length || 0
-                      : dept.attendance_employee_count || 0}{" "}
-                    Employees
+                    {dept.counts.swiped} / {dept.counts.total} Swiped
                   </EmployeeCount>
                 </DepartmentHeader>
 
@@ -200,6 +161,7 @@ const AttendanceList = () => {
                       <span>In Date</span>
                       <span>In Time</span>
                       <span>Out Time</span>
+                      <span>Status</span> {/* ✅ new column */}
                     </DropdownHeader>
 
                     <EmployeeList>
@@ -211,19 +173,22 @@ const AttendanceList = () => {
                         paginated.map((emp, idx) => {
                           const sessions = emp.sessions || [];
 
-                          // First punch in
                           const inTimes = sessions
                             .map((s) => parseTimeToTimestamp(s.time_in))
                             .filter((t) => !isNaN(t));
+
                           const tIn = inTimes.length
                             ? formatTime(Math.min(...inTimes))
                             : "-";
+
                           let tOut = "-";
                           if (sessions.length > 0) {
                             const lastSession = sessions[sessions.length - 1];
                             tOut =
                               lastSession.time_out && lastSession.time_out !== ""
-                                ? formatTime(parseTimeToTimestamp(lastSession.time_out))
+                                ? formatTime(
+                                    parseTimeToTimestamp(lastSession.time_out)
+                                  )
                                 : "---";
                           }
 
@@ -238,22 +203,27 @@ const AttendanceList = () => {
                               <EmployeeCell>{emp.date || "-"}</EmployeeCell>
                               <EmployeeCell>{tIn}</EmployeeCell>
                               <EmployeeCell>{tOut}</EmployeeCell>
+
+                              {/* ✅ Red dot if not swiped */}
+                              <EmployeeCell>
+                                {emp.attendance_today ? (
+                                  "✔"
+                                ) : (
+                                  <span style={{ color: "red", fontSize: "20px" }}>
+                                    ●
+                                  </span>
+                                )}
+                              </EmployeeCell>
                             </EmployeeRow>
                           );
                         })
                       ) : (
-                        <EmployeeItem>No attendance found for today.</EmployeeItem>
+                        <EmployeeItem>No attendance found.</EmployeeItem>
                       )}
                     </EmployeeList>
 
                     {employees.length > pageSize && (
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "10px",
-                          padding: "10px",
-                        }}
-                      >
+                      <div style={{ display: "flex", gap: "10px", padding: "10px" }}>
                         <button
                           disabled={currentPage === 1}
                           onClick={() =>
@@ -265,9 +235,11 @@ const AttendanceList = () => {
                         >
                           Prev
                         </button>
+
                         <span>
                           Page {currentPage} / {totalPages}
                         </span>
+
                         <button
                           disabled={currentPage === totalPages}
                           onClick={() =>
