@@ -95,6 +95,26 @@ class AttendanceSerializer(serializers.ModelSerializer):
         hours = int(obj.total_hours)
         minutes = int((obj.total_hours - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
+    
+    
+from rest_framework import serializers
+from employee.models import Employee_db
+
+
+class AttendanceEmployeeRowSerializer(serializers.ModelSerializer):
+    first_punch_in = serializers.TimeField(read_only=True)
+    has_swipe_today = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Employee_db
+        fields = [
+            "id",
+            "employee_id",
+            "name",
+            "profile_pic",
+            "first_punch_in",
+            "has_swipe_today",
+        ]
 
 
 class EmployeeInfoSerializer(serializers.ModelSerializer):

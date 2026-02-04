@@ -259,46 +259,70 @@ class AddPunchOutNoteView(APIView):
 
 # -----------------------------------------------------view for list attendance for admin
 
-from django.db.models import Min, Case, When, IntegerField
+from datetime import date as today_date
+from django.db.models import Min, OuterRef, Subquery, Exists, Case, When, IntegerField
+from rest_framework import generics, filters
 from rest_framework.exceptions import ValidationError
-
+from rest_framework.permissions import IsAuthenticated
+from employee.models import Employee_db
+from attendance.models import Attendance
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
-    permission_classes = [IsAuthenticated, IsHRAdmin]
+    pagination_class = CustomPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['employee__name', 'employee__employee_id', 'date']
-    pagination_class = CustomPagination
 
     def get_queryset(self):
         department_id = self.request.query_params.get('department_id')
+        selected_date = self.request.query_params.get('date')
+
         if not department_id:
-            raise ValidationError({"department_id": "This query parameter is required."})
+            raise ValidationError({"department_id": "department_id is required"})
 
-        date = self.request.query_params.get('date')
+        if not selected_date:
+            selected_date = today_date.today()
 
-        # ✅ Annotate each attendance record with the earliest punch-in (from AttendanceSession)
+        # 1️⃣ All employees in department
+        employees = Employee_db.objects.filter(department_id=department_id)
+
+        # 2️⃣ Employees who already have attendance
+        existing_attendance = Attendance.objects.filter(
+            employee__in=employees,
+            date=selected_date
+        ).values_list("employee_id", flat=True)
+
+        # 3️⃣ Create empty attendance for non-swiped employees
+        missing_employees = employees.exclude(id__in=existing_attendance)
+
+        Attendance.objects.bulk_create([
+            Attendance(
+                employee=emp,
+                date=selected_date,
+                total_hours=0
+            )
+            for emp in missing_employees
+        ], ignore_conflicts=True)
+
+        # 4️⃣ Normal queryset (unchanged)
         queryset = (
-            Attendance.objects.filter(employee__department_id=department_id)
+            Attendance.objects
+            .filter(employee__department_id=department_id)
             .annotate(first_punch_in=Min('sessions__time_in'))
         )
 
-        # Optional date filter
-        if date:
-            queryset = queryset.filter(date=date)
+        if selected_date:
+            queryset = queryset.filter(date=selected_date)
 
-        # ✅ Order by date (newest first), but within date, by first_punch_in (earliest first)
-        # Employees who haven’t swiped in yet (NULL) will be pushed to the bottom
-        queryset = queryset.order_by(
-            '-date',
+        return queryset.order_by(
             Case(
                 When(first_punch_in__isnull=True, then=1),
                 default=0,
                 output_field=IntegerField(),
             ),
             'first_punch_in',
+            'employee__name'
         )
 
-        return queryset
 
 
 
