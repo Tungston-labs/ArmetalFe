@@ -71,6 +71,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     profile_pic = serializers.ImageField(source='employee.profile_pic', read_only=True)
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
     total_hours_formatted = serializers.SerializerMethodField()
+    attendance_today = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Attendance
@@ -84,7 +85,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
             'total_hours',
             'total_hours_formatted',
             'remark',
-            'sessions'
+            'sessions',
+            'attendance_today'
         ]
 
     def get_total_hours_formatted(self, obj):
@@ -95,6 +97,26 @@ class AttendanceSerializer(serializers.ModelSerializer):
         hours = int(obj.total_hours)
         minutes = int((obj.total_hours - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
+    
+    
+from rest_framework import serializers
+from employee.models import Employee_db
+
+
+class AttendanceEmployeeRowSerializer(serializers.ModelSerializer):
+    first_punch_in = serializers.TimeField(read_only=True)
+    has_swipe_today = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Employee_db
+        fields = [
+            "id",
+            "employee_id",
+            "name",
+            "profile_pic",
+            "first_punch_in",
+            "has_swipe_today",
+        ]
 
 
 class EmployeeInfoSerializer(serializers.ModelSerializer):

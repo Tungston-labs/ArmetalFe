@@ -8,14 +8,24 @@ from user.models import User
 from django.core.exceptions import ValidationError
 from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
 
+import re
 def generate_password():
     return 'CMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
-def generate_company_id(location):
-    letters = ''.join(random.choices(string.ascii_lowercase, k=3))
-    location_part = location[:3].lower()
-    digits = ''.join(random.choices(string.digits, k=3))
-    return f"{letters}_arm_{location_part}_{digits}"
+def generate_company_id_from_name(name):
+    # remove spaces and special characters
+    clean_name = re.sub(r'[^a-zA-Z0-9]', '', name)
+    base_id = clean_name.lower()
+
+    # ensure uniqueness
+    unique_id = base_id
+    counter = 1
+    while Company.objects.filter(company_id=unique_id).exists():
+        unique_id = f"{base_id}{counter}"
+        counter += 1
+
+    return unique_id
+
 
 
 COUNTRY_CHOICES = [
@@ -57,7 +67,8 @@ class Company(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.company_id:
-            self.company_id = generate_company_id(self.location)
+            self.company_id = generate_company_id_from_name(self.name)
+
         if not self.default_password:
             self.default_password = generate_password()
         super().save(*args, **kwargs)

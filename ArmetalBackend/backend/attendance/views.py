@@ -259,46 +259,76 @@ class AddPunchOutNoteView(APIView):
 
 # -----------------------------------------------------view for list attendance for admin
 
-from django.db.models import Min, Case, When, IntegerField
+from datetime import date as today_date
+from django.db.models import Min, Case, When, IntegerField, BooleanField, Count, Q
+from rest_framework import generics, filters
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+
+from employee.models import Employee_db
+from attendance.models import Attendance
+from .serializers import AttendanceSerializer
+
 
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
-    permission_classes = [IsAuthenticated, IsHRAdmin]
+    pagination_class = CustomPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['employee__name', 'employee__employee_id', 'date']
-    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         department_id = self.request.query_params.get('department_id')
+        selected_date = self.request.query_params.get('date')
+
         if not department_id:
-            raise ValidationError({"department_id": "This query parameter is required."})
+            raise ValidationError({"department_id": "department_id is required"})
 
-        date = self.request.query_params.get('date')
+        if not selected_date:
+            selected_date = today_date.today()
 
-        # ✅ Annotate each attendance record with the earliest punch-in (from AttendanceSession)
+        # 1️⃣ Base queryset
         queryset = (
-            Attendance.objects.filter(employee__department_id=department_id)
-            .annotate(first_punch_in=Min('sessions__time_in'))
-        )
+            Attendance.objects
+            .filter(employee__department_id=department_id, date=selected_date)
+            .annotate(
+                first_punch_in=Min('sessions__time_in'),
 
-        # Optional date filter
-        if date:
-            queryset = queryset.filter(date=date)
-
-        # ✅ Order by date (newest first), but within date, by first_punch_in (earliest first)
-        # Employees who haven’t swiped in yet (NULL) will be pushed to the bottom
-        queryset = queryset.order_by(
-            '-date',
-            Case(
-                When(first_punch_in__isnull=True, then=1),
-                default=0,
-                output_field=IntegerField(),
-            ),
-            'first_punch_in',
+                # ✅ attendance_today flag
+                attendance_today=Case(
+                    When(first_punch_in__isnull=False, then=True),
+                    default=False,
+                    output_field=BooleanField(),
+                )
+            )
+            .order_by(
+                Case(
+                    When(first_punch_in__isnull=True, then=1),
+                    default=0,
+                    output_field=IntegerField(),
+                ),
+                'first_punch_in',
+                'employee__name'
+            )
         )
 
         return queryset
+
+    # 2️⃣ Add swiped employee count in response
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        swiped_count = queryset.filter(first_punch_in__isnull=False).count()
+        total_count = queryset.count()
+
+        response = super().list(request, *args, **kwargs)
+
+        # ✅ inject extra meta without breaking existing structure
+        response.data["swiped_employee_count"] = swiped_count
+        response.data["total_employee_count"] = total_count
+
+        return response
+
 
 
 

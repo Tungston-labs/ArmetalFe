@@ -131,6 +131,19 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         adjusted_basic_salary = basic_salary - lop_amount
         adjusted_gross = adjusted_basic_salary + housing_allowance + transportation
         net_pay = adjusted_gross - tds
+        # 🔒 Use frozen values if available
+        if instance.working_days is not None:
+            working_days = instance.working_days
+
+        if instance.days_present is not None:
+            days_present = instance.days_present
+
+        if instance.lop_days is not None:
+            lop_days = float(instance.lop_days)
+
+        if instance.lop_amount is not None:
+            lop_amount = float(instance.lop_amount)
+
 
         # --- Final Output ---
         data.update({
