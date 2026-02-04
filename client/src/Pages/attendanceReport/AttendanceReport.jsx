@@ -8,78 +8,81 @@ import {
     Td,
     Tr,
     LopTd,
+    TopBar,
+    MonthSelector,
 } from "./AttendanceReportStyles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
 
 const employeeData = [
-    {
-        name: "John Doe",
-        month: "January",
-        workingDays: 26,
-        present: 20,
-        absent: 6,
-        lop: 2,
-    },
-    {
-        name: "Sarah Smith",
-        month: "January",
-        workingDays: 26,
-        present: 22,
-        absent: 4,
-        lop: 0,
-    },
-    {
-        name: "David Miller",
-        month: "January",
-        workingDays: 26,
-        present: 25,
-        absent: 1,
-        lop: 0,
-    },
+    { name: "John Doe", month: "January", workingDays: 26, present: 20, absent: 6, lop: 2 },
+    { name: "Sarah Smith", month: "January", workingDays: 26, present: 22, absent: 4, lop: 0 },
+    { name: "David Miller", month: "February", workingDays: 26, present: 25, absent: 1, lop: 0 },
+    { name: "David Miller", month: "February", workingDays: 26, present: 25, absent: 1, lop: 0 },
+    { name: "David Miller", month: "February", workingDays: 26, present: 20, absent: 1, lop: 2 },
 ];
 
 const fullYearData = {
-  "John Doe": [
-    { month: "January", workingDays: 26, present: 20, absent: 6, lop: 2 },
-    { month: "February", workingDays: 24, present: 22, absent: 2, lop: 0 },
-    { month: "March", workingDays: 26, present: 25, absent: 1, lop: 0 },
-    { month: "April", workingDays: 26, present: 26, absent: 0, lop: 0 },
-    { month: "May", workingDays: 26, present: 23, absent: 3, lop: 2 },
-    { month: "June", workingDays: 26, present: 25, absent: 1, lop: 0 },
-    { month: "July", workingDays: 26, present: 24, absent: 2, lop: 0 },
-    { month: "August", workingDays: 26, present: 22, absent: 4, lop: 1 },
-    { month: "September", workingDays: 26, present: 26, absent: 0, lop: 0 },
-    { month: "October", workingDays: 26, present: 25, absent: 1, lop: 0 },
-    { month: "November", workingDays: 26, present: 23, absent: 3, lop: 1 },
-    { month: "December", workingDays: 26, present: 26, absent: 0, lop: 0 },
-  ],
-  "Sarah Smith": [
-    { month: "January", workingDays: 26, present: 22, absent: 4, lop: 0 },
-    { month: "February", workingDays: 24, present: 20, absent: 4, lop: 1 },
-    { month: "March", workingDays: 26, present: 24, absent: 2, lop: 0 },
-    // add other months
-  ],
-  "David Miller": [
-    { month: "January", workingDays: 26, present: 25, absent: 1, lop: 0 },
-    { month: "February", workingDays: 26, present: 24, absent: 2, lop: 0 },
-    { month: "March", workingDays: 26, present: 26, absent: 0, lop: 0 },
-  ],
+    "John Doe": [
+        { month: "January", workingDays: 26, present: 20, absent: 6, lop: 2 },
+        { month: "February", workingDays: 24, present: 22, absent: 2, lop: 0 },
+        { month: "March", workingDays: 26, present: 25, absent: 1, lop: 0 },
+        { month: "April", workingDays: 26, present: 26, absent: 0, lop: 0 },
+        { month: "May", workingDays: 26, present: 23, absent: 3, lop: 2 },
+        { month: "June", workingDays: 26, present: 25, absent: 1, lop: 0 },
+        { month: "July", workingDays: 26, present: 24, absent: 2, lop: 0 },
+        { month: "August", workingDays: 26, present: 22, absent: 4, lop: 1 },
+        { month: "September", workingDays: 26, present: 26, absent: 0, lop: 0 },
+        { month: "October", workingDays: 26, present: 25, absent: 1, lop: 0 },
+        { month: "November", workingDays: 26, present: 23, absent: 3, lop: 1 },
+        { month: "December", workingDays: 26, present: 26, absent: 0, lop: 0 },
+    ],
+    "Sarah Smith": [
+        { month: "January", workingDays: 26, present: 22, absent: 4, lop: 0 },
+        { month: "February", workingDays: 24, present: 20, absent: 4, lop: 1 },
+        { month: "March", workingDays: 26, present: 24, absent: 2, lop: 0 },
+    ],
+    "David Miller": [
+        { month: "January", workingDays: 26, present: 25, absent: 1, lop: 0 },
+        { month: "February", workingDays: 26, present: 24, absent: 2, lop: 0 },
+        { month: "March", workingDays: 26, present: 26, absent: 0, lop: 0 },
+    ],
 };
+
 const AttendanceReport = () => {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const totalWorkingDays = employeeData[0]?.workingDays || 0;
 
-   const handleRowClick = (employee) => {
-  const employeeFullYear = {
-    name: employee.name,
-    months: fullYearData[employee.name] || [], 
-  };
-  setSelectedEmployee(employeeFullYear);
-  setIsModalOpen(true);
-};
+    // default to current month in "YYYY-MM" format (input[type="month"] value)
+    const [selectedMonth, setSelectedMonth] = useState(
+        new Date().toISOString().slice(0, 7)
+    );
+
+    // convert "YYYY-MM" to month name like "March"
+    const getMonthNameFromYYYYMM = (yyyyMM) => {
+        if (!yyyyMM) return "";
+        // create a date using the first day of that month
+        const d = new Date(`${yyyyMM}-01T00:00:00`);
+        // ensure valid date
+        if (isNaN(d.getTime())) return "";
+        return d.toLocaleString("default", { month: "long" }); // e.g. "March"
+    };
+
+    const selectedMonthName = getMonthNameFromYYYYMM(selectedMonth);
+
+    // Filter the table data to show only rows matching the selected month name
+    const visibleRows = employeeData.filter((emp) => emp.month === selectedMonthName);
+
+    const handleRowClick = (employee) => {
+        const employeeFullYear = {
+            name: employee.name,
+            months: fullYearData[employee.name] || [],
+        };
+        setSelectedEmployee(employeeFullYear);
+        setIsModalOpen(true);
+    };
+
     return (
         <Container>
             <EmployeeTitle
@@ -91,6 +94,19 @@ const AttendanceReport = () => {
             />
 
             <PageWrapper>
+                <TopBar>
+                    <MonthSelector>
+                        <input
+                            type="month"
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                        />
+                        <div style={{ marginLeft: 12, fontWeight: 600 }}>
+                          {selectedMonthName || "Select month"}
+                        </div>
+                    </MonthSelector>
+                </TopBar>
+
                 <TableWrapper>
                     <StyledTable>
                         <thead>
@@ -104,22 +120,34 @@ const AttendanceReport = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {employeeData.map((emp, index) => (
-                                <Tr key={index} $lop={emp.lop}
-                                    onClick={() => handleRowClick(emp)}
-                                    style={{ cursor: "pointer" }}>
-                                    <Td>{emp.name}</Td>
-                                    <Td>{emp.month}</Td>
-                                    <Td>{emp.workingDays}</Td>
-                                    <Td>{emp.present}</Td>
-                                    <Td>{emp.absent}</Td>
-                                 <LopTd $lop={emp.lop}>{emp.lop}</LopTd>
+                            {visibleRows.length === 0 ? (
+                                <Tr>
+                                    <Td colSpan={6} style={{ textAlign: "center" }}>
+                                        No records for {selectedMonthName || "this month"}
+                                    </Td>
                                 </Tr>
-                            ))}
+                            ) : (
+                                visibleRows.map((emp, index) => (
+                                    <Tr
+                                        key={index}
+                                        $lop={emp.lop}
+                                        onClick={() => handleRowClick(emp)}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        <Td>{emp.name}</Td>
+                                        <Td>{emp.month}</Td>
+                                        <Td>{emp.workingDays}</Td>
+                                        <Td>{emp.present}</Td>
+                                        <Td>{emp.absent}</Td>
+                                        <LopTd $lop={emp.lop}>{emp.lop}</LopTd>
+                                    </Tr>
+                                ))
+                            )}
                         </tbody>
                     </StyledTable>
                 </TableWrapper>
             </PageWrapper>
+
             <EmployeeAttendanceModal
                 employee={selectedEmployee}
                 isOpen={isModalOpen}

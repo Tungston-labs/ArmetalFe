@@ -20,8 +20,6 @@ import {
 import API from '../services/api';
 import { NavLink } from "react-router-dom";
 
-
-
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();

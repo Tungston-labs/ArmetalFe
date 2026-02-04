@@ -53,7 +53,7 @@ const EmployeeTitle = ({
       path: "/employee-Contract-Visa-Expiry",
       label: "Employee Contract & Visa Expiry",
     },
-    { path: "/attendance-report", label: "Employee Attendance Report" },
+    { path: "/employee-attendance-report", label: "Employee Attendance Report" },
   ],
 
 

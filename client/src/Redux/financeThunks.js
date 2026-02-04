@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createFinanceService,
   listFinanceService,
+  deleteFinanceService
 } from "../services/financeService";
 
 export const createFinance = createAsyncThunk(
@@ -17,19 +18,25 @@ export const createFinance = createAsyncThunk(
 
 export const fetchFinanceList = createAsyncThunk(
   "finance/list",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, pageSize = 20 } = {}, { rejectWithValue }) => {
     try {
-      const response = await listFinanceService();
-
-      // ✅ normalize response
-      if (Array.isArray(response)) return response;
-      if (Array.isArray(response.results)) return response.results;
-      if (Array.isArray(response.data)) return response.data;
-
-      return []; // fallback
+      const response = await listFinanceService(page, pageSize);
+      return response;   // return full pagination object
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
 
+
+export const deleteFinance = createAsyncThunk(
+  "finance/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      await deleteFinanceService(id);
+      return id; // return deleted id
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);

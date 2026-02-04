@@ -10,8 +10,6 @@ export const PageWrapper = styled.div`
   margin-top: 16px;
 `;
 
-
-
 export const CardContainer = styled.div`
   display: flex;
   margin-bottom: 32px;
@@ -63,8 +61,6 @@ export const CardValue = styled.h2`
   line-height: 1;
 `;
 
-/* ===== TABLE ===== */
-
 export const TableWrapper = styled.div`
   background: #ffffff;
   border-radius: 12px;
@@ -108,4 +104,27 @@ export const LopTd = styled.td`
   font-weight: 700;
   color: ${({ $lop }) => ($lop > 0 ? "#dc2626" : "#111827")};
   border-bottom: 1px solid #e5e7eb;
+`;
+
+export const TopBar = styled.div`
+  display: flex;
+  justify-content: start;
+  margin-bottom: 16px;
+`;
+export const MonthSelector = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f7f8fa;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #e4e7ec;
+
+  input {
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+  }
 `;

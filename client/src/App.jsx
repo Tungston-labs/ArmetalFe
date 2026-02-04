@@ -131,7 +131,7 @@ function App() {
               <Route path="/parent" element={<Parent />} />
               <Route path="/layout" element={<ViewLayout />} />
               <Route path="/modal" element={<ProgressModal />} />
-              <Route path ="/attendance-report" element={< AttendanceReport/>} />
+              <Route path ="/employee-attendance-report" element={< AttendanceReport/>} />
 
               <Route path="/right-modal" element={<EmployeeAttendanceModal />}/>
               <Route path="*" element={<ErrorSomething />} />
