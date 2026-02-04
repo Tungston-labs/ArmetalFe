@@ -118,7 +118,7 @@ export const Button = styled.button`
   @media (max-width: 1024px) {
     font-size: 0.8rem;
   }
-  /* Responsive adjustments */
+ 
   @media (min-width: 1920px) {
     padding: 0.8rem 1.2rem;
     font-size: 1rem;
@@ -200,8 +200,8 @@ export const SearchWrapper = styled.div`
   }
 
   @media (min-width: 1920px) {
-    padding: 0.8rem 1.2rem;
-    max-width: 600px;
+    padding: 8px;
+    max-width: 400px;
 
     svg {
       font-size: 1.2rem;
@@ -313,11 +313,11 @@ export const Dropdown = styled.select`
 
 export const TabButton = styled.button`
   width: 100%;
-  background: ${({ active }) => (active ? "#304EB0" : "#F2F2F2")};
-  color: ${({ active }) => (active ? "#fff" : "black")};
+  background: ${({ $active }) => ($active ? "#304EB0" : "#F2F2F2")};
+  color: ${({ $active }) => ($active ? "#fff" : "black")};
   border: none;
   border-radius: 4px;
-  padding: 0.7rem 1rem;
+  /* padding: 0.7rem 1rem; */
   font-size: 0.9rem;
   font-weight: 500;
   text-align: center;
@@ -330,19 +330,18 @@ export const TabButton = styled.button`
     color: white;
   }
 
-  /* Mobile: show 3 tabs in one row */
   @media (max-width: 1023px) {
     flex: 0 0 calc(33.33% - 0.33rem);
     font-size: 0.8rem;
   }
  @media (min-width: 1024px) {
-    padding: 0.9rem 1.3rem;
+    padding: 0.9rem 1rem;
     font-size: 0.8rem;
   }
-  /* 1920px (Full HD) */
+
   @media (min-width: 1920px) {
-    padding: 0.9rem 1.3rem;
-    font-size: 1rem;
+    padding: 0.7rem 1rem;
+       font-size: 0.9rem;
   }
 
   /* 2560px (2K) */
@@ -420,10 +419,7 @@ export const TabsRow = styled.div`
 export const ScrollButton = styled.button`
   position: absolute;
   top: 50%;
-  /* transform: translateY(-50%); */
-  /* background: rgba(0,0,0,0.2); */
   border: none;
-  /* border-radius: 50%; */
   width: 30px;
   height: 30px;
   cursor: pointer;

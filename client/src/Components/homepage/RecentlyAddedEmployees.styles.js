@@ -31,7 +31,7 @@ export const Title = styled.h4`
   }
 
   @media (min-width: 1920px) {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   @media (min-width: 2560px) {
@@ -88,8 +88,8 @@ export const Avatar = styled.img`
   object-fit: cover;
 
   @media (min-width: 1920px) {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
   }
 `;
 
@@ -113,7 +113,7 @@ export const Name = styled.span`
   }
 
   @media (min-width: 1920px) {
-    font-size: 18px;
+    font-size: 16px;
   }
      @media (min-width: 2560px) {
     font-size: 1.5rem;
@@ -133,7 +133,7 @@ export const Dept = styled.span`
   }
 
   @media (min-width: 1920px) {
-    font-size: 15px;
+    font-size: 12px;
   }
     @media (min-width: 2560px) {
     font-size: 20px;
@@ -153,7 +153,7 @@ export const IdText = styled.span`
   }
 
   @media (min-width: 1920px) {
-    font-size: 13px;
+    font-size: 12px;
   }
        @media (min-width: 2560px) {
     font-size: 18px;

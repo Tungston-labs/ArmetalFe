@@ -87,13 +87,13 @@ export const Th = styled.th`
 `;
 
 export const Tr = styled.tr`
-  background: ${({ lop }) => (lop > 0 ? "#fff1f2" : "transparent")};
+  background: ${({ $lop }) => ($lop > 0 ? "#fff1f2" : "transparent")};
 
   &:hover {
-    background: ${({ lop }) => (lop > 0 ? "#ffe4e6" : "#f9fafb")};
-    
+    background: ${({ $lop }) => ($lop > 0 ? "#ffe4e6" : "#f9fafb")};
   }
 `;
+
 
 
 export const Td = styled.td`
@@ -106,6 +106,6 @@ export const LopTd = styled.td`
   padding: 14px;
   font-size: 14px;
   font-weight: 700;
-  color: ${({ lop }) => (lop > 0 ? "#dc2626" : "#111827")}; /* RED only if >0 */
+  color: ${({ $lop }) => ($lop > 0 ? "#dc2626" : "#111827")};
   border-bottom: 1px solid #e5e7eb;
 `;

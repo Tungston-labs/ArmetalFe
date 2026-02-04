@@ -85,9 +85,9 @@ export const DepartmentIcon = styled.div`
   text-transform: uppercase;
 
   @media (min-width: 1920px) {
-    width: 60px;
-    height: 60px;
-    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
   }
 
   @media (min-width: 2560px) {
@@ -114,7 +114,7 @@ export const DepartmentName = styled.h2`
 
   /* Responsive scaling */
   @media (min-width: 1920px) {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   @media (min-width: 2560px) {
@@ -217,7 +217,7 @@ grid-template-columns: repeat(6, 1fr);
   /* Responsive adjustments */
   @media (min-width: 1920px) {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    font-size: 1.1rem;
+    font-size: 1rem;
     padding: 1rem 1.5rem;
   }
 
@@ -262,7 +262,7 @@ background: #f4f8ff;
   @media (min-width: 1920px) {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     padding: 0.8rem 1.2rem;
-    font-size: 1.1rem;
+    /* font-size: 1.1rem; */
   }
 
   @media (min-width: 2560px) {

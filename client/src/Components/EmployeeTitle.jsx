@@ -205,7 +205,7 @@ const EmployeeTitle = ({
             <TabsRow ref={rowRef} onScroll={checkScroll}>
               {tabs.map((tab) => (
                 <NavLink key={tab.path} to={tab.path} style={{ textDecoration: "none" }}>
-                  <TabButton active={location.pathname === tab.path}>{tab.label}</TabButton>
+                  <TabButton $active={location.pathname === tab.path}>{tab.label}</TabButton>
                 </NavLink>
               ))}
             </TabsRow>
