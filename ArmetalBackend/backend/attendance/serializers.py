@@ -71,6 +71,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     profile_pic = serializers.ImageField(source='employee.profile_pic', read_only=True)
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
     total_hours_formatted = serializers.SerializerMethodField()
+    attendance_today = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Attendance

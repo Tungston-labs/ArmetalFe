@@ -260,17 +260,22 @@ class AddPunchOutNoteView(APIView):
 # -----------------------------------------------------view for list attendance for admin
 
 from datetime import date as today_date
-from django.db.models import Min, OuterRef, Subquery, Exists, Case, When, IntegerField
+from django.db.models import Min, Case, When, IntegerField, BooleanField, Count, Q
 from rest_framework import generics, filters
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+
 from employee.models import Employee_db
 from attendance.models import Attendance
+from .serializers import AttendanceSerializer
+
+
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
     pagination_class = CustomPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['employee__name', 'employee__employee_id', 'date']
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         department_id = self.request.query_params.get('department_id')
@@ -282,46 +287,47 @@ class AttendanceAdminListView(generics.ListAPIView):
         if not selected_date:
             selected_date = today_date.today()
 
-        # 1️⃣ All employees in department
-        employees = Employee_db.objects.filter(department_id=department_id)
-
-        # 2️⃣ Employees who already have attendance
-        existing_attendance = Attendance.objects.filter(
-            employee__in=employees,
-            date=selected_date
-        ).values_list("employee_id", flat=True)
-
-        # 3️⃣ Create empty attendance for non-swiped employees
-        missing_employees = employees.exclude(id__in=existing_attendance)
-
-        Attendance.objects.bulk_create([
-            Attendance(
-                employee=emp,
-                date=selected_date,
-                total_hours=0
-            )
-            for emp in missing_employees
-        ], ignore_conflicts=True)
-
-        # 4️⃣ Normal queryset (unchanged)
+        # 1️⃣ Base queryset
         queryset = (
             Attendance.objects
-            .filter(employee__department_id=department_id)
-            .annotate(first_punch_in=Min('sessions__time_in'))
+            .filter(employee__department_id=department_id, date=selected_date)
+            .annotate(
+                first_punch_in=Min('sessions__time_in'),
+
+                # ✅ attendance_today flag
+                attendance_today=Case(
+                    When(first_punch_in__isnull=False, then=True),
+                    default=False,
+                    output_field=BooleanField(),
+                )
+            )
+            .order_by(
+                Case(
+                    When(first_punch_in__isnull=True, then=1),
+                    default=0,
+                    output_field=IntegerField(),
+                ),
+                'first_punch_in',
+                'employee__name'
+            )
         )
 
-        if selected_date:
-            queryset = queryset.filter(date=selected_date)
+        return queryset
 
-        return queryset.order_by(
-            Case(
-                When(first_punch_in__isnull=True, then=1),
-                default=0,
-                output_field=IntegerField(),
-            ),
-            'first_punch_in',
-            'employee__name'
-        )
+    # 2️⃣ Add swiped employee count in response
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        swiped_count = queryset.filter(first_punch_in__isnull=False).count()
+        total_count = queryset.count()
+
+        response = super().list(request, *args, **kwargs)
+
+        # ✅ inject extra meta without breaking existing structure
+        response.data["swiped_employee_count"] = swiped_count
+        response.data["total_employee_count"] = total_count
+
+        return response
 
 
 
