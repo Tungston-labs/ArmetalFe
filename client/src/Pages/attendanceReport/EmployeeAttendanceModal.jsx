@@ -1,106 +1,121 @@
 import React from "react";
-import { FaTimes } from "react-icons/fa";
-import { CardLabel, CardValue, CloseIcon, LopTd, ModalBody, ModalContainer, ModalHeader, ModalOverlay, StyledTable, SummaryCard, SummaryGrid, TableWrapper, TotalRow, Tr,} from "./EmployeeAttendanceModal.styles";
+import {
+  ModalOverlay,
+  ModalContainer,
+  ModalHeader,
+  ModalTitle,
+  CloseButton,
+  CardsWrapper,
+  Card,
+  CardTitle,
+  CardValue,
+  AttendanceTableWrapper,
+  AttendanceTable,
+  TableHeader,
+  TableRow,
+  TableCell,
+  StatusBadge,
+} from "./EmployeeAttendanceModal.styles";
 
-const yearlyAttendance = {
-    name: "John Doe",
-    months: [
-        { month: "January", workingDays: 26, present: 24, absent: 2, lop: 0 },
-        { month: "February", workingDays: 24, present: 20, absent: 4, lop: 1 },
-        { month: "March", workingDays: 26, present: 25, absent: 1, lop: 0 },
-        { month: "April", workingDays: 26, present: 26, absent: 0, lop: 0 },
-        { month: "May", workingDays: 26, present: 23, absent: 3, lop: 2 },
-        { month: "June", workingDays: 26, present: 25, absent: 1, lop: 0 },
-        { month: "July", workingDays: 26, present: 24, absent: 2, lop: 0 },
-        { month: "August", workingDays: 26, present: 22, absent: 4, lop: 1 },
-        { month: "September", workingDays: 26, present: 26, absent: 0, lop: 0 },
-        { month: "October", workingDays: 26, present: 25, absent: 1, lop: 0 },
-        { month: "November", workingDays: 26, present: 23, absent: 3, lop: 1 },
-        { month: "December", workingDays: 26, present: 26, absent: 0, lop: 0 },
-    ],
-};
+const EmployeeAttendanceModal = ({ employee, monthName, isOpen, onClose }) => {
+  if (!employee) return null;
 
-const EmployeeAttendanceModal = ({ employee = yearlyAttendance, isOpen, onClose }) => {
-    if (!employee) return null;
-    const totals = employee.months.reduce(
-        (acc, m) => {
-            acc.workingDays += m.workingDays;
-            acc.present += m.present;
-            acc.absent += m.absent;
-            acc.lop += m.lop;
-            return acc;
-        },
-        { workingDays: 0, present: 0, absent: 0, lop: 0 }
-    );
+  // Map months to daily data
+  const attendanceData = employee.months.map((m) => {
+    const days = [];
+    for (let i = 1; i <= m.workingDays; i++) {
+      const status = i <= m.present ? "Present" : "Absent";
+      days.push({ date: i, status, hours: status === "Present" ? 8 : 0 });
+    }
+    return { month: m.month, days };
+  });
 
-    return (
-        <ModalOverlay isOpen={isOpen}>
-        <ModalContainer isOpen={isOpen}>
-            <ModalHeader>
-                <h3>Attendance Details</h3>
-                <CloseIcon onClick={onClose}>
-                    <FaTimes />
-                </CloseIcon>
-            </ModalHeader>
+  // Select only the month passed from parent
+  const monthData = attendanceData.find((m) => m.month === monthName);
 
-            <ModalBody>
-               <SummaryGrid>
-  <SummaryCard>
-    <CardLabel>Working Days</CardLabel>
-    <CardValue>{totals.workingDays}</CardValue>
-  </SummaryCard>
+  if (!monthData) return (
+    <ModalOverlay isOpen={isOpen}>
+      <ModalContainer>
+        <ModalHeader>
+          <ModalTitle>No data for {monthName}</ModalTitle>
+          <CloseButton onClick={onClose}>×</CloseButton>
+        </ModalHeader>
+      </ModalContainer>
+    </ModalOverlay>
+  );
 
-  <SummaryCard green>
-    <CardLabel>Present</CardLabel>
-    <CardValue>{totals.present}</CardValue>
-  </SummaryCard>
+  return (
+    <ModalOverlay isOpen={isOpen}>
+      <ModalContainer>
+        <ModalHeader>
+          <ModalTitle>{employee.name} Attendance</ModalTitle>
+          <CloseButton onClick={onClose}>×</CloseButton>
+        </ModalHeader>
 
-  <SummaryCard yellow>
-    <CardLabel>Absent</CardLabel>
-    <CardValue>{totals.absent}</CardValue>
-  </SummaryCard>
+        {/* Top Cards */}
+        <CardsWrapper>
+          <Card>
+            <CardTitle>Employee Name</CardTitle>
+            <CardValue>{employee.name}</CardValue>
+          </Card>
+          <Card>
+            <CardTitle>Month</CardTitle>
+            <CardValue>{monthData.month}</CardValue>
+          </Card>
+          <Card>
+            <CardTitle>Working Days</CardTitle>
+            <CardValue>{monthData.days.length}</CardValue>
+          </Card>
+          <Card>
+            <CardTitle>Present</CardTitle>
+            <CardValue>{monthData.days.filter(d => d.status === "Present").length}</CardValue>
+          </Card>
+          <Card>
+            <CardTitle>Absent</CardTitle>
+            <CardValue>{monthData.days.filter(d => d.status === "Absent").length}</CardValue>
+          </Card>
+        </CardsWrapper>
 
-  <SummaryCard red={totals.lop > 0}>
-    <CardLabel>LOP</CardLabel>
-    <CardValue>{totals.lop}</CardValue>
-  </SummaryCard>
-</SummaryGrid>
-
-                <TableWrapper>
-                    <StyledTable>
-                        <thead>
-                            <tr>
-                                <th>Month</th>
-                                <th>Working Days</th>
-                                <th>Present</th>
-                                <th>Absent</th>
-                                <th>LOP</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {employee.months.map((m, idx) => (
-                                <Tr key={idx} $lop={m.lop}>
-                                    <td>{m.month}</td>
-                                    <td>{m.workingDays}</td>
-                                    <td>{m.present}</td>
-                                    <td>{m.absent}</td>
-                                    <LopTd $lop={m.lop}>{m.lop}</LopTd>
-                                </Tr>
-                            ))}
-                            <TotalRow>
-                                <td>Total</td>
-                                <td>{totals.workingDays}</td>
-                                <td>{totals.present}</td>
-                                <td>{totals.absent}</td>
-                                <td>{totals.lop}</td>
-                            </TotalRow>
-                        </tbody>
-                    </StyledTable>
-                </TableWrapper>
-            </ModalBody>
-        </ModalContainer>
-        </ModalOverlay>
-    );
+        {/* Attendance Table */}
+        <AttendanceTableWrapper>
+          <AttendanceTable>
+            <thead>
+              <tr>
+                <TableHeader>Date</TableHeader>
+                <TableHeader>Status</TableHeader>
+                <TableHeader>Working Hours</TableHeader>
+              </tr>
+            </thead>
+            <tbody>
+              {monthData.days.map(day => (
+                <TableRow key={day.date}>
+                  <TableCell>
+                    <span style={{ fontWeight: 600, color: "#1034ad" }}>
+                      {`${monthData.month} ${day.date}`}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={day.status}>
+                      {day.status === "Present" ? "✔ Present" :
+                       day.status === "Leave" ? "✖ Leave" : "❌ Absent"}
+                    </StatusBadge>
+                  </TableCell>
+                  <TableCell>
+                    <span style={{ fontWeight: 500, color: "#555" }}>
+                      {day.hours}:00hrs
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </tbody>
+          </AttendanceTable>
+        </AttendanceTableWrapper>
+      </ModalContainer>
+    </ModalOverlay>
+  );
 };
 
 export default EmployeeAttendanceModal;
+
+
+

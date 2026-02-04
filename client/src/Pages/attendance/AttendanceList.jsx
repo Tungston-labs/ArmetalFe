@@ -204,16 +204,17 @@ const AttendanceList = () => {
                               <EmployeeCell>{tIn}</EmployeeCell>
                               <EmployeeCell>{tOut}</EmployeeCell>
 
-                              {/* ✅ Red dot if not swiped */}
-                              <EmployeeCell>
-                                {emp.attendance_today ? (
-                                  "✔"
-                                ) : (
-                                  <span style={{ color: "red", fontSize: "20px" }}>
-                                    ●
-                                  </span>
-                                )}
-                              </EmployeeCell>
+                             <EmployeeCell>
+  <span
+    style={{
+      color: emp.attendance_today ? "green" : "red",
+      fontSize: "14px",
+    }}
+  >
+    ●
+  </span>
+</EmployeeCell>
+
                             </EmployeeRow>
                           );
                         })

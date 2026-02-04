@@ -54,24 +54,18 @@ const AttendanceReport = () => {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // default to current month in "YYYY-MM" format (input[type="month"] value)
     const [selectedMonth, setSelectedMonth] = useState(
         new Date().toISOString().slice(0, 7)
     );
 
-    // convert "YYYY-MM" to month name like "March"
     const getMonthNameFromYYYYMM = (yyyyMM) => {
         if (!yyyyMM) return "";
-        // create a date using the first day of that month
         const d = new Date(`${yyyyMM}-01T00:00:00`);
-        // ensure valid date
         if (isNaN(d.getTime())) return "";
-        return d.toLocaleString("default", { month: "long" }); // e.g. "March"
+        return d.toLocaleString("default", { month: "long" }); 
     };
 
     const selectedMonthName = getMonthNameFromYYYYMM(selectedMonth);
-
-    // Filter the table data to show only rows matching the selected month name
     const visibleRows = employeeData.filter((emp) => emp.month === selectedMonthName);
 
     const handleRowClick = (employee) => {
@@ -101,9 +95,6 @@ const AttendanceReport = () => {
                             value={selectedMonth}
                             onChange={(e) => setSelectedMonth(e.target.value)}
                         />
-                        <div style={{ marginLeft: 12, fontWeight: 600 }}>
-                          {selectedMonthName || "Select month"}
-                        </div>
                     </MonthSelector>
                 </TopBar>
 
@@ -148,11 +139,12 @@ const AttendanceReport = () => {
                 </TableWrapper>
             </PageWrapper>
 
-            <EmployeeAttendanceModal
-                employee={selectedEmployee}
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-            />
+          <EmployeeAttendanceModal
+  employee={selectedEmployee}
+  monthName={selectedMonthName}
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+/>
         </Container>
     );
 };

@@ -178,7 +178,7 @@ export const EmployeeList = styled.ul`
 export const EmployeeHeader = styled.div`
   font-weight: bold;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 2fr; 
+  grid-template-columns: 1fr 1fr 1fr 2fr ; 
   gap: 10px;
   padding: 0.5rem 0.5rem;
   border-bottom: 1px solid #ccc;
@@ -203,7 +203,7 @@ export const EmployeeItem = styled.li`
 `;
 export const DropdownHeader = styled.div`
   display: grid;
-grid-template-columns: repeat(6, 1fr);
+grid-template-columns: repeat(7, 1fr);
   background: #3352BA;
   color: white;
   font-weight: 600;
@@ -237,7 +237,7 @@ grid-template-columns: repeat(6, 1fr);
 
 export const EmployeeRow = styled.li`
   display: grid;
-grid-template-columns: repeat(6, 1fr);
+grid-template-columns: repeat(7, 1fr);
 
   padding: 0.6rem 1rem;
   border-bottom: 1px solid #eee;
