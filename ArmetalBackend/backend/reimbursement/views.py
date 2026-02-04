@@ -39,41 +39,67 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
             employee=self.request.user.employee_db
         )
 
-        employee = reimbursement.employee
-        employee_name = employee.name if hasattr(employee, "name") else str(employee)
-        employee_id = employee.employee_id if hasattr(employee, "employee_id") else employee.id
-
-        FinanceRecord.objects.create(
-            date=reimbursement.date,
-            amount=reimbursement.amount,
-            payment_type="OUT",
-            category="REIMBURSEMENT",
-            note=f"Reimbursement by {employee_name} ({employee_id})"
-        )
+       
 
 
 
 # --- Retrieve, Update, Delete single reimbursement ---
+from rest_framework import generics
+from rest_framework.response import Response
+from django.db import transaction
+from .models import Reimbursement
+from finance.models import FinanceRecord
+from .serializers import ReimbursementDetailSerializer
+
+
 class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsHRorIsEmployee]
     serializer_class = ReimbursementDetailSerializer
 
     def get_queryset(self):
-        # HR/Admins should see all reimbursements
         user = self.request.user
         if getattr(user, "is_hr_admin", False) or getattr(user, "is_superadmin", False):
             return Reimbursement.objects.all()
         return Reimbursement.objects.filter(employee__user=user)
 
     def get_serializer(self, *args, **kwargs):
-        # ✅ Ensure 'request' is passed to serializer context
         kwargs['context'] = self.get_serializer_context()
         return super().get_serializer(*args, **kwargs)
 
+    @transaction.atomic
     def patch(self, request, *args, **kwargs):
-        kwargs['partial'] = True  # allow partial update
-        return self.update(request, *args, **kwargs)
+        instance = self.get_object()
+        old_status = instance.status
 
+        response = self.partial_update(request, *args, **kwargs)
+
+        instance.refresh_from_db()
+        new_status = instance.status
+
+        #  Create finance record ONLY when status changes to Approved
+        if old_status != "Approve" and new_status == "Approve":
+            employee = instance.employee
+            employee_name = employee.name if hasattr(employee, "name") else str(employee)
+            employee_id = employee.employee_id if hasattr(employee, "employee_id") else employee.id
+
+            #  Prevent duplicate finance records
+            exists = FinanceRecord.objects.filter(
+                date=instance.date,
+                amount=instance.amount,
+                category="REIMBURSEMENT",
+                note__icontains=str(employee_id)
+            ).exists()
+
+            if not exists:
+                FinanceRecord.objects.create(
+                    date=instance.date,
+                    amount=instance.amount,
+                    payment_type="OUT",
+                    category="REIMBURSEMENT",
+                    note=f"Reimbursement approved for {employee_name} ({employee_id})"
+                )
+
+        return response
 
 
 
