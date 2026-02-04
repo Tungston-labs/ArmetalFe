@@ -257,13 +257,24 @@ class PayrollStatusUpdateView(APIView):
         record.save()
 
         # ✅ Create Finance record ONLY when status becomes PAID
-        if previous_status != "PAID" and new_status == "PAID":
+        if previous_status != "Paid" and new_status == "Paid":
+
+            basic = record.basic_salary or 0
+            increment = record.salary_increment or 0
+            housing = record.housing_allowance or 0
+            transport = record.transportation or 0
+
+            lop = record.lop_amount or 0
+            tds = record.tds_deduction_amount or 0
+
+            gross_salary = basic + increment + housing + transport
+            net_salary = gross_salary - (lop + tds)
 
             # 🔒 Prevent duplicate salary entries
             already_exists = FinanceRecord.objects.filter(
                 category="SALARY",
                 payment_type="OUT",
-                note__icontains=f"{record.employee.id}",
+                note__icontains=f"{record.employee.employee_id}",
                 date__month=month,
                 date__year=year
             ).exists()
@@ -271,15 +282,16 @@ class PayrollStatusUpdateView(APIView):
             if not already_exists:
                 FinanceRecord.objects.create(
                     date=timezone.now().date(),
-                    amount=record.net_salary,  # uses frozen payroll
+                    amount=net_salary,
                     payment_type="OUT",
                     category="SALARY",
                     note=(
                         f"Salary paid to {record.employee.name} "
-                        f"(Employee ID: {record.employee.id}) "
+                        f"(Employee ID: {record.employee.employee_id}) "
                         f"for {month}/{year}"
                     )
                 )
+
 
         serializer = EmployeePayrollRecordSerializer(
             record,
