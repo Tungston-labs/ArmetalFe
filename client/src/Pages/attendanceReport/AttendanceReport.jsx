@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import {
     Container,
     PageWrapper,
-    CardContainer,
-    Card,
-    CardTitle,
-    CardValue,
-    IconWrapper,
     TableWrapper,
     StyledTable,
     Th,
@@ -14,7 +9,6 @@ import {
     Tr,
     LopTd,
 } from "./AttendanceReportStyles";
-import { FaCalendarCheck } from "react-icons/fa";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
@@ -71,7 +65,6 @@ const fullYearData = {
     { month: "January", workingDays: 26, present: 25, absent: 1, lop: 0 },
     { month: "February", workingDays: 26, present: 24, absent: 2, lop: 0 },
     { month: "March", workingDays: 26, present: 26, absent: 0, lop: 0 },
-    // add other months
   ],
 };
 const AttendanceReport = () => {
@@ -98,16 +91,6 @@ const AttendanceReport = () => {
             />
 
             <PageWrapper>
-                <CardContainer>
-                    <Card>
-                        <IconWrapper>
-                            <FaCalendarCheck />
-                        </IconWrapper>
-                        <CardTitle>Total Working Days</CardTitle>
-                        <CardValue>{totalWorkingDays}</CardValue>
-                    </Card>
-                </CardContainer>
-
                 <TableWrapper>
                     <StyledTable>
                         <thead>
@@ -122,7 +105,7 @@ const AttendanceReport = () => {
                         </thead>
                         <tbody>
                             {employeeData.map((emp, index) => (
-                                <Tr key={index} lop={emp.lop}
+                                <Tr key={index} $lop={emp.lop}
                                     onClick={() => handleRowClick(emp)}
                                     style={{ cursor: "pointer" }}>
                                     <Td>{emp.name}</Td>
@@ -130,7 +113,7 @@ const AttendanceReport = () => {
                                     <Td>{emp.workingDays}</Td>
                                     <Td>{emp.present}</Td>
                                     <Td>{emp.absent}</Td>
-                                    <LopTd lop={emp.lop}>{emp.lop}</LopTd>
+                                 <LopTd $lop={emp.lop}>{emp.lop}</LopTd>
                                 </Tr>
                             ))}
                         </tbody>

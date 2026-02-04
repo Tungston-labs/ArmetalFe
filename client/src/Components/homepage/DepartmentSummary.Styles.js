@@ -110,7 +110,7 @@ export const CountNumber = styled.h1`
   }
 
   @media (min-width: 1920px) {
-    font-size: 64px;
+    font-size: 50px;
   }
       @media (min-width: 2560px) {
     font-size: 64px;
@@ -134,7 +134,7 @@ export const CountLabel = styled.p`
   }
 
   @media (min-width: 1920px) {
-    font-size: 20px;
+    font-size: 18px;
   }
       @media (min-width: 2560px) {
     font-size: 20px;
@@ -179,7 +179,7 @@ export const LatestHeader = styled.h3`
   }
 
   @media (min-width: 1920px) {
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 20px;
   }
     @media (min-width: 2560px) {
@@ -250,7 +250,7 @@ export const DeptName = styled.span`
   }
 
   @media (min-width: 1920px) {
-    font-size: 20px;
+    font-size: 16px;
   }
      @media (min-width: 2560px) {
     font-size: 1.5rem;
@@ -270,7 +270,7 @@ export const DeptDate = styled.span`
   }
 
   @media (min-width: 1920px) {
-    font-size: 16px;
+    font-size: 12px;
   }
      @media (min-width: 2560px) {
     font-size: 1.2rem;

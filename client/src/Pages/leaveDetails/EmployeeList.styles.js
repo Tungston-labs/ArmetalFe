@@ -59,8 +59,8 @@ export const BodyCell = styled.td`
   }
 
   @media (min-width: 1920px) {
-    padding: 10px;
-    font-size: 1rem;
+    padding: 8px;
+    font-size: 0.9rem;
   }
      @media (min-width: 2560px) {
     padding: 15px;

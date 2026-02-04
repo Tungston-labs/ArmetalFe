@@ -284,7 +284,7 @@ export const Label = styled.label`
   font-size: clamp(0.85rem, 1vw, 1.3rem);
 
   @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   @media (min-width: 2560px) {
@@ -307,7 +307,7 @@ export const Input = styled.input`
     padding: 0.6rem 1.25rem;
   }
   @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: 0.75rem 1.25rem;
   }
 

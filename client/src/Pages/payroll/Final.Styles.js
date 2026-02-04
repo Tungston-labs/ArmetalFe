@@ -359,7 +359,7 @@ export const Th = styled.th`
     font-size: 1.5rem;
   }
   @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   @media (max-width: 1023px) {
     font-size: 1rem;
@@ -405,10 +405,10 @@ export const Td = styled.td`
 
   /* 🖥️ Large screens (full HD) */
   @media (min-width: 1441px) and (max-width: 1920px) {
-    font-size: 1rem;
+        font-size: 0.9rem;
   }
   @media (min-width: 1921px) and (max-width: 2560px) {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   @media (min-width: 2561px) and (max-width: 3839px) {

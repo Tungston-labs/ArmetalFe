@@ -1,6 +1,6 @@
 import React from "react";
 import { FaTimes } from "react-icons/fa";
-import { CloseIcon, EmployeeInfo, Label, LopTd, ModalBody, ModalContainer, ModalHeader, StyledTable, TableWrapper, TotalRow, Tr, Value } from "./EmployeeAttendanceModal.styles";
+import { CardLabel, CardValue, CloseIcon, LopTd, ModalBody, ModalContainer, ModalHeader, ModalOverlay, StyledTable, SummaryCard, SummaryGrid, TableWrapper, TotalRow, Tr,} from "./EmployeeAttendanceModal.styles";
 
 const yearlyAttendance = {
     name: "John Doe",
@@ -34,6 +34,7 @@ const EmployeeAttendanceModal = ({ employee = yearlyAttendance, isOpen, onClose 
     );
 
     return (
+        <ModalOverlay isOpen={isOpen}>
         <ModalContainer isOpen={isOpen}>
             <ModalHeader>
                 <h3>Attendance Details</h3>
@@ -43,13 +44,27 @@ const EmployeeAttendanceModal = ({ employee = yearlyAttendance, isOpen, onClose 
             </ModalHeader>
 
             <ModalBody>
-              <EmployeeInfo>
-  <p><Label>Name:</Label> <Value>{employee.name}</Value></p>
-  <p><Label>Total Working Days:</Label> <Value>{totals.workingDays}</Value></p>
-  <p><Label>Total Present:</Label> <Value>{totals.present}</Value></p>
-  <p><Label>Total Absent:</Label> <Value>{totals.absent}</Value></p>
-  <p><Label>Total LOP:</Label> <Value>{totals.lop}</Value></p>
-</EmployeeInfo>
+               <SummaryGrid>
+  <SummaryCard>
+    <CardLabel>Working Days</CardLabel>
+    <CardValue>{totals.workingDays}</CardValue>
+  </SummaryCard>
+
+  <SummaryCard green>
+    <CardLabel>Present</CardLabel>
+    <CardValue>{totals.present}</CardValue>
+  </SummaryCard>
+
+  <SummaryCard yellow>
+    <CardLabel>Absent</CardLabel>
+    <CardValue>{totals.absent}</CardValue>
+  </SummaryCard>
+
+  <SummaryCard red={totals.lop > 0}>
+    <CardLabel>LOP</CardLabel>
+    <CardValue>{totals.lop}</CardValue>
+  </SummaryCard>
+</SummaryGrid>
 
                 <TableWrapper>
                     <StyledTable>
@@ -64,12 +79,12 @@ const EmployeeAttendanceModal = ({ employee = yearlyAttendance, isOpen, onClose 
                         </thead>
                         <tbody>
                             {employee.months.map((m, idx) => (
-                                <Tr key={idx} lop={m.lop}>
+                                <Tr key={idx} $lop={m.lop}>
                                     <td>{m.month}</td>
                                     <td>{m.workingDays}</td>
                                     <td>{m.present}</td>
                                     <td>{m.absent}</td>
-                                    <LopTd lop={m.lop}>{m.lop}</LopTd>
+                                    <LopTd $lop={m.lop}>{m.lop}</LopTd>
                                 </Tr>
                             ))}
                             <TotalRow>
@@ -84,6 +99,7 @@ const EmployeeAttendanceModal = ({ employee = yearlyAttendance, isOpen, onClose 
                 </TableWrapper>
             </ModalBody>
         </ModalContainer>
+        </ModalOverlay>
     );
 };
 
