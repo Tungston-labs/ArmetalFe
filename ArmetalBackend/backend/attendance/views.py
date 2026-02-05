@@ -289,6 +289,8 @@ from .serializers import AttendanceSerializer
 from django.db.models import OuterRef, Subquery, F, Value, Case, When, BooleanField
 from employee.models import Employee_db, Attendance, AttendanceSession
 
+
+
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
     pagination_class = CustomPagination
@@ -301,19 +303,19 @@ class AttendanceAdminListView(generics.ListAPIView):
         if not department_id:
             raise ValidationError({"department_id": "department_id is required"})
 
-        # 🔹 Attendance of selected day
+        # Attendance for selected day
         attendance_qs = Attendance.objects.filter(
             employee=OuterRef("pk"),
             date=selected_date,
         )
 
-        # 🔹 First punch in session (TimeField)
+        # First session
         first_session = AttendanceSession.objects.filter(
             attendance__employee=OuterRef("pk"),
             attendance__date=selected_date,
         ).order_by("time_in")
 
-        # 🔹 Last punch out session (TimeField)
+        # Last session
         last_session = AttendanceSession.objects.filter(
             attendance__employee=OuterRef("pk"),
             attendance__date=selected_date,
@@ -325,7 +327,7 @@ class AttendanceAdminListView(generics.ListAPIView):
             .annotate(
                 date=Subquery(attendance_qs.values("date")[:1]),
                 total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
-                attendance_id=Subquery(attendance_qs.values("id")[:1]),  # ✅ added here
+                attendance_id=Subquery(attendance_qs.values("id")[:1]),  # ✅ annotated attendance id
                 first_swipe_in=Subquery(first_session.values("time_in")[:1]),
                 last_swipe_out=Subquery(last_session.values("time_out")[:1]),
                 attendance_today=Case(
@@ -334,13 +336,10 @@ class AttendanceAdminListView(generics.ListAPIView):
                     output_field=BooleanField(),
                 ),
             )
-            .order_by(
-                F("first_swipe_in").asc(nulls_last=True)
-            )
+            .order_by(F("first_swipe_in").asc(nulls_last=True))
         )
 
         return queryset
-
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -350,6 +349,7 @@ class AttendanceAdminListView(generics.ListAPIView):
 
         response = super().list(request, *args, **kwargs)
 
+        # Add extra info to response
         response.data["swiped_employee_count"] = swiped_count
         response.data["total_employee_count"] = total_count
 

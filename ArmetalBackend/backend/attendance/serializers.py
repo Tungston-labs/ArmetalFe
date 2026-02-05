@@ -73,12 +73,21 @@ from employee.models import Employee_db
 
 IST = pytz.timezone("Asia/Kolkata")
 
+# serializers.py
+from rest_framework import serializers
+from django.utils import timezone
+from datetime import datetime, time
+import pytz
+from employee.models import Employee_db, Attendance, AttendanceSession
+
+IST = pytz.timezone("Asia/Kolkata")
+
 
 class AttendanceSerializer(serializers.ModelSerializer):
     employee = serializers.IntegerField(source="id", read_only=True)
     employee_name = serializers.CharField(source="name", read_only=True)
     profile_pic = serializers.ImageField(read_only=True)
-    attendance_id = serializers.IntegerField(read_only=True)
+    attendance_id = serializers.IntegerField(read_only=True)  # comes from queryset annotation
 
     total_hours = serializers.DecimalField(
         max_digits=5,
@@ -86,7 +95,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
         read_only=True,
         allow_null=True,
     )
-
     total_hours_formatted = serializers.SerializerMethodField()
     attendance_today = serializers.BooleanField(read_only=True)
     date = serializers.DateField(read_only=True)
@@ -110,63 +118,58 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "attendance_id",
         ]
 
-    # ---------- hours formatting ----------
+    # ---------- format total_hours ----------
     def get_total_hours_formatted(self, obj):
         hours = int(obj.total_hours or 0)
         minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
 
-    # ---------- SAFE IST conversion ----------
+    # ---------- convert time to IST AM/PM ----------
     def _to_ist(self, value, attendance_date=None):
-        """
-        Handles:
-        - datetime (aware/naive)
-        - time object
-        - None
-        """
-
         if not value:
             return None
 
-        # 🔹 If TIME → combine with attendance date
+        # If TIME → combine with date
         if isinstance(value, time):
-            if not attendance_date:
+            if attendance_date is None:
                 return value.strftime("%H:%M")
             value = datetime.combine(attendance_date, value)
 
-        # 🔹 Ensure timezone aware
         if timezone.is_naive(value):
             value = timezone.make_aware(value, pytz.UTC)
 
-        # 🔹 Convert to IST
         value = value.astimezone(IST)
-
         return value.strftime("%I:%M %p")
 
-    # ---------- get today's attendance ----------
-    def _get_today_attendance(self, obj):
-        today = timezone.localdate()
-        return obj.attendances.filter(date=today).first()
-
-    # ---------- swipe times ----------
+    # ---------- first swipe in ----------
     def get_first_swipe_in(self, obj):
-        attendance = self._get_today_attendance(obj)
-        if not attendance:
-            return None
+        if hasattr(obj, "first_swipe_in") and obj.first_swipe_in:
+            return self._to_ist(obj.first_swipe_in, getattr(obj, "date", None))
 
-        session = attendance.sessions.order_by("time_in").first()
-        return self._to_ist(session.time_in, attendance.date) if session else None
+        # fallback: fetch from attendance sessions if annotation missing
+        if getattr(obj, "attendance_id", None):
+            try:
+                attendance = Attendance.objects.get(id=obj.attendance_id)
+                session = attendance.sessions.order_by("time_in").first()
+                return self._to_ist(session.time_in, attendance.date) if session else None
+            except Attendance.DoesNotExist:
+                return None
+        return None
 
+    # ---------- last swipe out ----------
     def get_last_swipe_out(self, obj):
-        attendance = self._get_today_attendance(obj)
-        if not attendance:
-            return None
+        if hasattr(obj, "last_swipe_out") and obj.last_swipe_out:
+            return self._to_ist(obj.last_swipe_out, getattr(obj, "date", None))
 
-        session = attendance.sessions.order_by("-time_out").first()
-        return self._to_ist(session.time_out, attendance.date) if session else None
-    
-    
-
+        # fallback: fetch from attendance sessions if annotation missing
+        if getattr(obj, "attendance_id", None):
+            try:
+                attendance = Attendance.objects.get(id=obj.attendance_id)
+                session = attendance.sessions.order_by("-time_out").first()
+                return self._to_ist(session.time_out, attendance.date) if session else None
+            except Attendance.DoesNotExist:
+                return None
+        return None
 
 from rest_framework import serializers
 from employee.models import Employee_db
