@@ -90,6 +90,12 @@ import pytz
 
 IST = pytz.timezone("Asia/Kolkata")
 
+from rest_framework import serializers
+from django.utils import timezone
+import pytz
+
+IST = pytz.timezone("Asia/Kolkata")
+
 
 class AttendanceSerializer(serializers.ModelSerializer):
     employee = serializers.IntegerField(source="id", read_only=True)
@@ -131,39 +137,37 @@ class AttendanceSerializer(serializers.ModelSerializer):
         minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
 
-    # ---------- IST formatter ----------
-    def _format_datetime_to_ist(self, value):
-        """
-        Convert datetime to IST and return HH:MM.
-        Works exactly like AttendanceDetailSerializer response.
-        """
-        if not value:
+    # ---------- helper: IST conversion ----------
+    def _to_ist(self, dt):
+        if not dt:
             return None
 
-        if timezone.is_naive(value):
-            value = timezone.make_aware(value, pytz.UTC)
+        if timezone.is_naive(dt):
+            dt = timezone.make_aware(dt, pytz.UTC)
 
-        value = value.astimezone(IST)
-        return value.strftime("%H:%M")
+        return dt.astimezone(IST).strftime("%H:%M")
 
-    # ---------- swipe times from sessions ----------
+    # ---------- get today's attendance ----------
+    def _get_today_attendance(self, obj):
+        today = timezone.localdate()
+        return obj.attendances.filter(date=today).first()
+
+    # ---------- swipe times ----------
     def get_first_swipe_in(self, obj):
-        """
-        Get earliest session time_in (same logic as detail API)
-        """
-        session = obj.sessions.order_by("time_in").first()
-        if session and session.time_in:
-            return self._format_datetime_to_ist(session.time_in)
-        return None
+        attendance = self._get_today_attendance(obj)
+        if not attendance:
+            return None
+
+        session = attendance.sessions.order_by("time_in").first()
+        return self._to_ist(session.time_in) if session else None
 
     def get_last_swipe_out(self, obj):
-        """
-        Get latest session time_out
-        """
-        session = obj.sessions.order_by("-time_out").first()
-        if session and session.time_out:
-            return self._format_datetime_to_ist(session.time_out)
-        return None
+        attendance = self._get_today_attendance(obj)
+        if not attendance:
+            return None
+
+        session = attendance.sessions.order_by("-time_out").first()
+        return self._to_ist(session.time_out) if session else None
 
 
 from rest_framework import serializers
