@@ -66,10 +66,14 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    employee = serializers.IntegerField(source='id', read_only=True)
-    employee_name = serializers.CharField(source='name', read_only=True)
-    employee_id = serializers.CharField(source='employee_id', read_only=True)
+    employee = serializers.IntegerField(source="id", read_only=True)
+    employee_name = serializers.CharField(source="name", read_only=True)
+    employee_id = serializers.CharField(source="employee_id", read_only=True)
     profile_pic = serializers.ImageField(read_only=True)
+
+    total_hours = serializers.DecimalField(
+        max_digits=5, decimal_places=2, read_only=True, allow_null=True
+    )
 
     total_hours_formatted = serializers.SerializerMethodField()
     attendance_today = serializers.BooleanField(read_only=True)
@@ -77,13 +81,13 @@ class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee_db
         fields = [
-            'employee',
-            'employee_name',
-            'employee_id',
-            'profile_pic',
-            'total_hours',
-            'total_hours_formatted',
-            'attendance_today'
+            "employee",
+            "employee_name",
+            "employee_id",
+            "profile_pic",
+            "total_hours",
+            "total_hours_formatted",
+            "attendance_today",
         ]
 
     def get_total_hours_formatted(self, obj):

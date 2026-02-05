@@ -270,60 +270,52 @@ from attendance.models import Attendance
 from .serializers import AttendanceSerializer
 
 
+from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value
+from django.db.models.functions import Coalesce
+
+
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
     pagination_class = CustomPagination
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['employee__name', 'employee__employee_id', 'date']
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        department_id = self.request.query_params.get('department_id')
-        selected_date = self.request.query_params.get('date')
+        department_id = self.request.query_params.get("department_id")
+        selected_date = self.request.query_params.get("date") or today_date.today()
 
         if not department_id:
             raise ValidationError({"department_id": "department_id is required"})
 
-        if not selected_date:
-            selected_date = today_date.today()
-
-        # 1️⃣ Base queryset
-        queryset = (
-            Attendance.objects
-            .filter(employee__department_id=department_id, date=selected_date)
-            .annotate(
-                first_punch_in=Min('sessions__time_in'),
-
-                # ✅ attendance_today flag
-                attendance_today=Case(
-                    When(first_punch_in__isnull=False, then=True),
-                    default=False,
-                    output_field=BooleanField(),
-                )
-            )
-            .order_by(
-                Case(
-                    When(first_punch_in__isnull=True, then=1),
-                    default=0,
-                    output_field=IntegerField(),
-                ),
-                'first_punch_in',
-                'employee__name'
-            )
+        # 🔹 Subquery to get attendance of that day
+        attendance_qs = Attendance.objects.filter(
+            employee=OuterRef("pk"),
+            date=selected_date,
         )
 
-        return queryset
+        return (
+            Employee_db.objects
+            .filter(department_id=department_id)
+            .annotate(
+                total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
+                first_punch_in=Subquery(attendance_qs.values("sessions__time_in")[:1]),
 
-    # 2️⃣ Add swiped employee count in response
+                attendance_today=Case(
+                    When(total_hours__isnull=False, then=Value(True)),
+                    default=Value(False),
+                    output_field=BooleanField(),
+                ),
+            )
+            .order_by("attendance_today", "name")
+        )
+
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
 
-        swiped_count = queryset.filter(first_punch_in__isnull=False).count()
+        swiped_count = queryset.filter(attendance_today=True).count()
         total_count = queryset.count()
 
         response = super().list(request, *args, **kwargs)
 
-        # ✅ inject extra meta without breaking existing structure
         response.data["swiped_employee_count"] = swiped_count
         response.data["total_employee_count"] = total_count
 
