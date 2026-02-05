@@ -271,7 +271,6 @@ from .serializers import AttendanceSerializer
 from django.db import models
 from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value
 from django.db.models.functions import Coalesce
-
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
     pagination_class = CustomPagination
@@ -279,48 +278,38 @@ class AttendanceAdminListView(generics.ListAPIView):
 
     def get_queryset(self):
         department_id = self.request.query_params.get("department_id")
-        selected_date = self.request.query_params.get("date") or timezone.now().date()
+        selected_date = self.request.query_params.get("date") or today_date.today()
 
         if not department_id:
             raise ValidationError({"department_id": "department_id is required"})
 
+        # 🔹 Attendance of selected day
         attendance_qs = Attendance.objects.filter(
             employee=OuterRef("pk"),
             date=selected_date,
         )
 
+        # 🔹 First punch in session
         first_session = AttendanceSession.objects.filter(
             attendance__employee=OuterRef("pk"),
             attendance__date=selected_date,
-            time_in__isnull=False,
         ).order_by("time_in")
 
+        # 🔹 Last punch out session
         last_session = AttendanceSession.objects.filter(
             attendance__employee=OuterRef("pk"),
             attendance__date=selected_date,
-            time_out__isnull=False,
         ).order_by("-time_out")
 
         return (
             Employee_db.objects
             .filter(department_id=department_id)
             .annotate(
-                date=Value(selected_date, output_field=models.DateField()),
+                date=Subquery(attendance_qs.values("date")[:1]),
+                total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
 
-                total_hours=Subquery(
-                    attendance_qs.values("total_hours")[:1],
-                    output_field=models.DecimalField(max_digits=5, decimal_places=2),
-                ),
-
-                first_swipe_in=Subquery(
-                    first_session.values("time_in")[:1],
-                    output_field=models.DateTimeField(),
-                ),
-
-                last_swipe_out=Subquery(
-                    last_session.values("time_out")[:1],
-                    output_field=models.DateTimeField(),
-                ),
+                first_swipe_in=Subquery(first_session.values("time_in")[:1]),
+                last_swipe_out=Subquery(last_session.values("time_out")[:1]),
 
                 attendance_today=Case(
                     When(total_hours__isnull=False, then=Value(True)),
@@ -328,7 +317,7 @@ class AttendanceAdminListView(generics.ListAPIView):
                     output_field=BooleanField(),
                 ),
             )
-            .order_by("-attendance_today", "name")
+            .order_by("attendance_today", "name")
         )
 
     def list(self, request, *args, **kwargs):
@@ -343,8 +332,6 @@ class AttendanceAdminListView(generics.ListAPIView):
         response.data["total_employee_count"] = total_count
 
         return response
-
-
 
 
 # -----------------------------------------------------attendance detail view group by date(admin)

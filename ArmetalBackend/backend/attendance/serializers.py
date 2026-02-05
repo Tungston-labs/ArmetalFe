@@ -65,26 +65,29 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
             return None
 
 
+from rest_framework import serializers
+from employee.models import Employee_db
+
+
 class AttendanceSerializer(serializers.ModelSerializer):
     employee = serializers.IntegerField(source="id", read_only=True)
-
     employee_name = serializers.CharField(source="name", read_only=True)
-    employee_id = serializers.CharField(read_only=True)
-    profile_pic = serializers.ImageField(read_only=True)
 
-    date = serializers.DateField(read_only=True)
-    first_swipe_in = serializers.DateTimeField(read_only=True)
-    last_swipe_out = serializers.DateTimeField(read_only=True)
+    profile_pic = serializers.ImageField(read_only=True)
 
     total_hours = serializers.DecimalField(
         max_digits=5,
         decimal_places=2,
         read_only=True,
-        allow_null=True
+        allow_null=True,
     )
 
     total_hours_formatted = serializers.SerializerMethodField()
     attendance_today = serializers.BooleanField(read_only=True)
+
+    date = serializers.DateField(read_only=True)
+    first_swipe_in = serializers.DateTimeField(read_only=True)
+    last_swipe_out = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Employee_db
@@ -102,11 +105,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
         ]
 
     def get_total_hours_formatted(self, obj):
-        if not obj.total_hours:
-            return "00:00"
-
-        hours = int(obj.total_hours)
-        minutes = int((float(obj.total_hours) - hours) * 60)
+        hours = int(obj.total_hours or 0)
+        minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
 
     
