@@ -287,7 +287,6 @@ from .serializers import AttendanceSerializer
 
 
 from django.db.models import OuterRef, Subquery, F, Value, Case, When, BooleanField
-from employee.models import Employee_db, Attendance, AttendanceSession
 
 
 
