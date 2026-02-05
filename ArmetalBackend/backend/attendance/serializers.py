@@ -67,8 +67,10 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
 
 from rest_framework import serializers
 from employee.models import Employee_db
-from time import timezone
+import pytz
+from django.utils import timezone
 
+IST = pytz.timezone("Asia/Kolkata")
 
 from rest_framework import serializers
 from django.utils import timezone
@@ -120,13 +122,15 @@ class AttendanceSerializer(serializers.ModelSerializer):
     def _format_time(self, value):
         if not value:
             return None
+
+        # ensure datetime is timezone-aware in UTC
+        if timezone.is_naive(value):
+            value = timezone.make_aware(value, pytz.UTC)
+
+        # convert UTC → IST
+        value = value.astimezone(IST)
+
         return value.strftime("%H:%M")
-
-    def get_first_swipe_in(self, obj):
-        return self._format_time(obj.first_swipe_in)
-
-    def get_last_swipe_out(self, obj):
-        return self._format_time(obj.last_swipe_out)
 
     
 from rest_framework import serializers
