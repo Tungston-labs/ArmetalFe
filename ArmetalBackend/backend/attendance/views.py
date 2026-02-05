@@ -281,9 +281,7 @@ from rest_framework.response import Response
 from employee.models import Employee_db
 from attendance.models import Attendance
 from .serializers import AttendanceSerializer
-from django.db.models import DecimalField, Value
-from django.db.models.functions import Coalesce
-
+from .pagination import CustomPagination
 
 
 class AttendanceAdminListView(generics.ListAPIView):
@@ -326,7 +324,6 @@ class AttendanceAdminListView(generics.ListAPIView):
                         output_field=BooleanField(),
                     )
                 ),
-
                 total_hours=Coalesce(
                     Min(
                         'attendances__total_hours',
@@ -336,10 +333,8 @@ class AttendanceAdminListView(generics.ListAPIView):
                             output_field=BooleanField(),
                         )
                     ),
-                    Value(0, output_field=DecimalField(max_digits=5, decimal_places=2)),
-                    output_field=DecimalField(max_digits=5, decimal_places=2),
+                    Value(0)
                 ),
-
             )
             .annotate(
                 attendance_today=Case(

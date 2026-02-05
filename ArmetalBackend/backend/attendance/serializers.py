@@ -238,3 +238,7 @@ class EmployeeAttendanceSummarySerializer(serializers.Serializer):
     lop_days = serializers.FloatField()
 
     daily_records = DailyAttendanceSerializer(many=True)
+
+
+
+
