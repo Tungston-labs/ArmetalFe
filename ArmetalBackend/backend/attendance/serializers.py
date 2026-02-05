@@ -66,33 +66,10 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
 
 
 from rest_framework import serializers
-from employee.models import Employee_db
-import pytz
-from django.utils import timezone
-
-IST = pytz.timezone("Asia/Kolkata")
-
-from rest_framework import serializers
-from django.utils import timezone
-from datetime import datetime, date
-from rest_framework import serializers
-from django.utils import timezone
-import pytz
-from employee.models import Employee_db
-
-IST = pytz.timezone("Asia/Kolkata")
-
-
-from rest_framework import serializers
 from django.utils import timezone
 from datetime import datetime, time
 import pytz
-
-IST = pytz.timezone("Asia/Kolkata")
-
-from rest_framework import serializers
-from django.utils import timezone
-import pytz
+from employee.models import Employee_db
 
 IST = pytz.timezone("Asia/Kolkata")
 
@@ -137,15 +114,32 @@ class AttendanceSerializer(serializers.ModelSerializer):
         minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
 
-    # ---------- helper: IST conversion ----------
-    def _to_ist(self, dt):
-        if not dt:
+    # ---------- SAFE IST conversion ----------
+    def _to_ist(self, value, attendance_date=None):
+        """
+        Handles:
+        - datetime (aware/naive)
+        - time object
+        - None
+        """
+
+        if not value:
             return None
 
-        if timezone.is_naive(dt):
-            dt = timezone.make_aware(dt, pytz.UTC)
+        # 🔹 If TIME → combine with attendance date
+        if isinstance(value, time):
+            if not attendance_date:
+                return value.strftime("%H:%M")
+            value = datetime.combine(attendance_date, value)
 
-        return dt.astimezone(IST).strftime("%H:%M")
+        # 🔹 Ensure timezone aware
+        if timezone.is_naive(value):
+            value = timezone.make_aware(value, pytz.UTC)
+
+        # 🔹 Convert to IST
+        value = value.astimezone(IST)
+
+        return value.strftime("%H:%M")
 
     # ---------- get today's attendance ----------
     def _get_today_attendance(self, obj):
@@ -159,7 +153,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
             return None
 
         session = attendance.sessions.order_by("time_in").first()
-        return self._to_ist(session.time_in) if session else None
+        return self._to_ist(session.time_in, attendance.date) if session else None
 
     def get_last_swipe_out(self, obj):
         attendance = self._get_today_attendance(obj)
@@ -167,7 +161,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
             return None
 
         session = attendance.sessions.order_by("-time_out").first()
-        return self._to_ist(session.time_out) if session else None
+        return self._to_ist(session.time_out, attendance.date) if session else None
 
 
 from rest_framework import serializers
