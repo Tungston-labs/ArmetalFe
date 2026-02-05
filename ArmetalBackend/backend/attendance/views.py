@@ -639,7 +639,19 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Employee_db.objects.select_related("department", "department__company")
+        user = self.request.user
+
+        qs = Employee_db.objects.select_related(
+            "department", "department__company"
+        ).prefetch_related(
+            "attendances__sessions"
+        ).filter(department__company=user.company)
+
+        # Employee should see only their own attendance
+        if user.is_employee:
+            qs = qs.filter(user=user)
+
+        return qs
 
     def list(self, request, *args, **kwargs):
         today = date.today()

@@ -11,7 +11,7 @@ urlpatterns = [
     path('attendance/add-note/', AddPunchOutNoteView.as_view(), name='attendance-add-note'),
     path('attendance/update-location/', AttendanceLocationUpdateView.as_view(), name='attendance-update-location'),
     path('background-location/<int:employee_id>/', BackgroundLocationUpdateView.as_view(), name='background-location'),
-    path("attendance/summary/", EmployeeAttendanceSummaryView.as_view()),
+    path('attendance/summary/', EmployeeAttendanceSummaryView.as_view()),
 
 
 ]
