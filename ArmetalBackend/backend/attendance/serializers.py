@@ -139,7 +139,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         # 🔹 Convert to IST
         value = value.astimezone(IST)
 
-        return value.strftime("%H:%M")
+        return value.strftime("%I:%M %p")
 
     # ---------- get today's attendance ----------
     def _get_today_attendance(self, obj):

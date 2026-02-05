@@ -187,8 +187,8 @@ const AttendanceList = () => {
                             tOut =
                               lastSession.time_out && lastSession.time_out !== ""
                                 ? formatTime(
-                                    parseTimeToTimestamp(lastSession.time_out)
-                                  )
+                                  parseTimeToTimestamp(lastSession.time_out)
+                                )
                                 : "---";
                           }
 
@@ -201,19 +201,19 @@ const AttendanceList = () => {
                               <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.date || "-"}</EmployeeCell>
-                              <EmployeeCell>{tIn}</EmployeeCell>
-                              <EmployeeCell>{tOut}</EmployeeCell>
+                              <EmployeeCell>{emp.first_swipe_in}</EmployeeCell>
+                              <EmployeeCell>{emp.last_swipe_out}</EmployeeCell>
 
-                             <EmployeeCell>
-  <span
-    style={{
-      color: emp.attendance_today ? "green" : "red",
-      fontSize: "14px",
-    }}
-  >
-    ●
-  </span>
-</EmployeeCell>
+                              <EmployeeCell>
+                                <span
+                                  style={{
+                                    color: emp.attendance_today ? "green" : "red",
+                                    fontSize: "14px",
+                                  }}
+                                >
+                                  ●
+                                </span>
+                              </EmployeeCell>
 
                             </EmployeeRow>
                           );
