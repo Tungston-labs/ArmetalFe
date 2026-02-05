@@ -70,7 +70,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     # direct model fields → NO source needed
     employee_name = serializers.CharField(source="name", read_only=True)
-    employee_id = serializers.CharField(source="id",read_only=True)
+    employee_id = serializers.CharField(read_only=True)
     profile_pic = serializers.ImageField(read_only=True)
 
     total_hours = serializers.DecimalField(
