@@ -67,12 +67,17 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
 
 class AttendanceSerializer(serializers.ModelSerializer):
     employee = serializers.IntegerField(source="id", read_only=True)
+
+    # direct model fields → NO source needed
     employee_name = serializers.CharField(source="name", read_only=True)
-    employee_id = serializers.CharField(source="employee_id", read_only=True)
+    employee_id = serializers.CharField(read_only=True)
     profile_pic = serializers.ImageField(read_only=True)
 
     total_hours = serializers.DecimalField(
-        max_digits=5, decimal_places=2, read_only=True, allow_null=True
+        max_digits=5,
+        decimal_places=2,
+        read_only=True,
+        allow_null=True
     )
 
     total_hours_formatted = serializers.SerializerMethodField()
@@ -95,7 +100,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
         minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
 
-    
 from rest_framework import serializers
 from employee.models import Employee_db
 
