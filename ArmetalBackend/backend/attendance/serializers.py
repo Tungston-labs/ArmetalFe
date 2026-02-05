@@ -167,6 +167,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     
     def get_attendance_id(self, obj):
         attendance = self._get_today_attendance(obj)
+        print("EMP:", obj.id, "ATT:", attendance)
         return attendance.id if attendance else None
 
 
