@@ -1,113 +1,121 @@
-import React, { useState } from "react";
+
+// ======================= AttendanceDetails.jsx =======================
+import React from "react";
 import {
-    PageWrapper,
-    Header,
-    CardWrapper,
-    Card,
-    CardTitle,
-    CardValue,
-    HistoryTable,
-    Table,
-    Th,
-    Td,
-    Tr,
-    CalendarWrapper,
+  PageWrapper,
+  Header,
+  CardWrapper,
+  Card,
+  CardTitle,
+  CardValue,
+  HistoryTable,
+  Table,
+  Th,
+  Td,
+  Tr,
+  CalendarWrapper,
 } from "./AttendanceDetails.Styles";
 
-const AttendanceDetails = () => {
-    const today = new Date();
-    const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-    };
-    const [selectedDate, setSelectedDate] = useState(formatDate(today));
-    const todayPunch = {
-        punchIn: "09:00 AM",
-        punchOut: "06:15 PM",
-    };
-    const weeklyHours = "45 hrs";
-    const monthlyHours = "182 hrs";
-    const history = [
-        { date: "01 Feb 2026", in: "09:05 AM", out: "06:10 PM", location: "kakkanad, thrikkakara" },
-        { date: "01 Feb 2026", in: "09:00 AM", out: "06:00 PM", location: "kakkanad, thrikkakara" },
-        { date: "01 Feb 2026", in: "09:10 AM", out: "06:20 PM", location: "kakkanad, thrikkakara" },
-    ];
-    const cardList = [
-        {
-            title: "Today Punch In",
-            value: todayPunch.punchIn,
-        },
-        {
-            title: "Today Punch Out",
-            value: todayPunch.punchOut,
-        },
-        {
-            title: "Weekly Hours",
-            value: weeklyHours,
-        },
-        {
-            title: "Monthly Hours",
-            value: monthlyHours,
-        },
-    ];
+const formatTime = (datetimeStr) => {
+  if (!datetimeStr) return "---";
+  const date = new Date(datetimeStr.replace(" ", "T"));
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
 
-    return (
-        <PageWrapper>
+const AttendanceDetails = ({ attendanceDetail, selectedDate, setSelectedDate }) => {
+  const sessions = attendanceDetail?.sessions || [];
 
-            <Header>Attendance Details</Header>
-            <CardWrapper>
-                {cardList.map((card, index) => (
-                    <Card key={index}>
-                        <CardTitle>{card.title}</CardTitle>
-                        <CardValue>{card.value}</CardValue>
-                    </Card>
-                ))}
-            </CardWrapper>
-            <HistoryTable>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-                    <Header>Previous Attendance</Header>
-                    <div>
-                        <CalendarWrapper>
-                            <input
-                                type="date"
-                                value={selectedDate}
-                                onChange={(e) => setSelectedDate(e.target.value)}
-                                style={{
-                                    padding: "6px 10px",
-                                    borderRadius: "6px",
-                                    border: "1px solid #ccc",
-                                }}
-                            />
-                        </CalendarWrapper>
-                    </div>
-                </div>
-                <Table>
-                    <thead>
-                        <tr>
-                            <Th>Date</Th>
-                            <Th>Punch In</Th>
-                            <Th>Punch Out</Th>
-                            <Th>Location</Th>
-                        </tr>
-                    </thead>
+  // ✅ Today punch in/out from sessions
+  const todayPunchIn = sessions.length ? formatTime(sessions[0]?.time_in) : "---";
 
-                    <tbody>
-                        {history.map((item, index) => (
-                            <Tr key={index}>
-                                <Td>{item.date}</Td>
-                                <Td>{item.in}</Td>
-                                <Td>{item.out}</Td>
-                                <Td>{item.location}</Td>
-                            </Tr>
-                        ))}
-                    </tbody>
-                </Table>
-            </HistoryTable>
+  const todayPunchOut = sessions.length
+    ? formatTime(sessions[sessions.length - 1]?.time_out)
+    : "---";
 
-        </PageWrapper>
-    );
+  const weeklyHours = attendanceDetail?.weekly_hours_formatted || "00:00";
+  const monthlyHours = attendanceDetail?.monthly_hours_formatted || "00:00";
+
+  const cardList = [
+    { title: "Today Punch In", value: todayPunchIn },
+    { title: "Today Punch Out", value: todayPunchOut },
+    { title: "Weekly Hours", value: weeklyHours },
+    { title: "Monthly Hours", value: monthlyHours },
+  ];
+
+  return (
+    <PageWrapper>
+      <Header>Attendance Details</Header>
+
+      {/* ✅ Summary cards */}
+      <CardWrapper>
+        {cardList.map((card, index) => (
+          <Card key={index}>
+            <CardTitle>{card.title}</CardTitle>
+            <CardValue>{card.value}</CardValue>
+          </Card>
+        ))}
+      </CardWrapper>
+
+      {/* ✅ Previous attendance table */}
+      <HistoryTable>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "15px",
+          }}
+        >
+          <Header>Sessions</Header>
+
+          <CalendarWrapper>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              style={{
+                padding: "6px 10px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+              }}
+            />
+          </CalendarWrapper>
+        </div>
+
+        <Table>
+          <thead>
+            <tr>
+              <Th>Punch In</Th>
+              <Th>Punch Out</Th>
+              <Th>Location</Th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {sessions.length === 0 ? (
+              <Tr>
+                <Td colSpan={3} style={{ textAlign: "center", color: "#777" }}>
+                  No sessions found
+                </Td>
+              </Tr>
+            ) : (
+              sessions.map((s, index) => (
+                <Tr key={index}>
+                  <Td>{formatTime(s?.time_in)}</Td>
+                  <Td>{formatTime(s?.time_out)}</Td>
+                  <Td>{s?.punch_in_location || "---"}</Td>
+                </Tr>
+              ))
+            )}
+          </tbody>
+        </Table>
+      </HistoryTable>
+    </PageWrapper>
+  );
 };
 
 export default AttendanceDetails;

@@ -617,3 +617,70 @@ class BackgroundLocationUpdateView(APIView):
             return Response({"status": "success"}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+# payroll/views.py
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from datetime import date
+import calendar
+
+from employee.models import Employee_db
+from .serializers import EmployeeAttendanceSummarySerializer
+from .utils.dayscalculations import build_employee_month_calendar
+
+
+class EmployeeAttendanceSummaryView(generics.ListAPIView):
+    serializer_class = EmployeeAttendanceSummarySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        qs = Employee_db.objects.select_related(
+            "department", "department__company"
+        ).prefetch_related(
+            "attendances__sessions"
+        ).filter(department__company=user.company)
+
+        # Employee should see only their own attendance
+        if user.is_employee:
+            qs = qs.filter(user=user)
+
+        return qs
+
+    def list(self, request, *args, **kwargs):
+        today = date.today()
+
+        year = int(request.query_params.get("year", today.year))
+        month = int(request.query_params.get("month", today.month))
+
+        start_date = date(year, month, 1)
+        end_date = date(year, month, calendar.monthrange(year, month)[1])
+
+        employees = self.get_queryset()
+
+        results = []
+
+        for emp in employees:
+            working_days, present_days, absent_days, lop_days, daily_records = (
+                build_employee_month_calendar(emp, start_date, end_date)
+            )
+
+            results.append({
+                "employee_id": emp.employee_id,
+                "employee_name": emp.name,
+                "department": emp.department.name if emp.department else None,
+                "working_days": working_days,
+                "present_days": present_days,
+                "absent_days": absent_days,
+                "lop_days": lop_days,
+                "daily_records": daily_records,
+            })
+
+        serializer = self.get_serializer(results, many=True)
+        return Response(serializer.data)

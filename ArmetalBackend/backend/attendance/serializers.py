@@ -223,3 +223,25 @@ class HourlyLocationLogSerializer(serializers.ModelSerializer):
         model = HourlyLocationLog
         fields = ['employee', 'latitude', 'longitude', 'location_name', 'logged_at']
         read_only_fields = ['logged_at']
+
+
+
+
+
+class DailyAttendanceSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    status = serializers.CharField()
+    total_hours = serializers.FloatField()
+
+
+class EmployeeAttendanceSummarySerializer(serializers.Serializer):
+    employee_id = serializers.CharField()
+    employee_name = serializers.CharField()
+    department = serializers.CharField()
+
+    working_days = serializers.FloatField()
+    present_days = serializers.FloatField()
+    absent_days = serializers.FloatField()
+    lop_days = serializers.FloatField()
+
+    daily_records = DailyAttendanceSerializer(many=True)
