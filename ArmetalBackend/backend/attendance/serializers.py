@@ -73,7 +73,6 @@ from time import timezone
 from rest_framework import serializers
 from django.utils import timezone
 from datetime import datetime, date
-
 class AttendanceSerializer(serializers.ModelSerializer):
     employee = serializers.IntegerField(source="id", read_only=True)
     employee_name = serializers.CharField(source="name", read_only=True)
@@ -92,7 +91,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     date = serializers.DateField(read_only=True)
 
-    # ✅ MUST be SerializerMethodField
+    # ✅ just method fields — no timezone conversion
     first_swipe_in = serializers.SerializerMethodField()
     last_swipe_out = serializers.SerializerMethodField()
 
@@ -117,23 +116,17 @@ class AttendanceSerializer(serializers.ModelSerializer):
         minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
 
-    # ---------- UTC → IST converter ----------
-    def _to_ist(self, value):
+    # ---------- return time as stored ----------
+    def _format_time(self, value):
         if not value:
             return None
-
-        dt = timezone.make_aware(
-            datetime.combine(date.today(), value),
-            timezone.utc
-        )
-        return dt.astimezone(timezone.get_current_timezone()).strftime("%H:%M")
+        return value.strftime("%H:%M")
 
     def get_first_swipe_in(self, obj):
-        return self._to_ist(obj.first_swipe_in)
+        return self._format_time(obj.first_swipe_in)
 
     def get_last_swipe_out(self, obj):
-        return self._to_ist(obj.last_swipe_out)
-
+        return self._format_time(obj.last_swipe_out)
 
     
 from rest_framework import serializers
