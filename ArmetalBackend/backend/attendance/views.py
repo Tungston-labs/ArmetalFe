@@ -281,7 +281,6 @@ from rest_framework.response import Response
 from employee.models import Employee_db
 from attendance.models import Attendance
 from .serializers import AttendanceSerializer
-from .pagination import CustomPagination
 
 
 class AttendanceAdminListView(generics.ListAPIView):
