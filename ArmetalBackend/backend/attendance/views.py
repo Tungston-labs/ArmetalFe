@@ -270,25 +270,11 @@ from attendance.models import Attendance
 from .serializers import AttendanceSerializer
 
 
-from datetime import date as today_date
-from django.db.models import Min, Case, When, IntegerField, BooleanField, Value
-from django.db.models.functions import Coalesce
-from rest_framework import generics, filters
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
-from employee.models import Employee_db
-from attendance.models import Attendance
-from .serializers import AttendanceSerializer
-from .pagination import CustomPagination
-
-
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
     pagination_class = CustomPagination
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'employee_id']
+    search_fields = ['employee__name', 'employee__employee_id', 'date']
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -301,42 +287,14 @@ class AttendanceAdminListView(generics.ListAPIView):
         if not selected_date:
             selected_date = today_date.today()
 
-        # 1️⃣ ALL employees in department
-        employees = Employee_db.objects.filter(department_id=department_id)
-
-        # 2️⃣ Join attendance of selected date
+        # 1️⃣ Base queryset
         queryset = (
-            employees
+            Attendance.objects
+            .filter(employee__department_id=department_id, date=selected_date)
             .annotate(
-                attendance_id=Min(
-                    'attendances__id',
-                    filter=Case(
-                        When(attendances__date=selected_date, then=True),
-                        default=False,
-                        output_field=BooleanField(),
-                    )
-                ),
-                first_punch_in=Min(
-                    'attendances__sessions__time_in',
-                    filter=Case(
-                        When(attendances__date=selected_date, then=True),
-                        default=False,
-                        output_field=BooleanField(),
-                    )
-                ),
-                total_hours=Coalesce(
-                    Min(
-                        'attendances__total_hours',
-                        filter=Case(
-                            When(attendances__date=selected_date, then=True),
-                            default=False,
-                            output_field=BooleanField(),
-                        )
-                    ),
-                    Value(0)
-                ),
-            )
-            .annotate(
+                first_punch_in=Min('sessions__time_in'),
+
+                # ✅ attendance_today flag
                 attendance_today=Case(
                     When(first_punch_in__isnull=False, then=True),
                     default=False,
@@ -350,25 +308,27 @@ class AttendanceAdminListView(generics.ListAPIView):
                     output_field=IntegerField(),
                 ),
                 'first_punch_in',
-                'name'
+                'employee__name'
             )
         )
 
         return queryset
 
+    # 2️⃣ Add swiped employee count in response
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
 
-        swiped_count = queryset.filter(attendance_today=True).count()
+        swiped_count = queryset.filter(first_punch_in__isnull=False).count()
         total_count = queryset.count()
 
         response = super().list(request, *args, **kwargs)
 
-        # inject extra meta
+        # ✅ inject extra meta without breaking existing structure
         response.data["swiped_employee_count"] = swiped_count
         response.data["total_employee_count"] = total_count
 
         return response
+
 
 
 
