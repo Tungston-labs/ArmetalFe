@@ -631,7 +631,7 @@ import calendar
 
 from employee.models import Employee_db
 from .serializers import EmployeeAttendanceSummarySerializer
-from utils.dayscalculations import build_employee_month_calendar
+from .utils.dayscalculations import build_employee_month_calendar
 
 
 class EmployeeAttendanceSummaryView(generics.ListAPIView):
