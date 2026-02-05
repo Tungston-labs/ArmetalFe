@@ -78,6 +78,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     employee = serializers.IntegerField(source="id", read_only=True)
     employee_name = serializers.CharField(source="name", read_only=True)
     profile_pic = serializers.ImageField(read_only=True)
+    attendance_id = serializers.IntegerField(read_only=True)
 
     total_hours = serializers.DecimalField(
         max_digits=5,
@@ -92,7 +93,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     first_swipe_in = serializers.SerializerMethodField()
     last_swipe_out = serializers.SerializerMethodField()
-    attendance_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee_db
@@ -165,11 +165,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         session = attendance.sessions.order_by("-time_out").first()
         return self._to_ist(session.time_out, attendance.date) if session else None
     
-    def get_attendance_id(self, obj):
-        attendance = self._get_today_attendance(obj)
-        print("EMP:", obj.id, "ATT:", attendance)
-        return attendance.id if attendance else None
-
+    
 
 
 from rest_framework import serializers

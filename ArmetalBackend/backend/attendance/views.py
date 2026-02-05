@@ -286,6 +286,9 @@ from attendance.models import Attendance, AttendanceSession
 from .serializers import AttendanceSerializer
 
 
+from django.db.models import OuterRef, Subquery, F, Value, Case, When, BooleanField
+from employee.models import Employee_db, Attendance, AttendanceSession
+
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
     pagination_class = CustomPagination
@@ -322,24 +325,22 @@ class AttendanceAdminListView(generics.ListAPIView):
             .annotate(
                 date=Subquery(attendance_qs.values("date")[:1]),
                 total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
-
-                # IMPORTANT → keep as TimeField (no casting)
+                attendance_id=Subquery(attendance_qs.values("id")[:1]),  # ✅ added here
                 first_swipe_in=Subquery(first_session.values("time_in")[:1]),
                 last_swipe_out=Subquery(last_session.values("time_out")[:1]),
-
                 attendance_today=Case(
                     When(total_hours__isnull=False, then=Value(True)),
                     default=Value(False),
                     output_field=BooleanField(),
                 ),
             )
-            # ✔ Correct ordering
             .order_by(
-                F("first_swipe_in").asc(nulls_last=True)  # first swipe first, null last
+                F("first_swipe_in").asc(nulls_last=True)
             )
         )
 
         return queryset
+
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
