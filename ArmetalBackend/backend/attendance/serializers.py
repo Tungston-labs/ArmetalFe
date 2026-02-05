@@ -83,11 +83,17 @@ from employee.models import Employee_db
 IST = pytz.timezone("Asia/Kolkata")
 
 
+from rest_framework import serializers
+from django.utils import timezone
+from datetime import datetime, time
+import pytz
+
+IST = pytz.timezone("Asia/Kolkata")
+
 
 class AttendanceSerializer(serializers.ModelSerializer):
     employee = serializers.IntegerField(source="id", read_only=True)
     employee_name = serializers.CharField(source="name", read_only=True)
-
     profile_pic = serializers.ImageField(read_only=True)
 
     total_hours = serializers.DecimalField(
@@ -99,7 +105,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     total_hours_formatted = serializers.SerializerMethodField()
     attendance_today = serializers.BooleanField(read_only=True)
-
     date = serializers.DateField(read_only=True)
 
     first_swipe_in = serializers.SerializerMethodField()
@@ -126,30 +131,40 @@ class AttendanceSerializer(serializers.ModelSerializer):
         minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
 
-    # ---------- SAFE timezone formatter ----------
-    def _format_time(self, value):
+    # ---------- IST formatter ----------
+    def _format_datetime_to_ist(self, value):
+        """
+        Convert datetime to IST and return HH:MM.
+        Works exactly like AttendanceDetailSerializer response.
+        """
         if not value:
             return None
 
-        # 🔹 If it's only a TIME → return directly (no timezone possible)
-        if isinstance(value, time):
-            return value.strftime("%H:%M")
+        if timezone.is_naive(value):
+            value = timezone.make_aware(value, pytz.UTC)
 
-        # 🔹 If it's DATETIME → convert to IST
-        if isinstance(value, datetime):
-            if timezone.is_naive(value):
-                value = timezone.make_aware(value, pytz.UTC)
+        value = value.astimezone(IST)
+        return value.strftime("%H:%M")
 
-            value = value.astimezone(IST)
-            return value.strftime("%H:%M")
-
+    # ---------- swipe times from sessions ----------
+    def get_first_swipe_in(self, obj):
+        """
+        Get earliest session time_in (same logic as detail API)
+        """
+        session = obj.sessions.order_by("time_in").first()
+        if session and session.time_in:
+            return self._format_datetime_to_ist(session.time_in)
         return None
 
-    def get_first_swipe_in(self, obj):
-        return self._format_time(obj.first_swipe_in)
-
     def get_last_swipe_out(self, obj):
-        return self._format_time(obj.last_swipe_out)
+        """
+        Get latest session time_out
+        """
+        session = obj.sessions.order_by("-time_out").first()
+        if session and session.time_out:
+            return self._format_datetime_to_ist(session.time_out)
+        return None
+
 
 from rest_framework import serializers
 from employee.models import Employee_db
