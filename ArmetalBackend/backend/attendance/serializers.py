@@ -92,6 +92,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     first_swipe_in = serializers.SerializerMethodField()
     last_swipe_out = serializers.SerializerMethodField()
+    attendance_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee_db
@@ -106,6 +107,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "total_hours",
             "total_hours_formatted",
             "attendance_today",
+            "attendance_id",
         ]
 
     # ---------- hours formatting ----------
@@ -162,6 +164,11 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
         session = attendance.sessions.order_by("-time_out").first()
         return self._to_ist(session.time_out, attendance.date) if session else None
+    
+    def get_attendance_id(self, obj):
+        attendance = self._get_today_attendance(obj)
+        return attendance.id if attendance else None
+
 
 
 from rest_framework import serializers
@@ -189,7 +196,6 @@ class EmployeeInfoSerializer(serializers.ModelSerializer):
         model = Employee_db
         fields = ['id', 'name', 'email', 'employee_id', 'profile_pic', 'department', 'designation','address','dob','gender']
         depth = 1  # if department/designation are foreign keys
-
 class AttendanceDetailSerializer(serializers.ModelSerializer):
     sessions = AttendanceSessionSerializer(many=True, read_only=True)
     employee = EmployeeInfoSerializer(read_only=True)
@@ -205,73 +211,64 @@ class AttendanceDetailSerializer(serializers.ModelSerializer):
             'remark', 'employee', 'sessions'
         ]
 
+    # ---------- format helpers ----------
+    def format_hours(self, hours):
+        """Convert decimal hours → HH:MM"""
+        if hours is None:
+            return "00:00"
+
+        h = int(hours)
+        m = int(round((float(hours) - h) * 60))
+        return f"{h:02d}:{m:02d}"
+
+    # ---------- total ----------
     def get_total_hours_formatted(self, obj):
-        """Format total hours as HH:MM"""
         return self.format_hours(obj.total_hours)
 
+    # ---------- week ----------
     def get_weekly_hours_formatted(self, obj):
-        """
-        Calculate hours within the same month-based week.
-        Example: Week 1 = 1-7, Week 2 = 8-14, etc.
-        """
         day = obj.date.day
         month_start = obj.date.replace(day=1)
 
-        # Determine week block
-        if day <= 7:
-            week_start = month_start
-            week_end_day = 7
-        elif day <= 14:
-            week_start = month_start.replace(day=8)
-            week_end_day = 14
-        elif day <= 21:
-            week_start = month_start.replace(day=15)
-            week_end_day = 21
-        elif day <= 28:
-            week_start = month_start.replace(day=22)
-            week_end_day = 28
-        else:
-            week_start = month_start.replace(day=29)
-            # Handle variable month length
-            if month_start.month == 12:
-                next_month_start = month_start.replace(year=month_start.year + 1, month=1, day=1)
-            else:
-                next_month_start = month_start.replace(month=month_start.month + 1, day=1)
-            week_end_day = (next_month_start - timedelta(days=1)).day
+        # week blocks: 1-7, 8-14, 15-21, 22-28, 29-end
+        week_start_day = ((day - 1) // 7) * 7 + 1
+        week_start = month_start.replace(day=week_start_day)
 
+        # last day of month
+        if month_start.month == 12:
+            next_month = month_start.replace(year=month_start.year + 1, month=1, day=1)
+        else:
+            next_month = month_start.replace(month=month_start.month + 1, day=1)
+
+        month_end_day = (next_month - timedelta(days=1)).day
+        week_end_day = min(week_start_day + 6, month_end_day)
         week_end = month_start.replace(day=week_end_day)
 
         total = Attendance.objects.filter(
             employee=obj.employee,
             date__range=[week_start, week_end]
-        ).aggregate(total=Sum('total_hours'))['total'] or 0
+        ).aggregate(total=Sum('total_hours'))['total']
 
         return self.format_hours(total)
 
+    # ---------- month ----------
     def get_monthly_hours_formatted(self, obj):
-        """Sum hours for the month of obj.date for that employee"""
         month_start = obj.date.replace(day=1)
 
         if month_start.month == 12:
-            next_month_start = month_start.replace(year=month_start.year + 1, month=1, day=1)
+            next_month = month_start.replace(year=month_start.year + 1, month=1, day=1)
         else:
-            next_month_start = month_start.replace(month=month_start.month + 1, day=1)
-        month_end = next_month_start - timedelta(days=1)
+            next_month = month_start.replace(month=month_start.month + 1, day=1)
+
+        month_end = next_month - timedelta(days=1)
 
         total = Attendance.objects.filter(
             employee=obj.employee,
             date__range=[month_start, month_end]
-        ).aggregate(total=Sum('total_hours'))['total'] or 0
+        ).aggregate(total=Sum('total_hours'))['total']
 
         return self.format_hours(total)
 
-    def format_hours(self, hours):
-        """Helper to format decimal hours into HH:MM"""
-        if not hours:
-            return "00:00"
-        h = int(hours)
-        m = int(round((hours - h) * 60))
-        return f"{h:02d}:{m:02d}"
 
 
 
