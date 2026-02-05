@@ -11,7 +11,7 @@ from .models import Attendance, AttendanceSession
 from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone,safe_parse_datetime,ensure_timezone
 import pytz
 from django.db.models import Sum
-from datetime import timedelta
+from datetime import timedelta,date
 
 
 class AttendanceSessionSerializer(serializers.ModelSerializer):
@@ -67,7 +67,12 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
 
 from rest_framework import serializers
 from employee.models import Employee_db
+from time import timezone
 
+
+from rest_framework import serializers
+from django.utils import timezone
+from datetime import datetime, date
 
 class AttendanceSerializer(serializers.ModelSerializer):
     employee = serializers.IntegerField(source="id", read_only=True)
@@ -87,8 +92,9 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     date = serializers.DateField(read_only=True)
 
-    first_swipe_in = serializers.TimeField(read_only=True)
-    last_swipe_out = serializers.TimeField(read_only=True)
+    # ✅ MUST be SerializerMethodField
+    first_swipe_in = serializers.SerializerMethodField()
+    last_swipe_out = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee_db
@@ -105,10 +111,28 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "attendance_today",
         ]
 
+    # ---------- hours formatting ----------
     def get_total_hours_formatted(self, obj):
         hours = int(obj.total_hours or 0)
         minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
+
+    # ---------- UTC → IST converter ----------
+    def _to_ist(self, value):
+        if not value:
+            return None
+
+        dt = timezone.make_aware(
+            datetime.combine(date.today(), value),
+            timezone.utc
+        )
+        return dt.astimezone(timezone.get_current_timezone()).strftime("%H:%M")
+
+    def get_first_swipe_in(self, obj):
+        return self._to_ist(obj.first_swipe_in)
+
+    def get_last_swipe_out(self, obj):
+        return self._to_ist(obj.last_swipe_out)
 
 
     
