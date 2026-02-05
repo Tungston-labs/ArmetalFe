@@ -260,7 +260,7 @@ class AddPunchOutNoteView(APIView):
 # -----------------------------------------------------view for list attendance for admin
 
 from datetime import date as today_date
-from django.db.models import IntegerField
+
 from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value, DateTimeField
 from django.db.models.functions import Cast
 from rest_framework import generics
@@ -303,41 +303,30 @@ class AttendanceAdminListView(generics.ListAPIView):
         ).order_by("-time_out")
 
         return (
-                Employee_db.objects
-                .filter(department_id=department_id)
-                .annotate(
-                    date=Subquery(attendance_qs.values("date")[:1]),
-                    total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
+            Employee_db.objects
+            .filter(department_id=department_id)
+            .annotate(
+                date=Subquery(attendance_qs.values("date")[:1]),
+                total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
 
-                    first_swipe_in=Cast(
-                        Subquery(first_session.values("time_in")[:1]),
-                        output_field=DateTimeField(),
-                    ),
-                    last_swipe_out=Cast(
-                        Subquery(last_session.values("time_out")[:1]),
-                        output_field=DateTimeField(),
-                    ),
+                # ✅ CAST to datetime → prevents astimezone crash
+                first_swipe_in=Cast(
+                    Subquery(first_session.values("time_in")[:1]),
+                    output_field=DateTimeField(),
+                ),
+                last_swipe_out=Cast(
+                    Subquery(last_session.values("time_out")[:1]),
+                    output_field=DateTimeField(),
+                ),
 
-                    attendance_today=Case(
-                        When(total_hours__isnull=False, then=Value(True)),
-                        default=Value(False),
-                        output_field=BooleanField(),
-                    ),
-                )
-                .annotate(
-                    swipe_priority=Case(
-                        When(attendance_today=True, then=Value(0)),
-                        default=Value(1),
-                        output_field=IntegerField(),
-                    )
-                )
-                .order_by(
-                    "swipe_priority",
-                    "first_swipe_in",
-                    "name",
-                )
+                attendance_today=Case(
+                    When(total_hours__isnull=False, then=Value(True)),
+                    default=Value(False),
+                    output_field=BooleanField(),
+                ),
             )
-
+            .order_by("attendance_today", "name")
+        )
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
