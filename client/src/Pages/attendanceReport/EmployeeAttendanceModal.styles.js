@@ -121,7 +121,7 @@ export const TableCell = styled.td`
     text-align: center;
 `;
 
-// Status Badge
+
 export const StatusBadge = styled.span`
   display: inline-block;
   padding: 4px 10px;
@@ -129,7 +129,17 @@ export const StatusBadge = styled.span`
   color: #fff;
   font-size: 12px;
   font-weight: 600;
-  background-color: ${(props) =>
-    props.status === "Present" ? "#28a745" :
-    props.status === "Leave" ? "#fd7e14" : "#dc3545"};
+  background-color: ${(props) => {
+    switch (props.status) {
+      case "present":
+        return "#28a745"; 
+      case "leave":
+        return "#fd7e14"; 
+      case "holiday":
+        return "#17a2b8"; 
+      case "absent":
+      default:
+        return "#dc3545";
+    }
+  }};
 `;
