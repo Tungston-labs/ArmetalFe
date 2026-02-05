@@ -78,7 +78,7 @@ from rest_framework import serializers
 from django.utils import timezone
 from datetime import datetime, time
 import pytz
-from employee.models import Employee_db, Attendance, AttendanceSession
+from .models import  Attendance, AttendanceSession
 
 IST = pytz.timezone("Asia/Kolkata")
 
