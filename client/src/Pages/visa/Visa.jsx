@@ -105,6 +105,7 @@ const EmployeeList = () => {
         <EmployeeTitle
           iconSrc={EmployeeIcon}
           showAddButton={false}
+            searchValue={searchText} 
           showSearch={true}
           showDropdown={true}
           dropdownOptions={[

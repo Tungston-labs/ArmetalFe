@@ -121,6 +121,7 @@ const AttendanceList = () => {
         iconSrc={EmployeeIcon}
         showAddButton={false}
         showDropdown={false}
+       searchValue={searchText}  
         onSearchChange={setSearchText}
         showBackArrow={false}
       />
@@ -161,7 +162,7 @@ const AttendanceList = () => {
                       <span>In Date</span>
                       <span>In Time</span>
                       <span>Out Time</span>
-                      <span>Status</span> {/* ✅ new column */}
+                      <span>Status</span>
                     </DropdownHeader>
 
                     <EmployeeList>

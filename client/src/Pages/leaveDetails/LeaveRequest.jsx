@@ -112,6 +112,7 @@ const isLoading = loading || deptLoading;
   showAddButton={false}
   dropdownOptions={departmentList || []}
   dropdownLoading={deptLoading}
+    searchValue={searchText} 
   onSearchChange={setSearchText}
   onDropdownChange={setDepartmentFilter}
        showBackArrow={false}

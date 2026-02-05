@@ -29,19 +29,10 @@ const fullYearData = {
         { month: "February", workingDays: 24, present: 22, absent: 2, lop: 0 },
         { month: "March", workingDays: 26, present: 25, absent: 1, lop: 0 },
         { month: "April", workingDays: 26, present: 26, absent: 0, lop: 0 },
-        { month: "May", workingDays: 26, present: 23, absent: 3, lop: 2 },
-        { month: "June", workingDays: 26, present: 25, absent: 1, lop: 0 },
-        { month: "July", workingDays: 26, present: 24, absent: 2, lop: 0 },
-        { month: "August", workingDays: 26, present: 22, absent: 4, lop: 1 },
-        { month: "September", workingDays: 26, present: 26, absent: 0, lop: 0 },
-        { month: "October", workingDays: 26, present: 25, absent: 1, lop: 0 },
-        { month: "November", workingDays: 26, present: 23, absent: 3, lop: 1 },
-        { month: "December", workingDays: 26, present: 26, absent: 0, lop: 0 },
     ],
     "Sarah Smith": [
         { month: "January", workingDays: 26, present: 22, absent: 4, lop: 0 },
         { month: "February", workingDays: 24, present: 20, absent: 4, lop: 1 },
-        { month: "March", workingDays: 26, present: 24, absent: 2, lop: 0 },
     ],
     "David Miller": [
         { month: "January", workingDays: 26, present: 25, absent: 1, lop: 0 },
@@ -53,20 +44,22 @@ const fullYearData = {
 const AttendanceReport = () => {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [selectedMonth, setSelectedMonth] = useState(
-        new Date().toISOString().slice(0, 7)
-    );
+    const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
+    const [searchTerm, setSearchTerm] = useState("");
 
     const getMonthNameFromYYYYMM = (yyyyMM) => {
         if (!yyyyMM) return "";
         const d = new Date(`${yyyyMM}-01T00:00:00`);
         if (isNaN(d.getTime())) return "";
-        return d.toLocaleString("default", { month: "long" }); 
+        return d.toLocaleString("default", { month: "long" });
     };
 
     const selectedMonthName = getMonthNameFromYYYYMM(selectedMonth);
-    const visibleRows = employeeData.filter((emp) => emp.month === selectedMonthName);
+    const visibleRows = employeeData.filter(
+        (emp) =>
+            emp.month === selectedMonthName &&
+            emp.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const handleRowClick = (employee) => {
         const employeeFullYear = {
@@ -85,6 +78,9 @@ const AttendanceReport = () => {
                 showTabs={true}
                 showDropdown={false}
                 showAddButton={false}
+                showSearch={true}
+                searchValue={searchTerm}
+                onSearchChange={(val) => setSearchTerm(val)}
             />
 
             <PageWrapper>
@@ -139,12 +135,12 @@ const AttendanceReport = () => {
                 </TableWrapper>
             </PageWrapper>
 
-          <EmployeeAttendanceModal
-  employee={selectedEmployee}
-  monthName={selectedMonthName}
-  isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-/>
+            <EmployeeAttendanceModal
+                employee={selectedEmployee}
+                monthName={selectedMonthName}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </Container>
     );
 };
