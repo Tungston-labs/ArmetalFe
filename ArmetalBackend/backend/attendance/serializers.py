@@ -86,8 +86,9 @@ class AttendanceSerializer(serializers.ModelSerializer):
     attendance_today = serializers.BooleanField(read_only=True)
 
     date = serializers.DateField(read_only=True)
-    first_swipe_in = serializers.DateTimeField(read_only=True)
-    last_swipe_out = serializers.DateTimeField(read_only=True)
+
+    first_swipe_in = serializers.TimeField(read_only=True)
+    last_swipe_out = serializers.TimeField(read_only=True)
 
     class Meta:
         model = Employee_db
@@ -108,6 +109,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         hours = int(obj.total_hours or 0)
         minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
+
 
     
 from rest_framework import serializers

@@ -260,12 +260,26 @@ class AddPunchOutNoteView(APIView):
 # -----------------------------------------------------view for list attendance for admin
 
 from datetime import date as today_date
-
-from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value, DateTimeField
-from django.db.models.functions import Cast
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from django.db.models import Min, Case, When, IntegerField, BooleanField, Count, Q
+from rest_framework import generics, filters
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+
+from employee.models import Employee_db
+from attendance.models import Attendance
+from .serializers import AttendanceSerializer
+from django.db import models
+from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value
+from django.db.models.functions import Coalesce
+
+# -----------------------------------------------------view for list attendance for admin
+
+from datetime import date as today_date
+
+from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value, F
+from rest_framework import generics
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 
 from employee.models import Employee_db
 from attendance.models import Attendance, AttendanceSession
@@ -290,34 +304,28 @@ class AttendanceAdminListView(generics.ListAPIView):
             date=selected_date,
         )
 
-        # 🔹 First swipe session
+        # 🔹 First punch in session (TimeField)
         first_session = AttendanceSession.objects.filter(
             attendance__employee=OuterRef("pk"),
             attendance__date=selected_date,
         ).order_by("time_in")
 
-        # 🔹 Last swipe session
+        # 🔹 Last punch out session (TimeField)
         last_session = AttendanceSession.objects.filter(
             attendance__employee=OuterRef("pk"),
             attendance__date=selected_date,
         ).order_by("-time_out")
 
-        return (
+        queryset = (
             Employee_db.objects
             .filter(department_id=department_id)
             .annotate(
                 date=Subquery(attendance_qs.values("date")[:1]),
                 total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
 
-                # ✅ CAST to datetime → prevents astimezone crash
-                first_swipe_in=Cast(
-                    Subquery(first_session.values("time_in")[:1]),
-                    output_field=DateTimeField(),
-                ),
-                last_swipe_out=Cast(
-                    Subquery(last_session.values("time_out")[:1]),
-                    output_field=DateTimeField(),
-                ),
+                # IMPORTANT → keep as TimeField (no casting)
+                first_swipe_in=Subquery(first_session.values("time_in")[:1]),
+                last_swipe_out=Subquery(last_session.values("time_out")[:1]),
 
                 attendance_today=Case(
                     When(total_hours__isnull=False, then=Value(True)),
@@ -325,8 +333,13 @@ class AttendanceAdminListView(generics.ListAPIView):
                     output_field=BooleanField(),
                 ),
             )
-            .order_by("attendance_today", "name")
+            # ✔ Correct ordering
+            .order_by(
+                F("first_swipe_in").asc(nulls_last=True)  # first swipe first, null last
+            )
         )
+
+        return queryset
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
