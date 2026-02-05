@@ -451,7 +451,7 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     lookup_field = 'id'
 
     def get(self, request, *args, **kwargs):
-        attendance_id = kwargs.get('id')
+        attendance_id = kwargs.get(self.lookup_field)
         date_str = request.query_params.get('date')
 
         # ✅ Base attendance record (for employee context)
