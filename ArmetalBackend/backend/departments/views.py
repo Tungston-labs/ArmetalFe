@@ -26,8 +26,26 @@ class DepartmentMiniListView(generics.ListAPIView):
     search_fields = ["name"]
 
     def get_queryset(self):
+        today = timezone.localdate()
         company = self.request.user.company
-        return Department.objects.filter(company=company)
+
+        # ✅ employees with attendance today per department
+        swiped_subquery = (
+            Attendance.objects
+            .filter(employee__department=OuterRef("pk"), date=today)
+            .values("employee__department")
+            .annotate(c=Count("employee", distinct=True))
+            .values("c")[:1]
+        )
+
+        return (
+            Department.objects
+            .filter(company=company)
+            .annotate(
+                total_employee_count=Count("employees", distinct=True),
+                swiped_employee_count=Subquery(swiped_subquery, output_field=IntegerField()),
+            )
+        )
 
 
 
