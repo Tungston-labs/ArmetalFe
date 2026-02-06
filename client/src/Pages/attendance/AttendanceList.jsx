@@ -195,7 +195,7 @@ const AttendanceList = () => {
                           return (
                             <EmployeeRow
                               key={emp.id}
-                              onClick={() => handleRowClick(emp.attendance_id)}
+                              onClick={() => handleRowClick(emp.id)}
                             >
                               <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
                               <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
