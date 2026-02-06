@@ -29,6 +29,8 @@ class EmployeeBankDetailListView(generics.ListAPIView):
         return Employee_db.objects.filter(department__company=company)
     
 #for updating status according to month and year(for all employees)
+from datetime import date
+import calendar
 
 
 
@@ -42,16 +44,27 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         company = self.request.user.company
         year = self.request.query_params.get('year')
         month = self.request.query_params.get('month')
-        department_id = self.request.query_params.get('department')  # 👈 NEW
+        department_id = self.request.query_params.get('department')
 
         employees = Employee_db.objects.filter(department__company=company)
 
         if department_id:
-            employees = employees.filter(department__id=department_id)  # 👈 Filter by department if given
+            employees = employees.filter(department__id=department_id)
 
+        # ✅ FILTER BY JOINING DATE
         if year and month:
+            year = int(year)
+            month = int(month)
+
+            last_day = calendar.monthrange(year, month)[1]
+            last_date_of_month = date(year, month, last_day)
+
+            employees = employees.filter(joining_date__lte=last_date_of_month)
+
             queryset = EmployeePayrollRecord.objects.filter(
-                employee__in=employees, year=year, month=month
+                employee__in=employees,
+                year=year,
+                month=month
             )
         else:
             queryset = EmployeePayrollRecord.objects.filter(
@@ -61,13 +74,23 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         return queryset
 
 
+
     def get(self, request):
         year = request.query_params.get('year')
         month = request.query_params.get('month')
         if not year or not month:
             return Response({"detail": "Year and month are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        employees = Employee_db.objects.filter(department__company=request.user.company)
+        year = int(year)
+        month = int(month)
+
+        last_day = calendar.monthrange(year, month)[1]
+        last_date_of_month = date(year, month, last_day)
+
+        employees = Employee_db.objects.filter(
+            department__company=request.user.company,
+            joining_date__lte=last_date_of_month
+        )
 
         existing_records = self.get_queryset()
         existing_emp_ids = existing_records.values_list('employee_id', flat=True)
