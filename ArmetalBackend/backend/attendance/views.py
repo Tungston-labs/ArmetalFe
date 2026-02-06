@@ -444,23 +444,96 @@ class AttendanceDetailByDateView(APIView):
 
 
 # -----------------------------------------------------attendance list view (for admin)
+# class AttendanceAdminDetailView(RetrieveAPIView):
+#     queryset = Attendance.objects.all()
+#     serializer_class = AttendanceDetailSerializer
+#     permission_classes = [IsAuthenticated, IsHRAdmin]
+#     lookup_field = 'id'
+
+#     def get(self, request, *args, **kwargs):
+#         attendance_id = kwargs.get(self.lookup_field)
+#         date_str = request.query_params.get('date')
+
+#         # ✅ Base attendance record (for employee context)
+#         try:
+#             base_attendance = Attendance.objects.select_related('employee').get(id=attendance_id)
+#         except Attendance.DoesNotExist:
+#             return Response({"error": "Attendance not found"}, status=404)
+
+#         # ✅ If ?date= provided → get record for that employee/date
+#         if date_str:
+#             try:
+#                 date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+#             except ValueError:
+#                 return Response({"error": "Invalid date format. Use YYYY-MM-DD"}, status=400)
+
+#             attendance = Attendance.objects.filter(
+#                 employee=base_attendance.employee,
+#                 date=date_obj
+#             ).first()
+
+#             # ⚠️ If no attendance found for that date, still return basic info
+#             if not attendance:
+#                 serializer = self.get_serializer(base_attendance)
+#                 data = serializer.data
+
+#                 # Wipe out time/session info (make it clear this date has no attendance)
+#                 data.update({
+#                     "date": str(date_obj),
+#                     "sessions": [],
+#                     "total_hours": None,
+#                     "status": "Absent",
+#                     "note": f"No attendance available for {date_obj}"
+#                 })
+
+#                 return Response(data, status=200)
+
+#             serializer = self.get_serializer(attendance)
+#             return Response(serializer.data)
+
+#         # ✅ Default → show normal attendance by ID
+#         serializer = self.get_serializer(base_attendance)
+#         return Response(serializer.data)
+from datetime import datetime, timedelta
+from django.db.models import Sum
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from .models import Attendance
+from .serializers import AttendanceDetailSerializer
+
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
-    lookup_field = 'id'
+    lookup_field = 'employee_id'  # Changed from 'id' to 'employee_id'
 
     def get(self, request, *args, **kwargs):
-        attendance_id = kwargs.get(self.lookup_field)
+        employee_id = kwargs.get(self.lookup_field)
         date_str = request.query_params.get('date')
 
-        # ✅ Base attendance record (for employee context)
-        try:
-            base_attendance = Attendance.objects.select_related('employee').get(id=attendance_id)
-        except Attendance.DoesNotExist:
-            return Response({"error": "Attendance not found"}, status=404)
+        # ✅ Base attendance record (latest for employee if exists)
+        base_attendance = Attendance.objects.filter(employee__id=employee_id).order_by('-date').first()
 
-        # ✅ If ?date= provided → get record for that employee/date
+        if not base_attendance:
+            # If employee has no attendance ever, we can return default info
+            data = {
+                "id": None,
+                "date": date_str or str(datetime.today().date()),
+                "total_hours": None,
+                "total_hours_formatted": "00:00",
+                "weekly_hours_formatted": "00:00",
+                "monthly_hours_formatted": "00:00",
+                "remark": "",
+                "employee": {"id": employee_id},  # minimal info
+                "sessions": [],
+                "status": "Absent",
+                "note": f"No attendance available"
+            }
+            return Response(data, status=200)
+
+        # ✅ If ?date= provided → get attendance for that date
         if date_str:
             try:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
@@ -468,30 +541,29 @@ class AttendanceAdminDetailView(RetrieveAPIView):
                 return Response({"error": "Invalid date format. Use YYYY-MM-DD"}, status=400)
 
             attendance = Attendance.objects.filter(
-                employee=base_attendance.employee,
+                employee__id=employee_id,
                 date=date_obj
             ).first()
 
-            # ⚠️ If no attendance found for that date, still return basic info
             if not attendance:
                 serializer = self.get_serializer(base_attendance)
                 data = serializer.data
-
-                # Wipe out time/session info (make it clear this date has no attendance)
                 data.update({
                     "date": str(date_obj),
                     "sessions": [],
                     "total_hours": None,
+                    "total_hours_formatted": "00:00",
+                    "weekly_hours_formatted": "00:00",
+                    "monthly_hours_formatted": "00:00",
                     "status": "Absent",
                     "note": f"No attendance available for {date_obj}"
                 })
-
                 return Response(data, status=200)
 
             serializer = self.get_serializer(attendance)
             return Response(serializer.data)
 
-        # ✅ Default → show normal attendance by ID
+        # ✅ Default → return latest attendance of employee
         serializer = self.get_serializer(base_attendance)
         return Response(serializer.data)
 
