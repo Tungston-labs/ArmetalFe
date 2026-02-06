@@ -18,7 +18,7 @@ import {
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { getDepartments } from "../../Redux/departmentSlice";
+import { getDepartmentsMin } from "../../Redux/departmentSlice";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader";
@@ -30,19 +30,19 @@ const AttendanceList = () => {
 
   const [selectedDept, setSelectedDept] = useState(null);
   const [departmentAttendance, setDepartmentAttendance] = useState({});
-  const [departmentCounts, setDepartmentCounts] = useState({});
   const [pageByDept, setPageByDept] = useState({});
   const [searchText, setSearchText] = useState("");
   const [loadingDept, setLoadingDept] = useState(false);
 
   const pageSize = 10;
 
-  const { list: departmentList = [], loading } = useSelector(
-    (state) => state.departments
-  );
+ const { minList: departmentList = [], loading } = useSelector(
+  (state) => state.departments
+);
+
 
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" }));
+    dispatch(getDepartmentsMin({ page: 1, search: "" }));
   }, [dispatch]);
 
   const parseTimeToTimestamp = (timeStr) => {
@@ -69,7 +69,7 @@ const AttendanceList = () => {
     return items.slice(start, start + pageSize);
   };
 
-  // ✅ LOAD attendance using NEW API response
+  // Load attendance employees for a department
   const loadAttendanceForDept = async (deptId) => {
     setLoadingDept(true);
     try {
@@ -79,14 +79,6 @@ const AttendanceList = () => {
       setDepartmentAttendance((p) => ({
         ...p,
         [deptId]: data.results || [],
-      }));
-
-      setDepartmentCounts((p) => ({
-        ...p,
-        [deptId]: {
-          swiped: data.swiped_employee_count || 0,
-          total: data.total_employee_count || 0,
-        },
       }));
     } finally {
       setLoadingDept(false);
@@ -112,7 +104,6 @@ const AttendanceList = () => {
   const departmentsToRender = departmentList.map((dept) => ({
     ...dept,
     employees: departmentAttendance[dept.id] || [],
-    counts: departmentCounts[dept.id] || { swiped: 0, total: 0 },
   }));
 
   return (
@@ -142,13 +133,13 @@ const AttendanceList = () => {
               <DepartmentCard key={dept.id}>
                 <DepartmentHeader onClick={() => handleToggle(dept.id)}>
                   <LeftWrapper>
-                    <DepartmentIcon>{dept.name[0]}</DepartmentIcon>
+                    <DepartmentIcon>{dept.name?.[0]}</DepartmentIcon>
                     <DepartmentName>{dept.name}</DepartmentName>
                   </LeftWrapper>
 
-                  {/* ✅ Show swiped / total count */}
+                  {/* Swiped / Total from Department API */}
                   <EmployeeCount>
-                    {dept.counts.swiped} / {dept.counts.total} Swiped
+                    {dept.swiped_employee_count || 0} / {dept.total_employee_count || 0} Swiped
                   </EmployeeCount>
                 </DepartmentHeader>
 
@@ -161,7 +152,7 @@ const AttendanceList = () => {
                       <span>In Date</span>
                       <span>In Time</span>
                       <span>Out Time</span>
-                      <span>Status</span> {/* ✅ new column */}
+                      <span>Status</span>
                     </DropdownHeader>
 
                     <EmployeeList>
@@ -186,23 +177,21 @@ const AttendanceList = () => {
                             const lastSession = sessions[sessions.length - 1];
                             tOut =
                               lastSession.time_out && lastSession.time_out !== ""
-                                ? formatTime(
-                                  parseTimeToTimestamp(lastSession.time_out)
-                                )
+                                ? formatTime(parseTimeToTimestamp(lastSession.time_out))
                                 : "---";
                           }
 
                           return (
                             <EmployeeRow
-                              key={emp.id}
+                              key={emp.employee}
                               onClick={() => handleRowClick(emp.employee)}
                             >
                               <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
                               <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.date || "-"}</EmployeeCell>
-                              <EmployeeCell>{emp.first_swipe_in}</EmployeeCell>
-                              <EmployeeCell>{emp.last_swipe_out}</EmployeeCell>
+                              <EmployeeCell>{emp.first_swipe_in || tIn}</EmployeeCell>
+                              <EmployeeCell>{emp.last_swipe_out || tOut}</EmployeeCell>
 
                               <EmployeeCell>
                                 <span
@@ -214,7 +203,6 @@ const AttendanceList = () => {
                                   ●
                                 </span>
                               </EmployeeCell>
-
                             </EmployeeRow>
                           );
                         })
