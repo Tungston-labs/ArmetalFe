@@ -22,6 +22,14 @@ export const Panel = styled.div`
   body.swal2-shown & {
     z-index: 900;
   }
+ @media (min-width: 1000px) {
+    width: 250px;
+  } 
+
+
+   @media (min-width: 1440px) {
+    width: 300px;
+  }
   @media (min-width: 1920px) {
     width: 350px;
   }
@@ -32,9 +40,6 @@ export const Panel = styled.div`
     width: 380px;
   }
 
-@media (min-width: 1000px) {
-    width: 300px;
-  }
 
   @media (max-width: 992px) {
     width: 300px;

@@ -112,6 +112,7 @@ const AttendanceList = () => {
         iconSrc={EmployeeIcon}
         showAddButton={false}
         showDropdown={false}
+       searchValue={searchText}  
         onSearchChange={setSearchText}
         showBackArrow={false}
       />

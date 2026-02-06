@@ -127,6 +127,7 @@ const EmployeeList = () => {
           dropdownOptions={departmentList || []}
           dropdownLoading={deptLoading}
           onAddClick={() => navigate("/basic-details")}
+            searchValue={searchText} 
           onSearchChange={setSearchText}
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
