@@ -103,7 +103,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
             if hours >= 8:
                 status = "present"
-            elif 4 <= hours < 8:
+            elif 5 <= hours < 8:
                 status = "half_day"
             else:
                 status = "absent"
