@@ -1,4 +1,3 @@
-# payroll/utils.py
 from datetime import timedelta, datetime
 from attendance.models import Attendance
 from leave.models import LeaveRequest
@@ -46,7 +45,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
     present_days = full_days + (0.5 * half_days)
 
-    # --- Approved Leaves (month-wise) ---
+    # --- Approved Leaves ---
     leave_requests = LeaveRequest.objects.filter(
         employee=employee,
         status="approved",
@@ -91,14 +90,14 @@ def build_employee_month_calendar(employee, start_date, end_date):
             status = "off"
             hours = 0
 
-        # Leave (counts as working day, also unswiped)
+        # Leave
         elif d in approved_leave_dates:
             status = "leave"
             hours = 0
             working_days += 1
             unswiped_days += 1
 
-        # Present
+        # Present / Half / Absent by hours
         elif d in attendance_dates:
             hours = attendance_map[d]
 
@@ -112,7 +111,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
             working_days += 1
 
-        # Absent
+        # Fully absent
         else:
             status = "absent"
             hours = 0
@@ -125,26 +124,25 @@ def build_employee_month_calendar(employee, start_date, end_date):
             "total_hours": round(hours, 2),
         })
 
-    # -------------------------------
-    # ✅ FINAL HR-CORRECT LOP LOGIC
-    # -------------------------------
+    # --------------------------------------------------
+    #  FINAL HR-CORRECT LOP CALCULATION
+    # --------------------------------------------------
 
     real_absent_days = unswiped_days - approved_leave_count
 
     total_leave_balance = float(employee.total_leave or 0)
     paid_leave = float(employee.paid_leave or 0)
 
-    # If employee still had leave balance this month,
-    # those leaves should NOT become LOP
+    # Leaves adjusted against balance
     leave_adjustment = min(approved_leave_count, total_leave_balance)
 
-    # Real LOP from absences
+    # LOP from true absences
     lop_from_absent = max(real_absent_days - leave_adjustment, 0)
 
     # Extra leave beyond balance already stored in paid_leave
     lop_days = lop_from_absent + paid_leave
 
-    # Final absent days (display only)
+    # Final absent days (for display only)
     absent_days = max(working_days - present_days - leave_adjustment, 0)
 
     return working_days, present_days, absent_days, lop_days, daily_records

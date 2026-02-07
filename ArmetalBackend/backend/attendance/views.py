@@ -714,8 +714,6 @@ class BackgroundLocationUpdateView(APIView):
 
 
 
-
-
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -723,6 +721,7 @@ from datetime import date
 import calendar
 
 from employee.models import Employee_db
+from payroll.models import EmployeePayrollRecord
 from .serializers import EmployeeAttendanceSummarySerializer
 from .utils.dayscalculations import build_employee_month_calendar
 
@@ -736,11 +735,8 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
 
         qs = Employee_db.objects.select_related(
             "department", "department__company"
-        ).prefetch_related(
-            "attendances__sessions"
         ).filter(department__company=user.company)
 
-        # Employee should see only their own attendance
         if user.is_employee:
             qs = qs.filter(user=user)
 
@@ -755,14 +751,31 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
         start_date = date(year, month, 1)
         end_date = date(year, month, calendar.monthrange(year, month)[1])
 
-        employees = self.get_queryset()
-
         results = []
 
-        for emp in employees:
-            working_days, present_days, absent_days, lop_days, daily_records = (
-                build_employee_month_calendar(emp, start_date, end_date)
-            )
+        for emp in self.get_queryset():
+
+            payroll = EmployeePayrollRecord.objects.filter(
+                employee=emp,
+                year=year,
+                month=month
+            ).first()
+
+            # ✅ If payroll exists → USE SNAPSHOT
+            if payroll:
+                working_days = payroll.working_days or 0
+                present_days = payroll.days_present or 0
+                lop_days = payroll.lop_days or 0
+
+                absent_days = max(working_days - present_days, 0)
+
+                daily_records = []  # Do not rebuild past calendar
+
+            # ✅ Else → CALCULATE LIVE
+            else:
+                working_days, present_days, absent_days, lop_days, daily_records = (
+                    build_employee_month_calendar(emp, start_date, end_date)
+                )
 
             results.append({
                 "employee_id": emp.employee_id,
