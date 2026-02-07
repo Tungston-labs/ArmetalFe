@@ -761,7 +761,7 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
                 month=month
             ).first()
 
-            # ✅ If payroll exists → USE SNAPSHOT
+            #  If payroll exists → USE SNAPSHOT
             if payroll:
                 working_days = payroll.working_days or 0
                 present_days = payroll.days_present or 0
@@ -771,7 +771,7 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
 
                 daily_records = []  # Do not rebuild past calendar
 
-            # ✅ Else → CALCULATE LIVE
+            #  Else → CALCULATE LIVE
             else:
                 working_days, present_days, absent_days, lop_days, daily_records = (
                     build_employee_month_calendar(emp, start_date, end_date)

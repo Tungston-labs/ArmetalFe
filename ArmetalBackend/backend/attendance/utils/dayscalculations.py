@@ -40,7 +40,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
     for hrs in attendance_map.values():
         if hrs >= 8:
             full_days += 1
-        elif 4 <= hrs < 8:
+        elif 5 <= hrs < 8:
             half_days += 1
 
     present_days = full_days + (0.5 * half_days)
