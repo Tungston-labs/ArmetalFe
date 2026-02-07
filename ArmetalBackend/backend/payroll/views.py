@@ -51,7 +51,7 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         if department_id:
             employees = employees.filter(department__id=department_id)
 
-        # ✅ FILTER BY JOINING DATE
+        #  FILTER BY JOINING DATE
         if year and month:
             year = int(year)
             month = int(month)
@@ -118,7 +118,7 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
                     }
                 )
 
-        # ⭐ AUTO-SYNC SALARY IF EMPLOYEE BANK DETAILS CHANGED
+        #  AUTO-SYNC SALARY IF EMPLOYEE BANK DETAILS CHANGED
         for record in existing_records:
             # 🔒 Do not touch verified payrolls
             if record.is_fully_verified():
@@ -203,19 +203,19 @@ class PayrollVerifyView(APIView):
 
         user = request.user
 
-        # ✅ Only HR (admin or normal HR) from the same company can verify
+        #  Only HR (admin or normal HR) from the same company can verify
         if not (user.is_hr_admin or user.is_hr):
             return Response({"error": "You are not allowed to verify payroll."}, status=403)
 
         if user.company != record.employee.department.company:
             return Response({"error": "You are not part of this company."}, status=403)
 
-        # ✅ Assign verification slots
+        #  Assign verification slots
         if record.hr1_verified_by is None:
             record.hr1_verified_by = user
             record.hr1_verified_at = now()
         elif record.hr2_verified_by is None and record.hr1_verified_by != user:
-            # 🔒 Freeze payroll snapshot on final verification
+            #  Freeze payroll snapshot on final verification
             serializer = EmployeePayrollRecordSerializer(
                 record, context={"request": request}
             )
@@ -234,7 +234,7 @@ class PayrollVerifyView(APIView):
 
         record.save()
 
-        # ✅ FIXED: pass request in serializer context
+        #  FIXED: pass request in serializer context
         serializer = EmployeePayrollRecordSerializer(record, context={"request": request})
         return Response(serializer.data)
 
@@ -265,7 +265,7 @@ class PayrollStatusUpdateView(APIView):
             year=year
         )
 
-        # ✅ Block update unless fully verified
+        #  Block update unless fully verified
         if not record.is_fully_verified():
             return Response(
                 {"error": "Both HRs must verify before updating status."},
@@ -279,7 +279,7 @@ class PayrollStatusUpdateView(APIView):
         record.status = new_status
         record.save()
 
-        # ✅ Create Finance record ONLY when status becomes PAID
+        #  Create Finance record ONLY when status becomes PAID
         if previous_status != "Paid" and new_status == "Paid":
 
             basic = record.basic_salary or 0
@@ -293,7 +293,7 @@ class PayrollStatusUpdateView(APIView):
             gross_salary = basic + increment + housing + transport
             net_salary = gross_salary - (lop + tds)
 
-            # 🔒 Prevent duplicate salary entries
+            #  Prevent duplicate salary entries
             already_exists = FinanceRecord.objects.filter(
                 category="SALARY",
                 payment_type="OUT",
@@ -397,7 +397,7 @@ class PayslipDownloadView(APIView):
         except EmployeePayrollRecord.DoesNotExist:
             raise Http404("Payroll record not found")
 
-        # ✅ Use serializer to get all computed values
+        # Use serializer to get all computed values
         from .serializers import EmployeePayrollRecordSerializer
         serialized = EmployeePayrollRecordSerializer(record).data
         print("\n==================== PAYSLIP DATA ====================")
@@ -406,7 +406,7 @@ class PayslipDownloadView(APIView):
         print("=====================================================\n")
 
 
-        # ✅ Pass serializer data (dict), not model instance
+        #  Pass serializer data (dict), not model instance
         pdf_bytes = generate_payslip_pdf(serialized)
 
         response = HttpResponse(content_type='application/pdf')

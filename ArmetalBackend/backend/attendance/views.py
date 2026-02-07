@@ -6,7 +6,6 @@ from rest_framework import status, generics, filters
 from rest_framework.generics import RetrieveAPIView
 from employee.models import Employee_db
 from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer,AttendanceLocationSerializer
-from shared.pagination import CustomPagination
 from .utils.timezone_utils import get_company_timezone, ensure_timezone,safe_parse_datetime
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 import pytz
@@ -260,33 +259,17 @@ class AddPunchOutNoteView(APIView):
 # -----------------------------------------------------view for list attendance for admin
 
 from datetime import date as today_date
-from django.db.models import Min, Case, When, IntegerField, BooleanField, Count, Q
 from rest_framework import generics, filters
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
-
 from employee.models import Employee_db
-from attendance.models import Attendance
 from .serializers import AttendanceSerializer
 from django.db import models
-from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value
 from django.db.models.functions import Coalesce
-
-# -----------------------------------------------------view for list attendance for admin
-
-from datetime import date as today_date
-
-from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value, F
-from rest_framework import generics
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
-
-from employee.models import Employee_db
+from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value, F,OuterRef
 from attendance.models import Attendance, AttendanceSession
-from .serializers import AttendanceSerializer
 
 
-from django.db.models import OuterRef, Subquery, F, Value, Case, When, BooleanField
 
 
 
@@ -326,7 +309,7 @@ class AttendanceAdminListView(generics.ListAPIView):
             .annotate(
                 date=Subquery(attendance_qs.values("date")[:1]),
                 total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
-                attendance_id=Subquery(attendance_qs.values("id")[:1]),  # ✅ annotated attendance id
+                attendance_id=Subquery(attendance_qs.values("id")[:1]),  
                 first_swipe_in=Subquery(first_session.values("time_in")[:1]),
                 last_swipe_out=Subquery(last_session.values("time_out")[:1]),
                 attendance_today=Case(
@@ -443,57 +426,7 @@ class AttendanceDetailByDateView(APIView):
         return Response(serializer.data)
 
 
-# -----------------------------------------------------attendance list view (for admin)
-# class AttendanceAdminDetailView(RetrieveAPIView):
-#     queryset = Attendance.objects.all()
-#     serializer_class = AttendanceDetailSerializer
-#     permission_classes = [IsAuthenticated, IsHRAdmin]
-#     lookup_field = 'id'
 
-#     def get(self, request, *args, **kwargs):
-#         attendance_id = kwargs.get(self.lookup_field)
-#         date_str = request.query_params.get('date')
-
-#         # ✅ Base attendance record (for employee context)
-#         try:
-#             base_attendance = Attendance.objects.select_related('employee').get(id=attendance_id)
-#         except Attendance.DoesNotExist:
-#             return Response({"error": "Attendance not found"}, status=404)
-
-#         # ✅ If ?date= provided → get record for that employee/date
-#         if date_str:
-#             try:
-#                 date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
-#             except ValueError:
-#                 return Response({"error": "Invalid date format. Use YYYY-MM-DD"}, status=400)
-
-#             attendance = Attendance.objects.filter(
-#                 employee=base_attendance.employee,
-#                 date=date_obj
-#             ).first()
-
-#             # ⚠️ If no attendance found for that date, still return basic info
-#             if not attendance:
-#                 serializer = self.get_serializer(base_attendance)
-#                 data = serializer.data
-
-#                 # Wipe out time/session info (make it clear this date has no attendance)
-#                 data.update({
-#                     "date": str(date_obj),
-#                     "sessions": [],
-#                     "total_hours": None,
-#                     "status": "Absent",
-#                     "note": f"No attendance available for {date_obj}"
-#                 })
-
-#                 return Response(data, status=200)
-
-#             serializer = self.get_serializer(attendance)
-#             return Response(serializer.data)
-
-#         # ✅ Default → show normal attendance by ID
-#         serializer = self.get_serializer(base_attendance)
-#         return Response(serializer.data)
 from datetime import datetime, timedelta
 from django.db.models import Sum
 from rest_framework.generics import RetrieveAPIView
@@ -513,7 +446,7 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         employee_id = kwargs.get(self.lookup_field)
         date_str = request.query_params.get('date')
 
-        # ✅ Base attendance record (latest for employee if exists)
+        # Base attendance record (latest for employee if exists)
         base_attendance = Attendance.objects.filter(employee__id=employee_id).order_by('-date').first()
 
         if not base_attendance:
@@ -533,7 +466,7 @@ class AttendanceAdminDetailView(RetrieveAPIView):
             }
             return Response(data, status=200)
 
-        # ✅ If ?date= provided → get attendance for that date
+        # If ?date= provided → get attendance for that date
         if date_str:
             try:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
@@ -563,7 +496,7 @@ class AttendanceAdminDetailView(RetrieveAPIView):
             serializer = self.get_serializer(attendance)
             return Response(serializer.data)
 
-        # ✅ Default → return latest attendance of employee
+        #  Default → return latest attendance of employee
         serializer = self.get_serializer(base_attendance)
         return Response(serializer.data)
 
@@ -698,7 +631,7 @@ class BackgroundLocationUpdateView(APIView):
         serializer = HourlyLocationLogSerializer(data=data)
         if serializer.is_valid():
             obj = serializer.save()
-            print(f"🌍 Calling geocoding for lat={obj.latitude}, lon={obj.longitude}")
+            print(f" Calling geocoding for lat={obj.latitude}, lon={obj.longitude}")
 
             if obj.latitude is not None and obj.longitude is not None:
                 try:

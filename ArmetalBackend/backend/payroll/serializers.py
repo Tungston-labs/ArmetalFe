@@ -61,7 +61,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
         # -------------------------------------------------------
-        # 1️⃣ HOLIDAYS & COMPANY OFF DAYS
+        # HOLIDAYS & COMPANY OFF DAYS
         # -------------------------------------------------------
         holidays_qs = PublicHoliday.objects.filter(
             date__range=(first_day, last_day),
@@ -78,7 +78,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                 holidays.add(h.date)
 
         # -------------------------------------------------------
-        # 2️⃣ WORKING DAYS
+        # WORKING DAYS
         # -------------------------------------------------------
         working_days = sum(
             1
@@ -88,7 +88,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         )
 
         # -------------------------------------------------------
-        # 3️⃣ ATTENDANCE
+        #  ATTENDANCE
         # -------------------------------------------------------
         attendances = Attendance.objects.filter(
             employee=employee, date__range=(first_day, last_day)
@@ -110,7 +110,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         days_present = full_days + (0.5 * half_days)
 
         # -------------------------------------------------------
-        # 4️⃣ APPROVED LEAVES (MONTH-WISE)
+        #  APPROVED LEAVES (MONTH-WISE)
         # -------------------------------------------------------
         leave_requests = LeaveRequest.objects.filter(
             employee=employee,
@@ -137,7 +137,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         approved_leave_count = float(len(approved_leave_dates))
 
         # -------------------------------------------------------
-        # 5️⃣ UNSWIPED DAYS  ✅ (LEAVE INCLUDED AS YOU REQUIRED)
+        # UNSWIPED DAYS  (LEAVE INCLUDED AS YOU REQUIRED)
         # -------------------------------------------------------
         all_days = [
             first_day + timedelta(days=i)
@@ -152,13 +152,12 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                     if d not in attendance_dates
                     and d not in holidays
                     and d.weekday() not in company_off_days
-                    # ❗ Leave NOT excluded → included in unswiped
                 ]
             )
         )
 
         # -------------------------------------------------------
-        # 6️⃣ FINAL HR-CORRECT LOP CALCULATION
+        #  FINAL HR-CORRECT LOP CALCULATION
         # -------------------------------------------------------
         total_leave_balance = float(employee.total_leave or 0)
         paid_leave = float(employee.paid_leave or 0)
@@ -175,7 +174,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         lop_days = lop_from_absent + paid_leave
 
         # -------------------------------------------------------
-        # 7️⃣ FREEZE VALUES IF PAYROLL LOCKED  🔒
+        # FREEZE VALUES IF PAYROLL LOCKED 
         # -------------------------------------------------------
         if instance.working_days is not None:
             working_days = float(instance.working_days)
@@ -187,7 +186,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             lop_days = float(instance.lop_days)
 
         # -------------------------------------------------------
-        # 8️⃣ SALARY CALCULATION
+        # SALARY CALCULATION
         # -------------------------------------------------------
         basic_salary = float(instance.basic_salary or 0)
         housing_allowance = float(instance.housing_allowance or 0)
@@ -206,7 +205,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         net_pay = adjusted_gross - tds
 
         # -------------------------------------------------------
-        # 9️⃣ FINAL RESPONSE
+        #  FINAL RESPONSE
         # -------------------------------------------------------
         data.update(
             {
@@ -256,11 +255,6 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         data["deductions"] = [d for d in data["deductions"] if d is not None]
         return data
-
-
-
-    
-
 
 class EmployeePayrollRecordSerializer2(serializers.ModelSerializer):
     download_url = serializers.SerializerMethodField()

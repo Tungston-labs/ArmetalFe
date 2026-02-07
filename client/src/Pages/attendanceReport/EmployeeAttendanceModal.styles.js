@@ -129,17 +129,29 @@ export const StatusBadge = styled.span`
   color: #fff;
   font-size: 12px;
   font-weight: 600;
+
   background-color: ${(props) => {
     switch (props.status) {
       case "present":
         return "#28a745"; 
+
+      case "half_day":      
+      case "half day":
+      case "half-day":
+      case "halfday":
+        return "#ffc107"; 
+
       case "leave":
         return "#fd7e14"; 
+
       case "holiday":
         return "#17a2b8"; 
+
       case "absent":
       default:
-        return "#dc3545";
+        return "#dc3545"; 
     }
   }};
 `;
+
+
