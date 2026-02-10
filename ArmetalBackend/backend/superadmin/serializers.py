@@ -88,11 +88,18 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         old_email = instance.email
-        new_email = validated_data.get('email', old_email)
+        new_email = validated_data.get("email", old_email)
+
+        # ✅ Convert numeric string → proper number
+        if "amount_per_employee" in validated_data:
+            validated_data["amount_per_employee"] = float(validated_data["amount_per_employee"] or 0)
+
+        if "initial_payment" in validated_data:
+            validated_data["initial_payment"] = float(validated_data["initial_payment"] or 0)
 
         instance = super().update(instance, validated_data)
 
-        # If company email was updated, sync to HR admin user
+        # Sync HR admin email if changed
         if new_email != old_email:
             hr_user = User.objects.filter(company=instance, is_hr_admin=True).first()
             if hr_user:
@@ -100,6 +107,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
                 hr_user.save()
 
         return instance
+
 
     def validate_modules(self, value):
         if not isinstance(value, dict):
