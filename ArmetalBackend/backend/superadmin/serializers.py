@@ -222,6 +222,8 @@ class CompanySelfUpdateSerializer(serializers.ModelSerializer):
             "email",
             "modules",
             "logo",
+            'amount_per_employee',   
+            'initial_payment', 
         ]
         extra_kwargs = {
             "email": {"required": False},
