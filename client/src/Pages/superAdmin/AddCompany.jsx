@@ -27,7 +27,7 @@ const AddCompanyModal = ({
   onClose,
   isEdit = false,
   selectedCompany = null,
-    showPrivileges = true,
+  showPrivileges = true,
 }) => {
   const dispatch = useDispatch();
   const fileInputRef = useRef();
@@ -83,6 +83,9 @@ const AddCompanyModal = ({
     latitude: "",
     longitude: "",
     logo: null,
+    amount_per_employee: "",
+    initial_payment: "",
+
   });
 
   const [logoPreview, setLogoPreview] = useState(null);
@@ -110,6 +113,9 @@ const AddCompanyModal = ({
         logo: null,
         latitude: selectedCompany.latitude || "",
         longitude: selectedCompany.longitude || "",
+        amount_per_employee: selectedCompany.amount_per_employee || "",
+        initial_payment: selectedCompany.initial_payment || "",
+
       });
 
       if (selectedCompany.logo) {
@@ -132,23 +138,23 @@ const AddCompanyModal = ({
     }));
   };
 
-const handleLogoChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  if (file.type === "image/png" || file.type === "image/svg+xml") {
-    setFormData((prev) => ({ ...prev, logo: file }));
-    setLogoPreview(URL.createObjectURL(file));
-  } else {
-    Swal.fire({
-      icon: "error",
-      title: "Invalid file type",
-      text: "Only PNG or SVG files are allowed.",
-      confirmButtonColor: "#3250B5",
-    });
-    fileInputRef.current.value = ""; 
-  }
-};
+    if (file.type === "image/png" || file.type === "image/svg+xml") {
+      setFormData((prev) => ({ ...prev, logo: file }));
+      setLogoPreview(URL.createObjectURL(file));
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid file type",
+        text: "Only PNG or SVG files are allowed.",
+        confirmButtonColor: "#3250B5",
+      });
+      fileInputRef.current.value = "";
+    }
+  };
 
   const removeLogo = () => {
     setFormData((prev) => ({ ...prev, logo: null }));
@@ -189,9 +195,17 @@ const handleLogoChange = (e) => {
       errors.contact_number = "Phone must be 7 to 12 digits.";
     }
 
-if (showPrivileges && formData.modules.length === 0) {
-  errors.modules = "Select at least one module.";
-}
+    if (showPrivileges && formData.modules.length === 0) {
+      errors.modules = "Select at least one module.";
+    }
+    if (!formData.amount_per_employee || formData.amount_per_employee <= 0) {
+      errors.amount_per_employee = "Enter valid amount per employee.";
+    }
+
+    if (formData.initial_payment && formData.initial_payment < 0) {
+      errors.initial_payment = "Initial payment cannot be negative.";
+    }
+
 
 
     setFormErrors(errors);
@@ -210,13 +224,16 @@ if (showPrivileges && formData.modules.length === 0) {
     payload.append("country", formData.country);
     payload.append("latitude", formData.latitude);
     payload.append("longitude", formData.longitude);
+    payload.append("amount_per_employee", formData.amount_per_employee);
+    payload.append("initial_payment", formData.initial_payment || 0);
+
     payload.append(
       "contact_number",
       `${formData.country_code}${formData.contact_number}`
     );
-if (showPrivileges) {
-  payload.append("modules", JSON.stringify(modulesObject));
-}
+    if (showPrivileges) {
+      payload.append("modules", JSON.stringify(modulesObject));
+    }
 
     if (formData.logo) payload.append("logo", formData.logo);
 
@@ -285,7 +302,7 @@ if (showPrivileges) {
                 value={formData.address}
                 onChange={handleChange}
                 placeholder="Company Address"
-                           autoComplete="off"
+                autoComplete="off"
               />
               {formErrors.address && (
                 <p style={{ color: "red" }}>{formErrors.address}</p>
@@ -299,12 +316,42 @@ if (showPrivileges) {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Company E-mail"
-                 autoComplete="off"
+                autoComplete="off"
               />
               {formErrors.email && (
                 <p style={{ color: "red" }}>{formErrors.email}</p>
               )}
             </FormField>
+            <FormField>
+              <Label>Amount per Employee (INR)</Label>
+              <Input
+                name="amount_per_employee"
+                type="number"
+                step="0.01"
+                value={formData.amount_per_employee}
+                onChange={handleChange}
+                placeholder="Enter amount per employee"
+              />
+              {formErrors.amount_per_employee && (
+                <p style={{ color: "red" }}>{formErrors.amount_per_employee}</p>
+              )}
+            </FormField>
+
+            <FormField>
+              <Label>Initial Payment (Advance ₹)</Label>
+              <Input
+                name="initial_payment"
+                type="number"
+                step="0.01"
+                value={formData.initial_payment}
+                onChange={handleChange}
+                placeholder="Enter advance amount (optional)"
+              />
+              {formErrors.initial_payment && (
+                <p style={{ color: "red" }}>{formErrors.initial_payment}</p>
+              )}
+            </FormField>
+
 
             <FormField>
               <Label>Upload logo</Label>
@@ -351,7 +398,7 @@ if (showPrivileges) {
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="Location"
-                 autoComplete="off"
+                autoComplete="off"
               />
               {formErrors.location && (
                 <p style={{ color: "red" }}>{formErrors.location}</p>
@@ -365,7 +412,7 @@ if (showPrivileges) {
                   name="country_code"
                   value={formData.country_code}
                   onChange={handleChange}
-                   autoComplete="off"
+                  autoComplete="off"
                   style={{ width: "35%", padding: "8px" }}
                 >
                   {countryDialCodes.map((item) => (
@@ -382,7 +429,7 @@ if (showPrivileges) {
                   onChange={handleChange}
                   placeholder="Phone number"
                   style={{ width: "65%" }}
-                             autoComplete="off"
+                  autoComplete="off"
                 />
               </div>
               {formErrors.contact_number && (
@@ -397,7 +444,7 @@ if (showPrivileges) {
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
-                           autoComplete="off"
+                autoComplete="off"
               >
                 <option value="">Select country</option>
                 {COUNTRY_CHOICES.map((item) => (
@@ -419,7 +466,7 @@ if (showPrivileges) {
                 value={formData.latitude}
                 onChange={handleChange}
                 placeholder="Enter company latitude"
-                 autoComplete="off"
+                autoComplete="off"
               />
             </FormField>
 
@@ -432,38 +479,38 @@ if (showPrivileges) {
                 value={formData.longitude}
                 onChange={handleChange}
                 placeholder="Enter company longitude"
-                 autoComplete="off"
+                autoComplete="off"
               />
             </FormField>
           </div>
         </FormSection>
 
-      {showPrivileges && (
-  <>
-    <h4>Privileges</h4>
+        {showPrivileges && (
+          <>
+            <h4>Privileges</h4>
 
-    <CheckboxGroup>
-      {allModules.map((mod) => (
-        <CheckboxLabel key={mod}>
-          <input
-            type="checkbox"
-            value={mod}
-            checked={formData.modules.includes(mod)}
-            onChange={handleModuleChange}
-          />
-          {mod.charAt(0).toUpperCase() +
-            mod.slice(1).replace("_", " ")}
-        </CheckboxLabel>
-      ))}
-    </CheckboxGroup>
+            <CheckboxGroup>
+              {allModules.map((mod) => (
+                <CheckboxLabel key={mod}>
+                  <input
+                    type="checkbox"
+                    value={mod}
+                    checked={formData.modules.includes(mod)}
+                    onChange={handleModuleChange}
+                  />
+                  {mod.charAt(0).toUpperCase() +
+                    mod.slice(1).replace("_", " ")}
+                </CheckboxLabel>
+              ))}
+            </CheckboxGroup>
 
-    {formErrors.modules && (
-      <p style={{ color: "blue" }}>{formErrors.modules}</p>
-    )}
+            {formErrors.modules && (
+              <p style={{ color: "blue" }}>{formErrors.modules}</p>
+            )}
 
-    <Hr />
-  </>
-)}
+            <Hr />
+          </>
+        )}
 
 
         <ButtonGroup>

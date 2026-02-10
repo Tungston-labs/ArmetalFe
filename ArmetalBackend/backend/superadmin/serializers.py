@@ -31,6 +31,8 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             'default_password',
             'created_at',
             'updated_at',
+            'amount_per_employee',   
+            'initial_payment', 
         ]
         read_only_fields = [
             'id',
@@ -105,11 +107,8 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
         return value
 
  
-    
 class CompanySubscriptionSerializer(serializers.ModelSerializer):
     month_display = serializers.SerializerMethodField()
-    amount = serializers.SerializerMethodField()
-    currency = serializers.SerializerMethodField()
 
     class Meta:
         model = CompanySubscription
@@ -120,22 +119,43 @@ class CompanySubscriptionSerializer(serializers.ModelSerializer):
             'month_display',
             'year',
             'paid_date',
-            'amount',
-            'currency',
+            'amount',   # INR only
             'status',
         ]
 
     def get_month_display(self, obj):
-        from calendar import month_name
         return month_name[obj.month]
+ 
+# class CompanySubscriptionSerializer(serializers.ModelSerializer):
+#     month_display = serializers.SerializerMethodField()
+#     amount = serializers.SerializerMethodField()
+#     currency = serializers.SerializerMethodField()
 
-    def get_amount(self, obj):
-        rate, currency = obj.get_rate_per_employee_and_currency()
-        return round(obj.company.number_of_employees * rate, 2)
+#     class Meta:
+#         model = CompanySubscription
+#         fields = [
+#             'id',
+#             'company',
+#             'month',
+#             'month_display',
+#             'year',
+#             'paid_date',
+#             'amount',
+#             'currency',
+#             'status',
+#         ]
 
-    def get_currency(self, obj):
-        _, currency = obj.get_rate_per_employee_and_currency()
-        return currency
+#     def get_month_display(self, obj):
+#         from calendar import month_name
+#         return month_name[obj.month]
+
+#     def get_amount(self, obj):
+#         rate, currency = obj.get_rate_per_employee_and_currency()
+#         return round(obj.company.number_of_employees * rate, 2)
+
+#     def get_currency(self, obj):
+#         _, currency = obj.get_rate_per_employee_and_currency()
+#         return currency
     
 class CompanyListSerializer(serializers.ModelSerializer):
     last_paid_date = serializers.SerializerMethodField()

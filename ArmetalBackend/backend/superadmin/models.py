@@ -63,6 +63,18 @@ class Company(TimeStampedModel):
                 blank=True,
                 help_text="Upload PNG or SVG logo."
             )
+    amount_per_employee = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        help_text="Monthly charge per employee for this company"
+    )
+
+    initial_payment = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        help_text="Advance amount paid during company onboarding (not linked to subscription)"
+    )
 
 
     def save(self, *args, **kwargs):
@@ -106,13 +118,11 @@ class CompanySubscription(TimeStampedModel):
 
 
     def save(self, *args, **kwargs):
-        rate, currency = self.get_rate_per_employee_and_currency()
-        expected_amount = round(self.company.number_of_employees * rate, 2)
+        # ✅ Calculate from company pricing
+        expected_amount = round(self.company.number_of_employees * self.company.amount_per_employee, 2)
 
-        # Always update amount/currency if mismatch
-        if not self.amount or self.amount != expected_amount or self.currency != currency:
+        if not self.amount or self.amount != expected_amount:
             self.amount = expected_amount
-            self.currency = currency
 
         if self.status == 'paid' and not self.paid_date:
             self.paid_date = now().date()
@@ -121,24 +131,24 @@ class CompanySubscription(TimeStampedModel):
 
     
 
-    def get_rate_per_employee_and_currency(self):
-        """Return per-employee rate and currency based on the company's country"""
-        country_rate_map = {
-            'AE': (5.0, 'AED'),
-            'IN': (113.0, 'INR'),
-            'US': (2.0, 'USD'),
-            'SG': (2.7, 'SGD'),
-            'GB': (1.9, 'GBP'),
-            'DE': (2.0, 'EUR'),
-            'FR': (2.0, 'EUR'),
-            'JP': (300.0, 'JPY'),
-            'CN': (13.0, 'CNY'),
-            'AU': (3.0, 'AUD'),
-            'CA': (2.5, 'CAD'),
-        }
+    # def get_rate_per_employee_and_currency(self):
+    #     """Return per-employee rate and currency based on the company's country"""
+    #     country_rate_map = {
+    #         'AE': (5.0, 'AED'),
+    #         'IN': (113.0, 'INR'),
+    #         'US': (2.0, 'USD'),
+    #         'SG': (2.7, 'SGD'),
+    #         'GB': (1.9, 'GBP'),
+    #         'DE': (2.0, 'EUR'),
+    #         'FR': (2.0, 'EUR'),
+    #         'JP': (300.0, 'JPY'),
+    #         'CN': (13.0, 'CNY'),
+    #         'AU': (3.0, 'AUD'),
+    #         'CA': (2.5, 'CAD'),
+    #     }
 
-        country_code = self.company.country or 'AE'  # Default to UAE if not set
-        return country_rate_map.get(country_code, (5.0, 'AED'))
+    #     country_code = self.company.country or 'AE'  # Default to UAE if not set
+    #     return country_rate_map.get(country_code, (5.0, 'AED'))
     
 
 class ImpersonationRequest(models.Model):
