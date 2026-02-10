@@ -90,7 +90,6 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
         old_email = instance.email
         new_email = validated_data.get("email", old_email)
 
-        # ✅ Convert numeric string → proper number
         if "amount_per_employee" in validated_data:
             validated_data["amount_per_employee"] = float(validated_data["amount_per_employee"] or 0)
 

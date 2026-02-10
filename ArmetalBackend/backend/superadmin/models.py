@@ -64,14 +64,15 @@ class Company(TimeStampedModel):
                 help_text="Upload PNG or SVG logo."
             )
     amount_per_employee = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,null=True,blank=True,
-        help_text="Monthly charge per employee for this company"
-    )
+    max_digits=10,
+    decimal_places=2,
+    default=0
+)
+
 
     initial_payment = models.DecimalField(
         max_digits=10,
-        decimal_places=2,null=True,blank=True,
+        decimal_places=2,
         default=0,
         help_text="Advance amount paid during company onboarding (not linked to subscription)"
     )
@@ -119,7 +120,8 @@ class CompanySubscription(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         # ✅ Calculate from company pricing
-        expected_amount = round(self.company.number_of_employees * self.company.amount_per_employee, 2)
+        rate = self.company.amount_per_employee or 0
+        expected_amount = round(self.company.number_of_employees * rate, 2)
 
         if not self.amount or self.amount != expected_amount:
             self.amount = expected_amount

@@ -224,8 +224,16 @@ const AddCompanyModal = ({
     payload.append("country", formData.country);
     payload.append("latitude", formData.latitude);
     payload.append("longitude", formData.longitude);
-    payload.append("amount_per_employee", formData.amount_per_employee);
-    payload.append("initial_payment", formData.initial_payment || 0);
+    payload.append(
+      "amount_per_employee",
+      Number(formData.amount_per_employee || 0)
+    );
+
+    payload.append(
+      "initial_payment",
+      Number(formData.initial_payment || 0)
+    );
+
 
     payload.append(
       "contact_number",
