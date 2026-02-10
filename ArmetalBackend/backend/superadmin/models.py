@@ -65,13 +65,13 @@ class Company(TimeStampedModel):
             )
     amount_per_employee = models.DecimalField(
         max_digits=10,
-        decimal_places=2,
+        decimal_places=2,null=True,blank=True,
         help_text="Monthly charge per employee for this company"
     )
 
     initial_payment = models.DecimalField(
         max_digits=10,
-        decimal_places=2,
+        decimal_places=2,null=True,blank=True,
         default=0,
         help_text="Advance amount paid during company onboarding (not linked to subscription)"
     )
