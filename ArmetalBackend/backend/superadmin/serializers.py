@@ -54,34 +54,29 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 
         extra_kwargs = {
             "modules": {"required": True},
+            "amount_per_employee": {"required": False},
+            "initial_payment": {"required": False},
         }
 
-    # ------------------------------------------------------------------
-    # COMMON HELPER → ensures decimal defaults always set
-    # ------------------------------------------------------------------
-    def _set_decimal_defaults(self, validated_data):
-        for field in ["amount_per_employee", "initial_payment"]:
-            value = self.initial_data.get(field, 0)
-            validated_data[field] = value if value not in ["", None] else 0
-        return validated_data
+    # ✅ MOST IMPORTANT FIX → prevents NULL before DB save
+    def validate(self, attrs):
+        attrs["amount_per_employee"] = attrs.get("amount_per_employee") or 0
+        attrs["initial_payment"] = attrs.get("initial_payment") or 0
+        return attrs
 
-    # ------------------------------------------------------------------
-    # CREATE COMPANY
-    # ------------------------------------------------------------------
+    # ---------------------------------------------------------
+    # CREATE
+    # ---------------------------------------------------------
     def create(self, validated_data):
 
-        # ✅ ensure decimal defaults
-        validated_data = self._set_decimal_defaults(validated_data)
-
-        # ✅ parse modules if sent as string (multipart fix)
+        # ✅ parse modules if multipart string
         modules = self.initial_data.get("modules")
         if isinstance(modules, str):
             validated_data["modules"] = json.loads(modules)
 
-        # ✅ create company
         company = Company.objects.create(**validated_data)
 
-        # ✅ create HR admin user
+        # ✅ create HR admin
         User.objects.create_user(
             username=company.company_id,
             email=company.email,
@@ -90,7 +85,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             company=company,
         )
 
-        # ✅ send credentials email
+        # ✅ send email (safe)
         try:
             send_mail(
                 subject="Welcome to Armetal - Company Credentials",
@@ -108,22 +103,18 @@ Armetal Support
 """,
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[company.email],
-                fail_silently=False,
+                fail_silently=True,
             )
-        except Exception as e:
-            print(f"❌ Email sending failed: {str(e)}")
+        except Exception:
+            pass
 
         return company
 
-    # ------------------------------------------------------------------
-    # UPDATE COMPANY
-    # ------------------------------------------------------------------
+    # ---------------------------------------------------------
+    # UPDATE
+    # ---------------------------------------------------------
     def update(self, instance, validated_data):
 
-        # ✅ ensure decimal defaults
-        validated_data = self._set_decimal_defaults(validated_data)
-
-        # ✅ parse modules JSON string
         modules = self.initial_data.get("modules")
         if isinstance(modules, str):
             validated_data["modules"] = json.loads(modules)
@@ -131,10 +122,9 @@ Armetal Support
         old_email = instance.email
         new_email = validated_data.get("email", old_email)
 
-        # ✅ update company
         instance = super().update(instance, validated_data)
 
-        # ✅ sync HR admin email if changed
+        # sync HR admin email
         if new_email != old_email:
             hr_user = User.objects.filter(company=instance, is_hr_admin=True).first()
             if hr_user:
@@ -143,13 +133,14 @@ Armetal Support
 
         return instance
 
-    # ------------------------------------------------------------------
+    # ---------------------------------------------------------
     # VALIDATION
-    # ------------------------------------------------------------------
+    # ---------------------------------------------------------
     def validate_modules(self, value):
         if not isinstance(value, dict):
             raise serializers.ValidationError("Modules must be a dictionary")
         return value
+
 
 
  
@@ -172,36 +163,7 @@ class CompanySubscriptionSerializer(serializers.ModelSerializer):
     def get_month_display(self, obj):
         return month_name[obj.month]
  
-# class CompanySubscriptionSerializer(serializers.ModelSerializer):
-#     month_display = serializers.SerializerMethodField()
-#     amount = serializers.SerializerMethodField()
-#     currency = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = CompanySubscription
-#         fields = [
-#             'id',
-#             'company',
-#             'month',
-#             'month_display',
-#             'year',
-#             'paid_date',
-#             'amount',
-#             'currency',
-#             'status',
-#         ]
-
-#     def get_month_display(self, obj):
-#         from calendar import month_name
-#         return month_name[obj.month]
-
-#     def get_amount(self, obj):
-#         rate, currency = obj.get_rate_per_employee_and_currency()
-#         return round(obj.company.number_of_employees * rate, 2)
-
-#     def get_currency(self, obj):
-#         _, currency = obj.get_rate_per_employee_and_currency()
-#         return currency
+        return currency
     
 class CompanyListSerializer(serializers.ModelSerializer):
     last_paid_date = serializers.SerializerMethodField()
