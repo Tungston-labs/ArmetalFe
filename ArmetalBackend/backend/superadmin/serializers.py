@@ -11,53 +11,71 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 
+from rest_framework import serializers
+from django.conf import settings
+from django.core.mail import send_mail
+from .models import Company, User
+import json
+
+
 class CompanyCreateSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Company
         fields = [
-            'id',
-            'company_id',
-            'name',
-            'address',
-            'location',
-            'contact_number',
-            'country',
-            'logo',
-            'email',
-            'modules',
-            'latitude',
-            'longitude',
-            'number_of_employees',
-            'default_password',
-            'created_at',
-            'updated_at',
-            'amount_per_employee',   
-            'initial_payment', 
+            "id",
+            "company_id",
+            "name",
+            "address",
+            "location",
+            "contact_number",
+            "country",
+            "logo",
+            "email",
+            "modules",
+            "latitude",
+            "longitude",
+            "number_of_employees",
+            "default_password",
+            "created_at",
+            "updated_at",
+            "amount_per_employee",
+            "initial_payment",
         ]
+
         read_only_fields = [
-            'id',
-            'company_id',
-            'number_of_employees',
-            'default_password',
-            'created_at',
-            'updated_at'
+            "id",
+            "company_id",
+            "number_of_employees",
+            "default_password",
+            "created_at",
+            "updated_at",
         ]
+
         extra_kwargs = {
-            'modules': {'required': True},
+            "modules": {"required": True},
         }
 
+    # ------------------------------------------------------------------
+    # COMMON HELPER → ensures decimal defaults always set
+    # ------------------------------------------------------------------
+    def _set_decimal_defaults(self, validated_data):
+        for field in ["amount_per_employee", "initial_payment"]:
+            value = self.initial_data.get(field, 0)
+            validated_data[field] = value if value not in ["", None] else 0
+        return validated_data
+
+    # ------------------------------------------------------------------
+    # CREATE COMPANY
+    # ------------------------------------------------------------------
     def create(self, validated_data):
 
-        # ✅ force read decimal fields from multipart
-        for field in ["amount_per_employee", "initial_payment"]:
-            if field in self.initial_data:
-                value = self.initial_data.get(field)
-                validated_data[field] = value if value not in ["", None] else 0
+        # ✅ ensure decimal defaults
+        validated_data = self._set_decimal_defaults(validated_data)
 
-        # ✅ convert modules JSON string → dict
+        # ✅ parse modules if sent as string (multipart fix)
         modules = self.initial_data.get("modules")
         if isinstance(modules, str):
-            import json
             validated_data["modules"] = json.loads(modules)
 
         # ✅ create company
@@ -69,75 +87,54 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             email=company.email,
             password=company.default_password,
             is_hr_admin=True,
-            company=company
+            company=company,
         )
 
-        # ✅ send email
+        # ✅ send credentials email
         try:
             send_mail(
-                subject=f"Welcome to Armetal - Your Company Credentials",
+                subject="Welcome to Armetal - Company Credentials",
                 message=f"""
-    Hi {company.name},
+Hi {company.name},
 
-    Your company account has been successfully created on Armetal.
+Your company account has been successfully created.
 
-    Login credentials:
-    Username: {company.company_id}
-    Password: {company.default_password}
+Login credentials:
+Username: {company.company_id}
+Password: {company.default_password}
 
-    Regards,
-    Armetal Support
-    """,
+Regards,
+Armetal Support
+""",
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[company.email],
                 fail_silently=False,
             )
         except Exception as e:
-            print(f"❌ Failed to send company credentials email: {str(e)}")
+            print(f"❌ Email sending failed: {str(e)}")
 
         return company
 
-    # def update(self, instance, validated_data):
-    #     old_email = instance.email
-    #     new_email = validated_data.get("email", old_email)
-
-    #     if "amount_per_employee" in validated_data:
-    #         validated_data["amount_per_employee"] = float(validated_data["amount_per_employee"] or 0)
-
-    #     if "initial_payment" in validated_data:
-    #         validated_data["initial_payment"] = float(validated_data["initial_payment"] or 0)
-
-    #     instance = super().update(instance, validated_data)
-
-    #     # Sync HR admin email if changed
-    #     if new_email != old_email:
-    #         hr_user = User.objects.filter(company=instance, is_hr_admin=True).first()
-    #         if hr_user:
-    #             hr_user.email = new_email
-    #             hr_user.save()
-
-    #     return instance
-    
+    # ------------------------------------------------------------------
+    # UPDATE COMPANY
+    # ------------------------------------------------------------------
     def update(self, instance, validated_data):
 
-    # ✅ force read from multipart initial_data
-        for field in ["amount_per_employee", "initial_payment"]:
-            if field in self.initial_data:
-                value = self.initial_data.get(field)
-                validated_data[field] = value if value not in ["", None] else 0
+        # ✅ ensure decimal defaults
+        validated_data = self._set_decimal_defaults(validated_data)
 
-        # ✅ convert modules JSON string → dict (multipart fix)
+        # ✅ parse modules JSON string
         modules = self.initial_data.get("modules")
         if isinstance(modules, str):
-            import json
             validated_data["modules"] = json.loads(modules)
 
         old_email = instance.email
         new_email = validated_data.get("email", old_email)
 
+        # ✅ update company
         instance = super().update(instance, validated_data)
 
-        # ✅ sync HR admin email
+        # ✅ sync HR admin email if changed
         if new_email != old_email:
             hr_user = User.objects.filter(company=instance, is_hr_admin=True).first()
             if hr_user:
@@ -146,12 +143,14 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 
         return instance
 
-
-
+    # ------------------------------------------------------------------
+    # VALIDATION
+    # ------------------------------------------------------------------
     def validate_modules(self, value):
         if not isinstance(value, dict):
             raise serializers.ValidationError("Modules must be a dictionary")
         return value
+
 
  
 class CompanySubscriptionSerializer(serializers.ModelSerializer):

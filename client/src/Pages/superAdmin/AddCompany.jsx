@@ -204,7 +204,13 @@ const handleSubmit = async (e) => {
       formPayload.append("logo", formData.logo);
     }
 
-    await dispatch(addCompany(formPayload)).unwrap();
+if (isEdit) {
+  await dispatch(
+    editCompany({ id: selectedCompany.id, data: formPayload })
+  ).unwrap();
+} else {
+  await dispatch(addCompany(formPayload)).unwrap();
+}
 
   } catch (err) {
     console.error("ERROR:", err);
