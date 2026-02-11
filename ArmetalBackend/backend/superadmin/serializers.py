@@ -63,19 +63,15 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
     # ---------------------------------------------------------
     def create(self, validated_data):
 
-    # ✅ FORCE decimal defaults BEFORE DB save
-        validated_data["amount_per_employee"] = validated_data.get("amount_per_employee") or 0
-        validated_data["initial_payment"] = validated_data.get("initial_payment") or 0
-
-        # ✅ parse modules if multipart string
+        # parse modules if multipart string
         modules = self.initial_data.get("modules")
         if isinstance(modules, str):
             validated_data["modules"] = json.loads(modules)
 
-        # ✅ create company
+        # create company → model default handles missing decimals
         company = Company.objects.create(**validated_data)
 
-        # ✅ create HR admin
+        # create HR admin
         User.objects.create_user(
             username=company.company_id,
             email=company.email,
@@ -84,24 +80,22 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             company=company,
         )
 
-
-
-        # ✅ send email (safe)
+        # send email
         try:
             send_mail(
                 subject="Welcome to Armetal - Company Credentials",
                 message=f"""
-Hi {company.name},
+    Hi {company.name},
 
-Your company account has been successfully created.
+    Your company account has been successfully created.
 
-Login credentials:
-Username: {company.company_id}
-Password: {company.default_password}
+    Login credentials:
+    Username: {company.company_id}
+    Password: {company.default_password}
 
-Regards,
-Armetal Support
-""",
+    Regards,
+    Armetal Support
+    """,
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[company.email],
                 fail_silently=True,
@@ -110,6 +104,7 @@ Armetal Support
             pass
 
         return company
+
 
     # ---------------------------------------------------------
     # UPDATE
