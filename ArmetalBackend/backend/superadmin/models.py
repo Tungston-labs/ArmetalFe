@@ -79,12 +79,22 @@ class Company(TimeStampedModel):
 
 
     def save(self, *args, **kwargs):
+
+    # ✅ force decimal defaults at DB level
+        if self.amount_per_employee is None:
+            self.amount_per_employee = 0
+
+        if self.initial_payment is None:
+            self.initial_payment = 0
+
         if not self.company_id:
             self.company_id = generate_company_id_from_name(self.name)
 
         if not self.default_password:
             self.default_password = generate_password()
+
         super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"{self.name} ({self.company_id})"
