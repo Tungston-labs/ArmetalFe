@@ -16,6 +16,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from .models import Company, User
 import json
+from decimal import Decimal
 
 
 class CompanyCreateSerializer(serializers.ModelSerializer):
@@ -57,21 +58,31 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "amount_per_employee": {"required": False},
             "initial_payment": {"required": False},
         }
+    def validate(self, attrs):
+
+        # handle multipart decimal strings
+        ape = self.initial_data.get("amount_per_employee")
+        ip = self.initial_data.get("initial_payment")
+
+        if ape not in [None, ""]:
+            attrs["amount_per_employee"] = Decimal(ape)
+
+        if ip not in [None, ""]:
+            attrs["initial_payment"] = Decimal(ip)
+
+        return attrs
 
     # ---------------------------------------------------------
     # CREATE
     # ---------------------------------------------------------
     def create(self, validated_data):
 
-        # parse modules if multipart string
         modules = self.initial_data.get("modules")
         if isinstance(modules, str):
             validated_data["modules"] = json.loads(modules)
 
-        # create company → model default handles missing decimals
         company = Company.objects.create(**validated_data)
 
-        # create HR admin
         User.objects.create_user(
             username=company.company_id,
             email=company.email,
@@ -80,7 +91,6 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             company=company,
         )
 
-        # send email
         try:
             send_mail(
                 subject="Welcome to Armetal - Company Credentials",
