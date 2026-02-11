@@ -58,22 +58,21 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "initial_payment": {"required": False},
         }
 
-    # ✅ MOST IMPORTANT FIX → prevents NULL before DB save
-    def validate(self, attrs):
-        attrs["amount_per_employee"] = attrs.get("amount_per_employee") or 0
-        attrs["initial_payment"] = attrs.get("initial_payment") or 0
-        return attrs
-
     # ---------------------------------------------------------
     # CREATE
     # ---------------------------------------------------------
     def create(self, validated_data):
+
+    # ✅ FORCE decimal defaults BEFORE DB save
+        validated_data["amount_per_employee"] = validated_data.get("amount_per_employee") or 0
+        validated_data["initial_payment"] = validated_data.get("initial_payment") or 0
 
         # ✅ parse modules if multipart string
         modules = self.initial_data.get("modules")
         if isinstance(modules, str):
             validated_data["modules"] = json.loads(modules)
 
+        # ✅ create company
         company = Company.objects.create(**validated_data)
 
         # ✅ create HR admin
@@ -84,6 +83,8 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             is_hr_admin=True,
             company=company,
         )
+
+
 
         # ✅ send email (safe)
         try:
