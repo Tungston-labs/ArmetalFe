@@ -47,10 +47,23 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # ✅ latitude & longitude are already in validated_data, so no need to ignore
+
+        # ✅ force read decimal fields from multipart
+        for field in ["amount_per_employee", "initial_payment"]:
+            if field in self.initial_data:
+                value = self.initial_data.get(field)
+                validated_data[field] = value if value not in ["", None] else 0
+
+        # ✅ convert modules JSON string → dict
+        modules = self.initial_data.get("modules")
+        if isinstance(modules, str):
+            import json
+            validated_data["modules"] = json.loads(modules)
+
+        # ✅ create company
         company = Company.objects.create(**validated_data)
 
-        # Create HR admin user linked to the company
+        # ✅ create HR admin user
         User.objects.create_user(
             username=company.company_id,
             email=company.email,
@@ -59,7 +72,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             company=company
         )
 
-        # Send credentials via email
+        # ✅ send email
         try:
             send_mail(
                 subject=f"Welcome to Armetal - Your Company Credentials",
@@ -72,9 +85,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
     Username: {company.company_id}
     Password: {company.default_password}
 
-    You can use these credentials to log in as the HR admin.
-
-    Regards,  
+    Regards,
     Armetal Support
     """,
                 from_email=settings.EMAIL_HOST_USER,

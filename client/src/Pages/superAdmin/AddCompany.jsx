@@ -162,122 +162,59 @@ const AddCompanyModal = ({
     fileInputRef.current.value = "";
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const errors = {};
-    if (!formData.name.trim()) errors.name = "Company name is required.";
-    if (!formData.address.trim()) errors.address = "Address is required.";
-    if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email))
-      errors.email = "Valid email is required.";
-    if (!formData.location.trim()) errors.location = "Location is required.";
-    if (!formData.country) errors.country = "Country is required.";
-    if (
-      !formData.latitude ||
-      formData.latitude < -90 ||
-      formData.latitude > 90
-    ) {
-      errors.latitude = "Latitude must be between -90 and 90.";
-    }
-    if (
-      !formData.longitude ||
-      formData.longitude < -180 ||
-      formData.longitude > 180
-    ) {
-      errors.longitude = "Longitude must be between -180 and 180.";
-    }
+  const lat = Number(formData.latitude);
+  const lng = Number(formData.longitude);
+  const amount = Number(formData.amount_per_employee);
+  const initial = Number(formData.initial_payment || 0);
 
-    const phoneRegex = /^\d{7,12}$/;
-    if (
-      !formData.contact_number.trim() ||
-      !phoneRegex.test(formData.contact_number)
-    ) {
-      errors.contact_number = "Phone must be 7 to 12 digits.";
-    }
+  // convert modules array → object
+  const formattedModules = {};
+  formData.modules.forEach((m) => {
+    formattedModules[m] = true;
+  });
 
-    if (showPrivileges && formData.modules.length === 0) {
-      errors.modules = "Select at least one module.";
-    }
-    if (!formData.amount_per_employee || formData.amount_per_employee <= 0) {
-      errors.amount_per_employee = "Enter valid amount per employee.";
-    }
-
-    if (formData.initial_payment && formData.initial_payment < 0) {
-      errors.initial_payment = "Initial payment cannot be negative.";
-    }
-
-
-
-    setFormErrors(errors);
-    if (Object.keys(errors).length > 0) return;
+  try {
     setIsSubmitting(true);
-    const modulesObject = {};
-    allModules.forEach((mod) => {
-      modulesObject[mod] = formData.modules.includes(mod);
-    });
-    console.log("module object:", modulesObject);
-    const payload = new FormData();
-    payload.append("name", formData.name);
-    payload.append("address", formData.address);
-    payload.append("email", formData.email);
-    payload.append("location", formData.location);
-    payload.append("country", formData.country);
-    payload.append("latitude", formData.latitude);
-    payload.append("longitude", formData.longitude);
-    payload.append(
-      "amount_per_employee",
-      Number(formData.amount_per_employee || 0)
-    );
 
-    payload.append(
-      "initial_payment",
-      Number(formData.initial_payment || 0)
-    );
+    const formPayload = new FormData();
 
-
-    payload.append(
+    formPayload.append("name", formData.name);
+    formPayload.append("address", formData.address);
+    formPayload.append("email", formData.email);
+    formPayload.append("location", formData.location);
+    formPayload.append("country", formData.country);
+    formPayload.append(
       "contact_number",
       `${formData.country_code}${formData.contact_number}`
     );
-    if (showPrivileges) {
-      payload.append("modules", JSON.stringify(modulesObject));
+
+    formPayload.append("latitude", lat);
+    formPayload.append("longitude", lng);
+
+    formPayload.append("amount_per_employee", amount);
+    formPayload.append("initial_payment", initial);
+
+    // 🔥 IMPORTANT
+    formPayload.append("modules", JSON.stringify(formattedModules));
+
+    if (formData.logo) {
+      formPayload.append("logo", formData.logo);
     }
 
-    if (formData.logo) payload.append("logo", formData.logo);
+    await dispatch(addCompany(formPayload)).unwrap();
 
-    try {
-      if (isEdit && selectedCompany?.id) {
-        await dispatch(
-          editCompany({ id: selectedCompany.id, data: payload })
-        ).unwrap();
-        Swal.fire({
-          title: "Updated!",
-          text: "Company details have been updated successfully.",
-          icon: "success",
-          confirmButtonColor: "#3250B5",
-        });
-      } else {
-        await dispatch(addCompany(payload)).unwrap();
-        Swal.fire({
-          title: "Saved!",
-          text: "Company has been added successfully.",
-          icon: "success",
-          confirmButtonColor: "#3250B5",
-        });
-      }
-      onClose();
-    } catch (err) {
-      console.error("Company save failed", err);
-      Swal.fire({
-        title: "Error!",
-        text: "Something went wrong. Please try again.",
-        icon: "error",
-        confirmButtonColor: "#D33",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  } catch (err) {
+    console.error("ERROR:", err);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
+
 
   return (
     <FormWrapper>
