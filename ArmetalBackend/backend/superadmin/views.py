@@ -54,40 +54,7 @@ from .models import Company, CompanySubscription
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 
-# class CompanySubscriptionListCreateView(APIView):
-#     """
-#     GET: Return all 12 months for a company/year (generate missing).
-#     POST: Not used (autogenerate on GET).
-#     """
-
-#     def get(self, request, company_id, year=None):
-#         year = year or now().year
-#         company = Company.objects.get(id=company_id)
-
-#         subs = []
-#         for m in range(1, 13):
-#             obj, created = CompanySubscription.objects.get_or_create(
-#                 company=company,
-#                 month=m,
-#                 year=year
-#             )
-
-#             # Always recalc and update amount/currency
-#             rate, currency = obj.get_rate_per_employee_and_currency()
-#             obj.amount = round(company.number_of_employees * rate, 2)
-#             obj.currency = currency
-
-#             if obj.status == 'paid' and not obj.paid_date:
-#                 obj.paid_date = now().date()
-
-#             obj.save()
-
-#             subs.append(obj)
-
-
-#         serializer = CompanySubscriptionSerializer(subs, many=True)
-#         return Response(serializer.data)
-
+    
 class CompanySubscriptionListCreateView(APIView):
     def get(self, request, company_id, year=None):
         year = year or now().year

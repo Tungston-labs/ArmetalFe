@@ -86,19 +86,47 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 
         return company
 
+    # def update(self, instance, validated_data):
+    #     old_email = instance.email
+    #     new_email = validated_data.get("email", old_email)
+
+    #     if "amount_per_employee" in validated_data:
+    #         validated_data["amount_per_employee"] = float(validated_data["amount_per_employee"] or 0)
+
+    #     if "initial_payment" in validated_data:
+    #         validated_data["initial_payment"] = float(validated_data["initial_payment"] or 0)
+
+    #     instance = super().update(instance, validated_data)
+
+    #     # Sync HR admin email if changed
+    #     if new_email != old_email:
+    #         hr_user = User.objects.filter(company=instance, is_hr_admin=True).first()
+    #         if hr_user:
+    #             hr_user.email = new_email
+    #             hr_user.save()
+
+    #     return instance
+    
     def update(self, instance, validated_data):
+
+    # ✅ force read from multipart initial_data
+        for field in ["amount_per_employee", "initial_payment"]:
+            if field in self.initial_data:
+                value = self.initial_data.get(field)
+                validated_data[field] = value if value not in ["", None] else 0
+
+        # ✅ convert modules JSON string → dict (multipart fix)
+        modules = self.initial_data.get("modules")
+        if isinstance(modules, str):
+            import json
+            validated_data["modules"] = json.loads(modules)
+
         old_email = instance.email
         new_email = validated_data.get("email", old_email)
 
-        if "amount_per_employee" in validated_data:
-            validated_data["amount_per_employee"] = float(validated_data["amount_per_employee"] or 0)
-
-        if "initial_payment" in validated_data:
-            validated_data["initial_payment"] = float(validated_data["initial_payment"] or 0)
-
         instance = super().update(instance, validated_data)
 
-        # Sync HR admin email if changed
+        # ✅ sync HR admin email
         if new_email != old_email:
             hr_user = User.objects.filter(company=instance, is_hr_admin=True).first()
             if hr_user:
@@ -106,6 +134,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
                 hr_user.save()
 
         return instance
+
 
 
     def validate_modules(self, value):
