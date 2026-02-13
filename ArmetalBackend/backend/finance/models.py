@@ -15,7 +15,7 @@ class FinanceRecord(models.Model):
         ("REIMBURSEMENT", "Reimbursement"),
         ("TRAVEL", "Travel"),
         ("FOOD", "Food"),
-        ("SUBSCRIPTION", "Subscription"),
+        ("SUBSCRIPTION","Subscription")
         ("OTHER", "Other"),
     )
 

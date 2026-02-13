@@ -7,7 +7,6 @@ from calendar import month_name
 from user.models import User
 from django.core.exceptions import ValidationError
 from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
-from finance.models import FinanceRecord
 from django.db import transaction
 
 
@@ -145,6 +144,7 @@ class CompanySubscription(TimeStampedModel):
 
         if not is_new:
             previous_status = CompanySubscription.objects.get(pk=self.pk).status
+        from finance.models import FinanceRecord
 
         with transaction.atomic():
 
