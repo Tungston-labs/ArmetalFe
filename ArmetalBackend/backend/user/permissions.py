@@ -1,3 +1,7 @@
+# users/permissions.py
+
+from rest_framework import permissions
+
 class IsHRAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and (
@@ -32,3 +36,4 @@ class IsCompanyActive(permissions.BasePermission):
             return False
 
         return True
+
