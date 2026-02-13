@@ -93,7 +93,7 @@ export default function Sidebar() {
             to="/finance"
             className={({ isActive }) => `${collapsed ? 'collapsed' : ''} ${isActive ? 'active' : ''}`}
           >
-            <BsFillBuildingsFill />
+            <FaReceipt />
             <span>Finance</span>
           </CustomLink>
 
