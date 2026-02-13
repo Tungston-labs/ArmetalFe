@@ -129,38 +129,25 @@ class CompanySubscription(TimeStampedModel):
 
 
     def save(self, *args, **kwargs):
-        # ✅ Calculate from company pricing
         rate = self.company.amount_per_employee or 0
         expected_amount = round(self.company.number_of_employees * rate, 2)
 
         if not self.amount or self.amount != expected_amount:
             self.amount = expected_amount
 
-        if self.status == 'paid' and not self.paid_date:
-            self.paid_date = now().date()
+        # when marked as paid
+        if self.status == "paid":
+            if not self.paid_date:
+                self.paid_date = now().date()
+
+            self.company.users.update(is_active=True)
 
         super().save(*args, **kwargs)
 
+
     
 
-    # def get_rate_per_employee_and_currency(self):
-    #     """Return per-employee rate and currency based on the company's country"""
-    #     country_rate_map = {
-    #         'AE': (5.0, 'AED'),
-    #         'IN': (113.0, 'INR'),
-    #         'US': (2.0, 'USD'),
-    #         'SG': (2.7, 'SGD'),
-    #         'GB': (1.9, 'GBP'),
-    #         'DE': (2.0, 'EUR'),
-    #         'FR': (2.0, 'EUR'),
-    #         'JP': (300.0, 'JPY'),
-    #         'CN': (13.0, 'CNY'),
-    #         'AU': (3.0, 'AUD'),
-    #         'CA': (2.5, 'CAD'),
-    #     }
 
-    #     country_code = self.company.country or 'AE'  # Default to UAE if not set
-    #     return country_rate_map.get(country_code, (5.0, 'AED'))
     
 
 class ImpersonationRequest(models.Model):
