@@ -9,8 +9,9 @@ from superadmin.models import Company
 from user.models import User
 from django.core.mail import send_mail
 from django.conf import settings
-
-
+from datetime import date, timedelta
+import calendar
+from django.utils.timezone import now
 from rest_framework import serializers
 from django.conf import settings
 from django.core.mail import send_mail
@@ -204,21 +205,33 @@ class CompanyListSerializer(serializers.ModelSerializer):
             return last_paid.paid_date.isoformat()
         return None
 
+
+
     def get_next_due_date(self, obj):
-        last_paid = obj.subscriptions.filter(status="paid").order_by('-year', '-month').first()
-        if not last_paid or not last_paid.paid_date:
-            return None
+        today = now().date()
+        billing_day = obj.created_at.day
 
-        paid_date = last_paid.paid_date
-        year, month, day = paid_date.year, paid_date.month, paid_date.day
-        if month == 12:
-            next_month, next_year = 1, year + 1
-        else:
-            next_month, next_year = month + 1, year
+        year, month = today.year, today.month
 
-        days_in_next_month = calendar.monthrange(next_year, next_month)[1]
-        next_day = min(day, days_in_next_month)
-        return date(next_year, next_month, next_day).isoformat()
+        # last valid day of this month
+        days_in_month = calendar.monthrange(year, month)[1]
+        due_day = min(billing_day, days_in_month)
+
+        due_date = date(year, month, due_day)
+
+        # if already passed → move to next month
+        if today > due_date:
+            if month == 12:
+                month, year = 1, year + 1
+            else:
+                month += 1
+
+            days_in_month = calendar.monthrange(year, month)[1]
+            due_day = min(billing_day, days_in_month)
+            due_date = date(year, month, due_day)
+
+        return due_date.isoformat()
+
 
 
 

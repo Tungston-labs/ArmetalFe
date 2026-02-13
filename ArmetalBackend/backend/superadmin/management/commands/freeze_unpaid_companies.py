@@ -1,34 +1,55 @@
 from django.core.management.base import BaseCommand
-from datetime import date
-from superadmin.models import CompanySubscription
+from datetime import date, timedelta
+import calendar
+from django.utils.timezone import now
+from superadmin.models import Company, CompanySubscription
 
 
 class Command(BaseCommand):
-    help = "Freeze users of companies with unpaid subscription after 10th"
+    help = "Freeze users of companies after grace period if unpaid"
 
     def handle(self, *args, **kwargs):
-        today = date.today()
+        today = now().date()
 
-        # run only after 10th
-        if today.day <= 10:
-            return
+        for company in Company.objects.all():
 
-        # previous month calculation
-        month = today.month - 1 if today.month > 1 else 12
-        year = today.year if today.month > 1 else today.year - 1
+            billing_day = company.created_at.day
+            year, month = today.year, today.month
 
-        unpaid_subs = CompanySubscription.objects.filter(
-            month=month,
-            year=year,
-            status="unpaid"
-        )
+            # due date for current month
+            days_in_month = calendar.monthrange(year, month)[1]
+            due_day = min(billing_day, days_in_month)
+            due_date = date(year, month, due_day)
 
-        for sub in unpaid_subs:
-            company = sub.company
+            # if today is before due date → check previous month cycle
+            if today <= due_date:
+                if month == 1:
+                    month, year = 12, year - 1
+                else:
+                    month -= 1
 
-            # deactivate all users
-            updated = company.users.update(is_active=False)
+                days_in_month = calendar.monthrange(year, month)[1]
+                due_day = min(billing_day, days_in_month)
+                due_date = date(year, month, due_day)
 
-            self.stdout.write(
-                f"❄️ Frozen {updated} users of company {company.company_id}"
-            )
+            # grace date
+            freeze_date = due_date + timedelta(days=10)
+
+            # skip if still in grace
+            if today <= freeze_date:
+                continue
+
+            # check subscription for that billing month
+            sub = CompanySubscription.objects.filter(
+                company=company,
+                month=month,
+                year=year,
+                status="paid"
+            ).exists()
+
+            if not sub:
+                updated = company.users.update(is_active=False)
+
+                self.stdout.write(
+                    f" Frozen {updated} users of company {company.company_id}"
+                )
