@@ -79,11 +79,14 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
         #  Create finance record ONLY when status changes to Approved
         if old_status != "Approve" and new_status == "Approve":
             employee = instance.employee
-            employee_name = employee.name if hasattr(employee, "name") else str(employee)
-            employee_id = employee.employee_id if hasattr(employee, "employee_id") else employee.id
+            company = employee.department.company
 
-            #  Prevent duplicate finance records
+            employee_name = getattr(employee, "name", str(employee))
+            employee_id = getattr(employee, "employee_id", employee.id)
+
+            # Prevent duplicate finance records (company-wise)
             exists = FinanceRecord.objects.filter(
+                company=company,          
                 date=instance.date,
                 amount=instance.amount,
                 category="REIMBURSEMENT",
@@ -92,12 +95,14 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
 
             if not exists:
                 FinanceRecord.objects.create(
+                    company=company,      
                     date=instance.date,
                     amount=instance.amount,
                     payment_type="OUT",
                     category="REIMBURSEMENT",
                     note=f"Reimbursement approved for {employee_name} ({employee_id})"
                 )
+
 
         return response
 

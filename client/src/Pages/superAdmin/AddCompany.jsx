@@ -170,7 +170,6 @@ const handleSubmit = async (e) => {
   const amount = Number(formData.amount_per_employee);
   const initial = Number(formData.initial_payment || 0);
 
-  // convert modules array → object
   const formattedModules = {};
   formData.modules.forEach((m) => {
     formattedModules[m] = true;
@@ -193,27 +192,49 @@ const handleSubmit = async (e) => {
 
     formPayload.append("latitude", lat);
     formPayload.append("longitude", lng);
-
     formPayload.append("amount_per_employee", amount);
     formPayload.append("initial_payment", initial);
-
-    // 🔥 IMPORTANT
     formPayload.append("modules", JSON.stringify(formattedModules));
 
     if (formData.logo) {
       formPayload.append("logo", formData.logo);
     }
 
-if (isEdit) {
-  await dispatch(
-    editCompany({ id: selectedCompany.id, data: formPayload })
-  ).unwrap();
-} else {
-  await dispatch(addCompany(formPayload)).unwrap();
-}
+    if (isEdit) {
+      await dispatch(
+        editCompany({ id: selectedCompany.id, data: formPayload })
+      ).unwrap();
+
+      await Swal.fire({
+        icon: "success",
+        title: "Updated!",
+        text: "Company updated successfully.",
+        confirmButtonColor: "#3250B5",
+      });
+
+    } else {
+      await dispatch(addCompany(formPayload)).unwrap();
+
+      await Swal.fire({
+        icon: "success",
+        title: "Created!",
+        text: "Company created successfully.",
+        confirmButtonColor: "#3250B5",
+      });
+    }
+
+    onClose(); // close modal after success
 
   } catch (err) {
     console.error("ERROR:", err);
+
+    Swal.fire({
+      icon: "error",
+      title: "Failed",
+      text: "Something went wrong. Please try again.",
+      confirmButtonColor: "#d33",
+    });
+
   } finally {
     setIsSubmitting(false);
   }
