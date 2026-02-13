@@ -7,6 +7,9 @@ from calendar import month_name
 from user.models import User
 from django.core.exceptions import ValidationError
 from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
+from finance.models import FinanceRecord
+from django.db import transaction
+
 
 import re
 def generate_password():
@@ -128,6 +131,7 @@ class CompanySubscription(TimeStampedModel):
         return f"{self.company.name} - {month_name[self.month]} {self.year} ({self.status})"
 
 
+
     def save(self, *args, **kwargs):
         rate = self.company.amount_per_employee or 0
         expected_amount = round(self.company.number_of_employees * rate, 2)
@@ -135,14 +139,49 @@ class CompanySubscription(TimeStampedModel):
         if not self.amount or self.amount != expected_amount:
             self.amount = expected_amount
 
-        # when marked as paid
-        if self.status == "paid":
-            if not self.paid_date:
-                self.paid_date = now().date()
+        # detect status change
+        is_new = self.pk is None
+        previous_status = None
 
-            self.company.users.update(is_active=True)
+        if not is_new:
+            previous_status = CompanySubscription.objects.get(pk=self.pk).status
 
-        super().save(*args, **kwargs)
+        with transaction.atomic():
+
+            # when marked as paid
+            if self.status == "paid":
+                if not self.paid_date:
+                    self.paid_date = now().date()
+
+                # activate users
+                self.company.users.update(is_active=True)
+
+            super().save(*args, **kwargs)
+
+            # ✅ create finance record ONLY when status becomes paid
+            if (is_new and self.status == "paid") or (
+                previous_status != "paid" and self.status == "paid"
+            ):
+
+                # prevent duplicate finance entry
+                exists = FinanceRecord.objects.filter(
+                    category="SUBSCRIPTION",
+                    payment_type="IN",
+                    note__icontains=self.company.company_id,
+                    date__month=self.month,
+                    date__year=self.year,
+                ).exists()
+
+                if not exists:
+                    FinanceRecord.objects.create(
+                        company=None,  # ← superadmin income
+                        date=self.paid_date,
+                        amount=self.amount,
+                        payment_type="IN",
+                        category="SUBSCRIPTION",
+                        note=f"Subscription payment from {self.company.name} ({self.company.company_id}) for {self.month}/{self.year}",
+                    )
+
 
 
     
