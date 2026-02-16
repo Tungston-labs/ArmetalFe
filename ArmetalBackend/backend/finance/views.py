@@ -1,4 +1,3 @@
-
 from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -59,5 +58,4 @@ class FinanceRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
             return FinanceRecord.objects.all()
 
         return FinanceRecord.objects.filter(company=user.company)
-
 

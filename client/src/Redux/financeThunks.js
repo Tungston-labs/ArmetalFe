@@ -18,15 +18,24 @@ export const createFinance = createAsyncThunk(
 
 export const fetchFinanceList = createAsyncThunk(
   "finance/list",
-  async ({ page = 1, pageSize = 20 } = {}, { rejectWithValue }) => {
+  async (
+    { page = 1, pageSize = 20, search = "", payment_type = "" } = {},
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await listFinanceService(page, pageSize);
-      return response;   // return full pagination object
+      const response = await listFinanceService(
+        page,
+        pageSize,
+        search,
+        payment_type
+      );
+      return response;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
 
 
 export const deleteFinance = createAsyncThunk(
