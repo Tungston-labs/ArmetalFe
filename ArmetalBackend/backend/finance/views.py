@@ -21,13 +21,11 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
 
-        # ✅ Superadmin → ONLY platform finance (company = NULL)
         if getattr(user, "is_superadmin", False):
             return FinanceRecord.objects.filter(
                 company__isnull=True
             ).order_by("-created_at")
 
-        # ✅ Company users → ONLY their company records
         if user.company:
             return FinanceRecord.objects.filter(
                 company=user.company
@@ -38,11 +36,9 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
 
-        # ✅ Superadmin → create ONLY platform finance
         if getattr(user, "is_superadmin", False):
             serializer.save(company=None)
 
-        # ✅ Company HR/Admin → force their company
         else:
             serializer.save(company=user.company)
 
