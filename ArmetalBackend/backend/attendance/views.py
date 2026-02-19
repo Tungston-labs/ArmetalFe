@@ -427,30 +427,65 @@ class AttendanceDetailByDateView(APIView):
 
 
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.db.models import Sum
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
 from .models import Attendance
 from .serializers import AttendanceDetailSerializer
+from django.utils.timezone import now
+
+
 
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
-    lookup_field = 'employee_id'  
+    lookup_field = 'employee_id'
 
+    # ---------- helper to get today's punch times ----------
+    def get_today_punch_times(self, employee_id):
+        today = now().date()
+
+        today_attendance = Attendance.objects.filter(
+            employee__id=employee_id,
+            date=today
+        ).prefetch_related("sessions").first()
+
+        if not today_attendance or not today_attendance.sessions.exists():
+            return None, None
+
+        first_session = today_attendance.sessions.order_by("punch_in").first()
+        last_session = today_attendance.sessions.order_by("-punch_out").first()
+
+        first_in = (
+            first_session.punch_in.strftime("%H:%M")
+            if first_session and first_session.punch_in else None
+        )
+
+        last_out = (
+            last_session.punch_out.strftime("%H:%M")
+            if last_session and last_session.punch_out else None
+        )
+
+        return first_in, last_out
+
+    # ---------- main GET ----------
     def get(self, request, *args, **kwargs):
         employee_id = kwargs.get(self.lookup_field)
         date_str = request.query_params.get('date')
 
-        # Base attendance record (latest for employee if exists)
-        base_attendance = Attendance.objects.filter(employee__id=employee_id).order_by('-date').first()
+        # latest attendance for employee
+        base_attendance = Attendance.objects.filter(
+            employee__id=employee_id
+        ).order_by('-date').first()
 
+        # today's punch times (needed in all responses)
+        first_in, last_out = self.get_today_punch_times(employee_id)
+
+        # ---------- case 1: employee has no attendance ever ----------
         if not base_attendance:
-            # If employee has no attendance ever, we can return default info
             data = {
                 "id": None,
                 "date": date_str or str(datetime.today().date()),
@@ -459,25 +494,31 @@ class AttendanceAdminDetailView(RetrieveAPIView):
                 "weekly_hours_formatted": "00:00",
                 "monthly_hours_formatted": "00:00",
                 "remark": "",
-                "employee": {"id": employee_id},  # minimal info
+                "employee": {"id": employee_id},
                 "sessions": [],
                 "status": "Absent",
-                "note": f"No attendance available"
+                "note": "No attendance available",
+                "today_first_punch_in": first_in,
+                "today_last_punch_out": last_out,
             }
             return Response(data, status=200)
 
-        # If ?date= provided → get attendance for that date
+        # ---------- case 2: specific date requested ----------
         if date_str:
             try:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
             except ValueError:
-                return Response({"error": "Invalid date format. Use YYYY-MM-DD"}, status=400)
+                return Response(
+                    {"error": "Invalid date format. Use YYYY-MM-DD"},
+                    status=400
+                )
 
             attendance = Attendance.objects.filter(
                 employee__id=employee_id,
                 date=date_obj
             ).first()
 
+            # ---------- date absent ----------
             if not attendance:
                 serializer = self.get_serializer(base_attendance)
                 data = serializer.data
@@ -489,16 +530,26 @@ class AttendanceAdminDetailView(RetrieveAPIView):
                     "weekly_hours_formatted": "00:00",
                     "monthly_hours_formatted": "00:00",
                     "status": "Absent",
-                    "note": f"No attendance available for {date_obj}"
+                    "note": f"No attendance available for {date_obj}",
+                    "today_first_punch_in": first_in,
+                    "today_last_punch_out": last_out,
                 })
                 return Response(data, status=200)
 
+            # ---------- normal attendance ----------
             serializer = self.get_serializer(attendance)
-            return Response(serializer.data)
+            data = serializer.data
+            data["today_first_punch_in"] = first_in
+            data["today_last_punch_out"] = last_out
+            return Response(data)
 
-        #  Default → return latest attendance of employee
+        # ---------- case 3: default latest attendance ----------
         serializer = self.get_serializer(base_attendance)
-        return Response(serializer.data)
+        data = serializer.data
+        data["today_first_punch_in"] = first_in
+        data["today_last_punch_out"] = last_out
+
+        return Response(data)
 
 
 # -----------------------------------------------------one hour location update from mobile app and view by admin
