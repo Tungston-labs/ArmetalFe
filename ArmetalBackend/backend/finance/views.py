@@ -1,4 +1,3 @@
-
 from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -10,27 +9,49 @@ from user.permissions import IsHRAdmin
 
 
 
-# ✅ CREATE + LIST
 class FinanceRecordListCreateView(generics.ListCreateAPIView):
-    queryset = FinanceRecord.objects.all().order_by("-created_at")
     serializer_class = FinanceRecordSerializer
-    permission_classes = [IsAuthenticated, IsHRAdmin]
+    permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
 
-    # 🔍 Filters & Search
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.SearchFilter,
-    ]
-
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ["category", "payment_type"]
     search_fields = ["note", "category", "payment_type"]
 
+    def get_queryset(self):
+        user = self.request.user
 
-# ✅ RETRIEVE + UPDATE + DELETE
+        if getattr(user, "is_superadmin", False):
+            return FinanceRecord.objects.filter(
+                company__isnull=True
+            ).order_by("-created_at")
+
+        if user.company:
+            return FinanceRecord.objects.filter(
+                company=user.company
+            ).order_by("-created_at")
+
+        return FinanceRecord.objects.none()
+
+    def perform_create(self, serializer):
+        user = self.request.user
+
+        if getattr(user, "is_superadmin", False):
+            serializer.save(company=None)
+
+        else:
+            serializer.save(company=user.company)
+
+
 class FinanceRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = FinanceRecord.objects.all()
     serializer_class = FinanceRecordSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
 
+        if getattr(user, "is_superadmin", False):
+            return FinanceRecord.objects.all()
+
+        return FinanceRecord.objects.filter(company=user.company)
 

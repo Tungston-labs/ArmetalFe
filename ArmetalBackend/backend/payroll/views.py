@@ -29,6 +29,8 @@ class EmployeeBankDetailListView(generics.ListAPIView):
         return Employee_db.objects.filter(department__company=company)
     
 #for updating status according to month and year(for all employees)
+from datetime import date
+import calendar
 
 
 
@@ -42,16 +44,27 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         company = self.request.user.company
         year = self.request.query_params.get('year')
         month = self.request.query_params.get('month')
-        department_id = self.request.query_params.get('department')  # 👈 NEW
+        department_id = self.request.query_params.get('department')
 
         employees = Employee_db.objects.filter(department__company=company)
 
         if department_id:
-            employees = employees.filter(department__id=department_id)  # 👈 Filter by department if given
+            employees = employees.filter(department__id=department_id)
 
+        #  FILTER BY JOINING DATE
         if year and month:
+            year = int(year)
+            month = int(month)
+
+            last_day = calendar.monthrange(year, month)[1]
+            last_date_of_month = date(year, month, last_day)
+
+            employees = employees.filter(joining_date__lte=last_date_of_month)
+
             queryset = EmployeePayrollRecord.objects.filter(
-                employee__in=employees, year=year, month=month
+                employee__in=employees,
+                year=year,
+                month=month
             )
         else:
             queryset = EmployeePayrollRecord.objects.filter(
@@ -61,13 +74,23 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         return queryset
 
 
+
     def get(self, request):
         year = request.query_params.get('year')
         month = request.query_params.get('month')
         if not year or not month:
             return Response({"detail": "Year and month are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        employees = Employee_db.objects.filter(department__company=request.user.company)
+        year = int(year)
+        month = int(month)
+
+        last_day = calendar.monthrange(year, month)[1]
+        last_date_of_month = date(year, month, last_day)
+
+        employees = Employee_db.objects.filter(
+            department__company=request.user.company,
+            joining_date__lte=last_date_of_month
+        )
 
         existing_records = self.get_queryset()
         existing_emp_ids = existing_records.values_list('employee_id', flat=True)
@@ -95,7 +118,7 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
                     }
                 )
 
-        # ⭐ AUTO-SYNC SALARY IF EMPLOYEE BANK DETAILS CHANGED
+        #  AUTO-SYNC SALARY IF EMPLOYEE BANK DETAILS CHANGED
         for record in existing_records:
             # 🔒 Do not touch verified payrolls
             if record.is_fully_verified():
@@ -180,19 +203,19 @@ class PayrollVerifyView(APIView):
 
         user = request.user
 
-        # ✅ Only HR (admin or normal HR) from the same company can verify
+        #  Only HR (admin or normal HR) from the same company can verify
         if not (user.is_hr_admin or user.is_hr):
             return Response({"error": "You are not allowed to verify payroll."}, status=403)
 
         if user.company != record.employee.department.company:
             return Response({"error": "You are not part of this company."}, status=403)
 
-        # ✅ Assign verification slots
+        #  Assign verification slots
         if record.hr1_verified_by is None:
             record.hr1_verified_by = user
             record.hr1_verified_at = now()
         elif record.hr2_verified_by is None and record.hr1_verified_by != user:
-            # 🔒 Freeze payroll snapshot on final verification
+            #  Freeze payroll snapshot on final verification
             serializer = EmployeePayrollRecordSerializer(
                 record, context={"request": request}
             )
@@ -211,7 +234,7 @@ class PayrollVerifyView(APIView):
 
         record.save()
 
-        # ✅ FIXED: pass request in serializer context
+        #  FIXED: pass request in serializer context
         serializer = EmployeePayrollRecordSerializer(record, context={"request": request})
         return Response(serializer.data)
 
@@ -242,7 +265,7 @@ class PayrollStatusUpdateView(APIView):
             year=year
         )
 
-        # ✅ Block update unless fully verified
+        #  Block update unless fully verified
         if not record.is_fully_verified():
             return Response(
                 {"error": "Both HRs must verify before updating status."},
@@ -256,7 +279,8 @@ class PayrollStatusUpdateView(APIView):
         record.status = new_status
         record.save()
 
-        # ✅ Create Finance record ONLY when status becomes PAID
+        #  Create Finance record ONLY when status becomes PAID
+        #  Create Finance record ONLY when status becomes PAID
         if previous_status != "Paid" and new_status == "Paid":
 
             basic = record.basic_salary or 0
@@ -270,8 +294,11 @@ class PayrollStatusUpdateView(APIView):
             gross_salary = basic + increment + housing + transport
             net_salary = gross_salary - (lop + tds)
 
-            # 🔒 Prevent duplicate salary entries
+            company = record.employee.department.company   
+
+            # Prevent duplicate salary entries (company-wise)
             already_exists = FinanceRecord.objects.filter(
+                company=company,                 
                 category="SALARY",
                 payment_type="OUT",
                 note__icontains=f"{record.employee.employee_id}",
@@ -281,6 +308,7 @@ class PayrollStatusUpdateView(APIView):
 
             if not already_exists:
                 FinanceRecord.objects.create(
+                    company=company,             
                     date=timezone.now().date(),
                     amount=net_salary,
                     payment_type="OUT",
@@ -291,6 +319,7 @@ class PayrollStatusUpdateView(APIView):
                         f"for {month}/{year}"
                     )
                 )
+
 
 
         serializer = EmployeePayrollRecordSerializer(
@@ -374,7 +403,7 @@ class PayslipDownloadView(APIView):
         except EmployeePayrollRecord.DoesNotExist:
             raise Http404("Payroll record not found")
 
-        # ✅ Use serializer to get all computed values
+        # Use serializer to get all computed values
         from .serializers import EmployeePayrollRecordSerializer
         serialized = EmployeePayrollRecordSerializer(record).data
         print("\n==================== PAYSLIP DATA ====================")
@@ -383,7 +412,7 @@ class PayslipDownloadView(APIView):
         print("=====================================================\n")
 
 
-        # ✅ Pass serializer data (dict), not model instance
+        #  Pass serializer data (dict), not model instance
         pdf_bytes = generate_payslip_pdf(serialized)
 
         response = HttpResponse(content_type='application/pdf')

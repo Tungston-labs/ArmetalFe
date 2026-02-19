@@ -1,4 +1,5 @@
 from django.db import models
+from superadmin.models import Company
 
 # Create your models here.
 from django.db import models
@@ -14,6 +15,7 @@ class FinanceRecord(models.Model):
         ("REIMBURSEMENT", "Reimbursement"),
         ("TRAVEL", "Travel"),
         ("FOOD", "Food"),
+        ("SUBSCRIPTION","Subscription"),
         ("OTHER", "Other"),
     )
 
@@ -28,6 +30,13 @@ class FinanceRecord(models.Model):
         choices=CATEGORY_CHOICES
     )
     note = models.TextField(blank=True, null=True)
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="finance_records"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

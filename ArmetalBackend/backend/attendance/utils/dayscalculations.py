@@ -1,4 +1,3 @@
-# payroll/utils.py
 from datetime import timedelta, datetime
 from attendance.models import Attendance
 from leave.models import LeaveRequest
@@ -26,7 +25,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
         else:
             holidays.add(h.date)
 
-    # --- Attendance pulled from REAL total_hours (auto-calculated from sessions) ---
+    # --- Attendance ---
     attendances = Attendance.objects.filter(
         employee=employee,
         date__range=(start_date, end_date)
@@ -41,7 +40,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
     for hrs in attendance_map.values():
         if hrs >= 8:
             full_days += 1
-        elif 4 <= hrs < 8:
+        elif 5 <= hrs < 8:
             half_days += 1
 
     present_days = full_days + (0.5 * half_days)
@@ -68,11 +67,13 @@ def build_employee_month_calendar(employee, start_date, end_date):
         for i in range((end - start).days + 1):
             approved_leave_dates.add(start + timedelta(days=i))
 
-    # --- Build Day-wise Calendar ---
+    approved_leave_count = len(approved_leave_dates)
+
+    # --- Build calendar ---
     total_days = (end_date - start_date).days + 1
 
     working_days = 0
-    unswiped_valid_days = 0
+    unswiped_days = 0
     daily_records = []
 
     for i in range(total_days):
@@ -89,30 +90,33 @@ def build_employee_month_calendar(employee, start_date, end_date):
             status = "off"
             hours = 0
 
-        # Approved leave
+        # Leave
         elif d in approved_leave_dates:
             status = "leave"
             hours = 0
+            working_days += 1
+            unswiped_days += 1
 
-        # Present
+        # Present / Half / Absent by hours
         elif d in attendance_dates:
             hours = attendance_map[d]
 
             if hours >= 8:
                 status = "present"
-            elif 4 <= hours < 8:
+            elif 5 <= hours < 8:
                 status = "half_day"
             else:
                 status = "absent"
+                unswiped_days += 1
 
             working_days += 1
 
-        # Absent without swipe
+        # Fully absent
         else:
             status = "absent"
             hours = 0
             working_days += 1
-            unswiped_valid_days += 1
+            unswiped_days += 1
 
         daily_records.append({
             "date": d,
@@ -120,14 +124,25 @@ def build_employee_month_calendar(employee, start_date, end_date):
             "total_hours": round(hours, 2),
         })
 
-    # --- Paid leave balance ---
+    # --------------------------------------------------
+    #  FINAL HR-CORRECT LOP CALCULATION
+    # --------------------------------------------------
+
+    real_absent_days = unswiped_days - approved_leave_count
+
+    total_leave_balance = float(employee.total_leave or 0)
     paid_leave = float(employee.paid_leave or 0)
 
-    # --- LOP with HALF-DAY consideration ---
-    effective_absent = unswiped_valid_days - paid_leave
-    lop_days = max(effective_absent, 0)
+    # Leaves adjusted against balance
+    leave_adjustment = min(approved_leave_count, total_leave_balance)
 
-    # --- Final absent days (for display) ---
-    absent_days = max(working_days - present_days - paid_leave, 0)
+    # LOP from true absences
+    lop_from_absent = max(real_absent_days - leave_adjustment, 0)
+
+    # Extra leave beyond balance already stored in paid_leave
+    lop_days = lop_from_absent + paid_leave
+
+    # Final absent days (for display only)
+    absent_days = max(working_days - present_days - leave_adjustment, 0)
 
     return working_days, present_days, absent_days, lop_days, daily_records

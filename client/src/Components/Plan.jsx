@@ -164,12 +164,12 @@ const handleDownload = (entry) => {
   <PlanDetails>
     <h3>Enterprise plan</h3>
     <p>
-      Pay a fixed $5 per employee.<br />
+      Pay a fixed amount per employee.<br />
       Simple, transparent, and ideal for managing individual payroll with ease.
     </p>
   </PlanDetails>
 
-  <PlanPrice>$5</PlanPrice>
+  <PlanPrice></PlanPrice>
 </PlanCard>
 
 

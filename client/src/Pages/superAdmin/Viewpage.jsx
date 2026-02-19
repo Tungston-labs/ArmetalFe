@@ -39,14 +39,14 @@ const CompanyViewPage = () => {
     };
   }, [dispatch, id]);
 
-  if (!selectedCompany) return <Loader/>;
+  if (!selectedCompany) return <Loader />;
 
-  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement","project","finance"];
+  const allModules = ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement", "project", "finance"];
   const enabledModules = allModules.filter(mod => selectedCompany.modules?.[mod]);
 
   return (
     <>
-     
+
       <FormWrapper>
         <TitleSection>
           <LuArrowLeft
@@ -63,7 +63,7 @@ const CompanyViewPage = () => {
             <Subtitle>Manage all departments within the organization.</Subtitle>
           </div>
         </TitleSection>
-        
+
 
         <FormSection>
           <div>
@@ -81,6 +81,25 @@ const CompanyViewPage = () => {
               <Label>Email</Label>
               <Input type="text" value={selectedCompany.email} readOnly />
             </FormField>
+
+            <FormField>
+              <Label>Amount Per Employee (₹)</Label>
+              <Input
+                type="text"
+                value={selectedCompany.amount_per_employee ?? 0}
+                readOnly
+              />
+            </FormField>
+
+            <FormField>
+              <Label>Initial Payment (₹)</Label>
+              <Input
+                type="text"
+                value={selectedCompany.initial_payment ?? 0}
+                readOnly
+              />
+            </FormField>
+
 
             <FormField>
               <Label style={{ fontFamily: "satoshi", fontStyle: "bold" }}>

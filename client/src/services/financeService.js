@@ -5,10 +5,18 @@ export const createFinanceService = async (data) => {
   return response.data;
 };
 
-export const listFinanceService = async (page = 1, pageSize = 20) => {
-  const response = await API.get(
-    `/finance/?page=${page}&page_size=${pageSize}`
-  );
+export const listFinanceService = async (
+  page = 1,
+  pageSize = 20,
+  search = "",
+  payment_type = ""
+) => {
+  let url = `/finance/?page=${page}&page_size=${pageSize}`;
+
+  if (search) url += `&search=${search}`;
+  if (payment_type) url += `&payment_type=${payment_type}`;
+
+  const response = await API.get(url);
   return response.data;
 };
 

@@ -27,7 +27,7 @@ const AddCompanyModal = ({
   onClose,
   isEdit = false,
   selectedCompany = null,
-    showPrivileges = true,
+  showPrivileges = true,
 }) => {
   const dispatch = useDispatch();
   const fileInputRef = useRef();
@@ -83,6 +83,9 @@ const AddCompanyModal = ({
     latitude: "",
     longitude: "",
     logo: null,
+    amount_per_employee: "",
+    initial_payment: "",
+
   });
 
   const [logoPreview, setLogoPreview] = useState(null);
@@ -110,6 +113,9 @@ const AddCompanyModal = ({
         logo: null,
         latitude: selectedCompany.latitude || "",
         longitude: selectedCompany.longitude || "",
+        amount_per_employee: selectedCompany.amount_per_employee || "",
+        initial_payment: selectedCompany.initial_payment || "",
+
       });
 
       if (selectedCompany.logo) {
@@ -132,23 +138,23 @@ const AddCompanyModal = ({
     }));
   };
 
-const handleLogoChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  if (file.type === "image/png" || file.type === "image/svg+xml") {
-    setFormData((prev) => ({ ...prev, logo: file }));
-    setLogoPreview(URL.createObjectURL(file));
-  } else {
-    Swal.fire({
-      icon: "error",
-      title: "Invalid file type",
-      text: "Only PNG or SVG files are allowed.",
-      confirmButtonColor: "#3250B5",
-    });
-    fileInputRef.current.value = ""; 
-  }
-};
+    if (file.type === "image/png" || file.type === "image/svg+xml") {
+      setFormData((prev) => ({ ...prev, logo: file }));
+      setLogoPreview(URL.createObjectURL(file));
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid file type",
+        text: "Only PNG or SVG files are allowed.",
+        confirmButtonColor: "#3250B5",
+      });
+      fileInputRef.current.value = "";
+    }
+  };
 
   const removeLogo = () => {
     setFormData((prev) => ({ ...prev, logo: null }));
@@ -156,103 +162,86 @@ const handleLogoChange = (e) => {
     fileInputRef.current.value = "";
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const errors = {};
-    if (!formData.name.trim()) errors.name = "Company name is required.";
-    if (!formData.address.trim()) errors.address = "Address is required.";
-    if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email))
-      errors.email = "Valid email is required.";
-    if (!formData.location.trim()) errors.location = "Location is required.";
-    if (!formData.country) errors.country = "Country is required.";
-    if (
-      !formData.latitude ||
-      formData.latitude < -90 ||
-      formData.latitude > 90
-    ) {
-      errors.latitude = "Latitude must be between -90 and 90.";
-    }
-    if (
-      !formData.longitude ||
-      formData.longitude < -180 ||
-      formData.longitude > 180
-    ) {
-      errors.longitude = "Longitude must be between -180 and 180.";
-    }
+  const lat = Number(formData.latitude);
+  const lng = Number(formData.longitude);
+  const amount = Number(formData.amount_per_employee);
+  const initial = Number(formData.initial_payment || 0);
 
-    const phoneRegex = /^\d{7,12}$/;
-    if (
-      !formData.contact_number.trim() ||
-      !phoneRegex.test(formData.contact_number)
-    ) {
-      errors.contact_number = "Phone must be 7 to 12 digits.";
-    }
+  const formattedModules = {};
+  formData.modules.forEach((m) => {
+    formattedModules[m] = true;
+  });
 
-if (showPrivileges && formData.modules.length === 0) {
-  errors.modules = "Select at least one module.";
-}
-
-
-    setFormErrors(errors);
-    if (Object.keys(errors).length > 0) return;
+  try {
     setIsSubmitting(true);
-    const modulesObject = {};
-    allModules.forEach((mod) => {
-      modulesObject[mod] = formData.modules.includes(mod);
-    });
-    console.log("module object:", modulesObject);
-    const payload = new FormData();
-    payload.append("name", formData.name);
-    payload.append("address", formData.address);
-    payload.append("email", formData.email);
-    payload.append("location", formData.location);
-    payload.append("country", formData.country);
-    payload.append("latitude", formData.latitude);
-    payload.append("longitude", formData.longitude);
-    payload.append(
+
+    const formPayload = new FormData();
+
+    formPayload.append("name", formData.name);
+    formPayload.append("address", formData.address);
+    formPayload.append("email", formData.email);
+    formPayload.append("location", formData.location);
+    formPayload.append("country", formData.country);
+    formPayload.append(
       "contact_number",
       `${formData.country_code}${formData.contact_number}`
     );
-if (showPrivileges) {
-  payload.append("modules", JSON.stringify(modulesObject));
-}
 
-    if (formData.logo) payload.append("logo", formData.logo);
+    formPayload.append("latitude", lat);
+    formPayload.append("longitude", lng);
+    formPayload.append("amount_per_employee", amount);
+    formPayload.append("initial_payment", initial);
+    formPayload.append("modules", JSON.stringify(formattedModules));
 
-    try {
-      if (isEdit && selectedCompany?.id) {
-        await dispatch(
-          editCompany({ id: selectedCompany.id, data: payload })
-        ).unwrap();
-        Swal.fire({
-          title: "Updated!",
-          text: "Company details have been updated successfully.",
-          icon: "success",
-          confirmButtonColor: "#3250B5",
-        });
-      } else {
-        await dispatch(addCompany(payload)).unwrap();
-        Swal.fire({
-          title: "Saved!",
-          text: "Company has been added successfully.",
-          icon: "success",
-          confirmButtonColor: "#3250B5",
-        });
-      }
-      onClose();
-    } catch (err) {
-      console.error("Company save failed", err);
-      Swal.fire({
-        title: "Error!",
-        text: "Something went wrong. Please try again.",
-        icon: "error",
-        confirmButtonColor: "#D33",
-      });
-    } finally {
-      setIsSubmitting(false);
+    if (formData.logo) {
+      formPayload.append("logo", formData.logo);
     }
-  };
+
+    if (isEdit) {
+      await dispatch(
+        editCompany({ id: selectedCompany.id, data: formPayload })
+      ).unwrap();
+
+      await Swal.fire({
+        icon: "success",
+        title: "Updated!",
+        text: "Company updated successfully.",
+        confirmButtonColor: "#3250B5",
+      });
+
+    } else {
+      await dispatch(addCompany(formPayload)).unwrap();
+
+      await Swal.fire({
+        icon: "success",
+        title: "Created!",
+        text: "Company created successfully.",
+        confirmButtonColor: "#3250B5",
+      });
+    }
+
+    onClose(); // close modal after success
+
+  } catch (err) {
+    console.error("ERROR:", err);
+
+    Swal.fire({
+      icon: "error",
+      title: "Failed",
+      text: "Something went wrong. Please try again.",
+      confirmButtonColor: "#d33",
+    });
+
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
+
 
   return (
     <FormWrapper>
@@ -285,7 +274,7 @@ if (showPrivileges) {
                 value={formData.address}
                 onChange={handleChange}
                 placeholder="Company Address"
-                           autoComplete="off"
+                autoComplete="off"
               />
               {formErrors.address && (
                 <p style={{ color: "red" }}>{formErrors.address}</p>
@@ -299,12 +288,42 @@ if (showPrivileges) {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Company E-mail"
-                 autoComplete="off"
+                autoComplete="off"
               />
               {formErrors.email && (
                 <p style={{ color: "red" }}>{formErrors.email}</p>
               )}
             </FormField>
+            <FormField>
+              <Label>Amount per Employee (INR)</Label>
+              <Input
+                name="amount_per_employee"
+                type="number"
+                step="0.01"
+                value={formData.amount_per_employee}
+                onChange={handleChange}
+                placeholder="Enter amount per employee"
+              />
+              {formErrors.amount_per_employee && (
+                <p style={{ color: "red" }}>{formErrors.amount_per_employee}</p>
+              )}
+            </FormField>
+
+            <FormField>
+              <Label>Initial Payment (Advance ₹)</Label>
+              <Input
+                name="initial_payment"
+                type="number"
+                step="0.01"
+                value={formData.initial_payment}
+                onChange={handleChange}
+                placeholder="Enter advance amount (optional)"
+              />
+              {formErrors.initial_payment && (
+                <p style={{ color: "red" }}>{formErrors.initial_payment}</p>
+              )}
+            </FormField>
+
 
             <FormField>
               <Label>Upload logo</Label>
@@ -351,7 +370,7 @@ if (showPrivileges) {
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="Location"
-                 autoComplete="off"
+                autoComplete="off"
               />
               {formErrors.location && (
                 <p style={{ color: "red" }}>{formErrors.location}</p>
@@ -365,7 +384,7 @@ if (showPrivileges) {
                   name="country_code"
                   value={formData.country_code}
                   onChange={handleChange}
-                   autoComplete="off"
+                  autoComplete="off"
                   style={{ width: "35%", padding: "8px" }}
                 >
                   {countryDialCodes.map((item) => (
@@ -382,7 +401,7 @@ if (showPrivileges) {
                   onChange={handleChange}
                   placeholder="Phone number"
                   style={{ width: "65%" }}
-                             autoComplete="off"
+                  autoComplete="off"
                 />
               </div>
               {formErrors.contact_number && (
@@ -397,7 +416,7 @@ if (showPrivileges) {
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
-                           autoComplete="off"
+                autoComplete="off"
               >
                 <option value="">Select country</option>
                 {COUNTRY_CHOICES.map((item) => (
@@ -419,7 +438,7 @@ if (showPrivileges) {
                 value={formData.latitude}
                 onChange={handleChange}
                 placeholder="Enter company latitude"
-                 autoComplete="off"
+                autoComplete="off"
               />
             </FormField>
 
@@ -432,38 +451,38 @@ if (showPrivileges) {
                 value={formData.longitude}
                 onChange={handleChange}
                 placeholder="Enter company longitude"
-                 autoComplete="off"
+                autoComplete="off"
               />
             </FormField>
           </div>
         </FormSection>
 
-      {showPrivileges && (
-  <>
-    <h4>Privileges</h4>
+        {showPrivileges && (
+          <>
+            <h4>Privileges</h4>
 
-    <CheckboxGroup>
-      {allModules.map((mod) => (
-        <CheckboxLabel key={mod}>
-          <input
-            type="checkbox"
-            value={mod}
-            checked={formData.modules.includes(mod)}
-            onChange={handleModuleChange}
-          />
-          {mod.charAt(0).toUpperCase() +
-            mod.slice(1).replace("_", " ")}
-        </CheckboxLabel>
-      ))}
-    </CheckboxGroup>
+            <CheckboxGroup>
+              {allModules.map((mod) => (
+                <CheckboxLabel key={mod}>
+                  <input
+                    type="checkbox"
+                    value={mod}
+                    checked={formData.modules.includes(mod)}
+                    onChange={handleModuleChange}
+                  />
+                  {mod.charAt(0).toUpperCase() +
+                    mod.slice(1).replace("_", " ")}
+                </CheckboxLabel>
+              ))}
+            </CheckboxGroup>
 
-    {formErrors.modules && (
-      <p style={{ color: "blue" }}>{formErrors.modules}</p>
-    )}
+            {formErrors.modules && (
+              <p style={{ color: "blue" }}>{formErrors.modules}</p>
+            )}
 
-    <Hr />
-  </>
-)}
+            <Hr />
+          </>
+        )}
 
 
         <ButtonGroup>

@@ -5,10 +5,18 @@ from employee.serializers import EmployeeSerializer
 
 
 class DepartmentMiniSerializer(serializers.ModelSerializer):
+    total_employee_count = serializers.IntegerField(read_only=True)
+    swiped_employee_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Department
-        fields = ["id", "name"]
+        fields = [
+            "id",
+            "name",
+            "total_employee_count",
+            "swiped_employee_count",
+        ]
+
 
 class DepartmentAttendanceSerializer(serializers.ModelSerializer):
     attendance_employee_count = serializers.IntegerField(read_only=True)

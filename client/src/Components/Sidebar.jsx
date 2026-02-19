@@ -87,6 +87,17 @@ export default function Sidebar() {
           </CustomLink>
 
         )}
+        {user?.is_superadmin && (
+          <CustomLink
+            as={NavLink}
+            to="/finance"
+            className={({ isActive }) => `${collapsed ? 'collapsed' : ''} ${isActive ? 'active' : ''}`}
+          >
+            <FaReceipt />
+            <span>Finance</span>
+          </CustomLink>
+
+        )}
 
         {(user?.is_hr_admin || user?.is_hr) && Object.keys(modules).length > 0 && (
           <>
