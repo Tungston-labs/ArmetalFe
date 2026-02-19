@@ -129,6 +129,7 @@ const EmployeeList = () => {
           onAddClick={() => navigate("/basic-details")}
             searchValue={searchText} 
           onSearchChange={setSearchText}
+            selectedDropdownValue={departmentFilter}  
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
           showTabs={true}

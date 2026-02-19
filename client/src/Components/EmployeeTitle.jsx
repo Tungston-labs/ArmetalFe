@@ -180,10 +180,12 @@ const EmployeeTitle = ({
           )}
 
           {showDropdown && (
-            <Dropdown
-              value={selectedDropdownValue ?? ""}
-              onChange={(e) => onDropdownChange && onDropdownChange(e.target.value)}
-            >
+           <Dropdown
+  value={String(selectedDropdownValue ?? "")}
+  onChange={(e) =>
+    onDropdownChange && onDropdownChange(String(e.target.value))
+  }
+>
               <option value="">{dropdownPlaceholder}</option>
 
               {dropdownLoading ? (
