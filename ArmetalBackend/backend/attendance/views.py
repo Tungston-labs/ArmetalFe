@@ -456,18 +456,19 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         if not today_attendance or not today_attendance.sessions.exists():
             return None, None
 
-        first_session = today_attendance.sessions.order_by("punch_in").first()
-        last_session = today_attendance.sessions.order_by("-punch_out").first()
+        first_session = today_attendance.sessions.order_by("time_in").first()
+        last_session = today_attendance.sessions.order_by("-time_out").first()
 
         first_in = (
-            first_session.punch_in.strftime("%H:%M")
-            if first_session and first_session.punch_in else None
+            first_session.time_in.strftime("%H:%M")
+            if first_session and first_session.time_in else None
         )
 
         last_out = (
-            last_session.punch_out.strftime("%H:%M")
-            if last_session and last_session.punch_out else None
+            last_session.time_out.strftime("%H:%M")
+            if last_session and last_session.time_out else None
         )
+
 
         return first_in, last_out
 
