@@ -17,8 +17,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 # GET http://178.248.112.16:8001/api/admin/attendance/31/
-GET http://178.248.112.16:8001/api/admin/attendance/187/?date=2025-11-02
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwMTg0NzQ3LCJpYXQiOjE3NzAxODExNDcsImp0aSI6ImJmZjIwOThmYTQ0YjQwNmI4YjI4MTdkMGFlZDk1NjdhIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.lgKaz2uNriXMYHk1H9Y9bScossJ-qRUSc9QA3H_O6_A
+GET http://178.248.112.16:8001/api/admin/attendance/351/?date=2026-02-11
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcxNDkxNzgwLCJpYXQiOjE3NzE0ODgxODAsImp0aSI6IjFhZjA4YzY0N2MxOTQ5NGU5Zjk5NjNjMTQ0NjRiMTRjIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.lUYYBXUzusMgUyy6-y7uyINR9vp0zn6NXp0xKBBOw_A
 
 # list out employee attendance for admin
 ###
