@@ -16,7 +16,7 @@ import {
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
-import { getAttendanceSummary } from "../../Redux/attendanceSlice"; 
+import { getAttendanceSummary } from "../../Redux/attendanceSlice";
 
 const AttendanceReport = () => {
   const dispatch = useDispatch();
@@ -25,12 +25,16 @@ const AttendanceReport = () => {
   const attendanceState = useSelector((state) => state.attendance || {});
   const attendanceSummary = attendanceState.attendanceSummary || [];
   const summaryLoading = attendanceState.summaryLoading || false;
+    const getPreviousMonth = () => {
+    const now = new Date();
+    now.setMonth(now.getMonth() - 1);
+    return now.toISOString().slice(0, 7);
+  };
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState(
-    new Date().toISOString().slice(0, 7)
-  );
+  const [selectedMonth, setSelectedMonth] = useState(getPreviousMonth());
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const getMonthNameFromYYYYMM = (yyyyMM) => {
@@ -44,6 +48,8 @@ const AttendanceReport = () => {
     () => getMonthNameFromYYYYMM(selectedMonth),
     [selectedMonth]
   );
+
+
 
   useEffect(() => {
     if (!selectedMonth) return;
@@ -83,8 +89,10 @@ const AttendanceReport = () => {
             <input
               type="month"
               value={selectedMonth}
+              max={getPreviousMonth()}   // ⬅️ restrict to previous months only
               onChange={(e) => setSelectedMonth(e.target.value)}
             />
+
           </MonthSelector>
         </TopBar>
 
