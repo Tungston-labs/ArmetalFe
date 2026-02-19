@@ -734,29 +734,54 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
         month = int(request.query_params.get("month", today.month))
 
         start_date = date(year, month, 1)
-        end_date = date(year, month, calendar.monthrange(year, month)[1])
+
+        # -------- Determine end_date logic --------
+        # Current month → calculate till today
+        if year == today.year and month == today.month:
+            end_date = today
+
+        # Future month → return zeros
+        elif start_date > today.replace(day=1):
+            end_date = start_date  # dummy, handled separately
+
+        # Past month → full month
+        else:
+            end_date = date(year, month, calendar.monthrange(year, month)[1])
 
         results = []
 
         for emp in self.get_queryset():
 
+            # -------- FUTURE MONTH → ZERO VALUES --------
+            if start_date > today.replace(day=1):
+                results.append({
+                    "employee_id": emp.employee_id,
+                    "employee_name": emp.name,
+                    "department": emp.department.name if emp.department else None,
+                    "working_days": 0,
+                    "present_days": 0,
+                    "absent_days": 0,
+                    "lop_days": 0,
+                    "daily_records": [],
+                })
+                continue
+
+            # -------- CHECK PAYROLL SNAPSHOT --------
             payroll = EmployeePayrollRecord.objects.filter(
                 employee=emp,
                 year=year,
                 month=month
             ).first()
 
-            #  If payroll exists → USE SNAPSHOT
+            # 👉 If payroll exists → USE SNAPSHOT
             if payroll:
                 working_days = payroll.working_days or 0
                 present_days = payroll.days_present or 0
                 lop_days = payroll.lop_days or 0
-
                 absent_days = max(working_days - present_days, 0)
+                daily_records = []
 
-                daily_records = []  # Do not rebuild past calendar
-
-            #  Else → CALCULATE LIVE
+            # 👉 Else → CALCULATE LIVE
             else:
                 working_days, present_days, absent_days, lop_days, daily_records = (
                     build_employee_month_calendar(emp, start_date, end_date)
