@@ -32,7 +32,6 @@ export const MonthName = styled.div`
   color: #0f172a;
 
   @media (max-width: 600px) { font-size: 14px; }
-  @media (min-width: 1920px) { font-size: 24px; }
   @media (min-width: 2560px) { font-size: 28px; }
   @media (min-width: 3840px) { font-size: 36px; }
 `;

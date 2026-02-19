@@ -103,17 +103,6 @@ export const BottomActions = styled.div`
   border-top: 1px solid #ddd;
   z-index: 3000;
 
-  @media (min-width: 1920px) {
-    width: 300px;
-  }
-  @media (min-width: 2560px) {
-    width: 350px;
-  }
-  @media (min-width: 3840px) {
-    width: 380px;
-  }
-
-  /* Mobile full width */
   @media (max-width: 600px) {
     width: 100%;
     padding: 15px 20px;

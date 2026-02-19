@@ -19,11 +19,10 @@ import {
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const AttendanceCircle = ({ present = 0, leave = 0 }) => {
-  // Convert values to numbers (API sometimes sends strings)
+
   const presentVal = Number(present) || 0;
   const leaveVal = Number(leave) || 0;
 
-  // Avoid empty donut when both values are zero
   const safeData =
     presentVal === 0 && leaveVal === 0 ? [1, 0] : [presentVal, leaveVal];
 
@@ -41,7 +40,7 @@ const AttendanceCircle = ({ present = 0, leave = 0 }) => {
 
   const options = {
     rotation: -90,
-    circumference: 180, // Half donut
+    circumference: 180, 
     plugins: {
       legend: { display: false },
     },
