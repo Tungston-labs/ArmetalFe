@@ -5,11 +5,6 @@ from holidays.models import PublicHoliday
 
 
 def build_employee_month_calendar(employee, start_date, end_date):
-    """
-    Returns:
-    working_days, present_days, absent_days, lop_days, daily_records
-    """
-
     today = date.today()
 
     # ---------- Holidays & Weekly Off ----------
@@ -30,7 +25,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
     # ---------- Attendance till TODAY ----------
     attendances = Attendance.objects.filter(
         employee=employee,
-        date__range=(start_date, min(end_date, today))
+        date__range=(start_date, today)
     )
 
     attendance_map = {a.date: float(a.total_hours or 0) for a in attendances}
@@ -40,7 +35,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
     leave_requests = LeaveRequest.objects.filter(
         employee=employee,
         status="approved",
-        from_date__lte=min(end_date, today),
+        from_date__lte=today,
         to_date__gte=start_date
     )
 
@@ -48,7 +43,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
     for leave in leave_requests:
         start = max(leave.from_date, start_date)
-        end = min(leave.to_date, min(end_date, today))
+        end = min(leave.to_date, today)
 
         if isinstance(start, datetime):
             start = start.date()
@@ -83,7 +78,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
         else:
             working_days += 1
 
-            # FUTURE → ignore in HR totals
+            # FUTURE → do not affect HR totals
             if d > today:
                 status = "upcoming"
                 hours = 0
@@ -111,11 +106,13 @@ def build_employee_month_calendar(employee, start_date, end_date):
                     status = "absent"
                     unswiped_days_till_today += 1
 
-            # Absent till today
+            # Absent ONLY till today
             else:
                 status = "absent"
                 hours = 0
-                unswiped_days_till_today += 1
+
+                if d <= today:
+                    unswiped_days_till_today += 1
 
         daily_records.append({
             "date": d,
