@@ -321,3 +321,34 @@ export const Pagination = styled.div`
     border-color: #1e3a8a;
   }
 `;
+
+export const SummaryWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+`;
+
+export const SummaryCard = styled.div`
+  background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+  border: 1px solid #e6eefb;
+  border-radius: 10px;
+  padding: 12px 16px;
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(2,6,23,0.06);
+`;
+
+export const SummaryLabel = styled.div`
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 600;
+`;
+
+export const SummaryValue = styled.div`
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+`;

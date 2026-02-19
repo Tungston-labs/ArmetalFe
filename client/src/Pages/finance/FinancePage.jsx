@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
@@ -16,6 +16,7 @@ import FinanceModal from "./NewFinance";
 import { createFinance, fetchFinanceList, deleteFinance } from "../../Redux/financeThunks";
 import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import FinanceSummary from "../../Components/finance/FinanceSummary";
 
 const PAYMENT_TYPE_LABELS = {
   IN: "Income",
@@ -128,6 +129,18 @@ const FinanceDetail = () => {
     setPage(newPage);
   };
 
+  const totals = useMemo(() => {
+  const income = list
+    .filter((r) => r.payment_type === "IN")
+    .reduce((s, r) => s + Number(r.amount || 0), 0);
+
+  const expense = list
+    .filter((r) => r.payment_type === "OUT")
+    .reduce((s, r) => s + Number(r.amount || 0), 0);
+
+  return { income, expense };
+}, [list]);
+
   return (
     <>
       <Container>
@@ -150,7 +163,11 @@ const FinanceDetail = () => {
             searchPlaceholder="Search Category / Note"
           />
         </TopBar>
-
+        
+<FinanceSummary
+  income={totals.income}
+  expense={totals.expense}
+/>
         <TableWrapper>
           <StyledTable>
             <thead>
@@ -204,8 +221,7 @@ const FinanceDetail = () => {
             </tbody>
           </StyledTable>
         </TableWrapper>
-
-        {/* 🔹 Backend Pagination Only */}
+        
         <Pagination>
           <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>&larr;</span>
 
@@ -232,8 +248,6 @@ const FinanceDetail = () => {
           </span>
         </Pagination>
       </Container>
-
-      {/* 🔹 Add Finance Modal */}
       <FinanceModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}

@@ -108,6 +108,7 @@ const EmployeeList = () => {
             searchValue={searchText} 
           showSearch={true}
           showDropdown={true}
+            selectedDropdownValue={expiryFilter}
           dropdownOptions={[
             { id: "visa", name: "Visa Expiry (next 30 days)" },
             { id: "contract", name: "Contract Expiry (next 30 days)" },
@@ -118,6 +119,7 @@ const EmployeeList = () => {
           }}
           onSearchChange={(value) => handleSearch(value)}
           showBackArrow={false}
+          
         />
 
         {/* TABLE */}
