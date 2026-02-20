@@ -2,15 +2,15 @@ import React, { forwardRef } from "react";
 import {
   Container, Header, Title, Badge, PrintIcon, GridLayout,
   InfoTable, InfoRow, Label, Value, TableWrapper, Table,
-  TableData, TotalRow, Footer, RightHeader, LeftHeader,
-  SectionTitles, BackTitle, SectionHeading, BackIcon
+  TableData, TotalRow, RightHeader, LeftHeader,
+  SectionTitles, BackTitle, BackIcon
 } from "./Payroll.styles";
 import { BsPrinter } from "react-icons/bs";
-
+import Loader from "../../Components/Loader"
 const PayrollDetailsView = forwardRef(
   ({ payrollDetail, loading, error, onPrint, onBack }, ref) => {
 
-    if (loading) return <div>Loading payroll details...</div>;
+    if (loading) return <div><Loader/></div>;
     if (error) return <div>Error: {error}</div>;
     if (!payrollDetail) return <div>No payroll data found.</div>;
 
@@ -21,17 +21,10 @@ const PayrollDetailsView = forwardRef(
       designation,
       working_days,
       days_present,
-      leave_taken,
       gross_earnings,
-      total_deductions,
-      net_pay,
-      payment_mode,
-      account_number,
       status,
       earnings,
       deductions,
-      lop_amount,
-      lop_days
     } = payrollDetail;
 
     return (
@@ -76,9 +69,7 @@ const PayrollDetailsView = forwardRef(
               <Table>
                 <thead>
                   <tr>
-                    <th>Earnings</th>
-                    {/* <th>Days</th> */}
-                    {/* <th>Hours</th> */}
+                    <th>Earnings</th>  
                     <th>Amount</th>
                   </tr>
                 </thead>
@@ -86,8 +77,6 @@ const PayrollDetailsView = forwardRef(
                   {earnings?.map((item, index) => (
                     <tr key={index}>
                       <TableData>{item.label}</TableData>
-                      {/* <TableData>{item.days ?? "-"}</TableData> */}
-                      {/* <TableData>{item.hours ?? "-"}</TableData> */}
                       <TableData>₹{item.amount}</TableData>
                     </tr>
                   ))}
