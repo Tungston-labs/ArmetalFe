@@ -226,7 +226,7 @@ export default function LeaveRequest() {
         <Pagination>
           <span
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-            style={{ cursor: 'pointer', marginRight: '8px' }}
+            style={{ cursor: 'pointer', marginRight: '0px',}}
           >
             &larr;
           </span>
@@ -239,8 +239,8 @@ export default function LeaveRequest() {
                 key={pageNumber}
                 onClick={() => setPage(pageNumber)}
                 style={{
-                  margin: '0 4px',
-                  padding: '6px 12px',
+                  margin: '0 0px',
+                  padding: '6px ',
                   borderRadius: '6px',
                   cursor: 'pointer',
                   backgroundColor: isActive ? '#003366' : '#e0e0e0',
@@ -257,7 +257,7 @@ export default function LeaveRequest() {
             onClick={() =>
               setPage((prev) => Math.min(prev + 1, 2))
             }
-            style={{ cursor: 'pointer', marginLeft: '8px' }}
+            style={{ cursor: 'pointer', marginLeft: '0px' }}
           >
             &rarr;
           </span>
@@ -265,7 +265,7 @@ export default function LeaveRequest() {
 
         {showModal && (
           <OnLeaveModal
-            leaveId={selectedLeave?.leave_id}    // ✅ leave id
+            leaveId={selectedLeave?.leave_id}    
             employeeId={selectedLeave?.employee_id}
             date={selectedLeave?.date}
             onClose={() => setShowModal(false)}
