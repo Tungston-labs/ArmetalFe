@@ -6,7 +6,20 @@ from .serializers import FinanceRecordSerializer
 from shared.pagination import CustomPagination
 from rest_framework.permissions import IsAuthenticated
 from user.permissions import IsHRAdmin
+from django.db.models import Sum
+from rest_framework.response import Response
 
+
+
+from rest_framework import generics, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Sum
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from .models import FinanceRecord
+from .serializers import FinanceRecordSerializer
+from shared.pagination import CustomPagination
 
 
 class FinanceRecordListCreateView(generics.ListCreateAPIView):
@@ -18,6 +31,9 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
     filterset_fields = ["category", "payment_type"]
     search_fields = ["note", "category", "payment_type"]
 
+    # ---------------------------------------------------
+    # QUERYSET (Company Based)
+    # ---------------------------------------------------
     def get_queryset(self):
         user = self.request.user
 
@@ -33,14 +49,69 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
 
         return FinanceRecord.objects.none()
 
+    # ---------------------------------------------------
+    # CREATE (Auto assign company)
+    # ---------------------------------------------------
     def perform_create(self, serializer):
         user = self.request.user
 
         if getattr(user, "is_superadmin", False):
             serializer.save(company=None)
-
         else:
             serializer.save(company=user.company)
+
+    # ---------------------------------------------------
+    # LIST WITH SUMMARY
+    # ---------------------------------------------------
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        user = request.user
+
+        # ---------- Summary Query ----------
+        if getattr(user, "is_superadmin", False):
+            summary_qs = FinanceRecord.objects.filter(company__isnull=True)
+        else:
+            summary_qs = FinanceRecord.objects.filter(company=user.company)
+
+        # ---------- Calculations ----------
+        total_income = summary_qs.filter(payment_type="IN").aggregate(
+            total=Sum("amount")
+        )["total"] or 0
+
+        total_expense = summary_qs.filter(payment_type="OUT").aggregate(
+            total=Sum("amount")
+        )["total"] or 0
+
+        net_asset = total_income - total_expense
+
+        if total_income > 0:
+            cash_balance_percentage = round((net_asset / total_income) * 100, 2)
+        else:
+            cash_balance_percentage = 0
+
+        # ---------- Pagination ----------
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            response = self.get_paginated_response(serializer.data)
+
+            # Inject summary fields
+            response.data["total_income"] = total_income
+            response.data["total_expense"] = total_expense
+            response.data["net_asset"] = net_asset
+            response.data["cash_balance_percentage"] = cash_balance_percentage
+
+            return response
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response({
+            "results": serializer.data,
+            "total_income": total_income,
+            "total_expense": total_expense,
+            "net_asset": net_asset,
+            "cash_balance_percentage": cash_balance_percentage,
+        })
 
 
 class FinanceRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
