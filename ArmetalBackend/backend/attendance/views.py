@@ -869,7 +869,7 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
                 month=month
             ).first()
 
-            if payroll:
+            if payroll and payroll.status=='paid':
                 working_days = payroll.working_days or 0
                 present_days = payroll.days_present or 0
                 lop_days = payroll.lop_days or 0
