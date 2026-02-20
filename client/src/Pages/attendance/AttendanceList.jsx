@@ -41,6 +41,8 @@ const AttendanceList = () => {
 );
 
 
+  const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
+
   useEffect(() => {
     dispatch(getDepartmentsMin({ page: 1, search: "" }));
   }, [dispatch]);

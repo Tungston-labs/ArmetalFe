@@ -1,4 +1,3 @@
-// ======================= AttendanceDetailsContainer.jsx =======================
 import React from "react";
 import AttendanceDetails from "./AttendanceDetails";
 
