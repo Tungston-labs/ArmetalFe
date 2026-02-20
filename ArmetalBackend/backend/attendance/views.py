@@ -427,30 +427,66 @@ class AttendanceDetailByDateView(APIView):
 
 
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.db.models import Sum
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
 from .models import Attendance
 from .serializers import AttendanceDetailSerializer
+from django.utils.timezone import now
+
+
 
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
-    lookup_field = 'employee_id'  
+    lookup_field = 'employee_id'
 
+    # ---------- helper to get today's punch times ----------
+    def get_today_punch_times(self, employee_id):
+        today = now().date()
+
+        today_attendance = Attendance.objects.filter(
+            employee__id=employee_id,
+            date=today
+        ).prefetch_related("sessions").first()
+
+        if not today_attendance or not today_attendance.sessions.exists():
+            return None, None
+
+        first_session = today_attendance.sessions.order_by("time_in").first()
+        last_session = today_attendance.sessions.order_by("-time_out").first()
+
+        first_in = (
+            first_session.time_in.strftime("%H:%M")
+            if first_session and first_session.time_in else None
+        )
+
+        last_out = (
+            last_session.time_out.strftime("%H:%M")
+            if last_session and last_session.time_out else None
+        )
+
+
+        return first_in, last_out
+
+    # ---------- main GET ----------
     def get(self, request, *args, **kwargs):
         employee_id = kwargs.get(self.lookup_field)
         date_str = request.query_params.get('date')
 
-        # Base attendance record (latest for employee if exists)
-        base_attendance = Attendance.objects.filter(employee__id=employee_id).order_by('-date').first()
+        # latest attendance for employee
+        base_attendance = Attendance.objects.filter(
+            employee__id=employee_id
+        ).order_by('-date').first()
 
+        # today's punch times (needed in all responses)
+        first_in, last_out = self.get_today_punch_times(employee_id)
+
+        # ---------- case 1: employee has no attendance ever ----------
         if not base_attendance:
-            # If employee has no attendance ever, we can return default info
             data = {
                 "id": None,
                 "date": date_str or str(datetime.today().date()),
@@ -459,25 +495,31 @@ class AttendanceAdminDetailView(RetrieveAPIView):
                 "weekly_hours_formatted": "00:00",
                 "monthly_hours_formatted": "00:00",
                 "remark": "",
-                "employee": {"id": employee_id},  # minimal info
+                "employee": {"id": employee_id},
                 "sessions": [],
                 "status": "Absent",
-                "note": f"No attendance available"
+                "note": "No attendance available",
+                "today_first_punch_in": first_in,
+                "today_last_punch_out": last_out,
             }
             return Response(data, status=200)
 
-        # If ?date= provided → get attendance for that date
+        # ---------- case 2: specific date requested ----------
         if date_str:
             try:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
             except ValueError:
-                return Response({"error": "Invalid date format. Use YYYY-MM-DD"}, status=400)
+                return Response(
+                    {"error": "Invalid date format. Use YYYY-MM-DD"},
+                    status=400
+                )
 
             attendance = Attendance.objects.filter(
                 employee__id=employee_id,
                 date=date_obj
             ).first()
 
+            # ---------- date absent ----------
             if not attendance:
                 serializer = self.get_serializer(base_attendance)
                 data = serializer.data
@@ -489,16 +531,26 @@ class AttendanceAdminDetailView(RetrieveAPIView):
                     "weekly_hours_formatted": "00:00",
                     "monthly_hours_formatted": "00:00",
                     "status": "Absent",
-                    "note": f"No attendance available for {date_obj}"
+                    "note": f"No attendance available for {date_obj}",
+                    "today_first_punch_in": first_in,
+                    "today_last_punch_out": last_out,
                 })
                 return Response(data, status=200)
 
+            # ---------- normal attendance ----------
             serializer = self.get_serializer(attendance)
-            return Response(serializer.data)
+            data = serializer.data
+            data["today_first_punch_in"] = first_in
+            data["today_last_punch_out"] = last_out
+            return Response(data)
 
-        #  Default → return latest attendance of employee
+        # ---------- case 3: default latest attendance ----------
         serializer = self.get_serializer(base_attendance)
-        return Response(serializer.data)
+        data = serializer.data
+        data["today_first_punch_in"] = first_in
+        data["today_last_punch_out"] = last_out
+
+        return Response(data)
 
 
 # -----------------------------------------------------one hour location update from mobile app and view by admin
@@ -647,6 +699,107 @@ class BackgroundLocationUpdateView(APIView):
 
 
 
+# from rest_framework import generics
+# from rest_framework.permissions import IsAuthenticated
+# from rest_framework.response import Response
+# from datetime import date
+# import calendar
+
+# from employee.models import Employee_db
+# from payroll.models import EmployeePayrollRecord
+# from .serializers import EmployeeAttendanceSummarySerializer
+# from .utils.dayscalculations import build_employee_month_calendar
+
+
+# class EmployeeAttendanceSummaryView(generics.ListAPIView):
+#     serializer_class = EmployeeAttendanceSummarySerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def get_queryset(self):
+#         user = self.request.user
+
+#         qs = Employee_db.objects.select_related(
+#             "department", "department__company"
+#         ).filter(department__company=user.company)
+
+#         if user.is_employee:
+#             qs = qs.filter(user=user)
+
+#         return qs
+
+#     def list(self, request, *args, **kwargs):
+#         today = date.today()
+
+#         year = int(request.query_params.get("year", today.year))
+#         month = int(request.query_params.get("month", today.month))
+
+#         start_date = date(year, month, 1)
+
+#         # -------- Determine end_date logic --------
+#         # Current month → calculate till today
+#         if year == today.year and month == today.month:
+#             end_date = today
+
+#         # Future month → return zeros
+#         elif start_date > today.replace(day=1):
+#             end_date = start_date  # dummy, handled separately
+
+#         # Past month → full month
+#         else:
+#             end_date = date(year, month, calendar.monthrange(year, month)[1])
+
+#         results = []
+
+#         for emp in self.get_queryset():
+
+#             # -------- FUTURE MONTH → ZERO VALUES --------
+#             if start_date > today.replace(day=1):
+#                 results.append({
+#                     "employee_id": emp.employee_id,
+#                     "employee_name": emp.name,
+#                     "department": emp.department.name if emp.department else None,
+#                     "working_days": 0,
+#                     "present_days": 0,
+#                     "absent_days": 0,
+#                     "lop_days": 0,
+#                     "daily_records": [],
+#                 })
+#                 continue
+
+#             # -------- CHECK PAYROLL SNAPSHOT --------
+#             payroll = EmployeePayrollRecord.objects.filter(
+#                 employee=emp,
+#                 year=year,
+#                 month=month
+#             ).first()
+
+#             # 👉 If payroll exists → USE SNAPSHOT
+#             if payroll:
+#                 working_days = payroll.working_days or 0
+#                 present_days = payroll.days_present or 0
+#                 lop_days = payroll.lop_days or 0
+#                 absent_days = max(working_days - present_days, 0)
+#                 daily_records = []
+
+#             # 👉 Else → CALCULATE LIVE
+#             else:
+#                 working_days, present_days, absent_days, lop_days, daily_records = (
+#                     build_employee_month_calendar(emp, start_date, end_date)
+#                 )
+
+#             results.append({
+#                 "employee_id": emp.employee_id,
+#                 "employee_name": emp.name,
+#                 "department": emp.department.name if emp.department else None,
+#                 "working_days": working_days,
+#                 "present_days": present_days,
+#                 "absent_days": absent_days,
+#                 "lop_days": lop_days,
+#                 "daily_records": daily_records,
+#             })
+
+#         serializer = self.get_serializer(results, many=True)
+#         return Response(serializer.data)
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -682,29 +835,47 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
         month = int(request.query_params.get("month", today.month))
 
         start_date = date(year, month, 1)
-        end_date = date(year, month, calendar.monthrange(year, month)[1])
+
+        # ---------- END DATE RULE ----------
+        if year == today.year and month == today.month:
+            end_date = today                     # current month → till today
+        elif start_date > today.replace(day=1):
+            end_date = start_date                # future month → handled separately
+        else:
+            end_date = date(year, month, calendar.monthrange(year, month)[1])  # past month
 
         results = []
 
         for emp in self.get_queryset():
 
+            # ---------- FUTURE MONTH ----------
+            if start_date > today.replace(day=1):
+                results.append({
+                    "employee_id": emp.employee_id,
+                    "employee_name": emp.name,
+                    "department": emp.department.name if emp.department else None,
+                    "working_days": 0,
+                    "present_days": 0,
+                    "absent_days": 0,
+                    "lop_days": 0,
+                    "daily_records": [],
+                })
+                continue
+
+            # ---------- PAYROLL SNAPSHOT ----------
             payroll = EmployeePayrollRecord.objects.filter(
                 employee=emp,
                 year=year,
                 month=month
             ).first()
 
-            #  If payroll exists → USE SNAPSHOT
             if payroll:
                 working_days = payroll.working_days or 0
                 present_days = payroll.days_present or 0
                 lop_days = payroll.lop_days or 0
-
                 absent_days = max(working_days - present_days, 0)
+                daily_records = []
 
-                daily_records = []  # Do not rebuild past calendar
-
-            #  Else → CALCULATE LIVE
             else:
                 working_days, present_days, absent_days, lop_days, daily_records = (
                     build_employee_month_calendar(emp, start_date, end_date)
