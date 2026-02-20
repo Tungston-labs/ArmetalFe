@@ -137,7 +137,7 @@ export const GridLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
@@ -272,23 +272,22 @@ export const Table = styled.table`
     border: 1px solid #999;
     padding: 0.4rem;
     text-align: left;
-    font-size: 14px; /* default for small screens */
-
+    font-size: 14px; 
     @media (min-width: 768px) {
       font-size: 16px;
     }
     @media (min-width: 1200px) {
-      font-size: 18px;
+      font-size: 16px;
     }
-    @media (min-width: 2560px) { /* 2K/QHD */
+    @media (min-width: 2560px) {
       font-size: 2rem;
          padding: 0.8rem;
     }
-    @media (min-width: 3840px) { /* 4K */
+    @media (min-width: 3840px) { 
       font-size: 2.5rem;
         padding: 1rem;
     }
-    @media (min-width: 7680px) { /* 8K */
+    @media (min-width: 7680px) { 
       font-size: 32px;
     }
   }

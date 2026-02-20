@@ -68,8 +68,6 @@ const AttendanceList = () => {
     const start = (page - 1) * pageSize;
     return items.slice(start, start + pageSize);
   };
-
-  // Load attendance employees for a department
   const loadAttendanceForDept = async (deptId) => {
     setLoadingDept(true);
     try {
@@ -99,9 +97,11 @@ const AttendanceList = () => {
     }
   };
 
-  const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
-
-  const departmentsToRender = departmentList.map((dept) => ({
+const departmentsToRender = departmentList
+  .filter((dept) =>
+    dept.name?.toLowerCase().includes(searchText.toLowerCase())
+  )
+  .map((dept) => ({
     ...dept,
     employees: departmentAttendance[dept.id] || [],
   }));
@@ -138,7 +138,6 @@ const AttendanceList = () => {
                     <DepartmentName>{dept.name}</DepartmentName>
                   </LeftWrapper>
 
-                  {/* Swiped / Total from Department API */}
                   <EmployeeCount>
                     {dept.swiped_employee_count || 0} / {dept.total_employee_count || 0} Swiped
                   </EmployeeCount>

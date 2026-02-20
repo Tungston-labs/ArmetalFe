@@ -18,7 +18,6 @@ import cardBg from "../../assets/shift.svg";
 import AddProjectModal from "../../Components/AddProjectModal";
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import TagIcon from "../../assets/downicon.svg";
-import { FaPlus } from "react-icons/fa";
 import { getProjects } from "../../Redux/fieldShiftSlice";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";

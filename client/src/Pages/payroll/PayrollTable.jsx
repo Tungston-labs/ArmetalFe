@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Container,
   Header,
@@ -30,6 +30,7 @@ import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
 import VerificationCircles from "../../Components/VerificationCircle";
 import HolidayIcon from "../../assets/payroll.svg";
+import { EmptyRow } from "../leaveDetails/EmployeeList.styles";
 
 const months = [
   "January",
@@ -53,7 +54,6 @@ const defaultYear = today.getFullYear();
 
 const years = Array.from({ length: 10 }, (_, i) => defaultYear - 2 + i);
 
-
 const PayrollTable = () => {
   const dispatch = useDispatch();
   const { data, loading, error, totalPages } = useSelector(
@@ -67,10 +67,20 @@ const PayrollTable = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState({});
-
-
   const [bulkStatus, setBulkStatus] = useState("");
   const LIMIT = 20;
+
+  // --- Sorting: ascending by employee_name (default)
+  const sortedData = useMemo(() => {
+    if (!Array.isArray(data)) return [];
+    const copy = [...data];
+    copy.sort((a, b) => {
+      const aName = (a.employee_name ?? "").toString();
+      const bName = (b.employee_name ?? "").toString();
+      return aName.localeCompare(bName, "en", { numeric: true });
+    });
+    return copy;
+  }, [data]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -86,9 +96,11 @@ const PayrollTable = () => {
         return "#000";
     }
   };
+
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
+
   useEffect(() => {
     dispatch(
       getPayrollData({
@@ -110,10 +122,11 @@ const PayrollTable = () => {
     selectedYear,
     selectedDepartment,
   ]);
+
   useEffect(() => {
-    if (data?.length) {
+    if (sortedData?.length) {
       const initialStatus = {};
-      data.forEach((emp) => {
+      sortedData.forEach((emp) => {
         initialStatus[emp.id] = {
           first: emp.hr1_verified,
           second: emp.hr2_verified,
@@ -121,7 +134,7 @@ const PayrollTable = () => {
       });
       setVerificationStatus(initialStatus);
     }
-  }, [data]);
+  }, [sortedData]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -147,9 +160,12 @@ const PayrollTable = () => {
 
   const handleSelectAll = () => {
     setSelectedEmployees(
-      selectedEmployees.length === data.length ? [] : data.map((emp) => emp.id),
+      selectedEmployees.length === sortedData.length
+        ? []
+        : sortedData.map((emp) => emp.id),
     );
   };
+
   const handleSingleStatusChange = async (employeeId, newStatus) => {
     const empStatus = verificationStatus[employeeId.id];
     if (!empStatus?.first || !empStatus?.second) {
@@ -195,7 +211,7 @@ const PayrollTable = () => {
 
     if (!newStatus || selectedEmployees.length === 0) return;
 
-    const unverified = data.filter(
+    const unverified = sortedData.filter(
       (emp) =>
         selectedEmployees.includes(emp.id) &&
         (!verificationStatus[emp.id]?.first ||
@@ -212,9 +228,10 @@ const PayrollTable = () => {
       return;
     }
 
-    const employee_ids = selectedEmployees.map(
-      (id) => data.find((e) => e.id === id).employee,
-    );
+    const employee_ids = selectedEmployees
+      .map((id) => sortedData.find((e) => e.id === id))
+      .filter(Boolean)
+      .map((e) => e.employee);
 
     try {
       await dispatch(
@@ -247,8 +264,6 @@ const PayrollTable = () => {
   };
 
   const handleCircleClick = async (e, employee, type) => {
-    console.log({ employee });
-
     e.preventDefault();
 
     const user =
@@ -389,7 +404,7 @@ const PayrollTable = () => {
           <div>
             <input
               type="checkbox"
-              checked={selectedEmployees.length === data.length}
+              checked={selectedEmployees.length === sortedData.length && sortedData.length > 0}
               onChange={handleSelectAll}
             />
             <strong>Selected {selectedEmployees.length} Employees</strong>
@@ -411,7 +426,7 @@ const PayrollTable = () => {
                 <input
                   type="checkbox"
                   checked={
-                    selectedEmployees.length === data.length && data.length > 0
+                    selectedEmployees.length === sortedData.length && sortedData.length > 0
                   }
                   onChange={handleSelectAll}
                 />
@@ -436,8 +451,8 @@ const PayrollTable = () => {
                   <Loader size="large" tip="Loading..." />
                 </td>
               </tr>
-            ) : data?.length > 0 ? (
-              data.map((emp, index) => (
+            ) : sortedData?.length > 0 ? (
+              sortedData.map((emp, index) => (
                 <tr key={emp.id}>
                   <Td>
                     <input
@@ -486,9 +501,10 @@ const PayrollTable = () => {
                 </tr>
               ))
             ) : (
-              <tr>
-                <Td colSpan="11">No data found</Td>
-              </tr>
+              
+             <EmptyRow>
+                                <td colSpan="8">No employees found.</td>
+                              </EmptyRow>
             )}
           </tbody>
         </Table>

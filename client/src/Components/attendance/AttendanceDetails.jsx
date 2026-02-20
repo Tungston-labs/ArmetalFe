@@ -1,4 +1,3 @@
-
 // ======================= AttendanceDetails.jsx =======================
 import React from "react";
 import {
@@ -16,41 +15,16 @@ import {
   CalendarWrapper,
 } from "./AttendanceDetails.Styles";
 
-const formatTime = (datetimeStr) => {
-  if (!datetimeStr) return "---";
-  const date = new Date(datetimeStr.replace(" ", "T"));
-  return date.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
-};
-
-const AttendanceDetails = ({ attendanceDetail, selectedDate, setSelectedDate }) => {
-  const sessions = attendanceDetail?.sessions || [];
-
-  // ✅ Today punch in/out from sessions
-  const todayPunchIn = sessions.length ? formatTime(sessions[0]?.time_in) : "---";
-
-  const todayPunchOut = sessions.length
-    ? formatTime(sessions[sessions.length - 1]?.time_out)
-    : "---";
-
-  const weeklyHours = attendanceDetail?.weekly_hours_formatted || "00:00";
-  const monthlyHours = attendanceDetail?.monthly_hours_formatted || "00:00";
-
-  const cardList = [
-    { title: "Today Punch In", value: todayPunchIn },
-    { title: "Today Punch Out", value: todayPunchOut },
-    { title: "Weekly Hours", value: weeklyHours },
-    { title: "Monthly Hours", value: monthlyHours },
-  ];
-
+const AttendanceDetails = ({
+  cardList,
+  sessions,
+  selectedDate,
+  onDateChange,
+  formatTime,
+}) => {
   return (
     <PageWrapper>
       <Header>Attendance Details</Header>
-
-      {/* ✅ Summary cards */}
       <CardWrapper>
         {cardList.map((card, index) => (
           <Card key={index}>
@@ -59,8 +33,6 @@ const AttendanceDetails = ({ attendanceDetail, selectedDate, setSelectedDate }) 
           </Card>
         ))}
       </CardWrapper>
-
-      {/* ✅ Previous attendance table */}
       <HistoryTable>
         <div
           style={{
@@ -71,12 +43,11 @@ const AttendanceDetails = ({ attendanceDetail, selectedDate, setSelectedDate }) 
           }}
         >
           <Header>Sessions</Header>
-
           <CalendarWrapper>
             <input
               type="date"
               value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
+              onChange={onDateChange}
               style={{
                 padding: "6px 10px",
                 borderRadius: "6px",
@@ -85,7 +56,6 @@ const AttendanceDetails = ({ attendanceDetail, selectedDate, setSelectedDate }) 
             />
           </CalendarWrapper>
         </div>
-
         <Table>
           <thead>
             <tr>
@@ -94,7 +64,6 @@ const AttendanceDetails = ({ attendanceDetail, selectedDate, setSelectedDate }) 
               <Th>Location</Th>
             </tr>
           </thead>
-
           <tbody>
             {sessions.length === 0 ? (
               <Tr>
