@@ -812,6 +812,7 @@ from .serializers import EmployeeAttendanceSummarySerializer
 from .utils.dayscalculations import build_employee_month_calendar
 
 
+
 class EmployeeAttendanceSummaryView(generics.ListAPIView):
     serializer_class = EmployeeAttendanceSummarySerializer
     permission_classes = [IsAuthenticated]
@@ -836,13 +837,9 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
 
         start_date = date(year, month, 1)
 
-        # ---------- END DATE RULE ----------
-        if year == today.year and month == today.month:
-            end_date = today                     # current month → till today
-        elif start_date > today.replace(day=1):
-            end_date = start_date                # future month → handled separately
-        else:
-            end_date = date(year, month, calendar.monthrange(year, month)[1])  # past month
+        # 🔥 ALWAYS use full month range
+        last_day = calendar.monthrange(year, month)[1]
+        end_date = date(year, month, last_day)
 
         results = []
 
@@ -862,21 +859,21 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
                 })
                 continue
 
-            # ---------- PAYROLL SNAPSHOT ----------
+            # ---------- PAYROLL SNAPSHOT (ONLY IF PAID) ----------
             payroll = EmployeePayrollRecord.objects.filter(
                 employee=emp,
                 year=year,
                 month=month
             ).first()
 
-            if payroll and payroll.status=='paid':
+            if payroll and payroll.status.lower() == "paid":
                 working_days = payroll.working_days or 0
                 present_days = payroll.days_present or 0
                 lop_days = payroll.lop_days or 0
                 absent_days = max(working_days - present_days, 0)
                 daily_records = []
-
             else:
+                # 🔥 Live calculation
                 working_days, present_days, absent_days, lop_days, daily_records = (
                     build_employee_month_calendar(emp, start_date, end_date)
                 )
