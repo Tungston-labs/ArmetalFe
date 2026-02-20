@@ -22,6 +22,8 @@ from .serializers import FinanceRecordSerializer
 from shared.pagination import CustomPagination
 
 
+
+
 class FinanceRecordListCreateView(generics.ListCreateAPIView):
     serializer_class = FinanceRecordSerializer
     permission_classes = [IsAuthenticated]
@@ -61,7 +63,7 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
             serializer.save(company=user.company)
 
     # ---------------------------------------------------
-    # LIST WITH SUMMARY
+    # LIST WITH FINANCIAL SUMMARY
     # ---------------------------------------------------
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -82,12 +84,7 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
             total=Sum("amount")
         )["total"] or 0
 
-        net_asset = total_income - total_expense
-
-        if total_income > 0:
-            cash_balance_percentage = round((net_asset / total_income) * 100, 2)
-        else:
-            cash_balance_percentage = 0
+        cash_balance = total_income - total_expense
 
         # ---------- Pagination ----------
         page = self.paginate_queryset(queryset)
@@ -95,11 +92,10 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
             serializer = self.get_serializer(page, many=True)
             response = self.get_paginated_response(serializer.data)
 
-            # Inject summary fields
+            # Inject summary fields (no structure change)
             response.data["total_income"] = total_income
             response.data["total_expense"] = total_expense
-            response.data["net_asset"] = net_asset
-            response.data["cash_balance_percentage"] = cash_balance_percentage
+            response.data["cash_balance"] = cash_balance
 
             return response
 
@@ -109,10 +105,8 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
             "results": serializer.data,
             "total_income": total_income,
             "total_expense": total_expense,
-            "net_asset": net_asset,
-            "cash_balance_percentage": cash_balance_percentage,
+            "cash_balance": cash_balance,
         })
-
 
 class FinanceRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = FinanceRecordSerializer
