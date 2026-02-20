@@ -1,4 +1,3 @@
-// src/components/TimesheetPage.styles.js
 import styled from 'styled-components';
 
 import { LuArrowLeft } from "react-icons/lu";

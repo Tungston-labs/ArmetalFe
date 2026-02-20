@@ -199,9 +199,9 @@ const RightModal = ({ open, onClose }) => {
         {loading.holidaySummary ? (
           <p>Loading holidays...</p>
         ) : holidaySummary ? (
-          <SingleHolidayCalendar
-            holidays={holidaySummary?.upcoming_holidays || []}
-          />
+        <SingleHolidayCalendar
+  holidays={holidaySummary?.all_holidays?.list || []}
+/>
         ) : (
           <p>No holidays found</p>
         )}

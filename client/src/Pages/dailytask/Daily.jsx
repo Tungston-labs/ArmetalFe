@@ -43,8 +43,6 @@ export default function DailyTask() {
 
   const dateInputRef = useRef(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-
-  // Helper to format Date -> YYYY-MM-DD in local time (no UTC conversion)
   const toYMD = (d) => {
     const date =
       d instanceof Date
@@ -58,59 +56,46 @@ export default function DailyTask() {
     const dd = String(date.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
   };
-
-  // Parse YYYY-MM-DD string into a local Date (midnight local)
   const parseYMD = (ymd) => {
     if (!ymd) return null;
     const [y, m, d] = ymd.split("-").map(Number);
     return new Date(y, m - 1, d);
   };
-
-  // Initialize selectedDate using local formatting
   const todayLocal = new Date();
   const initialYMD = toYMD(todayLocal);
-  const [selectedDate, setSelectedDate] = useState(initialYMD); // "YYYY-MM-DD"
+  const [selectedDate, setSelectedDate] = useState(initialYMD); 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // Fixed weekday labels (Mon -> Sun)
   const weekdayOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-  // Fetch departments on mount
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
 
-  // Fetch employees when department changes
   useEffect(() => {
     const params = {};
     if (selectedDepartment) params.department_id = selectedDepartment;
     dispatch(getEmployees(params));
   }, [dispatch, selectedDepartment]);
-
-  // Set default employee when employees list updates
   useEffect(() => {
     if (employees.length > 0) setSelectedEmployee(employees[0]);
     else setSelectedEmployee(null);
   }, [employees]);
 
-  // Fetch tasks when employee or date changes
   useEffect(() => {
     if (selectedEmployee && selectedDate) {
       dispatch(getTasks({ employeeId: selectedEmployee.id, date: selectedDate }));
     }
   }, [dispatch, selectedEmployee, selectedDate]);
 
-  // Filter employees by search term
   const filteredEmployees = employees.filter((emp) =>
     emp.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Get Monday of the week containing the selected date (local)
   const getStartOfWeekMonday = (ymd) => {
     const d = parseYMD(ymd);
-    const day = d.getDay(); // 0 Sunday
+    const day = d.getDay();
     const mondayOffset = day === 0 ? -6 : 1 - day;
     const monday = new Date(d);
     monday.setDate(d.getDate() + mondayOffset);
@@ -118,15 +103,13 @@ export default function DailyTask() {
     return monday;
   };
 
-  // Build weekDates (Mon -> Sun) from selectedDate (local)
   const weekStart = getStartOfWeekMonday(selectedDate);
   const weekDates = weekdayOrder.map((_, i) => {
     const d = new Date(weekStart);
     d.setDate(weekStart.getDate() + i);
-    return d; // Date objects in local timezone midnight
+    return d; 
   });
 
-  // Unified loader
   const loading = deptLoading || !departments.length || !employees.length;
 
   if (loading) {
@@ -147,14 +130,12 @@ export default function DailyTask() {
   const handleCalendarClick = () => setShowDatePicker(true);
   const handleEmployeeSelect = (emp) => setSelectedEmployee(emp);
 
-  // Prev day (local)
   const handlePrevDay = () => {
     const curr = parseYMD(selectedDate);
     curr.setDate(curr.getDate() - 1);
     setSelectedDate(toYMD(curr));
   };
 
-  // Next day (local) — only up to today
   const handleNextDay = () => {
     const curr = parseYMD(selectedDate);
     curr.setDate(curr.getDate() + 1);
@@ -164,7 +145,6 @@ export default function DailyTask() {
     }
   };
 
-  // Helpers for task UI (unchanged from your logic)
   const formatTime = (datetimeStr) => {
     if (!datetimeStr) return "-";
     try {
@@ -217,7 +197,6 @@ export default function DailyTask() {
           showSearch={false}
         />
 
-        {/* DatePicker modal (centered) */}
         {showDatePicker && (
           <div
             style={{
@@ -268,7 +247,7 @@ export default function DailyTask() {
               ))}
             </DepartmentDropdown>
         
-  </TopSelector>
+       </TopSelector>
           <div className="calendar-header">
             <div className="left">
               <button className="left-lesser" onClick={handlePrevDay}>

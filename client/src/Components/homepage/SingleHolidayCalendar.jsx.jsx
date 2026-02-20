@@ -21,10 +21,7 @@ const SingleHolidayCalendar = ({ holidays = [] }) => {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
 
-  // --------------------------------------------------------
-  // 🔥 CREATE HOLIDAY MAP LIKE:
-  // { "2025-12-25": { name: "xmas", type: "religious" } }
-  // --------------------------------------------------------
+
   const holidayMap = useMemo(() => {
     const map = {};
     holidays.forEach((h) => {

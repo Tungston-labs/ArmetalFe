@@ -8,7 +8,7 @@ import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
 
 import EmployeeList from "./Pages/leaveDetails/EmployeeList.jsx";
 import Holiday from "./Pages/holiday/Holiday.jsx";
-import Payroll from "./Pages/payroll/Payroll.jsx";
+import Payroll from "./Pages/payroll/PayrollDetailsView.jsx";
 import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx";
 import AddCompany from "./Pages/superAdmin/AddCompany.jsx";
 import Visa from "./Pages/visa/Visa.jsx";
@@ -25,10 +25,10 @@ import EmployeesOnLeave from "./Pages/onLeave/EmployeesOnLeave.jsx";
 import ViewBasic from "./Pages/employee/ViewBasic.jsx"
 import ViewBankpayment from "./Pages/employee/ViewBankpayment.jsx"
 import ViewDocument from "./Pages/employee/ViewDocument.jsx"
-import Payroll1 from "./Pages/payroll/Payroll1.jsx";
+import Payroll1 from "./Pages/payroll/PaymentOverview.jsx";
 import RequireAuth from "./Components/RequireAuth.jsx";
 import Viewpage from "./Pages/superAdmin/Viewpage.jsx";
-import PayrollFinal from "./Pages/payroll/PayrollFinal.jsx";
+// import PayrollFinal from "./Pages/payroll/PayrollFinal.jsx";
 import ForgetPassword from "./Pages/login/ForgetPassword.jsx";
 import Verification from "./Pages/login/Verification.jsx";
 import NewPassword from "./Pages/login/NewPassword.jsx";
@@ -61,6 +61,8 @@ import Parent from "./Pages/employeDashboard/Parent.jsx";
 import ProgressModal from "./Components/ProgressModal.jsx";
 import AttendanceReport from "./Pages/attendanceReport/AttendanceReport.jsx";
 import EmployeeAttendanceModal from "./Pages/attendanceReport/EmployeeAttendanceModal.jsx";
+import PayrollDetailsContainer from "./Pages/payroll/PayrollDetailsContainer.jsx";
+import PayrollTable from "./Pages/payroll/PayrollTable.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -96,8 +98,8 @@ function App() {
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
               <Route path="/holiday" element={<Holiday />} />
-              <Route path="/payrolldetails/:id" element={<Payroll />} />
-              <Route path="/payrolldetails" element={<PayrollFinal />} />
+              <Route path="/payrolldetails/:id" element={< PayrollDetailsContainer/>} />
+              <Route path="/payrolldetails" element={<PayrollTable />} />
               <Route path="/superadmin" element={<SuperAdmin />} />
               <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard />} />
               <Route path="/add-company" element={<AddCompany />} />
