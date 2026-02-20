@@ -22,16 +22,22 @@ def build_employee_month_calendar(employee, start_date, end_date):
         else:
             holidays.add(h.date)
 
-    # ---------- Attendance till TODAY ----------
+    # ---------- FULL MONTH LOOP ----------
+    total_days_full_month = (end_date - start_date).days + 1
+
+    working_days = 0  # Full month working days excluding holidays/off
+    present_days = 0
+    unswiped_days_till_today = 0
+    daily_records = []
+
+    # ---------- Attendance & Leaves ----------
     attendances = Attendance.objects.filter(
         employee=employee,
-        date__range=(start_date, today)
+        date__range=(start_date, today)  # Only upto today
     )
-
     attendance_map = {a.date: float(a.total_hours or 0) for a in attendances}
     attendance_dates = set(attendance_map.keys())
 
-    # ---------- Leaves till TODAY ----------
     leave_requests = LeaveRequest.objects.filter(
         employee=employee,
         status="approved",
@@ -40,96 +46,70 @@ def build_employee_month_calendar(employee, start_date, end_date):
     )
 
     approved_leave_dates = set()
-
     for leave in leave_requests:
         start = max(leave.from_date, start_date)
         end = min(leave.to_date, today)
-
         if isinstance(start, datetime):
             start = start.date()
         if isinstance(end, datetime):
             end = end.date()
-
         for i in range((end - start).days + 1):
             approved_leave_dates.add(start + timedelta(days=i))
 
-    # ---------- FULL MONTH LOOP ----------
-    total_days_full_month = (end_date - start_date).days + 1
-
-    working_days = 0
-    present_days = 0
-    unswiped_days_till_today = 0
-    daily_records = []
-
+    # ---------- Loop all month for working days, but daily records only upto today ----------
     for i in range(total_days_full_month):
         d = start_date + timedelta(days=i)
         weekday = d.weekday()
 
         # Holiday
         if d in holidays:
-            status = "holiday"
-            hours = 0
+            if d <= today:
+                daily_records.append({"date": d, "status": "holiday", "total_hours": 0})
+            continue  # Not a working day
 
         # Weekly off
-        elif weekday in company_off_days:
-            status = "off"
+        if weekday in company_off_days:
+            if d <= today:
+                daily_records.append({"date": d, "status": "off", "total_hours": 0})
+            continue  # Not a working day
+
+        # Count as working day
+        working_days += 1
+
+        if d > today:
+            continue  # No daily record for future
+
+        # ---------- Check attendance / leave ----------
+        if d in approved_leave_dates:
+            status = "leave"
             hours = 0
+            unswiped_days_till_today += 1
 
-        else:
-            working_days += 1
-
-            # FUTURE → do not affect HR totals
-            if d > today:
-                status = "upcoming"
-                hours = 0
-
-            # Leave
-            elif d in approved_leave_dates:
-                status = "leave"
-                hours = 0
-                unswiped_days_till_today += 1
-
-            # Attendance
-            elif d in attendance_dates:
-                hours = attendance_map[d]
-
-                if hours >= 8:
-                    status = "present"
-                    present_days += 1
-
-                elif 5 <= hours < 8:
-                    status = "half_day"
-                    present_days += 0.5
-                    unswiped_days_till_today += 0.5
-
-                else:
-                    status = "absent"
-                    unswiped_days_till_today += 1
-
-            # Absent ONLY till today
+        elif d in attendance_dates:
+            hours = attendance_map[d]
+            if hours >= 8:
+                status = "present"
+                present_days += 1
+            elif 5 <= hours < 8:
+                status = "half_day"
+                present_days += 0.5
+                unswiped_days_till_today += 0.5
             else:
                 status = "absent"
-                hours = 0
+                unswiped_days_till_today += 1
+        else:
+            status = "absent"
+            hours = 0
+            unswiped_days_till_today += 1
 
-                if d <= today:
-                    unswiped_days_till_today += 1
+        daily_records.append({"date": d, "status": status, "total_hours": round(hours, 2)})
 
-        daily_records.append({
-            "date": d,
-            "status": status,
-            "total_hours": round(hours, 2),
-        })
-
-    # ---------- FINAL HR CALC ----------
-    approved_leave_count = len(approved_leave_dates)
-
+    # ---------- FINAL LOP CALC ----------
     total_leave_balance = float(employee.total_leave or 0)
-    paid_leave = float(employee.paid_leave or 0)
-
-    leave_adjustment = min(approved_leave_count, total_leave_balance)
+    leave_adjustment = min(len(approved_leave_dates), total_leave_balance)
 
     real_absent_days = unswiped_days_till_today - leave_adjustment
-    lop_days = max(real_absent_days, 0) + paid_leave
-    absent_days = max(unswiped_days_till_today - leave_adjustment, 0)
+    lop_days = max(real_absent_days, 0)
+    absent_days = max(real_absent_days, 0)
 
     return working_days, present_days, absent_days, lop_days, daily_records
