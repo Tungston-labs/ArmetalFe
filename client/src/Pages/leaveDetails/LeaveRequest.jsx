@@ -1,42 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLeaveRequests, patchLeaveStatus } from '../../Redux/leaveSlice';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { IoEyeOutline } from 'react-icons/io5';
+import {useNavigate } from 'react-router-dom';
 import OnLeaveModal from "./ModalList"
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import {
   Container,
-  Table, DepartmentSelect,
   TableRow,
   TableCell,
-  ProfileImage,
   ActionButtons,
   ApproveButton,
-  Tab,
-  SearchInput,
-  AddButton,
-  Pagination,
-  TopBar,
-  HRManager,
-  HeaderSection,
-  TitleSection,
-  Title,
-  Subtitle,
-  ActionArea,
-  DropdownWrapper,
-  DropdownMenu,
-  SearchWrapper,
-  SearchIcon,
-  EmployeeImage
+  // Pagination,
 } from './LeaveRequest.Styles';
-import { PiUserCirclePlusThin } from "react-icons/pi";
-// import Navbar from '../../Components/Navbar';
 import Loader from "../../Components/Loader"
-import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TextBlock, Avatar, AvatarFallback, NameCell } from './EmployeeList.styles';
+import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, Avatar, AvatarFallback, NameCell } from './EmployeeList.styles';
 import EmployeeTitle from '../../Components/EmployeeTitle';
-
+import Pagination  from "../../Components/Pagination/Pagination"
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -101,6 +81,19 @@ export default function LeaveRequest() {
     setPage(1);
   };
 
+
+const handlePageChange = (newPage) => {
+  if (!newPage || newPage < 1) return;
+
+  dispatch(
+    getLeaveRequests({
+      page: newPage,
+      department_id: departmentFilter || undefined,
+    })
+  ).then(() => {
+    setPage(newPage);
+  });
+};
   return (
     <>
 
@@ -125,7 +118,6 @@ export default function LeaveRequest() {
               <HeadCell>Sl No</HeadCell>
               <HeadCell>Employee name</HeadCell>
               <HeadCell>Leave type</HeadCell>
-              {/* <HeadCell>Email ID</HeadCell> */}
               <HeadCell>Department</HeadCell>
               <HeadCell>Start date </HeadCell>
               <HeadCell>End date</HeadCell>
@@ -156,28 +148,15 @@ export default function LeaveRequest() {
                 >
                   <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
                   <BodyCell>
-                    <NameCell>
-                      {leave?.employee?.profile_pic ? (
-                        <Avatar src={leave.employee.profile_pic} alt="profile" />
-                      ) : (
-                        <AvatarFallback>
-                          <PiUserCirclePlusThin size={40} color="#999" />
-                        </AvatarFallback>
-                      )}
-                      {leave?.employee?.name || "N/A"}
-                    </NameCell>
+                  {leave?.employee?.name || "N/A"}                 
                   </BodyCell>
                   <BodyCell>{leave.leave_type}</BodyCell>
-                  {/* <BodyCell>{leave.employee.email}</BodyCell> */}
                   <BodyCell>{leave.employee.department}</BodyCell>
                   <BodyCell>
-                    {leave.from_date}
+                {leave.from_date}
                   </BodyCell>
                   <BodyCell> {leave.to_date}</BodyCell>
-
-
-
-                  <BodyCell
+                <BodyCell
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
@@ -187,8 +166,6 @@ export default function LeaveRequest() {
                         onClick={() => {
                           const today = new Date();
                           const leaveEnd = new Date(leave.to_date);
-
-                          // Disable only if leave is in the past
                           if (leaveEnd < today.setHours(0, 0, 0, 0)) {
                             alert("You cannot approve past leave requests.");
                             return;
@@ -223,7 +200,16 @@ export default function LeaveRequest() {
           </TableBody>
         </StyledTable>
 
-        <Pagination>
+  <Pagination
+    currentPage={page}
+    totalPages={pagination?.total_pages ?? 1}
+    onPageChange={handlePageChange}
+  />
+
+
+
+
+        {/* <Pagination>
           <span
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             style={{ cursor: 'pointer', marginRight: '0px',}}
@@ -261,7 +247,7 @@ export default function LeaveRequest() {
           >
             &rarr;
           </span>
-        </Pagination>
+        </Pagination> */}
 
         {showModal && (
           <OnLeaveModal

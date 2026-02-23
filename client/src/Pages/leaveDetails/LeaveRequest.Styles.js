@@ -326,13 +326,14 @@ export const DeclineButton = styled.button`
 export const ApproveButton = styled.button`
 
   color: white;
-  padding: 0.4rem 0.8rem;
+  padding:4px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border-radius: 7px;
+  border-radius: 4px;
   border: 1px solid #172554;
   background: #304eb0;
+  font-size: 12px;
   &:hover {
     background-color: #64748b; 
     transform: scale(1.02);

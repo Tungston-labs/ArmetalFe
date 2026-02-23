@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Pagination,
   TruncatedText,
   StyledTable,
-  NameCell,
-  Avatar,
-  AvatarFallback,
   DeleteIconWrapper,
   TableHead,
   HeadRow,
@@ -25,7 +21,6 @@ import {
   ModalButton,
   ModalButtonWrapper,
 } from "./DeletModal.styles";
-import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaTrash } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,13 +30,14 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import RightSideModal from "../employeDashboard/RightSideModal";
+import Pagination from "../../Components/Pagination/Pagination";
+
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [searchText, setSearchText] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -104,13 +100,13 @@ const EmployeeList = () => {
   };
   const filteredEmployees = Array.isArray(employeeList)
     ? employeeList.filter(
-        (emp) =>
-          emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-          emp.employee_id
-            ?.toString()
-            .toLowerCase()
-            .includes(debouncedSearch.toLowerCase()),
-      )
+      (emp) =>
+        emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        emp.employee_id
+          ?.toString()
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase()),
+    )
     : [];
   return (
     <>
@@ -127,9 +123,9 @@ const EmployeeList = () => {
           dropdownOptions={departmentList || []}
           dropdownLoading={deptLoading}
           onAddClick={() => navigate("/basic-details")}
-            searchValue={searchText} 
+          searchValue={searchText}
           onSearchChange={setSearchText}
-            selectedDropdownValue={departmentFilter}  
+          selectedDropdownValue={departmentFilter}
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
           showTabs={true}
@@ -160,19 +156,8 @@ const EmployeeList = () => {
                       }}
                     >
                       <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
-                      <BodyCell>
-                        <NameCell>
-                          {emp.profile_pic ? (
-                            <Avatar src={emp.profile_pic} alt={emp.name} />
-                          ) : (
-                            <AvatarFallback>
-                              <PiUserCirclePlusThin size={20} color="#999" />
-                            </AvatarFallback>
-                          )}
-                          {emp.name}
-                        </NameCell>
-                      </BodyCell>
 
+                      <BodyCell> {emp.name}</BodyCell>
                       <BodyCell>{emp.employee_id}</BodyCell>
 
                       <BodyCell>
@@ -210,33 +195,11 @@ const EmployeeList = () => {
                 )}
               </TableBody>
             </StyledTable>
-
-            <Pagination>
-              <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>
-                &larr;
-              </span>
-              {Array.from(
-                { length: pagination?.total_pages || 1 },
-                (_, i) => i + 1,
-              ).map((pageNumber) => (
-                <span
-                  key={pageNumber}
-                  onClick={() => handlePageChange(pageNumber)}
-                  className={page === pageNumber ? "active" : ""}
-                >
-                  {pageNumber}
-                </span>
-              ))}
-              <span
-                onClick={() => {
-                  if (page < (pagination?.total_pages || 1)) {
-                    handlePageChange(page + 1);
-                  }
-                }}
-              >
-                &rarr;
-              </span>
-            </Pagination>
+            <Pagination
+              currentPage={page}
+              totalPages={pagination?.total_pages || 1}
+              onPageChange={handlePageChange}
+            />
           </>
         )}
 
