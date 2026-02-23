@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
@@ -130,16 +130,16 @@ const FinanceDetail = () => {
   };
 
   const totals = useMemo(() => {
-  const income = list
-    .filter((r) => r.payment_type === "IN")
-    .reduce((s, r) => s + Number(r.amount || 0), 0);
+    const income = list
+      .filter((r) => r.payment_type === "IN")
+      .reduce((s, r) => s + Number(r.amount || 0), 0);
 
-  const expense = list
-    .filter((r) => r.payment_type === "OUT")
-    .reduce((s, r) => s + Number(r.amount || 0), 0);
+    const expense = list
+      .filter((r) => r.payment_type === "OUT")
+      .reduce((s, r) => s + Number(r.amount || 0), 0);
 
-  return { income, expense };
-}, [list]);
+    return { income, expense };
+  }, [list]);
 
   return (
     <>
@@ -163,11 +163,11 @@ const FinanceDetail = () => {
             searchPlaceholder="Search Category / Note"
           />
         </TopBar>
-        
-<FinanceSummary
-  income={totals.income}
-  expense={totals.expense}
-/>
+
+        <FinanceSummary
+          income={totals.income}
+          expense={totals.expense}
+        />
         <TableWrapper>
           <StyledTable>
             <thead>
@@ -194,8 +194,7 @@ const FinanceDetail = () => {
                     <Td>{String((page - 1) * PAGE_SIZE + index + 1).padStart(3, "0")}</Td>
 
                     <Td>{record.date || FALLBACK}</Td>
-                    <Td>{CATEGORY_LABELS[record.category] || FALLBACK}</Td>
-                    <Td>{record.note || FALLBACK}</Td>
+                    <Td>{record.category_name || FALLBACK}</Td>                    <Td>{record.note || FALLBACK}</Td>
                     <Td>{PAYMENT_TYPE_LABELS[record.payment_type] || FALLBACK}</Td>
                     <Td>
                       {record.amount !== null && record.amount !== undefined
@@ -221,7 +220,7 @@ const FinanceDetail = () => {
             </tbody>
           </StyledTable>
         </TableWrapper>
-        
+
         <Pagination>
           <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>&larr;</span>
 
