@@ -1,7 +1,7 @@
 from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import FinanceRecord
+from .models import FinanceRecord,FinanceCategory
 from .serializers import FinanceRecordSerializer
 from shared.pagination import CustomPagination
 from rest_framework.permissions import IsAuthenticated
@@ -18,10 +18,19 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .models import FinanceRecord
-from .serializers import FinanceRecordSerializer
+from .serializers import FinanceRecordSerializer,FinanceCategorySerializer
 from shared.pagination import CustomPagination
 
+class FinanceCategoryListCreateView(generics.ListCreateAPIView):
+    serializer_class = FinanceCategorySerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        return FinanceCategory.objects.filter(company=user.company)
+
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user.company)
 
 
 class FinanceRecordListCreateView(generics.ListCreateAPIView):
