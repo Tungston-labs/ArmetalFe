@@ -816,6 +816,7 @@ from .utils.dayscalculations import build_employee_month_calendar
 class EmployeeAttendanceSummaryView(generics.ListAPIView):
     serializer_class = EmployeeAttendanceSummarySerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         user = self.request.user
