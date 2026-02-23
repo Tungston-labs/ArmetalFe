@@ -10,24 +10,32 @@ Content-Type: application/json
 ###create finance record category
 
 POST http://178.248.112.16:8001/api/finance/categories/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcxODM0Mjc0LCJpYXQiOjE3NzE4MzA2NzQsImp0aSI6IjEzNzM0MTE2NGYyNjQzMDFhYzM5ZjhhMzE3ZTczNmI5IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.3sgN54RsLfNwdG0JAlRm82CZemQZoSzDOf-r5ln7wJg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcxODM0ODQ3LCJpYXQiOjE3NzE4MzEyNDcsImp0aSI6IjBiOTY3NmJiZTQ1OTRlMWViOWU4NWU5MDk2YmY1MzA0IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.AXzAEa83-livpE11yNcZPZM4GvV5tnuNWyXwffnb-QY
 Content-Type: application/json
 
 {
-  "name": "Petrol",
-  "payment_type": "OUT"
+  "name": "subscription",
+  "payment_type": "IN"
 }
+
+
+###get finance record category
+
+GET http://178.248.112.16:8001/api/finance/categories/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcxODM0Mjc0LCJpYXQiOjE3NzE4MzA2NzQsImp0aSI6IjEzNzM0MTE2NGYyNjQzMDFhYzM5ZjhhMzE3ZTczNmI5IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.3sgN54RsLfNwdG0JAlRm82CZemQZoSzDOf-r5ln7wJg
+
+
 ###create finance record
 
 POST http://178.248.112.16:8001/api/finance/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwMTgxOTUzLCJpYXQiOjE3NzAxNzgzNTMsImp0aSI6IjA3N2I0MTE2OGE1ZTRkMzFhMzVjMmVmZWM3OTliNjY2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.GX1_iNUHxRGyH0x9eOJgUaKZAypY3UC66lOvGlMCz8U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcxODM0Mjc0LCJpYXQiOjE3NzE4MzA2NzQsImp0aSI6IjEzNzM0MTE2NGYyNjQzMDFhYzM5ZjhhMzE3ZTczNmI5IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.3sgN54RsLfNwdG0JAlRm82CZemQZoSzDOf-r5ln7wJg
 Content-Type: application/json
 
 {
   "date": "2026-01-25",
   "amount": 1500,
   "payment_type": "OUT",
-  "category": "FOOD",
+  "category": 1,
   "note": "Team lunch"
 }
 
