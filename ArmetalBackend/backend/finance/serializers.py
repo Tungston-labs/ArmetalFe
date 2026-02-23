@@ -4,7 +4,9 @@ from .models import FinanceRecord,FinanceCategory
 class FinanceCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = FinanceCategory
-        fields = "__all__"
+        fields = ["id", "name", "payment_type", "company", "created_at"]
+        read_only_fields = ["company", "created_at"]
+        
 class FinanceRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinanceRecord
