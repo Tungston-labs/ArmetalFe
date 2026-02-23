@@ -164,10 +164,10 @@ class CompanySubscription(TimeStampedModel):
             ):
 
                 # prevent duplicate finance entry
-                subscription_category, _ = FinanceCategory.objects.get_or_create(
-                    name="Subscription",
+                subscription_category = FinanceCategory.objects.get(
+                    name="subscription",
                     payment_type="IN",
-                    company=None  # SUPERADMIN CATEGORY
+                    company=None
                 )
 
                 exists = FinanceRecord.objects.filter(

@@ -85,8 +85,8 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
             employee_id = getattr(employee, "employee_id", employee.id)
 
             # Prevent duplicate finance records (company-wise)
-            reimbursement_category, _ = FinanceCategory.objects.get_or_create(
-                name="Reimbursement",
+            reimbursement_category, _ = FinanceCategory.objects.get(
+                name="reimbursement",
                 payment_type="OUT",
                 company=company
             )

@@ -300,8 +300,8 @@ class PayrollStatusUpdateView(APIView):
 
             # Prevent duplicate salary entries (company-wise)
 
-            salary_category, _ = FinanceCategory.objects.get_or_create(
-                name="Salary",
+            salary_category, _ = FinanceCategory.objects.get(
+                name="salary",
                 payment_type="OUT",
                 company=company
             )
