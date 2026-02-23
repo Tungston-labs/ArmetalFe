@@ -144,7 +144,7 @@ class CompanySubscription(TimeStampedModel):
 
         if not is_new:
             previous_status = CompanySubscription.objects.get(pk=self.pk).status
-        from finance.models import FinanceRecord
+        from finance.models import FinanceRecord,FinanceCategory
 
         with transaction.atomic():
 
@@ -164,8 +164,14 @@ class CompanySubscription(TimeStampedModel):
             ):
 
                 # prevent duplicate finance entry
+                subscription_category, _ = FinanceCategory.objects.get_or_create(
+                    name="Subscription",
+                    payment_type="IN",
+                    company=None  # SUPERADMIN CATEGORY
+                )
+
                 exists = FinanceRecord.objects.filter(
-                    category="SUBSCRIPTION",
+                    category=subscription_category,
                     payment_type="IN",
                     note__icontains=self.company.company_id,
                     date__month=self.month,
@@ -174,20 +180,16 @@ class CompanySubscription(TimeStampedModel):
 
                 if not exists:
                     FinanceRecord.objects.create(
-                        company=None,  # ← superadmin income
+                        company=None,  # superadmin income
                         date=self.paid_date,
                         amount=self.amount,
                         payment_type="IN",
-                        category="SUBSCRIPTION",
-                        note=f"Subscription payment from {self.company.name} ({self.company.company_id}) for {self.month}/{self.year}",
+                        category=subscription_category,
+                        note=f"Subscription payment from {self.company.name} "
+                            f"({self.company.company_id}) "
+                            f"for {self.month}/{self.year}",
                     )
 
-
-
-    
-
-
-    
 
 class ImpersonationRequest(models.Model):
     super_admin = models.ForeignKey(User, on_delete=models.CASCADE)

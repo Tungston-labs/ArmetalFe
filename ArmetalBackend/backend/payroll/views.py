@@ -248,6 +248,8 @@ from django.utils import timezone
 from payroll.models import EmployeePayrollRecord
 from finance.models import FinanceRecord
 from payroll.serializers import EmployeePayrollRecordSerializer
+from finance.models import FinanceCategory
+
 
 
 class PayrollStatusUpdateView(APIView):
@@ -297,9 +299,16 @@ class PayrollStatusUpdateView(APIView):
             company = record.employee.department.company   
 
             # Prevent duplicate salary entries (company-wise)
+
+            salary_category, _ = FinanceCategory.objects.get_or_create(
+                name="Salary",
+                payment_type="OUT",
+                company=company
+            )
+
             already_exists = FinanceRecord.objects.filter(
-                company=company,                 
-                category="SALARY",
+                company=company,
+                category=salary_category,
                 payment_type="OUT",
                 note__icontains=f"{record.employee.employee_id}",
                 date__month=month,
@@ -308,16 +317,14 @@ class PayrollStatusUpdateView(APIView):
 
             if not already_exists:
                 FinanceRecord.objects.create(
-                    company=company,             
+                    company=company,
                     date=timezone.now().date(),
                     amount=net_salary,
                     payment_type="OUT",
-                    category="SALARY",
-                    note=(
-                        f"Salary paid to {record.employee.name} "
+                    category=salary_category,
+                    note=f"Salary paid to {record.employee.name} "
                         f"(Employee ID: {record.employee.employee_id}) "
                         f"for {month}/{year}"
-                    )
                 )
 
 

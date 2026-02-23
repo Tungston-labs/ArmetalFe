@@ -48,7 +48,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from django.db import transaction
 from .models import Reimbursement
-from finance.models import FinanceRecord
+from finance.models import FinanceRecord,FinanceCategory
 from .serializers import ReimbursementDetailSerializer
 
 
@@ -85,21 +85,27 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
             employee_id = getattr(employee, "employee_id", employee.id)
 
             # Prevent duplicate finance records (company-wise)
+            reimbursement_category, _ = FinanceCategory.objects.get_or_create(
+                name="Reimbursement",
+                payment_type="OUT",
+                company=company
+            )
+
             exists = FinanceRecord.objects.filter(
-                company=company,          
+                company=company,
                 date=instance.date,
                 amount=instance.amount,
-                category="REIMBURSEMENT",
+                category=reimbursement_category,
                 note__icontains=str(employee_id)
             ).exists()
 
             if not exists:
                 FinanceRecord.objects.create(
-                    company=company,      
+                    company=company,
                     date=instance.date,
                     amount=instance.amount,
                     payment_type="OUT",
-                    category="REIMBURSEMENT",
+                    category=reimbursement_category,
                     note=f"Reimbursement approved for {employee_name} ({employee_id})"
                 )
 
