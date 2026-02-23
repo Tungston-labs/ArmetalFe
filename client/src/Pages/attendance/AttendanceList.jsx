@@ -39,10 +39,7 @@ const AttendanceList = () => {
  const { minList: departmentList = [], loading } = useSelector(
   (state) => state.departments
 );
-
-
   const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
-
   useEffect(() => {
     dispatch(getDepartmentsMin({ page: 1, search: "" }));
   }, [dispatch]);
@@ -90,10 +87,8 @@ const AttendanceList = () => {
       setSelectedDept(null);
       return;
     }
-
     setSelectedDept(deptId);
     setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
-
     if (!departmentAttendance[deptId]) {
       await loadAttendanceForDept(deptId);
     }
@@ -118,7 +113,6 @@ const departmentsToRender = departmentList
         onSearchChange={setSearchText}
         showBackArrow={false}
       />
-
       {loading ? (
         <Loader />
       ) : (
@@ -139,12 +133,10 @@ const departmentsToRender = departmentList
                     <DepartmentIcon>{dept.name?.[0]}</DepartmentIcon>
                     <DepartmentName>{dept.name}</DepartmentName>
                   </LeftWrapper>
-
                   <EmployeeCount>
                     {dept.swiped_employee_count || 0} / {dept.total_employee_count || 0} Swiped
                   </EmployeeCount>
                 </DepartmentHeader>
-
                 {isOpen && (
                   <DropdownWrapper>
                     <DropdownHeader>
@@ -156,7 +148,6 @@ const departmentsToRender = departmentList
                       <span>Out Time</span>
                       <span>Status</span>
                     </DropdownHeader>
-
                     <EmployeeList>
                       {loadingDept ? (
                         <EmployeeItem style={{ textAlign: "center" }}>
@@ -165,7 +156,6 @@ const departmentsToRender = departmentList
                       ) : paginated.length > 0 ? (
                         paginated.map((emp, idx) => {
                           const sessions = emp.sessions || [];
-
                           const inTimes = sessions
                             .map((s) => parseTimeToTimestamp(s.time_in))
                             .filter((t) => !isNaN(t));
@@ -182,19 +172,16 @@ const departmentsToRender = departmentList
                                 ? formatTime(parseTimeToTimestamp(lastSession.time_out))
                                 : "---";
                           }
-
                           return (
                             <EmployeeRow
                               key={emp.employee}
-                              onClick={() => handleRowClick(emp.employee)}
-                            >
+                              onClick={() => handleRowClick(emp.employee)} >
                               <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
                               <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.date || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.first_swipe_in || tIn}</EmployeeCell>
                               <EmployeeCell>{emp.last_swipe_out || tOut}</EmployeeCell>
-
                               <EmployeeCell>
                                 <span
                                   style={{
@@ -212,7 +199,6 @@ const departmentsToRender = departmentList
                         <EmployeeItem>No attendance found.</EmployeeItem>
                       )}
                     </EmployeeList>
-
                     {employees.length > pageSize && (
                       <div style={{ display: "flex", gap: "10px", padding: "10px" }}>
                         <button
@@ -226,11 +212,9 @@ const departmentsToRender = departmentList
                         >
                           Prev
                         </button>
-
                         <span>
                           Page {currentPage} / {totalPages}
                         </span>
-
                         <button
                           disabled={currentPage === totalPages}
                           onClick={() =>
@@ -238,8 +222,7 @@ const departmentsToRender = departmentList
                               ...p,
                               [dept.id]: currentPage + 1,
                             }))
-                          }
-                        >
+                          } >
                           Next
                         </button>
                       </div>

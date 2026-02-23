@@ -16,22 +16,28 @@ import {
 } from "./NewFinance.Styles";
 import { FaArrowLeft } from "react-icons/fa6";
 const getTodayDate = () => new Date().toISOString().split("T")[0];
-const CATEGORY_OPTIONS = [
-  { label: "Salary", value: "SALARY" },
-  { label: "Reimbursement", value: "REIMBURSEMENT" },
-  { label: "Travel", value: "TRAVEL" },
-  { label: "Food", value: "FOOD" },
-  { label: "Other", value: "OTHER" },
-];
 
 const PAYMENT_TYPE_OPTIONS = [
   { label: "Income", value: "IN" },
   { label: "Expense", value: "OUT" },
 ];
-
+const EXPENSE_CATEGORIES = [
+  { label: "Salary", value: "SALARY" },
+  { label: "Reimbursement", value: "REIMBURSEMENT" },
+  { label: "Travel", value: "TRAVEL" },
+  { label: "Food", value: "FOOD" },
+  { label: "Other", value: "OTHER" },
+  { label: "+ Add New Category", value: "ADD_NEW" },
+];
+const INCOME_CATEGORIES = [
+  { label: "Project Payment", value: "PROJECT_PAYMENT" },
+  { label: "Client Payment", value: "CLIENT_PAYMENT" },
+  { label: "Other Income", value: "OTHER_INCOME" },
+  { label: "+ Add New Category", value: "ADD_NEW" },
+];
 const initialFormState = {
   category: "",
-  date: getTodayDate(), 
+  date: getTodayDate(),
   paymentType: "",
   amount1: "",
   note: "",
@@ -40,16 +46,16 @@ const initialFormState = {
 const FinanceModal = ({ isOpen, onClose, onSave }) => {
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
-
+  const [customCategory, setCustomCategory] = useState("");
 
   if (!isOpen) return null;
- const resetForm = () => {
-  setFormData({
-    ...initialFormState,
-    date: getTodayDate(), 
-  });
-  setErrors({});
-};
+  const resetForm = () => {
+    setFormData({
+      ...initialFormState,
+      date: getTodayDate(),
+    });
+    setErrors({});
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,7 +84,6 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
 
     if (!validate()) return;
 
-    // Wait for save to complete
     await onSave({
       category: formData.category,
       paymentType: formData.paymentType,
@@ -87,14 +92,18 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
       note: formData.note,
     });
 
-    resetForm();   // ✅ CLEAR FORM
+    resetForm();
   };
 
   const handleClose = () => {
-    resetForm();   // ✅ Clear when closing manually too
+    resetForm();
     onClose();
   };
-
+  const getCategoryOptions = () => {
+    if (formData.paymentType === "OUT") return EXPENSE_CATEGORIES;
+    if (formData.paymentType === "IN") return INCOME_CATEGORIES;
+    return [];
+  };
   return (
     <ModalOverlay>
       <ModalContainer>
@@ -106,36 +115,6 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
         </ModalHeader>
 
         <Form onSubmit={handleSubmit}>
-          <FormRow>
-            <div>
-              <Label>Category *</Label>
-              <Select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-              >
-                <option value="">Select Category</option>
-                {CATEGORY_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </Select>
-              {errors.category && <p className="error">{errors.category}</p>}
-            </div>
-
-            <div>
-              <Label>Date *</Label>
-              <Input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-              />
-              {errors.date && <p className="error">{errors.date}</p>}
-            </div>
-          </FormRow>
-
           <FormRow>
             <div>
               <Label>Payment Type *</Label>
@@ -153,6 +132,49 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
               </Select>
               {errors.paymentType && (
                 <p className="error">{errors.paymentType}</p>
+              )}
+            </div>
+
+            <div>
+              <Label>Date *</Label>
+              <Input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+              />
+              {errors.date && <p className="error">{errors.date}</p>}
+            </div>
+          </FormRow>
+
+          <FormRow>
+
+            <div>
+              <Label>Category *</Label>
+              <Select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+              >
+                <option value="">Select Category</option>
+                {getCategoryOptions().map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </Select>
+
+              {errors.category && <p className="error">{errors.category}</p>}
+
+              {/* Show input if Add New selected */}
+              {formData.category === "ADD_NEW" && (
+                <Input
+                  type="text"
+                  placeholder="Enter new category"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  style={{ marginTop: "8px" }}
+                />
               )}
             </div>
 

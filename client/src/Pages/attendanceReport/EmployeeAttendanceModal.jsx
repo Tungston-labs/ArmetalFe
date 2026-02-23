@@ -21,16 +21,11 @@ const EmployeeAttendanceModal = ({ employee, monthName, isOpen, onClose }) => {
   if (!isOpen || !employee) return null;
 
   const dailyRecords = employee.daily_records || [];
-
-  /* ---------- USE BACKEND VALUES (NO RECALCULATION) ---------- */
-
   const workingDays = employee.working_days ?? 0;
   const presentCount = employee.present_days ?? 0;
   const absentCount = employee.absent_days ?? 0;
   const lopCount = employee.lop_days ?? 0;
-
-  /* ---------- STATUS LABEL ---------- */
-
+  
   const getStatusLabel = (status) => {
     switch ((status || "").toLowerCase()) {
       case "present":
@@ -56,7 +51,6 @@ const EmployeeAttendanceModal = ({ employee, monthName, isOpen, onClose }) => {
           <CloseButton onClick={onClose}>×</CloseButton>
         </ModalHeader>
 
-        {/* ---------- SUMMARY CARDS ---------- */}
 
         <CardsWrapper>
           <Card>

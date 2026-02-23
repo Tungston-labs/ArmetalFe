@@ -256,17 +256,20 @@ export const TextBlock = styled.div`
 export const TruncatedText = styled.div`
   /* max-width: 80px; */
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
 
   @media (max-width: 768px) {
     max-width: 50px; 
+    overflow: hidden;
   }
    @media (min-width: 769px) and (max-width: 1024px) {
     max-width: 80px; 
+    overflow: hidden;
   }
    @media (min-width: 1025px) and (max-width: 1440px) {
     max-width: 80px; 
+    overflow: hidden;
   }
 `;
 export const PageLoaderOverlay = styled.div`

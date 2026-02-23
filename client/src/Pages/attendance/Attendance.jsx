@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getAttendanceDetail } from "../../Redux/attendanceSlice";
-import {
-  Container,
-} from "./Attendance.Style";
+import { Container,} from "./Attendance.Style";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from '../../Components/Loader';
 import EmployeeTitle from "../../Components/EmployeeTitle";
@@ -51,11 +49,11 @@ const TimesheetPage = () => {
 
       <EmployeeHeader employee={employee} editable={false} />
 
-   <AttendanceDetailsContainer
-  attendanceDetail={attendanceDetail}
-  selectedDate={selectedDate}
-  setSelectedDate={setSelectedDate}
-/>
+      <AttendanceDetailsContainer
+        attendanceDetail={attendanceDetail}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
     </Container>
   );
 };
