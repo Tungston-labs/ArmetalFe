@@ -182,6 +182,15 @@ export default function DailyTask() {
 
   const todayYMD = toYMD(new Date());
 
+  const formatYMDDisplay = (ymd) => {
+  if (!ymd) return "";
+  const d = parseYMD(ymd);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+};
+
   return (
     <>
       <Navbar />

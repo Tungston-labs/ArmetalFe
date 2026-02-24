@@ -1,4 +1,3 @@
-// redux/attendanceSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   fetchAttendanceList,
@@ -7,9 +6,6 @@ import {
   fetchAttendanceSummary,
 } from "../services/attendanceService";
 
-/* Thunks */
-
-// Attendance List
 export const getAttendanceList = createAsyncThunk(
   "attendance/getList",
   async (params, thunkAPI) => {
@@ -47,12 +43,12 @@ export const getDepartments = createAsyncThunk(
   }
 );
 
-// Attendance Summary (monthly)
+
 export const getAttendanceSummary = createAsyncThunk(
   "attendance/getSummary",
-  async ({ year, month, token }, thunkAPI) => {
+  async ({ year, month, token ,page = 1}, thunkAPI) => {
     try {
-      return await fetchAttendanceSummary({ year, month, token });
+      return await fetchAttendanceSummary({ year, month, token,page });
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch attendance summary"
@@ -92,7 +88,7 @@ const attendanceSlice = createSlice({
     departmentLoading: false,
 
     // Monthly summary
-    attendanceSummary: [],
+    attendanceSummary: null,
     summaryLoading: false,
 
     // Generic error holder
@@ -164,13 +160,10 @@ const attendanceSlice = createSlice({
         state.summaryLoading = true;
         state.error = null;
       })
-      .addCase(getAttendanceSummary.fulfilled, (state, action) => {
-        state.summaryLoading = false;
-        // action.payload is expected to be an array of employees with daily_records
-        state.attendanceSummary = Array.isArray(action.payload)
-          ? action.payload
-          : [];
-      })
+    .addCase(getAttendanceSummary.fulfilled, (state, action) => {
+  state.summaryLoading = false;
+  state.attendanceSummary = action.payload;
+})
       .addCase(getAttendanceSummary.rejected, (state, action) => {
         state.summaryLoading = false;
         state.attendanceSummary = [];

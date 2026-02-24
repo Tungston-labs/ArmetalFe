@@ -81,7 +81,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
     handleLogoChange,
     removeLogo,
     handleSubmit,
-      totalPercent,
+    totalPercent,
   } = useAddCompany({ isEdit, selectedCompany, onClose, allModules });
 
   return (
@@ -192,6 +192,16 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
               <Label>Longitude</Label>
               <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter company longitude" autoComplete="off" />
             </FormField>
+
+            <FormField>
+              <Label>Working Hour</Label>
+              <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter working hour" autoComplete="off" />
+            </FormField>
+
+            <FormField>
+              <Label>Half Day Hour</Label>
+              <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter half day hour" autoComplete="off" />
+            </FormField>
           </div>
         </FormSection>
 
@@ -209,8 +219,8 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
             <Hr />
           </>
         )}
-<SalaryWrapper>
-  <SalaryTitle>Salary Structure (%)</SalaryTitle>
+        <SalaryWrapper>
+          <SalaryTitle>Salary Structure (%)</SalaryTitle>
 
   <SalaryTableWrapper>
     <SalaryTable>¯

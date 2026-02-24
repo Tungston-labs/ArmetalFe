@@ -343,6 +343,16 @@ const PayrollTable = () => {
     if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
   };
 
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "N/A";
+    const date = new Date(dateStr);
+    if (isNaN(date)) return dateStr; // fallback to original
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
   return (
     <>
       <Container>
@@ -464,7 +474,7 @@ const PayrollTable = () => {
                   <Td>{(page - 1) * LIMIT + index + 1}</Td>
                   <Td>{emp.employee_name}</Td>
                   <Td>{emp.employee_id}</Td>
-                  <Td>{emp.joining_date}</Td>
+                  <Td>{formatDate(emp.joining_date)}</Td>
                   <Td>₹{emp.basic_salary ?? "N/A"}</Td>
                   <Td>
                     <Link to={`/payrolldetails/${emp.id}`}>
@@ -501,10 +511,10 @@ const PayrollTable = () => {
                 </tr>
               ))
             ) : (
-              
-             <EmptyRow>
-                                <td colSpan="8">No employees found.</td>
-                              </EmptyRow>
+
+              <EmptyRow>
+                <td colSpan="8">No employees found.</td>
+              </EmptyRow>
             )}
           </tbody>
         </Table>
@@ -543,10 +553,10 @@ const PayrollTable = () => {
         </Pagination> */}
 
         <Pagination
-  currentPage={page}
-  totalPages={totalPages}
-  onPageChange={handlePageChange}
-/>
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </Container>
     </>
   );

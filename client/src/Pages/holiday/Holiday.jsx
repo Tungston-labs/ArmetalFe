@@ -119,8 +119,6 @@ const HolidayManager = () => {
     setFormError("⚠️ Holiday date cannot be in the past.");
     return;
   }
-
-  // ✅ NEW VALIDATION: Check duplicate date
   const isDateAlreadyExists = holidays.some(
     (holiday) => holiday.date === formattedDate
   );
@@ -230,36 +228,38 @@ const formatDateToDisplay = (dateString) => {
           </TableHead>
 
           <TableBody>
-            {loading ? (
-              <tr>
-                <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-                  <Loader size="large" />
-                </Td>
-              </tr>
-            ) : holidays.length === 0 ? (
-              <tr>
-                <EmptyRow colSpan="5" style={{ textAlign: "center" }}>
-                  No holidays found.
-                </EmptyRow>
-              </tr>
-            ) : (
-              holidays.map((item, index) => (
-                <BodyRow key={item.id}>
-                  <BodyCell>
-                    {(currentPage - 1) * PAGE_SIZE + index + 1}
-                  </BodyCell>
-                  <BodyCell title={item.description}>{item.description}</BodyCell>
-                  <BodyCell>{item.holiday_type_display}</BodyCell>
-              <BodyCell>{formatDateToDisplay(item.date)}</BodyCell>
-                  <BodyCell>
-                    <FaTrashAlt
-                      style={{ color: "red", cursor: "pointer" }}
-                      onClick={() => handleDeleteClick(item.id)}
-                    />
-                  </BodyCell>
-                </BodyRow>
-              ))
-            )}
+          {loading ? (
+  <tr>
+    <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
+      <Loader size="large" />
+    </Td>
+  </tr>
+) : holidays.length === 0 ? (
+  <tr>
+    <EmptyRow colSpan="5" style={{ textAlign: "center" }}>
+      No holidays found.
+    </EmptyRow>
+  </tr>
+) : (
+  [...holidays]
+    .sort((a, b) => new Date(b.date) - new Date(a.date)) 
+    .map((item, index) => (
+      <BodyRow key={item.id}>
+        <BodyCell>
+          {(currentPage - 1) * PAGE_SIZE + index + 1}
+        </BodyCell>
+        <BodyCell title={item.description}>{item.description}</BodyCell>
+        <BodyCell>{item.holiday_type_display}</BodyCell>
+        <BodyCell>{formatDateToDisplay(item.date)}</BodyCell>
+        <BodyCell>
+          <FaTrashAlt
+            style={{ color: "red", cursor: "pointer" }}
+            onClick={() => handleDeleteClick(item.id)}
+          />
+        </BodyCell>
+      </BodyRow>
+    ))
+)}
           </TableBody>
         </StyledTable>
 
