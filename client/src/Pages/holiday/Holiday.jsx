@@ -32,6 +32,7 @@ const DEFAULT_HOLIDAY_TYPES = [
   { key: "regional", label: "Cultural/Regional Holiday" },
   { key: "observance", label: "Observance/Non-Leave Day" },
   { key: "company_off_day", label: "Company Off Day" },
+  { key: "second_saturday", label: "Second Saturdays" },
 ];
 
 

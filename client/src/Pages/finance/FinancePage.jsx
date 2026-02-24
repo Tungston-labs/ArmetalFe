@@ -167,9 +167,8 @@ const FinanceDetail = () => {
                       {(page - 1) * PAGE_SIZE + index + 1}
                     </Td>
 
-                    <Td>{formatDate(record.date)}</Td>
-                    <Td>{CATEGORY_LABELS[record.category] || FALLBACK}</Td>
-                    <Td>{record.note || FALLBACK}</Td>
+                    <Td>{record.date || FALLBACK}</Td>
+                    <Td>{record.category_name || FALLBACK}</Td>                    <Td>{record.note || FALLBACK}</Td>
                     <Td>{PAYMENT_TYPE_LABELS[record.payment_type] || FALLBACK}</Td>
                     <Td>
                       {record.amount !== null && record.amount !== undefined

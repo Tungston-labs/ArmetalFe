@@ -248,6 +248,8 @@ from django.utils import timezone
 from payroll.models import EmployeePayrollRecord
 from finance.models import FinanceRecord
 from payroll.serializers import EmployeePayrollRecordSerializer
+from finance.models import FinanceCategory
+
 
 
 class PayrollStatusUpdateView(APIView):
@@ -281,7 +283,7 @@ class PayrollStatusUpdateView(APIView):
 
         #  Create Finance record ONLY when status becomes PAID
         #  Create Finance record ONLY when status becomes PAID
-        if previous_status != "Paid" and new_status == "Paid":
+        if previous_status.lower() != "paid" and new_status.lower() == "paid":
 
             basic = record.basic_salary or 0
             increment = record.salary_increment or 0
@@ -294,32 +296,41 @@ class PayrollStatusUpdateView(APIView):
             gross_salary = basic + increment + housing + transport
             net_salary = gross_salary - (lop + tds)
 
-            company = record.employee.department.company   
+            company = record.employee.department.company
 
-            # Prevent duplicate salary entries (company-wise)
+            # ✅ FIX 1: correct get() usage + case insensitive
+            try:
+                salary_category = FinanceCategory.objects.get(
+                    name__iexact="salary",
+                    payment_type="OUT",
+                    company=company
+                )
+            except FinanceCategory.DoesNotExist:
+                return Response(
+                    {"error": "Salary category not configured for this company."},
+                    status=400
+                )
+
+            # ✅ FIX 2: cleaner duplicate check
             already_exists = FinanceRecord.objects.filter(
-                company=company,                 
-                category="SALARY",
-                payment_type="OUT",
-                note__icontains=f"{record.employee.employee_id}",
+                company=company,
+                category=salary_category,
                 date__month=month,
-                date__year=year
+                date__year=year,
+                note__icontains=str(record.employee.employee_id)
             ).exists()
 
             if not already_exists:
                 FinanceRecord.objects.create(
-                    company=company,             
+                    company=company,
                     date=timezone.now().date(),
                     amount=net_salary,
                     payment_type="OUT",
-                    category="SALARY",
-                    note=(
-                        f"Salary paid to {record.employee.name} "
+                    category=salary_category,
+                    note=f"Salary paid to {record.employee.name} "
                         f"(Employee ID: {record.employee.employee_id}) "
                         f"for {month}/{year}"
-                    )
                 )
-
 
 
         serializer = EmployeePayrollRecordSerializer(

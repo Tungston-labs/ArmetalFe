@@ -48,7 +48,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from django.db import transaction
 from .models import Reimbursement
-from finance.models import FinanceRecord
+from finance.models import FinanceRecord,FinanceCategory
 from .serializers import ReimbursementDetailSerializer
 
 
@@ -77,29 +77,42 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
         new_status = instance.status
 
         #  Create finance record ONLY when status changes to Approved
-        if old_status != "Approve" and new_status == "Approve":
+        if old_status.lower() != "approve" and new_status.lower() == "approve":
+
             employee = instance.employee
             company = employee.department.company
 
             employee_name = getattr(employee, "name", str(employee))
             employee_id = getattr(employee, "employee_id", employee.id)
 
-            # Prevent duplicate finance records (company-wise)
+            # ✅ FIX 1: Correct get() usage + case insensitive
+            try:
+                reimbursement_category = FinanceCategory.objects.get(
+                    name__iexact="reimbursement",
+                    payment_type="OUT",
+                    company=company
+                )
+            except FinanceCategory.DoesNotExist:
+                return Response(
+                    {"error": "Reimbursement category not configured for this company."},
+                    status=400
+                )
+
+            # ✅ FIX 2: cleaner duplicate check
             exists = FinanceRecord.objects.filter(
-                company=company,          
+                company=company,
+                category=reimbursement_category,
                 date=instance.date,
-                amount=instance.amount,
-                category="REIMBURSEMENT",
                 note__icontains=str(employee_id)
             ).exists()
 
             if not exists:
                 FinanceRecord.objects.create(
-                    company=company,      
+                    company=company,
                     date=instance.date,
                     amount=instance.amount,
                     payment_type="OUT",
-                    category="REIMBURSEMENT",
+                    category=reimbursement_category,
                     note=f"Reimbursement approved for {employee_name} ({employee_id})"
                 )
 

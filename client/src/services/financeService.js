@@ -24,3 +24,17 @@ export const deleteFinanceService = async (id) => {
   const response = await API.delete(`/finance/${id}/`);
   return response.data;
 };
+
+
+export const createFinanceCategoryService = async (data) => {
+  const response = await API.post("/finance/categories/", data);
+  return response.data;
+};
+
+export const listFinanceCategoryService = async (payment_type = "") => {
+  const response = await API.get("/finance/categories/", {
+    params: payment_type ? { payment_type } : {},
+  });
+
+  return response.data;
+};
