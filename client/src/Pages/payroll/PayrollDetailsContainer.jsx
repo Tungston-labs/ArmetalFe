@@ -40,7 +40,7 @@ const PayrollDetails = () => {
     department,
     designation,
     working_days,
-    days_present,
+    joining_date,
     leave_taken,
     casual_leave,
     paid_leave,
@@ -74,27 +74,33 @@ const PayrollDetails = () => {
         <InfoTable>
           <InfoRow><Label>Employee Name</Label><Value>{employee_name}</Value></InfoRow>
           <InfoRow><Label>Department</Label><Value>{department}</Value></InfoRow>
-          <InfoRow><Label>No. of Working Days</Label><Value>{working_days}</Value></InfoRow>
+          <InfoRow><Label>Account Number</Label><Value>{account_number}</Value></InfoRow>
         </InfoTable>
         <InfoTable>
           <InfoRow><Label>Employee ID</Label><Value>{employee_id}</Value></InfoRow>
           <InfoRow><Label>Designation</Label><Value>{designation}</Value></InfoRow>
-          <InfoRow><Label>Days Present</Label><Value>{days_present}</Value></InfoRow>
+          <InfoRow><Label>Joining Date</Label><Value>{joining_date}</Value></InfoRow>
         </InfoTable>
       </GridLayout>
 
      <GridLayout>
   <TableWrapper>
-   {/* <SectionHeading>Net Pay Summary</SectionHeading> */}
+
 
     <TableHeadingEarnings>Field Label</TableHeadingEarnings>
     <Table>
+      <thead>
+        <tr>
+      <th>Earnings</th>
+      <th>Amount</th>
+    </tr>
+    </thead>
       <tbody>
-        <tr><TableData>Gross Earnings</TableData><TableData>{gross_earnings}</TableData></tr>
-        <tr><TableData>Total Deductions</TableData><TableData>{total_deductions}</TableData></tr>
-        <tr><TableData>Net Pay</TableData><TableData>{net_pay}</TableData></tr>
-        <tr><TableData>Payment Mode</TableData><TableData>{payment_mode}</TableData></tr>
-        <tr><TableData>Bank Account</TableData><TableData>{account_number}</TableData></tr>
+        <tr><TableData>Basic Pay</TableData><TableData>{gross_earnings}</TableData></tr>
+        <tr><TableData>House Rent</TableData><TableData>{total_deductions}</TableData></tr>
+        <tr><TableData>Transport Allowance</TableData><TableData>{net_pay}</TableData></tr>
+        <tr><TableData>Special Allowance</TableData><TableData>{payment_mode}</TableData></tr>
+
       </tbody>
     </Table>
   </TableWrapper>
@@ -102,6 +108,12 @@ const PayrollDetails = () => {
   <TableWrapper>
     <TableHeadingEarnings>Leave Details</TableHeadingEarnings>
     <Table>
+      <thead>
+        <tr>
+      <th>Work Summary </th>
+      <th>Days</th>
+    </tr>
+    </thead>
       <tbody>
         <tr><TableData>Leave Taken</TableData><TableData>{leave_taken}</TableData></tr>
         <tr>
@@ -118,16 +130,13 @@ const PayrollDetails = () => {
 
 
 <GridLayout>
-  {/* Salary Earnings */}
   <TableWrapper>
     <SectionTitles>Salary Earnings</SectionTitles>
 
    <Table>
   <thead>
     <tr>
-      <th>Earnings</th>
-      <th>Days</th>
-      <th>Hours</th>
+      <th>Pay Summary </th>
       <th>Amount</th>
     </tr>
   </thead>
