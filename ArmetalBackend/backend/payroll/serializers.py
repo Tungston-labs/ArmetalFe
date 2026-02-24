@@ -7,8 +7,6 @@ from attendance.models import Attendance
 from leave.models import LeaveRequest
 from holidays.models import PublicHoliday
 import calendar
-from decimal import Decimal
-
 
 class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
     bank_details = EmpBankPaymentSerializer(read_only=True)
@@ -28,15 +26,18 @@ class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
 
 
 
+from attendance.models import Attendance
+from leave.models import LeaveRequest
+from holidays.models import PublicHoliday
+from .models import EmployeePayrollRecord
+
+
 from datetime import date, datetime, timedelta
 import calendar
 from decimal import Decimal, ROUND_HALF_UP
 from rest_framework import serializers
 
-from attendance.models import Attendance
-from leave.models import LeaveRequest
-from holidays.models import PublicHoliday
-from .models import EmployeePayrollRecord
+
 
 
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
@@ -186,7 +187,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # -------------------------------------------------------
         # SALARY CALCULATION (PERCENTAGE SPLIT)
         # -------------------------------------------------------
-        total_salary = Decimal(employee.basic_salary or 0)
+        total_salary = Decimal(instance.basic_salary or 0)
 
         basic_percent = Decimal(company.basic_salary_percent or 0)
         house_percent = Decimal(company.house_allowance_percent or 0)
@@ -294,7 +295,6 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         data["deductions"] = [d for d in data["deductions"] if d is not None]
 
         return data
-
 class EmployeePayrollRecordSerializer2(serializers.ModelSerializer):
     download_url = serializers.SerializerMethodField()
 
