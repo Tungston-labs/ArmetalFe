@@ -85,6 +85,7 @@ export const ButtonGroup = styled.div`
   gap: 10px;
   justify-content: flex-end;
   flex-wrap: wrap;
+  margin-top: 1rem;
 `;
 
 export const Button = styled.button`
@@ -153,10 +154,8 @@ export const Label = styled.label`
   font-size: 14px;
   color: #333;
   font-weight: 500;
-  font-family: Satoshi;
+  font-family: "Satoshi";
 font-weight: 400;
-font-style: Regular;
-leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
 
@@ -164,7 +163,7 @@ letter-spacing: 0%;
  
 
 export const Input = styled.input`
-  padding: 8px 12px;
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   // width: 100%;
@@ -239,4 +238,65 @@ export const LogoPreview = styled.div`
     line-height: 1;
   }
 `;
+export const SalaryWrapper = styled.div`
+  margin-top: 24px;
+`;
 
+export const SalaryTitle = styled.h4`
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+`;
+
+export const SalaryTableWrapper = styled.div`
+  overflow-x: auto;
+`;
+
+export const SalaryTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+`;
+
+export const TableHead = styled.thead`
+  background: #f4f7fc;
+`;
+
+export const Th = styled.th`
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  border: 1px solid #e5e7eb;
+`;
+
+export const Td = styled.td`
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+`;
+
+export const TotalText = styled.span`
+  font-weight: 600;
+  color: ${({ isError }) => (isError ? "#e74c3c" : "#2c3e50")};
+`;
+export const ToggleWrapper = styled.div`
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const ToggleLabel = styled.label`
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+`;
+
+export const ToggleInput = styled.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+`;
