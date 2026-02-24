@@ -7,6 +7,8 @@ from attendance.models import Attendance
 from leave.models import LeaveRequest
 from holidays.models import PublicHoliday
 import calendar
+from decimal import Decimal
+
 
 class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
     bank_details = EmpBankPaymentSerializer(read_only=True)
@@ -28,6 +30,7 @@ class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
 
 from datetime import date, datetime, timedelta
 import calendar
+from decimal import Decimal, ROUND_HALF_UP
 from rest_framework import serializers
 
 from attendance.models import Attendance
@@ -88,29 +91,33 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         )
 
         # -------------------------------------------------------
-        #  ATTENDANCE
+        # ATTENDANCE
         # -------------------------------------------------------
+        full_day_hours = Decimal(company.working_hours_per_day or 8)
+        half_day_hours = Decimal(company.half_day_hours or 4)
+
         attendances = Attendance.objects.filter(
-            employee=employee, date__range=(first_day, last_day)
+            employee=employee,
+            date__range=(first_day, last_day)
         )
 
-        full_days = 0
-        half_days = 0
+        full_days = Decimal(0)
+        half_days = Decimal(0)
         attendance_dates = set()
 
         for att in attendances:
-            hours = float(att.total_hours or 0)
+            hours = Decimal(att.total_hours or 0)
             attendance_dates.add(att.date)
 
-            if hours >= 8:
+            if hours >= full_day_hours:
                 full_days += 1
-            elif 4 <= hours < 8:
+            elif hours >= half_day_hours:
                 half_days += 1
 
-        days_present = full_days + (0.5 * half_days)
+        days_present = full_days + (Decimal("0.5") * half_days)
 
         # -------------------------------------------------------
-        #  APPROVED LEAVES (MONTH-WISE)
+        # APPROVED LEAVES
         # -------------------------------------------------------
         leave_requests = LeaveRequest.objects.filter(
             employee=employee,
@@ -137,7 +144,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         approved_leave_count = float(len(approved_leave_dates))
 
         # -------------------------------------------------------
-        # UNSWIPED DAYS  (LEAVE INCLUDED AS YOU REQUIRED)
+        # UNSWIPED DAYS
         # -------------------------------------------------------
         all_days = [
             first_day + timedelta(days=i)
@@ -157,25 +164,16 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         )
 
         # -------------------------------------------------------
-        #  FINAL HR-CORRECT LOP CALCULATION
+        # LOP CALCULATION
         # -------------------------------------------------------
         total_leave_balance = float(employee.total_leave or 0)
         paid_leave = float(employee.paid_leave or 0)
 
-        # Remove approved leave from real absence
         real_absent_days = unswiped_days - approved_leave_count
-
-        # Adjust using remaining total leave balance
         leave_adjustment = min(approved_leave_count, total_leave_balance)
-
         lop_from_absent = max(real_absent_days - leave_adjustment, 0)
-
-        # Extra paid leave already converted to LOP
         lop_days = lop_from_absent + paid_leave
 
-        # -------------------------------------------------------
-        # FREEZE VALUES IF PAYROLL LOCKED 
-        # -------------------------------------------------------
         if instance.working_days is not None:
             working_days = float(instance.working_days)
 
@@ -186,26 +184,65 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             lop_days = float(instance.lop_days)
 
         # -------------------------------------------------------
-        # SALARY CALCULATION
+        # SALARY CALCULATION (PERCENTAGE SPLIT)
         # -------------------------------------------------------
-        basic_salary = float(instance.basic_salary or 0)
-        housing_allowance = float(instance.housing_allowance or 0)
-        transportation = float(instance.transportation or 0)
-        tds = float(instance.tds_deduction_amount or 0)
+        total_salary = Decimal(employee.basic_salary or 0)
 
-        daily_basic = basic_salary / working_days if working_days > 0 else 0
-        lop_amount = round(daily_basic * lop_days, 2)
+        basic_percent = Decimal(company.basic_salary_percent or 0)
+        house_percent = Decimal(company.house_allowance_percent or 0)
+        transport_percent = Decimal(company.transport_allowance_percent or 0)
+        special_percent = Decimal(company.special_allowance_percent or 0)
 
-        # Freeze lop_amount if stored
+        basic_salary = (total_salary * basic_percent / 100).quantize(
+            Decimal("0.01"), rounding=ROUND_HALF_UP
+        )
+
+        housing_allowance = (total_salary * house_percent / 100).quantize(
+            Decimal("0.01"), rounding=ROUND_HALF_UP
+        )
+
+        transportation = (total_salary * transport_percent / 100).quantize(
+            Decimal("0.01"), rounding=ROUND_HALF_UP
+        )
+
+        special_allowance = (total_salary * special_percent / 100).quantize(
+            Decimal("0.01"), rounding=ROUND_HALF_UP
+        )
+
+        # Fix rounding difference
+        calculated_total = (
+            basic_salary + housing_allowance + transportation + special_allowance
+        )
+        difference = total_salary - calculated_total
+        special_allowance += difference
+
+        tds = Decimal(instance.tds_deduction_amount or 0)
+
+        daily_basic = (
+            basic_salary / Decimal(working_days)
+            if working_days > 0
+            else Decimal(0)
+        )
+
+        lop_amount = (daily_basic * Decimal(lop_days)).quantize(
+            Decimal("0.01"), rounding=ROUND_HALF_UP
+        )
+
         if instance.lop_amount is not None:
-            lop_amount = float(instance.lop_amount)
+            lop_amount = Decimal(instance.lop_amount)
 
         adjusted_basic_salary = basic_salary - lop_amount
-        adjusted_gross = adjusted_basic_salary + housing_allowance + transportation
+        adjusted_gross = (
+            adjusted_basic_salary
+            + housing_allowance
+            + transportation
+            + special_allowance
+        )
+
         net_pay = adjusted_gross - tds
 
         # -------------------------------------------------------
-        #  FINAL RESPONSE
+        # FINAL RESPONSE (FORMAT UNCHANGED)
         # -------------------------------------------------------
         data.update(
             {
@@ -224,18 +261,19 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                 "approved_leave_days": approved_leave_count,
                 "paid_leave_used": paid_leave,
                 "lop_days": lop_days,
-                "lop_amount": lop_amount,
-                "gross_earnings": round(adjusted_gross, 2),
-                "total_deductions": round(tds + lop_amount, 2),
-                "net_pay": round(net_pay, 2),
+                "lop_amount": float(lop_amount),
+                "gross_earnings": round(float(adjusted_gross), 2),
+                "total_deductions": round(float(tds + lop_amount), 2),
+                "net_pay": round(float(net_pay), 2),
                 "earnings": [
-                    {"label": "Basic Salary", "amount": round(basic_salary, 2)},
-                    {"label": "Housing Allowance", "amount": round(housing_allowance, 2)},
-                    {"label": "Transportation", "amount": round(transportation, 2)},
+                    {"label": "Basic Salary", "amount": round(float(basic_salary), 2)},
+                    {"label": "Housing Allowance", "amount": round(float(housing_allowance), 2)},
+                    {"label": "Transportation", "amount": round(float(transportation), 2)},
+                    {"label": "Special Allowance", "amount": round(float(special_allowance), 2)},
                 ],
                 "deductions": [
-                    {"label": "TDS Deduction", "value": round(tds, 2)},
-                    {"label": "Loss of Pay", "value": round(lop_amount, 2)}
+                    {"label": "TDS Deduction", "value": round(float(tds), 2)},
+                    {"label": "Loss of Pay", "value": round(float(lop_amount), 2)}
                     if lop_amount > 0
                     else None,
                 ],
@@ -254,6 +292,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         )
 
         data["deductions"] = [d for d in data["deductions"] if d is not None]
+
         return data
 
 class EmployeePayrollRecordSerializer2(serializers.ModelSerializer):

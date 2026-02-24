@@ -213,11 +213,11 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
   <SalaryTitle>Salary Structure (%)</SalaryTitle>
 
   <SalaryTableWrapper>
-    <SalaryTable>
+    <SalaryTable>¯
       <TableHead>
         <tr>
           <Th>Basic %</Th>
-          <Th>House Rent %</Th>
+          <Th>House Allowance %</Th>
           <Th>Transport %</Th>
           <Th>Special %</Th>
           <Th>Total %</Th>
@@ -229,8 +229,8 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
           <Td>
             <Input
               type="number"
-              name="basic_percent"
-              value={formData.basic_percent}
+              name="basic_salary_percent"
+              value={formData.basic_salary_percent}
               onChange={handleChange}
               placeholder="Basic"
             />
@@ -239,8 +239,8 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
           <Td>
             <Input
               type="number"
-              name="house_rent_percent"
-              value={formData.house_rent_percent}
+              name="house_allowance_percent"
+              value={formData.house_allowance_percent}
               onChange={handleChange}
               placeholder="HRA"
             />
@@ -249,8 +249,8 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
           <Td>
             <Input
               type="number"
-              name="transport_percent"
-              value={formData.transport_percent}
+              name="transport_allowance_percent"
+              value={formData.transport_allowance_percent}
               onChange={handleChange}
               placeholder="Transport"
             />
@@ -259,8 +259,8 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
           <Td>
             <Input
               type="number"
-              name="special_percent"
-              value={formData.special_percent}
+              name="special_allowance_percent"
+              value={formData.special_allowance_percent}
               onChange={handleChange}
               placeholder="Special"
             />
@@ -275,6 +275,31 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
       </tbody>
     </SalaryTable>
   </SalaryTableWrapper>
+
+  {/* Working Hours Section */}
+  <FormSection style={{ marginTop: "20px" }}>
+    <FormField>
+      <Label>Working Hours Per Day</Label>
+      <Input
+        type="number"
+        name="working_hours_per_day"
+        value={formData.working_hours_per_day}
+        onChange={handleChange}
+        placeholder="e.g. 8"
+      />
+    </FormField>
+
+    <FormField>
+      <Label>Half Day Hours</Label>
+      <Input
+        type="number"
+        name="half_day_hours"
+        value={formData.half_day_hours}
+        onChange={handleChange}
+        placeholder="e.g. 4"
+      />
+    </FormField>
+  </FormSection>
 </SalaryWrapper>
         <ButtonGroup>
           <Button type="button" cancel onClick={onClose}>
