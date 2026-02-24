@@ -33,6 +33,7 @@ import { CiAlarmOn } from "react-icons/ci";
 import { TbReportSearch } from "react-icons/tb";
 import { LuFileCheck } from "react-icons/lu";
 import MailModal from "./MailModal";
+import { HiUser } from "react-icons/hi2";
 
 const EmployeeDetails = ({ employee }) => {
   const [activeTab, setActiveTab] = useState("work");
@@ -79,7 +80,13 @@ const EmployeeDetails = ({ employee }) => {
       <TopSection>
         <ProfileLeft>
           <ProfileSection>
-            <Avatar style={{ backgroundImage: `url(${employee.profile_pic})` }} />
+          <Avatar>
+  {employee?.profile_pic ? (
+    <img src={employee.profile_pic} alt={employee.name} />
+  ) : (
+    <HiUser size={55} />
+  )}
+</Avatar>
             <Info>
               <Name>{employee.name}</Name>
               <Role>{employee.designation}</Role>

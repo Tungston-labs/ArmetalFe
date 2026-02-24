@@ -136,7 +136,7 @@ export const ThreeColumnRow = styled.div`
   @media (max-width: 600px) {
     flex-direction: column;
   }
-  @media (min-width: 1024px) and (max-width: 1440px) {
+  @media (min-width: 1024px) and (max-width: 1490px) {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }

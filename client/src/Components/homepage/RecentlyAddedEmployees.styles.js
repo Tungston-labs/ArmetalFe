@@ -93,6 +93,19 @@ export const Avatar = styled.img`
   }
 `;
 
+export const AvatarFallback = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f2f4f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    color: #98a2b3;
+  }
+`;
 export const Info = styled.div`
   display: flex;
   flex-direction: column;
@@ -177,7 +190,11 @@ export const DateBox = styled.div`
     font-size: 10px;
     padding: 4px 6px;
   }
-
+  @media (min-width: 1440px) {
+    font-size: 10px;
+    min-width: 80px;
+    padding: 8px 10px;
+  }
   @media (min-width: 1920px) {
     font-size: 14px;
     min-width: 110px;

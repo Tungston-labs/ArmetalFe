@@ -199,7 +199,6 @@ useEffect(() => {
           onFileChange={handleFileChange}
           errors={errors}
         />
-        <Hr />
         <JobDetails
           country={country}
           departments={departmentList}

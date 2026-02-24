@@ -221,6 +221,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
           </FormGroup>
         </FormRow>
       )}
+   
 
     </FormContainer>
   );

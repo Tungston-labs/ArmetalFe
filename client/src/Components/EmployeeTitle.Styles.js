@@ -329,11 +329,12 @@ export const TabButton = styled.button`
     background: #8ca0e2;
     color: white;
   }
-
-  @media (max-width: 1023px) {
-    flex: 0 0 calc(33.33% - 0.33rem);
+@media (max-width: 768px) {
+     padding: 0.5rem;
     font-size: 0.8rem;
   }
+
+  
  @media (min-width: 1024px) {
     padding: 0.9rem 1rem;
     font-size: 0.8rem;

@@ -1,4 +1,10 @@
-import styled from "styled-components";
+import styled,{keyframes} from "styled-components";
+
+const slideAnim = keyframes`
+  0%   { transform: translateX(0); opacity: 1; }
+  50%  { transform: translateX(6px); opacity: 0.8; }
+  100% { transform: translateX(0); opacity: 1; }
+`;
 
 export const Header = styled.div`
   display: flex;
@@ -47,4 +53,17 @@ export const SlideButton = styled.button`
   border: none;
   border-radius: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  animation: ${slideAnim} 1.5s ease-in-out infinite;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    animation: none; /* stop floating on hover */
+    transform: translateX(4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
 `;

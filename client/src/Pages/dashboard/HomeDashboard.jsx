@@ -100,23 +100,19 @@ const Dashboard = () => {
         </TwoColumn>
 
         <ThreeColumnRow>
-          {/* Departments */}
           <ThreeBox>
             <DepartmentSummary
               departments={departmentSummary?.recent_departments || []}
             />
           </ThreeBox>
-
-          {/* Recently Added Employees */}
           <ThreeBox>
             <RecentlyAddedEmployees employees={employeesList} showCount={4} />
           </ThreeBox>
 
-          {/* Contract Expiry */}
           <ThreeBox>
-          <EmployeeContractExpiry
+           <EmployeeContractExpiry
   employees={
-    (contractExpiry?.contract_expiry || []).map((emp) => ({
+    (contractExpiry || []).map((emp) => ({
       ...emp,
       expiryDate: emp.contract_expiry_date,
       empId: emp.employee_id,
@@ -125,8 +121,6 @@ const Dashboard = () => {
   showCount={4}
 />
           </ThreeBox>
-
-          {/* Upcoming Holidays */}
           <ThreeBox>
             <UpcomingHolidays
               holidays={

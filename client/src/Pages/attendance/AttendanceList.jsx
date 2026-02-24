@@ -14,6 +14,9 @@ import {
   EmployeeCell,
   LeftWrapper,
   DepartmentIcon,
+  PaginationWrapper,
+  PaginationButton,
+  PaginationInfo,
 } from "./AttendanceList.Styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
@@ -23,7 +26,7 @@ import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader";
 import { ClipLoader } from "react-spinners";
-
+import { FaAnglesLeft,FaAnglesRight } from "react-icons/fa6";
 const AttendanceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -199,34 +202,37 @@ const departmentsToRender = departmentList
                         <EmployeeItem>No attendance found.</EmployeeItem>
                       )}
                     </EmployeeList>
-                    {employees.length > pageSize && (
-                      <div style={{ display: "flex", gap: "10px", padding: "10px" }}>
-                        <button
-                          disabled={currentPage === 1}
-                          onClick={() =>
-                            setPageByDept((p) => ({
-                              ...p,
-                              [dept.id]: currentPage - 1,
-                            }))
-                          }
-                        >
-                          Prev
-                        </button>
-                        <span>
-                          Page {currentPage} / {totalPages}
-                        </span>
-                        <button
-                          disabled={currentPage === totalPages}
-                          onClick={() =>
-                            setPageByDept((p) => ({
-                              ...p,
-                              [dept.id]: currentPage + 1,
-                            }))
-                          } >
-                          Next
-                        </button>
-                      </div>
-                    )}
+                   {employees.length > pageSize && (
+  <PaginationWrapper>
+    <PaginationButton
+      disabled={currentPage === 1}
+      onClick={() =>
+        setPageByDept((p) => ({
+          ...p,
+          [dept.id]: currentPage - 1,
+        }))
+      }
+    >
+<FaAnglesLeft/>
+    </PaginationButton>
+
+    <PaginationInfo>
+      Page {currentPage} / {totalPages}
+    </PaginationInfo>
+
+    <PaginationButton
+      disabled={currentPage === totalPages}
+      onClick={() =>
+        setPageByDept((p) => ({
+          ...p,
+          [dept.id]: currentPage + 1,
+        }))
+      }
+    >
+<FaAnglesRight/>
+    </PaginationButton>
+  </PaginationWrapper>
+)}
                   </DropdownWrapper>
                 )}
               </DepartmentCard>

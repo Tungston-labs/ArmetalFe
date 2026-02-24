@@ -121,15 +121,24 @@ export const Avatar = styled.div`
   width: 130px;
   height: 130px;
   border-radius: 50%;
-  background: url("https://cdn-icons-png.flaticon.com/512/4140/4140037.png")
-    no-repeat center/cover;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #94a3b8;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
   @media (max-width: 480px) {
     width: 100px;
     height: 100px;
   }
 `;
-
 export const Info = styled.div`
   text-align: center;
   margin-top: 10px;
@@ -138,7 +147,7 @@ export const Info = styled.div`
 export const Name = styled.h2`
   margin: 5px 0;
   font-family: "Poppins";
-  font-size: 1.4rem;
+  font-size: 1rem;
 
   @media (max-width: 480px) {
     font-size: 1.2rem;
@@ -155,7 +164,7 @@ export const Role = styled.p`
   margin: 0;
   color: gray;
   font-family: "Poppins";
-
+    font-size: 0.9rem;
   @media (max-width: 1024px) {
     font-size: 0.9rem;
   }

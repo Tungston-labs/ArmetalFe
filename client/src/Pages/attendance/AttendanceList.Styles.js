@@ -291,18 +291,12 @@ export const NoRecordMessage = styled.div`
   padding: 1rem;
   font-style: italic;
 `;
-export const PaginationWrapper = styled.div`
-  display: flex;
-  justify-content: left;
-  gap: 12px;
-  padding: 12px 0;
-  margin-top: 10px;
-`;
+
 
 export const PageButton = styled.button`
   padding: 6px 14px;
   border-radius: 6px;
-  border: 1px solid #304EB0;
+  border: 1px solid #ddd;
   background: ${(props) => (props.disabled ? "#f3f4f6" : "#304EB0")};
   color: ${(props) => (props.disabled ? "#9ca3af" : "#ffffffff")};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
@@ -349,4 +343,30 @@ export const StatusSelect = styled.select`
     background: white !important;
     color: black !important;
   }
+`;
+export const PaginationWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+`;
+
+export const PaginationButton = styled.button`
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: ${({ disabled }) => (disabled ? "#f3f4f6" : "#304EB0")};
+  color: ${({ disabled }) => (disabled ? "#9ca3af" : "#ffffffff")};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  transition: all 0.2s ease;
+
+    &:hover {
+    background: ${(props) => (props.disabled ? "#f3f4f6" : "#4c66bdff")};
+  }
+`;
+
+export const PaginationInfo = styled.span`
+  font-weight: 500;
+  font-size: 14px;
+  color: #444;
 `;

@@ -77,9 +77,9 @@ export const FieldLabel = styled.label`
 `;
 
 export const Input = styled.input`
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #052DB4;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid lightgray;
   font-size: 0.95em;
 
    &:focus {
@@ -90,9 +90,9 @@ export const Input = styled.input`
 `;
 
 export const TextArea = styled.textarea`
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #052DB4;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid lightgray;
   font-size: 0.95em;
   resize: vertical;
    &:focus {
@@ -103,9 +103,9 @@ export const TextArea = styled.textarea`
 `;
 
 export const Select = styled.select`
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #052DB4;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid lightgray;
   font-size: 0.95em;
   background:white;
    &:focus {
