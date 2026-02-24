@@ -36,11 +36,16 @@ from datetime import date, datetime, timedelta
 import calendar
 from decimal import Decimal, ROUND_HALF_UP
 from rest_framework import serializers
+from employee.models import SalaryIncrement
+
+
+
 
 
 
 
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
+
     employee_name = serializers.CharField(source="employee.name", read_only=True)
     department = serializers.CharField(source="employee.department.name", read_only=True)
     employee_id = serializers.CharField(source="employee.employee_id", read_only=True)
@@ -65,7 +70,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
         # -------------------------------------------------------
-        # HOLIDAYS & COMPANY OFF DAYS
+        # HOLIDAYS
         # -------------------------------------------------------
         holidays_qs = PublicHoliday.objects.filter(
             date__range=(first_day, last_day),
@@ -99,7 +104,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         attendances = Attendance.objects.filter(
             employee=employee,
-            date__range=(first_day, last_day)
+            date__range=(first_day, last_day),
         )
 
         full_days = Decimal(0)
@@ -118,7 +123,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         days_present = full_days + (Decimal("0.5") * half_days)
 
         # -------------------------------------------------------
-        # APPROVED LEAVES
+        # LEAVES
         # -------------------------------------------------------
         leave_requests = LeaveRequest.objects.filter(
             employee=employee,
@@ -145,49 +150,36 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         approved_leave_count = float(len(approved_leave_dates))
 
         # -------------------------------------------------------
-        # UNSWIPED DAYS
+        # SALARY INCREMENT HISTORY
         # -------------------------------------------------------
-        all_days = [
-            first_day + timedelta(days=i)
-            for i in range((last_day - first_day).days + 1)
-        ]
 
-        unswiped_days = float(
-            len(
-                [
-                    d
-                    for d in all_days
-                    if d not in attendance_dates
-                    and d not in holidays
-                    and d.weekday() not in company_off_days
-                ]
-            )
+        increments_qs = SalaryIncrement.objects.filter(
+            employee=employee
+        ).order_by("date")
+
+        total_increment_amount = Decimal(0)
+        increment_history = []
+
+        for inc in increments_qs:
+            total_increment_amount += Decimal(inc.increment_amount or 0)
+
+            increment_history.append({
+                "date": str(inc.date),
+                "increment_amount": float(inc.increment_amount),
+            })
+
+        # -------------------------------------------------------
+        # Salary Base = Employee Salary + Increment Sum
+        # -------------------------------------------------------
+
+        total_salary = (
+            Decimal(instance.basic_salary or 0)
+            + total_increment_amount
         )
 
         # -------------------------------------------------------
-        # LOP CALCULATION
+        # Allowance Split
         # -------------------------------------------------------
-        total_leave_balance = float(employee.total_leave or 0)
-        paid_leave = float(employee.paid_leave or 0)
-
-        real_absent_days = unswiped_days - approved_leave_count
-        leave_adjustment = min(approved_leave_count, total_leave_balance)
-        lop_from_absent = max(real_absent_days - leave_adjustment, 0)
-        lop_days = lop_from_absent + paid_leave
-
-        if instance.working_days is not None:
-            working_days = float(instance.working_days)
-
-        if instance.days_present is not None:
-            days_present = float(instance.days_present)
-
-        if instance.lop_days is not None:
-            lop_days = float(instance.lop_days)
-
-        # -------------------------------------------------------
-        # SALARY CALCULATION (PERCENTAGE SPLIT)
-        # -------------------------------------------------------
-        total_salary = Decimal(instance.basic_salary or 0)
 
         basic_percent = Decimal(company.basic_salary_percent or 0)
         house_percent = Decimal(company.house_allowance_percent or 0)
@@ -212,27 +204,60 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         # Fix rounding difference
         calculated_total = (
-            basic_salary + housing_allowance + transportation + special_allowance
+            basic_salary
+            + housing_allowance
+            + transportation
+            + special_allowance
         )
+
         difference = total_salary - calculated_total
         special_allowance += difference
 
-        tds = Decimal(instance.tds_deduction_amount or 0)
+        # -------------------------------------------------------
+        # LOP CALCULATION
+        # -------------------------------------------------------
 
-        daily_basic = (
-            basic_salary / Decimal(working_days)
-            if working_days > 0
-            else Decimal(0)
+        total_leave_balance = float(employee.total_leave or 0)
+        paid_leave = float(employee.paid_leave or 0)
+
+        all_days = [
+            first_day + timedelta(days=i)
+            for i in range((last_day - first_day).days + 1)
+        ]
+
+        unswiped_days = float(
+            len([
+                d for d in all_days
+                if d not in attendance_dates
+                and d not in holidays
+                and d.weekday() not in company_off_days
+            ])
         )
 
+        real_absent_days = unswiped_days - approved_leave_count
+        leave_adjustment = min(approved_leave_count, total_leave_balance)
+        lop_days = max(real_absent_days - leave_adjustment, 0) + paid_leave
+
+        # Freeze payroll values if stored
+        if instance.working_days is not None:
+            working_days = float(instance.working_days)
+
+        if instance.lop_days is not None:
+            lop_days = float(instance.lop_days)
+
+        # LOP Amount
+        daily_basic = basic_salary / Decimal(working_days or 1)
         lop_amount = (daily_basic * Decimal(lop_days)).quantize(
-            Decimal("0.01"), rounding=ROUND_HALF_UP
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP,
         )
 
-        if instance.lop_amount is not None:
-            lop_amount = Decimal(instance.lop_amount)
+        # -------------------------------------------------------
+        # Final Salary Calculation
+        # -------------------------------------------------------
 
         adjusted_basic_salary = basic_salary - lop_amount
+
         adjusted_gross = (
             adjusted_basic_salary
             + housing_allowance
@@ -240,57 +265,65 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             + special_allowance
         )
 
+        tds = Decimal(instance.tds_deduction_amount or 0)
+
         net_pay = adjusted_gross - tds
 
         # -------------------------------------------------------
-        # FINAL RESPONSE (FORMAT UNCHANGED)
+        # RESPONSE
         # -------------------------------------------------------
-        data.update(
-            {
-                "company": {
-                    "name": company.name if company else None,
-                    "address": company.address if company else None,
-                    "email": company.email if company else None,
-                    "contact_number": company.contact_number if company else None,
-                    "logo_url": request.build_absolute_uri(company.logo.url)
-                    if company and company.logo
-                    else None,
-                },
-                "working_days": working_days,
-                "days_present": days_present,
-                "unswiped_days": unswiped_days,
-                "approved_leave_days": approved_leave_count,
-                "paid_leave_used": paid_leave,
-                "lop_days": lop_days,
-                "lop_amount": float(lop_amount),
-                "gross_earnings": round(float(adjusted_gross), 2),
-                "total_deductions": round(float(tds + lop_amount), 2),
-                "net_pay": round(float(net_pay), 2),
-                "earnings": [
-                    {"label": "Basic Salary", "amount": round(float(basic_salary), 2)},
-                    {"label": "Housing Allowance", "amount": round(float(housing_allowance), 2)},
-                    {"label": "Transportation", "amount": round(float(transportation), 2)},
-                    {"label": "Special Allowance", "amount": round(float(special_allowance), 2)},
-                ],
-                "deductions": [
-                    {"label": "TDS Deduction", "value": round(float(tds), 2)},
-                    {"label": "Loss of Pay", "value": round(float(lop_amount), 2)}
-                    if lop_amount > 0
-                    else None,
-                ],
-                "hr1_verified": instance.hr1_verified_by is not None,
-                "hr2_verified": instance.hr2_verified_by is not None,
-                "fully_verified": instance.is_fully_verified(),
-                "verified_by": {
-                    "hr1": instance.hr1_verified_by.username
-                    if instance.hr1_verified_by
-                    else None,
-                    "hr2": instance.hr2_verified_by.username
-                    if instance.hr2_verified_by
-                    else None,
-                },
-            }
-        )
+
+        data.update({
+            "company": {
+                "name": company.name if company else None,
+                "address": company.address if company else None,
+                "email": company.email if company else None,
+                "contact_number": company.contact_number if company else None,
+                "logo_url": request.build_absolute_uri(company.logo.url)
+                if company and company.logo else None,
+            },
+
+            "working_days": working_days,
+            "days_present": days_present,
+            "unswiped_days": unswiped_days,
+
+            "approved_leave_days": approved_leave_count,
+            "paid_leave_used": paid_leave,
+
+            "lop_days": lop_days,
+            "lop_amount": float(lop_amount),
+
+            "total_increment_amount": float(total_increment_amount),
+            "increment_history": increment_history,
+
+            "gross_earnings": round(float(adjusted_gross), 2),
+            "total_deductions": round(float(tds + lop_amount), 2),
+            "net_pay": round(float(net_pay), 2),
+
+            "earnings": [
+                {"label": "Basic Salary", "amount": round(float(basic_salary), 2)},
+                {"label": "Housing Allowance", "amount": round(float(housing_allowance), 2)},
+                {"label": "Transportation", "amount": round(float(transportation), 2)},
+                {"label": "Special Allowance", "amount": round(float(special_allowance), 2)},
+            ],
+
+            "deductions": [
+                {"label": "TDS Deduction", "value": round(float(tds), 2)},
+                {"label": "Loss of Pay", "value": round(float(lop_amount), 2)}
+                if lop_amount > 0 else None,
+            ],
+
+            "hr1_verified": instance.hr1_verified_by is not None,
+            "hr2_verified": instance.hr2_verified_by is not None,
+            "fully_verified": instance.is_fully_verified(),
+
+            "verified_by": {
+                "hr1": instance.hr1_verified_by.username
+                if instance.hr1_verified_by else None,
+                "hr2": instance.hr2_verified_by.username
+                if instance.hr2_verified_by else None,
+            },
+        })
 
         data["deductions"] = [d for d in data["deductions"] if d is not None]
 

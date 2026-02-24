@@ -199,3 +199,6 @@ export const sendEmail = async (data) => {
   const response = await API.post("/email/send/", data);
   return response.data;
 };
+
+
+
