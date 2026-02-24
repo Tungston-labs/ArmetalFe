@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -17,9 +17,11 @@ import {
 } from "./ViewTableBank.Styles";
 
 const ViewTableBank = ({
+    country,
   bankName, setBankName,
   swiftCode, setSwiftCode,
-  paymentMode, setPaymentMode,
+    ifscCode, setIfscCode,
+  // paymentMode, setPaymentMode,
   accountNumber, setAccountNumber,
   uanNumber, setUanNumber,
   panNumber, setPanNumber,
@@ -34,6 +36,14 @@ const ViewTableBank = ({
    
   
 }) => {
+
+  useEffect(() => {
+  if (country === "IN") {
+    setSwiftCode("");
+  } else {
+    setIfscCode("");
+  }
+}, [country]);
   const [increments, setIncrements] = useState([]);
 
   const addIncrement = () => {
@@ -79,11 +89,24 @@ const ViewTableBank = ({
               <ErrorText>{errors.bankName}</ErrorText>
             </div>
 
-            <div>
-              <Label>Swift Code</Label>
-              <Input value={swiftCode} onChange={(e) => setSwiftCode(e.target.value)} />
-              <ErrorText>{errors.swiftCode}</ErrorText>
-            </div>
+        <div>
+  <Label>{country === "IN" ? "IFSC Code" : "SWIFT Code"}</Label>
+
+<Input
+  value={country === "IN" ? ifscCode : swiftCode}
+  onChange={(e) =>
+    country === "IN"
+      ? setIfscCode(e.target.value.toUpperCase())
+      : setSwiftCode(e.target.value.toUpperCase())
+  }
+  maxLength={11}
+/>
+
+<ErrorText>
+  {country === "IN" ? errors.ifscCode : errors.swiftCode}
+</ErrorText>
+
+</div>
                <div>
               <Label>Basic Salary</Label>
               <Input value={basicSalary} onChange={(e) => setBasicSalary(e.target.value)} />
