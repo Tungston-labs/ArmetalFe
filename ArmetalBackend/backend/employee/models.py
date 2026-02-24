@@ -109,7 +109,7 @@ class EmpBankPaymentModel(models.Model):
     employee = models.OneToOneField(Employee_db, on_delete=models.CASCADE, related_name='bank_details')
     bank_name = models.CharField(max_length=100)
     swift_code = EncryptedCharField(max_length=500, blank=True, null=True)
-    payment_mode = models.CharField(max_length=10, choices=PAYMENT_MODES)
+    payment_mode = models.CharField(max_length=10, choices=PAYMENT_MODES,null=True,blank=True)
     account_number = EncryptedCharField(max_length=500)
     uan_epf_number = EncryptedCharField(max_length=500, blank=True, null=True)
     pan_number = EncryptedCharField(max_length=500)

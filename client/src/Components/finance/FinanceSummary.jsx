@@ -38,10 +38,10 @@ const FinanceSummary = ({ income = 0, expense = 0 }) => {
       </SummaryCard>
 
       <SummaryCard>
-        <SummaryLabel>Cash Balance (%)</SummaryLabel>
+        <SummaryLabel>Cash Balance</SummaryLabel>
         <SummaryValue>
           {Number.isFinite(diffPercent)
-            ? `${diffPercent.toFixed(2)}%`
+            ? `${diffPercent.toFixed(2)}`
             : "0.00%"}
         </SummaryValue>
       </SummaryCard>
