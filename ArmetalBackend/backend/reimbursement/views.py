@@ -77,25 +77,32 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
         new_status = instance.status
 
         #  Create finance record ONLY when status changes to Approved
-        if old_status != "Approve" and new_status == "Approve":
+        if old_status.lower() != "approve" and new_status.lower() == "approve":
+
             employee = instance.employee
             company = employee.department.company
 
             employee_name = getattr(employee, "name", str(employee))
             employee_id = getattr(employee, "employee_id", employee.id)
 
-            # Prevent duplicate finance records (company-wise)
-            reimbursement_category, _ = FinanceCategory.objects.get(
-                name="reimbursement",
-                payment_type="OUT",
-                company=company
-            )
+            # ✅ FIX 1: Correct get() usage + case insensitive
+            try:
+                reimbursement_category = FinanceCategory.objects.get(
+                    name__iexact="reimbursement",
+                    payment_type="OUT",
+                    company=company
+                )
+            except FinanceCategory.DoesNotExist:
+                return Response(
+                    {"error": "Reimbursement category not configured for this company."},
+                    status=400
+                )
 
+            # ✅ FIX 2: cleaner duplicate check
             exists = FinanceRecord.objects.filter(
                 company=company,
-                date=instance.date,
-                amount=instance.amount,
                 category=reimbursement_category,
+                date=instance.date,
                 note__icontains=str(employee_id)
             ).exists()
 
