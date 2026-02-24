@@ -1,4 +1,4 @@
-// pages/ViewBankpayment.jsx
+
 import React, { useEffect, useState } from "react";
 import {
   Section,
@@ -34,7 +34,6 @@ const ViewBankPayment = () => {
   // Fields
   const [bankName, setBankName] = useState("");
   const [swiftCode, setSwiftCode] = useState("");
-  const [paymentMode, setPaymentMode] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [uanNumber, setUanNumber] = useState("");
   const [panNumber, setPanNumber] = useState("");
@@ -46,7 +45,7 @@ const ViewBankPayment = () => {
   const [housingAllowance, setHousingAllowance] = useState("");
   const [transportation, setTransportation] = useState("");
   const [errors, setErrors] = useState({});
-
+  const [ifscCode, setIfscCode] = useState("");
   // Load employee & bank details
   useEffect(() => {
     dispatch(getEmployeeById(id));
@@ -59,7 +58,6 @@ const ViewBankPayment = () => {
     if (latest) {
       setBankName(latest.bank_name || "");
       setSwiftCode(latest.swift_code || "");
-      setPaymentMode(latest.payment_mode || "");
       setAccountNumber(latest.account_number || "");
       setUanNumber(latest.uan_epf_number || "");
       setPanNumber(latest.pan_number || "");
@@ -70,6 +68,7 @@ const ViewBankPayment = () => {
       setSalaryIncrement(latest.salary_increment || "");
       setHousingAllowance(latest.housing_allowance || "");
       setTransportation(latest.transportation || "");
+      setIfscCode(latest.ifsc_code || "");
     }
   }, [employeeBankPayments]);
 
@@ -92,7 +91,6 @@ const ViewBankPayment = () => {
     const formData = new FormData();
     formData.append("bank_name", bankName);
     formData.append("swift_code", swiftCode);
-    formData.append("payment_mode", paymentMode);
     formData.append("account_number", accountNumber);
     formData.append("uan_epf_number", uanNumber);
     formData.append("pan_number", panNumber);
@@ -140,24 +138,25 @@ const ViewBankPayment = () => {
     <>
       {loading && <SyncLoader />}
 
-        <ViewBasicLayout
-      id={id}
-      handleSubmit={handleSave}
-      formData={employeeDetail}
-      handleChange={() => {}}
-      handleImageChange={() => {}}
-    >
+      <ViewBasicLayout
+        id={id}
+        handleSubmit={handleSave}
+        formData={employeeDetail}
+        handleChange={() => { }}
+        handleImageChange={() => { }}
+      >
 
         <Section>
           <ViewTableBank
+            country={employeeDetail?.country}  
             isEditMode={true}
             setBankProofImage={setBankProofImage}
             bankName={bankName}
             setBankName={setBankName}
             swiftCode={swiftCode}
             setSwiftCode={setSwiftCode}
-            paymentMode={paymentMode}
-            setPaymentMode={setPaymentMode}
+            ifscCode={ifscCode}
+            setIfscCode={setIfscCode}
             accountNumber={accountNumber}
             setAccountNumber={setAccountNumber}
             uanNumber={uanNumber}
@@ -182,7 +181,7 @@ const ViewBankPayment = () => {
             showNextButton={false}
           />
         </Section>
-  </ViewBasicLayout>
+      </ViewBasicLayout>
     </>
   );
 };
