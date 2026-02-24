@@ -14,11 +14,6 @@ import {
   AddButton,
   ButtonWrapper,
   EmployeeHeader,
-  StatusRow,
-  NewStatusBadge,
-  NewStatusDot,
-  StatusContainer,
-  StatusLabel,
   ProgressContainer,
   LeftSide,
   RightSide,
@@ -315,7 +310,7 @@ const statusColors = {
                     <BodyRow
                       key={emp.id}
                       className={i % 2 === 0 ? "even" : ""}
-                      onClick={() => navigate(`/project/${emp.id}`)}
+                      // onClick={() => navigate(`/project/${emp.id}`)}
                       style={{ cursor: "pointer" }}     
                     >
                       <BodyCell>{i + 1}</BodyCell>

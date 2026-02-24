@@ -81,7 +81,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
     handleLogoChange,
     removeLogo,
     handleSubmit,
-      totalPercent,
+    totalPercent,
   } = useAddCompany({ isEdit, selectedCompany, onClose, allModules });
 
   return (
@@ -192,6 +192,16 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
               <Label>Longitude</Label>
               <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter company longitude" autoComplete="off" />
             </FormField>
+
+            <FormField>
+              <Label>Working Hour</Label>
+              <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter working hour" autoComplete="off" />
+            </FormField>
+
+            <FormField>
+              <Label>Half Day Hour</Label>
+              <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter half day hour" autoComplete="off" />
+            </FormField>
           </div>
         </FormSection>
 
@@ -209,73 +219,73 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
             <Hr />
           </>
         )}
-<SalaryWrapper>
-  <SalaryTitle>Salary Structure (%)</SalaryTitle>
+        <SalaryWrapper>
+          <SalaryTitle>Salary Structure (%)</SalaryTitle>
 
-  <SalaryTableWrapper>
-    <SalaryTable>
-      <TableHead>
-        <tr>
-          <Th>Basic %</Th>
-          <Th>House Rent %</Th>
-          <Th>Transport %</Th>
-          <Th>Special %</Th>
-          <Th>Total %</Th>
-        </tr>
-      </TableHead>
+          <SalaryTableWrapper>
+            <SalaryTable>
+              <TableHead>
+                <tr>
+                  <Th>Basic %</Th>
+                  <Th>House Rent %</Th>
+                  <Th>Transport %</Th>
+                  <Th>Special %</Th>
+                  <Th>Total %</Th>
+                </tr>
+              </TableHead>
 
-      <tbody>
-        <tr>
-          <Td>
-            <Input
-              type="number"
-              name="basic_percent"
-              value={formData.basic_percent}
-              onChange={handleChange}
-              placeholder="Basic"
-            />
-          </Td>
+              <tbody>
+                <tr>
+                  <Td>
+                    <Input
+                      type="number"
+                      name="basic_percent"
+                      value={formData.basic_percent}
+                      onChange={handleChange}
+                      placeholder="Basic"
+                    />
+                  </Td>
 
-          <Td>
-            <Input
-              type="number"
-              name="house_rent_percent"
-              value={formData.house_rent_percent}
-              onChange={handleChange}
-              placeholder="HRA"
-            />
-          </Td>
+                  <Td>
+                    <Input
+                      type="number"
+                      name="house_rent_percent"
+                      value={formData.house_rent_percent}
+                      onChange={handleChange}
+                      placeholder="HRA"
+                    />
+                  </Td>
 
-          <Td>
-            <Input
-              type="number"
-              name="transport_percent"
-              value={formData.transport_percent}
-              onChange={handleChange}
-              placeholder="Transport"
-            />
-          </Td>
+                  <Td>
+                    <Input
+                      type="number"
+                      name="transport_percent"
+                      value={formData.transport_percent}
+                      onChange={handleChange}
+                      placeholder="Transport"
+                    />
+                  </Td>
 
-          <Td>
-            <Input
-              type="number"
-              name="special_percent"
-              value={formData.special_percent}
-              onChange={handleChange}
-              placeholder="Special"
-            />
-          </Td>
+                  <Td>
+                    <Input
+                      type="number"
+                      name="special_percent"
+                      value={formData.special_percent}
+                      onChange={handleChange}
+                      placeholder="Special"
+                    />
+                  </Td>
 
-          <Td>
-            <TotalText isError={totalPercent !== 100}>
-              {totalPercent} %
-            </TotalText>
-          </Td>
-        </tr>
-      </tbody>
-    </SalaryTable>
-  </SalaryTableWrapper>
-</SalaryWrapper>
+                  <Td>
+                    <TotalText isError={totalPercent !== 100}>
+                      {totalPercent} %
+                    </TotalText>
+                  </Td>
+                </tr>
+              </tbody>
+            </SalaryTable>
+          </SalaryTableWrapper>
+        </SalaryWrapper>
         <ButtonGroup>
           <Button type="button" cancel onClick={onClose}>
             Cancel

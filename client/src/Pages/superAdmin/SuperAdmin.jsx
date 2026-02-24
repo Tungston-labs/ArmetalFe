@@ -260,7 +260,7 @@ const CompanyTable = () => {
               background: "white",
               padding: "2rem",
               borderRadius: "10px",
-              // maxWidth: "100px",
+              maxWidth: "1200px",
               width: "90%",
               maxHeight: "90vh",
               overflowY: "auto",

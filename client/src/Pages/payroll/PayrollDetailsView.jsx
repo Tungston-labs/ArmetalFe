@@ -80,10 +80,7 @@ const PayrollDetailsView = forwardRef(
                       <TableData>₹{item.amount}</TableData>
                     </tr>
                   ))}
-                  <TotalRow>
-                    <TableData colSpan="1"><strong>Total Earnings</strong></TableData>
-                    <TableData><strong>₹{gross_earnings}</strong></TableData>
-                  </TotalRow>
+                 
                 </tbody>
               </Table>
             </TableWrapper>
@@ -130,30 +127,6 @@ const PayrollDetailsView = forwardRef(
                 </tbody>
               </Table>
             </TableWrapper>
-
-            {/* <TableWrapper>
-              <SectionTitles></SectionTitles>
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Deductions</th>
-                    <th>Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {deductions?.map((item, index) => (
-                    <tr key={index}>
-                      <TableData>{item.label}</TableData>
-                      <TableData>₹{item.value}</TableData>
-                    </tr>
-                  ))}
-                  <TotalRow>
-                    <TableData><strong>Total Deduction</strong></TableData>
-                    <TableData><strong>₹{total_deductions}</strong></TableData>
-                  </TotalRow>
-                </tbody>
-              </Table>
-            </TableWrapper> */}
           </GridLayout>
 
         

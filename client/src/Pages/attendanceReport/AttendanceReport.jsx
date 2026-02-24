@@ -15,16 +15,20 @@ import {
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
-import { getAttendanceSummary } from "../../Redux/attendanceSlice"; 
+import { getAttendanceSummary } from "../../Redux/attendanceSlice";
+import Pagination from "../../Components/Pagination/Pagination";
 
 const AttendanceReport = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth || {});
   const token = auth?.accessToken || auth?.token || "";
   const attendanceState = useSelector((state) => state.attendance || {});
-  const attendanceSummary = attendanceState.attendanceSummary || [];
+  const attendanceSummary =
+    attendanceState.attendanceSummary?.results || [];
   const summaryLoading = attendanceState.summaryLoading || false;
-
+  const summaryData = attendanceState.attendanceSummary;
+  const currentPage = summaryData?.current_page || 1;
+  const totalPages = summaryData?.total_pages || 1;
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(
@@ -45,9 +49,15 @@ const AttendanceReport = () => {
   );
 
   useEffect(() => {
-    if (!selectedMonth) return;
+    if (!selectedMonth || !token) return;
     const [year, month] = selectedMonth.split("-");
-    dispatch(getAttendanceSummary({ year: Number(year), month: Number(month), token }));
+    dispatch
+      (getAttendanceSummary({
+        year: Number(year),
+        month: Number(month),
+        page: 1,
+        token
+      }));
   }, [selectedMonth, dispatch, token]);
 
   const visibleRows = useMemo(() => {
@@ -62,7 +72,20 @@ const AttendanceReport = () => {
     setSelectedEmployee(employee);
     setIsModalOpen(true);
   };
+  const handlePageChange = (page) => {
+    if (!selectedMonth || !token) return;
 
+    const [year, month] = selectedMonth.split("-");
+
+    dispatch(
+      getAttendanceSummary({
+        year: Number(year),
+        month: Number(month),
+        page,
+        token,
+      })
+    );
+  };
   return (
     <Container>
       <EmployeeTitle
@@ -135,6 +158,11 @@ const AttendanceReport = () => {
             </tbody>
           </StyledTable>
         </TableWrapper>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </PageWrapper>
 
       <EmployeeAttendanceModal

@@ -30,15 +30,24 @@ export const fetchDepartmentsAttendance = async ({ page = 1, search = "" }) => {
   return response.data;
 };
 
-export const fetchAttendanceSummary = async ({ year, month, token }) => {
-  // If you prefer the API instance, use it and attach Authorization header when token provided.
+export const fetchAttendanceSummary = async ({
+  year,
+  month,
+  token,
+  page = 1,
+}) => {
   const config = {
-    params: { year, month },
+    params: { year, month, page }, 
   };
+
   if (token) {
     config.headers = { Authorization: `Bearer ${token}` };
   }
-  // endpoint from your backend
-  const response = await API.get("/employee-attendance/summary/", config);
+
+  const response = await API.get(
+    "/employee-attendance/summary/",
+    config
+  );
+
   return response.data;
 };

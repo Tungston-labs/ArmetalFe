@@ -77,6 +77,7 @@ const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) =>
 
   );
 };
+
 const TaskPanel = ({ employeeId }) => {
   const dispatch = useDispatch();
   const [selectedDate, setSelectedDate] = useState(null);
@@ -91,7 +92,14 @@ const TaskPanel = ({ employeeId }) => {
       )?.name
   );
   
-
+  const formatYMDDisplay = (date) => {
+  if (!date) return "";
+  const d = new Date(date);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+};
   const formatDate = (d) => d?.toISOString().split("T")[0];
   useEffect(() => {
     if (employeeId) {
@@ -154,7 +162,7 @@ const TaskPanel = ({ employeeId }) => {
               <TaskBottom>
                 <div className="right-block">
                   <strong>{task.time_taken} hrs</strong>
-                  <span>{task.updated_at?.split("T")[0]}</span>
+                <span>{formatYMDDisplay(task.updated_at)}</span>
                 </div>
               </TaskBottom>
             </li>
@@ -192,6 +200,7 @@ export default function DepartmentView() {
   const handleToggle = () => setIsDeptPanelOpen(!isDeptPanelOpen);
 
   const isEmployeePanelVisible = selectedDeptId !== null;
+
 
   return (
     <ViewContainer>

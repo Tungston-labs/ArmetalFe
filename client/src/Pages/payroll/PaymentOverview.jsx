@@ -33,6 +33,18 @@ const PaymentOverview = () => {
     setPaymentData(updatedData);
   };
 
+  const formatDate = (dateStr) => {
+  if (!dateStr) return "---";
+
+  const date = new Date(dateStr);
+  if (isNaN(date)) return dateStr; // fallback to original if invalid
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   return (
     <>
       <SectionTitle>Payment Overview</SectionTitle>
@@ -79,7 +91,7 @@ const PaymentOverview = () => {
           {paymentData.map((entry, index) => (
             <TableRow key={index} status={entry.status}>
               <TableData>{entry.month}</TableData>
-              <TableData>{entry.date} 📅</TableData>
+           <TableData>{formatDate(entry.date)} 📅</TableData>
               <TableData><strong>{entry.amount}</strong></TableData>
               <TableData>
                 <StatusSelect
