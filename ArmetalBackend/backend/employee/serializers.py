@@ -381,8 +381,7 @@ class ScheduleReminderSerializer(serializers.ModelSerializer):
 
 from rest_framework import serializers
 from decimal import Decimal
-from .models import SalaryIncrement
-from finance.models import EmpBankPaymentModel
+from .models import SalaryIncrement,EmpBankPaymentModel
 
 
 class SalaryIncrementSerializer(serializers.ModelSerializer):
