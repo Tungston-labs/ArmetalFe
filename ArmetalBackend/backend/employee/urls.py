@@ -45,6 +45,11 @@ urlpatterns = [
     path("reminders/", views.ReminderListCreateView.as_view(), name="reminder-list-create"),
     path("reminders/<int:pk>/", views.ReminderRetrieveUpdateDestroyView.as_view(), name="reminder-detail"),
     path('employee-monthly-summary/', views.EmployeeMonthlySummaryView.as_view(), name='employee-monthly-summary'),
+    path(
+        "salary-increment/<int:employee_id>/",
+        views.SalaryIncrementListCreateView.as_view(),
+        name="salary-increment",
+    ),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

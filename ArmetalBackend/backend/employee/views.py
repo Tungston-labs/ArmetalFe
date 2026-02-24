@@ -994,3 +994,19 @@ class EmployeeMonthlySummaryView(APIView):
         }
 
         return Response(data)
+
+
+from .models import SalaryIncrement
+from .serializers import SalaryIncrementSerializer
+
+
+class SalaryIncrementListCreateView(generics.ListCreateAPIView):
+    serializer_class = SalaryIncrementSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        employee_id = self.kwargs["employee_id"]
+        return SalaryIncrement.objects.filter(employee_id=employee_id)
+
+    def perform_create(self, serializer):
+        serializer.save()

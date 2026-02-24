@@ -377,3 +377,39 @@ class ScheduleReminderSerializer(serializers.ModelSerializer):
         read_only_fields = ('employee', 'created_at', 'notified')
 
 
+# serializers.py
+
+from rest_framework import serializers
+from decimal import Decimal
+from .models import SalaryIncrement
+from finance.models import EmpBankPaymentModel
+
+
+class SalaryIncrementSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SalaryIncrement
+        fields = "__all__"
+        read_only_fields = ["total_salary"]
+
+    def create(self, validated_data):
+        employee = validated_data["employee"]
+        increment_amount = Decimal(validated_data["increment_amount"])
+
+        # Get last increment
+        last_increment = SalaryIncrement.objects.filter(
+            employee=employee
+        ).order_by("-date").first()
+
+        if last_increment:
+            base_salary = last_increment.total_salary
+        else:
+            # First increment → take from bank model
+            bank = EmpBankPaymentModel.objects.get(employee=employee)
+            base_salary = bank.basic_salary
+
+        total_salary = base_salary + increment_amount
+
+        validated_data["total_salary"] = total_salary
+
+        return super().create(validated_data)
