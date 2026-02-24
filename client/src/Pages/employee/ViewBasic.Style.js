@@ -54,7 +54,7 @@ export const Input = styled.input`
 `;
 
 export const Select = styled.select`
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-radius: 5px;
   border: 1px solid #ccc;
 `;

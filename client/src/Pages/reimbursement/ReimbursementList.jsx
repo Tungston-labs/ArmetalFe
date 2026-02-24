@@ -12,27 +12,24 @@ import {
   EmployeeItem,
   EmployeeRow,
   EmployeeCell,
-    PaginationWrapper,
+  PaginationWrapper,
   PageButton,
   PageInfo,
   StatusSelect,
   LeftWrapper,
   DepartmentIcon,
 } from "../attendance/AttendanceList.Styles";
-
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartments } from "../../Redux/departmentSlice";
-
 import {
   fetchReimbursementsByDepartment,
   updateReimbursementStatus,
 } from "../../services/reimbursement";
-
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader";
 import { ClipLoader } from "react-spinners";
-
+import { FaAnglesRight, FaAnglesLeft } from "react-icons/fa6";
 import HistoryIcon from "../../assets/history.svg";
 import RemiIcon from "../../assets/remi.svg";
 import Side_detail from "./Side_detail.jsx";
@@ -40,16 +37,13 @@ import Side_detail from "./Side_detail.jsx";
 const ReimbursementList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [selectedDept, setSelectedDept] = useState(null);
   const [departmentReimbursements, setDepartmentReimbursements] = useState({});
   const [loadingDept, setLoadingDept] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [showModal, setShowModal] = useState(false);
-
   const [pageByDept, setPageByDept] = useState({});
   const pageSize = 10;
-
   const { list: departmentList = [], loading } = useSelector(
     (state) => state.departments
   );
@@ -150,8 +144,8 @@ const ReimbursementList = () => {
 
       const matchingEmployees = search
         ? reimbursements.filter((emp) =>
-            (emp.employee_name || "").toLowerCase().includes(search)
-          )
+          (emp.employee_name || "").toLowerCase().includes(search)
+        )
         : reimbursements;
 
       const departmentMatches = dept.name.toLowerCase().includes(search);
@@ -176,7 +170,7 @@ const ReimbursementList = () => {
         onAddClick={() => setShowModal(true)}
         showSearch={false}
         showTabs={false}
-        showDropdown ={false}
+        showDropdown={false}
         showBackArrow={false}
       />
 
@@ -200,16 +194,16 @@ const ReimbursementList = () => {
 
               return (
                 <DepartmentCard key={dept.id}>
-                 <DepartmentHeader onClick={() => handleToggle(dept.id)}>
-  <LeftWrapper>
-    <DepartmentIcon>{dept.name?.charAt(0)}</DepartmentIcon>
-    <DepartmentName>{dept.name}</DepartmentName>
-  </LeftWrapper>
+                  <DepartmentHeader onClick={() => handleToggle(dept.id)}>
+                    <LeftWrapper>
+                      <DepartmentIcon>{dept.name?.charAt(0)}</DepartmentIcon>
+                      <DepartmentName>{dept.name}</DepartmentName>
+                    </LeftWrapper>
 
-  <EmployeeCount>
-    {dept.reimbursement_request_count || 0} Employees
-  </EmployeeCount>
-</DepartmentHeader>
+                    <EmployeeCount>
+                      {dept.reimbursement_request_count || 0} Employees
+                    </EmployeeCount>
+                  </DepartmentHeader>
 
 
                   {isOpen && (
@@ -249,23 +243,23 @@ const ReimbursementList = () => {
                               <EmployeeCell
                                 onClick={(e) => e.stopPropagation()}
                               >
-                             <StatusSelect
-  value={emp.status}
-  onChange={(e) =>
-    handleStatusChange(
-      emp.reimbursement_id,
-      e.target.value,
-      dept.id
-    )
-  }
-  className={emp.status ? emp.status.replace(/\s+/g, "-").toLowerCase() : ""}
->
-  <option value="" disabled>Select</option>
-  <option value="Approve">Approved</option>
-  <option value="On Hold">On Hold</option>
-  <option value="In Verification">In Verification</option>
-    <option value="Reject">Reject</option>
-</StatusSelect>
+                                <StatusSelect
+                                  value={emp.status}
+                                  onChange={(e) =>
+                                    handleStatusChange(
+                                      emp.reimbursement_id,
+                                      e.target.value,
+                                      dept.id
+                                    )
+                                  }
+                                  className={emp.status ? emp.status.replace(/\s+/g, "-").toLowerCase() : ""}
+                                >
+                                  <option value="" disabled>Select</option>
+                                  <option value="Approve">Approved</option>
+                                  <option value="On Hold">On Hold</option>
+                                  <option value="In Verification">In Verification</option>
+                                  <option value="Reject">Reject</option>
+                                </StatusSelect>
 
                               </EmployeeCell>
                             </EmployeeRow>
@@ -278,39 +272,39 @@ const ReimbursementList = () => {
                       </EmployeeList>
 
                       {/* PAGINATION */}
-                    {employees.length > pageSize && (
-  <PaginationWrapper onClick={(e) => e.stopPropagation()}>
-    <PageButton
-      disabled={currentPage === 1}
-      onClick={(e) => {
-        e.stopPropagation();
-        setPageByDept((prev) => ({
-          ...prev,
-          [dept.id]: Math.max(1, currentPage - 1),
-        }));
-      }}
-    >
-      Prev
-    </PageButton>
+                      {employees.length > pageSize && (
+                        <PaginationWrapper onClick={(e) => e.stopPropagation()}>
+                          <PageButton
+                            disabled={currentPage === 1}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPageByDept((prev) => ({
+                                ...prev,
+                                [dept.id]: Math.max(1, currentPage - 1),
+                              }));
+                            }}
+                          >
+                            <FaAnglesLeft />
+                          </PageButton>
 
-    <PageInfo>
-      Page {currentPage} / {totalPages}
-    </PageInfo>
+                          <PageInfo>
+                            Page {currentPage} / {totalPages}
+                          </PageInfo>
 
-    <PageButton
-      disabled={currentPage === totalPages}
-      onClick={(e) => {
-        e.stopPropagation();
-        setPageByDept((prev) => ({
-          ...prev,
-          [dept.id]: Math.min(totalPages, currentPage + 1),
-        }));
-      }}
-    >
-      Next
-    </PageButton>
-  </PaginationWrapper>
-                  )}
+                          <PageButton
+                            disabled={currentPage === totalPages}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPageByDept((prev) => ({
+                                ...prev,
+                                [dept.id]: Math.min(totalPages, currentPage + 1),
+                              }));
+                            }}
+                          >
+                            <FaAnglesRight />
+                          </PageButton>
+                        </PaginationWrapper>
+                      )}
 
                     </DropdownWrapper>
                   )}

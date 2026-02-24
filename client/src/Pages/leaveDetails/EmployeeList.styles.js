@@ -62,14 +62,7 @@ export const BodyCell = styled.td`
     padding: 8px;
     font-size: 0.9rem;
   }
-     @media (min-width: 2560px) {
-    padding: 15px;
-    font-size: 1.5rem;
-  }
-     @media (min-width: 3820px) {
-    padding: 15px;
-    font-size: 1.8rem;
-  }
+
 `;
 
 

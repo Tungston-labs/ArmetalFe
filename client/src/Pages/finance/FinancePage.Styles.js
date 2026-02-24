@@ -139,20 +139,22 @@ export const StyledTable = styled.table`
 export const Th = styled.th`
   background-color: #304EB0;
   color: white;
-  padding: 0.75rem;
-  text-align: center;
+  padding: 12px;
+  text-align: left;
   position: sticky;
   top: 0;
   z-index: 2;
+    font-size: 0.9rem;
 `;
 
 
 export const Td = styled.td`
-  text-align: center;
+  text-align: left;
   padding: 0.5rem;
   white-space: nowrap;
   background-color: white;
   border: none;
+  font-size: 0.9rem;
 `;
 
 

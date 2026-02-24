@@ -146,7 +146,7 @@ const EmployeeList = () => {
               </TableHead>
 
               <TableBody>
-                {filteredEmployees.length > 0 ? (
+               {!loading && filteredEmployees.length > 0 ? (
                   filteredEmployees.map((emp, index) => (
                     <BodyRow
                       key={emp.id}
@@ -188,11 +188,11 @@ const EmployeeList = () => {
                       </DeleteIconWrapper>
                     </BodyRow>
                   ))
-                ) : (
-                  <EmptyRow>
-                    <td colSpan="7">No employees found.</td>
-                  </EmptyRow>
-                )}
+               ) : !loading ? (
+  <EmptyRow>
+    <td colSpan="7">No employees found.</td>
+  </EmptyRow>
+) : null}
               </TableBody>
             </StyledTable>
             <Pagination

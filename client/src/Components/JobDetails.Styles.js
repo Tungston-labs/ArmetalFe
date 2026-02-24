@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   width: 100%;
   margin: auto;
   padding: 20px;
@@ -13,7 +13,7 @@ export const FormContainer = styled.form`
 `;
 
 export const SectionTitle = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: #333;
   border-bottom: 2px solid #e2e8f0;
@@ -36,12 +36,13 @@ export const Label = styled.label`
   font-weight: 500;
   margin-bottom: 6px;
   color: #172554;
+  font-size: 14px;
 `;
 
 export const Input = styled.input`
-  padding: 10px 12px;
-  border: 1px solid #052DB4;
-  border-radius: 8px;
+  padding: 8px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
   font-size: 1rem;
   &:focus {
     border-color: #3352BA;
@@ -51,9 +52,9 @@ export const Input = styled.input`
 `;
 
 export const Select = styled.select`
-  padding: 10px 12px;
-  border: 1px solid #052DB4;
-  border-radius: 8px;
+  padding:7px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
   font-size: 1rem;
   background: #fff;
   &:focus {
@@ -64,9 +65,9 @@ export const Select = styled.select`
 `;
 
 export const FileInputLabel = styled.label`
-  padding: 10px 12px;
+  padding:8px;
   border: 1px dashed #cbd5e1;
-  border-radius: 8px;
+  border-radius: 4px;
   text-align: center;
   cursor: pointer;
   color: #6b7280;

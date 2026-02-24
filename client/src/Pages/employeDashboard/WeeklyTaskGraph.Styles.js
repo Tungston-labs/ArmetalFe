@@ -163,14 +163,23 @@ export const BarWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: 150px;
+  height: 100px;
   width: 18px;
   background-color: #cfd9f8ff;
   border-radius: 4px;
   overflow: hidden;
-
+ @media (min-width: 1024px) {
+    height: 80px;
+  }
+   @media (min-width: 1440px) {
+    height: 100px;
+  }
+    @media (min-width: 1600px) {
+    height: 130px;
+    width: 25px;
+  }
   @media (min-width: 2540px) {
-    height: 230px;
+    height: 200px;
     width: 25px;
   }
 

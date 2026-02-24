@@ -23,19 +23,19 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
   const [empData, setEmpData] = useState(null);
   const [loading, setLoading] = useState(false);
 
- useEffect(() => {
-  if (!isOpen || !employeeId) return;
+  useEffect(() => {
+    if (!isOpen || !employeeId) return;
 
-  setLoading(true);
+    setLoading(true);
 
-  fetchEmployeeDashboard(employeeId)
-    .then((res) => {
-      setEmpData(res);
-    })
-    .catch((err) => {
-    })
-    .finally(() => setLoading(false));
-}, [isOpen, employeeId]);
+    fetchEmployeeDashboard(employeeId)
+      .then((res) => {
+        setEmpData(res);
+      })
+      .catch((err) => {
+      })
+      .finally(() => setLoading(false));
+  }, [isOpen, employeeId]);
 
 
   if (!isOpen) return null;
@@ -43,38 +43,38 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
   return (
     <>
       <Overlay isOpen={isOpen} onClick={onClose} />
-<ModalWrapper isOpen={isOpen}>
-  <HeaderBar>
-    <BackButton onClick={onClose}>← Back</BackButton>
-    <EditButton onClick={() => navigate(`/ViewBasic/${employeeId}`)}>
-      Edit <CiEdit />
-    </EditButton>
-  </HeaderBar>
+      <ModalWrapper isOpen={isOpen}>
+        <HeaderBar>
+          <BackButton onClick={onClose}>← Back</BackButton>
+          <EditButton onClick={() => navigate(`/ViewBasic/${employeeId}`)}>
+            Edit <CiEdit />
+          </EditButton>
+        </HeaderBar>
 
-  <ContentArea>
-    {loading && <p>Loading...</p>}
+        <ContentArea>
+          {loading && <p>Loading...</p>}
 
-    {empData && (
-      <>
-        <EmployeeDetails employee={empData} />
+          {empData && (
+            <>
+              <EmployeeDetails employee={empData} />
 
-        <TwoColumnWrapper>
-          <LeftSide>
-            <ProgressCard attendanceGraph={empData.attendance_graph} />
-          </LeftSide>
+              <TwoColumnWrapper>
+                <LeftSide>
+                  <ProgressCard attendanceGraph={empData.attendance_graph} />
+                </LeftSide>
 
-          <RightSide>
-            <WeeklyTaskGraph
-              weeklyData={Object.entries(empData.task_graph).map(
-                ([day, value]) => ({ day, tasksCompleted: value })
-              )}
-            />
-          </RightSide>
-        </TwoColumnWrapper>
-      </>
-    )}
-  </ContentArea>
-</ModalWrapper>
+                <RightSide>
+                  <WeeklyTaskGraph
+                    weeklyData={Object.entries(empData.task_graph).map(
+                      ([day, value]) => ({ day, tasksCompleted: value })
+                    )}
+                  />
+                </RightSide>
+              </TwoColumnWrapper>
+            </>
+          )}
+        </ContentArea>
+      </ModalWrapper>
 
     </>
   );

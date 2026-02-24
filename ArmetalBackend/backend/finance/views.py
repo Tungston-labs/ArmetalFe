@@ -47,7 +47,7 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ["category", "payment_type"]
-    search_fields = ["note", "category", "payment_type"]
+    search_fields = ["note", "category__name"]
 
     # ---------------------------------------------------
     # QUERYSET (Company Based)

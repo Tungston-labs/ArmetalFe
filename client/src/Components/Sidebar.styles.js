@@ -195,8 +195,8 @@ export const CustomLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 12px 16px;
-  border-radius: 10px;
+  padding: 10px 16px;
+  border-radius: 4px;
   font-size: 1rem;
   color: white;
   font-weight: 600;

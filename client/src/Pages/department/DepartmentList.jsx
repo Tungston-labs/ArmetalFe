@@ -1,4 +1,3 @@
-// src/pages/department/Department.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -57,12 +56,11 @@ import {
 } from "../department/DepartmentDetails.Styles";
 import Loader from "../../Components/Loader.jsx";
 import { ClipLoader } from "react-spinners";
-// import Navbar from "../../Components/Navbar.jsx";
 import EmployeeTitle from "../../Components/EmployeeTitle.jsx";
 import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
 import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
-import { fetchDepartmentById } from "../../services/departmentServices"; // you used this in DepartmentDetail
-
+import { fetchDepartmentById } from "../../services/departmentServices"; 
+import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
 const DepartmentList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,28 +71,20 @@ const DepartmentList = () => {
     department_code: "",
   });
   const [newDeptError, setNewDeptError] = useState("");
-
-  // Redux departments list + loading
   const { list: departments = [], loading } = useSelector(
     (state) => state.departments,
   );
-
-  // Local UI state
   const [search, setSearch] = useState("");
-  const [selectedDept, setSelectedDept] = useState(null); // currently expanded dept id
-  const [deptEmployees, setDeptEmployees] = useState({}); // { deptId: [employees] }
+  const [selectedDept, setSelectedDept] = useState(null);
+  const [deptEmployees, setDeptEmployees] = useState({}); 
   const [loadingDept, setLoadingDept] = useState(false);
   const [savingDept, setSavingDept] = useState(false);
-
-  const [pageByDept, setPageByDept] = useState({}); // per-department employee page
+  const [pageByDept, setPageByDept] = useState({}); 
   const pageSize = 10;
-
-  // per-department details + form state + editing state
-  const [deptDetails, setDeptDetails] = useState({}); // { deptId: deptObject }
-  const [formDatas, setFormDatas] = useState({}); // { deptId: { name, department_code, department_head_id } }
+  const [deptDetails, setDeptDetails] = useState({});
+  const [formDatas, setFormDatas] = useState({}); 
   const [editingDeptId, setEditingDeptId] = useState(null);
 
-  // fetch departments on mount
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: "" })).then((res) => {
     });
@@ -115,7 +105,6 @@ const DepartmentList = () => {
     return items.slice(start, start + size);
   };
 
-  // toggle expand / load employees + department details
   const handleToggle = async (deptId) => {
     if (selectedDept === deptId) {
       setSelectedDept(null);
@@ -125,28 +114,19 @@ const DepartmentList = () => {
 
     setSelectedDept(deptId);
     setEditingDeptId(null);
-
-    // reset page for this department to 1 when opened
     setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
 
-    // if already loaded, no need to fetch again
     if (deptEmployees[deptId] && deptDetails[deptId]) return;
 
     setLoadingDept(true);
     try {
-      // 1) fetch employees in department (redux thunk)
       const employeesRes = await dispatch(
         getEmployeesByDepartment(deptId),
       ).unwrap();
-      // store as-is (we'll sort on render), but ensure it's an array
       setDeptEmployees((prev) => ({ ...prev, [deptId]: employeesRes || [] }));
-
-      // 2) fetch department details for form (service)
       try {
         const deptData = await fetchDepartmentById(deptId);
         setDeptDetails((prev) => ({ ...prev, [deptId]: deptData }));
-
-        // initialize form data for this department
         setFormDatas((prev) => ({
           ...prev,
           [deptId]: {
@@ -156,7 +136,6 @@ const DepartmentList = () => {
           },
         }));
       } catch (err) {
-        // fallback: if service fails, try using local departments list item
         const fallback = departments.find((d) => d.id === deptId) || {};
         setDeptDetails((prev) => ({ ...prev, [deptId]: fallback }));
         setFormDatas((prev) => ({
@@ -175,7 +154,6 @@ const DepartmentList = () => {
     }
   };
 
-  // delete employee with confirmation and refresh employees list
   const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -189,7 +167,6 @@ const DepartmentList = () => {
       if (!result.isConfirmed) return;
       try {
         await dispatch(deleteEmployeeById(employeeId)).unwrap();
-        // re-fetch employees for this department
         const updated = await dispatch(
           getEmployeesByDepartment(deptId),
         ).unwrap();
@@ -204,8 +181,6 @@ const DepartmentList = () => {
       }
     });
   };
-
-  // form input change per department
   const handleFormChange = (deptId, e) => {
     const { name, value } = e.target;
     setFormDatas((prev) => ({
@@ -216,8 +191,6 @@ const DepartmentList = () => {
       },
     }));
   };
-
-  // toggle edit mode for a department
   const toggleEdit = (deptId) => {
     if (editingDeptId === deptId) {
       setEditingDeptId(null);
@@ -225,8 +198,6 @@ const DepartmentList = () => {
       setEditingDeptId(deptId);
     }
   };
-
-  // update department (department head)
   const handleUpdate = async (deptId) => {
     const form = formDatas[deptId] || {};
     const payload = {
@@ -251,8 +222,6 @@ const DepartmentList = () => {
       await dispatch(
         updateDepartmentById({ id: deptId, data: payload }),
       ).unwrap();
-
-      // re-fetch details and employees to reflect changes
       const updatedDept = await fetchDepartmentById(deptId);
       setDeptDetails((prev) => ({ ...prev, [deptId]: updatedDept }));
       setFormDatas((prev) => ({
@@ -263,8 +232,6 @@ const DepartmentList = () => {
           department_head_id: updatedDept.department_head?.id || "",
         },
       }));
-
-      // optionally refresh global departments list
       dispatch(getDepartments({ page: 1, search: "" }));
 
       Swal.fire("Updated!", "Department updated successfully.", "success");
@@ -282,12 +249,11 @@ const DepartmentList = () => {
     const { name, value } = e.target;
     setNewDeptForm((prev) => ({
       ...prev,
-      [name]: value.toUpperCase(), // optional: uppercase
+      [name]: value.toUpperCase(), 
     }));
   };
 
   const handleCreateDepartment = async () => {
-    // client-side validation
     if (!newDeptForm.name?.trim()) {
       setNewDeptError("Please provide a department name.");
       return;
@@ -357,7 +323,6 @@ const DepartmentList = () => {
                   }),
                 );
 
-                // pagination calculations for this department
                 const currentPage = pageByDept[dept.id] || 1;
                 const totalPages = Math.max(
                   1,
@@ -641,7 +606,7 @@ const DepartmentList = () => {
                           )}
                         </DropdownWrapper>
 
-                        {/* Pagination for employees inside the expanded department */}
+                  
                         {sortedEmployees.length > pageSize && (
                           <PaginationWrapper
                             onClick={(e) => e.stopPropagation()}
@@ -656,7 +621,7 @@ const DepartmentList = () => {
                                 }));
                               }}
                             >
-                              Prev
+                         <FaAnglesLeft/>
                             </PageButton>
 
                             <PageInfo>
@@ -676,7 +641,7 @@ const DepartmentList = () => {
                                 }));
                               }}
                             >
-                              Next
+                          <FaAnglesRight/>
                             </PageButton>
                           </PaginationWrapper>
                         )}

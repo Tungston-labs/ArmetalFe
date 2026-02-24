@@ -10,23 +10,19 @@ import {
   Td,
   Hr,
   DateWrapper,
-  Pagination,
   Heading,
   FieldWrapper,
   Label,
 } from './Holiday.styles';
-import { MdDateRange } from "react-icons/md";
 import { FaTrashAlt } from "react-icons/fa";
-import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { getHolidays, addHoliday, removeHoliday } from '../../Redux/holidaySlice';
 import { fetchHolidayTypes } from '../../services/holidayService';
 import Loader from "../../Components/Loader";
 import HolidayHeading from "../../Components/HolidayHeading";
 import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from '../leaveDetails/EmployeeList.styles';
+import Pagination from "../../Components/Pagination/Pagination"
 
-
-/* ✅ FALLBACK TYPES — only addition */
 const DEFAULT_HOLIDAY_TYPES = [
   { key: "public", label: "Public Holiday" },
   { key: "religious", label: "Religious Holiday" },
@@ -58,19 +54,17 @@ const HolidayManager = () => {
     loading,
     error,
     totalPages = 1,
-    currentPage = 1
+    currentPage = 1,
+    count = 0,
+    totalItems = 0
   } = useSelector(state => state.holidays);
 
   const [formError, setFormError] = useState("");
   const [formData, setFormData] = useState({ name: "", type: "", date: "" });
-
   const [typeOptions, setTypeOptions] = useState(DEFAULT_HOLIDAY_TYPES);
-
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [selectedIdToDelete, setSelectedIdToDelete] = React.useState(null);
-
-
-  /* ✅ SAFE FETCH (only fix) */
+  const PAGE_SIZE = 20;
   useEffect(() => {
     fetchHolidayTypes()
       .then(data => {
@@ -90,55 +84,61 @@ const HolidayManager = () => {
     dispatch(getHolidays(page));
   }, [dispatch, page]);
 
-
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
     }
   };
 
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+ const handleAdd = () => {
+  const { name, type, date } = formData;
+  const trimmedName = name.trim();
 
-  const handleAdd = () => {
-    const { name, type, date } = formData;
-    const trimmedName = name.trim();
+  if (!trimmedName || !type || !date) {
+    setFormError("⚠️ Please fill in all fields before adding a holiday.");
+    return;
+  }
 
-    if (!trimmedName || !type || !date) {
-      setFormError("⚠️ Please fill in all fields before adding a holiday.");
-      return;
-    }
+  if (trimmedName.length > 250) {
+    setFormError("⚠️ Holiday name cannot exceed 250 characters.");
+    return;
+  }
 
-    if (trimmedName.length > 250) {
-      setFormError("⚠️ Holiday name cannot exceed 250 characters.");
-      return;
-    }
+  const formattedDate = formatDateToISO(date);
+  const selectedDate = new Date(date);
+  const today = new Date();
 
-    const formattedDate = formatDateToISO(date);
-    const selectedDate = new Date(date);
-    const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
 
-    today.setHours(0, 0, 0, 0);
-    selectedDate.setHours(0, 0, 0, 0);
+  if (selectedDate < today) {
+    setFormError("⚠️ Holiday date cannot be in the past.");
+    return;
+  }
 
-    if (selectedDate < today) {
-      setFormError("⚠️ Holiday date cannot be in the past.");
-      return;
-    }
+  // ✅ NEW VALIDATION: Check duplicate date
+  const isDateAlreadyExists = holidays.some(
+    (holiday) => holiday.date === formattedDate
+  );
 
-    dispatch(addHoliday({
-      description: trimmedName,
-      holiday_type: type,
-      date: formattedDate
-    }));
+  if (isDateAlreadyExists) {
+    setFormError("⚠️ A holiday already exists on this date.");
+    return;
+  }
 
-    setFormData({ name: "", type: "", date: "" });
-    setFormError("");
-  };
+  dispatch(addHoliday({
+    description: trimmedName,
+    holiday_type: type,
+    date: formattedDate
+  }));
 
+  setFormData({ name: "", type: "", date: "" });
+  setFormError("");
+};
 
   const handleDeleteClick = (id) => {
     setSelectedIdToDelete(id);
@@ -155,8 +155,15 @@ const HolidayManager = () => {
     setShowDeleteModal(false);
     setSelectedIdToDelete(null);
   };
+const formatDateToDisplay = (dateString) => {
+  const date = new Date(dateString);
 
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
 
+  return `${day}/${month}/${year}`;
+};
   return (
     <>
       <Container>
@@ -238,10 +245,12 @@ const HolidayManager = () => {
             ) : (
               holidays.map((item, index) => (
                 <BodyRow key={item.id}>
-                  <BodyCell>{(currentPage - 1) * 7 + index + 1}</BodyCell>
+                  <BodyCell>
+                    {(currentPage - 1) * PAGE_SIZE + index + 1}
+                  </BodyCell>
                   <BodyCell title={item.description}>{item.description}</BodyCell>
                   <BodyCell>{item.holiday_type_display}</BodyCell>
-                  <BodyCell>{item.date}</BodyCell>
+              <BodyCell>{formatDateToDisplay(item.date)}</BodyCell>
                   <BodyCell>
                     <FaTrashAlt
                       style={{ color: "red", cursor: "pointer" }}
@@ -306,36 +315,11 @@ const HolidayManager = () => {
             </div>
           </div>
         )}
-
-        <Pagination>
-          <span
-            onClick={() => handlePageChange(page - 1)}
-            style={{ cursor: page > 1 ? 'pointer' : 'not-allowed', opacity: page > 1 ? 1 : 0.5 }}
-          >
-            &larr;
-          </span>
-
-          {[...Array(totalPages)].map((_, i) => {
-            const pageNum = i + 1;
-            return (
-              <span
-                key={pageNum}
-                onClick={() => handlePageChange(pageNum)}
-                className={pageNum === currentPage ? "active" : ""}
-                style={{ cursor: 'pointer', fontWeight: pageNum === currentPage ? 'bold' : 'normal' }}
-              >
-                {pageNum}
-              </span>
-            );
-          })}
-
-          <span
-            onClick={() => handlePageChange(page + 1)}
-            style={{ cursor: page < totalPages ? 'pointer' : 'not-allowed', opacity: page < totalPages ? 1 : 0.5 }}
-          >
-            &rarr;
-          </span>
-        </Pagination>
+        <Pagination
+          currentPage={page}
+          totalPages={Number(totalPages) || 1}
+          onPageChange={handlePageChange}
+        />
 
       </Container>
     </>

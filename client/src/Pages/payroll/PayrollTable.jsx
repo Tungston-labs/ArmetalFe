@@ -6,7 +6,7 @@ import {
   Title,
   Subtitle,
   SearchInput,
-  Pagination,
+  // Pagination,
   Table,
   Th,
   Td,
@@ -31,7 +31,7 @@ import Swal from "sweetalert2";
 import VerificationCircles from "../../Components/VerificationCircle";
 import HolidayIcon from "../../assets/payroll.svg";
 import { EmptyRow } from "../leaveDetails/EmployeeList.styles";
-
+import Pagination from "../../Components/Pagination/Pagination"
 const months = [
   "January",
   "February",
@@ -509,7 +509,7 @@ const PayrollTable = () => {
           </tbody>
         </Table>
 
-        <Pagination>
+        {/* <Pagination>
           <span
             onClick={() => handlePageChange(page - 1)}
             style={{
@@ -540,7 +540,13 @@ const PayrollTable = () => {
           >
             &rarr;
           </span>
-        </Pagination>
+        </Pagination> */}
+
+        <Pagination
+  currentPage={page}
+  totalPages={totalPages}
+  onPageChange={handlePageChange}
+/>
       </Container>
     </>
   );

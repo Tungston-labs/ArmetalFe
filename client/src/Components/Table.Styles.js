@@ -63,9 +63,9 @@ export const Label = styled.label`
 
 
 export const Input = styled.input`
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #052DB4;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid lightgray;
   font-size: 0.95rem;
   &:focus {
     border-color: #4f46e5;
@@ -75,10 +75,10 @@ export const Input = styled.input`
 
 // Select
 export const Select = styled.select`
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: 4px;
   background:white;
-  border: 1px solid #052DB4;
+  border: 1px solid lightgray;
   font-size: 0.95rem;
   &:focus {
     border-color: #4f46e5;
