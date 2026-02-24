@@ -27,7 +27,14 @@ class FinanceCategoryListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return FinanceCategory.objects.filter(company=user.company)
+        payment_type = self.request.query_params.get("payment_type")
+
+        queryset = FinanceCategory.objects.filter(company=user.company)
+
+        if payment_type:
+            queryset = queryset.filter(payment_type=payment_type)
+
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(company=self.request.user.company)

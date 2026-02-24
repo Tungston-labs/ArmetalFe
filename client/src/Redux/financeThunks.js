@@ -2,7 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createFinanceService,
   listFinanceService,
-  deleteFinanceService
+  deleteFinanceService,createFinanceCategoryService,
+  listFinanceCategoryService,
 } from "../services/financeService";
 
 export const createFinance = createAsyncThunk(
@@ -44,6 +45,28 @@ export const deleteFinance = createAsyncThunk(
     try {
       await deleteFinanceService(id);
       return id; // return deleted id
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const createFinanceCategory = createAsyncThunk(
+  "financeCategory/create",
+  async (data, { rejectWithValue }) => {
+    try {
+      return await createFinanceCategoryService(data);
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const fetchFinanceCategoryList = createAsyncThunk(
+  "financeCategory/list",
+  async (payment_type = "", { rejectWithValue }) => {
+    try {
+      return await listFinanceCategoryService(payment_type);
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }

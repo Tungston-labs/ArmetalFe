@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ModalOverlay,
   ModalContainer,
@@ -15,26 +15,19 @@ import {
   Select,
 } from "./NewFinance.Styles";
 import { FaArrowLeft } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import {
+  createFinanceCategory,
+  fetchFinanceCategoryList,
+} from "../../Redux/financeThunks";
+
 const getTodayDate = () => new Date().toISOString().split("T")[0];
 
 const PAYMENT_TYPE_OPTIONS = [
   { label: "Income", value: "IN" },
   { label: "Expense", value: "OUT" },
 ];
-const EXPENSE_CATEGORIES = [
-  { label: "Salary", value: "SALARY" },
-  { label: "Reimbursement", value: "REIMBURSEMENT" },
-  { label: "Travel", value: "TRAVEL" },
-  { label: "Food", value: "FOOD" },
-  { label: "Other", value: "OTHER" },
-  { label: "+ Add New Category", value: "ADD_NEW" },
-];
-const INCOME_CATEGORIES = [
-  { label: "Project Payment", value: "PROJECT_PAYMENT" },
-  { label: "Client Payment", value: "CLIENT_PAYMENT" },
-  { label: "Other Income", value: "OTHER_INCOME" },
-  { label: "+ Add New Category", value: "ADD_NEW" },
-];
+
 const initialFormState = {
   category: "",
   date: getTodayDate(),
@@ -44,30 +37,69 @@ const initialFormState = {
 };
 
 const FinanceModal = ({ isOpen, onClose, onSave }) => {
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [customCategory, setCustomCategory] = useState("");
+  const [categories, setCategories] = useState([]);
 
+  // ✅ Hook always runs
+ useEffect(() => {
+  const loadCategories = async () => {
+    if (!formData.paymentType) {
+      setCategories([]);  // ✅ clear categories
+      return;
+    }
+
+    const res = await dispatch(
+      fetchFinanceCategoryList(formData.paymentType)
+    );
+
+    if (res.meta.requestStatus === "fulfilled") {
+      setCategories(res.payload.results);
+    }
+  };
+
+  loadCategories();
+}, [formData.paymentType, dispatch]);
+
+  // ✅ RETURN AFTER ALL HOOKS
   if (!isOpen) return null;
+
+
   const resetForm = () => {
     setFormData({
       ...initialFormState,
       date: getTodayDate(),
     });
+    setCustomCategory("");
     setErrors({});
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
+ const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  setFormData((prev) => {
+    // If payment type changes, reset category
+    if (name === "paymentType") {
+      return {
+        ...prev,
+        paymentType: value,
+        category: "",   // ✅ reset category
+      };
+    }
+
+    return { ...prev, [name]: value };
+  });
+
+  setErrors((prev) => ({ ...prev, [name]: "" }));
+};
 
   const validate = () => {
     const newErrors = {};
 
     if (!formData.category) newErrors.category = "Category is required";
-    if (!formData.date) newErrors.date = "Date is required";
     if (!formData.paymentType)
       newErrors.paymentType = "Payment type is required";
     if (!formData.amount1)
@@ -81,11 +113,42 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validate()) return;
 
+    let finalCategory = formData.category;
+
+    // If user selected Add New
+    if (formData.category === "ADD_NEW") {
+      if (!customCategory.trim()) {
+        setErrors({ category: "Enter category name" });
+        return;
+      }
+
+      const res = await dispatch(
+        createFinanceCategory({
+          name: customCategory.toLowerCase(), // lowercase
+          payment_type: formData.paymentType,
+        })
+      );
+
+      if (res.meta.requestStatus === "fulfilled") {
+        finalCategory = res.payload.id;
+
+        // refresh categories
+        const refresh = await dispatch(
+          fetchFinanceCategoryList(formData.paymentType)
+        );
+
+        if (refresh.meta.requestStatus === "fulfilled") {
+          setCategories(refresh.payload.results);
+        }
+      } else {
+        return;
+      }
+    }
+
     await onSave({
-      category: formData.category,
+      category: finalCategory,
       paymentType: formData.paymentType,
       amount1: formData.amount1,
       date: formData.date,
@@ -99,11 +162,7 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
     resetForm();
     onClose();
   };
-  const getCategoryOptions = () => {
-    if (formData.paymentType === "OUT") return EXPENSE_CATEGORIES;
-    if (formData.paymentType === "IN") return INCOME_CATEGORIES;
-    return [];
-  };
+
   return (
     <ModalOverlay>
       <ModalContainer>
@@ -143,12 +202,10 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
                 value={formData.date}
                 onChange={handleChange}
               />
-              {errors.date && <p className="error">{errors.date}</p>}
             </div>
           </FormRow>
 
           <FormRow>
-
             <div>
               <Label>Category *</Label>
               <Select
@@ -157,16 +214,18 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
                 onChange={handleChange}
               >
                 <option value="">Select Category</option>
-                {getCategoryOptions().map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
+
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
                   </option>
                 ))}
+
+                <option value="ADD_NEW">+ Add New Category</option>
               </Select>
 
               {errors.category && <p className="error">{errors.category}</p>}
 
-              {/* Show input if Add New selected */}
               {formData.category === "ADD_NEW" && (
                 <Input
                   type="text"
