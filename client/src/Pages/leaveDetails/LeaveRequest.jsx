@@ -11,7 +11,6 @@ import {
   TableCell,
   ActionButtons,
   ApproveButton,
-  // Pagination,
 } from './LeaveRequest.Styles';
 import Loader from "../../Components/Loader"
 import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, Avatar, AvatarFallback, NameCell } from './EmployeeList.styles';
@@ -20,14 +19,12 @@ import Pagination  from "../../Components/Pagination/Pagination"
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
-
   const { leaves, loading, pagination } = useSelector(state => state.leave);
   const [actionType, setActionType] = useState('');
   const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState(null);
-  const [page, setPage] = useState(1); // <-- Pagination state
-
+  const [page, setPage] = useState(1); 
   const navigate = useNavigate();
   const [departmentFilter, setDepartmentFilter] = useState("");
 
@@ -152,10 +149,16 @@ const handlePageChange = (newPage) => {
                   </BodyCell>
                   <BodyCell>{leave.leave_type}</BodyCell>
                   <BodyCell>{leave.employee.department}</BodyCell>
-                  <BodyCell>
-                {leave.from_date}
-                  </BodyCell>
-                  <BodyCell> {leave.to_date}</BodyCell>
+                <BodyCell>
+  {leave.from_date
+    ? new Date(leave.from_date).toLocaleDateString("en-GB")
+    : "N/A"}
+</BodyCell>
+<BodyCell>
+  {leave.to_date
+    ? new Date(leave.to_date).toLocaleDateString("en-GB")
+    : "N/A"}
+</BodyCell>
                 <BodyCell
                     onClick={(e) => {
                       e.stopPropagation();
@@ -191,7 +194,6 @@ const handlePageChange = (newPage) => {
                         On Leaves
                       </ApproveButton>
 
-
                     </ActionButtons>
                   </BodyCell>
                 </BodyRow>
@@ -205,50 +207,6 @@ const handlePageChange = (newPage) => {
     totalPages={pagination?.total_pages ?? 1}
     onPageChange={handlePageChange}
   />
-
-
-
-
-        {/* <Pagination>
-          <span
-            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-            style={{ cursor: 'pointer', marginRight: '0px',}}
-          >
-            &larr;
-          </span>
-
-          {[1].map((pageNumber) => {
-            const isActive = pagination?.current_page === pageNumber;
-
-            return (
-              <span
-                key={pageNumber}
-                onClick={() => setPage(pageNumber)}
-                style={{
-                  margin: '0 0px',
-                  padding: '6px ',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  backgroundColor: isActive ? '#003366' : '#e0e0e0',
-                  color: isActive ? '#ffffff' : '#000000',
-                  fontWeight: isActive ? 'bold' : 'normal',
-                }}
-              >
-                {pageNumber}
-              </span>
-            );
-          })}
-
-          <span
-            onClick={() =>
-              setPage((prev) => Math.min(prev + 1, 2))
-            }
-            style={{ cursor: 'pointer', marginLeft: '0px' }}
-          >
-            &rarr;
-          </span>
-        </Pagination> */}
-
         {showModal && (
           <OnLeaveModal
             leaveId={selectedLeave?.leave_id}    
@@ -257,10 +215,6 @@ const handlePageChange = (newPage) => {
             onClose={() => setShowModal(false)}
           />
         )}
-
-
-
-
       </Container>
     </>
   );

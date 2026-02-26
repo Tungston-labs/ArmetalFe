@@ -4,7 +4,6 @@ import {
   updateCompanySelf,
 } from "../services/companyService";
 
-// GET
 export const getCompanySelf = createAsyncThunk(
   "company/getSelf",
   async (_, { rejectWithValue }) => {

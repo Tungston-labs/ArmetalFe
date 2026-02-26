@@ -3,24 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPayrollDetail } from "../../Redux/payrollSlice";
 import {
-  Container,
-  Header,
-  Title,
-  Badge,
-  PrintIcon,
-  GridLayout,
-  InfoTable,
-  InfoRow,
-  Label,
-  Value,
-  TableWrapper,
-  Table,
-  TableData,
-  RightHeader,
-  LeftHeader,
+  Container, Header, Title, Badge, PrintIcon, GridLayout, InfoTable, InfoRow,
+  Label, Value, TableWrapper, Table, TableData
+  , RightHeader, LeftHeader,
+
   BackTitle,
-  BackIcon,
-} from "./Payroll.styles";
+
+  BackIcon
+} from './Payroll.styles';
 import { BsPrinter } from "react-icons/bs";
 import { printElement } from "../../services/utlis/printPayroll";
 
@@ -72,15 +62,13 @@ const PayrollDetails = () => {
         <Header>
           <LeftHeader>
             <BackTitle onClick={() => navigate("/payrolldetails")}>
-              <BackIcon />
+              <BackIcon className="no-print" />
               <Title>Employee Details</Title>
             </BackTitle>
           </LeftHeader>
           <RightHeader>
-            <Badge>{status || "Unpaid"}</Badge>
-            <PrintIcon onClick={handleprint}>
-              <BsPrinter />
-            </PrintIcon>
+            <Badge>{status || 'Unpaid'}</Badge>
+            <PrintIcon className="no-print" onClick={handleprint}><BsPrinter /></PrintIcon>
           </RightHeader>
         </Header>
 
@@ -200,32 +188,16 @@ const PayrollDetails = () => {
               <tbody>
                 <tr>
                   <TableData>Gross Pay</TableData>
-                  <TableData>
-                    {Number(gross_earnings).toLocaleString("en-IN", {
-                      style: "currency",
-                      currency: "INR",
-                    })}
-                  </TableData>
+                  <TableData>{gross_earnings}</TableData>
                 </tr>
                 <tr>
-                  <TableData>Total Deductions</TableData>
-                  <TableData>
-                    {Number(total_deductions).toLocaleString("en-IN", {
-                      style: "currency",
-                      currency: "INR",
-                    })}
-                  </TableData>
+                  <TableData>Deductions</TableData>
+                  <TableData>{total_deductions}</TableData>
                 </tr>
-                <tr>
+                <tr className="net-pay">
                   <TableData>Net Pay</TableData>
-                  <TableData>
-                    {Number(net_pay).toLocaleString("en-IN", {
-                      style: "currency",
-                      currency: "INR",
-                    })}
-                  </TableData>
+                  <TableData>{net_pay}</TableData>
                 </tr>
-                
               </tbody>
             </Table>
           </TableWrapper>

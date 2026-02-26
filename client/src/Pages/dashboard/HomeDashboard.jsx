@@ -106,7 +106,7 @@ const Dashboard = () => {
             />
           </ThreeBox>
           <ThreeBox>
-            <RecentlyAddedEmployees employees={employeesList} showCount={4} />
+            <RecentlyAddedEmployees employees={employeesList} showCount={3} />
           </ThreeBox>
 
           <ThreeBox>
@@ -118,7 +118,7 @@ const Dashboard = () => {
       empId: emp.employee_id,
     }))
   }
-  showCount={4}
+  showCount={3}
 />
           </ThreeBox>
           <ThreeBox>
@@ -130,7 +130,7 @@ const Dashboard = () => {
                   type: h.holiday_type,
                 }))
               }
-              showCount={4}
+              showCount={3}
               onViewAll={() => console.log("open holidays page")}
             />
           </ThreeBox>

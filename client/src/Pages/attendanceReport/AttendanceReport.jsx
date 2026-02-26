@@ -60,13 +60,14 @@ const AttendanceReport = () => {
       }));
   }, [selectedMonth, dispatch, token]);
 
-  const visibleRows = useMemo(() => {
-    if (!Array.isArray(attendanceSummary)) return [];
-    const q = (searchTerm || "").trim().toLowerCase();
-    return attendanceSummary.filter((emp) =>
-      emp.employee_name.toLowerCase().includes(q)
-    );
-  }, [attendanceSummary, searchTerm]);
+const visibleRows = useMemo(() => {
+  if (!Array.isArray(attendanceSummary)) return [];
+  const q = (searchTerm || "").trim().toLowerCase();
+
+  return attendanceSummary
+    .filter((emp) => emp.employee_name.toLowerCase().includes(q))
+    .sort((a, b) => a.employee_name.localeCompare(b.employee_name));
+}, [attendanceSummary, searchTerm]);
 
   const handleRowClick = (employee) => {
     setSelectedEmployee(employee);
