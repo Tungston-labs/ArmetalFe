@@ -5,10 +5,10 @@ import { getPayrollDetail } from '../../Redux/payrollSlice';
 import {
   Container, Header, Title, Badge, PrintIcon, GridLayout, InfoTable, InfoRow,
   Label, Value, TableWrapper, Table, TableData
-, RightHeader, LeftHeader,
+  , RightHeader, LeftHeader,
 
   BackTitle,
- 
+
   BackIcon
 } from './Payroll.styles';
 import { BsPrinter } from "react-icons/bs";
@@ -58,13 +58,13 @@ const PayrollDetails = () => {
         <Header>
           <LeftHeader>
             <BackTitle onClick={() => navigate("/payrolldetails")}>
-              <BackIcon />
+              <BackIcon className="no-print" />
               <Title>Employee Details</Title>
             </BackTitle>
           </LeftHeader>
           <RightHeader>
             <Badge>{status || 'Unpaid'}</Badge>
-            <PrintIcon onClick={handleprint}><BsPrinter /></PrintIcon>
+            <PrintIcon className="no-print" onClick={handleprint}><BsPrinter /></PrintIcon>
           </RightHeader>
         </Header>
 
@@ -144,13 +144,16 @@ const PayrollDetails = () => {
               <tbody>
                 <tr>
                   <TableData>Gross Pay</TableData>
-                  <TableData>{gross_earnings}</TableData></tr>
+                  <TableData>{gross_earnings}</TableData>
+                </tr>
                 <tr>
-                  <TableData>Deductions </TableData>
+                  <TableData>Deductions</TableData>
                   <TableData>{total_deductions}</TableData>
                 </tr>
-                <TableData>Net Pay</TableData>
-                <TableData>{net_pay} </TableData>
+                <tr className="net-pay">
+                  <TableData>Net Pay</TableData>
+                  <TableData>{net_pay}</TableData>
+                </tr>
               </tbody>
             </Table>
 

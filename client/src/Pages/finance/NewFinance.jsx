@@ -44,11 +44,11 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
   const [customCategory, setCustomCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
-  // ✅ Hook always runs
+
  useEffect(() => {
   const loadCategories = async () => {
     if (!formData.paymentType) {
-      setCategories([]);  // ✅ clear categories
+      setCategories([]);  
       return;
     }
 
@@ -63,8 +63,6 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
 
   loadCategories();
 }, [formData.paymentType, dispatch]);
-
-  // ✅ RETURN AFTER ALL HOOKS
   if (!isOpen) return null;
 
 
@@ -81,24 +79,20 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
   const { name, value } = e.target;
 
   setFormData((prev) => {
-    // If payment type changes, reset category
     if (name === "paymentType") {
       return {
         ...prev,
         paymentType: value,
-        category: "",   // ✅ reset category
+        category: "",  
       };
     }
-
-    return { ...prev, [name]: value };
+  return { ...prev, [name]: value };
   });
-
   setErrors((prev) => ({ ...prev, [name]: "" }));
 };
 
   const validate = () => {
     const newErrors = {};
-
     if (!formData.category) newErrors.category = "Category is required";
     if (!formData.paymentType)
       newErrors.paymentType = "Payment type is required";
@@ -106,7 +100,6 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
       newErrors.amount1 = "Amount is required";
     else if (Number(formData.amount1) <= 0)
       newErrors.amount1 = "Amount must be greater than 0";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -116,8 +109,6 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
     if (!validate()) return;
 
     let finalCategory = formData.category;
-
-    // If user selected Add New
     if (formData.category === "ADD_NEW") {
       if (!customCategory.trim()) {
         setErrors({ category: "Enter category name" });
@@ -126,19 +117,16 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
 
       const res = await dispatch(
         createFinanceCategory({
-          name: customCategory.toLowerCase(), // lowercase
+          name: customCategory.toLowerCase(), 
           payment_type: formData.paymentType,
         })
       );
 
       if (res.meta.requestStatus === "fulfilled") {
         finalCategory = res.payload.id;
-
-        // refresh categories
         const refresh = await dispatch(
           fetchFinanceCategoryList(formData.paymentType)
         );
-
         if (refresh.meta.requestStatus === "fulfilled") {
           setCategories(refresh.payload.results);
         }
@@ -154,7 +142,6 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
       date: formData.date,
       note: formData.note,
     });
-
     resetForm();
   };
 
@@ -214,18 +201,14 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
                 onChange={handleChange}
               >
                 <option value="">Select Category</option>
-
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>
                 ))}
-
                 <option value="ADD_NEW">+ Add New Category</option>
               </Select>
-
               {errors.category && <p className="error">{errors.category}</p>}
-
               {formData.category === "ADD_NEW" && (
                 <Input
                   type="text"
@@ -236,7 +219,6 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
                 />
               )}
             </div>
-
             <div>
               <Label>Amount *</Label>
               <Input
@@ -250,7 +232,6 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
               )}
             </div>
           </FormRow>
-
           <div>
             <Label>Note</Label>
             <TextArea
@@ -259,7 +240,6 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
               onChange={handleChange}
             />
           </div>
-
           <ButtonGroup>
             <Button type="button" variant="cancel" onClick={handleClose}>
               Cancel

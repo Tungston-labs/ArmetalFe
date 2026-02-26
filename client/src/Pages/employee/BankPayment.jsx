@@ -156,7 +156,7 @@ export default function BankPaymentForm() {
 
     try {
       await dispatch(
-        submitBankPayment({ employeeId, data: bankData, bankProofImage }),
+        submitBankPayment({ employeeId, data: bankData, }),
       ).unwrap();
       dispatch(clearBankPayment());
       navigate("/documents");
