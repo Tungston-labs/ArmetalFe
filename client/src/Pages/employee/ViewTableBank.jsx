@@ -1,10 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchSalaryIncrements,
-  addSalaryIncrement,
-} from "../../Redux/salaryIncrementSlice";
-
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -19,82 +13,79 @@ import {
   Th,
   Td,
   AddButton,
+ 
 } from "./ViewTableBank.Styles";
 
 const ViewTableBank = ({
-  employeeId,
-  country,
-  bankName,
-  setBankName,
-  swiftCode,
-  setSwiftCode,
-  ifscCode,
-  setIfscCode,
-  accountNumber,
-  setAccountNumber,
-  panNumber,
-  setPanNumber,
-  basicSalary,
-  setBasicSalary,
+    country,
+  bankName, setBankName,
+  swiftCode, setSwiftCode,
+    ifscCode, setIfscCode,
+  // paymentMode, setPaymentMode,
+  accountNumber, setAccountNumber,
+  uanNumber, setUanNumber,
+  panNumber, setPanNumber,
+  taxRegime, setTaxRegime,
+  tdsAmount, setTdsAmount,
+  declaration80C, setDeclaration80C,
+  basicSalary, setBasicSalary,
+  salaryIncrement, setSalaryIncrement,
+  housingAllowance, setHousingAllowance,
+  transportation, setTransportation,
   errors = {},
+   
+  
 }) => {
 
-  const dispatch = useDispatch();
-
-  const { increments, loading } = useSelector(
-    (state) => state.salaryIncrement
-  );
-
-  const [date, setDate] = useState("");
-  const [incrementAmount, setIncrementAmount] = useState("");
-
-  // Fetch increment history
   useEffect(() => {
-    if (employeeId) {
-      dispatch(fetchSalaryIncrements(employeeId));
-    }
-  }, [employeeId, dispatch]);
+  if (country === "IN") {
+    setSwiftCode("");
+  } else {
+    setIfscCode("");
+  }
+}, [country]);
+  const [increments, setIncrements] = useState([]);
 
-  // Add Increment
-  const handleAddIncrement = () => {
-
-    if (!date || !incrementAmount || !employeeId) return;
-
-    dispatch(
-      addSalaryIncrement({
-        employeeId,
-        data: {
-          employee: employeeId,
-          date,
-          increment_amount: Number(incrementAmount),
-        },
-      })
-    )
-      .unwrap()
-      .then(() => {
-        setDate("");
-        setIncrementAmount("");
-
-        dispatch(fetchSalaryIncrements(employeeId));
-      });
+  const addIncrement = () => {
+    setIncrements((prev) => [
+      ...prev,
+      { date: "", increment: "", total: 0 },
+    ]);
   };
 
+
+  const handleChange = (index, field, value) => {
+    setIncrements((prev) =>
+      prev.map((item, i) =>
+        i === index
+          ? {
+              ...item,
+              [field]: value,
+              total:
+                field === "increment"
+                  ? calculateTotal(item.total, value)
+                  : item.total,
+            }
+          : item
+      )
+    );
+  };
+
+  const calculateTotal = (current, increment) => {
+    const total = parseFloat(current) || 0;
+    const incr = parseFloat(increment) || 0;
+    return (total + incr).toFixed(2);
+  };
   return (
     <Container>
-
-      {/* BANK DETAILS */}
       <Card>
         <CardHeader>Bank & Payment Details</CardHeader>
 
         <CardBody>
           <Grid2>
-
             <div>
               <Label>Bank Name</Label>
-              <Input
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
-              />
+              <Input value={bankName} onChange={(e) => setBankName(e.target.value)} />
               <ErrorText>{errors.bankName}</ErrorText>
             </div>
 
@@ -134,87 +125,145 @@ const ViewTableBank = ({
             </div> */}
 
             <div>
-              <Label>{country === "IN" ? "IFSC Code" : "SWIFT Code"}</Label>
+              <Label>Account Number</Label>
               <Input
-                value={country === "IN" ? ifscCode : swiftCode}
-                onChange={(e) =>
-                  country === "IN"
-                    ? setIfscCode(e.target.value.toUpperCase())
-                    : setSwiftCode(e.target.value.toUpperCase())
-                }
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
               />
+              <ErrorText>{errors.accountNumber}</ErrorText>
             </div>
-
-            <div>
-              <Label>Basic Salary</Label>
-              <Input
-                value={basicSalary}
-                onChange={(e) => setBasicSalary(e.target.value)}
-              />
+             <div>
+              <Label>PAN Number</Label>
+              <Input value={panNumber} onChange={(e) => setPanNumber(e.target.value)} />
+              <ErrorText>{errors.panNumber}</ErrorText>
             </div>
-
+          
           </Grid2>
         </CardBody>
       </Card>
 
-      {/* INCREMENT HISTORY */}
-      <Card>
-        <CardHeader>Salary Increment History</CardHeader>
+      {/* <Card> */}
+        {/* <CardHeader>Tax & Compliance</CardHeader> */}
+{/* 
+        <CardBody>
+          <Grid2>
+            <div>
+              <Label>PAN Number</Label>
+              <Input value={panNumber} onChange={(e) => setPanNumber(e.target.value)} />
+              <ErrorText>{errors.panNumber}</ErrorText>
+            </div> */}
+            
+{/* 
+            <div>
+              <Label>Tax Regime</Label>
+              <Select value={taxRegime} onChange={(e) => setTaxRegime(e.target.value)}>
+                <option value="">Select Regime</option>
+                <option value="old">Old Regime</option>
+                <option value="new">New Regime</option>
+              </Select>
+            </div> */}
+          {/* </Grid2> */}
 
-        <TableWrapper>
-          <Table>
-            <thead>
-              <tr>
-                <Th>Date</Th>
-                <Th>Increment Amount</Th>
-                <Th>Salary</Th>
-              </tr>
-            </thead>
+          {/* <Grid2> */}
+            {/* <div>
+              <Label>TDS Deduction Amount</Label>
+              <Select value={tdsAmount} onChange={(e) => setTdsAmount(e.target.value)}>
+                <option value="">Select TDS %</option>
+                {[0, 10, 20, 30].map((i) => (
+                  <option key={i} value={i}>{i}%</option>
+                ))}
+              </Select>
+            </div> */}
 
-            <tbody>
-              {(increments || []).length > 0 ? (
-                (increments || []).map((item) => (
-                  <tr key={item.id}>
-                    <Td>{item.date}</Td>
-                    <Td>
-                      ₹ {Number(item.increment_amount).toLocaleString("en-IN")}
-                    </Td>
-                    <Td>
-                      ₹ {Number(item.total_salary).toLocaleString("en-IN")}
-                    </Td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <Td colSpan={2} style={{ textAlign: "center" }}>
-                    No increments found
-                  </Td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
+            {/* <div>
+              <Label>Declaration under 80C</Label>
+              <Select value={declaration80C} onChange={(e) => setDeclaration80C(e.target.value)}>
+                <option value="">Select</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </Select>
+            </div> */}
+          {/* </Grid2> */}
+        {/* </CardBody>
+      </Card> */}
 
-          <div style={{ display: "flex", gap: 10, marginTop: 15 }}>
-            <Input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
 
-            <Input
-              type="number"
-              placeholder="Increment Amount"
-              value={incrementAmount}
-              onChange={(e) => setIncrementAmount(e.target.value)}
-            />
+      {/* <Card> */}
+        {/* <CardHeader>Salary & Increment</CardHeader> */}
+{/* 
+        <CardBody>
+          <Grid2> */}
+            {/* <div>
+              <Label>Basic Salary</Label>
+              <Input value={basicSalary} onChange={(e) => setBasicSalary(e.target.value)} />
+              <ErrorText>{errors.basicSalary}</ErrorText>
+            </div> */}
 
-            <AddButton onClick={handleAddIncrement}>
-              {loading ? "Saving..." : "+ Add"}
-            </AddButton>
-          </div>
-
-        </TableWrapper>
+            {/* <div>
+              <Label>Salary Increment</Label>
+              <Select
+                value={salaryIncrement}
+                onChange={(e) => setSalaryIncrement(e.target.value)}
+              >
+                {[...Array(11).keys()].map((i) => (
+                  <option key={i * 10} value={i * 10}>
+                    {i * 10}%
+                  </option>
+                ))}
+              </Select>
+            </div> */}
+          {/* </Grid2>
+        </CardBody>
       </Card>
+       */}
+
+<Card>
+      <CardHeader>Salary Increment History</CardHeader>
+    <TableWrapper>
+      <Table>
+        <thead>
+          <tr>
+            <Th>Date</Th>
+            <Th>Increment %</Th>
+            <Th>Total Amount</Th>
+          </tr>
+        </thead>
+        <tbody>
+          {increments.length > 0 ? (
+            increments.map((item, index) => (
+              <tr key={index}>
+                <Td>
+                  <Input
+                    type="date"
+                    value={item.date}
+                    onChange={(e) => handleChange(index, "date", e.target.value)}
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="number"
+                    value={item.increment}
+                    onChange={(e) =>
+                      handleChange(index, "increment", e.target.value)
+                    }
+                  />
+                </Td>
+                <Td>₹ {item.total}</Td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <Td colSpan={3} style={{ textAlign: "center", padding: "10px" }}>
+                No increments added
+              </Td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
+      <AddButton onClick={addIncrement}>+ Add Increment</AddButton>
+    </TableWrapper>
+</Card>
+
 
     </Container>
   );

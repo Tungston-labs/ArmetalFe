@@ -135,13 +135,18 @@ class EmployeeListView(generics.ListAPIView):
         print(f"✅ Returning employees for company: {company.name}, department_id: {department_id}")
         return queryset.order_by('name')
 
+<<<<<<< HEAD
 # ------------------------detail view,update,delete employee by admin
+=======
+
+>>>>>>> d9c6bfea (leave count in dashboard)
 class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee_db.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'pk'
 
+<<<<<<< HEAD
     def perform_update(self, serializer):
         instance = self.get_object()
         old_department = instance.department
@@ -160,6 +165,12 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         department = instance.department
         company = department.company if department else None
 
+=======
+    def perform_destroy(self, instance):
+        department = instance.department
+        company = department.company if department else None
+
+>>>>>>> d9c6bfea (leave count in dashboard)
         # Delete related user first (if exists)
         if instance.user:
             instance.user.delete()
@@ -171,11 +182,14 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if company:
             company.number_of_employees = max((company.number_of_employees or 1) - 1, 0)
             company.save(update_fields=["number_of_employees"])
+<<<<<<< HEAD
 
 
 # ------------------------create,list bank details of employee by admin
 
 
+=======
+>>>>>>> d9c6bfea (leave count in dashboard)
 
 
 class EmpBankPaymentCreateListView(generics.ListCreateAPIView):

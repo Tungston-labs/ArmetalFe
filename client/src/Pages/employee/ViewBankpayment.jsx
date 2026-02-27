@@ -1,28 +1,17 @@
-
 import React, { useEffect, useState } from "react";
-import {
-  Section,
-} from "./ViewBankpayment.Styles";
-
-import ViewTableBank from "./ViewTableBank";
-import { useParams, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
-import {
-  getEmployeeById,
-  fetchAllBankPaymentsThunk,
-  submitBankPayment,
-} from "../../Redux/employeeSlice";
-
-import SyncLoader from "../../Components/Loder";
 import Swal from "sweetalert2";
+
+import { getEmployeeById, fetchAllBankPaymentsThunk, submitBankPayment } from "../../Redux/employeeSlice";
+import SyncLoader from "../../Components/Loder";
 import ViewBasicLayout from "./layout/ViewLayout";
+import ViewTableBank from "./ViewTableBank";
+import { Section } from "./ViewBankpayment.Styles";
 
 const ViewBankPayment = () => {
   const { id } = useParams();
-  const location = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const { employeeDetail, employeeBankPayments, loading } = useSelector(
     (state) => state.employees
@@ -30,6 +19,7 @@ const ViewBankPayment = () => {
 
   const [bankProofImage, setBankProofImage] = useState(null);
   const [bankName, setBankName] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
   const [swiftCode, setSwiftCode] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [uanNumber, setUanNumber] = useState("");
@@ -42,15 +32,20 @@ const ViewBankPayment = () => {
   const [housingAllowance, setHousingAllowance] = useState("");
   const [transportation, setTransportation] = useState("");
   const [errors, setErrors] = useState({});
-  const [ifscCode, setIfscCode] = useState("");
+
+  const country = employeeDetail?.country || "IN";
+
+  // Fetch employee details and bank payments
   useEffect(() => {
     dispatch(getEmployeeById(id));
     dispatch(fetchAllBankPaymentsThunk(id));
   }, [id, dispatch]);
 
-useEffect(() => {
-  const latest = employeeBankPayments?.results?.[0];
-  if (latest) {
+  // Populate form fields with latest bank payment
+  useEffect(() => {
+    const latest = employeeBankPayments?.results?.[0];
+    if (!latest) return;
+
     setBankName(latest.bank_name || "");
     setAccountNumber(latest.account_number || "");
     setUanNumber(latest.uan_epf_number || "");
@@ -63,25 +58,24 @@ useEffect(() => {
     setHousingAllowance(latest.housing_allowance || "");
     setTransportation(latest.transportation || "");
 
-    if (employeeDetail?.country === "IN") {
-      setIfscCode(latest.swift_code || ""); // <-- use swift_code as IFSC
-      setSwiftCode(""); // clear SWIFT
+    // ✅ Handle IFSC/Swift properly
+    if (country === "IN") {
+      setIfscCode(latest.swift_code || ""); // IFSC stored in swift_code
+      setSwiftCode("");
     } else {
       setSwiftCode(latest.swift_code || "");
-      setIfscCode(""); // clear IFSC
+      setIfscCode("");
     }
-  }
-}, [employeeBankPayments, employeeDetail?.country]);
+  }, [employeeBankPayments, country]);
 
   const handleSave = () => {
     const existingPayment = employeeBankPayments?.results?.[0];
     const existingPaymentId = existingPayment?.id || null;
 
-    if (!bankName || !accountNumber || !panNumber || !basicSalary) {
+    if (!bankName || !accountNumber || !basicSalary) {
       setErrors({
         bankName: !bankName ? "Bank Name is required" : "",
         accountNumber: !accountNumber ? "Account Number is required" : "",
-        panNumber: !panNumber ? "PAN Number is required" : "",
         basicSalary: !basicSalary ? "Basic Salary is required" : "",
       });
       return;
@@ -89,7 +83,7 @@ useEffect(() => {
 
     const formData = new FormData();
     formData.append("bank_name", bankName);
-    formData.append("swift_code", swiftCode);
+    formData.append("swift_code", country === "IN" ? ifscCode : swiftCode);
     formData.append("account_number", accountNumber);
     formData.append("uan_epf_number", uanNumber);
     formData.append("pan_number", panNumber);
@@ -101,9 +95,7 @@ useEffect(() => {
     formData.append("housing_allowance", housingAllowance);
     formData.append("transportation", transportation);
 
-    if (bankProofImage) {
-      formData.append("bank_proof", bankProofImage);
-    }
+    if (bankProofImage) formData.append("bank_proof", bankProofImage);
 
     dispatch(
       submitBankPayment({
@@ -121,7 +113,6 @@ useEffect(() => {
           text: "Bank details saved successfully.",
           confirmButtonColor: "#304EB0",
         });
-
         dispatch(fetchAllBankPaymentsThunk(id));
       })
       .catch((err) => {
@@ -141,21 +132,20 @@ useEffect(() => {
         id={id}
         handleSubmit={handleSave}
         formData={employeeDetail}
-        handleChange={() => { }}
-        handleImageChange={() => { }}
+        handleChange={() => {}}
+        handleImageChange={() => {}}
       >
-
         <Section>
           <ViewTableBank
-            country={employeeDetail?.country}  
+            country={country}
             isEditMode={true}
             setBankProofImage={setBankProofImage}
             bankName={bankName}
             setBankName={setBankName}
-            swiftCode={swiftCode}
-            setSwiftCode={setSwiftCode}
             ifscCode={ifscCode}
             setIfscCode={setIfscCode}
+            swiftCode={swiftCode}
+            setSwiftCode={setSwiftCode}
             accountNumber={accountNumber}
             setAccountNumber={setAccountNumber}
             uanNumber={uanNumber}
