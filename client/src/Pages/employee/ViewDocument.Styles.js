@@ -714,25 +714,14 @@ export const LabelRow = styled.div`
   padding: clamp(0.2rem, 0.5vw, 0.5rem);
 
   @media (min-width: 1440px) {
-    font-size: 1.3rem;
+    font-size: 1rem;
     padding: 0.6rem;
   }
   @media (min-width: 1960px) {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     padding: 0.7rem;
   }
-  @media (min-width: 2560px) {
-    font-size: 2rem;
-    padding: 0.9rem;
-  }
-  @media (min-width: 3840px) {
-    font-size: 2.2rem;
-    padding: 1rem;
-  }
-  @media (min-width: 7680px) {
-    font-size: 2.5rem;
-    padding: 1.2rem;
-  }
+
 `;
 
 export const UploadButton = styled.button`
@@ -752,7 +741,6 @@ export const UploadButton = styled.button`
     background-color: #1c3aa9;
   }
 
-  /* Tablets */
   @media (min-width: 768px) {
     padding: 10px 18px;
     width: 120px;
@@ -768,21 +756,13 @@ export const UploadButton = styled.button`
     font-size: 0.9rem;
   }
 
-  /* Large screens */
   @media (min-width: 1440px) {
     padding: 14px 26px;
-    width: 160px;
-    height: 70px;
-    font-size: 0.9rem;
+    width: 150px;
+    height: 60px;
+    font-size: 1rem;
   }
 
-  /* Very large displays (4K) */
-  @media (min-width: 2560px) {
-    padding: 18px 30px;
-    width: 200px;
-    height: 90px;
-    font-size: 1.4rem;
-  }
 `;
 
 
@@ -790,7 +770,7 @@ export const InlineUploadRow = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap; /* makes it responsive */
+  flex-wrap: wrap; 
   background: #f1f1f1;
   padding: 10px;
 `;

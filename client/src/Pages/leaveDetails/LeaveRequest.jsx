@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLeaveRequests, patchLeaveStatus } from '../../Redux/leaveSlice';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import OnLeaveModal from "./ModalList"
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
@@ -15,7 +15,7 @@ import {
 import Loader from "../../Components/Loader"
 import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, Avatar, AvatarFallback, NameCell } from './EmployeeList.styles';
 import EmployeeTitle from '../../Components/EmployeeTitle';
-import Pagination  from "../../Components/Pagination/Pagination"
+import Pagination from "../../Components/Pagination/Pagination"
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,7 +24,7 @@ export default function LeaveRequest() {
   const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState(null);
-  const [page, setPage] = useState(1); 
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const [departmentFilter, setDepartmentFilter] = useState("");
 
@@ -79,18 +79,18 @@ export default function LeaveRequest() {
   };
 
 
-const handlePageChange = (newPage) => {
-  if (!newPage || newPage < 1) return;
+  const handlePageChange = (newPage) => {
+    if (!newPage || newPage < 1) return;
 
-  dispatch(
-    getLeaveRequests({
-      page: newPage,
-      department_id: departmentFilter || undefined,
-    })
-  ).then(() => {
-    setPage(newPage);
-  });
-};
+    dispatch(
+      getLeaveRequests({
+        page: newPage,
+        department_id: departmentFilter || undefined,
+      })
+    ).then(() => {
+      setPage(newPage);
+    });
+  };
   return (
     <>
 
@@ -145,21 +145,21 @@ const handlePageChange = (newPage) => {
                 >
                   <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
                   <BodyCell>
-                  {leave?.employee?.name || "N/A"}                 
+                    {leave?.employee?.name || "N/A"}
                   </BodyCell>
                   <BodyCell>{leave.leave_type}</BodyCell>
                   <BodyCell>{leave.employee.department}</BodyCell>
-                <BodyCell>
-  {leave.from_date
-    ? new Date(leave.from_date).toLocaleDateString("en-GB")
-    : "N/A"}
-</BodyCell>
-<BodyCell>
-  {leave.to_date
-    ? new Date(leave.to_date).toLocaleDateString("en-GB")
-    : "N/A"}
-</BodyCell>
-                <BodyCell
+                  <BodyCell>
+                    {leave.from_date
+                      ? new Date(leave.from_date).toLocaleDateString("en-GB")
+                      : "N/A"}
+                  </BodyCell>
+                  <BodyCell>
+                    {leave.to_date
+                      ? new Date(leave.to_date).toLocaleDateString("en-GB")
+                      : "N/A"}
+                  </BodyCell>
+                  <BodyCell
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
@@ -202,14 +202,14 @@ const handlePageChange = (newPage) => {
           </TableBody>
         </StyledTable>
 
-  <Pagination
-    currentPage={page}
-    totalPages={pagination?.total_pages ?? 1}
-    onPageChange={handlePageChange}
-  />
+        <Pagination
+          currentPage={page}
+          totalPages={pagination?.total_pages ?? 1}
+          onPageChange={handlePageChange}
+        />
         {showModal && (
           <OnLeaveModal
-            leaveId={selectedLeave?.leave_id}    
+            leaveId={selectedLeave?.leave_id}
             employeeId={selectedLeave?.employee_id}
             date={selectedLeave?.date}
             onClose={() => setShowModal(false)}

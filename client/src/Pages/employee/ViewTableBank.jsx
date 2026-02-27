@@ -99,7 +99,7 @@ const ViewTableBank = ({
       ? setIfscCode(e.target.value.toUpperCase())
       : setSwiftCode(e.target.value.toUpperCase())
   }
-  maxLength={11}
+    maxLength={country === "IN" ? 11 : 20}
 />
 
 <ErrorText>
