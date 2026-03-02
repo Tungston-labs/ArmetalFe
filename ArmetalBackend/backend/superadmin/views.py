@@ -1,12 +1,24 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions
-from .models import Company
 from .serializers import CompanyCreateSerializer,CompanyListSerializer
 from .permissions import IsSuperAdmin
 from rest_framework import generics, filters
 from rest_framework import serializers
-from .models import CompanySubscription
 from calendar import month_name
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.utils.timezone import now
+from superadmin.serializers import CompanySubscriptionSerializer
+from calendar import monthrange
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import UpdateAPIView
+from .models import Company, CompanySubscription
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from rest_framework.views import APIView
+from rest_framework import status
+from .serializers import CompanySelfUpdateSerializer
 
 
 
@@ -41,18 +53,7 @@ class CompanyDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
 
     
-# subscriptions/views.py
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.utils.timezone import now
-from superadmin.serializers import CompanySubscriptionSerializer
-from calendar import monthrange
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import UpdateAPIView
-from .models import Company, CompanySubscription
-from django.template.loader import render_to_string
-from django.core.mail import EmailMessage
+
 
     
 class CompanySubscriptionListCreateView(APIView):
@@ -152,14 +153,7 @@ class CompanyOverviewView(APIView):
         }
         return Response(data)
 
-# views/company_views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
 
-from .models import Company
-from .serializers import CompanySelfUpdateSerializer
 
 class CompanySelfView(APIView):
     permission_classes = [IsAuthenticated]

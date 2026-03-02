@@ -3,14 +3,22 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPayrollDetail } from "../../Redux/payrollSlice";
 import {
-  Container, Header, Title, Badge, PrintIcon, GridLayout, InfoTable, InfoRow,
-  Label, Value, TableWrapper, Table, TableData
-  , RightHeader, LeftHeader,
-
+  Container,
+  Header,
+  Title,
+  Badge,
+  PrintIcon,
+  GridLayout,
+  InfoTable,
+  InfoRow,
+  Label,
+  Value,
+  TableWrapper,
+  Table,
+  TableData,
   BackTitle,
-
-  BackIcon
-} from './Payroll.styles';
+  BackIcon,
+} from "./Payroll.styles";
 import { BsPrinter } from "react-icons/bs";
 import { printElement } from "../../services/utlis/printPayroll";
 
@@ -24,7 +32,7 @@ const PayrollDetails = () => {
 
   const ComponentRef = useRef();
 
-  const handleprint = () => {
+  const handlePrint = () => {
     printElement(ComponentRef.current);
   };
 
@@ -47,32 +55,90 @@ const PayrollDetails = () => {
     gross_earnings,
     total_deductions,
     net_pay,
-    payment_mode,
     account_number,
     status,
     earnings,
-    deductions,
     lop_days,
     lop_amount,
+    company,
+    basic_salary,
+    salary_increment,
   } = payrollDetail;
+
+  const formatCurrency = (value) =>
+    Number(value || 0).toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
+    });
 
   return (
     <div ref={ComponentRef}>
       <Container>
+
+        {/* ================= COMPANY HEADER ================= */}
+        {company && (
+          <div
+            style={{
+              backgroundColor: "#1f2937",   // ✅ Dark background
+              color: "#ffffff",
+              padding: "20px",
+              borderRadius: "8px",
+              marginBottom: "30px",
+              position: "relative",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            {/* Left side - Company Info */}
+            <div>
+              <h2 style={{ margin: 0 }}>{company.name}</h2>
+              <p style={{ margin: "4px 0" }}>{company.address}</p>
+              <p style={{ margin: "4px 0" }}>{company.email}</p>
+              <p style={{ margin: "4px 0" }}>{company.contact_number}</p>
+            </div>
+
+            {/* Right side - Logo */}
+            {company.logo_url && (
+              <img
+                src={company.logo_url}
+                alt="Company Logo"
+                style={{
+                  height: "90px",
+                  objectFit: "contain",
+                }}
+              />
+            )}
+
+            {/* ✅ TOP RIGHT STATUS + PRINT */}
+            <div
+              className="no-print"
+              style={{
+                position: "absolute",
+                top: "15px",
+                right: "20px",
+                display: "flex",
+                alignItems: "center",
+                gap: "15px",
+              }}
+            >
+              <Badge>{status || "Unpaid"}</Badge>
+              <PrintIcon onClick={handlePrint}>
+                <BsPrinter />
+              </PrintIcon>
+            </div>
+          </div>
+        )}
+
+        {/* ================= BACK + TITLE ================= */}
         <Header>
-          <LeftHeader>
-            <BackTitle onClick={() => navigate("/payrolldetails")}>
-              <BackIcon className="no-print" />
-              <Title>Employee Details</Title>
-            </BackTitle>
-          </LeftHeader>
-          <RightHeader>
-            <Badge>{status || 'Unpaid'}</Badge>
-            <PrintIcon className="no-print" onClick={handleprint}><BsPrinter /></PrintIcon>
-          </RightHeader>
+          <BackTitle onClick={() => navigate("/payrolldetails")}>
+            <BackIcon className="no-print" />
+            <Title>Payslip Details</Title>
+          </BackTitle>
         </Header>
 
-        {/* Employee Info */}
+        {/* ================= EMPLOYEE INFO ================= */}
         <GridLayout>
           <InfoTable>
             <InfoRow>
@@ -105,9 +171,10 @@ const PayrollDetails = () => {
           </InfoTable>
         </GridLayout>
 
-        {/* Earnings + Work Summary */}
+        {/* ================= EARNINGS & WORK SUMMARY ================= */}
         <GridLayout>
-          {/* Earnings Table */}
+
+          {/* Earnings */}
           <TableWrapper>
             <Table>
               <thead>
@@ -117,23 +184,26 @@ const PayrollDetails = () => {
                 </tr>
               </thead>
               <tbody>
-                {earnings && earnings.length > 0 ? (
-                  earnings.map((item, index) => (
-                    <tr key={index}>
-                      <TableData>{item.label}</TableData>
-                      <TableData>
-                        {Number(item.amount).toLocaleString("en-IN", {
-                          style: "currency",
-                          currency: "INR",
-                        })}
-                      </TableData>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <TableData colSpan="2">No earnings data</TableData>
+
+                {/* Total Salary */}
+                <tr>
+                  <TableData><strong>Total Salary</strong></TableData>
+                  <TableData><strong>{formatCurrency(basic_salary)}</strong></TableData>
+                </tr>
+
+                {/* Increment */}
+                <tr>
+                  <TableData>Increment</TableData>
+                  <TableData>{formatCurrency(salary_increment)}</TableData>
+                </tr>
+
+                {earnings?.map((item, index) => (
+                  <tr key={index}>
+                    <TableData>{item.label}</TableData>
+                    <TableData>{formatCurrency(item.amount)}</TableData>
                   </tr>
-                )}
+                ))}
+
               </tbody>
             </Table>
           </TableWrapper>
@@ -159,10 +229,7 @@ const PayrollDetails = () => {
                 <tr>
                   <TableData>Loss of Pay</TableData>
                   <TableData>
-                    {Number(lop_amount || 0).toLocaleString("en-IN", {
-                      style: "currency",
-                      currency: "INR",
-                    })}
+                    {formatCurrency(lop_amount)}
                     {lop_days > 0 &&
                       ` (${lop_days} day${lop_days > 1 ? "s" : ""})`}
                   </TableData>
@@ -172,11 +239,8 @@ const PayrollDetails = () => {
           </TableWrapper>
         </GridLayout>
 
-        {/* Pay Summary + Deductions */}
+        {/* ================= PAY SUMMARY ================= */}
         <GridLayout>
-       
-
-          {/* Pay Summary */}
           <TableWrapper>
             <Table>
               <thead>
@@ -188,20 +252,21 @@ const PayrollDetails = () => {
               <tbody>
                 <tr>
                   <TableData>Gross Pay</TableData>
-                  <TableData>{gross_earnings}</TableData>
+                  <TableData>{formatCurrency(gross_earnings)}</TableData>
                 </tr>
                 <tr>
                   <TableData>Deductions</TableData>
-                  <TableData>{total_deductions}</TableData>
+                  <TableData>{formatCurrency(total_deductions)}</TableData>
                 </tr>
                 <tr className="net-pay">
-                  <TableData>Net Pay</TableData>
-                  <TableData>{net_pay}</TableData>
+                  <TableData><strong>Net Pay</strong></TableData>
+                  <TableData><strong>{formatCurrency(net_pay)}</strong></TableData>
                 </tr>
               </tbody>
             </Table>
           </TableWrapper>
         </GridLayout>
+
       </Container>
     </div>
   );

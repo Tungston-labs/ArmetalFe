@@ -338,35 +338,7 @@ class AttendanceAdminListView(generics.ListAPIView):
         return response
 
 
-# -----------------------------------------------------attendance detail view group by date(admin)
 
-
-# class AttendanceDetailByDateView(APIView):
-#     permission_classes = [IsAuthenticated, IsHRorIsEmployee]
-
-#     def get(self, request):
-#         user = request.user
-#         employee = getattr(user, 'employee_db', None)
-
-#         if not employee:
-#             return Response({'detail': 'Employee not found.'}, status=status.HTTP_400_BAD_REQUEST)
-
-#         # Use today's date by default
-#         date_str = request.query_params.get('date')
-#         if date_str:
-#             try:
-#                 selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-#             except ValueError:
-#                 return Response({'detail': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             selected_date = timezone.localdate()
-
-#         try:
-#             attendance = Attendance.objects.get(employee=employee, date=selected_date)
-#             serializer = AttendanceDetailSerializer(attendance)
-#             return Response(serializer.data)
-#         except Attendance.DoesNotExist:
-#             return Response({'detail': f'No attendance recorded on {selected_date}.'}, status=status.HTTP_404_NOT_FOUND)
 
 from django.utils.dateparse import parse_date, parse_datetime
 
