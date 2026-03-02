@@ -139,17 +139,14 @@ export const GridLayout = styled.div`
   gap: 2rem;
   margin-top: 2rem;
 
+  @media print {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+  }
+
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
     gap: 1rem;
-  }
-
-  @media (min-width: 2560px) {
-    gap: 3rem;
-  }
-
-  @media (min-width: 3840px) {
-    gap: 4rem;
   }
 `;
 
