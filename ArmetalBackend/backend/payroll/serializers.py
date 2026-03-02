@@ -38,6 +38,12 @@ from decimal import Decimal, ROUND_HALF_UP
 from rest_framework import serializers
 from employee.models import SalaryIncrement
 
+from decimal import Decimal, ROUND_HALF_UP
+from datetime import date, datetime, timedelta
+import calendar
+from rest_framework import serializers
+
+
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
     employee_name = serializers.CharField(source="employee.name", read_only=True)
@@ -63,9 +69,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         first_day = date(year, month, 1)
         last_day = date(year, month, calendar.monthrange(year, month)[1])
 
-        # =======================================================
-        # HOLIDAYS & COMPANY OFF DAYS
-        # =======================================================
+        # ======================================================
+        # WORKING DAYS CALCULATION
+        # ======================================================
         holidays_qs = PublicHoliday.objects.filter(
             date__range=(first_day, last_day),
             company=company,
@@ -80,9 +86,6 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             else:
                 holidays.add(h.date)
 
-        # =======================================================
-        # WORKING DAYS
-        # =======================================================
         all_working_dates = [
             first_day + timedelta(days=i)
             for i in range((last_day - first_day).days + 1)
@@ -92,9 +95,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         working_days = Decimal(len(all_working_dates))
 
-        # =======================================================
-        # ATTENDANCE CALCULATION
-        # =======================================================
+        # ======================================================
+        # ATTENDANCE
+        # ======================================================
         full_day_hours = Decimal(company.working_hours_per_day or 8)
         half_day_hours = Decimal(company.half_day_hours or 4)
 
@@ -121,9 +124,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         days_present = full_days + half_days
 
-        # =======================================================
+        # ======================================================
         # APPROVED LEAVES
-        # =======================================================
+        # ======================================================
         leave_requests = LeaveRequest.objects.filter(
             employee=employee,
             status="approved",
@@ -144,28 +147,17 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
             for i in range((end - start).days + 1):
                 leave_day = start + timedelta(days=i)
-
                 if leave_day in all_working_dates:
                     approved_leave_dates.add(leave_day)
 
         approved_leave_days = Decimal(len(approved_leave_dates))
 
-        # =======================================================
-        # FINAL LOP DAYS
-        # =======================================================
         total_accounted_days = days_present + approved_leave_days
         lop_days = max(working_days - total_accounted_days, Decimal(0))
 
-        # Freeze payroll values if stored
-        if instance.working_days is not None:
-            working_days = Decimal(instance.working_days)
-
-        if instance.lop_days is not None:
-            lop_days = Decimal(instance.lop_days)
-
-        # =======================================================
-        # SALARY INCREMENT HISTORY
-        # =======================================================
+        # ======================================================
+        # SALARY INCREMENTS
+        # ======================================================
         increments_qs = SalaryIncrement.objects.filter(
             employee=employee
         ).order_by("date")
@@ -180,14 +172,14 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                 "increment_amount": float(inc.increment_amount or 0),
             })
 
-        # =======================================================
-        # TOTAL SALARY BASE
-        # =======================================================
+        # ======================================================
+        # TOTAL SALARY (FULL)
+        # ======================================================
         total_salary = Decimal(instance.basic_salary or 0) + total_increment_amount
 
-        # =======================================================
-        # ALLOWANCE SPLIT (FULL SALARY)
-        # =======================================================
+        # ======================================================
+        # SPLIT FULL SALARY INTO COMPONENTS
+        # ======================================================
         basic_percent = Decimal(company.basic_salary_percent or 0)
         house_percent = Decimal(company.house_allowance_percent or 0)
         transport_percent = Decimal(company.transport_allowance_percent or 0)
@@ -196,15 +188,12 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         basic_salary = (total_salary * basic_percent / 100).quantize(
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
-
         housing_allowance = (total_salary * house_percent / 100).quantize(
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
-
         transportation = (total_salary * transport_percent / 100).quantize(
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
-
         special_allowance = (total_salary * special_percent / 100).quantize(
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
@@ -216,33 +205,24 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         difference = total_salary - calculated_total
         special_allowance += difference
 
-        # =======================================================
-        # LOP AMOUNT (APPLY ONLY ON BASIC)
-        # =======================================================
-        daily_basic = basic_salary / (working_days or Decimal(1))
+        gross_earnings = total_salary
 
-        lop_amount = (daily_basic * lop_days).quantize(
+        # ======================================================
+        # LOP CALCULATION FROM FULL SALARY
+        # ======================================================
+        daily_salary = total_salary / (working_days or Decimal(1))
+
+        lop_amount = (daily_salary * lop_days).quantize(
             Decimal("0.01"),
             rounding=ROUND_HALF_UP,
         )
 
-        # =======================================================
-        # FINAL SALARY CALCULATION
-        # =======================================================
-        adjusted_basic_salary = basic_salary - lop_amount
-        if adjusted_basic_salary < 0:
-            adjusted_basic_salary = Decimal(0)
-
-        adjusted_gross = (
-            adjusted_basic_salary
-            + housing_allowance
-            + transportation
-            + special_allowance
-        )
-
+        # ======================================================
+        # FINAL NET PAY
+        # ======================================================
         tds = Decimal(instance.tds_deduction_amount or 0)
 
-        net_pay = (adjusted_gross - tds).quantize(
+        net_pay = (gross_earnings - lop_amount - tds).quantize(
             Decimal("0.01"),
             rounding=ROUND_HALF_UP,
         )
@@ -250,10 +230,11 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         if net_pay < 0:
             net_pay = Decimal(0)
 
-        # =======================================================
+        # ======================================================
         # RESPONSE
-        # =======================================================
+        # ======================================================
         data.update({
+
             "company": {
                 "name": company.name if company else None,
                 "address": company.address if company else None,
@@ -272,8 +253,8 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             "total_increment_amount": float(total_increment_amount),
             "increment_history": increment_history,
 
-            "gross_earnings": float(adjusted_gross),
-            "total_deductions": float(tds + lop_amount),
+            "gross_earnings": float(gross_earnings),
+            "total_deductions": float(lop_amount + tds),
             "net_pay": float(net_pay),
 
             "earnings": [
@@ -285,14 +266,12 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
             "deductions": [
                 {"label": "TDS Deduction", "value": float(tds)},
-                {"label": "Loss of Pay", "value": float(lop_amount)} if lop_amount > 0 else None,
+                {"label": "Loss of Pay", "value": float(lop_amount)},
             ],
         })
 
-        data["deductions"] = [d for d in data["deductions"] if d is not None]
-
         return data
-    
+
 class EmployeePayrollRecordSerializer2(serializers.ModelSerializer):
     download_url = serializers.SerializerMethodField()
 
