@@ -410,6 +410,8 @@ from django.utils.timezone import now
 from django.utils import timezone
 from zoneinfo import ZoneInfo
 
+
+
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer
@@ -417,6 +419,8 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     lookup_field = "employee_id"
 
     # ---------- helper to get punch times for given date ----------
+
+
     def get_punch_times(self, employee_id, target_date):
         ist = ZoneInfo("Asia/Kolkata")
 
@@ -435,18 +439,28 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         first_session = attendance.sessions.order_by("time_in").first()
         last_session = attendance.sessions.order_by("-time_out").first()
 
-        first_in = (
-            timezone.localtime(first_session.time_in, ist).strftime("%I:%M %p")
-            if first_session and first_session.time_in else None
-        )
+        first_in = None
+        last_out = None
 
-        last_out = (
-            timezone.localtime(last_session.time_out, ist).strftime("%I:%M %p")
-            if last_session and last_session.time_out else None
-        )
+        if first_session and first_session.time_in:
+            time_in = first_session.time_in
+
+            # ✅ Make aware if naive
+            if timezone.is_naive(time_in):
+                time_in = timezone.make_aware(time_in, timezone.utc)
+
+            first_in = timezone.localtime(time_in, ist).strftime("%I:%M %p")
+
+        if last_session and last_session.time_out:
+            time_out = last_session.time_out
+
+            # ✅ Make aware if naive
+            if timezone.is_naive(time_out):
+                time_out = timezone.make_aware(time_out, timezone.utc)
+
+            last_out = timezone.localtime(time_out, ist).strftime("%I:%M %p")
 
         return first_in, last_out
-
     # ---------- main GET ----------
     def get(self, request, *args, **kwargs):
         employee_id = kwargs.get(self.lookup_field)
