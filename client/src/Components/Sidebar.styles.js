@@ -45,6 +45,13 @@ export const SidebarContainer = styled.div`
   @media (min-width: 2560px) {
     width: 20%;
   }
+  @media print {
+    display: none !important;
+  }
+
+  &.collapsed {
+    width: 60px;
+  }
 `;
 
 
