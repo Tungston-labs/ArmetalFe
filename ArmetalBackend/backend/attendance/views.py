@@ -407,6 +407,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Attendance
 from .serializers import AttendanceDetailSerializer
 from django.utils.timezone import now
+from datetime import datetime
+from django.utils import timezone
 
 
 
@@ -416,20 +418,19 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'employee_id'
 
-    # ---------- helper to get today's punch times ----------
-    def get_today_punch_times(self, employee_id):
-        today = now().date()
+    # ---------- helper to get punch times for specific date ----------
+    def get_punch_times(self, employee_id, target_date):
 
-        today_attendance = Attendance.objects.filter(
+        attendance = Attendance.objects.filter(
             employee__id=employee_id,
-            date=today
+            date=target_date
         ).prefetch_related("sessions").first()
 
-        if not today_attendance or not today_attendance.sessions.exists():
+        if not attendance or not attendance.sessions.exists():
             return None, None
 
-        first_session = today_attendance.sessions.order_by("time_in").first()
-        last_session = today_attendance.sessions.order_by("-time_out").first()
+        first_session = attendance.sessions.order_by("time_in").first()
+        last_session = attendance.sessions.order_by("-time_out").first()
 
         first_in = (
             first_session.time_in.strftime("%H:%M")
@@ -441,7 +442,6 @@ class AttendanceAdminDetailView(RetrieveAPIView):
             if last_session and last_session.time_out else None
         )
 
-
         return first_in, last_out
 
     # ---------- main GET ----------
@@ -449,19 +449,35 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         employee_id = kwargs.get(self.lookup_field)
         date_str = request.query_params.get('date')
 
-        # latest attendance for employee
+        # latest attendance
         base_attendance = Attendance.objects.filter(
             employee__id=employee_id
         ).order_by('-date').first()
 
-        # today's punch times (needed in all responses)
-        first_in, last_out = self.get_today_punch_times(employee_id)
+        # decide which date to use
+        if date_str:
+            try:
+                target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            except ValueError:
+                return Response(
+                    {"error": "Invalid date format. Use YYYY-MM-DD"},
+                    status=400
+                )
+        else:
+            # if no date provided → use latest attendance date
+            if base_attendance:
+                target_date = base_attendance.date
+            else:
+                target_date = timezone.localdate()
 
-        # ---------- case 1: employee has no attendance ever ----------
+        # get punch times for THAT DATE
+        first_in, last_out = self.get_punch_times(employee_id, target_date)
+
+        # ---------- no attendance ever ----------
         if not base_attendance:
             data = {
                 "id": None,
-                "date": date_str or str(datetime.today().date()),
+                "date": str(target_date),
                 "total_hours": None,
                 "total_hours_formatted": "00:00",
                 "weekly_hours_formatted": "00:00",
@@ -476,48 +492,32 @@ class AttendanceAdminDetailView(RetrieveAPIView):
             }
             return Response(data, status=200)
 
-        # ---------- case 2: specific date requested ----------
-        if date_str:
-            try:
-                date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
-            except ValueError:
-                return Response(
-                    {"error": "Invalid date format. Use YYYY-MM-DD"},
-                    status=400
-                )
+        # ---------- attendance for selected date ----------
+        attendance = Attendance.objects.filter(
+            employee__id=employee_id,
+            date=target_date
+        ).first()
 
-            attendance = Attendance.objects.filter(
-                employee__id=employee_id,
-                date=date_obj
-            ).first()
-
-            # ---------- date absent ----------
-            if not attendance:
-                serializer = self.get_serializer(base_attendance)
-                data = serializer.data
-                data.update({
-                    "date": str(date_obj),
-                    "sessions": [],
-                    "total_hours": None,
-                    "total_hours_formatted": "00:00",
-                    "weekly_hours_formatted": "00:00",
-                    "monthly_hours_formatted": "00:00",
-                    "status": "Absent",
-                    "note": f"No attendance available for {date_obj}",
-                    "today_first_punch_in": first_in,
-                    "today_last_punch_out": last_out,
-                })
-                return Response(data, status=200)
-
-            # ---------- normal attendance ----------
-            serializer = self.get_serializer(attendance)
+        # absent for that date
+        if not attendance:
+            serializer = self.get_serializer(base_attendance)
             data = serializer.data
-            data["today_first_punch_in"] = first_in
-            data["today_last_punch_out"] = last_out
-            return Response(data)
+            data.update({
+                "date": str(target_date),
+                "sessions": [],
+                "total_hours": None,
+                "total_hours_formatted": "00:00",
+                "weekly_hours_formatted": "00:00",
+                "monthly_hours_formatted": "00:00",
+                "status": "Absent",
+                "note": f"No attendance available for {target_date}",
+                "today_first_punch_in": first_in,
+                "today_last_punch_out": last_out,
+            })
+            return Response(data, status=200)
 
-        # ---------- case 3: default latest attendance ----------
-        serializer = self.get_serializer(base_attendance)
+        # normal case
+        serializer = self.get_serializer(attendance)
         data = serializer.data
         data["today_first_punch_in"] = first_in
         data["today_last_punch_out"] = last_out
