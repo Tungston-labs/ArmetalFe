@@ -407,8 +407,6 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Attendance
 from .serializers import AttendanceDetailSerializer
 from django.utils.timezone import now
-from django.utils import timezone
-
 
 
 
@@ -419,11 +417,8 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     lookup_field = 'employee_id'
 
     # ---------- helper to get today's punch times ----------
-    
-
-
     def get_today_punch_times(self, employee_id):
-        today = timezone.localdate()
+        today = now().date()
 
         today_attendance = Attendance.objects.filter(
             employee__id=employee_id,
@@ -434,16 +429,21 @@ class AttendanceAdminDetailView(RetrieveAPIView):
             return None, None
 
         first_session = today_attendance.sessions.order_by("time_in").first()
+        last_session = today_attendance.sessions.order_by("-time_out").first()
 
-        last_session = today_attendance.sessions.filter(
-            time_out__isnull=False
-        ).order_by("-time_out").first()
+        first_in = (
+            first_session.time_in.strftime("%H:%M")
+            if first_session and first_session.time_in else None
+        )
 
-        first_in = timezone.localtime(first_session.time_in).strftime("%H:%M") if first_session and first_session.time_in else None
+        last_out = (
+            last_session.time_out.strftime("%H:%M")
+            if last_session and last_session.time_out else None
+        )
 
-        last_out = timezone.localtime(last_session.time_out).strftime("%H:%M") if last_session and last_session.time_out else None
 
         return first_in, last_out
+
     # ---------- main GET ----------
     def get(self, request, *args, **kwargs):
         employee_id = kwargs.get(self.lookup_field)
