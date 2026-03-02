@@ -266,6 +266,11 @@ export const TableWrapper = styled.div`
 export const Table = styled.table`
   width: 100%;
   min-width: 600px;
+
+@media print {
+  min-width: 0 !important;
+  width: 100% !important;
+}
   border-collapse: collapse;
   cursor:pointer;
   td, th {
