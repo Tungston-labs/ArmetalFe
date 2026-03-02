@@ -19,13 +19,13 @@ const AttendanceDetailsContainer = ({
 }) => {
   const sessions = attendanceDetail?.sessions || [];
 
-  const todayPunchIn = attendanceDetail?.today_first_punch_in
-  ? formatTime(attendanceDetail.today_first_punch_in)
-  : "---";
+//   const todayPunchIn = attendanceDetail?.today_first_punch_in
+//   ? formatTime(attendanceDetail.today_first_punch_in)
+//   : "---";
 
-const todayPunchOut = attendanceDetail?.today_last_punch_out
-  ? formatTime(attendanceDetail.today_last_punch_out)
-  : "---";
+// const todayPunchOut = attendanceDetail?.today_last_punch_out
+//   ? formatTime(attendanceDetail.today_last_punch_out)
+//   : "---";
   const weeklyHours =
     attendanceDetail?.weekly_hours_formatted || "00:00";
 
@@ -33,8 +33,8 @@ const todayPunchOut = attendanceDetail?.today_last_punch_out
     attendanceDetail?.monthly_hours_formatted || "00:00";
 
   const cardList = [
-    { title: "Today Punch In", value: todayPunchIn },
-    { title: "Today Punch Out", value: todayPunchOut },
+    // { title: "Today Punch In", value: todayPunchIn },
+    // { title: "Today Punch Out", value: todayPunchOut },
     { title: "Weekly Hours", value: weeklyHours },
     { title: "Monthly Hours", value: monthlyHours },
   ];
