@@ -438,15 +438,17 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         first_session = today_attendance.sessions.order_by("time_in").first()
         last_session = today_attendance.sessions.order_by("-time_out").first()
 
-        first_in = (
-            first_session.time_in.strftime("%H:%M")
-            if first_session and first_session.time_in else None
-        )
+        from django.utils import timezone
 
-        last_out = (
-            last_session.time_out.strftime("%H:%M")
-            if last_session and last_session.time_out else None
-        )
+        first_in = None
+        last_out = None
+
+        if first_session and first_session.time_in:
+            first_in = timezone.localtime(first_session.time_in).strftime("%H:%M")
+
+        if last_session and last_session.time_out:
+            last_out = timezone.localtime(last_session.time_out).strftime("%H:%M")
+
 
         return first_in, last_out
     # ---------- main GET ----------
