@@ -21,7 +21,11 @@ const EmployeeList = () => {
   const { employeeList, loading, pagination } = useSelector(
     (state) => state.employees
   );
+const user = JSON.parse(
+  localStorage.getItem("user") || sessionStorage.getItem("user")
+);
 
+const country = user?.company?.country || "IN";
   const [searchText, setSearchText] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -120,7 +124,9 @@ const EmployeeList = () => {
               <HeadCell>Employee Name</HeadCell>
               <HeadCell>Employee ID</HeadCell>
               <HeadCell>Email</HeadCell>
-              <HeadCell>Expiry Date</HeadCell>
+   <HeadCell>
+  {country === "IN" ? "Contract Expiry Date" : "Visa Expiry Date"}
+</HeadCell>
             </HeadRow>
           </TableHead>
 
@@ -138,11 +144,11 @@ const EmployeeList = () => {
                   <BodyCell> {emp.name} </BodyCell>
                   <BodyCell>{emp.employee_id}</BodyCell>
                   <BodyCell>{emp.email}</BodyCell>
-                  <BodyCell>
-                    {expiryFilter === "contract"
-                      ? emp.contract_expiry_date || "----"
-                      : emp.visa_expiry_date || "----"}
-                  </BodyCell>
+                <BodyCell>
+  {country === "IN"
+    ? emp.contract_expiry_date || "----"
+    : emp.visa_expiry_date || "----"}
+</BodyCell>
                 </BodyRow>
               ))
             ) : (

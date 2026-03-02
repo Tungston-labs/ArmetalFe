@@ -201,7 +201,7 @@ const ReimbursementList = () => {
                     </LeftWrapper>
 
                     <EmployeeCount>
-                      {dept.reimbursement_request_count || 0} Employees
+                      {dept.reimbursement_request_count || 0} Request
                     </EmployeeCount>
                   </DepartmentHeader>
 
@@ -270,8 +270,6 @@ const ReimbursementList = () => {
                           </EmployeeItem>
                         )}
                       </EmployeeList>
-
-                      {/* PAGINATION */}
                       {employees.length > pageSize && (
                         <PaginationWrapper onClick={(e) => e.stopPropagation()}>
                           <PageButton

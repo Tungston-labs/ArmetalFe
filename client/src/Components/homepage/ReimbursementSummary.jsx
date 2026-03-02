@@ -25,25 +25,25 @@ const ReimbursementSummary = ({ reimbursements, reimbursementMonthwise }) => {
       <RightCards>
         <CardGrid>
           <CardBox style={{ borderTopColor: "#3352BA" }}>
-            <Title>Total Requests</Title>
+            <Title> Total Reimbursement Requests</Title>
             <Count>{reimbursements.total_requests || 0}</Count>
             <Subtext>Overall Request raised</Subtext>
           </CardBox>
 
           <CardBox style={{ borderTopColor: "#f59e0b" }}>
-            <Title>Pending</Title>
+            <Title>Pending Reimbursement</Title>
             <Count>{reimbursements.pending_count || 0}</Count>
             <Subtext>Waiting for approval</Subtext>
           </CardBox>
 
           <CardBox style={{ borderTopColor: "#10b981" }}>
-            <Title>Verified</Title>
+            <Title>Verified Reimbursement</Title>
             <Count>{reimbursements.verified_count || 0}</Count>
             <Subtext>Verified by Accounts</Subtext>
           </CardBox>
 
           <CardBox style={{ borderTopColor: "#ef4444" }}>
-            <Title>Rejected</Title>
+            <Title>Rejected Reimbursement</Title>
             <Count>{reimbursements.rejected_count || 0}</Count>
             <Subtext>Rejected due to mismatch</Subtext>
           </CardBox>
