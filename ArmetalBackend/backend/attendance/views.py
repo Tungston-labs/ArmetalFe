@@ -407,8 +407,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Attendance
 from .serializers import AttendanceDetailSerializer
 from django.utils.timezone import now
-from django.utils import timezone
-from zoneinfo import ZoneInfo   # modern way (no pytz needed)
+
 
 
 
@@ -433,15 +432,13 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         first_session = today_attendance.sessions.order_by("time_in").first()
         last_session = today_attendance.sessions.order_by("-time_out").first()
 
-        ist = ZoneInfo("Asia/Kolkata")
-
         first_in = (
-            timezone.localtime(first_session.time_in, ist).strftime("%I:%M %p")
+            first_session.time_in.strftime("%H:%M")
             if first_session and first_session.time_in else None
         )
 
         last_out = (
-            timezone.localtime(last_session.time_out, ist).strftime("%I:%M %p")
+            last_session.time_out.strftime("%H:%M")
             if last_session and last_session.time_out else None
         )
 
