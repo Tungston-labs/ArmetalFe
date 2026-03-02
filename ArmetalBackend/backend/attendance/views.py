@@ -410,7 +410,6 @@ from django.utils.timezone import now
 
 
 
-
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer
