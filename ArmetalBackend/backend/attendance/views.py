@@ -407,6 +407,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Attendance
 from .serializers import AttendanceDetailSerializer
 from django.utils.timezone import now
+from django.utils import timezone
+from zoneinfo import ZoneInfo
 
 
 
@@ -417,8 +419,14 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     lookup_field = 'employee_id'
 
     # ---------- helper to get today's punch times ----------
+   
+
     def get_today_punch_times(self, employee_id):
-        today = now().date()
+
+        ist = ZoneInfo("Asia/Kolkata")
+
+        # ✅ Get IST date instead of UTC date
+        today = timezone.localtime(timezone.now(), ist).date()
 
         today_attendance = Attendance.objects.filter(
             employee__id=employee_id,
@@ -432,15 +440,14 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         last_session = today_attendance.sessions.order_by("-time_out").first()
 
         first_in = (
-            first_session.time_in.strftime("%H:%M")
+            timezone.localtime(first_session.time_in, ist).strftime("%I:%M %p")
             if first_session and first_session.time_in else None
         )
 
         last_out = (
-            last_session.time_out.strftime("%H:%M")
+            timezone.localtime(last_session.time_out, ist).strftime("%I:%M %p")
             if last_session and last_session.time_out else None
         )
-
 
         return first_in, last_out
 
