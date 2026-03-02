@@ -19,14 +19,13 @@ const AttendanceDetailsContainer = ({
 }) => {
   const sessions = attendanceDetail?.sessions || [];
 
-  const todayPunchIn = sessions.length
-    ? formatTime(sessions[0]?.today_first_punch_in)
-    : "---";
+  const todayPunchIn = attendanceDetail?.today_first_punch_in
+  ? formatTime(attendanceDetail.today_first_punch_in)
+  : "---";
 
-  const todayPunchOut = sessions.length
-    ? formatTime(sessions[sessions.length - 1]?.today_last_punch_out)
-    : "---";
-
+const todayPunchOut = attendanceDetail?.today_last_punch_out
+  ? formatTime(attendanceDetail.today_last_punch_out)
+  : "---";
   const weeklyHours =
     attendanceDetail?.weekly_hours_formatted || "00:00";
 
