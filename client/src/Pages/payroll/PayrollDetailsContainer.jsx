@@ -5,7 +5,6 @@ import { getPayrollDetail } from "../../Redux/payrollSlice";
 import {
   Container,
   Header,
-  Title,
   Badge,
   PrintIcon,
   GridLayout,
@@ -63,7 +62,13 @@ const PayrollDetails = () => {
     company,
     basic_salary,
     salary_increment,
+    month,
+    year,
   } = payrollDetail;
+
+  const monthName = new Date(year, month - 1).toLocaleString("en-IN", {
+    month: "long",
+  });
 
   const formatCurrency = (value) =>
     Number(value || 0).toLocaleString("en-IN", {
@@ -75,22 +80,28 @@ const PayrollDetails = () => {
     <div ref={ComponentRef}>
       <Container>
 
+        {/* ================= BACK ================= */}
+        <Header>
+          <BackTitle onClick={() => navigate("/payrolldetails")}>
+            <BackIcon className="no-print" />
+          </BackTitle>
+        </Header>
+
         {/* ================= COMPANY HEADER ================= */}
         {company && (
           <div
             style={{
-              backgroundColor: "#1f2937",   // ✅ Dark background
+              backgroundColor: "#1f2937",
               color: "#ffffff",
               padding: "20px",
               borderRadius: "8px",
               marginBottom: "30px",
-              position: "relative",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
             }}
           >
-            {/* Left side - Company Info */}
+            {/* Company Info */}
             <div>
               <h2 style={{ margin: 0 }}>{company.name}</h2>
               <p style={{ margin: "4px 0" }}>{company.address}</p>
@@ -98,7 +109,7 @@ const PayrollDetails = () => {
               <p style={{ margin: "4px 0" }}>{company.contact_number}</p>
             </div>
 
-            {/* Right side - Logo */}
+            {/* Logo */}
             {company.logo_url && (
               <img
                 src={company.logo_url}
@@ -109,34 +120,20 @@ const PayrollDetails = () => {
                 }}
               />
             )}
-
-            {/* ✅ TOP RIGHT STATUS + PRINT */}
-            <div
-              className="no-print"
-              style={{
-                position: "absolute",
-                top: "15px",
-                right: "20px",
-                display: "flex",
-                alignItems: "center",
-                gap: "15px",
-              }}
-            >
-              <Badge>{status || "Unpaid"}</Badge>
-              <PrintIcon onClick={handlePrint}>
-                <BsPrinter />
-              </PrintIcon>
-            </div>
           </div>
         )}
 
-        {/* ================= BACK + TITLE ================= */}
-        <Header>
-          <BackTitle onClick={() => navigate("/payrolldetails")}>
-            <BackIcon className="no-print" />
-            <Title>Payslip Details</Title>
-          </BackTitle>
-        </Header>
+        {/* ================= PAYSLIP TITLE ================= */}
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "25px",
+          }}
+        >
+          <h2 style={{ margin: 0 }}>
+            Payslip – {monthName} {year}
+          </h2>
+        </div>
 
         {/* ================= EMPLOYEE INFO ================= */}
         <GridLayout>
@@ -184,14 +181,11 @@ const PayrollDetails = () => {
                 </tr>
               </thead>
               <tbody>
-
-                {/* Total Salary */}
                 <tr>
                   <TableData><strong>Total Salary</strong></TableData>
                   <TableData><strong>{formatCurrency(basic_salary)}</strong></TableData>
                 </tr>
 
-                {/* Increment */}
                 <tr>
                   <TableData>Increment</TableData>
                   <TableData>{formatCurrency(salary_increment)}</TableData>
@@ -203,7 +197,6 @@ const PayrollDetails = () => {
                     <TableData>{formatCurrency(item.amount)}</TableData>
                   </tr>
                 ))}
-
               </tbody>
             </Table>
           </TableWrapper>
@@ -267,7 +260,40 @@ const PayrollDetails = () => {
           </TableWrapper>
         </GridLayout>
 
+        {/* ================= STATUS + PRINT (BOTTOM RIGHT) ================= */}
+        <div
+          className="no-print"
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            right: "40px",
+            display: "flex",
+            alignItems: "center",
+            gap: "15px",
+            background: "#ffffff",
+            padding: "10px 15px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <Badge>{status || "Unpaid"}</Badge>
+          <PrintIcon onClick={handlePrint}>
+            <BsPrinter />
+          </PrintIcon>
+        </div>
+
       </Container>
+
+      {/* Hide print controls when printing */}
+      <style>
+        {`
+          @media print {
+            .no-print {
+              display: none !important;
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };
