@@ -1,8 +1,7 @@
 export const printElement = (element) => {
   if (!element) return;
 
-  const WinPrint = window.open("", "", "width=1200,height=900");
-
+  const WinPrint = window.open("", "", "width=1400,height=1000");
   // Clone the element so we can modify it safely
   const clonedElement = element.cloneNode(true);
 
@@ -56,6 +55,11 @@ export const printElement = (element) => {
             padding: 20px;
             font-family: Arial, sans-serif;
           }
+            table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  table-layout: fixed !important;
+}
         </style>
       </head>
       <body>
