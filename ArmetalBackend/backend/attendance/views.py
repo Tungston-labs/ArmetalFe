@@ -422,8 +422,6 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     
 
 
-    from django.utils import timezone
-
     def get_today_punch_times(self, employee_id):
         today = timezone.localdate()
 
@@ -436,19 +434,14 @@ class AttendanceAdminDetailView(RetrieveAPIView):
             return None, None
 
         first_session = today_attendance.sessions.order_by("time_in").first()
-        last_session = today_attendance.sessions.order_by("-time_out").first()
 
-        from django.utils import timezone
+        last_session = today_attendance.sessions.filter(
+            time_out__isnull=False
+        ).order_by("-time_out").first()
 
-        first_in = None
-        last_out = None
+        first_in = timezone.localtime(first_session.time_in).strftime("%H:%M") if first_session and first_session.time_in else None
 
-        if first_session and first_session.time_in:
-            first_in = timezone.localtime(first_session.time_in).strftime("%H:%M")
-
-        if last_session and last_session.time_out:
-            last_out = timezone.localtime(last_session.time_out).strftime("%H:%M")
-
+        last_out = timezone.localtime(last_session.time_out).strftime("%H:%M") if last_session and last_session.time_out else None
 
         return first_in, last_out
     # ---------- main GET ----------
