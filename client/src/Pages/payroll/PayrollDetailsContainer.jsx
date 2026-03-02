@@ -58,7 +58,7 @@ const PayrollDetails = () => {
     lop_amount,
     company,
     basic_salary,
-    salary_increment,
+    total_increment_amount,
     month,
     year,
   } = payrollDetail;
@@ -177,7 +177,7 @@ const PayrollDetails = () => {
 
                 <tr>
                   <TableData>Increment</TableData>
-                  <TableData>{formatCurrency(salary_increment)}</TableData>
+                  <TableData>{formatCurrency(total_increment_amount)}</TableData>
                 </tr>
 
                 {earnings?.map((item, index) => (
