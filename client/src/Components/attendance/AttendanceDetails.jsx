@@ -60,7 +60,9 @@ const AttendanceDetails = ({
             <tr>
               <Th>Punch In</Th>
               <Th>Punch Out</Th>
-              <Th>Location</Th>
+              <Th>Punch In Location</Th>
+              <Th>Punch Out Location</Th>
+
             </tr>
           </thead>
           <tbody>
@@ -76,6 +78,7 @@ const AttendanceDetails = ({
                   <Td>{formatTime(s?.time_in)}</Td>
                   <Td>{formatTime(s?.time_out)}</Td>
                   <Td>{s?.punch_in_location || "---"}</Td>
+                  <Td>{s?.punch_out_location || "---"}</Td>
                 </Tr>
               ))
             )}
