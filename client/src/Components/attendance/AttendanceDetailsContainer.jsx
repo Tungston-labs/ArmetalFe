@@ -17,15 +17,31 @@ const AttendanceDetailsContainer = ({
   selectedDate,
   setSelectedDate,
 }) => {
-  const sessions = attendanceDetail?.sessions || [];
+const sessions = attendanceDetail?.sessions || [];
 
-  const todayPunchIn = sessions.length
-    ? formatTime(sessions[0]?.today_first_punch_in)
+const todayDate = new Date().toISOString().split("T")[0];
+
+const todaysSessions = sessions.filter((session) => {
+  if (!session?.time_in) return false;
+  return session.time_in.split(" ")[0] === todayDate;
+});
+
+const sortedSessions = [...todaysSessions].sort(
+  (a, b) => new Date(a.time_in) - new Date(b.time_in)
+);
+
+const firstPunchIn =
+  sortedSessions.length > 0
+    ? formatTime(sortedSessions[0].time_in)
     : "---";
 
-  const todayPunchOut = sessions.length
-    ? formatTime(sessions[sessions.length - 1]?.today_last_punch_out)
+// Last Punch Out
+const lastPunchOut =
+  sortedSessions.length > 0 &&
+  sortedSessions[sortedSessions.length - 1].time_out
+    ? formatTime(sortedSessions[sortedSessions.length - 1].time_out)
     : "---";
+
 
   const weeklyHours =
     attendanceDetail?.weekly_hours_formatted || "00:00";
@@ -34,8 +50,8 @@ const AttendanceDetailsContainer = ({
     attendanceDetail?.monthly_hours_formatted || "00:00";
 
   const cardList = [
-    { title: "Today Punch In", value: todayPunchIn },
-    { title: "Today Punch Out", value: todayPunchOut },
+    { title: "Today Punch In", value: firstPunchIn },
+    { title: "Today Punch Out", value: lastPunchOut },
     { title: "Weekly Hours", value: weeklyHours },
     { title: "Monthly Hours", value: monthlyHours },
   ];
@@ -47,6 +63,7 @@ const AttendanceDetailsContainer = ({
       selectedDate={selectedDate}
       onDateChange={(e) => setSelectedDate(e.target.value)}
       formatTime={formatTime}
+      employeeId={attendanceDetail?.employee?.id}
     />
   );
 };

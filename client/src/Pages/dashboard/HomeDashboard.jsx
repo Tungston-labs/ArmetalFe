@@ -110,9 +110,9 @@ const Dashboard = () => {
           </ThreeBox>
 
           <ThreeBox>
-           <EmployeeContractExpiry
+    <EmployeeContractExpiry
   employees={
-    (contractExpiry || []).map((emp) => ({
+    (contractExpiry?.contract_expiry || []).map((emp) => ({
       ...emp,
       expiryDate: emp.contract_expiry_date,
       empId: emp.employee_id,
