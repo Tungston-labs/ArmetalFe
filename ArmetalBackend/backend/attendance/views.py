@@ -407,9 +407,18 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Attendance
 from .serializers import AttendanceDetailSerializer
 from django.utils.timezone import now
+from django.utils import timezone
 
 
+def format_local_time(self, dt):
+    if not dt:
+        return None
 
+    # Make datetime timezone aware if naive
+    if timezone.is_naive(dt):
+        dt = timezone.make_aware(dt, timezone.get_current_timezone())
+
+    return timezone.localtime(dt).strftime("%H:%M")
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer

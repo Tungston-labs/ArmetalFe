@@ -52,6 +52,7 @@ const lastPunchOut =
   const cardList = [
     { title: "Today Punch In", value: firstPunchIn },
     { title: "Today Punch Out", value: lastPunchOut },
+    
     { title: "Weekly Hours", value: weeklyHours },
     { title: "Monthly Hours", value: monthlyHours },
   ];

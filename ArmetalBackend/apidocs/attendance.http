@@ -60,8 +60,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 }
 
 ###
-GET http://178.248.112.16:8001/api/admin/attendance/351/?date=2026-02-06
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwMzUzNzk2LCJpYXQiOjE3NzAzNTAxOTYsImp0aSI6ImY3NWFhMDVhYWQ4MDRhODk4MTBmNTQ2MjEyOTlhOWU1IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.6UmsbrDBKrR9Lev-zPecDwwDfC1hIMLIjHJuAEZ_fpA
+GET http://178.248.112.16:8001/api/admin/attendance/351/?date=2026-02-04
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcyNDQyNjUzLCJpYXQiOjE3NzI0MzkwNTMsImp0aSI6IjUzYTliYTU1YTVkNjQzNTI4MDM2ZDhkMGY4YTRjZGQ3IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.sAfalR6BiMHhvA09x8N-G3H9lLEBllVem0gLWYkiSwY
 
 ###attendance summary
 GET http://178.248.112.16:8001/api/employee-attendance/summary/?year=2026&month=02

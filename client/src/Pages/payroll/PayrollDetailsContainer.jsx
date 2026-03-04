@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPayrollDetail } from "../../Redux/payrollSlice";
@@ -19,7 +19,6 @@ import {
   BackIcon,
 } from "./Payroll.styles";
 import { BsPrinter } from "react-icons/bs";
-import { printElement } from "../../services/utlis/printPayroll";
 
 const PayrollDetails = () => {
   const { id } = useParams();
@@ -29,10 +28,8 @@ const PayrollDetails = () => {
     (state) => state.payroll
   );
 
-  const ComponentRef = useRef();
-
   const handlePrint = () => {
-    printElement(ComponentRef.current);
+    window.print();
   };
 
   useEffect(() => {
@@ -61,7 +58,7 @@ const PayrollDetails = () => {
     lop_amount,
     company,
     basic_salary,
-    salary_increment,
+    total_increment_amount,
     month,
     year,
   } = payrollDetail;
@@ -77,7 +74,7 @@ const PayrollDetails = () => {
     });
 
   return (
-    <div ref={ComponentRef}>
+    <div>
       <Container>
 
         {/* ================= BACK ================= */}
@@ -101,7 +98,6 @@ const PayrollDetails = () => {
               alignItems: "center",
             }}
           >
-            {/* Company Info */}
             <div>
               <h2 style={{ margin: 0 }}>{company.name}</h2>
               <p style={{ margin: "4px 0" }}>{company.address}</p>
@@ -109,7 +105,6 @@ const PayrollDetails = () => {
               <p style={{ margin: "4px 0" }}>{company.contact_number}</p>
             </div>
 
-            {/* Logo */}
             {company.logo_url && (
               <img
                 src={company.logo_url}
@@ -124,12 +119,7 @@ const PayrollDetails = () => {
         )}
 
         {/* ================= PAYSLIP TITLE ================= */}
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: "25px",
-          }}
-        >
+        <div style={{ textAlign: "center", marginBottom: "25px" }}>
           <h2 style={{ margin: 0 }}>
             Payslip – {monthName} {year}
           </h2>
@@ -171,7 +161,6 @@ const PayrollDetails = () => {
         {/* ================= EARNINGS & WORK SUMMARY ================= */}
         <GridLayout>
 
-          {/* Earnings */}
           <TableWrapper>
             <Table>
               <thead>
@@ -188,7 +177,7 @@ const PayrollDetails = () => {
 
                 <tr>
                   <TableData>Increment</TableData>
-                  <TableData>{formatCurrency(salary_increment)}</TableData>
+                  <TableData>{formatCurrency(total_increment_amount)}</TableData>
                 </tr>
 
                 {earnings?.map((item, index) => (
@@ -201,7 +190,6 @@ const PayrollDetails = () => {
             </Table>
           </TableWrapper>
 
-          {/* Work Summary */}
           <TableWrapper>
             <Table>
               <thead>
@@ -260,7 +248,7 @@ const PayrollDetails = () => {
           </TableWrapper>
         </GridLayout>
 
-        {/* ================= STATUS + PRINT (BOTTOM RIGHT) ================= */}
+        {/* ================= STATUS + PRINT ================= */}
         <div
           className="no-print"
           style={{
@@ -284,12 +272,28 @@ const PayrollDetails = () => {
 
       </Container>
 
-      {/* Hide print controls when printing */}
+      {/* ================= PRINT STYLES ================= */}
       <style>
         {`
           @media print {
+            body {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+
             .no-print {
               display: none !important;
+            }
+
+            table {
+              width: 100% !important;
+              border-collapse: collapse !important;
+              table-layout: fixed !important;
+            }
+
+            .net-pay td {
+              font-weight: bold;
+              border: 1px solid #000;
             }
           }
         `}
