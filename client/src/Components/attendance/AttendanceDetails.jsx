@@ -74,7 +74,7 @@ const AttendanceDetails = ({
           .split("T")[0];
 
 
-        const url = `http://178.248.112.16:8001/api/background-location/${employeeId}/?date=${formattedDate}`;
+        const url = `https://api.rekory.com/api/background-location/${employeeId}/?date=${formattedDate}`;
 
         console.log("API URL:", url);
 
