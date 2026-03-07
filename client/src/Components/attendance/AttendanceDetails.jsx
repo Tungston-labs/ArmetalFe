@@ -63,35 +63,43 @@ const AttendanceDetails = ({
 
 
 
-    const fetchEmployeeLocations = async () => {
-      try {
-        const token = await getAccessToken();
+  const fetchEmployeeLocations = async () => {
+  try {
+    const token = await getAccessToken();
 
-        if (!token) return;
+    console.log("Token:", token);
 
-        const formattedDate = new Date(selectedDate)
-          .toISOString()
-          .split("T")[0];
+    if (!token) {
+      console.log("No token found");
+      return;
+    }
 
+    const formattedDate = new Date(selectedDate)
+      .toISOString()
+      .split("T")[0];
 
-        const url = `https://api.rekory.com/api/background-location/${employeeId}/?date=${formattedDate}`;
+    const url = `https://api.rekory.com/api/background-location/${employeeId}/?date=${formattedDate}`;
 
-        console.log("API URL:", url);
+    console.log("API URL:", url);
 
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-        console.log("Response status:", response.status);
+    console.log("Response status:", response.status);
 
-        const json = await response.json();
-        setHourlyLocationData(json?.results || []);
-      } catch (err) {
-        console.error("Error fetching location:", err);
-      }
-    };
+    const json = await response.json();
+    console.log("Response Data:", json);
+
+    setHourlyLocationData(json?.results || []);
+  } catch (err) {
+    console.error("Error fetching location:", err);
+  }
+};
 
     fetchEmployeeLocations();
   }, [employeeId, selectedDate]);
