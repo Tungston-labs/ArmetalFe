@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   PageWrapper,
   Header,
@@ -13,6 +13,8 @@ import {
   Tr,
   CalendarWrapper,
 } from "./AttendanceDetails.Styles";
+import { useEffect } from "react";
+import { getAccessToken } from "../../hooks/useAccessToken";
 
 const AttendanceDetails = ({
   cardList,
@@ -20,7 +22,87 @@ const AttendanceDetails = ({
   selectedDate,
   onDateChange,
   formatTime,
+  employeeId,
 }) => {
+  const [hourlyLocationData, setHourlyLocationData] = useState([]);
+
+  const sessionEvents = sessions
+    .flatMap((s) => {
+      const events = [];
+
+      if (s?.time_in) {
+        events.push({
+          time: s.time_in,
+          action: "Punch In",
+          location: s?.punch_in_location,
+        });
+      }
+
+      if (s?.time_out) {
+        events.push({
+          time: s.time_out,
+          action: "Punch Out",
+          location: s?.punch_out_location,
+        });
+      }
+
+      return events;
+    })
+    .sort((a, b) => new Date(b.time) - new Date(a.time));
+
+  const backgroundEvents = (hourlyLocationData || []).map((item) => ({
+    time: item?.logged_at,
+    action: "Live Tracking",
+    location: item?.location_name,
+  }));
+  const allEvents = [...sessionEvents, ...backgroundEvents]
+    .filter((event) => event.time)
+    .sort((a, b) => new Date(b.time) - new Date(a.time));
+
+  useEffect(() => {
+
+
+
+  const fetchEmployeeLocations = async () => {
+  try {
+    const token = await getAccessToken();
+
+    console.log("Token:", token);
+
+    if (!token) {
+      console.log("No token found");
+      return;
+    }
+
+    const formattedDate = new Date(selectedDate)
+      .toISOString()
+      .split("T")[0];
+
+    const url = `https://api.rekory.com/api/background-location/${employeeId}/?date=${formattedDate}`;
+
+    console.log("API URL:", url);
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("Response status:", response.status);
+
+    const json = await response.json();
+    console.log("Response Data:", json);
+
+    setHourlyLocationData(json?.results || []);
+  } catch (err) {
+    console.error("Error fetching location:", err);
+  }
+};
+
+    fetchEmployeeLocations();
+  }, [employeeId, selectedDate]);
   return (
     <PageWrapper>
       <Header>Attendance Details</Header>
@@ -32,6 +114,7 @@ const AttendanceDetails = ({
           </Card>
         ))}
       </CardWrapper>
+
       <HistoryTable>
         <div
           style={{
@@ -58,27 +141,40 @@ const AttendanceDetails = ({
         <Table>
           <thead>
             <tr>
-              <Th>Punch In</Th>
-              <Th>Punch Out</Th>
-              <Th>Punch In Location</Th>
-              <Th>Punch Out Location</Th>
-
+              <Th>Time</Th>
+              <Th>Action</Th>
+              <Th>Location</Th>
             </tr>
           </thead>
           <tbody>
-            {sessions.length === 0 ? (
+            {allEvents.length === 0 ? (
               <Tr>
                 <Td colSpan={3} style={{ textAlign: "center", color: "#777" }}>
                   No sessions found
                 </Td>
               </Tr>
             ) : (
-              sessions.map((s, index) => (
+              allEvents.map((event, index) => (
                 <Tr key={index}>
-                  <Td>{formatTime(s?.time_in)}</Td>
-                  <Td>{formatTime(s?.time_out)}</Td>
-                  <Td>{s?.punch_in_location || "---"}</Td>
-                  <Td>{s?.punch_out_location || "---"}</Td>
+                  <Td>{formatTime(event.time)}</Td>
+
+                  <Td>
+                    <span
+                      style={{
+                        color:
+                          event.action === "Punch In"
+                            ? "#2F822F"
+                            : event.action === "Punch Out"
+                              ? "#ED2B2B"
+                              : "#2563EB",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {event.action}
+                    </span>
+                  </Td>
+
+                  <Td>{event.location || "---"}</Td>
                 </Tr>
               ))
             )}

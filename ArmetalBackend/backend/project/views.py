@@ -199,3 +199,23 @@ class EmployeeAttendanceDetailView(APIView):
         data["total_working_hours"] = total_working_hours
 
         return Response(data, status=200)
+
+
+class EmployeeProjectView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        employee = request.user.employee_db
+
+        project = Project.objects.filter(employees=employee).first()
+
+        if not project:
+            return Response({"project": None})
+
+        return Response({
+            "id": project.id,
+            "name": project.name,
+            "punch_type": project.punch_type,
+            "latitude": project.latitude,
+            "longitude": project.longitude
+        })
