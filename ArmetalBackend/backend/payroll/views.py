@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions,status,filters
-from employee.models import EmpBankPaymentModel, Employee_db
 from employee.serializers import EmpBankPaymentSerializer
 from user.permissions import IsHRAdmin
 from rest_framework.exceptions import NotFound
@@ -8,11 +7,25 @@ from .serializers import EmployeeWithBankDetailsSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import EmployeePayrollRecord
-from .serializers import EmployeePayrollRecordSerializer
 from django.db import transaction
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
+from datetime import date
+import calendar
+from django.utils import timezone
+from finance.models import FinanceRecord
+from payroll.serializers import EmployeePayrollRecordSerializer
+from finance.models import FinanceCategory
+from rest_framework.generics import RetrieveAPIView
+from django.http import HttpResponse
+from .utils import generate_payslip_pdf
+from django.http import HttpResponse, Http404
+from payroll.models import EmployeePayrollRecord
+from employee.models import Employee_db
+from .utils import generate_payslip_pdf 
+
+
 
 
 
@@ -29,8 +42,6 @@ class EmployeeBankDetailListView(generics.ListAPIView):
         return Employee_db.objects.filter(department__company=company)
     
 #for updating status according to month and year(for all employees)
-from datetime import date
-import calendar
 
 
 
@@ -240,17 +251,6 @@ class PayrollVerifyView(APIView):
 
 
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
-from payroll.models import EmployeePayrollRecord
-from finance.models import FinanceRecord
-from payroll.serializers import EmployeePayrollRecordSerializer
-from finance.models import FinanceCategory
-
-
 
 class PayrollStatusUpdateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -281,8 +281,7 @@ class PayrollStatusUpdateView(APIView):
         record.status = new_status
         record.save()
 
-        #  Create Finance record ONLY when status becomes PAID
-        #  Create Finance record ONLY when status becomes PAID
+      
         if previous_status.lower() != "paid" and new_status.lower() == "paid":
 
             basic = record.basic_salary or 0
@@ -342,11 +341,7 @@ class PayrollStatusUpdateView(APIView):
 
     # payroll (payslip) view
 
-# views.py
-from rest_framework.generics import RetrieveAPIView
-from rest_framework.permissions import IsAuthenticated
-from .models import EmployeePayrollRecord
-from .serializers import EmployeePayrollRecordSerializer
+
 
 class PayrollRecordDetailView(RetrieveAPIView):
     queryset = EmployeePayrollRecord.objects.all()
@@ -355,16 +350,7 @@ class PayrollRecordDetailView(RetrieveAPIView):
     lookup_field = 'id'
 
 
-# views.py
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.http import HttpResponse
-from .models import EmployeePayrollRecord
-from .serializers import EmployeePayrollRecordSerializer
-from employee.models import Employee_db
-from .utils import generate_payslip_pdf
 class EmployeePayslipView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -385,12 +371,7 @@ class EmployeePayslipView(APIView):
 
 
 
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from django.http import HttpResponse, Http404
-from payroll.models import EmployeePayrollRecord
-from employee.models import Employee_db
-from .utils import generate_payslip_pdf  # Make sure this points to your updated utils.py
+
 
 class PayslipDownloadView(APIView):
     permission_classes = [IsAuthenticated]

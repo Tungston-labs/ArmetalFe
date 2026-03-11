@@ -128,8 +128,8 @@ const PayrollTable = () => {
       const initialStatus = {};
       sortedData.forEach((emp) => {
         initialStatus[emp.id] = {
-          first: emp.hr1_verified,
-          second: emp.hr2_verified,
+          first: emp.hr1_verified_by,
+          second: emp.hr2_verified_by,
         };
       });
       setVerificationStatus(initialStatus);

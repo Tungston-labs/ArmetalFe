@@ -8,7 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .utils import send_reimbursement_email
-from finance.models import FinanceRecord
+from django.db import transaction
+from finance.models import FinanceRecord,FinanceCategory
 
 # --- List & Create for Employee ---
 
@@ -38,19 +39,6 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
         reimbursement = serializer.save(
             employee=self.request.user.employee_db
         )
-
-       
-
-
-
-# --- Retrieve, Update, Delete single reimbursement ---
-from rest_framework import generics
-from rest_framework.response import Response
-from django.db import transaction
-from .models import Reimbursement
-from finance.models import FinanceRecord,FinanceCategory
-from .serializers import ReimbursementDetailSerializer
-
 
 class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsHRorIsEmployee]

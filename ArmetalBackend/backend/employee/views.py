@@ -27,6 +27,13 @@ from rest_framework.pagination import PageNumberPagination
 from django.core.files.storage import default_storage
 from django.utils import timezone
 from django.db.models import Sum
+from decimal import Decimal
+from django.utils import timezone
+from .models import SalaryIncrement
+from .serializers import SalaryIncrementSerializer
+
+
+
 
 # BASIC DETAILS-create ,list
 
@@ -668,19 +675,7 @@ class EmployeeDocumentSummaryView(APIView):
 
 
 
-from datetime import date, timedelta
-from decimal import Decimal
-from calendar import monthrange
 
-from django.utils import timezone
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-
-from attendance.models import Attendance
-from holidays.models import PublicHoliday
-from employee.models import Employee_db
 
 
 class AttendanceSummaryView(APIView):
@@ -854,19 +849,6 @@ class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 # -------------------employee summary for mobile app
 
 
-from datetime import date, timedelta
-from decimal import Decimal
-import calendar
-
-from django.utils import timezone
-from django.db.models import Sum
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-
-from attendance.models import Attendance
-from holidays.models import PublicHoliday
-from employee.models import Employee_db
 
 
 class EmployeeMonthlySummaryView(APIView):
@@ -996,9 +978,8 @@ class EmployeeMonthlySummaryView(APIView):
         return Response(data)
 
 
-from .models import SalaryIncrement
-from .serializers import SalaryIncrementSerializer
 
+# salary increment create list view for employee
 
 class SalaryIncrementListCreateView(generics.ListCreateAPIView):
     serializer_class = SalaryIncrementSerializer

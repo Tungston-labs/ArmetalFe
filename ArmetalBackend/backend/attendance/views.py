@@ -43,7 +43,6 @@ class AttendanceSwipeView(APIView):
 
             emp_lat, emp_lon = float(emp_lat), float(emp_lon)
 
-            # ✅ Step 1: Get project & validate status
             project = Project.objects.filter(employees=employee).first()
 
             if project:
@@ -58,7 +57,6 @@ class AttendanceSwipeView(APIView):
 
 
 
-            # ✅ Step 2: Validate distance based on punch type
             if punch_type == "onsite":
                 project_location = (float(project.latitude), float(project.longitude))
                 employee_location = (emp_lat, emp_lon)
@@ -106,14 +104,12 @@ class AttendanceSwipeView(APIView):
                 # Default fallback (optional)
                 return Response({"error": f"Invalid punch type: {punch_type}"}, status=400)
 
-            # ✅ Step 3: Address & timezone
             address = self._get_location_address(emp_lat, emp_lon)
             company_tz = get_company_timezone(employee)
             now_utc = timezone.now()
             now_company_tz = now_utc.astimezone(company_tz)
             today = now_company_tz.date()
 
-            # ✅ Step 4: Check if employee is on approved leave today
             from leave.models import LeaveRequest
             is_on_leave = LeaveRequest.objects.filter(
                 employee=employee,
@@ -128,7 +124,6 @@ class AttendanceSwipeView(APIView):
                     status=400
                 )
 
-            # ✅ Step 5: Attendance logic
             attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
             latest_session = attendance.sessions.last()
             should_punch_in = self._should_punch_in(latest_session)
@@ -231,13 +226,11 @@ class AddPunchOutNoteView(APIView):
 
         today = timezone.localdate()
 
-        # Get today’s attendance
         try:
             attendance = Attendance.objects.get(employee=employee, date=today)
         except Attendance.DoesNotExist:
             return Response({'error': 'No attendance found for today.'}, status=404)
 
-        # Get the latest session with a punch-out
         latest_session = attendance.sessions.filter(time_out__isnull=False).order_by('-time_out').first()
 
         if not latest_session:
@@ -285,19 +278,16 @@ class AttendanceAdminListView(generics.ListAPIView):
         if not department_id:
             raise ValidationError({"department_id": "department_id is required"})
 
-        # Attendance for selected day
         attendance_qs = Attendance.objects.filter(
             employee=OuterRef("pk"),
             date=selected_date,
         )
 
-        # First session
         first_session = AttendanceSession.objects.filter(
             attendance__employee=OuterRef("pk"),
             attendance__date=selected_date,
         ).order_by("time_in")
 
-        # Last session
         last_session = AttendanceSession.objects.filter(
             attendance__employee=OuterRef("pk"),
             attendance__date=selected_date,
@@ -331,7 +321,6 @@ class AttendanceAdminListView(generics.ListAPIView):
 
         response = super().list(request, *args, **kwargs)
 
-        # Add extra info to response
         response.data["swiped_employee_count"] = swiped_count
         response.data["total_employee_count"] = total_count
 
@@ -362,7 +351,6 @@ class AttendanceDetailByDateView(APIView):
         date_param = request.query_params.get('date')
 
         if date_param:
-            # Handle both date & datetime formats (iOS safe)
             parsed_date = parse_date(date_param)
 
             if not parsed_date:
@@ -414,7 +402,6 @@ def format_local_time(self, dt):
     if not dt:
         return None
 
-    # Make datetime timezone aware if naive
     if timezone.is_naive(dt):
         dt = timezone.make_aware(dt, timezone.get_current_timezone())
 
@@ -425,7 +412,6 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'employee_id'
 
-    # ---------- helper to get today's punch times ----------
     def get_today_punch_times(self, employee_id):
         today = now().date()
 
@@ -453,20 +439,16 @@ class AttendanceAdminDetailView(RetrieveAPIView):
 
         return first_in, last_out
 
-    # ---------- main GET ----------
     def get(self, request, *args, **kwargs):
         employee_id = kwargs.get(self.lookup_field)
         date_str = request.query_params.get('date')
 
-        # latest attendance for employee
         base_attendance = Attendance.objects.filter(
             employee__id=employee_id
         ).order_by('-date').first()
 
-        # today's punch times (needed in all responses)
         first_in, last_out = self.get_today_punch_times(employee_id)
 
-        # ---------- case 1: employee has no attendance ever ----------
         if not base_attendance:
             data = {
                 "id": None,
@@ -485,7 +467,6 @@ class AttendanceAdminDetailView(RetrieveAPIView):
             }
             return Response(data, status=200)
 
-        # ---------- case 2: specific date requested ----------
         if date_str:
             try:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
@@ -500,7 +481,6 @@ class AttendanceAdminDetailView(RetrieveAPIView):
                 date=date_obj
             ).first()
 
-            # ---------- date absent ----------
             if not attendance:
                 serializer = self.get_serializer(base_attendance)
                 data = serializer.data
@@ -518,14 +498,12 @@ class AttendanceAdminDetailView(RetrieveAPIView):
                 })
                 return Response(data, status=200)
 
-            # ---------- normal attendance ----------
             serializer = self.get_serializer(attendance)
             data = serializer.data
             data["today_first_punch_in"] = first_in
             data["today_last_punch_out"] = last_out
             return Response(data)
 
-        # ---------- case 3: default latest attendance ----------
         serializer = self.get_serializer(base_attendance)
         data = serializer.data
         data["today_first_punch_in"] = first_in
@@ -551,12 +529,10 @@ class AttendanceLocationUpdateView(APIView):
 
         try:
             user = request.user
-            # Fetch employee linked to the logged-in user
             employee = Employee_db.objects.get(user=user)
         except Employee_db.DoesNotExist:
             return Response({"detail": "Employee not found."}, status=404)
 
-        # Get today's attendance
         today = timezone.localdate()
         try:
             attendance = Attendance.objects.get(employee=employee, date=today)
@@ -564,7 +540,6 @@ class AttendanceLocationUpdateView(APIView):
             return Response({"detail": "No active attendance session. Punch in first."},
                             status=400)
 
-        # Append location
         loc_data = {
             "location": serializer.validated_data["location"],
             "timestamp": serializer.validated_data.get("timestamp", timezone.now().isoformat())
@@ -612,7 +587,6 @@ class BackgroundLocationUpdateView(APIView):
 
         logs_qs = HourlyLocationLog.objects.filter(employee=employee).order_by("-logged_at")
 
-        # Filter by date, from_date, to_date
         date_str = request.query_params.get("date")
         from_date_str = request.query_params.get("from_date")
         to_date_str = request.query_params.get("to_date")
@@ -642,7 +616,6 @@ class BackgroundLocationUpdateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Pagination
         paginator = HourlyLocationLogPagination()
         page = paginator.paginate_queryset(logs_qs, request)
         serializer = HourlyLocationLogSerializer(page, many=True)
@@ -716,7 +689,6 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
 
         start_date = date(year, month, 1)
 
-        # 🔥 ALWAYS use full month range
         last_day = calendar.monthrange(year, month)[1]
         end_date = date(year, month, last_day)
 
@@ -752,7 +724,6 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
                 absent_days = max(working_days - present_days, 0)
                 daily_records = []
             else:
-                # 🔥 Live calculation
                 working_days, present_days, absent_days, lop_days, daily_records = (
                     build_employee_month_calendar(emp, start_date, end_date)
                 )

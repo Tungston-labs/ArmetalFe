@@ -29,7 +29,7 @@ class DepartmentMiniListView(generics.ListAPIView):
         today = timezone.localdate()
         company = self.request.user.company
 
-        # ✅ employees with attendance today per department
+        #  employees with attendance today per department
         swiped_subquery = (
             Attendance.objects
             .filter(employee__department=OuterRef("pk"), date=today)
@@ -60,7 +60,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
         try:
             today = timezone.localdate()
 
-            # ✅ Employees who have attendance today
+            # Employees who have attendance today
             attendance_subquery = (
                 Attendance.objects
                 .filter(employee__department=OuterRef("pk"), date=today)
@@ -69,7 +69,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
                 .values("c")[:1]
             )
 
-            # ✅ Employees with pending leave requests
+            # Employees with pending leave requests
             leave_subquery = (
                 LeaveRequest.objects
                 .filter(employee__department=OuterRef("pk"), status="pending")
@@ -78,7 +78,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
                 .values("c")[:1]
             )
 
-            # ✅ Employees who are actually on approved leave today
+            # Employees who are actually on approved leave today
             todays_leave_subquery = (
                 LeaveRequest.objects
                 .filter(
@@ -92,7 +92,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
                 .values("c")[:1]
             )
 
-            # ✅ Reimbursements on hold
+            #  Reimbursements on hold
             reimbursement_subquery = (
                 Reimbursement.objects
                 .filter(employee__department=OuterRef("pk"), status="On Hold")

@@ -12,7 +12,6 @@ from leave.models import LeaveRequest
 from datetime import date, timedelta
 from calendar import monthrange
 
-# Custom field to handle datetime-to-date safely
 class SafeDateField(serializers.DateField):
     def to_representation(self, value):
         if isinstance(value, datetime):
@@ -33,8 +32,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         write_only=True
     )
     department = serializers.CharField(source='department.name', read_only=True)
-
-    # ✅ Add is_head field
     is_head = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -47,18 +44,15 @@ class EmployeeSerializer(serializers.ModelSerializer):
     def validate(self, data):
         country = self.context['request'].user.company.country
 
-        # India-specific validation
         if country == "IN":
             if not data.get('aadar_number'):
                 raise serializers.ValidationError({"aadar_number": "Aadhaar number is required for India"})
         else:
-            # Non-India
             if not data.get('iqama_number'):
                 raise serializers.ValidationError({"iqama_number": "Iqama number is required for this country"})
             if not data.get('visa_expiry_date'):
                 raise serializers.ValidationError({"visa_expiry_date": "Visa expiry date is required"})
 
-        # Insurance can be optional or required depending on your business rules
         if country != "IN" and not data.get('insurance_number'):
             raise serializers.ValidationError({"insurance_number": "Insurance number is required for non-India"})
 
@@ -95,8 +89,6 @@ class EmpDocumentSerializer(serializers.ModelSerializer):
         read_only_fields = ['employee']
 
 
-# for mobile app
-
 
 
 
@@ -122,7 +114,6 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
         exclude = ['password']
 
     def get_company_logo(self, obj):
-        # Option 1: via employee -> user -> company
         company = obj.user.company
         if company and company.logo:
             request = self.context.get("request")
@@ -199,8 +190,6 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
     projects = serializers.SerializerMethodField()
     attendance_graph = serializers.SerializerMethodField()
     task_graph = serializers.SerializerMethodField()
-
-    # NEW FIELDS REQUESTED
     aadar_number = serializers.SerializerMethodField()
     iqama_number = serializers.SerializerMethodField()
     pan_number = serializers.SerializerMethodField()
@@ -221,12 +210,12 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             "employee_id",
             "designation",
             "joining_date",
-            "dob",                             # NEW
-            "aadar_number",                     # NEW
-            "iqama_number",                     # NEW
-            "pan_number",                       # NEW
-            "account_number",                   # NEW
-            "passport_number",                  # NEW
+            "dob",                             
+            "aadar_number",                    
+            "iqama_number",                     
+            "pan_number",                     
+            "account_number",                   
+            "passport_number",                  
             "department",
             "role",
             "salary",
