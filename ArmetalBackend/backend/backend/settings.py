@@ -104,7 +104,7 @@ CHANNEL_LAYERS = {
 }
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# https://docs.djangoproject.com/en/5.2zZZZ/ref/settings/#databases
 
 
 DATABASES = {

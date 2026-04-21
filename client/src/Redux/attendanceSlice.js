@@ -43,6 +43,18 @@ export const getDepartments = createAsyncThunk(
   }
 );
 
+export const searchAttendanceEmployees = createAsyncThunk(
+  "attendance/searchEmployees",
+  async (search, { rejectWithValue }) => {
+    try {
+      const data = await searchEmployees(search);
+      return data;   // must return list of employees with dept
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Search failed");
+    }
+  }
+);
+
 
 export const getAttendanceSummary = createAsyncThunk(
   "attendance/getSummary",
@@ -169,6 +181,7 @@ const attendanceSlice = createSlice({
         state.attendanceSummary = [];
         state.error = action.payload || "Failed to fetch summary";
       });
+
   },
 });
 

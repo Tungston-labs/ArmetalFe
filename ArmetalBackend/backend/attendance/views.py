@@ -271,6 +271,7 @@ class AttendanceAdminListView(generics.ListAPIView):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
 
+
     def get_queryset(self):
         department_id = self.request.query_params.get("department_id")
         selected_date = self.request.query_params.get("date") or today_date.today()
@@ -326,6 +327,45 @@ class AttendanceAdminListView(generics.ListAPIView):
 
         return response
 
+    def get(self, request):
+        query = request.GET.get("q", "").strip()
+
+        if not query:
+            return Response([])
+
+        employees = (
+            Employee_db.objects.filter(name_search__icontains=query)
+            .select_related("department")
+            .prefetch_related("attendances")  # correct related name
+        )
+
+        final_results = []
+
+        for emp in employees:
+            # Get latest attendance
+            attendance = emp.attendances.order_by('-date').first()
+
+            # Prepare response
+            final_results.append({
+                "id": emp.id,
+                "employee_name": emp.name,
+                "employee_id": emp.employee_id,
+                "department": {
+                    "id": emp.department.id,
+                    "name": emp.department.name
+                },
+                "date": attendance.date if attendance else None,
+                "time_in":
+                    attendance.sessions.first().time_in
+                    if attendance and attendance.sessions.exists()
+                    else None,
+                "time_out":
+                    attendance.sessions.last().time_out
+                    if attendance and attendance.sessions.exists()
+                    else None,
+            })
+
+        return Response(final_results)
 
 
 

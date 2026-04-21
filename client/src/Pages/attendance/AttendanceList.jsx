@@ -90,11 +90,17 @@ const AttendanceList = () => {
       setSelectedDept(null);
       return;
     }
+
     setSelectedDept(deptId);
     setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
     if (!departmentAttendance[deptId]) {
       await loadAttendanceForDept(deptId);
     }
+
+    // Normal mode
+    const response = await dispatch(getAttendanceList({ department_id: deptId }));
+    const results = response?.payload?.results || [];
+    setDepartmentAttendance((prev) => ({ ...prev, [deptId]: results }));
   };
 
 const departmentsToRender = departmentList
