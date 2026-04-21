@@ -851,11 +851,23 @@ class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from django.db.models import Sum
+from datetime import date, timedelta, datetime
+import calendar
+
+from employee.models import Employee_db, Attendance
+from superadmin.models import PublicHoliday
+
 class EmployeeMonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
+            # Get employee from logged-in user
             employee = request.user.employee_db
             department = employee.department
             company = department.company if department else None
@@ -940,7 +952,7 @@ class EmployeeMonthlySummaryView(APIView):
             and d not in half_days
         ]
 
-        # Remaining working days
+        # Remaining working days (after today)
         remaining_working_days = [d for d in working_days if d > today]
 
         # Company off day dates this month
