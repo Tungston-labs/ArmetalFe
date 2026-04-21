@@ -16,9 +16,9 @@ export const ModalOverlay = styled.div`
   right: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0,0,0,0.45);
   display: flex;
-  justify-content: flex-end; /* push content to right */
+  justify-content: flex-end;
   z-index: 2000;
 `;
 
@@ -31,7 +31,7 @@ export const ModalContent = styled.div`
   padding: 1.5rem;
   box-shadow: -2px 0 6px rgba(0, 0, 0, 0.2);
 
-  animation: ${slideIn} 0.3s ease-out; /* smooth slide in */
+  animation: ${slideIn} 0.3s ease-out; 
   @media (min-width: 2560px) {
     width: 40%;
     max-width: none;
@@ -86,6 +86,11 @@ export const CloseButton = styled.button`
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
+
+    @media (max-width: 1024px) {
+    font-size: 0.8rem;
+
+  }
   @media (min-width: 2560px) {
     font-size: 1.5rem;
     border-radius: 1rem;
@@ -100,6 +105,12 @@ export const CloseButton = styled.button`
 export const DateHeading = styled.h4`
   font-weight: 600;
   margin: 1.5rem 0 0.8rem 0;
+
+
+    @media (max-width: 1024px) {
+    font-size: 0.8rem;
+
+  }
   @media (min-width: 2560px) {
     font-size: 1.5rem;
   }
@@ -116,6 +127,13 @@ export const Card = styled.div`
   border-radius: 12px;
   margin-bottom: 0.8rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    @media (max-width: 1024px) {
+        padding: 0.9rem;
+    font-size: 0.8rem;
+
+  }
+
   @media (min-width: 2560px) {
     border-radius: 1rem;
     padding: 2rem;
@@ -172,12 +190,18 @@ export const Value = styled.div`
   font-size: 0.9rem;
   font-weight: 500;
   // border-bottom: 1px solid #eee;
+
+    @media (max-width: 1024px) {
+    font-size: 0.8rem;
+     font-weight: 400;
+  }
   @media (min-width: 2560px) {
     font-size: 1.5rem;
   }
   @media (min-width: 3840px) {
     font-size: 2.5rem;
   }
+  
 `;
 
 export const RightSection = styled.div`
@@ -191,6 +215,11 @@ export const Amount = styled.div`
   font-size: 1rem;
   font-weight: bold;
   color: #2f52e0;
+
+    @media (max-width: 1024px) {
+    font-size: 0.8rem;
+
+  }
   @media (min-width: 2560px) {
     font-size: 1.5rem;
   }

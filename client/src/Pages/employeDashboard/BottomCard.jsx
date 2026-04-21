@@ -101,7 +101,7 @@ const DailyTaskList = () => {
     ? employeeDashData.today_sessions
     : [];
 
-  const BASE_URL = "http://178.248.112.16:8001";
+  // const BASE_URL = "http://178.248.112.16:8001";
 
   return (
     <Container>

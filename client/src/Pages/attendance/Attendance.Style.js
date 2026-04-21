@@ -1,4 +1,3 @@
-// src/components/TimesheetPage.styles.js
 import styled from 'styled-components';
 
 import { LuArrowLeft } from "react-icons/lu";
@@ -7,20 +6,16 @@ export const BackArrow = styled(LuArrowLeft)`
   cursor: pointer;
   width: clamp(20px, 2vw, 50px);
   height: clamp(20px, 2vw, 50px);
-
-  /* 2K / QHD */
   @media (min-width: 2560px) {
     width: 60px;
     height: 60px;
   }
 
-  /* 4K */
   @media (min-width: 3840px) {
     width: 80px;
     height: 80px;
   }
 
-  /* 8K */
   @media (min-width: 7680px) {
     width: 120px;
     height: 120px;
@@ -29,7 +24,8 @@ export const BackArrow = styled(LuArrowLeft)`
 
 export const Container = styled.div`
   background: white;
-  padding: 20px;
+  // padding: 20px;
+    padding: 20px 30px;
   font-family: sans-serif;
 `;
 
@@ -49,20 +45,14 @@ export const ProfileImage = styled.img`
   &:hover {
     transform: scale(1.05);
   }
-
-  /* 📱 Small screens (mobiles) */
   @media (max-width: 480px) {
     width: 32px;
     height: 32px;
   }
-
-  /* 💻 Medium screens (tablets & small laptops) */
   @media (max-width: 1024px) and (min-width: 481px) {
     width: 70px;
     height: 80px;
   }
-
-  /* 🖥️ Large screens (1080p - standard desktops) */
   @media (min-width: 1025px) and (max-width: 1440px) {
     width: 80px;
     height: 100px;
@@ -71,7 +61,7 @@ export const ProfileImage = styled.img`
     width: 120px;
     height: 120px;
   }
-  /* 🖥️ Ultra-wide / 4K displays */
+
 @media (min-width: 1921px) and (max-width: 2560px) {
     width: 170px;
     height: 170px;
@@ -81,8 +71,6 @@ export const ProfileImage = styled.img`
     height: 250px;
   }
 `;
-
-
 
 export const InputGroup = styled.div`
   display: flex;
@@ -95,8 +83,6 @@ export const Hr = styled.hr`
   border-top: 1px solid #ccc;
 
 `;
-
-
 
 export const DateNavigation = styled.div`
   display: flex;
@@ -136,8 +122,6 @@ export const DateBox = styled.div`
     background-color: #fff;
   }
 `;
-
-
 
 export const TableScroll = styled.div`
   overflow-y: auto;
@@ -186,22 +170,19 @@ export const Table = styled.table`
       padding: 0.5rem;
     }
   }
-
   @media (min-width: 2560px) {
     th {
       font-size: 2rem;
       padding: 1rem;
     }
   }
-
-  @media (min-width: 3840px) { /* 4K */
+  @media (min-width: 3840px) { 
     th {
       font-size: 2.5rem;
       padding: 1.5rem;
     }
   }
-
-  @media (min-width: 7680px) { /* 8K */
+  @media (min-width: 7680px) { 
     th {
       font-size: 2rem;
       padding: 2rem;
@@ -640,10 +621,6 @@ export const DateDetails = styled.div`
   }
 `;
 
-
-
-
-
 export const DayBoxes = styled.div`
   display: flex;
   align-items: center;
@@ -673,7 +650,7 @@ export const DayBoxes = styled.div`
 export const DayBox = styled.div`
   background-color: #f3f3f3;
   padding: 10px;
-  width: 90px;
+  width: 70px;
   text-align: center;
   border-radius: 6px;
   color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
@@ -682,17 +659,12 @@ export const DayBox = styled.div`
     font-weight: 600;
     font-size: 16px;
     color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
-    /* 2K / QHD */
     @media (min-width: 2560px) {
-      font-size: 1.8rem;
+      font-size: 1.3rem;
     }
-
-    /* 4K */
     @media (min-width: 3840px) {
       font-size: 2rem;
     }
-
-    /* 8K */
     @media (min-width: 7680px) {
       font-size: 2.5rem;
     }
@@ -703,9 +675,8 @@ export const DayBox = styled.div`
     margin-bottom:0.3rem;
     font-size: 14px;
 color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
-    /* 2K / QHD */
     @media (min-width: 2560px) {
-      font-size: 1.8rem;
+      font-size: 1.3rem;
       margin-top: 0.8rem;
     }
 
@@ -727,11 +698,11 @@ color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
     color: #525252ff;
     color: ${(props) => (props.isFuture ? "#aaa" : "#525252")};
     @media (min-width: 2560px) {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
     }
 
     @media (min-width: 3840px) {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
     }
 
     @media (min-width: 7680px) {
@@ -740,13 +711,13 @@ color: ${(props) => (props.isFuture ? "#aaa" : "#000")};
   }
 
   @media (min-width: 2560px) {
-    width: 150px;
-    padding: 1rem;
+    width: 120px;
+    /* padding: 1rem; */
   }
 
   @media (min-width: 3840px) {
-    width: 180px;
-    padding: 1.8rem;
+    width: 150px;
+    /* padding: 1.8rem; */
   }
 
   @media (min-width: 7680px) {

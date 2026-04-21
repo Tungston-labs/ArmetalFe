@@ -22,7 +22,7 @@ import Navbar from "../../Components/Navbar"
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompanyOverview } from "../../Redux/superAdminSlice";
-
+import Loader from "../../Components/Loader"
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const Dashboard = () => {
   }, [dispatch]);
 
   if (loading) {
-    return <p>Loading dashboard...</p>;
+    return <Loader/>;
   }
 console.log({overview});
 
@@ -54,7 +54,6 @@ console.log({overview});
         <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
       </Header>
 
-      {/* Banner with total companies */}
       <BlueBanner>
         <BannerHeader>
           <div>
@@ -89,12 +88,10 @@ console.log({overview});
         </CardContainer>
       </BlueBanner>
 
-      {/* Table with unpaid companies */}
       <TableSection>
         <TableHeader>
           <div>
             <h2>Pending payment details</h2>
-            <p>Pending payment details List</p>
           </div>
           <span>{payments.length}</span>
         </TableHeader>

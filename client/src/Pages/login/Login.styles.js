@@ -28,7 +28,7 @@ export const LeftPanel = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 34%;
+  width: 30%;
   height: 100vh;
   overflow: hidden;
 
@@ -59,7 +59,6 @@ export const LeftPanel = styled.div`
 
 export const RightPanel = styled.div`
   flex: 1;
-  background: #fafcf5;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,29 +72,12 @@ export const RightPanel = styled.div`
 export const FormBox = styled.div`
   max-width: 400px;
   width: 100%;
-  margin-top: 50px;
+  margin-top: 150px;
+
   @media (min-width: 3840px) {
     max-width: 35%;
   }
-  // h2 {
-  //   font-family: Satoshi, sans-serif;
-  //   font-weight: 700;
-  //   font-size: clamp(28px, 4vw, 41px); /* responsive font */
-  //   line-height: 1.2;
-  //   text-align: left;
-  //   margin: 0 0 10px 0;
-  // }
-
-  // p {
-  //   font-family: Raleway, sans-serif;
-  //   font-size: clamp(14px, 2vw, 20px); /* responsive font */
-  //   line-height: 1.4;
-  //   margin: 5px 0 20px 0;
-  // }
-
-  // @media (max-width: 480px) {
-  //   margin-top: 20px;
-  // }
+  
 `;
 
 export const Label = styled.label`
@@ -104,7 +86,7 @@ export const Label = styled.label`
   font-family: "Raleway", sans-serif;
   margin-top: 5px;
   margin-bottom: 2px;
-  font-size: clamp(13px, 1vw, 2rem); /* responsive base */
+  font-size: clamp(13px, 1vw, 2rem);
 
   @media ${device.mobileS} {
     font-size: 13px;
@@ -221,7 +203,7 @@ export const SmallLink = styled.button`
 
   &:hover {
     text-decoration: underline;
-    color: #1e3a8a; /* optional hover color */
+    color: #1e3a8a
   }
   @media (min-width: 3840px) {
     font-size: 2rem;
@@ -239,32 +221,36 @@ export const LeftHeader = styled.div`
   padding: clamp(20px, 3vw, 40px);
   border-radius: 12px;
 
-  h2 {
-    font-size: clamp(20px, 3vw, 42px);
+    @media (max-width: 768px) {
+    width: 80%;
   }
-
-  p {
-    font-size: clamp(14px, 2vw, 22px);
+  @media (max-width: 1024px) {
+   width: 80%;
   }
-  @media (min-width: 3840px) {
-    h2 {
-      font-size: 7rem !important;
-    }
-    p{
-      font-size: 3rem;
-    }
+  @media (min-width: 1025px) {
+    width: 100%;
   }
 `;
 
 export const Logo = styled.img`
-  width: clamp(30%, 35vw, 40%);
+  width: 40%;
   height: auto;
   margin-bottom: 1rem;
   margin-left: 4rem;
-
+  
+  
   @media (max-width: 768px) {
-    margin-left: 0;
+    width: 20%;
   }
+  @media (max-width: 1024px) {
+    width: 20%;
+  }
+  @media (min-width: 1025px) {
+    width: 40%;
+  }
+
+
+
 `;
 
 export const CustomLink = styled.p`
@@ -321,33 +307,44 @@ export const SmallNote = styled.p`
   margin-top: ${(props) => props.marginTop || "20px"};
   color: ${(props) => props.color || "#3250B5"};
 `;
+
 export const Title = styled.h2`
   font-family: "Satoshi", sans-serif;
   font-weight: bold;
   margin: 0;
-  font-size: clamp(24px, 2.5vw, 5rem); // responsive base
+
+
+  font-size: 36px;
 
   @media ${device.mobileM} {
     font-size: 22px;
   }
 
   @media ${device.tablet} {
-    font-size: 30px;
+    font-size: 1rem;
   }
 
   @media ${device.laptop} {
-    font-size: 36px;
+    font-size: 1.5rem;
   }
+
+
+  @media (min-width: 1920px) {
+   font-size: 1.5rem;
+  }
+
+
   @media (min-width: 3840px) {
     font-size: 6rem;
     padding-block: 2rem;
   }
 `;
 
+
 export const Subtitle = styled.p`
   font-family: "Raleway", sans-serif;
   margin-top: 8px;
-  font-size: clamp(14px, 1vw, 2.5rem); // responsive base
+  font-size: 18px;
 
   @media ${device.mobileM} {
     font-size: 14px;
@@ -358,9 +355,105 @@ export const Subtitle = styled.p`
   }
 
   @media ${device.laptop} {
-    font-size: 18px;
+    font-size: 1rem;
+  }
+ @media (min-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (min-width: 1920px) {
+    font-size: 1.5rem;
   }
   @media (min-width: 3840px) {
     font-size: 3rem;
   }
+`;
+
+
+
+export const WelcomeTitle = styled.h2`
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+
+  @media (min-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+      font-size: 1.2rem;
+  }
+   @media (min-width: 1440px) {
+      font-size: 1.2rem;
+  }
+   @media (min-width: 1700px) {
+      font-size: 1.4rem;
+  }
+   @media (min-width: 1920px) {
+      font-size: 1.5rem;
+  }
+`;
+
+export const Description = styled.p`
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
+   @media (min-width: 1024px) {
+      font-size: 0.8rem;
+  }
+  @media (min-width: 1300px) {
+      font-size: 1rem;
+  }
+   @media (min-width: 1440px) {
+      font-size: 1.2rem;
+      
+  }
+    @media (min-width: 1700px) {
+      font-size: 1.2rem;
+  }
+`;
+
+export const ActionText = styled.p`
+  cursor: pointer;
+  text-decoration: none;
+  font-family: "Raleway", sans-serif;
+  font-size: 18px;
+
+  @media (min-width: 768px) {
+    font-size: 20px;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 22px;
+  }
+`;
+export const PasswordWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const EyeIcon = styled.span`
+  position: absolute;
+  right: 12px;
+  top: 35%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+
+  &:hover {
+    color: #000;
+  }
+`;
+
+export const ErrorText = styled.p`
+  color: red;
+  margin-top: 0.5rem;
+`;
+
+export const SuccessText = styled.p`
+  color: green;
+  margin-top: 0.5rem;
 `;

@@ -1,20 +1,25 @@
-// src/Components/Sidebar.styles.js
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const SidebarContainer = styled.div`
   width: 350px;
   min-width: 60px;
-  // height: 100vh;
   background: linear-gradient(181deg, rgba(23, 37, 84, 1) 20%, rgba(51, 82, 186, 1) 100%);
   color: white;
-  // display: flex;
+  display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
   top: 0;
   left: 0;
   z-index: 100;
-  overflow-y: auto;
+  overflow-y: auto; /* allow scrolling */
+  scrollbar-width: none; /* Firefox: hide scrollbar */
+  -ms-overflow-style: none;  /* IE 10+ */
+
+  &::-webkit-scrollbar {
+    width: 0px; /* hide scrollbar in Chrome, Safari */
+    background: transparent; /* optional: just to be safe */
+  }
 
   &.collapsed {
     width: 60px;
@@ -22,7 +27,6 @@ export const SidebarContainer = styled.div`
 
   @media (max-width: 1024px) {
     width: 200px;
-
     &.collapsed {
       width: 60px;
     }
@@ -31,16 +35,25 @@ export const SidebarContainer = styled.div`
   @media (min-width: 768px) and (max-width:1024px) {
     width: 80px;
   }
-      @media (min-width: 1025px) and (max-width:1439px) {
+
+  @media (min-width: 1025px) and (max-width:1439px) {
     width: 18%;
   }
-   @media (min-width: 1440px) and (max-width:1920px) {
+  @media (min-width: 1440px) and (max-width:1920px) {
     width: 20%;
   }
-    @media (min-width: 2560px) {
+  @media (min-width: 2560px) {
     width: 20%;
+  }
+  @media print {
+    display: none !important;
+  }
+
+  &.collapsed {
+    width: 60px;
   }
 `;
+
 
 
 export const TopSection = styled.div`
@@ -62,22 +75,20 @@ export const Logo = styled.div`
     transition: width 0.3s ease;
   }
 
-  img.default-logo {
+ img.default-logo {
     width: 300px;
     max-height: 110px;
-  }
+  } 
 
-  /* Adjust logo for smaller screens */
   @media (max-width: 1024px) {
     img {
       width: 120px;
 
-    img.default-logo {
+   img.default-logo {
       width: 120px;
-    }
+    } 
   }
   }
-  /* Hide logo on very small screens */
   @media (min-width: 768px) and (max-width:1024px){
     display: none;
   }
@@ -88,44 +99,37 @@ export const Logo = styled.div`
 
  @media (min-width: 1025px) {
     img{
-    min-height: 150px;
-   
+    min-height: 150px;  
     width: 150px;
     }
+
+     img.default-logo {
+      width: 120px;
+    } 
    }
 
  @media (min-width: 1440px) {
     img{
-    min-height: 150px;
-   
+    min-height: 150px;   
     width: 150px;
     }
+
+     img.default-logo {
+      width: 120px;
+    } 
    }
   @media (min-width: 1920px) {
     img{
     min-height: 150px;
-  
     width: 200px;
     }
+     img.default-logo {
+      width: 120px;
+    } 
    }
-   @media (min-width: 2560px) {
-    img{
-    min-height: 150px;
-    width: 300px;
-   margin-block: 2rem;
-    }
-   }
-   @media (min-width: 3840px) {
-    img{
-    min-height: 250px;
-    margin-block: 2rem;
-    width: 450px;
-    }
-   }
+ 
+  
 `;
-
-
-
 
 
 export const Nav = styled.ul`
@@ -136,7 +140,7 @@ export const Nav = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
   
    @media (min-width: 2560px) {
     gap: 1.5rem;
@@ -157,7 +161,6 @@ export const BottomSection = styled.div`
   align-items: center;
 `;
 
-// Logout icon/button
 export const LogoutButton = styled.button`
   font-size: 28px;
   color: red;
@@ -168,18 +171,16 @@ export const LogoutButton = styled.button`
   align-items: center;
 `;
 
-// Change Password link
 export const ChangePasswordLink = styled(Link)`
   font-size: 14px;
   color: white;
   text-decoration: none;
   cursor: pointer;
-margin-left:30px;
+  margin-left:30px;
   &:hover {
     color:blue;
     
   }
-  
 `;
 
 export const ToggleButton = styled.button`
@@ -201,8 +202,8 @@ export const CustomLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 12px 16px;
-  border-radius: 10px;
+  padding: 10px 16px;
+  border-radius: 4px;
   font-size: 1rem;
   color: white;
   font-weight: 600;
@@ -211,21 +212,13 @@ export const CustomLink = styled(Link)`
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
-  gap: 12px; 
+  gap: 12px;
 
   svg,
   img {
-    min-width: 20px; 
+    min-width: 20px;
     height: 20px;
     transition: filter 0.3s ease, transform 0.3s ease;
-
-@media (min-width: 2560px) and (max-width:3840px) {
-     min-width: 20px; 
-    height: 35px;
-  }
-
-
-    
   }
 
   span {
@@ -244,8 +237,9 @@ export const CustomLink = styled(Link)`
     }
 
     img {
-      filter: brightness(0) saturate(100%) invert(9%) sepia(40%) saturate(4410%)
-        hue-rotate(217deg) brightness(95%) contrast(105%);
+      filter: brightness(0) saturate(100%) invert(9%) sepia(40%)
+        saturate(4410%) hue-rotate(217deg)
+        brightness(95%) contrast(105%);
     }
   }
 
@@ -258,8 +252,9 @@ export const CustomLink = styled(Link)`
     }
 
     img {
-      filter: brightness(0) saturate(100%) invert(9%) sepia(40%) saturate(4410%)
-        hue-rotate(217deg) brightness(95%) contrast(105%);
+      filter: brightness(0) saturate(100%) invert(9%) sepia(40%)
+        saturate(4410%) hue-rotate(217deg)
+        brightness(95%) contrast(105%);
     }
 
     &::after {
@@ -269,7 +264,7 @@ export const CustomLink = styled(Link)`
       left: 10%;
       width: 80%;
       height: 3px;
-      background: rgb(255, 255, 255);
+      background: white;
       border-radius: 2px;
     }
   }
@@ -281,14 +276,18 @@ export const CustomLink = styled(Link)`
     span {
       display: none;
     }
-
-    svg,
-    img {
-      margin-right: 0;
-    }
   }
 
-  /* Hide text between 768px–1024px */
+
+    @media (min-width: 1024px) and (max-width: 1300px) {
+       justify-content: center;
+     gap: 10px;
+
+    span{
+     font-size: 0.8rem;
+    }
+    }
+
   @media (min-width: 768px) and (max-width: 1024px) {
     justify-content: center;
     gap: 0;
@@ -296,36 +295,42 @@ export const CustomLink = styled(Link)`
     span {
       display: none;
     }
-
-    svg,
-    img {
-      margin-right: 0;
-    }
   }
 
-  /* Small devices (below 768px) - keep text visible */
+  /* Mobile */
   @media (max-width: 767px) {
     justify-content: flex-start;
     gap: 10px;
   }
 
-  /* Ultra-wide screens */
+  /* 4K screens */
   @media (min-width: 2560px) {
-    font-size: 2rem;
+    font-size: 1.5rem;
     padding: 1rem 1.5rem;
     border-radius: 1rem;
     gap: 1.5rem;
+
+    svg,
+    img {
+      height: 35px;
+      min-width: 35px;
+    }
   }
 
+  /* 5K+ screens */
   @media (min-width: 3840px) {
-    font-size: 3rem;
+    font-size: 2rem;
     padding: 1.5rem 2rem;
     border-radius: 2rem;
     gap: 2rem;
+
+    svg,
+    img {
+      height: 45px;
+      min-width: 45px;
+    }
   }
 `;
-
-
 
 export const LinkIcon = styled.img`
   width: 20px;
@@ -338,4 +343,75 @@ export const LinkIcon = styled.img`
   filter: brightness(0) invert(1);
 `;
 
+export const BottomText = styled.div`
+  width: 100%;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 14px;
+  color: #ffffffaa;
+  font-weight: 500;
+  margin-top: auto;
+  line-height: 1.4;
+
+  span {
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  &.collapsed {
+    font-size: 12px;
+    padding: 10px 0;
+
+    span {
+      display: none;
+    }
+
+    &::after {
+      content: "R";
+      font-weight: 700;
+      color: #ffffff;
+      font-size: 14px;
+      margin-left: 4px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 767px) {
+   font-size: 0.7rem;
+    padding: 10px 0;
+
+    span {
+      font-size: 0.7rem;
+    }
+  }
+ 
+  @media (min-width: 768px) and (max-width: 1024px) {
+    font-size: 0.7rem;
+    padding: 12px 0;
+
+      span {
+      font-size: 0.7rem;
+    }
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 0.8rem;
+
+    span {
+      font-size: 0.7rem;
+    }
+  }
+
+  /* Large screens / 4K */
+  @media (min-width: 2560px) {
+    font-size: 1rem;
+    padding: 18px 0;
+
+    &.collapsed::after {
+      font-size: 1.4rem;
+    }
+  }
+
+  
+`;
 

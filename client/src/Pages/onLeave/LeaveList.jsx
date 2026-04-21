@@ -54,7 +54,8 @@ const LeaveList = () => {
         iconSrc={EmployeeIcon}
         showAddButton={false}
         showDropdown={false}
-        onSearchChange={setSearchText} // ✅ search text connected
+        onSearchChange={setSearchText} 
+        showBackArrow={false}
       />
 
       {loading ? (

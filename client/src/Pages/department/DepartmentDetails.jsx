@@ -30,9 +30,10 @@ import { deleteEmployeeById } from '../../Redux/employeeSlice';
 import Employee from "../../assets/employee.svg";
 import { HiArrowLeft } from 'react-icons/hi'; 
 import { FaUserCircle } from "react-icons/fa"; 
-import Navbar from '../../Components/Navbar';
+// import Navbar from '../../Components/Navbar';
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader"
+import { BASE_URL } from '../../services/api';
 
 
 const DepartmentDetail = () => {
@@ -167,7 +168,6 @@ const handleDeleteEmployee = (employeeId, employeeName) => {
           department_head_id: data.department_head?.id || ''
         });
       } catch (err) {
-        console.error('Error fetching department:', err);
       }
     };
     getDepartment();
@@ -234,7 +234,7 @@ const handleUpdate = async () => {
 
   return (
     <>
-      <Navbar/>
+      {/* <Navbar/> */}
       <Container>
 
         <HeaderSection>
@@ -250,9 +250,7 @@ const handleUpdate = async () => {
 
           <ActionArea>
             <ButtonGroup>
-            {/* <DeleteButton onClick={handleDeleteDepartment}>
-              <FaTrash style={{ width: "14px", height: "14px" }} /> Delete
-            </DeleteButton> */}
+          
 
             <AddButton
               onClick={() => {
@@ -377,7 +375,7 @@ const handleUpdate = async () => {
         <td style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           {emp.profile_pic ? (
             <img
-              src={`http://178.248.112.16:8001${emp.profile_pic}`}
+              src={`${BASE_URL}/api/${emp.profile_pic}`}
               alt={emp.name}
               style={{
                 width: "32px",

@@ -26,12 +26,11 @@ export const RoleInfo = styled.div`
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 `;
 
-export const 
-DateSelector = styled.div`
+export const DateSelector = styled.div`
   margin-top: 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* distribute search and date */
+  justify-content: space-between; 
   flex-wrap: wrap;
   font-size: 22px;
 
@@ -118,7 +117,8 @@ DateSelector = styled.div`
   }
 
     @media (min-width: 769px)and (max-width: 1023px) {
-     
+
+
     .day {
       font-size: 2.5rem;
     }
@@ -217,7 +217,28 @@ DateSelector = styled.div`
     }
   }
 `;
+ 
+export const TopSelector = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: stretch;
 
+  /* On tablets + small desktops (<=1024px) show as a row with space between */
+  @media (max-width: 1024px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  /* On very small screens keep row but allow stacking if needed */
+  @media (max-width: 480px) {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+`;
 export const SearchInput = styled.input`
   padding: 0.6rem;
   font-size: 0.9rem;
@@ -347,16 +368,16 @@ export const EmployeesPanel = styled.div`
   }
 
   /* 📱 Tablets */
-  @media (max-width: 1024px) {
+  @media (min-width: 1025px) {
     width: 40%;
-    min-height: 50vh;
-    max-height: 70vh;
+    min-height: 40vh;
+    max-height: 50vh;
     border-radius: 10px;
   }
-@media (min-width: 769px) and (max-width: 1023px) {
+@media (min-width: 769px) and (max-width: 1024px) {
     width: 100%;
     min-height: 35vh;
-    max-height: 50vh;
+    max-height: 45vh;
 
     margin-top: 10px;
   }
@@ -384,7 +405,8 @@ export const EmployeesPanel = styled.div`
 
 
 export const DepartmentDropdown = styled.select`
-  padding: 0.6rem 2rem 0.6rem 0.6rem; 
+  padding: 0.5rem 0rem 0.6rem 0.6rem; 
+
   font-size: 0.9rem;
   border-radius: 7px;
   border: 1px solid #172554;
@@ -888,6 +910,43 @@ export const Description = styled.p`
   line-height: 1.4;
   white-space: pre-wrap;
 `;
+export const DropdownHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+export const DropdownList = styled.div`
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  width: 100%;
+  margin-top: 0.2rem;
+  border-radius: 4px;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+`;
+
+export const DropdownItem = styled.div`
+  padding: 0.5rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+
+export const ArrowIcon = styled.span`
+  display: inline-block;
+  transition: transform 0.2s;
+  transform: ${(props) => (props.open ? "rotate(180deg)" : "rotate(0deg)")};
+`;
 export const DropdownWrapper = styled.div`
   position: relative;
 `;
@@ -924,7 +983,7 @@ export const NoTaskWrapper = styled.div`
   }
   img {
     width: 400px;
-    height: 350px;
+    height: 300px;
     opacity: 0.8;
     margin-bottom: 0;
     @media (min-width: 2000px) {

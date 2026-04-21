@@ -1,46 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container,
-  Header,
-ErrorMessage,
-  Title,
-  Subtitle,
+  ErrorMessage,
   FormSection,
   Input,
   Select,
   DateInput,
   AddButton,
-  TableWrapper,
-  Table,
-  Th,
   Td,
-  TrashIcon,
-  TitleSection,
   Hr,
-  TopBar,
-  HRManager,
   DateWrapper,
-Pagination,
-Heading,
-FieldWrapper,
-Label,
-
+  Heading,
+  FieldWrapper,
+  Label,
 } from './Holiday.styles';
-import { MdDateRange } from "react-icons/md";
 import { FaTrashAlt } from "react-icons/fa";
-import { LuArrowLeft } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { getHolidays, addHoliday, removeHoliday } from '../../Redux/holidaySlice';
 import { fetchHolidayTypes } from '../../services/holidayService';
-// import SyncLoader from 'react-spinners/SyncLoader';
-import Navbar from '../../Components/Navbar';
-import Loader from "../../Components/Loader"
-import HolidayHeading from "../../Components/HolidayHeading"
+import Loader from "../../Components/Loader";
+import HolidayHeading from "../../Components/HolidayHeading";
+import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from '../leaveDetails/EmployeeList.styles';
+import Pagination from "../../Components/Pagination/Pagination"
+
+const DEFAULT_HOLIDAY_TYPES = [
+  { key: "public", label: "Public Holiday" },
+  { key: "religious", label: "Religious Holiday" },
+  { key: "company", label: "Company Holiday" },
+  { key: "optional", label: "Optional/Restricted Holiday" },
+  { key: "bank", label: "Bank Holiday" },
+  { key: "regional", label: "Cultural/Regional Holiday" },
+  { key: "observance", label: "Observance/Non-Leave Day" },
+  { key: "company_off_day", label: "Company Off Day" },
+  { key: "second_saturday", label: "Second Saturdays" },
+];
+
 
 const formatDateToISO = (dateStr) => {
   const date = new Date(dateStr);
   const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
   const dd = String(date.getDate()).padStart(2, '0');
   return `${yyyy}-${mm}-${dd}`;
 };
@@ -49,22 +48,41 @@ const formatDateToISO = (dateStr) => {
 const HolidayManager = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const { list: holidays, loading, error,totalPages, currentPage } = useSelector(state => state.holidays);
-const [formError, setFormError] = useState("");
 
+  const {
+    list: holidays = [],
+    loading,
+    error,
+    totalPages = 1,
+    currentPage = 1,
+    count = 0,
+    totalItems = 0
+  } = useSelector(state => state.holidays);
+
+  const [formError, setFormError] = useState("");
   const [formData, setFormData] = useState({ name: "", type: "", date: "" });
-
-  const [typeOptions, setTypeOptions] = useState([]);
+  const [typeOptions, setTypeOptions] = useState(DEFAULT_HOLIDAY_TYPES);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [selectedIdToDelete, setSelectedIdToDelete] = React.useState(null);
-
+  const PAGE_SIZE = 20;
   useEffect(() => {
-    fetchHolidayTypes().then(data => setTypeOptions(data));
+    fetchHolidayTypes()
+      .then(data => {
+        if (data?.holiday_types?.length) {
+          setTypeOptions(data.holiday_types);
+        } else {
+          setTypeOptions(DEFAULT_HOLIDAY_TYPES);
+        }
+      })
+      .catch(() => {
+        setTypeOptions(DEFAULT_HOLIDAY_TYPES);
+      });
   }, []);
+
 
   useEffect(() => {
     dispatch(getHolidays(page));
-  }, [dispatch,page]);
+  }, [dispatch, page]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -75,19 +93,16 @@ const [formError, setFormError] = useState("");
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  
 
-const handleAdd = () => {
+ const handleAdd = () => {
   const { name, type, date } = formData;
   const trimmedName = name.trim();
 
-  // Validation: All fields must be filled
   if (!trimmedName || !type || !date) {
     setFormError("⚠️ Please fill in all fields before adding a holiday.");
     return;
   }
 
-  // Validation: Maximum 250 characters for holiday name
   if (trimmedName.length > 250) {
     setFormError("⚠️ Holiday name cannot exceed 250 characters.");
     return;
@@ -97,17 +112,22 @@ const handleAdd = () => {
   const selectedDate = new Date(date);
   const today = new Date();
 
-  // Clear time from both dates for comparison
   today.setHours(0, 0, 0, 0);
   selectedDate.setHours(0, 0, 0, 0);
 
-  // Validation: Date should not be in the past
   if (selectedDate < today) {
     setFormError("⚠️ Holiday date cannot be in the past.");
     return;
   }
+  const isDateAlreadyExists = holidays.some(
+    (holiday) => holiday.date === formattedDate
+  );
 
-  // ✅ All validations passed, dispatch action
+  if (isDateAlreadyExists) {
+    setFormError("⚠️ A holiday already exists on this date.");
+    return;
+  }
+
   dispatch(addHoliday({
     description: trimmedName,
     holiday_type: type,
@@ -115,218 +135,193 @@ const handleAdd = () => {
   }));
 
   setFormData({ name: "", type: "", date: "" });
-  setFormError(""); 
+  setFormError("");
 };
 
+  const handleDeleteClick = (id) => {
+    setSelectedIdToDelete(id);
+    setShowDeleteModal(true);
+  };
 
+  const confirmDelete = () => {
+    dispatch(removeHoliday(selectedIdToDelete));
+    setShowDeleteModal(false);
+    setSelectedIdToDelete(null);
+  };
 
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setSelectedIdToDelete(null);
+  };
+const formatDateToDisplay = (dateString) => {
+  const date = new Date(dateString);
 
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
 
-const handleDeleteClick = (id) => {
-  setSelectedIdToDelete(id);
-  setShowDeleteModal(true);
+  return `${day}/${month}/${year}`;
 };
-
-const confirmDelete = () => {
-  dispatch(removeHoliday(selectedIdToDelete));
-  setShowDeleteModal(false);
-  setSelectedIdToDelete(null);
-};
-
-
-const cancelDelete = () => {
-  setShowDeleteModal(false);
-  setSelectedIdToDelete(null);
-};
-
-
   return (
     <>
-       <Navbar/>
-    <Container>
+      <Container>
 
-<HolidayHeading/>
+        <HolidayHeading />
 
-   <FormSection>
-  <FieldWrapper>
-    <Label>Holiday Name</Label>
-    <Input
-      name="name"
-      autoComplete='off'
-      placeholder="Holiday name"
-      value={formData.name}
-      onChange={(e) =>
-        setFormData({ ...formData, name: e.target.value.slice(0, 250) })
-      }
-      style={{cursor:"pointer"}}
-    />
-  </FieldWrapper>
+        <FormSection>
+          <FieldWrapper>
+            <Label>Holiday Name</Label>
+            <Input
+              name="name"
+              autoComplete='off'
+              placeholder="Holiday name"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value.slice(0, 250) })
+              }
+              style={{ cursor: "pointer" }}
+            />
+          </FieldWrapper>
 
-  <FieldWrapper>
-    <Label>Type</Label>
-    <Select name="type" value={formData.type} onChange={handleChange}>
-      <option value="">Select</option>
-      {typeOptions.map(({ key, label }) => (
-        <option key={key} value={key}>
-          {label}
-        </option>
-      ))}
-    </Select>
-  </FieldWrapper>
+          <FieldWrapper>
+            <Label>Type</Label>
+            <Select name="type" value={formData.type} onChange={handleChange}>
+              <option value="">Select</option>
+              {typeOptions.map(({ key, label }) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </Select>
+          </FieldWrapper>
 
-  <FieldWrapper>
-    <Label>Date</Label>
-    <DateWrapper>
-      {/* <MdDateRange /> */}
-      <DateInput
-        type="date"
-        name="date"
-        value={formData.date}
-        onChange={handleChange}
-      />
-    </DateWrapper>
-  </FieldWrapper>
+          <FieldWrapper>
+            <Label>Date</Label>
+            <DateWrapper>
+              <DateInput
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+              />
+            </DateWrapper>
+          </FieldWrapper>
 
-  <AddButton onClick={handleAdd}>Add</AddButton>
-</FormSection>
+          <AddButton onClick={handleAdd}>Add</AddButton>
+        </FormSection>
 
-{formError && <ErrorMessage>{formError}</ErrorMessage>}
+        {formError && <ErrorMessage>{formError}</ErrorMessage>}
 
-      <Hr />
+        <Hr />
 
-      <TableWrapper>
-  <Heading>Holiday List</Heading>   
+        <Heading>Holiday List</Heading>
 
-        <Table>
-          <thead>
-            <tr>
-              <Th>Sl No</Th>
-              <Th>Holiday name</Th>
-              <Th>Holiday type</Th>
-              <Th>Date</Th>
-              <Th></Th>
-            </tr>
-          </thead>
-<tbody>
-  {loading ? (
-     <tr>
-     <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-       <Loader size="large" /> {/* ✅ Spinner here */}
-     </Td>
-   </tr>
-  ) : holidays.length === 0 ? (
-    <tr>
-      <Td colSpan="5" style={{ textAlign: "center" }}>
-        No holidays found.
-      </Td>
-    </tr>
-  ) : (
-    holidays.map((item, index) => (
-      <tr key={item.id}>
-        <Td>{(currentPage - 1) * 7 + index + 1}</Td>
-     <Td title={item.description}>{item.description}</Td>
-        <Td>{item.holiday_type_display}</Td>
-        <Td>{item.date}</Td>
-        <Td>
+        <StyledTable>
+          <TableHead>
+            <HeadRow>
+              <HeadCell>Sl No</HeadCell>
+              <HeadCell>Holiday name</HeadCell>
+              <HeadCell>Holiday type</HeadCell>
+              <HeadCell>Date</HeadCell>
+              <HeadCell></HeadCell>
+            </HeadRow>
+          </TableHead>
+
+          <TableBody>
+          {loading ? (
+  <tr>
+    <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
+      <Loader size="large" />
+    </Td>
+  </tr>
+) : holidays.length === 0 ? (
+  <tr>
+    <EmptyRow colSpan="5" style={{ textAlign: "center" }}>
+      No holidays found.
+    </EmptyRow>
+  </tr>
+) : (
+  [...holidays]
+    .sort((a, b) => new Date(b.date) - new Date(a.date)) 
+    .map((item, index) => (
+      <BodyRow key={item.id}>
+        <BodyCell>
+          {(currentPage - 1) * PAGE_SIZE + index + 1}
+        </BodyCell>
+        <BodyCell title={item.description}>{item.description}</BodyCell>
+        <BodyCell>{item.holiday_type_display}</BodyCell>
+        <BodyCell>{formatDateToDisplay(item.date)}</BodyCell>
+        <BodyCell>
           <FaTrashAlt
             style={{ color: "red", cursor: "pointer" }}
             onClick={() => handleDeleteClick(item.id)}
           />
-        </Td>
-      </tr>
+        </BodyCell>
+      </BodyRow>
     ))
-  )}
-</tbody>
-
-
-
-        </Table>
-      </TableWrapper>
-      {showDeleteModal && (
-  <div style={{
-    position: "fixed",
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000
-  }}>
-    <div style={{
-      background: "white",
-      padding: "2rem",
-      borderRadius: "10px",
-      textAlign: "center",
-      maxWidth: "400px",
-      width: "100%"
-    }}>
-      <h3>Confirm Deletion</h3>
-      <p>Are you sure you want to delete this Holiday?</p>
-      <div style={{ marginTop: "1rem" }}>
-        <button
-          onClick={confirmDelete}
-          style={{
-            marginRight: "1rem",
-            backgroundColor: "red",
-            color: "white",
-            border: "none",
-            padding: "0.5rem 1rem",
-            borderRadius: "5px",
-            cursor: "pointer"
-          }}
-        >
-          Delete
-        </button>
-        <button
-          onClick={cancelDelete}
-          style={{
-            backgroundColor: "gray",
-            color: "white",
-            border: "none",
-            padding: "0.5rem 1rem",
-            borderRadius: "5px",
-            cursor: "pointer"
-          }}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
 )}
+          </TableBody>
+        </StyledTable>
 
-<Pagination>
-  <span
-    onClick={() => handlePageChange(page - 1)}
-    style={{ cursor: page > 1 ? 'pointer' : 'not-allowed', opacity: page > 1 ? 1 : 0.5 }}
-  >
-    &larr;
-  </span>
+        {showDeleteModal && (
+          <div style={{
+            position: "fixed",
+            top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000
+          }}>
+            <div style={{
+              background: "white",
+              padding: "2rem",
+              borderRadius: "10px",
+              textAlign: "center",
+              maxWidth: "400px",
+              width: "100%"
+            }}>
+              <h3>Confirm Deletion</h3>
+              <p>Are you sure you want to delete this Holiday?</p>
+              <div style={{ marginTop: "1rem" }}>
+                <button
+                  onClick={confirmDelete}
+                  style={{
+                    marginRight: "1rem",
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                    padding: "0.5rem 1rem",
+                    borderRadius: "5px",
+                    cursor: "pointer"
+                  }}
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={cancelDelete}
+                  style={{
+                    backgroundColor: "gray",
+                    color: "white",
+                    border: "none",
+                    padding: "0.5rem 1rem",
+                    borderRadius: "5px",
+                    cursor: "pointer"
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        <Pagination
+          currentPage={page}
+          totalPages={Number(totalPages) || 1}
+          onPageChange={handlePageChange}
+        />
 
-  {[...Array(totalPages)].map((_, i) => {
-    const pageNum = i + 1;
-    return (
-      <span
-        key={pageNum}
-        onClick={() => handlePageChange(pageNum)}
-        className={pageNum === currentPage ? "active" : ""}
-        style={{ cursor: 'pointer', fontWeight: pageNum === currentPage ? 'bold' : 'normal' }}
-      >
-        {pageNum}
-      </span>
-    );
-  })}
-
-  <span
-    onClick={() => handlePageChange(page + 1)}
-    style={{ cursor: page < totalPages ? 'pointer' : 'not-allowed', opacity: page < totalPages ? 1 : 0.5 }}
-  >
-    &rarr;
-  </span>
-</Pagination>
-
-
-    </Container>
+      </Container>
     </>
   );
 };

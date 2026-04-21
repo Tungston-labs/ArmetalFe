@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions,status,filters
-from employee.models import EmpBankPaymentModel, Employee_db
 from employee.serializers import EmpBankPaymentSerializer
 from user.permissions import IsHRAdmin
 from rest_framework.exceptions import NotFound
@@ -8,11 +7,25 @@ from .serializers import EmployeeWithBankDetailsSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import EmployeePayrollRecord
-from .serializers import EmployeePayrollRecordSerializer
 from django.db import transaction
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
+from datetime import date
+import calendar
+from django.utils import timezone
+from finance.models import FinanceRecord
+from payroll.serializers import EmployeePayrollRecordSerializer
+from finance.models import FinanceCategory
+from rest_framework.generics import RetrieveAPIView
+from django.http import HttpResponse
+from .utils import generate_payslip_pdf
+from django.http import HttpResponse, Http404
+from payroll.models import EmployeePayrollRecord
+from employee.models import Employee_db
+from .utils import generate_payslip_pdf 
+
+
 
 
 
@@ -42,16 +55,27 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         company = self.request.user.company
         year = self.request.query_params.get('year')
         month = self.request.query_params.get('month')
-        department_id = self.request.query_params.get('department')  # 👈 NEW
+        department_id = self.request.query_params.get('department')
 
         employees = Employee_db.objects.filter(department__company=company)
 
         if department_id:
-            employees = employees.filter(department__id=department_id)  # 👈 Filter by department if given
+            employees = employees.filter(department__id=department_id)
 
+        #  FILTER BY JOINING DATE
         if year and month:
+            year = int(year)
+            month = int(month)
+
+            last_day = calendar.monthrange(year, month)[1]
+            last_date_of_month = date(year, month, last_day)
+
+            employees = employees.filter(joining_date__lte=last_date_of_month)
+
             queryset = EmployeePayrollRecord.objects.filter(
-                employee__in=employees, year=year, month=month
+                employee__in=employees,
+                year=year,
+                month=month
             )
         else:
             queryset = EmployeePayrollRecord.objects.filter(
@@ -61,21 +85,32 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         return queryset
 
 
+
     def get(self, request):
         year = request.query_params.get('year')
         month = request.query_params.get('month')
         if not year or not month:
             return Response({"detail": "Year and month are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        employees = Employee_db.objects.filter(department__company=request.user.company)
+        year = int(year)
+        month = int(month)
+
+        last_day = calendar.monthrange(year, month)[1]
+        last_date_of_month = date(year, month, last_day)
+
+        employees = Employee_db.objects.filter(
+            department__company=request.user.company,
+            joining_date__lte=last_date_of_month
+        )
+
         existing_records = self.get_queryset()
         existing_emp_ids = existing_records.values_list('employee_id', flat=True)
 
+        # Create missing payroll records
         missing_emps = employees.exclude(id__in=existing_emp_ids)
         for emp in missing_emps:
             bank = getattr(emp, 'bank_details', None)
             if bank:
-                
                 EmployeePayrollRecord.objects.get_or_create(
                     employee=emp,
                     year=year,
@@ -94,9 +129,35 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
                     }
                 )
 
-        queryset = self.filter_queryset(self.get_queryset())  # 👈 this applies search
+        #  AUTO-SYNC SALARY IF EMPLOYEE BANK DETAILS CHANGED
+        for record in existing_records:
+            # 🔒 Do not touch verified payrolls
+            if record.is_fully_verified():
+                continue
+
+            bank = getattr(record.employee, 'bank_details', None)
+            if not bank:
+                continue
+
+
+            if (
+                record.basic_salary != bank.basic_salary or
+                record.salary_increment != bank.salary_increment or
+                record.housing_allowance != bank.housing_allowance or
+                record.transportation != bank.transportation or
+                record.tds_deduction_amount != bank.tds_deduction_amount
+            ):
+                record.basic_salary = bank.basic_salary
+                record.salary_increment = bank.salary_increment
+                record.housing_allowance = bank.housing_allowance
+                record.transportation = bank.transportation
+                record.tds_deduction_amount = bank.tds_deduction_amount
+                record.save()
+
+        queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
 
     @transaction.atomic
     def post(self, request):
@@ -153,28 +214,41 @@ class PayrollVerifyView(APIView):
 
         user = request.user
 
-        # ✅ Only HR (admin or normal HR) from the same company can verify
+        #  Only HR (admin or normal HR) from the same company can verify
         if not (user.is_hr_admin or user.is_hr):
             return Response({"error": "You are not allowed to verify payroll."}, status=403)
 
         if user.company != record.employee.department.company:
             return Response({"error": "You are not part of this company."}, status=403)
 
-        # ✅ Assign verification slots
+        #  Assign verification slots
         if record.hr1_verified_by is None:
             record.hr1_verified_by = user
             record.hr1_verified_at = now()
         elif record.hr2_verified_by is None and record.hr1_verified_by != user:
+            #  Freeze payroll snapshot on final verification
+            serializer = EmployeePayrollRecordSerializer(
+                record, context={"request": request}
+            )
+            data = serializer.data
+
+            record.working_days = data.get("working_days")
+            record.days_present = data.get("days_present")
+            record.lop_days = data.get("lop_days")
+            record.lop_amount = data.get("lop_amount")
+
             record.hr2_verified_by = user
             record.hr2_verified_at = now()
+
         else:
             return Response({"error": "Already verified or duplicate HR"}, status=400)
 
         record.save()
 
-        # ✅ FIXED: pass request in serializer context
+        #  FIXED: pass request in serializer context
         serializer = EmployeePayrollRecordSerializer(record, context={"request": request})
         return Response(serializer.data)
+
 
 
 
@@ -193,28 +267,81 @@ class PayrollStatusUpdateView(APIView):
             year=year
         )
 
-        # ✅ Block update unless fully verified
+        #  Block update unless fully verified
         if not record.is_fully_verified():
-            return Response({"error": "Both HRs must verify before updating status."}, status=400)
+            return Response(
+                {"error": "Both HRs must verify before updating status."},
+                status=400
+            )
 
         if new_status not in dict(EmployeePayrollRecord.STATUS_CHOICES):
             return Response({"error": "Invalid status"}, status=400)
 
+        previous_status = record.status
         record.status = new_status
         record.save()
 
-        serializer = EmployeePayrollRecordSerializer(record,context={'request': request})
+      
+        if previous_status.lower() != "paid" and new_status.lower() == "paid":
+
+            basic = record.basic_salary or 0
+            increment = record.salary_increment or 0
+            housing = record.housing_allowance or 0
+            transport = record.transportation or 0
+
+            lop = record.lop_amount or 0
+            tds = record.tds_deduction_amount or 0
+
+            gross_salary = basic + increment + housing + transport
+            net_salary = gross_salary - (lop + tds)
+
+            company = record.employee.department.company
+
+            # ✅ FIX 1: correct get() usage + case insensitive
+            try:
+                salary_category = FinanceCategory.objects.get(
+                    name__iexact="salary",
+                    payment_type="OUT",
+                    company=company
+                )
+            except FinanceCategory.DoesNotExist:
+                return Response(
+                    {"error": "Salary category not configured for this company."},
+                    status=400
+                )
+
+            # ✅ FIX 2: cleaner duplicate check
+            already_exists = FinanceRecord.objects.filter(
+                company=company,
+                category=salary_category,
+                date__month=month,
+                date__year=year,
+                note__icontains=str(record.employee.employee_id)
+            ).exists()
+
+            if not already_exists:
+                FinanceRecord.objects.create(
+                    company=company,
+                    date=timezone.now().date(),
+                    amount=net_salary,
+                    payment_type="OUT",
+                    category=salary_category,
+                    note=f"Salary paid to {record.employee.name} "
+                        f"(Employee ID: {record.employee.employee_id}) "
+                        f"for {month}/{year}"
+                )
+
+
+        serializer = EmployeePayrollRecordSerializer(
+            record,
+            context={"request": request}
+        )
         return Response(serializer.data)
 
-    
 
     # payroll (payslip) view
 
-# views.py
-from rest_framework.generics import RetrieveAPIView
-from rest_framework.permissions import IsAuthenticated
-from .models import EmployeePayrollRecord
-from .serializers import EmployeePayrollRecordSerializer
+
 
 class PayrollRecordDetailView(RetrieveAPIView):
     queryset = EmployeePayrollRecord.objects.all()
@@ -223,16 +350,7 @@ class PayrollRecordDetailView(RetrieveAPIView):
     lookup_field = 'id'
 
 
-# views.py
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.http import HttpResponse
-from .models import EmployeePayrollRecord
-from .serializers import EmployeePayrollRecordSerializer
-from employee.models import Employee_db
-from .utils import generate_payslip_pdf
 class EmployeePayslipView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -253,12 +371,7 @@ class EmployeePayslipView(APIView):
 
 
 
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from django.http import HttpResponse, Http404
-from payroll.models import EmployeePayrollRecord
-from employee.models import Employee_db
-from .utils import generate_payslip_pdf  # Make sure this points to your updated utils.py
+
 
 class PayslipDownloadView(APIView):
     permission_classes = [IsAuthenticated]
@@ -282,7 +395,7 @@ class PayslipDownloadView(APIView):
         except EmployeePayrollRecord.DoesNotExist:
             raise Http404("Payroll record not found")
 
-        # ✅ Use serializer to get all computed values
+        # Use serializer to get all computed values
         from .serializers import EmployeePayrollRecordSerializer
         serialized = EmployeePayrollRecordSerializer(record).data
         print("\n==================== PAYSLIP DATA ====================")
@@ -291,7 +404,7 @@ class PayslipDownloadView(APIView):
         print("=====================================================\n")
 
 
-        # ✅ Pass serializer data (dict), not model instance
+        #  Pass serializer data (dict), not model instance
         pdf_bytes = generate_payslip_pdf(serialized)
 
         response = HttpResponse(content_type='application/pdf')

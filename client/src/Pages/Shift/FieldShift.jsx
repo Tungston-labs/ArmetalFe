@@ -3,12 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   PageWrapper,
-  HeaderSection,
-  TitleSection,
-  Title,
-  Subtitle,
-  SearchBar,
-  AddFieldButton,
   CardsGrid,
   Card,
   CardHeader,
@@ -17,18 +11,13 @@ import {
   CardFooter,
   Tag,
   CardTitleSection,
-  IconWrapper,
-  TextGroup,
-  SearchContainer,
-  SearchIcon,
+  StatusTag,
 } from "./FieldShift.Styles";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import cardBg from "../../assets/shift.svg";
 import AddProjectModal from "../../Components/AddProjectModal";
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import TagIcon from "../../assets/downicon.svg";
-import Navbar from "../../Components/Navbar";
-import { FaPlus } from "react-icons/fa";
 import { getProjects } from "../../Redux/fieldShiftSlice";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
@@ -36,12 +25,19 @@ import EmployeeTitle from "../../Components/EmployeeTitle";
 const DepartmentPage = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [open, setOpen] = useState(true);
+  const [step, setStep] = useState(0);
+const { projects = [], isLoading = false } = useSelector(
+  (state) => state.projects || {}
+);
+  const statusColors = {
+    "In Progress": "#fac25b",
+    Completed: "#5abe7f",
+    Pending: "#e07777",
+  };
 
-  const { projects, isLoading } = useSelector((state) => state.projects);
-
-  // Fetch projects from API
   useEffect(() => {
     dispatch(getProjects({ search: searchTerm }));
   }, [dispatch, searchTerm]);
@@ -49,32 +45,28 @@ const DepartmentPage = () => {
   const handleSaveProject = (data) => {
     console.log("New Project Added:", data);
     setIsModalOpen(false);
-    dispatch(getProjects()); // refresh project list
+    dispatch(getProjects());
   };
 
   return (
     <>
-      <Navbar />
       <PageWrapper>
         <EmployeeTitle
-  iconSrc={FieldShiftIcon}
-  title="Project"
-  subtitle="Manage all projects within the organization"
-  buttonText="Add Project"
-  searchValue={searchTerm}
-  onSearchChange={setSearchTerm}
-  onAddClick={() => setIsModalOpen(true)} 
-  showDropdown={false}
-  showBackArrow={false}
-  showTabs={false}
-/>
-       
-
-        
-
-        <CardsGrid>
+          iconSrc={FieldShiftIcon}
+          title="Project"
+          subtitle="Manage all projects within the organization"
+          buttonText="Add Project"
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
+          onAddClick={() => setIsModalOpen(true)}
+          showDropdown={false}
+          showBackArrow={false}
+          showTabs={false}
+          searchPlaceholder="Search Project Name"
+        />
+<CardsGrid>
   {isLoading ? (
-<Loader/>
+    <Loader />
   ) : projects.length === 0 ? (
     <p>No projects found.</p>
   ) : (
@@ -82,7 +74,11 @@ const DepartmentPage = () => {
       <Card
         key={project.id}
         style={{ backgroundImage: `url(${cardBg})`, cursor: "pointer" }}
-        onClick={() => navigate(`/project-department/${project.id}`, { state: { projectName: project.name } })}
+        onClick={() =>
+          navigate(`/project-department/${project.id}`, {
+            state: { projectName: project.name },
+          })
+        }
       >
         <CardHeader>
           <CardTitleSection>
@@ -93,7 +89,9 @@ const DepartmentPage = () => {
 
         <CardText>
           <span>Total employees</span>
-          <span className="employee-count">{project.employees?.length || 0}</span>
+          <span className="employee-count">
+            {project.employees?.length || 0}
+          </span>
         </CardText>
 
         <CardFooter>
@@ -101,12 +99,14 @@ const DepartmentPage = () => {
             <img src={TagIcon} alt="Tag icon" />
             {project.punch_type || "N/A"}
           </Tag>
+          <StatusTag bgcolor={statusColors[project.status]}>
+            {project.status || "i"}
+          </StatusTag>
         </CardFooter>
       </Card>
     ))
   )}
 </CardsGrid>
-
 
         <AddProjectModal
           isOpen={isModalOpen}

@@ -8,13 +8,22 @@ import {
   Table,
   ButtonRow,
   Button,
-  Checkbox,
+  Checkbox,CenterText,
+  Thead,
+  Th,
+  Tr,
+  Td,
+  EmptyRowText,
+  StyledTable,
 } from "./EmployeeModal.Styles";
 import { FaSearch } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { getEmployeesNotInProject, assignEmployees, getProjectById } from "../Redux/fieldShiftSlice";
+import {
+  getEmployeesNotInProject,
+  assignEmployees,
+  getProjectById,
+} from "../Redux/fieldShiftSlice";
 import Swal from "sweetalert2";
-
 
 const EmployeeModal = ({ onClose, projectId, project }) => {
   const dispatch = useDispatch();
@@ -50,11 +59,15 @@ const EmployeeModal = ({ onClose, projectId, project }) => {
 
     try {
       // Merge new employees with existing
-      const currentEmployeeIds = project?.employees?.map(emp => emp.id) || [];
-      const mergedEmployeeIds = Array.from(new Set([...currentEmployeeIds, ...selected]));
+      const currentEmployeeIds = project?.employees?.map((emp) => emp.id) || [];
+      const mergedEmployeeIds = Array.from(
+        new Set([...currentEmployeeIds, ...selected])
+      );
 
       // Call assignEmployees
-      await dispatch(assignEmployees({ projectId, employeeIds: mergedEmployeeIds })).unwrap();
+      await dispatch(
+        assignEmployees({ projectId, employeeIds: mergedEmployeeIds })
+      ).unwrap();
 
       Swal.fire("Success!", "Employees added successfully.", "success");
       onClose();
@@ -72,7 +85,6 @@ const EmployeeModal = ({ onClose, projectId, project }) => {
         <Header>
           <span>← Add Employees to Project</span>
         </Header>
-
         <SearchBar>
           <div className="input-wrapper">
             <FaSearch className="search-icon" />
@@ -83,54 +95,53 @@ const EmployeeModal = ({ onClose, projectId, project }) => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          {searchTerm && <button onClick={() => setSearchTerm("")}>Clear</button>}
+          {searchTerm && (
+            <button onClick={() => setSearchTerm("")}>Clear</button>
+          )}
         </SearchBar>
-
+        
         <TableWrapper>
           {isLoading ? (
-            <p style={{ textAlign: "center" }}>Loading employees...</p>
+            <CenterText>Loading employees...</CenterText>
           ) : (
-            <Table>
-              <thead>
+            <StyledTable>
+              <Thead>
                 <tr>
-                  <th>Sl No</th>
-                  <th>Employee Name</th>
-                  <th>Employee ID</th>
-                  <th>Designation</th>
-                  <th>Department</th>
-                  <th>Select</th>
+                  <Th>Sl No</Th>
+                  <Th>Employee Name</Th>
+                  <Th>Designation</Th>
+                  <Th>Department</Th>
+                  <Th>Select</Th>
                 </tr>
-              </thead>
+              </Thead>
               <tbody>
                 {(filteredEmployees || []).length === 0 ? (
                   <tr>
-                    <td colSpan="7" style={{ textAlign: "center" }}>
+                    <EmptyRowText colSpan={6}>
                       No unassigned employees found
-                    </td>
+                    </EmptyRowText>
                   </tr>
                 ) : (
                   filteredEmployees.map((emp, index) => (
-                    <tr key={emp.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>
-                      <td>{emp.name}</td>
-                      <td>{emp.employee_id}</td>
-                      <td>{emp.designation}</td>
-                      <td>{emp.department_name || "—"}</td>
-                      <td>
+                    <Tr key={emp.id}>
+                      <Td>{String(index + 1).padStart(3, "0")}</Td>
+                      <Td>{emp.name}</Td>
+                      <Td>{emp.designation}</Td>
+                      <Td>{emp.department_name || "—"}</Td>
+                      <Td>
                         <Checkbox
                           type="checkbox"
                           checked={selected.includes(emp.id)}
                           onChange={() => toggleSelect(emp.id)}
                         />
-                      </td>
-                    </tr>
+                      </Td>
+                    </Tr>
                   ))
                 )}
               </tbody>
-            </Table>
+            </StyledTable>
           )}
         </TableWrapper>
-
         <ButtonRow>
           <Button className="cancel" onClick={onClose}>
             Cancel

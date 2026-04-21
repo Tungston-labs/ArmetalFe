@@ -13,6 +13,14 @@ export const fetchDepartments = async ({ page = 1, search = '' }) => {
   return response.data; // ✅ should contain results + pagination
 };
 
+// services/departmentServices.js
+export const fetchDepartmentMin = async () => {
+  const response = await API.get(`/deptlist/`);
+  console.log("API raw response:", response.data); // optional: for debugging
+  return response.data; // returns { results: [...] }
+};
+
+
 
 // POST: Create a department
 export const createDepartment = async (data) => {
@@ -47,6 +55,12 @@ export const deleteDepartment = async (id) => {
   return response.data;
 };
 
+
+// GET: Employees by Department (Mini API: id, name, profile_pic)
+export const fetchEmployeesByDepartmentMini = async (departmentId) => {
+  const response = await API.get(`/employees/dep/${departmentId}/`);
+  return response.data; // Returns only id, name, profile_pic
+};
 
 
 

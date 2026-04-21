@@ -41,7 +41,7 @@ import {
 import { FaPlus, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import { GoArrowUpRight } from "react-icons/go";
-import Navbar from '../../Components/Navbar.jsx';
+
 import Loader from "../../Components/Loader.jsx";
 import EmployeeTitle from '../../Components/EmployeeTitle.jsx';
 
@@ -58,12 +58,11 @@ const Department = () => {
   });
   const [formError, setFormError] = useState("");
 
-  // Fetch all departments once on mount
+  
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: '' }));
   }, [dispatch]);
 
-  // Client-side search (filter)
   const filteredDepartments = useMemo(() => {
     if (!search.trim()) return departments;
     return departments.filter((dept) =>
@@ -76,7 +75,6 @@ const Department = () => {
     const { name, value } = e.target;
     let updatedValue = value;
 
-    // Force uppercase for name and code
     if (name === "name" || name === "department_code") {
       updatedValue = value.toUpperCase();
     }
@@ -96,7 +94,9 @@ const Department = () => {
         setShowModal(false);
         setFormData({ name: '', department_code: '' });
         setFormError("");
-        dispatch(getDepartments({ page: 1, search: '' })); // refresh list once
+        dispatch(getDepartments({ page: 1, search: '' })).then((res)=>{
+        }).catch((err)=>{
+        })
       } else {
         const errorMessage =
           result?.payload?.detail ||
@@ -105,7 +105,6 @@ const Department = () => {
         setFormError(errorMessage);
       }
     } catch (err) {
-      console.error("Unexpected error:", err);
       setFormError("Something went wrong. Please try again later.");
     }
   };
@@ -117,7 +116,7 @@ const Department = () => {
   if (loading) {
     return (
       <>
-        <Navbar />
+
         <div style={{
           display: "flex",
           justifyContent: "center",
@@ -227,6 +226,7 @@ const Department = () => {
                       placeholder="Department name"
                       value={formData.name}
                       onChange={handleChange}
+                      autoComplete="off"
                       required
                      style={{ cursor: "pointer" }}
                     />
@@ -240,6 +240,7 @@ const Department = () => {
                       placeholder="Eg HR"
                       value={formData.department_code}
                       onChange={handleChange}
+                      autoComplete='off'
                       required
                       style={{ cursor: "pointer" }}
                     />

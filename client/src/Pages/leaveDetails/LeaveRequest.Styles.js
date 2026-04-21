@@ -324,18 +324,18 @@ export const DeclineButton = styled.button`
 `;
 
 export const ApproveButton = styled.button`
-  // background-color: #94a3b8;
+
   color: white;
-  padding: 0.4rem 0.8rem;
-  // border: none;
+  padding:4px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border-radius: 7px;
+  border-radius: 4px;
   border: 1px solid #172554;
   background: #304eb0;
+  font-size: 12px;
   &:hover {
-    background-color: #64748b; /* darker bluish-gray */
+    background-color: #64748b; 
     transform: scale(1.02);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   }
@@ -536,31 +536,18 @@ export const EmployeeImage = styled.img`
 `;
 
 export const Pagination = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  gap: 0.2rem;
+display: flex;
+  justify-content: flex-start; /* changed from flex-end to flex-start */
+  gap: 0.3rem;
   margin-top: 1.5rem;
-  padding: 0.5rem;
+  // padding: 0.6rem;
 
   span {
-    padding: 0.2rem 0.6rem;
+    padding: 0.2rem 0.4rem;
     border-radius: 6px;
     border: 1px solid #ccc;
     cursor: pointer;
     font-size: 0.7rem;
-  }
-  @media (min-width: 2560px) {
-    span {
-      font-size: 2rem;
-      padding: 0.5rem 1.5rem;
-    }
-    gap: 0.5rem;
-  }
-  @media (min-width: 3840px) {
-    span {
-      font-size: 2.5rem;
-    }
-    gap: 1rem;
   }
   .active {
     background: #1e3a8a;

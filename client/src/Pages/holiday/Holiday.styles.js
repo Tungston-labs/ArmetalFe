@@ -320,10 +320,27 @@ export const AddButton = styled.button`
 
 
 
+
 export const TableWrapper = styled.div`
-  // overflow-x: auto;
-  margin-top:20px;
+  width: 100%;
+  max-height: 70vh;       
+  overflow-y: auto;       
+  overflow-x: hidden;   
+  margin-bottom:10px;
+
+  border: 1px solid #eee;
+  border-radius: 10px;
+border:none;
+  /* Optional: nice scrollbar */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
 `;
+
 export const Heading = styled.h2`
   margin: 0 0 12px 0;
   font-family: Raleway;

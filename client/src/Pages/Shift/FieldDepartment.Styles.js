@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const PageWrapper = styled.div`
   font-family: "Satoshi", sans-serif;
   background-color: #ffffff;
-  padding: 2rem ;
+  padding: 20px ;
   color: #1e1e1e;
   min-height: 100vh;
   @media (max-width: 768px) {
@@ -54,13 +54,13 @@ export const FormContainer = styled.div`
   margin-top: 2rem;
   gap: 1.5rem;
 
-  /* 🖥 3840px - Ultra 4K Displays */
+ 
   @media (min-width: 3840px) {
     margin-top: 4rem;
     gap: 2.5rem;
   }
 
-  /* 💻 2560px - QHD Screens */
+
   @media (max-width: 2560px) {
     margin-top: 3rem;
     gap: 2rem;
@@ -69,25 +69,24 @@ export const FormContainer = styled.div`
     margin-top: 3rem;
     gap: 2rem;
   }
-  /* 🖥 1440px - Common Desktops */
+
   @media (max-width: 1440px) {
     margin-top: 2.2rem;
     gap: 1.8rem;
   }
 
-  /* 💻 1024px - Tablet Landscape */
+
   @media (max-width: 1024px) {
     margin-top: 1.8rem;
     gap: 1.5rem;
   }
 
-  /* 📱 Tablets & Mobiles */
+
   @media (max-width: 768px) {
     margin-top: 1.3rem;
     gap: 1.2rem;
   }
 
-  /* 📱 Small Phones */
   @media (max-width: 480px) {
     margin-top: 1rem;
     gap: 1rem;
@@ -117,7 +116,7 @@ export const FormRow = styled.div`
     line-height: 100%;
   }
 
-  /* 🖥 3840px - Ultra 4K */
+
   @media (min-width: 3840px) {
     label {
       font-size: 2rem;
@@ -127,7 +126,7 @@ export const FormRow = styled.div`
     }
   }
 
-  /* 💻 2560px - QHD */
+
   @media (max-width: 2560px) {
     label {
       font-size: 20px;
@@ -142,7 +141,7 @@ export const FormRow = styled.div`
       flex: 1 1 47%;
     }
   }
-  /* 🖥 1440px - Standard Desktop */
+
   @media (max-width: 1440px) {
     label {
       font-size: 1rem;
@@ -152,7 +151,7 @@ export const FormRow = styled.div`
     }
   }
 
-  /* 💻 1024px - Tablet Landscape */
+
   @media (max-width: 1024px) {
     div {
       flex: 1 1 100%;
@@ -163,7 +162,7 @@ export const FormRow = styled.div`
     }
   }
 
-  /* 📱 Tablet Portrait */
+  
   @media (max-width: 768px) {
     div {
       min-width: 100%;
@@ -173,7 +172,7 @@ export const FormRow = styled.div`
     }
   }
 
-  /* 📱 Small Phones */
+
   @media (max-width: 480px) {
     gap: 0.8rem;
     margin-bottom: 1rem;
@@ -184,11 +183,11 @@ export const FormRow = styled.div`
 `;
 
 export const InputField = styled.input`
-  width: 100%;
-  padding: 0.7rem;
+  width: 90%;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 17px;
+  font-size: 1rem;
   font-family: "Satoshi", sans-serif;
   font-weight: 400;
   color: #333;
@@ -209,43 +208,64 @@ export const InputField = styled.input`
 
   @media (min-width: 3840px) {
     font-size: 2rem;
-    padding: 1.2rem;
+    /* padding: 1.2rem; */
     border-radius: 10px;
   }
 
-  /* 💻 2560px - QHD */
+
   @media (max-width: 2560px) {
     font-size: 20px;
-    padding: 1rem;
+    /* padding: 1rem; */
   }
  @media (max-width: 1940px) {
-    font-size: 1rem;
-    padding: 1rem;
+    font-size: 0.9rem;
+    /* padding: 1rem; */
   }
-  /* 🖥 1440px - Desktop */
+
   @media (max-width: 1440px) {
     font-size: 0.9rem;
-    padding: 0.8rem;
+    /* padding: 0.8rem; */
   }
 
-  /* 💻 1024px - Tablet Landscape */
+
   @media (max-width: 1024px) {
-    font-size: 16px;
-    padding: 0.75rem;
+    font-size: 0.9rem;
+    /* padding: 0.75rem; */
   }
 
-  /* 📱 Tablet Portrait */
   @media (max-width: 768px) {
-    font-size: 15px;
-    padding: 0.6rem;
+    font-size: 0.7rem;
+    /* padding: 0.6rem; */
   }
 
-  /* 📱 Small Phones */
+
   @media (max-width: 480px) {
     font-size: 14px;
     padding: 0.55rem;
   }
 `;
+export const ProgressContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 12px;
+`;
+
+export const LeftSide = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+`;
+
+export const RightSide = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+`;
+
+
 
 export const ButtonWrapper = styled.div`
   display: flex;
@@ -253,7 +273,7 @@ export const ButtonWrapper = styled.div`
   min-width: 120px;
   margin-top: 2rem;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: flex-end;
 
   /* 4K Screens - Large spacing */
   @media (min-width: 2560px) {
@@ -293,7 +313,7 @@ export const ActionButton = styled.button`
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 0.6rem 1.2rem;
+  padding:12px;
   cursor: pointer;
   font-size: 16px;
   font-family: "Satoshi", sans-serif;
@@ -309,43 +329,43 @@ export const ActionButton = styled.button`
   }
   @media (min-width: 3840px) {
     font-size: 2rem;
-    padding: 1rem 2rem;
+
     border-radius: 10px;
   }
   @media (max-width: 2561px) {
     font-size: 1.2rem;
-    padding: 1rem 2rem;
+
     border-radius: 10px;
   }
  @media (max-width: 2560px) {
     font-size: 1.2rem;
-    padding: 1rem 2rem;
+
     border-radius: 10px;
   }
   /* QHD Screens (1440px - 2560px) */
   @media (max-width: 1940px) and (min-width: 1440px) {
     font-size: 15px;
-    padding: 0.8rem 1.6rem;
+
   }
 
   /* Standard Laptop / Tablet */
   @media (max-width: 1024px) {
     font-size: 16px;
-    padding: 0.7rem 1.3rem;
+
   }
 
   /* Tablets & Smaller Screens */
   @media (max-width: 768px) {
     width: 80%;
     font-size: 15px;
-    padding: 0.8rem;
+
   }
 
   /* Small Phones */
   @media (max-width: 480px) {
     width: 100%;
     font-size: 14px;
-    padding: 0.7rem;
+
   }
 `;
 
@@ -424,7 +444,7 @@ export const Table = styled.table`
     }
   }
 `;
-export const TableHeader = styled.th`
+export const HeadCellTableHeader = styled.th`
   background-color: #3f64d7;
   color: white;
   padding: 0.8rem;
@@ -464,7 +484,6 @@ export const EmployeeHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
   flex-wrap: wrap;
   gap: 1rem;
 
@@ -511,9 +530,9 @@ export const EmployeeHeader = styled.div`
     }
   }
 
-  /* Tablets & smaller screens (768px) */
+
   @media (max-width: 1023px) {
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: center;
     h2 {
       font-size: 1.4rem;
@@ -549,53 +568,98 @@ export const AddButton = styled.button`
     transform: translateY(-2px);
   }
 
-  /* Base padding and font size */
-  padding: 0.7rem 1.5rem;
-  font-size: 0.95rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
 
-  /* Ultra 4K Screens */
   @media (min-width: 3840px) {
     font-size: 1.4rem;
-    padding: 1.2rem 2.5rem;
+
   }
 
-  /* QHD Screens (2560px) */
+
   @media (max-width: 3839px) and (min-width: 2560px) {
     font-size: 1.3rem;
-    padding: 1.1rem 2.2rem;
+
   }
 
-  /* Large Desktop (1940px) */
   @media (max-width: 2559px) and (min-width: 1940px) {
     font-size: 1.3rem;
-    padding: 1rem 2rem;
+   
   }
 
-  /* Standard Desktop (1440px) */
+
   @media (max-width: 1939px) and (min-width: 1440px) {
-    font-size: 1.1rem;
-    padding: 0.5rem 1.5rem;
-  }
-
-  /* Laptops/Tablets (1024px) */
-  @media (max-width: 1439px) and (min-width: 1024px) {
     font-size: 1rem;
-    padding: 0.8rem 1.5rem;
+  
   }
 
-  /* Tablets & smaller screens (768px) */
+  @media (max-width: 1439px) and (min-width: 1024px) {
+    font-size: 0.9rem;
+ 
+  }
+
   @media (max-width: 1023px) {
-    width: 80%;
-    font-size: 0.95rem;
-    padding: 0.7rem 1.4rem;
+    /* width: 20%; */
+    font-size: 0.8rem;
+  
   }
 
-  /* Small Phones (480px) */
   @media (max-width: 480px) {
     width: 100%;
     font-size: 0.85rem;
-    padding: 0.6rem 1rem;
+  
   }
 `;
 
 
+
+
+
+
+
+export const StatusRow = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 1rem;
+`;
+
+export const StatusContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 1rem 1.5rem;
+  background: #f9fafb;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+  min-width: 220px;
+`;
+
+export const StatusLabel = styled.label`
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.3px;
+`;
+
+export const NewStatusBadge = styled.div`
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: ${(props) => props.bgcolor || "#6b7280"};
+  color: white;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
+`;
+
+export const NewStatusDot = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid ${(props) => props.bgcolor || "#6b7280"};
+`;

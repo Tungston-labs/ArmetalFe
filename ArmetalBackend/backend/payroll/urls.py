@@ -14,7 +14,6 @@ urlpatterns = [
     path('payroll/record/<int:id>/', PayrollRecordDetailView.as_view(), name='payroll-record-detail'),
     path('payroll/<int:employee_id>/verify/', PayrollVerifyView.as_view(), name='payroll-verify'),
 
-# urls.py
 
     path('employee/payslips/', EmployeePayslipView.as_view(), name='employee-payslips'),
     path('employee/payslip/download/', PayslipDownloadView.as_view(), name='employee-payslip-download'),

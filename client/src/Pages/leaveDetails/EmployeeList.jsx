@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Table,
-  Pagination,
   TruncatedText,
+  StyledTable,
+  DeleteIconWrapper,
+  TableHead,
+  HeadRow,
+  HeadCell,
+  TableBody,
+  BodyRow,
+  BodyCell,
+  EmptyRow,
+  PageLoaderOverlay,
 } from "./EmployeeList.styles";
 import {
   ModalOverlay,
@@ -13,53 +21,47 @@ import {
   ModalButton,
   ModalButtonWrapper,
 } from "./DeletModal.styles";
-import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaTrash } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+import RightSideModal from "../employeDashboard/RightSideModal";
+import Pagination from "../../Components/Pagination/Pagination";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [searchText, setSearchText] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  // Employee & Department state
   const { employeeList, pagination, loading } = useSelector(
-    (state) => state.employees
+    (state) => state.employees,
   );
   const { list: departmentList, loading: deptLoading } = useSelector(
-    (state) => state.departments
+    (state) => state.departments,
   );
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" })); // ✅ fixed
+    dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
-  
-
-  // Fetch all employees (only once initially or on filter/page change)
   useEffect(() => {
     dispatch(
       getAllEmployees({
         page,
-        search: "", // we handle filtering locally
+        search: "",
         department_id: departmentFilter,
-      })
+      }),
     );
   }, [dispatch, page, departmentFilter]);
-
-  // Debounce search text input (wait 300ms before applying)
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(searchText), 300);
     return () => clearTimeout(handler);
@@ -69,7 +71,6 @@ const EmployeeList = () => {
     setSelectedEmployeeId(id);
     setShowDeleteModal(true);
   };
-
   const confirmDelete = async () => {
     await dispatch(deleteEmployeeById(selectedEmployeeId));
     dispatch(
@@ -77,194 +78,128 @@ const EmployeeList = () => {
         page,
         search: "",
         department_id: departmentFilter,
-      })
+      }),
     );
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-
   const cancelDelete = () => {
     setShowDeleteModal(false);
     setSelectedEmployeeId(null);
   };
-
   const handlePageChange = (newPage) => {
     dispatch(
       getAllEmployees({
         page: newPage,
         search: "",
         department_id: departmentFilter,
-      })
+      }),
     ).then(() => {
       setPage(newPage);
     });
   };
-
-  // Local filtering: matches employee name OR employee ID
   const filteredEmployees = Array.isArray(employeeList)
     ? employeeList.filter(
-        (emp) =>
-          emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-          emp.employee_id
-            ?.toString()
-            .toLowerCase()
-            .includes(debouncedSearch.toLowerCase())
-      )
+      (emp) =>
+        emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        emp.employee_id
+          ?.toString()
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase()),
+    )
     : [];
-
   return (
     <>
-      {loading && <Loader />}
-      <Navbar />
+      {loading && (
+        <PageLoaderOverlay>
+          <Loader />
+        </PageLoaderOverlay>
+      )}
+
       <Container>
-      <EmployeeTitle
-  key={departmentList?.length || 0} // ✅ forces rerender when departmentList changes
-  iconSrc={EmployeeIcon}
-  dropdownOptions={departmentList || []}
-  dropdownLoading={deptLoading}
-  onAddClick={() => navigate("/basic-details")}
-  onSearchChange={setSearchText}
-  onDropdownChange={setDepartmentFilter}
-  showBackArrow={false}
-  showTabs={true}
-/>
-
-
+        <EmployeeTitle
+          key={departmentList?.length || 0}
+          iconSrc={EmployeeIcon}
+          dropdownOptions={departmentList || []}
+          dropdownLoading={deptLoading}
+          onAddClick={() => navigate("/basic-details")}
+          searchValue={searchText}
+          onSearchChange={setSearchText}
+          selectedDropdownValue={departmentFilter}
+          onDropdownChange={setDepartmentFilter}
+          showBackArrow={false}
+          showTabs={true}
+        />
         {!loading && (
           <>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Sl No</th>
-                  <th>Employee name</th>
-                  <th>Employee ID</th>
-                  <th>Email ID</th>
-                  <th>Job Position</th>
-                  <th>Department</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredEmployees.length > 0 ? (
-                  filteredEmployees.map((emp, index) => (
-                    <tr
-                      key={emp.id}
-                      onClick={() =>
-                        navigate(`/fulldashboard/${emp.id}`, {
-                          state: { from: location.pathname },
-                        })
-                      }
-                      style={{
-                        cursor: "pointer",
-                        transition: "background 0.2s ease",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.background = "#f9f9ff")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.background = "transparent")
-                      }
-                    >
-                      <td>{index + 1 + (page - 1) * 20}</td>
-                      <td
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "10px",
-                        }}
-                      >
-                        {emp.profile_pic ? (
-                          <img
-                            src={emp.profile_pic}
-                            alt={emp.name}
-                            style={{
-                              width: "25px",
-                              height: "25px",
-                              borderRadius: "50%",
-                              objectFit: "cover",
-                            }}
-                          />
-                        ) : (
-                          <div
-                            style={{
-                              width: "25px",
-                              height: "25px",
-                              borderRadius: "50%",
-                              backgroundColor: "#f0f0f0",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <PiUserCirclePlusThin size={20} color="#999" />
-                          </div>
-                        )}
-                        {emp.name}
-                      </td>
+            <StyledTable>
+              <TableHead>
+                <HeadRow>
+                  <HeadCell>Sl No</HeadCell>
+                  <HeadCell>Employee name</HeadCell>
+                  <HeadCell>Employee ID</HeadCell>
+                  <HeadCell>Email ID</HeadCell>
+                  <HeadCell>Job Position</HeadCell>
+                  <HeadCell>Department</HeadCell>
+                  <HeadCell>Delete</HeadCell>
+                </HeadRow>
+              </TableHead>
 
-                      <td>{emp.employee_id}</td>
-                      <td>
+              <TableBody>
+               {!loading && filteredEmployees.length > 0 ? (
+                  filteredEmployees.map((emp, index) => (
+                    <BodyRow
+                      key={emp.id}
+                      onClick={() => {
+                        setSelectedEmployee(emp);
+                        setOpenModal(true);
+                      }}
+                    >
+                      <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
+
+                      <BodyCell> {emp.name}</BodyCell>
+                      <BodyCell>{emp.employee_id}</BodyCell>
+
+                      <BodyCell>
                         <TruncatedText title={emp.email}>
                           {emp.email}
                         </TruncatedText>
-                      </td>
-                      <td>
+                      </BodyCell>
+
+                      <BodyCell>
                         <TruncatedText title={emp.designation}>
                           {emp.designation}
                         </TruncatedText>
-                      </td>
-                      <td>
+                      </BodyCell>
+
+                      <BodyCell>
                         <TruncatedText title={emp.department}>
                           {emp.department}
                         </TruncatedText>
-                      </td>
+                      </BodyCell>
 
-                      <td
+                      <DeleteIconWrapper
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteClick(emp.id);
                         }}
                       >
-                        <FaTrash color="red" style={{ cursor: "pointer" }} />
-                      </td>
-                    </tr>
+                        <FaTrash color="red" />
+                      </DeleteIconWrapper>
+                    </BodyRow>
                   ))
-                ) : (
-                  <tr>
-                    <td colSpan="8" style={{ textAlign: "center" }}>
-                      No employees found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-
-            <Pagination>
-              <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>
-                &larr;
-              </span>
-              {Array.from(
-                { length: pagination?.total_pages || 1 },
-                (_, i) => i + 1
-              ).map((pageNumber) => (
-                <span
-                  key={pageNumber}
-                  onClick={() => handlePageChange(pageNumber)}
-                  className={page === pageNumber ? "active" : ""}
-                >
-                  {pageNumber}
-                </span>
-              ))}
-              <span
-                onClick={() => {
-                  if (page < (pagination?.total_pages || 1)) {
-                    handlePageChange(page + 1);
-                  }
-                }}
-              >
-                &rarr;
-              </span>
-            </Pagination>
+               ) : !loading ? (
+  <EmptyRow>
+    <td colSpan="7">No employees found.</td>
+  </EmptyRow>
+) : null}
+              </TableBody>
+            </StyledTable>
+            <Pagination
+              currentPage={page}
+              totalPages={pagination?.total_pages || 1}
+              onPageChange={handlePageChange}
+            />
           </>
         )}
 
@@ -273,7 +208,8 @@ const EmployeeList = () => {
             <ModalContainer>
               <ModalTitle>Confirm Deletion</ModalTitle>
               <ModalText>
-           Are you sure you want to permanently delete this employee from the system?
+                Are you sure you want to permanently delete this employee from
+                the system?
               </ModalText>
 
               <ModalButtonWrapper>
@@ -286,6 +222,13 @@ const EmployeeList = () => {
               </ModalButtonWrapper>
             </ModalContainer>
           </ModalOverlay>
+        )}
+        {openModal && (
+          <RightSideModal
+            isOpen={openModal}
+            onClose={() => setOpenModal(false)}
+            employeeId={selectedEmployee?.id}
+          />
         )}
       </Container>
     </>

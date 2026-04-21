@@ -1,186 +1,211 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
-  HeaderSection,
-  Title,
-  Subtitle,
-  TitleSection,
-  ActionArea,
-  AddButton,
   TableWrapper,
   StyledTable,
-  SearchInput,
-  Tabs,
-  TabButton,
-  FilterInput,
+  Th,
+  Td,
+  Tr,
+  TopBar,
 } from "../finance/FinancePage.Styles";
-import { HiArrowLeft } from "react-icons/hi";
-import Employee from "../../assets/employee.svg";
-import Navbar from "../../Components/Navbar";
-import NewFinance from "./NewFinance";
+import EmployeeIcon from "../../assets/employee.svg";
+import EmployeeTitle from "../../Components/EmployeeTitle";
+import FinanceModal from "./NewFinance";
+import {
+  createFinance,
+  fetchFinanceList,
+} from "../../Redux/financeThunks";
+import FinanceSummary from "../../Components/finance/FinanceSummary";
+import Pagination from "../../Components/Pagination/Pagination";
 
-const DepartmentDetail = () => {
-  const [activeTab, setActiveTab] = useState("inout");
+const PAYMENT_TYPE_LABELS = {
+  IN: "Income",
+  OUT: "Expense",
+};
+
+const PAGE_SIZE = 20;
+const FALLBACK = "----";
+
+const FinanceDetail = () => {
+  const dispatch = useDispatch();
+
+  const {
+    list = [],
+    loading,
+    pagination = {},
+    totalIncome = 0,
+    totalExpense = 0,
+    cashBalance = 0,
+  } = useSelector((state) => state.finance);
+
   const [isOpen, setIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState("");
+  const [page, setPage] = useState(1);
 
-  // Search states
-  const [searchText, setSearchText] = useState("");   // for name/note search
-  const [filterCategory, setFilterCategory] = useState("");
-
-  // Dummy static data
-  const departmentEmployees = [
-    {
-      id: 1,
-      date: "12 January",
-      category: "Travel",
-      sub_category: "Taxi",
-      note: "Airport trip",
-      payment_type: "Cash",
-      amount: "$50",
-    },
-    {
-      id: 2,
-      date: "12 January",
-      category: "Food",
-      sub_category: "Lunch",
-      note: "Team outing",
-      payment_type: "Card",
-      amount: "$120",
-    },
-    {
-      id: 3,
-      date: "12 January",
-      category: "Office",
-      sub_category: "Stationery",
-      note: "Notebooks & Pens",
-      payment_type: "UPI",
-      amount: "$30",
-    },
+  const paymentOptions = [
+    { label: "Income", value: "IN" },
+    { label: "Expense", value: "OUT" },
   ];
 
-  // Filtering logic
-  const filteredEmployees = departmentEmployees.filter((emp) => {
-    const matchesSearch =
-      emp.note.toLowerCase().includes(searchText.toLowerCase()) ||
-      emp.sub_category.toLowerCase().includes(searchText.toLowerCase());
-    const matchesCategory =
-      filterCategory === "" ||
-      emp.category.toLowerCase().includes(filterCategory.toLowerCase());
-    return matchesSearch && matchesCategory;
-  });
+  // Fetch Data
+  useEffect(() => {
+    dispatch(
+      fetchFinanceList({
+        page,
+        pageSize: PAGE_SIZE,
+        search: searchText,
+        payment_type: selectedPayment,
+      })
+    );
+  }, [dispatch, page, searchText, selectedPayment]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [searchText, selectedPayment]);
+
+  // Fix page overflow
+  useEffect(() => {
+    if (pagination?.totalPages && page > pagination.totalPages) {
+      setPage(pagination.totalPages);
+    }
+  }, [pagination?.totalPages, page]);
+
+  const handleAddFinance = (formData) => {
+    const payload = {
+      category: formData.category,
+      date: formData.date,
+      note: formData.note,
+      payment_type: formData.paymentType,
+      amount: formData.amount1,
+    };
+
+    dispatch(createFinance(payload)).then(() => {
+      setIsOpen(false);
+      dispatch(
+        fetchFinanceList({
+          page: 1,
+          pageSize: PAGE_SIZE,
+        })
+      );
+      setPage(1);
+    });
+  };
+
+  const handlePageChange = (newPage) => {
+    if (!pagination?.totalPages) return;
+    if (newPage < 1 || newPage > pagination.totalPages) return;
+    setPage(newPage);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return FALLBACK;
+    const date = new Date(dateString);
+    if (isNaN(date)) return FALLBACK;
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <>
-      <Navbar />
       <Container>
-        {/* Header */}
-        <HeaderSection>
-          <TitleSection>
-            <HiArrowLeft
-              style={{
-                width: "24px",
-                height: "24px",
-                cursor: "pointer",
-                color: "#3250B5",
-              }}
-            />
-            <img src={Employee} alt="employee icon" />
-            <div>
-              <Title>Finance</Title>
-              <Subtitle>
-                Manage all departments within the organization.
-              </Subtitle>
-            </div>
-          </TitleSection>
-
-          <ActionArea>
-            <div>
-              <AddButton onClick={() => setIsOpen(true)}>+ Add </AddButton>
-              <NewFinance isOpen={isOpen} onClose={() => setIsOpen(false)} />
-            </div>
-          </ActionArea>
-        </HeaderSection>
-
-        {/* Search & Filter */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            gap: "1rem",
-          }}
-        >
-          {/* Search Input */}
-          <SearchInput
-            placeholder="Search "
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+        <TopBar>
+          <EmployeeTitle
+            iconSrc={EmployeeIcon}
+            title="Finance"
+            subtitle="Manage your Finance"
+            buttonText="Add Finance"
+            searchValue={searchText}
+            onSearchChange={setSearchText}
+            onAddClick={() => setIsOpen(true)}
+            showDropdown
+            dropdownOptions={paymentOptions}
+            selectedDropdownValue={selectedPayment}
+            dropdownPlaceholder="All Payments"
+            onDropdownChange={setSelectedPayment}
+            showBackArrow={false}
+            showTabs={false}
+            searchPlaceholder="Search Category / Note"
           />
+        </TopBar>
 
-          {/* Filter Input */}
-          <FilterInput
-            placeholder="Filter By Category "
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-          />
-        </div>
+        {/* ✅ Use API Totals */}
+        <FinanceSummary
+          income={totalIncome}
+          expense={totalExpense}
+          cashBalance={cashBalance}
+        />
 
-        {/* Tabs */}
-        <Tabs>
-          <TabButton
-            active={activeTab === "inout"}
-            onClick={() => setActiveTab("inout")}
-          >
-            Payment in and out
-          </TabButton>
-          <TabButton
-            active={activeTab === "pending"}
-            onClick={() => setActiveTab("pending")}
-          >
-            Pending payment
-          </TabButton>
-        </Tabs>
-
-        {/* Table */}
         <TableWrapper>
           <StyledTable>
             <thead>
-              <tr>
-                <th>Sl No</th>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Sub Category</th>
-                <th>Note</th>
-                <th>Payment type</th>
-                <th>Amount</th>
-              </tr>
+              <Tr>
+                <Th>Sl No</Th>
+                <Th>Date</Th>
+                <Th>Category</Th>
+                <Th>Note</Th>
+                <Th>Payment Type</Th>
+                <Th>Amount</Th>
+              </Tr>
             </thead>
+
             <tbody>
-              {filteredEmployees.length > 0 ? (
-                filteredEmployees.map((emp, index) => (
-                  <tr key={emp.id}>
-                    <td>{String(index + 1).padStart(3, "0")}</td>
-                    <td>{emp.date}</td>
-                    <td>{emp.category}</td>
-                    <td>{emp.sub_category}</td>
-                    <td>{emp.note}</td>
-                    <td>{emp.payment_type}</td>
-                    <td>{emp.amount}</td>
-                  </tr>
+              {loading ? (
+                <Tr>
+                  <Td colSpan={6} style={{ textAlign: "center" }}>
+                    Loading...
+                  </Td>
+                </Tr>
+              ) : list.length > 0 ? (
+                list.map((record, index) => (
+                  <Tr key={record.id}>
+                    <Td>{(page - 1) * PAGE_SIZE + index + 1}</Td>
+                    <Td>{formatDate(record.date)}</Td>
+                    <Td>{record.category_name || FALLBACK}</Td>
+                    <Td>{record.note || FALLBACK}</Td>
+                    <Td>
+                      {PAYMENT_TYPE_LABELS[record.payment_type] ||
+                        FALLBACK}
+                    </Td>
+                    <Td>
+                      {record.amount !== null &&
+                      record.amount !== undefined
+                        ? record.amount
+                        : FALLBACK}
+                    </Td>
+                  </Tr>
                 ))
               ) : (
-                <tr>
-                  <td colSpan="7" style={{ textAlign: "center", padding: "1rem" }}>
+                <Tr>
+                  <Td colSpan={6} style={{ textAlign: "center" }}>
                     No results found
-                  </td>
-                </tr>
+                  </Td>
+                </Tr>
               )}
             </tbody>
           </StyledTable>
         </TableWrapper>
+
+        <Pagination
+          currentPage={page}
+          totalPages={pagination?.totalPages || 1}
+          onPageChange={handlePageChange}
+        />
       </Container>
+
+      <FinanceModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onSave={handleAddFinance}
+      />
     </>
   );
 };
 
-export default DepartmentDetail;
+export default FinanceDetail;

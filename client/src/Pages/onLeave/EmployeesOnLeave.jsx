@@ -1,20 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  HeaderSection,
-  Tabs,
-  Tab,
-  Title,
-  TopBar,
-  // SearchInput,
-  HRManager,
-  Subtitle,
-  DropdownMenu,
-  DropdownWrapper,
-  TitleSection,
-  Pagination,
-  TextBlock,
-  EmployeeImage
 } from "../leaveDetails/EmployeeList.styles";
 import {
   CardContainer,
@@ -27,9 +13,6 @@ import {
   DeptInfo,
   CardGrid,
   CardRight,
-  SearchInput,
-  SearchIcon,
-  SearchWrapper
 } from './EmployeesOnLeave.Style';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCirclePlusThin } from "react-icons/pi";
@@ -39,7 +22,7 @@ import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
-import Navbar from "../../Components/Navbar";
+// import Navbar from "../../Components/Navbar";
 import { FiSearch } from "react-icons/fi";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 const EmployeeList = () => {
@@ -69,7 +52,7 @@ const EmployeeList = () => {
 
   return (
     <>
-        <Navbar/>
+        {/* <Navbar/> */}
        
     <Container>
       {loading && ( <Loader /> )}

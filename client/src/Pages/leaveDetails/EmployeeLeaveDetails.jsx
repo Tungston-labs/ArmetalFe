@@ -1,231 +1,251 @@
+import React, { useEffect, useState } from "react";
 import {
   Container,
-  Breadcrumb,
-  InfoGrid,
-  ProfileImage,
-  TwoColumn,
-  Input,
+  PageCard,
   SectionTitle,
-  TextArea,
-  FlexRow,
+  InfoRow,
+  InfoGrid,
+  Label,
+  ReadonlyInput,
+  ButtonRow,
   ApproveButton,
   DeclineButton,
-  TopBar,
-  HRManager,
-  TitleSection,
-  Title,
-  LeftSide,
-  Subtitle,
-  Hr,
-  RightSide,
-  InfoSection,
-  FullWidthInput,
-  TwoColumnRow,
-  TwoColumnRows,
-  FlexRows,
-  DateField,
-  EmployeeImage,
-  BackArrow,
-  ProfileImageWrapper
+  ReasonBox,
+  CardWrapper,
+  CardHeader,
+  CardContent,
+  ArrowIcon,
 } from "./EmployeeLeaveDetails.Styles";
+
 import Header from "../../Components/Header";
-import ConfirmLeaveModal from '../../Components/ConfirmLeaveModal';
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
-import { getLeaveDetails, patchLeaveStatus } from '../../Redux/leaveSlice';
-import { useParams, useNavigate } from 'react-router-dom';
-import EmployeeIcon from "../../assets/employeeicon.svg";
-import Loader from "../../Components/Loader"
-import { Label } from "../employee/BasicLevel.Styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+import ConfirmLeaveModal from "../../Components/ConfirmLeaveModal";
+import Loader from "../../Components/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { getLeaveDetails, patchLeaveStatus } from "../../Redux/leaveSlice";
+import { useParams, useNavigate } from "react-router-dom";
+import EmployeeIcon from "../../assets/employeeicon.svg";
+import { FaAngleDown } from "react-icons/fa6";
+import { FaChevronUp } from "react-icons/fa";
 
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { leaveDetails, loading, pendingLeaves } = useSelector(state => state.leave);
+  const { leaveDetails, loading } = useSelector(state => state.leave);
   const navigate = useNavigate();
 
+  const [showJob, setShowJob] = useState(false);
+  const [showLeaveApp, setShowLeaveApp] = useState(false);
+  const [showBalance, setShowBalance] = useState(false);
+  const [showReason, setShowReason] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
-  const [actionType, setActionType] = useState('');
+  const [actionType, setActionType] = useState("");
 
   useEffect(() => {
-    if (id) {
-      dispatch(getLeaveDetails(id));
-    }
+    if (id) dispatch(getLeaveDetails(id));
   }, [dispatch, id]);
 
-  
-  // useEffect(() => {
-  //   if (leaveDetails?.employee?.id) {
-  //     dispatch(getEmployeePendingLeaves(leaveDetails.employee.id));
-  //   }
-  // }, [leaveDetails?.employee?.id, dispatch]);
-
-
   const today = new Date();
-today.setHours(0, 0, 0, 0); // normalize to midnight
+  today.setHours(0, 0, 0, 0);
 
-const leaveStart = leaveDetails?.from_date ? new Date(leaveDetails.from_date) : null;
-const leaveEnd = leaveDetails?.to_date ? new Date(leaveDetails.to_date) : null;
+  const leaveEnd = leaveDetails?.to_date ? new Date(leaveDetails.to_date) : null;
+  if (leaveEnd) leaveEnd.setHours(0, 0, 0, 0);
 
-// Normalize leave dates to midnight
-if (leaveStart) leaveStart.setHours(0, 0, 0, 0);
-if (leaveEnd) leaveEnd.setHours(0, 0, 0, 0);
-
-const isPastLeave = leaveEnd && leaveEnd < today;
-
+  const isPastLeave = leaveEnd && leaveEnd < today;
   const employee = leaveDetails?.employee || {};
 
   const handleStatusUpdate = async () => {
     if (!id || !actionType) return;
-    const status = actionType === 'approve' ? 'approved' : 'rejected';
+
+    const status = actionType === "approve" ? "approved" : "rejected";
+
     try {
       await dispatch(patchLeaveStatus({ leaveId: id, status }));
       navigate("/employee-leave-request");
-    } catch (error) {
-      console.error("Error updating leave status:", error);
     } finally {
       setShowModal(false);
-      setActionType('');
+      setActionType("");
     }
   };
 
   if (loading) {
     return (
-      <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'100vh' }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          height: "100vh",
+          alignItems: "center",
+        }}
+      >
         <Loader color="#003366" size={15} />
       </div>
     );
   }
 
-
   return (
     <>
- 
-    <Container>
- <EmployeeTitle
-        iconSrc={EmployeeIcon}
-        showAddButton={false}
-        showDropdown={false}
-        showBackArrow={true}
-        showTabs = {false}
-        showSearch={false}
-      />
+      <Container>
+        <EmployeeTitle
+          iconSrc={EmployeeIcon}
+          showAddButton={false}
+          showDropdown={false}
+          showBackArrow={true}
+          showTabs={false}
+          showSearch={false}
+        />
 
-      <Hr />
-   <Header employee={employee}/>
- 
-    <div>
-      <SectionTitle>Job Details</SectionTitle>
-  
-      <TwoColumnRows>
-        <Input placeholder="Job position / Designation" value={employee.designation || ''} readOnly />
-        <Input placeholder="Employment Type" value={employee.employment_type || ''} readOnly />
-      </TwoColumnRows>
-      <TwoColumnRows>
-        <Input placeholder="Department" value={employee.department || ''} readOnly />
-        <Input placeholder="Joining Date" value={employee.joining_date || ''} readOnly />
-      </TwoColumnRows>
-      </div>
-      
-      <div>
-      <SectionTitle>Leave Application</SectionTitle>
-      <FlexRows>
-  <LeftSide>
-    <Input placeholder="Leave Type" value={leaveDetails?.leave_type || ''} readOnly />
-  </LeftSide>
-  <RightSide>
-    <DateField>
-      <Label>From</Label>
-      <Input
-  type="text"
-  style={{ width: '180px' }} 
-  value={
-    leaveDetails?.from_date
-      ? `${leaveDetails.from_date} (${leaveDetails.from_date_type || ''})`
-      : ''
-  }
-  readOnly
+        <Header employee={employee} />
+
+        <PageCard>
+
+    
+          <CardWrapper>
+            <CardHeader onClick={() => setShowJob(!showJob)}>
+              <SectionTitle>Job Details</SectionTitle>
+              <ArrowIcon>
+                {showJob ? <FaChevronUp /> : <FaAngleDown />}
+              </ArrowIcon>
+            </CardHeader>
+
+            {showJob && (
+              <CardContent>
+                <InfoGrid>
+                  <ReadonlyInput value={employee.designation || ""} readOnly />
+                  <ReadonlyInput value={employee.employment_type || ""} readOnly />
+                  <ReadonlyInput value={employee.department || ""} readOnly />
+                  <ReadonlyInput value={employee.joining_date || ""} readOnly />
+                </InfoGrid>
+              </CardContent>
+            )}
+          </CardWrapper>
+
+
+          {/* --- Leave Application Card --- */}
+          <CardWrapper>
+            <CardHeader onClick={() => setShowLeaveApp(!showLeaveApp)}>
+              <SectionTitle>Leave Application</SectionTitle>
+              <ArrowIcon>
+                {showLeaveApp ? <FaChevronUp /> : <FaAngleDown />}
+              </ArrowIcon>
+            </CardHeader>
+
+            {showLeaveApp && (
+              <CardContent>
+                <InfoRow>
+                  <ReadonlyInput value={leaveDetails?.leave_type || ""} readOnly />
+                </InfoRow>
+
+                <InfoGrid columns="2">
+                  <div>
+                    <Label>From</Label>
+                    <ReadonlyInput
+                      value={
+                        leaveDetails?.from_date
+                          ? `${leaveDetails.from_date} (${leaveDetails.from_date_type || ""})`
+                          : ""
+                      }
+                      readOnly
+                    />
+                  </div>
+
+                  <div>
+                    <Label>To</Label>
+                    <ReadonlyInput
+                      value={
+                        leaveDetails?.to_date
+                          ? `${leaveDetails.to_date} (${leaveDetails.to_date_type || ""})`
+                          : ""
+                      }
+                      readOnly
+                    />
+                  </div>
+                </InfoGrid>
+              </CardContent>
+            )}
+          </CardWrapper>
+
+
+          {/* --- Leave Balance Card --- */}
+          <CardWrapper>
+            <CardHeader onClick={() => setShowBalance(!showBalance)}>
+              <SectionTitle>Leave Balance</SectionTitle>
+              <ArrowIcon>
+                {showBalance ? <FaChevronUp /> : <FaAngleDown />}
+              </ArrowIcon>
+            </CardHeader>
+
+            {showBalance && (
+              <CardContent>
+                <InfoGrid>
+                  <ReadonlyInput value={employee?.total_leave || ""} readOnly />
+                  <ReadonlyInput value={employee?.paid_leave || ""} readOnly />
+                </InfoGrid>
+              </CardContent>
+            )}
+          </CardWrapper>
+
+
+          {/* --- Reason --- */}
+          <CardWrapper>
+            <CardHeader onClick={() => setShowReason(!showReason)}>
+              <SectionTitle>Reason for Leave</SectionTitle>
+              <ArrowIcon>
+                {showReason ? <FaChevronUp /> : <FaAngleDown />}
+              </ArrowIcon>
+            </CardHeader>
+
+            {showReason && (
+              <CardContent>
+                <ReasonBox>
+                  {leaveDetails?.reason || "No reason provided"}
+                </ReasonBox>
+              </CardContent>
+            )}
+          </CardWrapper>
+
+
+          {/* Buttons */}
+          <ButtonRow>
+            <DeclineButton
+              onClick={() => {
+                setActionType("reject");
+                setShowModal(true);
+              }}
+            >
+              Decline
+            </DeclineButton>
+
+            <ApproveButton
+              disabled={isPastLeave}
+              style={{
+                background: isPastLeave ? "#ccc" : "#003366",
+                cursor: isPastLeave ? "not-allowed" : "pointer",
+              }}
+              onClick={() => {
+                if (isPastLeave) return alert("Cannot approve past leave.");
+                setActionType("approve");
+                setShowModal(true);
+              }}
+            >
+              Approve
+            </ApproveButton>
+          </ButtonRow>
+
+        </PageCard>
+
+        {/* Modal */}
+       <ConfirmLeaveModal
+  show={showModal}
+  onClose={() => setShowModal(false)}
+  onConfirm={handleStatusUpdate}
+  actionType={actionType}
+  leaveId={id}         
 />
 
-    </DateField>
-    <DateField>
-      <Label>To</Label>
-      <Input
-  type="text"
-  style={{ width: '180px' }} 
-  value={
-    leaveDetails?.to_date
-      ? `${leaveDetails.to_date} (${leaveDetails.to_date_type || ''})`
-      : ''
-  }
-  readOnly
-/>
 
-    </DateField>
-  </RightSide>
-
-</FlexRows>
-  </div>
-      <SectionTitle>Leave Balance</SectionTitle>
-      <TwoColumnRows>
-        <Input
-          placeholder="Pending Leaves"
-          value={employee?.total_leave || ''} readOnly
-          
-        />
-        <Input
-          placeholder="0"
-          value={employee?.paid_leave || ''}
-          readOnly
-        />
-      </TwoColumnRows>
-
-      <SectionTitle>Reason for Leave</SectionTitle>
-      <TextArea value={leaveDetails?.reason || ''} readOnly />
-
-      <FlexRow>
-      <FlexRow>
-  <DeclineButton
-    onClick={() => {
-      setActionType('rejected');
-      setShowModal(true);
-    }}
-  >
-    Decline
-  </DeclineButton>
-
-  <ApproveButton
-    onClick={() => {
-      if (isPastLeave) {
-        alert("You cannot approve past leave requests. Only rejection is allowed.");
-        return;
-      }
-      setActionType('approve');
-      setShowModal(true);
-    }}
-    style={{
-      backgroundColor: isPastLeave ? "#ccc" : "#003366",
-      cursor: isPastLeave ? "not-allowed" : "pointer",
-    }}
-    disabled={isPastLeave}
-  >
-    Approve
-  </ApproveButton>
-</FlexRow>
-
-
-      </FlexRow>
-
-      {showModal && (
-        <ConfirmLeaveModal
-          onClose={() => setShowModal(false)}
-          actionType={actionType}
-          leaveId={id}
-          onConfirm={handleStatusUpdate}
-        />
-      )}
-    </Container>
+      </Container>
     </>
   );
 };

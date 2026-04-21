@@ -17,6 +17,7 @@ export const ChartContainer = styled.div`
  @media (min-width: 1024px) {
     max-width: 250px;
     height: 350px;
+    
   }
   @media (min-width: 1440px) {
     max-width: 600px;

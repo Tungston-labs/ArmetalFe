@@ -120,3 +120,12 @@ export const Button = styled.button`
         color: white;
       `}
 `;
+
+export const Select = styled.select`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+`;

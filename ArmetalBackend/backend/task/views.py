@@ -9,6 +9,12 @@ from decimal import Decimal, InvalidOperation
 from django.db.models import Sum
 from django.utils import timezone
 from rest_framework import generics, permissions, serializers
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from departments.models import Department
+from .serializers import EmployeeMiniSerializer
+from employee.models import Employee_db
+from rest_framework.response import Response
 
 class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
     serializer_class = DailyTaskSerializer
@@ -23,12 +29,12 @@ class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
             from django.utils.dateparse import parse_date
             date = parse_date(date_str)
             if date:
-                queryset = queryset.filter(created_at__date=date)  # 👈 use created_at
+                queryset = queryset.filter(created_at__date=date)  
         return queryset.order_by("-created_at")
 
     def perform_create(self, serializer):
         employee = self.request.user.employee_db
-        today = timezone.localdate()  # 👈 timezone aware "today"
+        today = timezone.localdate()  
 
         # Aggregate today's total hours based on created_at
         agg = DailyTask.objects.filter(
@@ -71,6 +77,27 @@ class HRDailyTaskListView(generics.ListAPIView):
     queryset = DailyTask.objects.all()
     serializer_class = DailyTaskSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
+
+
+
+class EmployeeByDepartmentView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def get(self, request, department_id):
+        # Validate department belongs to the same company
+        try:
+            department = Department.objects.get(
+                pk=department_id, 
+                company=request.user.company
+            )
+        except Department.DoesNotExist:
+            return Response({"detail": "Department not found."}, status=404)
+
+        employees = Employee_db.objects.filter(department=department)
+
+        # Pass request in context so profile_pic URLs are correct
+        serializer = EmployeeMiniSerializer(employees, many=True, context={'request': request})
+        return Response(serializer.data)
 
 # HR:list daily task of particular employee with id
 from datetime import datetime

@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  padding: 2rem;
+  padding: 20px;
   background: white;
  font-family: Satoshi;
 `;

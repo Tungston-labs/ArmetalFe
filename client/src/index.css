@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
 
-    overflow-y: auto; /* or scroll, hidden, visible */
+    overflow-y: auto; 
    background: #FFFFFF;
     font-family: 'Satoshi', sans-serif;
   

@@ -1,4 +1,3 @@
-// src/pages/department/Department.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -24,6 +23,11 @@ import {
   EmployeeCell,
   EmployeeRow,
   NoRecordMessage,
+  LeftWrapper,
+  DepartmentIcon,
+  PaginationWrapper,
+  PageButton,
+  PageInfo,
 } from "../attendance/AttendanceList.Styles";
 import {
   ModalOverlay,
@@ -36,17 +40,27 @@ import {
   FormGroup,
   ButtonRow,
   SaveButton,
+  Title,
 } from "../department/AddDepartment.Styles.js";
 
-import { FormSection, InputGroup, Label, Input, ButtonGroups, CancelButton, TopRow, InputsWrapper, RightActions } from "../department/DepartmentDetails.Styles";
-import Loader from "../../Components/Loader.jsx"
+import {
+  FormSection,
+  InputGroup,
+  Label,
+  Input,
+  ButtonGroups,
+  CancelButton,
+  TopRow,
+  InputsWrapper,
+  RightActions,
+} from "../department/DepartmentDetails.Styles";
+import Loader from "../../Components/Loader.jsx";
 import { ClipLoader } from "react-spinners";
-import Navbar from "../../Components/Navbar.jsx";
 import EmployeeTitle from "../../Components/EmployeeTitle.jsx";
 import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
-import { GoArrowUpRight } from "react-icons/go";
-import { fetchDepartmentById } from "../../services/departmentServices"; // you used this in DepartmentDetail
-
+import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
+import { fetchDepartmentById } from "../../services/departmentServices"; 
+import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
 const DepartmentList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -57,39 +71,40 @@ const DepartmentList = () => {
     department_code: "",
   });
   const [newDeptError, setNewDeptError] = useState("");
-
-  // Redux departments list + loading
-  const { list: departments = [], loading } = useSelector((state) => state.departments);
-
-  // Local UI state
+  const { list: departments = [], loading } = useSelector(
+    (state) => state.departments,
+  );
   const [search, setSearch] = useState("");
-  const [selectedDept, setSelectedDept] = useState(null); // currently expanded dept id
-  const [deptEmployees, setDeptEmployees] = useState({}); // { deptId: [employees] }
+  const [selectedDept, setSelectedDept] = useState(null);
+  const [deptEmployees, setDeptEmployees] = useState({}); 
   const [loadingDept, setLoadingDept] = useState(false);
   const [savingDept, setSavingDept] = useState(false);
-
-  // per-department details + form state + editing state
-  const [deptDetails, setDeptDetails] = useState({}); // { deptId: deptObject }
-  const [formDatas, setFormDatas] = useState({}); // { deptId: { name, department_code, department_head_id } }
+  const [pageByDept, setPageByDept] = useState({}); 
+  const pageSize = 10;
+  const [deptDetails, setDeptDetails] = useState({});
+  const [formDatas, setFormDatas] = useState({}); 
   const [editingDeptId, setEditingDeptId] = useState(null);
 
-  // fetch departments on mount
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" }));
+    dispatch(getDepartments({ page: 1, search: "" })).then((res) => {
+    });
   }, [dispatch]);
 
-  // search filtering
   const filteredDepartments = useMemo(() => {
     if (!search.trim()) return departments || [];
     const q = search.toLowerCase();
     return (departments || []).filter(
       (d) =>
         (d.name || "").toLowerCase().includes(q) ||
-        (d.department_code || "").toLowerCase().includes(q)
+        (d.department_code || "").toLowerCase().includes(q),
     );
   }, [departments, search]);
 
-  // toggle expand / load employees + department details
+  const paginate = (items, page, size) => {
+    const start = (page - 1) * size;
+    return items.slice(start, start + size);
+  };
+
   const handleToggle = async (deptId) => {
     if (selectedDept === deptId) {
       setSelectedDept(null);
@@ -99,23 +114,19 @@ const DepartmentList = () => {
 
     setSelectedDept(deptId);
     setEditingDeptId(null);
+    setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
 
-    // if already loaded, no need to fetch again
     if (deptEmployees[deptId] && deptDetails[deptId]) return;
 
     setLoadingDept(true);
     try {
-      // 1) fetch employees in department (redux thunk)
-      const employeesRes = await dispatch(getEmployeesByDepartment(deptId)).unwrap();
-      // store as-is (we'll sort on render), but ensure it's an array
+      const employeesRes = await dispatch(
+        getEmployeesByDepartment(deptId),
+      ).unwrap();
       setDeptEmployees((prev) => ({ ...prev, [deptId]: employeesRes || [] }));
-
-      // 2) fetch department details for form (service)
       try {
         const deptData = await fetchDepartmentById(deptId);
         setDeptDetails((prev) => ({ ...prev, [deptId]: deptData }));
-
-        // initialize form data for this department
         setFormDatas((prev) => ({
           ...prev,
           [deptId]: {
@@ -125,7 +136,6 @@ const DepartmentList = () => {
           },
         }));
       } catch (err) {
-        // fallback: if service fails, try using local departments list item
         const fallback = departments.find((d) => d.id === deptId) || {};
         setDeptDetails((prev) => ({ ...prev, [deptId]: fallback }));
         setFormDatas((prev) => ({
@@ -138,14 +148,12 @@ const DepartmentList = () => {
         }));
       }
     } catch (err) {
-      console.error("Failed to load employees or details:", err);
       Swal.fire("Error", "Failed to load department data.", "error");
     } finally {
       setLoadingDept(false);
     }
   };
 
-  // delete employee with confirmation and refresh employees list
   const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -159,18 +167,20 @@ const DepartmentList = () => {
       if (!result.isConfirmed) return;
       try {
         await dispatch(deleteEmployeeById(employeeId)).unwrap();
-        // re-fetch employees for this department
-        const updated = await dispatch(getEmployeesByDepartment(deptId)).unwrap();
+        const updated = await dispatch(
+          getEmployeesByDepartment(deptId),
+        ).unwrap();
         setDeptEmployees((prev) => ({ ...prev, [deptId]: updated || [] }));
-        Swal.fire("Deleted!", `Employee "${employeeName}" has been deleted.`, "success");
+        Swal.fire(
+          "Deleted!",
+          `Employee "${employeeName}" has been deleted.`,
+          "success",
+        );
       } catch (err) {
-        console.error(err);
         Swal.fire("Error", "Failed to delete employee.", "error");
       }
     });
   };
-
-  // form input change per department
   const handleFormChange = (deptId, e) => {
     const { name, value } = e.target;
     setFormDatas((prev) => ({
@@ -181,8 +191,6 @@ const DepartmentList = () => {
       },
     }));
   };
-
-  // toggle edit mode for a department
   const toggleEdit = (deptId) => {
     if (editingDeptId === deptId) {
       setEditingDeptId(null);
@@ -190,14 +198,14 @@ const DepartmentList = () => {
       setEditingDeptId(deptId);
     }
   };
-
-  // update department (department head)
   const handleUpdate = async (deptId) => {
     const form = formDatas[deptId] || {};
     const payload = {
       name: form.name,
       department_code: form.department_code,
-      department_head_id: form.department_head_id ? parseInt(form.department_head_id, 10) : null,
+      department_head_id: form.department_head_id
+        ? parseInt(form.department_head_id, 10)
+        : null,
     };
 
     if (!payload.department_head_id) {
@@ -211,9 +219,9 @@ const DepartmentList = () => {
     }
 
     try {
-      await dispatch(updateDepartmentById({ id: deptId, data: payload })).unwrap();
-
-      // re-fetch details and employees to reflect changes
+      await dispatch(
+        updateDepartmentById({ id: deptId, data: payload }),
+      ).unwrap();
       const updatedDept = await fetchDepartmentById(deptId);
       setDeptDetails((prev) => ({ ...prev, [deptId]: updatedDept }));
       setFormDatas((prev) => ({
@@ -224,15 +232,16 @@ const DepartmentList = () => {
           department_head_id: updatedDept.department_head?.id || "",
         },
       }));
-
-      // optionally refresh global departments list
       dispatch(getDepartments({ page: 1, search: "" }));
 
       Swal.fire("Updated!", "Department updated successfully.", "success");
       setEditingDeptId(null);
     } catch (err) {
-      console.error("Update failed:", err);
-      Swal.fire("Error", "Something went wrong while updating department.", "error");
+      Swal.fire(
+        "Error",
+        "Something went wrong while updating department.",
+        "error",
+      );
     }
   };
 
@@ -240,12 +249,11 @@ const DepartmentList = () => {
     const { name, value } = e.target;
     setNewDeptForm((prev) => ({
       ...prev,
-      [name]: value.toUpperCase(), // optional: uppercase
+      [name]: value.toUpperCase(), 
     }));
   };
 
   const handleCreateDepartment = async () => {
-    // client-side validation
     if (!newDeptForm.name?.trim()) {
       setNewDeptError("Please provide a department name.");
       return;
@@ -263,25 +271,18 @@ const DepartmentList = () => {
     setSavingDept(true);
 
     try {
-      // use unwrap to throw on rejected thunk
       const created = await dispatch(createNewDepartment(newDeptForm)).unwrap();
-
-      // success: close modal, reset form and refresh list
       setShowAddModal(false);
       setNewDeptForm({ name: "", department_code: "" });
       setNewDeptError("");
       dispatch(getDepartments({ page: 1, search: "" }));
-
-      console.debug("Department created:", created);
     } catch (err) {
-      // Extract error message from common shapes
       const message =
         err?.payload?.detail ||
         err?.payload?.message ||
         err?.message ||
         "Something went wrong. Please try again later.";
       setNewDeptError(message);
-      console.error("Create department failed:", err);
     } finally {
       setSavingDept(false);
     }
@@ -289,7 +290,6 @@ const DepartmentList = () => {
 
   return (
     <>
-      <Navbar />
       <PageContainer>
         <EmployeeTitle
           iconSrc={EmployeeIcon}
@@ -302,10 +302,13 @@ const DepartmentList = () => {
           showDropdown={false}
           showBackArrow={false}
           showTabs={false}
+          searchPlaceholder="Search  Department Name"
         />
 
         {loading ? (
-          <div style={{ display: "flex", justifyContent: "center", padding: 40 }}>
+          <div
+            style={{ display: "flex", justifyContent: "center", padding: 40 }}
+          >
             <Loader size={32} color="#3352BA" />
           </div>
         ) : (
@@ -314,10 +317,24 @@ const DepartmentList = () => {
               filteredDepartments.map((dept) => {
                 const isOpen = selectedDept === dept.id;
                 const employees = deptEmployees[dept.id] || [];
-                // <-- sort employees A → Z by name (non-mutating)
                 const sortedEmployees = (employees || []).slice().sort((a, b) =>
-                  (a?.name || "").localeCompare(b?.name || "", undefined, { sensitivity: "base" })
+                  (a?.name || "").localeCompare(b?.name || "", undefined, {
+                    sensitivity: "base",
+                  }),
                 );
+
+                const currentPage = pageByDept[dept.id] || 1;
+                const totalPages = Math.max(
+                  1,
+                  Math.ceil(sortedEmployees.length / pageSize),
+                );
+                const paginatedEmployees = paginate(
+                  sortedEmployees,
+                  currentPage,
+                  pageSize,
+                );
+                const startIndex = (currentPage - 1) * pageSize;
+                const hasNextPage = currentPage < totalPages;
 
                 const details = deptDetails[dept.id] || {};
                 const form = formDatas[dept.id] || {};
@@ -325,13 +342,24 @@ const DepartmentList = () => {
                 return (
                   <DepartmentCard key={dept.id}>
                     <DepartmentHeader onClick={() => handleToggle(dept.id)}>
-                      <DepartmentName>{dept.name || "Department"}</DepartmentName>
+                      <LeftWrapper>
+                        <DepartmentIcon>{dept.name?.charAt(0)}</DepartmentIcon>
+                        <DepartmentName>{dept.name}</DepartmentName>
+                      </LeftWrapper>
+
                       <EmployeeCount>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <div style={{ fontSize: 16, fontWeight: 600 }}>
-                            {dept.employee_count ?? 0}
-                          </div>
-                          <GoArrowUpRight size={15} style={{ strokeWidth: 2 }} />
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                          }}
+                        >
+                          <div>{dept.employee_count ?? 0}</div>
+                          <GoArrowUpRight
+                            size={15}
+                            style={{ strokeWidth: 2 }}
+                          />
                         </div>
                       </EmployeeCount>
                     </DepartmentHeader>
@@ -354,10 +382,8 @@ const DepartmentList = () => {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   if (editingDeptId === dept.id) {
-                                    // currently editing => save
                                     handleUpdate(dept.id);
                                   } else {
-                                    // start editing
                                     toggleEdit(dept.id);
                                   }
                                 }}
@@ -368,13 +394,27 @@ const DepartmentList = () => {
                                   padding: "6px 10px",
                                   borderRadius: 6,
                                   border: "1px solid #d1d5db",
-                                  background: editingDeptId === dept.id ? "#3352BA" : "transparent",
-                                  color: editingDeptId === dept.id ? "#fff" : "#111827",
+                                  background:
+                                    editingDeptId === dept.id
+                                      ? "#3352BA"
+                                      : "transparent",
+                                  color:
+                                    editingDeptId === dept.id
+                                      ? "#fff"
+                                      : "#111827",
                                   cursor: "pointer",
                                 }}
-                                aria-label={editingDeptId === dept.id ? "Save department" : "Edit department"}
+                                aria-label={
+                                  editingDeptId === dept.id
+                                    ? "Save department"
+                                    : "Edit department"
+                                }
                               >
-                                {editingDeptId === dept.id ? <FaSave /> : <FaEdit />}
+                                {editingDeptId === dept.id ? (
+                                  <FaSave />
+                                ) : (
+                                  <FaEdit />
+                                )}
                                 {editingDeptId === dept.id ? "Save" : "Edit"}
                               </button>
                             </div>
@@ -382,104 +422,154 @@ const DepartmentList = () => {
 
                           <FormSection>
                             <TopRow>
-  <InputsWrapper>
-                            <InputGroup>
-                              <Label>Department name</Label>
-                              <Input
-                                name="name"
-                                value={form.name ?? ""}
-                                onChange={(e) => handleFormChange(dept.id, e)}
-                                disabled={editingDeptId !== dept.id}
-                                style={{ cursor: editingDeptId === dept.id ? "text" : "default" }}
-                              />
-                            </InputGroup>
+                              <InputsWrapper>
+                                <InputGroup>
+                                  <Label>Department name</Label>
+                                  <Input
+                                    name="name"
+                                    value={form.name ?? ""}
+                                    autoComplete='off'
+                                    onChange={(e) =>
+                                      handleFormChange(dept.id, e)
+                                    }
+                                    disabled={editingDeptId !== dept.id}
+                                    style={{
+                                      cursor:
+                                        editingDeptId === dept.id
+                                          ? "text"
+                                          : "default",
+                                    }}
+                                  />
+                                </InputGroup>
 
-                            <InputGroup>
-                              <Label>Department Code Name</Label>
-                              <Input
-                                name="department_code"
-                                value={form.department_code ?? ""}
-                                onChange={(e) => handleFormChange(dept.id, e)}
-                                disabled={editingDeptId !== dept.id}
-                                style={{ cursor: editingDeptId === dept.id ? "text" : "default" }}
-                              />
-                            </InputGroup>
+                                <InputGroup>
+                                  <Label>Department Code Name</Label>
+                                  <Input
+                                    name="department_code"
+                                    value={form.department_code ?? ""}
+                                    autoComplete='off'
+                                    onChange={(e) =>
+                                      handleFormChange(dept.id, e)
+                                    }
+                                    disabled={editingDeptId !== dept.id}
+                                    style={{
+                                      cursor:
+                                        editingDeptId === dept.id
+                                          ? "text"
+                                          : "default",
+                                    }}
+                                  />
+                                </InputGroup>
 
-                            <InputGroup>
-                              <Label>Department head</Label>
-                              {editingDeptId === dept.id ? (
-                                <select
-                                  name="department_head_id"
-                                  value={form.department_head_id ?? ""}
-                                  onChange={(e) => handleFormChange(dept.id, e)}
-                                  style={{
-                                    padding: "10px",
-                                    borderRadius: "8px",
-                                    border: "1px solid #ccc",
-                                    fontSize: "16px",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  <option value="">-- Select Department Head --</option>
-                                  {(deptEmployees[dept.id] || []).map((emp) => (
-                                    <option key={emp.id} value={emp.id}>
-                                      {emp.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              ) : (
-                                <Input name="department_head" value={details.department_head?.name || "Not Assigned"} disabled />
-                              )}
-                            </InputGroup>
-                             </InputsWrapper>
+                                <InputGroup>
+                                  <Label>Department head</Label>
+                                  {editingDeptId === dept.id ? (
+                                    <select
+                                      name="department_head_id"
+                                      value={form.department_head_id ?? ""}
+                                      onChange={(e) =>
+                                        handleFormChange(dept.id, e)
+                                      }
+                                      style={{
+                                        padding: "10px",
+                                        borderRadius: "8px",
+                                        border: "1px solid #ccc",
+                                        fontSize: "16px",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      <option value="">
+                                        -- Select Department Head --
+                                      </option>
+                                      {(deptEmployees[dept.id] || []).map(
+                                        (emp) => (
+                                          <option key={emp.id} value={emp.id}>
+                                            {emp.name}
+                                          </option>
+                                        ),
+                                      )}
+                                    </select>
+                                  ) : (
+                                    <Input
+                                      name="department_head"
+                                      value={
+                                        details.department_head?.name ||
+                                        "Not Assigned"
+                                      }
+                                      disabled
+                                    />
+                                  )}
+                                </InputGroup>
+                              </InputsWrapper>
 
-                      
-
-  <RightActions>
-                            {editingDeptId === dept.id && (
-                              <ButtonGroups>
-                                <CancelButton
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setEditingDeptId(null);
-                                  }}
-                                >
-                                  Cancel
-                                </CancelButton>
-                              </ButtonGroups>
-                            )}
-                            </RightActions>
-                                  </TopRow>
+                              <RightActions>
+                                {editingDeptId === dept.id && (
+                                  <ButtonGroups>
+                                    <CancelButton
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setEditingDeptId(null);
+                                      }}
+                                    >
+                                      Cancel
+                                    </CancelButton>
+                                  </ButtonGroups>
+                                )}
+                              </RightActions>
+                            </TopRow>
                           </FormSection>
                         </div>
 
                         <DropdownWrapper>
                           {loadingDept ? (
-                            <div style={{ textAlign: "center", padding: "1rem" }}>
+                            <div
+                              style={{ textAlign: "center", padding: "1rem" }}
+                            >
                               <ClipLoader size={24} color="#003366" />
                             </div>
-                          ) : sortedEmployees.length > 0 ? (
+                          ) : paginatedEmployees.length > 0 ? (
                             <>
                               <DropdownHeader>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Sl No</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Name</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Employee ID</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Email</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>Job Position</EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700, textAlign: "center" }}>Delete</EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Sl No
+                                </EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Name
+                                </EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Employee ID
+                                </EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Email
+                                </EmployeeCell>
+                                <EmployeeCell style={{ fontWeight: 700 }}>
+                                  Job Position
+                                </EmployeeCell>
+                                <EmployeeCell
+                                  style={{
+                                    fontWeight: 700,
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  Delete
+                                </EmployeeCell>
                               </DropdownHeader>
 
-                              {sortedEmployees.map((emp, idx) => (
+                              {paginatedEmployees.map((emp, idx) => (
                                 <EmployeeRow
-                                //   key={emp.id}
-                                //   onClick={() => navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })}
-                                //   style={{ cursor: "pointer" }}
+                                  key={
+                                    emp.id ??
+                                    emp.employee_id ??
+                                    `${dept.id}-${startIndex + idx}`
+                                  }
+                                  // onClick={() => navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })}
+                                  // style={{ cursor: "pointer" }}
                                 >
-                                  <EmployeeCell>{idx + 1}</EmployeeCell>
-
                                   <EmployeeCell>
-                                    {emp.name}
+                                    {startIndex + idx + 1}
                                   </EmployeeCell>
+
+                                  <EmployeeCell>{emp.name}</EmployeeCell>
 
                                   <EmployeeCell>{emp.employee_id}</EmployeeCell>
                                   <EmployeeCell>{emp.email}</EmployeeCell>
@@ -489,9 +579,18 @@ const DepartmentList = () => {
                                     <button
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        handleDeleteEmployee(emp.id, emp.name, dept.id);
+                                        handleDeleteEmployee(
+                                          emp.id,
+                                          emp.name,
+                                          dept.id,
+                                        );
                                       }}
-                                      style={{ border: "none", background: "transparent", cursor: "pointer", color: "red" }}
+                                      style={{
+                                        border: "none",
+                                        background: "transparent",
+                                        cursor: "pointer",
+                                        color: "red",
+                                      }}
                                       aria-label={`Delete ${emp.name}`}
                                     >
                                       <FaTrash />
@@ -501,9 +600,51 @@ const DepartmentList = () => {
                               ))}
                             </>
                           ) : (
-                            <NoRecordMessage>No employees found.</NoRecordMessage>
+                            <NoRecordMessage>
+                              No employees found.
+                            </NoRecordMessage>
                           )}
                         </DropdownWrapper>
+
+                  
+                        {sortedEmployees.length > pageSize && (
+                          <PaginationWrapper
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <PageButton
+                              disabled={currentPage === 1}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPageByDept((prev) => ({
+                                  ...prev,
+                                  [dept.id]: Math.max(1, currentPage - 1),
+                                }));
+                              }}
+                            >
+                         <FaAnglesLeft/>
+                            </PageButton>
+
+                            <PageInfo>
+                              Page {currentPage} / {totalPages}
+                            </PageInfo>
+
+                            <PageButton
+                              disabled={currentPage === totalPages}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPageByDept((prev) => ({
+                                  ...prev,
+                                  [dept.id]: Math.min(
+                                    totalPages,
+                                    currentPage + 1,
+                                  ),
+                                }));
+                              }}
+                            >
+                          <FaAnglesRight/>
+                            </PageButton>
+                          </PaginationWrapper>
+                        )}
                       </>
                     )}
                   </DepartmentCard>
@@ -519,15 +660,21 @@ const DepartmentList = () => {
           <ModalOverlay>
             <ModalContent>
               <Container style={{ position: "relative" }}>
-                <CloseButton onClick={() => setShowAddModal(false)} aria-label="Close">
+                <CloseButton
+                  onClick={() => setShowAddModal(false)}
+                  aria-label="Close"
+                >
                   <FaTimes />
                 </CloseButton>
 
                 <TitleRow>
-                  <BackArrow onClick={() => setShowAddModal(false)} aria-label="Back">
-                    <FaArrowLeft />
+                  <BackArrow
+                    onClick={() => setShowAddModal(false)}
+                    aria-label="Back"
+                  >
+                <GoArrowLeft />
                   </BackArrow>
-                  <h2>Add Department</h2>
+                  <Title>Add Department</Title>
                 </TitleRow>
 
                 <Form
@@ -539,11 +686,13 @@ const DepartmentList = () => {
                   <FormGroup>
                     <Label>Department Name</Label>
                     <Input
+                      style={{ border: "1px solid lightgray" }}
                       type="text"
                       name="name"
                       value={newDeptForm.name}
                       onChange={handleNewDeptChange}
-                      placeholder="Department name"
+                      placeholder="Eg:Development"
+                           autoComplete="off"
                       required
                     />
                   </FormGroup>
@@ -551,19 +700,26 @@ const DepartmentList = () => {
                   <FormGroup>
                     <Label>Department Code</Label>
                     <Input
+                      style={{ border: "1px solid lightgray" }}
                       type="text"
                       name="department_code"
                       value={newDeptForm.department_code}
                       onChange={handleNewDeptChange}
-                      placeholder="Eg: HR"
+                      placeholder="Eg:Dev_00"
+                      autoComplete="off"
                       required
                     />
                   </FormGroup>
 
-                  {newDeptError && <p style={{ color: "red" }}>{newDeptError}</p>}
+                  {newDeptError && (
+                    <p style={{ color: "red" }}>{newDeptError}</p>
+                  )}
 
                   <ButtonRow>
-                    <CancelButton type="button" onClick={() => setShowAddModal(false)}>
+                    <CancelButton
+                      type="button"
+                      onClick={() => setShowAddModal(false)}
+                    >
                       Cancel
                     </CancelButton>
                     <SaveButton type="submit">Save</SaveButton>

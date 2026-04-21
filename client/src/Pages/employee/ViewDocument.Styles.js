@@ -714,90 +714,63 @@ export const LabelRow = styled.div`
   padding: clamp(0.2rem, 0.5vw, 0.5rem);
 
   @media (min-width: 1440px) {
-    font-size: 1.3rem;
+    font-size: 1rem;
     padding: 0.6rem;
   }
   @media (min-width: 1960px) {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     padding: 0.7rem;
   }
-  @media (min-width: 2560px) {
-    font-size: 2rem;
-    padding: 0.9rem;
-  }
-  @media (min-width: 3840px) {
-    font-size: 2.2rem;
-    padding: 1rem;
-  }
-  @media (min-width: 7680px) {
-    font-size: 2.5rem;
-    padding: 1.2rem;
-  }
+
 `;
 
 export const UploadButton = styled.button`
   background-color: #1e40af;
   color: #fff;
-  padding: clamp(0.5rem, 0.8vw, 1rem) clamp(0.8rem, 1vw, 2rem);
   border: none;
-  width: clamp(80px, 15%, 200px);
-  height: clamp(50px, 10vw, 120px);
-  font-size: clamp(0.9rem, 1vw, 1.2rem);
   border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
+
+  padding: 8px 14px;
+  width: 90px;
+  height: 40px;
+  font-size: 0.9rem;
 
   &:hover {
     background-color: #1c3aa9;
   }
 
+  @media (min-width: 768px) {
+    padding: 10px 18px;
+    width: 120px;
+    height: 50px;
+   font-size: 0.9rem;
+  }
+
+  /* Small laptops */
+  @media (min-width: 1024px) {
+    padding: 12px 22px;
+    width: 140px;
+    height: 60px;
+    font-size: 0.9rem;
+  }
+
   @media (min-width: 1440px) {
-    font-size: 1.3rem;
+    padding: 14px 26px;
     width: 150px;
-    height: 70px;
+    height: 60px;
+    font-size: 1rem;
   }
-  @media (min-width: 1960px) {
-    font-size: 1.5rem;
-    width: 170px;
-    height: 80px;
-  }
-  @media (min-width: 2560px) {
-    font-size: 1.9rem;
-    width: 220px;
-    height: 150px;
-  }
-  @media (min-width: 3840px) {
-    font-size: 2.2rem;
-    width: 240px;
-    height: 180px;
-  }
-  @media (min-width: 7680px) {
-    font-size: 2.5rem;
-    width: 260px;
-    height: 200px;
-  }
+
 `;
 
-// export const ImagePreviewRow = styled.div`
-//   display: flex;
-//   gap: 0.8rem;
-// `;
-
-// export const ImageBox = styled.div`
-//   width: 117px;
-//   height: 80px;
-//   background: #f0f0f0;
-//   border-radius: 4px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// `;
 
 export const InlineUploadRow = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap; /* makes it responsive */
+  flex-wrap: wrap; 
   background: #f1f1f1;
   padding: 10px;
 `;

@@ -24,28 +24,29 @@ import {
   DayLabel,
   DayDate,
   DayMonth,
+  Header,
 } from "./FieldInfo.Styles";
 
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import TimeTable from "./TimeTable";
-import Navbar from "../../Components/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getFieldInfo } from "../../Redux/fieldShiftSlice";
-import Modal from "../../Components/ModalShift";
 import CalendarModal from "../../Components/CalendarModal";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+import { getAccessToken } from "../../hooks/useAccessToken";
+import ActivityLogModal from "../../Components/ModalShift";
+import { BASE_URL } from "../../services/api";
 
 const FieldInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const todayDate = new Date(); // today for comparison
+  const todayDate = new Date(); 
   const todayISO = todayDate.toISOString().split("T")[0];
-
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayISO);
   const [selectedDay, setSelectedDay] = useState(() => {
@@ -55,8 +56,8 @@ const FieldInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { fieldInfo, isLoading } = useSelector((state) => state.projects);
+  const accessToken = getAccessToken();
 
-  // Fetch field info whenever selectedDate changes
   useEffect(() => {
     if (id && selectedDate) {
       dispatch(getFieldInfo({ employeeId: id, date: selectedDate }));
@@ -73,7 +74,6 @@ const FieldInfo = () => {
   const profile = fieldInfo?.employee;
   const sessions = fieldInfo?.sessions || [];
 
-  // Format session times
   const formattedSessions = useMemo(
     () =>
       sessions.map((s) => ({
@@ -90,8 +90,50 @@ const FieldInfo = () => {
         location: s.punch_in_location || "No location info",
         note: s.note || "",
       })),
-    [sessions]
+    [sessions],
   );
+  useEffect(() => {
+    if (id && selectedDate) {
+      dispatch(getFieldInfo({ employeeId: id, date: selectedDate }));
+    }
+  }, [id, selectedDate, dispatch]);
+
+  const [hourlyLocationData, setHourlyLocationData] = useState([]);
+  useEffect(() => {
+    if (!id || !selectedDate) return;
+
+    let intervalId;
+
+    const fetchEmployeeLocations = async () => {
+      try {
+        const token = await getAccessToken();
+        if (!token) return;
+
+        const formattedDate = new Date(selectedDate)
+          .toISOString()
+          .split("T")[0];
+
+        const response = await fetch(
+          `${BASE_URL}/api/background-location/${id}/?date=${formattedDate}`,
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch");
+
+        const json = await response.json();
+        setHourlyLocationData(json?.results || []);
+      } catch (err) {
+        console.error("Error fetching location for date:", err);
+      }
+    };
+
+    // Fetch immediately once
+    fetchEmployeeLocations();
+
+    intervalId = setInterval(fetchEmployeeLocations, 150000);
+
+    return () => clearInterval(intervalId); // cleanup
+  }, [id, selectedDate]);
 
   // Generate week days starting from Monday
   const getWeekDays = (baseDate) => {
@@ -138,8 +180,8 @@ const FieldInfo = () => {
 
   return (
     <>
-      <Navbar />
       <PageWrapper>
+        {/* Header */}
         <EmployeeTitle
           iconSrc={FieldShiftIcon}
           title="Project"
@@ -149,25 +191,31 @@ const FieldInfo = () => {
           showSearch={false}
           rightElement={
             <>
-              <ButtonContainer>
-                <ButtonAct onClick={() => setIsModalOpen(true)}>
-                  Activity Log
-                </ButtonAct>
-              </ButtonContainer>
+              <Header>
+                <ButtonContainer>
+                  <ButtonAct onClick={() => setIsModalOpen(true)}>
+                    Activity Log
+                  </ButtonAct>
+                </ButtonContainer>
 
-              {isModalOpen && (
-                <Modal
-                  onClose={() => setIsModalOpen(false)}
-                  data={fieldInfo?.locations || []}
-                  date={selectedDate}
-                />
-              )}
+                {isModalOpen && (
+                  <ActivityLogModal
+                    date={selectedDate}
+                    hourlyLocationData={hourlyLocationData}
+                    liveLocationData={[]}
+                    onClose={() => setIsModalOpen(false)}
+                    onDateChange={(newDate) => {
+                      setSelectedDate(newDate);
+                      dispatch(getFieldInfo({ employeeId: id, date: newDate }));
+                    }}
+                  />
+                )}
+              </Header>
             </>
           }
         />
 
         <ContainerGrid>
-          {/* Profile Section */}
           <ProfileRow>
             <Avatar>
               {profile?.profile_pic ? (
@@ -210,12 +258,14 @@ const FieldInfo = () => {
             </ProfileDetails>
           </ProfileRow>
 
-          {/* Summary Section */}
           <SummaryRow>
             <SummaryCol>
               <SmallRow>
                 <span>Monthly Working Hours</span>
-                <strong>{fieldInfo?.monthly_hours_formatted || "00:00"} </strong>
+                <strong>
+                  {" "}
+                  {fieldInfo?.monthly_hours_formatted || "00:00"}{" "}
+                </strong>
               </SmallRow>
               <SmallRow>
                 <span>Total Monthly Working Hours</span>
@@ -229,14 +279,14 @@ const FieldInfo = () => {
 
             <DateNav>
               <DateContainer>
-                 <IconBtn onClick={handlePrevDay}>{"<"}</IconBtn>
+                <IconBtn onClick={handlePrevDay}>{"<"}</IconBtn>
                 <CalendarIcon
                   style={{ cursor: "pointer" }}
                   onClick={() => setIsCalendarOpen(true)}
-                />
-                {isCalendarOpen && (
-                  <div
-                    style={{
+                  />
+                     {isCalendarOpen && (
+                     <div
+                      style={{
                       position: "fixed",
                       inset: 0,
                       background: "rgba(0, 0, 0, 0.4)",
@@ -245,9 +295,9 @@ const FieldInfo = () => {
                       justifyContent: "center",
                       alignItems: "center",
                       zIndex: 999,
-                    }}
-                    onClick={() => setIsCalendarOpen(false)}
-                  >
+                      }}
+                      onClick={() => setIsCalendarOpen(false)}
+                     >
                     <div onClick={(e) => e.stopPropagation()}>
                       <CalendarModal
                         onClose={() => setIsCalendarOpen(false)}
@@ -276,7 +326,6 @@ const FieldInfo = () => {
               </DateContainer>
 
               <NavButtons>
-               
                 <IconBtn onClick={handleNextDay}>{">"}</IconBtn>
               </NavButtons>
             </DateNav>

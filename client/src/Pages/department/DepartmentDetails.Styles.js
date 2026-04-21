@@ -156,17 +156,17 @@ export const ButtonGroups = styled.div`
 
 export const CancelButton = styled.button`
   padding: 10px 10px;
-  background: #fff;
-  color: #111827;
-  border: 1px solid #d1d5db;
+  color: #ffffffff;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s ease;
-
+  border: 1px solid #ff2304;
+  background: #fd907b;
+  font-size: 1rem;
   &:hover {
-    background: #f4f4f5;
+    background: #e22c0bff;
   }
-    `;
+`;
 export const FormSection = styled.div`
   display: flex;
   /* flex-wrap: wrap; */
@@ -201,7 +201,7 @@ export const InputsWrapper = styled.div`
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
-  width: 80%;     /* LEFT SIDE 80% width */
+  width: 80%;
 `;
 
 // Right side button container
@@ -209,7 +209,7 @@ export const RightActions = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  width: 20%;     /* RIGHT SIDE 20% width */
+  width: 20%; /* RIGHT SIDE 20% width */
 `;
 
 export const AddButton = styled.button`
@@ -219,7 +219,11 @@ export const AddButton = styled.button`
   gap: 0.5rem;
   min-width: 80px;
   font-family: satoshi;
-  background: linear-gradient(181deg, rgba(23,37,84,1) 50%, rgba(51,82,186,1) 100%);
+  background: linear-gradient(
+    181deg,
+    rgba(23, 37, 84, 1) 50%,
+    rgba(51, 82, 186, 1) 100%
+  );
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -237,7 +241,7 @@ export const AddButton = styled.button`
     font-size: 16px;
     padding: 0.7rem 1.4rem;
   }
-   @media (min-width: 1940px0px) {
+  @media (min-width: 1940px0px) {
     font-size: 16px;
     padding: 0.7rem 1.4rem;
   }
@@ -246,14 +250,18 @@ export const AddButton = styled.button`
     font-size: 18px;
     padding: 0.8rem 1.6rem;
   }
-   @media (min-width: 3840px) {
+  @media (min-width: 3840px) {
     font-size: 1.8rem;
     padding: 0.8rem 1.6rem;
   }
 `;
 
 export const DeleteButton = styled(AddButton)`
-  background: linear-gradient(181deg, rgba(186,51,51,1) 50%, rgba(255,87,87,1) 100%);
+  background: linear-gradient(
+    181deg,
+    rgba(186, 51, 51, 1) 50%,
+    rgba(255, 87, 87, 1) 100%
+  );
 
   &:hover {
     opacity: 0.9;
@@ -271,42 +279,40 @@ export const SearchInput = styled.input`
 `;
 export const Label = styled.label`
   color: gray;
-  // margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 
- 
   font-size: clamp(0.85rem, 1vw, 1.3rem);
 
   @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   @media (min-width: 2560px) {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 `;
 
 export const Input = styled.input`
   background: white;
   // border: 1px solid #052db4;
-  // border-radius: 4px;
-  border:none;
-  width: 50%;
-
+  border-radius: 4px;
+  border: none;
+  /* width: 50%; */
 
   padding: clamp(0.4rem, 0.8vw, 0.75rem) clamp(0.6rem, 1vw, 1rem);
   font-size: clamp(0.85rem, 1vw, 1.1rem);
 
-   @media (min-width: 1440px) and (max-width: 1919px) {
+  @media (min-width: 1440px) and (max-width: 1919px) {
     font-size: 1rem;
     padding: 0.6rem 1.25rem;
   }
   @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: 0.75rem 1.25rem;
   }
 
   @media (min-width: 2560px) {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     padding: 1rem 1.5rem;
   }
 `;
@@ -327,129 +333,126 @@ export const StyledTable = styled.table`
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 
-
   td {
-  text-align: left;
-  padding: 8px 10px;
-  white-space: nowrap;
-  background-color: white;
-  border: none;
-  font-size: 1rem; 
-}
-
-/* Small screens (mobile) */
-@media (max-width: 600px) {
-  td {
-    font-size: 0.75rem;
-    padding: 5px 8px;
-  }
-}
-
-/* Tablets and small laptops */
-@media (min-width: 601px) and (max-width: 1024px) {
-  td {
-    font-size: 0.8rem;
-    padding: 3px 9px;
-  }
-}
-
-/* Large screens (desktop) */
-@media (min-width: 1025px) and (max-width: 1439px) {
-  td {
-    font-size: 0.9rem;
-    padding: 5px 10px;
-  }
-}
-@media (min-width: 1440px) and (max-width: 1599px) {
-  td {
-    font-size: 0.9rem;
-    padding: 5px 10px;
-  }
-}
-@media (min-width: 1560px) and (max-width: 1919px) {
-  td {
-    font-size: 0.9rem;
-    padding: 5px 10px;
-  }
-}
-
-@media (min-width: 1920px)and (max-width: 2559px) {
-  td {
-    font-size: 1.1rem;
-    padding: 5px 12px;
-  }
-}
-
-@media (min-width: 2560px) and (max-width: 3839px) {
-  td {
-    font-size: 1.5rem;
-    padding: 10px 10px;
-  }
-}
-@media (min-width: 3840px) {
-  td{
-    font-size: 2rem;
-    padding: 10px 15px;
-  }
-}
-
-
- th {
-  text-align: left;
-  background-color: #304eb0;
-  color: white;
-  font-family: Raleway, sans-serif;
-   padding: 6px 6px;
-}
-
-@media (min-width: 768px) and (max-width: 1024px) {
-  th {
-    padding: 4px 5px;
-    font-size: 0.85rem;
-  }
-}
-@media (min-width: 1025) and (max-width: 1440px) {
-  th {
-    padding: 6px 6px;
-    font-size: 0.85rem;
-  }
-}
-
-@media (min-width: 1441px) and (max-width: 1559px) {
-  th {
-    padding: 6px 8px;
-    font-size: 0.85rem;
-  }
-}
-
-@media (min-width: 1560px) and (max-width: 1919px) {
-  th {
-    padding: 10px 8px;
+    text-align: left;
+    padding: 8px 10px;
+    white-space: nowrap;
+    background-color: white;
+    border: none;
     font-size: 1rem;
   }
-}
 
-@media (min-width: 1920px) and (max-width: 2559px) {
-  th {
-    padding: 9px 8px;
-    font-size: 1.2rem;
+  /* Small screens (mobile) */
+  @media (max-width: 600px) {
+    td {
+      font-size: 0.75rem;
+      padding: 5px 8px;
+    }
   }
-}
 
-@media (min-width: 2560px) and (max-width: 3839px) {
-  th {
-    padding: 9px 8px;
-    font-size: 1.5rem;
+  /* Tablets and small laptops */
+  @media (min-width: 601px) and (max-width: 1024px) {
+    td {
+      font-size: 0.8rem;
+      padding: 3px 9px;
+    }
   }
-}
 
-@media (min-width: 3840px) {
-  th {
-    padding: 12px 16px;
-    font-size: 1.8rem;
+  /* Large screens (desktop) */
+  @media (min-width: 1025px) and (max-width: 1439px) {
+    td {
+      font-size: 0.9rem;
+      padding: 5px 10px;
+    }
   }
-}
+  @media (min-width: 1440px) and (max-width: 1599px) {
+    td {
+      font-size: 0.9rem;
+      padding: 5px 10px;
+    }
+  }
+  @media (min-width: 1560px) and (max-width: 1919px) {
+    td {
+      font-size: 0.9rem;
+      padding: 5px 10px;
+    }
+  }
 
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    td {
+      font-size: 1.1rem;
+      padding: 5px 12px;
+    }
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    td {
+      font-size: 1.5rem;
+      padding: 10px 10px;
+    }
+  }
+  @media (min-width: 3840px) {
+    td {
+      font-size: 2rem;
+      padding: 10px 15px;
+    }
+  }
+
+  th {
+    text-align: left;
+    background-color: #304eb0;
+    color: white;
+    font-family: Raleway, sans-serif;
+    padding: 6px 6px;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    th {
+      padding: 4px 5px;
+      font-size: 0.85rem;
+    }
+  }
+  @media (min-width: 1025) and (max-width: 1440px) {
+    th {
+      padding: 6px 6px;
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (min-width: 1441px) and (max-width: 1559px) {
+    th {
+      padding: 6px 8px;
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (min-width: 1560px) and (max-width: 1919px) {
+    th {
+      padding: 10px 8px;
+      font-size: 1rem;
+    }
+  }
+
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    th {
+      padding: 9px 8px;
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    th {
+      padding: 9px 8px;
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (min-width: 3840px) {
+    th {
+      padding: 12px 16px;
+      font-size: 1.8rem;
+    }
+  }
 
   tbody tr {
     box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
@@ -473,7 +476,6 @@ export const StyledTable = styled.table`
   tbody tr:hover td {
     background-color: #f5f5f5;
   }
-
 `;
 export const Avatar = styled.img`
   width: 32px;

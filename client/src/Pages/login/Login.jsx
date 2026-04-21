@@ -1,5 +1,5 @@
 // src/pages/LoginPage.jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Container,
   LeftPanel,
@@ -14,17 +14,21 @@ import {
   Logo,
   CustomLink,
   Title,
-  Subtitle
-} from '../login/Login.styles';
+  Subtitle,
+  WelcomeTitle,
+  Description,
+  ActionText,
+} from "../login/Login.styles";
 
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { login } from '../../Redux/authSlice';
-import { useNavigate } from 'react-router-dom';
-import { FiEye, FiEyeOff } from "react-icons/fi"; // 👁️ Eye icons
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { login } from "../../Redux/authSlice";
+import { useNavigate } from "react-router-dom";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import "@fontsource/anek-malayalam/400.css"; // Regular
-import "@fontsource/anek-malayalam/700.css"; // Bold
+import "@fontsource/anek-malayalam/400.css";
+import "@fontsource/anek-malayalam/700.css";
+import { BASE_URL } from "../../services/api";
 
 const PoweredBy = ({ company = "REKORY" }) => (
   <p
@@ -37,7 +41,7 @@ const PoweredBy = ({ company = "REKORY" }) => (
     }}
   >
     <span style={{ fontFamily: "Satoshi, sans-serif", fontWeight: 400 }}>
-      Powered by {" "}
+      Powered by{" "}
     </span>
     <span style={{ fontFamily: "Anek Malayalam, sans-serif", fontWeight: 700 }}>
       {company}
@@ -45,16 +49,15 @@ const PoweredBy = ({ company = "REKORY" }) => (
   </p>
 );
 
-
 const LoginForm = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
     remember: false,
-    old_password: '',
-    new_password: ''
+    old_password: "",
+    new_password: "",
   });
-  const [view, setView] = useState('login');
+  const [view, setView] = useState("login");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false); // ⏳ Spinner state
 
@@ -68,80 +71,86 @@ const LoginForm = () => {
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
-    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
+    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
   };
-
-console.log("---",formData);
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-  
+
     try {
-      const response = await axios.post("http://178.248.112.16:8001/api/token/", {
-        username: formData.username,
-        password: formData.password,
-      });
-  
+      const response = await axios.post(
+        `${BASE_URL}/api/token/`,
+        {
+          username: formData.username,
+          password: formData.password,
+        }
+      );
+
       const { access, refresh, user } = response.data;
-  
+
       // If "Remember me" checked -> use localStorage
       // Else -> use sessionStorage (clears on browser close)
       // const storage = formData.remember ? localStorage : sessionStorage;
-  
+
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
       localStorage.setItem("user", JSON.stringify(user));
-  
+
       dispatch(
         login({
           userName: user.username,
           accessToken: access,
           user,
-         
         })
       );
-  
+
       if (user.is_superadmin) navigate("/superadmin-dashboard");
       else navigate("/");
     } catch (err) {
       console.log(err);
-      setError(err.response?.data?.detail || "Login failed. Check credentials.");
+      setError(
+        err.response?.data?.detail || "Login failed. Check credentials."
+      );
     } finally {
       setLoading(false);
     }
   };
-  
+
   const handleForgotPassword = () => {
-    navigate('/forget-password');
+    navigate("/forget-password");
   };
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     setError(null);
-    setLoading(true); // ⏳ start spinner
+    setLoading(true);
     try {
       const token = localStorage.getItem("accessToken");
 
-      await axios.post("http://178.248.112.16:8000/api/change-password/", {
-        old_password: formData.old_password,
-        new_password: formData.new_password
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      await axios.post(
+        `${BASE_URL}/api/change-password/`,
+        {
+          old_password: formData.old_password,
+          new_password: formData.new_password,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       alert("Password changed successfully");
-      setFormData({ ...formData, old_password: '', new_password: '' });
-      setView('login');
+      setFormData({ ...formData, old_password: "", new_password: "" });
+      setView("login");
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.detail || "Password change failed.");
     } finally {
-      setLoading(false); // ⏹️ stop spinner
+      setLoading(false);
     }
   };
 
@@ -150,33 +159,31 @@ console.log("---",formData);
       <LeftPanel>
         <LeftHeader>
           <Logo src="/images/logos.png" alt="ARMETAL Logo" />
-          <h2 style={{ fontSize: 42 }}>Welcome back</h2>
-          <p>
-            Manage your employees with ease.<br />
+          <WelcomeTitle>Welcome back</WelcomeTitle>
+          <Description>
+            Manage your employees with ease.
+            <br />
             Log in to access your HR dashboard.
-          </p>
-          <p
-            onClick={() => setView('login')}
-            style={{ cursor: 'pointer', textDecoration: 'none', fontFamily: 'Raleway', fontSize: 22 }}
-          >
-          
-          </p>
+          </Description>
+          <ActionText onClick={() => setView("login")}>
+            {/* Add text here if needed */}
+          </ActionText>
         </LeftHeader>
-        <CustomLink onClick={() => setView('changePassword')}>
+        <CustomLink onClick={() => setView("changePassword")}>
           {/* Change password */}
         </CustomLink>
       </LeftPanel>
 
       <RightPanel>
-        {view === 'login' ? (
+        {view === "login" ? (
           <FormBox>
-             <div style={{ textAlign: "left" }}>
-    <Title>Log in</Title>
-    <Subtitle>
-      Welcome back! <br />
-      Please log in to your account
-    </Subtitle>
-  </div>
+            <div style={{ textAlign: "left" }}>
+              <Title>Log in</Title>
+              <Subtitle>
+                Welcome back! <br />
+                Please log in to your account
+              </Subtitle>
+            </div>
             <form onSubmit={handleSubmit}>
               <Label>Username</Label>
               <Input
@@ -206,21 +213,16 @@ console.log("---",formData);
                     right: "10px",
                     top: "40%",
                     transform: "translateY(-50%)",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                 >
                   {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
                 </span>
               </div>
 
-
-
-           <SmallLink type="button" onClick={handleForgotPassword}>
-  Forgot password?
-</SmallLink>
-
-
-
+              <SmallLink type="button" onClick={handleForgotPassword}>
+                Forgot password?
+              </SmallLink>
 
               <CheckboxContainer>
                 <input
@@ -236,93 +238,23 @@ console.log("---",formData);
                 {loading ? "Logging in..." : "Log in"}
               </Button>
               {error && (
-  <p style={{ 
-    color: 'red', 
-    textAlign: 'center', 
-    fontFamily: 'Raleway', 
-    marginTop: '10px' 
-  }}>
-    {error}
-  </p>
-)}
+                <p
+                  style={{
+                    color: "red",
+                    textAlign: "center",
+                    fontFamily: "Raleway",
+                    marginTop: "10px",
+                  }}
+                >
+                  {error}
+                </p>
+              )}
 
-
-<PoweredBy text="REKORY" />
-
+              <PoweredBy text="REKORY" />
             </form>
           </FormBox>
         ) : (
           <FormBox>
-            {/* <h2 style={{ fontSize: 41, fontFamily: 'Satoshi', whiteSpace: 'nowrap' }}>Change your password</h2> */}
-            {/* <p style={{ fontFamily: "raleway", fontSize: 20 }}>
-              Enter a new password<br />
-              Below to change your password
-            </p> */}
-            {/* <form onSubmit={handlePasswordChange}>
-              <Label>Old password</Label>
-              <div style={{ position: "relative" }}>
-                <Input
-                  type={showOldPassword ? "text" : "password"}
-                  name="old_password"
-                  placeholder="Old password"
-                  value={formData.old_password}
-                  onChange={handleChange}
-                  required
-                  style={{ paddingRight: "40px" }}
-                />
-                <span
-                  onClick={() => setShowOldPassword(!showOldPassword)}
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    cursor: "pointer"
-                  }}
-                >
-                  {showOldPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
-                </span>
-              </div>
-
-              <Label>New Password</Label>
-              <div style={{ position: "relative" }}>
-                <Input
-                  type={showNewPassword ? "text" : "password"}
-                  name="new_password"
-                  placeholder="New Password"
-                  value={formData.new_password}
-                  onChange={handleChange}
-                  required
-                  style={{ paddingRight: "40px" }}
-                />
-                <span
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    cursor: "pointer"
-                  }}
-                >
-                  {showNewPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
-                </span>
-              </div>
-
-              <Button type="submit" disabled={loading}>
-                {loading ? "Changing..." : "Change Password"}
-              </Button>
-              {error && (
-  <p style={{ 
-    color: 'red', 
-    textAlign: 'center', 
-    fontFamily: 'Raleway', 
-    marginTop: '30px' 
-  }}>
-    {error}
-  </p>
-)}
-            </form> */}
           </FormBox>
         )}
       </RightPanel>

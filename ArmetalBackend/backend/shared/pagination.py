@@ -16,3 +16,8 @@ class CustomPagination(PageNumberPagination):
             'previous': self.get_previous_link(),
             'results': data,
         })
+
+class HourlyLocationLogPagination(PageNumberPagination):
+    page_size = 100          # Default logs per page
+    page_size_query_param = "page_size"  # Allow custom page size via query param
+    max_page_size = 500

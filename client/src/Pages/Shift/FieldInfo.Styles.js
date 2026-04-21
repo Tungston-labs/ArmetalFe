@@ -85,6 +85,7 @@ export const Row = styled.div`
   gap: 20px;
   font-size: 14px;
 `;
+
 export const SmallRow = styled.div`
   display: flex;
   align-items: center;
@@ -96,7 +97,7 @@ export const SmallRow = styled.div`
   span,
   strong {
     font-family: "Satoshi", Arial, sans-serif;
-    font-weight: 700;
+    font-weight: 600;
     font-style: normal;
     line-height: 100%;
     letter-spacing: 0;
@@ -125,7 +126,7 @@ export const SmallRow = styled.div`
     }
 
     @media (min-width: 1701px) and (max-width: 2060px) {
-      font-size: 18px;
+      font-size: 16px;
       width: 300px;
     }
     @media (min-width: 2060px) and (max-width: 2600px) {
@@ -168,7 +169,7 @@ export const ProfileRow = styled.div`
   gap: 18px;
   align-items: stretch;
 
-  border-bottom: 1px solid #00000054;
+  /* border-bottom: 1px solid #00000054; */
   @media (max-width: 560px) {
     flex-direction: column;
     align-items: center;
@@ -181,7 +182,7 @@ export const Avatar = styled.div`
   border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid #052db4;
+  border: 1px solid #bebfc2ff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -272,7 +273,7 @@ export const InputRow = styled.div`
 
   .left-column {
     display: grid;
-    grid-template-rows: repeat(3, auto); /* 3 inputs */
+    grid-template-rows: repeat(3, auto); 
     gap: 10px;
   }
 
@@ -298,7 +299,7 @@ export const InputRow = styled.div`
 
 export const InfoInput = styled.input`
   border-radius: 6px;
-  border: 1px solid #052db4;
+  border: 1px solid #bebfc2ff;
   padding: 10px 12px;
   font-size: 14px;
   background: #fff;
@@ -318,11 +319,11 @@ export const InfoInput = styled.input`
     font-size: 14px;
   }
   @media (min-width: 1441px) and (max-width: 1700px) {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   @media (min-width: 1701px) and (max-width: 2060px) {
-    font-size: 18px;
+    font-size: 14px;
   }
   @media (min-width: 2060px) and (max-width: 2600px) {
     font-size: 20px;
@@ -435,38 +436,26 @@ export const DayTabs = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   transition: all 0.3s ease;
-
-  /* Mobile - Up to 768px */
   @media (max-width: 768px) {
     gap: 0.8rem;
     padding: 8px 0;
   }
-
-  /* Tablet - 769px to 1020px */
   @media (min-width: 769px) and (max-width: 1020px) {
     gap: 1.2rem;
     padding: 10px 0;
   }
-
-  /* Laptop - 1021px to 1440px */
   @media (min-width: 1021px) and (max-width: 1440px) {
     gap: 1.6rem;
     padding: 12px 0;
   }
-
-  /* Large Screen - 1441px to 1940px */
   @media (min-width: 1441px) and (max-width: 1940px) {
     gap: 1.8rem;
     padding: 14px 0;
   }
-
-  /* 2K - 1941px to 2560px */
   @media (min-width: 1941px) and (max-width: 2560px) {
     gap: 2rem;
     padding: 16px 0;
   }
-
-  /* 4K - 2561px to 3840px */
   @media (min-width: 2561px) and (max-width: 3840px) {
     gap: 2.4rem;
     padding: 18px 0;

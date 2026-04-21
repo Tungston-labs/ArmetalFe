@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   PageContainer,
@@ -13,62 +12,89 @@ import {
   EmployeeItem,
   EmployeeRow,
   EmployeeCell,
+  LeftWrapper,
+  DepartmentIcon,
+  PaginationWrapper,
+  PaginationButton,
+  PaginationInfo,
 } from "./AttendanceList.Styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { getDepartments } from "../../Redux/departmentSlice";
-import {
-  getAttendanceList,
-  searchAttendanceEmployees,
-} from "../../Redux/attendanceSlice";
+import { getDepartmentsMin } from "../../Redux/departmentSlice";
+import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader";
 import { ClipLoader } from "react-spinners";
-
+import { FaAnglesLeft,FaAnglesRight } from "react-icons/fa6";
 const AttendanceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [selectedDept, setSelectedDept] = useState(null);
   const [departmentAttendance, setDepartmentAttendance] = useState({});
+  const [pageByDept, setPageByDept] = useState({});
+  const [searchText, setSearchText] = useState("");
+  const [loadingDept, setLoadingDept] = useState(false);
 
-  const { searchResults, searchLoading } = useSelector(
-    (state) => state.attendance
-  );
+  const pageSize = 10;
 
-  const { list: departmentList = [], loading } = useSelector(
-    (state) => state.departments
-  );
-
+ const { minList: departmentList = [], loading } = useSelector(
+  (state) => state.departments
+);
+  const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" }));
+    dispatch(getDepartmentsMin({ page: 1, search: "" }));
   }, [dispatch]);
 
-  // Search Handler
-  const handleSearch = (value) => {
-    if (value.trim() === "") {
-  dispatch(searchAttendanceEmployees("clear"));
-  return;
-}
-    dispatch(searchAttendanceEmployees(value));
+  const parseTimeToTimestamp = (timeStr) => {
+    const d = new Date(timeStr);
+    return isNaN(d.getTime()) ? NaN : d.getTime();
   };
 
-  const handleToggle = async (deptId, employeesFromSearch) => {
+  const formatTime = (datetimeStr) => {
+    if (!datetimeStr) return "-";
+    try {
+      const date = new Date(datetimeStr);
+      if (isNaN(date.getTime())) return "-";
+      return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return "-";
+    }
+  };
+
+  const paginate = (items, page) => {
+    const start = (page - 1) * pageSize;
+    return items.slice(start, start + pageSize);
+  };
+  const loadAttendanceForDept = async (deptId) => {
+    setLoadingDept(true);
+    try {
+      const res = await dispatch(getAttendanceList({ department_id: deptId }));
+      const data = res?.payload || {};
+
+      setDepartmentAttendance((p) => ({
+        ...p,
+        [deptId]: data.results || [],
+      }));
+    } finally {
+      setLoadingDept(false);
+    }
+  };
+
+  const handleToggle = async (deptId) => {
     if (selectedDept === deptId) {
       setSelectedDept(null);
       return;
     }
 
     setSelectedDept(deptId);
-
-    // If search is active, do not fetch attendance
-    if (searchResults.length > 0) {
-      setDepartmentAttendance((prev) => ({
-        ...prev,
-        [deptId]: employeesFromSearch,
-      }));
-      return;
+    setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
+    if (!departmentAttendance[deptId]) {
+      await loadAttendanceForDept(deptId);
     }
 
     // Normal mode
@@ -77,31 +103,14 @@ const AttendanceList = () => {
     setDepartmentAttendance((prev) => ({ ...prev, [deptId]: results }));
   };
 
-  // restructure search results → group by department
-  const groupedSearch = {};
-  if (searchResults?.length > 0) {
-    searchResults.forEach((emp) => {
-      const deptId = emp.department?.id;
-      if (!deptId) return;
-      if (!groupedSearch[deptId]) groupedSearch[deptId] = [];
-      groupedSearch[deptId].push(emp);
-    });
-  }
-
-  // Final department list (filtered by search)
-  const visibleDepartments =
-  searchResults.length > 0
-    ? Object.keys(groupedSearch).map((deptId) => {
-        // find existing department OR build one from search result
-        return (
-          departmentList.find((d) => d.id === Number(deptId)) || {
-            id: Number(deptId),
-            name: groupedSearch[deptId][0]?.department?.name || "Unknown Dept",
-          }
-        );
-      })
-    : departmentList;
-
+const departmentsToRender = departmentList
+  .filter((dept) =>
+    dept.name?.toLowerCase().includes(searchText.toLowerCase())
+  )
+  .map((dept) => ({
+    ...dept,
+    employees: departmentAttendance[dept.id] || [],
+  }));
 
   return (
     <PageContainer>
@@ -109,77 +118,132 @@ const AttendanceList = () => {
         iconSrc={EmployeeIcon}
         showAddButton={false}
         showDropdown={false}
+       searchValue={searchText}  
+        onSearchChange={setSearchText}
         showBackArrow={false}
-        onSearchChange={handleSearch}
       />
-
       {loading ? (
         <Loader />
       ) : (
         <DepartmentGrid>
-          {visibleDepartments.length > 0 ? (
-            visibleDepartments.map((dept) => {
-              const isOpen = selectedDept === dept.id;
+          {departmentsToRender.map((dept) => {
+            const isOpen = selectedDept === dept.id;
+            const employees = dept.employees || [];
 
-              const employees = searchResults.length
-                ? groupedSearch[dept.id] || []
-                : departmentAttendance[dept.id] || [];
+            const currentPage = pageByDept[dept.id] || 1;
+            const totalPages = Math.ceil(employees.length / pageSize) || 1;
+            const paginated = paginate(employees, currentPage);
+            const startIndex = (currentPage - 1) * pageSize;
 
-              return (
-                <DepartmentCard key={dept.id}>
-                  <DepartmentHeader
-                    onClick={() =>
-                      handleToggle(dept.id, groupedSearch[dept.id] || [])
-                    }
-                  >
+            return (
+              <DepartmentCard key={dept.id}>
+                <DepartmentHeader onClick={() => handleToggle(dept.id)}>
+                  <LeftWrapper>
+                    <DepartmentIcon>{dept.name?.[0]}</DepartmentIcon>
                     <DepartmentName>{dept.name}</DepartmentName>
-                    <EmployeeCount>
-                      {searchResults.length
-                        ? groupedSearch[dept.id]?.length
-                        : dept.attendance_employee_count}
-                      {" "}Employees
-                    </EmployeeCount>
-                  </DepartmentHeader>
+                  </LeftWrapper>
+                  <EmployeeCount>
+                    {dept.swiped_employee_count || 0} / {dept.total_employee_count || 0} Swiped
+                  </EmployeeCount>
+                </DepartmentHeader>
+                {isOpen && (
+                  <DropdownWrapper>
+                    <DropdownHeader>
+                      <span>Sl No</span>
+                      <span>Name</span>
+                      <span>Employee ID</span>
+                      <span>In Date</span>
+                      <span>In Time</span>
+                      <span>Out Time</span>
+                      <span>Status</span>
+                    </DropdownHeader>
+                    <EmployeeList>
+                      {loadingDept ? (
+                        <EmployeeItem style={{ textAlign: "center" }}>
+                          <ClipLoader size={24} />
+                        </EmployeeItem>
+                      ) : paginated.length > 0 ? (
+                        paginated.map((emp, idx) => {
+                          const sessions = emp.sessions || [];
+                          const inTimes = sessions
+                            .map((s) => parseTimeToTimestamp(s.time_in))
+                            .filter((t) => !isNaN(t));
 
-                  {isOpen && (
-                    <DropdownWrapper>
-                      <DropdownHeader>
-                        <span>Name</span>
-                        <span>Employee ID</span>
-                        <span>In Date</span>
-                        <span>In Time</span>
-                        <span>Out Time</span>
-                      </DropdownHeader>
+                          const tIn = inTimes.length
+                            ? formatTime(Math.min(...inTimes))
+                            : "-";
 
-                      <EmployeeList>
-                        {searchLoading ? (
-                          <ClipLoader size={24} color="#003366" />
-                        ) : employees.length > 0 ? (
-                          employees.map((emp) => (
+                          let tOut = "-";
+                          if (sessions.length > 0) {
+                            const lastSession = sessions[sessions.length - 1];
+                            tOut =
+                              lastSession.time_out && lastSession.time_out !== ""
+                                ? formatTime(parseTimeToTimestamp(lastSession.time_out))
+                                : "---";
+                          }
+                          return (
                             <EmployeeRow
-                              key={emp.id}
-                              onClick={() => navigate(`/attendance/detail/${emp.id}`)}
-                              style={{ cursor: "pointer" }}
-                            >
-                              <EmployeeCell>{emp.employee_name}</EmployeeCell>
-                              <EmployeeCell>{emp.employee_id}</EmployeeCell>
+                              key={emp.employee}
+                              onClick={() => handleRowClick(emp.employee)} >
+                              <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
+                              <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
+                              <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.date || "-"}</EmployeeCell>
-                              <EmployeeCell>{emp.time_in || "-"}</EmployeeCell>
-                              <EmployeeCell>{emp.time_out || "-"}</EmployeeCell>
+                              <EmployeeCell>{emp.first_swipe_in || tIn}</EmployeeCell>
+                              <EmployeeCell>{emp.last_swipe_out || tOut}</EmployeeCell>
+                              <EmployeeCell>
+                                <span
+                                  style={{
+                                    color: emp.attendance_today ? "green" : "red",
+                                    fontSize: "14px",
+                                  }}
+                                >
+                                  ●
+                                </span>
+                              </EmployeeCell>
                             </EmployeeRow>
-                          ))
-                        ) : (
-                          <EmployeeItem>No records found.</EmployeeItem>
-                        )}
-                      </EmployeeList>
-                    </DropdownWrapper>
-                  )}
-                </DepartmentCard>
-              );
-            })
-          ) : (
-            <p>No departments found.</p>
-          )}
+                          );
+                        })
+                      ) : (
+                        <EmployeeItem>No attendance found.</EmployeeItem>
+                      )}
+                    </EmployeeList>
+                   {employees.length > pageSize && (
+  <PaginationWrapper>
+    <PaginationButton
+      disabled={currentPage === 1}
+      onClick={() =>
+        setPageByDept((p) => ({
+          ...p,
+          [dept.id]: currentPage - 1,
+        }))
+      }
+    >
+<FaAnglesLeft/>
+    </PaginationButton>
+
+    <PaginationInfo>
+      Page {currentPage} / {totalPages}
+    </PaginationInfo>
+
+    <PaginationButton
+      disabled={currentPage === totalPages}
+      onClick={() =>
+        setPageByDept((p) => ({
+          ...p,
+          [dept.id]: currentPage + 1,
+        }))
+      }
+    >
+<FaAnglesRight/>
+    </PaginationButton>
+  </PaginationWrapper>
+)}
+                  </DropdownWrapper>
+                )}
+              </DepartmentCard>
+            );
+          })}
         </DepartmentGrid>
       )}
     </PageContainer>

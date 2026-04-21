@@ -11,7 +11,8 @@ class PublicHoliday(models.Model):
         ('bank', 'Bank Holiday'),
         ('regional', 'Cultural/Regional Holiday'),
         ('observance', 'Observance/Non-Leave Day'),
-        ('company_off_day', 'Company Off Day'),  # 🆕 new type
+        ('company_off_day', 'Company Off Day'),  
+        ('second_saturday', 'Second Saturday'),
     ]
 
     company = models.ForeignKey(

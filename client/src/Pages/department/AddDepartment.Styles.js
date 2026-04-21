@@ -37,9 +37,8 @@ export const TitleRow = styled.div`
 `;
 
 export const BackArrow = styled.div`
-  font-size: 20px;
   cursor: pointer;
-  color: rgb(64, 101, 220);
+  color: rgba(15, 15, 15, 1);
 
   @media (min-width: 1440px) {
     font-size: 24px;
@@ -55,13 +54,13 @@ export const BackArrow = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 24px;
+  font-size: 1rem;
   margin: 0;
   font-family: satoshi;
-  color: rgb(64, 101, 220);
+      color: #3352ba;
 
   @media (min-width: 1440px) {
-    font-size: 28px;
+    font-size: 1.5rem;
   }
 
   @media (min-width: 2560px) {
@@ -74,7 +73,7 @@ export const Title = styled.h2`
 `;
 
 export const Form = styled.form`
-  display: flex;
+  // display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
 
@@ -119,7 +118,7 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #fa1212ff;
   border-radius: 6px;
   font-size: 16px;
   outline: none;
@@ -247,7 +246,7 @@ export const CloseButton = styled.button`
   background: transparent;
   cursor: pointer;
   font-size: 18px;
-  color: #374151;
+  color: #0d0d0eff;
 
   &:hover {
     color: #111827;

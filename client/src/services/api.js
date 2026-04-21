@@ -1,16 +1,17 @@
-// src/utils/API.js or wherever you saved it
 import axios from "axios";
+import {toast} from "react-toastify";
+
+export const BASE_URL=import.meta.env.VITE_API_BASE_URL
+console.log(BASE_URL);
 
 const API = axios.create({
-  baseURL: "http://178.248.112.16:8001/api",
-  // baseURL: "http://localhost:8000/api",
+  baseURL: `${BASE_URL}/api`,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Request Interceptor: Attach access token
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
@@ -22,10 +23,10 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Refresh token on 401
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
+    
     const originalRequest = error.config;
 
     if (
@@ -37,28 +38,24 @@ API.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem("refreshToken")|| sessionStorage.getItem("refreshToken");
-
-        const res = await axios.post("http://178.248.112.16:8001/api/token/refresh/", {
+        const res = await axios.post(`${BASE_URL}/api/token/refresh/`, {
           refresh: refreshToken,
         });
 
         const newAccessToken = res.data.access;
-        const newRefreshToken = res.data.refresh; // 👈 important
+        const newRefreshToken = res.data.refresh; 
 
         if(localStorage.getItem("refreshToken")){
-        // Store both tokens
         localStorage.setItem("accessToken", newAccessToken);
         if (newRefreshToken) {
-          localStorage.setItem("refreshToken", newRefreshToken); // 👈 overwrite old refresh token
+          localStorage.setItem("refreshToken", newRefreshToken);
         }
       }else{
         sessionStorage.setItem("accessToken", newAccessToken);
         if (newRefreshToken) {
-          sessionStorage.setItem("refreshToken", newRefreshToken); // 👈 overwrite old refresh token
+          sessionStorage.setItem("refreshToken", newRefreshToken);
         }
       }
-
-        // Retry the original request
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return API(originalRequest);
       } catch (refreshErr) {
@@ -68,7 +65,6 @@ API.interceptors.response.use(
         return Promise.reject(refreshErr);
       }
     }
-
     return Promise.reject(error);
   }
 );

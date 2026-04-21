@@ -37,26 +37,24 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
   const fetchPaymentData = async (id) => {
     try {
       const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
-      const res = await API.get(`http://178.248.112.16:8001/api/subscriptions/${id}/`);
+      const res = await API.get(`/subscriptions/${id}/`);
 
       if (Array.isArray(res.data)) {
         setPaymentData(res.data);
       }
     } catch (error) {
-      console.error("Failed to fetch payment data:", error);
     }
   };
   const fetchCompanyName = async (id) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await API.get(`http://178.248.112.16:8001/api/companies/${id}/`
+      const res = await API.get(`/companies/${id}/`
       );
 
       if (res.data?.name) {
         setCompanyName(res.data.name);
       }
     } catch (error) {
-      console.error("Failed to fetch company name:", error);
     }
   };
 
@@ -67,13 +65,12 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
     try {
       const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
       await API.patch(
-        `http://178.248.112.16:8001/api/subscriptions/mark-paid/${subscriptionId}/`,
+        `/subscriptions/mark-paid/${subscriptionId}/`,
         { status: newStatus },
         
       );
       await fetchPaymentData(companyId);
     } catch (error) {
-      console.error("Failed to update status:", error);
     }
   };
 const handleDownload = (entry) => {
@@ -142,14 +139,13 @@ const handleDownload = (entry) => {
   const handleSendEmail = async (entry) => {
     try {
       const token = localStorage.getItem("accessToken");
-      await API.post("http://178.248.112.16:8001/api/invoice/send-email/", {
+      await API.post("/invoice/send-email/", {
         entry: entry,
         company_id: entry.company,
       }, );
 
       alert("Invoice email sent successfully.");
     } catch (error) {
-      console.error("Email send failed:", error);
       alert("Failed to send invoice email.");
     }
   };
@@ -168,12 +164,12 @@ const handleDownload = (entry) => {
   <PlanDetails>
     <h3>Enterprise plan</h3>
     <p>
-      Pay a fixed $5 per employee.<br />
+      Pay a fixed amount per employee.<br />
       Simple, transparent, and ideal for managing individual payroll with ease.
     </p>
   </PlanDetails>
 
-  <PlanPrice>$5</PlanPrice>
+  <PlanPrice></PlanPrice>
 </PlanCard>
 
 

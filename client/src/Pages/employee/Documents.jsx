@@ -18,7 +18,6 @@ import {
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
 import { EmployeeImage } from './BasicLevel.Styles';
-import Navbar from '../../Components/Navbar';
 
 export default function DocumentUploadForm() {
   const navigate = useNavigate();
@@ -80,11 +79,7 @@ const handleSubmit = async () => {
       const uploadedUrls = await Promise.all(
         files.map(file => dispatch(uploadImageThunk(file)).unwrap())
       );
-
-      // Clear local files for this type immediately
       setSelectedFiles(prev => ({ ...prev, [type]: [] }));
-
-      // Add uploaded URLs to Redux
       uploadedUrls.forEach(url => {
         dispatch(addDocumentUrl({ type, url }));
       });
@@ -181,7 +176,7 @@ const handleSubmit = async () => {
 
   return (
      <>
-     <Navbar/>
+     {/* <Navbar/> */}
     {loading && <Loader  />}
     <Container>
       <Header>
@@ -218,7 +213,7 @@ const handleSubmit = async () => {
   <SuccessModal
     onClose={() => setShowSuccessModal(false)}
     onAddAnother={() => setShowSuccessModal(false)}
-    navigate={navigate} // 👈 pass navigate function
+    navigate={navigate}
   />
 )}
 

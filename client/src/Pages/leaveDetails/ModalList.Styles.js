@@ -13,8 +13,8 @@ export const ModalOverlay = styled.div`
 
 export const ModalContainer = styled.div`
   background: white;
-  width: 90%;
-  /* max-width: 1200px; */
+  width: 80%;
+  max-width: 1200px;
   padding: clamp(16px, 2vw, 40px);
   border-radius: 10px;
   /* max-height: 90%; */
@@ -37,20 +37,46 @@ export const ModalContainer = styled.div`
 `;
 
 export const ModalHeader = styled.div`
-  font-size: clamp(1rem, 2vw, 2rem);
   font-weight: bold;
   margin-bottom: 1.5rem;
 
-  /* 4K override */
-  @media (min-width: 3840px) {
-    font-size: 2.5rem;
+  /* Default size for mobile */
+  font-size: 1rem;
+
+  /* Tablet */
+  @media (min-width: 576px) {
+    font-size: 1.25rem;
   }
 
-  /* 8K override */
+  /* Small laptop */
+  @media (min-width: 768px) {
+    font-size: 0.8rem;
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    font-size: 0.8rem;
+  }
+
+  /* Large screens (1440p) */
+  @media (min-width: 1440px) {
+    font-size: 1rem;
+  }
+
+@media (min-width: 2560px) {
+    font-size: 1.5rem;
+  }
+  /* 4K */
+  @media (min-width: 3840px) {
+    font-size: 1.5rem;
+  }
+
+  /* 8K */
   @media (min-width: 7680px) {
     font-size: 3.5rem;
   }
 `;
+
 
 export const FieldRow = styled.div`
   display: flex;
@@ -94,11 +120,6 @@ export const TableHeader = styled.thead`
   background-color: #2f43b8;
   color: white;
 
-  th {
-    padding: clamp(8px, 1vw, 16px);
-    text-align: left;
-    font-size: 1.5rem;
-  }
 `;
 
 export const TableRow = styled.tr`
@@ -158,12 +179,12 @@ export const ApproveButton = styled.button`
 export const DeclineButton = styled.button`
   background-color: #ff6f61;
   color: white;
-  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 24px);
+  padding: 10px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
   min-width: 100px;
-  font-size: clamp(0.8rem, 1vw, 1rem);
+  font-size:12px;
   transition: background-color 0.3s ease, transform 0.2s ease;
 
   &:hover {

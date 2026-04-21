@@ -10,16 +10,17 @@ import {
 } from "./ConfirmLeaveModal.Styles";
 
 const ConfirmLeaveModal = ({
-  onConfirm,   // ✅ parent callback
+  show,
+  onConfirm,  
+  onClose,
   actionType = "approve",
   leaveId,
   zIndex = 2000,
 }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); // ✅ initialize navigate
-
+ if (!show) return null;
   if (!leaveId) {
-    console.error("Leave ID not provided to ConfirmLeaveModal!");
     return null;
   }
 
@@ -33,9 +34,8 @@ const ConfirmLeaveModal = ({
     setLoading(false);
   };
 
-  const handleCancel = () => {
-    navigate(-1); // ✅ go back to the previous page
-  };
+ const handleCancel = () => onClose();
+
 
   return ReactDOM.createPortal(
     <ModalOverlay style={{ zIndex }}>

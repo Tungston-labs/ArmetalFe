@@ -1,4 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import Calendar from "react-calendar";
+import { FaCalendarAlt } from "react-icons/fa"; // calendar icon
 import {
   Overlay,
   ModalWrapper,
@@ -9,9 +11,20 @@ import {
   TableHeader,
   TableRow,
   TableCell,
+  CalendarIconWrapper,
 } from "./ModalShift.styled.js";
 
-const ActivityLogModal = ({ data = [], date, onClose }) => {
+const ActivityLogModal = ({
+  data = [],
+  date,
+  onClose,
+  hourlyLocationData = [],
+  liveLocationData = [],
+  onDateChange, 
+}) => {
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const calendarRef = useRef(null);
+
   const parsedDate = useMemo(() => {
     if (!date) return null;
     const normalized = date.includes("T") ? date : date.replace(" ", "T");
@@ -19,21 +32,74 @@ const ActivityLogModal = ({ data = [], date, onClose }) => {
     return isNaN(d.getTime()) ? null : d;
   }, [date]);
 
-  const formattedLocations = useMemo(() => {
-    return data.map((item) => ({
-      time: new Date(item.timestamp).toLocaleTimeString([], {
+  const formattedLogs = useMemo(() => {
+    if (!Array.isArray(hourlyLocationData)) return [];
+    return hourlyLocationData.map((item) => ({
+      time: new Date(item.logged_at).toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       }),
-      location: item.location || "No location info",
+      location:
+        item.location_name ||
+        `Lat: ${item.latitude?.toFixed(5)}, Lon: ${item.longitude?.toFixed(5)}`,
+      isLive: false,
+      timestamp: item.logged_at,
     }));
-  }, [data]);
+  }, [hourlyLocationData]);
 
-  // ✅ Handle outside clicks
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose();
+  const formattedLive = useMemo(() => {
+    if (!Array.isArray(liveLocationData)) return [];
+    return liveLocationData.map((loc) => ({
+      time:
+        new Date(loc.timestamp || loc.logged_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }) + " (LIVE)",
+      location:
+        loc.location_name ||
+        `Lat: ${loc.latitude?.toFixed(5)}, Lon: ${loc.longitude?.toFixed(5)}`,
+      isLive: true,
+      timestamp: loc.timestamp || loc.logged_at,
+    }));
+  }, [liveLocationData]);
+
+ const allLocations = useMemo(() => {
+    const merged = [...formattedLive, ...formattedLogs];
+    
+    const sorted = merged.sort(
+      (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+    );
+
+    const uniqueByTime = new Map();
+    
+    sorted.forEach((item) => {
+      if (!uniqueByTime.has(item.time)) {
+        uniqueByTime.set(item.time, item);
+      }
+    });
+
+    return Array.from(uniqueByTime.values());
+  }, [formattedLive, formattedLogs]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setCalendarOpen(false);
+      }
+    };
+
+    if (calendarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
     }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [calendarOpen]);
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
   };
 
   return (
@@ -44,7 +110,7 @@ const ActivityLogModal = ({ data = [], date, onClose }) => {
           <CloseBtn onClick={onClose}>Close</CloseBtn>
         </ModalHeader>
 
-        {parsedDate ? (
+        {parsedDate && (
           <ModalDate>
             <div className="day">{parsedDate.getDate()}</div>
             <div className="month-week">
@@ -55,11 +121,23 @@ const ActivityLogModal = ({ data = [], date, onClose }) => {
                 {parsedDate.toLocaleDateString("default", { weekday: "long" })}
               </div>
             </div>
-          </ModalDate>
-        ) : (
-          <ModalDate>
-            <div>--</div>
-            <div>Invalid Date</div>
+
+
+            <CalendarIconWrapper onClick={() => setCalendarOpen(!calendarOpen)}>
+              <FaCalendarAlt size={18} />
+            </CalendarIconWrapper>
+
+            {calendarOpen && (
+              <div ref={calendarRef} style={{ position: "absolute", zIndex: 100, marginTop: 96 }}>
+                <Calendar
+                  onChange={(newDate) => {
+                    setCalendarOpen(false);
+                    onDateChange(newDate.toLocaleDateString("en-CA"));
+                  }}
+                  value={parsedDate}
+                />
+              </div>
+            )}
           </ModalDate>
         )}
 
@@ -69,20 +147,25 @@ const ActivityLogModal = ({ data = [], date, onClose }) => {
             <TableCell>Location</TableCell>
           </TableHeader>
 
-          {formattedLocations.length > 0 ? (
-            formattedLocations.map((item, index) => (
-              <TableRow key={index} even={index % 2 === 0}>
+          {allLocations.length > 0 ? (
+            allLocations.map((item, index) => (
+              <TableRow
+                key={item.timestamp || index}
+                even={index % 2 === 0}
+                style={
+                  item.isLive
+                    ? { backgroundColor: "#e6ffe6", fontWeight: "bold" }
+                    : {}
+                }
+              >
                 <TableCell>{item.time}</TableCell>
                 <TableCell>{item.location}</TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell
-                colSpan={2}
-                style={{ textAlign: "center", color: "#777" }}
-              >
-                No hourly locations found.
+              <TableCell colSpan={2} style={{ textAlign: "center", color: "#777" }}>
+                No location data available.
               </TableCell>
             </TableRow>
           )}

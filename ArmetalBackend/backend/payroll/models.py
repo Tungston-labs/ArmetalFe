@@ -29,6 +29,11 @@ class EmployeePayrollRecord(models.Model):
     pan_number = models.CharField(max_length=15, blank=True, null=True)
     account_number = models.CharField(max_length=30, blank=True, null=True)
     payslip_file = models.FileField(upload_to='payslips/', null=True, blank=True)
+    working_days = models.PositiveIntegerField(null=True, blank=True)
+    days_present = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    lop_days = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    lop_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
 
     # ✅ New fields for HR verification
     hr1_verified_by = models.ForeignKey(

@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .utils import send_reimbursement_email
+from django.db import transaction
+from finance.models import FinanceRecord,FinanceCategory
 
 # --- List & Create for Employee ---
 
@@ -18,12 +20,12 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.is_hr or user.is_admin:   # ✅ check HR/Admin role properly
+        if user.is_hr or user.is_admin:   #  check HR/Admin role properly
             return Reimbursement.objects.filter(
                 employee__department__company=user.company
             ).order_by("-created_at")
 
-        # ✅ Employee case: only their reimbursements
+        # Employee case: only their reimbursements
         return Reimbursement.objects.filter(
             employee__user=user
         ).order_by("-created_at")
@@ -34,31 +36,76 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
         return ReimbursementDetailSerializer
 
     def perform_create(self, serializer):
-        reimbursement = serializer.save(employee=self.request.user.employee_db)
-        # send_reimbursement_email(reimbursement)
+        reimbursement = serializer.save(
+            employee=self.request.user.employee_db
+        )
 
-
-# --- Retrieve, Update, Delete single reimbursement ---
 class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsHRorIsEmployee]
     serializer_class = ReimbursementDetailSerializer
 
     def get_queryset(self):
-        # HR/Admins should see all reimbursements
         user = self.request.user
         if getattr(user, "is_hr_admin", False) or getattr(user, "is_superadmin", False):
             return Reimbursement.objects.all()
         return Reimbursement.objects.filter(employee__user=user)
 
     def get_serializer(self, *args, **kwargs):
-        # ✅ Ensure 'request' is passed to serializer context
         kwargs['context'] = self.get_serializer_context()
         return super().get_serializer(*args, **kwargs)
 
+    @transaction.atomic
     def patch(self, request, *args, **kwargs):
-        kwargs['partial'] = True  # allow partial update
-        return self.update(request, *args, **kwargs)
+        instance = self.get_object()
+        old_status = instance.status
 
+        response = self.partial_update(request, *args, **kwargs)
+
+        instance.refresh_from_db()
+        new_status = instance.status
+
+        #  Create finance record ONLY when status changes to Approved
+        if old_status.lower() != "approve" and new_status.lower() == "approve":
+
+            employee = instance.employee
+            company = employee.department.company
+
+            employee_name = getattr(employee, "name", str(employee))
+            employee_id = getattr(employee, "employee_id", employee.id)
+
+            # ✅ FIX 1: Correct get() usage + case insensitive
+            try:
+                reimbursement_category = FinanceCategory.objects.get(
+                    name__iexact="reimbursement",
+                    payment_type="OUT",
+                    company=company
+                )
+            except FinanceCategory.DoesNotExist:
+                return Response(
+                    {"error": "Reimbursement category not configured for this company."},
+                    status=400
+                )
+
+            # ✅ FIX 2: cleaner duplicate check
+            exists = FinanceRecord.objects.filter(
+                company=company,
+                category=reimbursement_category,
+                date=instance.date,
+                note__icontains=str(employee_id)
+            ).exists()
+
+            if not exists:
+                FinanceRecord.objects.create(
+                    company=company,
+                    date=instance.date,
+                    amount=instance.amount,
+                    payment_type="OUT",
+                    category=reimbursement_category,
+                    note=f"Reimbursement approved for {employee_name} ({employee_id})"
+                )
+
+
+        return response
 
 
 

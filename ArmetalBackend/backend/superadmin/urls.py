@@ -9,6 +9,8 @@ urlpatterns = [
     path('subscriptions/mark-paid/<int:pk>/', views.MarkSubscriptionPaidView.as_view(), name='mark-paid'),
     path("invoice/send-email/",views.SendInvoiceEmailView.as_view(), name="send-invoice-email"),
     path("companies/overview/", views.CompanyOverviewView.as_view(), name="company-overview"),
+    path("company/self/", views.CompanySelfView.as_view(), name="company-self"),
+
 ]
 
 

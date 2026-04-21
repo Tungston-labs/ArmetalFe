@@ -1,206 +1,194 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { HiArrowLeft } from "react-icons/hi";
-import { FaUserCircle } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 
-import {
-  PageWrapper,
-  Header,
-  HeaderLeft,
-  HeaderTitle,
-  HeaderSubtitle,
-  ProfileSection,
-  ProfileImage,
-  ProfileInfo,
-  Label,
-  Value,
-  Row,
-  DateSection,
-  DescriptionBox,
-  BillsSection,
-  BillsGrid,
-  BillImage,
-  SelectBox,
-  Divider,
-} from "./Reimb_info.Styles";
-import RemiIcon from "../../assets/remi.svg";
 import {
   fetchReimbursementDetail,
   updateReimbursementStatus,
 } from "../../services/reimbursement";
-import Loader from "../../Components/Loader"
-import Navbar from "../../Components/Navbar";
+
+// import Navbar from "../../Components/Navbar";
+import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
-// Add this function at the top of your component
+import RemiIcon from "../../assets/remi.svg";
+
+import {
+  PageWrapper,
+  Card,
+  SectionTitle,
+  ProfileRow,
+  ProfileImage,
+  ProfileInfo,
+  InfoRow,
+  Label,
+  Value,
+  StatusSelect,
+  Divider,
+  NoteBox,
+  BillsGrid,
+  BillImageWrapper,
+  BillImage,
+  NoteCard,
+  NoteHeader,
+  Arrow,
+} from "./Reimb_info.Styles";
+
 const getStatusStyle = (status) => {
   switch (status) {
     case "Approve":
-      return { backgroundColor: "#4B976D", color: "white" }; // green
+      return "#4CAF50";
     case "On Hold":
-      return { backgroundColor: "#BA703A", color: "white" }; // brown-orange
+      return "#FF9800";
     case "In Verification":
-      return { backgroundColor: "#DD991D", color: "black" }; // yellow
+      return "#FFC107";
+    case "Reject":
+      return "#E57373";
     default:
-      return { backgroundColor: "#fff", color: "#000" };
+      return "#E0E0E0";
   }
 };
 
 
 
-
 const ReimbursementDetail = () => {
-  const { id } = useParams(); // get :id from URL
-  const navigate = useNavigate();
-
+  const { id } = useParams();
   const [reimbursement, setReimbursement] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showNote, setShowNote] = useState(false);
 
-  // 🔹 Fetch reimbursement detail on mount
+  // Fetch on load
   useEffect(() => {
     const loadDetail = async () => {
       try {
         const data = await fetchReimbursementDetail(id);
         setReimbursement(data);
-      } catch (error) {
-        console.error("Failed to load reimbursement detail:", error);
+      } catch (e) {
+        console.error(e);
       } finally {
         setLoading(false);
       }
     };
-
     loadDetail();
   }, [id]);
 
-  // 🔹 Handle status update
   const handleStatusChange = async (e) => {
     const newStatus = e.target.value;
+    const oldStatus = reimbursement.status;
+
+    setReimbursement((prev) => ({ ...prev, status: newStatus }));
+
     try {
-      // Optimistic UI update
-      setReimbursement((prev) => ({ ...prev, status: newStatus }));
       await updateReimbursementStatus(id, newStatus);
-    } catch (error) {
-      console.error("Failed to update status:", error);
+    } catch {
+      setReimbursement((prev) => ({ ...prev, status: oldStatus }));
     }
   };
- if (loading) {
-    return (
-   
-        <Loader  />
 
-    );
-  }
+  if (loading) return <Loader />;
+
   if (!reimbursement) return <p>No reimbursement found.</p>;
 
   return (
     <>
-    <Navbar/>
-    <PageWrapper>
-<EmployeeTitle
-  iconSrc={RemiIcon}
-  title="Reimbursement"
-  subtitle="Manage all departments within the organization"
-  showDropdown={false}
-  showTabs={false}
-  showSearch={false}
-  rightElement={
-    <SelectBox
-      value={reimbursement.status || ""}
-      onChange={async (e) => {
-        const newStatus = e.target.value;
-        try {
-          setReimbursement((prev) => ({ ...prev, status: newStatus }));
-          await updateReimbursementStatus(id, newStatus);
-        } catch (error) {
-          console.error("Failed to update status:", error);
-          setReimbursement((prev) => ({
-            ...prev,
-            status: reimbursement.status,
-          }));
-        }
-      }}
-      style={{
-        ...getStatusStyle(reimbursement.status),
-        fontWeight: "bold",
-        borderRadius: "6px",
-        padding: "5px 10px",
-        cursor: "pointer",
-      }}
-    >
-      <option value="" disabled>
-        Select
-      </option>
-      <option value="Approve">Approved</option>
-      <option value="On Hold">On Hold</option>
-      <option value="In Verification">In Verification</option>
-    </SelectBox>
-  }
-/>
+      {/* <Navbar /> */}
 
-      {/* Header */}
-    
+      <PageWrapper>
+        <EmployeeTitle
+          iconSrc={RemiIcon}
+          title="Reimbursement Details"
+          subtitle="View employee reimbursement with uploaded bills"
+          showSearch={false}
+          showTabs={false}
+          showDropdown={false}
+          rightElement={
+            <StatusSelect
+              value={reimbursement.status}
+              onChange={handleStatusChange}
+              statusColor={getStatusStyle(reimbursement.status)}
+            >
+              <option value="Approve">Approved</option>
+              <option value="On Hold">On Hold</option>
+              <option value="In Verification">In Verification</option>
+              <option value="Reject">Reject</option> 
+            </StatusSelect>
 
-      {/* Profile */}
-      <ProfileSection>
-      <ProfileImage
-  src={
-    reimbursement.profile_pic
-      ? reimbursement.profile_pic // use as-is
-      : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-          reimbursement.employee_name || "User"
-        )}&background=random`
-  }
-  alt="profile"
-/>        
-        <ProfileInfo>
-          <Row>
-            <Label>Name</Label>
-            <Value>{reimbursement.employee_name}</Value>
-          </Row>
-          <Row>
-            <Label>Employee ID</Label>
-            <Value>{reimbursement.employee_id}</Value>
-          </Row>
-          <Row>
-            <Label>Department</Label>
-            <Value>{reimbursement.department?.name}</Value>
-          </Row>
-        </ProfileInfo>
-        
-      </ProfileSection>
+          }
+        />
 
-<Divider />
-      {/* Date */}
-      <DateSection style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-  <div>
-    <Label style={{ color: "#6C6C6C", fontSize: "14px" }}>Date</Label>
-    <Value>{reimbursement.date}</Value>
-  </div>
+        {/* Profile Card */}
+        <Card>
+          <SectionTitle>Employee Information</SectionTitle>
+          <Divider />
+          <ProfileRow>
+            <ProfileImage
+              src={
+                reimbursement.profile_pic
+                  ? reimbursement.profile_pic
+                  : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    reimbursement.employee_name
+                  )}&background=random`
+              }
+            />
+            <ProfileInfo>
+              <InfoRow>
+                <Label>Name:</Label>
+                <Value>{reimbursement.employee_name}</Value>
+              </InfoRow>
+              <InfoRow>
+                <Label>Employee ID:</Label>
+                <Value>{reimbursement.employee_id}</Value>
+              </InfoRow>
+              <InfoRow>
+                <Label>Department:</Label>
+                <Value>{reimbursement.department?.name}</Value>
+              </InfoRow>
+            </ProfileInfo>
+          </ProfileRow>
+        </Card>
 
-  <div>
-    <Label style={{ color: "#6C6C6C", fontSize: "14px",paddingRight:"500px", }}>Amount</Label>
-    <Value style={{ fontWeight: "bold" }}>{reimbursement.amount} </Value>
-  </div>
-</DateSection>
+        {/* Date & Amount Card */}
+        <Card>
+          <SectionTitle>Reimbursement Details</SectionTitle>
+          <Divider />
+          <InfoRow>
+            <Label>Date:</Label>
+            <Value>{reimbursement.date}</Value>
+          </InfoRow>
 
-{/* Note */}
-<h6 style={{ color: "#6C6C6C", marginTop: "1rem" }}>Note</h6>
-<DescriptionBox>{reimbursement.note}</DescriptionBox>
+          <InfoRow>
+            <Label>Amount:</Label>
+            <Value >
+              ₹{reimbursement.amount}
+            </Value>
+          </InfoRow>
 
+          <Divider />
 
-      {/* Bills */}
-      <BillsSection>
-  <Label>📑 Bills uploaded</Label>
-  <Divider />
-  <BillsGrid>
-    {reimbursement.images?.map((bill) => (
-      <a key={bill.id} href={bill.image} target="_blank" rel="noopener noreferrer">
-        <BillImage src={bill.image} alt={`bill-${bill.id}`} />
-      </a>
-    ))}
-  </BillsGrid>
-</BillsSection>
+          <NoteCard>
+            <NoteHeader onClick={() => setShowNote(!showNote)}>
+              <span>Note</span>
+              <Arrow>{showNote ? "▲" : "▼"}</Arrow>
+            </NoteHeader>
 
-    </PageWrapper>
+            {showNote && <NoteBox>{reimbursement.note}</NoteBox>}
+          </NoteCard>
+        </Card>
+
+        {/* Bills */}
+        <Card>
+          <SectionTitle>Bills Uploaded</SectionTitle>
+          <Divider />
+
+          <BillsGrid>
+            {reimbursement.images.map((bill) => (
+              <BillImageWrapper key={bill.id}>
+                <a href={bill.image} target="_blank">
+                  <BillImage src={bill.image} />
+                </a>
+              </BillImageWrapper>
+            ))}
+          </BillsGrid>
+        </Card>
+      </PageWrapper>
     </>
   );
 };

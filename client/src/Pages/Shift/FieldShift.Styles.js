@@ -326,6 +326,8 @@ export const CardsGrid = styled.div`
   gap: 1.5rem;
   grid-template-columns: repeat(2, 1fr);
 
+
+
   @media (min-width: 1940px) {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -333,7 +335,9 @@ export const CardsGrid = styled.div`
   @media (min-width: 1440px) {
     grid-template-columns: repeat(4, 1fr);
   }
-
+ @media (max-width: 1439px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
   @media (max-width: 1024px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -344,6 +348,10 @@ export const CardsGrid = styled.div`
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
+  }
+  
+      @media (min-width: 2560px) {
+    grid-template-columns: repeat(5, 1fr);
   }
 `;
 
@@ -460,15 +468,18 @@ export const CardTitle = styled.h2`
   @media (max-width: 1024px) {
     font-size: 1rem;
   }
+   @media (min-width: 1025px) {
+    font-size: 1rem;
+  }
   @media (min-width: 1440px) {
     font-size: 1.2rem;
   }
 
   @media (min-width: 2560px) {
-    font-size: 2rem;
+    font-size: 1.3rem;
   }
     @media (min-width:3840px) {
-    font-size: 3rem;
+    font-size: 1.5rem;
     padding: 1rem;
   }
 `;
@@ -538,7 +549,7 @@ export const CardText = styled.p`
   }
 
   @media (min-width: 2560px) {
-    font-size: 2rem;
+    font-size: 1.2rem;
   }
 `;
 
@@ -548,7 +559,7 @@ export const CardFooter = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 0.6rem;
-
+justify-content: space-between;
   @media (max-width: 768px) {
     gap: 0.4rem;
   }
@@ -561,36 +572,36 @@ export const CardFooter = styled.div`
 export const Tag = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
   background-color: #b4c5ff;
   color: #172554;
   font-family: "Trispace", sans-serif;
   font-weight: 400;
   font-size: 12px;
   border-radius: 6px;
-  padding: 0.3rem 0.6rem;
+  padding: 0.1rem 0.6rem;
 
   img {
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     background-color: #172554;
     border-radius: 50%;
   }
 
-  @media (max-width: 768px) {
-    font-size: 11px;
-    padding: 0.25rem 0.5rem;
+  @media (max-width: 900px) {
+    font-size: 15px;
+    padding: 0.4rem 0.5rem;
     img {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
   }
 
   @media (max-width: 480px) {
     font-size: 10px;
     img {
-      width: 12px;
-      height: 12px;
+      width: 15px;
+      height: 15px;
     }
   }
   @media (max-width: 1024px) {
@@ -600,6 +611,7 @@ export const Tag = styled.div`
       height: 12px;
     }
   }
+  
   @media (min-width: 1440px) {
     font-size: 0.7rem;
     img {
@@ -626,3 +638,13 @@ export const Tag = styled.div`
   }
 `;
 
+export const StatusTag = styled.span`
+  background-color: ${(props) => props.bgcolor || "#c4e2fdff"};
+  color: white;
+  margin-left: 0.5rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+`;

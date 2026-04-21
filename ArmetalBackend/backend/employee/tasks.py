@@ -18,7 +18,6 @@ def send_reminder(reminder_id):
                 message=reminder.body
             )
 
-        # Mark reminder as notified
         reminder.notified = True
         reminder.save()
 

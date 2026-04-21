@@ -15,11 +15,10 @@ import {
   CustomLink,
   TopSection,
   LinkIcon,
+  BottomText,
 } from './Sidebar.styles';
 import API from '../services/api';
 import { NavLink } from "react-router-dom";
-
-
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -32,7 +31,6 @@ export default function Sidebar() {
   const modules = user?.company_modules || {};
 
   useEffect(() => {
-    console.log("Sidebar user updated:", user);
   }, [user]);
 
   const handleLogout = async () => {
@@ -46,7 +44,6 @@ export default function Sidebar() {
       sessionStorage.clear();
       navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error.response?.data || error.message);
     }
   };
 
@@ -89,6 +86,16 @@ export default function Sidebar() {
             <span>Companys</span>
           </CustomLink>
 
+        )}
+        {user?.is_superadmin && (
+          <CustomLink
+            as={NavLink}
+            to="/finance"
+            className={({ isActive }) => `${collapsed ? 'collapsed' : ''} ${isActive ? 'active' : ''}`}
+          >
+            <FaReceipt />
+            <span>Finance</span>
+          </CustomLink>
 
         )}
 
@@ -112,6 +119,11 @@ export default function Sidebar() {
             {modules.daily_task && (
               <CustomLink to="/daily-task" className={`${collapsed ? 'collapsed' : ''} ${isActive("/daily-task")}`}>
                 <FaTasks /><span>Daily Task</span>
+              </CustomLink>
+            )}
+             {modules.finance && (
+              <CustomLink to="/finance" className={`${collapsed ? 'collapsed' : ''} ${isActive("/finance")}`}>
+                <FaReceipt /><span>Finance</span>
               </CustomLink>
             )}
             {modules.payroll && (
@@ -140,10 +152,15 @@ export default function Sidebar() {
               </CustomLink>
             )}
 
+
           </>
         )}
       
       </Nav>
+
+<BottomText className={collapsed ? "collapsed" : ""}>
+  Powered by <span>REKORY</span>
+</BottomText>
     </SidebarContainer>
   );
 }

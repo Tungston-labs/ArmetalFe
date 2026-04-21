@@ -1,0 +1,69 @@
+# -------------employee attendance------------------
+
+
+
+# list out employee attendance for admin
+###
+GET http://178.248.112.16:8001/api/admin/attendance/?department_id=87
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwMjg4OTMxLCJpYXQiOjE3NzAyODUzMzEsImp0aSI6IjhiNmE3MTUyMzQ1NjQ0YzA5YjAyNjgxYmM3MzNkNmZiIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.SzZJpMwAuKDtTRFcRqPtb0PeTerkGlWS2IoRLG_LPQw
+
+# lst todays punch in punch outs
+###
+GET http://178.248.112.16:8001/api/attendance/today/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwMjc3OTM2LCJpYXQiOjE3NzAyNzQzMzYsImp0aSI6ImJlNTY4MzJkNTFjYjQ3OTNhM2I5MjMyYmE1Y2NmNzdkIiwidXNlcl9pZCI6NTAxLCJpc19zdXBlcmFkbWluIjpmYWxzZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6dHJ1ZSwiaXNfaHIiOnRydWV9.cJBxlI5LmDhZuc4vgGddCDOj6-1-Cov1eJvEYgmVvR0
+
+
+# attendance detail view(hr admin)
+
+###
+# GET http://178.248.112.16:8001/api/admin/attendance/31/
+GET http://178.248.112.16:8001/api/admin/attendance/351/?date=2026-02-11
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcxNDkxNzgwLCJpYXQiOjE3NzE0ODgxODAsImp0aSI6IjFhZjA4YzY0N2MxOTQ5NGU5Zjk5NjNjMTQ0NjRiMTRjIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.lUYYBXUzusMgUyy6-y7uyINR9vp0zn6NXp0xKBBOw_A
+
+# list out employee attendance for admin
+###
+GET http://178.248.112.16:8001/api/admin/attendance/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwMTg4OTgyLCJpYXQiOjE3NzAxODUzODIsImp0aSI6IjAwZDkzNjczZmQwMjRmNmRhZTFhNDc3YmYzMTc0OWY5IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.s8YgAOeQVEoM30WxusYerhgI7ixIzIdCc-sHFbDf6sI
+
+#================================MOBILE  APP==========
+
+### Swipe (Punch In/Out) -FOR EMPLOYEE
+
+
+POST http://178.248.112.16:8001/api/attendance/swipe/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMzMzODQwLCJpYXQiOjE3NjAzMzAyNDAsImp0aSI6IjUxYzNkNzc0YTY2NDQ5ODc5MGRiNmU2M2YxZTFkOTNhIiwidXNlcl9pZCI6IjczIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.nAne_hHjZPwJGrEEyWqW3hRIfUfF74NDPFGy6aybjDA
+Content-Type: application/json
+
+{
+  "latitude": 10.1060,
+  "longitude": 76.4730
+}
+
+
+# list todays punch in punch outs
+###
+GET http://178.248.112.16:8001/api/attendance/today/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3MTY3MjcwLCJpYXQiOjE3NjcxNjM2NzAsImp0aSI6IjBiZjZmYThjODMyMDQ4N2I5MTkxNDM3YTUyMWMyY2NjIiwidXNlcl9pZCI6IjUwMSIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6dHJ1ZX0.jSbYcpNFoym46a7DrAPN1ipRMJtsdOVIVPeSnCOMZqY
+
+#api for getting employees attendance details
+### 
+GET http://localhost:8000/api/attendance/summary/?month=2025-07
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODY1MzQ1LCJpYXQiOjE3NTM4NjE3NDUsImp0aSI6ImZkMGI2ZWQwMmYwNDRmMjM5YTNmNjExMjNlNjA0MzNjIiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.YI9aiNaDDaX_uz1XpPTGxfIYdPVkggdib5yRDZeR1qA
+
+###punchout note
+PATCH http://localhost:8000/api/attendance/add-note/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODc0NjAyLCJpYXQiOjE3NTM4NzEwMDIsImp0aSI6ImIwZDgyODljNmIzZDRmMGE4Njk5MmIwZWZjZThhM2I2IiwidXNlcl9pZCI6OTUsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.QHGVfWwW1urfQxTr8CHGpGN11jsn3WwzeafVplp2fAo
+
+{
+  "note": "Left early due to a dentist appointment"
+}
+
+###
+GET http://178.248.112.16:8001/api/admin/attendance/351/?date=2026-02-04
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcyNDQyNjUzLCJpYXQiOjE3NzI0MzkwNTMsImp0aSI6IjUzYTliYTU1YTVkNjQzNTI4MDM2ZDhkMGY4YTRjZGQ3IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.sAfalR6BiMHhvA09x8N-G3H9lLEBllVem0gLWYkiSwY
+
+###attendance summary
+GET http://178.248.112.16:8001/api/employee-attendance/summary/?year=2026&month=02
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcxNTY4NzgzLCJpYXQiOjE3NzE1NjUxODMsImp0aSI6ImM5YzA3ODBhZDM3MjRjYzNiZmI5NDg0MDBjMzllMjdmIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.wWf3ctm2E8Rc8iNp8yGm8d_xQEmnHbbjJ1Gyb35Rx2U
+
