@@ -16,6 +16,7 @@ import Loader from "../../Components/Loader"
 import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, Avatar, AvatarFallback, NameCell } from './EmployeeList.styles';
 import EmployeeTitle from '../../Components/EmployeeTitle';
 import Pagination from "../../Components/Pagination/Pagination"
+import NoEmployeeFound from '../../Components/No found/Noemployeefound';
 export default function LeaveRequest() {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -128,9 +129,11 @@ export default function LeaveRequest() {
                 <TableCell colSpan="7"></TableCell>
               </TableRow>
             ) : filteredLeaves.length === 0 ? (
-              <EmptyRow>
-                <TableCell colSpan="7">No matching leave requests found.</TableCell>
-              </EmptyRow>
+               <tr>
+    <td colSpan={6}>
+      <NoEmployeeFound  />
+    </td>
+  </tr>
             ) : (
               filteredLeaves.map((leave, index) => (
                 <BodyRow

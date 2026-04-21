@@ -32,6 +32,7 @@ import VerificationCircles from "../../Components/VerificationCircle";
 import HolidayIcon from "../../assets/payroll.svg";
 import { EmptyRow } from "../leaveDetails/EmployeeList.styles";
 import Pagination from "../../Components/Pagination/Pagination"
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 const months = [
   "January",
   "February",
@@ -347,7 +348,7 @@ const PayrollTable = () => {
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
     const date = new Date(dateStr);
-    if (isNaN(date)) return dateStr; // fallback to original
+    if (isNaN(date)) return dateStr; 
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
@@ -512,46 +513,14 @@ const PayrollTable = () => {
               ))
             ) : (
 
-              <EmptyRow>
-                <td colSpan="8">No employees found.</td>
-              </EmptyRow>
+        
+  <td colSpan={9}>
+    <NoEmployeeFound searchTerm={searchTerm} label="No Payroll Records Found" />
+  </td>
+
             )}
           </tbody>
         </Table>
-
-        {/* <Pagination>
-          <span
-            onClick={() => handlePageChange(page - 1)}
-            style={{
-              cursor: page > 1 ? "pointer" : "not-allowed",
-              opacity: page > 1 ? 1 : 0.5,
-            }}
-          >
-            &larr;
-          </span>
-          {[...Array(totalPages)].map((_, i) => {
-            const pageNum = i + 1;
-            return (
-              <span
-                key={pageNum}
-                onClick={() => handlePageChange(pageNum)}
-                className={pageNum === page ? "active" : ""}
-              >
-                {pageNum}
-              </span>
-            );
-          })}
-          <span
-            onClick={() => handlePageChange(page + 1)}
-            style={{
-              cursor: page < totalPages ? "pointer" : "not-allowed",
-              opacity: page < totalPages ? 1 : 0.5,
-            }}
-          >
-            &rarr;
-          </span>
-        </Pagination> */}
-
         <Pagination
           currentPage={page}
           totalPages={totalPages}

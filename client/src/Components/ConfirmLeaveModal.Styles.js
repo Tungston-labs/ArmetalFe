@@ -7,33 +7,24 @@ export const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000; /* higher than OnLeaveModal */
+  z-index: 2000;
 `;
 
 export const ModalContainer = styled.div`
   background: white;
-  padding: clamp(16px, 2vw, 30px);
+  padding: 24px;
   border-radius: 10px;
   max-height: 80%;
-  width: clamp(280px, 60%, 600px); /* ✅ responsive width */
   overflow-y: auto;
-  z-index: 2001; /* must be higher than overlay */
+  z-index: 2001;
   pointer-events: auto;
 `;
 
 export const Message = styled.p`
-  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-size: 16px;
   font-family: 'Satoshi', sans-serif;
   color: #000;
-  margin-bottom: 2rem;
-
-  @media (min-width: 3840px) { /* 4K */
-    font-size: 2rem;
-  }
-
-  @media (min-width: 7680px) { /* 8K */
-    font-size: 3rem;
-  }
+  margin-bottom: 24px;
 `;
 
 export const BoldText = styled.span`
@@ -44,15 +35,15 @@ export const ButtonRow = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  flex-wrap: wrap; /* ✅ prevents buttons from breaking on small screens */
+  flex-wrap: wrap;
 `;
 
 export const ModalButton = styled.button`
   flex: 1;
   min-width: 120px;
-  height: clamp(40px, 5vh, 50px);
+  height: 45px;
   border-radius: 10px;
-  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  font-size: 16px;
   font-weight: 700;
   font-family: 'Satoshi', sans-serif;
   border: 2px solid transparent;
@@ -64,15 +55,5 @@ export const ModalButton = styled.button`
   &:hover {
     opacity: 0.9;
     transform: scale(1.05);
-  }
-
-  @media (min-width: 3840px) { /* 4K */
-    font-size: 1.4rem;
-    height: 70px;
-  }
-
-  @media (min-width: 7680px) { /* 8K */
-    font-size: 2rem;
-    height: 90px;
   }
 `;

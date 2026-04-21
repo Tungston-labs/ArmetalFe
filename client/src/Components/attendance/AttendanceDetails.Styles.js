@@ -61,6 +61,7 @@ export const Th = styled.th`
 export const Td = styled.td`
   padding: 12px;
   border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
 `;
 
 export const Tr = styled.tr`
@@ -76,5 +77,17 @@ export const CalendarWrapper = styled.div`
   .react-calendar {
     width: 100%;
     border: none;
+  }
+`;
+export const TableScrollWrapper = styled.div`
+  max-height: 350px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
   }
 `;

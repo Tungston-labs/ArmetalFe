@@ -62,7 +62,6 @@ export const Status = styled.div`
     font-size: 1.8rem;
   }
 `;
-
 export const MailButton = styled.button`
   background: #3b82f6;
   color: white;
@@ -70,17 +69,10 @@ export const MailButton = styled.button`
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background 0.3s ease;
 
-  @media (max-width: 520px) {
-    width: 100%;
-  }
-  @media (min-width: 2560px) {
-    padding: 10px 18px;
-    font-size: 1.2rem;
-  }
-  @media (min-width: 3840px) {
-    padding: 12px 18px;
-    font-size: 1.5rem;
+  &:hover {
+    background: #2563eb; 
   }
 `;
 
@@ -100,7 +92,7 @@ export const TopSection = styled.div`
 `;
 
 export const ProfileLeft = styled.div`
-  width: 28%;
+  width: 20%;
 
   @media (max-width: 1024px) {
     width: 35%;
@@ -118,8 +110,8 @@ export const ProfileSection = styled.div`
 `;
 
 export const Avatar = styled.div`
-  width: 130px;
-  height: 130px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background: #fff;
   display: flex;
@@ -177,21 +169,13 @@ export const Role = styled.p`
 `;
 
 export const RightCards = styled.div`
-  width: 72%;
-
-  @media (max-width: 1024px) {
-    width: 65%;
-  }
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+  width: 80%;
 `;
 
 export const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
+  gap: 15px;
   cursor: pointer;
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -200,47 +184,25 @@ export const StatsGrid = styled.div`
 
 export const StatCard = styled.div`
   background: white;
-  padding: 18px;
+  padding: 15px;
   border-radius: 12px;
   position: relative;
 
-  @media (min-width: 2560px) {
-    padding: 20px;
-  }
-  @media (min-width: 3840px) {
-    padding: 30px;
-  }
 `;
 
 export const StatNumber = styled.h2`
   margin: 0;
   font-family: "Poppins";
+   font-size: 1rem;
 
-  @media (max-width: 1024px) {
-    font-size: 1rem;
-  }
-  @media (min-width: 2560px) {
-    font-size: 1.8rem;
-  }
-  @media (min-width: 3840px) {
-    font-size: 2rem;
-  }
 `;
 
 export const StatLabel = styled.p`
   margin: 5px 0 0 0;
   color: gray;
   font-family: "Poppins";
-
-  @media (max-width: 1024px) {
     font-size: 0.9rem;
-  }
-  @media (min-width: 2560px) {
-    font-size: 1.5rem;
-  }
-  @media (min-width: 3840px) {
-    font-size: 1.8rem;
-  }
+  
 `;
 
 export const IconRight = styled.div`
@@ -283,21 +245,7 @@ export const TabButton = styled.button`
   border-radius: 6px;
   font-family: "Poppins";
   white-space: nowrap;
-
-  @media (max-width: 480px) {
-    padding: 8px 15px;
-  }
-  @media (max-width: 1024px) {
-    font-size: 0.8rem;
-  }
-  @media (min-width: 2560px) {
-    font-size: 1.5rem;
-    padding: 12px 25px;
-  }
-  @media (min-width: 3840px) {
-    font-size: 1.8rem;
-    padding: 18px 25px;
-  }
+font-size: 0.8rem;
 `;
 
 export const ContentSection = styled.div`
@@ -345,59 +293,20 @@ export const InfoRow = styled.div`
 
 export const InfoTitle = styled.div`
   color: #6b7280;
-
-  font-size: 1rem;
-  font-family: "Poppins";
-
-  @media (max-width: 480px) {
-    font-size: 0.9rem;
-  }
-  @media (max-width: 1024px) {
-     font-size: 0.8rem;
-  }
-    @media (max-width: 1440px) {
-     font-size: 0.9rem;
-  }
-  @media (min-width: 2560px) {
-    font-size: 1.3rem;
-  }
-  @media (min-width: 3840px) {
-    font-size: 1.8rem;
-  }
-`;
-
-export const InfoValue = styled.div`
- 
   font-size: 0.9rem;
   font-family: "Poppins";
 
-  @media (max-width: 480px) {
-    font-size: 0.9rem;
-    color: #111;
-  }
-  @media (max-width: 1024px) {
-    font-size: 0.8rem;
-  }
-   @media (max-width: 1024px) {
-    font-size: 0.8rem;
-  }
-  @media (min-width: 2560px) {
-    font-size: 1.3rem;
-  }
-  @media (min-width: 3840px) {
-    font-size: 1.7rem;
-  }
+`;
+
+export const InfoValue = styled.div`
+  font-size: 0.9rem;
+  font-family: "Poppins";
+
 `;
 
 export const Title = styled.h3`
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-family: "Poppins";
 
-  @media (min-width: 2560px) {
-    font-size: 1.4rem;
-  }
-  @media (min-width: 3840px) {
-    font-size: 1.8rem;
-  }
 `;

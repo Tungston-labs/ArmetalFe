@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader";
 import { ClipLoader } from "react-spinners";
 import { FaAnglesLeft,FaAnglesRight } from "react-icons/fa6";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 const AttendanceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -126,7 +127,16 @@ const departmentsToRender = departmentList
         <Loader />
       ) : (
         <DepartmentGrid>
-          {departmentsToRender.map((dept) => {
+        {departmentsToRender.length === 0 ? (
+    <div style={{ 
+      width: "100%", 
+      display: "flex", 
+      justifyContent: "center" 
+    }}>
+      <NoEmployeeFound searchTerm={searchText} />
+    </div>
+  ) : (
+          departmentsToRender.map((dept) => {
             const isOpen = selectedDept === dept.id;
             const employees = dept.employees || [];
 
@@ -243,9 +253,12 @@ const departmentsToRender = departmentList
                 )}
               </DepartmentCard>
             );
-          })}
+          })
+        )}
         </DepartmentGrid>
+        
       )}
+      
     </PageContainer>
   );
 };

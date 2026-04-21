@@ -67,11 +67,9 @@ export const BodyCell = styled.td`
 
 
 export const EmptyRow = styled.tr`
-  td {
-    text-align: center;
-    padding: 20px;
-    font-size: 1rem;
-  }
+ text-align: center;
+  padding: 40px 0;
+ 
 `;
 export const HeadRow = styled.tr``;
 
