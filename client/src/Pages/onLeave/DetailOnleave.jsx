@@ -33,6 +33,7 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader"
 import { GoInfo } from "react-icons/go";
 import { BASE_URL } from "../../services/api";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -252,9 +253,11 @@ console.log(location.pathname.startsWith('/employee-on-leave') ||
       </tr>
     ))
   ) : (
-    <tr>
-      <td colSpan="8">No employees found.</td>
-    </tr>
+  <tr>
+    <td colSpan={5}>
+      <NoEmployeeFound searchTerm={debouncedSearch} />
+    </td>
+  </tr>
   )}
 </tbody>
 

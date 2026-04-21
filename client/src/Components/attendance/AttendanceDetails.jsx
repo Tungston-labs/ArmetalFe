@@ -12,6 +12,7 @@ import {
   Td,
   Tr,
   CalendarWrapper,
+  TableScrollWrapper,
 } from "./AttendanceDetails.Styles";
 import { useEffect } from "react";
 import { getAccessToken } from "../../hooks/useAccessToken";
@@ -138,6 +139,7 @@ const AttendanceDetails = ({
             />
           </CalendarWrapper>
         </div>
+        <TableScrollWrapper>
         <Table>
           <thead>
             <tr>
@@ -167,7 +169,7 @@ const AttendanceDetails = ({
                             : event.action === "Punch Out"
                               ? "#ED2B2B"
                               : "#2563EB",
-                        fontWeight: 600,
+                        fontWeight: 500,
                       }}
                     >
                       {event.action}
@@ -180,6 +182,7 @@ const AttendanceDetails = ({
             )}
           </tbody>
         </Table>
+        </TableScrollWrapper>
       </HistoryTable>
     </PageWrapper>
   );

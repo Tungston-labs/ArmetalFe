@@ -24,6 +24,7 @@ import TaskIcon from '../../assets/task.svg';
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartmentsMin, getEmployeesByDepartmentMini } from "../../Redux/departmentSlice";
 import { getTasks } from "../../Redux/dailyTaskSlice";
+import { PiUserCirclePlusThin } from "react-icons/pi";
 
 const Card = ({ dept, onClick, isActive }) => (
   <CardItem onClick={onClick} $isActive={isActive}>
@@ -60,18 +61,28 @@ const EmployeeList = ({ departmentId, onSelectEmployee, selectedEmployeeId }) =>
       onClick={() => onSelectEmployee(emp.id)}
       $isActive={emp.id === selectedEmployeeId}
     >
+  {emp.profile_pic && emp.profile_pic.trim() !== "" ? (
       <img
-        src={emp.profile_pic}                   
+        src={emp.profile_pic}
+        alt={emp.name}
         style={{
           width: 26,
           height: 26,
           borderRadius: "50%",
           marginRight: 8,
+          objectFit: "cover",
         }}
       />
-      {emp.name}                    
-    </EmployeeItem>
-  ))}
+    ) : (
+      <PiUserCirclePlusThin
+        size={26}
+        color="#999"
+        style={{ marginRight: 8, flexShrink: 0, }}
+      />
+    )}
+    {emp.name}
+  </EmployeeItem>
+))}
   {employeesData.length === 0 && <p>No employees in this department.</p>}
 </EmployeeContainer>
 

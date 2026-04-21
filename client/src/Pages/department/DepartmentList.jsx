@@ -61,6 +61,7 @@ import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
 import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
 import { fetchDepartmentById } from "../../services/departmentServices"; 
 import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
 const DepartmentList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -651,7 +652,13 @@ const DepartmentList = () => {
                 );
               })
             ) : (
-              <p>No departments found.</p>
+           <div style={{ 
+    width: "100%", 
+    display: "flex", 
+    justifyContent: "center" 
+  }}>
+    <NoEmployeeFound searchTerm={search} label="No Department Found" />
+  </div>
             )}
           </DepartmentGrid>
         )}

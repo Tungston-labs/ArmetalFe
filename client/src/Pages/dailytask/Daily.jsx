@@ -344,11 +344,11 @@ export default function DailyTask() {
                   onClick={() => handleEmployeeSelect(emp)}
                   active={emp.id === selectedEmployee?.id}
                 >
-                  {emp.profile_pic ? (
-                    <img src={emp.profile_pic} />
-                  ) : (
-                    <PiUserCirclePlusThin size={40} color="#999" />
-                  )}
+                  {emp.profile_pic && emp.profile_pic.trim() !== "" ? (
+  <img src={emp.profile_pic} alt={emp.name} />
+) : (
+  <PiUserCirclePlusThin size={40} color="#999" />
+)}
                   <span>{emp.name}</span>
                 </EmployeeCard>
               ))}

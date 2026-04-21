@@ -21,6 +21,7 @@ import TagIcon from "../../assets/downicon.svg";
 import { getProjects } from "../../Redux/fieldShiftSlice";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 
 const DepartmentPage = () => {
   const dispatch = useDispatch();
@@ -67,9 +68,7 @@ const { projects = [], isLoading = false } = useSelector(
 <CardsGrid>
   {isLoading ? (
     <Loader />
-  ) : projects.length === 0 ? (
-    <p>No projects found.</p>
-  ) : (
+  ) : projects.length > 0 ? (
     projects.map((project) => (
       <Card
         key={project.id}
@@ -105,8 +104,15 @@ const { projects = [], isLoading = false } = useSelector(
         </CardFooter>
       </Card>
     ))
-  )}
+  ) : null}
 </CardsGrid>
+
+{/* ✅ Outside the grid so it spans full width */}
+{!isLoading && projects.length === 0 && (
+  <div style={{ display: "flex", justifyContent: "center" }}>
+    <NoEmployeeFound searchTerm={searchTerm} label="No Projects Found" />
+  </div>
+)}
 
         <AddProjectModal
           isOpen={isModalOpen}

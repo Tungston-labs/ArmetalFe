@@ -14,7 +14,7 @@ import Loader from "../../Components/Loader";
 import Pagination from "../../Components/Pagination/Pagination"
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from "../leaveDetails/EmployeeList.styles";
-
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 const EmployeeList = () => {
   const dispatch = useDispatch();
 
@@ -152,9 +152,11 @@ const country = user?.company?.country || "IN";
                 </BodyRow>
               ))
             ) : (
-              <EmptyRow colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
-                No Employees Found
-              </EmptyRow>
+            <tr>
+    <td colSpan={5}>
+      <NoEmployeeFound searchTerm={debouncedSearch} />
+    </td>
+  </tr>
             )}
           </TableBody>
         </StyledTable>

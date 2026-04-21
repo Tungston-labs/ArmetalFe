@@ -18,6 +18,7 @@ import {
 } from "../../Redux/financeThunks";
 import FinanceSummary from "../../Components/finance/FinanceSummary";
 import Pagination from "../../Components/Pagination/Pagination";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 
 const PAYMENT_TYPE_LABELS = {
   IN: "Income",
@@ -150,8 +151,8 @@ const FinanceDetail = () => {
                 <Th>Date</Th>
                 <Th>Category</Th>
                 <Th>Note</Th>
-                <Th>Payment Type</Th>
-                <Th>Amount</Th>
+                <Th>Income</Th>
+                <Th>Expense</Th>
               </Tr>
             </thead>
 
@@ -170,23 +171,24 @@ const FinanceDetail = () => {
                     <Td>{record.category_name || FALLBACK}</Td>
                     <Td>{record.note || FALLBACK}</Td>
                     <Td>
-                      {PAYMENT_TYPE_LABELS[record.payment_type] ||
-                        FALLBACK}
+                      {record.payment_type === "IN"
+                        ? record.amount ?? FALLBACK
+                        : "--"}
                     </Td>
+
                     <Td>
-                      {record.amount !== null &&
-                      record.amount !== undefined
-                        ? record.amount
-                        : FALLBACK}
+                      {record.payment_type === "OUT"
+                        ? record.amount ?? FALLBACK
+                        : "--"}
                     </Td>
                   </Tr>
                 ))
               ) : (
-                <Tr>
-                  <Td colSpan={6} style={{ textAlign: "center" }}>
-                    No results found
-                  </Td>
-                </Tr>
+                 <tr>
+    <Td colSpan={6}>
+      <NoEmployeeFound searchTerm={searchText} label="No Finance Records Found" />
+    </Td>
+  </tr>
               )}
             </tbody>
           </StyledTable>

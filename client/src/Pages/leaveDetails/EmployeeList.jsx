@@ -31,6 +31,7 @@ import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import RightSideModal from "../employeDashboard/RightSideModal";
 import Pagination from "../../Components/Pagination/Pagination";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -189,9 +190,11 @@ const EmployeeList = () => {
                     </BodyRow>
                   ))
                ) : !loading ? (
-  <EmptyRow>
-    <td colSpan="7">No employees found.</td>
-  </EmptyRow>
+  <tr>
+    <td colSpan={7}>
+      <NoEmployeeFound searchTerm={debouncedSearch} />
+    </td>
+  </tr>
 ) : null}
               </TableBody>
             </StyledTable>

@@ -157,7 +157,7 @@ const EmployeeDetails = ({ employee }) => {
       <MailModal
         isOpen={isMailOpen}
         onClose={() => setIsMailOpen(false)}
-        employee={{ email: "ajaytungstonlabs@gmail.com" }}
+   employee={employee} 
       />
     </Wrapper>
   );
