@@ -15,6 +15,7 @@ import {
   EmployeeImage,
   LeftGroup,
   Selection,
+  TableWrapper
 } from "./Final.Styles";
 import { Link } from "react-router-dom";
 import { GoInfo } from "react-icons/go";
@@ -33,6 +34,7 @@ import HolidayIcon from "../../assets/payroll.svg";
 import { EmptyRow } from "../leaveDetails/EmployeeList.styles";
 import Pagination from "../../Components/Pagination/Pagination"
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
+
 const months = [
   "January",
   "February",
@@ -429,7 +431,7 @@ const PayrollTable = () => {
             <option value="Paid">Paid</option>
           </select>
         </BulkActionBar>
-
+<TableWrapper/>
         <Table>
           <thead>
             <tr>

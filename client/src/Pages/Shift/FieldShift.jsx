@@ -23,28 +23,39 @@ import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 
+const statusColors = {
+  in_progress: "#d97a0a",
+  completed: "#1e8c4a",
+  pending: "#c0392b",
+};
+
+const statusLightColors = {
+  in_progress: "#fff4e0",
+  completed: "#e6f9ee",
+  pending: "#fdecea",
+};
+
+const statusLabels = {
+  in_progress: "In Progress",
+  completed: "Completed",
+  pending: "Pending",
+};
+
 const DepartmentPage = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [open, setOpen] = useState(true);
-  const [step, setStep] = useState(0);
-const { projects = [], isLoading = false } = useSelector(
-  (state) => state.projects || {}
-);
-  const statusColors = {
-    "In Progress": "#fac25b",
-    Completed: "#5abe7f",
-    Pending: "#e07777",
-  };
+
+  const { projects = [], isLoading = false } = useSelector(
+    (state) => state.projects || {}
+  );
 
   useEffect(() => {
     dispatch(getProjects({ search: searchTerm }));
   }, [dispatch, searchTerm]);
 
   const handleSaveProject = (data) => {
-    console.log("New Project Added:", data);
     setIsModalOpen(false);
     dispatch(getProjects());
   };
@@ -65,54 +76,57 @@ const { projects = [], isLoading = false } = useSelector(
           showTabs={false}
           searchPlaceholder="Search Project Name"
         />
-<CardsGrid>
-  {isLoading ? (
-    <Loader />
-  ) : projects.length > 0 ? (
-    projects.map((project) => (
-      <Card
-        key={project.id}
-        style={{ backgroundImage: `url(${cardBg})`, cursor: "pointer" }}
-        onClick={() =>
-          navigate(`/project-department/${project.id}`, {
-            state: { projectName: project.name },
-          })
-        }
-      >
-        <CardHeader>
-          <CardTitleSection>
-            <CardTitle>{project.name}</CardTitle>
-          </CardTitleSection>
-          <HiOutlineDotsHorizontal className="menu-icon" />
-        </CardHeader>
 
-        <CardText>
-          <span>Total employees</span>
-          <span className="employee-count">
-            {project.employees?.length || 0}
-          </span>
-        </CardText>
+        <CardsGrid>
+          {isLoading ? (
+            <Loader />
+          ) : projects.length > 0 ? (
+            projects.map((project) => (
+              <Card
+                key={project.id}
+                style={{ backgroundImage: `url(${cardBg})`, cursor: "pointer" }}
+                onClick={() =>
+                  navigate(`/project-department/${project.id}`, {
+                    state: { projectName: project.name },
+                  })
+                }
+              >
+                <CardHeader>
+                  <CardTitleSection>
+                    <CardTitle>{project.name}</CardTitle>
+                  </CardTitleSection>
+                  <HiOutlineDotsHorizontal className="menu-icon" />
+                </CardHeader>
 
-        <CardFooter>
-          <Tag>
-            <img src={TagIcon} alt="Tag icon" />
-            {project.punch_type || "N/A"}
-          </Tag>
-          <StatusTag bgcolor={statusColors[project.status]}>
-            {project.status || "i"}
-          </StatusTag>
-        </CardFooter>
-      </Card>
-    ))
-  ) : null}
-</CardsGrid>
+                <CardText>
+                  <span>Total employees</span>
+                  <span className="employee-count">
+                    {project.employees?.length || 0}
+                  </span>
+                </CardText>
 
-{/* ✅ Outside the grid so it spans full width */}
-{!isLoading && projects.length === 0 && (
-  <div style={{ display: "flex", justifyContent: "center" }}>
-    <NoEmployeeFound searchTerm={searchTerm} label="No Projects Found" />
-  </div>
-)}
+                <CardFooter>
+                  <Tag>
+                    <img src={TagIcon} alt="Tag icon" />
+                    {project.punch_type || "N/A"}
+                  </Tag>
+                  <StatusTag
+  $color={statusColors[project.status]}
+  $lightbg={statusLightColors[project.status]}
+>
+  {statusLabels[project.status] || project.status || "N/A"}
+</StatusTag>
+                </CardFooter>
+              </Card>
+            ))
+          ) : null}
+        </CardsGrid>
+
+        {!isLoading && projects.length === 0 && (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <NoEmployeeFound searchTerm={searchTerm} label="No Projects Found" />
+          </div>
+        )}
 
         <AddProjectModal
           isOpen={isModalOpen}

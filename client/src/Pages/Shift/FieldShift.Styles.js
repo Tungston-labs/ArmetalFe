@@ -579,7 +579,7 @@ export const Tag = styled.div`
   font-weight: 400;
   font-size: 12px;
   border-radius: 6px;
-  padding: 0.1rem 0.6rem;
+  padding: 5px;
 
   img {
     width: 15px;
@@ -639,8 +639,9 @@ export const Tag = styled.div`
 `;
 
 export const StatusTag = styled.span`
-  background-color: ${(props) => props.bgcolor || "#c4e2fdff"};
-  color: white;
+  background-color: ${(props) => props.$lightbg};
+  color: ${(props) => props.$color};
+  border: 1.5px solid ${(props) => props.$color};
   margin-left: 0.5rem;
   padding: 4px 8px;
   border-radius: 4px;

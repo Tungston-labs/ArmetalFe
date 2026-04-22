@@ -290,13 +290,13 @@ export const BulkActionBar = styled.div`
 
 export const TableWrapper = styled.div`
   width: 100%;
-  max-height: 60vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  margin-bottom: 10px;
+  max-height: 65vh;       
+  overflow-y: auto;       
+  overflow-x: hidden;   
+
   border: 1px solid #eee;
   border-radius: 10px;
-  border: none;
+  border:none;
   /* Optional: nice scrollbar */
   &::-webkit-scrollbar {
     width: 4px;
@@ -306,6 +306,7 @@ export const TableWrapper = styled.div`
     border-radius: 10px;
   }
 `;
+
 
 export const Table = styled.table`
   width: 100%;

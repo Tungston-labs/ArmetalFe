@@ -13,7 +13,7 @@ import {
   ApproveButton,
 } from './LeaveRequest.Styles';
 import Loader from "../../Components/Loader"
-import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, Avatar, AvatarFallback, NameCell } from './EmployeeList.styles';
+import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, Avatar, AvatarFallback, NameCell, TableWrapper } from './EmployeeList.styles';
 import EmployeeTitle from '../../Components/EmployeeTitle';
 import Pagination from "../../Components/Pagination/Pagination"
 import NoEmployeeFound from '../../Components/No found/Noemployeefound';
@@ -108,7 +108,7 @@ export default function LeaveRequest() {
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
         />
-
+<TableWrapper>
         <StyledTable>
           <TableHead>
 
@@ -204,7 +204,7 @@ export default function LeaveRequest() {
             )}
           </TableBody>
         </StyledTable>
-
+</TableWrapper>
         <Pagination
           currentPage={page}
           totalPages={pagination?.total_pages ?? 1}

@@ -5,7 +5,7 @@ export const PaginationWrapper = styled.div`
   justify-content: right;
   align-items: center;
   gap: 4px;
-  margin-top: 24px;
+  margin-top: 15px;
 `;
 
 export const PageButton = styled.button`

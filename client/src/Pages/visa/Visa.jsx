@@ -13,7 +13,7 @@ import {
 import Loader from "../../Components/Loader";
 import Pagination from "../../Components/Pagination/Pagination"
 import EmployeeTitle from "../../Components/EmployeeTitle";
-import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from "../leaveDetails/EmployeeList.styles";
+import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead, TableWrapper } from "../leaveDetails/EmployeeList.styles";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -117,6 +117,7 @@ const country = user?.company?.country || "IN";
           showBackArrow={false}
 
         />
+        <TableWrapper>
         <StyledTable>
           <TableHead>
             <HeadRow>
@@ -160,6 +161,7 @@ const country = user?.company?.country || "IN";
             )}
           </TableBody>
         </StyledTable>
+        </TableWrapper>
         <Pagination
           currentPage={currentPage}
           totalPages={pagination?.total_pages || 1}

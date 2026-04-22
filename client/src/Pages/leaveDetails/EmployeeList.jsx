@@ -12,6 +12,7 @@ import {
   BodyCell,
   EmptyRow,
   PageLoaderOverlay,
+  TableWrapper,
 } from "./EmployeeList.styles";
 import {
   ModalOverlay,
@@ -133,71 +134,73 @@ const EmployeeList = () => {
         />
         {!loading && (
           <>
-            <StyledTable>
-              <TableHead>
-                <HeadRow>
-                  <HeadCell>Sl No</HeadCell>
-                  <HeadCell>Employee name</HeadCell>
-                  <HeadCell>Employee ID</HeadCell>
-                  <HeadCell>Email ID</HeadCell>
-                  <HeadCell>Job Position</HeadCell>
-                  <HeadCell>Department</HeadCell>
-                  <HeadCell>Delete</HeadCell>
-                </HeadRow>
-              </TableHead>
+            <TableWrapper>
+              <StyledTable>
+                <TableHead>
+                  <HeadRow>
+                    <HeadCell>Sl No</HeadCell>
+                    <HeadCell>Employee name</HeadCell>
+                    <HeadCell>Employee ID</HeadCell>
+                    <HeadCell>Email ID</HeadCell>
+                    <HeadCell>Job Position</HeadCell>
+                    <HeadCell>Department</HeadCell>
+                    <HeadCell>Delete</HeadCell>
+                  </HeadRow>
+                </TableHead>
 
-              <TableBody>
-               {!loading && filteredEmployees.length > 0 ? (
-                  filteredEmployees.map((emp, index) => (
-                    <BodyRow
-                      key={emp.id}
-                      onClick={() => {
-                        setSelectedEmployee(emp);
-                        setOpenModal(true);
-                      }}
-                    >
-                      <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
-
-                      <BodyCell> {emp.name}</BodyCell>
-                      <BodyCell>{emp.employee_id}</BodyCell>
-
-                      <BodyCell>
-                        <TruncatedText title={emp.email}>
-                          {emp.email}
-                        </TruncatedText>
-                      </BodyCell>
-
-                      <BodyCell>
-                        <TruncatedText title={emp.designation}>
-                          {emp.designation}
-                        </TruncatedText>
-                      </BodyCell>
-
-                      <BodyCell>
-                        <TruncatedText title={emp.department}>
-                          {emp.department}
-                        </TruncatedText>
-                      </BodyCell>
-
-                      <DeleteIconWrapper
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteClick(emp.id);
+                <TableBody>
+                  {!loading && filteredEmployees.length > 0 ? (
+                    filteredEmployees.map((emp, index) => (
+                      <BodyRow
+                        key={emp.id}
+                        onClick={() => {
+                          setSelectedEmployee(emp);
+                          setOpenModal(true);
                         }}
                       >
-                        <FaTrash color="red" />
-                      </DeleteIconWrapper>
-                    </BodyRow>
-                  ))
-               ) : !loading ? (
-  <tr>
-    <td colSpan={7}>
-      <NoEmployeeFound searchTerm={debouncedSearch} />
-    </td>
-  </tr>
-) : null}
-              </TableBody>
-            </StyledTable>
+                        <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
+
+                        <BodyCell> {emp.name}</BodyCell>
+                        <BodyCell>{emp.employee_id}</BodyCell>
+
+                        <BodyCell>
+                          <TruncatedText title={emp.email}>
+                            {emp.email}
+                          </TruncatedText>
+                        </BodyCell>
+
+                        <BodyCell>
+                          <TruncatedText title={emp.designation}>
+                            {emp.designation}
+                          </TruncatedText>
+                        </BodyCell>
+
+                        <BodyCell>
+                          <TruncatedText title={emp.department}>
+                            {emp.department}
+                          </TruncatedText>
+                        </BodyCell>
+
+                        <DeleteIconWrapper
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(emp.id);
+                          }}
+                        >
+                          <FaTrash color="red" />
+                        </DeleteIconWrapper>
+                      </BodyRow>
+                    ))
+                  ) : !loading ? (
+                    <tr>
+                      <td colSpan={7}>
+                        <NoEmployeeFound searchTerm={debouncedSearch} />
+                      </td>
+                    </tr>
+                  ) : null}
+                </TableBody>
+              </StyledTable>
+            </TableWrapper>
             <Pagination
               currentPage={page}
               totalPages={pagination?.total_pages || 1}

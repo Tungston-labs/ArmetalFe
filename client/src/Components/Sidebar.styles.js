@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const SidebarContainer = styled.div`
-  width: 350px;
+  width: 310px;
   min-width: 60px;
   background: linear-gradient(181deg, rgba(23, 37, 84, 1) 20%, rgba(51, 82, 186, 1) 100%);
   color: white;
@@ -32,19 +32,7 @@ export const SidebarContainer = styled.div`
     }
   }
 
-  @media (min-width: 768px) and (max-width:1024px) {
-    width: 80px;
-  }
 
-  @media (min-width: 1025px) and (max-width:1439px) {
-    width: 18%;
-  }
-  @media (min-width: 1440px) and (max-width:1920px) {
-    width: 20%;
-  }
-  @media (min-width: 2560px) {
-    width: 20%;
-  }
   @media print {
     display: none !important;
   }

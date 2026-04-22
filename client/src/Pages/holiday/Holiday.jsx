@@ -13,6 +13,7 @@ import {
   Heading,
   FieldWrapper,
   Label,
+  TableWrapper,
 } from './Holiday.styles';
 import { FaTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -94,49 +95,49 @@ const HolidayManager = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
- const handleAdd = () => {
-  const { name, type, date } = formData;
-  const trimmedName = name.trim();
+  const handleAdd = () => {
+    const { name, type, date } = formData;
+    const trimmedName = name.trim();
 
-  if (!trimmedName || !type || !date) {
-    setFormError("⚠️ Please fill in all fields before adding a holiday.");
-    return;
-  }
+    if (!trimmedName || !type || !date) {
+      setFormError("⚠️ Please fill in all fields before adding a holiday.");
+      return;
+    }
 
-  if (trimmedName.length > 250) {
-    setFormError("⚠️ Holiday name cannot exceed 250 characters.");
-    return;
-  }
+    if (trimmedName.length > 250) {
+      setFormError("⚠️ Holiday name cannot exceed 250 characters.");
+      return;
+    }
 
-  const formattedDate = formatDateToISO(date);
-  const selectedDate = new Date(date);
-  const today = new Date();
+    const formattedDate = formatDateToISO(date);
+    const selectedDate = new Date(date);
+    const today = new Date();
 
-  today.setHours(0, 0, 0, 0);
-  selectedDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
 
-  if (selectedDate < today) {
-    setFormError("⚠️ Holiday date cannot be in the past.");
-    return;
-  }
-  const isDateAlreadyExists = holidays.some(
-    (holiday) => holiday.date === formattedDate
-  );
+    if (selectedDate < today) {
+      setFormError("⚠️ Holiday date cannot be in the past.");
+      return;
+    }
+    const isDateAlreadyExists = holidays.some(
+      (holiday) => holiday.date === formattedDate
+    );
 
-  if (isDateAlreadyExists) {
-    setFormError("⚠️ A holiday already exists on this date.");
-    return;
-  }
+    if (isDateAlreadyExists) {
+      setFormError("⚠️ A holiday already exists on this date.");
+      return;
+    }
 
-  dispatch(addHoliday({
-    description: trimmedName,
-    holiday_type: type,
-    date: formattedDate
-  }));
+    dispatch(addHoliday({
+      description: trimmedName,
+      holiday_type: type,
+      date: formattedDate
+    }));
 
-  setFormData({ name: "", type: "", date: "" });
-  setFormError("");
-};
+    setFormData({ name: "", type: "", date: "" });
+    setFormError("");
+  };
 
   const handleDeleteClick = (id) => {
     setSelectedIdToDelete(id);
@@ -153,15 +154,15 @@ const HolidayManager = () => {
     setShowDeleteModal(false);
     setSelectedIdToDelete(null);
   };
-const formatDateToDisplay = (dateString) => {
-  const date = new Date(dateString);
+  const formatDateToDisplay = (dateString) => {
+    const date = new Date(dateString);
 
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
 
-  return `${day}/${month}/${year}`;
-};
+    return `${day}/${month}/${year}`;
+  };
   return (
     <>
       <Container>
@@ -215,54 +216,54 @@ const formatDateToDisplay = (dateString) => {
         <Hr />
 
         <Heading>Holiday List</Heading>
+        <TableWrapper>
+          <StyledTable>
+            <TableHead>
+              <HeadRow>
+                <HeadCell>Sl No</HeadCell>
+                <HeadCell>Holiday name</HeadCell>
+                <HeadCell>Holiday type</HeadCell>
+                <HeadCell>Date</HeadCell>
+                <HeadCell></HeadCell>
+              </HeadRow>
+            </TableHead>
 
-        <StyledTable>
-          <TableHead>
-            <HeadRow>
-              <HeadCell>Sl No</HeadCell>
-              <HeadCell>Holiday name</HeadCell>
-              <HeadCell>Holiday type</HeadCell>
-              <HeadCell>Date</HeadCell>
-              <HeadCell></HeadCell>
-            </HeadRow>
-          </TableHead>
-
-          <TableBody>
-          {loading ? (
-  <tr>
-    <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
-      <Loader size="large" />
-    </Td>
-  </tr>
-) : holidays.length === 0 ? (
-  <tr>
-    <EmptyRow colSpan="5" style={{ textAlign: "center" }}>
-      No holidays found.
-    </EmptyRow>
-  </tr>
-) : (
-  [...holidays]
-    .sort((a, b) => new Date(b.date) - new Date(a.date)) 
-    .map((item, index) => (
-      <BodyRow key={item.id}>
-        <BodyCell>
-          {(currentPage - 1) * PAGE_SIZE + index + 1}
-        </BodyCell>
-        <BodyCell title={item.description}>{item.description}</BodyCell>
-        <BodyCell>{item.holiday_type_display}</BodyCell>
-        <BodyCell>{formatDateToDisplay(item.date)}</BodyCell>
-        <BodyCell>
-          <FaTrashAlt
-            style={{ color: "red", cursor: "pointer" }}
-            onClick={() => handleDeleteClick(item.id)}
-          />
-        </BodyCell>
-      </BodyRow>
-    ))
-)}
-          </TableBody>
-        </StyledTable>
-
+            <TableBody>
+              {loading ? (
+                <tr>
+                  <Td colSpan="5" style={{ textAlign: "center", padding: "2rem" }}>
+                    <Loader size="large" />
+                  </Td>
+                </tr>
+              ) : holidays.length === 0 ? (
+                <tr>
+                  <EmptyRow colSpan="5" style={{ textAlign: "center" }}>
+                    No holidays found.
+                  </EmptyRow>
+                </tr>
+              ) : (
+                [...holidays]
+                  .sort((a, b) => new Date(b.date) - new Date(a.date))
+                  .map((item, index) => (
+                    <BodyRow key={item.id}>
+                      <BodyCell>
+                        {(currentPage - 1) * PAGE_SIZE + index + 1}
+                      </BodyCell>
+                      <BodyCell title={item.description}>{item.description}</BodyCell>
+                      <BodyCell>{item.holiday_type_display}</BodyCell>
+                      <BodyCell>{formatDateToDisplay(item.date)}</BodyCell>
+                      <BodyCell>
+                        <FaTrashAlt
+                          style={{ color: "red", cursor: "pointer" }}
+                          onClick={() => handleDeleteClick(item.id)}
+                        />
+                      </BodyCell>
+                    </BodyRow>
+                  ))
+              )}
+            </TableBody>
+          </StyledTable>
+        </TableWrapper>
         {showDeleteModal && (
           <div style={{
             position: "fixed",

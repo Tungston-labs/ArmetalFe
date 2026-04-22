@@ -3,9 +3,10 @@ import styled from "styled-components";
 export const PageWrapper = styled.div`
   font-family: "Satoshi", sans-serif;
   background-color: #ffffff;
-  padding: 20px ;
+  padding: 20px;
   color: #1e1e1e;
   min-height: 100vh;
+
   @media (max-width: 768px) {
     padding: 1.5rem;
   }
@@ -14,7 +15,6 @@ export const PageWrapper = styled.div`
 export const Header = styled.div`
   display: flex;
   align-items: center;
-  /* gap: 1rem; */
   flex-wrap: wrap;
   background-color: #ffffff;
   margin-bottom: 1.5rem;
@@ -29,8 +29,9 @@ export const BackButton = styled.button`
   color: #3352ba;
   font-size: 1.6rem;
   cursor: pointer;
+  margin-top: 10px;
   transition: transform 0.2s ease;
-margin-top: 10px;
+
   &:hover {
     transform: translateX(-3px);
   }
@@ -46,26 +47,23 @@ export const HeaderTitle = styled.h1`
   margin: 0;
 `;
 
-
-
 export const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 2rem;
   gap: 1.5rem;
 
- 
   @media (min-width: 3840px) {
     margin-top: 4rem;
     gap: 2.5rem;
   }
 
-
   @media (max-width: 2560px) {
     margin-top: 3rem;
     gap: 2rem;
   }
- @media (max-width: 1940px) {
+
+  @media (max-width: 1940px) {
     margin-top: 3rem;
     gap: 2rem;
   }
@@ -75,12 +73,10 @@ export const FormContainer = styled.div`
     gap: 1.8rem;
   }
 
-
   @media (max-width: 1024px) {
     margin-top: 1.8rem;
     gap: 1.5rem;
   }
-
 
   @media (max-width: 768px) {
     margin-top: 1.3rem;
@@ -116,7 +112,6 @@ export const FormRow = styled.div`
     line-height: 100%;
   }
 
-
   @media (min-width: 3840px) {
     label {
       font-size: 2rem;
@@ -126,31 +121,30 @@ export const FormRow = styled.div`
     }
   }
 
-
   @media (max-width: 2560px) {
+    gap: 1.2rem;
     label {
       font-size: 20px;
     }
-    gap: 1.2rem;
   }
+
   @media (max-width: 1940px) {
-    label {
-      font-size: 1rem;
-    }
     div {
       flex: 1 1 47%;
+    }
+    label {
+      font-size: 1rem;
     }
   }
 
   @media (max-width: 1440px) {
-    label {
-      font-size: 1rem;
-    }
     div {
       flex: 1 1 47%;
     }
+    label {
+      font-size: 1rem;
+    }
   }
-
 
   @media (max-width: 1024px) {
     div {
@@ -162,7 +156,6 @@ export const FormRow = styled.div`
     }
   }
 
-  
   @media (max-width: 768px) {
     div {
       min-width: 100%;
@@ -171,7 +164,6 @@ export const FormRow = styled.div`
       font-size: 15px;
     }
   }
-
 
   @media (max-width: 480px) {
     gap: 0.8rem;
@@ -205,45 +197,37 @@ export const InputField = styled.input`
     cursor: not-allowed;
   }
 
-
   @media (min-width: 3840px) {
     font-size: 2rem;
-    /* padding: 1.2rem; */
     border-radius: 10px;
   }
 
-
   @media (max-width: 2560px) {
     font-size: 20px;
-    /* padding: 1rem; */
   }
- @media (max-width: 1940px) {
+
+  @media (max-width: 1940px) {
     font-size: 0.9rem;
-    /* padding: 1rem; */
   }
 
   @media (max-width: 1440px) {
     font-size: 0.9rem;
-    /* padding: 0.8rem; */
   }
-
 
   @media (max-width: 1024px) {
     font-size: 0.9rem;
-    /* padding: 0.75rem; */
   }
 
   @media (max-width: 768px) {
     font-size: 0.7rem;
-    /* padding: 0.6rem; */
   }
-
 
   @media (max-width: 480px) {
     font-size: 14px;
     padding: 0.55rem;
   }
 `;
+
 export const ProgressContainer = styled.div`
   width: 100%;
   display: flex;
@@ -265,8 +249,6 @@ export const RightSide = styled.div`
   gap: 10px;
 `;
 
-
-
 export const ButtonWrapper = styled.div`
   display: flex;
   gap: 1rem;
@@ -275,24 +257,20 @@ export const ButtonWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: flex-end;
 
-  /* 4K Screens - Large spacing */
   @media (min-width: 2560px) {
     gap: 2rem;
     margin-top: 3rem;
   }
 
-  /* QHD Screens (1440px - 2559px) */
   @media (max-width: 2559px) and (min-width: 1440px) {
     gap: 1.5rem;
   }
 
-  /* Standard Laptops and Tablets */
   @media (max-width: 1024px) {
     justify-content: center;
     gap: 1rem;
   }
 
-  /* Tablets & Below */
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
@@ -300,7 +278,6 @@ export const ButtonWrapper = styled.div`
     gap: 0.8rem;
   }
 
-  /* Small Phones */
   @media (max-width: 480px) {
     gap: 0.7rem;
     margin-top: 1.5rem;
@@ -309,11 +286,15 @@ export const ButtonWrapper = styled.div`
 
 export const ActionButton = styled.button`
   background-color: ${(props) =>
-    props.color === "edit" ? "#3f64d7" : props.color === "delete" ? "#d9534f" : "#ccc"};
+    props.color === "edit"
+      ? "#3f64d7"
+      : props.color === "delete"
+      ? "#d9534f"
+      : "#ccc"};
   color: white;
   border: none;
   border-radius: 6px;
-  padding:12px;
+  padding: 12px;
   cursor: pointer;
   font-size: 16px;
   font-family: "Satoshi", sans-serif;
@@ -325,145 +306,62 @@ export const ActionButton = styled.button`
 
   &:hover {
     background-color: ${(props) =>
-      props.color === "edit" ? "#2f4db5" : props.color === "delete" ? "#b52b27" : "#999"};
+      props.color === "edit"
+        ? "#2f4db5"
+        : props.color === "delete"
+        ? "#b52b27"
+        : "#999"};
   }
+
   @media (min-width: 3840px) {
     font-size: 2rem;
-
     border-radius: 10px;
   }
-  @media (max-width: 2561px) {
+
+  @media (max-width: 2560px) {
     font-size: 1.2rem;
-
     border-radius: 10px;
   }
- @media (max-width: 2560px) {
-    font-size: 1.2rem;
 
-    border-radius: 10px;
-  }
-  /* QHD Screens (1440px - 2560px) */
   @media (max-width: 1940px) and (min-width: 1440px) {
     font-size: 15px;
-
   }
 
-  /* Standard Laptop / Tablet */
   @media (max-width: 1024px) {
     font-size: 16px;
-
   }
 
-  /* Tablets & Smaller Screens */
   @media (max-width: 768px) {
     width: 80%;
     font-size: 15px;
-
   }
 
-  /* Small Phones */
   @media (max-width: 480px) {
     width: 100%;
     font-size: 14px;
-
   }
 `;
-
 
 export const TableWrapper = styled.div`
-  overflow-x: auto;
-  border-radius: 8px;
-`;
-export const Table = styled.table`
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 10px;
-  /* margin-top: 1rem; */
-  text-align: left;
-  font-family: "Satoshi";
+  max-height: 40vh;       
+  overflow-y: auto;       
+  overflow-x: hidden;   
 
-  /* Scroll on small screens */
-  // display: block;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  border:none;
+  /* Optional: nice scrollbar */
+  &::-webkit-scrollbar {
+    width: 2px;
 
-  td {
-    text-align: left;
-    padding: clamp(4px, 0.5vw, 12px); /* responsive padding */
-    white-space: nowrap;
-    background-color: white;
-    border: none;
-    font-size: clamp(0.8rem, 1vw, 1.5rem); /* responsive font */
   }
-
-  th {
-    text-align: left;
-    background-color: #304eb0;
-    color: white;
-    font-family: Raleway;
-    padding: clamp(6px, 0.5vw, 16px); /* responsive padding */
-    font-size: clamp(0.9rem, 1vw, 1.8rem); /* responsive font */
-  }
-
-  tbody tr {
-    box-shadow: 0px 0px 2.7px 0px rgba(0, 0, 0, 0.28);
-  }
-
-  /* Background color for even rows */
-  tbody tr:nth-child(even) td {
-    background-color: #e6ecff;
-  }
-
-  tbody tr td:first-child {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-  }
-
-  tbody tr td:last-child {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-  }
-
-  tbody tr:hover td {
-    background-color: #f5f5f5;
-  }
-
-  @media (min-width: 2560px) {
-    td,
-    th {
-      font-size: clamp(1.2rem, 1.5vw, 1.8rem); /* large screens like 2K/4K */
-      padding: clamp(8px, 1vw, 24px);
-    }
-  }
-
-  @media (min-width: 3840px) {
-    td,
-    th {
-      font-size: clamp(1.5rem, 2vw, 2rem); /* ultra-large screens like 8K */
-      padding: clamp(10px, 2vw, 32px);
-    }
-  }
-`;
-export const HeadCellTableHeader = styled.th`
-  background-color: #3f64d7;
-  color: white;
-  padding: 0.8rem;
-`;
-
-export const TableRow = styled.tr`
-  &.even {
-    background-color: #f6f8ff;
-  }
-  &:hover {
-    background-color: #eef2ff;
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
   }
 `;
 
-export const TableCell = styled.td`
-  padding: 0.8rem;
-  border-bottom: 1px solid #ddd;
-  white-space: nowrap;
-`;
 
 export const EmployeesSection = styled.div`
   margin-top: 2rem;
@@ -495,44 +393,37 @@ export const EmployeeHeader = styled.div`
     margin: 0;
   }
 
-  /* Ultra 4K Screens */
   @media (min-width: 3840px) {
     h2 {
       font-size: 2.4rem;
     }
   }
 
-  /* QHD Screens (2560px) */
   @media (max-width: 3839px) and (min-width: 2560px) {
     h2 {
       font-size: 2.2rem;
     }
   }
 
-  /* Large Desktop (1940px) */
   @media (max-width: 2559px) and (min-width: 1940px) {
     h2 {
       font-size: 2rem;
     }
   }
 
-  /* Standard Desktop (1440px) */
   @media (max-width: 1939px) and (min-width: 1440px) {
     h2 {
       font-size: 1.5rem;
     }
   }
 
-  /* Laptops/Tablets (1024px) */
   @media (max-width: 1439px) and (min-width: 1024px) {
     h2 {
       font-size: 1.2rem;
     }
   }
 
-
   @media (max-width: 1023px) {
-    /* flex-direction: column; */
     align-items: center;
     h2 {
       font-size: 1.4rem;
@@ -540,7 +431,6 @@ export const EmployeeHeader = styled.div`
     }
   }
 
-  /* Small Phones (480px) */
   @media (max-width: 480px) {
     gap: 0.6rem;
     h2 {
@@ -559,6 +449,8 @@ export const AddButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 6px;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
   font-family: "Satoshi", sans-serif;
   font-weight: 500;
   transition: background 0.3s ease, transform 0.2s ease;
@@ -568,54 +460,35 @@ export const AddButton = styled.button`
     transform: translateY(-2px);
   }
 
-  padding: 0.7rem 1rem;
-  font-size: 0.9rem;
-
   @media (min-width: 3840px) {
     font-size: 1.4rem;
-
   }
-
 
   @media (max-width: 3839px) and (min-width: 2560px) {
     font-size: 1.3rem;
-
   }
 
   @media (max-width: 2559px) and (min-width: 1940px) {
     font-size: 1.3rem;
-   
   }
-
 
   @media (max-width: 1939px) and (min-width: 1440px) {
     font-size: 1rem;
-  
   }
 
   @media (max-width: 1439px) and (min-width: 1024px) {
     font-size: 0.9rem;
- 
   }
 
   @media (max-width: 1023px) {
-    /* width: 20%; */
     font-size: 0.8rem;
-  
   }
 
   @media (max-width: 480px) {
     width: 100%;
     font-size: 0.85rem;
-  
   }
 `;
-
-
-
-
-
-
 
 export const StatusRow = styled.div`
   display: flex;
@@ -632,7 +505,7 @@ export const StatusContainer = styled.div`
   background: #f9fafb;
   border-radius: 14px;
   border: 1px solid #e5e7eb;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
   min-width: 220px;
 `;
 
@@ -651,9 +524,9 @@ export const NewStatusBadge = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  background: ${(props) => props.bgcolor || "#6b7280"};
+  background: ${(props) => props.$bgcolor || "#6b7280"};
   color: white;
-  box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const NewStatusDot = styled.div`
@@ -662,4 +535,101 @@ export const NewStatusDot = styled.div`
   border-radius: 50%;
   background: white;
   border: 3px solid ${(props) => props.bgcolor || "#6b7280"};
+`;
+
+export const StyledTable = styled.table`
+  width: 100%;
+  min-width: 700px;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  text-align: left;
+  font-family: "Satoshi";
+  -webkit-overflow-scrolling: touch;
+`;
+
+export const TableHead = styled.thead`
+  background: #304eb0;
+  color: white;
+`;
+
+export const TableBody = styled.tbody``;
+
+export const HeadRow = styled.tr``;
+
+export const HeadCell = styled.th`
+  padding: 12px;
+  font-size: 1rem;
+  text-align: left;
+  font-family: "Raleway";
+  white-space: nowrap;
+
+  @media (min-width: 768px) {
+    padding: 10px;
+    font-size: 0.7rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1920px) {
+    padding: 10px;
+    font-size: 1rem;
+  }
+
+  @media (min-width: 2560px) {
+    padding: 15px;
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 3820px) {
+    padding: 15px;
+    font-size: 1.5rem;
+  }
+`;
+
+export const BodyRow = styled.tr`
+  cursor: pointer;
+  transition: background 0.2s ease;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25);
+
+  &:hover td {
+    background: #f9f9ff;
+  }
+
+  &:nth-child(even) td {
+    background: #e6ecff;
+  }
+`;
+
+export const BodyCell = styled.td`
+  font-size: 1rem;
+  white-space: nowrap;
+  background: #ffffff;
+
+  @media (min-width: 768px) {
+    padding: 5px;
+    font-size: 0.7rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 1920px) {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
 `;

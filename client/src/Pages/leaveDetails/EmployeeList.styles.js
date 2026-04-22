@@ -182,7 +182,7 @@ export const DeleteIconWrapper = styled.td`
 
 export const TableWrapper = styled.div`
   width: 100%;
-  max-height: 60vh;       
+  max-height: 65vh;       
   overflow-y: auto;       
   overflow-x: hidden;   
 
@@ -191,7 +191,7 @@ export const TableWrapper = styled.div`
   border:none;
   /* Optional: nice scrollbar */
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 2px;
   }
   &::-webkit-scrollbar-thumb {
     background: #c1c1c1;

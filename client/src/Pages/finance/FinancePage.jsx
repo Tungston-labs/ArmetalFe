@@ -25,7 +25,7 @@ const PAYMENT_TYPE_LABELS = {
   OUT: "Expense",
 };
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 12;
 const FALLBACK = "----";
 
 const FinanceDetail = () => {

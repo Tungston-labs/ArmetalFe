@@ -174,41 +174,23 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
-  padding: clamp(6px, 1vw, 12px) clamp(10px, 1vw, 16px);
+  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 7px;
   width: 100%;
   background-color: #fff;
-  font-size: clamp(0.85rem, 1vw, 1rem);
+  font-size: 0.9rem;
 
-  @media (min-width: 2560px) {
-    font-size: 1.3rem;
-    padding: 14px 20px;
-  }
-
-  @media (min-width: 3840px) {
-    font-size: 1.6rem;
-    padding: 18px 24px;
-  }
 `;
 
 export const Select = styled.select`
-  padding: clamp(6px, 1vw, 12px) clamp(10px, 1vw, 16px);
+  padding:12px;
   border: 1px solid #ccc;
   border-radius: 7px;
   width: 100%;
   background-color: #fff;
-  font-size: clamp(0.85rem, 1vw, 1rem);
+  font-size: 0.9rem;
 
-  @media (min-width: 2560px) {
-    font-size: 1.3rem;
-    padding: 14px 20px;
-  }
-
-  @media (min-width: 3840px) {
-    font-size: 1.6rem;
-    padding: 18px 24px;
-  }
 `;
 
 export const DateWrapper = styled.div`
@@ -219,22 +201,12 @@ export const DateWrapper = styled.div`
 `;
 
 export const DateInput = styled.input`
-  padding: clamp(6px, 1vw, 12px) clamp(10px, 1vw, 16px);
+  padding: 11px;
   border: 1px solid #ccc;
   border-radius: 7px;
   width: 100%;
   background-color: #fff;
-  font-size: clamp(0.85rem, 1vw, 1rem);
-
-  @media (min-width: 2560px) {
-    font-size: 1.3rem;
-    padding: 14px 20px;
-  }
-
-  @media (min-width: 3840px) {
-    font-size: 1.6rem;
-    padding: 18px 24px;
-  }
+  font-size: 0.9rem;
 `;
 
 export const Hr = styled.hr`
@@ -318,22 +290,18 @@ export const AddButton = styled.button`
 `;
 
 
-
-
-
 export const TableWrapper = styled.div`
   width: 100%;
-  max-height: 70vh;       
+  max-height: 65vh;       
   overflow-y: auto;       
   overflow-x: hidden;   
-  margin-bottom:10px;
 
   border: 1px solid #eee;
   border-radius: 10px;
-border:none;
+  border:none;
   /* Optional: nice scrollbar */
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 2px;
   }
   &::-webkit-scrollbar-thumb {
     background: #c1c1c1;
@@ -342,39 +310,10 @@ border:none;
 `;
 
 export const Heading = styled.h2`
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   font-family: Raleway;
   font-weight: 600;
-  line-height: 120%;
-  letter-spacing: 0%;
-  cursor:pointer;
-  /* ✅ Responsive font size using clamp */
-  font-size: clamp(0.9rem, 1.2vw, 1.2rem);
-
-  /* ✅ Large desktops / laptops */
-  @media (min-width: 1024px) and (max-width: 1919px) {
-    font-size: 1.4rem;
-  }
-
-  /* ✅ QHD / 2K screens */
-  @media (min-width: 1920px) and (max-width: 2559px) {
-    font-size: 1.8rem;
-  }
-
-  /* ✅ 4K screens */
-  @media (min-width: 2560px) {
-    font-size: 2.2rem;
-  }
-
-  /* ✅ Tablets */
-  @media (min-width: 768px) and (max-width: 1023px) {
-    font-size: 1.1rem;
-  }
-
-  /* ✅ Mobiles */
-  @media (max-width: 767px) {
-    font-size: 1rem;
-  }
+font-size: 1rem;
 `;
 
 
@@ -541,7 +480,7 @@ export const Pagination = styled.div`
     color: white;
     border-color: #1e3a8a;
   }
-  }
+  
 `;
 export const ErrorMessage = styled.p`
   color: red;

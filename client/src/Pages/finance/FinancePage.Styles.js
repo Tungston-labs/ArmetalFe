@@ -122,10 +122,21 @@ border: 1px solid #052DB4;
 
 export const TableWrapper = styled.div`
   width: 100%;
-  background-color: white;
-  padding: 6px;
-  border-radius: 8px;
-  overflow-x: auto; /* horizontal scroll for small screens */
+  max-height: 65vh;       
+  overflow-y: auto;       
+  overflow-x: hidden;   
+
+  border: 1px solid #eee;
+  border-radius: 10px;
+  border:none;
+  /* Optional: nice scrollbar */
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
 `;
 
 export const StyledTable = styled.table`
