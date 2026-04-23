@@ -863,6 +863,8 @@ from employee.models import Employee_db
 from attendance.models import Attendance
 from holidays.models import PublicHoliday
 
+# Attendance model
+
 class EmployeeMonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
