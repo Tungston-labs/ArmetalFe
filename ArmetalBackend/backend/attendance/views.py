@@ -11,7 +11,6 @@ from .utils.timezone_utils import (
     get_company_timezone,
     ensure_timezone,
     safe_parse_datetime,
-    validate_punch_times,
 )
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 import pytz
@@ -31,167 +30,143 @@ from rest_framework import status
 logger = logging.getLogger(__name__)
 
 # --------------------------------------------------------------view for swipe in/out
-from datetime import datetime, time, timedelta
-
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
             user = request.user
-            employee = getattr(user, "employee_db", None)
+            employee = getattr(user, 'employee_db', None)
 
             if not employee:
-                return Response({"error": "Employee not found"}, status=404)
+                return Response({'error': 'Employee not found'}, status=404)
 
+            # ------------------ LOCATION INPUT ------------------
             emp_lat = request.data.get("latitude")
             emp_lon = request.data.get("longitude")
-            session_id = request.data.get("session_id")
 
             if emp_lat is None or emp_lon is None:
-                return Response(
-                    {"error": "Latitude and longitude are required"},
-                    status=400,
-                )
+                return Response({"error": "Latitude and longitude are required"}, status=400)
 
             emp_lat, emp_lon = float(emp_lat), float(emp_lon)
+            employee_location = (emp_lat, emp_lon)
 
+            # ------------------ PROJECT ------------------
             project = Project.objects.filter(employees=employee).first()
 
-            if project:
-                if project.status != "in_progress":
-                    return Response(
-                        {
-                            "error": (
-                                f"Your project '{project.name}' is not active "
-                                f"(status: {project.status}). Punching is not allowed."
-                            )
-                        },
-                        status=400,
-                    )
-                punch_type = project.punch_type.lower()
-            else:
-                punch_type = "company"
+            if project and project.status != "in_progress":
+                return Response(
+                    {"error": f"Your project '{project.name}' is not active (status: {project.status}). Punching is not allowed."},
+                    status=400
+                )
 
-            if punch_type == "onsite":
-                project_location = (float(project.latitude), float(project.longitude))
-                employee_location = (emp_lat, emp_lon)
-                distance_project = geodesic(employee_location, project_location).meters
+            punch_type = project.punch_type.lower() if project else "company"
 
-                company = employee.department.company
-                company_location = (float(company.latitude), float(company.longitude))
-                distance_company = geodesic(employee_location, company_location).meters
-
-                if distance_project > 50 and distance_company > 50:
-                    return Response(
-                        {
-                            "error": (
-                                f"You are too far from project/company site "
-                                f"(Project: {int(distance_project)}m, "
-                                f"Company: {int(distance_company)}m). "
-                                f"Must be within 50m of either."
-                            )
-                        },
-                        status=400,
-                    )
-
-            elif punch_type == "bench":
-                company = employee.department.company
-                company_location = (float(company.latitude), float(company.longitude))
-                employee_location = (emp_lat, emp_lon)
-                distance = geodesic(employee_location, company_location).meters
-
-                if distance > 50:
-                    return Response(
-                        {
-                            "error": (
-                                f"Bench employees must punch from company location "
-                                f"({int(distance)}m). Allowed within 50m."
-                            )
-                        },
-                        status=400,
-                    )
-
-            elif punch_type == "company":
-                company = employee.department.company
-                company_location = (float(company.latitude), float(company.longitude))
-                employee_location = (emp_lat, emp_lon)
-                distance = geodesic(employee_location, company_location).meters
-
-                if distance > 50:
-                    return Response(
-                        {
-                            "error": (
-                                f"You are too far from company location "
-                                f"({int(distance)}m). Must be within 50m."
-                            )
-                        },
-                        status=400,
-                    )
-
-            elif punch_type == "variant":
-                pass
-            else:
-                return Response({"error": f"Invalid punch type: {punch_type}"}, status=400)
-
-            address = self._get_location_address(emp_lat, emp_lon)
+            # ------------------ TIME ------------------
             company_tz = get_company_timezone(employee)
             now_utc = timezone.now()
             now_company_tz = now_utc.astimezone(company_tz)
             today = now_company_tz.date()
 
+            # ------------------ LEAVE CHECK ------------------
             from leave.models import LeaveRequest
-
             is_on_leave = LeaveRequest.objects.filter(
                 employee=employee,
                 status="approved",
                 from_date__lte=today,
-                to_date__gte=today,
+                to_date__gte=today
             ).exists()
 
             if is_on_leave:
                 return Response(
                     {"error": "You are currently on approved leave and cannot mark attendance."},
-                    status=400,
+                    status=400
                 )
 
+            # ------------------ ATTENDANCE ------------------
             attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
 
-            if session_id:
-                latest_session = attendance.sessions.filter(
-                    id=session_id,
-                    time_out__isnull=True,
-                ).first()
-            else:
-                latest_session = attendance.sessions.filter(
-                    time_out__isnull=True
-                ).order_by("-id").first()
+            latest_session = attendance.sessions.order_by('-time_in').first()
 
-            should_punch_in = latest_session is None
+            should_punch_in = self._should_punch_in(latest_session)
 
+            logger.info(f"Latest session: {latest_session}")
+            logger.info(f"Should punch in: {should_punch_in}")
+
+            # ------------------ LOCATION VALIDATION (ONLY FOR PUNCH-IN) ------------------
+            if should_punch_in:
+                location_error = self._validate_location(
+                    employee, project, punch_type, employee_location
+                )
+                if location_error:
+                    return Response({"error": location_error}, status=400)
+
+            # ------------------ ADDRESS ------------------
+            address = self._get_location_address(emp_lat, emp_lon)
+
+            # ------------------ ACTION ------------------
             if should_punch_in:
                 return self._handle_punch_in(
-                    attendance,
-                    now_company_tz,
-                    company_tz,
-                    emp_lat,
-                    emp_lon,
-                    address,
+                    attendance, now_company_tz, company_tz,
+                    emp_lat, emp_lon, address
                 )
             else:
                 return self._handle_punch_out(
-                    latest_session,
-                    now_company_tz,
-                    company_tz,
-                    emp_lat,
-                    emp_lon,
-                    address,
-                    attendance,
+                    latest_session, now_company_tz, company_tz,
+                    emp_lat, emp_lon, address, attendance
                 )
 
         except Exception as e:
             logger.critical(f"Unhandled error in AttendanceSwipeView: {e}", exc_info=True)
-            return Response({"error": "Internal server error"}, status=500)
+            return Response({'error': 'Internal server error'}, status=500)
+
+    # ------------------ DECISION ------------------
+
+    def _should_punch_in(self, latest_session):
+        if not latest_session:
+            return True
+        if latest_session.time_out is None:
+            return False
+        return True
+
+    # ------------------ LOCATION VALIDATION ------------------
+
+    def _validate_location(self, employee, project, punch_type, employee_location):
+        try:
+            company = employee.department.company
+            company_location = (float(company.latitude), float(company.longitude))
+
+            if punch_type == "onsite":
+                project_location = (float(project.latitude), float(project.longitude))
+
+                distance_project = geodesic(employee_location, project_location).meters
+                distance_company = geodesic(employee_location, company_location).meters
+
+                if distance_project > 50 and distance_company > 50:
+                    return (
+                        f"You are too far from project/company "
+                        f"(Project: {int(distance_project)}m, Company: {int(distance_company)}m)."
+                    )
+
+            elif punch_type in ["bench", "company"]:
+                distance = geodesic(employee_location, company_location).meters
+
+                if distance > 50:
+                    return f"You are too far from company ({int(distance)}m). Must be within 50m."
+
+            elif punch_type == "variant":
+                return None
+
+            else:
+                return f"Invalid punch type: {punch_type}"
+
+            return None
+
+        except Exception as e:
+            logger.error(f"Location validation error: {e}")
+            return "Location validation failed"
+
+    # ------------------ PUNCH IN ------------------
 
     def _handle_punch_in(self, attendance, now_company_tz, company_tz, lat, lon, address):
         try:
@@ -201,44 +176,38 @@ class AttendanceSwipeView(APIView):
                 timezone=company_tz.zone,
                 punch_in_latitude=lat,
                 punch_in_longitude=lon,
-                punch_in_location=address,
+                punch_in_location=address
             )
-            return Response(
-                {
-                    "status": "success",
-                    "action": "punch_in",
-                    "time": now_company_tz.strftime("%H:%M:%S"),
-                    "date": now_company_tz.date().isoformat(),
-                    "session_id": session.id,
-                    "location": address,
-                },
-                status=201,
-            )
+
+            return Response({
+                'status': 'success',
+                'action': 'punch_in',
+                'time': now_company_tz.strftime("%H:%M:%S"),
+                'date': now_company_tz.date().isoformat(),
+                'session_id': session.id,
+                'location': address
+            }, status=201)
+
         except Exception as e:
-            logger.error(f"Error during punch in: {e}")
-            return Response({"error": "Failed to punch in"}, status=500)
+            logger.error(f"Punch in error: {e}")
+            return Response({'error': 'Failed to punch in'}, status=500)
+
+    # ------------------ PUNCH OUT ------------------
 
     def _handle_punch_out(self, latest_session, now_company_tz, company_tz, lat, lon, address, attendance):
         try:
-            time_in = latest_session._ensure_datetime(latest_session.time_in)
-            if time_in is None:
-                logger.error("Punch out failed because session %s has no valid time_in", latest_session.id)
-                return Response({"error": "Invalid punch-in time for this session"}, status=400)
+            time_in = latest_session.time_in
 
-            safe_time_out = now_company_tz
-            if time_in and safe_time_out <= time_in:
-                safe_time_out = time_in + timedelta(seconds=1)
+            # Ensure timezone aware
+            if timezone.is_naive(time_in):
+                time_in = company_tz.localize(time_in)
 
-            is_valid, validation_message = validate_punch_times(time_in, safe_time_out, company_tz)
-            if not is_valid:
-                logger.warning(
-                    "Adjusting punch-out time for session %s because validation failed: %s",
-                    latest_session.id,
-                    validation_message,
-                )
-                safe_time_out = time_in + timedelta(seconds=1)
+            if now_company_tz <= time_in:
+                return Response({
+                    'error': 'Punch out must be after punch in',
+                }, status=400)
 
-            latest_session.time_out = safe_time_out
+            latest_session.time_out = now_company_tz
             latest_session.punch_out_latitude = lat
             latest_session.punch_out_longitude = lon
             latest_session.punch_out_location = address
@@ -246,21 +215,20 @@ class AttendanceSwipeView(APIView):
 
             session_duration = latest_session.get_duration()
 
-            return Response(
-                {
-                    "status": "success",
-                    "action": "punch_out",
-                    "time": safe_time_out.strftime("%H:%M:%S"),
-                    "session_duration": session_duration,
-                    "location": address,
-                    "timezone": company_tz.zone,
-                    "session_id": latest_session.id,
-                },
-                status=200,
-            )
+            return Response({
+                'status': 'success',
+                'action': 'punch_out',
+                'time': now_company_tz.strftime("%H:%M:%S"),
+                'session_duration': session_duration,
+                'location': address,
+                'timezone': company_tz.zone
+            }, status=200)
+
         except Exception as e:
-            logger.error(f"Error during punch out: {e}")
-            return Response({"error": "Failed to punch out"}, status=500)
+            logger.error(f"Punch out error: {e}")
+            return Response({'error': 'Failed to punch out'}, status=500)
+
+    # ------------------ GEO LOCATION ------------------
 
     def _get_location_address(self, lat, lon):
         try:
@@ -272,49 +240,40 @@ class AttendanceSwipeView(APIView):
             return None
 
 
-class AddPunchOutNoteView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def patch(self, request):
-        note = request.data.get("note", "").strip()
-        user = request.user
-        employee = getattr(user, "employee_db", None)
-
-        if not employee:
-            return Response({"error": "Employee not found"}, status=404)
-
-        company_tz = get_company_timezone(employee)
-        today = timezone.now().astimezone(company_tz).date()
-
-        try:
-            attendance = Attendance.objects.get(employee=employee, date=today)
-        except Attendance.DoesNotExist:
-            return Response({"error": "No attendance found for today."}, status=404)
-
-        latest_session = attendance.sessions.filter(
-            time_out__isnull=False
-        ).order_by("-time_out").first()
-
-        if not latest_session:
-            return Response({"error": "No punch-out session found to add note."}, status=400)
-
-        latest_session.note = note if note else None
-        latest_session.save()
-
-        return Response(
-            {
-                "status": "success",
-                "message": "Note added to the latest attendance session",
-            },
-            status=200,
-        )
-
-
 # ----------------------------------to add a note to the corresponding punch out section
 
 
 
+class AddPunchOutNoteView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def patch(self, request):
+        note = request.data.get('note', '').strip()
+        user = request.user
+        employee = getattr(user, 'employee_db', None)
+
+        if not employee:
+            return Response({'error': 'Employee not found'}, status=404)
+
+        today = timezone.localdate()
+
+        try:
+            attendance = Attendance.objects.get(employee=employee, date=today)
+        except Attendance.DoesNotExist:
+            return Response({'error': 'No attendance found for today.'}, status=404)
+
+        latest_session = attendance.sessions.filter(time_out__isnull=False).order_by('-time_out').first()
+
+        if not latest_session:
+            return Response({'error': 'No punch-out session found to add note.'}, status=400)
+
+        latest_session.note = note if note else None
+        latest_session.save()
+
+        return Response({
+            'status': 'success',
+            'message': 'Note added to the latest attendance session'
+        }, status=200)
 
 
 
@@ -437,9 +396,6 @@ class AttendanceAdminListView(generics.ListAPIView):
         for emp in employees:
             # Get latest attendance
             attendance = emp.attendances.order_by('-date').first()
-            company_tz = get_company_timezone(emp)
-            first_session = attendance.sessions.order_by("time_in").first() if attendance else None
-            last_session = attendance.sessions.order_by("-time_out").first() if attendance else None
 
             # Prepare response
             final_results.append({
@@ -452,12 +408,12 @@ class AttendanceAdminListView(generics.ListAPIView):
                 },
                 "date": attendance.date if attendance else None,
                 "time_in":
-                    timezone.localtime(first_session.time_in, company_tz).strftime("%Y-%m-%d %H:%M:%S")
-                    if first_session and first_session.time_in
+                    attendance.sessions.first().time_in
+                    if attendance and attendance.sessions.exists()
                     else None,
                 "time_out":
-                    timezone.localtime(last_session.time_out, company_tz).strftime("%Y-%m-%d %H:%M:%S")
-                    if last_session and last_session.time_out
+                    attendance.sessions.last().time_out
+                    if attendance and attendance.sessions.exists()
                     else None,
             })
 
@@ -502,8 +458,7 @@ class AttendanceDetailByDateView(APIView):
 
             selected_date = parsed_date
         else:
-            company_tz = get_company_timezone(employee)
-            selected_date = timezone.now().astimezone(company_tz).date()
+            selected_date = timezone.localdate()
 
         attendance = Attendance.objects.filter(
             employee=employee,
@@ -550,12 +505,7 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     lookup_field = 'employee_id'
 
     def get_today_punch_times(self, employee_id):
-        employee = Employee_db.objects.filter(id=employee_id).select_related("department__company").first()
-        if not employee:
-            return None, None
-
-        company_tz = get_company_timezone(employee)
-        today = now().astimezone(company_tz).date()
+        today = now().date()
 
         today_attendance = Attendance.objects.filter(
             employee__id=employee_id,
@@ -569,12 +519,12 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         last_session = today_attendance.sessions.order_by("-time_out").first()
 
         first_in = (
-            timezone.localtime(first_session.time_in, company_tz).strftime("%H:%M")
+            first_session.time_in.strftime("%H:%M")
             if first_session and first_session.time_in else None
         )
 
         last_out = (
-            timezone.localtime(last_session.time_out, company_tz).strftime("%H:%M")
+            last_session.time_out.strftime("%H:%M")
             if last_session and last_session.time_out else None
         )
 
