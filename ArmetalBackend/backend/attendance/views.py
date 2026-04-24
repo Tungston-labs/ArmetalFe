@@ -11,6 +11,7 @@ from .utils.timezone_utils import (
     get_company_timezone,
     ensure_timezone,
     safe_parse_datetime,
+    validate_punch_times,
 )
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 import pytz
@@ -219,14 +220,22 @@ class AttendanceSwipeView(APIView):
 
     def _handle_punch_out(self, latest_session, now_company_tz, company_tz, lat, lon, address, attendance):
         try:
-            time_in = latest_session.time_in
-
-            if isinstance(time_in, time):
-                time_in = datetime.combine(attendance.date, time_in)
-                time_in = company_tz.localize(time_in)
+            time_in = latest_session._ensure_datetime(latest_session.time_in)
+            if time_in is None:
+                logger.error("Punch out failed because session %s has no valid time_in", latest_session.id)
+                return Response({"error": "Invalid punch-in time for this session"}, status=400)
 
             safe_time_out = now_company_tz
             if time_in and safe_time_out <= time_in:
+                safe_time_out = time_in + timedelta(seconds=1)
+
+            is_valid, validation_message = validate_punch_times(time_in, safe_time_out, company_tz)
+            if not is_valid:
+                logger.warning(
+                    "Adjusting punch-out time for session %s because validation failed: %s",
+                    latest_session.id,
+                    validation_message,
+                )
                 safe_time_out = time_in + timedelta(seconds=1)
 
             latest_session.time_out = safe_time_out

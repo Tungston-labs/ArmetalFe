@@ -3,7 +3,7 @@ from datetime import datetime
 from django.utils import timezone
 from employee.models import Employee_db
 from shared.models import TimeStampedModel
-from datetime import timedelta,time
+from datetime import timedelta, time
 from django.utils.dateparse import parse_datetime  # ensure this is imported
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import is_naive, make_aware, now as tz_now
@@ -26,20 +26,12 @@ class Attendance(TimeStampedModel):
     def update_total_hours(self):
         """Calculate total hours from all completed sessions for this attendance date"""
         total_seconds = 0
-        
+
         for session in self.sessions.all():
-            if session.time_in and session.time_out:
-                # Ensure both times are timezone-aware datetime objects
-                time_in = self._ensure_datetime(session.time_in)
-                time_out = self._ensure_datetime(session.time_out)
-                
-                if time_in and time_out:
-                    # Calculate duration in seconds
-                    duration = time_out - time_in
-                    total_seconds += duration.total_seconds()
-        
+            total_seconds += session.get_duration_seconds()
+
         # Convert seconds to hours with 2 decimal places
-        self.total_hours = round(total_seconds / 3600, 2)
+        self.total_hours = round(max(total_seconds, 0) / 3600, 2)
         self.save()
 
     def _ensure_datetime(self, dt_or_time):
@@ -80,22 +72,37 @@ class AttendanceSession(models.Model):
     punch_out_longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     punch_out_location = models.CharField(max_length=255, null=True, blank=True)
 
+    def _get_session_timezone(self):
+        """Return the configured session timezone, falling back to UTC."""
+        if self.timezone:
+            try:
+                return pytz.timezone(self.timezone)
+            except pytz.UnknownTimeZoneError:
+                logger.warning(f"Unknown session timezone '{self.timezone}', falling back to UTC")
+        return pytz.UTC
 
     def save(self, *args, **kwargs):
         # Store original values before processing
-        original_time_in = self.time_in
-        original_time_out = self.time_out
-        
         # Process time_in only if it's being set/updated
         if self.time_in is not None:
             self.time_in = self._process_datetime(self.time_in, field_name='time_in')
-            
+
         # Process time_out only if it's being set/updated
         if self.time_out is not None:
             self.time_out = self._process_datetime(self.time_out, field_name='time_out')
-            
+
+        if self.time_in and self.time_out and self.time_out <= self.time_in:
+            logger.warning(
+                "Adjusting invalid attendance session duration for session %s: time_out (%s) "
+                "was not after time_in (%s)",
+                self.pk,
+                self.time_out,
+                self.time_in,
+            )
+            self.time_out = self.time_in + timedelta(seconds=1)
+
         super().save(*args, **kwargs)
-        
+
         # Update attendance total hours after saving
         if self.attendance:
             self.attendance.update_total_hours()
@@ -109,56 +116,70 @@ class AttendanceSession(models.Model):
         if isinstance(dt, datetime):
             # Make timezone aware if naive
             if timezone.is_naive(dt):
-                dt = timezone.make_aware(dt, timezone=pytz.UTC)
+                dt = timezone.make_aware(dt, timezone=self._get_session_timezone())
             return dt
-            
+
         # If it's a string, try to parse it
         if isinstance(dt, str):
             try:
                 parsed = parse_datetime(dt)
                 if parsed:
                     if timezone.is_naive(parsed):
-                        parsed = timezone.make_aware(parsed, timezone=pytz.UTC)
+                        parsed = timezone.make_aware(parsed, timezone=self._get_session_timezone())
                     return parsed
             except Exception as e:
                 logger.error(f"Failed to parse {field_name} datetime string '{dt}': {e}")
                 pass
-                
+
         # If it's a time object, combine with attendance date
         if isinstance(dt, time) and self.attendance:
             dt = datetime.combine(self.attendance.date, dt)
             if timezone.is_naive(dt):
-                dt = timezone.make_aware(dt, timezone=pytz.UTC)
+                dt = timezone.make_aware(dt, timezone=self._get_session_timezone())
             return dt
-                
+
         # Only fallback to current time if we can't process the input
         logger.warning(f"Using current time as fallback for {field_name} with value: {dt}")
         return tz_now()
 
     def get_duration(self):
         """Get duration of this session in hours"""
+        duration_seconds = self.get_duration_seconds()
+        return round(duration_seconds / 3600, 2) if duration_seconds else 0
+
+    def get_duration_seconds(self):
+        """Get duration of this session in seconds, never returning negative values."""
         if self.time_in and self.time_out:
             time_in = self._ensure_datetime(self.time_in)
             time_out = self._ensure_datetime(self.time_out)
-            
+
             if time_in and time_out:
-                duration = time_out - time_in
-                return round(duration.total_seconds() / 3600, 2)
+                duration_seconds = (time_out - time_in).total_seconds()
+                if duration_seconds < 0:
+                    logger.warning(
+                        "Negative attendance duration detected for session %s. "
+                        "time_in=%s time_out=%s",
+                        self.pk,
+                        time_in,
+                        time_out,
+                    )
+                    return 0
+                return duration_seconds
         return 0
 
     def _ensure_datetime(self, dt_or_time):
         """Helper method to ensure datetime object"""
         if dt_or_time is None:
             return None
-            
+
         if isinstance(dt_or_time, time):
             dt_or_time = datetime.combine(self.attendance.date, dt_or_time)
-        
+
         if isinstance(dt_or_time, datetime):
             if timezone.is_naive(dt_or_time):
-                dt_or_time = timezone.make_aware(dt_or_time, timezone=pytz.UTC)
+                dt_or_time = timezone.make_aware(dt_or_time, timezone=self._get_session_timezone())
             return dt_or_time
-            
+
         return None
 # attendance/models.py
 from employee.models import Employee_db
