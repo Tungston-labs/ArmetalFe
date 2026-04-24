@@ -169,65 +169,77 @@ class AttendanceSwipeView(APIView):
     # ------------------ PUNCH IN ------------------
 
     def _handle_punch_in(self, attendance, now_company_tz, company_tz, lat, lon, address):
-        try:
-            session = AttendanceSession.objects.create(
-                attendance=attendance,
-                time_in=now_company_tz,
-                timezone=company_tz.zone,
-                punch_in_latitude=lat,
-                punch_in_longitude=lon,
-                punch_in_location=address
-            )
+    try:
+        now_utc = timezone.now()
 
-            return Response({
-                'status': 'success',
-                'action': 'punch_in',
-                'time': now_company_tz.strftime("%H:%M:%S"),
-                'date': now_company_tz.date().isoformat(),
-                'session_id': session.id,
-                'location': address
-            }, status=201)
+        session = AttendanceSession.objects.create(
+            attendance=attendance,
+            time_in=now_utc,  # ✅ store UTC
+            timezone=company_tz.zone,
+            punch_in_latitude=lat,
+            punch_in_longitude=lon,
+            punch_in_location=address
+        )
 
-        except Exception as e:
-            logger.error(f"Punch in error: {e}")
-            return Response({'error': 'Failed to punch in'}, status=500)
+        punch_in_local = session.time_in.astimezone(company_tz)
+
+        return Response({
+            'status': 'success',
+            'action': 'punch_in',
+            'time': punch_in_local.strftime("%H:%M:%S"),
+            'date': punch_in_local.date().isoformat(),
+            'session_id': session.id,
+            'location': address
+        }, status=201)
+
+    except Exception as e:
+        logger.error(f"Punch in error: {e}")
+        return Response({'error': 'Failed to punch in'}, status=500)
 
     # ------------------ PUNCH OUT ------------------
 
     def _handle_punch_out(self, latest_session, now_company_tz, company_tz, lat, lon, address, attendance):
-        try:
-            time_in = latest_session.time_in
+    try:
+        # ✅ Always use UTC for storage (same as Django standard)
+        now_utc = timezone.now()
 
-            # Ensure timezone aware
-            if timezone.is_naive(time_in):
-                time_in = company_tz.localize(time_in)
+        time_in = latest_session.time_in
 
-            if now_company_tz <= time_in:
-                return Response({
-                    'error': 'Punch out must be after punch in',
-                }, status=400)
+        # ✅ Ensure both are timezone-aware (UTC)
+        if timezone.is_naive(time_in):
+            time_in = timezone.make_aware(time_in, timezone.utc)
 
-            latest_session.time_out = now_company_tz
-            latest_session.punch_out_latitude = lat
-            latest_session.punch_out_longitude = lon
-            latest_session.punch_out_location = address
-            latest_session.save()
-
-            session_duration = latest_session.get_duration()
-
+        # ✅ Validation
+        if now_utc <= time_in:
             return Response({
-                'status': 'success',
-                'action': 'punch_out',
-                'time': now_company_tz.strftime("%H:%M:%S"),
-                'session_duration': session_duration,
-                'location': address,
-                'timezone': company_tz.zone
-            }, status=200)
+                'error': 'Punch out must be after punch in',
+            }, status=400)
 
-        except Exception as e:
-            logger.error(f"Punch out error: {e}")
-            return Response({'error': 'Failed to punch out'}, status=500)
+        # ✅ Save punch out in UTC
+        latest_session.time_out = now_utc
+        latest_session.punch_out_latitude = lat
+        latest_session.punch_out_longitude = lon
+        latest_session.punch_out_location = address
+        latest_session.save()
 
+        # ✅ Convert to company timezone ONLY for response (same as punch-in behavior)
+        punch_out_local = latest_session.time_out.astimezone(company_tz)
+
+        session_duration = latest_session.get_duration()
+
+        return Response({
+            'status': 'success',
+            'action': 'punch_out',
+            'time': punch_out_local.strftime("%H:%M:%S"),  # ✅ NOW MATCHES PUNCH-IN
+            'date': punch_out_local.date().isoformat(),
+            'session_duration': session_duration,
+            'location': address,
+            'timezone': company_tz.zone
+        }, status=200)
+
+    except Exception as e:
+        logger.error(f"Punch out error: {e}")
+        return Response({'error': 'Failed to punch out'}, status=500)
     # ------------------ GEO LOCATION ------------------
 
     def _get_location_address(self, lat, lon):
