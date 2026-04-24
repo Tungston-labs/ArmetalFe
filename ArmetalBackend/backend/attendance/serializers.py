@@ -5,7 +5,7 @@ from employee.models import Employee_db
 # serializers.py
 from rest_framework import serializers
 from .models import Attendance, AttendanceSession
-from datetime import time, datetime
+from datetime import time,datetime
 from rest_framework import serializers
 from .models import Attendance, AttendanceSession
 from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone,safe_parse_datetime,ensure_timezone
@@ -71,11 +71,16 @@ from datetime import datetime, time
 import pytz
 from employee.models import Employee_db
 
+IST = pytz.timezone("Asia/Kolkata")
+
+# serializers.py
 from rest_framework import serializers
 from django.utils import timezone
 from datetime import datetime, time
 import pytz
 from .models import  Attendance, AttendanceSession
+
+IST = pytz.timezone("Asia/Kolkata")
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
@@ -119,11 +124,12 @@ class AttendanceSerializer(serializers.ModelSerializer):
         minutes = int((float(obj.total_hours or 0) - hours) * 60)
         return f"{hours:02d}:{minutes:02d}"
 
-    # ---------- convert time to company timezone AM/PM ----------
-    def _to_company_time(self, value, employee, attendance_date=None):
+    # ---------- convert time to IST AM/PM ----------
+    def _to_ist(self, value, attendance_date=None):
         if not value:
             return None
 
+        # If TIME → combine with date
         if isinstance(value, time):
             if attendance_date is None:
                 return value.strftime("%H:%M")
@@ -132,32 +138,35 @@ class AttendanceSerializer(serializers.ModelSerializer):
         if timezone.is_naive(value):
             value = timezone.make_aware(value, pytz.UTC)
 
-        company_tz = get_company_timezone(employee)
-        value = value.astimezone(company_tz)
+        value = value.astimezone(IST)
         return value.strftime("%I:%M %p")
 
+    # ---------- first swipe in ----------
     def get_first_swipe_in(self, obj):
         if hasattr(obj, "first_swipe_in") and obj.first_swipe_in:
-            return self._to_company_time(obj.first_swipe_in, obj, getattr(obj, "date", None))
+            return self._to_ist(obj.first_swipe_in, getattr(obj, "date", None))
 
+        # fallback: fetch from attendance sessions if annotation missing
         if getattr(obj, "attendance_id", None):
             try:
                 attendance = Attendance.objects.get(id=obj.attendance_id)
                 session = attendance.sessions.order_by("time_in").first()
-                return self._to_company_time(session.time_in, obj, attendance.date) if session else None
+                return self._to_ist(session.time_in, attendance.date) if session else None
             except Attendance.DoesNotExist:
                 return None
         return None
 
+    # ---------- last swipe out ----------
     def get_last_swipe_out(self, obj):
         if hasattr(obj, "last_swipe_out") and obj.last_swipe_out:
-            return self._to_company_time(obj.last_swipe_out, obj, getattr(obj, "date", None))
+            return self._to_ist(obj.last_swipe_out, getattr(obj, "date", None))
 
+        # fallback: fetch from attendance sessions if annotation missing
         if getattr(obj, "attendance_id", None):
             try:
                 attendance = Attendance.objects.get(id=obj.attendance_id)
                 session = attendance.sessions.order_by("-time_out").first()
-                return self._to_company_time(session.time_out, obj, attendance.date) if session else None
+                return self._to_ist(session.time_out, attendance.date) if session else None
             except Attendance.DoesNotExist:
                 return None
         return None
