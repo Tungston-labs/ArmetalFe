@@ -437,6 +437,9 @@ class AttendanceAdminListView(generics.ListAPIView):
         for emp in employees:
             # Get latest attendance
             attendance = emp.attendances.order_by('-date').first()
+            company_tz = get_company_timezone(emp)
+            first_session = attendance.sessions.order_by("time_in").first() if attendance else None
+            last_session = attendance.sessions.order_by("-time_out").first() if attendance else None
 
             # Prepare response
             final_results.append({
@@ -449,12 +452,12 @@ class AttendanceAdminListView(generics.ListAPIView):
                 },
                 "date": attendance.date if attendance else None,
                 "time_in":
-                    attendance.sessions.first().time_in
-                    if attendance and attendance.sessions.exists()
+                    timezone.localtime(first_session.time_in, company_tz).strftime("%Y-%m-%d %H:%M:%S")
+                    if first_session and first_session.time_in
                     else None,
                 "time_out":
-                    attendance.sessions.last().time_out
-                    if attendance and attendance.sessions.exists()
+                    timezone.localtime(last_session.time_out, company_tz).strftime("%Y-%m-%d %H:%M:%S")
+                    if last_session and last_session.time_out
                     else None,
             })
 
@@ -499,7 +502,8 @@ class AttendanceDetailByDateView(APIView):
 
             selected_date = parsed_date
         else:
-            selected_date = timezone.localdate()
+            company_tz = get_company_timezone(employee)
+            selected_date = timezone.now().astimezone(company_tz).date()
 
         attendance = Attendance.objects.filter(
             employee=employee,
@@ -546,7 +550,12 @@ class AttendanceAdminDetailView(RetrieveAPIView):
     lookup_field = 'employee_id'
 
     def get_today_punch_times(self, employee_id):
-        today = now().date()
+        employee = Employee_db.objects.filter(id=employee_id).select_related("department__company").first()
+        if not employee:
+            return None, None
+
+        company_tz = get_company_timezone(employee)
+        today = now().astimezone(company_tz).date()
 
         today_attendance = Attendance.objects.filter(
             employee__id=employee_id,
@@ -560,12 +569,12 @@ class AttendanceAdminDetailView(RetrieveAPIView):
         last_session = today_attendance.sessions.order_by("-time_out").first()
 
         first_in = (
-            first_session.time_in.strftime("%H:%M")
+            timezone.localtime(first_session.time_in, company_tz).strftime("%H:%M")
             if first_session and first_session.time_in else None
         )
 
         last_out = (
-            last_session.time_out.strftime("%H:%M")
+            timezone.localtime(last_session.time_out, company_tz).strftime("%H:%M")
             if last_session and last_session.time_out else None
         )
 
