@@ -178,11 +178,7 @@ class AttendanceSwipeView(APIView):
                 time_in = datetime.combine(attendance.date, time_in)
                 time_in = company_tz.localize(time_in)
 
-            if now_company_tz <= time_in:
-                return Response({
-                    'error': 'Punch out must be after punch in',
-                }, status=400)
-
+            
             latest_session.time_out = now_company_tz
             latest_session.punch_out_latitude = lat
             latest_session.punch_out_longitude = lon
