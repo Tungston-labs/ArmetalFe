@@ -193,7 +193,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
               <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter company longitude" autoComplete="off" />
             </FormField>
 
-            <FormField>
+            {/* <FormField>
               <Label>Working Hour</Label>
               <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter working hour" autoComplete="off" />
             </FormField>
@@ -201,7 +201,8 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
             <FormField>
               <Label>Half Day Hour</Label>
               <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter half day hour" autoComplete="off" />
-            </FormField>
+            </FormField> */}
+
           </div>
         </FormSection>
 
@@ -223,7 +224,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
           <SalaryTitle>Salary Structure (%)</SalaryTitle>
 
   <SalaryTableWrapper>
-    <SalaryTable>¯
+    <SalaryTable>
       <TableHead>
         <tr>
           <Th>Basic %</Th>
