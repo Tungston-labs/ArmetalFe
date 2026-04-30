@@ -18,7 +18,7 @@ from django.core.mail import send_mail
 from .models import Company, User
 import json
 from decimal import Decimal
-from finance import FinanceCategory
+from finance.models import FinanceCategory
 
 
 class CompanyCreateSerializer(serializers.ModelSerializer):
