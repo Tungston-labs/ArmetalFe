@@ -5,12 +5,7 @@ import datetime
 class PublicHoliday(models.Model):
     HOLIDAY_TYPES = [
         ('public', 'Public Holiday'),
-        ('religious', 'Religious Holiday'),
         ('company', 'Company Holiday'),
-        ('optional', 'Optional/Restricted Holiday'),
-        ('bank', 'Bank Holiday'),
-        ('regional', 'Cultural/Regional Holiday'),
-        ('observance', 'Observance/Non-Leave Day'),
         ('company_off_day', 'Company Off Day'),  
         ('second_saturday', 'Second Saturday'),
     ]
