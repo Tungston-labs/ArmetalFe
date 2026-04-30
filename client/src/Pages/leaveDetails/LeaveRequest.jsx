@@ -147,9 +147,11 @@ export default function LeaveRequest() {
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
-                  <BodyCell>
-                    {leave?.employee?.name || "N/A"}
-                  </BodyCell>
+            <BodyCell style={{ textTransform: "capitalize" }}>
+  {leave?.employee?.name || "N/A"}
+</BodyCell>
+
+                                      
                   <BodyCell>{leave.leave_type}</BodyCell>
                   <BodyCell>{leave.employee.department}</BodyCell>
                   <BodyCell>

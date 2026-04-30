@@ -23,15 +23,16 @@ import Loader from "../../Components/Loader";
 import HolidayHeading from "../../Components/HolidayHeading";
 import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from '../leaveDetails/EmployeeList.styles';
 import Pagination from "../../Components/Pagination/Pagination"
+import NoEmployeeFound from '../../Components/No found/Noemployeefound';
 
 const DEFAULT_HOLIDAY_TYPES = [
   { key: "public", label: "Public Holiday" },
-  { key: "religious", label: "Religious Holiday" },
+  // { key: "religious", label: "Religious Holiday" },
   { key: "company", label: "Company Holiday" },
-  { key: "optional", label: "Optional/Restricted Holiday" },
-  { key: "bank", label: "Bank Holiday" },
-  { key: "regional", label: "Cultural/Regional Holiday" },
-  { key: "observance", label: "Observance/Non-Leave Day" },
+  // { key: "optional", label: "Optional/Restricted Holiday" },
+  // { key: "bank", label: "Bank Holiday" },
+  // { key: "regional", label: "Cultural/Regional Holiday" },
+  // { key: "observance", label: "Observance/Non-Leave Day" },
   { key: "company_off_day", label: "Company Off Day" },
   { key: "second_saturday", label: "Second Saturdays" },
 ];
@@ -95,60 +96,65 @@ const HolidayManager = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleAdd = () => {
-    const { name, type, date } = formData;
-    const trimmedName = name.trim();
+const handleAdd = () => {
+  const { name, type, date } = formData;
+  const trimmedName = name.trim();
 
-    if (!trimmedName || !type || !date) {
-      setFormError("⚠️ Please fill in all fields before adding a holiday.");
-      return;
-    }
+  if (!trimmedName || !type || !date) {
+    setFormError("⚠️ Please fill in all fields before adding a holiday.");
+    return;
+  }
 
-    if (trimmedName.length > 250) {
-      setFormError("⚠️ Holiday name cannot exceed 250 characters.");
-      return;
-    }
+  if (trimmedName.length > 250) {
+    setFormError("⚠️ Holiday name cannot exceed 250 characters.");
+    return;
+  }
 
-    const formattedDate = formatDateToISO(date);
-    const selectedDate = new Date(date);
-    const today = new Date();
+  const formattedDate = formatDateToISO(date);
+  const selectedDate = new Date(date);
+  const today = new Date();
 
-    today.setHours(0, 0, 0, 0);
-    selectedDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
 
-    if (selectedDate < today) {
-      setFormError("⚠️ Holiday date cannot be in the past.");
-      return;
-    }
-    const isDateAlreadyExists = holidays.some(
-      (holiday) => holiday.date === formattedDate
-    );
+  if (selectedDate < today) {
+    setFormError("⚠️ Holiday date cannot be in the past.");
+    return;
+  }
 
-    if (isDateAlreadyExists) {
-      setFormError("⚠️ A holiday already exists on this date.");
-      return;
-    }
+  const isDateAlreadyExists = holidays.some(
+    (holiday) => holiday.date === formattedDate
+  );
 
-    dispatch(addHoliday({
-      description: trimmedName,
-      holiday_type: type,
-      date: formattedDate
-    }));
+  if (isDateAlreadyExists) {
+    setFormError("⚠️ A holiday already exists on this date.");
+    return;
+  }
 
-    setFormData({ name: "", type: "", date: "" });
-    setFormError("");
-  };
+  dispatch(addHoliday({
+    description: trimmedName,
+    holiday_type: type,
+    date: formattedDate
+  })).then(() => {
+    dispatch(getHolidays(page)); // ✅ refresh list after adding
+  });
+
+  setFormData({ name: "", type: "", date: "" });
+  setFormError("");
+};
 
   const handleDeleteClick = (id) => {
     setSelectedIdToDelete(id);
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    dispatch(removeHoliday(selectedIdToDelete));
-    setShowDeleteModal(false);
-    setSelectedIdToDelete(null);
-  };
+const confirmDelete = () => {
+  dispatch(removeHoliday(selectedIdToDelete)).then(() => {
+    dispatch(getHolidays(page)); // ✅ refresh list after deleting
+  });
+  setShowDeleteModal(false);
+  setSelectedIdToDelete(null);
+};
 
   const cancelDelete = () => {
     setShowDeleteModal(false);
@@ -236,11 +242,11 @@ const HolidayManager = () => {
                   </Td>
                 </tr>
               ) : holidays.length === 0 ? (
-                <tr>
-                  <EmptyRow colSpan="5" style={{ textAlign: "center" }}>
-                    No holidays found.
-                  </EmptyRow>
-                </tr>
+                      <tr>
+    <td colSpan={5}>
+      <NoEmployeeFound />
+    </td>
+  </tr>
               ) : (
                 [...holidays]
                   .sort((a, b) => new Date(b.date) - new Date(a.date))

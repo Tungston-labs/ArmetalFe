@@ -160,7 +160,10 @@ const EmployeeList = () => {
                       >
                         <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
 
-                        <BodyCell> {emp.name}</BodyCell>
+                        <BodyCell>
+                          {emp.name ? emp.name.charAt(0).toUpperCase() + emp.name.slice(1) : ""}
+                        </BodyCell>
+
                         <BodyCell>{emp.employee_id}</BodyCell>
 
                         <BodyCell>
@@ -170,8 +173,8 @@ const EmployeeList = () => {
                         </BodyCell>
 
                         <BodyCell>
-                          <TruncatedText title={emp.designation}>
-                            {emp.designation}
+                          <TruncatedText title={emp.designation?.toUpperCase()}>
+                            {emp.designation?.toUpperCase()}
                           </TruncatedText>
                         </BodyCell>
 

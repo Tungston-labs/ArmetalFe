@@ -154,34 +154,52 @@ const DepartmentList = () => {
       setLoadingDept(false);
     }
   };
+const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: `Employee "${employeeName}" will be permanently deleted.`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete!",
+  }).then(async (result) => {
+    if (!result.isConfirmed) return;
+    try {
+      await dispatch(deleteEmployeeById(employeeId)).unwrap();
 
-  const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: `Employee "${employeeName}" will be permanently deleted.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete!",
-    }).then(async (result) => {
-      if (!result.isConfirmed) return;
+      // ✅ Try to fetch updated employees, handle 404 if last employee deleted
       try {
-        await dispatch(deleteEmployeeById(employeeId)).unwrap();
         const updated = await dispatch(
           getEmployeesByDepartment(deptId),
         ).unwrap();
         setDeptEmployees((prev) => ({ ...prev, [deptId]: updated || [] }));
+
         Swal.fire(
           "Deleted!",
           `Employee "${employeeName}" has been deleted.`,
           "success",
         );
-      } catch (err) {
-        Swal.fire("Error", "Failed to delete employee.", "error");
+      } catch (fetchErr) {
+        // ✅ Last employee deleted — department now empty, close and refresh
+        setDeptEmployees((prev) => ({ ...prev, [deptId]: [] }));
+        setSelectedDept(null); // close the card
+
+        // ✅ Refresh department list to remove empty department from UI
+        dispatch(getDepartments({ page: 1, search: "" }));
+
+        Swal.fire(
+          "Deleted!",
+          `Employee "${employeeName}" has been deleted. The department has been removed as it has no employees.`,
+          "success",
+        );
       }
-    });
-  };
+    } catch (err) {
+      Swal.fire("Error", "Failed to delete employee.", "error");
+    }
+  });
+};
+
   const handleFormChange = (deptId, e) => {
     const { name, value } = e.target;
     setFormDatas((prev) => ({
@@ -439,6 +457,7 @@ const DepartmentList = () => {
                                         editingDeptId === dept.id
                                           ? "text"
                                           : "default",
+                                             textTransform: "capitalize",
                                     }}
                                   />
                                 </InputGroup>

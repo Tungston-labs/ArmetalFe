@@ -1,4 +1,4 @@
-// components/AddCompany/AddCompanyModal.jsx
+
 import React from "react";
 import {
   FormWrapper,
@@ -167,8 +167,11 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                   ))}
                 </select>
 
+               
                 <Input name="contact_number" inputMode="numeric" value={formData.contact_number} onChange={handleChange} placeholder="Phone number" style={{ width: "65%" }} autoComplete="off" />
+             
               </div>
+              {formErrors.contact_number && <p style={{ color: "red" }}>{formErrors.contact_number}</p>}
             </FormField>
 
             <FormField>
@@ -181,27 +184,22 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                   </option>
                 ))}
               </Select>
+              {formErrors.country && <p style={{ color: "red" }}>{formErrors.country}</p>}
             </FormField>
 
             <FormField>
               <Label>Latitude</Label>
               <Input name="latitude" type="number" step="any" value={formData.latitude} onChange={handleChange} placeholder="Enter company latitude" autoComplete="off" />
+           {formErrors.latitude && <p style={{ color: "red" }}>{formErrors.latitude}</p>}
             </FormField>
 
             <FormField>
               <Label>Longitude</Label>
               <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter company longitude" autoComplete="off" />
+          {formErrors.longitude && <p style={{ color: "red" }}>{formErrors.longitude}</p>}
             </FormField>
 
-            {/* <FormField>
-              <Label>Working Hour</Label>
-              <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter working hour" autoComplete="off" />
-            </FormField>
-
-            <FormField>
-              <Label>Half Day Hour</Label>
-              <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter half day hour" autoComplete="off" />
-            </FormField> */}
+           
 
           </div>
         </FormSection>
@@ -217,6 +215,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                 </CheckboxLabel>
               ))}
             </CheckboxGroup>
+            {formErrors.modules && <p style={{ color: "red" }}>{formErrors.modules}</p>}
             <Hr />
           </>
         )}
@@ -245,6 +244,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
               onChange={handleChange}
               placeholder="Basic"
             />
+            {formErrors.basic_salary_percent && <p style={{ color: "red" }}>{formErrors.basic_salary_percent}</p>}
           </Td>
 
           <Td>
@@ -255,6 +255,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
               onChange={handleChange}
               placeholder="HRA"
             />
+            {formErrors.house_allowance_percent && <p style={{ color: "red" }}>{formErrors.house_allowance_percent}</p>}
           </Td>
 
           <Td>
@@ -265,6 +266,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
               onChange={handleChange}
               placeholder="Transport"
             />
+            {formErrors.transport_allowance_percent && <p style={{ color: "red" }}>{formErrors.transport_allowance_percent}</p>}
           </Td>
 
           <Td>
@@ -275,6 +277,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
               onChange={handleChange}
               placeholder="Special"
             />
+{formErrors.special_allowance_percent && <p style={{ color: "red" }}>{formErrors.special_allowance_percent}</p>} 
           </Td>
 
           <Td>
@@ -285,6 +288,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
         </tr>
       </tbody>
     </SalaryTable>
+    {formErrors.salary && <p style={{ color: "red" }}>{formErrors.salary}</p>}
   </SalaryTableWrapper>
 
   {/* Working Hours Section */}
@@ -298,6 +302,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
         onChange={handleChange}
         placeholder="e.g. 8"
       />
+      {formErrors.working_hours_per_day && <p style={{ color: "red" }}>{formErrors.working_hours_per_day}</p>}
     </FormField>
 
     <FormField>
@@ -309,6 +314,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
         onChange={handleChange}
         placeholder="e.g. 4"
       />
+      {formErrors.half_day_hours && <p style={{ color: "red" }}>{formErrors.half_day_hours}</p>}
     </FormField>
   </FormSection>
 </SalaryWrapper>
