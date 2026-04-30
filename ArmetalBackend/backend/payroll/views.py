@@ -250,15 +250,36 @@ class PayrollVerifyView(APIView):
         return Response(serializer.data)
 
 
-
+from decimal import Decimal
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.db import transaction
 
 class PayrollStatusUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def patch(self, request, employee_id):
-        month = request.data.get("month")
-        year = request.data.get("year")
+
+        try:
+            month = int(request.data.get("month"))
+            year = int(request.data.get("year"))
+        except (TypeError, ValueError):
+            return Response(
+                {"error": "Invalid month or year"},
+                status=400
+            )
+
         new_status = request.data.get("status")
+
+        if not new_status:
+            return Response(
+                {"error": "Status is required"},
+                status=400
+            )
 
         record = get_object_or_404(
             EmployeePayrollRecord,
@@ -267,75 +288,113 @@ class PayrollStatusUpdateView(APIView):
             year=year
         )
 
-        #  Block update unless fully verified
+        # Block update unless fully verified
         if not record.is_fully_verified():
             return Response(
                 {"error": "Both HRs must verify before updating status."},
                 status=400
             )
 
-        if new_status not in dict(EmployeePayrollRecord.STATUS_CHOICES):
-            return Response({"error": "Invalid status"}, status=400)
+        valid_statuses = dict(EmployeePayrollRecord.STATUS_CHOICES)
 
-        previous_status = record.status
+        if new_status not in valid_statuses:
+            return Response(
+                {"error": "Invalid status"},
+                status=400
+            )
+
+        previous_status = (record.status or "").strip().lower()
+
+        # Update payroll status
         record.status = new_status
         record.save()
 
-      
-        if previous_status.lower() != "paid" and new_status.lower() == "paid":
+        new_status_lower = (new_status or "").strip().lower()
 
-            basic = record.basic_salary or 0
-            increment = record.salary_increment or 0
-            housing = record.housing_allowance or 0
-            transport = record.transportation or 0
+        print("PREVIOUS STATUS:", previous_status)
+        print("NEW STATUS:", new_status_lower)
 
-            lop = record.lop_amount or 0
-            tds = record.tds_deduction_amount or 0
+        # Create finance record only when status changes to PAID
+        if previous_status != "paid" and new_status_lower == "paid":
 
-            gross_salary = basic + increment + housing + transport
+            basic = record.basic_salary or Decimal("0")
+            increment = record.salary_increment or Decimal("0")
+            housing = record.housing_allowance or Decimal("0")
+            transport = record.transportation or Decimal("0")
+
+            lop = record.lop_amount or Decimal("0")
+            tds = record.tds_deduction_amount or Decimal("0")
+
+            gross_salary = (
+                basic +
+                increment +
+                housing +
+                transport
+            )
+
             net_salary = gross_salary - (lop + tds)
 
             company = record.employee.department.company
 
-            # ✅ FIX 1: correct get() usage + case insensitive
+            print("COMPANY:", company)
+            print("NET SALARY:", net_salary)
+
+            # Get finance category
             try:
                 salary_category = FinanceCategory.objects.get(
                     name__iexact="salary",
                     payment_type="OUT",
                     company=company
                 )
+
+                print("SALARY CATEGORY FOUND")
+
             except FinanceCategory.DoesNotExist:
                 return Response(
-                    {"error": "Salary category not configured for this company."},
+                    {
+                        "error": (
+                            "Salary category not configured "
+                            "for this company."
+                        )
+                    },
                     status=400
                 )
 
-            # ✅ FIX 2: cleaner duplicate check
+            # Prevent duplicate finance entries
             already_exists = FinanceRecord.objects.filter(
                 company=company,
                 category=salary_category,
+                note__icontains=str(record.employee.employee_id),
                 date__month=month,
                 date__year=year,
-                note__icontains=str(record.employee.employee_id)
             ).exists()
 
+            print("ALREADY EXISTS:", already_exists)
+
             if not already_exists:
-                FinanceRecord.objects.create(
+
+                finance_record = FinanceRecord.objects.create(
                     company=company,
                     date=timezone.now().date(),
                     amount=net_salary,
                     payment_type="OUT",
                     category=salary_category,
-                    note=f"Salary paid to {record.employee.name} "
-                        f"(Employee ID: {record.employee.employee_id}) "
+                    note=(
+                        f"Salary paid to "
+                        f"{record.employee.name} "
+                        f"(Employee ID: "
+                        f"{record.employee.employee_id}) "
                         f"for {month}/{year}"
+                    )
                 )
 
+                print("FINANCE RECORD CREATED:", finance_record.id)
 
         serializer = EmployeePayrollRecordSerializer(
             record,
             context={"request": request}
         )
+
         return Response(serializer.data)
 
 

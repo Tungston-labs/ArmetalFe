@@ -59,12 +59,20 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         old_status = instance.status
 
-        response = self.partial_update(request, *args, **kwargs)
+        serializer = self.get_serializer(
+            instance,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         instance.refresh_from_db()
         new_status = instance.status
 
-        #  Create finance record ONLY when status changes to Approved
+        print("OLD:", old_status)
+        print("NEW:", new_status)
+
         if old_status.lower() != "approve" and new_status.lower() == "approve":
 
             employee = instance.employee
@@ -73,7 +81,6 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
             employee_name = getattr(employee, "name", str(employee))
             employee_id = getattr(employee, "employee_id", employee.id)
 
-            # ✅ FIX 1: Correct get() usage + case insensitive
             try:
                 reimbursement_category = FinanceCategory.objects.get(
                     name__iexact="reimbursement",
@@ -86,7 +93,6 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
                     status=400
                 )
 
-            # ✅ FIX 2: cleaner duplicate check
             exists = FinanceRecord.objects.filter(
                 company=company,
                 category=reimbursement_category,
@@ -104,8 +110,7 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
                     note=f"Reimbursement approved for {employee_name} ({employee_id})"
                 )
 
-
-        return response
+        return Response(serializer.data)
 
 
 
