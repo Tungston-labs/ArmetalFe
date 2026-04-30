@@ -6,7 +6,12 @@ from rest_framework import status, generics, filters
 from rest_framework.generics import RetrieveAPIView
 from employee.models import Employee_db
 from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer,AttendanceLocationSerializer
-from .utils.timezone_utils import get_company_timezone, ensure_timezone,safe_parse_datetime
+from .utils.timezone_utils import (
+    COUNTRY_TIMEZONE_MAPPING,
+    get_company_timezone,
+    ensure_timezone,
+    safe_parse_datetime,
+)
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 import pytz
 from geopy.distance import geodesic
@@ -173,11 +178,7 @@ class AttendanceSwipeView(APIView):
                 time_in = datetime.combine(attendance.date, time_in)
                 time_in = company_tz.localize(time_in)
 
-            if now_company_tz <= time_in:
-                return Response({
-                    'error': 'Punch out must be after punch in',
-                }, status=400)
-
+            
             latest_session.time_out = now_company_tz
             latest_session.punch_out_latitude = lat
             latest_session.punch_out_longitude = lon
@@ -271,10 +272,31 @@ class AttendanceAdminListView(generics.ListAPIView):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
 
+    def _get_default_selected_date(self):
+        company = getattr(self.request.user, "company", None)
+        country = getattr(company, "country", None)
+        tz_name = COUNTRY_TIMEZONE_MAPPING.get(
+            country,
+            str(timezone.get_current_timezone()),
+        )
+
+        try:
+            company_tz = pytz.timezone(tz_name)
+        except Exception:
+            company_tz = timezone.get_current_timezone()
+
+        return timezone.now().astimezone(company_tz).date()
 
     def get_queryset(self):
         department_id = self.request.query_params.get("department_id")
-        selected_date = self.request.query_params.get("date") or today_date.today()
+        selected_date_param = self.request.query_params.get("date")
+
+        if selected_date_param:
+            selected_date = parse_date(selected_date_param)
+            if not selected_date:
+                raise ValidationError({"date": "Invalid date format. Use YYYY-MM-DD"})
+        else:
+            selected_date = self._get_default_selected_date()
 
         if not department_id:
             raise ValidationError({"department_id": "department_id is required"})
@@ -304,7 +326,7 @@ class AttendanceAdminListView(generics.ListAPIView):
                 first_swipe_in=Subquery(first_session.values("time_in")[:1]),
                 last_swipe_out=Subquery(last_session.values("time_out")[:1]),
                 attendance_today=Case(
-                    When(total_hours__isnull=False, then=Value(True)),
+                    When(attendance_id__isnull=False, then=Value(True)),
                     default=Value(False),
                     output_field=BooleanField(),
                 ),
@@ -327,11 +349,11 @@ class AttendanceAdminListView(generics.ListAPIView):
 
         return response
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         query = request.GET.get("q", "").strip()
 
         if not query:
-            return Response([])
+            return super().get(request, *args, **kwargs)
 
         employees = (
             Employee_db.objects.filter(name_search__icontains=query)
