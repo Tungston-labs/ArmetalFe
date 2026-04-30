@@ -18,6 +18,7 @@ from django.core.mail import send_mail
 from .models import Company, User
 import json
 from decimal import Decimal
+from finance import FinanceCategory
 
 
 class CompanyCreateSerializer(serializers.ModelSerializer):
@@ -114,11 +115,15 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         modules = self.initial_data.get("modules")
+
         if isinstance(modules, str):
             validated_data["modules"] = json.loads(modules)
 
         company = Company.objects.create(**validated_data)
 
+        # -------------------------------------------------
+        # Create HR Admin User
+        # -------------------------------------------------
         User.objects.create_user(
             username=company.company_id,
             email=company.email,
@@ -127,6 +132,40 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             company=company,
         )
 
+        # -------------------------------------------------
+        # Create Default Finance Categories
+        # -------------------------------------------------
+        company_modules = company.modules or {}
+
+        finance_enabled = (
+            company_modules.get("finance") is True
+            or company_modules.get("finance") == "true"
+        )
+
+        if finance_enabled:
+
+            default_categories = [
+                {
+                    "name": "salary",
+                    "payment_type": "OUT"
+                },
+                {
+                    "name": "reimbursement",
+                    "payment_type": "OUT"
+                },
+            ]
+
+            for category in default_categories:
+
+                FinanceCategory.objects.get_or_create(
+                    company=company,
+                    name=category["name"],
+                    payment_type=category["payment_type"]
+                )
+
+        # -------------------------------------------------
+        # Send Mail
+        # -------------------------------------------------
         try:
             send_mail(
                 subject="Welcome to Rekory - Company Credentials",
@@ -146,6 +185,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
                 recipient_list=[company.email],
                 fail_silently=True,
             )
+
         except Exception:
             pass
 

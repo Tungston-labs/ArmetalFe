@@ -7,15 +7,18 @@ from departments.models import Department
 from shared.models import TimeStampedModel
 from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
 from django.contrib.postgres.fields import ArrayField  
-from django.db.models import JSONField  
+from django.db.models import JSONField  # m
+import re
 
-# models.py
+def generate_employee_id(employee_name):
 
-def generate_employee_id(company_name, department_name):
-    company_part = company_name[:3].upper()
-    department_part = department_name[:3].upper()
-    random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
-    return f"{company_part}{department_part}{random_part}"
+    # Remove extra spaces and special characters
+    cleaned_name = re.sub(r'[^a-zA-Z0-9 ]', '', employee_name)
+
+    # Convert spaces to underscore and uppercase
+    employee_id = cleaned_name.strip().replace(" ", "_").upper()
+
+    return employee_id
 
 def generate_password():
     return 'EMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
