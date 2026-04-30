@@ -40,40 +40,53 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
             employee=self.request.user.employee_db
         )
 
+from django.db import transaction
+
+
+
 class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsHRorIsEmployee]
     serializer_class = ReimbursementDetailSerializer
 
     def get_queryset(self):
         user = self.request.user
+
         if getattr(user, "is_hr_admin", False) or getattr(user, "is_superadmin", False):
             return Reimbursement.objects.all()
+
         return Reimbursement.objects.filter(employee__user=user)
 
     def get_serializer(self, *args, **kwargs):
-        kwargs['context'] = self.get_serializer_context()
+        kwargs["context"] = self.get_serializer_context()
         return super().get_serializer(*args, **kwargs)
 
     @transaction.atomic
     def patch(self, request, *args, **kwargs):
+
         instance = self.get_object()
-        old_status = instance.status
+
+        old_status = (instance.status or "").strip().lower()
 
         serializer = self.get_serializer(
             instance,
             data=request.data,
             partial=True
         )
+
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         instance.refresh_from_db()
-        new_status = instance.status
 
-        print("OLD:", old_status)
-        print("NEW:", new_status)
+        new_status = (instance.status or "").strip().lower()
 
-        if old_status.lower() != "approve" and new_status.lower() == "approve":
+        print("OLD STATUS:", old_status)
+        print("NEW STATUS:", new_status)
+
+        # Create finance entry only when status changes to Approve
+        if old_status != "approve" and new_status == "approve":
+
+            print("ENTERED APPROVE BLOCK")
 
             employee = instance.employee
             company = employee.department.company
@@ -81,38 +94,49 @@ class ReimbursementDetailView(generics.RetrieveUpdateDestroyAPIView):
             employee_name = getattr(employee, "name", str(employee))
             employee_id = getattr(employee, "employee_id", employee.id)
 
+            print("EMPLOYEE:", employee_name)
+            print("EMPLOYEE ID:", employee_id)
+
             try:
                 reimbursement_category = FinanceCategory.objects.get(
                     name__iexact="reimbursement",
                     payment_type="OUT",
                     company=company
                 )
+
+                print("CATEGORY FOUND:", reimbursement_category.id)
+
             except FinanceCategory.DoesNotExist:
+
+                print("CATEGORY NOT FOUND")
+
                 return Response(
-                    {"error": "Reimbursement category not configured for this company."},
-                    status=400
+                    {
+                        "error": (
+                            "Reimbursement category "
+                            "not configured for this company."
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
                 )
 
-            exists = FinanceRecord.objects.filter(
+            # Directly create finance record
+            finance_record = FinanceRecord.objects.create(
                 company=company,
-                category=reimbursement_category,
                 date=instance.date,
-                note__icontains=str(employee_id)
-            ).exists()
-
-            if not exists:
-                FinanceRecord.objects.create(
-                    company=company,
-                    date=instance.date,
-                    amount=instance.amount,
-                    payment_type="OUT",
-                    category=reimbursement_category,
-                    note=f"Reimbursement approved for {employee_name} ({employee_id})"
+                amount=instance.amount,
+                payment_type="OUT",
+                category=reimbursement_category,
+                note=(
+                    f"Reimbursement approved for "
+                    f"{employee_name} "
+                    f"(Employee ID: {employee_id})"
                 )
+            )
+
+            print("FINANCE RECORD CREATED:", finance_record.id)
 
         return Response(serializer.data)
-
-
 
 # --- Retrieve, Update, Delete single reimbursement for logged-in employee ---
 
