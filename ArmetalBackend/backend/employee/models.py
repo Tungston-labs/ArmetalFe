@@ -22,6 +22,12 @@ def generate_password():
 class Employee_db(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     employee_id = models.CharField(max_length=200, unique=True, editable=False)
+    employee_code = models.CharField(
+        max_length=200,
+        unique=True,
+        null=True,
+        blank=True
+    )
     password = models.CharField(max_length=200,unique=True,null=True,blank=True)
     name = EncryptedCharField(max_length=500)
     name_search = models.CharField(max_length=500, db_index=True, blank=True, null=True)

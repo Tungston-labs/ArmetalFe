@@ -204,7 +204,7 @@ export default function AddEmployeeForm() {
           }}
         >
           <label style={{ fontWeight: "600" }}>
-            Employee ID / Username
+             Username
           </label>
 
           <input

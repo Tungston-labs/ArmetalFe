@@ -44,6 +44,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         required=False,
         allow_blank=True
     )
+    employee_code = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     department_id = serializers.PrimaryKeyRelatedField(
         source='department',
