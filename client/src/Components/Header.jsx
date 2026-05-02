@@ -87,9 +87,9 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
             />
             <InputBox
               type="text"
-              name="employee_id"
-              placeholder="Employee ID"
-              value={employee.employee_id || ""}
+              name="employee_code"
+              placeholder="Employee Code"
+              value={employee.employee_code || ""}
               readOnly={!editable}
               onChange={onChange}
               autoComplete="off"
@@ -103,6 +103,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
               onChange={onChange}
               autoComplete="off"
             />
+            
           </LeftColumn>
 
           <RightColumn>

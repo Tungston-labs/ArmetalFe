@@ -204,7 +204,7 @@ const ViewBasic = () => {
           <CardContent>
             <Rowes>
               <FieldGroup>
-                <Label>Employee ID / Username</Label>
+                <Label> Username</Label>
 
                 <Input
                   name="employee_id"

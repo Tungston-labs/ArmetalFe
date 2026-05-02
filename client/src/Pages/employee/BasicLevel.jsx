@@ -194,7 +194,7 @@ export default function AddEmployeeForm() {
           onFileChange={handleFileChange}
           errors={errors}
         />
-        <div
+        {/* <div
           style={{
             background: "#fff",
             padding: "15px",
@@ -223,7 +223,7 @@ export default function AddEmployeeForm() {
           />
 
           
-        </div>
+        </div> */}
         <JobDetails
           country={country}
           departments={departmentList}

@@ -80,6 +80,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors }) => {
             {errors?.dob && <ErrorText>{errors.dob}</ErrorText>}
           </FieldGroup>
 
+
           <FieldGroup>
             <FieldLabel>Gender</FieldLabel>
             <Select
@@ -93,6 +94,17 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors }) => {
               <option>Other</option>
             </Select>
             {errors?.gender && <ErrorText>{errors.gender}</ErrorText>}
+          </FieldGroup>
+          <FieldGroup>
+            <FieldLabel>Address</FieldLabel>
+            <TextArea
+              name="address"
+              placeholder="Enter full address"
+              value={formData.address}
+              onChange={handleChange}
+              autoComplete="off"
+            />
+            {errors?.address && <ErrorText>{errors.address}</ErrorText>}
           </FieldGroup>
         </LeftColumn>
 
@@ -111,16 +123,30 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors }) => {
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Address</FieldLabel>
-            <TextArea
-              name="address"
-              placeholder="Enter full address"
-              value={formData.address}
+            <FieldLabel>Employee ID</FieldLabel>
+            <Input
+              type="text"
+              name="employee_code"
+              placeholder="Enter email address"
+              value={formData.employee_code}
               onChange={handleChange}
               autoComplete="off"
             />
-            {errors?.address && <ErrorText>{errors.address}</ErrorText>}
+            {errors?.employee_id && <ErrorText>{errors.employee_code}</ErrorText>}
           </FieldGroup>
+
+         <FieldGroup>
+  <FieldLabel>Username</FieldLabel>
+  <Input
+    type="text"
+    name="employee_id"
+    placeholder="Enter email address"
+    value={formData.email}        
+    onChange={handleChange}
+    autoComplete="off"
+  />
+  {errors?.employee_id && <ErrorText>{errors.employee_id}</ErrorText>}
+</FieldGroup>
         </RightColumn>
       </InfoWrapper>
     </Container>

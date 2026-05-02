@@ -140,8 +140,9 @@ const EmployeeList = () => {
                   <HeadRow>
                     <HeadCell>Sl No</HeadCell>
                     <HeadCell>Employee name</HeadCell>
+                         <HeadCell>Username</HeadCell>
                     <HeadCell>Employee ID</HeadCell>
-                    <HeadCell>Email ID</HeadCell>
+                    {/* <HeadCell>Email ID</HeadCell> */}
                     <HeadCell>Job Position</HeadCell>
                     <HeadCell>Department</HeadCell>
                     <HeadCell>Delete</HeadCell>
@@ -166,11 +167,12 @@ const EmployeeList = () => {
 
                         <BodyCell>{emp.employee_id}</BodyCell>
 
-                        <BodyCell>
+      <BodyCell>{emp.employee_code}</BodyCell>
+                        {/* <BodyCell>
                           <TruncatedText title={emp.email}>
                             {emp.email}
                           </TruncatedText>
-                        </BodyCell>
+                        </BodyCell> */}
 
                         <BodyCell>
                           <TruncatedText title={emp.designation?.toUpperCase()}>
