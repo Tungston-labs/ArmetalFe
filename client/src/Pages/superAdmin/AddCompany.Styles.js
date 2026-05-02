@@ -56,7 +56,7 @@ export const Subtitle = styled.p`
 
 export const FormWrapper = styled.div`
   background: white;
-  padding: 30px;
+  /* padding: 30px; */
   border-radius: 10px;
   margin-top: 30px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
@@ -128,8 +128,8 @@ export const TitleSection = styled.div`
 `;
 export const BackHeader = styled.h3`
   display: flex;
-  align-items: center;
-  gap: 8px; /* space between icon and text */
+  /* align-items: center; */
+  gap: 8px; 
   font-size: 20px;
   font-weight: 600;
 

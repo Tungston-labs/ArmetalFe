@@ -66,7 +66,9 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
     baseRequired.forEach(field => {
       if (!formData[field] || (typeof formData[field] === "string" && formData[field].trim() === "")) newErrors[field] = "This field is required";
     });
-
+if (country === "IN" && formData.aadar_number && !/^[0-9]{12}$/.test(formData.aadar_number)) {
+  newErrors.aadar_number = "Aadhaar number must be exactly 12 digits";
+}
     if (formData.phno) {
       const phone = formData.phno.trim();
       if (country === "IN" && !/^[0-9]{10}$/.test(phone)) newErrors.phno = "Enter a valid 10-digit phone number";
@@ -196,8 +198,17 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         <FormRow>
           <FormGroup>
             <Label>Aadhaar Number</Label>
-            <Input name="aadar_number" value={formData.aadar_number} onChange={handleChange} placeholder="Enter Aadhaar Number" autoComplete="off" />
-            {renderError("aadar_number")}
+<Input
+  name="aadar_number"
+  value={formData.aadar_number}
+  onChange={handleChange}
+  placeholder="Enter Aadhaar Number"
+  autoComplete="off"
+  maxLength={12}
+  onKeyPress={(e) => {
+    if (!/[0-9]/.test(e.key)) e.preventDefault();
+  }}
+/>            {renderError("aadar_number")}
           </FormGroup>
 
           <FormGroup>

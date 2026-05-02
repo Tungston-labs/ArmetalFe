@@ -142,7 +142,9 @@ const country = user?.company?.country || "IN";
               employeeList.map((emp, index) => (
                 <BodyRow key={emp.id}>
                   <BodyCell>{index + 1 + (currentPage - 1) * 20}</BodyCell>
-                  <BodyCell> {emp.name} </BodyCell>
+                <BodyCell style={{ textTransform: "capitalize" }}>
+  {emp.name}
+</BodyCell>
                   <BodyCell>{emp.employee_id}</BodyCell>
                   <BodyCell>{emp.email}</BodyCell>
                 <BodyCell>

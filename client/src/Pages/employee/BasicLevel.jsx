@@ -94,45 +94,39 @@ useEffect(() => {
     dispatch(setBasicFormData({ ...formData, profile_pic: file }));
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    const requiredFields = [
-      "name",
-      "address",
-      "email",
-      "dob",
-      "phno",
-      "gender",
-      "designation",
-      "joining_date",
-      "department_id",
-      "employment_type",
-      "total_leave",
-      "role",
-    ];
+const validateForm = () => {
+  const newErrors = {};
+  const now = new Date().toISOString().split("T")[0];
 
-    if (country !== "IN") {
-      requiredFields.push(
-        "visa_expiry_date",
-        "insurance_number",
-        "iqama_number",
-      );
-    } else {
-      requiredFields.push("aadar_number");
+  const requiredFields = [
+    "name", "address", "email", "dob", "phno",
+    "gender", "designation", "joining_date",
+    "department_id", "employment_type", "total_leave", "role",
+  ];
+
+  if (country !== "IN") {
+    requiredFields.push("visa_expiry_date", "insurance_number", "iqama_number");
+  } else {
+    requiredFields.push("aadar_number");
+  }
+
+  requiredFields.forEach((field) => {
+    if (!formData[field] || !formData[field].toString().trim()) {
+      newErrors[field] = "This field is required";
     }
+  });
 
-    requiredFields.forEach((field) => {
-      if (!formData[field] || !formData[field].toString().trim()) {
-        newErrors[field] = "This field is required";
-      }
-    });
+  // ✅ Add these date checks:
+  if (formData.dob && formData.dob >= now) {
+    newErrors.dob = "Date of birth must be in the past";
+  }
+  if (formData.joining_date && formData.joining_date > now) {
+    newErrors.joining_date = "Joining date cannot be in the future";
+  }
 
-    // Set errors so EmployeeHeader re-renders and shows messages
-    setErrors(newErrors);
-
-    // Return whether all required fields are filled
-    return Object.keys(newErrors).length === 0;
-  };
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const handleNext = async () => {
 

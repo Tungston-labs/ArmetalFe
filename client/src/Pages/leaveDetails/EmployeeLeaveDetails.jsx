@@ -179,8 +179,14 @@ const EmployeeLeaveForm = () => {
             {showBalance && (
               <CardContent>
                 <InfoGrid>
+                         <div>
+                    <Label>Balance Leave</Label>
                   <ReadonlyInput value={employee?.total_leave || ""} readOnly />
+                  </div>
+                  <div>
+                    <Label>Paid Leave</Label>
                   <ReadonlyInput value={employee?.paid_leave || ""} readOnly />
+                  </div>
                 </InfoGrid>
               </CardContent>
             )}
