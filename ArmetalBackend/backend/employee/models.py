@@ -9,13 +9,12 @@ from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIn
 from django.contrib.postgres.fields import ArrayField  
 from django.db.models import JSONField  
 
-# models.py
 
-def generate_employee_id(company_name, department_name):
-    company_part = company_name[:3].upper()
-    department_part = department_name[:3].upper()
-    random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
-    return f"{company_part}{department_part}{random_part}"
+# def generate_employee_id(company_name, department_name):
+#     company_part = company_name[:3].upper()
+#     department_part = department_name[:3].upper()
+#     random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
+#     return f"{company_part}{department_part}{random_part}"
 
 def generate_password():
     return 'EMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
@@ -62,31 +61,44 @@ class Employee_db(TimeStampedModel):
 
 
     def save(self, *args, **kwargs):
-        # Generate employee_id if missing
-        if not self.employee_id:
-            company_name = self.department.company.name if self.department and self.department.company else "DEF"
-            department_name = self.department.name if self.department else "GEN"
-            self.employee_id = generate_employee_id(company_name, department_name)
 
-        # Always refresh searchable name
+    # Generate employee_id from employee name
+        # Generate employee_id from employee name if empty
+        if not self.employee_id:
+
+            self.employee_id = (
+                str(self.name)
+                .strip()
+                .replace(" ", "_")
+                .lower()
+            )
+
+        # Store searchable lowercase name
         if self.name:
             clean_name = str(self.name).strip().lower()
             self.name_search = clean_name
 
-        # Create linked user if missing
+        # Create linked user automatically
         if not getattr(self, 'user', None):
+
             password = generate_password()
             self.password = password
+
             self.user = User.objects.create_user(
                 username=self.employee_id,
                 email=self.email,
                 password=password,
                 is_employee=True,
                 is_hr=self.role == 'hr',
-                company=self.department.company if self.department else None
+                company=(
+                    self.department.company
+                    if self.department
+                    else None
+                )
             )
+
         else:
-            # Keep role sync with user
+            # Sync HR role
             self.user.is_hr = self.role == 'hr'
             self.user.save()
 

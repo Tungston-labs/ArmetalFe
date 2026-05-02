@@ -19,19 +19,43 @@ class SafeDateField(serializers.DateField):
         return super().to_representation(value)
 
 class EmployeeSerializer(serializers.ModelSerializer):
+
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
     visa_expiry_date = SafeDateField(required=False)
-    iqama_number = serializers.CharField(required=False, allow_blank=True)
-    aadar_number = serializers.CharField(required=False, allow_blank=True)
-    insurance_number = serializers.CharField(required=False, allow_blank=True)
+
+    iqama_number = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
+
+    aadar_number = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
+
+    insurance_number = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
+
+    # Allow manual employee_id
+    employee_id = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
 
     department_id = serializers.PrimaryKeyRelatedField(
         source='department',
         queryset=Department.objects.all(),
         write_only=True
     )
-    department = serializers.CharField(source='department.name', read_only=True)
+
+    department = serializers.CharField(
+        source='department.name',
+        read_only=True
+    )
+
     is_head = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -39,24 +63,74 @@ class EmployeeSerializer(serializers.ModelSerializer):
         exclude = ['user', 'password']
 
     def get_is_head(self, obj):
-        return obj.department and obj.department.department_head == obj
+        return (
+            obj.department
+            and obj.department.department_head == obj
+        )
 
     def validate(self, data):
+
         country = self.context['request'].user.company.country
 
         if country == "IN":
             if not data.get('aadar_number'):
-                raise serializers.ValidationError({"aadar_number": "Aadhaar number is required for India"})
+                raise serializers.ValidationError({
+                    "aadar_number":
+                    "Aadhaar number is required for India"
+                })
+
         else:
             if not data.get('iqama_number'):
-                raise serializers.ValidationError({"iqama_number": "Iqama number is required for this country"})
-            if not data.get('visa_expiry_date'):
-                raise serializers.ValidationError({"visa_expiry_date": "Visa expiry date is required"})
+                raise serializers.ValidationError({
+                    "iqama_number":
+                    "Iqama number is required for this country"
+                })
 
-        if country != "IN" and not data.get('insurance_number'):
-            raise serializers.ValidationError({"insurance_number": "Insurance number is required for non-India"})
+            if not data.get('visa_expiry_date'):
+                raise serializers.ValidationError({
+                    "visa_expiry_date":
+                    "Visa expiry date is required"
+                })
+
+        if (
+            country != "IN"
+            and not data.get('insurance_number')
+        ):
+            raise serializers.ValidationError({
+                "insurance_number":
+                "Insurance number is required for non-India"
+            })
 
         return data
+
+    def create(self, validated_data):
+
+        employee = Employee_db.objects.create(
+            **validated_data
+        )
+
+        return employee
+
+    def update(self, instance, validated_data):
+
+        employee_id = validated_data.get(
+            "employee_id",
+            instance.employee_id
+        )
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.employee_id = employee_id
+
+        # Sync username also
+        if instance.user:
+            instance.user.username = employee_id
+            instance.user.save()
+
+        instance.save()
+
+        return instance
 
 
 
