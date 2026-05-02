@@ -127,7 +127,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors }) => {
             <Input
               type="text"
               name="employee_code"
-              placeholder="Enter email address"
+              placeholder="Enter employee code "
               value={formData.employee_code}
               onChange={handleChange}
               autoComplete="off"
