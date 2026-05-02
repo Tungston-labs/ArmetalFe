@@ -122,12 +122,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
 
         instance.employee_id = employee_id
-
-        # Sync username also
-        if instance.user:
-            instance.user.username = employee_id
-            instance.user.save()
-
         instance.save()
 
         return instance

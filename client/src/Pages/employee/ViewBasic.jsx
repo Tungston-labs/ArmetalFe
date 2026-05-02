@@ -73,6 +73,9 @@ const ViewBasic = () => {
 
     const updatedFormData = {
       ...employeeDetail,
+
+      employee_id: employeeDetail.employee_id || "", // ✅ ADDED HERE
+
       department: deptId,
       total_leave: employeeDetail.total_leave || "",
       paid_leave: employeeDetail.paid_leave || "",
@@ -201,6 +204,17 @@ const ViewBasic = () => {
           <CardContent>
             <Rowes>
               <FieldGroup>
+                <Label>Employee ID / Username</Label>
+
+                <Input
+                  name="employee_id"
+                  value={formData.employee_id || ""}
+                  onChange={handleChange}
+                  placeholder="Enter employee username"
+                />
+              </FieldGroup>
+
+              <FieldGroup>
                 <Label>Designation</Label>
                 <Input
                   name="designation"
@@ -208,6 +222,7 @@ const ViewBasic = () => {
                   onChange={handleChange}
                 />
               </FieldGroup>
+
               <FieldGroup>
                 <Label>Joining Date</Label>
                 <Input
@@ -216,6 +231,7 @@ const ViewBasic = () => {
                   onChange={handleChange}
                 />
               </FieldGroup>
+
               <FieldGroup>
                 <Label>Employment Type</Label>
                 <Input

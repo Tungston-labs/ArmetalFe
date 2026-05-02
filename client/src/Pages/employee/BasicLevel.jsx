@@ -66,12 +66,13 @@ export default function AddEmployeeForm() {
     role: "",
     contract_expiry_date: "",
     idcard: null,
+    employee_id: "",
   });
-useEffect(() => {
-  if (departmentList.length === 0) {
-    dispatch(getDepartments({ page: 1, search: "" }));
-  }
-}, [dispatch, departmentList.length]);
+  useEffect(() => {
+    if (departmentList.length === 0) {
+      dispatch(getDepartments({ page: 1, search: "" }));
+    }
+  }, [dispatch, departmentList.length]);
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
@@ -94,39 +95,39 @@ useEffect(() => {
     dispatch(setBasicFormData({ ...formData, profile_pic: file }));
   };
 
-const validateForm = () => {
-  const newErrors = {};
-  const now = new Date().toISOString().split("T")[0];
+  const validateForm = () => {
+    const newErrors = {};
+    const now = new Date().toISOString().split("T")[0];
 
-  const requiredFields = [
-    "name", "address", "email", "dob", "phno",
-    "gender", "designation", "joining_date",
-    "department_id", "employment_type", "total_leave", "role",
-  ];
+    const requiredFields = [
+      "name", "address", "email", "dob", "phno",
+      "gender", "designation", "joining_date",
+      "department_id", "employment_type", "total_leave", "role",
+    ];
 
-  if (country !== "IN") {
-    requiredFields.push("visa_expiry_date", "insurance_number", "iqama_number");
-  } else {
-    requiredFields.push("aadar_number");
-  }
-
-  requiredFields.forEach((field) => {
-    if (!formData[field] || !formData[field].toString().trim()) {
-      newErrors[field] = "This field is required";
+    if (country !== "IN") {
+      requiredFields.push("visa_expiry_date", "insurance_number", "iqama_number");
+    } else {
+      requiredFields.push("aadar_number");
     }
-  });
 
-  // ✅ Add these date checks:
-  if (formData.dob && formData.dob >= now) {
-    newErrors.dob = "Date of birth must be in the past";
-  }
-  if (formData.joining_date && formData.joining_date > now) {
-    newErrors.joining_date = "Joining date cannot be in the future";
-  }
+    requiredFields.forEach((field) => {
+      if (!formData[field] || !formData[field].toString().trim()) {
+        newErrors[field] = "This field is required";
+      }
+    });
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
+    // ✅ Add these date checks:
+    if (formData.dob && formData.dob >= now) {
+      newErrors.dob = "Date of birth must be in the past";
+    }
+    if (formData.joining_date && formData.joining_date > now) {
+      newErrors.joining_date = "Joining date cannot be in the future";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleNext = async () => {
 
@@ -185,7 +186,7 @@ const validateForm = () => {
             <Multistep currentStep={currentStep} steps={stepTitles} />
           </div>
         </div>
-        
+
         <EmployeeHeader
           formData={formData}
           setFormData={setFormData}
@@ -193,6 +194,36 @@ const validateForm = () => {
           onFileChange={handleFileChange}
           errors={errors}
         />
+        <div
+          style={{
+            background: "#fff",
+            padding: "15px",
+            marginTop: "15px",
+            borderRadius: "10px",
+            border: "1px solid #eee",
+          }}
+        >
+          <label style={{ fontWeight: "600" }}>
+            Employee ID / Username
+          </label>
+
+          <input
+            type="text"
+            name="employee_id"
+            value={formData.employee_id}
+            onChange={handleChange}
+            placeholder="Enter employee ID (leave empty for auto-generate)"
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginTop: "8px",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+            }}
+          />
+
+          
+        </div>
         <JobDetails
           country={country}
           departments={departmentList}

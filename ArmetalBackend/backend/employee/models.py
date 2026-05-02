@@ -62,25 +62,31 @@ class Employee_db(TimeStampedModel):
 
     def save(self, *args, **kwargs):
 
-    # Generate employee_id from employee name
-        # Generate employee_id from employee name if empty
+    # Generate employee_id if missing
         if not self.employee_id:
-
-            self.employee_id = (
-                str(self.name)
-                .strip()
-                .replace(" ", "_")
-                .lower()
+            company_name = (
+                self.department.company.name
+                if self.department and self.department.company
+                else "DEF"
             )
 
-        # Store searchable lowercase name
+            department_name = (
+                self.department.name
+                if self.department
+                else "GEN"
+            )
+
+            self.employee_id = generate_employee_id(
+                company_name,
+                department_name
+            )
+
+        # searchable name
         if self.name:
-            clean_name = str(self.name).strip().lower()
-            self.name_search = clean_name
+            self.name_search = str(self.name).strip().lower()
 
-        # Create linked user automatically
-        if not getattr(self, 'user', None):
-
+        # CREATE USER if not exists
+        if not self.user_id:
             password = generate_password()
             self.password = password
 
@@ -90,16 +96,13 @@ class Employee_db(TimeStampedModel):
                 password=password,
                 is_employee=True,
                 is_hr=self.role == 'hr',
-                company=(
-                    self.department.company
-                    if self.department
-                    else None
-                )
+                company=self.department.company if self.department else None
             )
 
         else:
-            # Sync HR role
-            self.user.is_hr = self.role == 'hr'
+            # 🔥 IMPORTANT: always sync username on update
+            self.user.username = self.employee_id
+            self.user.email = self.email
             self.user.save()
 
         super().save(*args, **kwargs)
