@@ -129,40 +129,40 @@ export default function AddEmployeeForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = async () => {
+const handleNext = async () => {
+  const isBasicValid = validateForm();
+  const jobComp = jobref.current;
+  const isJobValid = jobComp?.validate?.();
 
+  if (!isBasicValid || !isJobValid) return;
 
-    const isBasicValid = validateForm(); // this triggers setErrors
+  setLoading(true);
+  try {
+    dispatch(setBasicFormData(formData));
+    const res = await dispatch(submitEmployee({ basic: formData }));
 
-
-    const jobComp = jobref.current;
-
-
-    const isJobValid = jobComp?.validate?.();
-
-    setErrors((prev) => ({ ...prev }));
-
-    if (!isBasicValid || !isJobValid) {
-
-      return;
-    }
-
-    setLoading(true);
-    try {
-      dispatch(setBasicFormData(formData));
-      const res = await dispatch(submitEmployee({ basic: formData }));
-      if (res.meta.requestStatus === "fulfilled") {
-        const id = res.payload?.employee?.id || res.payload?.id;
-        if (id) {
-          dispatch(setEmployeeId(id));
-          setIsFormDirty(false);
-          navigate("/bank-payment");
-        }
+    if (res.meta.requestStatus === "fulfilled") {
+      const id = res.payload?.employee?.id || res.payload?.id;
+      if (id) {
+        dispatch(setEmployeeId(id));
+        setIsFormDirty(false);
+        navigate("/bank-payment");
       }
-    } finally {
-      setLoading(false);
+    } else if (res.meta.requestStatus === "rejected") {
+      // Map API errors back to form errors
+      const apiErrors = res.payload; // e.g. { email: ["employee_db with this email already exists."] }
+      if (apiErrors && typeof apiErrors === "object") {
+        const mappedErrors = {};
+        for (const [field, messages] of Object.entries(apiErrors)) {
+          mappedErrors[field] = Array.isArray(messages) ? messages[0] : messages;
+        }
+        setErrors((prev) => ({ ...prev, ...mappedErrors }));
+      }
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>
