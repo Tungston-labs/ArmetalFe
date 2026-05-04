@@ -21,11 +21,11 @@ const EmployeeList = () => {
   const { employeeList, loading, pagination } = useSelector(
     (state) => state.employees
   );
-const user = JSON.parse(
-  localStorage.getItem("user") || sessionStorage.getItem("user")
-);
+  const user = JSON.parse(
+    localStorage.getItem("user") || sessionStorage.getItem("user")
+  );
 
-const country = user?.company?.country || "IN";
+  const country = user?.company?.country || "IN";
   const [searchText, setSearchText] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -118,51 +118,55 @@ const country = user?.company?.country || "IN";
 
         />
         <TableWrapper>
-        <StyledTable>
-          <TableHead>
-            <HeadRow>
-              <HeadCell>Sl No</HeadCell>
-              <HeadCell>Employee Name</HeadCell>
-              <HeadCell>Employee ID</HeadCell>
-              <HeadCell>Email</HeadCell>
-   <HeadCell>
-  {country === "IN" ? "Contract Expiry Date" : "Visa Expiry Date"}
-</HeadCell>
-            </HeadRow>
-          </TableHead>
+          <StyledTable>
+            <TableHead>
+              <HeadRow>
+                <HeadCell>Sl No</HeadCell>
+                <HeadCell>Employee Name</HeadCell>
+                <HeadCell>Employee ID</HeadCell>
+                <HeadCell>Email</HeadCell>
+                <HeadCell>
+                  {country === "IN" ? "Contract Expiry Date" : "Visa Expiry Date"}
+                </HeadCell>
+              </HeadRow>
+            </TableHead>
 
-          <TableBody>
-            {loading ? (
-              <tr>
-                <td colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
-                  Loading...
-                </td>
-              </tr>
-            ) : employeeList?.length > 0 ? (
-              employeeList.map((emp, index) => (
-                <BodyRow key={emp.id}>
-                  <BodyCell>{index + 1 + (currentPage - 1) * 20}</BodyCell>
-                <BodyCell style={{ textTransform: "capitalize" }}>
-  {emp.name}
-</BodyCell>
-                  <BodyCell>{emp.employee_id}</BodyCell>
-                  <BodyCell>{emp.email}</BodyCell>
-                <BodyCell>
+            <TableBody>
+              {loading ? (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
+                    Loading...
+                  </td>
+                </tr>
+              ) : employeeList?.length > 0 ? (
+                employeeList.map((emp, index) => (
+                  <BodyRow key={emp.id}>
+                    <BodyCell>{index + 1 + (currentPage - 1) * 20}</BodyCell>
+                    <BodyCell style={{ textTransform: "capitalize" }}>
+                      {emp.name}
+                    </BodyCell>
+                    <BodyCell>{emp.employee_id}</BodyCell>
+                    <BodyCell>{emp.email}</BodyCell>
+                   <BodyCell>
   {country === "IN"
-    ? emp.contract_expiry_date || "----"
-    : emp.visa_expiry_date || "----"}
+    ? emp.contract_expiry_date
+      ? new Date(emp.contract_expiry_date).toLocaleDateString("en-GB")
+      : "----"
+    : emp.visa_expiry_date
+    ? new Date(emp.visa_expiry_date).toLocaleDateString("en-GB")
+    : "----"}
 </BodyCell>
-                </BodyRow>
-              ))
-            ) : (
-            <tr>
-    <td colSpan={5}>
-      <NoEmployeeFound searchTerm={debouncedSearch} />
-    </td>
-  </tr>
-            )}
-          </TableBody>
-        </StyledTable>
+                  </BodyRow>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5}>
+                    <NoEmployeeFound searchTerm={debouncedSearch} />
+                  </td>
+                </tr>
+              )}
+            </TableBody>
+          </StyledTable>
         </TableWrapper>
         <Pagination
           currentPage={currentPage}

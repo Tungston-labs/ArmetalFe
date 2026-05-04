@@ -140,7 +140,7 @@ const EmployeeList = () => {
                   <HeadRow>
                     <HeadCell>Sl No</HeadCell>
                     <HeadCell>Employee name</HeadCell>
-                         <HeadCell>Username</HeadCell>
+                    <HeadCell>Username</HeadCell>
                     <HeadCell>Employee ID</HeadCell>
                     {/* <HeadCell>Email ID</HeadCell> */}
                     <HeadCell>Job Position</HeadCell>
@@ -167,7 +167,7 @@ const EmployeeList = () => {
 
                         <BodyCell>{emp.employee_id}</BodyCell>
 
-      <BodyCell>{emp.employee_code}</BodyCell>
+                        <BodyCell>{emp.employee_code}</BodyCell>
                         {/* <BodyCell>
                           <TruncatedText title={emp.email}>
                             {emp.email}
