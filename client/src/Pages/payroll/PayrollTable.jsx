@@ -15,8 +15,9 @@ import {
   EmployeeImage,
   LeftGroup,
   Selection,
-  TableWrapper
-} from "./Final.Styles";
+  TableWrapper,
+  Tr
+} from "./PayrollTablestyes";
 import { Link } from "react-router-dom";
 import { GoInfo } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,10 +32,9 @@ import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
 import VerificationCircles from "../../Components/VerificationCircle";
 import HolidayIcon from "../../assets/payroll.svg";
-import { EmptyRow } from "../leaveDetails/EmployeeList.styles";
 import Pagination from "../../Components/Pagination/Pagination"
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
-
+import IncentiveModal from "../../Components/payroll/IncentiveModal";
 const months = [
   "January",
   "February",
@@ -71,6 +71,8 @@ const PayrollTable = () => {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState({});
   const [bulkStatus, setBulkStatus] = useState("");
+  const [showModal, setShowModal] = useState(false);
+const [selectedEmployee, setSelectedEmployee] = useState(null);
   const LIMIT = 20;
 
   // --- Sorting: ascending by employee_name (default)
@@ -350,12 +352,21 @@ const PayrollTable = () => {
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
     const date = new Date(dateStr);
-    if (isNaN(date)) return dateStr; 
+    if (isNaN(date)) return dateStr;
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+  const handleOpenModal = (emp) => {
+  setSelectedEmployee(emp);
+  setShowModal(true);
+};
+
+const handleCloseModal = () => {
+  setShowModal(false);
+  setSelectedEmployee(null);
+};
   return (
     <>
       <Container>
@@ -431,7 +442,7 @@ const PayrollTable = () => {
             <option value="Paid">Paid</option>
           </select>
         </BulkActionBar>
-<TableWrapper/>
+        <TableWrapper />
         <Table>
           <thead>
             <tr>
@@ -449,9 +460,11 @@ const PayrollTable = () => {
               <Th>Employee ID</Th>
               <Th>Joining Date</Th>
               <Th>Salary</Th>
+              <Th>Incentive</Th>
               <Th>Info</Th>
               <Th>Verification</Th>
               <Th>Status</Th>
+
             </tr>
           </thead>
           <tbody>
@@ -479,6 +492,19 @@ const PayrollTable = () => {
                   <Td>{emp.employee_id}</Td>
                   <Td>{formatDate(emp.joining_date)}</Td>
                   <Td>₹{emp.basic_salary ?? "N/A"}</Td>
+                  <Td>
+  <button
+    style={{
+      padding: "5px 10px",
+      borderRadius: "6px",
+      border: "1px solid #ccc",
+      cursor: "pointer",
+    }}
+    onClick={() => handleOpenModal(emp)}
+  >
+    Add
+  </button>
+</Td>
                   <Td>
                     <Link to={`/payrolldetails/${emp.id}`}>
                       <GoInfo style={{ cursor: "pointer", color: "black" }} />
@@ -515,11 +541,15 @@ const PayrollTable = () => {
               ))
             ) : (
 
-        
-  <td colSpan={9}>
-    <NoEmployeeFound searchTerm={searchTerm} label="No Payroll Records Found" />
-  </td>
 
+              <tr>
+                <td colSpan={9} style={{ textAlign: "center", padding: "20px" }}>
+                  <NoEmployeeFound
+                    searchTerm={searchTerm}
+                    label="No Payroll Records Found"
+                  />
+                </td>
+              </tr>
             )}
           </tbody>
         </Table>
@@ -528,6 +558,12 @@ const PayrollTable = () => {
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
+        {showModal && selectedEmployee && (
+  <IncentiveModal
+    employee={selectedEmployee}
+    onClose={handleCloseModal}
+  />
+)}
       </Container>
     </>
   );

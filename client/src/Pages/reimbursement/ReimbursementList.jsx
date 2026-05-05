@@ -243,23 +243,29 @@ const ReimbursementList = () => {
                               <EmployeeCell
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                <StatusSelect
-                                  value={emp.status}
-                                  onChange={(e) =>
-                                    handleStatusChange(
-                                      emp.reimbursement_id,
-                                      e.target.value,
-                                      dept.id
-                                    )
-                                  }
-                                  className={emp.status ? emp.status.replace(/\s+/g, "-").toLowerCase() : ""}
-                                >
-                                  <option value="" disabled>Select</option>
-                                  <option value="Approve">Approved</option>
-                                  <option value="On Hold">On Hold</option>
-                                  <option value="In Verification">In Verification</option>
-                                  <option value="Reject">Reject</option>
-                                </StatusSelect>
+                               <StatusSelect
+  value={emp.status}
+  onChange={(e) =>
+    handleStatusChange(
+      emp.reimbursement_id,
+      e.target.value,
+      dept.id
+    )
+  }
+  disabled={emp.status === "Approve"}  
+  className={emp.status ? emp.status.replace(/\s+/g, "-").toLowerCase() : ""}
+  style={{
+    opacity: emp.status === "Approve" ? 1 : 1,
+    cursor: emp.status === "Approve" ? "not-allowed" : "pointer",
+    pointerEvents: emp.status === "Approve" ? "none" : "auto",
+  }}
+>
+  <option value="" disabled>Select</option>
+  <option value="Approve">Approved</option>
+  <option value="On Hold">On Hold</option>
+  <option value="In Verification">In Verification</option>
+  <option value="Reject">Reject</option>
+</StatusSelect>
 
                               </EmployeeCell>
                             </EmployeeRow>

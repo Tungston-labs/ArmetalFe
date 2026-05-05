@@ -12,10 +12,10 @@ import API from './api';
 //   return response.data;
 // };
 
-export const fetchAllLeaveRequests = async ({ page = 1, department_id, search }) => {
+export const fetchAllLeaveRequests = async ({ page = 1, status, department_id, search }) => {
   const params = new URLSearchParams({ page });
-  params.append('status', 'pending'); // <-- Force pending status
 
+  if (status) params.append('status', status);  // ✅ only append if status has a value
   if (department_id) params.append('department_id', department_id);
   if (search) params.append('search', search);
 

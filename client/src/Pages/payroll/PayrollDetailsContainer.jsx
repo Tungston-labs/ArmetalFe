@@ -17,7 +17,7 @@ import {
   TableData,
   BackTitle,
   BackIcon,
-} from "./Payroll.styles";
+} from "./PayrollDetailsView.styles";
 import { BsPrinter } from "react-icons/bs";
 
 const PayrollDetails = () => {

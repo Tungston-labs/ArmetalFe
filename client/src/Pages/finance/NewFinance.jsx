@@ -11,7 +11,7 @@ import {
   ButtonGroup,
   Button,
   Label,
-  CloseButton,
+  HeaderLeft,
   Select,
 } from "./NewFinance.Styles";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -154,10 +154,9 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
     <ModalOverlay>
       <ModalContainer>
         <ModalHeader>
-          <CloseButton onClick={handleClose}>
-            <FaArrowLeft />
-          </CloseButton>
+             <HeaderLeft>
           <ModalTitle>New Finance Entry</ModalTitle>
+      </HeaderLeft>
         </ModalHeader>
 
         <Form onSubmit={handleSubmit}>
