@@ -222,13 +222,13 @@ export default function LeaveRequest() {
                     {/* Status Badge */}
                     <BodyCell>
                       <span style={{
-                        padding: "4px 12px",
-                        borderRadius: "12px",
-                        fontSize: "12px",
+                        // padding: "4px 12px",
+                        // borderRadius: "12px",
+                        // fontSize: "12px",
                         fontWeight: "600",
-                        background:
-                          leave.status === "approved" ? "#f0fdf4" :
-                          leave.status === "rejected" ? "#fef2f2" : "#fffbeb",
+                        // background:
+                          // leave.status === "approved" ? "#f0fdf4" :
+                          // leave.status === "rejected" ? "#fef2f2" : "#fffbeb",
                         color:
                           leave.status === "approved" ? "#16a34a" :
                           leave.status === "rejected" ? "#dc2626" : "#f59e0b",

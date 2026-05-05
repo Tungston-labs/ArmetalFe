@@ -114,7 +114,7 @@ const EmployeeAttendanceModal = ({ employee, monthName, isOpen, onClose, onSave 
                 <TableHeader style={{ width: "22%" }}>Date</TableHeader>
                 <TableHeader style={{ width: "36%" }}>Status</TableHeader>
                 <TableHeader style={{ width: "22%", textAlign: "right" }}>Hours</TableHeader>
-                <TableHeader style={{ width: "20%", textAlign: "center" }}>Action</TableHeader>
+                {/* <TableHeader style={{ width: "20%", textAlign: "center" }}>Action</TableHeader> */}
               </tr>
             </thead>
             <tbody>
@@ -192,7 +192,7 @@ const EmployeeAttendanceModal = ({ employee, monthName, isOpen, onClose, onSave 
                       </TableCell>
 
                       {/* Action buttons */}
-                      <TableCell style={{ textAlign: "center" }}>
+                      {/* <TableCell style={{ textAlign: "center" }}>
                         {isEditing ? (
                           <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
                             <button
@@ -243,7 +243,7 @@ const EmployeeAttendanceModal = ({ employee, monthName, isOpen, onClose, onSave 
                             Edit
                           </button>
                         )}
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   );
                 })

@@ -71,6 +71,7 @@ const ReimbursementDetail = () => {
   }, [id]);
 
   const handleStatusChange = async (e) => {
+      if (reimbursement.status === "Approve") return;
     const newStatus = e.target.value;
     const oldStatus = reimbursement.status;
 
@@ -100,17 +101,22 @@ const ReimbursementDetail = () => {
           showTabs={false}
           showDropdown={false}
           rightElement={
-            <StatusSelect
-              value={reimbursement.status}
-              onChange={handleStatusChange}
-              statusColor={getStatusStyle(reimbursement.status)}
-            >
-              <option value="Approve">Approved</option>
-              <option value="On Hold">On Hold</option>
-              <option value="In Verification">In Verification</option>
-              <option value="Reject">Reject</option> 
-            </StatusSelect>
-
+           <StatusSelect
+  value={reimbursement.status}
+  onChange={handleStatusChange}
+  statusColor={getStatusStyle(reimbursement.status)}
+  disabled={reimbursement.status === "Approve"}
+  style={{
+    cursor: reimbursement.status === "Approve" ? "not-allowed" : "pointer",
+    pointerEvents: reimbursement.status === "Approve" ? "none" : "auto",
+    opacity: 1,
+  }}
+>
+  <option value="Approve">Approved</option>
+  <option value="On Hold">On Hold</option>
+  <option value="In Verification">In Verification</option>
+  <option value="Reject">Reject</option>
+</StatusSelect>
           }
         />
 
