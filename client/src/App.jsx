@@ -8,7 +8,7 @@ import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
 
 import EmployeeList from "./Pages/leaveDetails/EmployeeList.jsx";
 import Holiday from "./Pages/holiday/Holiday.jsx";
-import Payroll from "./Pages/payroll/PayrollDetailsView.jsx";
+// import Payroll from "./Pages/payroll/PayrollDetailsView.jsx";
 import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx";
 import AddCompany from "./Pages/superAdmin/AddCompany.jsx";
 import Visa from "./Pages/visa/Visa.jsx";

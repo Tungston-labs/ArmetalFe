@@ -10,15 +10,9 @@ import { useNavigate } from "react-router-dom";
 import UnsavedChangesGuard from "../../Components/UnsavedChangesGuard";
 import {
   Container,
-  Header,
-  Title,
-  Subtitle,
-  Hr,
-  EmployeeImage,
 } from "./BasicLevel.Styles";
 
 import Multistep from "../../Components/Multistep";
-import { PiUserCirclePlusThin } from "react-icons/pi";
 import JobDetails from "../../Components/JobDetails";
 import Loader from "../../Components/Loader";
 import EmployeeIcon from "../../assets/employeeicon.svg";
@@ -26,7 +20,7 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeHeader from "../../Components/EmployeeHeader";
 import { ButtonWrapper, NextButton } from "../../Components/JobDetails.Styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
-import { Divider } from "../reimbursement/Reimb_info.Styles";
+
 
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
@@ -149,19 +143,38 @@ export default function AddEmployeeForm() {
 
     setLoading(true);
     try {
-      dispatch(setBasicFormData(formData));
-      const res = await dispatch(submitEmployee({ basic: formData }));
-      if (res.meta.requestStatus === "fulfilled") {
-        const id = res.payload?.employee?.id || res.payload?.id;
-        if (id) {
-          dispatch(setEmployeeId(id));
-          setIsFormDirty(false);
-          navigate("/bank-payment");
-        }
-      }
-    } finally {
-      setLoading(false);
+  dispatch(setBasicFormData(formData));
+  const res = await dispatch(submitEmployee({ basic: formData }));
+
+  if (res.meta.requestStatus === "fulfilled") {
+    const id = res.payload?.employee?.id || res.payload?.id;
+    if (id) {
+      dispatch(setEmployeeId(id));
+      setIsFormDirty(false);
+      navigate("/bank-payment");
     }
+  } 
+else if (res.meta.requestStatus === "rejected") {
+  if (res.payload) {
+    const formattedErrors = {};
+
+    Object.keys(res.payload).forEach((key) => {
+      formattedErrors[key] = Array.isArray(res.payload[key])
+        ? res.payload[key][0]
+        : res.payload[key];
+    });
+
+    // Optional clean message
+    if (formattedErrors.email) {
+      formattedErrors.email = "This email is already registered";
+    }
+
+    setErrors(formattedErrors);
+  }
+}
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -194,36 +207,6 @@ export default function AddEmployeeForm() {
           onFileChange={handleFileChange}
           errors={errors}
         />
-        {/* <div
-          style={{
-            background: "#fff",
-            padding: "15px",
-            marginTop: "15px",
-            borderRadius: "10px",
-            border: "1px solid #eee",
-          }}
-        >
-          <label style={{ fontWeight: "600" }}>
-             Username
-          </label>
-
-          <input
-            type="text"
-            name="employee_id"
-            value={formData.employee_id}
-            onChange={handleChange}
-            placeholder="Enter employee ID (leave empty for auto-generate)"
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginTop: "8px",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-            }}
-          />
-
-          
-        </div> */}
         <JobDetails
           country={country}
           departments={departmentList}
