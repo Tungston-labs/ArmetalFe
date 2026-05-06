@@ -472,3 +472,77 @@ class PayslipDownloadView(APIView):
         return response
 
 
+# views.py
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from django.shortcuts import get_object_or_404
+
+from .models import EmployeePayrollRecord
+from .serializers import EmployeePayrollRecordSerializer
+
+
+class PayrollIncentiveUpdateView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, employee_id):
+
+        month = request.data.get("month")
+        year = request.data.get("year")
+
+        incentive_amount = request.data.get(
+            "incentive_amount",
+            0
+        )
+
+        incentive_type = request.data.get(
+            "incentive_type"
+        )
+
+        incentive_reason = request.data.get(
+            "incentive_reason"
+        )
+
+        if not month or not year:
+            return Response(
+                {
+                    "error": "Month and year are required"
+                },
+                status=400
+            )
+
+        payroll = get_object_or_404(
+            EmployeePayrollRecord,
+            employee__id=employee_id,
+            month=month,
+            year=year
+        )
+
+        # BLOCK VERIFIED PAYROLL UPDATE
+
+        if payroll.is_fully_verified():
+
+            return Response(
+                {
+                    "error": (
+                        "Verified payroll cannot be modified"
+                    )
+                },
+                status=400
+            )
+
+        payroll.incentive_amount = incentive_amount
+        payroll.incentive_type = incentive_type
+        payroll.incentive_reason = incentive_reason
+
+        payroll.save()
+
+        serializer = EmployeePayrollRecordSerializer(
+            payroll,
+            context={"request": request}
+        )
+
+        return Response(serializer.data)
