@@ -55,7 +55,6 @@ from .models import EmployeePayrollRecord
 from attendance.models import Attendance
 from leave.models import LeaveRequest
 from holidays.models import PublicHoliday
-from payroll.models import SalaryIncrement
 
 
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
