@@ -97,14 +97,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### ADD / UPDATE PAYROLL INCENTIVE
 
-PATCH http://127.0.0.1:8000/payroll/incentive/5/
-Authorization: Bearer YOUR_ACCESS_TOKEN
+PATCH https://api.rekory.com/api/payroll/incentive/351/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc4MDkwMDkxLCJpYXQiOjE3NzgwNjEyOTEsImp0aSI6IjYxNzA1MmJmOWUyMTRlMTZiZTUzOGJlNzIwYjkyOTEzIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.tB3SD57xmfQXv9Q3lADHMgAAuNpfkwdngOmqNHTYFcE
 Content-Type: application/json
 
 {
-    "month": 5,
+    "month": 4,
     "year": 2026,
-    "incentive_amount": 5000,
+    "incentive_amount": 1000,
     "incentive_type": "Performance Bonus",
     "incentive_reason": "Completed monthly target successfully"
 }

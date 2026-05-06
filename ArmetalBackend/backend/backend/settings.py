@@ -173,7 +173,12 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'shared.pagination.CustomPagination',
     'PAGE_SIZE': 7,
+
+    'EXCEPTION_HANDLER': 'shared.utils.exception_handler.custom_exception_handler',
+
 }
+
+
 
 from datetime import timedelta
 

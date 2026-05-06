@@ -1,6 +1,6 @@
 ###LOGIN TO OBTAIN THE TOKEN PAIRS-FOR COMAPNY
 
-POST http://178.248.112.16:8001/api/token/
+POST https://api.rekory.com/api/token/
 Content-Type: application/json
 
 {
