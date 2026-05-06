@@ -54,7 +54,7 @@ from rest_framework import serializers
 from .models import EmployeePayrollRecord
 from attendance.models import Attendance
 from leave.models import LeaveRequest
-from holiday.models import PublicHoliday
+from holidays.models import PublicHoliday
 from payroll.models import SalaryIncrement
 
 

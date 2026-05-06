@@ -93,3 +93,18 @@ Content-Type: application/json
 ###PAYSLIP FOR EMPLOYEE
 GET http://localhost:8000/api/employee/payslip/download/?month=07&year=2025
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyMjA4MDA1LCJpYXQiOjE3NTIyMDQ0MDUsImp0aSI6IjBlMmViNDM4NjlmMzQ5NmM4NTE4MWUxZTFmNWFhMzc3IiwidXNlcl9pZCI6NjksImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.JhiuxkwcWdIgiaMpqI-tuPvWZoQJeK3RbKGJ-1hAsi8
+
+
+### ADD / UPDATE PAYROLL INCENTIVE
+
+PATCH http://127.0.0.1:8000/payroll/incentive/5/
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+{
+    "month": 5,
+    "year": 2026,
+    "incentive_amount": 5000,
+    "incentive_type": "Performance Bonus",
+    "incentive_reason": "Completed monthly target successfully"
+}
