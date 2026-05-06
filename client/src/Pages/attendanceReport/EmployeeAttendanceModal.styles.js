@@ -138,6 +138,7 @@ const badgeStyles = {
   leave:    { bg: "#e6f1fb", color: "#185fa5" },
   holiday:  { bg: "#e1f5ee", color: "#0f6e56" },
   absent:   { bg: "#fcebeb", color: "#a32d2d" },
+  off:      { bg: "#faeeda", color: "#a32d2d" },
 };
 
 export const StatusBadge = styled.span`
