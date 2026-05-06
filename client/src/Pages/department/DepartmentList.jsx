@@ -30,20 +30,6 @@ import {
   PageInfo,
 } from "../attendance/AttendanceList.Styles";
 import {
-  ModalOverlay,
-  ModalContent,
-  Container,
-  CloseButton,
-  TitleRow,
-  BackArrow,
-  Form,
-  FormGroup,
-  ButtonRow,
-  SaveButton,
-  Title,
-} from "../department/AddDepartment.Styles.js";
-
-import {
   FormSection,
   InputGroup,
   Label,
@@ -62,6 +48,7 @@ import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
 import { fetchDepartmentById } from "../../services/departmentServices"; 
 import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
+import AddDepartment from "./AddDepartment.jsx";
 const DepartmentList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -682,79 +669,9 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
           </DepartmentGrid>
         )}
 
-        {showAddModal && (
-          <ModalOverlay>
-            <ModalContent>
-              <Container style={{ position: "relative" }}>
-                <CloseButton
-                  onClick={() => setShowAddModal(false)}
-                  aria-label="Close"
-                >
-                  <FaTimes />
-                </CloseButton>
-
-                <TitleRow>
-                  <BackArrow
-                    onClick={() => setShowAddModal(false)}
-                    aria-label="Back"
-                  >
-                <GoArrowLeft />
-                  </BackArrow>
-                  <Title>Add Department</Title>
-                </TitleRow>
-
-                <Form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleCreateDepartment();
-                  }}
-                >
-                  <FormGroup>
-                    <Label>Department Name</Label>
-                    <Input
-                      style={{ border: "1px solid lightgray" }}
-                      type="text"
-                      name="name"
-                      value={newDeptForm.name}
-                      onChange={handleNewDeptChange}
-                      placeholder="Eg:Development"
-                           autoComplete="off"
-                      required
-                    />
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>Department Code</Label>
-                    <Input
-                      style={{ border: "1px solid lightgray" }}
-                      type="text"
-                      name="department_code"
-                      value={newDeptForm.department_code}
-                      onChange={handleNewDeptChange}
-                      placeholder="Eg:Dev_00"
-                      autoComplete="off"
-                      required
-                    />
-                  </FormGroup>
-
-                  {newDeptError && (
-                    <p style={{ color: "red" }}>{newDeptError}</p>
-                  )}
-
-                  <ButtonRow>
-                    <CancelButton
-                      type="button"
-                      onClick={() => setShowAddModal(false)}
-                    >
-                      Cancel
-                    </CancelButton>
-                    <SaveButton type="submit">Save</SaveButton>
-                  </ButtonRow>
-                </Form>
-              </Container>
-            </ModalContent>
-          </ModalOverlay>
-        )}
+     {showAddModal && (
+  <AddDepartment onClose={() => setShowAddModal(false)} />
+)}
       </PageContainer>
     </>
   );

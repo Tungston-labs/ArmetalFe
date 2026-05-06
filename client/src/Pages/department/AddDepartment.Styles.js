@@ -1,272 +1,217 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-export const Container = styled.div`
-  padding: 1.5rem;
-  background-color: #fff;
-  border-radius: 8px;
-  margin: 0 auto;
-  box-sizing: border-box;
-
-  @media (min-width: 1440px) {
-    padding: 2rem 3rem;
-  }
-
-  @media (min-width: 2560px) {
-    padding: 3rem 4rem;
-  }
-
-  @media (min-width: 3840px) {
-    padding: 4rem 6rem;
-  }
-`;
-
-export const TitleRow = styled.div`
+export const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 1.5rem;
-
-  @media (min-width: 1440px) {
-    gap: 15px;
-    margin-bottom: 2rem;
-  }
-
-  @media (min-width: 2560px) {
-    gap: 20px;
-  }
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
 `;
 
-export const BackArrow = styled.div`
-  cursor: pointer;
-  color: rgba(15, 15, 15, 1);
-
-  @media (min-width: 1440px) {
-    font-size: 24px;
-  }
-
-  @media (min-width: 2560px) {
-    font-size: 28px;
-  }
-
-  @media (min-width: 3840px) {
-    font-size: 32px;
-  }
+export const Modal = styled.div`
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
 `;
 
-export const Title = styled.h2`
-  font-size: 1rem;
-  margin: 0;
-  font-family: satoshi;
-      color: #3352ba;
-
-  @media (min-width: 1440px) {
-    font-size: 1.5rem;
-  }
-
-  @media (min-width: 2560px) {
-    font-size: 32px;
-  }
-
-  @media (min-width: 3840px) {
-    font-size: 36px;
-  }
+export const Header = styled.div`
+  background: #3352ba;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
-export const Form = styled.form`
-  // display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-
- 
-`;
-
-export const FormGroup = styled.div`
-  flex: ${({ fullWidth }) => (fullWidth ? '1 1 100%' : '1 1 45%')};
+export const HeaderLeft = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.5rem;
+  gap: 2px;
+`;
 
-  @media (max-width: 768px) {
-    flex: 1 1 100%;
-    margin-bottom: 1rem;
+export const Title = styled.h3`
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+`;
+
+export const Subtitle = styled.p`
+  margin: 0;
+  font-size: 0.9rem;
+  color: #c7d2fe;
+`;
+
+export const CloseBtn = styled.button`
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+`;
+
+export const Body = styled.div`
+  padding: 20px;
+`;
+
+export const EmployeeCard = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e2e5f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  background: #f8f9fc;
+`;
+
+export const Avatar = styled.div`
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #3352ba;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  flex-shrink: 0;
+`;
+
+export const EmpInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+`;
+
+export const EmpName = styled.p`
+  margin: 0;
+  font-size: 13px;
+  color: #111827;
+  font-weight: 500;
+`;
+
+export const EmpSub = styled.span`
+  font-size: 11px;
+  color: #6b7280;
+`;
+
+export const Row = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+`;
+
+export const Field = styled.div`
+  margin-bottom: 14px;
+
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
 export const Label = styled.label`
-  margin-bottom: 0.5rem;
+  font-size: 12px;
+  color: #374151;
   font-weight: 500;
-  font-size: 16px;
-  color: #333;
-
-  @media (max-width: 480px) {
-    font-size: 14px;
-    margin-bottom: 0.3rem;
-  }
-
-  @media (min-width: 1440px) {
-    font-size: 18px;
-  }
-
-  @media (min-width: 2560px) {
-    font-size: 24px;
-  }
-
-  @media (min-width: 3840px) {
-    font-size: 2.5rem;
-  }
+  margin-bottom: 5px;
+  display: block;
 `;
 
 export const Input = styled.input`
-  padding: 10px;
-  border: 1px solid #fa1212ff;
+  width: 100%;
+  padding: 9px 12px;
   border-radius: 6px;
-  font-size: 16px;
+  border: 1px solid #d1d5db;
+  color: #111827;
+  font-size: 13px;
+  background: #ffffff;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &::placeholder {
+    color: #b0b7c3;
+  }
 
   &:focus {
-    border-color: #304eb0;
-    box-shadow: 0 0 0 2px rgba(48, 78, 176, 0.15);
-  }
-
-  @media (max-width: 480px) {
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  @media (min-width: 1440px) {
-    padding: 12px;
-    font-size: 18px;
-  }
-
-  @media (min-width: 2560px) {
-    padding: 14px;
-    font-size: 22px;
-  }
-
-  @media (min-width: 3840px) {
-    padding: 16px;
-    font-size: 2rem;
+    border-color: #3352ba;
+    box-shadow: 0 0 0 3px rgba(51, 82, 186, 0.1);
   }
 `;
 
-export const Select = styled.select`
-  padding: 10px;
-  border: 1px solid #ccc;
+export const TextArea = styled.textarea`
+  width: 100%;
+  padding: 9px 12px;
   border-radius: 6px;
-  font-size: 16px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+  color: #111827;
+  resize: vertical;
   outline: none;
+  min-height: 72px;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
 
-  @media (max-width: 480px) {
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  @media (min-width: 1440px) {
-    padding: 12px;
-    font-size: 18px;
-  }
-
-  @media (min-width: 2560px) {
-    padding: 14px;
-    font-size: 20px;
-  }
-
-  @media (min-width: 3840px) {
-    padding: 16px;
-    font-size: 2rem;
+  &:focus {
+    border-color: #3352ba;
+    box-shadow: 0 0 0 3px rgba(51, 82, 186, 0.1);
   }
 `;
 
-export const ButtonRow = styled.div`
+export const Footer = styled.div`
+  padding: 14px 20px;
+  border-top: 1px solid #f0f2f7;
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  flex: 1 1 100%;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-
-  @media (min-width: 1440px) {
-    gap: 15px;
-    margin-top: 2rem;
-  }
-
-  @media (min-width: 2560px) {
-    gap: 20px;
-  }
+  gap: 10px;
 `;
 
-export const CancelButton = styled.button`
-  padding: 10px 20px;
-  background-color: #ff7a6b;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 16px;
-
-  &:hover {
-    background-color: #e85f54;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-
-  @media (min-width: 1440px) {
-    font-size: 18px;
-    padding: 12px 24px;
-  }
-
-  @media (min-width: 2560px) {
-    font-size: 22px;
-    padding: 14px 28px;
-  }
-
-  @media (min-width: 3840px) {
-    font-size: 28px;
-    padding: 16px 32px;
-  }
-`;
-
-export const SaveButton = styled(CancelButton)`
-  background-color: #304EB0;
-
-  &:hover {
-    background-color: #3f60cbff;
-  }
-`;
-export const CloseButton = styled.button`
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  border: none;
+export const CancelBtn = styled.button`
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
   background: transparent;
+  color: #374151;
+  font-size: 13px;
   cursor: pointer;
-  font-size: 18px;
-  color: #0d0d0eff;
+  transition: background 0.15s, border-color 0.15s;
 
   &:hover {
-    color: #111827;
+    background: #f9fafb;
+    border-color: #9ca3af;
   }
 `;
-export const ModalContent = styled.div`
-  width: 720px;
-  max-width: 100%;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  overflow: hidden;
-`;
-export const ModalOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 20px;
+
+export const SaveBtn = styled.button`
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #3352ba;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 80px;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #2f47a0;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
 `;

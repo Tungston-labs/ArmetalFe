@@ -42,6 +42,18 @@ const EmployeeLeaveForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [actionType, setActionType] = useState("");
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+
+    if (isNaN(date)) return dateStr;
+
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
   useEffect(() => {
     if (id) dispatch(getLeaveDetails(id));
   }, [dispatch, id]);
@@ -68,6 +80,7 @@ const EmployeeLeaveForm = () => {
       setActionType("");
     }
   };
+
 
   if (loading) {
     return (
@@ -100,7 +113,7 @@ const EmployeeLeaveForm = () => {
 
         <PageCard>
 
-    
+
           <CardWrapper>
             <CardHeader onClick={() => setShowJob(!showJob)}>
               <SectionTitle>Job Details</SectionTitle>
@@ -115,7 +128,7 @@ const EmployeeLeaveForm = () => {
                   <ReadonlyInput value={employee.designation || ""} readOnly />
                   <ReadonlyInput value={employee.employment_type || ""} readOnly />
                   <ReadonlyInput value={employee.department || ""} readOnly />
-                  <ReadonlyInput value={employee.joining_date || ""} readOnly />
+                  <ReadonlyInput value={formatDate(employee.joining_date)} readOnly />
                 </InfoGrid>
               </CardContent>
             )}
@@ -143,7 +156,7 @@ const EmployeeLeaveForm = () => {
                     <ReadonlyInput
                       value={
                         leaveDetails?.from_date
-                          ? `${leaveDetails.from_date} (${leaveDetails.from_date_type || ""})`
+                          ? `${formatDate(leaveDetails.from_date)} (${leaveDetails.from_date_type || ""})`
                           : ""
                       }
                       readOnly
@@ -155,7 +168,7 @@ const EmployeeLeaveForm = () => {
                     <ReadonlyInput
                       value={
                         leaveDetails?.to_date
-                          ? `${leaveDetails.to_date} (${leaveDetails.to_date_type || ""})`
+                          ? `${formatDate(leaveDetails.to_date)} (${leaveDetails.to_date_type || ""})`
                           : ""
                       }
                       readOnly
@@ -179,13 +192,13 @@ const EmployeeLeaveForm = () => {
             {showBalance && (
               <CardContent>
                 <InfoGrid>
-                         <div>
+                  <div>
                     <Label>Balance Leave</Label>
-                  <ReadonlyInput value={employee?.total_leave || ""} readOnly />
+                    <ReadonlyInput value={employee?.total_leave || ""} readOnly />
                   </div>
                   <div>
                     <Label>Paid Leave</Label>
-                  <ReadonlyInput value={employee?.paid_leave || ""} readOnly />
+                    <ReadonlyInput value={employee?.paid_leave || ""} readOnly />
                   </div>
                 </InfoGrid>
               </CardContent>
@@ -242,13 +255,13 @@ const EmployeeLeaveForm = () => {
         </PageCard>
 
         {/* Modal */}
-       <ConfirmLeaveModal
-  show={showModal}
-  onClose={() => setShowModal(false)}
-  onConfirm={handleStatusUpdate}
-  actionType={actionType}
-  leaveId={id}         
-/>
+        <ConfirmLeaveModal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={handleStatusUpdate}
+          actionType={actionType}
+          leaveId={id}
+        />
 
 
       </Container>

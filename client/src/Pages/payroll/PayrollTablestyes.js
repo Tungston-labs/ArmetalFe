@@ -564,3 +564,17 @@ export const Icon = styled.img`
   width: 52px;
   height: 52px;
 `;
+export const AddButton = styled.button`
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  background: ${(props) => (props.disabled ? "#ccc" : "#304eb0")};
+  color: ${(props) => (props.disabled ? "#666" : "#fff")};
+  font-size: 0.85rem;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${(props) => (props.disabled ? "#ccc" : "#243f99")};
+  }
+`;

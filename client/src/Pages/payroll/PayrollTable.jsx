@@ -16,7 +16,8 @@ import {
   LeftGroup,
   Selection,
   TableWrapper,
-  Tr
+  Tr,
+  AddButton
 } from "./PayrollTablestyes";
 import { Link } from "react-router-dom";
 import { GoInfo } from "react-icons/go";
@@ -358,7 +359,8 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-  const handleOpenModal = (emp) => {
+ const handleOpenModal = (emp) => {
+  if (emp.incentive_added) return;
   setSelectedEmployee(emp);
   setShowModal(true);
 };
@@ -492,18 +494,13 @@ const handleCloseModal = () => {
                   <Td>{emp.employee_id}</Td>
                   <Td>{formatDate(emp.joining_date)}</Td>
                   <Td>₹{emp.basic_salary ?? "N/A"}</Td>
-                  <Td>
-  <button
-    style={{
-      padding: "5px 10px",
-      borderRadius: "6px",
-      border: "1px solid #ccc",
-      cursor: "pointer",
-    }}
+   <Td>
+  <AddButton
     onClick={() => handleOpenModal(emp)}
+    disabled={emp.incentive_added}
   >
-    Add
-  </button>
+    {emp.incentive_added ? "Added" : "+ Add"}
+  </AddButton>
 </Td>
                   <Td>
                     <Link to={`/payrolldetails/${emp.id}`}>

@@ -46,6 +46,8 @@ export const Title = styled.h2`
 `;
 
 export const SlideButton = styled.button`
+  position: relative; /* ✅ required for dot */
+
   font-size: 20px;
   padding: 8px 14px;
   background: #3352BA;
@@ -53,6 +55,7 @@ export const SlideButton = styled.button`
   border: none;
   border-radius: 12px;
   cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,9 +64,35 @@ export const SlideButton = styled.button`
 
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
+  svg {
+    color: white;
+  }
+
   &:hover {
-    animation: none; /* stop floating on hover */
+    animation: none;
     transform: translateX(4px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+export const NotificationDot = styled.span`
+  position: absolute;
+  top: 6px;
+  right: 6px;
+
+  width: 8px;
+  height: 8px;
+
+  background: #ff3b30;
+  border-radius: 50%;
+  border: 2px solid white;
+
+  /* optional animation */
+  animation: pulse 1.5s infinite;
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
   }
 `;
