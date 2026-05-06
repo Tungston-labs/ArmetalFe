@@ -1,11 +1,11 @@
 ###LOGIN TO OBTAIN THE TOKEN PAIRS-FOR COMAPNY
 
-POST http://178.248.112.16:8001/api/token/
+POST https://api.rekory.com/api/token/
 Content-Type: application/json
 
 {
-  "username": "TUNDEVB5O",
-  "password": "Password@123"
+  "username": "snv_arm_kak_117",
+  "password": "password12345"
 }
 ###
 POST http://178.248.112.16:8001/api/token/

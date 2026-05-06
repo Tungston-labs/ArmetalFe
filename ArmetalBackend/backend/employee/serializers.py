@@ -69,6 +69,117 @@ class EmployeeSerializer(serializers.ModelSerializer):
             and obj.department.department_head == obj
         )
 
+        # =====================================================
+    # EMAIL VALIDATION
+    # =====================================================
+
+    def validate_email(self, value):
+
+        qs = Employee_db.objects.filter(
+            email__iexact=value
+        )
+
+        # exclude current instance during update
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Email already exists."
+            )
+
+        return value
+
+    # =====================================================
+    # PHONE VALIDATION
+    # =====================================================
+
+    def validate_phno(self, value):
+
+        qs = Employee_db.objects.filter(
+            phno=value
+        )
+
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Phone number already exists."
+            )
+
+        return value
+
+    # =====================================================
+    # EMPLOYEE ID VALIDATION
+    # =====================================================
+
+    def validate_employee_id(self, value):
+
+        # skip empty because auto-generated possible
+        if not value:
+            return value
+
+        qs = Employee_db.objects.filter(
+            employee_id=value
+        )
+
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Employee ID already exists."
+            )
+
+        return value
+
+    # =====================================================
+    # IQAMA VALIDATION
+    # =====================================================
+
+    def validate_iqama_number(self, value):
+
+        if not value:
+            return value
+
+        qs = Employee_db.objects.filter(
+            iqama_number=value
+        )
+
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Iqama number already exists."
+            )
+
+        return value
+
+    # =====================================================
+    # AADHAR VALIDATION
+    # =====================================================
+
+    def validate_aadar_number(self, value):
+
+        if not value:
+            return value
+
+        qs = Employee_db.objects.filter(
+            aadar_number=value
+        )
+
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Aadhaar number already exists."
+            )
+
+        return value
+
     def validate(self, data):
 
         country = self.context['request'].user.company.country
