@@ -111,11 +111,11 @@ const DepartmentPage = () => {
                     {project.punch_type || "N/A"}
                   </Tag>
                   <StatusTag
-  $color={statusColors[project.status]}
-  $lightbg={statusLightColors[project.status]}
->
-  {statusLabels[project.status] || project.status || "N/A"}
-</StatusTag>
+                    $color={statusColors[project.status]}
+                    $lightbg={statusLightColors[project.status]}
+                  >
+                    {statusLabels[project.status] || project.status || "N/A"}
+                  </StatusTag>
                 </CardFooter>
               </Card>
             ))

@@ -259,7 +259,7 @@ export const InfoGrid = styled.div`
 
 export const InfoRow = styled.div`
   display: grid;
-  grid-template-columns: 180px 1fr 180px 1fr;
+  grid-template-columns: 170px 1fr 170px 1fr;
   padding: 8px 0;
   align-items: center;
   row-gap: 10px;

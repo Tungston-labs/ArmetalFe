@@ -17,6 +17,11 @@ import {
   TableData,
   BackTitle,
   BackIcon,
+  CompanyHeader,
+  CompanyInfo,
+  CompanyLogo,
+  CompanyName,
+  CompanyText,
 } from "./PayrollDetailsView.styles";
 import { BsPrinter } from "react-icons/bs";
 
@@ -86,37 +91,22 @@ const PayrollDetails = () => {
 
         {/* ================= COMPANY HEADER ================= */}
         {company && (
-          <div
-            style={{
-              backgroundColor: "#1f2937",
-              color: "#ffffff",
-              padding: "20px",
-              borderRadius: "8px",
-              marginBottom: "30px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <h2 style={{ margin: 0 }}>{company.name}</h2>
-              <p style={{ margin: "4px 0" }}>{company.address}</p>
-              <p style={{ margin: "4px 0" }}>{company.email}</p>
-              <p style={{ margin: "4px 0" }}>{company.contact_number}</p>
-            </div>
+  <CompanyHeader>
+    <CompanyInfo>
+      <CompanyName>{company.name}</CompanyName>
+      <CompanyText>{company.address}</CompanyText>
+      <CompanyText>{company.email}</CompanyText>
+      <CompanyText>{company.contact_number}</CompanyText>
+    </CompanyInfo>
 
-            {company.logo_url && (
-              <img
-                src={company.logo_url}
-                alt="Company Logo"
-                style={{
-                  height: "90px",
-                  objectFit: "contain",
-                }}
-              />
-            )}
-          </div>
-        )}
+    {company.logo_url && (
+      <CompanyLogo
+        src={company.logo_url}
+        alt="Company Logo"
+      />
+    )}
+  </CompanyHeader>
+)}
 
         {/* ================= PAYSLIP TITLE ================= */}
         <div style={{ textAlign: "center", marginBottom: "25px" }}>

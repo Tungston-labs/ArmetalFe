@@ -163,31 +163,11 @@ export const LatestCard = styled.div`
 `;
 
 export const LatestHeader = styled.h3`
-  font-size: 17px;
+  font-size: 0.92rem;
   font-weight: 700;
   color: #334155;
   margin-bottom: 16px;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-    margin-bottom: 12px;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-
-  @media (min-width: 1920px) {
-    font-size: 18px;
-    margin-bottom: 20px;
-  }
-    @media (min-width: 2560px) {
-       font-size: 1.8rem;
-  }
-      @media (min-width: 3840px) {
-         font-size: 1.8rem;
-  } 
 `;
 export const LatestItem = styled.div`
   display: flex;
@@ -235,30 +215,16 @@ export const LatestItem = styled.div`
 
 export const DeptInfo = styled.div`
   display: flex;
-  padding: 10px;
+  /* padding: 10px; */
   flex-direction: column;
   margin-bottom: 20px;
 `;
 
 export const DeptName = styled.span`
   font-weight: 600;
-  font-size: 15px;
+  font-size: 0.9rem;
   color: #0f172a;
 
-  @media (max-width: 768px) {
-    font-size: 14px;
-  }
-
-  @media (min-width: 1920px) {
-    font-size: 16px;
-  }
-     @media (min-width: 2560px) {
-    font-size: 1.5rem;
-  }
-     @media (min-width: 3840px) {
-  font-size: 1.5rem;
-
-  }
 `;
 
 export const DeptDate = styled.span`

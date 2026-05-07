@@ -279,10 +279,7 @@ export const CompanyHeader = styled.div`
   align-items: center;
   gap: 16px;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+
 `;
 
 export const CompanyInfo = styled.div`
@@ -318,5 +315,5 @@ export const CompanyLogo = styled.img`
   object-fit: contain;
   opacity: 0.9;
 
-  @media (max-width: 768px) { height: 50px; }
+
 `;

@@ -48,7 +48,7 @@ const EmployeeDetails = ({ employee }) => {
 
   const workInfo = [
     { title: "Job Title :", value: employee.designation, title2: "Salary :", value2: employee.salary },
-    { title: "Employee ID :", value: employee.employee_id, title2: "Email Id :", value2: employee.email },
+    { title: "Username :", value: employee.employee_id, title2: "Email Id :", value2: employee.email },
     { title: "Department :", value: employee.department, title2: "Joining Date :", value2: employee.joining_date },
     { title: "Role :", value: employee.role, title2: "Contract Expiry :", value2: employee.contract }
   ];

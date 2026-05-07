@@ -98,7 +98,7 @@ const AddProjectModal = ({ isOpen, onClose }) => {
     <ModalOverlay onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
-          <BackButton onClick={onClose}>&larr;</BackButton>
+          {/* <BackButton onClick={onClose}>&larr;</BackButton> */}
           <HeaderContent>
             <HeaderTitle>Add Project</HeaderTitle>
             <HeaderSubtitle>

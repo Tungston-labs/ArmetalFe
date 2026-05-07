@@ -34,6 +34,18 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
     }
   };
 
+  const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+
+  if (isNaN(date)) return dateStr;
+
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
   return (
     <ProfileContainer>
       <ProfileCard>
@@ -120,7 +132,7 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
                 type="text"
                 name="dob"
                 placeholder="Date of Birth"
-                value={employee.dob || ""}
+     value={formatDate(employee.dob)}
                 readOnly={!editable}
                 onChange={onChange}
                 autoComplete="off"

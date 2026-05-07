@@ -76,3 +76,19 @@ export const getPayrollDetailById = async (id) => {
     throw new Error(msg);
   }
 };
+
+export const updateEmployeeIncentive = async ({ employeeId, month, year, incentive_amount, incentive_type, incentive_reason }) => {
+  try {
+ const response = await API.patch(`/payroll/incentive/${employeeId}/`, {  
+      month,
+      year,
+      incentive_amount,
+      incentive_type,
+      incentive_reason,
+    });
+    return response.data;
+  } catch (error) {
+    const msg = error.response?.data?.error || error.message || "Error updating incentive!";
+    throw new Error(msg);
+  }
+};

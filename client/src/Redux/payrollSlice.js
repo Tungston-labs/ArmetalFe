@@ -5,6 +5,7 @@ import {
   updateEmployeePayrollStatus,
   getPayrollDetailById,
   verifyPayroll,
+    updateEmployeeIncentive,
 } from "../services/payrollService";
 
 export const getPayrollData = createAsyncThunk(
@@ -76,7 +77,20 @@ export const verifyEmployeePayroll = createAsyncThunk(
   }
 );
 
-
+export const updatePayrollIncentive = createAsyncThunk(
+  "payroll/updatePayrollIncentive",
+  async ({ employeeId, month, year, incentive_amount, incentive_type, incentive_reason }, { rejectWithValue }) => {
+    try {
+      const data = await updateEmployeeIncentive({
+        employeeId, month, year,
+        incentive_amount, incentive_type, incentive_reason,
+      });
+      return { employeeId, data };
+    } catch (error) {
+      return rejectWithValue(error.message || "Failed to update incentive");
+    }
+  }
+);
 
 const payrollSlice = createSlice({
   name: "payroll",
@@ -88,7 +102,9 @@ const payrollSlice = createSlice({
     submitSuccess: false,
     updateStatusSuccess: false,
     verifySuccess: false,
-    payrollDetail: null, // ✅ New state
+    payrollDetail: null,
+    incentiveUpdateSuccess: false,
+    incentiveError: null,
   },
   reducers: {
     resetPayrollState: (state) => {
@@ -110,6 +126,10 @@ const payrollSlice = createSlice({
     resetVerifySuccess: (state) => {
       state.verifySuccess = false;
     },
+    resetIncentiveSuccess: (state) => {
+  state.incentiveUpdateSuccess = false;
+  state.incentiveError = null;
+},
   },
   extraReducers: (builder) => {
     builder
@@ -144,7 +164,7 @@ const payrollSlice = createSlice({
       .addCase(submitPayrollRecords.fulfilled, (state, action) => {
         state.loading = false;
         state.submitSuccess = true;
-      
+
         // Update the status of selected employees in state.data
         if (action.meta.arg.employee_ids && action.meta.arg.status) {
           const { employee_ids, status } = action.meta.arg;
@@ -155,7 +175,7 @@ const payrollSlice = createSlice({
           );
         }
       })
-      
+
       .addCase(submitPayrollRecords.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -176,7 +196,7 @@ const payrollSlice = createSlice({
             : emp
         );
       })
-      
+
       .addCase(updatePayrollStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -198,8 +218,7 @@ const payrollSlice = createSlice({
         state.error = action.payload;
         state.payrollDetail = null;
       })
-     
-      // ✅ Verify Payroll
+
       .addCase(verifyEmployeePayroll.pending, (state) => {
         state.loading = true;
         state.verifySuccess = false;
@@ -212,24 +231,40 @@ const payrollSlice = createSlice({
             ? action.payload.data
             : emp
         );
-        
+
       })
-      
-     .addCase(verifyEmployeePayroll.rejected, (state, action) => {
-  state.loading = false;
-  state.verifySuccess = false;
-  state.error = action.payload;  // ✅ capture backend error
-});
 
-      
-
-
+      .addCase(verifyEmployeePayroll.rejected, (state, action) => {
+        state.loading = false;
+        state.verifySuccess = false;
+        state.error = action.payload;  // ✅ capture backend error
+      })
+      .addCase(updatePayrollIncentive.pending, (state) => {
+        state.loading = true;
+        state.incentiveUpdateSuccess = false;
+        state.incentiveError = null;
+      })
+      .addCase(updatePayrollIncentive.fulfilled, (state, action) => {
+        state.loading = false;
+        state.incentiveUpdateSuccess = true;
+        state.data = state.data.map((emp) =>
+          emp.id === action.payload.employeeId
+            ? action.payload.data
+            : emp
+        );
+      })
+      .addCase(updatePayrollIncentive.rejected, (state, action) => {
+        state.loading = false;
+        state.incentiveUpdateSuccess = false;
+        state.incentiveError = action.payload;
+      });
   },
 });
 
-export const { resetPayrollState, 
-  resetSubmitSuccess, 
-  resetUpdateStatusSuccess, 
-  resetVerifySuccess  } = payrollSlice.actions;
+export const { resetPayrollState,
+  resetSubmitSuccess,
+  resetUpdateStatusSuccess,
+  resetIncentiveSuccess ,
+  resetVerifySuccess } = payrollSlice.actions;
 
 export default payrollSlice.reducer;
