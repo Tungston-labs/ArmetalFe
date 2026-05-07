@@ -6,7 +6,6 @@ import {
   Title,
   Subtitle,
   SearchInput,
-  // Pagination,
   Table,
   Th,
   Td,
@@ -33,50 +32,39 @@ import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
 import VerificationCircles from "../../Components/VerificationCircle";
 import HolidayIcon from "../../assets/payroll.svg";
-import Pagination from "../../Components/Pagination/Pagination"
+import Pagination from "../../Components/Pagination/Pagination";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 import IncentiveModal from "../../Components/payroll/IncentiveModal";
+
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
 
 const today = new Date();
-
 const defaultMonth = today.getMonth() + 1;
 const defaultYear = today.getFullYear();
-
 const years = Array.from({ length: 10 }, (_, i) => defaultYear - 2 + i);
 
 const PayrollTable = () => {
   const dispatch = useDispatch();
-  const { data, loading, error, totalPages } = useSelector(
-    (state) => state.payroll,
-  );
+  const { data, loading, error, totalPages } = useSelector((state) => state.payroll);
   const departmentList = useSelector((state) => state.departments.list || []);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
+  const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
   const [selectedYear, setSelectedYear] = useState(defaultYear);
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState({});
   const [bulkStatus, setBulkStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
-const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [incentiveAddedIds, setIncentiveAddedIds] = useState([]); // ✅ local tracking
+
   const LIMIT = 20;
 
-  // --- Sorting: ascending by employee_name (default)
   const sortedData = useMemo(() => {
     if (!Array.isArray(data)) return [];
     const copy = [...data];
@@ -90,16 +78,11 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Paid":
-        return "#4B976D";
-      case "OnHold":
-        return "#bac8f8";
-      case "Pending":
-        return "#ffb833";
-      case "Cancelled":
-        return "#E67B7B";
-      default:
-        return "#000";
+      case "Paid": return "#4B976D";
+      case "OnHold": return "#bac8f8";
+      case "Pending": return "#ffb833";
+      case "Cancelled": return "#E67B7B";
+      default: return "#000";
     }
   };
 
@@ -116,18 +99,9 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
         month: selectedMonth,
         year: selectedYear,
         department: selectedDepartment,
-      }),
-    )
-      .unwrap()
-      .catch((err) => console.error("Error fetching payroll data:", err));
-  }, [
-    dispatch,
-    page,
-    searchTerm,
-    selectedMonth,
-    selectedYear,
-    selectedDepartment,
-  ]);
+      })
+    ).unwrap().catch((err) => console.error("Error fetching payroll data:", err));
+  }, [dispatch, page, searchTerm, selectedMonth, selectedYear, selectedDepartment]);
 
   useEffect(() => {
     if (sortedData?.length) {
@@ -146,21 +120,27 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
     setSearchTerm(e.target.value);
     setPage(1);
   };
+
   const handleMonthChange = (e) => {
     setSelectedMonth(Number(e.target.value));
+    setIncentiveAddedIds([]); // ✅ reset on month change
   };
+
   const handleYearChange = (e) => {
     setSelectedYear(Number(e.target.value));
     setPage(1);
+    setIncentiveAddedIds([]); // ✅ reset on year change
   };
+
   const handleDepartmentChange = (e) => {
     setSelectedDepartment(e.target.value);
     setPage(1);
+    setIncentiveAddedIds([]); // ✅ reset on department change
   };
 
   const toggleEmployeeSelect = (id) => {
     setSelectedEmployees((prev) =>
-      prev.includes(id) ? prev.filter((empId) => empId !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((empId) => empId !== id) : [...prev, id]
     );
   };
 
@@ -168,7 +148,7 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
     setSelectedEmployees(
       selectedEmployees.length === sortedData.length
         ? []
-        : sortedData.map((emp) => emp.id),
+        : sortedData.map((emp) => emp.id)
     );
   };
 
@@ -190,7 +170,7 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
           month: selectedMonth,
           year: selectedYear,
           status: newStatus,
-        }),
+        })
       ).unwrap();
 
       dispatch(
@@ -200,7 +180,7 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
           month: selectedMonth,
           year: selectedYear,
           department: selectedDepartment,
-        }),
+        })
       );
     } catch (err) {
       Swal.fire({
@@ -220,8 +200,7 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
     const unverified = sortedData.filter(
       (emp) =>
         selectedEmployees.includes(emp.id) &&
-        (!verificationStatus[emp.id]?.first ||
-          !verificationStatus[emp.id]?.second),
+        (!verificationStatus[emp.id]?.first || !verificationStatus[emp.id]?.second)
     );
 
     if (unverified.length > 0) {
@@ -246,7 +225,7 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
           year: selectedYear,
           employee_ids,
           status: newStatus,
-        }),
+        })
       ).unwrap();
 
       Swal.fire({
@@ -276,23 +255,17 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
       JSON.parse(localStorage.getItem("user")) ||
       JSON.parse(sessionStorage.getItem("user"));
     if (!user) return;
+
     if (verificationStatus[employee.id]?.[type]) {
-      Swal.fire({
-        icon: "info",
-        title: "Already Verified",
-        text: "This was already verified.",
-      });
+      Swal.fire({ icon: "info", title: "Already Verified", text: "This was already verified." });
       return;
     }
+
     if (
       employee.hr1_verified_by === user.username ||
       employee.hr2_verified_by === user.username
     ) {
-      Swal.fire({
-        icon: "warning",
-        title: "Cannot Verify",
-        text: "You cannot verify the same payroll twice.",
-      });
+      Swal.fire({ icon: "warning", title: "Cannot Verify", text: "You cannot verify the same payroll twice." });
       return;
     }
 
@@ -302,12 +275,14 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
           employeeId: employee.employee,
           month: selectedMonth,
           year: selectedYear,
-        }),
+        })
       ).unwrap();
+
       setVerificationStatus((prev) => ({
         ...prev,
         [employee.id]: { ...prev[employee.id], [type]: true },
       }));
+
       await dispatch(
         getPayrollData({
           page,
@@ -315,7 +290,7 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
           month: selectedMonth,
           year: selectedYear,
           department: selectedDepartment,
-        }),
+        })
       );
 
       Swal.fire({
@@ -339,7 +314,7 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
             month: selectedMonth,
             year: selectedYear,
             department: selectedDepartment,
-          }),
+          })
         );
       });
     }
@@ -348,7 +323,6 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
   };
-
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
@@ -359,16 +333,32 @@ const [selectedEmployee, setSelectedEmployee] = useState(null);
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
- const handleOpenModal = (emp) => {
-  if (emp.incentive_added) return;
-  setSelectedEmployee(emp);
-  setShowModal(true);
-};
 
-const handleCloseModal = () => {
-  setShowModal(false);
-  setSelectedEmployee(null);
-};
+  const handleOpenModal = (emp) => {
+    if (emp.incentive_added || incentiveAddedIds.includes(emp.id)) return; // ✅ block if already added
+    setSelectedEmployee(emp);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = (saved = false) => {
+    setShowModal(false);
+
+    if (saved && selectedEmployee) {
+      setIncentiveAddedIds((prev) => [...prev, selectedEmployee.id]); // ✅ mark as added locally
+      dispatch(
+        getPayrollData({
+          page,
+          search: searchTerm,
+          month: selectedMonth,
+          year: selectedYear,
+          department: selectedDepartment,
+        })
+      );
+    }
+
+    setSelectedEmployee(null);
+  };
+
   return (
     <>
       <Container>
@@ -381,11 +371,7 @@ const handleCloseModal = () => {
                 <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
               </div>
             </LeftGroup>
-
-            <Selection
-              value={selectedDepartment}
-              onChange={handleDepartmentChange}
-            >
+            <Selection value={selectedDepartment} onChange={handleDepartmentChange}>
               <option value="">Select Department</option>
               {departmentList.map((dept) => (
                 <option key={dept.id} value={String(dept.id).split(":")[0]}>
@@ -396,13 +382,7 @@ const handleCloseModal = () => {
           </TitleSection>
         </Header>
 
-        <Header
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <Header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <SearchInput
             placeholder=" Search by employee ID"
             value={searchTerm}
@@ -411,16 +391,12 @@ const handleCloseModal = () => {
           <div style={{ display: "flex", gap: "10px" }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
               {months.map((month, index) => (
-                <option key={month} value={index + 1}>
-                  {month}
-                </option>
+                <option key={month} value={index + 1}>{month}</option>
               ))}
             </Select>
             <Select value={selectedYear} onChange={handleYearChange}>
               {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
+                <option key={year} value={year}>{year}</option>
               ))}
             </Select>
           </div>
@@ -435,132 +411,122 @@ const handleCloseModal = () => {
             />
             <strong>Selected {selectedEmployees.length} Employees</strong>
           </div>
-
-          <select onChange={handleBulkStatusChange}>
-            <option>Select</option>
+          <select value={bulkStatus} onChange={handleBulkStatusChange}>
+            <option value="">Select</option>
             <option value="OnHold">OnHold</option>
             <option value="Cancelled">Cancelled</option>
             <option value="Pending">Pending</option>
             <option value="Paid">Paid</option>
           </select>
         </BulkActionBar>
-        <TableWrapper />
-        <Table>
-          <thead>
-            <tr>
-              <Th>
-                <input
-                  type="checkbox"
-                  checked={
-                    selectedEmployees.length === sortedData.length && sortedData.length > 0
-                  }
-                  onChange={handleSelectAll}
-                />
-              </Th>
-              <Th>Sl No</Th>
-              <Th>Name</Th>
-              <Th>Employee ID</Th>
-              <Th>Joining Date</Th>
-              <Th>Salary</Th>
-              <Th>Incentive</Th>
-              <Th>Info</Th>
-              <Th>Verification</Th>
-              <Th>Status</Th>
 
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
+        <TableWrapper>
+          <Table>
+            <thead>
               <tr>
-                <td
-                  colSpan="11"
-                  style={{ textAlign: "center", padding: "2rem" }}
-                >
-                  <Loader size="large" tip="Loading..." />
-                </td>
-              </tr>
-            ) : sortedData?.length > 0 ? (
-              sortedData.map((emp, index) => (
-                <tr key={emp.id}>
-                  <Td>
-                    <input
-                      type="checkbox"
-                      checked={selectedEmployees.includes(emp.id)}
-                      onChange={() => toggleEmployeeSelect(emp.id)}
-                    />
-                  </Td>
-                  <Td>{(page - 1) * LIMIT + index + 1}</Td>
-                  <Td>{emp.employee_name}</Td>
-                  <Td>{emp.employee_id}</Td>
-                  <Td>{formatDate(emp.joining_date)}</Td>
-                  <Td>₹{emp.basic_salary ?? "N/A"}</Td>
-   <Td>
-  <AddButton
-    onClick={() => handleOpenModal(emp)}
-    disabled={emp.incentive_added}
-  >
-    {emp.incentive_added ? "Added" : "+ Add"}
-  </AddButton>
-</Td>
-                  <Td>
-                    <Link to={`/payrolldetails/${emp.id}`}>
-                      <GoInfo style={{ cursor: "pointer", color: "black" }} />
-                    </Link>
-                  </Td>
-                  <Td>
-                    <VerificationCircles
-                      emp={emp}
-                      verificationStatus={verificationStatus}
-                      handleCircleClick={handleCircleClick}
-                    />
-                  </Td>
-
-                  <Td>
-                    <Select
-                      value={emp.status || ""}
-                      onChange={(e) =>
-                        handleSingleStatusChange(emp, e.target.value)
-                      }
-                      $bg={emp.status ? getStatusColor(emp.status) : "white"}
-                      $color={
-                        emp.status === "Pending" || !emp.status
-                          ? "black"
-                          : "white"
-                      }
-                    >
-                      <option value="OnHold">On Hold</option>
-                      <option value="Cancelled">Cancelled</option>
-                      <option value="Pending">Pending</option>
-                      <option value="Paid">Paid</option>
-                    </Select>
-                  </Td>
-                </tr>
-              ))
-            ) : (
-
-
-              <tr>
-                <td colSpan={9} style={{ textAlign: "center", padding: "20px" }}>
-                  <NoEmployeeFound
-                    searchTerm={searchTerm}
-                    label="No Payroll Records Found"
+                <Th>
+                  <input
+                    type="checkbox"
+                    checked={selectedEmployees.length === sortedData.length && sortedData.length > 0}
+                    onChange={handleSelectAll}
                   />
-                </td>
+                </Th>
+                <Th>Sl No</Th>
+                <Th>Name</Th>
+                <Th>Employee ID</Th>
+                <Th>Joining Date</Th>
+                <Th>Salary</Th>
+                <Th>Incentive</Th>
+                <Th>Info</Th>
+                <Th>Verification</Th>
+                <Th>Status</Th>
               </tr>
-            )}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="10" style={{ textAlign: "center", padding: "2rem" }}>
+                    <Loader size="large" tip="Loading..." />
+                  </td>
+                </tr>
+              ) : sortedData?.length > 0 ? (
+                sortedData.map((emp, index) => (
+                  <tr key={emp.id}>
+                    <Td>
+                      <input
+                        type="checkbox"
+                        checked={selectedEmployees.includes(emp.id)}
+                        onChange={() => toggleEmployeeSelect(emp.id)}
+                      />
+                    </Td>
+                    <Td>{(page - 1) * LIMIT + index + 1}</Td>
+                    <Td>{emp.employee_name}</Td>
+                    <Td>{emp.employee_id}</Td>
+                    <Td>{formatDate(emp.joining_date)}</Td>
+                    <Td>₹{emp.basic_salary ?? "N/A"}</Td>
+                    <Td>
+                      <AddButton
+                        onClick={() => handleOpenModal(emp)}
+                        disabled={emp.incentive_added || incentiveAddedIds.includes(emp.id)}
+                      >
+                        {emp.incentive_added || incentiveAddedIds.includes(emp.id) ? "Added" : "+ Add"}
+                      </AddButton>
+                    </Td>
+                    <Td>
+                      <Link to={`/payrolldetails/${emp.id}`}>
+                        <GoInfo style={{ cursor: "pointer", color: "black" }} />
+                      </Link>
+                    </Td>
+                    <Td>
+                      <VerificationCircles
+                        emp={emp}
+                        verificationStatus={verificationStatus}
+                        handleCircleClick={handleCircleClick}
+                      />
+                    </Td>
+                    <Td>
+                      <Select
+                        value={emp.status || ""}
+                        onChange={(e) => handleSingleStatusChange(emp, e.target.value)}
+                        $bg={emp.status ? getStatusColor(emp.status) : "white"}
+                        $color={emp.status === "Pending" || !emp.status ? "black" : "white"}
+                      >
+                        <option value="OnHold">On Hold</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Paid">Paid</option>
+                      </Select>
+                    </Td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} style={{ textAlign: "center", padding: "20px" }}>
+                    <NoEmployeeFound
+                      searchTerm={searchTerm}
+                      label="No Payroll Records Found"
+                    />
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </TableWrapper>
+
         <Pagination
           currentPage={page}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
+
         {showModal && selectedEmployee && (
-  <IncentiveModal
-    employee={selectedEmployee}
-    onClose={handleCloseModal}
-  />
-)}
+          <IncentiveModal
+            employee={selectedEmployee}
+            month={selectedMonth}
+            year={selectedYear}
+            onClose={handleCloseModal}
+          />
+        )}
       </Container>
     </>
   );

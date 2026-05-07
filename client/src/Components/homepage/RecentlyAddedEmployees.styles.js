@@ -116,7 +116,7 @@ export const Info = styled.div`
 export const Name = styled.span`
   font-weight: 600;
   color: #0f172a;
-  font-size: 15px;
+  font-size:0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -138,7 +138,7 @@ export const Name = styled.span`
 
 export const Dept = styled.span`
   color: #475569;
-  font-size: 13px;
+  font-size: 0.8rem;
   margin-top: 2px;
 
   @media (max-width: 600px) {
@@ -158,7 +158,7 @@ export const Dept = styled.span`
 
 export const IdText = styled.span`
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 0.7rem;
   margin-top: 2px;
 
   @media (max-width: 600px) {

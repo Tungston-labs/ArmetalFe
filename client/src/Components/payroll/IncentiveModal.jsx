@@ -1,94 +1,79 @@
 import React, { useState } from "react";
 import {
-    Overlay,
-    Modal,
-    Header,
-    HeaderLeft,
-    Title,
-    Subtitle,
-    CloseBtn,
-    Body,
-    EmployeeCard,
-    Avatar,
-    EmpInfo,
-    EmpName,
-    EmpSub,
-    Row,
-    Field,
-    Label,
-    Input,
-    TextArea,
-    Footer,
-    CancelBtn,
-    SaveBtn,
+    Overlay, Modal, Header, HeaderLeft, Title, Subtitle, CloseBtn,
+    Body, EmployeeCard, Avatar, EmpInfo, EmpName, EmpSub,
+    Row, Field, Label, Input, TextArea, Footer, CancelBtn, SaveBtn,
 } from "./IncentiveModal.styles";
 import { useDispatch } from "react-redux";
-// import { addEmployeeIncentive } from "../../Redux/payrollSlice";
-const IncentiveModal = ({ onClose, employee }) => {
+import { updatePayrollIncentive } from "../../Redux/payrollSlice";
+
+const IncentiveModal = ({ onClose, employee, month, year }) => {
     const dispatch = useDispatch();
     const [amount, setAmount] = useState("");
     const [type, setType] = useState("");
     const [remarks, setRemarks] = useState("");
     const [errors, setErrors] = useState({});
-
-
     const [loading, setLoading] = useState(false);
 
-const handleSave = async () => {
-    const newErrors = {};
+    const handleSave = async () => {
+        const newErrors = {};
 
-    // Amount validation
-    if (!amount) {
-        newErrors.amount = "Amount is required";
-    } else if (Number(amount) <= 0) {
-        newErrors.amount = "Amount must be greater than 0";
-    }
-
-    // Type validation
-    if (!type || !type.trim()) {
-        newErrors.type = "Incentive type is required";
-    }
-
-    // Optional: remarks limit
-    if (remarks.length > 200) {
-        newErrors.remarks = "Remarks cannot exceed 200 characters";
-    }
-
-    // If errors exist → stop
-    if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-        return;
-    }
-
-    setErrors({});
-    setLoading(true);
-
-    try {
-        await dispatch(
-            addEmployeeIncentive({
-                employeeId: employee.employee,
-                amount,
-                type,
-                remarks,
-            })
-        ).unwrap();
-
-        onClose();
-    } catch (err) {
-        // ✅ Backend error handling
-        if (typeof err === "object") {
-            setErrors(err); // if backend sends field errors
-        } else {
-            setErrors({ general: err || "Something went wrong" });
+        if (!amount) {
+            newErrors.amount = "Amount is required";
+        } else if (Number(amount) <= 0) {
+            newErrors.amount = "Amount must be greater than 0";
         }
-    } finally {
-        setLoading(false);
-    }
-};
+
+        if (!type || !type.trim()) {
+            newErrors.type = "Incentive type is required";
+        }
+
+        if (remarks.length > 200) {
+            newErrors.remarks = "Remarks cannot exceed 200 characters";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        // ✅ Block if already added
+        if (employee.incentive_added) {
+            setErrors({ general: "Incentive already added for this employee this month." });
+            return;
+        }
+
+        setErrors({});
+        setLoading(true);
+
+        try {
+            await dispatch(
+                updatePayrollIncentive({
+                    employeeId: employee.employee,
+                    month,
+                    year,
+                    incentive_amount: amount,
+                    incentive_type: type,
+                    incentive_reason: remarks,
+                })
+            ).unwrap();
+
+            onClose(true);  // ✅ true = saved, triggers refresh in parent
+
+        } catch (err) {
+            if (typeof err === "object") {
+                setErrors(err);
+            } else {
+                setErrors({ general: err || "Something went wrong" });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <Overlay>
             <Modal>
-                {/* Header */}
                 <Header>
                     <HeaderLeft>
                         <Title>Add Incentive</Title>
@@ -96,22 +81,15 @@ const handleSave = async () => {
                             {new Date().toLocaleString("en-IN", { month: "long", year: "numeric" })}
                         </Subtitle>
                     </HeaderLeft>
-
-                    <CloseBtn onClick={onClose}>✕</CloseBtn>
+                    <CloseBtn onClick={() => onClose(false)}>✕</CloseBtn>  {/* ✅ false = just closing */}
                 </Header>
 
-                {/* Body */}
                 <Body>
                     <EmployeeCard>
-                        <Avatar>
-                            {employee?.employee_name?.slice(0, 2).toUpperCase()}
-                        </Avatar>
+                        <Avatar>{employee?.employee_name?.slice(0, 2).toUpperCase()}</Avatar>
                         <EmpInfo>
                             <EmpName>{employee?.employee_name}</EmpName>
-
-                            <EmpSub>
-                                {employee?.employee_id} · {employee?.department || "N/A"}
-                            </EmpSub>
+                            <EmpSub>{employee?.employee_id} · {employee?.department || "N/A"}</EmpSub>
                         </EmpInfo>
                     </EmployeeCard>
 
@@ -150,9 +128,13 @@ const handleSave = async () => {
                     </Field>
                 </Body>
 
-                {/* Footer */}
                 <Footer>
-                    <CancelBtn onClick={onClose}>Cancel</CancelBtn>
+                    {errors.general && (
+                        <p style={{ color: "red", fontSize: "12px", marginBottom: "8px" }}>
+                            {errors.general}
+                        </p>
+                    )}
+                    <CancelBtn onClick={() => onClose(false)}>Cancel</CancelBtn>  {/* ✅ false */}
                     <SaveBtn onClick={handleSave} disabled={loading}>
                         {loading ? "Saving..." : "Save Incentive"}
                     </SaveBtn>
