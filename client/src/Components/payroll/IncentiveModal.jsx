@@ -15,61 +15,65 @@ const IncentiveModal = ({ onClose, employee, month, year }) => {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const handleSave = async () => {
-        const newErrors = {};
+   const handleSave = async () => {
+    const newErrors = {};
 
-        if (!amount) {
-            newErrors.amount = "Amount is required";
-        } else if (Number(amount) <= 0) {
-            newErrors.amount = "Amount must be greater than 0";
-        }
+    if (!amount) {
+        newErrors.amount = "Amount is required";
+    } else if (Number(amount) <= 0) {
+        newErrors.amount = "Amount must be greater than 0";
+    }
 
-        if (!type || !type.trim()) {
-            newErrors.type = "Incentive type is required";
-        }
+    if (!type || !type.trim()) {
+        newErrors.type = "Incentive type is required";
+    }
 
-        if (remarks.length > 200) {
-            newErrors.remarks = "Remarks cannot exceed 200 characters";
-        }
+    if (remarks.length > 200) {
+        newErrors.remarks = "Remarks cannot exceed 200 characters";
+    }
 
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+    }
+
+    setErrors({});
+    setLoading(true);
+
+    try {
+        await dispatch(
+            updatePayrollIncentive({
+                employeeId: employee.employee,
+                month,
+                year,
+                incentive_amount: amount,
+                incentive_type: type,
+                incentive_reason: remarks,
+            })
+        ).unwrap();
+
+        onClose(true);
+
+    } catch (err) {
+        console.log("Incentive Error:", err);
+
+        if (
+            err?.error === "Incentive already added for this employee for this month." ||
+            err?.message === "Incentive already added for this employee for this month."
+        ) {
+            onClose(true); // ✅ make button Added
             return;
         }
 
-        // ✅ Block if already added
-        if (employee.incentive_added) {
-            setErrors({ general: "Incentive already added for this employee this month." });
-            return;
+        if (typeof err === "object") {
+            setErrors(err);
+        } else {
+            setErrors({ general: err || "Something went wrong" });
         }
-
-        setErrors({});
-        setLoading(true);
-
-        try {
-            await dispatch(
-                updatePayrollIncentive({
-                    employeeId: employee.employee,
-                    month,
-                    year,
-                    incentive_amount: amount,
-                    incentive_type: type,
-                    incentive_reason: remarks,
-                })
-            ).unwrap();
-
-            onClose(true);  // ✅ true = saved, triggers refresh in parent
-
-        } catch (err) {
-            if (typeof err === "object") {
-                setErrors(err);
-            } else {
-                setErrors({ general: err || "Something went wrong" });
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <Overlay>

@@ -44,7 +44,10 @@ const months = [
 const today = new Date();
 const defaultMonth = today.getMonth() + 1;
 const defaultYear = today.getFullYear();
-const years = Array.from({ length: 10 }, (_, i) => defaultYear - 2 + i);
+const years = Array.from(
+  { length: 3 },
+  (_, i) => defaultYear - 2 + i
+);
 
 const PayrollTable = () => {
   const dispatch = useDispatch();
@@ -340,24 +343,29 @@ const PayrollTable = () => {
     setShowModal(true);
   };
 
-  const handleCloseModal = (saved = false) => {
-    setShowModal(false);
+const handleCloseModal = (saved = false) => {
+  setShowModal(false);
 
-    if (saved && selectedEmployee) {
-      setIncentiveAddedIds((prev) => [...prev, selectedEmployee.id]); // ✅ mark as added locally
-      dispatch(
-        getPayrollData({
-          page,
-          search: searchTerm,
-          month: selectedMonth,
-          year: selectedYear,
-          department: selectedDepartment,
-        })
-      );
-    }
+  if (saved && selectedEmployee) {
+    setIncentiveAddedIds((prev) =>
+      prev.includes(selectedEmployee.id)
+        ? prev
+        : [...prev, selectedEmployee.id]
+    );
 
-    setSelectedEmployee(null);
-  };
+    dispatch(
+      getPayrollData({
+        page,
+        search: searchTerm,
+        month: selectedMonth,
+        year: selectedYear,
+        department: selectedDepartment,
+      })
+    );
+  }
+
+  setSelectedEmployee(null);
+};
 
   return (
     <>
@@ -390,10 +398,25 @@ const PayrollTable = () => {
           />
           <div style={{ display: "flex", gap: "10px" }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
-              {months.map((month, index) => (
-                <option key={month} value={index + 1}>{month}</option>
-              ))}
-            </Select>
+  {months
+    .filter((_, index) => {
+      // ✅ Hide future months for current year
+      if (selectedYear === defaultYear) {
+        return index + 1 <= defaultMonth;
+      }
+      return true;
+    })
+    .map((month, index) => {
+      // ✅ Correct month value after filtering
+      const monthValue = months.indexOf(month) + 1;
+
+      return (
+        <option key={month} value={monthValue}>
+          {month}
+        </option>
+      );
+    })}
+</Select>
             <Select value={selectedYear} onChange={handleYearChange}>
               {years.map((year) => (
                 <option key={year} value={year}>{year}</option>
@@ -465,12 +488,14 @@ const PayrollTable = () => {
                     <Td>{formatDate(emp.joining_date)}</Td>
                     <Td>₹{emp.basic_salary ?? "N/A"}</Td>
                     <Td>
-                      <AddButton
-                        onClick={() => handleOpenModal(emp)}
-                        disabled={emp.incentive_added || incentiveAddedIds.includes(emp.id)}
-                      >
-                        {emp.incentive_added || incentiveAddedIds.includes(emp.id) ? "Added" : "+ Add"}
-                      </AddButton>
+               <AddButton
+  onClick={() => handleOpenModal(emp)}
+  disabled={emp.incentive_amount > 0 || incentiveAddedIds.includes(emp.id)}
+>
+  {emp.incentive_amount > 0 || incentiveAddedIds.includes(emp.id)
+    ? "Added"
+    : "+ Add"}
+</AddButton>
                     </Td>
                     <Td>
                       <Link to={`/payrolldetails/${emp.id}`}>
