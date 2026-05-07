@@ -483,7 +483,6 @@ from django.shortcuts import get_object_or_404
 from .models import EmployeePayrollRecord
 from .serializers import EmployeePayrollRecordSerializer
 
-
 class PayrollIncentiveUpdateView(APIView):
 
     permission_classes = [IsAuthenticated]
@@ -507,6 +506,7 @@ class PayrollIncentiveUpdateView(APIView):
         )
 
         if not month or not year:
+
             return Response(
                 {
                     "error": "Month and year are required"
@@ -521,7 +521,9 @@ class PayrollIncentiveUpdateView(APIView):
             year=year
         )
 
+        # =====================================================
         # BLOCK VERIFIED PAYROLL UPDATE
+        # =====================================================
 
         if payroll.is_fully_verified():
 
@@ -533,6 +535,29 @@ class PayrollIncentiveUpdateView(APIView):
                 },
                 status=400
             )
+
+        # =====================================================
+        # ALLOW ONLY ONE INCENTIVE UPDATE
+        # =====================================================
+
+        if (
+            payroll.incentive_amount
+            and payroll.incentive_amount > 0
+        ):
+
+            return Response(
+                {
+                    "error": (
+                        "Incentive already added for this employee "
+                        "for this month."
+                    )
+                },
+                status=400
+            )
+
+        # =====================================================
+        # SAVE INCENTIVE
+        # =====================================================
 
         payroll.incentive_amount = incentive_amount
         payroll.incentive_type = incentive_type
