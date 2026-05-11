@@ -1,152 +1,186 @@
 import styled from "styled-components";
 
+// Overlay
 export const ModalOverlay = styled.div`
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: ${(props) => (props.isOpen ? "flex" : "none")};
   justify-content: center;
   align-items: center;
   z-index: 999;
   padding: 16px;
 `;
 
+// Modal Container
 export const ModalContainer = styled.div`
-  background: #ffffff;
-  /* border-radius: 16px; */
-  border: 0.5px solid #eeeeee;
+  background: #fff;
+  border-radius: 16px;
   width: 100%;
-  max-width: 50%;
-  max-height: 88vh;
+  max-width: 950px;
+  max-height: 90vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 `;
 
+// Header with Close Button
 export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  padding: 20px 24px 16px;
-  border-bottom: 0.5px solid #eeeeee;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #eee;
+  background: #f9f9f9;
 `;
 
 export const ModalTitle = styled.h2`
-  margin: 0 0 2px;
-  font-size: 17px;
-  font-weight: 500;
-  color: #1a1a1a;
+  margin: 0;
+  font-size: 20px;
+  color: #1034ad;
 `;
 
 export const CloseButton = styled.button`
   background: transparent;
   border: none;
-  font-size: 16px;
+  font-size: 28px;
   cursor: pointer;
-  color: #6b7280;
-  padding: 2px 6px;
-  border-radius: 6px;
-  line-height: 1;
-  margin-top: 2px;
-  &:hover {
-    background: #f7f8fa;
-    color: #1a1a1a;
-  }
+  color: #333;
 `;
 
+// Top Cards
 export const CardsWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
   padding: 16px 24px;
-  border-bottom: 0.5px solid #eeeeee;
+  border-bottom: 1px solid #eee;
 `;
-
-const cardColors = {
-  present: { bg: "#eaf3de", text: "#3b6d11" },
-  absent:  { bg: "#fcebeb", text: "#a32d2d" },
-  lop:     { bg: "#faeeda", text: "#854f0b" },
-  default: { bg: "#f7f8fa", text: "#1a1a1a" },
-};
 
 export const Card = styled.div`
-  background: ${({ type }) => cardColors[type]?.bg || cardColors.default.bg};
-  border-radius: 10px;
-  padding: 14px 12px;
+  flex: 1;
+  min-width: 140px;
+  background: #f5f8ff;
+  border-radius: 12px;
+  padding: 16px;
   text-align: center;
+  box-shadow: 0 2px 8px rgba(16, 52, 173, 0.1);
 `;
 
 export const CardTitle = styled.div`
-  font-size: 11px;
-  font-weight: 500;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
   margin-bottom: 6px;
 `;
 
 export const CardValue = styled.div`
-  font-size: 26px;
-  font-weight: 500;
-  color: ${({ type }) => cardColors[type]?.text || cardColors.default.text};
+  font-size: 18px;
+  font-weight: bold;
+  color: #1034ad;
 `;
 
+// Scrollable Table
 export const AttendanceTableWrapper = styled.div`
   overflow-y: auto;
-  flex: 1;
+  max-height: 400px;
 `;
 
 export const AttendanceTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
 `;
 
 export const TableHeader = styled.th`
   position: sticky;
   top: 0;
-  background: #f7f8fa;
-  border-bottom: 0.5px solid #eeeeee;
-  padding: 10px 16px;
+  background: #f9f9f9;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
   text-align: left;
-  font-size: 12px;
-  font-weight: 500;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  font-weight: 600;
+    text-align: center;
 `;
 
 export const TableRow = styled.tr`
   &:nth-child(even) {
-    background: #f7f8fa;
+    background: #f7f9fc;
   }
   &:hover {
-    background: #e6f1fb;
+    background: #e6f0ff;
   }
 `;
 
 export const TableCell = styled.td`
-  padding: 10px 16px;
-  border-bottom: 0.5px solid #eeeeee;
-  font-size: 14px;
-  color: #1a1a1a;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+    text-align: center;
 `;
 
-const badgeStyles = {
-  present:  { bg: "#eaf3de", color: "#3b6d11" },
-  half_day: { bg: "#faeeda", color: "#854f0b" },
-  leave:    { bg: "#e6f1fb", color: "#185fa5" },
-  holiday:  { bg: "#e1f5ee", color: "#0f6e56" },
-  absent:   { bg: "#fcebeb", color: "#a32d2d" },
-  off:      { bg: "#faeeda", color: "#a32d2d" },
-};
-
 export const StatusBadge = styled.span`
-  display: inline-block;
-  padding: 3px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 78px;
+  padding: 5px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  background: ${({ status }) => badgeStyles[status]?.bg || badgeStyles.absent.bg};
-  color: ${({ status }) => badgeStyles[status]?.color || badgeStyles.absent.color};
+  letter-spacing: 0.2px;
+
+  background-color: ${(props) => {
+    switch (props.status) {
+      case "present":
+        return "#E8F5EE";
+
+      case "half_day":
+      case "half day":
+      case "half-day":
+      case "halfday":
+        return "#FFF4DE";
+
+      case "leave":
+        return "#EAF1FF";
+
+      case "holiday":
+        return "#E8F7F6";
+
+      case "off":
+        return "#F1ECFF";
+
+      case "absent":
+      default:
+        return "#FDECEC";
+    }
+  }};
+
+  color: ${(props) => {
+    switch (props.status) {
+      case "present":
+        return "#1F9254";
+
+      case "half_day":
+      case "half day":
+      case "half-day":
+      case "halfday":
+        return "#B78103";
+
+      case "leave":
+        return "#3B5CCC";
+
+      case "holiday":
+        return "#16837A";
+
+      case "off":
+        return "#6B46C1";
+
+      case "absent":
+      default:
+        return "#D14343";
+    }
+  }};
 `;

@@ -25,11 +25,14 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const reduxUser = useSelector((state) => state.auth.user);
-
+console.log("Sidebar rendering");
   const storedUser = useSelector((state) => state.auth.user);
   const user = reduxUser || storedUser;
   const modules = user?.company_modules || {};
 
+  console.log(user);
+console.log(user?.company);
+console.log(user?.company?.logo);
   useEffect(() => {
   }, [user]);
 
