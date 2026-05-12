@@ -115,6 +115,7 @@ const visibleRows = useMemo(() => {
           <StyledTable>
             <thead>
               <tr>
+                <Th>Sl No.</Th>
                 <Th>Employee Name</Th>
                 <Th>Month</Th>
                 <Th>Working Days</Th>
@@ -138,13 +139,14 @@ const visibleRows = useMemo(() => {
                   </Td>
                 </Tr>
               ) : (
-                visibleRows.map((emp) => (
+                visibleRows.map((emp, index) => (
                   <Tr
                     key={emp.employee_id}
                     $lop={emp.lop_days ?? emp.lop ?? 0}
                     onClick={() => handleRowClick(emp)}
                     style={{ cursor: "pointer" }}
                   >
+                     <Td>{index + 1 + (currentPage - 1) * 20}</Td>
                     <Td>{emp.employee_name}</Td>
                     <Td>{selectedMonthName}</Td>
                     <Td>{emp.working_days ?? emp.workingDays ?? "-"}</Td>

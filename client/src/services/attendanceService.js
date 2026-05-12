@@ -37,7 +37,7 @@ export const fetchAttendanceSummary = async ({
   page = 1,
 }) => {
   const config = {
-    params: { year, month, page }, 
+    params: { year, month, page,  page_size: 20 }, 
   };
 
   if (token) {

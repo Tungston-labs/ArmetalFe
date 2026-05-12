@@ -38,6 +38,20 @@ import { HiUser } from "react-icons/hi2";
 const EmployeeDetails = ({ employee }) => {
   const [activeTab, setActiveTab] = useState("work");
   const [isMailOpen, setIsMailOpen] = useState(false);
+
+    const formatDate = (date) => {
+  if (!date) return "-";
+
+  const d = new Date(date);
+
+  if (isNaN(d)) return date;
+
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   if (!employee) return <p>Loading...</p>;
   const statsData = [
     { number: employee.pending_leave ?? "00", label: "Balance Leaves", icon: <PiUsersThreeLight size={22} /> },
@@ -47,17 +61,18 @@ const EmployeeDetails = ({ employee }) => {
   ];
 
   const workInfo = [
-    { title: "Job Title :", value: employee.designation, title2: "Salary :", value2: employee.salary },
-    { title: "Username :", value: employee.employee_id, title2: "Email Id :", value2: employee.email },
-    { title: "Department :", value: employee.department, title2: "Joining Date :", value2: employee.joining_date },
-    { title: "Role :", value: employee.role, title2: "Contract Expiry :", value2: employee.contract }
+    { title: "Job Title :", value: employee.designation,title2: "Username :", value2: employee.employee_id },
+    { title: "Role :", value: employee.role, title2: "Salary :",value2: employee.salary },
+    { title2: "Department :", value2: employee.department, title: "Joining Date :", value: formatDate(employee.joining_date) },
+    {  title: "Email Id :", value: employee.email },
   ];
   const personalInfo = [
-    { title: "Date Of Birth :", value: employee.dob, title2: "Contact Number :", value2: employee.phno },
+    { title: "Date Of Birth :",value: formatDate(employee.dob), title2: "Contact Number :", value2: employee.phno },
     { title: "Aadhaar Number :", value: employee.aadar_number, title2: "PAN Number :", value2: employee.pan_number },
     { title: "Account Number :", value: employee.account_number, title2: "Passport Number :", value2: employee.passport_number },
     { title: "Address :", value: employee.address, title2: "", value2: "" }
   ];
+
   return (
     <Wrapper>
       <HeaderRow>

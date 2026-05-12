@@ -172,9 +172,17 @@ const attendanceSlice = createSlice({
         state.summaryLoading = true;
         state.error = null;
       })
-    .addCase(getAttendanceSummary.fulfilled, (state, action) => {
+  .addCase(getAttendanceSummary.fulfilled, (state, action) => {
   state.summaryLoading = false;
-  state.attendanceSummary = action.payload;
+
+  state.attendanceSummary = {
+    results: action.payload.results || [],
+    total_pages: action.payload.total_pages || 1,
+    current_page: action.payload.current_page || 1,
+    total_items: action.payload.total_items || 0,
+    next: action.payload.next || null,
+    previous: action.payload.previous || null,
+  };
 })
       .addCase(getAttendanceSummary.rejected, (state, action) => {
         state.summaryLoading = false;

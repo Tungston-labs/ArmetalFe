@@ -255,7 +255,9 @@ const confirmDelete = () => {
                       <BodyCell>
                         {(currentPage - 1) * PAGE_SIZE + index + 1}
                       </BodyCell>
-                      <BodyCell title={item.description}>{item.description}</BodyCell>
+             <BodyCell title={item.description}>
+  {item.description.charAt(0).toUpperCase() + item.description.slice(1)}
+</BodyCell>
                       <BodyCell>{item.holiday_type_display}</BodyCell>
                       <BodyCell>{formatDateToDisplay(item.date)}</BodyCell>
                       <BodyCell>
