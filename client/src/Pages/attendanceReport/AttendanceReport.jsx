@@ -118,7 +118,7 @@ const visibleRows = useMemo(() => {
                 <Th>Sl No.</Th>
                 <Th>Employee Name</Th>
                 <Th>Month</Th>
-                <Th>Working Days</Th>
+                <Th>Total Working Days</Th>
                 <Th>Present</Th>
                 <Th>Absent</Th>
                 <Th>Loss of Pay</Th>
