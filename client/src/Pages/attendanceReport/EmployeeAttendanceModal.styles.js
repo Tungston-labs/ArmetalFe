@@ -21,6 +21,13 @@ export const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+    @media print {
+    max-width: 100%;
+    max-height: none;
+    overflow: visible;
+    border:none;
+  }
 `;
 
 export const ModalHeader = styled.div`
@@ -48,9 +55,14 @@ export const CloseButton = styled.button`
   border-radius: 6px;
   line-height: 1;
   margin-top: 2px;
+
   &:hover {
     background: #f7f8fa;
     color: #1a1a1a;
+  }
+
+  @media print {
+    display: none;
   }
 `;
 
@@ -149,4 +161,21 @@ export const StatusBadge = styled.span`
   font-weight: 500;
   background: ${({ status }) => badgeStyles[status]?.bg || badgeStyles.absent.bg};
   color: ${({ status }) => badgeStyles[status]?.color || badgeStyles.absent.color};
+`;
+
+export const PrintButton = styled.button`
+  border: 1px solid lightgray;
+  background: white;
+  color: black;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background: #f7f8fa;
+  }
+
+  @media print {
+    display: none !important;
+  }
 `;
