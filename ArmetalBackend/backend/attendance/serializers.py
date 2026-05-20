@@ -289,11 +289,20 @@ class HourlyLocationLogSerializer(serializers.ModelSerializer):
 
 
 
-
 class DailyAttendanceSerializer(serializers.Serializer):
     date = serializers.DateField()
     status = serializers.CharField()
     total_hours = serializers.FloatField()
+
+    first_punch_in = serializers.CharField(
+        required=False,
+        allow_null=True
+    )
+
+    last_punch_out = serializers.CharField(
+        required=False,
+        allow_null=True
+    )
 
 
 class EmployeeAttendanceSummarySerializer(serializers.Serializer):
