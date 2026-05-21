@@ -164,9 +164,15 @@ def build_employee_month_calendar(employee, start_date, end_date):
             last_punch_out = attendance_data["last_punch_out"]
 
             # ---------- Missed Punch Out ----------
+            # ---------- Active / Missed Punch Out ----------
             if first_punch_in and not last_punch_out:
 
-                status = "missed_punchout"
+                # If today's attendance and still working
+                if d == today:
+                    status = "active"
+
+                else:
+                    status = "missed_punchout"
 
                 # Full day completed
                 if hours >= full_day_hours:

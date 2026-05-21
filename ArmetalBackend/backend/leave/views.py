@@ -19,7 +19,12 @@ from rest_framework import status
 
 
 #  Employee: List + Create Leave Requests
+# Employee: List + Create Leave Requests
+
+
+
 class LeaveRequestCreateListView(generics.ListCreateAPIView):
+
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsEmployee]
     filter_backends = [filters.SearchFilter]
@@ -27,70 +32,151 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
+
         return LeaveRequest.objects.filter(
             employee__user=self.request.user
         ).order_by("-created_at")
 
     def list(self, request, *args, **kwargs):
+
         try:
+
             queryset = self.get_queryset()
-            pending_count = queryset.filter(status='pending').count()
-            lop_count = queryset.filter(leave_type='earned').count()
+
+            pending_count = queryset.filter(
+                status='pending'
+            ).count()
+
+            lop_count = queryset.filter(
+                leave_type='earned'
+            ).count()
 
             page = self.paginate_queryset(queryset)
-            serializer = self.get_serializer(page, many=True)
+
+            serializer = self.get_serializer(
+                page,
+                many=True
+            )
 
             return self.get_paginated_response({
                 'leaves': serializer.data,
                 'pending_leave_count': pending_count,
                 'loss_of_pay_count': lop_count,
             })
+
         except Exception as e:
-            return Response({"error": str(e)}, status=500)
+
+            return Response(
+                {"error": str(e)},
+                status=500
+            )
 
     def perform_create(self, serializer):
+
         try:
-            employee = Employee_db.objects.get(user=self.request.user)
+            employee = Employee_db.objects.get(
+                user=self.request.user
+            )
+
         except Employee_db.DoesNotExist:
-            raise serializers.ValidationError({"error": "Employee not found."})
+
+            raise serializers.ValidationError({
+                "error": "Employee not found."
+            })
 
         from_date = serializer.validated_data.get('from_date')
         to_date = serializer.validated_data.get('to_date')
 
+        # ---------- Overlapping Leave Check ----------
         overlapping = LeaveRequest.objects.filter(
             employee=employee
-        ).filter(Q(from_date__lte=to_date) & Q(to_date__gte=from_date))
+        ).filter(
+            Q(from_date__lte=to_date) &
+            Q(to_date__gte=from_date)
+        )
 
         if overlapping.exists():
+
             raise serializers.ValidationError({
-                "detail": "You already applied leave for one or more selected dates."
+                "detail": (
+                    "You already applied leave "
+                    "for one or more selected dates."
+                )
             })
 
         try:
+
             leave = serializer.save(employee=employee)
 
-            # Email handling safely
+            # ---------- Email Handling ----------
             try:
+
                 subject = f"Leave Request from {employee.name}"
+
                 message = (
+                    f"Employee Name: {employee.name}\n"
+                    f"Employee ID: {employee.employee_id}\n"
+                    f"Department: {employee.department.name if employee.department else 'N/A'}\n\n"
                     f"Leave Type: {leave.leave_type}\n"
                     f"From: {leave.from_date}\n"
                     f"To: {leave.to_date}\n"
-                    f"Reason: {leave.reason}"
+                    f"Reason: {leave.reason}\n"
+                    f"Status: {leave.status}"
                 )
+
+                # ---------- Company ----------
+                company = employee.department.company
+
+                # ---------- HR Emails ----------
+                hr_emails = list(
+                    Employee_db.objects.filter(
+                        department__company=company,
+                        role="hr"
+                    )
+                    .exclude(email__isnull=True)
+                    .exclude(email__exact="")
+                    .values_list("email", flat=True)
+                )
+
+                # ---------- Recipient List ----------
+                recipient_list = []
+
+                # Add leave recipient
+                if leave.to_email:
+                    recipient_list.append(leave.to_email)
+
+                # Add HR emails
+                recipient_list.extend(hr_emails)
+
+                # Remove duplicates
+                recipient_list = list(set(recipient_list))
+
+                # ---------- CC ----------
+                cc_list = []
+
+                if leave.cc_email:
+                    cc_list.append(leave.cc_email)
+
+                # ---------- Send Email ----------
                 email = EmailMessage(
                     subject=subject,
                     body=message,
                     from_email=employee.email,
-                    to=[leave.to_email],
-                    cc=[leave.cc_email] if leave.cc_email else [],
+                    to=recipient_list,
+                    cc=cc_list,
                 )
+
                 email.send(fail_silently=True)
-            except Exception:
-                pass
+
+            except Exception as email_error:
+
+                print("Email sending failed:", str(email_error))
 
         except Exception as e:
-            raise serializers.ValidationError({"error": str(e)})
+
+            raise serializers.ValidationError({
+                "error": str(e)
+            })
 
 
 
