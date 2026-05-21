@@ -1,6 +1,7 @@
 from datetime import timedelta, datetime, date
 from decimal import Decimal
 import pytz
+
 from attendance.models import Attendance
 from leave.models import LeaveRequest
 from holidays.models import PublicHoliday
@@ -52,6 +53,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
     attendance_map = {}
 
+    india_tz = pytz.timezone("Asia/Kolkata")
+    utc_tz = pytz.UTC
+
     for a in attendances:
 
         sessions = a.sessions.all().order_by("time_in")
@@ -63,9 +67,6 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
             first_session = sessions.first()
             last_session = sessions.last()
-
-            india_tz = pytz.timezone("Asia/Kolkata")
-            utc_tz = pytz.UTC
 
             # ---------- First Punch In ----------
             if first_session.time_in:
@@ -166,7 +167,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
         if d > today:
             continue
 
-        # Default values
+        # ---------- Default Values ----------
         status = "absent"
         hours = Decimal("0")
         first_punch_in = None
@@ -187,16 +188,15 @@ def build_employee_month_calendar(employee, start_date, end_date):
             first_punch_in = attendance_data["first_punch_in"]
             last_punch_out = attendance_data["last_punch_out"]
 
+            # ---------- ACTIVE TODAY ----------
+            if d == today and first_punch_in:
+
+                status = "active"
+
             # ---------- Missed Punch Out ----------
-            # ---------- Active / Missed Punch Out ----------
-            if first_punch_in and not last_punch_out:
+            elif first_punch_in and not last_punch_out:
 
-                # If today's attendance and still working
-                if d == today:
-                    status = "active"
-
-                else:
-                    status = "missed_punchout"
+                status = "missed_punchout"
 
                 # Full day completed
                 if hours >= full_day_hours:
