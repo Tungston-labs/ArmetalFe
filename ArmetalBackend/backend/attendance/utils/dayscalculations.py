@@ -64,21 +64,15 @@ def build_employee_month_calendar(employee, start_date, end_date):
             first_session = sessions.first()
             last_session = sessions.last()
 
-            india_tz = pytz.timezone("Asia/Kolkata")
-
             # ---------- First Punch In ----------
             if first_session.time_in:
 
-                first_in_local = first_session.time_in.astimezone(india_tz)
-
-                first_punch_in = first_in_local.strftime("%I:%M %p")
+                first_punch_in = first_session.time_in.strftime("%I:%M %p")
 
             # ---------- Last Punch Out ----------
             if last_session.time_out:
 
-                last_out_local = last_session.time_out.astimezone(india_tz)
-
-                last_punch_out = last_out_local.strftime("%I:%M %p")
+                last_punch_out = last_session.time_out.strftime("%I:%M %p")
 
         attendance_map[a.date] = {
             "hours": Decimal(a.total_hours or 0),
