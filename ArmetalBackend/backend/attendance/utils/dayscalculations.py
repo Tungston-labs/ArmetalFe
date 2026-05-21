@@ -50,14 +50,30 @@ def build_employee_month_calendar(employee, start_date, end_date):
         date__range=(start_date, today)
     )
 
-    attendance_map = {
-        a.date: {
+    attendance_map = {}
+
+    for a in attendances:
+
+        sessions = a.sessions.all().order_by("time_in")
+
+        first_punch_in = None
+        last_punch_out = None
+
+        if sessions.exists():
+
+            first_session = sessions.first()
+            last_session = sessions.last()
+
+            first_punch_in = first_session.time_in
+
+            # last session may not have punchout
+            last_punch_out = last_session.time_out
+
+        attendance_map[a.date] = {
             "hours": Decimal(a.total_hours or 0),
-            "first_punch_in": a.first_punch_in,
-            "last_punch_out": a.last_punch_out,
+            "first_punch_in": first_punch_in,
+            "last_punch_out": last_punch_out,
         }
-        for a in attendances
-    }
 
     attendance_dates = set(attendance_map.keys())
 
