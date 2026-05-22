@@ -27,11 +27,10 @@ const EmployeeAttendanceModal = ({
   onClose,
 }) => {
   if (!isOpen || !employee) return null;
-
   const [records] = useState(employee.daily_records || []);
-
   const printRef = useRef();
 
+  
   const handlePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: `${employee.employee_name}-attendance`,
@@ -49,30 +48,57 @@ const EmployeeAttendanceModal = ({
 
   const lopCount = employee.lop_days ?? 0;
 
-  const getStatusLabel = (status) => {
-    switch ((status || "").toLowerCase()) {
-      case "present":
-        return { text: "Present", key: "present" };
+const getStatusLabel = (status) => {
+  switch ((status || "").toLowerCase()) {
+    case "present":
+      return {
+        text: "Present",
+        key: "present",
+      };
 
-      case "half_day":
-        return { text: "Half Day", key: "half_day" };
+    case "active":
+      return {
+        text: "Working",
+        key: "active",
+      };
 
-      case "leave":
-        return { text: "Leave", key: "leave" };
+    case "half_day":
+      return {
+        text: "Half Day",
+        key: "half_day",
+      };
 
-      case "holiday":
-        return { text: "Holiday", key: "holiday" };
+    case "leave":
+      return {
+        text: "Leave",
+        key: "leave",
+      };
 
-      case "off":
-        return { text: "Off Day", key: "off" };
+    case "holiday":
+      return {
+        text: "Holiday",
+        key: "holiday",
+      };
 
-      default:
-        return {
-          text: "Absent",
-          key: "absent",
-        };
-    }
-  };
+    case "off":
+      return {
+        text: "Off Day",
+        key: "off",
+      };
+
+    case "missed_punchout":
+      return {
+        text: "Missed Punch Out",
+        key: "missed_punchout",
+      };
+
+    default:
+      return {
+        text: "Absent",
+        key: "absent",
+      };
+  }
+};
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "—";
@@ -94,20 +120,13 @@ const EmployeeAttendanceModal = ({
     return `${day} ${month}`;
   };
 
-  const formatTime = (timeStr) => {
-    if (!timeStr) return "—";
+const formatTime = (timeStr) => {
+  if (!timeStr || timeStr === "null") {
+    return "—";
+  }
 
-    const d = new Date(timeStr);
-
-    return d.toLocaleTimeString(
-      "en-IN",
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      }
-    );
-  };
+  return String(timeStr).trim();
+};
 
   const cards = [
     {
@@ -279,18 +298,13 @@ const EmployeeAttendanceModal = ({
                           </StatusBadge>
                         </TableCell>
 
-                        <TableCell>
-                          {formatTime(
-                            rec.punch_in
-                          )}
-                        </TableCell>
+                       <TableCell>
+  {formatTime(rec.first_punch_in)}
+</TableCell>
 
-                        <TableCell>
-                          {formatTime(
-                            rec.punch_out
-                          )}
-                        </TableCell>
-
+<TableCell>
+  {formatTime(rec.last_punch_out)}
+</TableCell>
                         <TableCell
                           style={{
                             textAlign:

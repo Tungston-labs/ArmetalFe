@@ -112,3 +112,40 @@ export const NextButton = styled.button`
     cursor: not-allowed;
   }
 `;
+
+export const LeaveContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+`;
+
+export const TotalLeaveBox = styled.div`
+ padding: 8px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  font-size: 1rem;
+    margin-bottom: 10px;
+  &:focus {
+    border-color: #3352BA;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+
+  }
+`;
+
+export const AddLeaveButton = styled.button`
+  padding: 8px 12px;
+  border: 1px dashed #304EB0;
+  border-radius: 6px;
+  background: transparent;
+  color: #304EB0;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #304EB0;
+    color: white;
+  }
+`;

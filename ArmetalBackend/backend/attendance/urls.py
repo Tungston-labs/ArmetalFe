@@ -13,7 +13,6 @@ urlpatterns = [
     path('background-location/<int:employee_id>/', BackgroundLocationUpdateView.as_view(), name='background-location'),
     path('employee-attendance/summary/', EmployeeAttendanceSummaryView.as_view()),
 
-
 ]
 
 

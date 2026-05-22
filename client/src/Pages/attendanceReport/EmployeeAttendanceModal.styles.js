@@ -156,9 +156,9 @@ const badgeStyles = {
 export const StatusBadge = styled.span`
   display: inline-block;
   padding: 3px 10px;
-  border-radius: 20px;
+  border-radius: 5px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 700;
   background: ${({ status }) => badgeStyles[status]?.bg || badgeStyles.absent.bg};
   color: ${({ status }) => badgeStyles[status]?.color || badgeStyles.absent.color};
 `;

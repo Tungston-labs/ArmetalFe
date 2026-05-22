@@ -11,6 +11,9 @@ import {
   FileInputLabel,
   FileInput,
   ErrorText,
+  TotalLeaveBox,
+  LeaveContainer,
+  AddLeaveButton,
  
 } from "./JobDetails.Styles";
 
@@ -25,7 +28,10 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
     joining_date: "",
     department_id: "",
     employment_type: "",
-    total_leave: "",
+    total_leave:0,
+  leave_balances: [
+  { type: "Casual", days: "" }
+],
     role: "",
     phno: "",
     iqama_number: "",
@@ -49,6 +55,17 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
     if (initialValues && Object.keys(initialValues).length) setFormData(prev => ({ ...prev, ...initialValues }));
   }, [initialValues]);
 
+  useEffect(() => {
+  const total = formData.leave_balances.reduce(
+    (sum, leave) => sum + (Number(leave.days) || 0),
+    0
+  );
+
+  setFormData(prev => ({
+    ...prev,
+    total_leave: total
+  }));
+}, [formData.leave_balances]);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData(prev => ({ ...prev, [name]: files ? files[0] : value }));
@@ -92,6 +109,28 @@ if (country === "IN" && formData.aadar_number && !/^[0-9]{12}$/.test(formData.aa
 
   const renderError = (field) => <>{errors[field] && <ErrorText>{errors[field]}</ErrorText>}</>;
 
+  const leaveTypes = ["Casual", "Sick", "Annual", "Maternity"];
+
+const addLeaveType = () => {
+  setFormData(prev => ({
+    ...prev,
+    leave_balances: [
+      ...prev.leave_balances,
+      { type: "", days: "" }
+    ]
+  }));
+};
+
+const updateLeave = (index, field, value) => {
+  const updated = [...formData.leave_balances];
+
+  updated[index][field] = value;
+
+  setFormData(prev => ({
+    ...prev,
+    leave_balances: updated
+  }));
+};
   return (
     <FormContainer noValidate>
       <SectionTitle>Job Details</SectionTitle>
@@ -133,12 +172,48 @@ if (country === "IN" && formData.aadar_number && !/^[0-9]{12}$/.test(formData.aa
       </FormRow>
 
       <FormRow>
-        <FormGroup>
-          <Label>Total Leave</Label>
-          <Input type="number" name="total_leave" value={formData.total_leave} onChange={handleChange} step="0.1" min="0" onWheel={e => e.target.blur()}
-          placeholder="Enter Total Leave"  autoComplete="off" />
-          {renderError("total_leave")}
-        </FormGroup>
+    <FormGroup>
+  <Label>Leave Allocation</Label>
+<TotalLeaveBox>
+  Total Leave : {formData.total_leave}
+</TotalLeaveBox>
+
+{formData.leave_balances.map((leave, index) => (
+  <LeaveContainer key={index}>
+    <Select
+      value={leave.type}
+      onChange={(e) =>
+        updateLeave(index, "type", e.target.value)
+      }
+    >
+      <option value="">Select Leave</option>
+
+      {leaveTypes.map(type => (
+        <option key={type} value={type}>
+          {type}
+        </option>
+      ))}
+    </Select>
+
+    <Input
+      type="number"
+      placeholder="Days"
+      value={leave.days}
+      onChange={(e) =>
+        updateLeave(index, "days", e.target.value)
+      }
+    />
+  </LeaveContainer>
+))}
+
+<AddLeaveButton
+  type="button"
+  onClick={addLeaveType}
+>
+  + Add Leave Type
+</AddLeaveButton>
+
+</FormGroup>
 
         <FormGroup>
           <Label>Roles</Label>
