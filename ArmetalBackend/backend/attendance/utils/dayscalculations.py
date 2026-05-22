@@ -1,5 +1,6 @@
 from datetime import timedelta, datetime, date
 from decimal import Decimal
+import pytz
 
 from attendance.models import Attendance
 from leave.models import LeaveRequest
@@ -52,6 +53,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
     attendance_map = {}
 
+    india_tz = pytz.timezone("Asia/Kolkata")
+    utc_tz = pytz.UTC
+
     for a in attendances:
 
         sessions = a.sessions.all().order_by("time_in")
@@ -64,10 +68,31 @@ def build_employee_month_calendar(employee, start_date, end_date):
             first_session = sessions.first()
             last_session = sessions.last()
 
-            first_punch_in = first_session.time_in
+            # ---------- First Punch In ----------
+            if first_session.time_in:
 
-            # last session may not have punchout
-            last_punch_out = last_session.time_out
+                first_dt = datetime.combine(
+                    a.date,
+                    first_session.time_in
+                )
+
+                first_dt = utc_tz.localize(first_dt)
+                first_dt_ist = first_dt.astimezone(india_tz)
+
+                first_punch_in = first_dt_ist.strftime("%I:%M %p")
+
+            # ---------- Last Punch Out ----------
+            if last_session.time_out:
+
+                last_dt = datetime.combine(
+                    a.date,
+                    last_session.time_out
+                )
+
+                last_dt = utc_tz.localize(last_dt)
+                last_dt_ist = last_dt.astimezone(india_tz)
+
+                last_punch_out = last_dt_ist.strftime("%I:%M %p")
 
         attendance_map[a.date] = {
             "hours": Decimal(a.total_hours or 0),
@@ -142,7 +167,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
         if d > today:
             continue
 
-        # Default values
+        # ---------- Default Values ----------
         status = "absent"
         hours = Decimal("0")
         first_punch_in = None
@@ -163,8 +188,13 @@ def build_employee_month_calendar(employee, start_date, end_date):
             first_punch_in = attendance_data["first_punch_in"]
             last_punch_out = attendance_data["last_punch_out"]
 
+            # ---------- ACTIVE TODAY ----------
+            if d == today and first_punch_in:
+
+                status = "active"
+
             # ---------- Missed Punch Out ----------
-            if first_punch_in and not last_punch_out:
+            elif first_punch_in and not last_punch_out:
 
                 status = "missed_punchout"
 
