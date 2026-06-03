@@ -34,7 +34,7 @@ import VerificationCircles from "../../Components/VerificationCircle";
 import HolidayIcon from "../../assets/payroll.svg";
 import Pagination from "../../Components/Pagination/Pagination";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
-import IncentiveModal from "../../Components/payroll/IncentiveModal";
+import IncentiveModal from "../../Components/payroll/IncentiveModal/IncentiveModal";
 
 const months = [
   "January", "February", "March", "April", "May", "June",

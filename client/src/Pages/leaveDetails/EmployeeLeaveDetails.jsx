@@ -58,13 +58,7 @@ const EmployeeLeaveForm = () => {
     if (id) dispatch(getLeaveDetails(id));
   }, [dispatch, id]);
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const leaveEnd = leaveDetails?.to_date ? new Date(leaveDetails.to_date) : null;
-  if (leaveEnd) leaveEnd.setHours(0, 0, 0, 0);
-
-  const isPastLeave = leaveEnd && leaveEnd < today;
+  
   const employee = leaveDetails?.employee || {};
 
   const handleStatusUpdate = async () => {
@@ -236,20 +230,14 @@ const EmployeeLeaveForm = () => {
               Decline
             </DeclineButton>
 
-            <ApproveButton
-              disabled={isPastLeave}
-              style={{
-                background: isPastLeave ? "#ccc" : "#003366",
-                cursor: isPastLeave ? "not-allowed" : "pointer",
-              }}
-              onClick={() => {
-                if (isPastLeave) return alert("Cannot approve past leave.");
-                setActionType("approve");
-                setShowModal(true);
-              }}
-            >
-              Approve
-            </ApproveButton>
+           <ApproveButton
+  onClick={() => {
+    setActionType("approve");
+    setShowModal(true);
+  }}
+>
+  Approve
+</ApproveButton>
           </ButtonRow>
 
         </PageCard>

@@ -5,7 +5,7 @@ import {
     Row, Field, Label, Input, TextArea, Footer, CancelBtn, SaveBtn,
 } from "./IncentiveModal.styles";
 import { useDispatch } from "react-redux";
-import { updatePayrollIncentive } from "../../Redux/payrollSlice";
+import { updatePayrollIncentive } from "../../../Redux/payrollSlice";
 
 const IncentiveModal = ({ onClose, employee, month, year }) => {
     const dispatch = useDispatch();

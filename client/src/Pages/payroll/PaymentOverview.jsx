@@ -16,13 +16,7 @@ import {
   SaveButton
 } from './PaymentOverview.styles';
 
-const initialData = [
-  { month: 'January', date: '12-12-25', amount: 1500, status: 'Paid' },
-  { month: 'February', date: '12-12-25', amount: 1500, status: 'Paid' },
-  { month: 'March', date: '12-12-24', amount: 1500, status: 'Paid' },
-  { month: 'April', date: '12-12-24', amount: 1500, status: 'Paid' },
-  { month: 'May', date: '12-12-24', amount: 1500, status: 'Un-Paid' }
-];
+
 
 const PaymentOverview = () => {
   const [paymentData, setPaymentData] = useState(initialData);

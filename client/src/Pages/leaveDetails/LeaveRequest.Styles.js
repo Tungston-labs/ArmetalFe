@@ -324,9 +324,8 @@ export const DeclineButton = styled.button`
 `;
 
 export const ApproveButton = styled.button`
-
   color: white;
-  padding:4px;
+  padding:5px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -579,3 +578,101 @@ export const DropdownMenu = styled.div`
     }
   }
 `;
+export const StatusTabsWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+`;
+
+export const StatusButton = styled.button`
+  padding: 7px 20px;
+  border-radius: 20px;
+
+  border: 1.5px solid
+    ${({ $active, $borderColor }) =>
+      $active ? $borderColor : "#ddd"};
+
+  background: ${({ $active, $bg }) =>
+    $active ? $bg : "#fff"};
+
+  color: ${({ $active, $color }) =>
+    $active ? $color : "#888"};
+
+  font-weight: ${({ $active }) =>
+    $active ? "700" : "500"};
+
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+
+export const StatusDot = styled.span`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  background: ${({ $active, $color }) =>
+    $active ? $color : "#ccc"};
+
+  display: inline-block;
+`;
+
+export const CountBadge = styled.span`
+  background: ${({ $active, $color }) =>
+    $active ? $color : "#eee"};
+
+  color: ${({ $active }) =>
+    $active ? "#fff" : "#666"};
+
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+`;
+
+export const StatusText = styled.span`
+  font-weight: 600;
+  color: ${({ status }) =>
+    status === "approved"
+      ? "#16a34a"
+      : status === "rejected"
+      ? "#dc2626"
+      : "#f59e0b"};
+`;
+
+export const PrintSection = styled.div`
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+`;
+
+export const MonthSelect = styled.select`
+  padding:8px 14px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+  outline:none;
+  min-width:170px;
+  font-size:14px;
+  background:white;
+  cursor:pointer;
+
+  &:focus{
+    border-color:#304EB0;
+  }
+`;
+
+
+
+
+
+
+

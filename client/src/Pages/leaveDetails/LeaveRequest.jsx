@@ -6,17 +6,20 @@ import OnLeaveModal from "./ModalList"
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import {
-  Container,
-  TableRow,
-  TableCell,
-  ActionButtons,
-  ApproveButton,
+  Container,TableRow,
+  TableCell,ActionButtons,
+  ApproveButton,StatusTabsWrapper,
+  StatusButton,StatusDot,
+  CountBadge,
+  PrintSection,
+  MonthSelect,
 } from './LeaveRequest.Styles';
 import Loader from "../../Components/Loader"
 import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, Avatar, AvatarFallback, NameCell, TableWrapper } from './EmployeeList.styles';
 import EmployeeTitle from '../../Components/EmployeeTitle';
 import Pagination from "../../Components/Pagination/Pagination"
 import NoEmployeeFound from '../../Components/No found/Noemployeefound';
+import { exportLeaveReport } from '../../utils/leaveExcelExport';
 
 export default function LeaveRequest() {
   const dispatch = useDispatch();
@@ -31,6 +34,17 @@ export default function LeaveRequest() {
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
+  const [selectedMonth, setSelectedMonth] = useState(
+  new Date().getMonth() + 1
+);
+const handleExportExcel = () => {
+  exportLeaveReport(
+    filteredLeaves,
+    page,
+    formatDate,
+    selectedMonth
+  );
+};
   useEffect(() => {
     dispatch(getLeaveRequests({
       page,
@@ -105,7 +119,20 @@ export default function LeaveRequest() {
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
+const months = [
+  { value: 1, label: "January" },
+  { value: 2, label: "February" },
+  { value: 3, label: "March" },
+  { value: 4, label: "April" },
+  { value: 5, label: "May" },
+  { value: 6, label: "June" },
+  { value: 7, label: "July" },
+  { value: 8, label: "August" },
+  { value: 9, label: "September" },
+  { value: 10, label: "October" },
+  { value: 11, label: "November" },
+  { value: 12, label: "December" },
+];
   return (
     <>
       {loading && <Loader />}
@@ -122,56 +149,65 @@ export default function LeaveRequest() {
           showBackArrow={false}
         />
 
-        {/* Status Filter Tabs */}
-        <div style={{
-          display: "flex",
-          gap: "10px",
-          margin: "16px 0",
-          flexWrap: "wrap",
-        }}>
-          {statusTabs.map(({ label, value, color, bg, border }) => (
-            <button
-              key={value}
-              onClick={() => { setStatusFilter(value); setPage(1); }}
-              style={{
-                padding: "7px 20px",
-                borderRadius: "20px",
-                border: `1.5px solid ${statusFilter === value ? border : "#ddd"}`,
-                background: statusFilter === value ? bg : "#fff",
-                color: statusFilter === value ? color : "#888",
-                fontWeight: statusFilter === value ? "700" : "500",
-                fontSize: "13px",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              <span style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                background: statusFilter === value ? color : "#ccc",
-                display: "inline-block",
-              }} />
-              {label}
-              {value !== "" && pagination?.[`${value}_count`] !== undefined && (
-                <span style={{
-                  background: statusFilter === value ? color : "#eee",
-                  color: statusFilter === value ? "#fff" : "#666",
-                  borderRadius: "10px",
-                  padding: "1px 8px",
-                  fontSize: "11px",
-                  fontWeight: "700",
-                }}>
-                  {pagination[`${value}_count`]}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+    <StatusTabsWrapper>
+  {statusTabs.map(({ label, value, color, bg, border }) => (
+    <StatusButton
+      key={value}
+      $active={statusFilter === value}
+      $color={color}
+      $bg={bg}
+      $borderColor={border}
+      onClick={() => {
+        setStatusFilter(value);
+        setPage(1);
+      }}
+    >
+      <StatusDot
+        $active={statusFilter === value}
+        $color={color}
+      />
 
+      {label}
+
+      {value !== "" &&
+        pagination?.[`${value}_count`] !== undefined && (
+          <CountBadge
+            $active={statusFilter === value}
+            $color={color}
+          >
+            {pagination[`${value}_count`]}
+          </CountBadge>
+        )}
+    </StatusButton>
+  ))}
+  
+</StatusTabsWrapper>
+<PrintSection>
+
+  <MonthSelect
+    value={selectedMonth}
+    onChange={(e) =>
+      setSelectedMonth(Number(e.target.value))
+    }
+  >
+    {months.map((month) => (
+      <option
+        key={month.value}
+        value={month.value}
+      >
+        {month.label}
+      </option>
+    ))}
+  </MonthSelect>
+
+  <ApproveButton
+    onClick={handleExportExcel}
+   
+  >
+    Print Monthly Sheet
+  </ApproveButton>
+
+</PrintSection>
         <TableWrapper>
           <StyledTable>
             <TableHead>
@@ -293,6 +329,7 @@ export default function LeaveRequest() {
             onClose={() => setShowModal(false)}
           />
         )}
+
       </Container>
     </>
   );

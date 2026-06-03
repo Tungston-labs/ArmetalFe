@@ -567,7 +567,7 @@ export const Icon = styled.img`
 export const AddButton = styled.button`
   padding: 6px 14px;
   border-radius: 6px;
-  border: none;
+  border: #304eb0;
   background: ${(props) => (props.disabled ? "#ccc" : "#304eb0")};
   color: ${(props) => (props.disabled ? "#666" : "#fff")};
   font-size: 0.85rem;
