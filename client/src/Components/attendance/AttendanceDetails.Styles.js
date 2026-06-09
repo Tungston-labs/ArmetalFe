@@ -82,6 +82,7 @@ export const CalendarWrapper = styled.div`
 export const TableScrollWrapper = styled.div`
   max-height: 350px;
   overflow-y: auto;
+  
 
   &::-webkit-scrollbar {
     width: 4px;

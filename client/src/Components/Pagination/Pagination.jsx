@@ -50,7 +50,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         ) : (
           <PageButton
             key={page}
-            active={currentPage === page}
+            $active={currentPage === page}
             onClick={() => onPageChange(page)}
           >
             {page}

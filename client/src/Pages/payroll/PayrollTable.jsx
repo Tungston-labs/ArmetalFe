@@ -327,15 +327,16 @@ const PayrollTable = () => {
     if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
   };
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "N/A";
-    const date = new Date(dateStr);
-    if (isNaN(date)) return dateStr;
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
+const formatDate = (date) => {
+  if (!date) return "----";
+
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
 
   const handleOpenModal = (emp) => {
     if (emp.incentive_added || incentiveAddedIds.includes(emp.id)) return; // ✅ block if already added
@@ -486,7 +487,7 @@ const handleCloseModal = (saved = false) => {
                     <Td>{emp.employee_name}</Td>
                     <Td>{emp.employee_id}</Td>
                     <Td>{formatDate(emp.joining_date)}</Td>
-                    <Td>₹{emp.basic_salary ?? "N/A"}</Td>
+                    <Td>{emp.basic_salary ?? "N/A"}</Td>
                     <Td>
                <AddButton
   onClick={() => handleOpenModal(emp)}

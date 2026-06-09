@@ -248,7 +248,7 @@ const ViewTableBank = ({
                     }
                   />
                 </Td>
-                <Td>₹ {item.total}</Td>
+                <Td> {item.total}</Td>
               </tr>
             ))
           ) : (

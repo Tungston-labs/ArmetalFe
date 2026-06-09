@@ -119,9 +119,6 @@ const AttendanceDetails = ({
       <HistoryTable>
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
             marginBottom: "15px",
           }}
         >
@@ -135,6 +132,7 @@ const AttendanceDetails = ({
                 padding: "6px 10px",
                 borderRadius: "6px",
                 border: "1px solid #ccc",
+              
               }}
             />
           </CalendarWrapper>

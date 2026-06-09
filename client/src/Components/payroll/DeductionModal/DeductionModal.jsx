@@ -131,7 +131,7 @@ const DeductionModal = ({ onClose, employee, month, year }) => {
 
           <Row>
             <Field>
-              <Label>Deduction Amount (₹)</Label>
+              <Label>Deduction Amount</Label>
 
               <Input
                 type="number"

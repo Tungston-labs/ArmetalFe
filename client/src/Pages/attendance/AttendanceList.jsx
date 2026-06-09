@@ -113,6 +113,16 @@ const departmentsToRender = departmentList
     employees: departmentAttendance[dept.id] || [],
   }));
 
+  const formatDate = (date) => {
+  if (!date) return "-";
+
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   return (
     <PageContainer>
       <EmployeeTitle
@@ -122,6 +132,7 @@ const departmentsToRender = departmentList
        searchValue={searchText}  
         onSearchChange={setSearchText}
         showBackArrow={false}
+        showReportButton={false}
       />
       {loading ? (
         <Loader />
@@ -198,7 +209,7 @@ const departmentsToRender = departmentList
                               <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
                               <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
-                              <EmployeeCell>{emp.date || "-"}</EmployeeCell>
+                   <EmployeeCell>{formatDate(emp.date)}</EmployeeCell>
                               <EmployeeCell>{emp.first_swipe_in || tIn}</EmployeeCell>
                               <EmployeeCell>{emp.last_swipe_out || tOut}</EmployeeCell>
                               <EmployeeCell>

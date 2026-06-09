@@ -65,24 +65,16 @@ const EmployeeList = () => {
     setPage(1);
   };
 
-  const handleDelete = async () => {
-    await dispatch(deleteEmployeeById(selectedEmployeeId));
+const formatDate = (date) => {
+  if (!date) return "----";
 
-    if (expiryFilter) {
-      dispatch(
-        getUpcomingExpiryEmployees({
-          expiryType: expiryFilter,
-          page,
-          search: debouncedSearch,
-        })
-      );
-    } else {
-      dispatch(getAllEmployees({ page, search: debouncedSearch }));
-    }
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
 
-    setShowDeleteModal(false);
-    setSelectedEmployeeId(null);
-  };
+  return `${day}/${month}/${year}`;
+};
 
   const currentPage = pagination?.current_page || 1;
   const handlePageChange = (newPage) => {
@@ -115,7 +107,7 @@ const EmployeeList = () => {
           }}
           onSearchChange={(value) => handleSearch(value)}
           showBackArrow={false}
-
+showReportButton={false}
         />
         <TableWrapper>
           <StyledTable>
@@ -149,12 +141,8 @@ const EmployeeList = () => {
                     <BodyCell>{emp.email}</BodyCell>
                    <BodyCell>
   {country === "IN"
-    ? emp.contract_expiry_date
-      ? new Date(emp.contract_expiry_date).toLocaleDateString("en-GB")
-      : "----"
-    : emp.visa_expiry_date
-    ? new Date(emp.visa_expiry_date).toLocaleDateString("en-GB")
-    : "----"}
+    ? formatDate(emp.contract_expiry_date)
+    : formatDate(emp.visa_expiry_date)}
 </BodyCell>
                   </BodyRow>
                 ))

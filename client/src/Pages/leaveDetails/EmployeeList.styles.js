@@ -182,20 +182,32 @@ export const DeleteIconWrapper = styled.td`
 
 export const TableWrapper = styled.div`
   width: 100%;
-  max-height: 65vh;       
-  overflow-y: auto;       
-  overflow-x: hidden;   
+  max-height: 65vh;
+  overflow-y: auto;
+  overflow-x: auto;
 
   border: 1px solid #eee;
   border-radius: 10px;
-  border:none;
-  /* Optional: nice scrollbar */
+  border: none;
+
+  /* Vertical scrollbar */
   &::-webkit-scrollbar {
     width: 2px;
   }
+
+  /* Horizontal scrollbar */
+  &::-webkit-scrollbar:horizontal {
+    height: 2px;
+  }
+
+  /* Thumb styling */
   &::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:horizontal {
+    background: #c1c1c1;
   }
 `;
 

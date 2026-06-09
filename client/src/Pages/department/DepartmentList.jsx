@@ -309,6 +309,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
           showBackArrow={false}
           showTabs={false}
           searchPlaceholder="Search  Department Name"
+          showReportButton={false}
         />
 
         {loading ? (

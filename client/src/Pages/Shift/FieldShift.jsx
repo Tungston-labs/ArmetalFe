@@ -75,6 +75,7 @@ const DepartmentPage = () => {
           showBackArrow={false}
           showTabs={false}
           searchPlaceholder="Search Project Name"
+          showReportButton={false}
         />
 
         <CardsGrid>

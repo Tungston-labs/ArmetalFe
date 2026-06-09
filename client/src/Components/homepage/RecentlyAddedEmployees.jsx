@@ -26,7 +26,16 @@ const RecentlyAddedEmployees = ({ employees = [], showCount = 5 }) => {
   );
 
   const list = sorted.slice(0, showCount);
+const formatDate = (date) => {
+  if (!date) return "-";
 
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   return (
     <Wrapper>
       <Header>
@@ -57,11 +66,7 @@ const RecentlyAddedEmployees = ({ employees = [], showCount = 5 }) => {
               <Dept>{emp.department}</Dept>
               <IdText>ID: {emp.empId}</IdText>
             </Info>
-            <DateBox>
-              {emp.joiningDate
-                ? new Date(emp.joiningDate).toLocaleDateString("en-IN")
-                : "-"}
-            </DateBox>
+           <DateBox>{formatDate(emp.joiningDate)}</DateBox>
           </ListItem>
         ))}
       </List>

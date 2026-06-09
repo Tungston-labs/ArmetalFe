@@ -22,14 +22,14 @@ const FinanceSummary = ({
       <SummaryCard>
         <SummaryLabel>Total Income</SummaryLabel>
         <SummaryValue>
-          ₹ {formatAmount(income)}
+           {formatAmount(income)}
         </SummaryValue>
       </SummaryCard>
 
       <SummaryCard>
         <SummaryLabel>Total Expense</SummaryLabel>
         <SummaryValue>
-          ₹ {formatAmount(expense)}
+           {formatAmount(expense)}
         </SummaryValue>
       </SummaryCard>
 
@@ -40,7 +40,7 @@ const FinanceSummary = ({
             color: cashBalance >= 0 ? "#0b6623" : "#b91c1c",
           }}
         >
-          ₹ {formatAmount(cashBalance)}
+           {formatAmount(cashBalance)}
         </SummaryValue>
       </SummaryCard>
     </SummaryWrapper>

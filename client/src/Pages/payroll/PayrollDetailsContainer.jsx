@@ -72,12 +72,20 @@ const PayrollDetails = () => {
     month: "long",
   });
 
-  const formatCurrency = (value) =>
-    Number(value || 0).toLocaleString("en-IN", {
-      style: "currency",
-      currency: "INR",
-    });
+ 
+const formatAmount = (value) => {
+  return Number(value || 0).toFixed(2);
+};
+const formatDate = (date) => {
+  if (!date) return "----";
 
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   return (
     <div>
       <Container>
@@ -143,7 +151,7 @@ const PayrollDetails = () => {
             </InfoRow>
             <InfoRow>
               <Label>Joining Date</Label>
-              <Value>{joining_date}</Value>
+              <Value>{formatDate(joining_date)}</Value>
             </InfoRow>
           </InfoTable>
         </GridLayout>
@@ -162,18 +170,18 @@ const PayrollDetails = () => {
               <tbody>
                 <tr>
                   <TableData><strong>Total Salary</strong></TableData>
-                  <TableData><strong>{formatCurrency(basic_salary)}</strong></TableData>
+                  <TableData><strong>{formatAmount(basic_salary)}</strong></TableData>
                 </tr>
 
                 <tr>
                   <TableData>Increment</TableData>
-                  <TableData>{formatCurrency(total_increment_amount)}</TableData>
+                  <TableData>{formatAmount(total_increment_amount)}</TableData>
                 </tr>
 
                 {earnings?.map((item, index) => (
                   <tr key={index}>
                     <TableData>{item.label}</TableData>
-                    <TableData>{formatCurrency(item.amount)}</TableData>
+                    <TableData>{formatAmount(item.amount)}</TableData>
                   </tr>
                 ))}
               </tbody>
@@ -200,7 +208,7 @@ const PayrollDetails = () => {
                 <tr>
                   <TableData>Loss of Pay</TableData>
                   <TableData>
-                    {formatCurrency(lop_amount)}
+                    {formatAmount(lop_amount)}
                     {lop_days > 0 &&
                       ` (${lop_days} day${lop_days > 1 ? "s" : ""})`}
                   </TableData>
@@ -223,15 +231,15 @@ const PayrollDetails = () => {
               <tbody>
                 <tr>
                   <TableData>Gross Pay</TableData>
-                  <TableData>{formatCurrency(gross_earnings)}</TableData>
+                  <TableData>{formatAmount(gross_earnings)}</TableData>
                 </tr>
                 <tr>
                   <TableData>Deductions</TableData>
-                  <TableData>{formatCurrency(total_deductions)}</TableData>
+                  <TableData>{formatAmount(total_deductions)}</TableData>
                 </tr>
                 <tr className="net-pay">
                   <TableData><strong>Net Pay</strong></TableData>
-                  <TableData><strong>{formatCurrency(net_pay)}</strong></TableData>
+                  <TableData><strong>{formatAmount(net_pay)}</strong></TableData>
                 </tr>
               </tbody>
             </Table>

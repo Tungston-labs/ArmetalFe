@@ -34,17 +34,15 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
     }
   };
 
-  const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
+const formatDate = (date) => {
+  if (!date) return "-";
 
-  if (isNaN(date)) return dateStr;
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
 
-  return date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  return `${day}/${month}/${year}`;
 };
   return (
     <ProfileContainer>

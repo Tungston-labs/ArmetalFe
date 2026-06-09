@@ -119,7 +119,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
             </FormField>
 
             <FormField>
-              <Label>Initial Payment (Advance ₹)</Label>
+              <Label>Initial Payment (Advance )</Label>
               <Input name="initial_payment" type="number" step="0.01" value={formData.initial_payment} onChange={handleChange} placeholder="Enter advance amount (optional)" />
               {formErrors.initial_payment && <p style={{ color: "red" }}>{formErrors.initial_payment}</p>}
             </FormField>

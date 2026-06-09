@@ -33,6 +33,9 @@ import EmployeeTitle from "../../Components/EmployeeTitle";
 import RightSideModal from "../employeDashboard/RightSideModal";
 import Pagination from "../../Components/Pagination/Pagination";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
+import { exportEmployeeReport } from "../../utils/employeelistReport";
+import { exportEmployeePDF } from "../report/EmployeelistReport";
+import { fetchUnpaginatedEmployees } from "../../services/employeeService";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -46,6 +49,7 @@ const EmployeeList = () => {
   const [page, setPage] = useState(1);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
   const { employeeList, pagination, loading } = useSelector(
     (state) => state.employees,
   );
@@ -100,6 +104,27 @@ const EmployeeList = () => {
       setPage(newPage);
     });
   };
+  const handleReportClick = async (type) => {
+    setExportLoading(true);
+    try {
+      const data = await fetchUnpaginatedEmployees(debouncedSearch, departmentFilter);
+      if (type === "excel") {
+        exportEmployeeReport(data);
+      } else if (type === "pdf") {
+        exportEmployeePDF(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch employees for export:", error);
+      // Fallback
+      if (type === "excel") {
+        exportEmployeeReport(filteredEmployees);
+      } else if (type === "pdf") {
+        exportEmployeePDF(filteredEmployees);
+      }
+    } finally {
+      setExportLoading(false);
+    }
+  };
   const filteredEmployees = Array.isArray(employeeList)
     ? employeeList.filter(
       (emp) =>
@@ -112,7 +137,7 @@ const EmployeeList = () => {
     : [];
   return (
     <>
-      {loading && (
+      {(loading || exportLoading) && (
         <PageLoaderOverlay>
           <Loader />
         </PageLoaderOverlay>
@@ -131,6 +156,11 @@ const EmployeeList = () => {
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
           showTabs={true}
+          showAddButton={true}
+          showReportButton={true}
+          buttonText="Add Employee"
+          reportButtonText="Reports"
+          onReportClick={handleReportClick}
         />
         {!loading && (
           <>

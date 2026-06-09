@@ -13,9 +13,9 @@ export const PageButton = styled.button`
   height: 32px;
   padding: 0 8px;
   border-radius: 6px;
-  border: 1px solid ${({ active }) => (active ? "#4f46e5" : "#e5e7eb")};
-  background-color: ${({ active }) => (active ? "#304eb0" : "#ffffff")};
-  color: ${({ active }) => (active ? "#ffffff" : "#374151")};
+  border: 1px solid ${({ $active }) => ($active ? "#4f46e5" : "#e5e7eb")};
+  background-color: ${({ $active }) => ($active ? "#304eb0" : "#ffffff")};
+  color: ${({ $active }) => ($active ? "#ffffff" : "#374151")};
   font-size: 13px;
   font-weight: 500;
   display: flex;
@@ -25,10 +25,10 @@ export const PageButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: ${({ active }) =>
-      active ? "#4338ca" : "#f9fafb"};
-    border-color: ${({ active }) =>
-      active ? "#4338ca" : "#d1d5db"};
+    background-color: ${({ $active }) =>
+      $active ? "#4338ca" : "#f9fafb"};
+    border-color: ${({ $active }) =>
+      $active ? "#4338ca" : "#d1d5db"};
   }
 
   &:disabled {

@@ -26,7 +26,7 @@ export const SidebarContainer = styled.div`
   }
 
   @media (max-width: 1024px) {
-    width: 200px;
+    width: 120px;
     &.collapsed {
       width: 60px;
     }

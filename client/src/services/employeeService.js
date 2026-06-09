@@ -73,6 +73,18 @@ export const fetchAllEmployees = async (
   return response.data;
 };
 
+export const fetchUnpaginatedEmployees = async (
+  search = "",
+  department_id = ""
+) => {
+  let url = `/employeelist/?search=${search}`;
+  if (department_id) {
+    url += `&department_id=${department_id}`;
+  }
+  const response = await API.get(url);
+  return response.data;
+};
+
 export const fetchEmployeeById = async (id) => {
   const res = await API.get(`/employees/${id}/`);
   return res.data;

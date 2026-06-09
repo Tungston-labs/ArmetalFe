@@ -227,6 +227,7 @@ const FieldShift = () => {
           showTabs={false}
           showAddButton={false}
           showSearch={false}
+          showReportButton={false}
         />
         {!isDeleted ? (
           <>

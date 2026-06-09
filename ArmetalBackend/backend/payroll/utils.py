@@ -25,7 +25,7 @@ def generate_payslip_pdf(data):
     elements.append(Spacer(1, 12))
 
     # Earnings
-    earnings_table = [["Earnings", "Amount (₹)"]]
+    earnings_table = [["Earnings", "Amount ()"]]
     for e in data["earnings"]:
         earnings_table.append([e["label"], f"{e['amount']:.2f}"])
     earnings_table.append(["Gross Earnings", f"{data['gross_earnings']:.2f}"])
@@ -33,7 +33,7 @@ def generate_payslip_pdf(data):
     elements.append(Spacer(1, 12))
 
     # Deductions
-    deductions_table = [["Deductions", "Amount (₹)"]]
+    deductions_table = [["Deductions", "Amount ()"]]
     for d in data["deductions"]:
         deductions_table.append([d["label"], f"{d['value']:.2f}"])
     deductions_table.append(["Total Deductions", f"{data['total_deductions']:.2f}"])

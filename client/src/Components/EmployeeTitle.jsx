@@ -20,12 +20,16 @@ import {
   TabsRowContainer,
   ScrollLeft,
   ScrollRight,
+  ReportButton,
+  ReportMenu,
+  ReportMenuItem,
+  ReportWrapper,
 } from "./EmployeeTitle.Styles";
 import { LuCirclePlus } from "react-icons/lu";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { FiSearch } from "react-icons/fi";
+import { FiBarChart2, FiSearch } from "react-icons/fi";
 
 const EmployeeTitle = ({
   showIcon = true,
@@ -44,6 +48,9 @@ const EmployeeTitle = ({
   buttonText = "Add Employee",
   searchPlaceholder = "Search by name or ID",
   searchValue = "",
+  showReportButton = true,
+  reportButtonText = "Reports",
+  onReportClick,
 
   tabs = [
     { path: "/employee", label: "Total Employee" },
@@ -72,7 +79,7 @@ const EmployeeTitle = ({
   const rowRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-
+const [showReportMenu, setShowReportMenu] = useState(false);
   const handleTabClick = (path) => {
     setActiveTab(path);
     onTabChange && onTabChange(path);
@@ -140,30 +147,76 @@ const EmployeeTitle = ({
           </TitleBlock>
         </LeftBlock>
 
-        {showAddButton && (
-          <RightBlock>
-            {rightElement ? (
-              rightElement
+      {(showAddButton || showReportButton) && (
+  <RightBlock>
+    {showAddButton && (
+      <>
+        {rightElement ? (
+          rightElement
+        ) : (
+          <Button
+            onClick={
+              onAddClick ||
+              (() => navigate("/basic-details"))
+            }
+          >
+            {buttonIcon ? (
+              <img
+                src={buttonIcon}
+                alt={`${buttonText} icon`}
+                style={{
+                  width: "18px",
+                  height: "18px",
+                  marginRight: "6px",
+                }}
+              />
             ) : (
-              <Button onClick={onAddClick || (() => navigate("/basic-details"))}>
-                {buttonIcon ? (
-                  <img
-                    src={buttonIcon}
-                    alt={`${buttonText} icon`}
-                    style={{
-                      width: "18px",
-                      height: "18px",
-                      marginRight: "6px",
-                    }}
-                  />
-                ) : (
-                  <LuCirclePlus size={18} style={{ marginRight: "6px" }} />
-                )}
-                {buttonText}
-              </Button>
+              <LuCirclePlus
+                size={18}
+                style={{ marginRight: "6px" }}
+              />
             )}
-          </RightBlock>
+
+            {buttonText}
+          </Button>
         )}
+      </>
+    )}
+
+{showReportButton && (
+  <ReportWrapper>
+    <ReportButton
+      onClick={() => setShowReportMenu((prev) => !prev)}
+    >
+      <FiBarChart2 size={18} />
+      {reportButtonText}
+    </ReportButton>
+
+    {showReportMenu && (
+      <ReportMenu>
+        <ReportMenuItem
+          onClick={() => {
+            onReportClick?.("excel");
+            setShowReportMenu(false);
+          }}
+        >
+          Export Excel
+        </ReportMenuItem>
+
+        <ReportMenuItem
+          onClick={() => {
+            onReportClick?.("pdf");
+            setShowReportMenu(false);
+          }}
+        >
+          Export PDF
+        </ReportMenuItem>
+      </ReportMenu>
+    )}
+  </ReportWrapper>
+)}
+  </RightBlock>
+)}
       </TopSection>
 
       {(showSearch || showDropdown) && (
@@ -203,7 +256,7 @@ const EmployeeTitle = ({
       {showTabs && (
         <>
           <TabsRowContainer>
-            {canScrollLeft && <ScrollLeft onClick={scrollLeft}><FaChevronLeft /></ScrollLeft>}
+            {/* {canScrollLeft && <ScrollLeft onClick={scrollLeft}></ScrollLeft>} */}
             <TabsRow ref={rowRef} onScroll={checkScroll}>
               {tabs.map((tab) => (
                 <NavLink key={tab.path} to={tab.path} style={{ textDecoration: "none" }}>

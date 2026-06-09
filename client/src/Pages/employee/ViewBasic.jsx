@@ -98,7 +98,16 @@ const ViewBasic = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setIsEdited(true);
   };
+const formatDate = (date) => {
+  if (!date) return "----";
 
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   const handleImageChange = (file) => {
     setFormData((prev) => ({ ...prev, profile_pic: file }));
     setIsEdited(true);
@@ -180,6 +189,7 @@ const ViewBasic = () => {
     }
   };
 
+  
   if (loading || !formData || Object.keys(formData).length === 0) {
     return (
       <FullPageLoaderWrapper>
@@ -227,7 +237,7 @@ const ViewBasic = () => {
                 <Label>Joining Date</Label>
                 <Input
                   name="joining_date"
-                  value={formData.joining_date || ""}
+             value={formatDate(formData.joining_date)}
                   onChange={handleChange}
                 />
               </FieldGroup>

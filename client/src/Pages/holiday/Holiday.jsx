@@ -24,7 +24,8 @@ import HolidayHeading from "../../Components/HolidayHeading";
 import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from '../leaveDetails/EmployeeList.styles';
 import Pagination from "../../Components/Pagination/Pagination"
 import NoEmployeeFound from '../../Components/No found/Noemployeefound';
-
+import {exportHolidayExcel} from "../../utils/holiday";
+import {exportHolidayPDF} from "../report/holiday"
 const DEFAULT_HOLIDAY_TYPES = [
   { key: "public", label: "Public Holiday" },
   // { key: "religious", label: "Religious Holiday" },
@@ -160,20 +161,30 @@ const confirmDelete = () => {
     setShowDeleteModal(false);
     setSelectedIdToDelete(null);
   };
-  const formatDateToDisplay = (dateString) => {
-    const date = new Date(dateString);
+const formatDate = (date) => {
+  if (!date) return "----";
 
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
 
-    return `${day}/${month}/${year}`;
-  };
+  return `${day}/${month}/${year}`;
+};
+  const handleReportClick = (type) => {
+  if (type === "excel") {
+    exportHolidayExcel(holidays);
+  }
+
+  if (type === "pdf") {
+    exportHolidayPDF(holidays);
+  }
+};
   return (
     <>
       <Container>
 
-        <HolidayHeading />
+<HolidayHeading onReportClick={handleReportClick} />
 
         <FormSection>
           <FieldWrapper>
@@ -259,7 +270,7 @@ const confirmDelete = () => {
   {item.description.charAt(0).toUpperCase() + item.description.slice(1)}
 </BodyCell>
                       <BodyCell>{item.holiday_type_display}</BodyCell>
-                      <BodyCell>{formatDateToDisplay(item.date)}</BodyCell>
+                      <BodyCell>{formatDate(item.date)}</BodyCell>
                       <BodyCell>
                         <FaTrashAlt
                           style={{ color: "red", cursor: "pointer" }}

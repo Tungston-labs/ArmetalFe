@@ -99,7 +99,7 @@ const IncentiveModal = ({ onClose, employee, month, year }) => {
 
                     <Row>
                         <Field>
-                            <Label>Incentive Amount (₹)</Label>
+                            <Label>Incentive Amount</Label>
                             <Input
                                 type="number"
                                 placeholder="e.g. 8000"

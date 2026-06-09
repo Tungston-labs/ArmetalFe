@@ -172,6 +172,7 @@ const ReimbursementList = () => {
         showTabs={false}
         showDropdown={false}
         showBackArrow={false}
+                  showReportButton = {false}
       />
 
       {loading ? (

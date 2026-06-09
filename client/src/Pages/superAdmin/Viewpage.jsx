@@ -83,7 +83,7 @@ const CompanyViewPage = () => {
             </FormField>
 
             <FormField>
-              <Label>Amount Per Employee (₹)</Label>
+              <Label>Amount Per Employee</Label>
               <Input
                 type="text"
                 value={selectedCompany.amount_per_employee ?? 0}
@@ -92,7 +92,7 @@ const CompanyViewPage = () => {
             </FormField>
 
             <FormField>
-              <Label>Initial Payment (₹)</Label>
+              <Label>Initial Payment</Label>
               <Input
                 type="text"
                 value={selectedCompany.initial_payment ?? 0}

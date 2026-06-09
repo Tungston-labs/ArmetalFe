@@ -45,6 +45,8 @@ const TimesheetPage = () => {
         showDropdown={false}
         showSearch={false}
         showTabs={false}
+        showReportButton={false}
+
       />
 
       <EmployeeHeader employee={employee} editable={false} />
