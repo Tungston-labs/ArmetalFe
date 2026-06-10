@@ -33,19 +33,6 @@ export default function Sidebar() {
   useEffect(() => {
   }, [user]);
 
-  const handleLogout = async () => {
-    try {
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (!refreshToken) return;
-
-      await API.post("/logout/", { refresh: refreshToken });
-
-      localStorage.clear();
-      sessionStorage.clear();
-      navigate("/login");
-    } catch (error) {
-    }
-  };
 
   const isActive = (path) => {
     if (path === "/") return location.pathname === "/" ? "active" : "";
