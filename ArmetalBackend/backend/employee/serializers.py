@@ -59,6 +59,46 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     is_head = serializers.SerializerMethodField(read_only=True)
 
+    casual_leave = serializers.DecimalField(
+    max_digits=5,
+    decimal_places=2,
+    required=False,
+    default=0,
+    write_only=True
+    )
+
+    sick_leave = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        default=0,
+        write_only=True
+    )
+
+    earned_leave = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        default=0,
+        write_only=True
+    )
+
+    maternity_leave = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        default=0,
+        write_only=True
+    )
+
+    other_leave = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        default=0,
+        write_only=True
+    )
+
     class Meta:
         model = Employee_db
         exclude = ['user', 'password']
@@ -217,9 +257,46 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
+        casual_leave = validated_data.pop(
+            "casual_leave", 0
+        )
+
+        sick_leave = validated_data.pop(
+            "sick_leave", 0
+        )
+
+        earned_leave = validated_data.pop(
+            "earned_leave", 0
+        )
+
+        maternity_leave = validated_data.pop(
+            "maternity_leave", 0
+        )
+
+        other_leave = validated_data.pop(
+            "other_leave", 0
+        )
+
         employee = Employee_db.objects.create(
             **validated_data
         )
+
+        leave_data = [
+            ("casual", casual_leave),
+            ("sick", sick_leave),
+            ("earned", earned_leave),
+            ("maternity", maternity_leave),
+            ("others", other_leave),
+        ]
+
+        for leave_type, total in leave_data:
+
+            EmployeeLeaveBalance.objects.create(
+                employee=employee,
+                leave_type=leave_type,
+                total_leave=total,
+                remaining_leave=total
+            )
 
         return employee
 
