@@ -3,7 +3,6 @@ from shared.models import TimeStampedModel
 from employee.models import Employee_db
 from rest_framework.exceptions import ValidationError
 from decimal import Decimal
-from .models import EmployeeLeaveBalance
 
 class EmployeeLeaveBalance(TimeStampedModel):
 
@@ -52,7 +51,7 @@ class EmployeeLeaveBalance(TimeStampedModel):
             self.total_leave - self.used_leave
         )
         super().save(*args, **kwargs)
-        
+
 class LeaveRequest(TimeStampedModel):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
