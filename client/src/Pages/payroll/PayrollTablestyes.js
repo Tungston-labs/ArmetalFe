@@ -3,8 +3,13 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 export const Container = styled.div`
   font-family: "Segoe UI", sans-serif;
-  background-color: white;
   padding: 20px;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+
 `;
 
 export const TopBar = styled.div`
@@ -290,7 +295,7 @@ export const BulkActionBar = styled.div`
 
 export const TableWrapper = styled.div`
   width: 100%;
-  max-height: 65vh;       
+  flex: 1;    
   overflow-y: auto;       
   overflow-x: hidden;   
 
@@ -315,7 +320,6 @@ export const Table = styled.table`
   margin-top: 1rem;
   text-align: left;
   font-family: "Satoshi";
-
   /* Scroll on small screens */
   // display: block;
   overflow-x: auto;
@@ -576,5 +580,42 @@ export const AddButton = styled.button`
 
   &:hover {
     background: ${(props) => (props.disabled ? "#ccc" : "#243f99")};
+  }
+`;
+export const TooltipWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+export const TooltipCard = styled.div`
+  position: absolute;
+  top: -10px;
+  left: 110%;
+
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+
+  font-size: 12px;
+  text-align: left;
+`;
+
+export const TooltipItem = styled.div`
+  margin-bottom: 6px;
+  line-height: 1.4;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  strong {
+    margin-right: 4px;
+    color: #304eb0;
+    font-weight: 600;
   }
 `;

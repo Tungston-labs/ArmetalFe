@@ -16,7 +16,10 @@ import {
   Selection,
   TableWrapper,
   Tr,
-  AddButton
+  AddButton,
+  TooltipWrapper,
+  TooltipCard,
+  TooltipItem
 } from "./PayrollTablestyes";
 import { Link } from "react-router-dom";
 import { GoInfo } from "react-icons/go";
@@ -53,7 +56,7 @@ const PayrollTable = () => {
   const dispatch = useDispatch();
   const { data, loading, error, totalPages } = useSelector((state) => state.payroll);
   const departmentList = useSelector((state) => state.departments.list || []);
-
+const [hoveredIncentive, setHoveredIncentive] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
@@ -525,16 +528,48 @@ const handleCloseModal = (saved = false) => {
                     <Td>{emp.employee_id}</Td>
                     <Td>{formatDate(emp.joining_date)}</Td>
                     <Td>{emp.basic_salary ?? "N/A"}</Td>
-                    <Td>
-               <AddButton
-  onClick={() => handleOpenModal(emp)}
-  disabled={emp.incentive_amount > 0 || incentiveAddedIds.includes(emp.id)}
->
-  {emp.incentive_amount > 0 || incentiveAddedIds.includes(emp.id)
-    ? "Added"
-    : "+ Add"}
-</AddButton>
-                    </Td>
+ <Td>
+  <TooltipWrapper
+    onMouseEnter={() => {
+      if (emp.incentive_amount > 0) {
+        setHoveredIncentive(emp.id);
+      }
+    }}
+    onMouseLeave={() => setHoveredIncentive(null)}
+  >
+    <AddButton
+      onClick={() => handleOpenModal(emp)}
+      disabled={
+        emp.incentive_amount > 0 ||
+        incentiveAddedIds.includes(emp.id)
+      }
+    >
+      {emp.incentive_amount > 0 ||
+      incentiveAddedIds.includes(emp.id)
+        ? "Added"
+        : "+ Add"}
+    </AddButton>
+
+    {hoveredIncentive === emp.id &&
+      emp.incentive_amount > 0 && (
+        <TooltipCard>
+          <TooltipItem>
+            <strong>Amount:</strong> ₹{emp.incentive_amount}
+          </TooltipItem>
+
+          <TooltipItem>
+            <strong>Type:</strong>{" "}
+            {emp.incentive_type || "N/A"}
+          </TooltipItem>
+
+          <TooltipItem>
+            <strong>Reason:</strong>{" "}
+            {emp.incentive_reason || "N/A"}
+          </TooltipItem>
+        </TooltipCard>
+      )}
+  </TooltipWrapper>
+</Td>
                     <Td>
   <AddButton
     onClick={() => handleOpenDeductionModal(emp)}
