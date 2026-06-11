@@ -5,6 +5,54 @@ from rest_framework.exceptions import ValidationError
 from decimal import Decimal
 from .models import EmployeeLeaveBalance
 
+class EmployeeLeaveBalance(TimeStampedModel):
+
+    LEAVE_TYPES = [
+        ('casual', 'Casual'),
+        ('sick', 'Sick'),
+        ('earned', 'Earned'),
+        ('maternity', 'Maternity'),
+        ('others', 'Others'),
+    ]
+
+    employee = models.ForeignKey(
+        Employee_db,
+        on_delete=models.CASCADE,
+        related_name='leave_balances'
+    )
+
+    leave_type = models.CharField(
+        max_length=20,
+        choices=LEAVE_TYPES
+    )
+
+    total_leave = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0
+    )
+
+    used_leave = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0
+    )
+
+    remaining_leave = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0
+    )
+
+    class Meta:
+        unique_together = ('employee', 'leave_type')
+
+    def save(self, *args, **kwargs):
+        self.remaining_leave = (
+            self.total_leave - self.used_leave
+        )
+        super().save(*args, **kwargs)
+        
 class LeaveRequest(TimeStampedModel):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -99,52 +147,4 @@ class LeaveRequest(TimeStampedModel):
             balance.used_leave += leave_days
             balance.save()
 
-        super().save(*args, **kwargs)
-
-class EmployeeLeaveBalance(TimeStampedModel):
-
-    LEAVE_TYPES = [
-        ('casual', 'Casual'),
-        ('sick', 'Sick'),
-        ('earned', 'Earned'),
-        ('maternity', 'Maternity'),
-        ('others', 'Others'),
-    ]
-
-    employee = models.ForeignKey(
-        Employee_db,
-        on_delete=models.CASCADE,
-        related_name='leave_balances'
-    )
-
-    leave_type = models.CharField(
-        max_length=20,
-        choices=LEAVE_TYPES
-    )
-
-    total_leave = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=0
-    )
-
-    used_leave = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=0
-    )
-
-    remaining_leave = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=0
-    )
-
-    class Meta:
-        unique_together = ('employee', 'leave_type')
-
-    def save(self, *args, **kwargs):
-        self.remaining_leave = (
-            self.total_leave - self.used_leave
-        )
         super().save(*args, **kwargs)
