@@ -256,6 +256,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        print("VALIDATED DATA:", validated_data)
 
         casual_leave = validated_data.pop(
             "casual_leave", 0
