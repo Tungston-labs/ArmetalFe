@@ -8,7 +8,7 @@ from .models import (
 from departments.models import Department
 from attendance.models import Attendance
 from task.models import DailyTask
-from leave.models import LeaveRequest
+from leave.models import LeaveRequest,EmployeeLeaveBalance
 from datetime import date, timedelta
 from calendar import monthrange
 
