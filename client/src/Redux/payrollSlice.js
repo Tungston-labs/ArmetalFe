@@ -5,7 +5,8 @@ import {
   updateEmployeePayrollStatus,
   getPayrollDetailById,
   verifyPayroll,
-    updateEmployeeIncentive,
+  updateEmployeeIncentive,
+  updateEmployeeDeduction,
 } from "../services/payrollService";
 
 export const getPayrollData = createAsyncThunk(
@@ -91,6 +92,37 @@ export const updatePayrollIncentive = createAsyncThunk(
     }
   }
 );
+export const updatePayrollDeduction = createAsyncThunk(
+  "payroll/updatePayrollDeduction",
+  async (
+    {
+      employeeId,
+      month,
+      year,
+      deduction_amount,
+      deduction_type,
+      deduction_reason,
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const data = await updateEmployeeDeduction({
+        employeeId,
+        month,
+        year,
+        deduction_amount,
+        deduction_type,
+        deduction_reason,
+      });
+
+      return { employeeId, data };
+    } catch (error) {
+      return rejectWithValue(
+        error.message || "Failed to update deduction"
+      );
+    }
+  }
+);
 
 const payrollSlice = createSlice({
   name: "payroll",
@@ -105,6 +137,8 @@ const payrollSlice = createSlice({
     payrollDetail: null,
     incentiveUpdateSuccess: false,
     incentiveError: null,
+    deductionUpdateSuccess: false,
+    deductionError: null,
   },
   reducers: {
     resetPayrollState: (state) => {
@@ -127,9 +161,9 @@ const payrollSlice = createSlice({
       state.verifySuccess = false;
     },
     resetIncentiveSuccess: (state) => {
-  state.incentiveUpdateSuccess = false;
-  state.incentiveError = null;
-},
+      state.incentiveUpdateSuccess = false;
+      state.incentiveError = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -257,14 +291,36 @@ const payrollSlice = createSlice({
         state.loading = false;
         state.incentiveUpdateSuccess = false;
         state.incentiveError = action.payload;
-      });
+      })
+      .addCase(updatePayrollDeduction.pending, (state) => {
+  state.loading = true;
+  state.deductionUpdateSuccess = false;
+  state.deductionError = null;
+})
+
+.addCase(updatePayrollDeduction.fulfilled, (state, action) => {
+  state.loading = false;
+  state.deductionUpdateSuccess = true;
+
+  state.data = state.data.map((emp) =>
+    emp.id === action.payload.employeeId
+      ? action.payload.data
+      : emp
+  );
+})
+
+.addCase(updatePayrollDeduction.rejected, (state, action) => {
+  state.loading = false;
+  state.deductionUpdateSuccess = false;
+  state.deductionError = action.payload;
+});          
   },
 });
 
 export const { resetPayrollState,
   resetSubmitSuccess,
   resetUpdateStatusSuccess,
-  resetIncentiveSuccess ,
+  resetIncentiveSuccess,
   resetVerifySuccess } = payrollSlice.actions;
 
 export default payrollSlice.reducer;

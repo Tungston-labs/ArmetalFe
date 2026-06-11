@@ -35,7 +35,7 @@ import HolidayIcon from "../../assets/payroll.svg";
 import Pagination from "../../Components/Pagination/Pagination";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 import IncentiveModal from "../../Components/payroll/IncentiveModal/IncentiveModal";
-
+import DeductionModal from "../../Components/payroll/DeductionModal/DeductionModal";
 const months = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -64,8 +64,10 @@ const PayrollTable = () => {
   const [bulkStatus, setBulkStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [incentiveAddedIds, setIncentiveAddedIds] = useState([]); // ✅ local tracking
-
+  const [incentiveAddedIds, setIncentiveAddedIds] = useState([]); 
+const [deductionAddedIds, setDeductionAddedIds] = useState([]);
+const [showDeductionModal, setShowDeductionModal] = useState(false);
+const [selectedDeductionEmployee, setSelectedDeductionEmployee] = useState(null);
   const LIMIT = 20;
 
   const sortedData = useMemo(() => {
@@ -126,19 +128,22 @@ const PayrollTable = () => {
 
   const handleMonthChange = (e) => {
     setSelectedMonth(Number(e.target.value));
-    setIncentiveAddedIds([]); // ✅ reset on month change
+    setIncentiveAddedIds([]); 
+      setDeductionAddedIds([]);
   };
 
   const handleYearChange = (e) => {
     setSelectedYear(Number(e.target.value));
     setPage(1);
-    setIncentiveAddedIds([]); // ✅ reset on year change
+    setIncentiveAddedIds([]); 
+    setDeductionAddedIds([]);
   };
 
   const handleDepartmentChange = (e) => {
     setSelectedDepartment(e.target.value);
     setPage(1);
-    setIncentiveAddedIds([]); // ✅ reset on department change
+    setIncentiveAddedIds([]);
+     setDeductionAddedIds([]);
   };
 
   const toggleEmployeeSelect = (id) => {
@@ -155,6 +160,7 @@ const PayrollTable = () => {
     );
   };
 
+  
   const handleSingleStatusChange = async (employeeId, newStatus) => {
     const empStatus = verificationStatus[employeeId.id];
     if (!empStatus?.first || !empStatus?.second) {
@@ -251,6 +257,13 @@ const PayrollTable = () => {
     }
   };
 
+const handleOpenDeductionModal = (emp) => {
+  if (emp.deduction_amount > 0 || deductionAddedIds.includes(emp.id))
+    return;
+
+  setSelectedDeductionEmployee(emp);
+  setShowDeductionModal(true);
+};
   const handleCircleClick = async (e, employee, type) => {
     e.preventDefault();
 
@@ -327,6 +340,29 @@ const PayrollTable = () => {
     if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
   };
 
+const handleCloseDeductionModal = (saved = false) => {
+  setShowDeductionModal(false);
+
+  if (saved && selectedDeductionEmployee) {
+    setDeductionAddedIds((prev) =>
+      prev.includes(selectedDeductionEmployee.id)
+        ? prev
+        : [...prev, selectedDeductionEmployee.id]
+    );
+
+    dispatch(
+      getPayrollData({
+        page,
+        search: searchTerm,
+        month: selectedMonth,
+        year: selectedYear,
+        department: selectedDepartment,
+      })
+    );
+  }
+
+  setSelectedDeductionEmployee(null);
+};
 const formatDate = (date) => {
   if (!date) return "----";
 
@@ -339,7 +375,7 @@ const formatDate = (date) => {
 };
 
   const handleOpenModal = (emp) => {
-    if (emp.incentive_added || incentiveAddedIds.includes(emp.id)) return; // ✅ block if already added
+    if (emp.incentive_added || incentiveAddedIds.includes(emp.id)) return;
     setSelectedEmployee(emp);
     setShowModal(true);
   };
@@ -461,6 +497,7 @@ const handleCloseModal = (saved = false) => {
                 <Th>Joining Date</Th>
                 <Th>Salary</Th>
                 <Th>Incentive</Th>
+                   <Th>Deduction</Th>
                 <Th>Info</Th>
                 <Th>Verification</Th>
                 <Th>Status</Th>
@@ -498,6 +535,20 @@ const handleCloseModal = (saved = false) => {
     : "+ Add"}
 </AddButton>
                     </Td>
+                    <Td>
+  <AddButton
+    onClick={() => handleOpenDeductionModal(emp)}
+    disabled={
+      emp.deduction_amount > 0 ||
+      deductionAddedIds.includes(emp.id)
+    }
+  >
+    {emp.deduction_amount > 0 ||
+    deductionAddedIds.includes(emp.id)
+      ? "Added"
+      : "+ Add"}
+  </AddButton>
+</Td>
                     <Td>
                       <Link to={`/payrolldetails/${emp.id}`}>
                         <GoInfo style={{ cursor: "pointer", color: "black" }} />
@@ -553,6 +604,15 @@ const handleCloseModal = (saved = false) => {
             onClose={handleCloseModal}
           />
         )}
+        {showDeductionModal && selectedDeductionEmployee && (
+  <DeductionModal
+    employee={selectedDeductionEmployee}
+    month={selectedMonth}
+    year={selectedYear}
+    onClose={handleCloseDeductionModal}
+  />
+)}
+
       </Container>
     </>
   );

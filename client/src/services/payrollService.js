@@ -92,3 +92,34 @@ export const updateEmployeeIncentive = async ({ employeeId, month, year, incenti
     throw new Error(msg);
   }
 };
+
+export const updateEmployeeDeduction = async ({
+  employeeId,
+  month,
+  year,
+  deduction_amount,
+  deduction_type,
+  deduction_reason,
+}) => {
+  try {
+    const response = await API.patch(
+      `/payroll/deduction/${employeeId}/`,
+      {
+        month,
+        year,
+        deduction_amount,
+        deduction_type,
+        deduction_reason,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    const msg =
+      error.response?.data?.error ||
+      error.message ||
+      "Error updating deduction!";
+
+    throw new Error(msg);
+  }
+};
