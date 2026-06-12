@@ -3,6 +3,7 @@ from shared.models import TimeStampedModel
 from employee.models import Employee_db
 from rest_framework.exceptions import ValidationError
 from decimal import Decimal
+from django.db.models import Sum
 
 class EmployeeLeaveBalance(TimeStampedModel):
 
@@ -120,21 +121,26 @@ class LeaveRequest(TimeStampedModel):
                 flat=True
             ).first()
 
-        # Only when status changes to approved
-        if self.status == "approved" and old_status != "approved":
+        leave_days = Decimal(
+            str(self.calculate_leave_days())
+        )
 
-            leave_days = Decimal(
-                str(self.calculate_leave_days())
-            )
+        balance = EmployeeLeaveBalance.objects.filter(
+            employee=self.employee,
+            leave_type=self.leave_type
+        ).first()
 
-            balance = EmployeeLeaveBalance.objects.filter(
-                employee=self.employee,
-                leave_type=self.leave_type
-            ).first()
+        # ==========================================
+        # PENDING -> APPROVED
+        # ==========================================
+        if (
+            self.status == "approved"
+            and old_status != "approved"
+        ):
 
             if not balance:
                 raise ValidationError(
-                    f"{self.leave_type} leave balance not configured for employee."
+                    f"{self.leave_type} leave balance not configured."
                 )
 
             if balance.remaining_leave < leave_days:
@@ -146,4 +152,35 @@ class LeaveRequest(TimeStampedModel):
             balance.used_leave += leave_days
             balance.save()
 
+        # ==========================================
+        # APPROVED -> REJECTED/PENDING
+        # ==========================================
+        elif (
+            old_status == "approved"
+            and self.status != "approved"
+        ):
+
+            if balance:
+                balance.used_leave -= leave_days
+
+                if balance.used_leave < 0:
+                    balance.used_leave = 0
+
+                balance.save()
+
         super().save(*args, **kwargs)
+
+        # ==========================================
+        # RECALCULATE EMPLOYEE TOTAL LEAVE
+        # ==========================================
+        total_remaining = EmployeeLeaveBalance.objects.filter(
+            employee=self.employee
+        ).aggregate(
+            total=Sum("remaining_leave")
+        )["total"] or 0
+
+        Employee_db.objects.filter(
+            pk=self.employee.pk
+        ).update(
+            total_leave=total_remaining
+        )

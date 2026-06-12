@@ -104,6 +104,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
 
         year = instance.year
+        
         month = instance.month
 
         first_day = date(year, month, 1)
