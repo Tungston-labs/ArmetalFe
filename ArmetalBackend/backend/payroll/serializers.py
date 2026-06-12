@@ -104,6 +104,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
 
         year = instance.year
+
         month = instance.month
 
         first_day = date(year, month, 1)
@@ -119,8 +120,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # ======================================================
 
         holidays_qs = PublicHoliday.objects.filter(
-            date__range=(first_day, last_day),
-            company=company,
+            company=company
         )
 
         holidays = set()
@@ -129,9 +129,19 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         for h in holidays_qs:
 
             if h.holiday_type == "company_off_day":
-                company_off_days.add(h.date.weekday())
+
+                if h.off_day_weekday is not None:
+                    company_off_days.add(
+                        h.off_day_weekday
+                    )
+
             else:
-                holidays.add(h.date)
+
+                if (
+                    h.date and
+                    first_day <= h.date <= last_day
+                ):
+                    holidays.add(h.date)
 
         all_working_dates = [
             first_day + timedelta(days=i)

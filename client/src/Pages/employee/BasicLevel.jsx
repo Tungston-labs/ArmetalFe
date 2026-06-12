@@ -57,6 +57,11 @@ export default function AddEmployeeForm() {
     insurance_number: "",
     profile_pic: null,
     total_leave: "",
+    casual_leave: "",
+    sick_leave: "",
+    earned_leave: "",
+    maternity_leave: "",
+    other_leave: "",
     role: "",
     contract_expiry_date: "",
     idcard: null,
@@ -143,38 +148,52 @@ export default function AddEmployeeForm() {
 
     setLoading(true);
     try {
-  dispatch(setBasicFormData(formData));
-  const res = await dispatch(submitEmployee({ basic: formData }));
+      const jobData = jobref.current?.getData?.();
 
-  if (res.meta.requestStatus === "fulfilled") {
-    const id = res.payload?.employee?.id || res.payload?.id;
-    if (id) {
-      dispatch(setEmployeeId(id));
-      setIsFormDirty(false);
-      navigate("/bank-payment");
+      const finalData = {
+        ...formData,
+        ...jobData,
+      };
+
+      console.log("FINAL DATA", finalData);
+
+      dispatch(setBasicFormData(finalData));
+
+      const res = await dispatch(
+        submitEmployee({
+          basic: finalData,
+        })
+      );
+
+      if (res.meta.requestStatus === "fulfilled") {
+        const id = res.payload?.employee?.id || res.payload?.id;
+        if (id) {
+          dispatch(setEmployeeId(id));
+          setIsFormDirty(false);
+          navigate("/bank-payment");
+        }
+      }
+      else if (res.meta.requestStatus === "rejected") {
+        if (res.payload) {
+          const formattedErrors = {};
+
+          Object.keys(res.payload).forEach((key) => {
+            formattedErrors[key] = Array.isArray(res.payload[key])
+              ? res.payload[key][0]
+              : res.payload[key];
+          });
+
+          // Optional clean message
+          if (formattedErrors.email) {
+            formattedErrors.email = "This email is already registered";
+          }
+
+          setErrors(formattedErrors);
+        }
+      }
+    } finally {
+      setLoading(false);
     }
-  } 
-else if (res.meta.requestStatus === "rejected") {
-  if (res.payload) {
-    const formattedErrors = {};
-
-    Object.keys(res.payload).forEach((key) => {
-      formattedErrors[key] = Array.isArray(res.payload[key])
-        ? res.payload[key][0]
-        : res.payload[key];
-    });
-
-    // Optional clean message
-    if (formattedErrors.email) {
-      formattedErrors.email = "This email is already registered";
-    }
-
-    setErrors(formattedErrors);
-  }
-}
-} finally {
-  setLoading(false);
-}
   };
 
   return (

@@ -137,6 +137,7 @@ const ViewBankPayment = () => {
       >
         <Section>
           <ViewTableBank
+  employeeId={id}
             country={country}
             isEditMode={true}
             setBankProofImage={setBankProofImage}

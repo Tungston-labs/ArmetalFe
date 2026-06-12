@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -13,69 +14,116 @@ import {
   Th,
   Td,
   AddButton,
- 
 } from "./ViewTableBank.Styles";
 
+import {
+  fetchSalaryIncrements,
+  addSalaryIncrement,
+} from "../../Redux/salaryIncrementSlice";
+
 const ViewTableBank = ({
-    country,
-  bankName, setBankName,
-  swiftCode, setSwiftCode,
-    ifscCode, setIfscCode,
-  // paymentMode, setPaymentMode,
-  accountNumber, setAccountNumber,
-  uanNumber, setUanNumber,
-  panNumber, setPanNumber,
-  taxRegime, setTaxRegime,
-  tdsAmount, setTdsAmount,
-  declaration80C, setDeclaration80C,
-  basicSalary, setBasicSalary,
-  salaryIncrement, setSalaryIncrement,
-  housingAllowance, setHousingAllowance,
-  transportation, setTransportation,
+  employeeId,
+  country,
+  bankName,
+  setBankName,
+  swiftCode,
+  setSwiftCode,
+  ifscCode,
+  setIfscCode,
+  accountNumber,
+  setAccountNumber,
+  uanNumber,
+  setUanNumber,
+  panNumber,
+  setPanNumber,
+  taxRegime,
+  setTaxRegime,
+  tdsAmount,
+  setTdsAmount,
+  declaration80C,
+  setDeclaration80C,
+  basicSalary,
+  setBasicSalary,
+  salaryIncrement,
+  setSalaryIncrement,
+  housingAllowance,
+  setHousingAllowance,
+  transportation,
+  setTransportation,
   errors = {},
-   
-  
 }) => {
+  const dispatch = useDispatch();
 
+  const { increments = [] } = useSelector(
+    (state) => state.salaryIncrement
+  );
+
+  const [showNewRow, setShowNewRow] = useState(false);
+
+  const [newIncrement, setNewIncrement] = useState({
+    date: "",
+    increment_amount: "",
+  });
+  const saveIncrement = async () => {
+    if (!newIncrement.date || !newIncrement.increment_amount) {
+      alert("Please enter date and increment amount");
+      return;
+    }
+
+    try {
+      await dispatch(
+        addSalaryIncrement({
+          employeeId,
+          data: {
+            employee: employeeId,
+            date: newIncrement.date,
+            increment_amount: Number(
+              newIncrement.increment_amount
+            ),
+          },
+        })
+      ).unwrap();
+
+      setNewIncrement({
+        date: "",
+        increment_amount: "",
+      });
+
+      setShowNewRow(false);
+
+      dispatch(fetchSalaryIncrements(employeeId));
+    } catch (err) {
+      console.log(err);
+      alert("Failed to add increment");
+    }
+  };
   useEffect(() => {
-  if (country === "IN") {
-    setSwiftCode("");
-  } else {
-    setIfscCode("");
-  }
-}, [country]);
-  const [increments, setIncrements] = useState([]);
+    if (employeeId) {
+      dispatch(fetchSalaryIncrements(employeeId));
+    }
+  }, [dispatch, employeeId]);
 
-  const addIncrement = () => {
-    setIncrements((prev) => [
-      ...prev,
-      { date: "", increment: "", total: 0 },
-    ]);
+  const addIncrement = async () => {
+    const today = new Date().toISOString().split("T")[0];
+
+    try {
+      await dispatch(
+        addSalaryIncrement({
+          employeeId,
+          data: {
+            employee: employeeId,
+            date: today,
+            increment_amount: 0,
+          },
+        })
+      ).unwrap();
+
+      dispatch(fetchSalaryIncrements(employeeId));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-
-  const handleChange = (index, field, value) => {
-    setIncrements((prev) =>
-      prev.map((item, i) =>
-        i === index
-          ? {
-              ...item,
-              [field]: value,
-              total:
-                field === "increment"
-                  ? calculateTotal(item.total, value)
-                  : item.total,
-            }
-          : item
-      )
-    );
-  };
-
-  const calculateTotal = (current, increment) => {
-    const total = parseFloat(current) || 0;
-    const incr = parseFloat(increment) || 0;
-    return (total + incr).toFixed(2);
-  };
   return (
     <Container>
       <Card>
@@ -85,186 +133,174 @@ const ViewTableBank = ({
           <Grid2>
             <div>
               <Label>Bank Name</Label>
-              <Input value={bankName} onChange={(e) => setBankName(e.target.value)} />
+              <Input
+                value={bankName}
+                onChange={(e) => setBankName(e.target.value)}
+              />
               <ErrorText>{errors.bankName}</ErrorText>
             </div>
 
-        <div>
-  <Label>{country === "IN" ? "IFSC Code" : "SWIFT Code"}</Label>
+            <div>
+              <Label>
+                {country === "IN"
+                  ? "IFSC Code"
+                  : "SWIFT Code"}
+              </Label>
 
-<Input
-  value={country === "IN" ? ifscCode : swiftCode}
-  onChange={(e) =>
-    country === "IN"
-      ? setIfscCode(e.target.value.toUpperCase())
-      : setSwiftCode(e.target.value.toUpperCase())
-  }
-    maxLength={country === "IN" ? 11 : 20}
-/>
+              <Input
+                value={
+                  country === "IN"
+                    ? ifscCode
+                    : swiftCode
+                }
+                onChange={(e) =>
+                  country === "IN"
+                    ? setIfscCode(
+                      e.target.value.toUpperCase()
+                    )
+                    : setSwiftCode(
+                      e.target.value.toUpperCase()
+                    )
+                }
+                maxLength={
+                  country === "IN" ? 11 : 20
+                }
+              />
 
-<ErrorText>
-  {country === "IN" ? errors.ifscCode : errors.swiftCode}
-</ErrorText>
+              <ErrorText>
+                {country === "IN"
+                  ? errors.ifscCode
+                  : errors.swiftCode}
+              </ErrorText>
+            </div>
 
-</div>
-               <div>
+            <div>
               <Label>Basic Salary</Label>
-              <Input value={basicSalary} onChange={(e) => setBasicSalary(e.target.value)} />
+              <Input
+                value={basicSalary}
+                onChange={(e) =>
+                  setBasicSalary(e.target.value)
+                }
+              />
               <ErrorText>{errors.basicSalary}</ErrorText>
             </div>
           </Grid2>
 
           <Grid2>
-            {/* <div>
-              <Label>Payment Mode</Label>
-              <Select value={paymentMode} onChange={(e) => setPaymentMode(e.target.value)}>
-                <option value="">Select Payment Mode</option>
-                <option value="online">Online</option>
-                <option value="cheque">Cheque</option>
-              </Select>
-            </div> */}
-
             <div>
               <Label>Account Number</Label>
               <Input
                 value={accountNumber}
-                onChange={(e) => setAccountNumber(e.target.value)}
+                onChange={(e) =>
+                  setAccountNumber(e.target.value)
+                }
               />
-              <ErrorText>{errors.accountNumber}</ErrorText>
+              <ErrorText>
+                {errors.accountNumber}
+              </ErrorText>
             </div>
-             <div>
+
+            <div>
               <Label>PAN Number</Label>
-              <Input value={panNumber} onChange={(e) => setPanNumber(e.target.value)} />
+              <Input
+                value={panNumber}
+                onChange={(e) =>
+                  setPanNumber(e.target.value)
+                }
+              />
               <ErrorText>{errors.panNumber}</ErrorText>
             </div>
-          
           </Grid2>
         </CardBody>
       </Card>
 
-      {/* <Card> */}
-        {/* <CardHeader>Tax & Compliance</CardHeader> */}
-{/* 
-        <CardBody>
-          <Grid2>
-            <div>
-              <Label>PAN Number</Label>
-              <Input value={panNumber} onChange={(e) => setPanNumber(e.target.value)} />
-              <ErrorText>{errors.panNumber}</ErrorText>
-            </div> */}
-            
-{/* 
-            <div>
-              <Label>Tax Regime</Label>
-              <Select value={taxRegime} onChange={(e) => setTaxRegime(e.target.value)}>
-                <option value="">Select Regime</option>
-                <option value="old">Old Regime</option>
-                <option value="new">New Regime</option>
-              </Select>
-            </div> */}
-          {/* </Grid2> */}
+      <Card>
+        <CardHeader>Salary Increment History</CardHeader>
 
-          {/* <Grid2> */}
-            {/* <div>
-              <Label>TDS Deduction Amount</Label>
-              <Select value={tdsAmount} onChange={(e) => setTdsAmount(e.target.value)}>
-                <option value="">Select TDS %</option>
-                {[0, 10, 20, 30].map((i) => (
-                  <option key={i} value={i}>{i}%</option>
-                ))}
-              </Select>
-            </div> */}
-
-            {/* <div>
-              <Label>Declaration under 80C</Label>
-              <Select value={declaration80C} onChange={(e) => setDeclaration80C(e.target.value)}>
-                <option value="">Select</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </Select>
-            </div> */}
-          {/* </Grid2> */}
-        {/* </CardBody>
-      </Card> */}
-
-
-      {/* <Card> */}
-        {/* <CardHeader>Salary & Increment</CardHeader> */}
-{/* 
-        <CardBody>
-          <Grid2> */}
-            {/* <div>
-              <Label>Basic Salary</Label>
-              <Input value={basicSalary} onChange={(e) => setBasicSalary(e.target.value)} />
-              <ErrorText>{errors.basicSalary}</ErrorText>
-            </div> */}
-
-            {/* <div>
-              <Label>Salary Increment</Label>
-              <Select
-                value={salaryIncrement}
-                onChange={(e) => setSalaryIncrement(e.target.value)}
-              >
-                {[...Array(11).keys()].map((i) => (
-                  <option key={i * 10} value={i * 10}>
-                    {i * 10}%
-                  </option>
-                ))}
-              </Select>
-            </div> */}
-          {/* </Grid2>
-        </CardBody>
-      </Card>
-       */}
-
-<Card>
-      <CardHeader>Salary Increment History</CardHeader>
-    <TableWrapper>
-      <Table>
-        <thead>
-          <tr>
-            <Th>Date</Th>
-            <Th>Increment %</Th>
-            <Th>Total Amount</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {increments.length > 0 ? (
-            increments.map((item, index) => (
-              <tr key={index}>
-                <Td>
-                  <Input
-                    type="date"
-                    value={item.date}
-                    onChange={(e) => handleChange(index, "date", e.target.value)}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="number"
-                    value={item.increment}
-                    onChange={(e) =>
-                      handleChange(index, "increment", e.target.value)
-                    }
-                  />
-                </Td>
-                <Td> {item.total}</Td>
+        <TableWrapper>
+          <Table>
+            <thead>
+              <tr>
+                <Th>Date</Th>
+                <Th>Increment Amount</Th>
+                <Th>Total Salary</Th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <Td colSpan={3} style={{ textAlign: "center", padding: "10px" }}>
-                No increments added
-              </Td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
-      <AddButton onClick={addIncrement}>+ Add Increment</AddButton>
-    </TableWrapper>
-</Card>
+            </thead>
 
+            <tbody>
+              {increments.length > 0 ? (
+                increments.map((item) => (
+                  <tr key={item.id}>
+                    <Td>{item.date}</Td>
+                    <Td>{item.increment_amount}</Td>
+                    <Td>{item.total_salary}</Td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <Td
+                    colSpan={3}
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                    }}
+                  >
+                    No increments added
+                  </Td>
+                </tr>
+              )}
 
+              {showNewRow && (
+                <tr>
+                  <Td>
+                    <Input
+                      type="date"
+                      value={newIncrement.date}
+                      onChange={(e) =>
+                        setNewIncrement({
+                          ...newIncrement,
+                          date: e.target.value,
+                        })
+                      }
+                    />
+                  </Td>
+
+                  <Td>
+                    <Input
+                      type="number"
+                      placeholder="Increment Amount"
+                      value={newIncrement.increment_amount}
+                      onChange={(e) =>
+                        setNewIncrement({
+                          ...newIncrement,
+                          increment_amount:
+                            e.target.value,
+                        })
+                      }
+                    />
+                  </Td>
+
+                  <Td>
+                    <button
+                      type="button"
+                      onClick={saveIncrement}
+                    >
+                      Save
+                    </button>
+                  </Td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+
+          <AddButton
+            type="button"
+            onClick={() => setShowNewRow(true)}
+          >
+            + Add Increment
+          </AddButton>
+        </TableWrapper>
+      </Card>
     </Container>
   );
 };

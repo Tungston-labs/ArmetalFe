@@ -32,28 +32,39 @@ class PublicHolidayCreateListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         company = self.request.user.company
+
         holiday_type = serializer.validated_data.get("holiday_type")
         selected_date = serializer.validated_data.get("date")
-        description = serializer.validated_data.get("description")
+        off_day_weekday = serializer.validated_data.get("off_day_weekday")
 
-        # ---------------------------------------------------
-        # AUTO CREATE SECOND SATURDAYS FOR WHOLE YEAR
-        # ---------------------------------------------------
+        # SECOND SATURDAY
         if holiday_type == "second_saturday" and selected_date:
+
             year = selected_date.year
 
             for month in range(1, 13):
-                month_calendar = calendar.monthcalendar(year, month)
 
-                # Second Saturday = second week where Saturday exists
+                month_calendar = calendar.monthcalendar(
+                    year,
+                    month
+                )
+
                 saturday_count = 0
-                for week in month_calendar:
-                    if week[calendar.SATURDAY] != 0:
-                        saturday_count += 1
-                        if saturday_count == 2:
-                            second_sat = date(year, month, week[calendar.SATURDAY])
 
-                            # Avoid duplicate entries
+                for week in month_calendar:
+
+                    if week[calendar.SATURDAY] != 0:
+
+                        saturday_count += 1
+
+                        if saturday_count == 2:
+
+                            second_sat = date(
+                                year,
+                                month,
+                                week[calendar.SATURDAY]
+                            )
+
                             PublicHoliday.objects.get_or_create(
                                 company=company,
                                 date=second_sat,
@@ -62,13 +73,25 @@ class PublicHolidayCreateListView(generics.ListCreateAPIView):
                                     "holiday_type": "second_saturday",
                                 }
                             )
+
                             break
 
-            return  # stop normal save
+            return
 
-        # ---------------------------------------------------
-        # NORMAL SAVE
-        # ---------------------------------------------------
+        # COMPANY OFF DAY
+        if holiday_type == "company_off_day":
+
+            PublicHoliday.objects.get_or_create(
+                company=company,
+                holiday_type="company_off_day",
+                off_day_weekday=off_day_weekday,
+                defaults={
+                    "description": "Company Off Day"
+                }
+            )
+
+            return
+
         serializer.save(company=company)
 
 

@@ -24,8 +24,8 @@ import HolidayHeading from "../../Components/HolidayHeading";
 import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from '../leaveDetails/EmployeeList.styles';
 import Pagination from "../../Components/Pagination/Pagination"
 import NoEmployeeFound from '../../Components/No found/Noemployeefound';
-import {exportHolidayExcel} from "../../utils/holiday";
-import {exportHolidayPDF} from "../report/holiday"
+import { exportHolidayExcel } from "../../utils/holiday";
+import { exportHolidayPDF } from "../report/holiday"
 const DEFAULT_HOLIDAY_TYPES = [
   { key: "public", label: "Public Holiday" },
   // { key: "religious", label: "Religious Holiday" },
@@ -38,7 +38,15 @@ const DEFAULT_HOLIDAY_TYPES = [
   { key: "second_saturday", label: "Second Saturdays" },
 ];
 
-
+const WEEK_DAYS = [
+  { value: 0, label: "Monday" },
+  { value: 1, label: "Tuesday" },
+  { value: 2, label: "Wednesday" },
+  { value: 3, label: "Thursday" },
+  { value: 4, label: "Friday" },
+  { value: 5, label: "Saturday" },
+  { value: 6, label: "Sunday" },
+];
 const formatDateToISO = (dateStr) => {
   const date = new Date(dateStr);
   const yyyy = date.getFullYear();
@@ -63,8 +71,12 @@ const HolidayManager = () => {
   } = useSelector(state => state.holidays);
 
   const [formError, setFormError] = useState("");
-  const [formData, setFormData] = useState({ name: "", type: "", date: "" });
-  const [typeOptions, setTypeOptions] = useState(DEFAULT_HOLIDAY_TYPES);
+  const [formData, setFormData] = useState({
+    name: "",
+    type: "",
+    date: "",
+    off_day_weekday: ""
+  }); const [typeOptions, setTypeOptions] = useState(DEFAULT_HOLIDAY_TYPES);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [selectedIdToDelete, setSelectedIdToDelete] = React.useState(null);
   const PAGE_SIZE = 20;
@@ -94,97 +106,153 @@ const HolidayManager = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+
+    setFormError("");
   };
 
-const handleAdd = () => {
-  const { name, type, date } = formData;
-  const trimmedName = name.trim();
+  const handleAdd = () => {
+    const {
+      name,
+      type,
+      date,
+      off_day_weekday
+    } = formData; const trimmedName = name.trim();
 
-  if (!trimmedName || !type || !date) {
-    setFormError("⚠️ Please fill in all fields before adding a holiday.");
-    return;
-  }
 
-  if (trimmedName.length > 250) {
-    setFormError("⚠️ Holiday name cannot exceed 250 characters.");
-    return;
-  }
 
-  const formattedDate = formatDateToISO(date);
-  const selectedDate = new Date(date);
-  const today = new Date();
+    if (!trimmedName || !type) {
+      setFormError("⚠️ Please fill in all required fields.");
+      return;
+    }
 
-  today.setHours(0, 0, 0, 0);
-  selectedDate.setHours(0, 0, 0, 0);
+    if (trimmedName.length > 250) {
+      setFormError("⚠️ Holiday name cannot exceed 250 characters.");
+      return;
+    }
 
-  if (selectedDate < today) {
-    setFormError("⚠️ Holiday date cannot be in the past.");
-    return;
-  }
+    if (
+      type === "company_off_day" &&
+      off_day_weekday === ""
+    ) {
+      setFormError("⚠️ Please select a weekly off day.");
+      return;
+    }
 
-  const isDateAlreadyExists = holidays.some(
-    (holiday) => holiday.date === formattedDate
-  );
+    if (
+      type !== "company_off_day" &&
+      !date
+    ) {
+      setFormError("⚠️ Please select a date.");
+      return;
+    }
 
-  if (isDateAlreadyExists) {
-    setFormError("⚠️ A holiday already exists on this date.");
-    return;
-  }
+    let formattedDate = null;
 
-  dispatch(addHoliday({
-    description: trimmedName,
-    holiday_type: type,
-    date: formattedDate
-  })).then(() => {
-    dispatch(getHolidays(page)); // ✅ refresh list after adding
-  });
+    if (type !== "company_off_day") {
+      formattedDate = formatDateToISO(date);
 
-  setFormData({ name: "", type: "", date: "" });
-  setFormError("");
-};
+      const selectedDate = new Date(date);
+      const today = new Date();
+
+      today.setHours(0, 0, 0, 0);
+      selectedDate.setHours(0, 0, 0, 0);
+
+      if (selectedDate < today) {
+        setFormError("⚠️ Holiday date cannot be in the past.");
+        return;
+      }
+
+      const isDateAlreadyExists = holidays.some(
+        (holiday) => holiday.date === formattedDate
+      );
+
+      if (isDateAlreadyExists) {
+        setFormError("⚠️ A holiday already exists on this date.");
+        return;
+      }
+    }
+
+    const payload = {
+      description: trimmedName,
+      holiday_type: type,
+    };
+
+    if (type === "company_off_day") {
+      payload.off_day_weekday = Number(
+        off_day_weekday
+      );
+
+      payload.date = new Date().toISOString().split("T")[0];
+    } else {
+      payload.date = formattedDate;
+    }
+
+    dispatch(addHoliday(payload))
+      .unwrap()
+      .then(() => {
+        dispatch(getHolidays(page));
+      })
+      .catch((err) => {
+        setFormError(
+          err?.message ||
+          "Failed to create holiday"
+        );
+      });
+
+    setFormData({
+      name: "",
+      type: "",
+      date: "",
+      off_day_weekday: ""
+    });
+    setFormError("");
+  };
 
   const handleDeleteClick = (id) => {
     setSelectedIdToDelete(id);
     setShowDeleteModal(true);
   };
 
-const confirmDelete = () => {
-  dispatch(removeHoliday(selectedIdToDelete)).then(() => {
-    dispatch(getHolidays(page)); // ✅ refresh list after deleting
-  });
-  setShowDeleteModal(false);
-  setSelectedIdToDelete(null);
-};
+  const confirmDelete = () => {
+    dispatch(removeHoliday(selectedIdToDelete)).then(() => {
+      dispatch(getHolidays(page)); // ✅ refresh list after deleting
+    });
+    setShowDeleteModal(false);
+    setSelectedIdToDelete(null);
+  };
 
   const cancelDelete = () => {
     setShowDeleteModal(false);
     setSelectedIdToDelete(null);
   };
-const formatDate = (date) => {
-  if (!date) return "----";
+  const formatDate = (date) => {
+    if (!date) return "----";
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
 
-  return `${day}/${month}/${year}`;
-};
+    return `${day}/${month}/${year}`;
+  };
   const handleReportClick = (type) => {
-  if (type === "excel") {
-    exportHolidayExcel(holidays);
-  }
+    if (type === "excel") {
+      exportHolidayExcel(holidays);
+    }
 
-  if (type === "pdf") {
-    exportHolidayPDF(holidays);
-  }
-};
+    if (type === "pdf") {
+      exportHolidayPDF(holidays);
+    }
+  };
   return (
     <>
       <Container>
 
-<HolidayHeading onReportClick={handleReportClick} />
+        <HolidayHeading onReportClick={handleReportClick} />
 
         <FormSection>
           <FieldWrapper>
@@ -212,18 +280,39 @@ const formatDate = (date) => {
               ))}
             </Select>
           </FieldWrapper>
+          {formData.type === "company_off_day" && (
+            <FieldWrapper>
+              <Label>Weekly Off Day</Label>
 
-          <FieldWrapper>
-            <Label>Date</Label>
-            <DateWrapper>
-              <DateInput
-                type="date"
-                name="date"
-                value={formData.date}
+              <Select
+                name="off_day_weekday"
+                value={formData.off_day_weekday}
                 onChange={handleChange}
-              />
-            </DateWrapper>
-          </FieldWrapper>
+              >
+                <option value="">Select Day</option>
+
+                {WEEK_DAYS.map((day) => (
+                  <option key={day.value} value={day.value}>
+                    {day.label}
+                  </option>
+                ))}
+              </Select>
+            </FieldWrapper>
+          )}
+
+          {formData.type !== "company_off_day" && (
+            <FieldWrapper>
+              <Label>Date</Label>
+              <DateWrapper>
+                <DateInput
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                />
+              </DateWrapper>
+            </FieldWrapper>
+          )}
 
           <AddButton onClick={handleAdd}>Add</AddButton>
         </FormSection>
@@ -253,11 +342,11 @@ const formatDate = (date) => {
                   </Td>
                 </tr>
               ) : holidays.length === 0 ? (
-                      <tr>
-    <td colSpan={5}>
-      <NoEmployeeFound />
-    </td>
-  </tr>
+                <tr>
+                  <td colSpan={5}>
+                    <NoEmployeeFound />
+                  </td>
+                </tr>
               ) : (
                 [...holidays]
                   .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -266,9 +355,9 @@ const formatDate = (date) => {
                       <BodyCell>
                         {(currentPage - 1) * PAGE_SIZE + index + 1}
                       </BodyCell>
-             <BodyCell title={item.description}>
-  {item.description.charAt(0).toUpperCase() + item.description.slice(1)}
-</BodyCell>
+                      <BodyCell title={item.description}>
+                        {item.description.charAt(0).toUpperCase() + item.description.slice(1)}
+                      </BodyCell>
                       <BodyCell>{item.holiday_type_display}</BodyCell>
                       <BodyCell>{formatDate(item.date)}</BodyCell>
                       <BodyCell>
