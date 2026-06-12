@@ -132,6 +132,7 @@ const FinanceDetail = () => {
             showBackArrow={false}
             showTabs={false}
             searchPlaceholder="Search Category / Note"
+            showReportButton={false}
           />
         </TopBar>
 

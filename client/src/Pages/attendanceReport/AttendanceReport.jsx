@@ -108,7 +108,7 @@ const handleReportClick = (type) => {
         showSearch={true}
         searchValue={searchTerm}
         onSearchChange={(val) => setSearchTerm(val)}
-          showReportButton={true}
+          showReportButton={false}
                 reportButtonText="Reports"
           onReportClick={handleReportClick}
       />
