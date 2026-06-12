@@ -403,3 +403,31 @@ export const BottomText = styled.div`
   
 `;
 
+
+
+export const SubMenu = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+  gap:8px;
+`;
+
+export const SubMenuLink = styled(Link)`
+  width: 90%;
+  /* margin-left: 35px; */
+  padding: 8px 12px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 6px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  &.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+  }
+`;

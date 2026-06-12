@@ -24,8 +24,7 @@ import HolidayHeading from "../../Components/HolidayHeading";
 import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from '../leaveDetails/EmployeeList.styles';
 import Pagination from "../../Components/Pagination/Pagination"
 import NoEmployeeFound from '../../Components/No found/Noemployeefound';
-import {exportHolidayExcel} from "../../utils/holiday";
-import {exportHolidayPDF} from "../report/holiday"
+
 const DEFAULT_HOLIDAY_TYPES = [
   { key: "public", label: "Public Holiday" },
   // { key: "religious", label: "Religious Holiday" },
@@ -171,20 +170,12 @@ const formatDate = (date) => {
 
   return `${day}/${month}/${year}`;
 };
-  const handleReportClick = (type) => {
-  if (type === "excel") {
-    exportHolidayExcel(holidays);
-  }
 
-  if (type === "pdf") {
-    exportHolidayPDF(holidays);
-  }
-};
   return (
     <>
       <Container>
 
-<HolidayHeading onReportClick={handleReportClick} />
+<HolidayHeading />
 
         <FormSection>
           <FieldWrapper>

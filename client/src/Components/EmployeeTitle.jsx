@@ -182,38 +182,13 @@ const [showReportMenu, setShowReportMenu] = useState(false);
         )}
       </>
     )}
-
 {showReportButton && (
-  <ReportWrapper>
-    <ReportButton
-      onClick={() => setShowReportMenu((prev) => !prev)}
-    >
-      <FiBarChart2 size={18} />
-      {reportButtonText}
-    </ReportButton>
-
-    {showReportMenu && (
-      <ReportMenu>
-        <ReportMenuItem
-          onClick={() => {
-            onReportClick?.("excel");
-            setShowReportMenu(false);
-          }}
-        >
-          Export Excel
-        </ReportMenuItem>
-
-        <ReportMenuItem
-          onClick={() => {
-            onReportClick?.("pdf");
-            setShowReportMenu(false);
-          }}
-        >
-          Export PDF
-        </ReportMenuItem>
-      </ReportMenu>
-    )}
-  </ReportWrapper>
+  <ReportButton
+    onClick={() => onReportClick?.("excel")}
+  >
+    <FiBarChart2 size={18} />
+    Export Excel
+  </ReportButton>
 )}
   </RightBlock>
 )}

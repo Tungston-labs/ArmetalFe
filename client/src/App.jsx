@@ -63,6 +63,8 @@ import AttendanceReport from "./Pages/attendanceReport/AttendanceReport.jsx";
 import EmployeeAttendanceModal from "./Pages/attendanceReport/EmployeeAttendanceModal.jsx";
 import PayrollDetailsContainer from "./Pages/payroll/PayrollDetailsContainer.jsx";
 import PayrollTable from "./Pages/payroll/PayrollTable.jsx";
+import ReportAttendance from "./Pages/report/AttendaceReport.jsx";
+import LeaveReport from "./Pages/report/LeaveReport.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -135,6 +137,8 @@ function App() {
               <Route path="/modal" element={<ProgressModal />} />
               <Route path ="/employee-attendance-report" element={< AttendanceReport/>} />
 
+<Route path="/reports/attendance" element={<ReportAttendance />} />
+<Route path="/reports/leave" element={<LeaveReport />} />
               <Route path="/right-modal" element={<EmployeeAttendanceModal />}/>
               <Route path="*" element={<ErrorSomething />} />
             </Route>

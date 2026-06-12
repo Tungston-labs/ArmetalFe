@@ -16,16 +16,19 @@ import {
   TopSection,
   LinkIcon,
   BottomText,
+  SubMenuLink,
+  SubMenu,
 } from './Sidebar.styles';
 import API from '../services/api';
 import { NavLink } from "react-router-dom";
-
+import { TfiFiles } from "react-icons/tfi";
+import { FaAngleRight,FaAngleUp } from "react-icons/fa6";
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const reduxUser = useSelector((state) => state.auth.user);
-
+const [reportOpen, setReportOpen] = useState(false);
   const storedUser = useSelector((state) => state.auth.user);
   const user = reduxUser || storedUser;
   const modules = user?.company_modules || {};
@@ -151,9 +154,40 @@ export default function Sidebar() {
                 <span>Project</span>
               </CustomLink>
             )}
+{modules.project && (
+  <>
+    <CustomLink
+      as="div"
+      onClick={() => setReportOpen(!reportOpen)}
+      className={`${collapsed ? "collapsed" : ""}`}
+      style={{ cursor: "pointer" }}
+    >
+      <TfiFiles />
+      <span>Report</span>
 
+      {!collapsed &&
+        (reportOpen ? <FaAngleUp /> : <FaAngleRight />)}
+    </CustomLink>
 
-          </>
+    {reportOpen && !collapsed && (
+      <SubMenu>
+        <SubMenuLink
+          to="/reports/attendance"
+          className={isActive("/reports/attendance")}
+        >
+          Attendance Report
+        </SubMenuLink>
+
+        <SubMenuLink
+          to="/reports/leave"
+          className={isActive("/reports/leave-request")}
+        >
+          Leave Report
+        </SubMenuLink>
+      </SubMenu>
+    )}
+  </>
+)}       </>
         )}
       
       </Nav>

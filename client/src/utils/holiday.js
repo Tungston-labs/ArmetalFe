@@ -1,4 +1,4 @@
-import * as XLSX from "xlsx-js-style";
+import * as XLSX from "xlsx";
 
 export const exportHolidayExcel = (holidays = []) => {
   const workbook = XLSX.utils.book_new();

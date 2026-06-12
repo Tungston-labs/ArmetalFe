@@ -17,8 +17,7 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
 import { getAttendanceSummary } from "../../Redux/attendanceSlice";
 import Pagination from "../../Components/Pagination/Pagination";
-import { exportAttendanceExcel } from "../../utils/attendance";
-import { exportAttendancePDF } from "../report/attendance";
+
 const AttendanceReport = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth || {});
@@ -88,15 +87,7 @@ const visibleRows = useMemo(() => {
       })
     );
   };
-const handleReportClick = (type) => {
-  if (type === "excel") {
-    exportAttendanceExcel(attendanceSummary);
-  }
 
-  if (type === "pdf") {
-    exportAttendancePDF(attendanceSummary);
-  }
-};
   return (
     <Container>
       <EmployeeTitle
@@ -108,9 +99,8 @@ const handleReportClick = (type) => {
         showSearch={true}
         searchValue={searchTerm}
         onSearchChange={(val) => setSearchTerm(val)}
-          showReportButton={true}
-                reportButtonText="Reports"
-          onReportClick={handleReportClick}
+          showReportButton={false}
+              
       />
 
       <PageWrapper>

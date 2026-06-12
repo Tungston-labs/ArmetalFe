@@ -121,6 +121,27 @@ const formatDate = (date) => {
           <h2 style={{ margin: 0 }}>
             Payslip – {monthName} {year}
           </h2>
+             <div
+          className="no-print"
+          style={{
+            position: "fixed",
+            // bottom: "30px",
+            right: "40px",
+            display: "flex",
+            alignItems: "center",
+            gap: "15px",
+            background: "#ffffff",
+            padding: "10px 15px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+            marginTop:"-30px"
+          }}
+        >
+          {/* <Badge>{status || "Unpaid"}</Badge> */}
+          <PrintIcon onClick={handlePrint}>
+            <BsPrinter />
+          </PrintIcon>
+        </div>
         </div>
 
         {/* ================= EMPLOYEE INFO ================= */}
@@ -247,26 +268,7 @@ const formatDate = (date) => {
         </GridLayout>
 
         {/* ================= STATUS + PRINT ================= */}
-        <div
-          className="no-print"
-          style={{
-            position: "fixed",
-            bottom: "30px",
-            right: "40px",
-            display: "flex",
-            alignItems: "center",
-            gap: "15px",
-            background: "#ffffff",
-            padding: "10px 15px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-          }}
-        >
-          <Badge>{status || "Unpaid"}</Badge>
-          <PrintIcon onClick={handlePrint}>
-            <BsPrinter />
-          </PrintIcon>
-        </div>
+     
 
       </Container>
 

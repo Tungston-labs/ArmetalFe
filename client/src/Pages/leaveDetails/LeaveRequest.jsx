@@ -19,7 +19,7 @@ import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable,
 import EmployeeTitle from '../../Components/EmployeeTitle';
 import Pagination from "../../Components/Pagination/Pagination"
 import NoEmployeeFound from '../../Components/No found/Noemployeefound';
-import { exportLeaveReport } from '../../utils/leaveExcelExport';
+// import { exportLeaveReport } from '../../utils/leaveExcelExport';
 
 export default function LeaveRequest() {
   const dispatch = useDispatch();
@@ -37,14 +37,14 @@ export default function LeaveRequest() {
   const [selectedMonth, setSelectedMonth] = useState(
   new Date().getMonth() + 1
 );
-const handleExportExcel = () => {
-  exportLeaveReport(
-    filteredLeaves,
-    page,
-    formatDate,
-    selectedMonth
-  );
-};
+// const handleExportExcel = () => {
+//   exportLeaveReport(
+//     filteredLeaves,
+//     page,
+//     formatDate,
+//     selectedMonth
+//   );
+// };
   useEffect(() => {
     dispatch(getLeaveRequests({
       page,
@@ -147,6 +147,7 @@ const months = [
           selectedDropdownValue={departmentFilter}
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
+          showReportButton={false}
         />
 
     <StatusTabsWrapper>
@@ -183,29 +184,6 @@ const months = [
   
 </StatusTabsWrapper>
 <PrintSection>
-
-  <MonthSelect
-    value={selectedMonth}
-    onChange={(e) =>
-      setSelectedMonth(Number(e.target.value))
-    }
-  >
-    {months.map((month) => (
-      <option
-        key={month.value}
-        value={month.value}
-      >
-        {month.label}
-      </option>
-    ))}
-  </MonthSelect>
-
-  <ApproveButton
-    onClick={handleExportExcel}
-   
-  >
-    Print Monthly Sheet
-  </ApproveButton>
 
 </PrintSection>
         <TableWrapper>
