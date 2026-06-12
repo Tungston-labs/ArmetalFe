@@ -33,8 +33,8 @@ import EmployeeTitle from "../../Components/EmployeeTitle";
 import RightSideModal from "../employeDashboard/RightSideModal";
 import Pagination from "../../Components/Pagination/Pagination";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
-import { exportEmployeeReport } from "../../utils/employeelistReport";
-import { exportEmployeePDF } from "../report/EmployeelistReport";
+// import { exportEmployeeReport } from "../../utils/employeelistReport";
+// import { exportEmployeePDF } from "../report/EmployeelistReport";
 import { fetchUnpaginatedEmployees } from "../../services/employeeService";
 
 const EmployeeList = () => {
@@ -104,27 +104,29 @@ const EmployeeList = () => {
       setPage(newPage);
     });
   };
-  const handleReportClick = async (type) => {
-    setExportLoading(true);
-    try {
-      const data = await fetchUnpaginatedEmployees(debouncedSearch, departmentFilter);
-      if (type === "excel") {
-        exportEmployeeReport(data);
-      } else if (type === "pdf") {
-        exportEmployeePDF(data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch employees for export:", error);
-      // Fallback
-      if (type === "excel") {
-        exportEmployeeReport(filteredEmployees);
-      } else if (type === "pdf") {
-        exportEmployeePDF(filteredEmployees);
-      }
-    } finally {
-      setExportLoading(false);
-    }
-  };
+
+  // const handleReportClick = async (type) => {
+  //   setExportLoading(true);
+  //   try {
+  //     const data = await fetchUnpaginatedEmployees(debouncedSearch, departmentFilter);
+  //     if (type === "excel") {
+  //       exportEmployeeReport(data);
+  //     } else if (type === "pdf") {
+  //       exportEmployeePDF(data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch employees for export:", error);
+  //     // Fallback
+  //     if (type === "excel") {
+  //       exportEmployeeReport(filteredEmployees);
+  //     } else if (type === "pdf") {
+  //       exportEmployeePDF(filteredEmployees);
+  //     }
+  //   } finally {
+  //     setExportLoading(false);
+  //   }
+  // };
+
   const filteredEmployees = Array.isArray(employeeList)
     ? employeeList.filter(
       (emp) =>
@@ -157,10 +159,10 @@ const EmployeeList = () => {
           showBackArrow={false}
           showTabs={true}
           showAddButton={true}
-          showReportButton={true}
+          showReportButton={false}
           buttonText="Add Employee"
-          reportButtonText="Reports"
-          onReportClick={handleReportClick}
+          // reportButtonText="Reports"
+          // onReportClick={handleReportClick}
         />
         {!loading && (
           <>

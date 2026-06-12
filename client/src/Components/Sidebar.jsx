@@ -16,16 +16,18 @@ import {
   TopSection,
   LinkIcon,
   BottomText,
+
 } from './Sidebar.styles';
 import API from '../services/api';
 import { NavLink } from "react-router-dom";
-
+import { TfiFiles } from "react-icons/tfi";
+import { FaAngleRight,FaAngleUp } from "react-icons/fa6";
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const reduxUser = useSelector((state) => state.auth.user);
-
+const [reportOpen, setReportOpen] = useState(false);
   const storedUser = useSelector((state) => state.auth.user);
   const user = reduxUser || storedUser;
   const modules = user?.company_modules || {};
@@ -33,6 +35,19 @@ export default function Sidebar() {
   useEffect(() => {
   }, [user]);
 
+  const handleLogout = async () => {
+    try {
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (!refreshToken) return;
+
+      await API.post("/logout/", { refresh: refreshToken });
+
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate("/login");
+    } catch (error) {
+    }
+  };
 
   const isActive = (path) => {
     if (path === "/") return location.pathname === "/" ? "active" : "";
@@ -139,8 +154,7 @@ export default function Sidebar() {
               </CustomLink>
             )}
 
-
-          </>
+    </>
         )}
       
       </Nav>

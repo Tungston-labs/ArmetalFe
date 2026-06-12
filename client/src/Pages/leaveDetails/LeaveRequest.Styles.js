@@ -325,7 +325,7 @@ export const DeclineButton = styled.button`
 
 export const ApproveButton = styled.button`
   color: white;
-  padding:5px;
+  padding:8px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;

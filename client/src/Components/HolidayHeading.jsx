@@ -24,8 +24,9 @@ const Header = ({ onReportClick }) => {
   showTabs={false}
   showAddButton={false}
   showSearch={false}
-  showReportButton={true}
+  showReportButton={false}
     onReportClick={onReportClick} 
+
 />
     </HeaderContainer>
   );

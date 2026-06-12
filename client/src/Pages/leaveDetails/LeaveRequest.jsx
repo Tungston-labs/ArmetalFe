@@ -147,6 +147,7 @@ const months = [
           selectedDropdownValue={departmentFilter}
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
+          showReportButton={false}
         />
 
     <StatusTabsWrapper>
@@ -204,7 +205,7 @@ const months = [
     onClick={handleExportExcel}
    
   >
-    Print Monthly Sheet
+    Export Excel
   </ApproveButton>
 
 </PrintSection>
