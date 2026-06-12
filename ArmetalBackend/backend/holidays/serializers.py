@@ -3,6 +3,10 @@ from .models import PublicHoliday
 
 class PublicHolidaySerializer(serializers.ModelSerializer):
     holiday_type_display = serializers.SerializerMethodField()
+    off_day_weekday = serializers.IntegerField(
+    required=False,
+    allow_null=True
+)
 
     class Meta:
         model = PublicHoliday
