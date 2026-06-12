@@ -3,22 +3,26 @@ from .models import PublicHoliday
 
 class PublicHolidaySerializer(serializers.ModelSerializer):
     holiday_type_display = serializers.SerializerMethodField()
-    off_day_weekday = serializers.IntegerField(
-    required=False,
-    allow_null=True
-)
 
     class Meta:
         model = PublicHoliday
         fields = [
-            'id',
-            'description',
-            'holiday_type',
-            'holiday_type_display',
-            'date',
-            'day',  
-            'off_day_weekday',
+            "id",
+            "description",
+            "holiday_type",
+            "holiday_type_display",
+            "date",
+            "day",
+            "off_day_weekday",
         ]
 
     def get_holiday_type_display(self, obj):
+
+        if isinstance(obj, dict):
+            holiday_type = obj.get("holiday_type")
+
+            return dict(
+                PublicHoliday.HOLIDAY_TYPES
+            ).get(holiday_type, holiday_type)
+
         return obj.get_holiday_type_display()
