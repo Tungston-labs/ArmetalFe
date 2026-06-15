@@ -6,10 +6,10 @@ import OnLeaveModal from "./ModalList"
 import { getDepartments } from "../../Redux/departmentSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import {
-  Container,TableRow,
-  TableCell,ActionButtons,
-  ApproveButton,StatusTabsWrapper,
-  StatusButton,StatusDot,
+  Container, TableRow,
+  TableCell, ActionButtons,
+  ApproveButton, StatusTabsWrapper,
+  StatusButton, StatusDot,
   CountBadge,
   PrintSection,
   MonthSelect,
@@ -37,23 +37,37 @@ export default function LeaveRequest() {
   const [statusFilter, setStatusFilter] = useState("");
 
   const [selectedMonth, setSelectedMonth] = useState(
-  new Date().getMonth() + 1
-);
-const handleExportExcel = () => {
-  exportLeaveReport(
-    filteredLeaves,
-    page,
-    formatDate,
-    selectedMonth
+    new Date().getMonth() + 1
   );
-};
-  useEffect(() => {
-    dispatch(getLeaveRequests({
+  const [selectedYear, setSelectedYear] = useState(
+    new Date().getFullYear()
+  );
+  const handleExportExcel = () => {
+    exportLeaveReport(
+      filteredLeaves,
       page,
-      department_id: departmentFilter || undefined,
-      status: statusFilter || undefined,
-    }));
-  }, [dispatch, page, departmentFilter, statusFilter]);
+      formatDate,
+      selectedMonth
+    );
+  };
+  useEffect(() => {
+    dispatch(
+      getLeaveRequests({
+        page,
+        department_id: departmentFilter || undefined,
+        status: statusFilter || undefined,
+        month: selectedMonth,
+        year: selectedYear,
+      })
+    );
+  }, [
+    dispatch,
+    page,
+    departmentFilter,
+    statusFilter,
+    selectedMonth,
+    selectedYear,
+  ]);
 
   useEffect(() => {
   }, [pagination]);
@@ -97,18 +111,22 @@ const handleExportExcel = () => {
 
   const handlePageChange = (newPage) => {
     if (!newPage || newPage < 1) return;
-    dispatch(getLeaveRequests({
-      page: newPage,
-      department_id: departmentFilter || undefined,
-      status: statusFilter || undefined,
-    })).then(() => {
+    dispatch(
+      getLeaveRequests({
+        page: newPage,
+        department_id: departmentFilter || undefined,
+        status: statusFilter || undefined,
+        month: selectedMonth,
+        year: selectedYear,
+      })
+    ).then(() => {
       setPage(newPage);
     });
   };
 
   const statusTabs = [
-        { label: "All",      value: "",         color: "#304eb0", bg: "#eff3ff", border: "#304eb0" },
-    { label: "Pending",  value: "pending",  color: "#f59e0b", bg: "#fffbeb", border: "#f59e0b" },
+    { label: "All", value: "", color: "#304eb0", bg: "#eff3ff", border: "#304eb0" },
+    { label: "Pending", value: "pending", color: "#f59e0b", bg: "#fffbeb", border: "#f59e0b" },
     { label: "Approved", value: "approved", color: "#16a34a", bg: "#f0fdf4", border: "#16a34a" },
     { label: "Rejected", value: "rejected", color: "#dc2626", bg: "#fef2f2", border: "#dc2626" },
   ];
@@ -121,20 +139,20 @@ const handleExportExcel = () => {
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
   };
-const months = [
-  { value: 1, label: "January" },
-  { value: 2, label: "February" },
-  { value: 3, label: "March" },
-  { value: 4, label: "April" },
-  { value: 5, label: "May" },
-  { value: 6, label: "June" },
-  { value: 7, label: "July" },
-  { value: 8, label: "August" },
-  { value: 9, label: "September" },
-  { value: 10, label: "October" },
-  { value: 11, label: "November" },
-  { value: 12, label: "December" },
-];
+  const months = [
+    { value: 1, label: "January" },
+    { value: 2, label: "February" },
+    { value: 3, label: "March" },
+    { value: 4, label: "April" },
+    { value: 5, label: "May" },
+    { value: 6, label: "June" },
+    { value: 7, label: "July" },
+    { value: 8, label: "August" },
+    { value: 9, label: "September" },
+    { value: 10, label: "October" },
+    { value: 11, label: "November" },
+    { value: 12, label: "December" },
+  ];
   return (
     <>
       {loading && <Loader />}
@@ -151,67 +169,80 @@ const months = [
           showBackArrow={false}
           showReportButton={false}
         />
-<TopActionRow>
-    <StatusTabsWrapper>
-  {statusTabs.map(({ label, value, color, bg, border }) => (
-    <StatusButton
-      key={value}
-      $active={statusFilter === value}
-      $color={color}
-      $bg={bg}
-      $borderColor={border}
-      onClick={() => {
-        setStatusFilter(value);
-        setPage(1);
-      }}
-    >
-      <StatusDot
-        $active={statusFilter === value}
-        $color={color}
-      />
+        <TopActionRow>
+          <StatusTabsWrapper>
+            {statusTabs.map(({ label, value, color, bg, border }) => (
+              <StatusButton
+                key={value}
+                $active={statusFilter === value}
+                $color={color}
+                $bg={bg}
+                $borderColor={border}
+                onClick={() => {
+                  setStatusFilter(value);
+                  setPage(1);
+                }}
+              >
+                <StatusDot
+                  $active={statusFilter === value}
+                  $color={color}
+                />
 
-      {label}
+                {label}
 
-      {value !== "" &&
-        pagination?.[`${value}_count`] !== undefined && (
-          <CountBadge
-            $active={statusFilter === value}
-            $color={color}
-          >
-            {pagination[`${value}_count`]}
-          </CountBadge>
-        )}
-    </StatusButton>
-  ))}
-  
-</StatusTabsWrapper>
-<PrintSection>
+                {value !== "" &&
+                  pagination?.[`${value}_count`] !== undefined && (
+                    <CountBadge
+                      $active={statusFilter === value}
+                      $color={color}
+                    >
+                      {pagination[`${value}_count`]}
+                    </CountBadge>
+                  )}
+              </StatusButton>
+            ))}
 
-  <MonthSelect
-    value={selectedMonth}
-    onChange={(e) =>
-      setSelectedMonth(Number(e.target.value))
-    }
-  >
-    {months.map((month) => (
-      <option
-        key={month.value}
-        value={month.value}
-      >
-        {month.label}
-      </option>
-    ))}
-  </MonthSelect>
+          </StatusTabsWrapper>
+          <PrintSection>
 
-  <ExcelButton
-    onClick={handleExportExcel}
-   
-  >
-    Export Excel
-  </ExcelButton>
+            <MonthSelect
+              value={selectedMonth}
+              onChange={(e) =>
+                setSelectedMonth(Number(e.target.value))
+              }
+            >
+              {months.map((month) => (
+                <option
+                  key={month.value}
+                  value={month.value}
+                >
+                  {month.label}
+                </option>
+              ))}
+            </MonthSelect>
 
-</PrintSection>
-</TopActionRow>
+            <MonthSelect
+              value={selectedYear}
+              onChange={(e) =>
+                setSelectedYear(Number(e.target.value))
+              }
+            >
+              {[2024, 2025, 2026, 2027, 2028].map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </MonthSelect>
+
+            <ExcelButton
+              onClick={handleExportExcel}
+
+            >
+              Export Excel
+            </ExcelButton>
+
+          </PrintSection>
+        </TopActionRow>
         <TableWrapper>
           <StyledTable>
             <TableHead>
@@ -267,11 +298,11 @@ const months = [
                         // fontSize: "12px",
                         fontWeight: "600",
                         // background:
-                          // leave.status === "approved" ? "#f0fdf4" :
-                          // leave.status === "rejected" ? "#fef2f2" : "#fffbeb",
+                        // leave.status === "approved" ? "#f0fdf4" :
+                        // leave.status === "rejected" ? "#fef2f2" : "#fffbeb",
                         color:
                           leave.status === "approved" ? "#16a34a" :
-                          leave.status === "rejected" ? "#dc2626" : "#f59e0b",
+                            leave.status === "rejected" ? "#dc2626" : "#f59e0b",
                       }}>
                         {leave.status
                           ? leave.status.charAt(0).toUpperCase() + leave.status.slice(1)
