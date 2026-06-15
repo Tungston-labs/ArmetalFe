@@ -65,7 +65,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
     decimal_places=2,
     required=False,
     default=0,
-    write_only=True
     )
 
     sick_leave = serializers.DecimalField(
@@ -73,7 +72,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         decimal_places=2,
         required=False,
         default=0,
-        write_only=True
+        
     )
 
     earned_leave = serializers.DecimalField(
@@ -81,7 +80,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         decimal_places=2,
         required=False,
         default=0,
-        write_only=True
+        
     )
 
     maternity_leave = serializers.DecimalField(
@@ -89,7 +88,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         decimal_places=2,
         required=False,
         default=0,
-        write_only=True
+        
     )
 
     other_leave = serializers.DecimalField(
@@ -97,7 +96,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         decimal_places=2,
         required=False,
         default=0,
-        write_only=True
+        
     )
 
     class Meta:
@@ -109,6 +108,23 @@ class EmployeeSerializer(serializers.ModelSerializer):
             obj.department
             and obj.department.department_head == obj
         )
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        balances = {
+            balance.leave_type: balance.total_leave
+            for balance in EmployeeLeaveBalance.objects.filter(
+                employee=instance
+            )
+        }
+
+        data["casual_leave"] = balances.get("casual", 0)
+        data["sick_leave"] = balances.get("sick", 0)
+        data["earned_leave"] = balances.get("earned", 0)
+        data["maternity_leave"] = balances.get("maternity", 0)
+        data["other_leave"] = balances.get("others", 0)
+
+        return data
 
         # =====================================================
     # EMAIL VALIDATION
@@ -256,28 +272,14 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
         return data
 
+
     def create(self, validated_data):
-        print("VALIDATED DATA:", validated_data)
 
-        casual_leave = validated_data.pop(
-            "casual_leave", 0
-        )
-
-        sick_leave = validated_data.pop(
-            "sick_leave", 0
-        )
-
-        earned_leave = validated_data.pop(
-            "earned_leave", 0
-        )
-
-        maternity_leave = validated_data.pop(
-            "maternity_leave", 0
-        )
-
-        other_leave = validated_data.pop(
-            "other_leave", 0
-        )
+        casual_leave = validated_data.pop("casual_leave", 0)
+        sick_leave = validated_data.pop("sick_leave", 0)
+        earned_leave = validated_data.pop("earned_leave", 0)
+        maternity_leave = validated_data.pop("maternity_leave", 0)
+        other_leave = validated_data.pop("other_leave", 0)
 
         employee = Employee_db.objects.create(
             **validated_data
@@ -291,38 +293,38 @@ class EmployeeSerializer(serializers.ModelSerializer):
             ("others", other_leave),
         ]
 
+        total_leave = Decimal("0")
+
         for leave_type, total in leave_data:
+
+            total = Decimal(str(total or 0))
 
             EmployeeLeaveBalance.objects.create(
                 employee=employee,
                 leave_type=leave_type,
                 total_leave=total,
+                used_leave=0,
                 remaining_leave=total
             )
-            employee.total_leave = (
-            Decimal(str(casual_leave)) +
-            Decimal(str(sick_leave)) +
-            Decimal(str(earned_leave)) +
-            Decimal(str(maternity_leave)) +
-            Decimal(str(other_leave))
-        )
 
+            total_leave += total
+
+        employee.total_leave = total_leave
         employee.save(update_fields=["total_leave"])
 
         return employee
 
 
 
+
     def update(self, instance, validated_data):
 
-        # Leave values from request
         casual_leave = validated_data.pop("casual_leave", None)
         sick_leave = validated_data.pop("sick_leave", None)
         earned_leave = validated_data.pop("earned_leave", None)
         maternity_leave = validated_data.pop("maternity_leave", None)
         other_leave = validated_data.pop("other_leave", None)
 
-        # Update employee fields
         employee_id = validated_data.get(
             "employee_id",
             instance.employee_id
@@ -334,7 +336,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         instance.employee_id = employee_id
         instance.save()
 
-        # Leave updates
         leave_updates = {
             "casual": casual_leave,
             "sick": sick_leave,
@@ -357,14 +358,12 @@ class EmployeeSerializer(serializers.ModelSerializer):
                 }
             )
 
-            # Update only if value sent from frontend
             if leave_total is not None:
 
                 leave_total = Decimal(str(leave_total))
 
                 balance.total_leave = leave_total
 
-                # Preserve already used leaves
                 balance.remaining_leave = (
                     leave_total - balance.used_leave
                 )
@@ -376,7 +375,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
             total_leave += balance.total_leave
 
-        # Update employee total leave
         instance.total_leave = total_leave
         instance.save(update_fields=["total_leave"])
 

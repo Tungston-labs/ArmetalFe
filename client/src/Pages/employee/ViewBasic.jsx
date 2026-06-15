@@ -40,12 +40,12 @@ const ViewBasic = () => {
     JSON.parse(localStorage.getItem("user")) ||
     JSON.parse(sessionStorage.getItem("user"));
 
-const calculatedTotal =
-  Number(formData.casual_leave || 0) +
-  Number(formData.sick_leave || 0) +
-  Number(formData.earned_leave || 0) +
-  Number(formData.maternity_leave || 0) +
-  Number(formData.other_leave || 0);
+  const calculatedTotal =
+    Number(formData.casual_leave || 0) +
+    Number(formData.sick_leave || 0) +
+    Number(formData.earned_leave || 0) +
+    Number(formData.maternity_leave || 0) +
+    Number(formData.other_leave || 0);
 
   useEffect(() => {
     if (departmentList.length === 0) {
@@ -105,16 +105,16 @@ const calculatedTotal =
     setFormData((prev) => ({ ...prev, [name]: value }));
     setIsEdited(true);
   };
-const formatDate = (date) => {
-  if (!date) return "----";
+  const formatDate = (date) => {
+    if (!date) return "----";
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
 
-  return `${day}/${month}/${year}`;
-};
+    return `${day}/${month}/${year}`;
+  };
   const handleImageChange = (file) => {
     setFormData((prev) => ({ ...prev, profile_pic: file }));
     setIsEdited(true);
@@ -196,7 +196,7 @@ const formatDate = (date) => {
     }
   };
 
-  
+
   if (loading || !formData || Object.keys(formData).length === 0) {
     return (
       <FullPageLoaderWrapper>
@@ -244,7 +244,7 @@ const formatDate = (date) => {
                 <Label>Joining Date</Label>
                 <Input
                   name="joining_date"
-             value={formatDate(formData.joining_date)}
+                  value={formatDate(formData.joining_date)}
                   onChange={handleChange}
                 />
               </FieldGroup>
@@ -257,7 +257,7 @@ const formatDate = (date) => {
                   onChange={handleChange}
                 />
               </FieldGroup>
-                <FieldGroup>
+              <FieldGroup>
                 <Label>Department</Label>
                 <Select
                   name="department"
@@ -274,72 +274,72 @@ const formatDate = (date) => {
               </FieldGroup>
             </Rowes>
             <Rowes>
-        
-            
-  <FieldGroup>
-    <Label>Casual Leave</Label>
-    <Input
-      type="number"
-      name="casual_leave"
-      value={formData.casual_leave || ""}
-      onChange={handleChange}
-      min="0"
-    />
-  </FieldGroup>
 
-  <FieldGroup>
-    <Label>Sick Leave</Label>
-    <Input
-      type="number"
-      name="sick_leave"
-      value={formData.sick_leave || ""}
-      onChange={handleChange}
-      min="0"
-    />
-  </FieldGroup>
 
-  <FieldGroup>
-  <Label>Earned Leave</Label>
-  <Input
-    type="number"
-    name="earned_leave"
-    value={formData.earned_leave || ""}
-    onChange={handleChange}
-    min="0"
-  />
-</FieldGroup>
+              <FieldGroup>
+                <Label>Casual Leave</Label>
+                <Input
+                  type="number"
+                  name="casual_leave"
+                  value={formData.casual_leave || ""}
+                  onChange={handleChange}
+                  min="0"
+                />
+              </FieldGroup>
 
-<FieldGroup>
-  <Label>Maternity Leave</Label>
-  <Input
-    type="number"
-    name="maternity_leave"
-    value={formData.maternity_leave || ""}
-    onChange={handleChange}
-    min="0"
-  />
-</FieldGroup>
+              <FieldGroup>
+                <Label>Sick Leave</Label>
+                <Input
+                  type="number"
+                  name="sick_leave"
+                  value={formData.sick_leave || ""}
+                  onChange={handleChange}
+                  min="0"
+                />
+              </FieldGroup>
 
-<FieldGroup>
-  <Label>Other Leave</Label>
-  <Input
-    type="number"
-    name="other_leave"
-    value={formData.other_leave || ""}
-    onChange={handleChange}
-    min="0"
-  />
-</FieldGroup>
-   <FieldGroup>
-  <Label>Total Leave</Label>
-  <Input
-    type="number"
-    value={calculatedTotal}
-    readOnly
-  />
-</FieldGroup>
-</Rowes>
-          
+              <FieldGroup>
+                <Label>Earned Leave</Label>
+                <Input
+                  type="number"
+                  name="earned_leave"
+                  value={formData.earned_leave || ""}
+                  onChange={handleChange}
+                  min="0"
+                />
+              </FieldGroup>
+
+              <FieldGroup>
+                <Label>Maternity Leave</Label>
+                <Input
+                  type="number"
+                  name="maternity_leave"
+                  value={formData.maternity_leave || ""}
+                  onChange={handleChange}
+                  min="0"
+                />
+              </FieldGroup>
+
+              <FieldGroup>
+                <Label>Other Leave</Label>
+                <Input
+                  type="number"
+                  name="other_leave"
+                  value={formData.other_leave || ""}
+                  onChange={handleChange}
+                  min="0"
+                />
+              </FieldGroup>
+              <FieldGroup>
+                <Label>Total Leave</Label>
+                <Input
+                  type="number"
+                  value={calculatedTotal}
+                  readOnly
+                />
+              </FieldGroup>
+            </Rowes>
+
           </CardContent>
         </Card>
         <Card>
