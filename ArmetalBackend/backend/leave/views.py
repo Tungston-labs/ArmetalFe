@@ -214,22 +214,42 @@ class LeaveRequestAdminListView(generics.ListAPIView):
         try:
             user = self.request.user
             company = user.company
+
             if not company:
                 return LeaveRequest.objects.none()
 
-            queryset = LeaveRequest.objects.filter(employee__department__company=company)
+            queryset = LeaveRequest.objects.filter(
+                employee__department__company=company
+            )
 
             # Department filter
             dept_id = self.request.query_params.get('department_id')
             if dept_id:
-                queryset = queryset.filter(employee__department_id=dept_id)
+                queryset = queryset.filter(
+                    employee__department_id=dept_id
+                )
 
-            # Status filter (fix)
+            # Status filter
             status = self.request.query_params.get('status')
             if status:
                 queryset = queryset.filter(status=status)
 
+            # Year filter
+            year = self.request.query_params.get('year')
+            if year:
+                queryset = queryset.filter(
+                    from_date__year=year
+                )
+
+            # Month filter
+            month = self.request.query_params.get('month')
+            if month:
+                queryset = queryset.filter(
+                    from_date__month=month
+                )
+
             return queryset.order_by('-created_at')
+
         except Exception:
             return LeaveRequest.objects.none()
 

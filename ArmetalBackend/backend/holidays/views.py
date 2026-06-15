@@ -20,15 +20,28 @@ from shared.pagination import CustomPagination
 from user.permissions import IsHRAdmin
 
 
+from django.db.models import Q
+
 class PublicHolidayCreateListView(generics.ListCreateAPIView):
     serializer_class = PublicHolidaySerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        return PublicHoliday.objects.filter(
+        queryset = PublicHoliday.objects.filter(
             company=self.request.user.company
-        ).order_by("date")
+        )
+
+        year = self.request.query_params.get("year")
+        month = self.request.query_params.get("month")
+
+        if year:
+            queryset = queryset.filter(date__year=year)
+
+        if month:
+            queryset = queryset.filter(date__month=month)
+
+        return queryset.order_by("date")
 
     def perform_create(self, serializer):
         company = self.request.user.company
@@ -93,7 +106,6 @@ class PublicHolidayCreateListView(generics.ListCreateAPIView):
             return
 
         serializer.save(company=company)
-
 
 class PublicHolidayDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PublicHolidaySerializer
