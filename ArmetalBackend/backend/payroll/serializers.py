@@ -280,6 +280,12 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         incentive_amount = Decimal(
             instance.incentive_amount or 0
         )
+        # ======================================================
+        # DEDUCTION
+        # ======================================================
+        deduction_amount = Decimal(
+            instance.deduction_amount or 0
+        )
 
         # ======================================================
         # GROSS EARNINGS
@@ -380,6 +386,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             gross_earnings
             - lop_amount
             - tds
+            - deduction_amount
         ).quantize(
             Decimal("0.01"),
             rounding=ROUND_HALF_UP,
@@ -429,8 +436,8 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             "gross_earnings": float(gross_earnings),
 
             "total_deductions": float(
-                lop_amount + tds
-            ),
+                    lop_amount + tds + deduction_amount
+                ),
 
             "net_pay": float(net_pay),
 
@@ -444,6 +451,17 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
             "incentive_reason": (
                 instance.incentive_reason
+            ),
+            "deduction_amount": float(
+                deduction_amount
+            ),
+
+            "deduction_type": (
+                instance.deduction_type
+            ),
+
+            "deduction_reason": (
+                instance.deduction_reason
             ),
 
             "earnings": [
@@ -485,8 +503,16 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                     "label": "Loss of Pay",
                     "value": float(lop_amount)
                 },
+
+                {
+                    "label": (
+                        instance.deduction_type
+                        or "Other Deduction"
+                    ),
+                    "value": float(deduction_amount)
+                },
             ],
-        })
+                    })
 
         return data
 

@@ -571,3 +571,85 @@ class PayrollIncentiveUpdateView(APIView):
         )
 
         return Response(serializer.data)
+    
+
+
+
+
+
+class PayrollDeductionUpdateView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, employee_id):
+
+        month = request.data.get("month")
+        year = request.data.get("year")
+
+        deduction_amount = request.data.get(
+            "deduction_amount",
+            0
+        )
+
+        deduction_type = request.data.get(
+            "deduction_type"
+        )
+
+        deduction_reason = request.data.get(
+            "deduction_reason"
+        )
+
+        if not month or not year:
+
+            return Response(
+                {
+                    "error": "Month and year are required"
+                },
+                status=400
+            )
+
+        payroll = get_object_or_404(
+            EmployeePayrollRecord,
+            employee__id=employee_id,
+            month=month,
+            year=year
+        )
+
+        if payroll.is_fully_verified():
+
+            return Response(
+                {
+                    "error": (
+                        "Verified payroll cannot be modified"
+                    )
+                },
+                status=400
+            )
+
+        if (
+            payroll.deduction_amount
+            and payroll.deduction_amount > 0
+        ):
+
+            return Response(
+                {
+                    "error": (
+                        "Deduction already added for this employee "
+                        "for this month."
+                    )
+                },
+                status=400
+            )
+
+        payroll.deduction_amount = deduction_amount
+        payroll.deduction_type = deduction_type
+        payroll.deduction_reason = deduction_reason
+
+        payroll.save()
+
+        serializer = EmployeePayrollRecordSerializer(
+            payroll,
+            context={"request": request}
+        )
+
+        return Response(serializer.data)

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import EmployeeBankDetailListView,EmployeePayrollRecordListCreateView,PayrollStatusUpdateView,PayrollVerifyView,PayrollRecordDetailView,EmployeePayslipView,PayslipDownloadView,PayrollIncentiveUpdateView
+from .views import EmployeeBankDetailListView,EmployeePayrollRecordListCreateView,PayrollStatusUpdateView,PayrollVerifyView,PayrollRecordDetailView,EmployeePayslipView,PayslipDownloadView,PayrollIncentiveUpdateView,PayrollDeductionUpdateView
 urlpatterns = [
     
     # bank + basic details of all employee
@@ -22,6 +22,11 @@ urlpatterns = [
         PayrollIncentiveUpdateView.as_view(),
         name="payroll-incentive-update"
     ),
+    path(
+    "payroll/deduction/<int:employee_id>/",
+    PayrollDeductionUpdateView.as_view(),
+    name="payroll-deduction-update"
+),
 
 
 ]
