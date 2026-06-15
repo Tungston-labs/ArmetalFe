@@ -14,6 +14,9 @@ import {
   TotalLeaveBox,
   LeaveContainer,
   AddLeaveButton,
+  LeaveItem,
+  LeaveLabel,
+  LeaveInput,
 
 } from "./JobDetails.Styles";
 
@@ -191,53 +194,63 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       </FormRow>
 
       <FormRow>
-        <FormGroup>
-          <Label>Leave Allocation</Label>
+      <FormGroup>
+  <Label>Leave Allocation</Label>
 
-          <TotalLeaveBox>
-            Total Leave : {formData.total_leave}
-          </TotalLeaveBox>
+  <TotalLeaveBox>
+    Total Leave : {formData.total_leave}
+  </TotalLeaveBox>
 
-          <Input
-            type="number"
-            name="casual_leave"
-            value={formData.casual_leave}
-            onChange={handleChange}
-            placeholder="Casual Leave"
-          />
+  <LeaveItem>
+    <LeaveLabel>Casual Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="casual_leave"
+      value={formData.casual_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
 
-          <Input
-            type="number"
-            name="sick_leave"
-            value={formData.sick_leave}
-            onChange={handleChange}
-            placeholder="Sick Leave"
-          />
+  <LeaveItem>
+    <LeaveLabel>Sick Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="sick_leave"
+      value={formData.sick_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
 
-          <Input
-            type="number"
-            name="earned_leave"
-            value={formData.earned_leave}
-            onChange={handleChange}
-            placeholder="Earned Leave"
-          />
+  <LeaveItem>
+    <LeaveLabel>Earned Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="earned_leave"
+      value={formData.earned_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
 
-          <Input
-            type="number"
-            name="maternity_leave"
-            value={formData.maternity_leave}
-            onChange={handleChange}
-            placeholder="Maternity Leave"
-          />
+  <LeaveItem>
+    <LeaveLabel>Maternity Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="maternity_leave"
+      value={formData.maternity_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
 
-          <Input
-            type="number"
-            name="other_leave"
-            value={formData.other_leave}
-            onChange={handleChange}
-            placeholder="Other Leave"
-          />
-        </FormGroup>
+  <LeaveItem>
+    <LeaveLabel>Other Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="other_leave"
+      value={formData.other_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
+</FormGroup>
 
         <FormGroup>
           <Label>Roles</Label>

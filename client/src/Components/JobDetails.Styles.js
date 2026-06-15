@@ -149,3 +149,21 @@ export const AddLeaveButton = styled.button`
     color: white;
   }
 `;
+
+export const LeaveItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+`;
+
+export const LeaveLabel = styled.span`
+  min-width: 140px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #172554;
+`;
+
+export const LeaveInput = styled(Input)`
+  flex: 1;
+`;

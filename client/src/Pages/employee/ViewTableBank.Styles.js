@@ -168,3 +168,17 @@ export const AddButton = styled.button`
     background: #2563eb;
   }
 `;
+
+export const SaveBtn = styled.button`
+  padding: 8px 16px;
+  background: #304EB0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover {
+    background: #243d8f;
+  }
+`;

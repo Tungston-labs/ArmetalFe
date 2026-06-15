@@ -14,6 +14,8 @@ import {
   Th,
   Td,
   AddButton,
+  Select,
+  SaveBtn
 } from "./ViewTableBank.Styles";
 
 import {
@@ -210,6 +212,26 @@ const ViewTableBank = ({
               />
               <ErrorText>{errors.panNumber}</ErrorText>
             </div>
+            <div>
+  <Label>Tax Regime</Label>
+  <Select
+    value={taxRegime}
+    onChange={(e) => setTaxRegime(e.target.value)}
+  >
+    <option value="">Select Tax Regime</option>
+    <option value="old">Old Regime</option>
+    <option value="new">New Regime</option>
+  </Select>
+</div>
+
+<div>
+  <Label>TDS Amount</Label>
+  <Input
+    type="number"
+    value={tdsAmount}
+    onChange={(e) => setTdsAmount(e.target.value)}
+  />
+</div>
           </Grid2>
         </CardBody>
       </Card>
@@ -280,14 +302,14 @@ const ViewTableBank = ({
                     />
                   </Td>
 
-                  <Td>
-                    <button
-                      type="button"
-                      onClick={saveIncrement}
-                    >
-                      Save
-                    </button>
-                  </Td>
+                 <Td>
+  <SaveBtn
+    type="button"
+    onClick={saveIncrement}
+  >
+    Save
+  </SaveBtn>
+</Td>
                 </tr>
               )}
             </tbody>

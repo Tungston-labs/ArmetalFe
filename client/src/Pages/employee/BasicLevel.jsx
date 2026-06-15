@@ -210,6 +210,7 @@ export default function AddEmployeeForm() {
           showTabs={false}
           showSearch={false}
           showDropdown={false}
+          showReportButton={false}
         />
         <div
           style={{ display: "flex", justifyContent: "center", padding: "0px" }}
@@ -237,9 +238,13 @@ export default function AddEmployeeForm() {
         />
 
         <ButtonWrapper>
-          <NextButton type="button" onClick={handleNext}>
-            Next
-          </NextButton>
+         <NextButton
+  type="button"
+  onClick={handleNext}
+  disabled={loading}
+>
+  {loading ? "Saving..." : "Next"}
+</NextButton>
         </ButtonWrapper>
       </Container>
     </>

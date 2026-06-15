@@ -88,8 +88,8 @@ const ViewBankPayment = () => {
     formData.append("uan_epf_number", uanNumber);
     formData.append("pan_number", panNumber);
     formData.append("tax_regime", taxRegime);
-    formData.append("tds_deduction_amount", tdsAmount);
-    formData.append("declaration_80c", declaration80C);
+formData.append("tds_deduction_amount", tdsAmount);
+formData.append("declaration_80c", declaration80C);
     formData.append("basic_salary", basicSalary);
     formData.append("salary_increment", salaryIncrement);
     formData.append("housing_allowance", housingAllowance);
@@ -137,7 +137,7 @@ const ViewBankPayment = () => {
       >
         <Section>
           <ViewTableBank
-  employeeId={id}
+           employeeId={id}
             country={country}
             isEditMode={true}
             setBankProofImage={setBankProofImage}
