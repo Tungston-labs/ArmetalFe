@@ -372,33 +372,51 @@ const [selectedMonth, setSelectedMonth] = useState("");
                     <Loader size="large" />
                   </Td>
                 </tr>
-              ) : holidays.length === 0 ? (
+              ) : filteredHolidays.length === 0 ? (
                 <tr>
                   <td colSpan={5}>
                     <NoEmployeeFound />
                   </td>
                 </tr>
               ) : (
-                [...holidays]
-                  .sort((a, b) => new Date(b.date) - new Date(a.date))
-                  .map((item, index) => (
-                    <BodyRow key={item.id}>
-                      <BodyCell>
-                        {(currentPage - 1) * PAGE_SIZE + index + 1}
-                      </BodyCell>
-                      <BodyCell title={item.description}>
-                        {item.description.charAt(0).toUpperCase() + item.description.slice(1)}
-                      </BodyCell>
-                      <BodyCell>{item.holiday_type_display}</BodyCell>
-                      <BodyCell>{formatDate(item.date)}</BodyCell>
-                      <BodyCell>
-                        <FaTrashAlt
-                          style={{ color: "red", cursor: "pointer" }}
-                          onClick={() => handleDeleteClick(item.id)}
-                        />
-                      </BodyCell>
-                    </BodyRow>
-                  ))
+                [...filteredHolidays]
+  .sort((a, b) => {
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return new Date(b.date) - new Date(a.date);
+  })
+  .map((item, index) => (
+    <BodyRow key={item.id}>
+      <BodyCell>
+        {(currentPage - 1) * PAGE_SIZE + index + 1}
+      </BodyCell>
+
+      <BodyCell title={item.description}>
+        {item.description.charAt(0).toUpperCase() +
+          item.description.slice(1)}
+      </BodyCell>
+
+      <BodyCell>
+        {item.holiday_type_display}
+      </BodyCell>
+
+      <BodyCell>
+        {formatDate(item.date)}
+      </BodyCell>
+
+      <BodyCell>
+        <FaTrashAlt
+          style={{
+            color: "red",
+            cursor: "pointer",
+          }}
+          onClick={() =>
+            handleDeleteClick(item.id)
+          }
+        />
+      </BodyCell>
+    </BodyRow>
+  ))
               )}
             </TableBody>
           </StyledTable>

@@ -35,11 +35,15 @@ class PublicHolidayCreateListView(generics.ListCreateAPIView):
         year = self.request.query_params.get("year")
         month = self.request.query_params.get("month")
 
-        if year:
-            queryset = queryset.filter(date__year=year)
-
-        if month:
-            queryset = queryset.filter(date__month=month)
+        if year and month:
+            queryset = queryset.filter(
+                Q(
+                    date__year=year,
+                    date__month=month
+                )
+                |
+                Q(holiday_type="company_off_day")
+            )
 
         return queryset.order_by("date")
 
