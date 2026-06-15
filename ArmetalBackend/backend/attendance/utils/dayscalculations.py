@@ -19,22 +19,28 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
     # ---------- Holidays & Weekly Off ----------
     holidays_qs = PublicHoliday.objects.filter(
-        date__range=(start_date, end_date),
         company=company
     )
 
-    holidays = set()
-    company_off_days = set()
+    holiday_map = {}
+    company_off_days = {}
 
     for h in holidays_qs:
 
-        # Weekly Off
-        if h.holiday_type == "company_off_day":
-            company_off_days.add(h.date.weekday())
+        # Weekly Off (Sunday, Friday, etc.)
+        if (
+            h.holiday_type == "company_off_day"
+            and h.off_day_weekday is not None
+        ):
+            company_off_days[h.off_day_weekday] = (
+                h.description or "Company Off"
+            )
 
-        # Public Holiday
-        else:
-            holidays.add(h.date)
+        # Public / Company Holiday
+        elif h.date:
+            holiday_map[h.date] = (
+                h.description or "Holiday"
+            )
 
     # ---------- Full Month ----------
     total_days_full_month = (end_date - start_date).days + 1
@@ -68,7 +74,6 @@ def build_employee_month_calendar(employee, start_date, end_date):
             first_session = sessions.first()
             last_session = sessions.last()
 
-            # ---------- First Punch In ----------
             if first_session.time_in:
 
                 first_dt = datetime.combine(
@@ -81,7 +86,6 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
                 first_punch_in = first_dt_ist.strftime("%I:%M %p")
 
-            # ---------- Last Punch Out ----------
             if last_session.time_out:
 
                 last_dt = datetime.combine(
@@ -124,7 +128,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
             end = end.date()
 
         for i in range((end - start).days + 1):
-            approved_leave_dates.add(start + timedelta(days=i))
+            approved_leave_dates.add(
+                start + timedelta(days=i)
+            )
 
     # ---------- Main Loop ----------
     for i in range(total_days_full_month):
@@ -133,12 +139,12 @@ def build_employee_month_calendar(employee, start_date, end_date):
         weekday = d.weekday()
 
         # ---------- Holiday ----------
-        if d in holidays:
+        if d in holiday_map:
 
             if d <= today:
                 daily_records.append({
                     "date": d,
-                    "status": "holiday",
+                    "status": holiday_map[d],
                     "total_hours": 0,
                     "first_punch_in": None,
                     "last_punch_out": None,
@@ -152,7 +158,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
             if d <= today:
                 daily_records.append({
                     "date": d,
-                    "status": "off",
+                    "status": company_off_days[weekday],
                     "total_hours": 0,
                     "first_punch_in": None,
                     "last_punch_out": None,
@@ -163,11 +169,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
         # ---------- Working Day ----------
         working_days += 1
 
-        # Skip future dates
         if d > today:
             continue
 
-        # ---------- Default Values ----------
         status = "absent"
         hours = Decimal("0")
         first_punch_in = None
@@ -188,43 +192,35 @@ def build_employee_month_calendar(employee, start_date, end_date):
             first_punch_in = attendance_data["first_punch_in"]
             last_punch_out = attendance_data["last_punch_out"]
 
-            # ---------- ACTIVE TODAY ----------
             if d == today and first_punch_in:
 
                 status = "active"
 
-            # ---------- Missed Punch Out ----------
             elif first_punch_in and not last_punch_out:
 
                 status = "missed_punchout"
 
-                # Full day completed
                 if hours >= full_day_hours:
                     present_days += 1
 
-                # Half day completed
                 elif hours >= half_day_hours:
                     present_days += Decimal("0.5")
                     unswiped_days_till_today += Decimal("0.5")
 
-                # Very low hours
                 else:
                     unswiped_days_till_today += 1
 
-            # ---------- Full Day ----------
             elif hours >= full_day_hours:
 
                 status = "present"
                 present_days += 1
 
-            # ---------- Half Day ----------
             elif hours >= half_day_hours:
 
                 status = "half_day"
                 present_days += Decimal("0.5")
                 unswiped_days_till_today += Decimal("0.5")
 
-            # ---------- Absent ----------
             else:
 
                 status = "absent"
@@ -236,7 +232,6 @@ def build_employee_month_calendar(employee, start_date, end_date):
             status = "absent"
             unswiped_days_till_today += 1
 
-        # ---------- Daily Record ----------
         daily_records.append({
             "date": d,
             "status": status,
@@ -246,7 +241,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
         })
 
     # ---------- Leave Adjustment ----------
-    total_leave_balance = Decimal(employee.total_leave or 0)
+    total_leave_balance = Decimal(
+        employee.total_leave or 0
+    )
 
     leave_adjustment = min(
         Decimal(len(approved_leave_dates)),
@@ -254,7 +251,8 @@ def build_employee_month_calendar(employee, start_date, end_date):
     )
 
     real_absent_days = (
-        Decimal(unswiped_days_till_today) - leave_adjustment
+        Decimal(unswiped_days_till_today)
+        - leave_adjustment
     )
 
     lop_days = max(real_absent_days, Decimal("0"))
