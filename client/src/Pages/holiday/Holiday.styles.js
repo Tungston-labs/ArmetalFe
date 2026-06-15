@@ -487,3 +487,40 @@ export const ErrorMessage = styled.p`
   margin-top: 8px;
   font-size: 14px;
 `;
+
+export const FilterWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+`;
+
+export const FilterLabel = styled.label`
+  font-family: Satoshi;
+  font-size: 14px;
+  color: #333;
+`;
+
+export const MonthFilter = styled.input`
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  background: #fff;
+  font-size: 0.9rem;
+  width: 180px;
+
+  &:focus {
+    outline: none;
+    border-color: #3352BA;
+  }
+`;
+
+export const HeadingRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 16px;
+  flex-wrap: wrap;
+`;
+

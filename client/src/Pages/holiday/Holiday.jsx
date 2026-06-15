@@ -14,6 +14,10 @@ import {
   FieldWrapper,
   Label,
   TableWrapper,
+  HeadingRow,
+  MonthFilter,
+  FilterWrapper,
+  FilterLabel,
 } from './Holiday.styles';
 import { FaTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -69,7 +73,7 @@ const HolidayManager = () => {
     count = 0,
     totalItems = 0
   } = useSelector(state => state.holidays);
-
+const [selectedMonth, setSelectedMonth] = useState("");
   const [formError, setFormError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -248,6 +252,19 @@ const HolidayManager = () => {
       exportHolidayPDF(holidays);
     }
   };
+  const filteredHolidays = selectedMonth
+  ? holidays.filter((holiday) => {
+      if (!holiday.date) return false;
+
+      const d = new Date(holiday.date);
+
+      const holidayMonth = `${d.getFullYear()}-${String(
+        d.getMonth() + 1
+      ).padStart(2, "0")}`;
+
+      return holidayMonth === selectedMonth;
+    })
+  : holidays;
   return (
     <>
       <Container>
@@ -315,13 +332,27 @@ const HolidayManager = () => {
           )}
 
           <AddButton onClick={handleAdd}>Add</AddButton>
+
+          
         </FormSection>
 
         {formError && <ErrorMessage>{formError}</ErrorMessage>}
 
         <Hr />
 
-        <Heading>Holiday List</Heading>
+<HeadingRow>
+  <Heading>Holiday List</Heading>
+
+  <FilterWrapper >
+    <FilterLabel>Filter by Month</FilterLabel>
+
+    <MonthFilter
+      type="month"
+      value={selectedMonth}
+      onChange={(e) => setSelectedMonth(e.target.value)}
+    />
+  </FilterWrapper>
+</HeadingRow>
         <TableWrapper>
           <StyledTable>
             <TableHead>

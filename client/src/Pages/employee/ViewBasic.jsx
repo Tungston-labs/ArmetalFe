@@ -250,9 +250,7 @@ const formatDate = (date) => {
                   onChange={handleChange}
                 />
               </FieldGroup>
-            </Rowes>
-            <Rowes>
-              <FieldGroup>
+                <FieldGroup>
                 <Label>Department</Label>
                 <Select
                   name="department"
@@ -267,31 +265,74 @@ const formatDate = (date) => {
                   ))}
                 </Select>
               </FieldGroup>
-              <FieldGroup>
-                <Label>Total Leaves</Label>
-                <Input
-                  type="number"
-                  name="total_leave"
-                  value={formData.total_leave || ""}
-                  onChange={handleChange}
-                  step="0.1"
-                  min="0"
-                  onWheel={(e) => e.target.blur()}
-                />
-              </FieldGroup>
-              <FieldGroup>
-                <Label>Paid Leave</Label>
-                <Input
-                  type="number"
-                  name="paid_leave"
-                  value={formData.paid_leave || ""}
-                  onChange={handleChange}
-                  step="0.1"
-                  min="0"
-                  onWheel={(e) => e.target.blur()}
-                />
-              </FieldGroup>
             </Rowes>
+            <Rowes>
+        
+            
+  <FieldGroup>
+    <Label>Casual Leave</Label>
+    <Input
+      type="number"
+      name="casual_leave"
+      value={formData.casual_leave || ""}
+      onChange={handleChange}
+      min="0"
+    />
+  </FieldGroup>
+
+  <FieldGroup>
+    <Label>Sick Leave</Label>
+    <Input
+      type="number"
+      name="sick_leave"
+      value={formData.sick_leave || ""}
+      onChange={handleChange}
+      min="0"
+    />
+  </FieldGroup>
+
+  <FieldGroup>
+    <Label>Annual Leave</Label>
+    <Input
+      type="number"
+      name="annual_leave"
+      value={formData.annual_leave || ""}
+      onChange={handleChange}
+      min="0"
+    />
+  </FieldGroup>
+   <FieldGroup>
+    <Label>Maternity Leave</Label>
+    <Input
+      type="number"
+      name="annual_leave"
+      value={formData.annual_leave || ""}
+      onChange={handleChange}
+      min="0"
+    />
+  </FieldGroup>
+   <FieldGroup>
+    <Label>Other Leave</Label>
+    <Input
+      type="number"
+      name="annual_leave"
+      value={formData.annual_leave || ""}
+      onChange={handleChange}
+      min="0"
+    />
+  </FieldGroup>
+   <FieldGroup>
+    <Label>Total Leave</Label>
+    <Input
+      type="number"
+      name="total_leave"
+      value={formData.total_leave || ""}
+      onChange={handleChange}
+      min="0"
+    />
+  </FieldGroup>
+</Rowes>
+          
           </CardContent>
         </Card>
         <Card>

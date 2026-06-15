@@ -13,6 +13,8 @@ import {
   CountBadge,
   PrintSection,
   MonthSelect,
+  TopActionRow,
+  ExcelButton,
 } from './LeaveRequest.Styles';
 import Loader from "../../Components/Loader"
 import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, Avatar, AvatarFallback, NameCell, TableWrapper } from './EmployeeList.styles';
@@ -149,7 +151,7 @@ const months = [
           showBackArrow={false}
           showReportButton={false}
         />
-
+<TopActionRow>
     <StatusTabsWrapper>
   {statusTabs.map(({ label, value, color, bg, border }) => (
     <StatusButton
@@ -201,14 +203,15 @@ const months = [
     ))}
   </MonthSelect>
 
-  <ApproveButton
+  <ExcelButton
     onClick={handleExportExcel}
    
   >
     Export Excel
-  </ApproveButton>
+  </ExcelButton>
 
 </PrintSection>
+</TopActionRow>
         <TableWrapper>
           <StyledTable>
             <TableHead>
@@ -297,7 +300,7 @@ const months = [
                             backgroundColor:
                               new Date(leave.to_date) < new Date().setHours(0, 0, 0, 0)
                                 ? "#fa8e8e"
-                                : "#074583",
+                                : "#304EB0",
                             cursor:
                               new Date(leave.to_date) < new Date().setHours(0, 0, 0, 0)
                                 ? "not-allowed"

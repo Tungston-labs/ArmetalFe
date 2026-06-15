@@ -99,6 +99,7 @@ const formatDate = (date) => {
           showBackArrow={true}
           showTabs={false}
           showSearch={false}
+          showReportButton={false}
         />
 
         <Header employee={employee} />

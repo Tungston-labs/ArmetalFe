@@ -325,13 +325,13 @@ export const DeclineButton = styled.button`
 
 export const ApproveButton = styled.button`
   color: white;
-  padding:8px;
+  padding:6px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 4px;
   border: 1px solid #172554;
-  background: #304eb0;
+  background: #304EB0;
   font-size: 12px;
   &:hover {
     background-color: #64748b; 
@@ -586,8 +586,8 @@ export const StatusTabsWrapper = styled.div`
 `;
 
 export const StatusButton = styled.button`
-  padding: 7px 20px;
-  border-radius: 20px;
+  padding: 8px 20px;
+  border-radius: 4px;
 
   border: 1.5px solid
     ${({ $active, $borderColor }) =>
@@ -657,10 +657,10 @@ export const PrintSection = styled.div`
 
 export const MonthSelect = styled.select`
   padding:8px 14px;
-  border-radius:8px;
+  border-radius:4px;
   border:1px solid #d1d5db;
   outline:none;
-  min-width:170px;
+  min-width:150px;
   font-size:14px;
   background:white;
   cursor:pointer;
@@ -670,7 +670,35 @@ export const MonthSelect = styled.select`
   }
 `;
 
+export const ExcelButton = styled.button`
+  padding:8px 14px;
+  border-radius:4px;
+  border:1px solid #d1d5db;
+  outline:none;
+  min-width:150px;
+  font-size:14px;
+  background:white;
+  cursor:pointer;
 
+  &:hover{
+   background-color:#304EB0;
+   color: white;
+  }
+`;
+
+export const TopActionRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+`;
 
 
 

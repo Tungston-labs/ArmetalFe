@@ -36,17 +36,10 @@ const EmployeeAttendanceModal = ({
     documentTitle: `${employee.employee_name}-attendance`,
   });
 
-  const workingDays = employee.working_days ?? 0;
-
-  const presentCount = records.filter(
-    (r) => r.status === "present"
-  ).length;
-
-  const absentCount = records.filter(
-    (r) => r.status === "absent"
-  ).length;
-
-  const lopCount = employee.lop_days ?? 0;
+ const workingDays = employee.working_days ?? 0;
+const presentCount = employee.present_days ?? 0;
+const absentCount = employee.absent_days ?? 0;
+const lopCount = employee.lop_days ?? 0;
 
 const getStatusLabel = (status) => {
   switch ((status || "").toLowerCase()) {
@@ -128,28 +121,28 @@ const formatTime = (timeStr) => {
   return String(timeStr).trim();
 };
 
-  const cards = [
-    {
-      label: "Working Days",
-      value: workingDays,
-      type: "default",
-    },
-    {
-      label: "Present",
-      value: presentCount,
-      type: "present",
-    },
-    {
-      label: "Absent",
-      value: absentCount,
-      type: "absent",
-    },
-    {
-      label: "LOP",
-      value: lopCount,
-      type: "lop",
-    },
-  ];
+const cards = [
+  {
+    label: "Working Days",
+    value: workingDays,
+    type: "default",
+  },
+  {
+    label: "Present",
+    value: presentCount,
+    type: "present",
+  },
+  {
+    label: "Absent",
+    value: absentCount,
+    type: "absent",
+  },
+  {
+    label: "LOP",
+    value: lopCount,
+    type: "lop",
+  },
+];
 
   return (
     <ModalOverlay
