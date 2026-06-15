@@ -180,6 +180,7 @@ export default function BankPaymentForm() {
           showTabs={false}
           showSearch={false}
           showDropdown={false}
+            showReportButton={false}
         />
         <Divider />
         <div
