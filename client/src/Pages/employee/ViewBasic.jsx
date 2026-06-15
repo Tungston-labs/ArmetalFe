@@ -40,6 +40,13 @@ const ViewBasic = () => {
     JSON.parse(localStorage.getItem("user")) ||
     JSON.parse(sessionStorage.getItem("user"));
 
+const calculatedTotal =
+  Number(formData.casual_leave || 0) +
+  Number(formData.sick_leave || 0) +
+  Number(formData.earned_leave || 0) +
+  Number(formData.maternity_leave || 0) +
+  Number(formData.other_leave || 0);
+
   useEffect(() => {
     if (departmentList.length === 0) {
       dispatch(getDepartments({ page: 1, search: "" }));
@@ -292,45 +299,45 @@ const formatDate = (date) => {
   </FieldGroup>
 
   <FieldGroup>
-    <Label>Annual Leave</Label>
-    <Input
-      type="number"
-      name="annual_leave"
-      value={formData.annual_leave || ""}
-      onChange={handleChange}
-      min="0"
-    />
-  </FieldGroup>
+  <Label>Earned Leave</Label>
+  <Input
+    type="number"
+    name="earned_leave"
+    value={formData.earned_leave || ""}
+    onChange={handleChange}
+    min="0"
+  />
+</FieldGroup>
+
+<FieldGroup>
+  <Label>Maternity Leave</Label>
+  <Input
+    type="number"
+    name="maternity_leave"
+    value={formData.maternity_leave || ""}
+    onChange={handleChange}
+    min="0"
+  />
+</FieldGroup>
+
+<FieldGroup>
+  <Label>Other Leave</Label>
+  <Input
+    type="number"
+    name="other_leave"
+    value={formData.other_leave || ""}
+    onChange={handleChange}
+    min="0"
+  />
+</FieldGroup>
    <FieldGroup>
-    <Label>Maternity Leave</Label>
-    <Input
-      type="number"
-      name="annual_leave"
-      value={formData.annual_leave || ""}
-      onChange={handleChange}
-      min="0"
-    />
-  </FieldGroup>
-   <FieldGroup>
-    <Label>Other Leave</Label>
-    <Input
-      type="number"
-      name="annual_leave"
-      value={formData.annual_leave || ""}
-      onChange={handleChange}
-      min="0"
-    />
-  </FieldGroup>
-   <FieldGroup>
-    <Label>Total Leave</Label>
-    <Input
-      type="number"
-      name="total_leave"
-      value={formData.total_leave || ""}
-      onChange={handleChange}
-      min="0"
-    />
-  </FieldGroup>
+  <Label>Total Leave</Label>
+  <Input
+    type="number"
+    value={calculatedTotal}
+    readOnly
+  />
+</FieldGroup>
 </Rowes>
           
           </CardContent>

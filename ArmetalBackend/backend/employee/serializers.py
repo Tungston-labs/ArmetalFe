@@ -11,6 +11,7 @@ from task.models import DailyTask
 from leave.models import LeaveRequest,EmployeeLeaveBalance
 from datetime import date, timedelta
 from calendar import monthrange
+from decimal import Decimal
 
 class SafeDateField(serializers.DateField):
     def to_representation(self, value):
@@ -298,11 +299,30 @@ class EmployeeSerializer(serializers.ModelSerializer):
                 total_leave=total,
                 remaining_leave=total
             )
+            employee.total_leave = (
+            Decimal(str(casual_leave)) +
+            Decimal(str(sick_leave)) +
+            Decimal(str(earned_leave)) +
+            Decimal(str(maternity_leave)) +
+            Decimal(str(other_leave))
+        )
+
+        employee.save(update_fields=["total_leave"])
 
         return employee
 
+
+
     def update(self, instance, validated_data):
 
+        # Leave values from request
+        casual_leave = validated_data.pop("casual_leave", None)
+        sick_leave = validated_data.pop("sick_leave", None)
+        earned_leave = validated_data.pop("earned_leave", None)
+        maternity_leave = validated_data.pop("maternity_leave", None)
+        other_leave = validated_data.pop("other_leave", None)
+
+        # Update employee fields
         employee_id = validated_data.get(
             "employee_id",
             instance.employee_id
@@ -313,6 +333,52 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
         instance.employee_id = employee_id
         instance.save()
+
+        # Leave updates
+        leave_updates = {
+            "casual": casual_leave,
+            "sick": sick_leave,
+            "earned": earned_leave,
+            "maternity": maternity_leave,
+            "others": other_leave,
+        }
+
+        total_leave = Decimal("0")
+
+        for leave_type, leave_total in leave_updates.items():
+
+            balance, created = EmployeeLeaveBalance.objects.get_or_create(
+                employee=instance,
+                leave_type=leave_type,
+                defaults={
+                    "total_leave": leave_total or 0,
+                    "used_leave": 0,
+                    "remaining_leave": leave_total or 0,
+                }
+            )
+
+            # Update only if value sent from frontend
+            if leave_total is not None:
+
+                leave_total = Decimal(str(leave_total))
+
+                balance.total_leave = leave_total
+
+                # Preserve already used leaves
+                balance.remaining_leave = (
+                    leave_total - balance.used_leave
+                )
+
+                if balance.remaining_leave < 0:
+                    balance.remaining_leave = 0
+
+                balance.save()
+
+            total_leave += balance.total_leave
+
+        # Update employee total leave
+        instance.total_leave = total_leave
+        instance.save(update_fields=["total_leave"])
 
         return instance
 

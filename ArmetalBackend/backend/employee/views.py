@@ -22,7 +22,7 @@ from django.utils.timezone import now as timezone_now
 from employee.utils import send_push_notification
 import calendar
 from departments.models import Department
-from leave.models import LeaveRequest,EmployeeLeaveBalance
+from leave.models import LeaveRequest
 from rest_framework.pagination import PageNumberPagination
 from django.core.files.storage import default_storage
 from django.utils import timezone
@@ -149,71 +149,19 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
     lookup_field = 'pk'
 
-    def update(self, instance, validated_data):
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        old_department = instance.department
+        new_department = serializer.validated_data.get('department', old_department)
 
-        casual_leave = validated_data.pop(
-            "casual_leave",
-            None
-        )
+        # ✅ If department changed, remove as head from old department
+        if old_department and old_department != new_department:
+            if old_department.department_head == instance:
+                old_department.department_head = None
+                old_department.save(update_fields=['department_head'])
 
-        sick_leave = validated_data.pop(
-            "sick_leave",
-            None
-        )
-
-        earned_leave = validated_data.pop(
-            "earned_leave",
-            None
-        )
-
-        maternity_leave = validated_data.pop(
-            "maternity_leave",
-            None
-        )
-
-        other_leave = validated_data.pop(
-            "other_leave",
-            None
-        )
-
-        # Update employee fields
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        instance.save()
-
-        # Update leave balances
-        leave_updates = {
-            "casual": casual_leave,
-            "sick": sick_leave,
-            "earned": earned_leave,
-            "maternity": maternity_leave,
-            "others": other_leave,
-        }
-
-        total_leave = Decimal("0")
-
-        for leave_type, total in leave_updates.items():
-
-            balance, created = EmployeeLeaveBalance.objects.get_or_create(
-                employee=instance,
-                leave_type=leave_type,
-                defaults={
-                    "total_leave": total or 0
-                }
-            )
-
-            if total is not None:
-                balance.total_leave = total
-                balance.save()
-
-            total_leave += Decimal(balance.total_leave)
-
-        # Update employee total leave
-        instance.total_leave = total_leave
-        instance.save(update_fields=["total_leave"])
-
-        return instance
+        # Save the updated employee
+        serializer.save()
 
     def perform_destroy(self, instance):
         department = instance.department
