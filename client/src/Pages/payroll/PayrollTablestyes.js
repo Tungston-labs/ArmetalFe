@@ -188,7 +188,7 @@ export const SearchInput = styled.input`
 `;
 
 export const BulkActionBar = styled.div`
-  background: #3352ba;
+  background: #304EB0;
   color: #fff;
   padding: 10px;
   margin: 20px 0 10px 0;

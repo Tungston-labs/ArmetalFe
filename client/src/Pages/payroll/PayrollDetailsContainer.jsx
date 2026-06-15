@@ -59,6 +59,7 @@ const PayrollDetails = () => {
     account_number,
     status,
     earnings,
+      deductions,
     lop_days,
     lop_amount,
     company,
@@ -121,6 +122,7 @@ const formatDate = (date) => {
           <h2 style={{ margin: 0 }}>
             Payslip – {monthName} {year}
           </h2>
+          
         </div>
 
         {/* ================= EMPLOYEE INFO ================= */}
@@ -188,6 +190,7 @@ const formatDate = (date) => {
             </Table>
           </TableWrapper>
 
+
           <TableWrapper>
             <Table>
               <thead>
@@ -199,11 +202,11 @@ const formatDate = (date) => {
               <tbody>
                 <tr>
                   <TableData>Total Working Days</TableData>
-                  <TableData>{working_days}</TableData>
+                  <TableData>{working_days} Days</TableData>
                 </tr>
                 <tr>
-                  <TableData>No of Days Paid</TableData>
-                  <TableData>{days_present}</TableData>
+                  <TableData>No. of Days Paid</TableData>
+                  <TableData>{days_present} Days</TableData>
                 </tr>
                 <tr>
                   <TableData>Loss of Pay</TableData>
@@ -216,10 +219,43 @@ const formatDate = (date) => {
               </tbody>
             </Table>
           </TableWrapper>
-        </GridLayout>
+
+          <TableWrapper>
+  <Table>
+    <thead>
+      <tr>
+        <th>Deduction Breakdown</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {deductions?.map((item, index) => (
+        <tr key={index}>
+          <TableData>{item.label}</TableData>
+          <TableData>
+            {formatAmount(item.value)}
+          </TableData>
+        </tr>
+      ))}
+
+      <tr>
+        <TableData>
+          <strong>Total Deductions</strong>
+        </TableData>
+        <TableData>
+          <strong>
+            {formatAmount(total_deductions)}
+          </strong>
+        </TableData>
+      </tr>
+    </tbody>
+  </Table>
+</TableWrapper>
+        {/* </GridLayout> */}
 
         {/* ================= PAY SUMMARY ================= */}
-        <GridLayout>
+        {/* <GridLayout> */}
           <TableWrapper>
             <Table>
               <thead>
@@ -251,7 +287,7 @@ const formatDate = (date) => {
           className="no-print"
           style={{
             position: "fixed",
-            bottom: "30px",
+            top: "20px",
             right: "40px",
             display: "flex",
             alignItems: "center",
@@ -259,10 +295,10 @@ const formatDate = (date) => {
             background: "#ffffff",
             padding: "10px 15px",
             borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
           }}
         >
-          <Badge>{status || "Unpaid"}</Badge>
+          {/* <Badge>{status || "Unpaid"}</Badge> */}
           <PrintIcon onClick={handlePrint}>
             <BsPrinter />
           </PrintIcon>
