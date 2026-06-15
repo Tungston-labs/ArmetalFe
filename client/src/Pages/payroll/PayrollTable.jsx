@@ -35,6 +35,7 @@ import HolidayIcon from "../../assets/payroll.svg";
 import Pagination from "../../Components/Pagination/Pagination";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 import IncentiveModal from "../../Components/payroll/IncentiveModal/IncentiveModal";
+import DeductionModal from "../../Components/payroll/DeductionModal/DeductionModal";
 
 const months = [
   "January", "February", "March", "April", "May", "June",
@@ -65,7 +66,9 @@ const PayrollTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [incentiveAddedIds, setIncentiveAddedIds] = useState([]); // ✅ local tracking
-
+  const [deductionAddedIds, setDeductionAddedIds] = useState([]);
+  const [showDeductionModal, setShowDeductionModal] = useState(false);
+  const [selectedDeductionEmployee, setSelectedDeductionEmployee] = useState(null);
   const LIMIT = 20;
 
   const sortedData = useMemo(() => {
@@ -127,18 +130,21 @@ const PayrollTable = () => {
   const handleMonthChange = (e) => {
     setSelectedMonth(Number(e.target.value));
     setIncentiveAddedIds([]); // ✅ reset on month change
+    setDeductionAddedIds([]);
   };
 
   const handleYearChange = (e) => {
     setSelectedYear(Number(e.target.value));
     setPage(1);
     setIncentiveAddedIds([]); // ✅ reset on year change
+    setDeductionAddedIds([]);
   };
 
   const handleDepartmentChange = (e) => {
     setSelectedDepartment(e.target.value);
     setPage(1);
     setIncentiveAddedIds([]); // ✅ reset on department change
+    setDeductionAddedIds([]);
   };
 
   const toggleEmployeeSelect = (id) => {
@@ -251,6 +257,14 @@ const PayrollTable = () => {
     }
   };
 
+  const handleOpenDeductionModal = (emp) => {
+    if (emp.deduction_amount > 0 || deductionAddedIds.includes(emp.id))
+      return;
+
+    setSelectedDeductionEmployee(emp);
+    setShowDeductionModal(true);
+  };
+
   const handleCircleClick = async (e, employee, type) => {
     e.preventDefault();
 
@@ -327,16 +341,40 @@ const PayrollTable = () => {
     if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
   };
 
-const formatDate = (date) => {
-  if (!date) return "----";
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+  const handleCloseDeductionModal = (saved = false) => {
+    setShowDeductionModal(false);
 
-  return `${day}/${month}/${year}`;
-};
+    if (saved && selectedDeductionEmployee) {
+      setDeductionAddedIds((prev) =>
+        prev.includes(selectedDeductionEmployee.id)
+          ? prev
+          : [...prev, selectedDeductionEmployee.id]
+      );
+
+      dispatch(
+        getPayrollData({
+          page,
+          search: searchTerm,
+          month: selectedMonth,
+          year: selectedYear,
+          department: selectedDepartment,
+        })
+      );
+    }
+
+    setSelectedDeductionEmployee(null);
+  };
+  const formatDate = (date) => {
+    if (!date) return "----";
+
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
 
   const handleOpenModal = (emp) => {
     if (emp.incentive_added || incentiveAddedIds.includes(emp.id)) return; // ✅ block if already added
@@ -344,29 +382,29 @@ const formatDate = (date) => {
     setShowModal(true);
   };
 
-const handleCloseModal = (saved = false) => {
-  setShowModal(false);
+  const handleCloseModal = (saved = false) => {
+    setShowModal(false);
 
-  if (saved && selectedEmployee) {
-    setIncentiveAddedIds((prev) =>
-      prev.includes(selectedEmployee.id)
-        ? prev
-        : [...prev, selectedEmployee.id]
-    );
+    if (saved && selectedEmployee) {
+      setIncentiveAddedIds((prev) =>
+        prev.includes(selectedEmployee.id)
+          ? prev
+          : [...prev, selectedEmployee.id]
+      );
 
-    dispatch(
-      getPayrollData({
-        page,
-        search: searchTerm,
-        month: selectedMonth,
-        year: selectedYear,
-        department: selectedDepartment,
-      })
-    );
-  }
+      dispatch(
+        getPayrollData({
+          page,
+          search: searchTerm,
+          month: selectedMonth,
+          year: selectedYear,
+          department: selectedDepartment,
+        })
+      );
+    }
 
-  setSelectedEmployee(null);
-};
+    setSelectedEmployee(null);
+  };
 
   return (
     <>
@@ -399,25 +437,25 @@ const handleCloseModal = (saved = false) => {
           />
           <div style={{ display: "flex", gap: "10px" }}>
             <Select value={selectedMonth} onChange={handleMonthChange}>
-  {months
-    .filter((_, index) => {
-      // ✅ Hide future months for current year
-      if (selectedYear === defaultYear) {
-        return index + 1 <= defaultMonth;
-      }
-      return true;
-    })
-    .map((month, index) => {
-      // ✅ Correct month value after filtering
-      const monthValue = months.indexOf(month) + 1;
+              {months
+                .filter((_, index) => {
+                  // ✅ Hide future months for current year
+                  if (selectedYear === defaultYear) {
+                    return index + 1 <= defaultMonth;
+                  }
+                  return true;
+                })
+                .map((month, index) => {
+                  // ✅ Correct month value after filtering
+                  const monthValue = months.indexOf(month) + 1;
 
-      return (
-        <option key={month} value={monthValue}>
-          {month}
-        </option>
-      );
-    })}
-</Select>
+                  return (
+                    <option key={month} value={monthValue}>
+                      {month}
+                    </option>
+                  );
+                })}
+            </Select>
             <Select value={selectedYear} onChange={handleYearChange}>
               {years.map((year) => (
                 <option key={year} value={year}>{year}</option>
@@ -461,6 +499,7 @@ const handleCloseModal = (saved = false) => {
                 <Th>Joining Date</Th>
                 <Th>Salary</Th>
                 <Th>Incentive</Th>
+                <Th>Deduction</Th>
                 <Th>Info</Th>
                 <Th>Verification</Th>
                 <Th>Status</Th>
@@ -489,14 +528,28 @@ const handleCloseModal = (saved = false) => {
                     <Td>{formatDate(emp.joining_date)}</Td>
                     <Td>{emp.basic_salary ?? "N/A"}</Td>
                     <Td>
-               <AddButton
-  onClick={() => handleOpenModal(emp)}
-  disabled={emp.incentive_amount > 0 || incentiveAddedIds.includes(emp.id)}
->
-  {emp.incentive_amount > 0 || incentiveAddedIds.includes(emp.id)
-    ? "Added"
-    : "+ Add"}
-</AddButton>
+                      <AddButton
+                        onClick={() => handleOpenModal(emp)}
+                        disabled={emp.incentive_amount > 0 || incentiveAddedIds.includes(emp.id)}
+                      >
+                        {emp.incentive_amount > 0 || incentiveAddedIds.includes(emp.id)
+                          ? "Added"
+                          : "+ Add"}
+                      </AddButton>
+                    </Td>
+                    <Td>
+                      <AddButton
+                        onClick={() => handleOpenDeductionModal(emp)}
+                        disabled={
+                          emp.deduction_amount > 0 ||
+                          deductionAddedIds.includes(emp.id)
+                        }
+                      >
+                        {emp.deduction_amount > 0 ||
+                          deductionAddedIds.includes(emp.id)
+                          ? "Added"
+                          : "+ Add"}
+                      </AddButton>
                     </Td>
                     <Td>
                       <Link to={`/payrolldetails/${emp.id}`}>
@@ -553,6 +606,14 @@ const handleCloseModal = (saved = false) => {
             onClose={handleCloseModal}
           />
         )}
+              {showDeductionModal && selectedDeductionEmployee && (
+  <DeductionModal
+    employee={selectedDeductionEmployee}
+    month={selectedMonth}
+    year={selectedYear}
+    onClose={handleCloseDeductionModal}
+  />
+)}
       </Container>
     </>
   );

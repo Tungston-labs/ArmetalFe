@@ -22,9 +22,9 @@ import {
   CancelBtn,
   SaveBtn,
 } from "../IncentiveModal/IncentiveModal.styles";
-
+import { updatePayrollDeduction } from "../../../Redux/payrollSlice";
 import { useDispatch } from "react-redux";
-// import { updatePayrollDeduction } from "../../../Redux/payrollSlice";
+
 
 const DeductionModal = ({ onClose, employee, month, year }) => {
   const dispatch = useDispatch();

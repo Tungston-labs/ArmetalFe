@@ -42,41 +42,37 @@ const absentCount = employee.absent_days ?? 0;
 const lopCount = employee.lop_days ?? 0;
 
 const getStatusLabel = (status) => {
-  switch ((status || "").toLowerCase()) {
+  const normalized = (status || "")
+    .toLowerCase()
+    .trim();
+
+  switch (normalized) {
     case "present":
-      return {
-        text: "Present",
-        key: "present",
-      };
+      return { text: "Present", key: "present" };
 
     case "active":
-      return {
-        text: "Working",
-        key: "active",
-      };
+      return { text: "Working", key: "active" };
 
     case "half_day":
-      return {
-        text: "Half Day",
-        key: "half_day",
-      };
+      return { text: "Half Day", key: "half_day" };
 
     case "leave":
-      return {
-        text: "Leave",
-        key: "leave",
-      };
+      return { text: "Leave", key: "leave" };
 
     case "holiday":
-      return {
-        text: "Holiday",
-        key: "holiday",
-      };
+      return { text: "Holiday", key: "holiday" };
 
     case "off":
+    case "company off day":
       return {
-        text: "Off Day",
+        text: "Company Off Day",
         key: "off",
+      };
+
+    case "second saturday":
+      return {
+        text: "Second Saturday",
+        key: "holiday",
       };
 
     case "missed_punchout":
@@ -85,10 +81,20 @@ const getStatusLabel = (status) => {
         key: "missed_punchout",
       };
 
-    default:
+    case "absent":
       return {
         text: "Absent",
         key: "absent",
+      };
+
+    default:
+      // For custom holidays like
+      // "Dilshima Birthday"
+      // "Christmas"
+      // "Eid"
+      return {
+        text: status,
+        key: "holiday",
       };
   }
 };

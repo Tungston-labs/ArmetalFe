@@ -6,6 +6,7 @@ import {
   getPayrollDetailById,
   verifyPayroll,
     updateEmployeeIncentive,
+      updateEmployeeDeduction,
 } from "../services/payrollService";
 
 export const getPayrollData = createAsyncThunk(
@@ -91,7 +92,37 @@ export const updatePayrollIncentive = createAsyncThunk(
     }
   }
 );
+export const updatePayrollDeduction = createAsyncThunk(
+  "payroll/updatePayrollDeduction",
+  async (
+    {
+      employeeId,
+      month,
+      year,
+      deduction_amount,
+      deduction_type,
+      deduction_reason,
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const data = await updateEmployeeDeduction({
+        employeeId,
+        month,
+        year,
+        deduction_amount,
+        deduction_type,
+        deduction_reason,
+      });
 
+      return { employeeId, data };
+    } catch (error) {
+      return rejectWithValue(
+        error.message || "Failed to update deduction"
+      );
+    }
+  }
+);
 const payrollSlice = createSlice({
   name: "payroll",
   initialState: {
@@ -257,7 +288,26 @@ const payrollSlice = createSlice({
         state.loading = false;
         state.incentiveUpdateSuccess = false;
         state.incentiveError = action.payload;
-      });
+      })
+      
+      .addCase(updatePayrollDeduction.pending, (state) => {
+  state.loading = true;
+})
+
+.addCase(updatePayrollDeduction.fulfilled, (state, action) => {
+  state.loading = false;
+
+  state.data = state.data.map((emp) =>
+    emp.id === action.payload.employeeId
+      ? action.payload.data
+      : emp
+  );
+})
+
+.addCase(updatePayrollDeduction.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+});
   },
 });
 
