@@ -37,6 +37,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
     iqama_number: "",
     passport_number: "",
     employeeContract: "",
+        total_leave: "",
     workPermit: "",
     insurance_number: "",
     visa_expiry_date: "",
@@ -109,28 +110,6 @@ if (country === "IN" && formData.aadar_number && !/^[0-9]{12}$/.test(formData.aa
 
   const renderError = (field) => <>{errors[field] && <ErrorText>{errors[field]}</ErrorText>}</>;
 
-  const leaveTypes = ["Casual", "Sick", "Annual", "Maternity"];
-
-const addLeaveType = () => {
-  setFormData(prev => ({
-    ...prev,
-    leave_balances: [
-      ...prev.leave_balances,
-      { type: "", days: "" }
-    ]
-  }));
-};
-
-const updateLeave = (index, field, value) => {
-  const updated = [...formData.leave_balances];
-
-  updated[index][field] = value;
-
-  setFormData(prev => ({
-    ...prev,
-    leave_balances: updated
-  }));
-};
   return (
     <FormContainer noValidate>
       <SectionTitle>Job Details</SectionTitle>
@@ -172,48 +151,13 @@ const updateLeave = (index, field, value) => {
       </FormRow>
 
       <FormRow>
-    <FormGroup>
-  <Label>Leave Allocation</Label>
-<TotalLeaveBox>
-  Total Leave : {formData.total_leave}
-</TotalLeaveBox>
+ <FormGroup>
+          <Label>Total Leave</Label>
+          <Input type="number" name="total_leave" value={formData.total_leave} onChange={handleChange} step="0.1" min="0" onWheel={e => e.target.blur()}
+          placeholder="Enter Total Leave"  autoComplete="off" />
+          {renderError("total_leave")}
+        </FormGroup>
 
-{formData.leave_balances.map((leave, index) => (
-  <LeaveContainer key={index}>
-    <Select
-      value={leave.type}
-      onChange={(e) =>
-        updateLeave(index, "type", e.target.value)
-      }
-    >
-      <option value="">Select Leave</option>
-
-      {leaveTypes.map(type => (
-        <option key={type} value={type}>
-          {type}
-        </option>
-      ))}
-    </Select>
-
-    <Input
-      type="number"
-      placeholder="Days"
-      value={leave.days}
-      onChange={(e) =>
-        updateLeave(index, "days", e.target.value)
-      }
-    />
-  </LeaveContainer>
-))}
-
-<AddLeaveButton
-  type="button"
-  onClick={addLeaveType}
->
-  + Add Leave Type
-</AddLeaveButton>
-
-</FormGroup>
 
         <FormGroup>
           <Label>Roles</Label>
