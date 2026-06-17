@@ -22,14 +22,15 @@ import {
   getSimpleNotifications,
 } from "../../Redux/dashboardSlice";
 import EditProfileModal from "../../Components/homepage/EditProfileModal.jsx";
-
+import ChangePasswordModal from "../ChangePasswordModal/ChangePasswordModal.jsx";
 const RightModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const logout = useLogout();
   const [showCompanyModal, setShowCompanyModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [selectedCompany, setSelectedCompany] = useState(null);
-
+  const [showPasswordModal, setShowPasswordModal] =
+    useState(false);
   const { notifications, todayStats, holidaySummary, loading } = useSelector(
     (state) => state.dashboard,
   );
@@ -60,104 +61,7 @@ const RightModal = ({ open, onClose }) => {
     }
   };
 
-  const handleChangePassword = async () => {
-    const { value: formValues } = await Swal.fire({
-      title: "Change Password",
-      confirmButtonText: "Update Password",
-      showCancelButton: true,
-      cancelButtonText: "Cancel",
-      confirmButtonColor: "#2563eb",
-      cancelButtonColor: "#9ca3af",
-      focusConfirm: false,
 
-      html: `
-      <div style="
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        text-align: left;
-        margin-top: 10px;
-      ">
-        <div>
-          <label style="font-size:1rem; font-weight:500;">Old Password:</label>
-          <input 
-            type="password" 
-            id="oldPassword" 
-            class="swal2-input"
-            style="margin-top:6px"
-            placeholder="Enter old password"
-              autoComplete="off"
-          />
-        </div>
-
-<div>
-  <label style="font-size:1rem; font-weight:500;">New Password:</label>
-  <input 
-    type="password"
-    id="newPassword"
-    class="swal2-input"
-    style="margin-top:6px"
-    placeholder="Enter new password"
-    autocomplete="new-password"
-  />
-</div>
-
-      </div>
-    `,
-
-      preConfirm: () => {
-        const oldPassword = document.getElementById("oldPassword").value;
-        const newPassword = document.getElementById("newPassword").value;
-
-        if (!oldPassword || !newPassword) {
-          Swal.showValidationMessage("Both fields are required");
-          return false;
-        }
-
-        if (newPassword.length < 6) {
-          Swal.showValidationMessage("Password must be at least 6 characters");
-          return false;
-        }
-
-        return {
-          old_password: oldPassword,
-          new_password: newPassword,
-        };
-      },
-    });
-
-    if (!formValues) return;
-
-    try {
-      Swal.fire({
-        title: "Updating password...",
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading(),
-      });
-
-      await API.post(
-        "/change-password/",
-        formValues,
-      );
-
-      Swal.fire({
-        icon: "success",
-        title: "Password Updated",
-        text: "Your password has been changed successfully",
-        confirmButtonColor: "#16a34a",
-      });
-    } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Update Failed",
-        text:
-          err.response?.data?.error ||
-          err.response?.data?.detail ||
-          "Failed to change password",
-        confirmButtonColor: "#dc2626",
-      });
-    }
-  };
 
   return (
     <Panel className={open ? "open" : ""}>
@@ -199,16 +103,20 @@ const RightModal = ({ open, onClose }) => {
         {loading.holidaySummary ? (
           <p>Loading holidays...</p>
         ) : holidaySummary ? (
-        <SingleHolidayCalendar
-  holidays={holidaySummary?.all_holidays?.list || []}
-/>
+          <SingleHolidayCalendar
+            holidays={holidaySummary?.all_holidays?.list || []}
+          />
         ) : (
           <p>No holidays found</p>
         )}
       </Columns>
 
       <BottomActions>
-        <ActionButton onClick={handleChangePassword}>
+        <ActionButton
+          onClick={() =>
+            setShowPasswordModal(true)
+          }
+        >
           Change Password
         </ActionButton>
         <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
@@ -243,11 +151,18 @@ const RightModal = ({ open, onClose }) => {
             <EditProfileModal
               isEdit={isEditMode}
               selectedCompany={selectedCompany}
-                showPrivileges={false}
+              showPrivileges={false}
               onClose={() => setShowCompanyModal(false)}
             />
           </div>
         </div>
+      )}
+      {showPasswordModal && (
+        <ChangePasswordModal
+          onClose={() =>
+            setShowPasswordModal(false)
+          }
+        />
       )}
     </Panel>
   );

@@ -50,7 +50,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         }}
       >
         <p><strong>{label}</strong></p>
-        <p>Count: <strong>{payload[0].value}</strong></p>
+        <p>Amount: <strong>{payload[0].value}</strong></p>
       </div>
     );
   }
