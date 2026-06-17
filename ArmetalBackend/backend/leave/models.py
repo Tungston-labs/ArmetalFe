@@ -138,19 +138,15 @@ class LeaveRequest(TimeStampedModel):
             and old_status != "approved"
         ):
 
-            if not balance:
-                raise ValidationError(
-                    f"{self.leave_type} leave balance not configured."
-                )
+            if balance:
 
-            if balance.remaining_leave < leave_days:
-                raise ValidationError(
-                    f"Insufficient {self.leave_type} leave balance. "
-                    f"Available: {balance.remaining_leave}"
-                )
+                balance.used_leave += leave_days
 
-            balance.used_leave += leave_days
-            balance.save()
+                # Never allow used_leave to exceed total_leave
+                if balance.used_leave > balance.total_leave:
+                    balance.used_leave = balance.total_leave
+
+                balance.save()
 
         # ==========================================
         # APPROVED -> REJECTED/PENDING
