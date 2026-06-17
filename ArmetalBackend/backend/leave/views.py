@@ -7,7 +7,7 @@ from django.utils.dateparse import parse_date
 from datetime import timedelta, date
 import calendar
 
-from .models import LeaveRequest
+from .models import LeaveRequest,EmployeeLeaveBalance
 from .serializers import LeaveRequestSerializer
 from employee.models import Employee_db
 from user.permissions import IsEmployee, IsHRAdmin
