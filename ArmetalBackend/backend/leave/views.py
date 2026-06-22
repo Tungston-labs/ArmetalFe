@@ -7,7 +7,7 @@ from django.utils.dateparse import parse_date
 from datetime import timedelta, date
 import calendar
 
-from .models import LeaveRequest
+from .models import LeaveRequest,EmployeeLeaveBalance
 from .serializers import LeaveRequestSerializer
 from employee.models import Employee_db
 from user.permissions import IsEmployee, IsHRAdmin
@@ -23,6 +23,12 @@ from rest_framework import status
 
 
 
+from decimal import Decimal
+from rest_framework.response import Response
+from rest_framework import status
+from django.db.models import Q
+from django.core.mail import EmailMessage
+
 class LeaveRequestCreateListView(generics.ListCreateAPIView):
 
     serializer_class = LeaveRequestSerializer
@@ -32,7 +38,6 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-
         return LeaveRequest.objects.filter(
             employee__user=self.request.user
         ).order_by("-created_at")
@@ -40,7 +45,6 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
     def list(self, request, *args, **kwargs):
 
         try:
-
             queryset = self.get_queryset()
 
             pending_count = queryset.filter(
@@ -65,120 +69,192 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
             })
 
         except Exception as e:
-
             return Response(
                 {"error": str(e)},
                 status=500
             )
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+
+        serializer = self.get_serializer(
+            data=request.data
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
 
         try:
             employee = Employee_db.objects.get(
-                user=self.request.user
+                user=request.user
             )
 
         except Employee_db.DoesNotExist:
+            return Response(
+                {"error": "Employee not found."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-            raise serializers.ValidationError({
-                "error": "Employee not found."
-            })
+        from_date = serializer.validated_data.get(
+            "from_date"
+        )
 
-        from_date = serializer.validated_data.get('from_date')
-        to_date = serializer.validated_data.get('to_date')
+        to_date = serializer.validated_data.get(
+            "to_date"
+        )
 
-        # ---------- Overlapping Leave Check ----------
+        # ==========================================
+        # OVERLAPPING CHECK
+        # ==========================================
         overlapping = LeaveRequest.objects.filter(
             employee=employee
         ).filter(
-            Q(from_date__lte=to_date) &
+            Q(from_date__lte=to_date)
+            &
             Q(to_date__gte=from_date)
         )
 
         if overlapping.exists():
 
-            raise serializers.ValidationError({
-                "detail": (
-                    "You already applied leave "
-                    "for one or more selected dates."
-                )
-            })
+            return Response(
+                {
+                    "detail":
+                    "You already applied leave for one or more selected dates."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
+        # ==========================================
+        # SAVE LEAVE
+        # ==========================================
+        leave = serializer.save(
+            employee=employee
+        )
+
+        # ==========================================
+        # LEAVE BALANCE WARNING
+        # ==========================================
+        warning_message = None
+
+        leave_days = Decimal(
+            str(leave.calculate_leave_days())
+        )
+
+        balance = EmployeeLeaveBalance.objects.filter(
+            employee=employee,
+            leave_type=leave.leave_type
+        ).first()
+
+        if balance:
+
+            if leave_days > balance.remaining_leave:
+
+                shortage = (
+                    leave_days -
+                    balance.remaining_leave
+                )
+
+                warning_message = (
+                    f"You have only "
+                    f"{balance.remaining_leave} "
+                    f"{leave.leave_type} leave(s) remaining. "
+                    f"Requested {leave_days} day(s). "
+                    f"Excess {shortage} day(s) may be treated as Loss Of Pay."
+                )
+
+        # ==========================================
+        # SEND EMAIL
+        # ==========================================
         try:
 
-            leave = serializer.save(employee=employee)
+            subject = (
+                f"Leave Request from "
+                f"{employee.name}"
+            )
 
-            # ---------- Email Handling ----------
-            try:
+            message = (
+                f"Employee Name: {employee.name}\n"
+                f"Employee ID: {employee.employee_id}\n"
+                f"Department: "
+                f"{employee.department.name if employee.department else 'N/A'}\n\n"
+                f"Leave Type: {leave.leave_type}\n"
+                f"From: {leave.from_date}\n"
+                f"To: {leave.to_date}\n"
+                f"Reason: {leave.reason}\n"
+                f"Status: {leave.status}"
+            )
 
-                subject = f"Leave Request from {employee.name}"
+            company = employee.department.company
 
-                message = (
-                    f"Employee Name: {employee.name}\n"
-                    f"Employee ID: {employee.employee_id}\n"
-                    f"Department: {employee.department.name if employee.department else 'N/A'}\n\n"
-                    f"Leave Type: {leave.leave_type}\n"
-                    f"From: {leave.from_date}\n"
-                    f"To: {leave.to_date}\n"
-                    f"Reason: {leave.reason}\n"
-                    f"Status: {leave.status}"
+            hr_emails = list(
+                Employee_db.objects.filter(
+                    department__company=company,
+                    role="hr"
+                )
+                .exclude(email__isnull=True)
+                .exclude(email__exact="")
+                .values_list(
+                    "email",
+                    flat=True
+                )
+            )
+
+            recipient_list = []
+
+            if leave.to_email:
+                recipient_list.append(
+                    leave.to_email
                 )
 
-                # ---------- Company ----------
-                company = employee.department.company
+            recipient_list.extend(
+                hr_emails
+            )
 
-                # ---------- HR Emails ----------
-                hr_emails = list(
-                    Employee_db.objects.filter(
-                        department__company=company,
-                        role="hr"
-                    )
-                    .exclude(email__isnull=True)
-                    .exclude(email__exact="")
-                    .values_list("email", flat=True)
+            recipient_list = list(
+                set(recipient_list)
+            )
+
+            cc_list = []
+
+            if leave.cc_email:
+                cc_list.append(
+                    leave.cc_email
                 )
 
-                # ---------- Recipient List ----------
-                recipient_list = []
+            email = EmailMessage(
+                subject=subject,
+                body=message,
+                from_email=employee.email,
+                to=recipient_list,
+                cc=cc_list,
+            )
 
-                # Add leave recipient
-                if leave.to_email:
-                    recipient_list.append(leave.to_email)
+            email.send(
+                fail_silently=True
+            )
 
-                # Add HR emails
-                recipient_list.extend(hr_emails)
+        except Exception as email_error:
+            print(
+                "Email sending failed:",
+                str(email_error)
+            )
 
-                # Remove duplicates
-                recipient_list = list(set(recipient_list))
-
-                # ---------- CC ----------
-                cc_list = []
-
-                if leave.cc_email:
-                    cc_list.append(leave.cc_email)
-
-                # ---------- Send Email ----------
-                email = EmailMessage(
-                    subject=subject,
-                    body=message,
-                    from_email=employee.email,
-                    to=recipient_list,
-                    cc=cc_list,
-                )
-
-                email.send(fail_silently=True)
-
-            except Exception as email_error:
-
-                print("Email sending failed:", str(email_error))
-
-        except Exception as e:
-
-            raise serializers.ValidationError({
-                "error": str(e)
-            })
-
-
+        # ==========================================
+        # RESPONSE
+        # ==========================================
+        return Response(
+            {
+                "message":
+                "Leave request submitted successfully.",
+                "warning":
+                warning_message,
+                "data":
+                LeaveRequestSerializer(
+                    leave
+                ).data
+            },
+            status=status.HTTP_201_CREATED
+        )
 
 #  Employee: Cancel Pending Leave
 class LeaveRequestCancelView(generics.DestroyAPIView):
