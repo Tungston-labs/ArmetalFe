@@ -108,6 +108,7 @@ const formatDate = (date) => {
           onSearchChange={(value) => handleSearch(value)}
           showBackArrow={false}
 showReportButton={false}
+showTabs={false}
         />
         <TableWrapper>
           <StyledTable>

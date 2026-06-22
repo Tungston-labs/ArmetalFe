@@ -54,12 +54,12 @@ export const BodyCell = styled.td`
   }
 
   @media (min-width: 1440px) {
-    padding: 8px;
+    padding: 10px;
     font-size: 0.9rem;
   }
 
   @media (min-width: 1920px) {
-    padding: 8px;
+    padding: 10px;
     font-size: 0.9rem;
   }
 
@@ -69,12 +69,13 @@ export const BodyCell = styled.td`
 export const EmptyRow = styled.tr`
  text-align: center;
   padding: 40px 0;
+  
  
 `;
 export const HeadRow = styled.tr``;
 
 export const HeadCell = styled.th`
-  padding: 12px;
+  padding: 15px;
   font-size: 1rem;
   text-align: left;
   font-family: "Raleway";
@@ -92,22 +93,15 @@ export const HeadCell = styled.th`
   }
 
   @media (min-width: 1440px) {
-    padding: 10px;
+    padding: 15px;
     font-size: 0.9rem;
   }
 
   @media (min-width: 1920px) {
-    padding: 10px;
+    padding: 15px;
     font-size: 1rem;
   }
-     @media (min-width: 2560px) {
-    padding: 15px;
-    font-size: 1.5rem;
-  }
-     @media (min-width: 3820px) {
-    padding: 15px;
-      font-size: 1.5rem;
-  }
+
 `;
 export const NameCell = styled.td`
   display: flex;
@@ -182,7 +176,6 @@ export const DeleteIconWrapper = styled.td`
 
 export const TableWrapper = styled.div`
   width: 100%;
-  max-height: 65vh;
   overflow-y: auto;
   overflow-x: auto;
 

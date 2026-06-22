@@ -168,6 +168,7 @@ export default function LeaveRequest() {
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
           showReportButton={false}
+          showTabs={false}
         />
         <TopActionRow>
           <StatusTabsWrapper>

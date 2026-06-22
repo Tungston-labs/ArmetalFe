@@ -102,7 +102,7 @@ const handleReportClick = (type) => {
       <EmployeeTitle
         iconSrc={EmployeeIcon}
         showBackArrow={false}
-        showTabs={true}
+        showTabs={false}
         showDropdown={false}
         showAddButton={false}
         showSearch={true}

@@ -133,6 +133,7 @@ const departmentsToRender = departmentList
         onSearchChange={setSearchText}
         showBackArrow={false}
         showReportButton={false}
+        showTabs={false}
       />
       {loading ? (
         <Loader />
