@@ -11,14 +11,15 @@ import {
   LopTd,
   TopBar,
   MonthSelector,
+  ReportButton,
 } from "./AttendanceReportStyles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
 import { getAttendanceSummary } from "../../Redux/attendanceSlice";
 import Pagination from "../../Components/Pagination/Pagination";
-import { exportAttendanceExcel } from "../../utils/attendance";
-import { exportAttendancePDF } from "../report/attendance";
+import { exportAttendanceExcel } from "../../utils/montlyAttendance";
+
 const AttendanceReport = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth || {});
@@ -97,12 +98,15 @@ const handleReportClick = (type) => {
     exportAttendancePDF(attendanceSummary);
   }
 };
+const handleDownloadExcel = () => {
+  exportAttendanceExcel(summaryData.results, selectedMonth);
+};
   return (
     <Container>
       <EmployeeTitle
         iconSrc={EmployeeIcon}
         showBackArrow={false}
-        showTabs={false}
+        showTabs={true}
         showDropdown={false}
         showAddButton={false}
         showSearch={true}
@@ -122,6 +126,9 @@ const handleReportClick = (type) => {
               onChange={(e) => setSelectedMonth(e.target.value)}
             />
           </MonthSelector>
+           <ReportButton onClick={handleDownloadExcel}>
+    📊 Monthly Report (Excel)
+  </ReportButton>
         </TopBar>
 
         <TableWrapper>

@@ -108,7 +108,7 @@ export const LopTd = styled.td`
 
 export const TopBar = styled.div`
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   margin-bottom: 16px;
 `;
 export const MonthSelector = styled.div`
@@ -126,5 +126,28 @@ export const MonthSelector = styled.div`
     font-size: 14px;
     outline: none;
     cursor: pointer;
+  }
+`;
+
+export const ReportButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #3352BA;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #8ca0e2;
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 `;

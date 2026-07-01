@@ -157,7 +157,7 @@ const EmployeeList = () => {
           selectedDropdownValue={departmentFilter}
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
-          showTabs={false}
+          showTabs={true}
           showAddButton={true}
           showReportButton={false}
           buttonText="Add Employee"

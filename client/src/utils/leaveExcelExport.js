@@ -46,7 +46,7 @@ export const exportLeaveReport = (
 
   filteredLeaves.forEach((leave, index) => {
     rows.push([
-      index + 1 + (page - 1) * 20,
+      index + 1 ,
       leave?.employee?.name || "N/A",
       leave?.employee?.employee_id ||
         leave?.employee?.id ||

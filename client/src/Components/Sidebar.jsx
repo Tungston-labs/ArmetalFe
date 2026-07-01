@@ -151,35 +151,10 @@ export default function Sidebar() {
                 >
                   <FaUsers />
                   <span>Employee</span>
-                  {!collapsed &&
-                    (employeeOpen ? <FaAngleUp /> : <FaAngleRight />)}
+             
                 </CustomLink>
 
-                {employeeOpen && !collapsed && (
-                  <SubMenu>
-                    <SubMenuLink to="/employee">Employee List</SubMenuLink>
-
-                    <SubMenuLink to="/employee-leave-request">
-                      Employee Leave Request
-                    </SubMenuLink>
-
-                    <SubMenuLink to="/employee-attendance">
-                      Employee Attendance
-                    </SubMenuLink>
-
-                    <SubMenuLink to="/employee-Contract-Visa-Expiry">
-                      Employee Contract & Visa Expiry
-                    </SubMenuLink>
-
-                    <SubMenuLink to="/employee-attendance-report">
-                      Employee Attendance Report
-                    </SubMenuLink>
-
-                    <SubMenuLink to="/employee-attendance-request">
-                      Employee Attendance Request
-                    </SubMenuLink>
-                  </SubMenu>
-                )}
+             
               </>
             )}
 

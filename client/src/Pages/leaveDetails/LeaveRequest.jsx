@@ -42,14 +42,46 @@ export default function LeaveRequest() {
   const [selectedYear, setSelectedYear] = useState(
     new Date().getFullYear()
   );
-  const handleExportExcel = () => {
+const handleExportExcel = async () => {
+  try {
+    let allLeaves = [];
+    let currentPage = 1;
+    let totalPages = 1;
+
+    do {
+      const response = await dispatch(
+        getLeaveRequests({
+          page: currentPage,
+          department_id: departmentFilter || undefined,
+          status: statusFilter || undefined,
+          month: selectedMonth,
+          year: selectedYear,
+        })
+      ).unwrap();
+
+      allLeaves = [...allLeaves, ...response.results];
+      totalPages = response.total_pages;
+      currentPage++;
+    } while (currentPage <= totalPages);
+
+    // Apply search filter if needed
+    const excelData = allLeaves.filter((leave) => {
+      const name = leave?.employee?.name?.toLowerCase() || "";
+      const empId = leave?.employee?.employee_id?.toLowerCase() || "";
+      const search = searchText.toLowerCase();
+
+      return name.includes(search) || empId.includes(search);
+    });
+
     exportLeaveReport(
-      filteredLeaves,
-      page,
-      formatDate,
-      selectedMonth
+      excelData,
+      1,
+      formatDate
     );
-  };
+  } catch (error) {
+    console.error("Export failed:", error);
+  }
+};
   useEffect(() => {
     dispatch(
       getLeaveRequests({
@@ -168,7 +200,7 @@ export default function LeaveRequest() {
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
           showReportButton={false}
-          showTabs={false}
+          showTabs={true}
         />
         <TopActionRow>
           <StatusTabsWrapper>

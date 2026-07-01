@@ -46,7 +46,7 @@ const EmployeeTitle = ({
   title = "Employee",
   subtitle = "Manage your employees",
   buttonText = "Add Employee",
-  searchPlaceholder = "Search by name or ID",
+  searchPlaceholder = "Search Here...",
   searchValue = "",
   showReportButton = true,
   reportButtonText = "Reports",
@@ -61,7 +61,7 @@ const EmployeeTitle = ({
       label: "Employee Contract & Visa Expiry",
     },
     { path: "/employee-attendance-report", label: "Employee Attendance Report" },
-       { path: "/request", label: "Employee Attendance Request" },
+      //  { path: "/request", label: "Employee Attendance Request" },
   ],
 
 
