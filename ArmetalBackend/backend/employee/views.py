@@ -54,7 +54,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
             return Employee_db.objects.none()
 
         department_id = self.request.query_params.get('department_id')
-        queryset = Employee_db.objects.filter(department__company=company)
+        queryset = Employee_db.objects.filter(department__company=company,is_deleted=False)
 
         if department_id:
             queryset = queryset.filter(department_id=department_id)
@@ -134,7 +134,7 @@ class EmployeeListView(generics.ListAPIView):
             return Employee_db.objects.none()
 
         department_id = self.request.query_params.get('department_id')
-        queryset = Employee_db.objects.filter(department__company=company)
+        queryset = Employee_db.objects.filter(department__company=company,is_deleted=False)
 
         if department_id:
             queryset = queryset.filter(department_id=department_id)
@@ -240,7 +240,7 @@ class UpcomingExpiryEmployeeListView(generics.ListAPIView):
         today = timezone.now().date()
         one_month_later = today + timedelta(days=30)
 
-        queryset = Employee_db.objects.filter(department__company=company)  # filter by company
+        queryset = Employee_db.objects.filter(department__company=company,is_deleted=False)  # filter by company
 
         if expiry_type == "visa":
             queryset = queryset.filter(
@@ -427,7 +427,7 @@ class DashboardSummaryView(APIView):
 
         # 1. Total employees list with department name
         employees_qs = Employee_db.objects.filter(
-            department__company=company
+            department__company=company,is_deleted=False
         )
 
         total_employees_count = employees_qs.count()
@@ -609,14 +609,14 @@ class EmployeesInMyDepartmentView(APIView):
 
     def get(self, request):
         try:
-            employee = Employee_db.objects.get(user=request.user)
+            employee = Employee_db.objects.get(user=request.user,is_deleted=False)
             department = employee.department
         except Employee_db.DoesNotExist:
             return Response({"detail": "Employee profile not found."}, status=404)
         except AttributeError:
             return Response({"detail": "No department assigned."}, status=400)
 
-        employees = Employee_db.objects.filter(department=department)
+        employees = Employee_db.objects.filter(department=department,is_deleted=False)
         count = employees.count()
         serializer = EmployeeSerializer(employees, many=True)
 

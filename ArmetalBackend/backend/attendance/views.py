@@ -318,7 +318,7 @@ class AttendanceAdminListView(generics.ListAPIView):
 
         queryset = (
             Employee_db.objects
-            .filter(department_id=department_id)
+            .filter(department_id=department_id,is_deleted=False)
             .annotate(
                 date=Subquery(attendance_qs.values("date")[:1]),
                 total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
@@ -355,11 +355,8 @@ class AttendanceAdminListView(generics.ListAPIView):
         if not query:
             return super().get(request, *args, **kwargs)
 
-        employees = (
-            Employee_db.objects.filter(name_search__icontains=query)
-            .select_related("department")
-            .prefetch_related("attendances")  # correct related name
-        )
+        employees = (Employee_db.objects.filter(name_search__icontains=query,is_deleted=False).select_related("department").prefetch_related("attendances")
+)
 
         final_results = []
 
@@ -591,7 +588,7 @@ class AttendanceLocationUpdateView(APIView):
 
         try:
             user = request.user
-            employee = Employee_db.objects.get(user=user)
+            employee = Employee_db.objects.get(user=user,is_deleted=False)
         except Employee_db.DoesNotExist:
             return Response({"detail": "Employee not found."}, status=404)
 
@@ -643,7 +640,7 @@ class BackgroundLocationUpdateView(APIView):
         with pagination.
         """
         try:
-            employee = Employee_db.objects.get(id=employee_id)
+            employee = Employee_db.objects.get(id=employee_id,is_deleted=False)
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -736,7 +733,7 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
 
         qs = Employee_db.objects.select_related(
             "department", "department__company"
-        ).filter(department__company=user.company)
+        ).filter(department__company=user.company,is_deleted=False)
 
         if user.is_employee:
             qs = qs.filter(user=user)

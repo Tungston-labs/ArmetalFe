@@ -39,7 +39,7 @@ class EmployeeBankDetailListView(generics.ListAPIView):
         company = self.request.user.company
         if not company:
             return Employee_db.objects.none()
-        return Employee_db.objects.filter(department__company=company)
+        return Employee_db.objects.filter(department__company=company,is_deleted=False)
     
 #for updating status according to month and year(for all employees)
 
@@ -57,7 +57,7 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         month = self.request.query_params.get('month')
         department_id = self.request.query_params.get('department')
 
-        employees = Employee_db.objects.filter(department__company=company)
+        employees = Employee_db.objects.filter(department__company=company,is_deleted=False)
 
         if department_id:
             employees = employees.filter(department__id=department_id)
@@ -100,7 +100,8 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
 
         employees = Employee_db.objects.filter(
             department__company=request.user.company,
-            joining_date__lte=last_date_of_month
+            joining_date__lte=last_date_of_month,
+            is_deleted=False
         )
 
         existing_records = self.get_queryset()
@@ -169,7 +170,7 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
         if not year or not month:
             return Response({'error': 'Year and month are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        employees = Employee_db.objects.filter(id__in=selected_employee_ids, department__company=request.user.company)
+        employees = Employee_db.objects.filter(id__in=selected_employee_ids, department__company=request.user.company,is_deleted=False)
         updated_records = []
         for emp in employees:
             bank = getattr(emp, 'bank_details', None)

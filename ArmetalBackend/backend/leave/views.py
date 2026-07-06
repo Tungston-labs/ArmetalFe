@@ -188,7 +188,7 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
 
             hr_emails = list(
                 Employee_db.objects.filter(
-                    department__company=company,
+                    department__company=company,is_deleted=False,
                     role="hr"
                 )
                 .exclude(email__isnull=True)
@@ -370,7 +370,7 @@ class EmployeesOnLeaveTodayByDepartmentView(APIView):
                 to_date__gte=today,
                 employee__department_id=department_id
             )
-            employees = Employee_db.objects.filter(id__in=leaves.values_list('employee_id', flat=True))
+            employees = Employee_db.objects.filter(is_deleted=False,id__in=leaves.values_list('employee_id', flat=True))
             from employee.serializers import EmployeeSerializer
             serializer = EmployeeSerializer(employees, many=True)
             return Response(serializer.data)
@@ -390,7 +390,7 @@ class DepartmentEmployeesOnLeaveView(APIView):
             return Response({"error": "Invalid date format"}, status=400)
 
         try:
-            emp = Employee_db.objects.get(id=employee_id)
+            emp = Employee_db.objects.get(id=employee_id,is_deleted=False)
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found"}, status=404)
 
@@ -400,7 +400,7 @@ class DepartmentEmployeesOnLeaveView(APIView):
         try:
 
             dept = emp.department
-            dept_emps = Employee_db.objects.filter(department=dept)
+            dept_emps = Employee_db.objects.filter(department=dept,is_deleted=False)
 
             leaves = LeaveRequest.objects.filter(
                 employee__in=dept_emps,
