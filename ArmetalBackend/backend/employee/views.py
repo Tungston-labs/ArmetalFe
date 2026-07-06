@@ -163,18 +163,21 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         # Save the updated employee
         serializer.save()
 
+
     def perform_destroy(self, instance):
-        department = instance.department
-        company = department.company if department else None
+        company = instance.department.company if instance.department else None
 
-        # Delete related user first (if exists)
+        # Soft delete employee
+        instance.is_deleted = True
+        instance.deleted_at = timezone.now()
+        instance.save(update_fields=["is_deleted", "deleted_at"])
+
+        # Disable login
         if instance.user:
-            instance.user.delete()
+            instance.user.is_active = False
+            instance.user.save(update_fields=["is_active"])
 
-        # Delete the employee (this will trigger signal)
-        instance.delete()
-
-        # ✅ Update company employee count
+        # Update employee count
         if company:
             company.number_of_employees = max((company.number_of_employees or 1) - 1, 0)
             company.save(update_fields=["number_of_employees"])

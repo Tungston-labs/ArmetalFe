@@ -54,6 +54,8 @@ class Employee_db(TimeStampedModel):
     total_leave = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     paid_leave = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     idcard = models.ImageField(upload_to='idcard_pics/', blank=True, null=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     ROLE_CHOICES = (
         ('employee', 'Employee'),
         ('hr', 'HR'),
