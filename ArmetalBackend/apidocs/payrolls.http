@@ -91,7 +91,7 @@ Content-Type: application/json
 
 
 ###PAYSLIP FOR EMPLOYEE
-GET https://api.rekory.com/api/employee/payslip/download/?month=05&year=2026
+GET https://api.rekory.com/api/employee/payslip/download/?month=06&year=2026
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzgzNTI2MDI5LCJpYXQiOjE3ODM0OTcyMjksImp0aSI6ImMyOGViMjAyMDM3NDRiZWZhODQ3OGQwMjdkMzc5ZGI2IiwidXNlcl9pZCI6NDkzLCJpc19zdXBlcmFkbWluIjpmYWxzZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6dHJ1ZSwiaXNfaHIiOmZhbHNlfQ.zvmjsmmn4eMUDSQOYBoAcc0Iv9-zOhW1N21Q09W52x0
 
 
