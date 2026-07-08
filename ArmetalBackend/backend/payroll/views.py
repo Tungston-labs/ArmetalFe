@@ -456,8 +456,10 @@ class PayslipDownloadView(APIView):
             raise Http404("Payroll record not found")
 
         # Use serializer to get all computed values
-        from .serializers import EmployeePayrollRecordSerializer
-        serialized = EmployeePayrollRecordSerializer(record).data
+        serialized = EmployeePayrollRecordSerializer(
+            record,
+            context={"request": request}
+        ).data
         print("\n==================== PAYSLIP DATA ====================")
         import pprint
         pprint.pprint(serialized)
