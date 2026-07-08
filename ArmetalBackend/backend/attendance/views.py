@@ -776,7 +776,20 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
                 month=month
             ).first()
 
-            if payroll and payroll.status.lower() == "paid":
+            print("--------------------------------")
+            print("Employee:", emp.name)
+            print("Employee ID:", emp.id)
+            print("Month:", month, "Year:", year)
+            print("Payroll:", payroll)
+
+            if payroll:
+                print("Status:", repr(payroll.status))
+                print("Working Days:", payroll.working_days)
+                print("Present Days:", payroll.days_present)
+                print("LOP Days:", payroll.lop_days)
+            print("--------------------------------")
+
+            if payroll and payroll.status and payroll.status.strip().lower() == "paid":
                 working_days = payroll.working_days or 0
                 present_days = payroll.days_present or 0
                 lop_days = payroll.lop_days or 0
@@ -786,6 +799,10 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
                 working_days, present_days, absent_days, lop_days, daily_records = (
                     build_employee_month_calendar(emp, start_date, end_date)
                 )
+
+            print(
+                f"{emp.name} -> Working={working_days}, Present={present_days}, Absent={absent_days}, LOP={lop_days}"
+            )
 
             results.append({
                 "employee_id": emp.employee_id,
