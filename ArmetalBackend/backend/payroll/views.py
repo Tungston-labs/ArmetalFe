@@ -430,15 +430,17 @@ class EmployeePayslipView(APIView):
 
 
 
-
-
+from django.http import Http404, FileResponse, HttpResponse
+from django.core.files.base import ContentFile
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 class PayslipDownloadView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        month = request.query_params.get('month')
-        year = request.query_params.get('year')
+        month = request.query_params.get("month")
+        year = request.query_params.get("year")
 
         if not (month and year):
             return HttpResponse("Month and year required", status=400)
@@ -450,30 +452,47 @@ class PayslipDownloadView(APIView):
 
         try:
             record = EmployeePayrollRecord.objects.get(
-                employee=employee, month=int(month), year=int(year)
+                employee=employee,
+                month=int(month),
+                year=int(year),
             )
         except EmployeePayrollRecord.DoesNotExist:
             raise Http404("Payroll record not found")
 
-        # Use serializer to get all computed values
+        # If already generated, return the saved file
+        if record.payslip_file:
+            return FileResponse(
+                record.payslip_file.open("rb"),
+                as_attachment=True,
+                filename=record.payslip_file.name.split("/")[-1],
+            )
+
+        # Serialize payroll
         serialized = EmployeePayrollRecordSerializer(
             record,
-            context={"request": request}
+            context={"request": request},
         ).data
-        print("\n==================== PAYSLIP DATA ====================")
-        import pprint
-        pprint.pprint(serialized)
-        print("=====================================================\n")
 
-
-        #  Pass serializer data (dict), not model instance
+        # Generate PDF
         pdf_bytes = generate_payslip_pdf(serialized)
 
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="Payslip_{month}_{year}.pdf"'
-        response.write(pdf_bytes)
-        return response
+        # Save PDF into FileField
+        filename = f"Payslip_{employee.employee_id}_{month}_{year}.pdf"
 
+        record.payslip_file.save(
+            filename,
+            ContentFile(pdf_bytes),
+            save=True,
+        )
+        print("Saved file:", record.payslip_file.name)
+        print("Saved path:", record.payslip_file.path)
+
+        # Return saved file
+        return FileResponse(
+            record.payslip_file.open("rb"),
+            as_attachment=True,
+            filename=filename,
+        )
 
 # views.py
 
