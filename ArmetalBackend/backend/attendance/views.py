@@ -789,16 +789,30 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
                 print("LOP Days:", payroll.lop_days)
             print("--------------------------------")
 
-            if payroll and payroll.status and payroll.status.strip().lower() == "paid":
-                working_days = payroll.working_days or 0
-                present_days = payroll.days_present or 0
-                lop_days = payroll.lop_days or 0
-                absent_days = max(working_days - present_days, 0)
-                daily_records = []
-            else:
-                working_days, present_days, absent_days, lop_days, daily_records = (
-                    build_employee_month_calendar(emp, start_date, end_date)
+            calendar_working_days, calendar_present_days, calendar_absent_days, calendar_lop_days, daily_records = (
+            build_employee_month_calendar(
+                emp,
+                start_date,
+                end_date
                 )
+            )
+
+            payroll = EmployeePayrollRecord.objects.filter(
+                employee=emp,
+                year=year,
+                month=month
+            ).first()
+
+            if payroll and payroll.status.lower() == "paid":
+                working_days = payroll.working_days or calendar_working_days
+                present_days = payroll.days_present or calendar_present_days
+                lop_days = payroll.lop_days or calendar_lop_days
+                absent_days = max(working_days - present_days, 0)
+            else:
+                working_days = calendar_working_days
+                present_days = calendar_present_days
+                absent_days = calendar_absent_days
+                lop_days = calendar_lop_days
 
             print(
                 f"{emp.name} -> Working={working_days}, Present={present_days}, Absent={absent_days}, LOP={lop_days}"
