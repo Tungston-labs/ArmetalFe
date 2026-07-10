@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "exceljs": "^4.4.0",
-    "xlsx-js-style": "^1.2.0"
+    "react-to-print": "^3.3.0"
   }
 }

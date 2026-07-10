@@ -64,6 +64,7 @@ import EmployeeAttendanceModal from "./Pages/attendanceReport/EmployeeAttendance
 import PayrollDetailsContainer from "./Pages/payroll/PayrollDetailsContainer.jsx";
 import PayrollTable from "./Pages/payroll/PayrollTable.jsx";
 import AttendanceRequestScreen from "./Pages/attendanceRequest/AttendanceRequest.jsx";
+import Invoice from "./Pages/superAdmin/print/Invoice.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -138,6 +139,7 @@ function App() {
 
               <Route path="/right-modal" element={<EmployeeAttendanceModal />}/>
 
+              <Route path="/invoice" element={<Invoice />}/>
 
               <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />}/>
               <Route path="*" element={<ErrorSomething />} />

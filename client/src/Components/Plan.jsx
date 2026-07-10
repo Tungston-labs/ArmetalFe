@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { MdOutlineFileDownload } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
 import { VscSend } from "react-icons/vsc";
@@ -19,11 +19,13 @@ import {
   PlanIconWrapper
 } from './Plan.Styles';
 import API from '../services/api';
-
+import { useReactToPrint } from "react-to-print";
+import Invoice from "../Pages/superAdmin/print/Invoice";
 const PaymentOverview = ({ companyId: propCompanyId }) => {
   const { id: urlCompanyId } = useParams();
   const companyId = propCompanyId || urlCompanyId;
-
+  const invoiceRef = useRef();
+const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [paymentData, setPaymentData] = useState([]);
   const [companyName, setCompanyName] = useState("Company");
 
@@ -73,65 +75,19 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
     } catch (error) {
     }
   };
+  
+  const handlePrint = useReactToPrint({
+  contentRef: invoiceRef,
+  documentTitle: "Invoice",
+});
+
 const handleDownload = (entry) => {
+  setSelectedInvoice(entry);
 
-      const html = generateInvoiceHTML(entry, companyName);
-  // const companyName = entry.name || "Your Company Name";
-  // const html = generateInvoiceHTML(entry,companyName);
-  // const companyName = entry.company_name || "Your Company Name";
-  // Open a new browser window
-  const printWindow = window.open('', '_blank', 'width=800,height=600');
-
-  printWindow.document.open();
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Invoice - ${entry.month_display} ${entry.year}</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 40px;
-            color: #333;
-          }
-          h1 {
-            text-align: center;
-            color: #0546A0;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-          }
-          th, td {
-            border: 1px solid #ccc;
-            padding: 12px;
-            text-align: left;
-          }
-          th {
-            background-color: #f2f2f2;
-          }
-          .section-title {
-            margin-top: 40px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #444;
-          }
-        </style>
-      </head>
-      <body>
-        ${html}
-        <script>
-          window.onload = function () {
-            window.print();
-            setTimeout(() => window.close(), 100); // Auto-close after print
-          };
-        </script>
-      </body>
-    </html>
-  `);
-  printWindow.document.close();
+  setTimeout(() => {
+    handlePrint();
+  }, 100);
 };
-
 
 
 
@@ -227,6 +183,23 @@ const handleDownload = (entry) => {
           </tbody>
         </PaymentTable>
       </ScrollWrapper>
+
+      <div
+  style={{
+    position: "absolute",
+    left: "-9999px",
+    top: 0,
+  }}
+>
+  <div ref={invoiceRef}>
+    {selectedInvoice && (
+      <Invoice
+        entry={selectedInvoice}
+        companyName={companyName}
+      />
+    )}
+  </div>
+</div>
     </>
   );
 };
