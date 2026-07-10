@@ -232,20 +232,19 @@ class CompanySubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanySubscription
         fields = [
-            'id',
-            'company',
-            'month',
-            'month_display',
-            'year',
-            'paid_date',
-            'amount',   # INR only
-            'status',
+            "id",
+            "company",
+            "month",
+            "month_display",
+            "year",
+            "paid_date",
+            "amount",
+            "currency",
+            "status",
         ]
 
     def get_month_display(self, obj):
         return month_name[obj.month]
- 
-        return currency
     
 class CompanyListSerializer(serializers.ModelSerializer):
     last_paid_date = serializers.SerializerMethodField()

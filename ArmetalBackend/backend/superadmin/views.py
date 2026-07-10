@@ -56,6 +56,8 @@ class CompanyDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
 
     
+from django.utils.timezone import now
+
 class CompanySubscriptionListCreateView(APIView):
     def get(self, request, company_id, year=None):
         year = year or now().year
@@ -63,7 +65,10 @@ class CompanySubscriptionListCreateView(APIView):
         try:
             company = Company.objects.get(id=company_id)
         except Company.DoesNotExist:
-            return Response({"error": "Company not found"}, status=404)
+            return Response(
+                {"error": "Company not found"},
+                status=404
+            )
 
         subs = []
 
@@ -73,11 +78,28 @@ class CompanySubscriptionListCreateView(APIView):
                 month=m,
                 year=year
             )
-            obj.save()  # amount auto-calculated in model
+            obj.save()  # auto calculates amount
             subs.append(obj)
 
         serializer = CompanySubscriptionSerializer(subs, many=True)
-        return Response(serializer.data)
+
+        return Response({
+            "company": {
+                "id": company.id,
+                "company_id": company.company_id,
+                "name": company.name,
+                "address": company.address,
+                "location": company.location,
+                "country": company.country,
+                "contact_number": company.contact_number,
+                "email": company.email,
+                "employee_count": company.number_of_employees,
+                "amount_per_employee": company.amount_per_employee,
+                "currency": subs[0].currency if subs else "AED",
+                "today": now().date(),
+            },
+            "subscriptions": serializer.data
+        })
 
 
 class MarkSubscriptionPaidView(UpdateAPIView):
