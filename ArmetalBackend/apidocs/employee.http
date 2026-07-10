@@ -1,10 +1,10 @@
 ###
-POST http://178.248.112.16:8001/api/token/
+POST https://api.rekory.com/api/token/
 Content-Type: application/json
 
 {
-  "username": "STAPERSLG",     
-  "password": "password123"  
+  "username": "jesnajamal",     
+  "password": "password"  
 }
 
 

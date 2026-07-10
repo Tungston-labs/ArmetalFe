@@ -318,7 +318,7 @@ class AttendanceAdminListView(generics.ListAPIView):
 
         queryset = (
             Employee_db.objects
-            .filter(department_id=department_id)
+            .filter(department_id=department_id,is_deleted=False)
             .annotate(
                 date=Subquery(attendance_qs.values("date")[:1]),
                 total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
@@ -355,11 +355,8 @@ class AttendanceAdminListView(generics.ListAPIView):
         if not query:
             return super().get(request, *args, **kwargs)
 
-        employees = (
-            Employee_db.objects.filter(name_search__icontains=query)
-            .select_related("department")
-            .prefetch_related("attendances")  # correct related name
-        )
+        employees = (Employee_db.objects.filter(name_search__icontains=query,is_deleted=False).select_related("department").prefetch_related("attendances")
+)
 
         final_results = []
 
@@ -591,7 +588,7 @@ class AttendanceLocationUpdateView(APIView):
 
         try:
             user = request.user
-            employee = Employee_db.objects.get(user=user)
+            employee = Employee_db.objects.get(user=user,is_deleted=False)
         except Employee_db.DoesNotExist:
             return Response({"detail": "Employee not found."}, status=404)
 
@@ -643,7 +640,7 @@ class BackgroundLocationUpdateView(APIView):
         with pagination.
         """
         try:
-            employee = Employee_db.objects.get(id=employee_id)
+            employee = Employee_db.objects.get(id=employee_id,is_deleted=False)
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -736,7 +733,7 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
 
         qs = Employee_db.objects.select_related(
             "department", "department__company"
-        ).filter(department__company=user.company)
+        ).filter(department__company=user.company,is_deleted=False)
 
         if user.is_employee:
             qs = qs.filter(user=user)
@@ -779,16 +776,47 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
                 month=month
             ).first()
 
-            if payroll and payroll.status.lower() == "paid":
-                working_days = payroll.working_days or 0
-                present_days = payroll.days_present or 0
-                lop_days = payroll.lop_days or 0
-                absent_days = max(working_days - present_days, 0)
-                daily_records = []
-            else:
-                working_days, present_days, absent_days, lop_days, daily_records = (
-                    build_employee_month_calendar(emp, start_date, end_date)
+            print("--------------------------------")
+            print("Employee:", emp.name)
+            print("Employee ID:", emp.id)
+            print("Month:", month, "Year:", year)
+            print("Payroll:", payroll)
+
+            if payroll:
+                print("Status:", repr(payroll.status))
+                print("Working Days:", payroll.working_days)
+                print("Present Days:", payroll.days_present)
+                print("LOP Days:", payroll.lop_days)
+            print("--------------------------------")
+
+            calendar_working_days, calendar_present_days, calendar_absent_days, calendar_lop_days, daily_records = (
+            build_employee_month_calendar(
+                emp,
+                start_date,
+                end_date
                 )
+            )
+
+            payroll = EmployeePayrollRecord.objects.filter(
+                employee=emp,
+                year=year,
+                month=month
+            ).first()
+
+            if payroll and payroll.status.lower() == "paid":
+                working_days = payroll.working_days or calendar_working_days
+                present_days = payroll.days_present or calendar_present_days
+                lop_days = payroll.lop_days or calendar_lop_days
+                absent_days = max(working_days - present_days, 0)
+            else:
+                working_days = calendar_working_days
+                present_days = calendar_present_days
+                absent_days = calendar_absent_days
+                lop_days = calendar_lop_days
+
+            print(
+                f"{emp.name} -> Working={working_days}, Present={present_days}, Absent={absent_days}, LOP={lop_days}"
+            )
 
             results.append({
                 "employee_id": emp.employee_id,

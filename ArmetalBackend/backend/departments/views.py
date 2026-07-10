@@ -171,7 +171,7 @@ class EmployeeByDepartmentView(APIView):
         except Department.DoesNotExist:
             return Response({"detail": "Department not found."}, status=404)
 
-        employees = Employee_db.objects.filter(department=department)
+        employees = Employee_db.objects.filter(department=department,is_deleted=False)
         serializer = EmployeeSerializer(employees, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 

@@ -42,7 +42,7 @@ class DashboardCountsView(APIView):
             if not company:
                 return error("Company not assigned to user", status.HTTP_404_NOT_FOUND)
 
-            employees_qs = Employee_db.objects.filter(department__company=company)
+            employees_qs = Employee_db.objects.filter(department__company=company,is_deleted=False)
 
             data = {
                 "total_employees": employees_qs.count(),
@@ -178,7 +178,7 @@ class RecentEmployeesView(APIView):
                 return error("Company not assigned", status.HTTP_404_NOT_FOUND)
 
             qs = Employee_db.objects.filter(
-                department__company=company
+                department__company=company,is_deleted=False
             ).order_by("-created_at")[:5]
 
             employees = [
@@ -220,7 +220,7 @@ class ContractExpiry30DaysView(APIView):
         today = timezone.now().date()
         next_30 = today + timedelta(days=30)
 
-        qs = Employee_db.objects.filter(
+        qs = Employee_db.objects.filter(is_deleted=False,
             contract_expiry_date__isnull=False,
             contract_expiry_date__range=(today, next_30),
             department__company=company   
@@ -303,7 +303,7 @@ class TodayEmployeeStatsAPI(APIView):
             today = date.today()
             company = request.user.company
 
-            employees = Employee_db.objects.filter(department__company=company)
+            employees = Employee_db.objects.filter(department__company=company,is_deleted=False)
             total = employees.count()
 
             present = Attendance.objects.filter(
