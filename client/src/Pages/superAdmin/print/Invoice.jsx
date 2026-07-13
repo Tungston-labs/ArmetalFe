@@ -29,22 +29,37 @@ import {
   FooterAddress,
   FooterText,
 } from "./Invoice.styles";
+
 import { IoMdCall } from "react-icons/io";
-import logo from "/images/invoice.png";
-import watermark from "/images/invoice.png";
 import { CiGlobe } from "react-icons/ci";
 import { FaLocationDot } from "react-icons/fa6";
 
-const invoiceItems = [
-  {
-    slno: 1,
-    description: "HR App monthly subscription charge (June) (26 employees)",
-    price: "₹100",
-    total: "₹2,600",
-  },
-];
+import logo from "/images/invoice.png";
+import watermark from "/images/invoice.png";
 
-const Invoice = ({ entry, companyName }) => {
+const Invoice = ({ entry, company }) => {
+  if (!entry || !company) return null;
+
+
+  const invoiceItems = [
+    {
+      slno: 1,
+      description: `HR App monthly subscription charge (${entry.month_display} ${entry.year}) (${company.employee_count} Employees)`,
+      price: Number(company.amount_per_employee).toFixed(2),
+      total: Number(entry.amount).toFixed(2),
+    },
+  ];
+  const formatDate = (date) => {
+    if (!date) return "-";
+
+    const d = new Date(date);
+
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
   return (
     <Page>
       <Watermark src={watermark} alt="watermark" />
@@ -58,40 +73,37 @@ const Invoice = ({ entry, companyName }) => {
 
       <InvoiceTitle>INVOICE</InvoiceTitle>
 
-      {/* Customer + Invoice details, side by side */}
+      {/* Customer + Invoice Details */}
       <TopSection>
         <AddressSection>
           <SectionTitle>TO:</SectionTitle>
+
           <AddressText>
-            <strong>{companyName}</strong>
+            <strong>{company.name}</strong>
             <br />
-            2nd Floor,
+            {company.address}
             <br />
-            Villakkath Tower,
+
+            Phone : {company.contact_number}
             <br />
-            Opposite Cloude 9 Hotel,
-            <br />
-            Thankalam,
-            <br />
-            Kothamangalam Taluk,
-            <br />
-            Ernakulam
-            <br />
-            Phone: +91 9567923861
+            Email : {company.email}
           </AddressText>
         </AddressSection>
 
         <InvoiceSection>
           <SectionTitle>Invoice Details</SectionTitle>
+
           <InvoiceText>
-            Invoice no: {entry?.id ?? "-"}
+            Invoice No : INV-{entry.id}
             <br />
-            Date: {entry?.paid_date ?? "-"}
+            Date : {formatDate(entry.paid_date || company.today)}
+            <br />
+            Status : {entry.status.toUpperCase()}
           </InvoiceText>
         </InvoiceSection>
       </TopSection>
 
-      {/* Table */}
+      {/* Description */}
       <SectionTitle>DESCRIPTION</SectionTitle>
 
       <Table>
@@ -108,15 +120,23 @@ const Invoice = ({ entry, companyName }) => {
           {invoiceItems.map((item) => (
             <TableRow key={item.slno}>
               <TableCell>{item.slno}</TableCell>
-              <TableCell style={{ textAlign: "left" }}>{item.description}</TableCell>
+
+              <TableCell style={{ textAlign: "left" }}>
+                {item.description}
+              </TableCell>
+
               <TableCell>{item.price}</TableCell>
+
               <TableCell>{item.total}</TableCell>
             </TableRow>
           ))}
 
           <GrandTotalRow>
             <TableCell colSpan={3}>GRAND TOTAL</TableCell>
-            <TableCell>₹2,600</TableCell>
+            <TableCell>
+
+              {Number(entry.amount).toFixed(2)}
+            </TableCell>
           </GrandTotalRow>
         </tbody>
       </Table>
@@ -124,6 +144,7 @@ const Invoice = ({ entry, companyName }) => {
       {/* Notes */}
       <NotesSection>
         <NotesTitle>NOTES</NotesTitle>
+
         <NotesList>
           <li>Amounts received will not be reimbursed.</li>
           <li>Project will be taken forward after the payment.</li>
@@ -131,9 +152,10 @@ const Invoice = ({ entry, companyName }) => {
         </NotesList>
       </NotesSection>
 
-      {/* Bank */}
+      {/* Bank Details */}
       <BankSection>
         <NotesTitle>BANK DETAILS</NotesTitle>
+
         <AddressText>
           Account holder: OFFRADAR TUNGSTON LABS
           <br />
@@ -150,12 +172,18 @@ const Invoice = ({ entry, companyName }) => {
       {/* Footer */}
       <Footer>
         <FooterCard>
-          <FooterIcon><IoMdCall /></FooterIcon>
+          <FooterIcon>
+            <IoMdCall />
+          </FooterIcon>
+
           <FooterText>+91 9778377526</FooterText>
         </FooterCard>
 
         <FooterCard>
-          <FooterIcon><CiGlobe /></FooterIcon>
+          <FooterIcon>
+            <CiGlobe />
+          </FooterIcon>
+
           <div>
             <FooterText>tungstonlabs.com</FooterText>
             <FooterText>info@tungstonlabs.com</FooterText>
@@ -163,7 +191,10 @@ const Invoice = ({ entry, companyName }) => {
         </FooterCard>
 
         <FooterCard>
-          <FooterIcon><FaLocationDot /></FooterIcon>
+          <FooterIcon>
+            <FaLocationDot />
+          </FooterIcon>
+
           <FooterAddress>
             4th Floor, Ullampilly Building,
             <br />
