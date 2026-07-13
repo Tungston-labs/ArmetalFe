@@ -435,7 +435,7 @@ def generate_payslip_pdf(data):
     elements.append(_side_by_side(deduction_table, summary_table))
     elements.append(Spacer(1, 20))
 
-    elements.append(Paragraph("This is a computer generated payslip.", footer_style))
+    # elements.append(Paragraph("This is a computer generated payslip.", footer_style))
 
     doc.build(elements)
 
