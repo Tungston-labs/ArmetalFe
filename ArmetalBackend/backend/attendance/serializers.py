@@ -200,4 +200,3 @@ class HourlyLocationLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = HourlyLocationLog
         fields = ['employee', 'latitude', 'longitude', 'location_name', 'logged_at']
-        read_only_fields = ['logged_at']

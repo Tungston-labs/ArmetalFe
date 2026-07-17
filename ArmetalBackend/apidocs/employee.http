@@ -1,10 +1,10 @@
 ###
-POST http://178.248.112.16:8001/api/token/
+POST http://178.248.112.25:8001/api/token/
 Content-Type: application/json
 
 {
-  "username": "snv_arm_kak_117",     
-  "password": "password1234"  
+  "username": "TUNDEVT1V",     
+  "password": "EMPO4PRQ6U0"  
 }
 
 
