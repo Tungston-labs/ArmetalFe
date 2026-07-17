@@ -66,7 +66,7 @@ export const FormWrapper = styled.div`
 font-weight: 700;
 font-style: Bold;
 font-size: 22px;
-leading-trim: NONE;
+
 line-height: 100%;
 letter-spacing: 0%;
 

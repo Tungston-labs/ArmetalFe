@@ -57,7 +57,8 @@ const Dashboard = () => {
     (state) => state.dashboard.projectEmployeeCount
   );
   const todayStats = useSelector((state) => state.dashboard.todayStats);
-
+console.log("contractExpiry", contractExpiry);
+console.log("contract_expiry", contractExpiry?.contract_expiry);
   useEffect(() => {
     dispatch(getDashCounts());
     dispatch(getReimbursementCounts());
@@ -100,33 +101,22 @@ const Dashboard = () => {
         </TwoColumn>
 
         <ThreeColumnRow>
-          {/* Departments */}
           <ThreeBox>
             <DepartmentSummary
               departments={departmentSummary?.recent_departments || []}
             />
           </ThreeBox>
-
-          {/* Recently Added Employees */}
           <ThreeBox>
-            <RecentlyAddedEmployees employees={employeesList} showCount={4} />
+            <RecentlyAddedEmployees employees={employeesList} showCount={3} />
           </ThreeBox>
 
-          {/* Contract Expiry */}
           <ThreeBox>
-            <EmployeeContractExpiry
-              employees={
-                contractExpiry?.map((emp) => ({
-                  ...emp,
-                  expiryDate: emp.contract_expiry_date,
-                  empId: emp.employee_id,
-                })) || []
-              }
-              showCount={4}
-            />
-          </ThreeBox>
+   <EmployeeContractExpiry
+  employees={contractExpiry || []}
+  showCount={3}
+/>
 
-          {/* Upcoming Holidays */}
+          </ThreeBox>
           <ThreeBox>
             <UpcomingHolidays
               holidays={
@@ -136,7 +126,7 @@ const Dashboard = () => {
                   type: h.holiday_type,
                 }))
               }
-              showCount={4}
+              showCount={3}
               onViewAll={() => console.log("open holidays page")}
             />
           </ThreeBox>

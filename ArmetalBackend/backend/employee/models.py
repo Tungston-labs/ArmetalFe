@@ -9,13 +9,12 @@ from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIn
 from django.contrib.postgres.fields import ArrayField  
 from django.db.models import JSONField  
 
-# models.py
 
-def generate_employee_id(company_name, department_name):
-    company_part = company_name[:3].upper()
-    department_part = department_name[:3].upper()
-    random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
-    return f"{company_part}{department_part}{random_part}"
+# def generate_employee_id(company_name, department_name):
+#     company_part = company_name[:3].upper()
+#     department_part = department_name[:3].upper()
+#     random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
+#     return f"{company_part}{department_part}{random_part}"
 
 def generate_password():
     return 'EMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
@@ -23,6 +22,12 @@ def generate_password():
 class Employee_db(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     employee_id = models.CharField(max_length=200, unique=True, editable=False)
+    employee_code = models.CharField(
+        max_length=200,
+        unique=True,
+        null=True,
+        blank=True
+    )
     password = models.CharField(max_length=200,unique=True,null=True,blank=True)
     name = EncryptedCharField(max_length=500)
     name_search = models.CharField(max_length=500, db_index=True, blank=True, null=True)
@@ -49,6 +54,8 @@ class Employee_db(TimeStampedModel):
     total_leave = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     paid_leave = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     idcard = models.ImageField(upload_to='idcard_pics/', blank=True, null=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     ROLE_CHOICES = (
         ('employee', 'Employee'),
         ('hr', 'HR'),
@@ -62,35 +69,45 @@ class Employee_db(TimeStampedModel):
 
 
     def save(self, *args, **kwargs):
-        # Generate employee_id if missing
+
+        # If employee_id not provided
+        # use email as username
         if not self.employee_id:
-            company_name = self.department.company.name if self.department and self.department.company else "DEF"
-            department_name = self.department.name if self.department else "GEN"
-            self.employee_id = generate_employee_id(company_name, department_name)
+            self.employee_id = self.email
 
-        # Always refresh searchable name
+        # searchable lowercase name
         if self.name:
-            clean_name = str(self.name).strip().lower()
-            self.name_search = clean_name
+            self.name_search = str(self.name).strip().lower()
 
-        # Create linked user if missing
-        if not getattr(self, 'user', None):
+        # CREATE USER
+        if not self.user_id:
+
             password = generate_password()
             self.password = password
+
             self.user = User.objects.create_user(
                 username=self.employee_id,
                 email=self.email,
                 password=password,
                 is_employee=True,
                 is_hr=self.role == 'hr',
-                company=self.department.company if self.department else None
+                company=(
+                    self.department.company
+                    if self.department else None
+                )
             )
+
         else:
-            # Keep role sync with user
+            # UPDATE USER DETAILS
+            self.user.username = self.employee_id
+            self.user.email = self.email
             self.user.is_hr = self.role == 'hr'
             self.user.save()
 
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} - {self.employee_id}"
 
 
 
@@ -109,7 +126,7 @@ class EmpBankPaymentModel(models.Model):
     employee = models.OneToOneField(Employee_db, on_delete=models.CASCADE, related_name='bank_details')
     bank_name = models.CharField(max_length=100)
     swift_code = EncryptedCharField(max_length=500, blank=True, null=True)
-    payment_mode = models.CharField(max_length=10, choices=PAYMENT_MODES)
+    payment_mode = models.CharField(max_length=10, choices=PAYMENT_MODES,null=True,blank=True)
     account_number = EncryptedCharField(max_length=500)
     uan_epf_number = EncryptedCharField(max_length=500, blank=True, null=True)
     pan_number = EncryptedCharField(max_length=500)
@@ -164,4 +181,25 @@ class ScheduleReminder(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.scheduled_datetime}"
-        
+
+from decimal import Decimal
+
+
+class SalaryIncrement(models.Model):
+    employee = models.ForeignKey(
+        Employee_db,
+        on_delete=models.CASCADE,
+        related_name="salary_increments"
+    )
+
+    date = models.DateField()
+    increment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    total_salary = models.DecimalField(max_digits=10, decimal_places=2)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date"]
+
+    def __str__(self):
+        return f"{self.employee.name} - {self.increment_amount}"

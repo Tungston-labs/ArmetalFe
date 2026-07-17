@@ -1,4 +1,3 @@
-// src/pages/department/Department.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -31,20 +30,6 @@ import {
   PageInfo,
 } from "../attendance/AttendanceList.Styles";
 import {
-  ModalOverlay,
-  ModalContent,
-  Container,
-  CloseButton,
-  TitleRow,
-  BackArrow,
-  Form,
-  FormGroup,
-  ButtonRow,
-  SaveButton,
-  Title,
-} from "../department/AddDepartment.Styles.js";
-
-import {
   FormSection,
   InputGroup,
   Label,
@@ -57,12 +42,13 @@ import {
 } from "../department/DepartmentDetails.Styles";
 import Loader from "../../Components/Loader.jsx";
 import { ClipLoader } from "react-spinners";
-// import Navbar from "../../Components/Navbar.jsx";
 import EmployeeTitle from "../../Components/EmployeeTitle.jsx";
 import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
 import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
-import { fetchDepartmentById } from "../../services/departmentServices"; // you used this in DepartmentDetail
-
+import { fetchDepartmentById } from "../../services/departmentServices"; 
+import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
+import AddDepartment from "./AddDepartment.jsx";
 const DepartmentList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,31 +59,22 @@ const DepartmentList = () => {
     department_code: "",
   });
   const [newDeptError, setNewDeptError] = useState("");
-
-  // Redux departments list + loading
   const { list: departments = [], loading } = useSelector(
     (state) => state.departments,
   );
-
-  // Local UI state
   const [search, setSearch] = useState("");
-  const [selectedDept, setSelectedDept] = useState(null); // currently expanded dept id
-  const [deptEmployees, setDeptEmployees] = useState({}); // { deptId: [employees] }
+  const [selectedDept, setSelectedDept] = useState(null);
+  const [deptEmployees, setDeptEmployees] = useState({}); 
   const [loadingDept, setLoadingDept] = useState(false);
   const [savingDept, setSavingDept] = useState(false);
-
-  const [pageByDept, setPageByDept] = useState({}); // per-department employee page
+  const [pageByDept, setPageByDept] = useState({}); 
   const pageSize = 10;
-
-  // per-department details + form state + editing state
-  const [deptDetails, setDeptDetails] = useState({}); // { deptId: deptObject }
-  const [formDatas, setFormDatas] = useState({}); // { deptId: { name, department_code, department_head_id } }
+  const [deptDetails, setDeptDetails] = useState({});
+  const [formDatas, setFormDatas] = useState({}); 
   const [editingDeptId, setEditingDeptId] = useState(null);
 
-  // fetch departments on mount
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: "" })).then((res) => {
-      console.log("Department list refreshed", res);
     });
   }, [dispatch]);
 
@@ -116,7 +93,6 @@ const DepartmentList = () => {
     return items.slice(start, start + size);
   };
 
-  // toggle expand / load employees + department details
   const handleToggle = async (deptId) => {
     if (selectedDept === deptId) {
       setSelectedDept(null);
@@ -126,28 +102,19 @@ const DepartmentList = () => {
 
     setSelectedDept(deptId);
     setEditingDeptId(null);
-
-    // reset page for this department to 1 when opened
     setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
 
-    // if already loaded, no need to fetch again
     if (deptEmployees[deptId] && deptDetails[deptId]) return;
 
     setLoadingDept(true);
     try {
-      // 1) fetch employees in department (redux thunk)
       const employeesRes = await dispatch(
         getEmployeesByDepartment(deptId),
       ).unwrap();
-      // store as-is (we'll sort on render), but ensure it's an array
       setDeptEmployees((prev) => ({ ...prev, [deptId]: employeesRes || [] }));
-
-      // 2) fetch department details for form (service)
       try {
         const deptData = await fetchDepartmentById(deptId);
         setDeptDetails((prev) => ({ ...prev, [deptId]: deptData }));
-
-        // initialize form data for this department
         setFormDatas((prev) => ({
           ...prev,
           [deptId]: {
@@ -157,7 +124,6 @@ const DepartmentList = () => {
           },
         }));
       } catch (err) {
-        // fallback: if service fails, try using local departments list item
         const fallback = departments.find((d) => d.id === deptId) || {};
         setDeptDetails((prev) => ({ ...prev, [deptId]: fallback }));
         setFormDatas((prev) => ({
@@ -170,45 +136,57 @@ const DepartmentList = () => {
         }));
       }
     } catch (err) {
-      console.error("Failed to load employees or details:", err);
       Swal.fire("Error", "Failed to load department data.", "error");
     } finally {
       setLoadingDept(false);
     }
   };
+const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: `Employee "${employeeName}" will be permanently deleted.`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete!",
+  }).then(async (result) => {
+    if (!result.isConfirmed) return;
+    try {
+      await dispatch(deleteEmployeeById(employeeId)).unwrap();
 
-  // delete employee with confirmation and refresh employees list
-  const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: `Employee "${employeeName}" will be permanently deleted.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete!",
-    }).then(async (result) => {
-      if (!result.isConfirmed) return;
+      // ✅ Try to fetch updated employees, handle 404 if last employee deleted
       try {
-        await dispatch(deleteEmployeeById(employeeId)).unwrap();
-        // re-fetch employees for this department
         const updated = await dispatch(
           getEmployeesByDepartment(deptId),
         ).unwrap();
         setDeptEmployees((prev) => ({ ...prev, [deptId]: updated || [] }));
+
         Swal.fire(
           "Deleted!",
           `Employee "${employeeName}" has been deleted.`,
           "success",
         );
-      } catch (err) {
-        console.error(err);
-        Swal.fire("Error", "Failed to delete employee.", "error");
-      }
-    });
-  };
+      } catch (fetchErr) {
+        // ✅ Last employee deleted — department now empty, close and refresh
+        setDeptEmployees((prev) => ({ ...prev, [deptId]: [] }));
+        setSelectedDept(null); // close the card
 
-  // form input change per department
+        // ✅ Refresh department list to remove empty department from UI
+        dispatch(getDepartments({ page: 1, search: "" }));
+
+        Swal.fire(
+          "Deleted!",
+          `Employee "${employeeName}" has been deleted. The department has been removed as it has no employees.`,
+          "success",
+        );
+      }
+    } catch (err) {
+      Swal.fire("Error", "Failed to delete employee.", "error");
+    }
+  });
+};
+
   const handleFormChange = (deptId, e) => {
     const { name, value } = e.target;
     setFormDatas((prev) => ({
@@ -219,8 +197,6 @@ const DepartmentList = () => {
       },
     }));
   };
-
-  // toggle edit mode for a department
   const toggleEdit = (deptId) => {
     if (editingDeptId === deptId) {
       setEditingDeptId(null);
@@ -228,8 +204,6 @@ const DepartmentList = () => {
       setEditingDeptId(deptId);
     }
   };
-
-  // update department (department head)
   const handleUpdate = async (deptId) => {
     const form = formDatas[deptId] || {};
     const payload = {
@@ -254,8 +228,6 @@ const DepartmentList = () => {
       await dispatch(
         updateDepartmentById({ id: deptId, data: payload }),
       ).unwrap();
-
-      // re-fetch details and employees to reflect changes
       const updatedDept = await fetchDepartmentById(deptId);
       setDeptDetails((prev) => ({ ...prev, [deptId]: updatedDept }));
       setFormDatas((prev) => ({
@@ -266,14 +238,11 @@ const DepartmentList = () => {
           department_head_id: updatedDept.department_head?.id || "",
         },
       }));
-
-      // optionally refresh global departments list
       dispatch(getDepartments({ page: 1, search: "" }));
 
       Swal.fire("Updated!", "Department updated successfully.", "success");
       setEditingDeptId(null);
     } catch (err) {
-      console.error("Update failed:", err);
       Swal.fire(
         "Error",
         "Something went wrong while updating department.",
@@ -286,12 +255,11 @@ const DepartmentList = () => {
     const { name, value } = e.target;
     setNewDeptForm((prev) => ({
       ...prev,
-      [name]: value.toUpperCase(), // optional: uppercase
+      [name]: value.toUpperCase(), 
     }));
   };
 
   const handleCreateDepartment = async () => {
-    // client-side validation
     if (!newDeptForm.name?.trim()) {
       setNewDeptError("Please provide a department name.");
       return;
@@ -314,8 +282,6 @@ const DepartmentList = () => {
       setNewDeptForm({ name: "", department_code: "" });
       setNewDeptError("");
       dispatch(getDepartments({ page: 1, search: "" }));
-
-      console.debug("Department created:", created);
     } catch (err) {
       const message =
         err?.payload?.detail ||
@@ -323,7 +289,6 @@ const DepartmentList = () => {
         err?.message ||
         "Something went wrong. Please try again later.";
       setNewDeptError(message);
-      console.error("Create department failed:", err);
     } finally {
       setSavingDept(false);
     }
@@ -344,6 +309,7 @@ const DepartmentList = () => {
           showBackArrow={false}
           showTabs={false}
           searchPlaceholder="Search  Department Name"
+          showReportButton={false}
         />
 
         {loading ? (
@@ -364,7 +330,6 @@ const DepartmentList = () => {
                   }),
                 );
 
-                // pagination calculations for this department
                 const currentPage = pageByDept[dept.id] || 1;
                 const totalPages = Math.max(
                   1,
@@ -480,6 +445,7 @@ const DepartmentList = () => {
                                         editingDeptId === dept.id
                                           ? "text"
                                           : "default",
+                                             textTransform: "capitalize",
                                     }}
                                   />
                                 </InputGroup>
@@ -648,7 +614,7 @@ const DepartmentList = () => {
                           )}
                         </DropdownWrapper>
 
-                        {/* Pagination for employees inside the expanded department */}
+                  
                         {sortedEmployees.length > pageSize && (
                           <PaginationWrapper
                             onClick={(e) => e.stopPropagation()}
@@ -663,7 +629,7 @@ const DepartmentList = () => {
                                 }));
                               }}
                             >
-                              Prev
+                         <FaAnglesLeft/>
                             </PageButton>
 
                             <PageInfo>
@@ -683,7 +649,7 @@ const DepartmentList = () => {
                                 }));
                               }}
                             >
-                              Next
+                          <FaAnglesRight/>
                             </PageButton>
                           </PaginationWrapper>
                         )}
@@ -693,84 +659,20 @@ const DepartmentList = () => {
                 );
               })
             ) : (
-              <p>No departments found.</p>
+           <div style={{ 
+    width: "100%", 
+    display: "flex", 
+    justifyContent: "center" 
+  }}>
+    <NoEmployeeFound searchTerm={search} label="No Department Found" />
+  </div>
             )}
           </DepartmentGrid>
         )}
 
-        {showAddModal && (
-          <ModalOverlay>
-            <ModalContent>
-              <Container style={{ position: "relative" }}>
-                <CloseButton
-                  onClick={() => setShowAddModal(false)}
-                  aria-label="Close"
-                >
-                  <FaTimes />
-                </CloseButton>
-
-                <TitleRow>
-                  <BackArrow
-                    onClick={() => setShowAddModal(false)}
-                    aria-label="Back"
-                  >
-                <GoArrowLeft />
-                  </BackArrow>
-                  <Title>Add Department</Title>
-                </TitleRow>
-
-                <Form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleCreateDepartment();
-                  }}
-                >
-                  <FormGroup>
-                    <Label>Department Name</Label>
-                    <Input
-                      style={{ border: "1px solid lightgray" }}
-                      type="text"
-                      name="name"
-                      value={newDeptForm.name}
-                      onChange={handleNewDeptChange}
-                      placeholder="Eg:Development"
-                           autoComplete="off"
-                      required
-                    />
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>Department Code</Label>
-                    <Input
-                      style={{ border: "1px solid lightgray" }}
-                      type="text"
-                      name="department_code"
-                      value={newDeptForm.department_code}
-                      onChange={handleNewDeptChange}
-                      placeholder="Eg:Dev_00"
-                      autoComplete="off"
-                      required
-                    />
-                  </FormGroup>
-
-                  {newDeptError && (
-                    <p style={{ color: "red" }}>{newDeptError}</p>
-                  )}
-
-                  <ButtonRow>
-                    <CancelButton
-                      type="button"
-                      onClick={() => setShowAddModal(false)}
-                    >
-                      Cancel
-                    </CancelButton>
-                    <SaveButton type="submit">Save</SaveButton>
-                  </ButtonRow>
-                </Form>
-              </Container>
-            </ModalContent>
-          </ModalOverlay>
-        )}
+     {showAddModal && (
+  <AddDepartment onClose={() => setShowAddModal(false)} />
+)}
       </PageContainer>
     </>
   );

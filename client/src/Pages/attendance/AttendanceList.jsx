@@ -1,4 +1,3 @@
-// src/pages/attendance/AttendanceList.jsx
 import React, { useState, useEffect } from "react";
 import {
   PageContainer,
@@ -15,16 +14,20 @@ import {
   EmployeeCell,
   LeftWrapper,
   DepartmentIcon,
+  PaginationWrapper,
+  PaginationButton,
+  PaginationInfo,
 } from "./AttendanceList.Styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { getDepartments } from "../../Redux/departmentSlice";
+import { getDepartmentsMin } from "../../Redux/departmentSlice";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader";
 import { ClipLoader } from "react-spinners";
-
+import { FaAnglesLeft,FaAnglesRight } from "react-icons/fa6";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 const AttendanceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,12 +39,13 @@ const AttendanceList = () => {
   const [loadingDept, setLoadingDept] = useState(false);
 
   const pageSize = 10;
-  const { list: departmentList = [], loading } = useSelector(
-    (state) => state.departments
-  );
 
+ const { minList: departmentList = [], loading } = useSelector(
+  (state) => state.departments
+);
+  const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" }));
+    dispatch(getDepartmentsMin({ page: 1, search: "" }));
   }, [dispatch]);
 
   const parseTimeToTimestamp = (timeStr) => {
@@ -67,27 +71,16 @@ const AttendanceList = () => {
     const start = (page - 1) * pageSize;
     return items.slice(start, start + pageSize);
   };
-
-  const groupByEmployee = (records) => {
-    const map = {};
-    records.forEach((emp) => {
-      const id = emp.employee_id;
-      if (!map[id]) map[id] = emp;
-    });
-    return Object.values(map);
-  };
-
-  const getTodayDate = () => new Date().toISOString().split("T")[0];
-
   const loadAttendanceForDept = async (deptId) => {
     setLoadingDept(true);
     try {
       const res = await dispatch(getAttendanceList({ department_id: deptId }));
-      const results = res?.payload?.results || [];
-      const today = getTodayDate();
-      const todays = results.filter((e) => e.date === today);
-      const unique = groupByEmployee(todays);
-      setDepartmentAttendance((p) => ({ ...p, [deptId]: unique }));
+      const data = res?.payload || {};
+
+      setDepartmentAttendance((p) => ({
+        ...p,
+        [deptId]: data.results || [],
+      }));
     } finally {
       setLoadingDept(false);
     }
@@ -98,79 +91,64 @@ const AttendanceList = () => {
       setSelectedDept(null);
       return;
     }
+
     setSelectedDept(deptId);
     setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
-
     if (!departmentAttendance[deptId]) {
       await loadAttendanceForDept(deptId);
     }
+
+    // Normal mode
+    const response = await dispatch(getAttendanceList({ department_id: deptId }));
+    const results = response?.payload?.results || [];
+    setDepartmentAttendance((prev) => ({ ...prev, [deptId]: results }));
   };
 
-  const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
+const departmentsToRender = departmentList
+  .filter((dept) =>
+    dept.name?.toLowerCase().includes(searchText.toLowerCase())
+  )
+  .map((dept) => ({
+    ...dept,
+    employees: departmentAttendance[dept.id] || [],
+  }));
 
-  // ----------------- FILTER + SEARCH -----------------------
-  const [filteredDepartments, setFilteredDepartments] = useState([]);
+  const formatDate = (date) => {
+  if (!date) return "-";
 
-  useEffect(() => {
-    const fetchAndFilter = async () => {
-      if (!searchText) {
-        setFilteredDepartments(
-          departmentList.map((dept) => ({
-            ...dept,
-            employees: departmentAttendance[dept.id] || [],
-          }))
-        );
-        return;
-      }
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
 
-      const promises = departmentList.map(async (dept) => {
-        if (!departmentAttendance[dept.id]) {
-          await loadAttendanceForDept(dept.id);
-        }
-      });
-
-      await Promise.all(promises);
-
-      const filtered = departmentList
-        .map((dept) => {
-          const employees = departmentAttendance[dept.id] || [];
-          const matches = employees.filter((e) =>
-            (e.employee_name || "")
-              .toLowerCase()
-              .includes(searchText.toLowerCase())
-          );
-          return { ...dept, employees: matches };
-        })
-        .filter((dept) => dept.employees.length > 0);
-
-      setFilteredDepartments(filtered);
-    };
-
-    fetchAndFilter();
-  }, [searchText, departmentList, departmentAttendance]);
-
-  const departmentsToRender = searchText
-    ? filteredDepartments
-    : departmentList.map((dept) => ({
-        ...dept,
-        employees: departmentAttendance[dept.id] || [],
-      }));
-
+  return `${day}/${month}/${year}`;
+};
   return (
     <PageContainer>
       <EmployeeTitle
         iconSrc={EmployeeIcon}
         showAddButton={false}
         showDropdown={false}
+       searchValue={searchText}  
         onSearchChange={setSearchText}
         showBackArrow={false}
+        showReportButton={false}
+        showTabs={true}
       />
-
       {loading ? (
         <Loader />
       ) : (
         <DepartmentGrid>
-          {departmentsToRender.map((dept) => {
+        {departmentsToRender.length === 0 ? (
+    <div style={{ 
+      width: "100%", 
+      display: "flex", 
+      justifyContent: "center" 
+    }}>
+      <NoEmployeeFound searchTerm={searchText} />
+    </div>
+  ) : (
+          departmentsToRender.map((dept) => {
             const isOpen = selectedDept === dept.id;
             const employees = dept.employees || [];
 
@@ -183,17 +161,13 @@ const AttendanceList = () => {
               <DepartmentCard key={dept.id}>
                 <DepartmentHeader onClick={() => handleToggle(dept.id)}>
                   <LeftWrapper>
-                    <DepartmentIcon>{dept.name[0]}</DepartmentIcon>
+                    <DepartmentIcon>{dept.name?.[0]}</DepartmentIcon>
                     <DepartmentName>{dept.name}</DepartmentName>
                   </LeftWrapper>
                   <EmployeeCount>
-                    {searchText
-                      ? dept.employees?.length || 0
-                      : dept.attendance_employee_count || 0}{" "}
-                    Employees
+                    {dept.swiped_employee_count || 0} / {dept.total_employee_count || 0} Swiped
                   </EmployeeCount>
                 </DepartmentHeader>
-
                 {isOpen && (
                   <DropdownWrapper>
                     <DropdownHeader>
@@ -203,8 +177,8 @@ const AttendanceList = () => {
                       <span>In Date</span>
                       <span>In Time</span>
                       <span>Out Time</span>
+                      <span>Status</span>
                     </DropdownHeader>
-
                     <EmployeeList>
                       {loadingDept ? (
                         <EmployeeItem style={{ textAlign: "center" }}>
@@ -213,16 +187,14 @@ const AttendanceList = () => {
                       ) : paginated.length > 0 ? (
                         paginated.map((emp, idx) => {
                           const sessions = emp.sessions || [];
-
-                          // First punch in
                           const inTimes = sessions
                             .map((s) => parseTimeToTimestamp(s.time_in))
                             .filter((t) => !isNaN(t));
+
                           const tIn = inTimes.length
                             ? formatTime(Math.min(...inTimes))
                             : "-";
 
-                          // Last punch out or '---' if last action is punch in
                           let tOut = "-";
                           if (sessions.length > 0) {
                             const lastSession = sessions[sessions.length - 1];
@@ -231,68 +203,74 @@ const AttendanceList = () => {
                                 ? formatTime(parseTimeToTimestamp(lastSession.time_out))
                                 : "---";
                           }
-
                           return (
                             <EmployeeRow
-                              key={emp.id}
-                              onClick={() => handleRowClick(emp.id)}
-                            >
+                              key={emp.employee}
+                              onClick={() => handleRowClick(emp.employee)} >
                               <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
                               <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
-                              <EmployeeCell>{emp.date || "-"}</EmployeeCell>
-                              <EmployeeCell>{tIn}</EmployeeCell>
-                              <EmployeeCell>{tOut}</EmployeeCell>
+                   <EmployeeCell>{formatDate(emp.date)}</EmployeeCell>
+                              <EmployeeCell>{emp.first_swipe_in || tIn}</EmployeeCell>
+                              <EmployeeCell>{emp.last_swipe_out || tOut}</EmployeeCell>
+                              <EmployeeCell>
+                                <span
+                                  style={{
+                                    color: emp.attendance_today ? "green" : "red",
+                                    fontSize: "14px",
+                                  }}
+                                >
+                                  ●
+                                </span>
+                              </EmployeeCell>
                             </EmployeeRow>
                           );
                         })
                       ) : (
-                        <EmployeeItem>No attendance found for today.</EmployeeItem>
+                        <EmployeeItem>No attendance found.</EmployeeItem>
                       )}
                     </EmployeeList>
+                   {employees.length > pageSize && (
+  <PaginationWrapper>
+    <PaginationButton
+      disabled={currentPage === 1}
+      onClick={() =>
+        setPageByDept((p) => ({
+          ...p,
+          [dept.id]: currentPage - 1,
+        }))
+      }
+    >
+<FaAnglesLeft/>
+    </PaginationButton>
 
-                    {employees.length > pageSize && (
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "10px",
-                          padding: "10px",
-                        }}
-                      >
-                        <button
-                          disabled={currentPage === 1}
-                          onClick={() =>
-                            setPageByDept((p) => ({
-                              ...p,
-                              [dept.id]: currentPage - 1,
-                            }))
-                          }
-                        >
-                          Prev
-                        </button>
-                        <span>
-                          Page {currentPage} / {totalPages}
-                        </span>
-                        <button
-                          disabled={currentPage === totalPages}
-                          onClick={() =>
-                            setPageByDept((p) => ({
-                              ...p,
-                              [dept.id]: currentPage + 1,
-                            }))
-                          }
-                        >
-                          Next
-                        </button>
-                      </div>
-                    )}
+    <PaginationInfo>
+      Page {currentPage} / {totalPages}
+    </PaginationInfo>
+
+    <PaginationButton
+      disabled={currentPage === totalPages}
+      onClick={() =>
+        setPageByDept((p) => ({
+          ...p,
+          [dept.id]: currentPage + 1,
+        }))
+      }
+    >
+<FaAnglesRight/>
+    </PaginationButton>
+  </PaginationWrapper>
+)}
                   </DropdownWrapper>
                 )}
               </DepartmentCard>
             );
-          })}
+          })
+        )}
         </DepartmentGrid>
+        
       )}
+      
     </PageContainer>
   );
 };

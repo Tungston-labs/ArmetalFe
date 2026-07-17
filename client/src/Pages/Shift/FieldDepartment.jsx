@@ -14,14 +14,14 @@ import {
   AddButton,
   ButtonWrapper,
   EmployeeHeader,
-  StatusRow,
-  NewStatusBadge,
-  NewStatusDot,
-  StatusContainer,
-  StatusLabel,
   ProgressContainer,
   LeftSide,
   RightSide,
+  StyledTable,
+  BodyCell,
+  BodyRow,
+  HeadCell, HeadRow, TableBody, TableHead,
+  TableWrapper
 } from "./FieldDepartment.Styles";
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import { FaPlus, FaTrash } from "react-icons/fa";
@@ -29,7 +29,6 @@ import { BiEditAlt } from "react-icons/bi";
 import Swal from "sweetalert2";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
-import { BodyCell, BodyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead } from "../leaveDetails/EmployeeList.styles";
 import ProgressModal from "../../Components/ProgressModal";
 const FieldShift = () => {
   const dispatch = useDispatch();
@@ -48,18 +47,18 @@ const FieldShift = () => {
     longitude: "",
     status: "",
   });
-const statusText = {
-  in_progress: "In Progress",
-  completed: "Completed",
-  on_hold: "On Hold",
-  cancelled: "Cancelled",
-};
-const statusColors = {
-  in_progress: "#f59e0b",   // yellow
-  completed: "#10b981",     // green
-  on_hold: "#3b82f6",       // blue
-  cancelled: "#ef4444",     // red
-};
+  const statusText = {
+    in_progress: "In Progress",
+    completed: "Completed",
+    on_hold: "On Hold",
+    cancelled: "Cancelled",
+  };
+  const statusColors = {
+    in_progress: "#f59e0b",   // yellow
+    completed: "#10b981",     // green
+    on_hold: "#3b82f6",       // blue
+    cancelled: "#ef4444",     // red
+  };
   const [employees, setEmployees] = useState([]);
   useEffect(() => {
     if (id) dispatch(getProjectById(id));
@@ -72,7 +71,7 @@ const statusColors = {
         punchType: project.punch_type || "",
         latitude: project.latitude || "",
         longitude: project.longitude || "",
-        status: project.status || "in_progress",  
+        status: project.status || "in_progress",
       });
 
 
@@ -167,12 +166,12 @@ const statusColors = {
 
   const handleSaveFromModal = async (updatedData) => {
     const updatedProject = {
-  name: updatedData.projectName,
-  punch_type: updatedData.punchInType,
-  latitude: updatedData.latitude,
-  longitude: updatedData.longitude,
-  status: updatedData.status,   
-};
+      name: updatedData.projectName,
+      punch_type: updatedData.punchInType,
+      latitude: updatedData.latitude,
+      longitude: updatedData.longitude,
+      status: updatedData.status,
+    };
 
 
     try {
@@ -228,31 +227,32 @@ const statusColors = {
           showTabs={false}
           showAddButton={false}
           showSearch={false}
+          showReportButton={false}
         />
         {!isDeleted ? (
           <>
-<ProgressContainer>
-  <LeftSide>
-<ProgressModal
-  isOpen={!showEmployeeModal}
-  status={formData.status}
-/>
-  </LeftSide>
+            <ProgressContainer>
+              <LeftSide>
+                <ProgressModal
+                  isOpen={!showEmployeeModal}
+                  status={formData.status}
+                />
+              </LeftSide>
 
-  <RightSide>
-    <ButtonWrapper>
-      <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
-        <BiEditAlt style={{ marginRight: "6px" }} />
-        Edit
-      </ActionButton>
+              <RightSide>
+                <ButtonWrapper>
+                  <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
+                    <BiEditAlt style={{ marginRight: "6px" }} />
+                    Edit
+                  </ActionButton>
 
-      <ActionButton color="delete" onClick={handleDelete}>
-        <FaTrash style={{ marginRight: "6px" }} />
-        Delete
-      </ActionButton>
-    </ButtonWrapper>
-  </RightSide>
-</ProgressContainer>
+                  <ActionButton color="delete" onClick={handleDelete}>
+                    <FaTrash style={{ marginRight: "6px" }} />
+                    Delete
+                  </ActionButton>
+                </ButtonWrapper>
+              </RightSide>
+            </ProgressContainer>
             <FormContainer>
               <div
                 style={{
@@ -294,52 +294,50 @@ const statusColors = {
                   <FaPlus /> Add
                 </AddButton>
               </EmployeeHeader>
+              <TableWrapper>
+                <StyledTable>
+                  <TableHead>
+                    <HeadRow>
+                      <HeadCell>Sl No</HeadCell>
+                      <HeadCell>Employee Name</HeadCell>
+                      <HeadCell>Employee ID</HeadCell>
+                      <HeadCell>Email ID</HeadCell>
+                      <HeadCell>Job Position</HeadCell>
+                      <HeadCell>Department</HeadCell>
+                      <HeadCell>Delete</HeadCell>
+                    </HeadRow>
+                  </TableHead>
 
-
-
-              <StyledTable>
-                <TableHead>
-                  <HeadRow>
-                    <HeadCell>Sl No</HeadCell>
-                    <HeadCell>Employee Name</HeadCell>
-                    <HeadCell>Employee ID</HeadCell>
-                    <HeadCell>Email ID</HeadCell>
-                    <HeadCell>Job Position</HeadCell>
-                    <HeadCell>Department</HeadCell>
-                    <HeadCell>Delete</HeadCell>
-                  </HeadRow>
-                </TableHead>
-
-                <TableBody>
-                  {employees.map((emp, i) => (
-                    <BodyRow
-                      key={emp.id}
-                      className={i % 2 === 0 ? "even" : ""}
-                      onClick={() => navigate(`/project/${emp.id}`)}
-                      style={{ cursor: "pointer" }}     
-                    >
-                      <BodyCell>{i + 1}</BodyCell>
-                      <BodyCell>{emp.name}</BodyCell>
-                      <BodyCell>{emp.employeeId}</BodyCell>
-                      <BodyCell>{emp.email}</BodyCell>
-                      <BodyCell>{emp.position}</BodyCell>
-                      <BodyCell>{emp.department_name}</BodyCell>
-
-
-                      <BodyCell
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEmployeeDelete(emp.id);
-                        }}
+                  <TableBody>
+                    {employees.map((emp, i) => (
+                      <BodyRow
+                        key={emp.id}
+                        className={i % 2 === 0 ? "even" : ""}
+                        // onClick={() => navigate(`/project/${emp.id}`)}
+                        style={{ cursor: "pointer" }}
                       >
-                        <FaTrash color="red" style={{ cursor: "pointer" }} />
-                      </BodyCell>
-                    </BodyRow>
-                  ))}
-                </TableBody>
+                        <BodyCell>{i + 1}</BodyCell>
+                        <BodyCell>{emp.name}</BodyCell>
+                        <BodyCell>{emp.employeeId}</BodyCell>
+                        <BodyCell>{emp.email}</BodyCell>
+                        <BodyCell>{emp.position}</BodyCell>
+                        <BodyCell>{emp.department_name}</BodyCell>
 
-              </StyledTable>
 
+                        <BodyCell
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEmployeeDelete(emp.id);
+                          }}
+                        >
+                          <FaTrash color="red" style={{ cursor: "pointer" }} />
+                        </BodyCell>
+                      </BodyRow>
+                    ))}
+                  </TableBody>
+
+                </StyledTable>
+              </TableWrapper>
             </EmployeesSection>
 
             {showEmployeeModal && (
@@ -364,7 +362,7 @@ const statusColors = {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           onSave={handleSaveFromModal}
-          projectData={{ ...formData, punchInType: formData.punchType, status: formData.status,}}
+          projectData={{ ...formData, punchInType: formData.punchType, status: formData.status, }}
         />
       )}
     </>

@@ -9,88 +9,204 @@ from superadmin.models import Company
 from user.models import User
 from django.core.mail import send_mail
 from django.conf import settings
+from datetime import date, timedelta
+import calendar
+from django.utils.timezone import now
+from rest_framework import serializers
+from django.conf import settings
+from django.core.mail import send_mail
+from .models import Company, User
+import json
+from decimal import Decimal
+from finance.models import FinanceCategory
 
 
 class CompanyCreateSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Company
         fields = [
-            'id',
-            'company_id',
-            'name',
-            'address',
-            'location',
-            'contact_number',
-            'country',
-            'logo',
-            'email',
-            'modules',
-            'latitude',
-            'longitude',
-            'number_of_employees',
-            'default_password',
-            'created_at',
-            'updated_at',
+            "id",
+            "company_id",
+            "name",
+            "address",
+            "location",
+            "contact_number",
+            "country",
+            "logo",
+            "email",
+            "modules",
+            "latitude",
+            "longitude",
+            "number_of_employees",
+            "default_password",
+            "created_at",
+            "updated_at",
+            "amount_per_employee",
+            "initial_payment",
+            "basic_salary_percent",
+            "house_allowance_percent",
+            "transport_allowance_percent",
+            "special_allowance_percent",
+            "working_hours_per_day",
+            "half_day_hours",
         ]
-        read_only_fields = [
-            'id',
-            'company_id',
-            'number_of_employees',
-            'default_password',
-            'created_at',
-            'updated_at'
-        ]
-        extra_kwargs = {
-            'modules': {'required': True},
-        }
 
+        read_only_fields = [
+            "id",
+            "company_id",
+            "number_of_employees",
+            "default_password",
+            "created_at",
+            "updated_at",
+        ]
+
+        extra_kwargs = {
+            "modules": {"required": True},
+            "amount_per_employee": {"required": False},
+            "initial_payment": {"required": False},
+        }
+    def validate(self, attrs):
+
+    # -------------------------------
+    # Handle decimal fields from multipart
+    # -------------------------------
+        ape = self.initial_data.get("amount_per_employee")
+        ip = self.initial_data.get("initial_payment")
+
+        if ape not in [None, ""]:
+            attrs["amount_per_employee"] = Decimal(ape)
+
+        if ip not in [None, ""]:
+            attrs["initial_payment"] = Decimal(ip)
+
+        # -------------------------------
+        # Salary Percentage Validation
+        # -------------------------------
+        basic = attrs.get("basic_salary_percent", 0)
+        hra = attrs.get("house_allowance_percent", 0)
+        transport = attrs.get("transport_allowance_percent", 0)
+        special = attrs.get("special_allowance_percent", 0)
+
+        total_percent = basic + hra + transport + special
+
+        if total_percent > 100:
+            raise serializers.ValidationError(
+                "Total salary percentage cannot exceed 100%."
+            )
+
+        # -------------------------------
+        # Working Hours Validation
+        # -------------------------------
+        working_hours = attrs.get("working_hours_per_day")
+        half_day_hours = attrs.get("half_day_hours")
+
+        if working_hours and half_day_hours:
+            if half_day_hours >= working_hours:
+                raise serializers.ValidationError(
+                    "Half day hours must be less than working hours per day."
+                )
+
+        return attrs
+
+    # ---------------------------------------------------------
+    # CREATE
+    # ---------------------------------------------------------
     def create(self, validated_data):
-        # ✅ latitude & longitude are already in validated_data, so no need to ignore
+
+        modules = self.initial_data.get("modules")
+
+        if isinstance(modules, str):
+            validated_data["modules"] = json.loads(modules)
+
         company = Company.objects.create(**validated_data)
 
-        # Create HR admin user linked to the company
+        # -------------------------------------------------
+        # Create HR Admin User
+        # -------------------------------------------------
         User.objects.create_user(
             username=company.company_id,
             email=company.email,
             password=company.default_password,
             is_hr_admin=True,
-            company=company
+            company=company,
         )
 
-        # Send credentials via email
+        # -------------------------------------------------
+        # Create Default Finance Categories
+        # -------------------------------------------------
+        company_modules = company.modules or {}
+
+        finance_enabled = (
+            company_modules.get("finance") is True
+            or company_modules.get("finance") == "true"
+        )
+
+        if finance_enabled:
+
+            default_categories = [
+                {
+                    "name": "salary",
+                    "payment_type": "OUT"
+                },
+                {
+                    "name": "reimbursement",
+                    "payment_type": "OUT"
+                },
+            ]
+
+            for category in default_categories:
+
+                FinanceCategory.objects.get_or_create(
+                    company=company,
+                    name=category["name"],
+                    payment_type=category["payment_type"]
+                )
+
+        # -------------------------------------------------
+        # Send Mail
+        # -------------------------------------------------
         try:
             send_mail(
-                subject=f"Welcome to Armetal - Your Company Credentials",
+                subject="Welcome to Rekory - Company Credentials",
                 message=f"""
     Hi {company.name},
 
-    Your company account has been successfully created on Armetal.
+    Your company account has been successfully created.
 
     Login credentials:
     Username: {company.company_id}
     Password: {company.default_password}
 
-    You can use these credentials to log in as the HR admin.
-
-    Regards,  
-    Armetal Support
+    Regards,
+    Rekory Team
     """,
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[company.email],
-                fail_silently=False,
+                fail_silently=True,
             )
-        except Exception as e:
-            print(f"❌ Failed to send company credentials email: {str(e)}")
+
+        except Exception:
+            pass
 
         return company
 
+
+    # ---------------------------------------------------------
+    # UPDATE
+    # ---------------------------------------------------------
     def update(self, instance, validated_data):
+
+        modules = self.initial_data.get("modules")
+        if isinstance(modules, str):
+            validated_data["modules"] = json.loads(modules)
+
         old_email = instance.email
-        new_email = validated_data.get('email', old_email)
+        new_email = validated_data.get("email", old_email)
 
         instance = super().update(instance, validated_data)
 
-        # If company email was updated, sync to HR admin user
+        # sync HR admin email
         if new_email != old_email:
             hr_user = User.objects.filter(company=instance, is_hr_admin=True).first()
             if hr_user:
@@ -99,43 +215,36 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 
         return instance
 
+    # ---------------------------------------------------------
+    # VALIDATION
+    # ---------------------------------------------------------
     def validate_modules(self, value):
         if not isinstance(value, dict):
             raise serializers.ValidationError("Modules must be a dictionary")
         return value
 
+
+
  
-    
 class CompanySubscriptionSerializer(serializers.ModelSerializer):
     month_display = serializers.SerializerMethodField()
-    amount = serializers.SerializerMethodField()
-    currency = serializers.SerializerMethodField()
 
     class Meta:
         model = CompanySubscription
         fields = [
-            'id',
-            'company',
-            'month',
-            'month_display',
-            'year',
-            'paid_date',
-            'amount',
-            'currency',
-            'status',
+            "id",
+            "company",
+            "month",
+            "month_display",
+            "year",
+            "paid_date",
+            "amount",
+            "currency",
+            "status",
         ]
 
     def get_month_display(self, obj):
-        from calendar import month_name
         return month_name[obj.month]
-
-    def get_amount(self, obj):
-        rate, currency = obj.get_rate_per_employee_and_currency()
-        return round(obj.company.number_of_employees * rate, 2)
-
-    def get_currency(self, obj):
-        _, currency = obj.get_rate_per_employee_and_currency()
-        return currency
     
 class CompanyListSerializer(serializers.ModelSerializer):
     last_paid_date = serializers.SerializerMethodField()
@@ -170,21 +279,33 @@ class CompanyListSerializer(serializers.ModelSerializer):
             return last_paid.paid_date.isoformat()
         return None
 
+
+
     def get_next_due_date(self, obj):
-        last_paid = obj.subscriptions.filter(status="paid").order_by('-year', '-month').first()
-        if not last_paid or not last_paid.paid_date:
-            return None
+        today = now().date()
+        billing_day = obj.created_at.day
 
-        paid_date = last_paid.paid_date
-        year, month, day = paid_date.year, paid_date.month, paid_date.day
-        if month == 12:
-            next_month, next_year = 1, year + 1
-        else:
-            next_month, next_year = month + 1, year
+        year, month = today.year, today.month
 
-        days_in_next_month = calendar.monthrange(next_year, next_month)[1]
-        next_day = min(day, days_in_next_month)
-        return date(next_year, next_month, next_day).isoformat()
+        # last valid day of this month
+        days_in_month = calendar.monthrange(year, month)[1]
+        due_day = min(billing_day, days_in_month)
+
+        due_date = date(year, month, due_day)
+
+        # if already passed → move to next month
+        if today > due_date:
+            if month == 12:
+                month, year = 1, year + 1
+            else:
+                month += 1
+
+            days_in_month = calendar.monthrange(year, month)[1]
+            due_day = min(billing_day, days_in_month)
+            due_date = date(year, month, due_day)
+
+        return due_date.isoformat()
+
 
 
 
@@ -202,6 +323,14 @@ class CompanySelfUpdateSerializer(serializers.ModelSerializer):
             "email",
             "modules",
             "logo",
+            'amount_per_employee',   
+            'initial_payment', 
+            "basic_salary_percent",
+            "house_allowance_percent",
+            "transport_allowance_percent",
+            "special_allowance_percent",
+            "working_hours_per_day",
+            "half_day_hours",
         ]
         extra_kwargs = {
             "email": {"required": False},

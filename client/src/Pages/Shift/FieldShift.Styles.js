@@ -572,36 +572,36 @@ justify-content: space-between;
 export const Tag = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
   background-color: #b4c5ff;
   color: #172554;
   font-family: "Trispace", sans-serif;
   font-weight: 400;
   font-size: 12px;
   border-radius: 6px;
-  padding: 0.3rem 0.6rem;
+  padding: 5px;
 
   img {
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     background-color: #172554;
     border-radius: 50%;
   }
 
-  @media (max-width: 768px) {
-    font-size: 11px;
-    padding: 0.25rem 0.5rem;
+  @media (max-width: 900px) {
+    font-size: 15px;
+    padding: 0.4rem 0.5rem;
     img {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
   }
 
   @media (max-width: 480px) {
     font-size: 10px;
     img {
-      width: 12px;
-      height: 12px;
+      width: 15px;
+      height: 15px;
     }
   }
   @media (max-width: 1024px) {
@@ -611,6 +611,7 @@ export const Tag = styled.div`
       height: 12px;
     }
   }
+  
   @media (min-width: 1440px) {
     font-size: 0.7rem;
     img {
@@ -638,8 +639,9 @@ export const Tag = styled.div`
 `;
 
 export const StatusTag = styled.span`
-  background-color: ${(props) => props.bgcolor || "#c4e2fdff"};
-  color: white;
+  background-color: ${(props) => props.$lightbg};
+  color: ${(props) => props.$color};
+  border: 1.5px solid ${(props) => props.$color};
   margin-left: 0.5rem;
   padding: 4px 8px;
   border-radius: 4px;

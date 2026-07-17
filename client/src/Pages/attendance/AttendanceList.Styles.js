@@ -85,9 +85,9 @@ export const DepartmentIcon = styled.div`
   text-transform: uppercase;
 
   @media (min-width: 1920px) {
-    width: 60px;
-    height: 60px;
-    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
   }
 
   @media (min-width: 2560px) {
@@ -114,7 +114,7 @@ export const DepartmentName = styled.h2`
 
   /* Responsive scaling */
   @media (min-width: 1920px) {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   @media (min-width: 2560px) {
@@ -178,7 +178,7 @@ export const EmployeeList = styled.ul`
 export const EmployeeHeader = styled.div`
   font-weight: bold;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 2fr; 
+  grid-template-columns: 1fr 1fr 1fr 2fr ; 
   gap: 10px;
   padding: 0.5rem 0.5rem;
   border-bottom: 1px solid #ccc;
@@ -203,7 +203,7 @@ export const EmployeeItem = styled.li`
 `;
 export const DropdownHeader = styled.div`
   display: grid;
-grid-template-columns: repeat(6, 1fr);
+grid-template-columns: repeat(7, 1fr);
   background: #3352BA;
   color: white;
   font-weight: 600;
@@ -217,7 +217,7 @@ grid-template-columns: repeat(6, 1fr);
   /* Responsive adjustments */
   @media (min-width: 1920px) {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    font-size: 1.1rem;
+    font-size: 1rem;
     padding: 1rem 1.5rem;
   }
 
@@ -237,7 +237,7 @@ grid-template-columns: repeat(6, 1fr);
 
 export const EmployeeRow = styled.li`
   display: grid;
-grid-template-columns: repeat(6, 1fr);
+grid-template-columns: repeat(7, 1fr);
 
   padding: 0.6rem 1rem;
   border-bottom: 1px solid #eee;
@@ -262,7 +262,7 @@ background: #f4f8ff;
   @media (min-width: 1920px) {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     padding: 0.8rem 1.2rem;
-    font-size: 1.1rem;
+    /* font-size: 1.1rem; */
   }
 
   @media (min-width: 2560px) {
@@ -291,18 +291,12 @@ export const NoRecordMessage = styled.div`
   padding: 1rem;
   font-style: italic;
 `;
-export const PaginationWrapper = styled.div`
-  display: flex;
-  justify-content: left;
-  gap: 12px;
-  padding: 12px 0;
-  margin-top: 10px;
-`;
+
 
 export const PageButton = styled.button`
   padding: 6px 14px;
   border-radius: 6px;
-  border: 1px solid #304EB0;
+  border: 1px solid #ddd;
   background: ${(props) => (props.disabled ? "#f3f4f6" : "#304EB0")};
   color: ${(props) => (props.disabled ? "#9ca3af" : "#ffffffff")};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
@@ -349,4 +343,30 @@ export const StatusSelect = styled.select`
     background: white !important;
     color: black !important;
   }
+`;
+export const PaginationWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+`;
+
+export const PaginationButton = styled.button`
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: ${({ disabled }) => (disabled ? "#f3f4f6" : "#304EB0")};
+  color: ${({ disabled }) => (disabled ? "#9ca3af" : "#ffffffff")};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  transition: all 0.2s ease;
+
+    &:hover {
+    background: ${(props) => (props.disabled ? "#f3f4f6" : "#4c66bdff")};
+  }
+`;
+
+export const PaginationInfo = styled.span`
+  font-weight: 500;
+  font-size: 14px;
+  color: #444;
 `;

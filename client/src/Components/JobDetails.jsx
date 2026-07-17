@@ -11,7 +11,13 @@ import {
   FileInputLabel,
   FileInput,
   ErrorText,
- 
+  TotalLeaveBox,
+  LeaveContainer,
+  AddLeaveButton,
+  LeaveItem,
+  LeaveLabel,
+  LeaveInput,
+
 } from "./JobDetails.Styles";
 
 const JobDetails = forwardRef(({ country: propCountry, departments = [], initialValues = {}, onFormChange, errors: parentErrors }, ref) => {
@@ -25,7 +31,12 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
     joining_date: "",
     department_id: "",
     employment_type: "",
-    total_leave: "",
+    total_leave: 0,
+    casual_leave: "",
+    sick_leave: "",
+    earned_leave: "",
+    maternity_leave: "",
+    other_leave: "",
     role: "",
     phno: "",
     iqama_number: "",
@@ -48,7 +59,35 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
   useEffect(() => {
     if (initialValues && Object.keys(initialValues).length) setFormData(prev => ({ ...prev, ...initialValues }));
   }, [initialValues]);
+  useEffect(() => {
+    const total =
+      (Number(formData.casual_leave) || 0) +
+      (Number(formData.sick_leave) || 0) +
+      (Number(formData.earned_leave) || 0) +
+      (Number(formData.maternity_leave) || 0) +
+      (Number(formData.other_leave) || 0);
 
+    setFormData(prev => ({
+      ...prev,
+      total_leave: total
+    }));
+
+    if (onFormChange) {
+      onFormChange({
+        target: {
+          name: "total_leave",
+          value: total
+        }
+      });
+    }
+
+  }, [
+    formData.casual_leave,
+    formData.sick_leave,
+    formData.earned_leave,
+    formData.maternity_leave,
+    formData.other_leave
+  ]);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData(prev => ({ ...prev, [name]: files ? files[0] : value }));
@@ -58,15 +97,17 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
   const validateForm = () => {
     const newErrors = {};
     const now = new Date().toISOString().split("T")[0];
-    const baseRequired = ["designation","joining_date","department_id","employment_type","total_leave","phno","email","dob","role",];
+    const baseRequired = ["designation", "joining_date", "department_id", "employment_type", "total_leave", "phno", "email", "dob", "role",];
 
     if (country === "IN") baseRequired.push("aadar_number");
-    else baseRequired.push("visa_expiry_date","insurance_number","iqama_number");
+    else baseRequired.push("visa_expiry_date", "insurance_number", "iqama_number");
 
     baseRequired.forEach(field => {
       if (!formData[field] || (typeof formData[field] === "string" && formData[field].trim() === "")) newErrors[field] = "This field is required";
     });
-
+    if (country === "IN" && formData.aadar_number && !/^[0-9]{12}$/.test(formData.aadar_number)) {
+      newErrors.aadar_number = "Aadhaar number must be exactly 12 digits";
+    }
     if (formData.phno) {
       const phone = formData.phno.trim();
       if (country === "IN" && !/^[0-9]{10}$/.test(phone)) newErrors.phno = "Enter a valid 10-digit phone number";
@@ -90,6 +131,28 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
 
   const renderError = (field) => <>{errors[field] && <ErrorText>{errors[field]}</ErrorText>}</>;
 
+  //   const leaveTypes = ["Casual", "Sick", "Annual", "Maternity"];
+
+  // const addLeaveType = () => {
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     leave_balances: [
+  //       ...prev.leave_balances,
+  //       { type: "", days: "" }
+  //     ]
+  //   }));
+  // };
+
+  // const updateLeave = (index, field, value) => {
+  //   const updated = [...formData.leave_balances];
+
+  //   updated[index][field] = value;
+
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     leave_balances: updated
+  //   }));
+  // };
   return (
     <FormContainer noValidate>
       <SectionTitle>Job Details</SectionTitle>
@@ -97,7 +160,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       <FormRow>
         <FormGroup>
           <Label>Designation</Label>
-          <Input name="designation" value={formData.designation} onChange={handleChange} placeholder="Enter Designation" autoComplete="off"/>
+          <Input name="designation" value={formData.designation} onChange={handleChange} placeholder="Enter Designation" autoComplete="off" />
           {renderError("designation")}
         </FormGroup>
 
@@ -131,12 +194,63 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       </FormRow>
 
       <FormRow>
-        <FormGroup>
-          <Label>Total Leave</Label>
-          <Input type="number" name="total_leave" value={formData.total_leave} onChange={handleChange} step="0.1" min="0" onWheel={e => e.target.blur()}
-          placeholder="Enter Total Leave"  autoComplete="off" />
-          {renderError("total_leave")}
-        </FormGroup>
+      <FormGroup>
+  <Label>Leave Allocation</Label>
+
+  <TotalLeaveBox>
+    Total Leave : {formData.total_leave}
+  </TotalLeaveBox>
+
+  <LeaveItem>
+    <LeaveLabel>Casual Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="casual_leave"
+      value={formData.casual_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
+
+  <LeaveItem>
+    <LeaveLabel>Sick Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="sick_leave"
+      value={formData.sick_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
+
+  <LeaveItem>
+    <LeaveLabel>Earned Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="earned_leave"
+      value={formData.earned_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
+
+  <LeaveItem>
+    <LeaveLabel>Maternity Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="maternity_leave"
+      value={formData.maternity_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
+
+  <LeaveItem>
+    <LeaveLabel>Other Leave</LeaveLabel>
+    <LeaveInput
+      type="number"
+      name="other_leave"
+      value={formData.other_leave}
+      onChange={handleChange}
+    />
+  </LeaveItem>
+</FormGroup>
 
         <FormGroup>
           <Label>Roles</Label>
@@ -181,7 +295,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       <FormRow>
         <FormGroup>
           <Label>Insurance Number</Label>
-          <Input name="insurance_number" value={formData.insurance_number} onChange={handleChange} placeholder="Enter Insurance Number"  autoComplete="off"/>
+          <Input name="insurance_number" value={formData.insurance_number} onChange={handleChange} placeholder="Enter Insurance Number" autoComplete="off" />
           {renderError("insurance_number")}
         </FormGroup>
 
@@ -196,8 +310,17 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         <FormRow>
           <FormGroup>
             <Label>Aadhaar Number</Label>
-            <Input name="aadar_number" value={formData.aadar_number} onChange={handleChange} placeholder="Enter Aadhaar Number" autoComplete="off" />
-            {renderError("aadar_number")}
+            <Input
+              name="aadar_number"
+              value={formData.aadar_number}
+              onChange={handleChange}
+              placeholder="Enter Aadhaar Number"
+              autoComplete="off"
+              maxLength={12}
+              onKeyPress={(e) => {
+                if (!/[0-9]/.test(e.key)) e.preventDefault();
+              }}
+            />            {renderError("aadar_number")}
           </FormGroup>
 
           <FormGroup>
@@ -210,7 +333,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         <FormRow>
           <FormGroup>
             <Label>Iqama Number</Label>
-            <Input name="iqama_number" value={formData.iqama_number} onChange={handleChange} placeholder=" Enter Iqama Number" autoComplete="off"/>
+            <Input name="iqama_number" value={formData.iqama_number} onChange={handleChange} placeholder=" Enter Iqama Number" autoComplete="off" />
             {renderError("iqama_number")}
           </FormGroup>
 
@@ -221,6 +344,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
           </FormGroup>
         </FormRow>
       )}
+
 
     </FormContainer>
   );

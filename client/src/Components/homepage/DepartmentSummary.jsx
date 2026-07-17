@@ -26,6 +26,7 @@ const DepartmentSummary = ({ departments = [] }) => {
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .slice(0, 1);
 
+    
   return (
     <Wrapper>
          <Header>

@@ -104,7 +104,7 @@ CHANNEL_LAYERS = {
 }
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# https://docs.djangoproject.com/en/5.2zZZZ/ref/settings/#databases
 
 
 DATABASES = {
@@ -168,18 +168,23 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": (
+        "user.permissions.IsCompanyActive",
     ),
     'DEFAULT_PAGINATION_CLASS': 'shared.pagination.CustomPagination',
     'PAGE_SIZE': 7,
+
+    'EXCEPTION_HANDLER': 'shared.utils.exception_handler.custom_exception_handler',
+
 }
+
+
 
 from datetime import timedelta
 
 SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=60),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MdOutlineFileDownload } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
 import { VscSend } from "react-icons/vsc";
@@ -19,46 +19,51 @@ import {
   PlanIconWrapper
 } from './Plan.Styles';
 import API from '../services/api';
-
+import { useReactToPrint } from "react-to-print";
+import Invoice from "../Pages/superAdmin/print/Invoice";
 const PaymentOverview = ({ companyId: propCompanyId }) => {
   const { id: urlCompanyId } = useParams();
   const companyId = propCompanyId || urlCompanyId;
-
+  const invoiceRef = useRef();
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [paymentData, setPaymentData] = useState([]);
-  const [companyName, setCompanyName] = useState("Company");
+const [company, setCompany] = useState(null);
 
-  useEffect(() => {
-    if (companyId) {
-      fetchPaymentData(companyId);
-      fetchCompanyName(companyId);
-    }
-  }, [companyId]);
+console.log("Company ID:", companyId);
 
-  const fetchPaymentData = async (id) => {
-    try {
-      const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
-      const res = await API.get(`/subscriptions/${id}/`);
+useEffect(() => {
+  if (companyId) {
+    fetchPaymentData(companyId);
+  }
+}, [companyId]);
 
-      if (Array.isArray(res.data)) {
-        setPaymentData(res.data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch payment data:", error);
-    }
-  };
-  const fetchCompanyName = async (id) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const res = await API.get(`/companies/${id}/`
-      );
+const fetchPaymentData = async (id) => {
+  try {
+    const res = await API.get(`/subscriptions/${id}/`);
 
-      if (res.data?.name) {
-        setCompanyName(res.data.name);
-      }
-    } catch (error) {
-      console.error("Failed to fetch company name:", error);
-    }
-  };
+    console.log("Subscription API Data:", res.data);
+
+    setCompany(res.data.company || null);
+    setPaymentData(res.data.subscriptions || []);
+  } catch (error) {
+    console.error(error);
+    setCompany(null);
+    setPaymentData([]);
+  }
+};
+
+  // const fetchCompanyName = async (id) => {
+  //   try {
+  //     const token = localStorage.getItem("accessToken");
+  //     const res = await API.get(`/companies/${id}/`
+  //     );
+
+  //     if (res.data?.name) {
+  //       setCompanyName(res.data.name);
+  //     }
+  //   } catch (error) {
+  //   }
+  // };
 
 
 
@@ -69,72 +74,25 @@ const PaymentOverview = ({ companyId: propCompanyId }) => {
       await API.patch(
         `/subscriptions/mark-paid/${subscriptionId}/`,
         { status: newStatus },
-        
+
       );
       await fetchPaymentData(companyId);
     } catch (error) {
-      console.error("Failed to update status:", error);
     }
   };
-const handleDownload = (entry) => {
 
-      const html = generateInvoiceHTML(entry, companyName);
-  // const companyName = entry.name || "Your Company Name";
-  // const html = generateInvoiceHTML(entry,companyName);
-  // const companyName = entry.company_name || "Your Company Name";
-  // Open a new browser window
-  const printWindow = window.open('', '_blank', 'width=800,height=600');
+  const handlePrint = useReactToPrint({
+    contentRef: invoiceRef,
+    documentTitle: "Invoice",
+  });
 
-  printWindow.document.open();
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Invoice - ${entry.month_display} ${entry.year}</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 40px;
-            color: #333;
-          }
-          h1 {
-            text-align: center;
-            color: #0546A0;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-          }
-          th, td {
-            border: 1px solid #ccc;
-            padding: 12px;
-            text-align: left;
-          }
-          th {
-            background-color: #f2f2f2;
-          }
-          .section-title {
-            margin-top: 40px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #444;
-          }
-        </style>
-      </head>
-      <body>
-        ${html}
-        <script>
-          window.onload = function () {
-            window.print();
-            setTimeout(() => window.close(), 100); // Auto-close after print
-          };
-        </script>
-      </body>
-    </html>
-  `);
-  printWindow.document.close();
-};
+  const handleDownload = (entry) => {
+    setSelectedInvoice(entry);
 
+    setTimeout(() => {
+      handlePrint();
+    }, 100);
+  };
 
 
 
@@ -145,11 +103,10 @@ const handleDownload = (entry) => {
       await API.post("/invoice/send-email/", {
         entry: entry,
         company_id: entry.company,
-      }, );
+      },);
 
       alert("Invoice email sent successfully.");
     } catch (error) {
-      console.error("Email send failed:", error);
       alert("Failed to send invoice email.");
     }
   };
@@ -158,23 +115,23 @@ const handleDownload = (entry) => {
     <>
       <SectionTitle>Payment Overview</SectionTitle>
 
-    <PlanCard>
-  <PlanIconWrapper>
-    <PlanIcon>
-      <img src="/images/plan.png" alt="Plan Icon" />
-    </PlanIcon>
-  </PlanIconWrapper>
+      <PlanCard>
+        <PlanIconWrapper>
+          <PlanIcon>
+            <img src="/images/plan.png" alt="Plan Icon" />
+          </PlanIcon>
+        </PlanIconWrapper>
 
-  <PlanDetails>
-    <h3>Enterprise plan</h3>
-    <p>
-      Pay a fixed $5 per employee.<br />
-      Simple, transparent, and ideal for managing individual payroll with ease.
-    </p>
-  </PlanDetails>
+        <PlanDetails>
+          <h3>Enterprise plan</h3>
+          <p>
+            Pay a fixed amount per employee.<br />
+            Simple, transparent, and ideal for managing individual payroll with ease.
+          </p>
+        </PlanDetails>
 
-  <PlanPrice>$5</PlanPrice>
-</PlanCard>
+        <PlanPrice></PlanPrice>
+      </PlanCard>
 
 
       <ScrollWrapper>
@@ -217,7 +174,7 @@ const handleDownload = (entry) => {
                       {entry.status}
                     </button>
                   </TableData>
-                  <TableData style={{  gap: '10px', justifyContent: 'center' }}>
+                  <TableData style={{ gap: '10px', justifyContent: 'center' }}>
                     <button onClick={() => handleDownload(entry)} title="Download" style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
                       <MdOutlineFileDownload />
                     </button>
@@ -231,6 +188,23 @@ const handleDownload = (entry) => {
           </tbody>
         </PaymentTable>
       </ScrollWrapper>
+
+      <div
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: 0,
+        }}
+      >
+        <div ref={invoiceRef}>
+          {selectedInvoice && (
+            <Invoice
+  entry={selectedInvoice}
+  company={company}
+/>
+          )}
+        </div>
+      </div>
     </>
   );
 };

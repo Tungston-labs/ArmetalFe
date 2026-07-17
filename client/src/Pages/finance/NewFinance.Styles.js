@@ -3,36 +3,43 @@ import styled from "styled-components";
 export const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1000;
 `;
 
 export const ModalContainer = styled.div`
-  background: #fff;
-  width: 600px;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 620px;
+  /* background: #2b2b2b; */
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  /* border: 1px solid #3a3a3a; */
+  color: #fff;
 `;
 
 export const ModalHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-`;
+ background: #3352BA;
+  padding: 16px 20px;
 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+`;
+export const HeaderLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 export const ModalTitle = styled.h2`
   font-size: 1.2rem;
   font-weight: 600;
   font-family: Satoshi;
 font-weight: 700;
 font-style: Bold;
-
-leading-trim: NONE;
 line-height: 100%;
 letter-spacing: 0%;
 
@@ -46,14 +53,13 @@ export const CloseButton = styled.button`
 `;
 
 export const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  padding: 20px;
 `;
 
 export const FormRow = styled.div`
   display: flex;
   gap: 20px;
+  margin-bottom: 15px;
   > div {
     flex: 1;
     display: flex;
@@ -62,34 +68,40 @@ export const FormRow = styled.div`
 `;
 
 export const Label = styled.label`
-  font-size: 0.9rem;
+  font-size: 12px;
+  color: #000;
   margin-bottom: 5px;
-  color:#00000080;
-  font-family: Satoshi;
-font-weight: 400;
-font-style: Regular;
-
-leading-trim: NONE;
-line-height: 100%;
-letter-spacing: 0%;
+  display: block;
 
 `;
 
 export const Input = styled.input`
-  padding: 10px;
-  border: 1px solid #ccc;
+  width: 100%;
+  padding: 9px 12px;
   border-radius: 6px;
-  font-size: 14px;
+  border: 1px solid #ccc;
+  /* background: #1f1f1f; */
+  color: #000;
+  font-size: 13px;
+
+  &:focus {
+    outline: none;
+    border-color: #3f57b3;
+  }
 `;
 
 export const TextArea = styled.textarea`
-  padding: 10px;
-  border: 1px solid #ccc;
+   width: 100%;
+  padding: 9px 12px;
   border-radius: 6px;
-  resize: none;
-  min-height: 100px;
-  min-width:550px;
-  font-size: 14px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  resize: vertical;
+color: #000;
+  &:focus {
+    outline: none;
+    border-color: #3f57b3;
+  }
 `;
 
 export const ButtonGroup = styled.div`
@@ -119,4 +131,19 @@ export const Button = styled.button`
         background: #3352BA;
         color: white;
       `}
+`;
+
+export const Select = styled.select`
+    width: 100%;
+  padding: 9px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #000;
+  font-size: 13px;
+
+  &:focus {
+    outline: none;
+    border-color: #3f57b3;
+  }
 `;

@@ -42,17 +42,21 @@ const EmployeeLeaveForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [actionType, setActionType] = useState("");
 
+const formatDate = (date) => {
+  if (!date) return "-";
+
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   useEffect(() => {
     if (id) dispatch(getLeaveDetails(id));
   }, [dispatch, id]);
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const leaveEnd = leaveDetails?.to_date ? new Date(leaveDetails.to_date) : null;
-  if (leaveEnd) leaveEnd.setHours(0, 0, 0, 0);
-
-  const isPastLeave = leaveEnd && leaveEnd < today;
+  
   const employee = leaveDetails?.employee || {};
 
   const handleStatusUpdate = async () => {
@@ -68,6 +72,7 @@ const EmployeeLeaveForm = () => {
       setActionType("");
     }
   };
+
 
   if (loading) {
     return (
@@ -94,13 +99,14 @@ const EmployeeLeaveForm = () => {
           showBackArrow={true}
           showTabs={false}
           showSearch={false}
+          showReportButton={false}
         />
 
         <Header employee={employee} />
 
         <PageCard>
 
-    
+
           <CardWrapper>
             <CardHeader onClick={() => setShowJob(!showJob)}>
               <SectionTitle>Job Details</SectionTitle>
@@ -115,7 +121,7 @@ const EmployeeLeaveForm = () => {
                   <ReadonlyInput value={employee.designation || ""} readOnly />
                   <ReadonlyInput value={employee.employment_type || ""} readOnly />
                   <ReadonlyInput value={employee.department || ""} readOnly />
-                  <ReadonlyInput value={employee.joining_date || ""} readOnly />
+                  <ReadonlyInput value={formatDate(employee.joining_date)} readOnly />
                 </InfoGrid>
               </CardContent>
             )}
@@ -143,7 +149,7 @@ const EmployeeLeaveForm = () => {
                     <ReadonlyInput
                       value={
                         leaveDetails?.from_date
-                          ? `${leaveDetails.from_date} (${leaveDetails.from_date_type || ""})`
+                          ? `${formatDate(leaveDetails.from_date)} (${leaveDetails.from_date_type || ""})`
                           : ""
                       }
                       readOnly
@@ -155,7 +161,7 @@ const EmployeeLeaveForm = () => {
                     <ReadonlyInput
                       value={
                         leaveDetails?.to_date
-                          ? `${leaveDetails.to_date} (${leaveDetails.to_date_type || ""})`
+                          ? `${formatDate(leaveDetails.to_date)} (${leaveDetails.to_date_type || ""})`
                           : ""
                       }
                       readOnly
@@ -179,8 +185,14 @@ const EmployeeLeaveForm = () => {
             {showBalance && (
               <CardContent>
                 <InfoGrid>
-                  <ReadonlyInput value={employee?.total_leave || ""} readOnly />
-                  <ReadonlyInput value={employee?.paid_leave || ""} readOnly />
+                  <div>
+                    <Label>Balance Leave</Label>
+                    <ReadonlyInput value={employee?.total_leave || ""} readOnly />
+                  </div>
+                  <div>
+                    <Label>Paid Leave</Label>
+                    <ReadonlyInput value={employee?.paid_leave || ""} readOnly />
+                  </div>
                 </InfoGrid>
               </CardContent>
             )}
@@ -217,32 +229,26 @@ const EmployeeLeaveForm = () => {
               Decline
             </DeclineButton>
 
-            <ApproveButton
-              disabled={isPastLeave}
-              style={{
-                background: isPastLeave ? "#ccc" : "#003366",
-                cursor: isPastLeave ? "not-allowed" : "pointer",
-              }}
-              onClick={() => {
-                if (isPastLeave) return alert("Cannot approve past leave.");
-                setActionType("approve");
-                setShowModal(true);
-              }}
-            >
-              Approve
-            </ApproveButton>
+           <ApproveButton
+  onClick={() => {
+    setActionType("approve");
+    setShowModal(true);
+  }}
+>
+  Approve
+</ApproveButton>
           </ButtonRow>
 
         </PageCard>
 
         {/* Modal */}
-       <ConfirmLeaveModal
-  show={showModal}
-  onClose={() => setShowModal(false)}
-  onConfirm={handleStatusUpdate}
-  actionType={actionType}
-  leaveId={id}         
-/>
+        <ConfirmLeaveModal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={handleStatusUpdate}
+          actionType={actionType}
+          leaveId={id}
+        />
 
 
       </Container>

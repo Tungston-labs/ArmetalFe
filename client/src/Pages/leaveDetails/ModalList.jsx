@@ -5,14 +5,9 @@ import {
   ModalOverlay,
   ModalContainer,
   ModalHeader,
-  TableContainer,
   TableHeader,
-  TableRow,
-  TableData,
   ActionButtons,
-  ApproveButton,
   DeclineButton,
-  ProfileImg,
 } from "./ModalList.Styles";
 
 import ConfirmLeaveModal from "../../Components/ConfirmLeaveModal";
@@ -75,6 +70,17 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+
+    const date = new Date(dateString);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
   return ReactDOM.createPortal(
     <>
       <ModalOverlay zIndex={1000}>
@@ -118,8 +124,10 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
                     <BodyCell>{emp.email}</BodyCell>
                     <BodyCell>{emp.phone}</BodyCell>
                     <BodyCell>
-                      {emp.from_date}({emp.from_date_type}) to {emp.to_date}({emp.to_date_type})
+                      {formatDate(emp.from_date)} ({emp.from_date_type}) To {" "}
+                      {formatDate(emp.to_date)} ({emp.to_date_type})
                     </BodyCell>
+
                   </BodyRow>
                 ))
               )}

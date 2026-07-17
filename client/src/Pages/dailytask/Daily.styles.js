@@ -449,10 +449,13 @@ export const EmployeeCard = styled.div`
   @media (min-width: 3500px) {
     padding: 2.2rem;
   }
+
   img {
     width: 35px;
     height: 35px;
     border-radius: 50%;
+    object-fit: cover;        /* ← add this */
+    flex-shrink: 0;           /* ← add this */
 
     @media (min-width: 3500px) {
       width: 55px;
@@ -462,8 +465,24 @@ export const EmployeeCard = styled.div`
       width: 70px;
       height: 70px;
     }
-    
   }
+
+  /* ✅ Add this - matches img sizing so icon renders correctly */
+  svg {
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+
+    @media (min-width: 3500px) {
+      width: 55px;
+      height: 55px;
+    }
+    @media (min-width: 2000px) {
+      width: 70px;
+      height: 70px;
+    }
+  }
+
   span {
     @media (min-width: 2000px) {
       font-size: 30px;
@@ -471,16 +490,16 @@ export const EmployeeCard = styled.div`
     @media (min-width: 3500px) {
       font-size: 50px;
     }
-       @media (max-width:1920px) {
+    @media (max-width: 1920px) {
       font-size: 20px;
     }
-       @media (max-width: 1440px) {
+    @media (max-width: 1440px) {
       font-size: 15px;
     }
-       @media (max-width: 1024px) {
+    @media (max-width: 1024px) {
       font-size: 15px;
     }
-       @media (max-width: 768px) {
+    @media (max-width: 768px) {
       font-size: 15px;
     }
   }

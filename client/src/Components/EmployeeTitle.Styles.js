@@ -118,7 +118,7 @@ export const Button = styled.button`
   @media (max-width: 1024px) {
     font-size: 0.8rem;
   }
-  /* Responsive adjustments */
+ 
   @media (min-width: 1920px) {
     padding: 0.8rem 1.2rem;
     font-size: 1rem;
@@ -200,8 +200,8 @@ export const SearchWrapper = styled.div`
   }
 
   @media (min-width: 1920px) {
-    padding: 0.8rem 1.2rem;
-    max-width: 600px;
+    padding: 8px;
+    max-width: 400px;
 
     svg {
       font-size: 1.2rem;
@@ -313,11 +313,11 @@ export const Dropdown = styled.select`
 
 export const TabButton = styled.button`
   width: 100%;
-  background: ${({ active }) => (active ? "#304EB0" : "#F2F2F2")};
-  color: ${({ active }) => (active ? "#fff" : "black")};
+  background: ${({ $active }) => ($active ? "#304EB0" : "#F2F2F2")};
+  color: ${({ $active }) => ($active ? "#fff" : "black")};
   border: none;
   border-radius: 4px;
-  padding: 0.7rem 1rem;
+  padding: 10px;
   font-size: 0.9rem;
   font-weight: 500;
   text-align: center;
@@ -329,20 +329,20 @@ export const TabButton = styled.button`
     background: #8ca0e2;
     color: white;
   }
+@media (max-width: 768px) {
+     padding:10px;
+    font-size: 0.8rem;
+  }
 
-  /* Mobile: show 3 tabs in one row */
-  @media (max-width: 1023px) {
-    flex: 0 0 calc(33.33% - 0.33rem);
-    font-size: 0.8rem;
-  }
+  
  @media (min-width: 1024px) {
-    padding: 0.9rem 1.3rem;
-    font-size: 0.8rem;
+    padding: 12px;
+    font-size: 0.9rem;
   }
-  /* 1920px (Full HD) */
+
   @media (min-width: 1920px) {
-    padding: 0.9rem 1.3rem;
-    font-size: 1rem;
+    padding: 0.7rem 1rem;
+       font-size: 0.9rem;
   }
 
   /* 2560px (2K) */
@@ -365,6 +365,7 @@ export const TabsRowContainer = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
+
 
   /* Spacing for larger screens */
   @media (min-width: 1920px) {
@@ -395,6 +396,7 @@ export const TabsRow = styled.div`
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -420,10 +422,7 @@ export const TabsRow = styled.div`
 export const ScrollButton = styled.button`
   position: absolute;
   top: 50%;
-  /* transform: translateY(-50%); */
-  /* background: rgba(0,0,0,0.2); */
   border: none;
-  /* border-radius: 50%; */
   width: 30px;
   height: 30px;
   cursor: pointer;
@@ -468,5 +467,60 @@ export const BackArrow = styled.div`
   &:hover {
     color: #172554;
     transform: translateX(-3px);
+  }
+`;
+
+export const ReportButton = styled(Button)`
+  background: #ffffff;
+  color: #304eb0;
+  border: 1px solid #304eb0;
+
+  &:hover {
+    background: #304eb0;
+    color: #ffffff;
+  }
+`;
+export const ReportWrapper = styled.div`
+  position: relative;
+`;
+
+export const ReportMenu = styled.div`
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  z-index: 1000;
+`;
+
+export const ReportMenuItem = styled.div`
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #304eb0;
+    color: #ffffff;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 18px;
+    padding: 16px 20px;
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 22px;
+    padding: 20px 24px;
   }
 `;

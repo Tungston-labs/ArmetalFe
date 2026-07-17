@@ -185,7 +185,7 @@ export const RightColumn = styled.div`
 
 export const InputBox = styled.input`
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid #ccc;
   font-size: 1rem;
  color: #111111ff;
@@ -239,7 +239,7 @@ export const InputBox = styled.input`
 
 export const BioBox = styled.textarea`
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid #ccc;
   min-height: 90px;
   resize: vertical;

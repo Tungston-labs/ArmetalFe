@@ -54,36 +54,28 @@ export const BodyCell = styled.td`
   }
 
   @media (min-width: 1440px) {
-    padding: 8px;
+    padding: 10px;
     font-size: 0.9rem;
   }
 
   @media (min-width: 1920px) {
     padding: 10px;
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
-     @media (min-width: 2560px) {
-    padding: 15px;
-    font-size: 1.5rem;
-  }
-     @media (min-width: 3820px) {
-    padding: 15px;
-    font-size: 1.8rem;
-  }
+
 `;
 
 
 export const EmptyRow = styled.tr`
-  td {
-    text-align: center;
-    padding: 20px;
-    font-size: 1rem;
-  }
+ text-align: center;
+  padding: 40px 0;
+  
+ 
 `;
 export const HeadRow = styled.tr``;
 
 export const HeadCell = styled.th`
-  padding: 12px;
+  padding: 15px;
   font-size: 1rem;
   text-align: left;
   font-family: "Raleway";
@@ -101,22 +93,15 @@ export const HeadCell = styled.th`
   }
 
   @media (min-width: 1440px) {
-    padding: 10px;
+    padding: 15px;
     font-size: 0.9rem;
   }
 
   @media (min-width: 1920px) {
-    padding: 10px;
+    padding: 15px;
     font-size: 1rem;
   }
-     @media (min-width: 2560px) {
-    padding: 15px;
-    font-size: 1.5rem;
-  }
-     @media (min-width: 3820px) {
-    padding: 15px;
-      font-size: 1.5rem;
-  }
+
 `;
 export const NameCell = styled.td`
   display: flex;
@@ -191,20 +176,31 @@ export const DeleteIconWrapper = styled.td`
 
 export const TableWrapper = styled.div`
   width: 100%;
-  max-height: 60vh;       
-  overflow-y: auto;       
-  overflow-x: hidden;   
+  overflow-y: auto;
+  overflow-x: auto;
 
   border: 1px solid #eee;
   border-radius: 10px;
-  border:none;
-  /* Optional: nice scrollbar */
+  border: none;
+
+  /* Vertical scrollbar */
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 2px;
   }
+
+  /* Horizontal scrollbar */
+  &::-webkit-scrollbar:horizontal {
+    height: 2px;
+  }
+
+  /* Thumb styling */
   &::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:horizontal {
+    background: #c1c1c1;
   }
 `;
 
@@ -221,7 +217,7 @@ export const ActionIcons = styled.div`
 
 export const Pagination = styled.div`
   display: flex;
-  justify-content: flex-start; /* changed from flex-end to flex-start */
+  justify-content: flex-start; 
   gap: 0.3rem;
   margin-top: 1.5rem;
   // padding: 0.6rem;
@@ -232,30 +228,9 @@ export const Pagination = styled.div`
     border: 1px solid #ccc;
     cursor: pointer;
     font-size: 0.7rem;
+  
 
-    @media (min-width: 3500px) {
-      padding: 0.8rem 1.5;
-      font-size: 1.5rem;
-    }
-    @media (min-width: 2000px) {
-      padding: 0.6rem 0.8rem;
-      font-size: 1.5rem;
-    }
   }
-  @media (min-width: 2560px) {
-    span{
-      font-size: 1.5rem;
-    padding: 0.5rem 1.5rem;
-    }
-    gap: 0.5rem;
-  }
-  @media (min-width: 3840px) {
-    span{
-      font-size: 1.5rem;
-    }
-    gap: 1rem;
-  }
-
   .active {
     background: #1e3a8a;
     color: white;
@@ -277,17 +252,20 @@ export const TextBlock = styled.div`
 export const TruncatedText = styled.div`
   /* max-width: 80px; */
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
 
   @media (max-width: 768px) {
     max-width: 50px; 
+    overflow: hidden;
   }
    @media (min-width: 769px) and (max-width: 1024px) {
     max-width: 80px; 
+    overflow: hidden;
   }
    @media (min-width: 1025px) and (max-width: 1440px) {
     max-width: 80px; 
+    overflow: hidden;
   }
 `;
 export const PageLoaderOverlay = styled.div`

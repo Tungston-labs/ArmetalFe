@@ -20,7 +20,7 @@ export const ContentWrapper = styled.div`
 
   &.shrink {
     transform: scale(0.98);
-    margin-right: 280px;
+    margin-right: 200px;
 
     @media (max-width: 1200px) {
       margin-right: 250px;
@@ -28,12 +28,12 @@ export const ContentWrapper = styled.div`
     }
 
     @media (max-width: 1400px) {
-      margin-right: 0;
+      margin-right: 0px;
       transform: scale(1);
     }
 
     @media (min-width: 1920px) {
-      margin-right: 320px;
+      margin-right: 200px;
       transform: scale(0.96);
     }
 
@@ -136,7 +136,7 @@ export const ThreeColumnRow = styled.div`
   @media (max-width: 600px) {
     flex-direction: column;
   }
-  @media (min-width: 1024px) and (max-width: 1440px) {
+  @media (min-width: 1024px) and (max-width: 1490px) {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }

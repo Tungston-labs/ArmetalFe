@@ -27,6 +27,13 @@ from rest_framework.pagination import PageNumberPagination
 from django.core.files.storage import default_storage
 from django.utils import timezone
 from django.db.models import Sum
+from decimal import Decimal
+from django.utils import timezone
+from .models import SalaryIncrement
+from .serializers import SalaryIncrementSerializer
+
+
+
 
 # BASIC DETAILS-create ,list
 
@@ -47,7 +54,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
             return Employee_db.objects.none()
 
         department_id = self.request.query_params.get('department_id')
-        queryset = Employee_db.objects.filter(department__company=company)
+        queryset = Employee_db.objects.filter(department__company=company,is_deleted=False)
 
         if department_id:
             queryset = queryset.filter(department_id=department_id)
@@ -127,7 +134,7 @@ class EmployeeListView(generics.ListAPIView):
             return Employee_db.objects.none()
 
         department_id = self.request.query_params.get('department_id')
-        queryset = Employee_db.objects.filter(department__company=company)
+        queryset = Employee_db.objects.filter(department__company=company,is_deleted=False)
 
         if department_id:
             queryset = queryset.filter(department_id=department_id)
@@ -156,18 +163,21 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         # Save the updated employee
         serializer.save()
 
+
     def perform_destroy(self, instance):
-        department = instance.department
-        company = department.company if department else None
+        company = instance.department.company if instance.department else None
 
-        # Delete related user first (if exists)
+        # Soft delete employee
+        instance.is_deleted = True
+        instance.deleted_at = timezone.now()
+        instance.save(update_fields=["is_deleted", "deleted_at"])
+
+        # Disable login
         if instance.user:
-            instance.user.delete()
+            instance.user.is_active = False
+            instance.user.save(update_fields=["is_active"])
 
-        # Delete the employee (this will trigger signal)
-        instance.delete()
-
-        # ✅ Update company employee count
+        # Update employee count
         if company:
             company.number_of_employees = max((company.number_of_employees or 1) - 1, 0)
             company.save(update_fields=["number_of_employees"])
@@ -230,7 +240,7 @@ class UpcomingExpiryEmployeeListView(generics.ListAPIView):
         today = timezone.now().date()
         one_month_later = today + timedelta(days=30)
 
-        queryset = Employee_db.objects.filter(department__company=company)  # filter by company
+        queryset = Employee_db.objects.filter(department__company=company,is_deleted=False)  # filter by company
 
         if expiry_type == "visa":
             queryset = queryset.filter(
@@ -417,7 +427,7 @@ class DashboardSummaryView(APIView):
 
         # 1. Total employees list with department name
         employees_qs = Employee_db.objects.filter(
-            department__company=company
+            department__company=company,is_deleted=False
         )
 
         total_employees_count = employees_qs.count()
@@ -599,14 +609,14 @@ class EmployeesInMyDepartmentView(APIView):
 
     def get(self, request):
         try:
-            employee = Employee_db.objects.get(user=request.user)
+            employee = Employee_db.objects.get(user=request.user,is_deleted=False)
             department = employee.department
         except Employee_db.DoesNotExist:
             return Response({"detail": "Employee profile not found."}, status=404)
         except AttributeError:
             return Response({"detail": "No department assigned."}, status=400)
 
-        employees = Employee_db.objects.filter(department=department)
+        employees = Employee_db.objects.filter(department=department,is_deleted=False)
         count = employees.count()
         serializer = EmployeeSerializer(employees, many=True)
 
@@ -668,7 +678,6 @@ class EmployeeDocumentSummaryView(APIView):
 
 
 
-# mobile app home page with attendance details--
 
 
 
@@ -679,74 +688,127 @@ class AttendanceSummaryView(APIView):
         user = request.user
 
         try:
-            employee = Employee_db.objects.get(user=user)
+            employee = Employee_db.objects.select_related(
+                "department__company"
+            ).get(user=user)
         except Employee_db.DoesNotExist:
-            return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Employee not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-        # Get ?month=YYYY-MM from query params
+        company = employee.department.company
+
+        # ✅ Dynamic company hours
+        full_day_hours = Decimal(company.working_hours_per_day)
+        half_day_hours = Decimal(company.half_day_hours)
+
+        # ---------- Month Handling ----------
         month_param = request.query_params.get("month")
+
         try:
             if month_param:
                 year, month = map(int, month_param.split("-"))
                 from_date = date(year, month, 1)
             else:
-                from_date = timezone.now().date().replace(day=1)
+                today = timezone.now().date()
+                from_date = today.replace(day=1)
+
             last_day = monthrange(from_date.year, from_date.month)[1]
             to_date = from_date.replace(day=last_day)
+
         except ValueError:
-            return Response({"error": "Invalid month format. Use YYYY-MM."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Invalid month format. Use YYYY-MM."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # List of all dates in month
-        total_dates = [from_date + timedelta(days=i) for i in range((to_date - from_date).days + 1)]
+        today = timezone.now().date()
 
-        # Mon–Fri only
-        working_days = [d for d in total_dates if d.weekday() < 5]
+        # ---------- All dates in month ----------
+        total_dates = [
+            from_date + timedelta(days=i)
+            for i in range((to_date - from_date).days + 1)
+        ]
 
-        # Holidays
+        # ---------- Weekly Off (Company Configured) ----------
+        company_off_day = PublicHoliday.objects.filter(
+            company=company,
+            holiday_type="company_off_day"
+        ).first()
+
+        off_day_name = company_off_day.day if company_off_day else None
+
+        # ---------- Holidays ----------
         holidays = PublicHoliday.objects.filter(
-            company=employee.department.company,
+            company=company,
             date__range=(from_date, to_date)
-        ).values_list("date", flat=True)
+        ).exclude(holiday_type="company_off_day")
 
-        actual_working_days = [d for d in working_days if d not in holidays]
+        holiday_dates = list(holidays.values_list("date", flat=True))
 
-        # Attendance
-        attendances = Attendance.objects.filter(employee=employee, date__range=(from_date, to_date))
+        # ---------- Actual Working Days ----------
+        actual_working_days = [
+            d for d in total_dates
+            if (off_day_name is None or d.strftime("%A") != off_day_name)
+            and d not in holiday_dates
+        ]
+
+        # ---------- Attendance ----------
+        attendances = Attendance.objects.filter(
+            employee=employee,
+            date__range=(from_date, to_date)
+        )
 
         present_days = 0
         half_days = 0
-        total_hours = 0.0
+        total_hours = Decimal(0)
         attended_dates = set()
 
         for att in attendances:
-            if att.date:
-                attended_dates.add(att.date)
-
-            if att.total_hours is None:
+            if not att.date:
                 continue
 
-            total_hours += float(att.total_hours)
+            attended_dates.add(att.date)
 
-            if att.total_hours >= 8:
+            hours = Decimal(att.total_hours or 0)
+            total_hours += hours
+
+            if hours >= full_day_hours:
                 present_days += 1
-            elif att.total_hours < 5:
+
+            elif hours >= half_day_hours:
                 half_days += 1
 
-        absent_days = [d for d in actual_working_days if d not in attended_dates]
-        today = timezone.now().date()
-        remaining_days = [d for d in actual_working_days if d > today]
+        # ---------- Absent Days (Only Until Today) ----------
+        absent_days = [
+            d for d in actual_working_days
+            if d <= today and d not in attended_dates
+        ]
+
+        # ---------- Remaining Working Days ----------
+        remaining_days = [
+            d for d in actual_working_days
+            if d > today
+        ]
 
         return Response({
             "month": from_date.strftime("%B %Y"),
+
+            "working_days": len(actual_working_days),
             "present_days": present_days,
             "half_days": half_days,
             "absent_days": len(absent_days),
-            "holiday_days": len(holidays),
-            "working_days": len(actual_working_days),
+
+            "holiday_days": len(holiday_dates),
             "remaining_working_days": len(remaining_days),
-            "total_hours": round(total_hours, 2)
+
+            "total_hours": float(round(total_hours, 2)),
+
+            # Optional (useful for mobile UI)
+            "full_day_hours_required": float(full_day_hours),
+            "half_day_hours_required": float(half_day_hours),
         })
-    
 # --------------------schedule remainder create list
 class ReminderListCreateView(generics.ListCreateAPIView):
     serializer_class = ScheduleReminderSerializer
@@ -790,98 +852,233 @@ class ReminderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 # -------------------employee summary for mobile app
 
 
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from django.db.models import Sum
+from datetime import date, timedelta, datetime
+import calendar
+
+from employee.models import Employee_db
+from attendance.models import Attendance
+from holidays.models import PublicHoliday
+
+# Attendance model
+from decimal import Decimal
+import calendar
+from datetime import date, timedelta
+
+
+
+
 class EmployeeMonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+
         try:
-            # Get employee from logged-in user
             employee = request.user.employee_db
             department = employee.department
             company = department.company if department else None
         except Employee_db.DoesNotExist:
-            return Response({"error": "Employee not found"}, status=404)
+            return Response(
+                {"error": "Employee not found"},
+                status=404
+            )
 
         if not department or not company:
-            return Response({"error": "Employee not assigned to a department or company"}, status=400)
+            return Response(
+                {
+                    "error": "Employee not assigned to a department or company"
+                },
+                status=400,
+            )
+
+        full_day_hours = Decimal(company.working_hours_per_day or 8)
+        half_day_hours = Decimal(company.half_day_hours or 4)
 
         today = timezone.now().date()
+
         year = today.year
         month = today.month
 
-        # First and last day of month
         first_day = date(year, month, 1)
-        last_day = date(year, month, calendar.monthrange(year, month)[1])
+        last_day = date(
+            year,
+            month,
+            calendar.monthrange(year, month)[1]
+        )
 
-        # All days in month
-        all_days = [first_day + timedelta(days=i) for i in range((last_day - first_day).days + 1)]
+        all_days = [
+            first_day + timedelta(days=i)
+            for i in range((last_day - first_day).days + 1)
+        ]
 
-        # Get company_off_day (e.g., Friday) for this company
-        company_off_day = PublicHoliday.objects.filter(
+        # ---------------------------------------------------
+        # Company Weekly Off
+        # ---------------------------------------------------
+
+        company_off = PublicHoliday.objects.filter(
             company=company,
-            holiday_type='company_off_day'
+            holiday_type="company_off_day"
         ).first()
-        off_day_name = company_off_day.day if company_off_day else None
 
-        # Company holidays excluding company_off_day
-        holidays_qs = PublicHoliday.objects.filter(
-            company=company,
-            date__range=(first_day, last_day)
-        ).exclude(holiday_type='company_off_day')
-        holidays = [h.date for h in holidays_qs]
+        off_day_weekday = (
+            company_off.off_day_weekday
+            if company_off else None
+        )
 
-        # Working days = all_days excluding company_off_day and holidays
+        weekday_names = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+        ]
+
+        off_day_name = (
+            weekday_names[off_day_weekday]
+            if off_day_weekday is not None
+            else None
+        )
+
+        # ---------------------------------------------------
+        # Public / Company Holidays
+        # ---------------------------------------------------
+
+        holidays = list(
+            PublicHoliday.objects.filter(
+                company=company,
+                date__range=(first_day, last_day)
+            )
+            .exclude(holiday_type="company_off_day")
+            .values_list("date", flat=True)
+        )
+
+        # ---------------------------------------------------
+        # Working Days
+        # ---------------------------------------------------
+
         working_days = [
-            d for d in all_days
-            if (off_day_name is None or d.strftime('%A') != off_day_name)
+            d
+            for d in all_days
+            if (
+                off_day_weekday is None
+                or d.weekday() != off_day_weekday
+            )
             and d not in holidays
         ]
 
-        # Attendance records
-        attendances = Attendance.objects.filter(employee=employee, date__range=(first_day, last_day))
+        # ---------------------------------------------------
+        # Attendance
+        # ---------------------------------------------------
 
-        # Total hours
-        total_hours = attendances.aggregate(total=Sum("total_hours"))["total"] or 0
+        attendances = Attendance.objects.filter(
+            employee=employee,
+            date__range=(first_day, last_day),
+        )
 
-        # Half days (4 <= hours < 8)
-        half_days = [att.date for att in attendances if 4 <= (att.total_hours or 0) < 8]
+        total_hours = (
+            attendances.aggregate(
+                total=Sum("total_hours")
+            )["total"]
+            or Decimal(0)
+        )
 
-        # Full present days (hours >= 8)
-        present_days = [att.date for att in attendances if (att.total_hours or 0) >= 8]
+        present_days = []
+        half_days = []
 
-        # Absent days (working days until today, excluding present and half days)
+        for att in attendances:
+
+            hours = Decimal(att.total_hours or 0)
+
+            if hours >= full_day_hours:
+                present_days.append(att.date)
+
+            elif hours >= half_day_hours:
+                half_days.append(att.date)
+
+        # ---------------------------------------------------
+        # Absent Days
+        # ---------------------------------------------------
+
         absent_days = [
-            d for d in working_days
-            if d <= today and d not in present_days and d not in half_days
+            d
+            for d in working_days
+            if d <= today
+            and d not in present_days
+            and d not in half_days
         ]
 
-        # Remaining working days (after today)
-        remaining_working_days = [d for d in working_days if d > today]
+        # ---------------------------------------------------
+        # Remaining Working Days
+        # ---------------------------------------------------
 
-        # Company off day dates for this month
-        off_day_dates = [
-            d for d in all_days if off_day_name and d.strftime('%A') == off_day_name
+        remaining_working_days = [
+            d
+            for d in working_days
+            if d > today
         ]
 
-        data = {
+        # ---------------------------------------------------
+        # Weekly Off Dates
+        # ---------------------------------------------------
+
+        company_off_day_dates = [
+            d
+            for d in all_days
+            if off_day_weekday is not None
+            and d.weekday() == off_day_weekday
+        ]
+
+        # ---------------------------------------------------
+        # Response
+        # ---------------------------------------------------
+
+        return Response({
             "month": today.strftime("%B"),
+
             "total_working_days": len(working_days),
             "total_working_days_dates": working_days,
+
             "total_working_hours": float(total_hours),
-            "half_days_count": len(half_days),
-            "half_days_dates": half_days,
+
             "present_days_count": len(present_days),
             "present_days_dates": present_days,
+
+            "half_days_count": len(half_days),
+            "half_days_dates": half_days,
+
             "absent_days_count": len(absent_days),
             "absent_days_dates": absent_days,
+
             "remaining_working_days_count": len(remaining_working_days),
             "remaining_working_days_dates": remaining_working_days,
+
             "holidays_count": len(holidays),
             "holidays_dates": holidays,
+
             "company_off_day_name": off_day_name,
-            "company_off_day_dates": off_day_dates
-        }
+            "company_off_day_dates": company_off_day_dates,
+            "company_off_day_count": len(company_off_day_dates),
+        })
 
-        return Response(data)
 
 
+# salary increment create list view for employee
+
+class SalaryIncrementListCreateView(generics.ListCreateAPIView):
+    serializer_class = SalaryIncrementSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        employee_id = self.kwargs["employee_id"]
+        return SalaryIncrement.objects.filter(employee_id=employee_id)
+
+    def perform_create(self, serializer):
+        serializer.save()

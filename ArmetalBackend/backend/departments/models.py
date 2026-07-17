@@ -7,7 +7,7 @@ class Department(TimeStampedModel):
     name = models.CharField(max_length=100)
     department_code = models.CharField(max_length=10, unique=True)
     department_head = models.ForeignKey(
-        'employee.Employee_db',  # ✅ String reference avoids circular import
+        'employee.Employee_db',  
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -18,4 +18,4 @@ class Department(TimeStampedModel):
         return f"{self.name} ({self.department_code})"
 
     class Meta:
-        ordering = ['name']  # ✅ Add ordering to avoid pagination inconsistency
+        ordering = ['name']  

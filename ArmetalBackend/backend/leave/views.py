@@ -7,7 +7,7 @@ from django.utils.dateparse import parse_date
 from datetime import timedelta, date
 import calendar
 
-from .models import LeaveRequest
+from .models import LeaveRequest,EmployeeLeaveBalance
 from .serializers import LeaveRequestSerializer
 from employee.models import Employee_db
 from user.permissions import IsEmployee, IsHRAdmin
@@ -19,7 +19,18 @@ from rest_framework import status
 
 
 #  Employee: List + Create Leave Requests
+# Employee: List + Create Leave Requests
+
+
+
+from decimal import Decimal
+from rest_framework.response import Response
+from rest_framework import status
+from django.db.models import Q
+from django.core.mail import EmailMessage
+
 class LeaveRequestCreateListView(generics.ListCreateAPIView):
+
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsEmployee]
     filter_backends = [filters.SearchFilter]
@@ -32,67 +43,218 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
         ).order_by("-created_at")
 
     def list(self, request, *args, **kwargs):
+
         try:
             queryset = self.get_queryset()
-            pending_count = queryset.filter(status='pending').count()
-            lop_count = queryset.filter(leave_type='earned').count()
+
+            pending_count = queryset.filter(
+                status='pending'
+            ).count()
+
+            lop_count = queryset.filter(
+                leave_type='earned'
+            ).count()
 
             page = self.paginate_queryset(queryset)
-            serializer = self.get_serializer(page, many=True)
+
+            serializer = self.get_serializer(
+                page,
+                many=True
+            )
 
             return self.get_paginated_response({
                 'leaves': serializer.data,
                 'pending_leave_count': pending_count,
                 'loss_of_pay_count': lop_count,
             })
+
         except Exception as e:
-            return Response({"error": str(e)}, status=500)
+            return Response(
+                {"error": str(e)},
+                status=500
+            )
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+
+        serializer = self.get_serializer(
+            data=request.data
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
         try:
-            employee = Employee_db.objects.get(user=self.request.user)
+            employee = Employee_db.objects.get(
+                user=request.user
+            )
+
         except Employee_db.DoesNotExist:
-            raise serializers.ValidationError({"error": "Employee not found."})
+            return Response(
+                {"error": "Employee not found."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        from_date = serializer.validated_data.get('from_date')
-        to_date = serializer.validated_data.get('to_date')
+        from_date = serializer.validated_data.get(
+            "from_date"
+        )
 
+        to_date = serializer.validated_data.get(
+            "to_date"
+        )
+
+        # ==========================================
+        # OVERLAPPING CHECK
+        # ==========================================
         overlapping = LeaveRequest.objects.filter(
             employee=employee
-        ).filter(Q(from_date__lte=to_date) & Q(to_date__gte=from_date))
+        ).filter(
+            Q(from_date__lte=to_date)
+            &
+            Q(to_date__gte=from_date)
+        )
 
         if overlapping.exists():
-            raise serializers.ValidationError({
-                "detail": "You already applied leave for one or more selected dates."
-            })
 
+            return Response(
+                {
+                    "detail":
+                    "You already applied leave for one or more selected dates."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ==========================================
+        # SAVE LEAVE
+        # ==========================================
+        leave = serializer.save(
+            employee=employee
+        )
+
+        # ==========================================
+        # LEAVE BALANCE WARNING
+        # ==========================================
+        warning_message = None
+
+        leave_days = Decimal(
+            str(leave.calculate_leave_days())
+        )
+
+        balance = EmployeeLeaveBalance.objects.filter(
+            employee=employee,
+            leave_type=leave.leave_type
+        ).first()
+
+        if balance:
+
+            if leave_days > balance.remaining_leave:
+
+                shortage = (
+                    leave_days -
+                    balance.remaining_leave
+                )
+
+                warning_message = (
+                    f"You have only "
+                    f"{balance.remaining_leave} "
+                    f"{leave.leave_type} leave(s) remaining. "
+                    f"Requested {leave_days} day(s). "
+                    f"Excess {shortage} day(s) may be treated as Loss Of Pay."
+                )
+
+        # ==========================================
+        # SEND EMAIL
+        # ==========================================
         try:
-            leave = serializer.save(employee=employee)
 
-            # Email handling safely
-            try:
-                subject = f"Leave Request from {employee.name}"
-                message = (
-                    f"Leave Type: {leave.leave_type}\n"
-                    f"From: {leave.from_date}\n"
-                    f"To: {leave.to_date}\n"
-                    f"Reason: {leave.reason}"
+            subject = (
+                f"Leave Request from "
+                f"{employee.name}"
+            )
+
+            message = (
+                f"Employee Name: {employee.name}\n"
+                f"Employee ID: {employee.employee_id}\n"
+                f"Department: "
+                f"{employee.department.name if employee.department else 'N/A'}\n\n"
+                f"Leave Type: {leave.leave_type}\n"
+                f"From: {leave.from_date}\n"
+                f"To: {leave.to_date}\n"
+                f"Reason: {leave.reason}\n"
+                f"Status: {leave.status}"
+            )
+
+            company = employee.department.company
+
+            hr_emails = list(
+                Employee_db.objects.filter(
+                    department__company=company,is_deleted=False,
+                    role="hr"
                 )
-                email = EmailMessage(
-                    subject=subject,
-                    body=message,
-                    from_email=employee.email,
-                    to=[leave.to_email],
-                    cc=[leave.cc_email] if leave.cc_email else [],
+                .exclude(email__isnull=True)
+                .exclude(email__exact="")
+                .values_list(
+                    "email",
+                    flat=True
                 )
-                email.send(fail_silently=True)
-            except Exception:
-                pass
+            )
 
-        except Exception as e:
-            raise serializers.ValidationError({"error": str(e)})
+            recipient_list = []
 
+            if leave.to_email:
+                recipient_list.append(
+                    leave.to_email
+                )
 
+            recipient_list.extend(
+                hr_emails
+            )
+
+            recipient_list = list(
+                set(recipient_list)
+            )
+
+            cc_list = []
+
+            if leave.cc_email:
+                cc_list.append(
+                    leave.cc_email
+                )
+
+            email = EmailMessage(
+                subject=subject,
+                body=message,
+                from_email=employee.email,
+                to=recipient_list,
+                cc=cc_list,
+            )
+
+            email.send(
+                fail_silently=True
+            )
+
+        except Exception as email_error:
+            print(
+                "Email sending failed:",
+                str(email_error)
+            )
+
+        # ==========================================
+        # RESPONSE
+        # ==========================================
+        return Response(
+            {
+                "message":
+                "Leave request submitted successfully.",
+                "warning":
+                warning_message,
+                "data":
+                LeaveRequestSerializer(
+                    leave
+                ).data
+            },
+            status=status.HTTP_201_CREATED
+        )
 
 #  Employee: Cancel Pending Leave
 class LeaveRequestCancelView(generics.DestroyAPIView):
@@ -128,22 +290,42 @@ class LeaveRequestAdminListView(generics.ListAPIView):
         try:
             user = self.request.user
             company = user.company
+
             if not company:
                 return LeaveRequest.objects.none()
 
-            queryset = LeaveRequest.objects.filter(employee__department__company=company)
+            queryset = LeaveRequest.objects.filter(
+                employee__department__company=company
+            )
 
             # Department filter
             dept_id = self.request.query_params.get('department_id')
             if dept_id:
-                queryset = queryset.filter(employee__department_id=dept_id)
+                queryset = queryset.filter(
+                    employee__department_id=dept_id
+                )
 
-            # Status filter (fix)
+            # Status filter
             status = self.request.query_params.get('status')
             if status:
                 queryset = queryset.filter(status=status)
 
+            # Year filter
+            year = self.request.query_params.get('year')
+            if year:
+                queryset = queryset.filter(
+                    from_date__year=year
+                )
+
+            # Month filter
+            month = self.request.query_params.get('month')
+            if month:
+                queryset = queryset.filter(
+                    from_date__month=month
+                )
+
             return queryset.order_by('-created_at')
+
         except Exception:
             return LeaveRequest.objects.none()
 
@@ -188,7 +370,7 @@ class EmployeesOnLeaveTodayByDepartmentView(APIView):
                 to_date__gte=today,
                 employee__department_id=department_id
             )
-            employees = Employee_db.objects.filter(id__in=leaves.values_list('employee_id', flat=True))
+            employees = Employee_db.objects.filter(is_deleted=False,id__in=leaves.values_list('employee_id', flat=True))
             from employee.serializers import EmployeeSerializer
             serializer = EmployeeSerializer(employees, many=True)
             return Response(serializer.data)
@@ -208,7 +390,7 @@ class DepartmentEmployeesOnLeaveView(APIView):
             return Response({"error": "Invalid date format"}, status=400)
 
         try:
-            emp = Employee_db.objects.get(id=employee_id)
+            emp = Employee_db.objects.get(id=employee_id,is_deleted=False)
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found"}, status=404)
 
@@ -218,7 +400,7 @@ class DepartmentEmployeesOnLeaveView(APIView):
         try:
 
             dept = emp.department
-            dept_emps = Employee_db.objects.filter(department=dept)
+            dept_emps = Employee_db.objects.filter(department=dept,is_deleted=False)
 
             leaves = LeaveRequest.objects.filter(
                 employee__in=dept_emps,

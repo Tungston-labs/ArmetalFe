@@ -324,15 +324,15 @@ export const DeclineButton = styled.button`
 `;
 
 export const ApproveButton = styled.button`
-
   color: white;
-  padding: 0.4rem 0.8rem;
+  padding:6px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border-radius: 7px;
+  border-radius: 4px;
   border: 1px solid #172554;
-  background: #304eb0;
+  background: #304EB0;
+  font-size: 12px;
   &:hover {
     background-color: #64748b; 
     transform: scale(1.02);
@@ -535,31 +535,18 @@ export const EmployeeImage = styled.img`
 `;
 
 export const Pagination = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  gap: 0.2rem;
+display: flex;
+  justify-content: flex-start; /* changed from flex-end to flex-start */
+  gap: 0.3rem;
   margin-top: 1.5rem;
-  padding: 0.5rem;
+  // padding: 0.6rem;
 
   span {
-    padding: 0.2rem 0.6rem;
+    padding: 0.2rem 0.4rem;
     border-radius: 6px;
     border: 1px solid #ccc;
     cursor: pointer;
     font-size: 0.7rem;
-  }
-  @media (min-width: 2560px) {
-    span {
-      font-size: 2rem;
-      padding: 0.5rem 1.5rem;
-    }
-    gap: 0.5rem;
-  }
-  @media (min-width: 3840px) {
-    span {
-      font-size: 2.5rem;
-    }
-    gap: 1rem;
   }
   .active {
     background: #1e3a8a;
@@ -591,3 +578,129 @@ export const DropdownMenu = styled.div`
     }
   }
 `;
+export const StatusTabsWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+`;
+
+export const StatusButton = styled.button`
+  padding: 8px 20px;
+  border-radius: 4px;
+
+  border: 1.5px solid
+    ${({ $active, $borderColor }) =>
+      $active ? $borderColor : "#ddd"};
+
+  background: ${({ $active, $bg }) =>
+    $active ? $bg : "#fff"};
+
+  color: ${({ $active, $color }) =>
+    $active ? $color : "#888"};
+
+  font-weight: ${({ $active }) =>
+    $active ? "700" : "500"};
+
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+
+export const StatusDot = styled.span`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  background: ${({ $active, $color }) =>
+    $active ? $color : "#ccc"};
+
+  display: inline-block;
+`;
+
+export const CountBadge = styled.span`
+  background: ${({ $active, $color }) =>
+    $active ? $color : "#eee"};
+
+  color: ${({ $active }) =>
+    $active ? "#fff" : "#666"};
+
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+`;
+
+export const StatusText = styled.span`
+  font-weight: 600;
+  color: ${({ status }) =>
+    status === "approved"
+      ? "#16a34a"
+      : status === "rejected"
+      ? "#dc2626"
+      : "#f59e0b"};
+`;
+
+export const PrintSection = styled.div`
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+`;
+
+export const MonthSelect = styled.select`
+  padding:8px 14px;
+  border-radius:4px;
+  border:1px solid #d1d5db;
+  outline:none;
+  min-width:150px;
+  font-size:14px;
+  background:white;
+  cursor:pointer;
+
+  &:focus{
+    border-color:#304EB0;
+  }
+`;
+
+export const ExcelButton = styled.button`
+  padding:8px 14px;
+  border-radius:4px;
+  border:1px solid #d1d5db;
+  outline:none;
+  min-width:150px;
+  font-size:14px;
+  background:white;
+  cursor:pointer;
+
+  &:hover{
+   background-color:#304EB0;
+   color: white;
+  }
+`;
+
+export const TopActionRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+`;
+
+
+
+
+

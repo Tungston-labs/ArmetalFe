@@ -22,6 +22,14 @@ export const Panel = styled.div`
   body.swal2-shown & {
     z-index: 900;
   }
+ @media (min-width: 1000px) {
+    width: 250px;
+  } 
+
+
+   @media (min-width: 1440px) {
+    width: 300px;
+  }
   @media (min-width: 1920px) {
     width: 350px;
   }
@@ -32,9 +40,6 @@ export const Panel = styled.div`
     width: 380px;
   }
 
-@media (min-width: 1000px) {
-    width: 300px;
-  }
 
   @media (max-width: 992px) {
     width: 300px;
@@ -98,17 +103,6 @@ export const BottomActions = styled.div`
   border-top: 1px solid #ddd;
   z-index: 3000;
 
-  @media (min-width: 1920px) {
-    width: 300px;
-  }
-  @media (min-width: 2560px) {
-    width: 350px;
-  }
-  @media (min-width: 3840px) {
-    width: 380px;
-  }
-
-  /* Mobile full width */
   @media (max-width: 600px) {
     width: 100%;
     padding: 15px 20px;

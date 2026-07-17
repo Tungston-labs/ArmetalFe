@@ -1,11 +1,15 @@
 import React from "react";
-import { Header, Title, SlideButton } from "./HeaderBar.Styles";
-
-const HeaderBar = ({ onOpen }) => {
+import { Header, Title, SlideButton, NotificationDot } from "./HeaderBar.Styles";
+import { MdMenuOpen } from "react-icons/md";
+const HeaderBar = ({ onOpen, hasNotification = true }) => {
   return (
     <Header>
       <Title>Dashboard Overview</Title>
-      <SlideButton onClick={onOpen}>➤</SlideButton>
+
+      <SlideButton onClick={onOpen}>
+        <MdMenuOpen size={20} />
+        {hasNotification && <NotificationDot />}
+      </SlideButton>
     </Header>
   );
 };

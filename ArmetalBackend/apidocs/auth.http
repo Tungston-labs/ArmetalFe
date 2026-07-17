@@ -1,13 +1,20 @@
 ###LOGIN TO OBTAIN THE TOKEN PAIRS-FOR COMAPNY
 
-POST http://178.248.112.16:8001/api/token/
+POST https://api.rekory.com/api/token/
 Content-Type: application/json
 
 {
-  "username": "snv_arm_kak_117",
-  "password": "password1234"
+  "username": "mediora",
+  "password": "CMPPSPI4Z6TPE"
 }
+###
+POST https://api.rekory.com/api/token/
+Content-Type: application/json
 
+{
+  "username": "TlsLab",
+  "password": "password123"
+}
 ###LOGIN FOR EMPLOYEE
 POST http://178.248.112.16:8001/api/token/
 Content-Type: application/json
@@ -54,7 +61,7 @@ POST http://178.248.112.16:8001/api/forgot-password/send-otp/
 Content-Type: application/json
 
 {
-  "email": "nisna.u5@gmail.com"
+  "email": "sharanyamol2@gmail.com"
 }
 # verify OPTIONS 
 ###
@@ -62,8 +69,8 @@ POST http://178.248.112.16:8001/api/forgot-password/verify-otp/
 Content-Type: application/json
 
 {
-  "email": "nisna.u5@gmail.com",
-  "otp": "978004"
+  "email": "sharanyamol2@gmail.com",
+  "otp": "801348"
 }
 
 # reset password after otp verification
@@ -73,7 +80,7 @@ POST http://178.248.112.16:8001/api/forgot-password/reset/
 Content-Type: application/json
 
 {
-  "email": "nisna.u5@gmail.com",
+  "email": "sharanyamol2@gmail.com",
   "new_password": "password123",
   "confirm_password": "password123"
 }

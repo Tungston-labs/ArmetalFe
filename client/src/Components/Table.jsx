@@ -28,8 +28,8 @@ const Table = ({
   setBankName,
   swiftCode,
   setSwiftCode,
-  paymentMode,
-  setPaymentMode,
+  ifscCode,
+setIfscCode,
   accountNumber,
   setAccountNumber,
   uanNumber,
@@ -62,8 +62,8 @@ const Table = ({
       </Header>
 
       <FormSection>
-        {/* Bank Name */}
         <Row>
+                    <TwoColumnRows>
           <FormGroups>
             <Label>Bank Name</Label>
             <Input
@@ -73,39 +73,8 @@ const Table = ({
             />
             <ErrorMsg msg={errors.bankName} />
           </FormGroups>
-        </Row>
-
-        {/* Bank Info */}
-        <Row>
-          <TwoColumnRows>
-            <FormGroups>
-              <Label>Swift Code</Label>
-              <ErrorMsg msg={errors.swiftCode} />
-              <Input
-                placeholder="Enter Swift Code"
-                value={swiftCode}
-                onChange={(e) => setSwiftCode(e.target.value)}
-              />
-            </FormGroups>
-
-            <FormGroups>
-              <Label>Payment Mode</Label>
-
-              <Select
-                value={paymentMode}
-                onChange={(e) => setPaymentMode(e.target.value)}
-              >
-                <option value="">Select Payment Mode</option>
-                <option value="online">Online</option>
-                <option value="cheque">Cheque</option>
-              </Select>
-              <ErrorMsg msg={errors.paymentMode} />
-            </FormGroups>
-          </TwoColumnRows>
-        </Row>
-        <Row>
-          <TwoColumnRows>
-            <FormGroups>
+          
+             <FormGroups>
               <Label>Account Number</Label>
 
               <Input
@@ -128,25 +97,46 @@ const Table = ({
                 <ErrorMsg msg={errors.uanNumber} />
               </FormGroups>
             )}
+            </TwoColumnRows>
+        </Row>
+        <Row>
+          <TwoColumnRows>
+      <FormGroups>
+  <Label>{country === "IN" ? "IFSC Code" : "SWIFT Code"}</Label>
+
+  <ErrorMsg
+    msg={country === "IN" ? errors.ifscCode : errors.swiftCode}
+  />
+
+  <Input
+    placeholder={
+      country === "IN"
+        ? "Enter IFSC Code"
+        : "Enter SWIFT Code"
+    }
+    value={country === "IN" ? ifscCode : swiftCode}
+    onChange={(e) =>
+      country === "IN"
+        ? setIfscCode(e.target.value)
+        : setSwiftCode(e.target.value)
+    }
+  />
+</FormGroups>
+
+             <FormGroups>
+              <Label>Basic Salary</Label>
+
+              <Input
+                placeholder="Enter Basic Salary"
+                value={basicSalary}
+                onChange={(e) => setBasicSalary(e.target.value)}
+              />
+              <ErrorMsg msg={errors.basicSalary} />
+            </FormGroups>
+
           </TwoColumnRows>
         </Row>
-
-        {/* Bank Proof file */}
-        {/* <Row>
-          <FormGroups>
-            <Label>Bank Proof (optional)</Label>
-            <input
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => {
-                const file = e.target.files?.[0] || null;
-                if (setBankProofImage) setBankProofImage(file);
-              }}
-            />
-          </FormGroups>
-        </Row> */}
-
-        {/* Tax & Compliance */}
+   
         <SectionTitle>Tax and Compliance</SectionTitle>
         <Row>
           <TwoColumnRows>
@@ -207,64 +197,6 @@ const Table = ({
                 <option value="false">No</option>
               </Select>
               <ErrorMsg msg={errors.declaration80C} />
-            </FormGroups>
-          </TwoColumnRows>
-        </Row>
-
-        {/* Salary & Increment */}
-        <SectionTitle>Salary and Increment</SectionTitle>
-        <Row>
-          <TwoColumnRows>
-            <FormGroups>
-              <Label>Basic Salary</Label>
-
-              <Input
-                placeholder="Enter Basic Salary"
-                value={basicSalary}
-                onChange={(e) => setBasicSalary(e.target.value)}
-              />
-              <ErrorMsg msg={errors.basicSalary} />
-            </FormGroups>
-
-            <FormGroups>
-              <Label>Salary Increment</Label>
-
-              <Select
-                value={salaryIncrement}
-                onChange={(e) => setSalaryIncrement(e.target.value)}
-              >
-                <option value="">Salary Increment %</option>
-                {[...Array(11).keys()].map((i) => (
-                  <option key={i * 10} value={i * 10}>
-                    {i * 10}%
-                  </option>
-                ))}
-              </Select>
-              <ErrorMsg msg={errors.salaryIncrement} />
-            </FormGroups>
-          </TwoColumnRows>
-
-          <TwoColumnRows>
-            <FormGroups>
-              <Label>Housing Allowance</Label>
-
-              <Input
-                placeholder="Enter Housing Allowance"
-                value={housingAllowance}
-                onChange={(e) => setHousingAllowance(e.target.value)}
-              />
-              <ErrorMsg msg={errors.housingAllowance} />
-            </FormGroups>
-
-            <FormGroups>
-              <Label>Transportation</Label>
-
-              <Input
-                placeholder="Enter Transportation"
-                value={transportation}
-                onChange={(e) => setTransportation(e.target.value)}
-              />
-              <ErrorMsg msg={errors.transportation} />
             </FormGroups>
           </TwoColumnRows>
         </Row>

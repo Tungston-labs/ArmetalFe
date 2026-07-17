@@ -25,19 +25,21 @@ function daysLeft(dateStr) {
 
 const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) => {
   const navigate = useNavigate();
-  const sorted = [...employees].sort(
-    (a, b) => new Date(a.expiryDate) - new Date(b.expiryDate)
-  );
+ const sorted = [...employees].sort(
+  (a, b) =>
+    new Date(a.contract_expiry_date) -
+    new Date(b.contract_expiry_date)
+);
 
   const list = sorted.slice(0, showCount);
-
+console.log("employees:", employees);
   return (
     <Wrapper>
       <Header>
         <Title>Contract Expiry</Title>
 
 
-               <IconButton onClick={() => navigate("/employee")}>
+               <IconButton onClick={() => navigate("/employee-Contract-Visa-Expiry")}>
           <BsArrowUpRightCircleFill />
         </IconButton>
       </Header>
@@ -46,23 +48,24 @@ const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) => {
         {list.length === 0 && <NoData>No expiring contracts</NoData>}
 
         {list.map((emp, idx) => {
-          const days = daysLeft(emp.expiryDate);
+         const days = emp.days_left;
           const isSoon = days >= 0 && days <= 5;
 
           return (
             <ListItem key={idx} $highlight={isSoon}>
               
               <ExpiryBox $highlight={isSoon}>
-                <span className="day">{new Date(emp.expiryDate).getDate()}</span>
-                <span className="month">
-                  {new Date(emp.expiryDate).toLocaleString("en-IN", { month: "short" })}
-                </span>
+<span className="day">
+  {new Date(emp.contract_expiry_date).getDate()}
+</span>                <span className="month">
+{new Date(emp.contract_expiry_date).toLocaleString("en-US", {
+  month: "short",
+})}                </span>
               </ExpiryBox>
 
               <Info>
                 <Name>{emp.name}</Name>
-                <Dept>ID: {emp.empId}</Dept>
-                <IdText>
+<Dept>ID: {emp.employee_id}</Dept>                <IdText>
                   {days === 0
                     ? "Expires Today"
                     : days > 0

@@ -8,11 +8,11 @@ from .models import (
 from departments.models import Department
 from attendance.models import Attendance
 from task.models import DailyTask
-from leave.models import LeaveRequest
+from leave.models import LeaveRequest,EmployeeLeaveBalance
 from datetime import date, timedelta
 from calendar import monthrange
+from decimal import Decimal
 
-# Custom field to handle datetime-to-date safely
 class SafeDateField(serializers.DateField):
     def to_representation(self, value):
         if isinstance(value, datetime):
@@ -20,49 +20,365 @@ class SafeDateField(serializers.DateField):
         return super().to_representation(value)
 
 class EmployeeSerializer(serializers.ModelSerializer):
+
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
     visa_expiry_date = SafeDateField(required=False)
-    iqama_number = serializers.CharField(required=False, allow_blank=True)
-    aadar_number = serializers.CharField(required=False, allow_blank=True)
-    insurance_number = serializers.CharField(required=False, allow_blank=True)
+
+    iqama_number = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
+
+    aadar_number = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
+
+    insurance_number = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
+
+    # Allow manual employee_id
+    employee_id = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
+    employee_code = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     department_id = serializers.PrimaryKeyRelatedField(
         source='department',
         queryset=Department.objects.all(),
         write_only=True
     )
-    department = serializers.CharField(source='department.name', read_only=True)
 
-    # ✅ Add is_head field
+    department = serializers.CharField(
+        source='department.name',
+        read_only=True
+    )
+
     is_head = serializers.SerializerMethodField(read_only=True)
+
+    casual_leave = serializers.DecimalField(
+    max_digits=5,
+    decimal_places=2,
+    required=False,
+    default=0,
+    )
+
+    sick_leave = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        default=0,
+        
+    )
+
+    earned_leave = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        default=0,
+        
+    )
+
+    maternity_leave = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        default=0,
+        
+    )
+
+    other_leave = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        default=0,
+        
+    )
 
     class Meta:
         model = Employee_db
         exclude = ['user', 'password']
 
     def get_is_head(self, obj):
-        return obj.department and obj.department.department_head == obj
+        return (
+            obj.department
+            and obj.department.department_head == obj
+        )
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
 
-    def validate(self, data):
-        country = self.context['request'].user.company.country
+        balances = {
+            balance.leave_type: balance.total_leave
+            for balance in EmployeeLeaveBalance.objects.filter(
+                employee=instance
+            )
+        }
 
-        # India-specific validation
-        if country == "IN":
-            if not data.get('aadar_number'):
-                raise serializers.ValidationError({"aadar_number": "Aadhaar number is required for India"})
-        else:
-            # Non-India
-            if not data.get('iqama_number'):
-                raise serializers.ValidationError({"iqama_number": "Iqama number is required for this country"})
-            if not data.get('visa_expiry_date'):
-                raise serializers.ValidationError({"visa_expiry_date": "Visa expiry date is required"})
-
-        # Insurance can be optional or required depending on your business rules
-        if country != "IN" and not data.get('insurance_number'):
-            raise serializers.ValidationError({"insurance_number": "Insurance number is required for non-India"})
+        data["casual_leave"] = balances.get("casual", 0)
+        data["sick_leave"] = balances.get("sick", 0)
+        data["earned_leave"] = balances.get("earned", 0)
+        data["maternity_leave"] = balances.get("maternity", 0)
+        data["other_leave"] = balances.get("others", 0)
 
         return data
+
+        # =====================================================
+    # EMAIL VALIDATION
+    # =====================================================
+
+    def validate_email(self, value):
+
+        qs = Employee_db.objects.filter(
+            email__iexact=value
+        )
+
+        # exclude current instance during update
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Email already exists."
+            )
+
+        return value
+
+    # =====================================================
+    # PHONE VALIDATION
+    # =====================================================
+
+    def validate_phno(self, value):
+
+        qs = Employee_db.objects.filter(
+            phno=value
+        )
+
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Phone number already exists."
+            )
+
+        return value
+
+    # =====================================================
+    # EMPLOYEE ID VALIDATION
+    # =====================================================
+
+    def validate_employee_id(self, value):
+
+        # skip empty because auto-generated possible
+        if not value:
+            return value
+
+        qs = Employee_db.objects.filter(
+            employee_id=value
+        )
+
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Employee ID already exists."
+            )
+
+        return value
+
+    # =====================================================
+    # IQAMA VALIDATION
+    # =====================================================
+
+    def validate_iqama_number(self, value):
+
+        if not value:
+            return value
+
+        qs = Employee_db.objects.filter(
+            iqama_number=value
+        )
+
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Iqama number already exists."
+            )
+
+        return value
+
+    # =====================================================
+    # AADHAR VALIDATION
+    # =====================================================
+
+    def validate_aadar_number(self, value):
+
+        if not value:
+            return value
+
+        qs = Employee_db.objects.filter(
+            aadar_number=value
+        )
+
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Aadhaar number already exists."
+            )
+
+        return value
+
+    def validate(self, data):
+
+        country = self.context['request'].user.company.country
+
+        if country == "IN":
+            if not data.get('aadar_number'):
+                raise serializers.ValidationError({
+                    "aadar_number":
+                    "Aadhaar number is required for India"
+                })
+
+        else:
+            if not data.get('iqama_number'):
+                raise serializers.ValidationError({
+                    "iqama_number":
+                    "Iqama number is required for this country"
+                })
+
+            if not data.get('visa_expiry_date'):
+                raise serializers.ValidationError({
+                    "visa_expiry_date":
+                    "Visa expiry date is required"
+                })
+
+        if (
+            country != "IN"
+            and not data.get('insurance_number')
+        ):
+            raise serializers.ValidationError({
+                "insurance_number":
+                "Insurance number is required for non-India"
+            })
+
+        return data
+
+
+    def create(self, validated_data):
+
+        casual_leave = validated_data.pop("casual_leave", 0)
+        sick_leave = validated_data.pop("sick_leave", 0)
+        earned_leave = validated_data.pop("earned_leave", 0)
+        maternity_leave = validated_data.pop("maternity_leave", 0)
+        other_leave = validated_data.pop("other_leave", 0)
+
+        employee = Employee_db.objects.create(
+            **validated_data
+        )
+
+        leave_data = [
+            ("casual", casual_leave),
+            ("sick", sick_leave),
+            ("earned", earned_leave),
+            ("maternity", maternity_leave),
+            ("others", other_leave),
+        ]
+
+        total_leave = Decimal("0")
+
+        for leave_type, total in leave_data:
+
+            total = Decimal(str(total or 0))
+
+            EmployeeLeaveBalance.objects.create(
+                employee=employee,
+                leave_type=leave_type,
+                total_leave=total,
+                used_leave=0,
+                remaining_leave=total
+            )
+
+            total_leave += total
+
+        employee.total_leave = total_leave
+        employee.save(update_fields=["total_leave"])
+
+        return employee
+
+
+
+
+    def update(self, instance, validated_data):
+
+        casual_leave = validated_data.pop("casual_leave", None)
+        sick_leave = validated_data.pop("sick_leave", None)
+        earned_leave = validated_data.pop("earned_leave", None)
+        maternity_leave = validated_data.pop("maternity_leave", None)
+        other_leave = validated_data.pop("other_leave", None)
+
+        employee_id = validated_data.get(
+            "employee_id",
+            instance.employee_id
+        )
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.employee_id = employee_id
+        instance.save()
+
+        leave_updates = {
+            "casual": casual_leave,
+            "sick": sick_leave,
+            "earned": earned_leave,
+            "maternity": maternity_leave,
+            "others": other_leave,
+        }
+
+        total_leave = Decimal("0")
+
+        for leave_type, leave_total in leave_updates.items():
+
+            balance, created = EmployeeLeaveBalance.objects.get_or_create(
+                employee=instance,
+                leave_type=leave_type,
+                defaults={
+                    "total_leave": leave_total or 0,
+                    "used_leave": 0,
+                    "remaining_leave": leave_total or 0,
+                }
+            )
+
+            if leave_total is not None:
+
+                leave_total = Decimal(str(leave_total))
+
+                balance.total_leave = leave_total
+
+                balance.remaining_leave = (
+                    leave_total - balance.used_leave
+                )
+
+                if balance.remaining_leave < 0:
+                    balance.remaining_leave = 0
+
+                balance.save()
+
+            total_leave += balance.total_leave
+
+        instance.total_leave = total_leave
+        instance.save(update_fields=["total_leave"])
+
+        return instance
 
 
 
@@ -95,8 +411,6 @@ class EmpDocumentSerializer(serializers.ModelSerializer):
         read_only_fields = ['employee']
 
 
-# for mobile app
-
 
 
 
@@ -122,7 +436,6 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
         exclude = ['password']
 
     def get_company_logo(self, obj):
-        # Option 1: via employee -> user -> company
         company = obj.user.company
         if company and company.logo:
             request = self.context.get("request")
@@ -199,8 +512,6 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
     projects = serializers.SerializerMethodField()
     attendance_graph = serializers.SerializerMethodField()
     task_graph = serializers.SerializerMethodField()
-
-    # NEW FIELDS REQUESTED
     aadar_number = serializers.SerializerMethodField()
     iqama_number = serializers.SerializerMethodField()
     pan_number = serializers.SerializerMethodField()
@@ -221,12 +532,12 @@ class EmployeeDashboardSerializer(serializers.ModelSerializer):
             "employee_id",
             "designation",
             "joining_date",
-            "dob",                             # NEW
-            "aadar_number",                     # NEW
-            "iqama_number",                     # NEW
-            "pan_number",                       # NEW
-            "account_number",                   # NEW
-            "passport_number",                  # NEW
+            "dob",                             
+            "aadar_number",                    
+            "iqama_number",                     
+            "pan_number",                     
+            "account_number",                   
+            "passport_number",                  
             "department",
             "role",
             "salary",
@@ -377,3 +688,38 @@ class ScheduleReminderSerializer(serializers.ModelSerializer):
         read_only_fields = ('employee', 'created_at', 'notified')
 
 
+# serializers.py
+
+from rest_framework import serializers
+from decimal import Decimal
+from .models import SalaryIncrement,EmpBankPaymentModel
+
+
+class SalaryIncrementSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SalaryIncrement
+        fields = "__all__"
+        read_only_fields = ["total_salary"]
+
+    def create(self, validated_data):
+        employee = validated_data["employee"]
+        increment_amount = Decimal(validated_data["increment_amount"])
+
+        # Get last increment
+        last_increment = SalaryIncrement.objects.filter(
+            employee=employee
+        ).order_by("-date").first()
+
+        if last_increment:
+            base_salary = last_increment.total_salary
+        else:
+            # First increment → take from bank model
+            bank = EmpBankPaymentModel.objects.get(employee=employee)
+            base_salary = bank.basic_salary
+
+        total_salary = base_salary + increment_amount
+
+        validated_data["total_salary"] = total_salary
+
+        return super().create(validated_data)

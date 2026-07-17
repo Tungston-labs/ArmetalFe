@@ -9,6 +9,12 @@ from decimal import Decimal, InvalidOperation
 from django.db.models import Sum
 from django.utils import timezone
 from rest_framework import generics, permissions, serializers
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from departments.models import Department
+from .serializers import EmployeeMiniSerializer
+from employee.models import Employee_db
+from rest_framework.response import Response
 
 class EmployeeDailyTaskCreateListView(generics.ListCreateAPIView):
     serializer_class = DailyTaskSerializer
@@ -72,12 +78,7 @@ class HRDailyTaskListView(generics.ListAPIView):
     serializer_class = DailyTaskSerializer
     permission_classes = [permissions.IsAuthenticated, IsHRAdmin]
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from departments.models import Department
-from .serializers import EmployeeMiniSerializer
-from employee.models import Employee_db
-from rest_framework.response import Response
+
 
 class EmployeeByDepartmentView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]

@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Pagination,
   TruncatedText,
   StyledTable,
-  NameCell,
-  Avatar,
-  AvatarFallback,
   DeleteIconWrapper,
   TableHead,
   HeadRow,
@@ -16,6 +12,7 @@ import {
   BodyCell,
   EmptyRow,
   PageLoaderOverlay,
+  TableWrapper,
 } from "./EmployeeList.styles";
 import {
   ModalOverlay,
@@ -25,7 +22,6 @@ import {
   ModalButton,
   ModalButtonWrapper,
 } from "./DeletModal.styles";
-import { PiUserCirclePlusThin } from "react-icons/pi";
 import { FaTrash } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,19 +31,25 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import RightSideModal from "../employeDashboard/RightSideModal";
+import Pagination from "../../Components/Pagination/Pagination";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
+// import { exportEmployeeReport } from "../../utils/employeelistReport";
+// import { exportEmployeePDF } from "../report/EmployeelistReport";
+import { fetchUnpaginatedEmployees } from "../../services/employeeService";
+
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [searchText, setSearchText] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
   const { employeeList, pagination, loading } = useSelector(
     (state) => state.employees,
   );
@@ -102,19 +104,42 @@ const EmployeeList = () => {
       setPage(newPage);
     });
   };
+
+  // const handleReportClick = async (type) => {
+  //   setExportLoading(true);
+  //   try {
+  //     const data = await fetchUnpaginatedEmployees(debouncedSearch, departmentFilter);
+  //     if (type === "excel") {
+  //       exportEmployeeReport(data);
+  //     } else if (type === "pdf") {
+  //       exportEmployeePDF(data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch employees for export:", error);
+  //     // Fallback
+  //     if (type === "excel") {
+  //       exportEmployeeReport(filteredEmployees);
+  //     } else if (type === "pdf") {
+  //       exportEmployeePDF(filteredEmployees);
+  //     }
+  //   } finally {
+  //     setExportLoading(false);
+  //   }
+  // };
+
   const filteredEmployees = Array.isArray(employeeList)
     ? employeeList.filter(
-        (emp) =>
-          emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-          emp.employee_id
-            ?.toString()
-            .toLowerCase()
-            .includes(debouncedSearch.toLowerCase()),
-      )
+      (emp) =>
+        emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        emp.employee_id
+          ?.toString()
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase()),
+    )
     : [];
   return (
     <>
-      {loading && (
+      {(loading || exportLoading) && (
         <PageLoaderOverlay>
           <Loader />
         </PageLoaderOverlay>
@@ -127,114 +152,97 @@ const EmployeeList = () => {
           dropdownOptions={departmentList || []}
           dropdownLoading={deptLoading}
           onAddClick={() => navigate("/basic-details")}
+          searchValue={searchText}
           onSearchChange={setSearchText}
+          selectedDropdownValue={departmentFilter}
           onDropdownChange={setDepartmentFilter}
           showBackArrow={false}
           showTabs={true}
+          showAddButton={true}
+          showReportButton={false}
+          buttonText="Add Employee"
+          // reportButtonText="Reports"
+          // onReportClick={handleReportClick}
         />
         {!loading && (
           <>
-            <StyledTable>
-              <TableHead>
-                <HeadRow>
-                  <HeadCell>Sl No</HeadCell>
-                  <HeadCell>Employee name</HeadCell>
-                  <HeadCell>Employee ID</HeadCell>
-                  <HeadCell>Email ID</HeadCell>
-                  <HeadCell>Job Position</HeadCell>
-                  <HeadCell>Department</HeadCell>
-                  <HeadCell>Delete</HeadCell>
-                </HeadRow>
-              </TableHead>
+            <TableWrapper>
+              <StyledTable>
+                <TableHead>
+                  <HeadRow>
+                    <HeadCell>Sl No</HeadCell>
+                    <HeadCell>Employee name</HeadCell>
+                    <HeadCell>Username</HeadCell>
+                    <HeadCell>Employee ID</HeadCell>
+                    {/* <HeadCell>Email ID</HeadCell> */}
+                    <HeadCell>Job Position</HeadCell>
+                    <HeadCell>Department</HeadCell>
+                    <HeadCell>Delete</HeadCell>
+                  </HeadRow>
+                </TableHead>
 
-              <TableBody>
-                {filteredEmployees.length > 0 ? (
-                  filteredEmployees.map((emp, index) => (
-                    <BodyRow
-                      key={emp.id}
-                      onClick={() => {
-                        setSelectedEmployee(emp);
-                        setOpenModal(true);
-                      }}
-                    >
-                      <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
-                      <BodyCell>
-                        <NameCell>
-                          {emp.profile_pic ? (
-                            <Avatar src={emp.profile_pic} alt={emp.name} />
-                          ) : (
-                            <AvatarFallback>
-                              <PiUserCirclePlusThin size={20} color="#999" />
-                            </AvatarFallback>
-                          )}
-                          {emp.name}
-                        </NameCell>
-                      </BodyCell>
-
-                      <BodyCell>{emp.employee_id}</BodyCell>
-
-                      <BodyCell>
-                        <TruncatedText title={emp.email}>
-                          {emp.email}
-                        </TruncatedText>
-                      </BodyCell>
-
-                      <BodyCell>
-                        <TruncatedText title={emp.designation}>
-                          {emp.designation}
-                        </TruncatedText>
-                      </BodyCell>
-
-                      <BodyCell>
-                        <TruncatedText title={emp.department}>
-                          {emp.department}
-                        </TruncatedText>
-                      </BodyCell>
-
-                      <DeleteIconWrapper
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteClick(emp.id);
+                <TableBody>
+                  {!loading && filteredEmployees.length > 0 ? (
+                    filteredEmployees.map((emp, index) => (
+                      <BodyRow
+                        key={emp.id}
+                        onClick={() => {
+                          setSelectedEmployee(emp);
+                          setOpenModal(true);
                         }}
                       >
-                        <FaTrash color="red" />
-                      </DeleteIconWrapper>
-                    </BodyRow>
-                  ))
-                ) : (
-                  <EmptyRow>
-                    <td colSpan="7">No employees found.</td>
-                  </EmptyRow>
-                )}
-              </TableBody>
-            </StyledTable>
+                        <BodyCell>{index + 1 + (page - 1) * 20}</BodyCell>
 
-            <Pagination>
-              <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>
-                &larr;
-              </span>
-              {Array.from(
-                { length: pagination?.total_pages || 1 },
-                (_, i) => i + 1,
-              ).map((pageNumber) => (
-                <span
-                  key={pageNumber}
-                  onClick={() => handlePageChange(pageNumber)}
-                  className={page === pageNumber ? "active" : ""}
-                >
-                  {pageNumber}
-                </span>
-              ))}
-              <span
-                onClick={() => {
-                  if (page < (pagination?.total_pages || 1)) {
-                    handlePageChange(page + 1);
-                  }
-                }}
-              >
-                &rarr;
-              </span>
-            </Pagination>
+                        <BodyCell>
+                          {emp.name ? emp.name.charAt(0).toUpperCase() + emp.name.slice(1) : ""}
+                        </BodyCell>
+
+                        <BodyCell>{emp.employee_id}</BodyCell>
+
+                        <BodyCell>{emp.employee_code}</BodyCell>
+                        {/* <BodyCell>
+                          <TruncatedText title={emp.email}>
+                            {emp.email}
+                          </TruncatedText>
+                        </BodyCell> */}
+
+                        <BodyCell>
+                          <TruncatedText title={emp.designation?.toUpperCase()}>
+                            {emp.designation?.toUpperCase()}
+                          </TruncatedText>
+                        </BodyCell>
+
+                        <BodyCell>
+                          <TruncatedText title={emp.department}>
+                            {emp.department}
+                          </TruncatedText>
+                        </BodyCell>
+
+                        <DeleteIconWrapper
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(emp.id);
+                          }}
+                        >
+                          <FaTrash color="red" />
+                        </DeleteIconWrapper>
+                      </BodyRow>
+                    ))
+                  ) : !loading ? (
+                    <tr>
+                      <td colSpan={7}>
+                        <NoEmployeeFound searchTerm={debouncedSearch} />
+                      </td>
+                    </tr>
+                  ) : null}
+                </TableBody>
+              </StyledTable>
+            </TableWrapper>
+            <Pagination
+              currentPage={page}
+              totalPages={pagination?.total_pages || 1}
+              onPageChange={handlePageChange}
+            />
           </>
         )}
 

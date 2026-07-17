@@ -91,5 +91,20 @@ Content-Type: application/json
 
 
 ###PAYSLIP FOR EMPLOYEE
-GET http://localhost:8000/api/employee/payslip/download/?month=07&year=2025
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyMjA4MDA1LCJpYXQiOjE3NTIyMDQ0MDUsImp0aSI6IjBlMmViNDM4NjlmMzQ5NmM4NTE4MWUxZTFmNWFhMzc3IiwidXNlcl9pZCI6NjksImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlfQ.JhiuxkwcWdIgiaMpqI-tuPvWZoQJeK3RbKGJ-1hAsi8
+GET https://api.rekory.com/api/employee/payslip/download/?month=06&year=2026
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzgzNTI2MDI5LCJpYXQiOjE3ODM0OTcyMjksImp0aSI6ImMyOGViMjAyMDM3NDRiZWZhODQ3OGQwMjdkMzc5ZGI2IiwidXNlcl9pZCI6NDkzLCJpc19zdXBlcmFkbWluIjpmYWxzZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6dHJ1ZSwiaXNfaHIiOmZhbHNlfQ.zvmjsmmn4eMUDSQOYBoAcc0Iv9-zOhW1N21Q09W52x0
+
+
+### ADD / UPDATE PAYROLL INCENTIVE
+
+PATCH https://api.rekory.com/api/payroll/incentive/351/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc4MTY3MjA2LCJpYXQiOjE3NzgxMzg0MDYsImp0aSI6IjM0Y2RiZjZiYjg0YzRkNWVhYjVjNzI1NzE5ZjNmMWJlIiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.QTerqoSCuO2eXeHBlo96gkxtcMWsbZvEOtkRU63Bq5w
+Content-Type: application/json
+
+{
+    "month": 4,
+    "year": 2026,
+    "incentive_amount": 1000,
+    "incentive_type": "Performance Bonus",
+    "incentive_reason": "Completed monthly target successfully"
+}

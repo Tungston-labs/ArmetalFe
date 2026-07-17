@@ -6,8 +6,12 @@ from rest_framework import status, generics, filters
 from rest_framework.generics import RetrieveAPIView
 from employee.models import Employee_db
 from .serializers import AttendanceSerializer, AttendanceSessionSerializer, AttendanceDetailSerializer,AttendanceLocationSerializer
-from shared.pagination import CustomPagination
-from .utils.timezone_utils import get_company_timezone, ensure_timezone,safe_parse_datetime
+from .utils.timezone_utils import (
+    COUNTRY_TIMEZONE_MAPPING,
+    get_company_timezone,
+    ensure_timezone,
+    safe_parse_datetime,
+)
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 import pytz
 from geopy.distance import geodesic
@@ -44,7 +48,6 @@ class AttendanceSwipeView(APIView):
 
             emp_lat, emp_lon = float(emp_lat), float(emp_lon)
 
-            # ✅ Step 1: Get project & validate status
             project = Project.objects.filter(employees=employee).first()
 
             if project:
@@ -59,7 +62,6 @@ class AttendanceSwipeView(APIView):
 
 
 
-            # ✅ Step 2: Validate distance based on punch type
             if punch_type == "onsite":
                 project_location = (float(project.latitude), float(project.longitude))
                 employee_location = (emp_lat, emp_lon)
@@ -107,14 +109,12 @@ class AttendanceSwipeView(APIView):
                 # Default fallback (optional)
                 return Response({"error": f"Invalid punch type: {punch_type}"}, status=400)
 
-            # ✅ Step 3: Address & timezone
             address = self._get_location_address(emp_lat, emp_lon)
             company_tz = get_company_timezone(employee)
             now_utc = timezone.now()
             now_company_tz = now_utc.astimezone(company_tz)
             today = now_company_tz.date()
 
-            # ✅ Step 4: Check if employee is on approved leave today
             from leave.models import LeaveRequest
             is_on_leave = LeaveRequest.objects.filter(
                 employee=employee,
@@ -129,7 +129,6 @@ class AttendanceSwipeView(APIView):
                     status=400
                 )
 
-            # ✅ Step 5: Attendance logic
             attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
             latest_session = attendance.sessions.last()
             should_punch_in = self._should_punch_in(latest_session)
@@ -179,11 +178,7 @@ class AttendanceSwipeView(APIView):
                 time_in = datetime.combine(attendance.date, time_in)
                 time_in = company_tz.localize(time_in)
 
-            if now_company_tz <= time_in:
-                return Response({
-                    'error': 'Punch out must be after punch in',
-                }, status=400)
-
+            
             latest_session.time_out = now_company_tz
             latest_session.punch_out_latitude = lat
             latest_session.punch_out_longitude = lon
@@ -232,13 +227,11 @@ class AddPunchOutNoteView(APIView):
 
         today = timezone.localdate()
 
-        # Get today’s attendance
         try:
             attendance = Attendance.objects.get(employee=employee, date=today)
         except Attendance.DoesNotExist:
             return Response({'error': 'No attendance found for today.'}, status=404)
 
-        # Get the latest session with a punch-out
         latest_session = attendance.sessions.filter(time_out__isnull=False).order_by('-time_out').first()
 
         if not latest_session:
@@ -259,79 +252,141 @@ class AddPunchOutNoteView(APIView):
 
 # -----------------------------------------------------view for list attendance for admin
 
-from django.db.models import Min, Case, When, IntegerField
+from datetime import date as today_date
+from rest_framework import generics, filters
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from employee.models import Employee_db
+from .serializers import AttendanceSerializer
+from django.db import models
+from django.db.models.functions import Coalesce
+from django.db.models import OuterRef, Subquery, BooleanField, Case, When, Value, F,OuterRef
+from attendance.models import Attendance, AttendanceSession
+
+
+
+
 
 class AttendanceAdminListView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
-    permission_classes = [IsAuthenticated, IsHRAdmin]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['employee__name', 'employee__employee_id', 'date']
     pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        department_id = self.request.query_params.get('department_id')
-        if not department_id:
-            raise ValidationError({"department_id": "This query parameter is required."})
-
-        date = self.request.query_params.get('date')
-
-        # ✅ Annotate each attendance record with the earliest punch-in (from AttendanceSession)
-        queryset = (
-            Attendance.objects.filter(employee__department_id=department_id)
-            .annotate(first_punch_in=Min('sessions__time_in'))
+    def _get_default_selected_date(self):
+        company = getattr(self.request.user, "company", None)
+        country = getattr(company, "country", None)
+        tz_name = COUNTRY_TIMEZONE_MAPPING.get(
+            country,
+            str(timezone.get_current_timezone()),
         )
 
-        # Optional date filter
-        if date:
-            queryset = queryset.filter(date=date)
+        try:
+            company_tz = pytz.timezone(tz_name)
+        except Exception:
+            company_tz = timezone.get_current_timezone()
 
-        # ✅ Order by date (newest first), but within date, by first_punch_in (earliest first)
-        # Employees who haven’t swiped in yet (NULL) will be pushed to the bottom
-        queryset = queryset.order_by(
-            '-date',
-            Case(
-                When(first_punch_in__isnull=True, then=1),
-                default=0,
-                output_field=IntegerField(),
-            ),
-            'first_punch_in',
+        return timezone.now().astimezone(company_tz).date()
+
+    def get_queryset(self):
+        department_id = self.request.query_params.get("department_id")
+        selected_date_param = self.request.query_params.get("date")
+
+        if selected_date_param:
+            selected_date = parse_date(selected_date_param)
+            if not selected_date:
+                raise ValidationError({"date": "Invalid date format. Use YYYY-MM-DD"})
+        else:
+            selected_date = self._get_default_selected_date()
+
+        if not department_id:
+            raise ValidationError({"department_id": "department_id is required"})
+
+        attendance_qs = Attendance.objects.filter(
+            employee=OuterRef("pk"),
+            date=selected_date,
+        )
+
+        first_session = AttendanceSession.objects.filter(
+            attendance__employee=OuterRef("pk"),
+            attendance__date=selected_date,
+        ).order_by("time_in")
+
+        last_session = AttendanceSession.objects.filter(
+            attendance__employee=OuterRef("pk"),
+            attendance__date=selected_date,
+        ).order_by("-time_out")
+
+        queryset = (
+            Employee_db.objects
+            .filter(department_id=department_id,is_deleted=False)
+            .annotate(
+                date=Subquery(attendance_qs.values("date")[:1]),
+                total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
+                attendance_id=Subquery(attendance_qs.values("id")[:1]),  
+                first_swipe_in=Subquery(first_session.values("time_in")[:1]),
+                last_swipe_out=Subquery(last_session.values("time_out")[:1]),
+                attendance_today=Case(
+                    When(attendance_id__isnull=False, then=Value(True)),
+                    default=Value(False),
+                    output_field=BooleanField(),
+                ),
+            )
+            .order_by(F("first_swipe_in").asc(nulls_last=True))
         )
 
         return queryset
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        swiped_count = queryset.filter(attendance_today=True).count()
+        total_count = queryset.count()
+
+        response = super().list(request, *args, **kwargs)
+
+        response.data["swiped_employee_count"] = swiped_count
+        response.data["total_employee_count"] = total_count
+
+        return response
+
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get("q", "").strip()
+
+        if not query:
+            return super().get(request, *args, **kwargs)
+
+        employees = (Employee_db.objects.filter(name_search__icontains=query,is_deleted=False).select_related("department").prefetch_related("attendances")
+)
+
+        final_results = []
+
+        for emp in employees:
+            # Get latest attendance
+            attendance = emp.attendances.order_by('-date').first()
+
+            # Prepare response
+            final_results.append({
+                "id": emp.id,
+                "employee_name": emp.name,
+                "employee_id": emp.employee_id,
+                "department": {
+                    "id": emp.department.id,
+                    "name": emp.department.name
+                },
+                "date": attendance.date if attendance else None,
+                "time_in":
+                    attendance.sessions.first().time_in
+                    if attendance and attendance.sessions.exists()
+                    else None,
+                "time_out":
+                    attendance.sessions.last().time_out
+                    if attendance and attendance.sessions.exists()
+                    else None,
+            })
+
+        return Response(final_results)
 
 
-
-# -----------------------------------------------------attendance detail view group by date(admin)
-
-
-# class AttendanceDetailByDateView(APIView):
-#     permission_classes = [IsAuthenticated, IsHRorIsEmployee]
-
-#     def get(self, request):
-#         user = request.user
-#         employee = getattr(user, 'employee_db', None)
-
-#         if not employee:
-#             return Response({'detail': 'Employee not found.'}, status=status.HTTP_400_BAD_REQUEST)
-
-#         # Use today's date by default
-#         date_str = request.query_params.get('date')
-#         if date_str:
-#             try:
-#                 selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-#             except ValueError:
-#                 return Response({'detail': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             selected_date = timezone.localdate()
-
-#         try:
-#             attendance = Attendance.objects.get(employee=employee, date=selected_date)
-#             serializer = AttendanceDetailSerializer(attendance)
-#             return Response(serializer.data)
-#         except Attendance.DoesNotExist:
-#             return Response({'detail': f'No attendance recorded on {selected_date}.'}, status=status.HTTP_404_NOT_FOUND)
 
 from django.utils.dateparse import parse_date, parse_datetime
 
@@ -355,7 +410,6 @@ class AttendanceDetailByDateView(APIView):
         date_param = request.query_params.get('date')
 
         if date_param:
-            # Handle both date & datetime formats (iOS safe)
             parsed_date = parse_date(date_param)
 
             if not parsed_date:
@@ -391,57 +445,130 @@ class AttendanceDetailByDateView(APIView):
         return Response(serializer.data)
 
 
-# -----------------------------------------------------attendance list view (for admin)
+
+from datetime import datetime
+from django.db.models import Sum
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .models import Attendance
+from .serializers import AttendanceDetailSerializer
+from django.utils.timezone import now
+from django.utils import timezone
+
+
+def format_local_time(self, dt):
+    if not dt:
+        return None
+
+    if timezone.is_naive(dt):
+        dt = timezone.make_aware(dt, timezone.get_current_timezone())
+
+    return timezone.localtime(dt).strftime("%H:%M")
 class AttendanceAdminDetailView(RetrieveAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceDetailSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
-    lookup_field = 'id'
+    lookup_field = 'employee_id'
+
+    def get_today_punch_times(self, employee_id):
+        today = now().date()
+
+        today_attendance = Attendance.objects.filter(
+            employee__id=employee_id,
+            date=today
+        ).prefetch_related("sessions").first()
+
+        if not today_attendance or not today_attendance.sessions.exists():
+            return None, None
+
+        first_session = today_attendance.sessions.order_by("time_in").first()
+        last_session = today_attendance.sessions.order_by("-time_out").first()
+
+        first_in = (
+            first_session.time_in.strftime("%H:%M")
+            if first_session and first_session.time_in else None
+        )
+
+        last_out = (
+            last_session.time_out.strftime("%H:%M")
+            if last_session and last_session.time_out else None
+        )
+
+
+        return first_in, last_out
 
     def get(self, request, *args, **kwargs):
-        attendance_id = kwargs.get('id')
+        employee_id = kwargs.get(self.lookup_field)
         date_str = request.query_params.get('date')
 
-        # ✅ Base attendance record (for employee context)
-        try:
-            base_attendance = Attendance.objects.select_related('employee').get(id=attendance_id)
-        except Attendance.DoesNotExist:
-            return Response({"error": "Attendance not found"}, status=404)
+        base_attendance = Attendance.objects.filter(
+            employee__id=employee_id
+        ).order_by('-date').first()
 
-        # ✅ If ?date= provided → get record for that employee/date
+        first_in, last_out = self.get_today_punch_times(employee_id)
+
+        if not base_attendance:
+            data = {
+                "id": None,
+                "date": date_str or str(datetime.today().date()),
+                "total_hours": None,
+                "total_hours_formatted": "00:00",
+                "weekly_hours_formatted": "00:00",
+                "monthly_hours_formatted": "00:00",
+                "remark": "",
+                "employee": {"id": employee_id},
+                "sessions": [],
+                "status": "Absent",
+                "note": "No attendance available",
+                "today_first_punch_in": first_in,
+                "today_last_punch_out": last_out,
+            }
+            return Response(data, status=200)
+
         if date_str:
             try:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
             except ValueError:
-                return Response({"error": "Invalid date format. Use YYYY-MM-DD"}, status=400)
+                return Response(
+                    {"error": "Invalid date format. Use YYYY-MM-DD"},
+                    status=400
+                )
 
             attendance = Attendance.objects.filter(
-                employee=base_attendance.employee,
+                employee__id=employee_id,
                 date=date_obj
             ).first()
 
-            # ⚠️ If no attendance found for that date, still return basic info
             if not attendance:
                 serializer = self.get_serializer(base_attendance)
                 data = serializer.data
-
-                # Wipe out time/session info (make it clear this date has no attendance)
                 data.update({
                     "date": str(date_obj),
                     "sessions": [],
                     "total_hours": None,
+                    "total_hours_formatted": "00:00",
+                    "weekly_hours_formatted": "00:00",
+                    "monthly_hours_formatted": "00:00",
                     "status": "Absent",
-                    "note": f"No attendance available for {date_obj}"
+                    "note": f"No attendance available for {date_obj}",
+                    "today_first_punch_in": first_in,
+                    "today_last_punch_out": last_out,
                 })
-
                 return Response(data, status=200)
 
             serializer = self.get_serializer(attendance)
-            return Response(serializer.data)
+            data = serializer.data
+            data["today_first_punch_in"] = first_in
+            data["today_last_punch_out"] = last_out
+            return Response(data)
 
-        # ✅ Default → show normal attendance by ID
         serializer = self.get_serializer(base_attendance)
-        return Response(serializer.data)
+        data = serializer.data
+        data["today_first_punch_in"] = first_in
+        data["today_last_punch_out"] = last_out
+
+        return Response(data)
 
 
 # -----------------------------------------------------one hour location update from mobile app and view by admin
@@ -461,12 +588,10 @@ class AttendanceLocationUpdateView(APIView):
 
         try:
             user = request.user
-            # Fetch employee linked to the logged-in user
-            employee = Employee_db.objects.get(user=user)
+            employee = Employee_db.objects.get(user=user,is_deleted=False)
         except Employee_db.DoesNotExist:
             return Response({"detail": "Employee not found."}, status=404)
 
-        # Get today's attendance
         today = timezone.localdate()
         try:
             attendance = Attendance.objects.get(employee=employee, date=today)
@@ -474,7 +599,6 @@ class AttendanceLocationUpdateView(APIView):
             return Response({"detail": "No active attendance session. Punch in first."},
                             status=400)
 
-        # Append location
         loc_data = {
             "location": serializer.validated_data["location"],
             "timestamp": serializer.validated_data.get("timestamp", timezone.now().isoformat())
@@ -516,13 +640,12 @@ class BackgroundLocationUpdateView(APIView):
         with pagination.
         """
         try:
-            employee = Employee_db.objects.get(id=employee_id)
+            employee = Employee_db.objects.get(id=employee_id,is_deleted=False)
         except Employee_db.DoesNotExist:
             return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
 
         logs_qs = HourlyLocationLog.objects.filter(employee=employee).order_by("-logged_at")
 
-        # Filter by date, from_date, to_date
         date_str = request.query_params.get("date")
         from_date_str = request.query_params.get("from_date")
         to_date_str = request.query_params.get("to_date")
@@ -552,7 +675,6 @@ class BackgroundLocationUpdateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Pagination
         paginator = HourlyLocationLogPagination()
         page = paginator.paginate_queryset(logs_qs, request)
         serializer = HourlyLocationLogSerializer(page, many=True)
@@ -574,7 +696,7 @@ class BackgroundLocationUpdateView(APIView):
         serializer = HourlyLocationLogSerializer(data=data)
         if serializer.is_valid():
             obj = serializer.save()
-            print(f"🌍 Calling geocoding for lat={obj.latitude}, lon={obj.longitude}")
+            print(f" Calling geocoding for lat={obj.latitude}, lon={obj.longitude}")
 
             if obj.latitude is not None and obj.longitude is not None:
                 try:
@@ -587,3 +709,130 @@ class BackgroundLocationUpdateView(APIView):
             return Response({"status": "success"}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from datetime import date
+import calendar
+
+from employee.models import Employee_db
+from payroll.models import EmployeePayrollRecord
+from .serializers import EmployeeAttendanceSummarySerializer
+from .utils.dayscalculations import build_employee_month_calendar
+
+
+
+class EmployeeAttendanceSummaryView(generics.ListAPIView):
+    serializer_class = EmployeeAttendanceSummarySerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        user = self.request.user
+
+        qs = Employee_db.objects.select_related(
+            "department", "department__company"
+        ).filter(department__company=user.company,is_deleted=False)
+
+        if user.is_employee:
+            qs = qs.filter(user=user)
+
+        return qs
+
+    def list(self, request, *args, **kwargs):
+        today = date.today()
+
+        year = int(request.query_params.get("year", today.year))
+        month = int(request.query_params.get("month", today.month))
+
+        start_date = date(year, month, 1)
+
+        last_day = calendar.monthrange(year, month)[1]
+        end_date = date(year, month, last_day)
+
+        results = []
+
+        for emp in self.get_queryset():
+
+            # ---------- FUTURE MONTH ----------
+            if start_date > today.replace(day=1):
+                results.append({
+                    "employee_id": emp.employee_id,
+                    "employee_name": emp.name,
+                    "department": emp.department.name if emp.department else None,
+                    "working_days": 0,
+                    "present_days": 0,
+                    "absent_days": 0,
+                    "lop_days": 0,
+                    "daily_records": [],
+                })
+                continue
+
+            # ---------- PAYROLL SNAPSHOT (ONLY IF PAID) ----------
+            payroll = EmployeePayrollRecord.objects.filter(
+                employee=emp,
+                year=year,
+                month=month
+            ).first()
+
+            print("--------------------------------")
+            print("Employee:", emp.name)
+            print("Employee ID:", emp.id)
+            print("Month:", month, "Year:", year)
+            print("Payroll:", payroll)
+
+            if payroll:
+                print("Status:", repr(payroll.status))
+                print("Working Days:", payroll.working_days)
+                print("Present Days:", payroll.days_present)
+                print("LOP Days:", payroll.lop_days)
+            print("--------------------------------")
+
+            calendar_working_days, calendar_present_days, calendar_absent_days, calendar_lop_days, daily_records = (
+            build_employee_month_calendar(
+                emp,
+                start_date,
+                end_date
+                )
+            )
+
+            payroll = EmployeePayrollRecord.objects.filter(
+                employee=emp,
+                year=year,
+                month=month
+            ).first()
+
+            if payroll and payroll.status.lower() == "paid":
+                working_days = payroll.working_days or calendar_working_days
+                present_days = payroll.days_present or calendar_present_days
+                lop_days = payroll.lop_days or calendar_lop_days
+                absent_days = max(working_days - present_days, 0)
+            else:
+                working_days = calendar_working_days
+                present_days = calendar_present_days
+                absent_days = calendar_absent_days
+                lop_days = calendar_lop_days
+
+            print(
+                f"{emp.name} -> Working={working_days}, Present={present_days}, Absent={absent_days}, LOP={lop_days}"
+            )
+
+            results.append({
+                "employee_id": emp.employee_id,
+                "employee_name": emp.name,
+                "department": emp.department.name if emp.department else None,
+                "working_days": working_days,
+                "present_days": present_days,
+                "absent_days": absent_days,
+                "lop_days": lop_days,
+                "daily_records": daily_records,
+            })
+
+        page = self.paginate_queryset(results)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(results, many=True)
+        return Response(serializer.data)

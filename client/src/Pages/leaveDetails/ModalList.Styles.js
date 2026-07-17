@@ -14,7 +14,7 @@ export const ModalOverlay = styled.div`
 export const ModalContainer = styled.div`
   background: white;
   width: 80%;
-  /* max-width: 1200px; */
+  max-width: 1200px;
   padding: clamp(16px, 2vw, 40px);
   border-radius: 10px;
   /* max-height: 90%; */
@@ -179,12 +179,12 @@ export const ApproveButton = styled.button`
 export const DeclineButton = styled.button`
   background-color: #ff6f61;
   color: white;
-  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 24px);
+  padding: 10px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
   min-width: 100px;
-  font-size: clamp(0.8rem, 1vw, 1rem);
+  font-size:12px;
   transition: background-color 0.3s ease, transform 0.2s ease;
 
   &:hover {

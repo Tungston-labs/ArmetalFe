@@ -26,8 +26,26 @@ class DepartmentMiniListView(generics.ListAPIView):
     search_fields = ["name"]
 
     def get_queryset(self):
+        today = timezone.localdate()
         company = self.request.user.company
-        return Department.objects.filter(company=company)
+
+        #  employees with attendance today per department
+        swiped_subquery = (
+            Attendance.objects
+            .filter(employee__department=OuterRef("pk"), date=today)
+            .values("employee__department")
+            .annotate(c=Count("employee", distinct=True))
+            .values("c")[:1]
+        )
+
+        return (
+            Department.objects
+            .filter(company=company)
+            .annotate(
+                total_employee_count=Count("employees", distinct=True),
+                swiped_employee_count=Subquery(swiped_subquery, output_field=IntegerField()),
+            )
+        )
 
 
 
@@ -42,7 +60,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
         try:
             today = timezone.localdate()
 
-            # ✅ Employees who have attendance today
+            # Employees who have attendance today
             attendance_subquery = (
                 Attendance.objects
                 .filter(employee__department=OuterRef("pk"), date=today)
@@ -51,7 +69,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
                 .values("c")[:1]
             )
 
-            # ✅ Employees with pending leave requests
+            # Employees with pending leave requests
             leave_subquery = (
                 LeaveRequest.objects
                 .filter(employee__department=OuterRef("pk"), status="pending")
@@ -60,7 +78,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
                 .values("c")[:1]
             )
 
-            # ✅ Employees who are actually on approved leave today
+            # Employees who are actually on approved leave today
             todays_leave_subquery = (
                 LeaveRequest.objects
                 .filter(
@@ -74,7 +92,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
                 .values("c")[:1]
             )
 
-            # ✅ Reimbursements on hold
+            #  Reimbursements on hold
             reimbursement_subquery = (
                 Reimbursement.objects
                 .filter(employee__department=OuterRef("pk"), status="On Hold")
@@ -153,7 +171,7 @@ class EmployeeByDepartmentView(APIView):
         except Department.DoesNotExist:
             return Response({"detail": "Department not found."}, status=404)
 
-        employees = Employee_db.objects.filter(department=department)
+        employees = Employee_db.objects.filter(department=department,is_deleted=False)
         serializer = EmployeeSerializer(employees, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 

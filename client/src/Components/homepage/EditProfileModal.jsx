@@ -4,11 +4,8 @@ import {
   BackHeader,
   FormSection,
   Input,
-  CheckboxGroup,
-  CheckboxLabel,
   ButtonGroup,
   Button,
-  Hr,
   Select,
   FormField,
   Label,
@@ -67,12 +64,12 @@ const EditProfileModal = ({ onClose }) => {
     logo: null,
   });
 
-  /* ---------------- FETCH COMPANY SELF ---------------- */
+
   useEffect(() => {
     dispatch(getCompanySelf());
   }, [dispatch]);
 
-  /* ---------------- PREFILL FORM ---------------- */
+
   useEffect(() => {
     if (company) {
       const match = company.contact_number?.match(
@@ -97,8 +94,6 @@ const EditProfileModal = ({ onClose }) => {
       }
     }
   }, [company]);
-
-  /* ---------------- HANDLERS ---------------- */
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -129,8 +124,6 @@ const EditProfileModal = ({ onClose }) => {
     setLogoPreview(null);
     fileInputRef.current.value = "";
   };
-
-  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -139,7 +132,6 @@ const EditProfileModal = ({ onClose }) => {
     if (!formData.address.trim()) errors.address = "Address is required";
     if (!formData.location.trim()) errors.location = "Location is required";
     if (!formData.country) errors.country = "Country is required";
-
     if (!formData.latitude || formData.latitude < -90 || formData.latitude > 90)
       errors.latitude = "Latitude must be between -90 and 90";
 
@@ -192,8 +184,6 @@ const EditProfileModal = ({ onClose }) => {
       setIsSubmitting(false);
     }
   };
-
-  /* ---------------- UI ---------------- */
   return (
     <FormWrapper>
       <BackHeader>
@@ -206,7 +196,7 @@ const EditProfileModal = ({ onClose }) => {
           <div>
             <FormField>
               <Label>Company Name</Label>
-              <Input name="name" value={formData.name} onChange={handleChange} />
+              <Input name="name" value={formData.name} onChange={handleChange} disabled />
               {formErrors.name && <p style={{ color: "red" }}>{formErrors.name}</p>}
             </FormField>
 
@@ -226,13 +216,14 @@ const EditProfileModal = ({ onClose }) => {
                   accept=".png,.svg"
                   hidden
                   onChange={handleLogoChange}
+                      disabled
                 />
               </LogoUploadBox>
 
               {logoPreview && (
                 <LogoPreview>
                   <img src={logoPreview} alt="logo" />
-                  <button type="button" onClick={removeLogo}>
+                  <button type="button" onClick={removeLogo} disabled>
                     <AiOutlineClose />
                   </button>
                 </LogoPreview>
@@ -252,6 +243,7 @@ const EditProfileModal = ({ onClose }) => {
                 <select
                   name="country_code"
                   value={formData.country_code}
+                      disabled
                   onChange={handleChange}
                   style={{ width: "35%" }}
                 >
@@ -266,13 +258,14 @@ const EditProfileModal = ({ onClose }) => {
                   name="contact_number"
                   value={formData.contact_number}
                   onChange={handleChange}
+                      disabled
                 />
               </div>
             </FormField>
 
             <FormField>
               <Label>Country</Label>
-              <Select name="country" value={formData.country} onChange={handleChange}>
+              <Select name="country" value={formData.country} onChange={handleChange} disabled>
                 <option value="">Select country</option>
                 {COUNTRY_CHOICES.map((c) => (
                   <option key={c.code} value={c.code}>
@@ -290,6 +283,7 @@ const EditProfileModal = ({ onClose }) => {
                 step="any"
                 value={formData.latitude}
                 onChange={handleChange}
+                    
               />
             </FormField>
 
@@ -300,7 +294,7 @@ const EditProfileModal = ({ onClose }) => {
                 type="number"
                 step="any"
                 value={formData.longitude}
-                onChange={handleChange}
+                onChange={handleChange}   
               />
             </FormField>
           </div>

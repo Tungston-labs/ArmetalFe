@@ -29,6 +29,11 @@ class EmployeePayrollRecord(models.Model):
     pan_number = models.CharField(max_length=15, blank=True, null=True)
     account_number = models.CharField(max_length=30, blank=True, null=True)
     payslip_file = models.FileField(upload_to='payslips/', null=True, blank=True)
+    working_days = models.PositiveIntegerField(null=True, blank=True)
+    days_present = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    lop_days = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    lop_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
 
     # ✅ New fields for HR verification
     hr1_verified_by = models.ForeignKey(
@@ -41,6 +46,38 @@ class EmployeePayrollRecord(models.Model):
     )
     hr1_verified_at = models.DateTimeField(null=True, blank=True)
     hr2_verified_at = models.DateTimeField(null=True, blank=True)
+    incentive_amount = models.DecimalField(
+    max_digits=10,
+    decimal_places=2,
+    default=0.00
+    )
+
+    incentive_type = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    incentive_reason = models.TextField(
+        blank=True,
+        null=True
+    )
+    deduction_amount = models.DecimalField(
+    max_digits=10,
+    decimal_places=2,
+    default=0.00
+    )
+
+    deduction_type = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    deduction_reason = models.TextField(
+        blank=True,
+        null=True
+    )
 
     class Meta:
         unique_together = ('employee', 'month', 'year')

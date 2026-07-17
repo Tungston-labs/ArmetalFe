@@ -62,9 +62,9 @@ const ViewDocument = () => {
       <LabelRow>{label}</LabelRow>
 
       <InlineUploadRow>
-        {inputKeys.map((key, index) => (
+        {inputKeys.map((key,) => (
           <UploadButton as="label" key={key}>
-            <LuCirclePlus /> Choose Image {index + 1}
+            <LuCirclePlus /> Choose Image 
             <input
               type="file"
               accept="image/*"

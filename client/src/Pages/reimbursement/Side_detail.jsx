@@ -46,6 +46,16 @@ const ReimbursementHistory = ({ onClose }) => {
   if (loading) return <Loader/>;
   if (!reimbursements.length) return <p>No reimbursements found.</p>;
 
+const formatDate = (date) => {
+  if (!date) return "----";
+
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   return (
     <ModalOverlay onClick={handleOverlayClick}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -57,7 +67,7 @@ const ReimbursementHistory = ({ onClose }) => {
 
           {reimbursements.map((section, idx) => (
             <div key={idx}>
-              <DateHeading>{section.date}</DateHeading>
+              <DateHeading>{ formatDate(section.date)}</DateHeading>
               {section.reimbursements.map((item) => (
                 <Card key={item.id}>
                   <ProfileImage
@@ -79,7 +89,7 @@ const ReimbursementHistory = ({ onClose }) => {
                       <Label>Position</Label>
                       <Value>{item.designation || "N/A"}</Value>
                     </div>
-                    <Amount>₹ {item.amount}</Amount>
+                    <Amount> {item.amount}</Amount>
                   </RightSection>
                 </Card>
               ))}

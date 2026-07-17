@@ -10,15 +10,9 @@ import { useNavigate } from "react-router-dom";
 import UnsavedChangesGuard from "../../Components/UnsavedChangesGuard";
 import {
   Container,
-  Header,
-  Title,
-  Subtitle,
-  Hr,
-  EmployeeImage,
 } from "./BasicLevel.Styles";
 
 import Multistep from "../../Components/Multistep";
-import { PiUserCirclePlusThin } from "react-icons/pi";
 import JobDetails from "../../Components/JobDetails";
 import Loader from "../../Components/Loader";
 import EmployeeIcon from "../../assets/employeeicon.svg";
@@ -26,7 +20,7 @@ import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeHeader from "../../Components/EmployeeHeader";
 import { ButtonWrapper, NextButton } from "../../Components/JobDetails.Styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
-import { Divider } from "../reimbursement/Reimb_info.Styles";
+
 
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
@@ -63,15 +57,21 @@ export default function AddEmployeeForm() {
     insurance_number: "",
     profile_pic: null,
     total_leave: "",
+    casual_leave: "",
+    sick_leave: "",
+    earned_leave: "",
+    maternity_leave: "",
+    other_leave: "",
     role: "",
     contract_expiry_date: "",
     idcard: null,
+    employee_id: "",
   });
-useEffect(() => {
-  if (departmentList.length === 0) {
-    dispatch(getDepartments({ page: 1, search: "" }));
-  }
-}, [dispatch, departmentList.length]);
+  useEffect(() => {
+    if (departmentList.length === 0) {
+      dispatch(getDepartments({ page: 1, search: "" }));
+    }
+  }, [dispatch, departmentList.length]);
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
@@ -96,27 +96,16 @@ useEffect(() => {
 
   const validateForm = () => {
     const newErrors = {};
+    const now = new Date().toISOString().split("T")[0];
+
     const requiredFields = [
-      "name",
-      "address",
-      "email",
-      "dob",
-      "phno",
-      "gender",
-      "designation",
-      "joining_date",
-      "department_id",
-      "employment_type",
-      "total_leave",
-      "role",
+      "name", "address", "email", "dob", "phno",
+      "gender", "designation", "joining_date",
+      "department_id", "employment_type", "total_leave", "role",
     ];
 
     if (country !== "IN") {
-      requiredFields.push(
-        "visa_expiry_date",
-        "insurance_number",
-        "iqama_number",
-      );
+      requiredFields.push("visa_expiry_date", "insurance_number", "iqama_number");
     } else {
       requiredFields.push("aadar_number");
     }
@@ -127,41 +116,79 @@ useEffect(() => {
       }
     });
 
-    // Set errors so EmployeeHeader re-renders and shows messages
-    setErrors(newErrors);
+    // ✅ Add these date checks:
+    if (formData.dob && formData.dob >= now) {
+      newErrors.dob = "Date of birth must be in the past";
+    }
+    if (formData.joining_date && formData.joining_date > now) {
+      newErrors.joining_date = "Joining date cannot be in the future";
+    }
 
-    // Return whether all required fields are filled
+    setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleNext = async () => {
-    console.log("Next clicked");
+
 
     const isBasicValid = validateForm(); // this triggers setErrors
-    console.log("Basic Valid:", isBasicValid);
+
 
     const jobComp = jobref.current;
-    console.log("JobDetails ref:", jobComp);
+
 
     const isJobValid = jobComp?.validate?.();
-    console.log("Job Valid:", isJobValid);
+
     setErrors((prev) => ({ ...prev }));
 
     if (!isBasicValid || !isJobValid) {
-      console.log("Validation failed, staying on page");
+
       return;
     }
 
     setLoading(true);
     try {
-      dispatch(setBasicFormData(formData));
-      const res = await dispatch(submitEmployee({ basic: formData }));
+      const jobData = jobref.current?.getData?.();
+
+      const finalData = {
+        ...formData,
+        ...jobData,
+      };
+
+      console.log("FINAL DATA", finalData);
+
+      dispatch(setBasicFormData(finalData));
+
+      const res = await dispatch(
+        submitEmployee({
+          basic: finalData,
+        })
+      );
+
       if (res.meta.requestStatus === "fulfilled") {
         const id = res.payload?.employee?.id || res.payload?.id;
         if (id) {
           dispatch(setEmployeeId(id));
           setIsFormDirty(false);
           navigate("/bank-payment");
+        }
+      }
+      else if (res.meta.requestStatus === "rejected") {
+        if (res.payload) {
+          const formattedErrors = {};
+
+          Object.keys(res.payload).forEach((key) => {
+            formattedErrors[key] = Array.isArray(res.payload[key])
+              ? res.payload[key][0]
+              : res.payload[key];
+          });
+
+          // Optional clean message
+          if (formattedErrors.email) {
+            formattedErrors.email = "This email is already registered";
+          }
+
+          setErrors(formattedErrors);
         }
       }
     } finally {
@@ -183,6 +210,7 @@ useEffect(() => {
           showTabs={false}
           showSearch={false}
           showDropdown={false}
+          showReportButton={false}
         />
         <div
           style={{ display: "flex", justifyContent: "center", padding: "0px" }}
@@ -191,7 +219,7 @@ useEffect(() => {
             <Multistep currentStep={currentStep} steps={stepTitles} />
           </div>
         </div>
-        
+
         <EmployeeHeader
           formData={formData}
           setFormData={setFormData}
@@ -199,7 +227,6 @@ useEffect(() => {
           onFileChange={handleFileChange}
           errors={errors}
         />
-        <Hr />
         <JobDetails
           country={country}
           departments={departmentList}
@@ -211,9 +238,13 @@ useEffect(() => {
         />
 
         <ButtonWrapper>
-          <NextButton type="button" onClick={handleNext}>
-            Next
-          </NextButton>
+         <NextButton
+  type="button"
+  onClick={handleNext}
+  disabled={loading}
+>
+  {loading ? "Saving..." : "Next"}
+</NextButton>
         </ButtonWrapper>
       </Container>
     </>

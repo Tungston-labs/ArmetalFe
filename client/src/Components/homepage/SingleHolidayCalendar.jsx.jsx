@@ -21,10 +21,7 @@ const SingleHolidayCalendar = ({ holidays = [] }) => {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
 
-  // --------------------------------------------------------
-  // 🔥 CREATE HOLIDAY MAP LIKE:
-  // { "2025-12-25": { name: "xmas", type: "religious" } }
-  // --------------------------------------------------------
+
   const holidayMap = useMemo(() => {
     const map = {};
     holidays.forEach((h) => {
@@ -61,30 +58,22 @@ const SingleHolidayCalendar = ({ holidays = [] }) => {
 
   const renderDays = () => {
     const list = [];
-
-    // Empty cells before month start
     for (let i = 0; i < firstDay; i++) list.push(<Day key={"e" + i} />);
-
-    // Day cells
     for (let d = 1; d <= totalDays; d++) {
       const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
         d
       ).padStart(2, "0")}`;
 
       const currentDate = new Date(year, month, d);
-      const weekday = currentDate.getDay(); // 0 = Sunday
+      const weekday = currentDate.getDay(); 
 
       let isHoliday = holidayMap[dateStr] || null;
-
-      // Auto-mark Sundays as holiday
       if (!isHoliday && hasCompanyOffDay && weekday === 0) {
         isHoliday = {
           name: "Company Off Day",
           type: "company_off_day"
         };
       }
-
-      // Check today
       const isToday =
         d === today.getDate() &&
         month === today.getMonth() &&
@@ -95,7 +84,7 @@ const SingleHolidayCalendar = ({ holidays = [] }) => {
       if (isToday) className += " today";
 
       const tooltip = isHoliday
-        ? `${isHoliday.name} (${isHoliday.type})`
+        ? `${isHoliday.name}`
         : "";
 
       list.push(

@@ -20,7 +20,7 @@ import { clearBankPayment } from "../../Redux/employeeSlice";
 import Loader from "../../Components/Loader";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { EmployeeImage } from "./BasicLevel.Styles";
-// import Navbar from '../../Components/Navbar';
+
 import { Divider } from "../reimbursement/Reimb_info.Styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 export default function BankPaymentForm() {
@@ -35,7 +35,6 @@ export default function BankPaymentForm() {
 
   const [bankName, setBankName] = useState("");
   const [swiftCode, setSwiftCode] = useState("");
-  const [paymentMode, setPaymentMode] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [uanNumber, setUanNumber] = useState("");
   const [panNumber, setPanNumber] = useState("");
@@ -48,15 +47,17 @@ export default function BankPaymentForm() {
   const [transportation, setTransportation] = useState("");
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  const [bankProofImage, setBankProofImage] = useState(null);
-
+  const [ifscCode, setIfscCode] = useState("");
   const stepTitles = ["Basic Info", "Bank Details", "Document Upload"];
 
   useEffect(() => {
     if (savedBankForm) {
       setBankName(savedBankForm.bank_name || "");
-      setSwiftCode(savedBankForm.swift_code || "");
-      setPaymentMode(savedBankForm.payment_mode || "");
+      if (country === "IN") {
+        setIfscCode(savedBankForm.swift_code || "");
+      } else {
+        setSwiftCode(savedBankForm.swift_code || "");
+      }
       setAccountNumber(savedBankForm.account_number || "");
       setUanNumber(savedBankForm.uan_epf_number || "");
       setPanNumber(savedBankForm.pan_number || "");
@@ -76,7 +77,6 @@ export default function BankPaymentForm() {
     if (bankPayment) {
       setBankName(bankPayment.bank_name || "");
       setSwiftCode(bankPayment.swift_code || "");
-      setPaymentMode(bankPayment.payment_mode || "");
       setAccountNumber(bankPayment.account_number || "");
       setUanNumber(bankPayment.uan_epf_number || "");
       setPanNumber(bankPayment.pan_number || "");
@@ -87,11 +87,7 @@ export default function BankPaymentForm() {
       setSalaryIncrement(bankPayment.salary_increment?.toString() || "");
       setHousingAllowance(bankPayment.housing_allowance?.toString() || "");
       setTransportation(bankPayment.transportation?.toString() || "");
-      // if (bankPayment.bank_proof_image) {
-      //   setBankProofImage(
-      //     `${process.env.REACT_APP_BASE_URL || "http://localhost:8000"}${bankPayment.bank_proof_image}`,
-      //   );
-      // }
+
     }
   }, [bankPayment]);
 
@@ -108,9 +104,13 @@ export default function BankPaymentForm() {
     if (country === "IN") {
       if (!panNumber.trim()) errors.panNumber = "PAN Number is required.";
     }
+    if (country === "IN") {
+      if (!ifscCode.trim()) errors.ifscCode = "IFSC Code is required.";
+    } else {
+      if (!swiftCode.trim()) errors.swiftCode = "SWIFT Code is required.";
+    }
     // Fields always required
     if (!bankName.trim()) errors.bankName = "Bank Name is required.";
-    if (!paymentMode.trim()) errors.paymentMode = "Payment Mode is required.";
     if (!accountNumber.trim())
       errors.accountNumber = "Account Number is required.";
     if (!basicSalary || !isDecimal(basicSalary))
@@ -136,11 +136,9 @@ export default function BankPaymentForm() {
       return;
     }
 
-    // Prepare bank data for submission
     const bankData = {
       bank_name: bankName,
-      swift_code: swiftCode,
-      payment_mode: paymentMode,
+      swift_code: country === "IN" ? ifscCode : swiftCode,
       account_number: accountNumber,
       uan_epf_number: uanNumber,
       pan_number: panNumber,
@@ -158,7 +156,7 @@ export default function BankPaymentForm() {
 
     try {
       await dispatch(
-        submitBankPayment({ employeeId, data: bankData, bankProofImage }),
+        submitBankPayment({ employeeId, data: bankData, }),
       ).unwrap();
       dispatch(clearBankPayment());
       navigate("/documents");
@@ -173,7 +171,7 @@ export default function BankPaymentForm() {
 
   return (
     <>
-      {/* <Navbar/> */}
+
       {loading && <Loader />}
       <Container>
         <EmployeeTitle
@@ -182,6 +180,7 @@ export default function BankPaymentForm() {
           showTabs={false}
           showSearch={false}
           showDropdown={false}
+            showReportButton={false}
         />
         <Divider />
         <div
@@ -205,8 +204,8 @@ export default function BankPaymentForm() {
           setBankName={setBankName}
           swiftCode={swiftCode}
           setSwiftCode={setSwiftCode}
-          paymentMode={paymentMode}
-          setPaymentMode={setPaymentMode}
+          ifscCode={ifscCode}
+          setIfscCode={setIfscCode}
           accountNumber={accountNumber}
           setAccountNumber={setAccountNumber}
           uanNumber={uanNumber}

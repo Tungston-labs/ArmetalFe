@@ -12,10 +12,12 @@ import {
   IdText,
   DateBox,
   NoData,
-  IconButton
+  IconButton,
+  AvatarFallback
 } from "./RecentlyAddedEmployees.styles";
 import { useNavigate } from "react-router-dom";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
+import { RiUserFill } from "react-icons/ri";
 const RecentlyAddedEmployees = ({ employees = [], showCount = 5 }) => {
   const navigate = useNavigate();
 
@@ -24,7 +26,16 @@ const RecentlyAddedEmployees = ({ employees = [], showCount = 5 }) => {
   );
 
   const list = sorted.slice(0, showCount);
+const formatDate = (date) => {
+  if (!date) return "-";
 
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   return (
     <Wrapper>
       <Header>
@@ -40,21 +51,22 @@ const RecentlyAddedEmployees = ({ employees = [], showCount = 5 }) => {
 
         {list.map((emp, idx) => (
           <ListItem key={idx}>
-            {/* Use null if no avatar, or a default image */}
-            <Avatar
-              src={emp.avatar || null} 
-              alt={emp.name || "Employee"} 
-            />
+         {emp.avatar ? (
+  <Avatar
+    src={emp.avatar}
+    alt={emp.name || "Employee"}
+  />
+) : (
+  <AvatarFallback>
+    <RiUserFill size={20} />
+  </AvatarFallback>
+)}
             <Info>
               <Name>{emp.name}</Name>
               <Dept>{emp.department}</Dept>
               <IdText>ID: {emp.empId}</IdText>
             </Info>
-            <DateBox>
-              {emp.joiningDate
-                ? new Date(emp.joiningDate).toLocaleDateString("en-IN")
-                : "-"}
-            </DateBox>
+           <DateBox>{formatDate(emp.joiningDate)}</DateBox>
           </ListItem>
         ))}
       </List>

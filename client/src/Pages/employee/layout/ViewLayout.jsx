@@ -44,6 +44,8 @@ const ViewBasicLayout = ({
           showDropdown={false}
           onAddClick={handleSubmit}
           buttonText="Save"
+          showBackArrow={false}
+          showReportButton={false}
         />
 
         <Header

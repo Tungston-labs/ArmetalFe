@@ -137,6 +137,7 @@ const DepartmentDetail = () => {
             showDropdown={false}
             showTabs={false}
             showSearch={false}
+            
           />
 
           {/* Department Form */}

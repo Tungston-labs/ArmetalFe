@@ -7,7 +7,6 @@ export const fetchPayrollData = async (month, year, search = "", page = 1, depar
     const response = await API.get("/payroll/", {
       params: { month, year, search, page, department }, // 👈 include department
     });
-    console.log("✅ Payroll API Response:", response.data);
     return response.data;
   } catch (error) {
     const msg = error.response?.data?.error || error.message || "Something went wrong while fetching payroll!";
@@ -74,6 +73,55 @@ export const getPayrollDetailById = async (id) => {
     return response.data;
   } catch (error) {
     const msg = error.response?.data?.error || error.message || "Error fetching payroll detail!";
+    throw new Error(msg);
+  }
+};
+
+export const updateEmployeeIncentive = async ({ employeeId, month, year, incentive_amount, incentive_type, incentive_reason }) => {
+  try {
+ const response = await API.patch(`/payroll/incentive/${employeeId}/`, {  
+      month,
+      year,
+      incentive_amount,
+      incentive_type,
+      incentive_reason,
+    });
+    return response.data;
+  } catch (error) {
+    const msg = error.response?.data?.error || error.message || "Error updating incentive!";
+    throw new Error(msg);
+  }
+};
+
+
+
+export const updateEmployeeDeduction = async ({
+  employeeId,
+  month,
+  year,
+  deduction_amount,
+  deduction_type,
+  deduction_reason,
+}) => {
+  try {
+    const response = await API.patch(
+      `/payroll/deduction/${employeeId}/`,
+      {
+        month,
+        year,
+        deduction_amount,
+        deduction_type,
+        deduction_reason,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    const msg =
+      error.response?.data?.error ||
+      error.message ||
+      "Error updating deduction!";
+
     throw new Error(msg);
   }
 };

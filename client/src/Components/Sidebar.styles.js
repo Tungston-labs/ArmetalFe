@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 export const SidebarContainer = styled.div`
-  width: 350px;
+  width: 310px;
   min-width: 60px;
   background: linear-gradient(181deg, rgba(23, 37, 84, 1) 20%, rgba(51, 82, 186, 1) 100%);
   color: white;
@@ -26,24 +26,19 @@ export const SidebarContainer = styled.div`
   }
 
   @media (max-width: 1024px) {
-    width: 200px;
+    width: 120px;
     &.collapsed {
       width: 60px;
     }
   }
 
-  @media (min-width: 768px) and (max-width:1024px) {
-    width: 80px;
+
+  @media print {
+    display: none !important;
   }
 
-  @media (min-width: 1025px) and (max-width:1439px) {
-    width: 18%;
-  }
-  @media (min-width: 1440px) and (max-width:1920px) {
-    width: 20%;
-  }
-  @media (min-width: 2560px) {
-    width: 20%;
+  &.collapsed {
+    width: 60px;
   }
 `;
 
@@ -73,7 +68,6 @@ export const Logo = styled.div`
     max-height: 110px;
   } 
 
-  /* Adjust logo for smaller screens */
   @media (max-width: 1024px) {
     img {
       width: 120px;
@@ -83,7 +77,6 @@ export const Logo = styled.div`
     } 
   }
   }
-  /* Hide logo on very small screens */
   @media (min-width: 768px) and (max-width:1024px){
     display: none;
   }
@@ -127,9 +120,6 @@ export const Logo = styled.div`
 `;
 
 
-
-
-
 export const Nav = styled.ul`
   list-style: none;
   margin: 0;
@@ -138,7 +128,7 @@ export const Nav = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
   
    @media (min-width: 2560px) {
     gap: 1.5rem;
@@ -174,7 +164,7 @@ export const ChangePasswordLink = styled(Link)`
   color: white;
   text-decoration: none;
   cursor: pointer;
-margin-left:30px;
+  margin-left:30px;
   &:hover {
     color:blue;
     
@@ -200,8 +190,8 @@ export const CustomLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 12px 16px;
-  border-radius: 10px;
+  padding: 10px 16px;
+  border-radius: 4px;
   font-size: 1rem;
   color: white;
   font-weight: 600;
@@ -278,11 +268,11 @@ export const CustomLink = styled(Link)`
 
 
     @media (min-width: 1024px) and (max-width: 1300px) {
-          justify-content: center;
+       justify-content: center;
      gap: 10px;
 
     span{
-font-size: 0.8rem;
+     font-size: 0.8rem;
     }
     }
 
@@ -330,9 +320,6 @@ font-size: 0.8rem;
   }
 `;
 
-
-
-
 export const LinkIcon = styled.img`
   width: 20px;
   height: 20px;
@@ -343,7 +330,6 @@ export const LinkIcon = styled.img`
   /* default: white color */
   filter: brightness(0) invert(1);
 `;
-
 
 export const BottomText = styled.div`
   width: 100%;
@@ -386,8 +372,7 @@ export const BottomText = styled.div`
       font-size: 0.7rem;
     }
   }
-
-  /* Tablet */
+ 
   @media (min-width: 768px) and (max-width: 1024px) {
     font-size: 0.7rem;
     padding: 12px 0;
@@ -397,7 +382,6 @@ export const BottomText = styled.div`
     }
   }
 
-  /* Desktop */
   @media (min-width: 1025px) and (max-width: 1440px) {
     font-size: 0.8rem;
 
@@ -419,3 +403,22 @@ export const BottomText = styled.div`
   
 `;
 
+export const SubMenu = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 0px;
+`;
+
+export const SubMenuLink = styled(NavLink)`
+  padding: 10px 0;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+
+  &.active {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  
+`;

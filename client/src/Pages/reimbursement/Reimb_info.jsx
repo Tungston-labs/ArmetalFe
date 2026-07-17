@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import {
   fetchReimbursementDetail,
   updateReimbursementStatus,
 } from "../../services/reimbursement";
-
-// import Navbar from "../../Components/Navbar";
 import Loader from "../../Components/Loader";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import RemiIcon from "../../assets/remi.svg";
@@ -71,6 +68,7 @@ const ReimbursementDetail = () => {
   }, [id]);
 
   const handleStatusChange = async (e) => {
+      if (reimbursement.status === "Approve") return;
     const newStatus = e.target.value;
     const oldStatus = reimbursement.status;
 
@@ -86,11 +84,18 @@ const ReimbursementDetail = () => {
   if (loading) return <Loader />;
 
   if (!reimbursement) return <p>No reimbursement found.</p>;
+const formatDate = (date) => {
+  if (!date) return "----";
 
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
   return (
     <>
-      {/* <Navbar /> */}
-
       <PageWrapper>
         <EmployeeTitle
           iconSrc={RemiIcon}
@@ -99,18 +104,24 @@ const ReimbursementDetail = () => {
           showSearch={false}
           showTabs={false}
           showDropdown={false}
+showReportButton= {false}
           rightElement={
-            <StatusSelect
-              value={reimbursement.status}
-              onChange={handleStatusChange}
-              statusColor={getStatusStyle(reimbursement.status)}
-            >
-              <option value="Approve">Approved</option>
-              <option value="On Hold">On Hold</option>
-              <option value="In Verification">In Verification</option>
-              <option value="Reject">Reject</option> 
-            </StatusSelect>
-
+           <StatusSelect
+  value={reimbursement.status}
+  onChange={handleStatusChange}
+  statusColor={getStatusStyle(reimbursement.status)}
+  disabled={reimbursement.status === "Approve"}
+  style={{
+    cursor: reimbursement.status === "Approve" ? "not-allowed" : "pointer",
+    pointerEvents: reimbursement.status === "Approve" ? "none" : "auto",
+    opacity: 1,
+  }}
+>
+  <option value="Approve">Approved</option>
+  <option value="On Hold">On Hold</option>
+  <option value="In Verification">In Verification</option>
+  <option value="Reject">Reject</option>
+</StatusSelect>
           }
         />
 
@@ -151,13 +162,13 @@ const ReimbursementDetail = () => {
           <Divider />
           <InfoRow>
             <Label>Date:</Label>
-            <Value>{reimbursement.date}</Value>
+            <Value>{formatDate (reimbursement.date)}</Value>
           </InfoRow>
 
           <InfoRow>
             <Label>Amount:</Label>
             <Value >
-              ₹{reimbursement.amount}
+              {reimbursement.amount}
             </Value>
           </InfoRow>
 

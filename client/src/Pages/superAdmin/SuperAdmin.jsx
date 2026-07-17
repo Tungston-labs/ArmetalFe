@@ -87,7 +87,7 @@ const CompanyTable = () => {
         {loading && <Loader />}
       <HeaderSection>
         <TitleSection>
-          <LuArrowLeft style={{ width: "30px", height: 30 }} />
+          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
           <img
             src="/images/superadminlogo.png"
             alt="Payroll Icon"
@@ -260,7 +260,7 @@ const CompanyTable = () => {
               background: "white",
               padding: "2rem",
               borderRadius: "10px",
-              maxWidth: "900px",
+              maxWidth: "1200px",
               width: "90%",
               maxHeight: "90vh",
               overflowY: "auto",

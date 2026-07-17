@@ -26,154 +26,495 @@ class EmployeeWithBankDetailsSerializer(serializers.ModelSerializer):
 
 
 
+from attendance.models import Attendance
+from leave.models import LeaveRequest
+from holidays.models import PublicHoliday
+from .models import EmployeePayrollRecord
+
+
+from datetime import date, datetime, timedelta
+import calendar
+from decimal import Decimal, ROUND_HALF_UP
+from rest_framework import serializers
+from employee.models import SalaryIncrement
+
+from decimal import Decimal, ROUND_HALF_UP
+from datetime import date, datetime, timedelta
+import calendar
+from rest_framework import serializers
+
+# serializers.py
+
+from decimal import Decimal, ROUND_HALF_UP
+from datetime import date, datetime, timedelta
+import calendar
+
+from rest_framework import serializers
+
+from .models import EmployeePayrollRecord
+from attendance.models import Attendance
+from leave.models import LeaveRequest
+from holidays.models import PublicHoliday
 
 
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
-    employee_name = serializers.CharField(source='employee.name', read_only=True)
-    department = serializers.CharField(source='employee.department.name', read_only=True)
-    employee_id = serializers.CharField(source='employee.employee_id', read_only=True)
-    designation = serializers.CharField(source='employee.designation', read_only=True)
-    email = serializers.EmailField(source='employee.email', read_only=True)
-    joining_date = serializers.DateField(source='employee.joining_date', read_only=True)
+
+    employee_name = serializers.CharField(
+        source="employee.name",
+        read_only=True
+    )
+
+    department = serializers.CharField(
+        source="employee.department.name",
+        read_only=True
+    )
+
+    employee_id = serializers.CharField(
+        source="employee.employee_id",
+        read_only=True
+    )
+
+    designation = serializers.CharField(
+        source="employee.designation",
+        read_only=True
+    )
+
+    email = serializers.EmailField(
+        source="employee.email",
+        read_only=True
+    )
+
+    joining_date = serializers.DateField(
+        source="employee.joining_date",
+        read_only=True
+    )
 
     class Meta:
         model = EmployeePayrollRecord
-        fields = '__all__'
+        fields = "__all__"
 
     def to_representation(self, instance):
+
         data = super().to_representation(instance)
+
         employee = instance.employee
         department = employee.department
         company = department.company if department else None
-        request = self.context.get('request')
-        year, month = instance.year, instance.month
+
+        request = self.context.get("request")
+
+        year = instance.year
+
+        month = instance.month
 
         first_day = date(year, month, 1)
-        last_day = date(year, month, calendar.monthrange(year, month)[1])
 
-        # --- Identify Company Off Days & Holidays ---
-        holidays_qs = PublicHoliday.objects.filter(
-            date__range=(first_day, last_day),
-            company=employee.department.company
+        last_day = date(
+            year,
+            month,
+            calendar.monthrange(year, month)[1]
         )
+
+        # ======================================================
+        # WORKING DAYS
+        # ======================================================
+
+        holidays_qs = PublicHoliday.objects.filter(
+            company=company
+        )
+
         holidays = set()
         company_off_days = set()
+
         for h in holidays_qs:
-            if h.holiday_type == 'company_off_day':
-                company_off_days.add(h.date.weekday())
+
+            if h.holiday_type == "company_off_day":
+
+                if h.off_day_weekday is not None:
+                    company_off_days.add(
+                        h.off_day_weekday
+                    )
+
             else:
-                holidays.add(h.date)
 
-        # --- Working Days ---
-        working_days = sum(
-            1 for d in range((last_day - first_day).days + 1)
-            if (first_day + timedelta(days=d)).weekday() not in company_off_days
-            and (first_day + timedelta(days=d)) not in holidays
+                if (
+                    h.date and
+                    first_day <= h.date <= last_day
+                ):
+                    holidays.add(h.date)
+
+        all_working_dates = [
+            first_day + timedelta(days=i)
+            for i in range((last_day - first_day).days + 1)
+            if (
+                (first_day + timedelta(days=i)).weekday()
+                not in company_off_days
+            )
+            and (
+                (first_day + timedelta(days=i))
+                not in holidays
+            )
+        ]
+
+        working_days = Decimal(len(all_working_dates))
+
+        # ======================================================
+        # ATTENDANCE
+        # ======================================================
+
+        full_day_hours = Decimal(
+            company.working_hours_per_day or 8
         )
 
-        # --- Attendance ---
-        attendances = Attendance.objects.filter(employee=employee, date__range=(first_day, last_day))
-        full_days = half_days = 0
-        attendance_dates = set()
-        for att in attendances:
-            hours = float(att.total_hours or 0)
-            attendance_dates.add(att.date)
-            if hours >= 8:
+        half_day_hours = Decimal(
+            company.half_day_hours or 4
+        )
+
+        attendances = Attendance.objects.filter(
+            employee=employee,
+            date__range=(first_day, last_day),
+        )
+
+        attendance_map = {
+            att.date: Decimal(att.total_hours or 0)
+            for att in attendances
+        }
+
+        full_days = Decimal(0)
+        half_days = Decimal(0)
+
+        for day in all_working_dates:
+
+            hours = attendance_map.get(day, Decimal(0))
+
+            if hours >= full_day_hours:
                 full_days += 1
-            elif 4 <= hours < 8:
-                half_days += 1
 
-        days_present = full_days + 0.5 * half_days
+            elif hours >= half_day_hours:
+                half_days += Decimal("0.5")
 
-        # --- Approved Leave Days ---
+        days_present = full_days + half_days
+
+        # ======================================================
+        # APPROVED LEAVES
+        # ======================================================
+
         leave_requests = LeaveRequest.objects.filter(
-            employee=employee, status='approved',
-            from_date__lte=last_day, to_date__gte=first_day
+            employee=employee,
+            status="approved",
+            from_date__lte=last_day,
+            to_date__gte=first_day,
         )
+
         approved_leave_dates = set()
+
         for leave in leave_requests:
+
             start = max(leave.from_date, first_day)
             end = min(leave.to_date, last_day)
+
             if isinstance(start, datetime):
                 start = start.date()
+
             if isinstance(end, datetime):
                 end = end.date()
-            if start <= end:
-                for n in range((end - start).days + 1):
-                    approved_leave_dates.add(start + timedelta(days=n))
 
-        # --- Unswiped Days (excluding approved leaves, holidays, off days) ---
-        all_days = [(first_day + timedelta(days=i)) for i in range((last_day - first_day).days + 1)]
-        unswiped_valid_days = [
-            d for d in all_days
-            if d not in attendance_dates
-            and d not in holidays
-            and d.weekday() not in company_off_days
-            and d not in approved_leave_dates
-        ]
-        unswiped_days = float(len(unswiped_valid_days))
+            for i in range((end - start).days + 1):
 
-        # --- Paid Leave ---
-        paid_leave_balance = float(employee.paid_leave or 0.0)
+                leave_day = start + timedelta(days=i)
 
-        # --- LOP Days (exclude paid leave) ---
-        lop_days = max(unswiped_days - paid_leave_balance, 0)
+                if leave_day in all_working_dates:
+                    approved_leave_dates.add(leave_day)
 
-        # --- Salary Components ---
-        basic_salary = float(instance.basic_salary or 0)
-        housing_allowance = float(instance.housing_allowance or 0)
-        transportation = float(instance.transportation or 0)
-        tds = float(instance.tds_deduction_amount or 0)
+        approved_leave_days = Decimal(
+            len(approved_leave_dates)
+        )
 
-        daily_basic = basic_salary / working_days if working_days > 0 else 0
-        lop_amount = round(daily_basic * lop_days, 2)
+        total_accounted_days = (
+            days_present + approved_leave_days
+        )
 
-        adjusted_basic_salary = basic_salary - lop_amount
-        adjusted_gross = adjusted_basic_salary + housing_allowance + transportation
-        net_pay = adjusted_gross - tds
+        lop_days = max(
+            working_days - total_accounted_days,
+            Decimal(0)
+        )
 
-        # --- Final Output ---
+        # ======================================================
+        # SALARY INCREMENTS
+        # ======================================================
+
+        increments_qs = SalaryIncrement.objects.filter(
+            employee=employee
+        ).order_by("date")
+
+        total_increment_amount = Decimal(0)
+
+        increment_history = []
+
+        for inc in increments_qs:
+
+            total_increment_amount += Decimal(
+                inc.increment_amount or 0
+            )
+
+            increment_history.append({
+                "date": str(inc.date),
+                "increment_amount": float(
+                    inc.increment_amount or 0
+                ),
+            })
+
+        # ======================================================
+        # TOTAL SALARY
+        # ======================================================
+
+        total_salary = (
+            Decimal(instance.basic_salary or 0)
+            + total_increment_amount
+        )
+
+        # ======================================================
+        # INCENTIVE
+        # ======================================================
+
+        incentive_amount = Decimal(
+            instance.incentive_amount or 0
+        )
+        # ======================================================
+        # DEDUCTION
+        # ======================================================
+        deduction_amount = Decimal(
+            instance.deduction_amount or 0
+        )
+
+        # ======================================================
+        # GROSS EARNINGS
+        # ======================================================
+
+        gross_earnings = (
+            total_salary + incentive_amount
+        )
+
+        # ======================================================
+        # SALARY SPLIT
+        # ======================================================
+
+        basic_percent = Decimal(
+            company.basic_salary_percent or 0
+        )
+
+        house_percent = Decimal(
+            company.house_allowance_percent or 0
+        )
+
+        transport_percent = Decimal(
+            company.transport_allowance_percent or 0
+        )
+
+        special_percent = Decimal(
+            company.special_allowance_percent or 0
+        )
+
+        basic_salary = (
+            total_salary * basic_percent / 100
+        ).quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP
+        )
+
+        housing_allowance = (
+            total_salary * house_percent / 100
+        ).quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP
+        )
+
+        transportation = (
+            total_salary * transport_percent / 100
+        ).quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP
+        )
+
+        special_allowance = (
+            total_salary * special_percent / 100
+        ).quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP
+        )
+
+        calculated_total = (
+            basic_salary +
+            housing_allowance +
+            transportation +
+            special_allowance
+        )
+
+        difference = total_salary - calculated_total
+
+        special_allowance += difference
+
+        
+
+        # ======================================================
+        # LOP
+        # ======================================================
+
+        daily_salary = total_salary / (
+            working_days or Decimal(1)
+        )
+
+        lop_amount = (
+            daily_salary * lop_days
+        ).quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP,
+        )
+
+        # ======================================================
+        # FINAL NET PAY
+        # ======================================================
+
+        tds = Decimal(
+            instance.tds_deduction_amount or 0
+        )
+
+        
+
+        
+        net_pay = (
+            gross_earnings
+            - lop_amount
+            - tds
+            - deduction_amount
+        ).quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP,
+        )
+
+        if net_pay < 0:
+            net_pay = Decimal(0)
+
+        # ======================================================
+        # RESPONSE
+        # ======================================================
+
         data.update({
-             'company': {
-            'name': company.name if company else None,
-            'address': company.address if company else None,
-            'email': company.email if company else None,
-            'contact_number': company.contact_number if company else None,
-            'logo_url': request.build_absolute_uri(company.logo.url) if company and company.logo else None,
-        },
-            'working_days': working_days,
-            'days_present': days_present,
-            'unswiped_days': unswiped_days,
-            'paid_leave_used': paid_leave_balance,
-            'lop_days': lop_days,
-            'lop_amount': lop_amount,
-            'gross_earnings': round(adjusted_gross, 2),
-            'total_deductions': round(tds + lop_amount, 2),
-            'net_pay': round(net_pay, 2),
-            'earnings': [
-                {'label': 'Basic Salary', 'amount': round(basic_salary, 2)},
-                {'label': 'Housing Allowance', 'amount': round(housing_allowance, 2)},
-                {'label': 'Transportation', 'amount': round(transportation, 2)},
-            ],
-            'deductions': [
-                {'label': 'TDS Deduction', 'value': round(tds, 2)},
-                {'label': 'Loss of Pay', 'value': round(lop_amount, 2)} if lop_amount > 0 else None,
-            ],
-            "hr1_verified": instance.hr1_verified_by is not None,
-            "hr2_verified": instance.hr2_verified_by is not None,
-            "fully_verified": instance.is_fully_verified(),
-            "verified_by": {
-                "hr1": instance.hr1_verified_by.username if instance.hr1_verified_by else None,
-                "hr2": instance.hr2_verified_by.username if instance.hr2_verified_by else None,
-            }
-        })
 
-        data['deductions'] = [d for d in data['deductions'] if d is not None]
+            "company": {
+                "name": company.name if company else None,
+                "address": company.address if company else None,
+                "email": company.email if company else None,
+                "contact_number": (
+                    company.contact_number
+                    if company else None
+                ),
+                "logo_url": (
+                    request.build_absolute_uri(company.logo.url)
+                    if company and company.logo else None
+                ),
+            },
+
+            "working_days": float(working_days),
+
+            "days_present": float(days_present),
+
+            "approved_leave_days": float(
+                approved_leave_days
+            ),
+
+            "lop_days": float(lop_days),
+
+            "lop_amount": float(lop_amount),
+
+            "total_increment_amount": float(
+                total_increment_amount
+            ),
+
+            "increment_history": increment_history,
+
+            "gross_earnings": float(gross_earnings),
+
+            "total_deductions": float(
+                    lop_amount + tds + deduction_amount
+                ),
+
+            "net_pay": float(net_pay),
+
+            "incentive_amount": float(
+                incentive_amount
+            ),
+
+            "incentive_type": (
+                instance.incentive_type
+            ),
+
+            "incentive_reason": (
+                instance.incentive_reason
+            ),
+            "deduction_amount": float(
+                deduction_amount
+            ),
+
+            "deduction_type": (
+                instance.deduction_type
+            ),
+
+            "deduction_reason": (
+                instance.deduction_reason
+            ),
+
+            "earnings": [
+
+                {
+                    "label": "Basic Salary",
+                    "amount": float(basic_salary)
+                },
+
+                {
+                    "label": "Housing Allowance",
+                    "amount": float(housing_allowance)
+                },
+
+                {
+                    "label": "Transportation",
+                    "amount": float(transportation)
+                },
+
+                {
+                    "label": "Special Allowance",
+                    "amount": float(special_allowance)
+                },
+
+                {
+                    "label": "Incentive",
+                    "amount": float(incentive_amount)
+                },
+            ],
+
+            "deductions": [
+
+                {
+                    "label": "TDS Deduction",
+                    "value": float(tds)
+                },
+
+                {
+                    "label": "Loss of Pay",
+                    "value": float(lop_amount)
+                },
+
+                {
+                    "label": (
+                        instance.deduction_type
+                        or "Other Deduction"
+                    ),
+                    "value": float(deduction_amount)
+                },
+            ],
+                    })
+
         return data
-
-
-
-    
 
 
 class EmployeePayrollRecordSerializer2(serializers.ModelSerializer):

@@ -23,12 +23,12 @@ export const CardHeader = styled.h2`
 export const CardBody = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.3rem;
+  gap: 10px;
 `;
 
 export const Grid2 = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
 
   @media (max-width: 768px) {
@@ -45,15 +45,15 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   width: 100%;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 8px;
+  border-radius: 4px;
   border: 1px solid #ccc;
 `;
 
 export const Select = styled.select`
   width: 100%;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 8px;
+  border-radius: 4px;
   border: 1px solid #ccc;
 `;
 
@@ -122,4 +122,63 @@ export const UploadButton = styled.label`
 
 export const FileInput = styled.input`
   display: none;
+`;
+ export const TableWrapper = styled.div`
+  width: 100%;
+  margin-top: 20px;
+`;
+
+export const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+export const Th = styled.th`
+  text-align: left;
+  padding: 10px;
+  border-bottom: 2px solid #d1d5db;
+`;
+
+export const Td = styled.td`
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+`;
+
+// export const Input = styled.input`
+//   padding: 6px 10px;
+//   border-radius: 6px;
+//   border: 1px solid #d1d5db;
+//   width: 100%;
+//   &:focus {
+//     outline: none;
+//     border-color: #3b82f6;
+//   }
+// `;
+
+export const AddButton = styled.button`
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  &:hover {
+    background: #2563eb;
+  }
+`;
+
+export const SaveBtn = styled.button`
+  padding: 8px 16px;
+  background: #304EB0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover {
+    background: #243d8f;
+  }
 `;

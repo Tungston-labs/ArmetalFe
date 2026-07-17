@@ -1,23 +1,12 @@
 import React from "react";
 import { 
   HeaderContainer, 
-  LeftSection, 
-  BackButton, 
-  TitleContainer, 
-  Icon, 
-  Title, 
-  Subtitle, 
-  SearchBox, 
-  SearchInput, 
-  EmployeeImage,
-  TextBlock
 } from "./HolidayHeading.styles";
-
-import { FiArrowLeft, FiSearch } from "react-icons/fi";
 import HolidayIcon from "../assets/payroll.svg"; 
 import EmployeeTitle from "./EmployeeTitle";
 
-const Header = () => {
+
+const Header = ({ onReportClick }) => {
   return (
     <HeaderContainer>
       {/* Left Section */}       
@@ -35,6 +24,9 @@ const Header = () => {
   showTabs={false}
   showAddButton={false}
   showSearch={false}
+  showReportButton={false}
+    onReportClick={onReportClick} 
+
 />
     </HeaderContainer>
   );

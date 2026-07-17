@@ -31,7 +31,7 @@ export const Title = styled.h4`
   }
 
   @media (min-width: 1920px) {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   @media (min-width: 2560px) {
@@ -88,11 +88,24 @@ export const Avatar = styled.img`
   object-fit: cover;
 
   @media (min-width: 1920px) {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
   }
 `;
 
+export const AvatarFallback = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f2f4f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    color: #98a2b3;
+  }
+`;
 export const Info = styled.div`
   display: flex;
   flex-direction: column;
@@ -103,7 +116,7 @@ export const Info = styled.div`
 export const Name = styled.span`
   font-weight: 600;
   color: #0f172a;
-  font-size: 15px;
+  font-size:0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -113,7 +126,7 @@ export const Name = styled.span`
   }
 
   @media (min-width: 1920px) {
-    font-size: 18px;
+    font-size: 16px;
   }
      @media (min-width: 2560px) {
     font-size: 1.5rem;
@@ -125,7 +138,7 @@ export const Name = styled.span`
 
 export const Dept = styled.span`
   color: #475569;
-  font-size: 13px;
+  font-size: 0.8rem;
   margin-top: 2px;
 
   @media (max-width: 600px) {
@@ -133,7 +146,7 @@ export const Dept = styled.span`
   }
 
   @media (min-width: 1920px) {
-    font-size: 15px;
+    font-size: 12px;
   }
     @media (min-width: 2560px) {
     font-size: 20px;
@@ -145,7 +158,7 @@ export const Dept = styled.span`
 
 export const IdText = styled.span`
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 0.7rem;
   margin-top: 2px;
 
   @media (max-width: 600px) {
@@ -153,7 +166,7 @@ export const IdText = styled.span`
   }
 
   @media (min-width: 1920px) {
-    font-size: 13px;
+    font-size: 12px;
   }
        @media (min-width: 2560px) {
     font-size: 18px;
@@ -177,7 +190,11 @@ export const DateBox = styled.div`
     font-size: 10px;
     padding: 4px 6px;
   }
-
+  @media (min-width: 1440px) {
+    font-size: 10px;
+    min-width: 80px;
+    padding: 8px 10px;
+  }
   @media (min-width: 1920px) {
     font-size: 14px;
     min-width: 110px;
