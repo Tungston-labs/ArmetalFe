@@ -19,6 +19,7 @@ from django.core.mail import EmailMessage
 from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import CompanySelfUpdateSerializer
+from .management.commands.subscriptions import get_billable_employee_count
 
 
 
@@ -58,7 +59,10 @@ class CompanyDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     
 from django.utils.timezone import now
 
+from django.utils.timezone import now
+
 class CompanySubscriptionListCreateView(APIView):
+
     def get(self, request, company_id, year=None):
         year = year or now().year
 
@@ -73,12 +77,32 @@ class CompanySubscriptionListCreateView(APIView):
         subs = []
 
         for m in range(1, 13):
-            obj, _ = CompanySubscription.objects.get_or_create(
+
+            obj, created = CompanySubscription.objects.get_or_create(
                 company=company,
                 month=m,
-                year=year
+                year=year,
+                defaults={
+                    "amount": 0,
+                    "employee_count": 0,
+                    "amount_per_employee": company.amount_per_employee,
+                }
             )
-            obj.save()  # auto calculates amount
+
+            # Update only while subscription is unpaid
+            if obj.status == "unpaid":
+
+                employee_count = get_billable_employee_count(
+                    company,
+                    m,
+                    year
+                )
+
+                obj.employee_count = employee_count
+                obj.amount_per_employee = company.amount_per_employee
+                obj.amount = employee_count * company.amount_per_employee
+                obj.save()
+
             subs.append(obj)
 
         serializer = CompanySubscriptionSerializer(subs, many=True)
@@ -93,14 +117,13 @@ class CompanySubscriptionListCreateView(APIView):
                 "country": company.country,
                 "contact_number": company.contact_number,
                 "email": company.email,
-                "employee_count": company.number_of_employees,
+                "employee_count": company.number_of_employees,   # current count
                 "amount_per_employee": company.amount_per_employee,
                 "currency": subs[0].currency if subs else "AED",
                 "today": now().date(),
             },
             "subscriptions": serializer.data
         })
-
 
 class MarkSubscriptionPaidView(UpdateAPIView):
     queryset = CompanySubscription.objects.all()

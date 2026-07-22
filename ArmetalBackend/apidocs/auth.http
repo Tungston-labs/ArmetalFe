@@ -57,11 +57,11 @@ Content-Type: application/json
 
 # forgot password
 ###
-POST http://178.248.112.16:8001/api/forgot-password/send-otp/
+POST https://api.rekory.com/api/forgot-password/send-otp/
 Content-Type: application/json
 
 {
-  "email": "sharanyamol2@gmail.com"
+  "email": "aparnaaparnajockson@gmail.com"
 }
 # verify OPTIONS 
 ###

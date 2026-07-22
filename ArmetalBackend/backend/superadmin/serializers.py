@@ -237,6 +237,8 @@ class CompanySubscriptionSerializer(serializers.ModelSerializer):
             "month",
             "month_display",
             "year",
+            "employee_count",
+            "amount_per_employee",
             "paid_date",
             "amount",
             "currency",
