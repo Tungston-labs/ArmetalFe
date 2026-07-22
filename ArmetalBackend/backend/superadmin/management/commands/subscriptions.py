@@ -1,5 +1,6 @@
 from calendar import monthrange
 from datetime import date
+from django.db.models import Q
 
 from employee.models import Employee_db
 
@@ -12,8 +13,15 @@ def get_billable_employee_count(company, month, year):
     first_day = date(year, month, 1)
     last_day = date(year, month, monthrange(year, month)[1])
 
+
     employees = Employee_db.objects.filter(
-        user__company=company
+        department__company=company
+    ).filter(
+        Q(is_deleted=False) |
+        Q(
+            is_deleted=True,
+            deleted_at__date__gte=first_day
+        )
     )
 
     total = 0
