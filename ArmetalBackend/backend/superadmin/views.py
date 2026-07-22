@@ -20,6 +20,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import CompanySelfUpdateSerializer
 from .management.commands.subscriptions import get_billable_employee_count
+from employee.models import Employee_db
 
 
 
@@ -117,8 +118,10 @@ class CompanySubscriptionListCreateView(APIView):
                 "country": company.country,
                 "contact_number": company.contact_number,
                 "email": company.email,
-                "employee_count": company.number_of_employees,   # current count
-                "amount_per_employee": company.amount_per_employee,
+                "employee_count": Employee_db.objects.filter(
+                    department__company=company,
+                    is_deleted=False
+                ).count(),                "amount_per_employee": company.amount_per_employee,
                 "currency": subs[0].currency if subs else "AED",
                 "today": now().date(),
             },
