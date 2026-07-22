@@ -692,6 +692,8 @@ class BackgroundLocationUpdateView(APIView):
 
         data = request.data.copy()
         data["employee"] = employee.id
+        if "logged_at" not in data and "captured_at" in data:
+            data["logged_at"] = data["captured_at"]
 
         serializer = HourlyLocationLogSerializer(data=data)
         if serializer.is_valid():
