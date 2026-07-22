@@ -168,7 +168,7 @@ class HourlyLocationLog(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     location_name = models.CharField(max_length=255, blank=True, null=True)
-    logged_at = models.DateTimeField(auto_now_add=True)
+    logged_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ['-logged_at']
