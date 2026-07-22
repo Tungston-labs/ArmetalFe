@@ -19,9 +19,12 @@ from .models import Company, User
 import json
 from decimal import Decimal
 from finance.models import FinanceCategory
+from employee.models import Employee_db
+
 
 
 class CompanyCreateSerializer(serializers.ModelSerializer):
+    number_of_employees = serializers.SerializerMethodField()
 
     class Meta:
         model = Company
@@ -214,6 +217,12 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
                 hr_user.save()
 
         return instance
+
+    def get_number_of_employees(self, obj):
+        return Employee_db.objects.filter(
+            department__company=obj,
+            is_deleted=False
+        ).count()
 
     # ---------------------------------------------------------
     # VALIDATION
