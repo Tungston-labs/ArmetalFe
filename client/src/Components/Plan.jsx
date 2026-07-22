@@ -155,7 +155,7 @@ const fetchPaymentData = async (id) => {
                 <TableRow key={entry.id} status={entry.status}>
                   <TableData>{entry.month_display}</TableData>
                   <TableData>{entry.paid_date || '-'} <SlCalender /></TableData>
-                  <TableData><strong>{entry.amount} {entry.currency}</strong></TableData>
+                  <TableData><strong>{entry.amount} </strong></TableData>
                   <TableData>
                     <button
                       onClick={() => handleStatusChange(entry.id, entry.status)}
