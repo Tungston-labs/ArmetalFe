@@ -123,6 +123,7 @@ class Company(TimeStampedModel):
         default=4.0,
         help_text="Half day working hours"
     )
+    is_active = models.BooleanField(default=True)
 
 
     def save(self, *args, **kwargs):
@@ -215,7 +216,12 @@ class CompanySubscription(TimeStampedModel):
                 if not self.paid_date:
                     self.paid_date = now().date()
 
-                # activate users
+                # Activate company
+                if not self.company.is_active:
+                    self.company.is_active = True
+                    self.company.save(update_fields=["is_active"])
+
+                # Activate all company users
                 self.company.users.update(is_active=True)
 
             super().save(*args, **kwargs)

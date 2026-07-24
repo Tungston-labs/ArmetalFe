@@ -234,3 +234,104 @@ class CompanySelfView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from superadmin.models import Company
+
+from superadmin.management.commands.subscription_service import (
+    SubscriptionService
+)
+
+from superadmin.serializers import (
+    CompanySubscriptionActionSerializer
+)
+
+from user.permissions import IsSuperAdmin
+
+
+
+class CompanySubscriptionStatusAPIView(APIView):
+
+    permission_classes = [
+        IsSuperAdmin
+    ]
+
+
+    def post(self, request):
+
+
+        serializer = (
+            CompanySubscriptionActionSerializer(
+                data=request.data
+            )
+        )
+
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+
+        company_id = (
+            serializer.validated_data[
+                "company_id"
+            ]
+        )
+
+
+        action = (
+            serializer.validated_data[
+                "action"
+            ]
+        )
+
+
+        company = Company.objects.get(
+            id=company_id
+        )
+
+
+        if action == "freeze":
+
+
+            users = (
+                SubscriptionService
+                .freeze_company(company)
+            )
+
+
+            return Response(
+                {
+                    "message":
+                    "Company frozen successfully",
+
+                    "users_frozen":
+                    users
+                }
+            )
+
+
+
+        if action == "unfreeze":
+
+
+            users = (
+                SubscriptionService
+                .unfreeze_company(company)
+            )
+
+
+            return Response(
+                {
+                    "message":
+                    "Company unfreezed successfully",
+
+                    "users_activated":
+                    users
+                }
+            )

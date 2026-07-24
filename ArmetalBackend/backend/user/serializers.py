@@ -22,7 +22,42 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         password = attrs.get("password")
         fcm_token = self.context['request'].data.get("fcm_token")
 
-        user = authenticate(username=username, password=password)
+        user = authenticate(
+            username=username,
+            password=password
+        )
+
+        if user is None:
+            raise serializers.ValidationError(
+                "Invalid username or password"
+            )
+
+        if not user.is_active:
+            raise serializers.ValidationError(
+                "Your account has been disabled."
+            )
+
+        company = None
+
+        # HR Admin / Company Admin
+        if user.company:
+            company = user.company
+
+        # Employee
+        elif hasattr(user, "employee_db"):
+            employee = user.employee_db
+
+            if (
+                employee and
+                employee.department and
+                employee.department.company
+            ):
+                company = employee.department.company
+
+        if company and not company.is_active:
+            raise serializers.ValidationError(
+                "Your company's subscription has expired."
+            )
 
         if user is None:
             raise serializers.ValidationError("Invalid username or password")

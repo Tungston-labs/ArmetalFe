@@ -347,3 +347,27 @@ class CompanySelfUpdateSerializer(serializers.ModelSerializer):
             "email": {"required": False},
             "modules": {"required": False},
         }
+from rest_framework import serializers
+from superadmin.models import Company
+
+
+class CompanySubscriptionActionSerializer(serializers.Serializer):
+
+    company_id = serializers.IntegerField()
+
+    action = serializers.ChoiceField(
+        choices=[
+            ("freeze", "Freeze"),
+            ("unfreeze", "Unfreeze"),
+        ]
+    )
+
+
+    def validate_company_id(self, value):
+
+        if not Company.objects.filter(id=value).exists():
+            raise serializers.ValidationError(
+                "Company not found"
+            )
+
+        return value
