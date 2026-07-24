@@ -88,11 +88,68 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
     formData.maternity_leave,
     formData.other_leave
   ]);
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData(prev => ({ ...prev, [name]: files ? files[0] : value }));
-    if (onFormChange) onFormChange(e);
-  };
+const handleChange = (e) => {
+  const { name, value, files, type } = e.target;
+
+  if (type === "file") {
+    const file = files?.[0];
+
+    if (!file) {
+      setFormData((prev) => ({ ...prev, [name]: null }));
+      if (onFormChange) onFormChange(e);
+      return;
+    }
+
+    // Validate file type
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "Only JPG, JPEG, PNG and WEBP images are allowed.",
+      }));
+      return;
+    }
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "Image size must be less than 5 MB.",
+      }));
+      return;
+    }
+
+    // Clear previous error
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: file,
+    }));
+
+    if (onFormChange) {
+      onFormChange({
+        target: {
+          name,
+          value: file,
+          files: [file],
+          type: "file",
+        },
+      });
+    }
+
+    return;
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+
+  if (onFormChange) onFormChange(e);
+};
 
   const validateForm = () => {
     const newErrors = {};
@@ -130,29 +187,14 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
   }));
 
   const renderError = (field) => <>{errors[field] && <ErrorText>{errors[field]}</ErrorText>}</>;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
-  //   const leaveTypes = ["Casual", "Sick", "Annual", "Maternity"];
-
-  // const addLeaveType = () => {
-  //   setFormData(prev => ({
-  //     ...prev,
-  //     leave_balances: [
-  //       ...prev.leave_balances,
-  //       { type: "", days: "" }
-  //     ]
-  //   }));
-  // };
-
-  // const updateLeave = (index, field, value) => {
-  //   const updated = [...formData.leave_balances];
-
-  //   updated[index][field] = value;
-
-  //   setFormData(prev => ({
-  //     ...prev,
-  //     leave_balances: updated
-  //   }));
-  // };
+const ALLOWED_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
   return (
     <FormContainer noValidate>
       <SectionTitle>Job Details</SectionTitle>
@@ -303,6 +345,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
           <Label>ID Card Photo</Label>
           <FileInputLabel htmlFor="idcard">{formData.idcard?.name || "Upload ID Card +"}</FileInputLabel>
           <FileInput id="idcard" name="idcard" type="file" onChange={handleChange} />
+          {errors.idcard && <ErrorText>{errors.idcard}</ErrorText>}
         </FormGroup>
       </FormRow>
 

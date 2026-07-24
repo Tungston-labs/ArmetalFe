@@ -142,14 +142,21 @@ export const TopBar = styled.div`
 
 export const TitleSection = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  margin-bottom: 30px;
 
-  img {
-    height: 51px;
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  div {
+  img {
+    height: 50px;
+  }
+
+  .left > div {
     display: flex;
     flex-direction: column;
   }
@@ -198,5 +205,58 @@ export const FormSection = styled.div`
 
   > div {
     width: 50%;
+  }
+`;
+export const BlockSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+`;
+
+export const BlockText = styled.span`
+  font-size: 15px;
+  font-weight: 600;
+  color: ${({ theme, blocked }) => (blocked ? "#d32f2f" : "#2e7d32")};
+`;
+
+export const Switch = styled.label`
+  position: relative;
+  display: inline-block;
+  width: 58px;
+  height: 30px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #4caf50;
+    transition: 0.3s;
+    border-radius: 34px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #f44336;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(28px);
   }
 `;

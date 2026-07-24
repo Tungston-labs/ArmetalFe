@@ -102,7 +102,7 @@ function App() {
               <Route path="/holiday" element={<Holiday />} />
               <Route path="/payrolldetails/:id" element={< PayrollDetailsContainer/>} />
               <Route path="/payrolldetails" element={<PayrollTable />} />
-              <Route path="/superadmin" element={<SuperAdmin />} />
+              <Route path="/company" element={<SuperAdmin />} />
               <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard />} />
               <Route path="/add-company" element={<AddCompany />} />
               <Route path="/employee-Contract-Visa-Expiry" element={<Visa />} />

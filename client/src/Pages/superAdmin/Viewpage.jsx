@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormWrapper,
   BackHeader,
@@ -9,6 +9,12 @@ import {
   Input,
   CheckboxGroup,
   CheckboxLabel,
+  TitleSection,
+  BlockSection,
+  BlockText,
+  Switch,
+  Title,
+  Subtitle
 } from "./View.Styles";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -17,14 +23,13 @@ import {
 } from "../../Redux/superAdminSlice";
 import { useParams, useNavigate } from "react-router-dom";
 import Plan from "../../Components/Plan";
-import { Subtitle, Title, TitleSection } from "./SuperAdmin.Styles";
 import { LuArrowLeft } from "react-icons/lu";
 import Loader from "../../Components/Loader"
 const CompanyViewPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-
+const [isBlocked, setIsBlocked] = useState(false);
   const selectedCompany = useSelector(
     (state) => state.superAdmin.selectedCompany,
   );
@@ -38,6 +43,11 @@ const CompanyViewPage = () => {
       dispatch(clearSelectedCompany());
     };
   }, [dispatch, id]);
+  useEffect(() => {
+  if (selectedCompany) {
+    setIsBlocked(selectedCompany.is_blocked);
+  }
+}, [selectedCompany]);
 
   if (!selectedCompany) return <Loader />;
 
@@ -48,21 +58,42 @@ const CompanyViewPage = () => {
     <>
 
       <FormWrapper>
-        <TitleSection>
-          <LuArrowLeft
-            style={{ width: "30px", height: 30, cursor: "pointer" }}
-            onClick={() => navigate("/superadmin")}
-          />
-          <img
-            src="/images/superadminlogo.png"
-            alt="Payroll Icon"
-            style={{ height: "50px" }}
-          />
-          <div>
-            <Title>Super admin</Title>
-            <Subtitle>Manage all departments within the organization.</Subtitle>
-          </div>
-        </TitleSection>
+     <TitleSection>
+  <div className="left">
+    <LuArrowLeft
+      style={{ width: "30px", height: 30, cursor: "pointer" }}
+      onClick={() => navigate("/superadmin")}
+    />
+
+    <img
+      src="/images/superadminlogo.png"
+      alt="Payroll Icon"
+      style={{ height: "50px" }}
+    />
+
+    <div>
+      <Title>Super admin</Title>
+      <Subtitle>
+        Manage all departments within the organization.
+      </Subtitle>
+    </div>
+  </div>
+
+  <BlockSection>
+    <BlockText blocked={isBlocked}>
+  {isBlocked ? "Company Blocked" : "Company Active"}
+</BlockText>
+
+<Switch>
+  <input
+    type="checkbox"
+    checked={isBlocked}
+    onChange={(e) => setIsBlocked(e.target.checked)}
+  />
+  <span className="slider"></span>
+</Switch>
+  </BlockSection>
+</TitleSection>
 
 
         <FormSection>

@@ -124,13 +124,14 @@ const CompanyTable = () => {
             <tr>
               <Th>Sl no</Th>
               <Th>Company name</Th>
-              <Th>Address</Th>
+              {/* <Th>Address</Th> */}
               <Th>Company ID</Th>
               <Th>Contact details</Th>
               <Th>No of Employees</Th>
               <Th>Info</Th>
               <Th>Edit</Th>
               <Th>Delete</Th>
+               
             </tr>
           </thead>
           <tbody>
@@ -139,12 +140,12 @@ const CompanyTable = () => {
                 <tr key={item.id}>
                   <Td>{(page - 1) * 7 + idx + 1}</Td>
                   <Td>{item.name}</Td>
-                  <Td>{item.address}</Td>
+                  {/* <Td>{item.address}</Td> */}
                   <Td>{item.company_id}</Td>
                   <Td>{item.contact_number}</Td>
                   <Td>{item.number_of_employees}</Td>
 
-                  {/* ✅ Navigate with company_id */}
+                
                   <Td
                     onClick={() => navigate(`/superadmin/view/${item.id}`)}
                     style={{ cursor: "pointer" }}

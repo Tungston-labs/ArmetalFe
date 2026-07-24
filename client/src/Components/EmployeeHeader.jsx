@@ -19,12 +19,54 @@ import {
 } from "./EmployeeHeader.Styles";
 import { PiUserCirclePlusThin } from "react-icons/pi";
 
-const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors }) => {
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((p) => ({ ...p, [name]: files ? files[0] : value }));
-    setIsFormDirty(true);
-  };
+const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors ,setErrors}) => {
+  const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+
+const handleChange = (e) => {
+  const { name, value, files, type } = e.target;
+
+  if (type === "file") {
+    const file = files?.[0];
+
+    if (!file) return;
+
+    // Allow only images
+    if (!file.type.startsWith("image/")) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "Please upload a valid image.",
+      }));
+      return;
+    }
+
+    // Maximum size
+    if (file.size > MAX_SIZE) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "Image size must be less than 5 MB.",
+      }));
+      return;
+    }
+
+    // Clear previous error
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: file,
+    }));
+  } else {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  setIsFormDirty(true);
+};
 
   return (
     <Container>
@@ -42,6 +84,10 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors }) => {
                 <PiUserCirclePlusThin size={80} />
               </IconWrapper>
             )}
+
+  {errors?.profile_pic && (
+    <ErrorText>{errors.profile_pic}</ErrorText>
+  )}
           </ProfileLabel>
           <HiddenFileInput
             id="profile-upload"
