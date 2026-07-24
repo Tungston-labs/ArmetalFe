@@ -104,9 +104,7 @@ setIfscCode,
       <FormGroups>
   <Label>{country === "IN" ? "IFSC Code" : "SWIFT Code"}</Label>
 
-  <ErrorMsg
-    msg={country === "IN" ? errors.ifscCode : errors.swiftCode}
-  />
+
 
   <Input
     placeholder={
@@ -121,12 +119,16 @@ setIfscCode,
         : setSwiftCode(e.target.value)
     }
   />
+    <ErrorMsg
+    msg={country === "IN" ? errors.ifscCode : errors.swiftCode}
+  />
 </FormGroups>
 
              <FormGroups>
               <Label>Basic Salary</Label>
 
               <Input
+              type="number"
                 placeholder="Enter Basic Salary"
                 value={basicSalary}
                 onChange={(e) => setBasicSalary(e.target.value)}

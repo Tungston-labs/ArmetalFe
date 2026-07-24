@@ -106,9 +106,9 @@ export default function Sidebar() {
         {user?.is_superadmin && (
           <CustomLink
             as={NavLink}
-            to="/superadmin"
+            to="/company"
             className={`${collapsed ? "collapsed" : ""} ${isActive(
-              "/superadmin"
+              "/company"
             )}`}
           >
             <BsFillBuildingsFill />

@@ -226,6 +226,7 @@ export default function AddEmployeeForm() {
           setIsFormDirty={setIsFormDirty}
           onFileChange={handleFileChange}
           errors={errors}
+          setErrors={setErrors}
         />
         <JobDetails
           country={country}

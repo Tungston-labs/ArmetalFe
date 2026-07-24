@@ -49,13 +49,50 @@ const [uploadErrors,setUploadErrors]= useState({});
     fileInputRefs[type].current.click();
   };
 
-  const handleFileChange = (e, type) => {
-    const files = Array.from(e.target.files);
-    setSelectedFiles(prev => ({
-      ...prev,
-      [type]: [...prev[type], ...files],
-    }));
-  };
+ const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
+
+const handleFileChange = (e, type) => {
+  const files = Array.from(e.target.files);
+
+  const validFiles = [];
+  let error = "";
+
+  files.forEach((file) => {
+    // Check file size
+    if (file.size > MAX_FILE_SIZE) {
+      error = "Each image must be smaller than 1 MB.";
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith("image/")) {
+      error = "Only image files are allowed.";
+      return;
+    }
+
+    validFiles.push(file);
+  });
+
+  // Update error state
+  setUploadErrors((prev) => ({
+    ...prev,
+    [type]: error,
+  }));
+
+  // Don't add invalid files
+  if (validFiles.length === 0) {
+    e.target.value = "";
+    return;
+  }
+
+  setSelectedFiles((prev) => ({
+    ...prev,
+    [type]: [...prev[type], ...validFiles],
+  }));
+
+  // Reset input so the same file can be selected again
+  e.target.value = "";
+};
 
   const handleDeleteImage = (type, index) => {
     setSelectedFiles(prev => {
