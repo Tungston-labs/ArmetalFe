@@ -19,9 +19,12 @@ from .models import Company, User
 import json
 from decimal import Decimal
 from finance.models import FinanceCategory
+from employee.models import Employee_db
+
 
 
 class CompanyCreateSerializer(serializers.ModelSerializer):
+    number_of_employees = serializers.SerializerMethodField()
 
     class Meta:
         model = Company
@@ -215,6 +218,12 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 
         return instance
 
+    def get_number_of_employees(self, obj):
+        return Employee_db.objects.filter(
+            department__company=obj,
+            is_deleted=False
+        ).count()
+
     # ---------------------------------------------------------
     # VALIDATION
     # ---------------------------------------------------------
@@ -237,6 +246,8 @@ class CompanySubscriptionSerializer(serializers.ModelSerializer):
             "month",
             "month_display",
             "year",
+            "employee_count",
+            "amount_per_employee",
             "paid_date",
             "amount",
             "currency",
@@ -336,3 +347,27 @@ class CompanySelfUpdateSerializer(serializers.ModelSerializer):
             "email": {"required": False},
             "modules": {"required": False},
         }
+from rest_framework import serializers
+from superadmin.models import Company
+
+
+class CompanySubscriptionActionSerializer(serializers.Serializer):
+
+    company_id = serializers.IntegerField()
+
+    action = serializers.ChoiceField(
+        choices=[
+            ("freeze", "Freeze"),
+            ("unfreeze", "Unfreeze"),
+        ]
+    )
+
+
+    def validate_company_id(self, value):
+
+        if not Company.objects.filter(id=value).exists():
+            raise serializers.ValidationError(
+                "Company not found"
+            )
+
+        return value

@@ -19,6 +19,8 @@ from django.core.mail import EmailMessage
 from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import CompanySelfUpdateSerializer
+from .management.commands.subscriptions import get_billable_employee_count
+from employee.models import Employee_db
 
 
 
@@ -58,7 +60,10 @@ class CompanyDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     
 from django.utils.timezone import now
 
+from django.utils.timezone import now
+
 class CompanySubscriptionListCreateView(APIView):
+
     def get(self, request, company_id, year=None):
         year = year or now().year
 
@@ -73,12 +78,32 @@ class CompanySubscriptionListCreateView(APIView):
         subs = []
 
         for m in range(1, 13):
-            obj, _ = CompanySubscription.objects.get_or_create(
+
+            obj, created = CompanySubscription.objects.get_or_create(
                 company=company,
                 month=m,
-                year=year
+                year=year,
+                defaults={
+                    "amount": 0,
+                    "employee_count": 0,
+                    "amount_per_employee": company.amount_per_employee,
+                }
             )
-            obj.save()  # auto calculates amount
+
+            # Update only while subscription is unpaid
+            if obj.status == "unpaid":
+
+                employee_count = get_billable_employee_count(
+                    company,
+                    m,
+                    year
+                )
+
+                obj.employee_count = employee_count
+                obj.amount_per_employee = company.amount_per_employee
+                obj.amount = employee_count * company.amount_per_employee
+                obj.save()
+
             subs.append(obj)
 
         serializer = CompanySubscriptionSerializer(subs, many=True)
@@ -93,14 +118,15 @@ class CompanySubscriptionListCreateView(APIView):
                 "country": company.country,
                 "contact_number": company.contact_number,
                 "email": company.email,
-                "employee_count": company.number_of_employees,
-                "amount_per_employee": company.amount_per_employee,
+                "employee_count": Employee_db.objects.filter(
+                    department__company=company,
+                    is_deleted=False
+                ).count(),                "amount_per_employee": company.amount_per_employee,
                 "currency": subs[0].currency if subs else "AED",
                 "today": now().date(),
             },
             "subscriptions": serializer.data
         })
-
 
 class MarkSubscriptionPaidView(UpdateAPIView):
     queryset = CompanySubscription.objects.all()
@@ -208,3 +234,104 @@ class CompanySelfView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from superadmin.models import Company
+
+from superadmin.management.commands.subscription_service import (
+    SubscriptionService
+)
+
+from superadmin.serializers import (
+    CompanySubscriptionActionSerializer
+)
+
+from user.permissions import IsSuperAdmin
+
+
+
+class CompanySubscriptionStatusAPIView(APIView):
+
+    permission_classes = [
+        IsSuperAdmin
+    ]
+
+
+    def post(self, request):
+
+
+        serializer = (
+            CompanySubscriptionActionSerializer(
+                data=request.data
+            )
+        )
+
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+
+        company_id = (
+            serializer.validated_data[
+                "company_id"
+            ]
+        )
+
+
+        action = (
+            serializer.validated_data[
+                "action"
+            ]
+        )
+
+
+        company = Company.objects.get(
+            id=company_id
+        )
+
+
+        if action == "freeze":
+
+
+            users = (
+                SubscriptionService
+                .freeze_company(company)
+            )
+
+
+            return Response(
+                {
+                    "message":
+                    "Company frozen successfully",
+
+                    "users_frozen":
+                    users
+                }
+            )
+
+
+
+        if action == "unfreeze":
+
+
+            users = (
+                SubscriptionService
+                .unfreeze_company(company)
+            )
+
+
+            return Response(
+                {
+                    "message":
+                    "Company unfreezed successfully",
+
+                    "users_activated":
+                    users
+                }
+            )

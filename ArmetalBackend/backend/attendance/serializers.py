@@ -280,10 +280,22 @@ class AttendanceLocationSerializer(serializers.Serializer):
 from rest_framework import serializers
 from .models import HourlyLocationLog
 
+# serializers.py
 class HourlyLocationLogSerializer(serializers.ModelSerializer):
+    captured_at = serializers.DateTimeField(required=False, write_only=True)
+
     class Meta:
         model = HourlyLocationLog
-        fields = ['employee', 'latitude', 'longitude', 'location_name', 'logged_at']
+        fields = ['employee', 'latitude', 'longitude', 'location_name', 'logged_at', 'captured_at']
+        extra_kwargs = {
+            'logged_at': {'required': False},
+        }
+
+    def create(self, validated_data):
+        captured_at = validated_data.pop('captured_at', None)
+        if captured_at and 'logged_at' not in validated_data:
+            validated_data['logged_at'] = captured_at
+        return super().create(validated_data)
 
 
 

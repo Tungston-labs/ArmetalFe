@@ -93,6 +93,7 @@ Content-Type: application/json
     "year": 2025,
     "amount": 299.99,
     "status": "Paid",
+    
     "paid_date": "2025-06-20",
     "currency": "USD"
   },
@@ -114,4 +115,18 @@ Content-Type: multipart/form-data
   "latitude": 10.0159,
   "longitude": 76.3419,
   "country": "IN"
+}
+
+
+
+
+### Freeze Company
+POST https://api.rekory.com/api/subscription/company-status/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0OTEwNDU3LCJpYXQiOjE3ODQ4ODE2NTcsImp0aSI6Ijk4YTk2YzVjZGM5ZjQ3NzQ5N2E0NzljOTExOTM4NjMyIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.ZuDMMpZPneeH6oipRnhQMBBbsw_yWA-f_kVbgjBEUNI
+Content-Type: application/json
+
+
+{
+    "company_id": 13,
+    "action": "unfreeze"
 }

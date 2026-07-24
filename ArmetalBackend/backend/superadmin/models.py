@@ -123,6 +123,7 @@ class Company(TimeStampedModel):
         default=4.0,
         help_text="Half day working hours"
     )
+    is_active = models.BooleanField(default=True)
 
 
     def save(self, *args, **kwargs):
@@ -176,6 +177,13 @@ class CompanySubscription(TimeStampedModel):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=10,default='unpaid')
     currency = models.CharField(max_length=10, default='AED')
+    employee_count = models.PositiveIntegerField(default=0)
+
+    amount_per_employee = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
 
     class Meta:
         unique_together = ('company', 'month', 'year')
@@ -187,11 +195,11 @@ class CompanySubscription(TimeStampedModel):
 
 
     def save(self, *args, **kwargs):
-        rate = self.company.amount_per_employee or 0
-        expected_amount = round(self.company.number_of_employees * rate, 2)
+        # rate = self.company.amount_per_employee or 0
+        # expected_amount = round(self.company.number_of_employees * rate, 2)
 
-        if not self.amount or self.amount != expected_amount:
-            self.amount = expected_amount
+        # if not self.amount or self.amount != expected_amount:
+        #     self.amount = expected_amount
 
         # detect status change
         is_new = self.pk is None
@@ -208,7 +216,12 @@ class CompanySubscription(TimeStampedModel):
                 if not self.paid_date:
                     self.paid_date = now().date()
 
-                # activate users
+                # Activate company
+                if not self.company.is_active:
+                    self.company.is_active = True
+                    self.company.save(update_fields=["is_active"])
+
+                # Activate all company users
                 self.company.users.update(is_active=True)
 
             super().save(*args, **kwargs)
