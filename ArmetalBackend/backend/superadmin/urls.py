@@ -13,6 +13,11 @@ urlpatterns = [
     path("subscription/company-status/",
         views.CompanySubscriptionStatusAPIView.as_view(),
         name="company-status"),
+        path(
+        "subscription/send-reminder/",
+        views.SendSubscriptionReminderAPIView.as_view(),
+        name="subscription-reminder",
+    ),
 
 ]
 

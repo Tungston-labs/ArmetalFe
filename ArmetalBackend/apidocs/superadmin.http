@@ -130,3 +130,12 @@ Content-Type: application/json
     "company_id": 13,
     "action": "unfreeze"
 }
+
+### Send Subscription Reminder
+POST http://127.0.0.1:8000/api/subscription/send-reminder/
+Authorization: Bearer YOUR_SUPER_ADMIN_TOKEN
+Content-Type: application/json
+
+{
+    "company_id": 13
+}

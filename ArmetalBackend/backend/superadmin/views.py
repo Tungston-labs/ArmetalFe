@@ -335,3 +335,41 @@ class CompanySubscriptionStatusAPIView(APIView):
                     users
                 }
             )
+        
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from superadmin.models import Company
+from superadmin.serializers import SubscriptionReminderSerializer
+from superadmin.management.commands.subscription_email_service import SubscriptionEmailService
+
+from user.permissions import IsSuperAdmin
+
+
+class SendSubscriptionReminderAPIView(APIView):
+
+    permission_classes = [IsSuperAdmin]
+
+    def post(self, request):
+
+        serializer = SubscriptionReminderSerializer(
+            data=request.data
+        )
+
+        serializer.is_valid(raise_exception=True)
+
+        company = get_object_or_404(
+            Company,
+            id=serializer.validated_data["company_id"]
+        )
+
+        SubscriptionEmailService.send_subscription_email(company)
+
+        return Response(
+            {
+                "message": "Subscription reminder email sent successfully."
+            },
+            status=status.HTTP_200_OK
+        )

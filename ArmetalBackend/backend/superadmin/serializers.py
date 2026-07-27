@@ -372,3 +372,10 @@ class CompanySubscriptionActionSerializer(serializers.Serializer):
             )
 
         return value
+    
+
+
+
+
+class SubscriptionReminderSerializer(serializers.Serializer):
+    company_id = serializers.IntegerField()
