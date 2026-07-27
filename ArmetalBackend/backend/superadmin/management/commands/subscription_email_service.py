@@ -57,16 +57,15 @@ class SubscriptionEmailService:
         current_year = today.year
         current_month = today.month
 
+
         unpaid_subscriptions = (
             CompanySubscription.objects.filter(
                 company=company,
-                status="unpaid"
+                status="unpaid",
+                year=current_year,
+                month__lte=current_month
             )
-            .filter(
-                Q(year__lt=current_year) |
-                Q(year=current_year, month__lte=current_month)
-            )
-            .order_by("year", "month")
+            .order_by("month")
         )
 
         total_amount = 0
