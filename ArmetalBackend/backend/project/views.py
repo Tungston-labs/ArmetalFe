@@ -92,9 +92,13 @@ class EmployeesNotInProjectView(APIView):
         if project.company != company:
             return Response({"detail": "Not authorized for this project"}, status=status.HTTP_403_FORBIDDEN)
 
-        employees_not_in_project = Employee_db.objects.filter(
-            department__company=company
-        ).exclude(id__in=project.employees.all())
+        employees_not_in_project = (
+                Employee_db.objects.filter(
+                    department__company=company,
+                    is_deleted=False
+                )
+                .exclude(id__in=project.employees.values_list("id", flat=True))
+            )
 
         serializer = EmployeeSerializer(employees_not_in_project, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)

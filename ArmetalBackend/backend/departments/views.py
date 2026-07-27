@@ -15,6 +15,8 @@ from rest_framework.permissions import IsAuthenticated
 from employee.models import Employee_db
 from employee.serializers import EmployeeSerializer
 from rest_framework import status
+from django.db.models import Count, OuterRef, Subquery, IntegerField, Q
+
 
 # --------------------create ,list department by admin
 
@@ -25,14 +27,18 @@ class DepartmentMiniListView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ["name"]
 
+
     def get_queryset(self):
         today = timezone.localdate()
         company = self.request.user.company
 
-        #  employees with attendance today per department
         swiped_subquery = (
             Attendance.objects
-            .filter(employee__department=OuterRef("pk"), date=today)
+            .filter(
+                employee__department=OuterRef("pk"),
+                employee__is_deleted=False,
+                date=today
+            )
             .values("employee__department")
             .annotate(c=Count("employee", distinct=True))
             .values("c")[:1]
@@ -42,8 +48,15 @@ class DepartmentMiniListView(generics.ListAPIView):
             Department.objects
             .filter(company=company)
             .annotate(
-                total_employee_count=Count("employees", distinct=True),
-                swiped_employee_count=Subquery(swiped_subquery, output_field=IntegerField()),
+                total_employee_count=Count(
+                    "employees",
+                    filter=Q(employees__is_deleted=False),
+                    distinct=True,
+                ),
+                swiped_employee_count=Subquery(
+                    swiped_subquery,
+                    output_field=IntegerField(),
+                ),
             )
         )
 
@@ -63,7 +76,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
             # Employees who have attendance today
             attendance_subquery = (
                 Attendance.objects
-                .filter(employee__department=OuterRef("pk"), date=today)
+                .filter(employee__department=OuterRef("pk"),employee__is_deleted=False, date=today)
                 .values("employee__department")
                 .annotate(c=Count("employee", distinct=True))
                 .values("c")[:1]
@@ -72,7 +85,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
             # Employees with pending leave requests
             leave_subquery = (
                 LeaveRequest.objects
-                .filter(employee__department=OuterRef("pk"), status="pending")
+                .filter(employee__department=OuterRef("pk"),employee__is_deleted=False, status="pending")
                 .values("employee__department")
                 .annotate(c=Count("id"))
                 .values("c")[:1]
@@ -82,7 +95,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
             todays_leave_subquery = (
                 LeaveRequest.objects
                 .filter(
-                    employee__department=OuterRef("pk"),
+                    employee__department=OuterRef("pk"),employee__is_deleted=False,
                     status="approved",
                     from_date__lte=today,
                     to_date__gte=today
@@ -95,7 +108,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
             #  Reimbursements on hold
             reimbursement_subquery = (
                 Reimbursement.objects
-                .filter(employee__department=OuterRef("pk"), status="On Hold")
+                .filter(employee__department=OuterRef("pk"),employee__is_deleted=False, status="On Hold")
                 .values("employee__department")
                 .annotate(c=Count("id"))
                 .values("c")[:1]
@@ -105,7 +118,7 @@ class DepartmentCreateListView(generics.ListCreateAPIView):
                 Department.objects
                 .filter(company=self.request.user.company)
                 .annotate(
-                    employee_count=Count("employees", distinct=True),
+                    employee_count=Count("employees",filter=Q(employees__is_deleted=False), distinct=True),
                     attendance_employee_count=Subquery(attendance_subquery, output_field=IntegerField()),
                     leave_request_count=Subquery(leave_subquery, output_field=IntegerField()),
                     reimbursement_request_count=Subquery(reimbursement_subquery, output_field=IntegerField()),
