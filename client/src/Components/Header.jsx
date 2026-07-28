@@ -16,6 +16,8 @@ import {
   InfoRow,
   BackArrowWrapper,
   UserIconWrapper,
+  OutlinedField,
+  OutlinedLabel,
 } from "./Header.Styles";
 
 const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBack }) => {
@@ -34,16 +36,16 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
     }
   };
 
-const formatDate = (date) => {
-  if (!date) return "-";
+  const formatDate = (date) => {
+    if (!date) return "-";
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
 
-  return `${day}/${month}/${year}`;
-};
+    return `${day}/${month}/${year}`;
+  };
   return (
     <ProfileContainer>
       <ProfileCard>
@@ -86,64 +88,75 @@ const formatDate = (date) => {
         </ProfileImageWrapper>
         <ContentArea>
           <LeftColumn>
-            <InputBox
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={employee.name || ""}
-              readOnly={!editable}
-              onChange={onChange}
-              autoComplete="off"
-            />
-            <InputBox
-              type="text"
-              name="employee_code"
-              placeholder="Employee Code"
-              value={employee.employee_code || ""}
-              readOnly={!editable}
-              onChange={onChange}
-              autoComplete="off"
-            />
-            <InputBox
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={employee.email || ""}
-              readOnly={!editable}
-              onChange={onChange}
-              autoComplete="off"
-            />
-            
+            <OutlinedField>
+              <OutlinedLabel>Full Name</OutlinedLabel>
+              <InputBox
+                type="text"
+                name="name"
+                value={employee.name || ""}
+                readOnly={!editable}
+                onChange={onChange}
+                autoComplete="off"
+              />
+            </OutlinedField>
+            <OutlinedField>
+              <OutlinedLabel>Employee Code</OutlinedLabel>
+              <InputBox
+                type="text"
+                name="employee_code"
+                value={employee.employee_code || ""}
+                readOnly={!editable}
+                onChange={onChange}
+              />
+            </OutlinedField>
+            <OutlinedField>
+              <OutlinedLabel>Email</OutlinedLabel>
+              <InputBox
+                type="email"
+                name="email"
+                value={employee.email || ""}
+                readOnly={!editable}
+                onChange={onChange}
+              />
+            </OutlinedField>
+
           </LeftColumn>
 
           <RightColumn>
-            <BioBox
-              name="address"
-              placeholder="Address"
-              value={employee.address || ""}
-              readOnly={!editable}
-              onChange={onChange}
-              autoComplete="off"
-            />
+            <OutlinedField>
+              <OutlinedLabel>Address</OutlinedLabel>
+              <BioBox
+                name="address"
+                value={employee.address || ""}
+                readOnly={!editable}
+                onChange={onChange}
+              />
+            </OutlinedField>
             <InfoRow>
-              <InputBox
-                type="text"
-                name="dob"
-                placeholder="Date of Birth"
-     value={formatDate(employee.dob)}
-                readOnly={!editable}
-                onChange={onChange}
-                autoComplete="off"
-              />
-              <InputBox
-                type="text"
-                name="gender"
-                placeholder="Gender"
-                value={employee.gender || ""}
-                readOnly={!editable}
-                onChange={onChange}
-                autoComplete="off"
-              />
+              <OutlinedField>
+                <OutlinedLabel>Date of Birth</OutlinedLabel>
+                <InputBox
+                  type={editable ? "date" : "text"}
+                  name="dob"
+                  value={
+                    editable
+                      ? (employee.dob ? employee.dob.split("T")[0] : "")
+                      : formatDate(employee.dob)
+                  }
+                  readOnly={!editable}
+                  onChange={onChange}
+                />
+              </OutlinedField>
+              <OutlinedField>
+                <OutlinedLabel>Gender</OutlinedLabel>
+                <InputBox
+                  type="text"
+                  name="gender"
+                  value={employee.gender || ""}
+                  readOnly={!editable}
+                  onChange={onChange}
+                />
+              </OutlinedField>
             </InfoRow>
           </RightColumn>
         </ContentArea>

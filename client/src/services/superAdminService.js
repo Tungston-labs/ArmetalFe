@@ -51,6 +51,13 @@ export const fetchCompanyOverview = async () => {
   return response.data;
 };
 
+export const updateCompanyStatus = async (companyId, action) => {
+  const response = await API.post("/subscription/company-status/", {
+    company_id: companyId,
+    action,
+  });
 
+  return response.data;
+};
 
   

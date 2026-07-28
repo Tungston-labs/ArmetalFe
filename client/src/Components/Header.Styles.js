@@ -183,115 +183,115 @@ export const RightColumn = styled.div`
   }
 `;
 
-export const InputBox = styled.input`
-  padding: 10px 12px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
- color: #111111ff;
-  &:focus {
-    outline: none;
-    border-color: #1034ad;
-    box-shadow: 0 0 0 2px rgba(16, 52, 173, 0.2);
-  }
+// export const InputBox = styled.input`
+//   padding: 10px 12px;
+//   border-radius: 4px;
+//   border: 1px solid #ccc;
+//   font-size: 1rem;
+//  color: #111111ff;
+//   &:focus {
+//     outline: none;
+//     border-color: #1034ad;
+//     box-shadow: 0 0 0 2px rgba(16, 52, 173, 0.2);
+//   }
 
-  /* 📱 Mobile (0–480px) */
-  @media (max-width: 480px) {
-    font-size: 0.85rem;
-    padding: 8px 10px;
-  }
+//   /* 📱 Mobile (0–480px) */
+//   @media (max-width: 480px) {
+//     font-size: 0.85rem;
+//     padding: 8px 10px;
+//   }
 
-  /* 📱 Tablet Portrait (481–768px) */
-  @media (max-width: 768px) and (min-width: 481px) {
-    font-size: 0.9rem;
-    padding: 9px 10px;
-  }
+//   /* 📱 Tablet Portrait (481–768px) */
+//   @media (max-width: 768px) and (min-width: 481px) {
+//     font-size: 0.9rem;
+//     padding: 9px 10px;
+//   }
 
-  /* 💻 Small Laptops (769–1024px) */
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 0.95rem;
-    padding: 10px 12px;
-  }
-  @media (min-width: 1025px) {
-    font-size: 0.9rem;
-    padding: 10px 12px;
-  }
-  /* 🖥 Full HD (1920px) */
-  @media (min-width: 1920px) {
-    font-size: 1rem;
-    padding: 12px 14px;
-  }
+//   /* 💻 Small Laptops (769–1024px) */
+//   @media (min-width: 769px) and (max-width: 1024px) {
+//     font-size: 0.95rem;
+//     padding: 10px 12px;
+//   }
+//   @media (min-width: 1025px) {
+//     font-size: 0.9rem;
+//     padding: 10px 12px;
+//   }
+//   /* 🖥 Full HD (1920px) */
+//   @media (min-width: 1920px) {
+//     font-size: 1rem;
+//     padding: 12px 14px;
+//   }
 
-  /* 🖥 2K (2560px) */
-  @media (min-width: 2560px) {
-    font-size: 1.25rem;
-    padding: 14px 18px;
-  }
+//   /* 🖥 2K (2560px) */
+//   @media (min-width: 2560px) {
+//     font-size: 1.25rem;
+//     padding: 14px 18px;
+//   }
 
-  /* 🖥 4K (3840px) */
-  @media (min-width: 3840px) {
-    font-size: 1.5rem;
-    padding: 16px 20px;
-    border-radius: 10px;
-  }
-`;
-
-
-export const BioBox = styled.textarea`
-  padding: 10px 12px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  min-height: 90px;
-  resize: vertical;
-  font-size: 1rem;
-  color: #111111ff;
-  &:focus {
-    outline: none;
-    border-color: #1034ad;
-    box-shadow: 0 0 0 2px rgba(16, 52, 173, 0.2);
-  }
+//   /* 🖥 4K (3840px) */
+//   @media (min-width: 3840px) {
+//     font-size: 1.5rem;
+//     padding: 16px 20px;
+//     border-radius: 10px;
+//   }
+// `;
 
 
+// export const BioBox = styled.textarea`
+//   padding: 10px 12px;
+//   border-radius: 4px;
+//   border: 1px solid #ccc;
+//   min-height: 90px;
+//   resize: vertical;
+//   font-size: 1rem;
+//   color: #111111ff;
+//   &:focus {
+//     outline: none;
+//     border-color: #1034ad;
+//     box-shadow: 0 0 0 2px rgba(16, 52, 173, 0.2);
+//   }
 
-  /* 📱 Tablet Portrait (481–768px) */
-  @media (min-width: 481px) and (max-width: 768px) {
-    font-size: 0.9rem;
-    padding: 9px 10px;
-    min-height: 75px;
-  }
 
-  /* 💻 Small Laptops (769–1024px) */
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 0.95rem;
-    padding: 10px 12px;
-    min-height: 85px;
-  }
-  @media (min-width: 1025px) {
-    font-size: 0.9rem;
-    padding: 10px 12px;
-  }
-  /* 🖥 Full HD (1920px) */
-  @media (min-width: 1920px) {
-    font-size: 1.1rem;
-    padding: 12px 14px;
-    min-height: 110px;
-  }
 
-  /* 🖥 2K (2560px) */
-  @media (min-width: 2560px) {
-    font-size: 1.25rem;
-    padding: 14px 18px;
-    min-height: 120px;
-  }
+//   /* 📱 Tablet Portrait (481–768px) */
+//   @media (min-width: 481px) and (max-width: 768px) {
+//     font-size: 0.9rem;
+//     padding: 9px 10px;
+//     min-height: 75px;
+//   }
 
-  /* 🖥 4K (3840px) */
-  @media (min-width: 3840px) {
-    font-size: 1.4rem;
-    padding: 16px 20px;
-    border-radius: 10px;
-    min-height: 150px;
-  }
-`;
+//   /* 💻 Small Laptops (769–1024px) */
+//   @media (min-width: 769px) and (max-width: 1024px) {
+//     font-size: 0.95rem;
+//     padding: 10px 12px;
+//     min-height: 85px;
+//   }
+//   @media (min-width: 1025px) {
+//     font-size: 0.9rem;
+//     padding: 10px 12px;
+//   }
+//   /* 🖥 Full HD (1920px) */
+//   @media (min-width: 1920px) {
+//     font-size: 1.1rem;
+//     padding: 12px 14px;
+//     min-height: 110px;
+//   }
+
+//   /* 🖥 2K (2560px) */
+//   @media (min-width: 2560px) {
+//     font-size: 1.25rem;
+//     padding: 14px 18px;
+//     min-height: 120px;
+//   }
+
+//   /* 🖥 4K (3840px) */
+//   @media (min-width: 3840px) {
+//     font-size: 1.4rem;
+//     padding: 16px 20px;
+//     border-radius: 10px;
+//     min-height: 150px;
+//   }
+// `;
 
 export const InfoRow = styled.div`
   display: flex;
@@ -300,5 +300,57 @@ export const InfoRow = styled.div`
   @media (max-width: 1250px) {
     flex-direction: column;
     gap: 8px;
+  }
+`;
+export const OutlinedField = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const OutlinedLabel = styled.label`
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  background: #fff;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  z-index: 1;
+`;
+
+export const InputBox = styled.input`
+  width: 100%;
+  padding: 14px 12px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: #111;
+  background: #fff;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #1034ad;
+    box-shadow: 0 0 0 2px rgba(16, 52, 173, 0.15);
+  }
+`;
+
+export const BioBox = styled.textarea`
+  width: 100%;
+  padding: 16px 12px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-height: 95px;
+  resize: vertical;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #111;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #1034ad;
+    box-shadow: 0 0 0 2px rgba(16, 52, 173, 0.15);
   }
 `;

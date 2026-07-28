@@ -33,8 +33,6 @@ import EmployeeTitle from "../../Components/EmployeeTitle";
 import RightSideModal from "../employeDashboard/RightSideModal";
 import Pagination from "../../Components/Pagination/Pagination";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
-// import { exportEmployeeReport } from "../../utils/employeelistReport";
-// import { exportEmployeePDF } from "../report/EmployeelistReport";
 import { fetchUnpaginatedEmployees } from "../../services/employeeService";
 
 const EmployeeList = () => {

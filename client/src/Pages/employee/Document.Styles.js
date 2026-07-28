@@ -121,9 +121,25 @@ margin-bottom: 0.8rem;
 background: white;
 color: #999999;
 padding: 0.4rem;  
+display: flex;
+align-items: center;
+flex-wrap: wrap;
+gap: 0.6rem;
 
   @media (min-width: 1440px) { font-size: 1rem; padding: 0.6rem; }
   @media (min-width: 1960px) { font-size: 1rem; padding: 0.6rem; }
+`;
+
+export const SizeHint = styled.span`
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #9ca3af;
+
+  &::before {
+    content: "•";
+    margin-right: 0.6rem;
+    color: #d1d5db;
+  }
 `;
 
 export const UploadButton = styled.button`

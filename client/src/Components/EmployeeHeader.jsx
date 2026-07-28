@@ -3,10 +3,16 @@ import {
   Container,
   ProfileWrapper,
   UploadWrapper,
+  AvatarShell,
   ProfileLabel,
+  AvatarCircle,
   ProfileImage,
   IconWrapper,
+  HoverOverlay,
+  CameraBadge,
+  RemoveBadge,
   HiddenFileInput,
+  HelperText,
   InfoWrapper,
   LeftColumn,
   RightColumn,
@@ -17,78 +23,83 @@ import {
   Select,
   ErrorText,
 } from "./EmployeeHeader.Styles";
-import { PiUserCirclePlusThin } from "react-icons/pi";
+import { PiUserCirclePlusThin, PiCameraThin } from "react-icons/pi";
+import { AiOutlineClose } from "react-icons/ai";
 
-const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors ,setErrors}) => {
-  const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErrors }) => {
+  const MAX_SIZE = 5 * 1024 * 1024;
 
-const handleChange = (e) => {
-  const { name, value, files, type } = e.target;
+  const handleChange = (e) => {
+    const { name, value, files, type } = e.target;
 
-  if (type === "file") {
-    const file = files?.[0];
+    if (type === "file") {
+      const file = files?.[0];
+      if (!file) return;
 
-    if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        setErrors((prev) => ({ ...prev, [name]: "Please upload a valid image." }));
+        return;
+      }
 
-    // Allow only images
-    if (!file.type.startsWith("image/")) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "Please upload a valid image.",
-      }));
-      return;
+      if (file.size > MAX_SIZE) {
+        setErrors((prev) => ({ ...prev, [name]: "Image size must be less than 5 MB." }));
+        return;
+      }
+
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+      setFormData((prev) => ({ ...prev, [name]: file }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
 
-    // Maximum size
-    if (file.size > MAX_SIZE) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "Image size must be less than 5 MB.",
-      }));
-      return;
-    }
+    setIsFormDirty(true);
+  };
 
-    // Clear previous error
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: file,
-    }));
-  } else {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
-
-  setIsFormDirty(true);
-};
+  const removeProfilePic = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFormData((prev) => ({ ...prev, profile_pic: null }));
+    setErrors((prev) => ({ ...prev, profile_pic: "" }));
+    setIsFormDirty(true);
+  };
 
   return (
     <Container>
       {/* Profile on Top */}
       <ProfileWrapper>
         <UploadWrapper>
-          <ProfileLabel htmlFor="profile-upload">
-            {formData.profile_pic ? (
-              <ProfileImage
-                src={URL.createObjectURL(formData.profile_pic)}
-                alt="Profile"
-              />
-            ) : (
-              <IconWrapper>
-                <PiUserCirclePlusThin size={80} />
-              </IconWrapper>
-            )}
+          <AvatarShell>
+            <ProfileLabel htmlFor="profile-upload">
+              <AvatarCircle>
+                {formData.profile_pic ? (
+                  <ProfileImage
+                    src={URL.createObjectURL(formData.profile_pic)}
+                    alt="Profile"
+                  />
+                ) : (
+                  <IconWrapper>
+                    <PiUserCirclePlusThin size={80} />
+                  </IconWrapper>
+                )}
 
-  {errors?.profile_pic && (
-    <ErrorText>{errors.profile_pic}</ErrorText>
-  )}
-          </ProfileLabel>
+                <HoverOverlay>
+                  <PiCameraThin size={20} />
+                  <span>{formData.profile_pic ? "Change" : "Upload"}</span>
+                </HoverOverlay>
+              </AvatarCircle>
+            </ProfileLabel>
+
+            <CameraBadge onClick={() => document.getElementById("profile-upload").click()}>
+              <PiCameraThin size={16} />
+            </CameraBadge>
+
+            {formData.profile_pic && (
+              <RemoveBadge type="button" onClick={removeProfilePic} title="Remove photo">
+                <AiOutlineClose size={12} />
+              </RemoveBadge>
+            )}
+          </AvatarShell>
+
           <HiddenFileInput
             id="profile-upload"
             type="file"
@@ -96,6 +107,9 @@ const handleChange = (e) => {
             name="profile_pic"
             onChange={handleChange}
           />
+
+          <HelperText>JPG, PNG · Max 5 MB</HelperText>
+          {errors?.profile_pic && <ErrorText>{errors.profile_pic}</ErrorText>}
         </UploadWrapper>
       </ProfileWrapper>
 
@@ -117,23 +131,13 @@ const handleChange = (e) => {
 
           <FieldGroup>
             <FieldLabel>Date of Birth</FieldLabel>
-            <Input
-              type="date"
-              name="dob"
-              value={formData.dob}
-              onChange={handleChange}
-            />
+            <Input type="date" name="dob" value={formData.dob} onChange={handleChange} />
             {errors?.dob && <ErrorText>{errors.dob}</ErrorText>}
           </FieldGroup>
 
-
           <FieldGroup>
             <FieldLabel>Gender</FieldLabel>
-            <Select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-            >
+            <Select name="gender" value={formData.gender} onChange={handleChange}>
               <option value="">Select Gender</option>
               <option>Male</option>
               <option>Female</option>
@@ -141,6 +145,7 @@ const handleChange = (e) => {
             </Select>
             {errors?.gender && <ErrorText>{errors.gender}</ErrorText>}
           </FieldGroup>
+
           <FieldGroup>
             <FieldLabel>Address</FieldLabel>
             <TextArea
@@ -173,26 +178,26 @@ const handleChange = (e) => {
             <Input
               type="text"
               name="employee_code"
-              placeholder="Enter employee code "
+              placeholder="Enter employee code"
               value={formData.employee_code}
               onChange={handleChange}
               autoComplete="off"
             />
-            {errors?.employee_id && <ErrorText>{errors.employee_code}</ErrorText>}
+            {errors?.employee_code && <ErrorText>{errors.employee_code}</ErrorText>}
           </FieldGroup>
 
-         <FieldGroup>
-  <FieldLabel>Username</FieldLabel>
-  <Input
-    type="text"
-    name="employee_id"
-    placeholder="Enter email address"
-    value={formData.email}        
-    onChange={handleChange}
-    autoComplete="off"
-  />
-  {errors?.employee_id && <ErrorText>{errors.employee_id}</ErrorText>}
-</FieldGroup>
+          <FieldGroup>
+            <FieldLabel>Username</FieldLabel>
+            <Input
+              type="text"
+              name="employee_id"
+              placeholder="Enter email address"
+              value={formData.email}
+              onChange={handleChange}
+              autoComplete="off"
+            />
+            {errors?.employee_id && <ErrorText>{errors.employee_id}</ErrorText>}
+          </FieldGroup>
         </RightColumn>
       </InfoWrapper>
     </Container>

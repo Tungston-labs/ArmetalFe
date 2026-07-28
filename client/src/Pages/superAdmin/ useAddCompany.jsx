@@ -47,17 +47,42 @@ export const useAddCompany = ({
       const modulesChecked =
         allModules?.filter((mod) => selectedCompany.modules?.[mod]) || [];
 
-      const match =
-        selectedCompany.contact_number?.match(/^(\+\d{1,4})(\d{6,15})$/);
+    const phone = selectedCompany.contact_number || "";
 
+const countryCodes = [
+  "+971",
+  "+966",
+  "+965",
+  "+973",
+  "+968",
+  "+974",
+  "+91",
+  "+880",
+  "+92",
+];
+
+let countryCode = "+971";
+let contactNumber = phone;
+
+const matchedCode = countryCodes.find((code) =>
+  phone.startsWith(code)
+);
+
+if (matchedCode) {
+  countryCode = matchedCode;
+  contactNumber = phone.slice(matchedCode.length);
+}
+
+console.log(selectedCompany);
+console.log(selectedCompany);
       setFormData({
         name: selectedCompany.name ?? "",
         address: selectedCompany.address ?? "",
         email: selectedCompany.email ?? "",
         location: selectedCompany.location ?? "",
         country: selectedCompany.country ?? "",
-        country_code: match ? match[1] : "+971",
-        contact_number: match ? match[2] : "",
+       country_code: countryCode,
+contact_number: contactNumber,
         modules: modulesChecked,
         logo: null,
         latitude: selectedCompany.latitude ?? "",
@@ -178,6 +203,11 @@ const validate = () => {
     errs.email = "Enter a valid email address";
   }
 
+  // ── Location ──────────────────────────────────────────────
+  if (!formData.location?.trim()) {
+    errs.location = "Location is required";
+  }
+
   // ── Amount per Employee ───────────────────────────────────
   if (formData.amount_per_employee === "" || formData.amount_per_employee === null || formData.amount_per_employee === undefined) {
     errs.amount_per_employee = "Amount per employee is required";
@@ -185,11 +215,12 @@ const validate = () => {
     errs.amount_per_employee = "Enter a valid amount greater than 0";
   }
 
-  // ── Initial Payment (optional, validate only if filled) ───
-  if (formData.initial_payment !== "" && formData.initial_payment !== null && formData.initial_payment !== undefined) {
-    if (isNaN(Number(formData.initial_payment)) || Number(formData.initial_payment) < 0) {
-      errs.initial_payment = "Advance amount must be 0 or greater";
-    }
+
+
+
+  // ── Logo (now required) ───────────────────────────────────
+  if (!formData.logo && !logoPreview) {
+    errs.logo = "Company logo is required";
   }
 
   // ── Contact Number ────────────────────────────────────────
@@ -213,16 +244,20 @@ const validate = () => {
     errs.country = "Please select a country";
   }
 
-  // ── Latitude (optional, validate if filled) ───────────────
-  if (formData.latitude !== "" && formData.latitude !== null && formData.latitude !== undefined) {
+  // ── Latitude (now required) ───────────────────────────────
+  if (formData.latitude === "" || formData.latitude === null || formData.latitude === undefined) {
+    errs.latitude = "Latitude is required";
+  } else {
     const lat = Number(formData.latitude);
     if (isNaN(lat) || lat < -90 || lat > 90) {
       errs.latitude = "Latitude must be between -90 and 90";
     }
   }
 
-  // ── Longitude (optional, validate if filled) ──────────────
-  if (formData.longitude !== "" && formData.longitude !== null && formData.longitude !== undefined) {
+  // ── Longitude (now required) ──────────────────────────────
+  if (formData.longitude === "" || formData.longitude === null || formData.longitude === undefined) {
+    errs.longitude = "Longitude is required";
+  } else {
     const lng = Number(formData.longitude);
     if (isNaN(lng) || lng < -180 || lng > 180) {
       errs.longitude = "Longitude must be between -180 and 180";
@@ -251,7 +286,6 @@ const validate = () => {
     }
   });
 
-  // Total must equal exactly 100
   const noSalaryFieldErrors = !errs.basic_salary_percent &&
     !errs.house_allowance_percent &&
     !errs.transport_allowance_percent &&
@@ -331,15 +365,26 @@ const validate = () => {
       }
 
       onClose?.();
-    } catch (err) {
-      Swal.fire(
-        "Error",
-        err?.message || "Something went wrong",
-        "error"
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+   } catch (err) {
+     console.log("ERROR:", err);
+  const data = err?.response?.data || err;
+
+  if (data?.email) {
+    setFormErrors((prev) => ({
+      ...prev,
+      email: "Email already exists",
+    }));
+    return;
+  }
+
+  Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: "Something went wrong.",
+  });
+} finally {
+  setIsSubmitting(false);
+}
   };
 
   return {

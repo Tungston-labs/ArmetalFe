@@ -94,7 +94,7 @@ const FieldShift = () => {
     navigate(`/project/${employeeId}`, { state: { employeeId } });
   };
 
-  const handleDelete = () => {
+const handleDelete = () => {
     Swal.fire({
       title: "Are you sure?",
       text: "This will permanently delete the project!",
@@ -115,6 +115,7 @@ const FieldShift = () => {
             showConfirmButton: false,
           });
           setIsDeleted(true);
+          navigate("/project");
         } catch (err) {
           Swal.fire({
             title: "Error!",

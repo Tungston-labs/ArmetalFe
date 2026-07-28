@@ -20,14 +20,14 @@ import {
   SearchWrapper,
 } from "./SuperAdmin.Styles";
 import Loader from "../../Components/Loader"
-import { LuArrowLeft } from "react-icons/lu";
+import { MdOutlineEmail } from "react-icons/md";
 import { FaTrashAlt, FaPlus } from "react-icons/fa";
 import { TbPencilMinus } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompanies, removeCompany } from "../../Redux/superAdminSlice";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-
+import EmailComposeModal from "../../Components/superadmin/EmailCompose/EmailCompose";
 const CompanyTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const CompanyTable = () => {
   const [showCompanyModal, setShowCompanyModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
-
+  const [showEmailModal, setShowEmailModal] = useState(false);
   useEffect(() => {
     dispatch(getCompanies({ page, search: search.trim() }));
   }, [dispatch, page, search]);
@@ -81,10 +81,13 @@ const CompanyTable = () => {
     setSelectedCompany(company);
     setShowCompanyModal(true);
   };
-
+  const handleSendEmail = (company) => {
+    setSelectedCompany(company);
+    setShowEmailModal(true);
+  };
   return (
     <Container>
-        {loading && <Loader />}
+      {loading && <Loader />}
       <HeaderSection>
         <TitleSection>
           {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
@@ -128,10 +131,12 @@ const CompanyTable = () => {
               <Th>Company ID</Th>
               <Th>Contact details</Th>
               <Th>No of Employees</Th>
+              <Th>Email</Th>
               <Th>Info</Th>
               <Th>Edit</Th>
               <Th>Delete</Th>
-               
+
+
             </tr>
           </thead>
           <tbody>
@@ -144,8 +149,12 @@ const CompanyTable = () => {
                   <Td>{item.company_id}</Td>
                   <Td>{item.contact_number}</Td>
                   <Td>{item.number_of_employees}</Td>
+                  <Td>
+                    <IconButton onClick={() => handleSendEmail(item)}>
+                      <MdOutlineEmail />
+                    </IconButton>
+                  </Td>
 
-                
                   <Td
                     onClick={() => navigate(`/superadmin/view/${item.id}`)}
                     style={{ cursor: "pointer" }}
@@ -305,6 +314,12 @@ const CompanyTable = () => {
           &rarr;
         </span>
       </Pagination>
+      {showEmailModal && (
+        <EmailComposeModal
+          company={selectedCompany}
+          onClose={() => setShowEmailModal(false)}
+        />
+      )}
     </Container>
   );
 };

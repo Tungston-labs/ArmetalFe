@@ -18,32 +18,129 @@ export const UploadWrapper = styled.div`
   align-items: center;
 `;
 
-export const ProfileLabel = styled.label`
-  cursor: pointer;
+/* ── New standard avatar upload design ───────────────────── */
+
+export const AvatarShell = styled.div`
+  position: relative;
+  width: 120px;
+  height: 120px;
 `;
 
-export const ProfileImage = styled.img`
+export const ProfileLabel = styled.label`
+  cursor: pointer;
+  display: block;
   width: 120px;
   height: 120px;
   border-radius: 50%;
+  position: relative;
+`;
+
+export const AvatarCircle = styled.div`
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f1f1f1;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 1px #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+`;
+
+export const ProfileImage = styled.img`
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  margin-bottom: 10px;
 `;
 
 export const IconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 120px;
-  height: 120px;
-  background: #F1F1F1;
+  width: 100%;
+  height: 100%;
+  color: #94a3b8;
+`;
+
+export const HoverOverlay = styled.div`
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
-  margin-bottom: 10px;
+  background: rgba(15, 23, 42, 0.55);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 0.7em;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+
+  ${AvatarCircle}:hover & {
+    opacity: 1;
+  }
+`;
+
+export const CameraBadge = styled.div`
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #3352ba;
+  border: 3px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background: #27419a;
+    transform: scale(1.05);
+  }
+`;
+
+export const RemoveBadge = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #dc2626;
+  }
 `;
 
 export const HiddenFileInput = styled.input`
   display: none;
 `;
+
+export const HelperText = styled.div`
+  margin-top: 10px;
+  font-size: 0.78em;
+  color: #64748b;
+  text-align: center;
+`;
+
+/* ── Rest unchanged ───────────────────────────────────────── */
 
 export const InfoWrapper = styled.div`
   display: flex;
@@ -73,7 +170,7 @@ export const FieldGroup = styled.div`
 export const FieldLabel = styled.label`
   margin-bottom: 6px;
   font-weight: 500;
-  color:#172554;
+  color: #172554;
 `;
 
 export const Input = styled.input`
@@ -82,10 +179,10 @@ export const Input = styled.input`
   border: 1px solid lightgray;
   font-size: 0.95em;
 
-   &:focus {
-    border-color: #3352BA;
+  &:focus {
+    border-color: #3352ba;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
   }
 `;
 
@@ -95,10 +192,10 @@ export const TextArea = styled.textarea`
   border: 1px solid lightgray;
   font-size: 0.95em;
   resize: vertical;
-   &:focus {
-    border-color: #3352BA;
+  &:focus {
+    border-color: #3352ba;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
   }
 `;
 
@@ -107,11 +204,11 @@ export const Select = styled.select`
   border-radius: 4px;
   border: 1px solid lightgray;
   font-size: 0.95em;
-  background:white;
-   &:focus {
-    border-color: #3352BA;
+  background: white;
+  &:focus {
+    border-color: #3352ba;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
   }
 `;
 
@@ -119,4 +216,5 @@ export const ErrorText = styled.div`
   color: red;
   font-size: 0.85em;
   margin-top: 4px;
+  text-align: left;
 `;

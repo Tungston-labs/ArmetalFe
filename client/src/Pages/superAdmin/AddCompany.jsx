@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   FormWrapper,
@@ -23,6 +22,8 @@ import {
   SalaryTableWrapper,
   SalaryTitle,
   SalaryWrapper,
+  SectionTitle,
+  ErrorText,
 } from "./AddCompany.Styles";
 import { GoArrowLeft } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
@@ -92,45 +93,47 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
       </BackHeader>
 
       <form onSubmit={handleSubmit}>
+        <SectionTitle>Company details</SectionTitle>
         <FormSection>
           <div>
             <FormField>
               <Label>Company Name</Label>
               <Input name="name" value={formData.name} onChange={handleChange} placeholder="Company name" autoComplete="off" />
-              {formErrors.name && <p style={{ color: "red" }}>{formErrors.name}</p>}
+              {formErrors.name && <ErrorText>{formErrors.name}</ErrorText>}
             </FormField>
 
             <FormField>
               <Label>Address</Label>
               <Input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" autoComplete="off" />
-              {formErrors.address && <p style={{ color: "red" }}>{formErrors.address}</p>}
+              {formErrors.address && <ErrorText>{formErrors.address}</ErrorText>}
             </FormField>
 
             <FormField>
               <Label>Email</Label>
               <Input name="email" value={formData.email} onChange={handleChange} placeholder="Company E-mail" autoComplete="off" />
-              {formErrors.email && <p style={{ color: "red" }}>{formErrors.email}</p>}
+              {formErrors.email && <ErrorText>{formErrors.email}</ErrorText>}
+              
             </FormField>
 
             <FormField>
               <Label>Amount per Employee (INR)</Label>
               <Input name="amount_per_employee" type="number" step="0.01" value={formData.amount_per_employee} onChange={handleChange} placeholder="Enter amount per employee" />
-              {formErrors.amount_per_employee && <p style={{ color: "red" }}>{formErrors.amount_per_employee}</p>}
+              {formErrors.amount_per_employee && <ErrorText>{formErrors.amount_per_employee}</ErrorText>}
             </FormField>
 
             <FormField>
-              <Label>Initial Payment (Advance )</Label>
+              <Label>Initial Payment (Advance)</Label>
               <Input name="initial_payment" type="number" step="0.01" value={formData.initial_payment} onChange={handleChange} placeholder="Enter advance amount (optional)" />
-              {formErrors.initial_payment && <p style={{ color: "red" }}>{formErrors.initial_payment}</p>}
+              {/* {formErrors.initial_payment && <ErrorText>{formErrors.initial_payment}</ErrorText>} */}
             </FormField>
 
             <FormField>
               <Label>Upload logo</Label>
               <LogoUploadBox onClick={() => fileInputRef.current?.click()}>
-                <FiUpload size={24} />
+                <FiUpload size={22} />
                 <p>
-                  Click to upload or Drag and Drop <br />
-                  Max 2 MB file size (PNG or SVG only)
+                  Click to upload or drag and drop <br />
+                  Max 2 MB · PNG or SVG only
                 </p>
                 <input type="file" accept=".png,.svg" ref={fileInputRef} onChange={handleLogoChange} style={{ display: "none" }} />
               </LogoUploadBox>
@@ -138,7 +141,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
               {logoPreview && (
                 <LogoPreview>
                   {formData.logo?.type === "image/svg+xml" ? (
-                    <object data={logoPreview} type="image/svg+xml" width="50" height="50" />
+                    <object data={logoPreview} type="image/svg+xml" width="52" height="52" />
                   ) : (
                     <img src={logoPreview} alt="Logo" />
                   )}
@@ -147,6 +150,7 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                   </button>
                 </LogoPreview>
               )}
+                {formErrors.logo && <ErrorText>{formErrors.logo}</ErrorText>}
             </FormField>
           </div>
 
@@ -154,24 +158,37 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
             <FormField>
               <Label>Company location</Label>
               <Input name="location" value={formData.location} onChange={handleChange} placeholder="Location" autoComplete="off" />
+                {formErrors.location && <ErrorText>{formErrors.location}</ErrorText>}
             </FormField>
 
             <FormField>
               <Label>Contact Number</Label>
               <div style={{ display: "flex", gap: "8px" }}>
-                <select name="country_code" value={formData.country_code} onChange={handleChange} autoComplete="off" style={{ width: "35%", padding: "8px" }}>
+                <Select
+                  name="country_code"
+                  value={formData.country_code}
+                  onChange={handleChange}
+                  autoComplete="off"
+                  style={{ width: "42%" }}
+                >
                   {countryDialCodes.map((item) => (
                     <option key={item.code} value={item.code}>
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </Select>
 
-               
-                <Input name="contact_number" inputMode="numeric" value={formData.contact_number} onChange={handleChange} placeholder="Phone number" style={{ width: "65%" }} autoComplete="off" />
-             
+                <Input
+                  name="contact_number"
+                  inputMode="numeric"
+                  value={formData.contact_number}
+                  onChange={handleChange}
+                  placeholder="Phone number"
+                  style={{ width: "58%" }}
+                  autoComplete="off"
+                />
               </div>
-              {formErrors.contact_number && <p style={{ color: "red" }}>{formErrors.contact_number}</p>}
+              {formErrors.contact_number && <ErrorText>{formErrors.contact_number}</ErrorText>}
             </FormField>
 
             <FormField>
@@ -184,29 +201,27 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                   </option>
                 ))}
               </Select>
-              {formErrors.country && <p style={{ color: "red" }}>{formErrors.country}</p>}
+              {formErrors.country && <ErrorText>{formErrors.country}</ErrorText>}
             </FormField>
 
             <FormField>
               <Label>Latitude</Label>
               <Input name="latitude" type="number" step="any" value={formData.latitude} onChange={handleChange} placeholder="Enter company latitude" autoComplete="off" />
-           {formErrors.latitude && <p style={{ color: "red" }}>{formErrors.latitude}</p>}
+              {formErrors.latitude && <ErrorText>{formErrors.latitude}</ErrorText>}
             </FormField>
 
             <FormField>
               <Label>Longitude</Label>
               <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter company longitude" autoComplete="off" />
-          {formErrors.longitude && <p style={{ color: "red" }}>{formErrors.longitude}</p>}
+              {formErrors.longitude && <ErrorText>{formErrors.longitude}</ErrorText>}
             </FormField>
-
-           
-
           </div>
         </FormSection>
 
         {showPrivileges && (
           <>
-            <h4>Privileges</h4>
+            <Hr />
+            <SectionTitle>Privileges</SectionTitle>
             <CheckboxGroup>
               {allModules.map((mod) => (
                 <CheckboxLabel key={mod}>
@@ -215,109 +230,111 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                 </CheckboxLabel>
               ))}
             </CheckboxGroup>
-            {formErrors.modules && <p style={{ color: "red" }}>{formErrors.modules}</p>}
-            <Hr />
+            {formErrors.modules && <ErrorText>{formErrors.modules}</ErrorText>}
           </>
         )}
+
+        <Hr />
+
         <SalaryWrapper>
-          <SalaryTitle>Salary Structure (%)</SalaryTitle>
+          <SalaryTitle>Salary structure (%)</SalaryTitle>
 
-  <SalaryTableWrapper>
-    <SalaryTable>
-      <TableHead>
-        <tr>
-          <Th>Basic %</Th>
-          <Th>House Allowance %</Th>
-          <Th>Transport %</Th>
-          <Th>Special %</Th>
-          <Th>Total %</Th>
-        </tr>
-      </TableHead>
+          <SalaryTableWrapper>
+            <SalaryTable>
+              <TableHead>
+                <tr>
+                  <Th>Basic %</Th>
+                  <Th>House Allowance %</Th>
+                  <Th>Transport %</Th>
+                  <Th>Special %</Th>
+                  <Th>Total %</Th>
+                </tr>
+              </TableHead>
 
-      <tbody>
-        <tr>
-          <Td>
-            <Input
-              type="number"
-              name="basic_salary_percent"
-              value={formData.basic_salary_percent}
-              onChange={handleChange}
-              placeholder="Basic"
-            />
-            {formErrors.basic_salary_percent && <p style={{ color: "red" }}>{formErrors.basic_salary_percent}</p>}
-          </Td>
+              <tbody>
+                <tr>
+                  <Td>
+                    <Input
+                      type="number"
+                      name="basic_salary_percent"
+                      value={formData.basic_salary_percent}
+                      onChange={handleChange}
+                      placeholder="Basic"
+                    />
+                    {formErrors.basic_salary_percent && <ErrorText>{formErrors.basic_salary_percent}</ErrorText>}
+                  </Td>
 
-          <Td>
-            <Input
-              type="number"
-              name="house_allowance_percent"
-              value={formData.house_allowance_percent}
-              onChange={handleChange}
-              placeholder="HRA"
-            />
-            {formErrors.house_allowance_percent && <p style={{ color: "red" }}>{formErrors.house_allowance_percent}</p>}
-          </Td>
+                  <Td>
+                    <Input
+                      type="number"
+                      name="house_allowance_percent"
+                      value={formData.house_allowance_percent}
+                      onChange={handleChange}
+                      placeholder="HRA"
+                    />
+                    {formErrors.house_allowance_percent && <ErrorText>{formErrors.house_allowance_percent}</ErrorText>}
+                  </Td>
 
-          <Td>
-            <Input
-              type="number"
-              name="transport_allowance_percent"
-              value={formData.transport_allowance_percent}
-              onChange={handleChange}
-              placeholder="Transport"
-            />
-            {formErrors.transport_allowance_percent && <p style={{ color: "red" }}>{formErrors.transport_allowance_percent}</p>}
-          </Td>
+                  <Td>
+                    <Input
+                      type="number"
+                      name="transport_allowance_percent"
+                      value={formData.transport_allowance_percent}
+                      onChange={handleChange}
+                      placeholder="Transport"
+                    />
+                    {formErrors.transport_allowance_percent && <ErrorText>{formErrors.transport_allowance_percent}</ErrorText>}
+                  </Td>
 
-          <Td>
-            <Input
-              type="number"
-              name="special_allowance_percent"
-              value={formData.special_allowance_percent}
-              onChange={handleChange}
-              placeholder="Special"
-            />
-{formErrors.special_allowance_percent && <p style={{ color: "red" }}>{formErrors.special_allowance_percent}</p>} 
-          </Td>
+                  <Td>
+                    <Input
+                      type="number"
+                      name="special_allowance_percent"
+                      value={formData.special_allowance_percent}
+                      onChange={handleChange}
+                      placeholder="Special"
+                    />
+                    {formErrors.special_allowance_percent && <ErrorText>{formErrors.special_allowance_percent}</ErrorText>}
+                  </Td>
 
-          <Td>
-            <TotalText isError={totalPercent !== 100}>
-              {totalPercent} %
-            </TotalText>
-          </Td>
-        </tr>
-      </tbody>
-    </SalaryTable>
-    {formErrors.salary && <p style={{ color: "red" }}>{formErrors.salary}</p>}
-  </SalaryTableWrapper>
+                  <Td>
+                    <TotalText isError={totalPercent !== 100}>
+                      {totalPercent} %
+                    </TotalText>
+                  </Td>
+                </tr>
+              </tbody>
+            </SalaryTable>
+            {formErrors.salary && <ErrorText>{formErrors.salary}</ErrorText>}
+          </SalaryTableWrapper>
 
-  {/* Working Hours Section */}
-  <FormSection style={{ marginTop: "20px" }}>
-    <FormField>
-      <Label>Working Hours Per Day</Label>
-      <Input
-        type="number"
-        name="working_hours_per_day"
-        value={formData.working_hours_per_day}
-        onChange={handleChange}
-        placeholder="e.g. 8"
-      />
-      {formErrors.working_hours_per_day && <p style={{ color: "red" }}>{formErrors.working_hours_per_day}</p>}
-    </FormField>
+          <FormSection style={{ marginTop: "20px", marginBottom: 0 }}>
+            <FormField>
+              <Label>Working Hours Per Day</Label>
+              <Input
+                type="number"
+                name="working_hours_per_day"
+                value={formData.working_hours_per_day}
+                onChange={handleChange}
+                placeholder="e.g. 8"
+              />
+              {formErrors.working_hours_per_day && <ErrorText>{formErrors.working_hours_per_day}</ErrorText>}
+            </FormField>
 
-    <FormField>
-      <Label>Half Day Hours</Label>
-      <Input
-        type="number"
-        name="half_day_hours"
-        value={formData.half_day_hours}
-        onChange={handleChange}
-        placeholder="e.g. 4"
-      />
-      {formErrors.half_day_hours && <p style={{ color: "red" }}>{formErrors.half_day_hours}</p>}
-    </FormField>
-  </FormSection>
-</SalaryWrapper>
+            <FormField>
+              <Label>Half Day Hours</Label>
+              <Input
+                type="number"
+                name="half_day_hours"
+                value={formData.half_day_hours}
+                onChange={handleChange}
+                placeholder="e.g. 4"
+              />
+              {formErrors.half_day_hours && <ErrorText>{formErrors.half_day_hours}</ErrorText>}
+            </FormField>
+          </FormSection>
+        </SalaryWrapper>
+
         <ButtonGroup>
           <Button type="button" cancel onClick={onClose}>
             Cancel

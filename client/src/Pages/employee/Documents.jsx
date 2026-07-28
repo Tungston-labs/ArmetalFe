@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
   Container, Header, RoleInfo, SectionTitle,
-  UploadSection, LabelRow, UploadButton, ImagePreviewRow,
+  UploadSection, LabelRow, SizeHint, UploadButton, ImagePreviewRow,
   ImageBox, ButtonGroup, Button, Title, Subtitle, Hr, InlineUploadRow
 } from './Document.Styles';
 import Multistep from '../../Components/Multistep';
@@ -188,6 +188,7 @@ const handleSubmit = async () => {
   <UploadSection key={key}>
     <LabelRow>
       {label}
+      <SizeHint>Max 1 MB per image</SizeHint>
       {uploadErrors[key] && (
         <span style={{ color: 'red', fontSize: '0.8rem', marginLeft: '1rem' }}>
           {uploadErrors[key]}

@@ -101,7 +101,7 @@ export default function AddEmployeeForm() {
     const requiredFields = [
       "name", "address", "email", "dob", "phno",
       "gender", "designation", "joining_date",
-      "department_id", "employment_type", "total_leave", "role",
+      "department_id", "employment_type", "total_leave", "role","employee_code"
     ];
 
     if (country !== "IN") {

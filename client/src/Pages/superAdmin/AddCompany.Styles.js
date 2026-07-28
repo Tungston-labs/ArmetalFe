@@ -1,8 +1,24 @@
 import styled from 'styled-components';
 
+/* ---------------------------------------------
+   Tokens (shared with SuperAdmin.Styles.js)
+--------------------------------------------- */
+const color = {
+  bg: "#F7F8FB",
+  surface: "#FFFFFF",
+  border: "#E6E8EF",
+  text: "#1B1F2A",
+  textMuted: "#6B7280",
+  primary: "#3352BA",
+  primaryDark: "#242F73",
+  primarySoft: "#EEF1FB",
+  danger: "#D8452F",
+  dangerSoft: "#FBEAE7",
+};
+
 export const Container = styled.div`
-  font-family: 'Segoe UI', sans-serif;
-  background-color: white;
+  font-family: "Raleway", "Segoe UI", sans-serif;
+  background-color: ${color.surface};
   padding: 20px;
 `;
 
@@ -11,12 +27,11 @@ export const HRManager = styled.div`
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  background-color: #fff;
+  border: 1px solid ${color.border};
+  border-radius: 10px;
+  background-color: ${color.surface};
   font-size: 0.95rem;
-  color: #333;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  color: ${color.text};
 
   span {
     font-weight: 500;
@@ -29,15 +44,21 @@ export const HRManager = styled.div`
     object-fit: cover;
   }
 `;
+
 export const SearchInput = styled.input`
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid ${color.border};
+  font-size: 13.5px;
+
+  &:focus {
+    outline: none;
+    border-color: ${color.primary};
+    box-shadow: 0 0 0 3px ${color.primarySoft};
+  }
 `;
 
-
 export const Header = styled.div`
-  // display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
@@ -46,60 +67,372 @@ export const Header = styled.div`
 export const Title = styled.h2`
   font-size: 22px;
   margin: 0;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 700;
+  color: ${color.text};
 `;
 
 export const Subtitle = styled.p`
   font-size: 12px;
-  color: #666;
+  color: ${color.textMuted};
   margin: 0;
 `;
 
+/* ---------------------------------------------
+   Form shell
+--------------------------------------------- */
 export const FormWrapper = styled.div`
-  background: white;
-  /* padding: 30px; */
-  border-radius: 10px;
-  margin-top: 30px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  background: ${color.surface};
+  border-radius: 12px;
 `;
 
+export const BackHeader = styled.h3`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: "Satoshi", sans-serif;
+  color: ${color.text};
+  margin: 0 0 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid ${color.border};
 
+  svg {
+    font-size: 20px;
+    color: ${color.textMuted};
+    border-radius: 6px;
+    transition: background 0.12s ease, color 0.12s ease;
+
+    &:hover {
+      background: ${color.primarySoft};
+      color: ${color.primary};
+    }
+  }
+`;
+
+export const SectionTitle = styled.h4`
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: ${color.textMuted};
+  margin: 0 0 16px;
+`;
+
+export const Hr = styled.hr`
+  border: none;
+  border-top: 1px solid ${color.border};
+  margin: 24px 0;
+`;
+
+/* ---------------------------------------------
+   Fields
+--------------------------------------------- */
+export const FormSection = styled.div`
+  display: flex;
+  gap: 40px;
+  margin-bottom: 8px;
+
+  > div {
+    width: 50%;
+    flex: 1;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0;
+  }
+`;
+
+export const FormField = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+`;
+
+export const Label = styled.label`
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  color: ${color.textMuted};
+  font-weight: 600;
+  font-family: "Satoshi", sans-serif;
+`;
+
+export const Input = styled.input`
+  padding: 10px 12px;
+  border: 1px solid ${color.border};
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: ${color.text};
+  background: ${color.surface};
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder {
+    color: #9CA3AF;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${color.primary};
+    box-shadow: 0 0 0 3px ${color.primarySoft};
+  }
+`;
+
+export const Select = styled.select`
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid ${color.border};
+  font-size: 13.5px;
+  color: ${color.text};
+  background: ${color.surface};
+
+  &:focus {
+    outline: none;
+    border-color: ${color.primary};
+    box-shadow: 0 0 0 3px ${color.primarySoft};
+  }
+`;
+
+export const ErrorText = styled.p`
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: ${color.danger};
+`;
+
+/* ---------------------------------------------
+   Privileges
+--------------------------------------------- */
 export const CheckboxGroup = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 `;
 
 export const CheckboxLabel = styled.label`
   display: flex;
   align-items: center;
-  font-size: 14px;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: ${color.text};
+  padding: 8px 14px;
+  border: 1px solid ${color.border};
+  border-radius: 20px;
+  background: ${color.surface};
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+
+  &:has(input:checked) {
+    border-color: ${color.primary};
+    background: ${color.primarySoft};
+    color: ${color.primaryDark};
+  }
 
   input {
-    margin-right: 8px;
+    accent-color: ${color.primary};
+    margin: 0;
   }
 `;
 
+/* ---------------------------------------------
+   Logo upload
+--------------------------------------------- */
+export const LogoUploadBox = styled.div`
+  border: 1.5px dashed ${color.border};
+  background-color: ${color.bg};
+  padding: 14px;
+  text-align: center;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  color: ${color.textMuted};
+  font-size: 12.5px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  svg {
+    color: ${color.primary};
+  }
+
+  p {
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  &:hover {
+    border-color: ${color.primary};
+    background-color: ${color.primarySoft};
+  }
+`;
+
+export const LogoPreview = styled.div`
+  position: relative;
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 16px;
+
+  img,
+  object {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid ${color.border};
+    background: ${color.surface};
+    padding: 4px;
+    display: block;
+  }
+
+  button {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    background: ${color.danger};
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    padding: 0;
+
+    &:hover {
+      opacity: 0.9;
+    }
+
+    svg {
+      font-size: 11px;
+    }
+  }
+`;
+
+/* ---------------------------------------------
+   Salary table
+--------------------------------------------- */
+export const SalaryWrapper = styled.div`
+  margin-top: 8px;
+`;
+
+export const SalaryTitle = styled.h4`
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: ${color.textMuted};
+`;
+
+export const SalaryTableWrapper = styled.div`
+  overflow-x: auto;
+  border: 1px solid ${color.border};
+  border-radius: 10px;
+`;
+
+export const SalaryTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  background: ${color.surface};
+`;
+
+export const TableHead = styled.thead`
+  background: ${color.bg};
+`;
+
+export const Th = styled.th`
+  padding: 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: left;
+  color: ${color.textMuted};
+  border-bottom: 1px solid ${color.border};
+`;
+
+export const Td = styled.td`
+  padding: 10px 12px;
+  border-bottom: 1px solid ${color.border};
+
+  tr:last-child & {
+    border-bottom: none;
+  }
+`;
+
+export const TotalText = styled.span`
+  font-weight: 700;
+  color: ${({ isError }) => (isError ? color.danger : color.text)};
+`;
+
+/* ---------------------------------------------
+   Toggle (freeze/unfreeze style switch, if used here)
+--------------------------------------------- */
+export const ToggleWrapper = styled.div`
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const ToggleLabel = styled.label`
+  font-size: 13.5px;
+  font-weight: 600;
+  color: ${color.text};
+`;
+
+export const ToggleInput = styled.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: ${color.primary};
+`;
+
+/* ---------------------------------------------
+   Actions
+--------------------------------------------- */
 export const ButtonGroup = styled.div`
   display: flex;
   gap: 10px;
   justify-content: flex-end;
   flex-wrap: wrap;
-  margin-top: 1rem;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid ${color.border};
 `;
 
 export const Button = styled.button`
-  padding: 10px 25px;
-  border: none;
-  border: 2px solid ${props => (props.cancel ? '#FF2304' : '#0c236dff')}; /* border added */
-  border-radius: 6px;
-  font-weight: 500;
-  color: #fff;
+  padding: 10px 22px;
+  border: 1px solid
+    ${(props) => (props.cancel ? color.border : color.primary)};
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
   cursor: pointer;
-  background-color: ${props => props.cancel ? '#FF230480' : '#3450adff'};
+  color: ${(props) => (props.cancel ? color.textMuted : "white")};
+  background-color: ${(props) =>
+    props.cancel ? color.surface : color.primary};
+  transition: background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
 
-  &:hover {
-    opacity: 0.9;
+  &:hover:not(:disabled) {
+    background-color: ${(props) =>
+      props.cancel ? color.bg : color.primaryDark};
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
   }
 `;
 
@@ -111,192 +444,17 @@ export const TopBar = styled.div`
   margin-bottom: 30px;
 `;
 
-
 export const TitleSection = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
 
   img {
-    height: 51px;
+    height: 44px;
   }
 
   div {
     display: flex;
     flex-direction: column;
   }
-`;
-export const BackHeader = styled.h3`
-  display: flex;
-  /* align-items: center; */
-  gap: 8px; 
-  font-size: 20px;
-  font-weight: 600;
-
-  svg {
-    font-size: 22px;
-  }
-`;
-export const Hr = styled.hr`
-  border: none;
-  border-top: 1px solid #ccc;
-
-`;
-
-export const FormField = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-`;
-
-export const Label = styled.label`
-  margin-bottom: 6px;
-  font-size: 14px;
-  color: #333;
-  font-weight: 500;
-  font-family: "Satoshi";
-font-weight: 400;
-line-height: 100%;
-letter-spacing: 0%;
-
-`;
- 
-
-export const Input = styled.input`
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  // width: 100%;
-`;
-
-export const Select = styled.select`
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-`;
-export const FormSection = styled.div`
-  display: flex;
-  gap: 40px;
-  margin-bottom: 30px;
-
-  > div {
-    width: 50%;
-    flex:1;
-  }
-`;
-
-
-export const LogoUploadBox = styled.div`
-  border: 2px dashed #a1a1a1;
-  background-color: #f5f8fd;
-  padding: 10px;
-  text-align: center;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  // margin-top: -35px;
-  color: #666;
-  font-size: 13px;
-  cursor: pointer;
-  width:300px;
-  height:100px;
-
-  p {
-    margin-top: 8px;
-    line-height: 1.4;
-  }
-
-  &:hover {
-    background-color: #eef3fb;
-  }
-`;
-
-export const LogoPreview = styled.div`
-  position: relative;
-  display: inline-block;
-  margin-bottom: 20px;
-
-  img {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-    border-radius: 4px;
-    background: #f2f2f2;
-  }
-
-  button {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    padding: 2px 5px;
-    font-size: 10px;
-    color: red;
-    cursor: pointer;
-    line-height: 1;
-  }
-`;
-export const SalaryWrapper = styled.div`
-  margin-top: 24px;
-`;
-
-export const SalaryTitle = styled.h4`
-  margin-bottom: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #2c3e50;
-`;
-
-export const SalaryTableWrapper = styled.div`
-  overflow-x: auto;
-`;
-
-export const SalaryTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  background: #ffffff;
-  border-radius: 10px;
-  overflow: hidden;
-`;
-
-export const TableHead = styled.thead`
-  background: #f4f7fc;
-`;
-
-export const Th = styled.th`
-  padding: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: left;
-  border: 1px solid #e5e7eb;
-`;
-
-export const Td = styled.td`
-  padding: 10px;
-  border: 1px solid #e5e7eb;
-`;
-
-export const TotalText = styled.span`
-  font-weight: 600;
-  color: ${({ isError }) => (isError ? "#e74c3c" : "#2c3e50")};
-`;
-export const ToggleWrapper = styled.div`
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-export const ToggleLabel = styled.label`
-  font-size: 14px;
-  font-weight: 500;
-  color: #2c3e50;
-`;
-
-export const ToggleInput = styled.input`
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
 `;

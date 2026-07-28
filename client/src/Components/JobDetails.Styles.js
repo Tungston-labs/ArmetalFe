@@ -83,8 +83,8 @@ export const FileInput = styled.input`
 `;
 
 export const ErrorText = styled.div`
-  color: #ef4444;
-  font-size: 0.875rem;
+  color: red;
+ font-size: 0.85em;
   margin-top: 4px;
 `;
 export const ButtonWrapper = styled.div`

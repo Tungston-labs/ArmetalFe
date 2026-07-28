@@ -4,7 +4,8 @@ import {
   createCompany,
   fetchCompanyById,
   updateCompany,
-  deleteCompany,fetchCompanyOverview
+  deleteCompany,fetchCompanyOverview,
+    updateCompanyStatus
 } from '../services/superAdminService';
 
 // Async thunk for fetching paginated company list
@@ -18,9 +19,13 @@ export const getCompanies = createAsyncThunk(
 
 // Create company
 export const addCompany = createAsyncThunk(
-  'superAdmin/addCompany',
-  async (data) => {
-    return await createCompany(data);
+  "superAdmin/addCompany",
+  async (data, { rejectWithValue }) => {
+    try {
+      return await createCompany(data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
 
@@ -57,6 +62,23 @@ export const getCompanyOverview = createAsyncThunk(
   }
 );
 
+export const updateCompanyStatusThunk = createAsyncThunk(
+  "superAdmin/updateCompanyStatus",
+  async ({ companyId, action }, { rejectWithValue }) => {
+    try {
+      const response = await updateCompanyStatus(companyId, action);
+      return {
+        companyId,
+        action,
+        data: response,
+      };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || error.message
+      );
+    }
+  }
+);
 
 // Slice definition
 const superAdminSlice = createSlice({
@@ -141,8 +163,34 @@ const superAdminSlice = createSlice({
       .addCase(getCompanyOverview.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+            // Update Company Status
+      .addCase(updateCompanyStatusThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+    .addCase(updateCompanyStatusThunk.fulfilled, (state, action) => {
+  state.loading = false;
+
+  const isNowActive = action.payload.action !== "freeze"; // freeze -> inactive
+
+  if (state.selectedCompany) {
+    state.selectedCompany.is_active = isNowActive;
+  }
+
+  const index = state.companies.findIndex(
+    company => company.id === action.payload.companyId
+  );
+
+  if (index !== -1) {
+    state.companies[index].is_active = isNowActive;
+  }
+})
+      .addCase(updateCompanyStatusThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
       });
-      
   }
 });
 

@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCompanyById,
   clearSelectedCompany,
+    updateCompanyStatusThunk,
 } from "../../Redux/superAdminSlice";
 import { useParams, useNavigate } from "react-router-dom";
 import Plan from "../../Components/Plan";
@@ -43,9 +44,12 @@ const [isBlocked, setIsBlocked] = useState(false);
       dispatch(clearSelectedCompany());
     };
   }, [dispatch, id]);
-  useEffect(() => {
+ useEffect(() => {
   if (selectedCompany) {
-    setIsBlocked(selectedCompany.is_blocked);
+    console.log(selectedCompany);
+    console.log("is_active:", selectedCompany.is_active);
+
+    setIsBlocked(!selectedCompany.is_active);
   }
 }, [selectedCompany]);
 
@@ -62,7 +66,7 @@ const [isBlocked, setIsBlocked] = useState(false);
   <div className="left">
     <LuArrowLeft
       style={{ width: "30px", height: 30, cursor: "pointer" }}
-      onClick={() => navigate("/superadmin")}
+      onClick={() => navigate("/company")}
     />
 
     <img
@@ -88,7 +92,26 @@ const [isBlocked, setIsBlocked] = useState(false);
   <input
     type="checkbox"
     checked={isBlocked}
-    onChange={(e) => setIsBlocked(e.target.checked)}
+    onChange={async (e) => {
+  const checked = e.target.checked;
+  setIsBlocked(checked);
+
+  try {
+    const result = await dispatch(
+      updateCompanyStatusThunk({
+        companyId: selectedCompany.id,
+        action: checked ? "freeze" : "unfreeze",
+      })
+    ).unwrap();
+
+    console.log("✅ Thunk succeeded, result:", result); // <--- ADD THIS
+
+  } catch (error) {
+    setIsBlocked(!checked);
+    console.error("❌ Thunk failed:", error); // <--- you already log, but check what error actually is
+    alert("Failed to update company status");
+  }
+}}
   />
   <span className="slider"></span>
 </Switch>

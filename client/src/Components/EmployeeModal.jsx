@@ -83,7 +83,7 @@ const EmployeeModal = ({ onClose, projectId, project }) => {
     <ModalOverlay>
       <ModalContainer>
         <Header>
-          <span>← Add Employees to Project</span>
+          <span> Add Employees to Project</span>
         </Header>
         <SearchBar>
           <div className="input-wrapper">

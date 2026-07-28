@@ -240,15 +240,19 @@ const ViewBasic = () => {
                 />
               </FieldGroup>
 
-              <FieldGroup>
-                <Label>Joining Date</Label>
-                <Input
-                  name="joining_date"
-                  value={formatDate(formData.joining_date)}
-                  onChange={handleChange}
-                />
-              </FieldGroup>
-
+             <FieldGroup>
+  <Label>Joining Date</Label>
+  <Input
+    type="date"
+    name="joining_date"
+    value={
+      formData.joining_date
+        ? formData.joining_date.split("T")[0]
+        : ""
+    }
+    onChange={handleChange}
+  />
+</FieldGroup>
               <FieldGroup>
                 <Label>Employment Type</Label>
                 <Input

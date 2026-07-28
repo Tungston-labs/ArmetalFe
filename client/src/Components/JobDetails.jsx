@@ -155,7 +155,16 @@ const handleChange = (e) => {
     const newErrors = {};
     const now = new Date().toISOString().split("T")[0];
     const baseRequired = ["designation", "joining_date", "department_id", "employment_type", "total_leave", "phno", "email", "dob", "role",];
+  const totalLeave =
+    (Number(formData.casual_leave) || 0) +
+    (Number(formData.sick_leave) || 0) +
+    (Number(formData.earned_leave) || 0) +
+    (Number(formData.maternity_leave) || 0) +
+    (Number(formData.other_leave) || 0);
 
+  if (totalLeave === 0) {
+    newErrors.leave = "Please enter at least one leave.";
+  }
     if (country === "IN") baseRequired.push("aadar_number");
     else baseRequired.push("visa_expiry_date", "insurance_number", "iqama_number");
 
@@ -243,6 +252,7 @@ const ALLOWED_TYPES = [
     Total Leave : {formData.total_leave}
   </TotalLeaveBox>
 
+  {errors.leave && <ErrorText>{errors.leave}</ErrorText>}
   <LeaveItem>
     <LeaveLabel>Casual Leave</LeaveLabel>
     <LeaveInput
@@ -292,6 +302,7 @@ const ALLOWED_TYPES = [
       onChange={handleChange}
     />
   </LeaveItem>
+
 </FormGroup>
 
         <FormGroup>
