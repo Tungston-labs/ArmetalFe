@@ -53,6 +53,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "special_allowance_percent",
             "working_hours_per_day",
             "half_day_hours",
+            "is_active",
         ]
 
         read_only_fields = [
@@ -371,3 +372,10 @@ class CompanySubscriptionActionSerializer(serializers.Serializer):
             )
 
         return value
+    
+
+
+
+
+class SubscriptionReminderSerializer(serializers.Serializer):
+    company_id = serializers.IntegerField()

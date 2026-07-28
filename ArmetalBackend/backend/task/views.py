@@ -93,7 +93,10 @@ class EmployeeByDepartmentView(APIView):
         except Department.DoesNotExist:
             return Response({"detail": "Department not found."}, status=404)
 
-        employees = Employee_db.objects.filter(department=department)
+        employees = Employee_db.objects.filter(
+            department=department,
+            is_deleted=False
+        )
 
         # Pass request in context so profile_pic URLs are correct
         serializer = EmployeeMiniSerializer(employees, many=True, context={'request': request})
