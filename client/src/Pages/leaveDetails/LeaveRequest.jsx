@@ -306,7 +306,7 @@ const handleExportExcel = async () => {
                 filteredLeaves.map((leave, index) => (
                   <BodyRow
                     key={leave.id}
-                    onClick={() => navigate(`/leave-details/${leave.id}`)}
+                    onClick={() => navigate(`/employee-leave-details/${leave.id}`)}
                     style={{
                       cursor: "pointer",
                       transition: "background 0.2s ease",
