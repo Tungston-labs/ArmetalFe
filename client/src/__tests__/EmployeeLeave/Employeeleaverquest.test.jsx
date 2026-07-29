@@ -230,7 +230,7 @@ describe("LeaveRequest", () => {
     const row = screen.getByText("john").closest("tr");
     fireEvent.click(within(row).getByText("On Leave"));
 
-    expect(mockNavigate).not.toHaveBeenCalledWith("/employee-leave-details/1"); // stopPropagation prevents row nav
+    expect(mockNavigate).not.toHaveBeenCalledWith("/employee-leave-details/1"); 
     const modal = screen.getByTestId("on-leave-modal");
     expect(modal).toHaveTextContent("leaveId:1");
     expect(modal).toHaveTextContent("employeeId:100");
