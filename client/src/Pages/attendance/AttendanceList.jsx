@@ -43,7 +43,7 @@ const AttendanceList = () => {
  const { minList: departmentList = [], loading } = useSelector(
   (state) => state.departments
 );
-  const handleRowClick = (id) => navigate(`/attendance/detail/${id}`);
+  const handleRowClick = (id) => navigate(`/employee-attendance/detail/${id}`);
   useEffect(() => {
     dispatch(getDepartmentsMin({ page: 1, search: "" }));
   }, [dispatch]);
