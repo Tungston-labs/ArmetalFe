@@ -4,7 +4,7 @@ import LoginForm from "./Pages/login/Login";
 import Layout from "./Components/Layout";
 import DepartmentList from "./Pages/department/DepartmentList";
 // import Dashboard from "./Pages/dashboard/Dashboard";
-import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
+// import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
 
 import EmployeeList from "./Pages/leaveDetails/EmployeeList.jsx";
 import Holiday from "./Pages/holiday/Holiday.jsx";
@@ -12,7 +12,7 @@ import Holiday from "./Pages/holiday/Holiday.jsx";
 import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx";
 import AddCompany from "./Pages/superAdmin/AddCompany.jsx";
 import Visa from "./Pages/visa/Visa.jsx";
-import DailyTask from "./Pages/dailytask/Daily.jsx";
+// import DailyTask from "./Pages/dailytask/Daily.jsx";
 import BasicLevel from "./Pages/employee/BasicLevel.jsx";
 import BankPayment from "./Pages/employee/BankPayment.jsx";
 import Documents from "./Pages/employee/Documents.jsx";
@@ -40,7 +40,7 @@ import LeaveList from "./Pages/onLeave/LeaveList.jsx";
 import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
 import NewDashboard from "./Pages/dashboard/NewDashboard.jsx";
 import DashboardNew from "./Pages/dashboard/DashboardNew.jsx";
-import Reimbpage from "./Pages/reimbursement/ReimbPage.jsx"
+// import Reimbpage from "./Pages/reimbursement/ReimbPage.jsx"
 import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
 import FinancePage from "./Pages/finance/FinancePage.jsx"
 import { useEffect } from "react";
@@ -96,7 +96,7 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<HomeDashboard />} />
               <Route path="/department" element={<DepartmentList />} />
-              <Route path="/departments/:id" element={<DepartmentDetails />} />
+              {/* <Route path="/departments/:id" element={<DepartmentDetails />} /> */}
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
               <Route path="/holiday" element={<Holiday />} />
@@ -126,7 +126,7 @@ function App() {
               <Route path="/leftcontent" element={<LeftContent />} />
               <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
               <Route path="/reimbursement" element={<ReimbursementList />} />
-              <Route path="/reimbursement_detail/:id" element={<Reimbpage />} />
+              {/* <Route path="/reimbursement_detail/:id" element={<Reimbpage />} /> */}
               <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
               <Route path="/finance" element={<FinancePage />} />
               <Route path="/project" element={<FieldShift />} />
