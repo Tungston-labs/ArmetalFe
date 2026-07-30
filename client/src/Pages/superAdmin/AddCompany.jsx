@@ -32,7 +32,12 @@ import { ClipLoader } from "react-spinners";
 
 import { useAddCompany } from "./ useAddCompany";
 
-const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, showPrivileges = true }) => {
+const AddCompanyModal = ({
+  onClose,
+  isEdit = false,
+  selectedCompany = null,
+  showPrivileges = true,
+}) => {
   const countryDialCodes = [
     { code: "+971", label: "UAE (+971)" },
     { code: "+966", label: "Saudi Arabia (+966)" },
@@ -98,32 +103,67 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
           <div>
             <FormField>
               <Label>Company Name</Label>
-              <Input name="name" value={formData.name} onChange={handleChange} placeholder="Company name" autoComplete="off" />
+              <Input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Company name"
+                autoComplete="off"
+              />
               {formErrors.name && <ErrorText>{formErrors.name}</ErrorText>}
             </FormField>
 
             <FormField>
               <Label>Address</Label>
-              <Input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" autoComplete="off" />
-              {formErrors.address && <ErrorText>{formErrors.address}</ErrorText>}
+              <Input
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Company Address"
+                autoComplete="off"
+              />
+              {formErrors.address && (
+                <ErrorText>{formErrors.address}</ErrorText>
+              )}
             </FormField>
 
             <FormField>
               <Label>Email</Label>
-              <Input name="email" value={formData.email} onChange={handleChange} placeholder="Company E-mail" autoComplete="off" />
+              <Input
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Company E-mail"
+                autoComplete="off"
+              />
               {formErrors.email && <ErrorText>{formErrors.email}</ErrorText>}
-              
             </FormField>
 
             <FormField>
               <Label>Amount per Employee (INR)</Label>
-              <Input name="amount_per_employee" type="number" step="0.01" value={formData.amount_per_employee} onChange={handleChange} placeholder="Enter amount per employee" />
-              {formErrors.amount_per_employee && <ErrorText>{formErrors.amount_per_employee}</ErrorText>}
+              <Input
+                name="amount_per_employee"
+                type="number"
+                step="0.01"
+                value={formData.amount_per_employee}
+                onChange={handleChange}
+                placeholder="Enter amount per employee"
+              />
+              {formErrors.amount_per_employee && (
+                <ErrorText>{formErrors.amount_per_employee}</ErrorText>
+              )}
             </FormField>
 
             <FormField>
               <Label>Initial Payment (Advance)</Label>
-              <Input name="initial_payment" type="number" step="0.01" value={formData.initial_payment} onChange={handleChange} placeholder="Enter advance amount (optional)" />
+              <Input
+                name="initial_payment"
+                type="number"
+                step="0.01"
+                value={formData.initial_payment}
+                onChange={handleChange}
+                placeholder="Enter advance amount (optional)"
+              />
               {/* {formErrors.initial_payment && <ErrorText>{formErrors.initial_payment}</ErrorText>} */}
             </FormField>
 
@@ -135,13 +175,24 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                   Click to upload or drag and drop <br />
                   Max 2 MB · PNG or SVG only
                 </p>
-                <input type="file" accept=".png,.svg" ref={fileInputRef} onChange={handleLogoChange} style={{ display: "none" }} />
+                <input
+                  type="file"
+                  accept=".png,.svg"
+                  ref={fileInputRef}
+                  onChange={handleLogoChange}
+                  style={{ display: "none" }}
+                />
               </LogoUploadBox>
 
               {logoPreview && (
                 <LogoPreview>
                   {formData.logo?.type === "image/svg+xml" ? (
-                    <object data={logoPreview} type="image/svg+xml" width="52" height="52" />
+                    <object
+                      data={logoPreview}
+                      type="image/svg+xml"
+                      width="52"
+                      height="52"
+                    />
                   ) : (
                     <img src={logoPreview} alt="Logo" />
                   )}
@@ -150,15 +201,23 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                   </button>
                 </LogoPreview>
               )}
-                {formErrors.logo && <ErrorText>{formErrors.logo}</ErrorText>}
+              {formErrors.logo && <ErrorText>{formErrors.logo}</ErrorText>}
             </FormField>
           </div>
 
           <div>
             <FormField>
               <Label>Company location</Label>
-              <Input name="location" value={formData.location} onChange={handleChange} placeholder="Location" autoComplete="off" />
-                {formErrors.location && <ErrorText>{formErrors.location}</ErrorText>}
+              <Input
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="Location"
+                autoComplete="off"
+              />
+              {formErrors.location && (
+                <ErrorText>{formErrors.location}</ErrorText>
+              )}
             </FormField>
 
             <FormField>
@@ -188,12 +247,19 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                   autoComplete="off"
                 />
               </div>
-              {formErrors.contact_number && <ErrorText>{formErrors.contact_number}</ErrorText>}
+              {formErrors.contact_number && (
+                <ErrorText>{formErrors.contact_number}</ErrorText>
+              )}
             </FormField>
 
             <FormField>
               <Label>Country</Label>
-              <Select name="country" value={formData.country} onChange={handleChange} autoComplete="off">
+              <Select
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                autoComplete="off"
+              >
                 <option value="">Select country</option>
                 {COUNTRY_CHOICES.map((item) => (
                   <option key={item.code} value={item.code}>
@@ -201,19 +267,41 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                   </option>
                 ))}
               </Select>
-              {formErrors.country && <ErrorText>{formErrors.country}</ErrorText>}
+              {formErrors.country && (
+                <ErrorText>{formErrors.country}</ErrorText>
+              )}
             </FormField>
 
             <FormField>
               <Label>Latitude</Label>
-              <Input name="latitude" type="number" step="any" value={formData.latitude} onChange={handleChange} placeholder="Enter company latitude" autoComplete="off" />
-              {formErrors.latitude && <ErrorText>{formErrors.latitude}</ErrorText>}
+              <Input
+                name="latitude"
+                type="number"
+                step="any"
+                value={formData.latitude}
+                onChange={handleChange}
+                placeholder="Enter company latitude"
+                autoComplete="off"
+              />
+              {formErrors.latitude && (
+                <ErrorText>{formErrors.latitude}</ErrorText>
+              )}
             </FormField>
 
             <FormField>
               <Label>Longitude</Label>
-              <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter company longitude" autoComplete="off" />
-              {formErrors.longitude && <ErrorText>{formErrors.longitude}</ErrorText>}
+              <Input
+                name="longitude"
+                type="number"
+                step="any"
+                value={formData.longitude}
+                onChange={handleChange}
+                placeholder="Enter company longitude"
+                autoComplete="off"
+              />
+              {formErrors.longitude && (
+                <ErrorText>{formErrors.longitude}</ErrorText>
+              )}
             </FormField>
           </div>
         </FormSection>
@@ -225,7 +313,11 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
             <CheckboxGroup>
               {allModules.map((mod) => (
                 <CheckboxLabel key={mod}>
-                  <input type="checkbox" checked={formData.modules.includes(mod)} onChange={() => handleModuleChange(mod)} />
+                  <input
+                    type="checkbox"
+                    checked={formData.modules.includes(mod)}
+                    onChange={() => handleModuleChange(mod)}
+                  />
                   {mod.charAt(0).toUpperCase() + mod.slice(1).replace("_", " ")}
                 </CheckboxLabel>
               ))}
@@ -261,7 +353,9 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                       onChange={handleChange}
                       placeholder="Basic"
                     />
-                    {formErrors.basic_salary_percent && <ErrorText>{formErrors.basic_salary_percent}</ErrorText>}
+                    {formErrors.basic_salary_percent && (
+                      <ErrorText>{formErrors.basic_salary_percent}</ErrorText>
+                    )}
                   </Td>
 
                   <Td>
@@ -272,7 +366,11 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                       onChange={handleChange}
                       placeholder="HRA"
                     />
-                    {formErrors.house_allowance_percent && <ErrorText>{formErrors.house_allowance_percent}</ErrorText>}
+                    {formErrors.house_allowance_percent && (
+                      <ErrorText>
+                        {formErrors.house_allowance_percent}
+                      </ErrorText>
+                    )}
                   </Td>
 
                   <Td>
@@ -283,7 +381,11 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                       onChange={handleChange}
                       placeholder="Transport"
                     />
-                    {formErrors.transport_allowance_percent && <ErrorText>{formErrors.transport_allowance_percent}</ErrorText>}
+                    {formErrors.transport_allowance_percent && (
+                      <ErrorText>
+                        {formErrors.transport_allowance_percent}
+                      </ErrorText>
+                    )}
                   </Td>
 
                   <Td>
@@ -294,7 +396,11 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                       onChange={handleChange}
                       placeholder="Special"
                     />
-                    {formErrors.special_allowance_percent && <ErrorText>{formErrors.special_allowance_percent}</ErrorText>}
+                    {formErrors.special_allowance_percent && (
+                      <ErrorText>
+                        {formErrors.special_allowance_percent}
+                      </ErrorText>
+                    )}
                   </Td>
 
                   <Td>
@@ -318,7 +424,9 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                 onChange={handleChange}
                 placeholder="e.g. 8"
               />
-              {formErrors.working_hours_per_day && <ErrorText>{formErrors.working_hours_per_day}</ErrorText>}
+              {formErrors.working_hours_per_day && (
+                <ErrorText>{formErrors.working_hours_per_day}</ErrorText>
+              )}
             </FormField>
 
             <FormField>
@@ -330,7 +438,9 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
                 onChange={handleChange}
                 placeholder="e.g. 4"
               />
-              {formErrors.half_day_hours && <ErrorText>{formErrors.half_day_hours}</ErrorText>}
+              {formErrors.half_day_hours && (
+                <ErrorText>{formErrors.half_day_hours}</ErrorText>
+              )}
             </FormField>
           </FormSection>
         </SalaryWrapper>
@@ -341,7 +451,9 @@ const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, show
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? (
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
                 <ClipLoader size={16} color="#fff" />
                 {isEdit ? "Updating..." : "Saving..."}
               </div>

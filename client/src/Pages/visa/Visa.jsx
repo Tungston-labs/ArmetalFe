@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  LoaderOverlay,
-} from "./Visa.Styles";
+import { Container, LoaderOverlay } from "./Visa.Styles";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,18 +8,28 @@ import {
   getUpcomingExpiryEmployees,
 } from "../../Redux/employeeSlice";
 import Loader from "../../Components/Loader";
-import Pagination from "../../Components/Pagination/Pagination"
+import Pagination from "../../Components/Pagination/Pagination";
 import EmployeeTitle from "../../Components/EmployeeTitle";
-import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead, TableWrapper } from "../leaveDetails/EmployeeList.styles";
+import {
+  BodyCell,
+  BodyRow,
+  EmptyRow,
+  HeadCell,
+  HeadRow,
+  StyledTable,
+  TableBody,
+  TableHead,
+  TableWrapper,
+} from "../leaveDetails/EmployeeList.styles";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 const EmployeeList = () => {
   const dispatch = useDispatch();
 
   const { employeeList, loading, pagination } = useSelector(
-    (state) => state.employees
+    (state) => state.employees,
   );
   const user = JSON.parse(
-    localStorage.getItem("user") || sessionStorage.getItem("user")
+    localStorage.getItem("user") || sessionStorage.getItem("user"),
   );
 
   const country = user?.company?.country || "IN";
@@ -47,7 +54,7 @@ const EmployeeList = () => {
           expiryType: expiryFilter,
           page,
           search: debouncedSearch,
-        })
+        }),
       );
     } else {
       dispatch(getAllEmployees({ page, search: debouncedSearch }));
@@ -65,16 +72,16 @@ const EmployeeList = () => {
     setPage(1);
   };
 
-const formatDate = (date) => {
-  if (!date) return "----";
+  const formatDate = (date) => {
+    if (!date) return "----";
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
 
-  return `${day}/${month}/${year}`;
-};
+    return `${day}/${month}/${year}`;
+  };
 
   const currentPage = pagination?.current_page || 1;
   const handlePageChange = (newPage) => {
@@ -107,8 +114,8 @@ const formatDate = (date) => {
           }}
           onSearchChange={(value) => handleSearch(value)}
           showBackArrow={false}
-showReportButton={false}
-showTabs={true}
+          showReportButton={false}
+          showTabs={true}
         />
         <TableWrapper>
           <StyledTable>
@@ -119,7 +126,9 @@ showTabs={true}
                 <HeadCell>Employee ID</HeadCell>
                 <HeadCell>Email</HeadCell>
                 <HeadCell>
-                  {country === "IN" ? "Contract Expiry Date" : "Visa Expiry Date"}
+                  {country === "IN"
+                    ? "Contract Expiry Date"
+                    : "Visa Expiry Date"}
                 </HeadCell>
               </HeadRow>
             </TableHead>
@@ -127,7 +136,10 @@ showTabs={true}
             <TableBody>
               {loading ? (
                 <tr>
-                  <td colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
+                  <td
+                    colSpan="8"
+                    style={{ textAlign: "center", padding: "1rem" }}
+                  >
                     Loading...
                   </td>
                 </tr>
@@ -140,11 +152,11 @@ showTabs={true}
                     </BodyCell>
                     <BodyCell>{emp.employee_id}</BodyCell>
                     <BodyCell>{emp.email}</BodyCell>
-                   <BodyCell>
-  {country === "IN"
-    ? formatDate(emp.contract_expiry_date)
-    : formatDate(emp.visa_expiry_date)}
-</BodyCell>
+                    <BodyCell>
+                      {country === "IN"
+                        ? formatDate(emp.contract_expiry_date)
+                        : formatDate(emp.visa_expiry_date)}
+                    </BodyCell>
                   </BodyRow>
                 ))
               ) : (
