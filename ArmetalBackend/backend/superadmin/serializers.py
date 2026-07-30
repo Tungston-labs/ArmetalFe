@@ -379,3 +379,8 @@ class CompanySubscriptionActionSerializer(serializers.Serializer):
 
 class SubscriptionReminderSerializer(serializers.Serializer):
     company_id = serializers.IntegerField()
+
+
+class SubscriptionReminderSimpleSerializer(serializers.Serializer):
+    company_id = serializers.IntegerField()
+    email = serializers.EmailField(required=False, allow_blank=False)
