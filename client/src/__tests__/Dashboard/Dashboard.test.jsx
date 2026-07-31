@@ -132,13 +132,15 @@ describe("ProjectChart", () => {
     expect(chart.textContent).toContain('"name":"Bench","value":1');
   });
 
-  test("navigates to /project when the shortcut icon is clicked", async () => {
-    const user = userEvent.setup();
-    render(<ProjectChart projectEmployeeCount={{ on_site: 1, variant: 1, bench: 1 }} />);
-    await user.click(screen.getByRole("button"));
-    expect(mockNavigate).toHaveBeenCalledWith("/project");
-  });
+test("navigates to /project when the shortcut icon is clicked", async () => {
+  const user = userEvent.setup();
+  const { container } = render(
+    <ProjectChart projectEmployeeCount={{ on_site: 1, variant: 1, bench: 1 }} />
+  );
+  await user.click(container.querySelector("svg").closest("div"));
+  expect(mockNavigate).toHaveBeenCalledWith("/project");
 });
+}); 
 
 // ---------------------------------------------------------------------
 import ReimbursementSummary from "../../Components/homepage/ReimbursementSummary";
