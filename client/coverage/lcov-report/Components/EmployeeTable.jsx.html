@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -109,27 +109,6 @@
 <a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -149,49 +128,70 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
-import { TableContainer, StyledTable, Thead, Th, Tbody, Tr, Td } from "./EmployeeTable.Styles";
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// import React from "react";
+// import { TableContainer, StyledTable, Thead, Th, Tbody, Tr, Td } from "./EmployeeTable.Styles";
 &nbsp;
-const EmployeeTable = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> columns = <span class="branch-0 cbranch-no" title="branch not covered" >[], d</span>ata = <span class="branch-0 cbranch-no" title="branch not covered" >[], o</span>nRowClick }) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;TableContainer&gt;
-      &lt;StyledTable&gt;
-        &lt;Thead&gt;
-          &lt;Tr&gt;
-            {columns.map(<span class="fstat-no" title="function not covered" >(c</span>ol) =&gt; (
-<span class="cstat-no" title="statement not covered" >              &lt;Th key={col.key}&gt;{col.title}&lt;/Th&gt;</span>
-            ))}
-          &lt;/Tr&gt;
-        &lt;/Thead&gt;
-        &lt;Tbody&gt;
-          {data.length &gt; 0 ? (
-            data.map(<span class="fstat-no" title="function not covered" >(r</span>ow, rowIndex) =&gt; (
-<span class="cstat-no" title="statement not covered" >              &lt;Tr</span>
-                key={row.id || rowIndex}
-                style={{ cursor: onRowClick ? "pointer" : "default" }}
-                onClick={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >o</span>nRowClick &amp;&amp; onRowClick(row)}</span>
-              &gt;
-                {columns.map(<span class="fstat-no" title="function not covered" >(c</span>ol) =&gt; (
-<span class="cstat-no" title="statement not covered" >                  &lt;Td key={col.key} data-label={col.title}&gt;</span>
-                    {row[col.key]}
-                  &lt;/Td&gt;
-                ))}
-              &lt;/Tr&gt;
-            ))
-          ) : (
-            &lt;Tr&gt;
-              &lt;Td colSpan={columns.length} style={{ textAlign: "center" }}&gt;
-                No data found
-              &lt;/Td&gt;
-            &lt;/Tr&gt;
-          )}
-        &lt;/Tbody&gt;
-      &lt;/StyledTable&gt;
-    &lt;/TableContainer&gt;
-  );
-};
+// const EmployeeTable = ({ columns = [], data = [], onRowClick }) =&gt; {
+//   return (
+//     &lt;TableContainer&gt;
+//       &lt;StyledTable&gt;
+//         &lt;Thead&gt;
+//           &lt;Tr&gt;
+//             {columns.map((col) =&gt; (
+//               &lt;Th key={col.key}&gt;{col.title}&lt;/Th&gt;
+//             ))}
+//           &lt;/Tr&gt;
+//         &lt;/Thead&gt;
+//         &lt;Tbody&gt;
+//           {data.length &gt; 0 ? (
+//             data.map((row, rowIndex) =&gt; (
+//               &lt;Tr
+//                 key={row.id || rowIndex}
+//                 style={{ cursor: onRowClick ? "pointer" : "default" }}
+//                 onClick={() =&gt; onRowClick &amp;&amp; onRowClick(row)}
+//               &gt;
+//                 {columns.map((col) =&gt; (
+//                   &lt;Td key={col.key} data-label={col.title}&gt;
+//                     {row[col.key]}
+//                   &lt;/Td&gt;
+//                 ))}
+//               &lt;/Tr&gt;
+//             ))
+//           ) : (
+//             &lt;Tr&gt;
+//               &lt;Td colSpan={columns.length} style={{ textAlign: "center" }}&gt;
+//                 No data found
+//               &lt;/Td&gt;
+//             &lt;/Tr&gt;
+//           )}
+//         &lt;/Tbody&gt;
+//       &lt;/StyledTable&gt;
+//     &lt;/TableContainer&gt;
+//   );
+// };
 &nbsp;
-export default EmployeeTable;
+// export default EmployeeTable;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -199,7 +199,7 @@ export default EmployeeTable;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-31T06:06:57.909Z
+                at 2026-07-31T09:56:39.573Z
             </div>
         <script src="../prettify.js"></script>
         <script>

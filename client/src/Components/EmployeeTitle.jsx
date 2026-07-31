@@ -131,9 +131,12 @@ const [showReportMenu, setShowReportMenu] = useState(false);
       <TopSection>
         <LeftBlock>
           {showBackArrow && (
-            <BackArrow onClick={() => navigate(-1)}>
-              <IoArrowBackOutline size={22} />
-            </BackArrow>
+          <BackArrow
+  data-testid="back-arrow"
+  onClick={() => navigate(-1)}
+>
+  <IoArrowBackOutline size={22} />
+</BackArrow>
           )}
 
           {showIcon && iconSrc && (

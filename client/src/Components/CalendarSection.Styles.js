@@ -90,76 +90,8 @@ export const UpcomingWrapper = styled.div`
       font-weight: 600;
     }
 
-    .arrow {import ContractExpiryList from "../../Components/ContractExpiryList";
-import CalendarSection from "../../Components/CalendarSection";
-import TopCard from "../../Components/TopCard";
-import DashboardContent from "./DashboardContent";
-
-const employeesMock = [
-  { name: "Employee", empId: "1254125", department: "Department" },
-  { name: "Employee", empId: "1254125", department: "Department" },
-  { name: "Employee", empId: "1254125", department: "Department" },
-  { name: "Employee", empId: "1254125", department: "Department" }
-];
-
-export default function HomeDashboard() {
-  return (
-    <>
-      {/* TOP CARDS GRID */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
-          gap: "1.5rem"
-        }}
-      >
-        <TopCard
-          icon="👨‍💼"
-          title="Total Employees"
-          count={12}
-          employees={employeesMock}
-        />
-
-        <TopCard
-          icon="🧾"
-          title="Employee Leave Request"
-          count={12}
-          employees={employeesMock}
-        />
-
-        <TopCard
-          icon="🛂"
-          title="Employee Visa Expiry"
-          count={12}
-          employees={employeesMock}
-        />
-      </div>
-
-      {/* CONTRACT EXPIRY LEFT --- CALENDAR RIGHT */}
-      <div
-        style={{
-          marginTop: "2rem",
-          display: "grid",
-          gridTemplateColumns: "1fr 350px",
-          gap: "1.5rem",
-          alignItems: "flex-start"
-        }}
-      >
-        {/* LEFT SIDE */}
-        <ContractExpiryList />
-
-        {/* RIGHT SIDE */}
-        <CalendarSection />
-      </div>
-    </>
-  );
-}
-
-      font-size: 20px;
-      cursor: pointer;
-    }
   }
-`;
+  `;
 
 export const HolidayItem = styled.div`
   background: #fff;

@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -111,23 +111,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -140,9 +123,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -151,50 +131,70 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useEffect, useRef } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// import React, { useEffect, useRef } from "react";
+// import Calendar from "react-calendar";
+// import "react-calendar/dist/Calendar.css";
 &nbsp;
-const CalendarModal = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> onClose, selectedDate, setSelectedDate }) =&gt; {</span>
-  const <span class="cstat-no" title="statement not covered" >modalRef = useRef(null);</span>
+// const CalendarModal = ({ onClose, selectedDate, setSelectedDate }) =&gt; {
+//   const modalRef = useRef(null);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-    const handleClickOutside = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if (modalRef.current &amp;&amp; !modalRef.current.contains(event.target)) {</span>
-<span class="cstat-no" title="statement not covered" >        onClose(); </span>
-      }
-    };
+//   useEffect(() =&gt; {
+//     const handleClickOutside = (event) =&gt; {
+//       if (modalRef.current &amp;&amp; !modalRef.current.contains(event.target)) {
+//         onClose(); 
+//       }
+//     };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    document.addEventListener("mousedown", handleClickOutside);</span>
-<span class="cstat-no" title="statement not covered" >    return <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >      document.removeEventListener("mousedown", handleClickOutside);</span>
-    };
-  }, [onClose]);
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () =&gt; {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, [onClose]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;div
-      ref={modalRef}
-      style={{
-        background: "#fff",
-        padding: "16px",
-        borderRadius: "12px",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-        zIndex: 1000,
-      }}
-    &gt;
-      &lt;Calendar
-        onChange={<span class="fstat-no" title="function not covered" >(d</span>ate) =&gt; {
-          const formatted = <span class="cstat-no" title="statement not covered" >date.toLocaleDateString("en-CA");</span>
-<span class="cstat-no" title="statement not covered" >          setSelectedDate(formatted);</span>
-<span class="cstat-no" title="statement not covered" >          onClose();</span>
-        }}
-        value={new Date(selectedDate)}
-      /&gt;
-    &lt;/div&gt;
-  );
-};
+//   return (
+//     &lt;div
+//       ref={modalRef}
+//       style={{
+//         background: "#fff",
+//         padding: "16px",
+//         borderRadius: "12px",
+//         boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+//         zIndex: 1000,
+//       }}
+//     &gt;
+//       &lt;Calendar
+//         onChange={(date) =&gt; {
+//           const formatted = date.toLocaleDateString("en-CA");
+//           setSelectedDate(formatted);
+//           onClose();
+//         }}
+//         value={new Date(selectedDate)}
+//       /&gt;
+//     &lt;/div&gt;
+//   );
+// };
 &nbsp;
-export default CalendarModal;
+// export default CalendarModal;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -202,7 +202,7 @@ export default CalendarModal;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-31T06:06:58.079Z
+                at 2026-07-31T09:56:39.731Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -134,7 +134,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -142,27 +142,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -194,35 +194,35 @@ import {
   ModalButton,
 } from "./ConfirmLeaveModal.Styles";
 &nbsp;
-const ConfirmLeaveModal = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span></span>
+const ConfirmLeaveModal = ({
   show,
   onConfirm,  
   onClose,
-  actionType = <span class="branch-0 cbranch-no" title="branch not covered" >"approve",</span>
+  actionType = "approve",
   leaveId,
-  zIndex = <span class="branch-0 cbranch-no" title="branch not covered" >2000,</span>
+  zIndex = 2000,
 }) =&gt; {
-  const [loading, setLoading<span class="cstat-no" title="statement not covered" >] = useState(false);</span>
-  const <span class="cstat-no" title="statement not covered" >navigate = useNavigate(); // ✅ initialize navigate</span>
-<span class="cstat-no" title="statement not covered" > if (!show) <span class="cstat-no" title="statement not covered" >return null;</span></span>
-<span class="cstat-no" title="statement not covered" >  if (!leaveId) {</span>
-<span class="cstat-no" title="statement not covered" >    return null;</span>
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // ✅ initialize navigate
+ if (!show) return null;
+  if (!leaveId) {
+    return null;
   }
 &nbsp;
-   const actionText = (<span class="cstat-no" title="statement not covered" >actionType === "reject" || actionType === "rejected")</span>
+   const actionText = (actionType === "reject" || actionType === "rejected")
      ? "Reject leave"
      : "Approve leave";
   
-  const handleConfirm = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async () =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >    setLoading(true);</span>
-<span class="cstat-no" title="statement not covered" >    await onConfirm();   // ✅ call parent logic</span>
-<span class="cstat-no" title="statement not covered" >    setLoading(false);</span>
+  const handleConfirm = async () =&gt; {
+    setLoading(true);
+    await onConfirm();   // ✅ call parent logic
+    setLoading(false);
   };
 &nbsp;
- const handleCancel = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >o</span>nClose();</span></span>
+ const handleCancel = () =&gt; onClose();
 &nbsp;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return ReactDOM.createPortal(</span>
+  return ReactDOM.createPortal(
     &lt;ModalOverlay style={{ zIndex }}&gt;
       &lt;ModalContainer style={{ zIndex: zIndex + 1 }}&gt;
         &lt;Message&gt;
@@ -250,7 +250,7 @@ export default ConfirmLeaveModal;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-31T06:06:58.079Z
+                at 2026-07-31T09:56:39.731Z
             </div>
         <script src="../prettify.js"></script>
         <script>
