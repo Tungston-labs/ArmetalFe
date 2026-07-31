@@ -16,6 +16,8 @@ import {
   Description,
   PasswordWrapper,
   EyeIcon,
+  ErrorText,
+  SuccessText,
 } from "../login/Login.styles";
 
 import axios from "axios";
@@ -115,11 +117,14 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
             <Title>Set New Password</Title>
           </div>
 
-          <Subtitle>
-            You're resetting for <strong>{email}</strong>
-          </Subtitle>
+        <Subtitle>
+  You're resetting for <strong>{email}</strong>
+</Subtitle>
 
-      <form onSubmit={handleChangePasswordSubmit}>
+{error && <ErrorText>{error}</ErrorText>}
+{message && <SuccessText>{message}</SuccessText>}
+
+   <form noValidate onSubmit={handleChangePasswordSubmit}>
   <Label>New Password</Label>
 
   <PasswordWrapper>
@@ -131,7 +136,10 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
       onChange={handleChange}
       required
     />
-    <EyeIcon onClick={() => setShowPassword(!showPassword)}>
+<EyeIcon
+  data-testid="toggle-password"
+  onClick={() => setShowPassword(!showPassword)}
+>
       {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
     </EyeIcon>
   </PasswordWrapper>
@@ -147,15 +155,16 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
       onChange={handleChange}
       required
     />
-    <EyeIcon onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+<EyeIcon
+  data-testid="toggle-confirm-password"
+  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+>
       {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
     </EyeIcon>
   </PasswordWrapper>
 
   <Button type="submit">Continue</Button>
 
-  {error && <ErrorText>{error}</ErrorText>}
-  {message && <SuccessText>{message}</SuccessText>}
 </form>
 
         </FormBox>

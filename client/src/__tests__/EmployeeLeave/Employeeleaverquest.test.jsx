@@ -5,75 +5,83 @@ import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 
-import LeaveRequest from "./LeaveRequest"; // adjust path/filename to match your project
+import LeaveRequest from "../../Pages/leaveDetails/LeaveRequest"; // adjust path/filename to match your project
 import * as leaveSlice from "../../Redux/leaveSlice";
 import * as departmentSlice from "../../Redux/departmentSlice";
 import * as leaveExcelExport from "../../utils/leaveExcelExport";
 
 // ---- Mocks ----
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock("../../Redux/leaveSlice", () => ({
-  getLeaveRequests: jest.fn(() => ({
+vi.mock("../../Redux/leaveSlice", () => ({
+  getLeaveRequests: vi.fn(() => ({
     type: "leave/getLeaveRequests",
     unwrap: () => Promise.resolve({ results: [], total_pages: 1 }),
     then: (cb) => Promise.resolve().then(cb),
   })),
-  patchLeaveStatus: jest.fn(() => ({ type: "leave/patchLeaveStatus" })),
+  patchLeaveStatus: vi.fn(() => ({ type: "leave/patchLeaveStatus" })),
 }));
 
-jest.mock("../../Redux/departmentSlice", () => ({
-  getDepartments: jest.fn(() => ({ type: "departments/getDepartments" })),
+vi.mock("../../Redux/departmentSlice", () => ({
+  getDepartments: vi.fn(() => ({ type: "departments/getDepartments" })),
 }));
 
-jest.mock("../../utils/leaveExcelExport", () => ({
-  exportLeaveReport: jest.fn(),
+vi.mock("../../utils/leaveExcelExport", () => ({
+  exportLeaveReport: vi.fn(),
 }));
 
-jest.mock("../../Components/Loader", () => () => <div>Loading...</div>);
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div>Loading...</div>,
+}));
 
-jest.mock("../../Components/Pagination/Pagination", () => (props) => (
-  <div data-testid="pagination">
-    {`Page ${props.currentPage} of ${props.totalPages}`}
-    <button onClick={() => props.onPageChange(props.currentPage + 1)}>Next</button>
-  </div>
-));
+vi.mock("../../Components/Pagination/Pagination", () => ({
+  default: (props) => (
+    <div data-testid="pagination">
+      {`Page ${props.currentPage} of ${props.totalPages}`}
+      <button onClick={() => props.onPageChange(props.currentPage + 1)}>Next</button>
+    </div>
+  ),
+}));
 
-jest.mock("../../Components/No found/Noemployeefound", () => () => (
-  <div>No Leave Requests Found</div>
-));
+vi.mock("../../Components/No found/Noemployeefound", () => ({
+  default: () => <div>No Leave Requests Found</div>,
+}));
 
-jest.mock("./ModalList", () => (props) => (
-  <div data-testid="on-leave-modal">
-    leaveId:{props.leaveId} employeeId:{props.employeeId} date:{props.date}
-    <button onClick={props.onClose}>Close</button>
-  </div>
-));
+vi.mock("../../Pages/leaveDetails/ModalList", () => ({
+  default: (props) => (
+    <div data-testid="on-leave-modal">
+      leaveId:{props.leaveId} employeeId:{props.employeeId} date:{props.date}
+      <button onClick={props.onClose}>Close</button>
+    </div>
+  ),
+}));
 
-jest.mock("../../Components/EmployeeTitle", () => (props) => (
-  <div>
-    <input
-      placeholder="search"
-      value={props.searchValue}
-      onChange={(e) => props.onSearchChange(e.target.value)}
-    />
-    <select
-      value={props.selectedDropdownValue}
-      onChange={(e) => props.onDropdownChange(e.target.value)}
-    >
-      <option value="">All Departments</option>
-      {props.dropdownOptions?.map((d) => (
-        <option key={d.id} value={d.id}>
-          {d.name}
-        </option>
-      ))}
-    </select>
-  </div>
-));
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: (props) => (
+    <div>
+      <input
+        placeholder="search"
+        value={props.searchValue}
+        onChange={(e) => props.onSearchChange(e.target.value)}
+      />
+      <select
+        value={props.selectedDropdownValue}
+        onChange={(e) => props.onDropdownChange(e.target.value)}
+      >
+        <option value="">All Departments</option>
+        {props.dropdownOptions?.map((d) => (
+          <option key={d.id} value={d.id}>
+            {d.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  ),
+}));
 
 const FUTURE_DATE = new Date();
 FUTURE_DATE.setDate(FUTURE_DATE.getDate() + 5);
@@ -124,8 +132,8 @@ function renderWithProviders({
 
 describe("LeaveRequest", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    window.alert = jest.fn();
+    vi.clearAllMocks();
+    window.alert = vi.fn();
   });
 
   test("dispatches getDepartments and getLeaveRequests on mount", () => {
@@ -141,15 +149,16 @@ describe("LeaveRequest", () => {
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
-  test("renders leave rows with formatted dates and capitalized status", () => {
-    renderWithProviders();
-    expect(screen.getByText("john")).toBeInTheDocument();
-    expect(screen.getByText("amy")).toBeInTheDocument();
-    expect(screen.getByText("Sick")).toBeInTheDocument();
-    expect(screen.getByText("Field Ops")).toBeInTheDocument();
-    expect(screen.getByText("Pending")).toBeInTheDocument();
-    expect(screen.getByText("Approved")).toBeInTheDocument();
-  });
+ test("renders leave rows with formatted dates and capitalized status", () => {
+  renderWithProviders();
+  const table = screen.getByRole("table");
+  expect(screen.getByText("john")).toBeInTheDocument();
+  expect(screen.getByText("amy")).toBeInTheDocument();
+  expect(screen.getByText("Sick")).toBeInTheDocument();
+  expect(within(table).getByText("Field Ops")).toBeInTheDocument();
+  expect(within(table).getByText("Pending")).toBeInTheDocument();
+  expect(within(table).getByText("Approved")).toBeInTheDocument();
+});
 
   test("shows empty state when there are no matching leaves", () => {
     renderWithProviders({ leaves: [] });
@@ -172,24 +181,24 @@ describe("LeaveRequest", () => {
     expect(screen.queryByText("john")).not.toBeInTheDocument();
   });
 
-  test("clicking a status tab updates the filter, resets page, and re-fetches", async () => {
-    renderWithProviders();
-    leaveSlice.getLeaveRequests.mockClear();
+ test("clicking a status tab updates the filter, resets page, and re-fetches", async () => {
+  renderWithProviders();
+  leaveSlice.getLeaveRequests.mockClear();
 
-    fireEvent.click(screen.getByText("Approved"));
+  fireEvent.click(screen.getByRole("button", { name: /^Approved/ }));
 
-    await waitFor(() =>
-      expect(leaveSlice.getLeaveRequests).toHaveBeenCalledWith(
-        expect.objectContaining({ status: "approved", page: 1 })
-      )
-    );
-  });
+  await waitFor(() =>
+    expect(leaveSlice.getLeaveRequests).toHaveBeenCalledWith(
+      expect.objectContaining({ status: "approved", page: 1 })
+    )
+  );
+});
 
-  test("displays count badges for each non-'All' status tab", () => {
-    renderWithProviders();
-    const pendingTab = screen.getByText("Pending").closest("button");
-    expect(within(pendingTab).getByText("1")).toBeInTheDocument();
-  });
+test("displays count badges for each non-'All' status tab", () => {
+  renderWithProviders();
+  const pendingTab = screen.getByRole("button", { name: /^Pending/ });
+  expect(within(pendingTab).getByText("1")).toBeInTheDocument();
+});
 
   test("changing the month select re-fetches leave requests for that month", async () => {
     renderWithProviders();
@@ -222,7 +231,7 @@ describe("LeaveRequest", () => {
   test("clicking a leave row navigates to its detail page", () => {
     renderWithProviders();
     fireEvent.click(screen.getByText("john"));
-    expect(mockNavigate).toHaveBeenCalledWith("/employee-leave-details/1");
+    expect(mockNavigate).toHaveBeenCalledWith("/leave-details/1");
   });
 
   test("clicking 'On Leave' for a future-dated leave opens the approval modal with correct data", () => {
@@ -230,7 +239,7 @@ describe("LeaveRequest", () => {
     const row = screen.getByText("john").closest("tr");
     fireEvent.click(within(row).getByText("On Leave"));
 
-    expect(mockNavigate).not.toHaveBeenCalledWith("/employee-leave-details/1"); 
+    expect(mockNavigate).not.toHaveBeenCalledWith("/leave-details/1"); // stopPropagation prevents row nav
     const modal = screen.getByTestId("on-leave-modal");
     expect(modal).toHaveTextContent("leaveId:1");
     expect(modal).toHaveTextContent("employeeId:100");
@@ -293,7 +302,7 @@ describe("LeaveRequest", () => {
       type: "leave/getLeaveRequests",
       unwrap: () => Promise.reject(new Error("network error")),
     }));
-    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     renderWithProviders();
     fireEvent.click(screen.getByText("Export Excel"));
