@@ -4,37 +4,45 @@
 // Mocks: axios, react-redux (useDispatch), react-router-dom (useNavigate),
 //        localStorage, and window.alert.
 //
-// If your project uses Vitest instead of Jest, swap `jest.mock` -> `vi.mock`
-// and `jest.fn()` -> `vi.fn()`; the rest of the API is compatible.
+// If your project uses Vitest instead of Jest, swap `vi.mock` -> `vi.mock`
+// and `vi.fn()` -> `vi.fn()`; the rest of the API is compatible.
 
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
 
-import LoginForm from "./LoginPage";
+import LoginForm from "../../Pages/login/Login";
 
 // ---- Mocks -----------------------------------------------------------
 
-jest.mock("axios");
+vi.mock("axios");
 
-const mockDispatch = jest.fn();
-jest.mock("react-redux", () => ({
-  useDispatch: () => mockDispatch,
-}));
+const mockDispatch = vi.fn();
+vi.mock("react-redux", async () => {
+  const actual = await vi.importActual("react-redux");
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: () => mockNavigate,
-  Link: ({ children, ...props }) => <a {...props}>{children}</a>,
-}));
+  return {
+    ...actual,
+    useDispatch: () => mockDispatch,
+  };
+});
 
-jest.mock("../../Redux/authSlice", () => ({
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+vi.mock("../../Redux/authSlice", () => ({
   login: (payload) => ({ type: "auth/login", payload }),
 }));
 
-jest.mock("../../services/api", () => ({
+vi.mock("../../services/api", () => ({
   BASE_URL: "http://test-api.local",
 }));
 
@@ -51,18 +59,18 @@ let removeItemSpy;
 let clearSpy;
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   // Mock localStorage via Storage.prototype so calls are spied on while
   // still hitting the real jsdom localStorage under the hood, instead
   // of relying on a hand-rolled fake object.
-  setItemSpy = jest.spyOn(Storage.prototype, "setItem");
-  getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-  removeItemSpy = jest.spyOn(Storage.prototype, "removeItem");
-  clearSpy = jest.spyOn(Storage.prototype, "clear");
+  setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+  getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+  removeItemSpy = vi.spyOn(Storage.prototype, "removeItem");
+  clearSpy = vi.spyOn(Storage.prototype, "clear");
 
   window.localStorage.clear();
-  jest.spyOn(window, "alert").mockImplementation(() => {});
+  vi.spyOn(window, "alert").mockImplementation(() => {});
 });
 
 afterEach(() => {

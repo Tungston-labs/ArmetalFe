@@ -4,7 +4,7 @@ import "@testing-library/jest-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import ReimbursementList from "./ReimbursementList"; // adjust path/filename to match your project
+import ReimbursementList from "../../Pages/reimbursement/ReimbursementList"; // adjust path/filename to match your project
 import { getDepartments } from "../../Redux/departmentSlice";
 import {
   fetchReimbursementsByDepartment,
@@ -13,57 +13,72 @@ import {
 
 // ---- Mocks -----------------------------------------------------------
 
-jest.mock("react-redux", () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+vi.mock("react-redux", () => ({
+  useDispatch: vi.fn(),
+  useSelector: vi.fn(),
 }));
 
-jest.mock("react-router-dom", () => ({
-  useNavigate: jest.fn(),
+vi.mock("react-router-dom", async () => ({
+  useNavigate: vi.fn(),
 }));
 
-jest.mock("../../Redux/departmentSlice", () => ({
-  getDepartments: jest.fn((payload) => ({ type: "departments/get", payload })),
+vi.mock("../../Redux/departmentSlice", () => ({
+  getDepartments: vi.fn((payload) => ({ type: "departments/get", payload })),
 }));
 
-jest.mock("../../services/reimbursement", () => ({
-  fetchReimbursementsByDepartment: jest.fn(),
-  updateReimbursementStatus: jest.fn(),
+vi.mock("../../services/reimbursement", () => ({
+  fetchReimbursementsByDepartment: vi.fn(),
+  updateReimbursementStatus: vi.fn(),
 }));
 
-jest.mock("../../Components/Loader", () => () => <div data-testid="loader" />);
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div data-testid="loader" />,
+}));
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: (props) => (
+    <div data-testid="employee-title">
+      <span>{props.title}</span>
+      <span>{props.subtitle}</span>
 
-jest.mock("../../Components/EmployeeTitle", () => (props) => (
-  <div data-testid="employee-title">
-    <span>{props.title}</span>
-    <span>{props.subtitle}</span>
-    {props.buttonText && (
-      <button onClick={props.onAddClick}>{props.buttonText}</button>
-    )}
-  </div>
-));
+      {props.buttonText && (
+        <button onClick={props.onAddClick}>
+          {props.buttonText}
+        </button>
+      )}
+    </div>
+  ),
+}));
 
-jest.mock("react-spinners", () => ({
+vi.mock("react-spinners", () => ({
   ClipLoader: () => <div data-testid="clip-loader" />,
 }));
 
-jest.mock("react-icons/fa6", () => ({
+vi.mock("react-icons/fa6", () => ({
   FaAnglesRight: () => <span>Right</span>,
   FaAnglesLeft: () => <span>Left</span>,
 }));
 
-jest.mock("../../assets/history.svg", () => "history-icon.svg");
-jest.mock("../../assets/remi.svg", () => "remi-icon.svg");
+vi.mock("../../assets/history.svg", () => ({
+  default: "history-icon.svg",
+}));
 
-jest.mock("./Side_detail.jsx", () => (props) => (
-  <div data-testid="side-detail">
-    <button onClick={props.onClose}>Close</button>
-  </div>
-));
+vi.mock("../../assets/remi.svg", () => ({
+  default: "remi-icon.svg",
+}));
+
+// FIXED: path must match where ReimbursementList.jsx actually imports
+// Side_detail from (its own folder), not the test file's folder.
+vi.mock("../../Pages/reimbursement/Side_detail", () => ({
+  default: (props) => (
+    <div data-testid="side-detail">
+      <button onClick={props.onClose}>Close</button>
+    </div>
+  ),
+}));
 
 // Styled-components mocked as plain passthrough elements so tests aren't
 // coupled to the real styling implementation.
-jest.mock("../attendance/AttendanceList.Styles", () => {
+vi.mock("../attendance/AttendanceList.Styles", () => {
   const passthrough = (tag) => (props) =>
     React.createElement(tag, props, props.children);
   return {
@@ -105,8 +120,8 @@ const makeEmployee = (i, overrides = {}) => ({
   ...overrides,
 });
 
-const mockDispatch = jest.fn();
-const mockNavigate = jest.fn();
+const mockDispatch = vi.fn();
+const mockNavigate = vi.fn();
 
 const setupSelector = ({ list = departments, loading = false } = {}) => {
   useSelector.mockImplementation((selectorFn) =>
@@ -115,7 +130,7 @@ const setupSelector = ({ list = departments, loading = false } = {}) => {
 };
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   useDispatch.mockReturnValue(mockDispatch);
   useNavigate.mockReturnValue(mockNavigate);
   setupSelector();

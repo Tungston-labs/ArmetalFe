@@ -11,14 +11,14 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useDispatch, useSelector } from "react-redux";
 
-import DailyTask from "../../../pages/dailyTask/DailyTask";
+import DailyTask from "../../Pages/dailytask/DailyTask";
 
-jest.mock("react-redux", () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+vi.mock("react-redux", () => ({
+  useDispatch: vi.fn(),
+  useSelector: vi.fn(),
 }));
 
-jest.mock("../../../Redux/departmentSlice", () => ({
+vi.mock("../../Redux/departmentSlice", () => ({
   getDepartmentsMin: () => ({ type: "getDepartmentsMin" }),
   getEmployeesByDepartmentMini: (id) => ({
     type: "getEmployeesByDepartmentMini",
@@ -26,11 +26,11 @@ jest.mock("../../../Redux/departmentSlice", () => ({
   }),
 }));
 
-jest.mock("../../../Redux/dailyTaskSlice", () => ({
+vi.mock("../../Redux/dailyTaskSlice", () => ({
   getTasks: (args) => ({ type: "getTasks", payload: args }),
 }));
 
-const mockDispatch = jest.fn();
+const mockDispatch = vi.fn();
 
 const departmentsFixture = [
   { id: 1, name: "Engineering" },
@@ -56,7 +56,7 @@ const tasksFixture = [
 let stateOverrides;
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   mockDispatch.mockImplementation(() => Promise.resolve({}));
   useDispatch.mockReturnValue(mockDispatch);
 

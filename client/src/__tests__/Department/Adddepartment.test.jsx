@@ -7,13 +7,13 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useDispatch } from "react-redux";
 
-import AddDepartment from "../../../pages/department/AddDepartment";
+import AddDepartment from "../../Pages/department/AddDepartment";
 
-jest.mock("react-redux", () => ({
-  useDispatch: jest.fn(),
+vi.mock("react-redux", () => ({
+  useDispatch: vi.fn(),
 }));
 
-jest.mock("../../../Redux/departmentSlice.js", () => ({
+vi.mock("../../Redux/departmentSlice.js", () => ({
   createNewDepartment: (form) => ({ type: "createNewDepartment", payload: form }),
   getDepartments: (params) => ({ type: "getDepartments", payload: params }),
 }));
@@ -30,11 +30,11 @@ const makeThunkRejection = (err) => {
   return p;
 };
 
-const mockDispatch = jest.fn();
-const mockOnClose = jest.fn();
+const mockDispatch = vi.fn();
+const mockOnClose = vi.fn();
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   useDispatch.mockReturnValue(mockDispatch);
   mockDispatch.mockImplementation((action) => makeThunkResult({}));
 });

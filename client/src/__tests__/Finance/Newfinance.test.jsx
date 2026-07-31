@@ -12,13 +12,13 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useDispatch } from "react-redux";
 
-import FinanceModal from "../../../pages/finance/NewFinance";
+import FinanceModal from "../../Pages/finance/NewFinance";
 
-jest.mock("react-redux", () => ({
-  useDispatch: jest.fn(),
+vi.mock("react-redux", () => ({
+  useDispatch: vi.fn(),
 }));
 
-jest.mock("../../../Redux/financeThunks", () => ({
+vi.mock("../../Redux/financeThunks", () => ({
   createFinanceCategory: (args) => ({ type: "createFinanceCategory", payload: args }),
   fetchFinanceCategoryList: (paymentType) => ({
     type: "fetchFinanceCategoryList",
@@ -26,9 +26,9 @@ jest.mock("../../../Redux/financeThunks", () => ({
   }),
 }));
 
-const mockDispatch = jest.fn();
-const mockOnClose = jest.fn();
-const mockOnSave = jest.fn().mockResolvedValue(undefined);
+const mockDispatch = vi.fn();
+const mockOnClose = vi.fn();
+const mockOnSave = vi.fn().mockResolvedValue(undefined);
 
 const incomeCategories = [
   { id: 1, name: "salary" },
@@ -36,7 +36,7 @@ const incomeCategories = [
 ];
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   useDispatch.mockReturnValue(mockDispatch);
   mockDispatch.mockImplementation((action) => {
     if (action.type === "fetchFinanceCategoryList") {

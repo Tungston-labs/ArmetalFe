@@ -4,42 +4,51 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import "@testing-library/jest-dom";
 
-import AttendanceReport from "./AttendanceReport"; // adjust path/filename to match your project
+import AttendanceReport from "../../Pages/attendanceReport/AttendanceReport"; // adjust path/filename to match your project
 import * as attendanceSlice from "../../Redux/attendanceSlice";
 import * as monthlyAttendance from "../../utils/montlyAttendance";
 
 // ---- Mocks ----
-jest.mock("../../Redux/attendanceSlice", () => ({
-  getAttendanceSummary: jest.fn(() => ({ type: "attendance/getAttendanceSummary" })),
+vi.mock("../../Redux/attendanceSlice", () => ({
+  getAttendanceSummary: vi.fn(() => ({ type: "attendance/getAttendanceSummary" })),
 }));
 
-jest.mock("../../utils/montlyAttendance", () => ({
-  exportAttendanceExcel: jest.fn(),
+vi.mock("../../utils/montlyAttendance", () => ({
+  exportAttendanceExcel: vi.fn(),
 }));
 
-jest.mock("../../Components/Pagination/Pagination", () => (props) => (
-  <div data-testid="pagination">
-    {`Page ${props.currentPage} of ${props.totalPages}`}
-    <button onClick={() => props.onPageChange(props.currentPage + 1)}>Next</button>
-  </div>
-));
-
-jest.mock("./EmployeeAttendanceModal", () => (props) =>
-  props.isOpen ? (
-    <div data-testid="attendance-modal">
-      {props.employee?.employee_name} - {props.monthName}
-      <button onClick={props.onClose}>Close</button>
+vi.mock("../../Components/Pagination/Pagination", () => ({
+  default: (props) => (
+    <div data-testid="pagination">
+      {`Page ${props.currentPage} of ${props.totalPages}`}
+      <button onClick={() => props.onPageChange(props.currentPage + 1)}>Next</button>
     </div>
-  ) : null
-);
+  ),
+}));
 
-jest.mock("../../Components/EmployeeTitle", () => (props) => (
-  <input
-    placeholder="search"
-    value={props.searchValue}
-    onChange={(e) => props.onSearchChange(e.target.value)}
-  />
-));
+// FIXED: path corrected to be relative to this test file's location,
+// resolving to where AttendanceReport.jsx actually imports the modal from
+// (src/Pages/attendanceReport/EmployeeAttendanceModal), plus wrapped in
+// { default: ... }
+vi.mock("../../Pages/attendanceReport/EmployeeAttendanceModal", () => ({
+  default: (props) =>
+    props.isOpen ? (
+      <div data-testid="attendance-modal">
+        {props.employee?.employee_name} - {props.monthName}
+        <button onClick={props.onClose}>Close</button>
+      </div>
+    ) : null,
+}));
+
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: (props) => (
+    <input
+      placeholder="search"
+      value={props.searchValue}
+      onChange={(e) => props.onSearchChange(e.target.value)}
+    />
+  ),
+}));
 
 const summaryResults = [
   {
@@ -81,7 +90,7 @@ function renderWithProviders({
 
 describe("AttendanceReport", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("dispatches getAttendanceSummary for the current month with the auth token on mount", () => {

@@ -5,35 +5,45 @@ import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "@testing-library/jest-dom";
 
-import EmployeeLeaveForm from "./EmployeeLeaveDetails"; // adjust path/filename to match your project
+import EmployeeLeaveForm from "../../Pages/leaveDetails/EmployeeLeaveDetails"; // adjust path/filename to match your project
 import * as leaveSlice from "../../Redux/leaveSlice";
 
 // ---- Mocks ----
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock("../../Redux/leaveSlice", () => ({
-  getLeaveDetails: jest.fn(() => ({ type: "leave/getLeaveDetails" })),
-  patchLeaveStatus: jest.fn(() => ({ type: "leave/patchLeaveStatus" })),
+vi.mock("../../Redux/leaveSlice", () => ({
+  getLeaveDetails: vi.fn(() => ({ type: "leave/getLeaveDetails" })),
+  patchLeaveStatus: vi.fn(() => ({ type: "leave/patchLeaveStatus" })),
 }));
 
-jest.mock("../../Components/Loader", () => () => <div>Loading...</div>);
-jest.mock("../../Components/Header", () => (props) => (
-  <div data-testid="employee-header">{props.employee?.name || "No Employee"}</div>
-));
-jest.mock("../../Components/EmployeeTitle", () => () => <div>Title Bar</div>);
-jest.mock("../../Components/ConfirmLeaveModal", () => (props) =>
-  props.show ? (
-    <div data-testid="confirm-modal">
-      actionType:{props.actionType} leaveId:{props.leaveId}
-      <button onClick={props.onConfirm}>Confirm</button>
-      <button onClick={props.onClose}>Cancel</button>
-    </div>
-  ) : null
-);
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div>Loading...</div>,
+}));
+
+vi.mock("../../Components/Header", () => ({
+  default: (props) => (
+    <div data-testid="employee-header">{props.employee?.name || "No Employee"}</div>
+  ),
+}));
+
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: () => <div>Title Bar</div>,
+}));
+
+vi.mock("../../Components/ConfirmLeaveModal", () => ({
+  default: (props) =>
+    props.show ? (
+      <div data-testid="confirm-modal">
+        actionType:{props.actionType} leaveId:{props.leaveId}
+        <button onClick={props.onConfirm}>Confirm</button>
+        <button onClick={props.onClose}>Cancel</button>
+      </div>
+    ) : null,
+}));
 
 const leaveDetails = {
   leave_type: "Sick Leave",
@@ -77,7 +87,7 @@ function renderWithProviders({
 
 describe("EmployeeLeaveForm", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("dispatches getLeaveDetails with the route id on mount", () => {
@@ -214,14 +224,16 @@ describe("EmployeeLeaveForm", () => {
     );
   });
 
-  test("closes the modal and resets action type even if the dispatch throws", async () => {
-    leaveSlice.patchLeaveStatus.mockImplementationOnce(() => {
-      throw new Error("network error");
-    });
-    renderWithProviders();
-    fireEvent.click(screen.getByText("Approve"));
-    fireEvent.click(screen.getByText("Confirm"));
 
-    await waitFor(() => expect(screen.queryByTestId("confirm-modal")).not.toBeInTheDocument());
-  });
+test("closes the modal and resets action type even if the dispatch throws", async () => {
+  leaveSlice.patchLeaveStatus.mockImplementationOnce(() => ({
+    type: "leave/patchLeaveStatus",
+    unwrap: () => Promise.reject(new Error("network error")),
+  }));
+  renderWithProviders();
+  fireEvent.click(screen.getByText("Approve"));
+  fireEvent.click(screen.getByText("Confirm"));
+
+  await waitFor(() => expect(screen.queryByTestId("confirm-modal")).not.toBeInTheDocument());
+});
 });

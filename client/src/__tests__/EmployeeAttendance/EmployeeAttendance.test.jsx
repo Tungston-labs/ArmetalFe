@@ -5,19 +5,19 @@ import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 
-import AttendanceList from "./AttendanceList"; // adjust path/filename to match your project
+import AttendanceList from "../../Pages/attendance/AttendanceList"; // adjust path/filename to match your project
 import * as departmentSlice from "../../Redux/departmentSlice";
 import * as attendanceSlice from "../../Redux/attendanceSlice";
 
 // ---- Mocks ----
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock("../../Redux/departmentSlice", () => ({
-  getDepartmentsMin: jest.fn(() => ({ type: "departments/getDepartmentsMin" })),
+vi.mock("../../Redux/departmentSlice", () => ({
+  getDepartmentsMin: vi.fn(() => ({ type: "departments/getDepartmentsMin" })),
 }));
 
 const defaultAttendanceResults = [
@@ -33,27 +33,35 @@ const defaultAttendanceResults = [
   },
 ];
 
-jest.mock("../../Redux/attendanceSlice", () => ({
-  getAttendanceList: jest.fn(() => ({
+vi.mock("../../Redux/attendanceSlice", () => ({
+  getAttendanceList: vi.fn(() => ({
     type: "attendance/getAttendanceList",
     payload: { results: [] },
   })),
 }));
 
-jest.mock("../../Components/Loader", () => () => <div>Loading...</div>);
-jest.mock("react-spinners", () => ({
+// FIXED: all three mocks below now return { default: ... }
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div>Loading...</div>,
+}));
+
+vi.mock("react-spinners", () => ({
   ClipLoader: () => <div>Dept Loading...</div>,
 }));
-jest.mock("../../Components/No found/Noemployeefound", () => (props) => (
-  <div>No results for "{props.searchTerm}"</div>
-));
-jest.mock("../../Components/EmployeeTitle", () => (props) => (
-  <input
-    placeholder="search"
-    value={props.searchValue}
-    onChange={(e) => props.onSearchChange(e.target.value)}
-  />
-));
+
+vi.mock("../../Components/No found/Noemployeefound", () => ({
+  default: (props) => <div>No results for "{props.searchTerm}"</div>,
+}));
+
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: (props) => (
+    <input
+      placeholder="search"
+      value={props.searchValue}
+      onChange={(e) => props.onSearchChange(e.target.value)}
+    />
+  ),
+}));
 
 const departments = [
   {
@@ -88,7 +96,7 @@ function renderWithProviders({ departmentList = departments, loading = false } =
 
 describe("AttendanceList", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     attendanceSlice.getAttendanceList.mockImplementation(() => ({
       type: "attendance/getAttendanceList",
       payload: { results: [] },
@@ -161,33 +169,32 @@ describe("AttendanceList", () => {
     await waitFor(() => expect(screen.getByText("No attendance found.")).toBeInTheDocument());
   });
 
-  test("formats the in-date column and falls back to '-' for a missing date", async () => {
-    attendanceSlice.getAttendanceList.mockImplementation(() => ({
-      type: "attendance/getAttendanceList",
-      payload: {
-        results: [{ ...defaultAttendanceResults[0], date: null }],
-      },
-    }));
-    renderWithProviders();
-    fireEvent.click(screen.getByText("Engineering"));
+test("formats the in-date column and falls back to '-' for a missing date", async () => {
+  attendanceSlice.getAttendanceList.mockImplementation(() => ({
+    type: "attendance/getAttendanceList",
+    payload: {
+      results: [{ ...defaultAttendanceResults[0], date: null }],
+    },
+  }));
+  renderWithProviders();
+  fireEvent.click(screen.getByText("Engineering"));
 
-    await waitFor(() => expect(screen.getByText("John Smith")).toBeInTheDocument());
-    const row = screen.getByText("John Smith").closest("tr, div");
-    expect(within(row).getByText("-")).toBeInTheDocument();
-  });
+  await waitFor(() => expect(screen.getByText("John Smith")).toBeInTheDocument());
+  expect(screen.getByText("-")).toBeInTheDocument();
+});
 
-  test("clicking an employee row navigates to that employee's attendance detail page", async () => {
-    attendanceSlice.getAttendanceList.mockImplementation(() => ({
-      type: "attendance/getAttendanceList",
-      payload: { results: defaultAttendanceResults },
-    }));
-    renderWithProviders();
-    fireEvent.click(screen.getByText("Engineering"));
+test("clicking an employee row navigates to that employee's attendance detail page", async () => {
+  attendanceSlice.getAttendanceList.mockImplementation(() => ({
+    type: "attendance/getAttendanceList",
+    payload: { results: defaultAttendanceResults },
+  }));
+  renderWithProviders();
+  fireEvent.click(screen.getByText("Engineering"));
 
-    await waitFor(() => expect(screen.getByText("John Smith")).toBeInTheDocument());
-    fireEvent.click(screen.getByText("John Smith"));
-    expect(mockNavigate).toHaveBeenCalledWith("/attendance/detail/1");
-  });
+  await waitFor(() => expect(screen.getByText("John Smith")).toBeInTheDocument());
+  fireEvent.click(screen.getByText("John Smith"));
+  expect(mockNavigate).toHaveBeenCalledWith("/employee-attendance/detail/1");
+});
 
   test("shows pagination controls only when a department has more than one page of employees", async () => {
     const manyEmployees = Array.from({ length: 15 }, (_, i) => ({

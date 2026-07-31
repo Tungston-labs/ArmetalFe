@@ -1,77 +1,88 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within, act } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 
-import EmployeeList from "./EmployeeList"; // adjust path/filename to match your project
+import EmployeeList from "../../Pages/leaveDetails/EmployeeList"; // adjust path/filename to match your project
 import * as employeeSlice from "../../Redux/employeeSlice";
 import * as departmentSlice from "../../Redux/departmentSlice";
 
 // ---- Mocks ----
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock("../../Redux/employeeSlice", () => ({
-  getAllEmployees: jest.fn((args) => ({
+vi.mock("../../Redux/employeeSlice", () => ({
+  getAllEmployees: vi.fn((args) => ({
     type: "employees/getAllEmployees",
     payload: args,
     then: (cb) => Promise.resolve().then(cb), // supports .then() chaining used by handlePageChange
   })),
-  deleteEmployeeById: jest.fn(() => ({ type: "employees/deleteEmployeeById" })),
+  deleteEmployeeById: vi.fn(() => ({ type: "employees/deleteEmployeeById" })),
 }));
 
-jest.mock("../../Redux/departmentSlice", () => ({
-  getDepartments: jest.fn(() => ({ type: "departments/getDepartments" })),
+vi.mock("../../Redux/departmentSlice", () => ({
+  getDepartments: vi.fn(() => ({ type: "departments/getDepartments" })),
 }));
 
-jest.mock("../../Components/Loader", () => () => <div>Loading...</div>);
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div>Loading...</div>,
+}));
 
-jest.mock("../../Components/Pagination/Pagination", () => (props) => (
-  <div data-testid="pagination">
-    {`Page ${props.currentPage} of ${props.totalPages}`}
-    <button onClick={() => props.onPageChange(props.currentPage + 1)}>Next</button>
-  </div>
-));
-
-jest.mock("../../Components/No found/Noemployeefound", () => (props) => (
-  <div>No results for "{props.searchTerm}"</div>
-));
-
-jest.mock("../employeDashboard/RightSideModal", () => (props) =>
-  props.isOpen ? (
-    <div data-testid="right-side-modal">
-      Employee {props.employeeId}
-      <button onClick={props.onClose}>Close Modal</button>
+vi.mock("../../Components/Pagination/Pagination", () => ({
+  default: (props) => (
+    <div data-testid="pagination">
+      {`Page ${props.currentPage} of ${props.totalPages}`}
+      <button onClick={() => props.onPageChange(props.currentPage + 1)}>Next</button>
     </div>
-  ) : null
-);
+  ),
+}));
 
-jest.mock("../../Components/EmployeeTitle", () => (props) => (
-  <div>
-    <input
-      placeholder="search"
-      value={props.searchValue}
-      onChange={(e) => props.onSearchChange(e.target.value)}
-    />
-    <select
-      value={props.selectedDropdownValue}
-      onChange={(e) => props.onDropdownChange(e.target.value)}
-    >
-      <option value="">All Departments</option>
-      {props.dropdownOptions?.map((d) => (
-        <option key={d.id} value={d.id}>
-          {d.name}
-        </option>
-      ))}
-    </select>
-    <button onClick={props.onAddClick}>{props.buttonText}</button>
-  </div>
-));
+vi.mock("../../Components/No found/Noemployeefound", () => ({
+  default: (props) => <div>No results for "{props.searchTerm}"</div>,
+}));
+
+// FIXED: path must be relative to this test file's location, resolving to
+// where EmployeeList.jsx actually imports RightSideModal from
+// (src/Pages/employeDashboard/RightSideModal), not relative to the test
+// file's own folder.
+vi.mock("../../Pages/employeDashboard/RightSideModal", () => ({
+  default: (props) =>
+    props.isOpen ? (
+      <div data-testid="right-side-modal">
+        Employee {props.employeeId}
+        <button onClick={props.onClose}>Close Modal</button>
+      </div>
+    ) : null,
+}));
+
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: (props) => (
+    <div>
+      <input
+        placeholder="search"
+        value={props.searchValue}
+        onChange={(e) => props.onSearchChange(e.target.value)}
+      />
+      <select
+        value={props.selectedDropdownValue}
+        onChange={(e) => props.onDropdownChange(e.target.value)}
+      >
+        <option value="">All Departments</option>
+        {props.dropdownOptions?.map((d) => (
+          <option key={d.id} value={d.id}>
+            {d.name}
+          </option>
+        ))}
+      </select>
+      <button onClick={props.onAddClick}>{props.buttonText}</button>
+    </div>
+  ),
+}));
 
 const employees = [
   {
@@ -117,7 +128,7 @@ function renderWithProviders({
 
 describe("EmployeeList", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("dispatches getDepartments and getAllEmployees on mount", () => {
@@ -142,12 +153,15 @@ describe("EmployeeList", () => {
 
   test("renders employee rows with capitalized name and uppercase designation", () => {
     renderWithProviders();
+    // FIXED: "Field Ops" is ambiguous (also appears as a dropdown option),
+    // so scope the query to inside the table.
+    const table = screen.getByRole("table");
     expect(screen.getByText("John")).toBeInTheDocument();
     expect(screen.getByText("Amy")).toBeInTheDocument();
     expect(screen.getByText("TECHNICIAN")).toBeInTheDocument();
     expect(screen.getByText("SUPERVISOR")).toBeInTheDocument();
     expect(screen.getByText("EMP001")).toBeInTheDocument();
-    expect(screen.getByText("Field Ops")).toBeInTheDocument();
+    expect(within(table).getByText("Field Ops")).toBeInTheDocument();
   });
 
   test("shows the 'no employee found' message when the list is empty", () => {
@@ -155,31 +169,38 @@ describe("EmployeeList", () => {
     expect(screen.getByText(/no results for/i)).toBeInTheDocument();
   });
 
-  test("filters displayed employees by search text (name match)", () => {
-    jest.useFakeTimers();
+  test("filters displayed employees by search text (name match)", async () => {
+    vi.useFakeTimers();
     renderWithProviders();
 
     const searchInput = screen.getByPlaceholderText("search");
     fireEvent.change(searchInput, { target: { value: "john" } });
 
-    jest.advanceTimersByTime(300);
+    // FIXED: wrap timer advancement in act() so React flushes the debounce
+    // state update and any dependent re-render before we assert.
+    await act(async () => {
+      vi.advanceTimersByTime(300);
+    });
 
     expect(screen.getByText("John")).toBeInTheDocument();
     expect(screen.queryByText("Amy")).not.toBeInTheDocument();
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
-  test("filters displayed employees by search text (employee_id match)", () => {
-    jest.useFakeTimers();
+  test("filters displayed employees by search text (employee_id match)", async () => {
+    vi.useFakeTimers();
     renderWithProviders();
 
     const searchInput = screen.getByPlaceholderText("search");
     fireEvent.change(searchInput, { target: { value: "alee" } });
-    jest.advanceTimersByTime(300);
+
+    await act(async () => {
+      vi.advanceTimersByTime(300);
+    });
 
     expect(screen.getByText("Amy")).toBeInTheDocument();
     expect(screen.queryByText("John")).not.toBeInTheDocument();
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   test("changing the department dropdown re-dispatches getAllEmployees with the filter", async () => {
@@ -218,7 +239,7 @@ describe("EmployeeList", () => {
   test("clicking the delete icon opens the confirmation modal without opening the row modal", () => {
     renderWithProviders();
     const row = screen.getByText("John").closest("tr");
-    const deleteIcon = within(row).getByText((_, el) => el.tagName === "svg") || row.querySelector("svg");
+    const deleteIcon = row.querySelector("svg");
     fireEvent.click(deleteIcon);
 
     expect(screen.getByText("Confirm Deletion")).toBeInTheDocument();
@@ -232,7 +253,9 @@ describe("EmployeeList", () => {
     fireEvent.click(deleteIcon);
 
     employeeSlice.getAllEmployees.mockClear();
-    fireEvent.click(screen.getByText("Delete"));
+    // FIXED: "Delete" is ambiguous (also a table column header) — target
+    // the confirm-modal button by role instead.
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
 
     await waitFor(() => expect(employeeSlice.deleteEmployeeById).toHaveBeenCalledWith(1));
     await waitFor(() => expect(employeeSlice.getAllEmployees).toHaveBeenCalled());
@@ -245,7 +268,7 @@ describe("EmployeeList", () => {
     const deleteIcon = row.querySelector("svg");
     fireEvent.click(deleteIcon);
 
-    fireEvent.click(screen.getByText("Cancel"));
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
     expect(employeeSlice.deleteEmployeeById).not.toHaveBeenCalled();
     expect(screen.queryByText("Confirm Deletion")).not.toBeInTheDocument();

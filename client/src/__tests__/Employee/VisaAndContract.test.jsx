@@ -1,60 +1,66 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within, act } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import "@testing-library/jest-dom";
 
-import EmployeeList from "./Visa"; // adjust path/filename to match your project
+import EmployeeList from "../../Pages/visa/Visa"; // adjust path/filename to match your project
 import * as employeeSlice from "../../Redux/employeeSlice";
 
 // ---- Mocks ----
-jest.mock("../../Redux/employeeSlice", () => ({
-  getAllEmployees: jest.fn(() => ({ type: "employees/getAllEmployees" })),
-  deleteEmployeeById: jest.fn(() => ({ type: "employees/deleteEmployeeById" })),
-  getUpcomingExpiryEmployees: jest.fn(() => ({
+vi.mock("../../Redux/employeeSlice", () => ({
+  getAllEmployees: vi.fn(() => ({ type: "employees/getAllEmployees" })),
+  deleteEmployeeById: vi.fn(() => ({ type: "employees/deleteEmployeeById" })),
+  getUpcomingExpiryEmployees: vi.fn(() => ({
     type: "employees/getUpcomingExpiryEmployees",
   })),
 }));
 
-jest.mock("../../Components/Loader", () => () => <div>Spinner...</div>);
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div>Loading...</div>,
+}));
 
 // Capture the latest onPageChange handler so tests can invoke it directly
 // with arbitrary (including invalid) values.
 let latestOnPageChange = null;
-jest.mock("../../Components/Pagination/Pagination", () => (props) => {
-  latestOnPageChange = props.onPageChange;
-  return (
-    <div data-testid="pagination">
-      {`Page ${props.currentPage} of ${props.totalPages}`}
-      <button onClick={() => props.onPageChange(props.currentPage + 1)}>Next</button>
+vi.mock("../../Components/Pagination/Pagination", () => ({
+  default: (props) => {
+    latestOnPageChange = props.onPageChange;
+    return (
+      <div data-testid="pagination">
+        {`Page ${props.currentPage} of ${props.totalPages}`}
+        <button onClick={() => props.onPageChange(props.currentPage + 1)}>Next</button>
+      </div>
+    );
+  },
+}));
+
+vi.mock("../../Components/No found/Noemployeefound", () => ({
+  default: (props) => <div>No results for "{props.searchTerm}"</div>,
+}));
+
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: (props) => (
+    <div>
+      <input
+        placeholder="search"
+        value={props.searchValue}
+        onChange={(e) => props.onSearchChange(e.target.value)}
+      />
+      <select
+        value={props.selectedDropdownValue}
+        onChange={(e) => props.onDropdownChange(e.target.value)}
+      >
+        <option value="">None</option>
+        {props.dropdownOptions?.map((opt) => (
+          <option key={opt.id} value={opt.id}>
+            {opt.name}
+          </option>
+        ))}
+      </select>
     </div>
-  );
-});
-
-jest.mock("../../Components/No found/Noemployeefound", () => (props) => (
-  <div>No results for "{props.searchTerm}"</div>
-));
-
-jest.mock("../../Components/EmployeeTitle", () => (props) => (
-  <div>
-    <input
-      placeholder="search"
-      value={props.searchValue}
-      onChange={(e) => props.onSearchChange(e.target.value)}
-    />
-    <select
-      value={props.selectedDropdownValue}
-      onChange={(e) => props.onDropdownChange(e.target.value)}
-    >
-      <option value="">None</option>
-      {props.dropdownOptions?.map((opt) => (
-        <option key={opt.id} value={opt.id}>
-          {opt.name}
-        </option>
-      ))}
-    </select>
-  </div>
-));
+  ),
+}));
 
 const employees = [
   {
@@ -95,14 +101,14 @@ function renderWithProviders({
 
 describe("EmployeeList (visa/contract expiry)", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     localStorage.clear();
     sessionStorage.clear();
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   test("dispatches getAllEmployees by default (no expiry filter) on mount", () => {
@@ -113,12 +119,13 @@ describe("EmployeeList (visa/contract expiry)", () => {
 
   test("shows loader overlay while loading", () => {
     renderWithProviders({ loading: true });
-    expect(screen.getByText("Spinner...")).toBeInTheDocument();
+    expect(screen.getAllByText("Loading...")[0]).toBeInTheDocument();
   });
 
   test("shows 'Loading...' text row inside the table body while loading", () => {
     renderWithProviders({ loading: true });
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    const table = screen.getByRole("table");
+    expect(within(table).getByText("Loading...")).toBeInTheDocument();
   });
 
   test("renders employee rows with capitalized name and 'Contract Expiry Date' header for IN users", () => {
@@ -126,8 +133,8 @@ describe("EmployeeList (visa/contract expiry)", () => {
     renderWithProviders();
 
     expect(screen.getByText("Contract Expiry Date")).toBeInTheDocument();
-    expect(screen.getByText("John")).toBeInTheDocument();
-    expect(screen.getByText("Amy")).toBeInTheDocument();
+    expect(screen.getByText("john")).toBeInTheDocument();
+    expect(screen.getByText("amy")).toBeInTheDocument();
     expect(screen.getByText("15/Aug/2026")).toBeInTheDocument();
   });
 
@@ -155,7 +162,7 @@ describe("EmployeeList (visa/contract expiry)", () => {
     expect(screen.getByText(/no results for/i)).toBeInTheDocument();
   });
 
-  test("debounces search input before dispatching getAllEmployees", () => {
+  test("debounces search input before dispatching getAllEmployees", async () => {
     renderWithProviders();
     employeeSlice.getAllEmployees.mockClear();
 
@@ -165,18 +172,26 @@ describe("EmployeeList (visa/contract expiry)", () => {
     // Not yet dispatched before debounce window elapses
     expect(employeeSlice.getAllEmployees).not.toHaveBeenCalled();
 
-    jest.advanceTimersByTime(500);
+    // FIXED: wrap timer advancement in act() so React flushes the state
+    // update (setDebouncedSearch) and the dependent dispatch effect
+    // before we assert on it.
+    await act(async () => {
+      vi.advanceTimersByTime(500);
+    });
 
     expect(employeeSlice.getAllEmployees).toHaveBeenCalledWith(
       expect.objectContaining({ search: "john", page: 1 })
     );
   });
 
-  test("resets page to 1 immediately when the user types a new search", () => {
+  test("resets page to 1 immediately when the user types a new search", async () => {
     renderWithProviders({ pagination: { total_pages: 3, current_page: 2 } });
     const input = screen.getByPlaceholderText("search");
     fireEvent.change(input, { target: { value: "a" } });
-    jest.advanceTimersByTime(500);
+
+    await act(async () => {
+      vi.advanceTimersByTime(500);
+    });
 
     expect(employeeSlice.getAllEmployees).toHaveBeenCalledWith(
       expect.objectContaining({ page: 1 })

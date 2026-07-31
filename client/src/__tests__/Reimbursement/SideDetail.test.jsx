@@ -6,20 +6,22 @@ import React from "react";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import Side_detail from "../../../pages/reimbursement/Side_detail.jsx"; // adjust path to match your project
-import { getGroupedReimbursements } from "../../../services/reimbursement";
+import Side_detail from "../../Pages/reimbursement/Side_detail.jsx"; // adjust path to match your project
+import { getGroupedReimbursements } from "../../services/reimbursement";
 
-jest.mock("../../../services/reimbursement", () => ({
-  getGroupedReimbursements: jest.fn(),
+vi.mock("../../services/reimbursement", () => ({
+  getGroupedReimbursements: vi.fn(),
 }));
 
-jest.mock("../../../Components/Loader", () => () => (
-  <div data-testid="loader" />
-));
+vi.mock("../../Components/Loader", () => ({
+  default: () => (
+    <div data-testid="loader" />
+  ),
+}));
 
 // Styled-components mocked as plain passthrough elements so tests aren't
 // coupled to the real styling implementation.
-jest.mock("../../../pages/reimbursement/Side_detail.Styles", () => {
+vi.mock("../../Pages/reimbursement/Side_detail.Styles", () => {
   const passthrough = (tag) => (props) =>
     React.createElement(tag, props, props.children);
   return {
@@ -38,7 +40,11 @@ jest.mock("../../../pages/reimbursement/Side_detail.Styles", () => {
     Title: passthrough("h2"),
     CloseButton: (props) => <button {...props}>{props.children}</button>,
     DateHeading: passthrough("h3"),
-    Card: passthrough("div"),
+    Card: (props) => (
+      <div data-testid="card" {...props}>
+        {props.children}
+      </div>
+    ),
     ProfileImage: (props) => <img {...props} />,
     Info: passthrough("div"),
     Label: passthrough("span"),
@@ -85,10 +91,10 @@ const groupedFixture = [
   },
 ];
 
-const onClose = jest.fn();
+const onClose = vi.fn();
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 describe("Side_detail (ReimbursementHistory)", () => {
@@ -161,7 +167,10 @@ describe("Side_detail (ReimbursementHistory)", () => {
     render(<Side_detail onClose={onClose} />);
     await screen.findByText("Bob");
 
-    const bobCard = screen.getByText("Bob").closest("div");
+    // Find the outer Card (via its test id), not just the immediate
+    // Name/Value wrapper div — Card is where Department/Designation
+    // siblings with "N/A" actually live.
+    const bobCard = screen.getByText("Bob").closest('[data-testid="card"]');
     expect(within(bobCard).getAllByText("N/A")).toHaveLength(2);
   });
 

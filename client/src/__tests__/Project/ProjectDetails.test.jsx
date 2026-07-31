@@ -1,199 +1,285 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
+import Swal from "sweetalert2";
 
-import DepartmentPage from "./FieldShift"; // adjust path/filename to match your project
+import FieldShift from "../../Pages/Shift/FieldDepartment"; // adjust path/filename to match your project
 import * as fieldShiftSlice from "../../Redux/fieldShiftSlice";
 
 // ---- Mocks ----
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockNavigate,
+  useParams: () => ({ id: "42" }),
 }));
 
-jest.mock("../../Redux/fieldShiftSlice", () => ({
-  getProjects: jest.fn(() => ({ type: "projects/getProjects" })),
+vi.mock("sweetalert2", () => ({
+  default: {
+    fire: vi.fn(() => Promise.resolve({ isConfirmed: true })),
+  },
 }));
 
-jest.mock("../../Components/Loader", () => () => <div>Loading...</div>);
+vi.mock("../../Redux/fieldShiftSlice", () => ({
+  getProjectById: vi.fn(() => ({ type: "projects/getProjectById" })),
+  updateProject: vi.fn(() => ({
+    type: "projects/updateProject",
+    unwrap: () => Promise.resolve({}),
+  })),
+  deleteProject: vi.fn(() => ({
+    type: "projects/deleteProject",
+    unwrap: () => Promise.resolve({}),
+  })),
+  removeEmployeeFromProject: vi.fn(() => ({
+    type: "projects/removeEmployeeFromProject",
+    unwrap: () => Promise.resolve({}),
+  })),
+}));
 
-jest.mock("../../Components/No found/Noemployeefound", () => (props) => (
-  <div>{props.label}</div>
-));
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div>Loading...</div>,
+}));
 
-jest.mock("../../Components/AddProjectModal", () => (props) =>
-  props.isOpen ? (
-    <div data-testid="add-project-modal">
-      <button onClick={() => props.onSave({ name: "New Project" })}>Save</button>
-      <button onClick={props.onClose}>Close</button>
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: (props) => <h1>{props.title}</h1>,
+}));
+
+vi.mock("../../Components/ProgressModal", () => ({
+  default: (props) => <div data-testid="progress-modal">{props.status}</div>,
+}));
+
+vi.mock("../../Components/EmployeeModal", () => ({
+  default: (props) => (
+    <div data-testid="employee-modal">
+      <button onClick={props.onClose}>Close Employee Modal</button>
     </div>
-  ) : null
-);
+  ),
+}));
 
-// Mock EmployeeTitle to expose the search/add controls in a predictable way
-jest.mock("../../Components/EmployeeTitle", () => (props) => (
-  <div>
-    <h1>{props.title}</h1>
-    <input
-      placeholder={props.searchPlaceholder}
-      value={props.searchValue}
-      onChange={(e) => props.onSearchChange(e.target.value)}
-    />
-    <button onClick={props.onAddClick}>{props.buttonText}</button>
-  </div>
-));
+vi.mock("../../Components/EditProjectModal", () => ({
+  default: (props) =>
+    props.isOpen ? (
+      <div data-testid="edit-project-modal">
+        <button
+          onClick={() =>
+            props.onSave({
+              projectName: "Updated Name",
+              punchInType: "QR",
+              latitude: "1.1",
+              longitude: "2.2",
+              status: "completed",
+            })
+          }
+        >
+          Save Edit
+        </button>
+        <button onClick={props.onClose}>Close Edit</button>
+      </div>
+    ) : null,
+}));
 
-const projects = [
-  {
-    id: 1,
-    name: "Site Alpha",
-    employees: [{ id: 1 }, { id: 2 }],
-    punch_type: "GPS",
-    status: "in_progress",
-  },
-  {
-    id: 2,
-    name: "Site Beta",
-    employees: [],
-    punch_type: "QR",
-    status: "completed",
-  },
-  {
-    id: 3,
-    name: "Site Gamma",
-    employees: [{ id: 3 }],
-    status: "unknown_status",
-  },
-];
+const baseProject = {
+  id: 42,
+  name: "Site Alpha",
+  punch_type: "GPS",
+  latitude: "10.1",
+  longitude: "20.2",
+  status: "in_progress",
+  employees: [
+    {
+      id: 1,
+      name: "John Smith",
+      employee_id: "EMP001",
+      email: "john@example.com",
+      designation: "Technician",
+      department_name: "Field Ops",
+    },
+    {
+      id: 2,
+      name: "Amy Lee",
+      employee_id: "EMP002",
+      email: "amy@example.com",
+      designation: "Supervisor",
+      department_name: "Field Ops",
+    },
+  ],
+};
 
-function renderWithProviders({ projects: projState = projects, isLoading = false } = {}) {
+function renderWithProviders({ project = baseProject, loading = false, error = null } = {}) {
   const store = configureStore({
     reducer: {
-      projects: (state = { projects: projState, isLoading }) => state,
+      projects: (state = { project, loading, error }) => state,
     },
   });
 
   return render(
     <Provider store={store}>
       <MemoryRouter>
-        <DepartmentPage />
+        <FieldShift />
       </MemoryRouter>
     </Provider>
   );
 }
 
-describe("DepartmentPage", () => {
+describe("FieldShift (project detail)", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  test("dispatches getProjects with empty search term on mount", () => {
+  test("dispatches getProjectById with the route id on mount", () => {
     renderWithProviders();
-    expect(fieldShiftSlice.getProjects).toHaveBeenCalledWith({ search: "" });
+    expect(fieldShiftSlice.getProjectById).toHaveBeenCalledWith("42");
   });
 
-  test("shows the loader while isLoading is true", () => {
-    renderWithProviders({ isLoading: true });
+  test("shows loader while loading", () => {
+    renderWithProviders({ loading: true, project: null });
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
-  test("renders a card for each project with employee count, punch type, and status", () => {
+  test("shows error message when fetch fails", () => {
+    renderWithProviders({ project: null, error: "Not found" });
+    expect(screen.getByText(/failed to load project: not found/i)).toBeInTheDocument();
+  });
+
+  test("populates form fields from the loaded project", () => {
     renderWithProviders();
-
-    expect(screen.getByText("Site Alpha")).toBeInTheDocument();
-    expect(screen.getByText("Site Beta")).toBeInTheDocument();
-    expect(screen.getByText("Site Gamma")).toBeInTheDocument();
-
-    // Employee counts
-    expect(screen.getByText("2")).toBeInTheDocument(); // Alpha
-    expect(screen.getByText("0")).toBeInTheDocument(); // Beta
-    expect(screen.getByText("1")).toBeInTheDocument(); // Gamma
-
-    // Punch type fallback
-    expect(screen.getByText("GPS")).toBeInTheDocument();
-    expect(screen.getByText("QR")).toBeInTheDocument();
-    expect(screen.getByText("N/A")).toBeInTheDocument(); // Gamma has no punch_type
-
-    // Status labels
-    expect(screen.getByText("In Progress")).toBeInTheDocument();
-    expect(screen.getByText("Completed")).toBeInTheDocument();
-    // Unknown status falls back to raw value
-    expect(screen.getByText("unknown_status")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Site Alpha")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("GPS")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("10.1")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("20.2")).toBeInTheDocument();
   });
 
-  test("shows 'No Projects Found' when the project list is empty", () => {
-    renderWithProviders({ projects: [] });
-    expect(screen.getByText("No Projects Found")).toBeInTheDocument();
-  });
-
-  test("does not show empty-state message while still loading", () => {
-    renderWithProviders({ projects: [], isLoading: true });
-    expect(screen.queryByText("No Projects Found")).not.toBeInTheDocument();
-  });
-
-  test("clicking a project card navigates to its detail page with project name in state", () => {
+  test("renders the employee table with mapped fields", () => {
     renderWithProviders();
-    fireEvent.click(screen.getByText("Site Alpha"));
-    expect(mockNavigate).toHaveBeenCalledWith("/project-department/1", {
-      state: { projectName: "Site Alpha" },
-    });
+    expect(screen.getByText("John Smith")).toBeInTheDocument();
+    expect(screen.getByText("EMP001")).toBeInTheDocument();
+    expect(screen.getByText("john@example.com")).toBeInTheDocument();
+    expect(screen.getByText("Technician")).toBeInTheDocument();
+    expect(screen.getAllByText("Field Ops")).toHaveLength(2);
+    expect(screen.getByText("Amy Lee")).toBeInTheDocument();
   });
 
-  test("typing in the search box updates search term and re-triggers getProjects", async () => {
+  test("renders ProgressModal with current status", () => {
     renderWithProviders();
-    fieldShiftSlice.getProjects.mockClear();
+    expect(screen.getByTestId("progress-modal")).toHaveTextContent("in_progress");
+  });
 
-    const input = screen.getByPlaceholderText("Search Project Name");
-    fireEvent.change(input, { target: { value: "Alpha" } });
+  test("clicking Edit opens the EditProjectModal", () => {
+    renderWithProviders();
+    fireEvent.click(screen.getByRole("button", { name: /edit/i }));
+    expect(screen.getByTestId("edit-project-modal")).toBeInTheDocument();
+  });
+
+  test("saving from EditProjectModal dispatches updateProject and refetches", async () => {
+    renderWithProviders();
+    fireEvent.click(screen.getByRole("button", { name: /edit/i }));
+    fireEvent.click(screen.getByText("Save Edit"));
 
     await waitFor(() =>
-      expect(fieldShiftSlice.getProjects).toHaveBeenCalledWith({ search: "Alpha" })
+      expect(fieldShiftSlice.updateProject).toHaveBeenCalledWith({
+        id: "42",
+        projectData: {
+          name: "Updated Name",
+          punch_type: "QR",
+          latitude: "1.1",
+          longitude: "2.2",
+          status: "completed",
+        },
+      })
     );
+    expect(Swal.fire).toHaveBeenCalledWith(
+      expect.objectContaining({ title: "Updated!", icon: "success" })
+    );
+    expect(fieldShiftSlice.getProjectById).toHaveBeenCalledTimes(2); // mount + after save
   });
 
-  test("clicking 'Add Project' opens the AddProjectModal", () => {
+  test("shows an error alert if updateProject fails", async () => {
+    fieldShiftSlice.updateProject.mockReturnValueOnce({
+      type: "projects/updateProject",
+      unwrap: () => Promise.reject(new Error("fail")),
+    });
     renderWithProviders();
-    fireEvent.click(screen.getByText("Add Project"));
-    expect(screen.getByTestId("add-project-modal")).toBeInTheDocument();
-  });
-
-  test("saving from the AddProjectModal closes it and refetches projects", async () => {
-    renderWithProviders();
-    fireEvent.click(screen.getByText("Add Project"));
-    fieldShiftSlice.getProjects.mockClear();
-
-    fireEvent.click(screen.getByText("Save"));
+    fireEvent.click(screen.getByRole("button", { name: /edit/i }));
+    fireEvent.click(screen.getByText("Save Edit"));
 
     await waitFor(() =>
-      expect(screen.queryByTestId("add-project-modal")).not.toBeInTheDocument()
+      expect(Swal.fire).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Error!", icon: "error" })
+      )
     );
-    expect(fieldShiftSlice.getProjects).toHaveBeenCalled();
   });
 
-  test("closing the AddProjectModal without saving just closes it", () => {
+  test("clicking Delete asks for confirmation and deletes on confirm", async () => {
     renderWithProviders();
-    fireEvent.click(screen.getByText("Add Project"));
-    fireEvent.click(screen.getByText("Close"));
-    expect(screen.queryByTestId("add-project-modal")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /delete/i }));
+
+    await waitFor(() => expect(fieldShiftSlice.deleteProject).toHaveBeenCalledWith("42"));
+    expect(screen.getByText(/the project has been deleted/i)).toBeInTheDocument();
+    expect(mockNavigate).toHaveBeenCalledWith("/project");
   });
 
-  test("handles missing projects/isLoading state gracefully (defaults applied)", () => {
-    const store = configureStore({
-      reducer: {
-        projects: (state = undefined) => state ?? null,
-      },
+  test("does not delete the project if confirmation is declined", async () => {
+    Swal.fire.mockResolvedValueOnce({ isConfirmed: false });
+    renderWithProviders();
+    fireEvent.click(screen.getByRole("button", { name: /delete/i }));
+
+    await waitFor(() => expect(Swal.fire).toHaveBeenCalled());
+    expect(fieldShiftSlice.deleteProject).not.toHaveBeenCalled();
+    expect(screen.queryByText(/the project has been deleted/i)).not.toBeInTheDocument();
+  });
+
+  test("shows an error alert if deleteProject fails", async () => {
+    fieldShiftSlice.deleteProject.mockReturnValueOnce({
+      type: "projects/deleteProject",
+      unwrap: () => Promise.reject(new Error("fail")),
     });
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <DepartmentPage />
-        </MemoryRouter>
-      </Provider>
+    renderWithProviders();
+    fireEvent.click(screen.getByRole("button", { name: /delete/i }));
+
+    await waitFor(() =>
+      expect(Swal.fire).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Error!", icon: "error" })
+      )
     );
-    expect(screen.getByText("No Projects Found")).toBeInTheDocument();
+  });
+
+  test("clicking the trash icon for an employee asks for confirmation and removes them", async () => {
+    renderWithProviders();
+    const row = screen.getByText("John Smith").closest("tr");
+
+    // The row-level delete icon is rendered as <svg color="red" ...> in the
+    // last cell — query it directly rather than via getByText/tagName tricks.
+    const deleteIcon = row.querySelector('svg[color="red"]');
+    fireEvent.click(deleteIcon);
+
+    await waitFor(() =>
+      expect(fieldShiftSlice.removeEmployeeFromProject).toHaveBeenCalledWith({
+        projectId: "42",
+        employeeId: 1,
+      })
+    );
+    await waitFor(() => expect(screen.queryByText("John Smith")).not.toBeInTheDocument());
+  });
+
+  test("clicking Add opens the EmployeeModal with the current project id", () => {
+    renderWithProviders();
+    fireEvent.click(screen.getByRole("button", { name: /add/i }));
+    expect(screen.getByTestId("employee-modal")).toBeInTheDocument();
+  });
+
+  test("closing the EmployeeModal hides it", () => {
+    renderWithProviders();
+    fireEvent.click(screen.getByRole("button", { name: /add/i }));
+    fireEvent.click(screen.getByText("Close Employee Modal"));
+    expect(screen.queryByTestId("employee-modal")).not.toBeInTheDocument();
+  });
+
+  test("renders an empty employees table when the project has no employees", () => {
+    renderWithProviders({ project: { ...baseProject, employees: [] } });
+    expect(screen.queryByText("John Smith")).not.toBeInTheDocument();
+    expect(screen.getByText("Employees")).toBeInTheDocument();
   });
 });

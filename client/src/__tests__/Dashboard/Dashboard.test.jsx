@@ -12,13 +12,13 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock("recharts", () => ({
+vi.mock("recharts", () => ({
   ResponsiveContainer: ({ children }) => <div>{children}</div>,
   BarChart: ({ children, data }) => (
     <div data-testid="bar-chart">{JSON.stringify(data)}{children}</div>
@@ -34,28 +34,28 @@ jest.mock("recharts", () => ({
   CartesianGrid: () => null,
 }));
 
-jest.mock("react-chartjs-2", () => ({
+vi.mock("react-chartjs-2", () => ({
   Doughnut: ({ data }) => <div data-testid="doughnut">{JSON.stringify(data)}</div>,
 }));
 
-jest.mock("chart.js", () => ({
-  Chart: { register: jest.fn() },
+vi.mock("chart.js", () => ({
+  Chart: { register: vi.fn() },
   ArcElement: {},
   Tooltip: {},
   Legend: {},
 }));
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 // ---------------------------------------------------------------------
-import HeaderBar from "../../../Components/homepage/HeaderBar";
+import HeaderBar from "../../Components/homepage/HeaderBar";
 
 describe("HeaderBar", () => {
   test("renders the title and calls onOpen when the menu button is clicked", async () => {
     const user = userEvent.setup();
-    const onOpen = jest.fn();
+    const onOpen = vi.fn();
     render(<HeaderBar onOpen={onOpen} />);
 
     expect(screen.getByText("Dashboard Overview")).toBeInTheDocument();
@@ -74,7 +74,7 @@ describe("HeaderBar", () => {
 });
 
 // ---------------------------------------------------------------------
-import StatsGrid from "../../../Components/homepage/StatsGrid";
+import StatsGrid from "../../Components/homepage/StatsGrid";
 
 describe("StatsGrid", () => {
   test("shows a loading message when counts is not yet available", () => {
@@ -114,7 +114,7 @@ describe("StatsGrid", () => {
 });
 
 // ---------------------------------------------------------------------
-import ProjectChart from "../../../Components/homepage/ProjectChart";
+import ProjectChart from "../../Components/homepage/ProjectChart";
 
 describe("ProjectChart", () => {
   test("shows a loading message while projectEmployeeCount is not ready", () => {
@@ -141,7 +141,7 @@ describe("ProjectChart", () => {
 });
 
 // ---------------------------------------------------------------------
-import ReimbursementSummary from "../../../Components/homepage/ReimbursementSummary";
+import ReimbursementSummary from "../../Components/homepage/ReimbursementSummary";
 
 describe("ReimbursementSummary", () => {
   test("shows a loading message until both reimbursements and monthwise data exist", () => {
@@ -176,7 +176,7 @@ describe("ReimbursementSummary", () => {
 });
 
 // ---------------------------------------------------------------------
-import DepartmentSummary from "../../../Components/homepage/DepartmentSummary";
+import DepartmentSummary from "../../Components/homepage/DepartmentSummary";
 
 describe("DepartmentSummary", () => {
   test("shows total department count and the single most recent department", () => {
@@ -202,7 +202,7 @@ describe("DepartmentSummary", () => {
 });
 
 // ---------------------------------------------------------------------
-import RecentlyAddedEmployees from "../../../Components/homepage/RecentlyAddedEmployees";
+import RecentlyAddedEmployees from "../../Components/homepage/RecentlyAddedEmployees";
 
 describe("RecentlyAddedEmployees", () => {
   const employees = [
@@ -230,7 +230,7 @@ describe("RecentlyAddedEmployees", () => {
 });
 
 // ---------------------------------------------------------------------
-import EmployeeContractExpiry from "../../../Components/homepage/EmployeeContractExpiry";
+import EmployeeContractExpiry from "../../Components/homepage/EmployeeContractExpiry";
 
 describe("EmployeeContractExpiry", () => {
   test("sorts employees by soonest contract expiry date first", () => {
@@ -264,7 +264,7 @@ describe("EmployeeContractExpiry", () => {
 });
 
 // ---------------------------------------------------------------------
-import UpcomingHolidays from "../../../Components/homepage/UpcomingHolidays";
+import UpcomingHolidays from "../../Components/homepage/UpcomingHolidays";
 
 describe("UpcomingHolidays", () => {
   test("sorts holidays chronologically and respects showCount", () => {
@@ -288,7 +288,7 @@ describe("UpcomingHolidays", () => {
 });
 
 // ---------------------------------------------------------------------
-import AttendanceCircle from "../../../Components/homepage/AttendanceCircle";
+import AttendanceCircle from "../../Components/homepage/AttendanceCircle";
 
 describe("AttendanceCircle", () => {
   test("renders present and leave percentages", () => {
@@ -305,7 +305,7 @@ describe("AttendanceCircle", () => {
 });
 
 // ---------------------------------------------------------------------
-import SingleHolidayCalendar from "../../../Components/homepage/SingleHolidayCalendar.jsx";
+import SingleHolidayCalendar from "../../Components/homepage/SingleHolidayCalendar.jsx";
 
 describe("SingleHolidayCalendar", () => {
   test("renders the current month and year by default", () => {

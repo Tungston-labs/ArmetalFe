@@ -1,25 +1,25 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "@testing-library/jest-dom";
 
-import PayrollDetails from "./PayrollDetailsView"; // adjust path/filename to match your project
+import PayrollDetails from "../../Pages/payroll/PayrollDetailsContainer"; // adjust path/filename to match your project
 import * as payrollSlice from "../../Redux/payrollSlice";
 
 // Mock the async thunk so it doesn't hit the real API
-jest.mock("../../Redux/payrollSlice", () => {
-  const actual = jest.requireActual("../../Redux/payrollSlice");
+vi.mock("../../Redux/payrollSlice", async () => {
+  const actual = await vi.importActual("../../Redux/payrollSlice");
   return {
     ...actual,
-    getPayrollDetail: jest.fn(() => ({ type: "payroll/getPayrollDetail" })),
+    getPayrollDetail: vi.fn(() => ({ type: "payroll/getPayrollDetail" })),
   };
 });
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockNavigate,
 }));
 
@@ -74,8 +74,8 @@ function renderWithProviders(preloadedState, route = "/payrolldetails/1") {
 
 describe("PayrollDetails", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    window.print = jest.fn();
+    vi.clearAllMocks();
+    window.print = vi.fn();
   });
 
   test("dispatches getPayrollDetail with the route id on mount", () => {
@@ -102,7 +102,7 @@ describe("PayrollDetails", () => {
     expect(screen.getByText(/no payroll data found/i)).toBeInTheDocument();
   });
 
-  test("renders employee info, company header, and pay summary correctly", () => {
+ test("renders employee info, company header, and pay summary correctly", () => {
     renderWithProviders({
       payrollDetail: basePayroll,
       loading: false,
@@ -128,9 +128,13 @@ describe("PayrollDetails", () => {
 
     // Earnings table: basic salary + increment + dynamic earning row
     expect(screen.getByText("40000.00")).toBeInTheDocument(); // basic salary
-    expect(screen.getByText("2000.00")).toBeInTheDocument(); // increment
+
+    const incrementRow = screen.getByText("Increment").closest("tr");
+    expect(within(incrementRow).getByText("2000.00")).toBeInTheDocument();
+
     expect(screen.getByText("HRA")).toBeInTheDocument();
-    expect(screen.getByText("5000.00")).toBeInTheDocument(); // HRA amount
+    const hraRow = screen.getByText("HRA").closest("tr");
+    expect(within(hraRow).getByText("5000.00")).toBeInTheDocument(); // HRA amount
 
     // Work summary
     expect(screen.getByText("22 Days")).toBeInTheDocument();
@@ -174,17 +178,15 @@ describe("PayrollDetails", () => {
   });
 
   test("clicking back navigates to /payrolldetails", () => {
-    const { container } = renderWithProviders({
+    renderWithProviders({
       payrollDetail: basePayroll,
       loading: false,
       error: null,
     });
-    const backTitle = container.querySelector(
-      '[class*="BackTitle"], header > *:first-child'
-    );
-    // Fallback: click the first clickable element inside Header if class selector fails
-    const clickable = backTitle || screen.getAllByRole("presentation")[0];
-    if (clickable) fireEvent.click(clickable);
+    // FIXED: no role="presentation" exists; the back arrow is simply the
+    // first <svg> on the page.
+    const backIcon = document.querySelectorAll("svg")[0];
+    fireEvent.click(backIcon);
     expect(mockNavigate).toHaveBeenCalledWith("/payrolldetails");
   });
 
@@ -194,8 +196,11 @@ describe("PayrollDetails", () => {
       loading: false,
       error: null,
     });
-    const printIcon = document.querySelector("svg");
-    if (printIcon) fireEvent.click(printIcon.closest("*"));
+    // FIXED: document.querySelector("svg") grabbed the back arrow (first
+    // svg on the page). The print icon is the second svg, inside the
+    // fixed "no-print" panel.
+    const printIcon = document.querySelectorAll("svg")[1];
+    fireEvent.click(printIcon.closest("span"));
     expect(window.print).toHaveBeenCalled();
   });
 

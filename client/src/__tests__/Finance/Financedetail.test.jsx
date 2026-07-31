@@ -11,95 +11,128 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useDispatch, useSelector } from "react-redux";
 
-import FinanceDetail from "../../../pages/finance/FinanceDetail";
+import FinanceDetail from "../../Pages/finance/FinancePage";
 
-jest.mock("react-redux", () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+vi.mock("react-redux", () => ({
+  useDispatch: vi.fn(),
+  useSelector: vi.fn(),
 }));
 
-jest.mock("../../../Redux/financeThunks", () => ({
+vi.mock("../../Redux/financeThunks", () => ({
   createFinance: (payload) => ({ type: "createFinance", payload }),
   fetchFinanceList: (params) => ({ type: "fetchFinanceList", payload: params }),
 }));
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: ({
+    onSearchChange,
+    onAddClick,
+    onDropdownChange,
+    searchValue,
+    selectedDropdownValue,
+  }) => (
+    <div>
+      <input
+        aria-label="search-finance"
+        value={searchValue}
+        onChange={(e) => onSearchChange(e.target.value)}
+      />
 
-jest.mock("../../../Components/EmployeeTitle", () => ({
-  onSearchChange,
-  onAddClick,
-  onDropdownChange,
-  searchValue,
-  selectedDropdownValue,
-}) => (
-  <div>
-    <input
-      aria-label="search-finance"
-      value={searchValue}
-      onChange={(e) => onSearchChange(e.target.value)}
-    />
-    <select
-      aria-label="payment-type-filter"
-      value={selectedDropdownValue}
-      onChange={(e) => onDropdownChange(e.target.value)}
-    >
-      <option value="">All Payments</option>
-      <option value="IN">Income</option>
-      <option value="OUT">Expense</option>
-    </select>
-    <button onClick={onAddClick}>Add Finance</button>
-  </div>
-));
-
-jest.mock("../../../Components/finance/FinanceSummary", () => (props) => (
-  <div data-testid="finance-summary">{JSON.stringify(props)}</div>
-));
-
-jest.mock("../../../Components/Pagination/Pagination", () => ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}) => (
-  <div>
-    <span>
-      Page {currentPage} of {totalPages}
-    </span>
-    <button onClick={() => onPageChange(currentPage - 1)}>prev-page</button>
-    <button onClick={() => onPageChange(currentPage + 1)}>next-page</button>
-    <button onClick={() => onPageChange(0)}>jump-to-zero</button>
-    <button onClick={() => onPageChange(999)}>jump-too-far</button>
-  </div>
-));
-
-jest.mock("../../../Components/No found/Noemployeefound", () => ({
-  searchTerm,
-  label,
-}) => (
-  <div>
-    {label} {searchTerm ? `(searched: ${searchTerm})` : ""}
-  </div>
-));
-
-jest.mock("../../../pages/finance/NewFinance", () => ({ isOpen, onClose, onSave }) =>
-  isOpen ? (
-    <div data-testid="finance-modal">
-      <button
-        onClick={() =>
-          onSave({
-            category: "1",
-            paymentType: "IN",
-            amount1: "500",
-            date: "2026-01-15",
-            note: "Freelance",
-          })
-        }
+      <select
+        aria-label="payment-type-filter"
+        value={selectedDropdownValue}
+        onChange={(e) => onDropdownChange(e.target.value)}
       >
-        submit-finance
-      </button>
-      <button onClick={onClose}>close-finance-modal</button>
-    </div>
-  ) : null
-);
+        <option value="">All Payments</option>
+        <option value="IN">Income</option>
+        <option value="OUT">Expense</option>
+      </select>
 
-const mockDispatch = jest.fn();
+      <button onClick={onAddClick}>
+        Add Finance
+      </button>
+    </div>
+  ),
+}));
+
+vi.mock("../../Components/finance/FinanceSummary", () => ({
+  default: (props) => (
+    <div data-testid="finance-summary">
+      {JSON.stringify(props)}
+    </div>
+  ),
+}));
+
+vi.mock("../../Components/Pagination/Pagination", () => ({
+  default: ({
+    currentPage,
+    totalPages,
+    onPageChange,
+  }) => (
+    <div>
+      <span>
+        Page {currentPage} of {totalPages}
+      </span>
+
+      <button onClick={() => onPageChange(currentPage - 1)}>
+        prev-page
+      </button>
+
+      <button onClick={() => onPageChange(currentPage + 1)}>
+        next-page
+      </button>
+
+      <button onClick={() => onPageChange(0)}>
+        jump-to-zero
+      </button>
+
+      <button onClick={() => onPageChange(999)}>
+        jump-too-far
+      </button>
+    </div>
+  ),
+}));
+
+vi.mock("../../Components/No found/Noemployeefound", () => ({
+  default: ({
+    searchTerm,
+    label,
+  }) => (
+    <div>
+      {label} {searchTerm ? `(searched: ${searchTerm})` : ""}
+    </div>
+  ),
+}));
+
+vi.mock("../../Pages/finance/NewFinance", () => ({
+  default: ({
+    isOpen,
+    onClose,
+    onSave,
+  }) =>
+    isOpen ? (
+      <div data-testid="finance-modal">
+        <button
+          onClick={() =>
+            onSave({
+              category: "1",
+              paymentType: "IN",
+              amount1: "500",
+              date: "2026-01-15",
+              note: "Freelance",
+            })
+          }
+        >
+          submit-finance
+        </button>
+
+        <button onClick={onClose}>
+          close-finance-modal
+        </button>
+      </div>
+    ) : null,
+}));
+
+const mockDispatch = vi.fn();
 
 const financeRecords = [
   {
@@ -130,7 +163,7 @@ const baseFinanceState = {
 };
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   useDispatch.mockReturnValue(mockDispatch);
   mockDispatch.mockImplementation((action) => {
     if (action.type === "createFinance") {

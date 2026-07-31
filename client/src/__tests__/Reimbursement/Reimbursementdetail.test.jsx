@@ -3,7 +3,7 @@ import { render, screen, waitFor, fireEvent, within } from "@testing-library/rea
 import "@testing-library/jest-dom";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-import ReimbursementDetail from "./ReimbursementDetail"; // adjust path/filename to match your project
+import ReimbursementDetail from "../../Pages/reimbursement/Reimb_info"; // adjust path/filename to match your project
 import {
   fetchReimbursementDetail,
   updateReimbursementStatus,
@@ -11,26 +11,32 @@ import {
 
 // ---- Mocks -----------------------------------------------------------
 
-jest.mock("../../services/reimbursement", () => ({
-  fetchReimbursementDetail: jest.fn(),
-  updateReimbursementStatus: jest.fn(),
+vi.mock("../../services/reimbursement", () => ({
+  fetchReimbursementDetail: vi.fn(),
+  updateReimbursementStatus: vi.fn(),
 }));
 
-jest.mock("../../Components/Loader", () => () => <div data-testid="loader" />);
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div data-testid="loader" />,
+}));
 
-jest.mock("../../Components/EmployeeTitle", () => (props) => (
-  <div data-testid="employee-title">
-    <span>{props.title}</span>
-    <span>{props.subtitle}</span>
-    {props.rightElement}
-  </div>
-));
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: (props) => (
+    <div data-testid="employee-title">
+      <span>{props.title}</span>
+      <span>{props.subtitle}</span>
+      {props.rightElement}
+    </div>
+  ),
+}));
 
-jest.mock("../../assets/remi.svg", () => "remi-icon.svg");
+vi.mock("../../assets/remi.svg", () => ({
+  default: "remi-icon.svg",
+}));
 
 // Styled-components are mocked as simple passthrough elements so we can
 // query by role/text without depending on the actual styling implementation.
-jest.mock("./Reimb_info.Styles", () => {
+vi.mock("../../Pages/reimbursement/Reimb_info.Styles", () => {
   const passthrough = (tag) => (props) =>
     React.createElement(tag, props, props.children);
   return {
@@ -83,7 +89,7 @@ const renderWithRouter = (id = "1") =>
   );
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 // ---- Tests ---------------------------------------------------------------

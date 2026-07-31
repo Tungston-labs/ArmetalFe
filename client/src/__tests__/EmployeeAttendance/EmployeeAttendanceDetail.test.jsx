@@ -5,30 +5,38 @@ import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "@testing-library/jest-dom";
 
-import TimesheetPage from "./TimesheetPage"; // adjust path/filename to match your project
+import TimesheetPage from "../../Pages/attendance/Attendance"; // adjust path/filename to match your project
 import * as attendanceSlice from "../../Redux/attendanceSlice";
 
 // ---- Mocks ----
-jest.mock("../../Redux/attendanceSlice", () => ({
-  getAttendanceDetail: jest.fn(() => ({ type: "attendance/getAttendanceDetail" })),
+vi.mock("../../Redux/attendanceSlice", () => ({
+  getAttendanceDetail: vi.fn(() => ({ type: "attendance/getAttendanceDetail" })),
 }));
 
-jest.mock("../../Components/Loader", () => () => <div>Loading...</div>);
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div>Loading...</div>,
+}));
 
-jest.mock("../../Components/EmployeeTitle", () => () => <div>Title Bar</div>);
+vi.mock("../../Components/EmployeeTitle", () => ({
+  default: () => <div>Title Bar</div>,
+}));
 
-jest.mock("../../Components/header/EmployeeHeader", () => (props) => (
-  <div data-testid="employee-header">
-    {props.employee?.name || "No Employee"} - editable:{String(props.editable)}
-  </div>
-));
+vi.mock("../../Components/header/EmployeeHeader", () => ({
+  default: (props) => (
+    <div data-testid="employee-header">
+      {props.employee?.name || "No Employee"} - editable:{String(props.editable)}
+    </div>
+  ),
+}));
 
-jest.mock("../../Components/attendance/AttendanceDetailsContainer", () => (props) => (
-  <div data-testid="attendance-details">
-    date:{props.selectedDate}
-    <button onClick={() => props.setSelectedDate("2026-08-05")}>Change Date</button>
-  </div>
-));
+vi.mock("../../Components/attendance/AttendanceDetailsContainer", () => ({
+  default: (props) => (
+    <div data-testid="attendance-details">
+      date:{props.selectedDate}
+      <button onClick={() => props.setSelectedDate("2026-08-05")}>Change Date</button>
+    </div>
+  ),
+}));
 
 const attendanceDetail = {
   date: "2026-08-01",
@@ -63,7 +71,7 @@ function renderWithProviders({
 
 describe("TimesheetPage", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("dispatches getAttendanceDetail with the route id and empty selectedDate on mount", () => {

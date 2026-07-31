@@ -12,26 +12,27 @@ import userEvent from "@testing-library/user-event";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 
-import DepartmentList from "../../../pages/department/DepartmentList";
-import { fetchDepartmentById } from "../../../services/departmentServices";
+import DepartmentList from "../../Pages/department/DepartmentList";
+import { fetchDepartmentById } from "../../services/departmentServices";
 
 // ---- Mocks -------------------------------------------------------------
 
-jest.mock("react-redux", () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+vi.mock("react-redux", () => ({
+  useDispatch: vi.fn(),
+  useSelector: vi.fn(),
 }));
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: () => jest.fn(),
+vi.mock("react-router-dom", async () => ({
+  ...(await vi.importActual("react-router-dom")),
+  useNavigate: () => vi.fn(),
 }));
 
-jest.mock("sweetalert2", () => ({
-  fire: jest.fn(),
+vi.mock("sweetalert2", () => ({
+  default: {
+    fire: vi.fn(),
+  },
 }));
-
-jest.mock("../../../Redux/departmentSlice.js", () => ({
+vi.mock("../../Redux/departmentSlice.js", () => ({
   getDepartments: (params) => ({ type: "getDepartments", payload: params }),
   getEmployeesByDepartment: (deptId) => ({
     type: "getEmployeesByDepartment",
@@ -41,49 +42,49 @@ jest.mock("../../../Redux/departmentSlice.js", () => ({
   createNewDepartment: (form) => ({ type: "createNewDepartment", payload: form }),
 }));
 
-jest.mock("../../../Redux/employeeSlice.js", () => ({
+vi.mock("../../Redux/employeeSlice.js", () => ({
   deleteEmployeeById: (id) => ({ type: "deleteEmployeeById", payload: id }),
 }));
 
-jest.mock("../../../services/departmentServices", () => ({
-  fetchDepartmentById: jest.fn(),
+vi.mock("../../services/departmentServices", () => ({
+  fetchDepartmentById: vi.fn(),
 }));
 
-jest.mock("../../../Components/Loader.jsx", () => () => <div>loading-departments</div>);
-
-jest.mock("react-spinners", () => ({
+vi.mock("../../Components/Loader.jsx", () => ({
+  default: () => <div>loading-departments</div>,
+}));
+vi.mock("react-spinners", () => ({
   ClipLoader: () => <div>loading-employees</div>,
 }));
 
-jest.mock("../../../Components/EmployeeTitle.jsx", () => ({
-  onSearchChange,
-  onAddClick,
-  searchValue,
-}) => (
-  <div>
-    <input
-      aria-label="search-departments"
-      value={searchValue}
-      onChange={(e) => onSearchChange(e.target.value)}
-    />
-    <button onClick={onAddClick}>Add Department</button>
-  </div>
-));
+vi.mock("../../Components/EmployeeTitle.jsx", () => ({
+  default: ({ onSearchChange, onAddClick, searchValue }) => (
+    <div>
+      <input
+        aria-label="search-departments"
+        value={searchValue}
+        onChange={(e) => onSearchChange(e.target.value)}
+      />
+      <button onClick={onAddClick}>Add Department</button>
+    </div>
+  ),
+}));
 
-jest.mock("../../../Components/No found/Noemployeefound.jsx", () => ({
-  searchTerm,
-  label,
-}) => (
-  <div>
-    {label} {searchTerm ? `(searched: ${searchTerm})` : ""}
-  </div>
-));
+vi.mock("../../Components/No found/Noemployeefound.jsx", () => ({
+  default: ({ searchTerm, label }) => (
+    <div>
+      {label} {searchTerm ? `(searched: ${searchTerm})` : ""}
+    </div>
+  ),
+}));
 
-jest.mock("../../../pages/department/AddDepartment.jsx", () => ({ onClose }) => (
-  <div data-testid="add-department-modal">
-    <button onClick={onClose}>close-add-department</button>
-  </div>
-));
+vi.mock("../../Pages/department/AddDepartment.jsx", () => ({
+  default: ({ onClose }) => (
+    <div data-testid="add-department-modal">
+      <button onClick={onClose}>close-add-department</button>
+    </div>
+  ),
+}));
 
 // ---- Fixtures ------------------------------------------------------------
 
@@ -115,11 +116,11 @@ const makeThunkRejection = (err) => {
   return p;
 };
 
-const mockDispatch = jest.fn();
+const mockDispatch = vi.fn();
 let dispatchResponses;
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   dispatchResponses = {
     getDepartments: undefined,

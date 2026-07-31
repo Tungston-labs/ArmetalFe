@@ -1,70 +1,84 @@
-// src/__tests__/pages/holiday/HolidayManager.test.jsx
-//
-// Test stack: Jest + @testing-library/react + @testing-library/user-event
 
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useDispatch, useSelector } from "react-redux";
 
-import HolidayManager from "../../../pages/holiday/HolidayManager";
-import { fetchHolidayTypes } from "../../../services/holidayService";
-import { exportHolidayExcel } from "../../../utils/holiday";
-import { exportHolidayPDF } from "../../../pages/report/holiday";
+import HolidayManager from "../../Pages/holiday/Holiday";
+import { fetchHolidayTypes } from "../../services/holidayService";
+import { exportHolidayExcel } from "../../utils/holiday";
+import { exportHolidayPDF } from "../../Pages/report/holiday";
 
-jest.mock("react-redux", () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+vi.mock("react-redux", () => ({
+  useDispatch: vi.fn(),
+  useSelector: vi.fn(),
 }));
 
-jest.mock("../../../Redux/holidaySlice", () => ({
+vi.mock("../../Redux/holidaySlice", () => ({
   getHolidays: (page) => ({ type: "getHolidays", payload: page }),
   addHoliday: (payload) => ({ type: "addHoliday", payload }),
   removeHoliday: (id) => ({ type: "removeHoliday", payload: id }),
 }));
 
-jest.mock("../../../services/holidayService", () => ({
-  fetchHolidayTypes: jest.fn(),
+vi.mock("../../services/holidayService", () => ({
+  fetchHolidayTypes: vi.fn(),
 }));
 
-jest.mock("../../../utils/holiday", () => ({
-  exportHolidayExcel: jest.fn(),
+vi.mock("../../utils/holiday", () => ({
+  exportHolidayExcel: vi.fn(),
 }));
 
-jest.mock("../../../pages/report/holiday", () => ({
-  exportHolidayPDF: jest.fn(),
+vi.mock("../../Pages/report/holiday", () => ({
+  exportHolidayPDF: vi.fn(),
 }));
 
-jest.mock("../../../Components/Loader", () => () => <div>loading-holidays</div>);
+vi.mock("../../Components/Loader", () => ({
+  default: () => <div>loading-holidays</div>,
+}));
+vi.mock("../../Components/HolidayHeading", () => ({
+  default: ({ onReportClick }) => (
+    <div>
+      <button onClick={() => onReportClick("excel")}>
+        export-excel
+      </button>
+      <button onClick={() => onReportClick("pdf")}>
+        export-pdf
+      </button>
+    </div>
+  ),
+}));
 
-jest.mock("../../../Components/HolidayHeading", () => ({ onReportClick }) => (
-  <div>
-    <button onClick={() => onReportClick("excel")}>export-excel</button>
-    <button onClick={() => onReportClick("pdf")}>export-pdf</button>
-  </div>
-));
+vi.mock("../../Components/Pagination/Pagination", () => ({
+  default: ({ currentPage, totalPages, onPageChange }) => (
+    <div>
+      <span>
+        Page {currentPage} of {totalPages}
+      </span>
 
-jest.mock("../../../Components/Pagination/Pagination", () => ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}) => (
-  <div>
-    <span>
-      Page {currentPage} of {totalPages}
-    </span>
-    <button onClick={() => onPageChange(currentPage - 1)}>prev-page</button>
-    <button onClick={() => onPageChange(currentPage + 1)}>next-page</button>
-    <button onClick={() => onPageChange(0)}>jump-to-zero</button>
-    <button onClick={() => onPageChange(999)}>jump-too-far</button>
-  </div>
-));
+      <button onClick={() => onPageChange(currentPage - 1)}>
+        prev-page
+      </button>
 
-jest.mock("../../../Components/No found/Noemployeefound", () => () => (
-  <div>no-holidays-found</div>
-));
+      <button onClick={() => onPageChange(currentPage + 1)}>
+        next-page
+      </button>
 
-const mockDispatch = jest.fn();
+      <button onClick={() => onPageChange(0)}>
+        jump-to-zero
+      </button>
+
+      <button onClick={() => onPageChange(999)}>
+        jump-too-far
+      </button>
+    </div>
+  ),
+}));
+
+vi.mock("../../Components/No found/Noemployeefound", () => ({
+  default: () => <div>no-holidays-found</div>,
+}));
+
+const mockDispatch = vi.fn();
 
 const makeThunkResult = (value) => {
   const p = Promise.resolve(value);
@@ -112,7 +126,12 @@ const baseHolidayState = {
 let dispatchResponses;
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
+
+  // Pin "today" to a date before both holiday fixtures (2026-01-26, 2026-03-10)
+  // so date-past-vs-future validation stays stable no matter when tests run.
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date("2025-12-01"));
 
   dispatchResponses = {
     getHolidays: undefined,
@@ -140,6 +159,10 @@ beforeEach(() => {
   });
 });
 
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 const openTypeDropdown = () => screen.getByDisplayValue("Select");
 
 describe("HolidayManager", () => {
@@ -153,14 +176,22 @@ describe("HolidayManager", () => {
 
   test("falls back to the default holiday types when the service call fails", async () => {
     fetchHolidayTypes.mockRejectedValueOnce(new Error("network error"));
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await waitFor(() => expect(fetchHolidayTypes).toHaveBeenCalled());
     await user.click(openTypeDropdown());
-    expect(screen.getByText("Public Holiday")).toBeInTheDocument();
-    expect(screen.getByText("Company Off Day")).toBeInTheDocument();
-    expect(screen.getByText("Second Saturdays")).toBeInTheDocument();
+    expect(
+      screen.getByRole("option", { name: "Public Holiday" })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("option", { name: "Company Off Day" })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("option", { name: "Second Saturdays" })
+    ).toBeInTheDocument();
   });
 
   test("shows a loader while holidays are loading", () => {
@@ -196,7 +227,7 @@ describe("HolidayManager", () => {
   });
 
   test("filters the list by the selected month", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     const monthInput = document.querySelector('input[type="month"]');
@@ -207,7 +238,7 @@ describe("HolidayManager", () => {
   });
 
   test("shows an error when required fields are missing on add", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await user.click(screen.getByText("Add"));
@@ -220,7 +251,7 @@ describe("HolidayManager", () => {
   });
 
   test("requires a weekly off day when the type is Company Off Day", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await user.type(screen.getByPlaceholderText("Holiday name"), "Weekly Rest");
@@ -233,7 +264,7 @@ describe("HolidayManager", () => {
   });
 
   test("requires a date for non-recurring holiday types", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await user.type(screen.getByPlaceholderText("Holiday name"), "New Year");
@@ -244,13 +275,14 @@ describe("HolidayManager", () => {
   });
 
   test("rejects a date in the past", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await user.type(screen.getByPlaceholderText("Holiday name"), "Old Day");
     await user.selectOptions(openTypeDropdown(), "public");
     const dateInput = document.querySelector('input[type="date"]');
-    await user.type(dateInput, "2020-01-01");
+    // Must be before the pinned "today" (2025-12-01) to count as past.
+    await user.type(dateInput, "2025-11-01");
     await user.click(screen.getByText("Add"));
 
     expect(
@@ -259,13 +291,13 @@ describe("HolidayManager", () => {
   });
 
   test("rejects a date that already has a holiday", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await user.type(screen.getByPlaceholderText("Holiday name"), "Duplicate");
     await user.selectOptions(openTypeDropdown(), "public");
     const dateInput = document.querySelector('input[type="date"]');
-    await user.type(dateInput, "2026-01-26"); // matches the Republic Day fixture
+    await user.type(dateInput, "2026-01-26"); // matches the Republic Day fixture, now in the future relative to pinned "today"
     await user.click(screen.getByText("Add"));
 
     expect(
@@ -274,7 +306,7 @@ describe("HolidayManager", () => {
   });
 
   test("adding a dated holiday dispatches the correct payload and refetches the list", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await user.type(screen.getByPlaceholderText("Holiday name"), "Spring Fest");
@@ -304,7 +336,7 @@ describe("HolidayManager", () => {
   });
 
   test("adding a company off day sends the weekday number and today's date, skipping date validation", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await user.type(screen.getByPlaceholderText("Holiday name"), "Weekly Rest");
@@ -313,7 +345,7 @@ describe("HolidayManager", () => {
 
     await user.click(screen.getByText("Add"));
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0]; // resolves against the pinned system time
     await waitFor(() => {
       const addCall = mockDispatch.mock.calls.find((c) => c[0].type === "addHoliday");
       expect(addCall[0].payload).toEqual({
@@ -327,7 +359,7 @@ describe("HolidayManager", () => {
 
   test("shows the server's error message when creating a holiday fails", async () => {
     dispatchResponses.addHoliday = new Error("Holiday limit reached");
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await user.type(screen.getByPlaceholderText("Holiday name"), "Extra Day");
@@ -340,7 +372,7 @@ describe("HolidayManager", () => {
   });
 
   test("clicking delete opens a confirmation dialog", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const { container } = render(<HolidayManager />);
 
     const trashIcons = container.querySelectorAll("svg");
@@ -350,7 +382,7 @@ describe("HolidayManager", () => {
   });
 
   test("confirming delete removes the holiday and refreshes the list", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const { container } = render(<HolidayManager />);
     mockDispatch.mockClear();
 
@@ -370,7 +402,7 @@ describe("HolidayManager", () => {
   });
 
   test("cancelling delete closes the dialog without dispatching", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const { container } = render(<HolidayManager />);
     mockDispatch.mockClear();
 
@@ -385,7 +417,7 @@ describe("HolidayManager", () => {
   });
 
   test("report buttons call the matching export helper with the current holiday list", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
 
     await user.click(screen.getByText("export-excel"));
@@ -396,7 +428,7 @@ describe("HolidayManager", () => {
   });
 
   test("pagination ignores out-of-range pages and fetches valid ones", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HolidayManager />);
     mockDispatch.mockClear();
 
