@@ -231,7 +231,7 @@ test("displays count badges for each non-'All' status tab", () => {
   test("clicking a leave row navigates to its detail page", () => {
     renderWithProviders();
     fireEvent.click(screen.getByText("john"));
-    expect(mockNavigate).toHaveBeenCalledWith("/leave-details/1");
+    expect(mockNavigate).toHaveBeenCalledWith("/employee-leave-details/1");
   });
 
   test("clicking 'On Leave' for a future-dated leave opens the approval modal with correct data", () => {

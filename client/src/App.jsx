@@ -112,7 +112,7 @@ function App() {
               <Route path="/documents" element={<Documents />} />
               {/* <Route path="/edit-basic-level " element={<EditBasicLevel />} /> */}
               <Route path="/employee-leave-request" element={<LeaveRequest />} />
-              <Route path="/leave-details/:id"  element={<EmployeeLeaveDetails />} />
+              <Route path="/employee-leave-details/:id"  element={<EmployeeLeaveDetails />} />
               <Route path="/employee-attendance/detail/:id" element={<Attendance />} />
               <Route path="/leave" element={<LeaveList />} />
               <Route path="/ViewBasic/:id" element={<ViewBasic />} />
