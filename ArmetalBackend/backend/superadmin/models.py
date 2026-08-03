@@ -259,6 +259,42 @@ class CompanySubscription(TimeStampedModel):
                     )
 
 
+
+class SubscriptionPlan(TimeStampedModel):
+
+    PLAN_TYPE = (
+        ("basic", "Basic"),
+        ("enterprise", "Enterprise"),
+    )
+
+    
+
+    name = models.CharField(max_length=100, unique=True)
+
+    plan_type = models.CharField(
+        max_length=20,
+        choices=PLAN_TYPE
+    )
+
+    description = models.TextField(blank=True)
+
+
+    base_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    extra_employee_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+
+    is_active = models.BooleanField(default=True)
+
+
+
+
 class ImpersonationRequest(models.Model):
     super_admin = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -268,4 +304,7 @@ class ImpersonationRequest(models.Model):
 
     class Meta:
         unique_together = ('super_admin', 'company')
+
+
+
 

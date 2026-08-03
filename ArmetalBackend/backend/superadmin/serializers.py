@@ -1,21 +1,15 @@
 from rest_framework import serializers
-from .models import Company,CompanySubscription
+from .models import Company,CompanySubscription,SubscriptionPlan
 from user.models import User
 from calendar import month_name
-from datetime import date
-import calendar
 from rest_framework import serializers
-from superadmin.models import Company
-from user.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 from datetime import date, timedelta
 import calendar
 from django.utils.timezone import now
-from rest_framework import serializers
 from django.conf import settings
 from django.core.mail import send_mail
-from .models import Company, User
 import json
 from decimal import Decimal
 from finance.models import FinanceCategory
@@ -348,8 +342,6 @@ class CompanySelfUpdateSerializer(serializers.ModelSerializer):
             "email": {"required": False},
             "modules": {"required": False},
         }
-from rest_framework import serializers
-from superadmin.models import Company
 
 
 class CompanySubscriptionActionSerializer(serializers.Serializer):
@@ -384,3 +376,25 @@ class SubscriptionReminderSerializer(serializers.Serializer):
 class SubscriptionReminderSimpleSerializer(serializers.Serializer):
     company_id = serializers.IntegerField()
     email = serializers.EmailField(required=False, allow_blank=False)
+
+
+
+
+class SubscriptionPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubscriptionPlan
+        fields = "__all__"
+
+    def validate_base_price(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                "Base price must be greater than 0."
+            )
+        return value
+
+    def validate_extra_employee_price(self, value):
+        if value < 0:
+            raise serializers.ValidationError(
+                "Extra employee price cannot be negative."
+            )
+        return value

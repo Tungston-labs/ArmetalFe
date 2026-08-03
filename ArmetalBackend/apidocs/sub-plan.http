@@ -1,0 +1,90 @@
+###############################################################
+### Subscription Plan APIs
+###############################################################
+
+@baseUrl = http://127.0.0.1:8000/api
+@token = YOUR_SUPER_ADMIN_ACCESS_TOKEN
+
+###############################################################
+### Create Subscription Plan
+###############################################################
+
+POST {{baseUrl}}/plans/
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Basic Plan",
+    "plan_type": "basic",
+    "description": "Suitable for small companies",
+    "base_price": "2000.00",
+    "extra_employee_price": "100.00",
+    "is_active": true
+}
+
+###
+
+###############################################################
+### Create Enterprise Plan
+###############################################################
+
+POST {{baseUrl}}/plans/
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Enterprise Plan",
+    "plan_type": "enterprise",
+    "description": "Suitable for medium and large companies",
+    "base_price": "5000.00",
+    "extra_employee_price": "75.00",
+    "is_active": true
+}
+
+###
+
+###############################################################
+### List Subscription Plans
+###############################################################
+
+GET {{baseUrl}}/plans/
+Authorization: Bearer {{token}}
+
+###
+
+###############################################################
+### Retrieve Subscription Plan
+###############################################################
+
+GET {{baseUrl}}/plans/1/
+Authorization: Bearer {{token}}
+
+###
+
+###############################################################
+### Update Subscription Plan
+###############################################################
+
+PUT {{baseUrl}}/plans/1/
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Basic Plan Updated",
+    "plan_type": "basic",
+    "description": "Updated basic subscription",
+    "base_price": "2500.00",
+    "extra_employee_price": "120.00",
+    "is_active": true
+}
+
+###
+
+###############################################################
+### Delete Subscription Plan
+###############################################################
+
+DELETE {{baseUrl}}/plans/1/
+Authorization: Bearer {{token}}
+
+###

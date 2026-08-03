@@ -12,11 +12,9 @@ urlpatterns = [
     path("company/self/", views.CompanySelfView.as_view(), name="company-self"),
     path("subscription/company-status/",views.CompanySubscriptionStatusAPIView.as_view(),name="company-status"),
     path("subscription/send-reminder/",views.SendSubscriptionReminderAPIView.as_view(),name="subscription-reminder"),
-    path(
-    "subscription/send-reminder-email/",
-    views.SendSubscriptionReminderMailAPIView.as_view(),
-    name="send-reminder-email",
-),
+    path("subscription/send-reminder-email/",views.SendSubscriptionReminderMailAPIView.as_view(),name="send-reminder-email"),
+    path("plans/",views.SubscriptionPlanCreateListAPIView.as_view(),name="subscription-plan-list-create",),
+    path("plans/<int:pk>/",views.SubscriptionPlanRetrieveUpdateDeleteAPIView.as_view(),name="subscription-plan-detail",),
 
 ]
 
