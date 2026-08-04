@@ -34,12 +34,10 @@ export const SectionTitle = styled.h3`
 
 export const InfoGrid = styled.div`
   display: grid;
-  grid-template-columns: ${({ columns }) =>
-    columns === "2" ? "1fr 1fr" : "1fr 1fr"};
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
 
-
-  @media (min-width: 2600px) { /* 4K */
+  @media (min-width: 2600px) {
     gap: 26px;
   }
 `;

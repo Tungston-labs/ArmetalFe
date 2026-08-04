@@ -1,5 +1,11 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter } from "react-router-dom";
@@ -42,7 +48,9 @@ vi.mock("../../Components/Pagination/Pagination", () => ({
   default: (props) => (
     <div data-testid="pagination">
       {`Page ${props.currentPage} of ${props.totalPages}`}
-      <button onClick={() => props.onPageChange(props.currentPage + 1)}>Next</button>
+      <button onClick={() => props.onPageChange(props.currentPage + 1)}>
+        Next
+      </button>
     </div>
   ),
 }));
@@ -91,7 +99,12 @@ PAST_DATE.setDate(PAST_DATE.getDate() - 5);
 const leaves = [
   {
     id: 1,
-    employee: { id: 100, name: "john", employee_id: "jsmith", department: "Field Ops" },
+    employee: {
+      id: 100,
+      name: "john",
+      employee_id: "jsmith",
+      department: "Field Ops",
+    },
     leave_type: "Sick",
     from_date: "2026-06-01",
     to_date: FUTURE_DATE.toISOString(),
@@ -99,7 +112,12 @@ const leaves = [
   },
   {
     id: 2,
-    employee: { id: 200, name: "amy", employee_id: "alee", department: "Operations" },
+    employee: {
+      id: 200,
+      name: "amy",
+      employee_id: "alee",
+      department: "Operations",
+    },
     leave_type: "Casual",
     from_date: "2026-05-01",
     to_date: PAST_DATE.toISOString(),
@@ -110,14 +128,20 @@ const leaves = [
 function renderWithProviders({
   leaves: leaveState = leaves,
   loading = false,
-  pagination = { total_pages: 2, pending_count: 1, approved_count: 1, rejected_count: 0 },
+  pagination = {
+    total_pages: 2,
+    pending_count: 1,
+    approved_count: 1,
+    rejected_count: 0,
+  },
   departments = [{ id: 10, name: "Field Ops" }],
   deptLoading = false,
 } = {}) {
   const store = configureStore({
     reducer: {
       leave: (state = { leaves: leaveState, loading, pagination }) => state,
-      departments: (state = { list: departments, loading: deptLoading }) => state,
+      departments: (state = { list: departments, loading: deptLoading }) =>
+        state,
     },
   });
 
@@ -126,7 +150,7 @@ function renderWithProviders({
       <MemoryRouter>
         <LeaveRequest />
       </MemoryRouter>
-    </Provider>
+    </Provider>,
   );
 }
 
@@ -140,7 +164,7 @@ describe("LeaveRequest", () => {
     renderWithProviders();
     expect(departmentSlice.getDepartments).toHaveBeenCalled();
     expect(leaveSlice.getLeaveRequests).toHaveBeenCalledWith(
-      expect.objectContaining({ page: 1 })
+      expect.objectContaining({ page: 1 }),
     );
   });
 
@@ -149,16 +173,16 @@ describe("LeaveRequest", () => {
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
- test("renders leave rows with formatted dates and capitalized status", () => {
-  renderWithProviders();
-  const table = screen.getByRole("table");
-  expect(screen.getByText("john")).toBeInTheDocument();
-  expect(screen.getByText("amy")).toBeInTheDocument();
-  expect(screen.getByText("Sick")).toBeInTheDocument();
-  expect(within(table).getByText("Field Ops")).toBeInTheDocument();
-  expect(within(table).getByText("Pending")).toBeInTheDocument();
-  expect(within(table).getByText("Approved")).toBeInTheDocument();
-});
+  test("renders leave rows with formatted dates and capitalized status", () => {
+    renderWithProviders();
+    const table = screen.getByRole("table");
+    expect(screen.getByText("john")).toBeInTheDocument();
+    expect(screen.getByText("amy")).toBeInTheDocument();
+    expect(screen.getByText("Sick")).toBeInTheDocument();
+    expect(within(table).getByText("Field Ops")).toBeInTheDocument();
+    expect(within(table).getByText("Pending")).toBeInTheDocument();
+    expect(within(table).getByText("Approved")).toBeInTheDocument();
+  });
 
   test("shows empty state when there are no matching leaves", () => {
     renderWithProviders({ leaves: [] });
@@ -181,36 +205,36 @@ describe("LeaveRequest", () => {
     expect(screen.queryByText("john")).not.toBeInTheDocument();
   });
 
- test("clicking a status tab updates the filter, resets page, and re-fetches", async () => {
-  renderWithProviders();
-  leaveSlice.getLeaveRequests.mockClear();
+  test("clicking a status tab updates the filter, resets page, and re-fetches", async () => {
+    renderWithProviders();
+    leaveSlice.getLeaveRequests.mockClear();
 
-  fireEvent.click(screen.getByRole("button", { name: /^Approved/ }));
+    fireEvent.click(screen.getByRole("button", { name: /^Approved/ }));
 
-  await waitFor(() =>
-    expect(leaveSlice.getLeaveRequests).toHaveBeenCalledWith(
-      expect.objectContaining({ status: "approved", page: 1 })
-    )
-  );
-});
+    await waitFor(() =>
+      expect(leaveSlice.getLeaveRequests).toHaveBeenCalledWith(
+        expect.objectContaining({ status: "approved", page: 1 }),
+      ),
+    );
+  });
 
-test("displays count badges for each non-'All' status tab", () => {
-  renderWithProviders();
-  const pendingTab = screen.getByRole("button", { name: /^Pending/ });
-  expect(within(pendingTab).getByText("1")).toBeInTheDocument();
-});
+  test("displays count badges for each non-'All' status tab", () => {
+    renderWithProviders();
+    const pendingTab = screen.getByRole("button", { name: /^Pending/ });
+    expect(within(pendingTab).getByText("1")).toBeInTheDocument();
+  });
 
   test("changing the month select re-fetches leave requests for that month", async () => {
     renderWithProviders();
     leaveSlice.getLeaveRequests.mockClear();
 
-    const monthSelect = screen.getByDisplayValue("July"); // default month for current date context may vary
+    const monthSelect = screen.getAllByRole("combobox")[1]; // default month for current date context may vary
     fireEvent.change(monthSelect, { target: { value: "3" } });
 
     await waitFor(() =>
       expect(leaveSlice.getLeaveRequests).toHaveBeenCalledWith(
-        expect.objectContaining({ month: 3 })
-      )
+        expect.objectContaining({ month: 3 }),
+      ),
     );
   });
 
@@ -223,8 +247,8 @@ test("displays count badges for each non-'All' status tab", () => {
 
     await waitFor(() =>
       expect(leaveSlice.getLeaveRequests).toHaveBeenCalledWith(
-        expect.objectContaining({ year: 2027 })
-      )
+        expect.objectContaining({ year: 2027 }),
+      ),
     );
   });
 
@@ -273,8 +297,8 @@ test("displays count badges for each non-'All' status tab", () => {
 
     await waitFor(() =>
       expect(leaveSlice.getLeaveRequests).toHaveBeenCalledWith(
-        expect.objectContaining({ page: 2 })
-      )
+        expect.objectContaining({ page: 2 }),
+      ),
     );
   });
 
@@ -291,7 +315,9 @@ test("displays count badges for each non-'All' status tab", () => {
     renderWithProviders();
     fireEvent.click(screen.getByText("Export Excel"));
 
-    await waitFor(() => expect(leaveExcelExport.exportLeaveReport).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(leaveExcelExport.exportLeaveReport).toHaveBeenCalled(),
+    );
     const [exportedData] = leaveExcelExport.exportLeaveReport.mock.calls[0];
     expect(exportedData).toHaveLength(1);
     expect(exportedData[0].employee.name).toBe("john");
@@ -308,7 +334,10 @@ test("displays count badges for each non-'All' status tab", () => {
     fireEvent.click(screen.getByText("Export Excel"));
 
     await waitFor(() =>
-      expect(consoleSpy).toHaveBeenCalledWith("Export failed:", expect.any(Error))
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Export failed:",
+        expect.any(Error),
+      ),
     );
     expect(leaveExcelExport.exportLeaveReport).not.toHaveBeenCalled();
     consoleSpy.mockRestore();

@@ -47,7 +47,6 @@ export const ButtonGroup = styled.div`
   justify-content: center;
   gap: 10px;
  
-  
 `;
 
 export const ModalButton = styled.button`
@@ -60,16 +59,19 @@ export const ModalButton = styled.button`
   cursor: pointer;
   font-weight: 700;
   font-family: satoshi;
-display: flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 
-  border: 2px solid ${({ variant }) => (variant === 'dark' ? '#172554' : '#172554')};
-  background: ${({ variant }) => (variant === 'dark' ? '#172554' : '#9EABD8')};
-  color: ${({ variant }) => (variant === 'dark' ? '#fff' : '#172554')};
+  border: 2px solid #172554;
+
+  background: ${({ variant }) =>
+    variant === 'dark' ? '#172554' : '#9EABD8'};
+
+  color: ${({ variant }) =>
+    variant === 'dark' ? '#fff' : '#172554'};
 
   &:hover {
     opacity: 0.9;
   }
 `;
-

@@ -20,7 +20,13 @@ import {
   OutlinedLabel,
 } from "./Header.Styles";
 
-const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBack }) => {
+const Header = ({
+  employee = {},
+  editable = false,
+  onChange,
+  onImageChange,
+  onBack,
+}) => {
   const fileInputRef = useRef(null);
 
   const handleImageClick = () => {
@@ -119,7 +125,6 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
                 onChange={onChange}
               />
             </OutlinedField>
-
           </LeftColumn>
 
           <RightColumn>
@@ -140,7 +145,9 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
                   name="dob"
                   value={
                     editable
-                      ? (employee.dob ? employee.dob.split("T")[0] : "")
+                      ? employee.dob
+                        ? employee.dob.split("T")[0]
+                        : ""
                       : formatDate(employee.dob)
                   }
                   readOnly={!editable}

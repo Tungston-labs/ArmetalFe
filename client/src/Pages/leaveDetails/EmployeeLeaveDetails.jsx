@@ -31,7 +31,7 @@ import { FaChevronUp } from "react-icons/fa";
 const EmployeeLeaveForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { leaveDetails, loading } = useSelector(state => state.leave);
+  const { leaveDetails, loading } = useSelector((state) => state.leave);
   const navigate = useNavigate();
 
   const [showJob, setShowJob] = useState(false);
@@ -42,21 +42,20 @@ const EmployeeLeaveForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [actionType, setActionType] = useState("");
 
-const formatDate = (date) => {
-  if (!date) return "-";
+  const formatDate = (date) => {
+    if (!date) return "-";
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
 
-  return `${day}/${month}/${year}`;
-};
+    return `${day}/${month}/${year}`;
+  };
   useEffect(() => {
     if (id) dispatch(getLeaveDetails(id));
   }, [dispatch, id]);
 
-  
   const employee = leaveDetails?.employee || {};
 
   const handleStatusUpdate = async () => {
@@ -72,7 +71,6 @@ const formatDate = (date) => {
       setActionType("");
     }
   };
-
 
   if (loading) {
     return (
@@ -105,8 +103,6 @@ const formatDate = (date) => {
         <Header employee={employee} />
 
         <PageCard>
-
-
           <CardWrapper>
             <CardHeader onClick={() => setShowJob(!showJob)}>
               <SectionTitle>Job Details</SectionTitle>
@@ -119,14 +115,19 @@ const formatDate = (date) => {
               <CardContent>
                 <InfoGrid>
                   <ReadonlyInput value={employee.designation || ""} readOnly />
-                  <ReadonlyInput value={employee.employment_type || ""} readOnly />
+                  <ReadonlyInput
+                    value={employee.employment_type || ""}
+                    readOnly
+                  />
                   <ReadonlyInput value={employee.department || ""} readOnly />
-                  <ReadonlyInput value={formatDate(employee.joining_date)} readOnly />
+                  <ReadonlyInput
+                    value={formatDate(employee.joining_date)}
+                    readOnly
+                  />
                 </InfoGrid>
               </CardContent>
             )}
           </CardWrapper>
-
 
           {/* --- Leave Application Card --- */}
           <CardWrapper>
@@ -140,7 +141,10 @@ const formatDate = (date) => {
             {showLeaveApp && (
               <CardContent>
                 <InfoRow>
-                  <ReadonlyInput value={leaveDetails?.leave_type || ""} readOnly />
+                  <ReadonlyInput
+                    value={leaveDetails?.leave_type || ""}
+                    readOnly
+                  />
                 </InfoRow>
 
                 <InfoGrid columns="2">
@@ -172,7 +176,6 @@ const formatDate = (date) => {
             )}
           </CardWrapper>
 
-
           {/* --- Leave Balance Card --- */}
           <CardWrapper>
             <CardHeader onClick={() => setShowBalance(!showBalance)}>
@@ -187,17 +190,22 @@ const formatDate = (date) => {
                 <InfoGrid>
                   <div>
                     <Label>Balance Leave</Label>
-                    <ReadonlyInput value={employee?.total_leave || ""} readOnly />
+                    <ReadonlyInput
+                      value={employee?.total_leave || ""}
+                      readOnly
+                    />
                   </div>
                   <div>
                     <Label>Paid Leave</Label>
-                    <ReadonlyInput value={employee?.paid_leave || ""} readOnly />
+                    <ReadonlyInput
+                      value={employee?.paid_leave || ""}
+                      readOnly
+                    />
                   </div>
                 </InfoGrid>
               </CardContent>
             )}
           </CardWrapper>
-
 
           {/* --- Reason --- */}
           <CardWrapper>
@@ -217,7 +225,6 @@ const formatDate = (date) => {
             )}
           </CardWrapper>
 
-
           {/* Buttons */}
           <ButtonRow>
             <DeclineButton
@@ -229,16 +236,15 @@ const formatDate = (date) => {
               Decline
             </DeclineButton>
 
-           <ApproveButton
-  onClick={() => {
-    setActionType("approve");
-    setShowModal(true);
-  }}
->
-  Approve
-</ApproveButton>
+            <ApproveButton
+              onClick={() => {
+                setActionType("approve");
+                setShowModal(true);
+              }}
+            >
+              Approve
+            </ApproveButton>
           </ButtonRow>
-
         </PageCard>
 
         {/* Modal */}
@@ -249,8 +255,6 @@ const formatDate = (date) => {
           actionType={actionType}
           leaveId={id}
         />
-
-
       </Container>
     </>
   );

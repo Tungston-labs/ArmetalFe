@@ -16,3 +16,4 @@ export const addSalaryIncrementService = async (employeeId, data) => {
   );
   return response.data;
 };
+

@@ -4,7 +4,6 @@ import {
   ModalOverlay,
   ModalContainer,
   ModalHeader,
-  BackButton,
   HeaderContent,
   HeaderTitle,
   HeaderSubtitle,
@@ -84,8 +83,8 @@ const AddProjectModal = ({ isOpen, onClose }) => {
       };
 
       await dispatch(createProject(payload)).unwrap();
-      await dispatch(getProjects());
-      setFormData(initialForm);  
+      dispatch(getProjects());
+      setFormData(initialForm);
       onClose();
     } catch (err) {
       setApiError(err.message || "Failed to save project");

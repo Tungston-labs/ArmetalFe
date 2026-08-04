@@ -34,18 +34,6 @@ export const Label = styled.label`
   color: #374151;
 `;
 
-// export const Input = styled.input`
-//   padding: 12px;
-//   border: 1px solid #d1d5db;
-//   border-radius: 8px;
-//   font-size: 14px;
-
-//   &:focus {
-//     outline: none;
-//     border-color: #304eb0;
-//   }
-// `;
-
 export const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -72,25 +60,6 @@ export const SaveButton = styled.button`
     opacity: 0.7;
   }
 `;
-// export const InputWrapper = styled.div`
-//   position: relative;
-// `;
-
-// export const EyeIcon = styled.div`
-//   position: absolute;
-//   top: 50%;
-//   right: 14px;
-//   transform: translateY(-50%);
-//   cursor: pointer;
-//   color: #6b7280;
-//   display: flex;
-//   align-items: center;
-//   font-size: 18px;
-
-//   &:hover {
-//     color: #304eb0;
-//   }
-// `;
 
 export const InputWrapper = styled.div`
   position: relative;
@@ -99,7 +68,7 @@ export const InputWrapper = styled.div`
 
 export const Input = styled.input`
   width: 100%;
-  padding: 12px 45px 12px 12px; /* space for the icon */
+  padding: 12px 45px 12px 12px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;

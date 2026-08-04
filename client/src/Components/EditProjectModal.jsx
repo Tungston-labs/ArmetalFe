@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   ModalOverlay,
   ModalContainer,
   ModalHeader,
-  BackButton,
   HeaderContent,
   HeaderTitle,
   HeaderSubtitle,
@@ -17,18 +16,16 @@ import {
   CancelButton,
   SaveButton,
   SelectWrapper,
-  DropdownIcon
-} from './AddProjectModalStyles';
+  DropdownIcon,
+} from "./AddProjectModalStyles";
 
 const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
-  if (!isOpen) return null;
-
   const [formData, setFormData] = useState({
-    projectName: '',
-    punchInType: '',
-    latitude: '',
-    longitude: '',
-    status: '',
+    projectName: "",
+    punchInType: "",
+    latitude: "",
+    longitude: "",
+    status: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -43,19 +40,22 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
       if (punchType === "bench") punchType = "bench";
 
       setFormData({
-        projectName: projectData.projectName || '',
-        punchInType: punchType || '',
-        latitude: projectData.latitude || '',
-        longitude: projectData.longitude || '',
-        status: projectData.status || 'in_progress',
+        projectName: projectData.projectName || "",
+        punchInType: punchType || "",
+        latitude: projectData.latitude || "",
+        longitude: projectData.longitude || "",
+        status: projectData.status || "in_progress",
       });
     }
   }, [projectData]);
 
+  // ✅ Move this here
+  if (!isOpen) return null;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   // Validation (NO latitude/longitude validation)
@@ -68,31 +68,30 @@ const EditProjectModal = ({ isOpen, onClose, onSave, projectData }) => {
     if (!formData.punchInType)
       newErrors.punchInType = "Punch in type is required";
 
-    if (!formData.status)
-      newErrors.status = "Status is required";
+    if (!formData.status) newErrors.status = "Status is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSave = () => {
-  if (!validate()) return;
+  const handleSave = () => {
+    if (!validate()) return;
 
-  const payload = {
-    ...formData,
-    latitude:
-      formData.punchInType === "bench" || formData.punchInType === "variant"
-        ? null
-        : formData.latitude || null,
-    longitude:
-      formData.punchInType === "bench" || formData.punchInType === "variant"
-        ? null
-        : formData.longitude || null,
+    const payload = {
+      ...formData,
+      latitude:
+        formData.punchInType === "bench" || formData.punchInType === "variant"
+          ? null
+          : formData.latitude || null,
+      longitude:
+        formData.punchInType === "bench" || formData.punchInType === "variant"
+          ? null
+          : formData.longitude || null,
+    };
+
+    onSave(payload);
+    onClose();
   };
-
-  onSave(payload);
-  onClose();
-};
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -106,7 +105,6 @@ const handleSave = () => {
         </ModalHeader>
 
         <FormGrid>
-
           {/* PROJECT NAME */}
           <FieldGroup>
             <Label>Project name</Label>
@@ -117,7 +115,9 @@ const handleSave = () => {
               value={formData.projectName}
               onChange={handleChange}
             />
-            {errors.projectName && <span style={{ color: 'red' }}>{errors.projectName}</span>}
+            {errors.projectName && (
+              <span style={{ color: "red" }}>{errors.projectName}</span>
+            )}
           </FieldGroup>
 
           {/* PUNCH TYPE */}
@@ -128,16 +128,20 @@ const handleSave = () => {
                 name="punchInType"
                 value={formData.punchInType}
                 onChange={handleChange}
-                autoComplete='off'
+                autoComplete="off"
               >
-                <Option value="" disabled>Select type</Option>
+                <Option value="" disabled>
+                  Select type
+                </Option>
                 <Option value="on_site">On Site</Option>
                 <Option value="variant">Variant</Option>
                 <Option value="bench">Bench</Option>
               </SelectField>
               <DropdownIcon />
             </SelectWrapper>
-            {errors.punchInType && <span style={{ color: 'red' }}>{errors.punchInType}</span>}
+            {errors.punchInType && (
+              <span style={{ color: "red" }}>{errors.punchInType}</span>
+            )}
           </FieldGroup>
 
           {/* LATITUDE */}
@@ -149,9 +153,8 @@ const handleSave = () => {
               placeholder="Enter latitude"
               value={formData.latitude}
               onChange={handleChange}
-                autoComplete='off'
-              disabled={formData.punchInType === "bench"}   
-  
+              autoComplete="off"
+              disabled={formData.punchInType === "bench"}
             />
           </FieldGroup>
 
@@ -164,9 +167,8 @@ const handleSave = () => {
               placeholder="Enter longitude"
               value={formData.longitude}
               onChange={handleChange}
-                autoComplete='off'
-              disabled={formData.punchInType === "bench"}   
-              
+              autoComplete="off"
+              disabled={formData.punchInType === "bench"}
             />
           </FieldGroup>
 
@@ -179,16 +181,19 @@ const handleSave = () => {
                 value={formData.status}
                 onChange={handleChange}
               >
-                <Option value="" disabled>Select Status</Option>
+                <Option value="" disabled>
+                  Select Status
+                </Option>
                 <Option value="in_progress">In Progress</Option>
                 <Option value="completed">Completed</Option>
                 <Option value="on_hold">On Hold</Option>
               </SelectField>
               <DropdownIcon />
             </SelectWrapper>
-            {errors.status && <span style={{ color: 'red' }}>{errors.status}</span>}
+            {errors.status && (
+              <span style={{ color: "red" }}>{errors.status}</span>
+            )}
           </FieldGroup>
-
         </FormGrid>
 
         <ButtonContainer>

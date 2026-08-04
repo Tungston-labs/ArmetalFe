@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import NoAttendance from "../../assets/puchtime.svg"; 
+import NoAttendance from "../../assets/puchtime.svg";
 
 export const Container = styled.div`
   display: grid;
@@ -302,8 +302,7 @@ export const TaskTime = styled.div`
     font-size: 11px;
     margin-top: 4px;
   }
-`;1024
-
+`;
 
 export const TaskContent = styled.div`
   display: flex;
@@ -340,7 +339,7 @@ export const TaskRole = styled.div`
     font-size: 1.2rem;
   }
 
-@media (min-width: 1020px) and (max-width:1599) {
+@media (min-width: 1020px) and (max-width: 1599px) {
     font-size: 1.2rem;
   }
   @media (min-width: 768px) and (max-width:1019px) {

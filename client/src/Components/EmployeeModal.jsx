@@ -5,7 +5,6 @@ import {
   Header,
   SearchBar,
   TableWrapper,
-  Table,
   ButtonRow,
   Button,
   Checkbox,CenterText,

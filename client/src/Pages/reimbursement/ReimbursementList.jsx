@@ -45,7 +45,7 @@ const ReimbursementList = () => {
   const [pageByDept, setPageByDept] = useState({});
   const pageSize = 10;
   const { list: departmentList = [], loading } = useSelector(
-    (state) => state.departments
+    (state) => state.departments,
   );
 
   useEffect(() => {
@@ -118,7 +118,7 @@ const ReimbursementList = () => {
         [deptId]: prev[deptId].map((emp) =>
           emp.reimbursement_id === reimbursementId
             ? { ...emp, status: newStatus }
-            : emp
+            : emp,
         ),
       }));
 
@@ -144,8 +144,8 @@ const ReimbursementList = () => {
 
       const matchingEmployees = search
         ? reimbursements.filter((emp) =>
-          (emp.employee_name || "").toLowerCase().includes(search)
-        )
+            (emp.employee_name || "").toLowerCase().includes(search),
+          )
         : reimbursements;
 
       const departmentMatches = dept.name.toLowerCase().includes(search);
@@ -172,7 +172,7 @@ const ReimbursementList = () => {
         showTabs={false}
         showDropdown={false}
         showBackArrow={false}
-                  showReportButton = {false}
+        showReportButton={false}
       />
 
       {loading ? (
@@ -190,7 +190,7 @@ const ReimbursementList = () => {
               const paginatedEmployees = paginate(
                 employees,
                 currentPage,
-                pageSize
+                pageSize,
               );
 
               return (
@@ -205,7 +205,6 @@ const ReimbursementList = () => {
                       {dept.reimbursement_request_count || 0} Request
                     </EmployeeCount>
                   </DepartmentHeader>
-
 
                   {isOpen && (
                     <DropdownWrapper>
@@ -229,7 +228,7 @@ const ReimbursementList = () => {
                               key={emp.reimbursement_id}
                               onClick={() =>
                                 navigate(
-                                  `/reimbursement_info/${emp.reimbursement_id}`
+                                  `/reimbursement_info/${emp.reimbursement_id}`,
                                 )
                               }
                             >
@@ -244,30 +243,45 @@ const ReimbursementList = () => {
                               <EmployeeCell
                                 onClick={(e) => e.stopPropagation()}
                               >
-                               <StatusSelect
-  value={emp.status}
-  onChange={(e) =>
-    handleStatusChange(
-      emp.reimbursement_id,
-      e.target.value,
-      dept.id
-    )
-  }
-  disabled={emp.status === "Approve"}  
-  className={emp.status ? emp.status.replace(/\s+/g, "-").toLowerCase() : ""}
-  style={{
-    opacity: emp.status === "Approve" ? 1 : 1,
-    cursor: emp.status === "Approve" ? "not-allowed" : "pointer",
-    pointerEvents: emp.status === "Approve" ? "none" : "auto",
-  }}
->
-  <option value="" disabled>Select</option>
-  <option value="Approve">Approved</option>
-  <option value="On Hold">On Hold</option>
-  <option value="In Verification">In Verification</option>
-  <option value="Reject">Reject</option>
-</StatusSelect>
-
+                                <StatusSelect
+                                  value={emp.status}
+                                  onChange={(e) =>
+                                    handleStatusChange(
+                                      emp.reimbursement_id,
+                                      e.target.value,
+                                      dept.id,
+                                    )
+                                  }
+                                  disabled={emp.status === "Approve"}
+                                  className={
+                                    emp.status
+                                      ? emp.status
+                                          .replace(/\s+/g, "-")
+                                          .toLowerCase()
+                                      : ""
+                                  }
+                                  style={{
+                                    opacity: 1,
+                                    cursor:
+                                      emp.status === "Approve"
+                                        ? "not-allowed"
+                                        : "pointer",
+                                    pointerEvents:
+                                      emp.status === "Approve"
+                                        ? "none"
+                                        : "auto",
+                                  }}
+                                >
+                                  <option value="" disabled>
+                                    Select
+                                  </option>
+                                  <option value="Approve">Approved</option>
+                                  <option value="On Hold">On Hold</option>
+                                  <option value="In Verification">
+                                    In Verification
+                                  </option>
+                                  <option value="Reject">Reject</option>
+                                </StatusSelect>
                               </EmployeeCell>
                             </EmployeeRow>
                           ))
@@ -302,7 +316,10 @@ const ReimbursementList = () => {
                               e.stopPropagation();
                               setPageByDept((prev) => ({
                                 ...prev,
-                                [dept.id]: Math.min(totalPages, currentPage + 1),
+                                [dept.id]: Math.min(
+                                  totalPages,
+                                  currentPage + 1,
+                                ),
                               }));
                             }}
                           >
@@ -310,7 +327,6 @@ const ReimbursementList = () => {
                           </PageButton>
                         </PaginationWrapper>
                       )}
-
                     </DropdownWrapper>
                   )}
                 </DepartmentCard>

@@ -30,7 +30,7 @@ import { FiUpload } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
 import { ClipLoader } from "react-spinners";
 
-import { useAddCompany } from "./ useAddCompany";
+import { useAddCompany } from "./useAddCompany";
 
 const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, showPrivileges = true }) => {
   const countryDialCodes = [

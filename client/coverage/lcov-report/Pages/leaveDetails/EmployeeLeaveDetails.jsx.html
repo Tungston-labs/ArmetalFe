@@ -322,7 +322,11 @@
 <a name='L257'></a><a href='#L257'>257</a>
 <a name='L258'></a><a href='#L258'>258</a>
 <a name='L259'></a><a href='#L259'>259</a>
-<a name='L260'></a><a href='#L260'>260</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -380,7 +384,6 @@
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
@@ -394,7 +397,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -430,9 +432,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -499,6 +504,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -525,8 +532,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -567,10 +578,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -614,7 +622,7 @@ import { FaChevronUp } from "react-icons/fa";
 const EmployeeLeaveForm = () =&gt; {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { leaveDetails, loading } = useSelector(state =&gt; state.leave);
+  const { leaveDetails, loading } = useSelector((state) =&gt; state.leave);
   const navigate = useNavigate();
 &nbsp;
   const [showJob, setShowJob] = useState(false);
@@ -625,21 +633,20 @@ const EmployeeLeaveForm = () =&gt; {
   const [showModal, setShowModal] = useState(false);
   const [actionType, setActionType] = useState("");
 &nbsp;
-const formatDate = (date) =&gt; {
-  if (!date) return "-";
+  const formatDate = (date) =&gt; {
+    if (!date) return "-";
 &nbsp;
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
 &nbsp;
-  return `${day}/${month}/${year}`;
-};
+    return `${day}/${month}/${year}`;
+  };
   useEffect(() =&gt; {
     <span class="missing-if-branch" title="else path not taken" >E</span>if (id) dispatch(getLeaveDetails(id));
   }, [dispatch, id]);
 &nbsp;
-  
   const employee = leaveDetails?.employee || {};
 &nbsp;
   const handleStatusUpdate = async () =&gt; {
@@ -655,7 +662,6 @@ const formatDate = (date) =&gt; {
       setActionType("");
     }
   };
-&nbsp;
 &nbsp;
   if (loading) {
     return (
@@ -688,8 +694,6 @@ const formatDate = (date) =&gt; {
         &lt;Header employee={employee} /&gt;
 &nbsp;
         &lt;PageCard&gt;
-&nbsp;
-&nbsp;
           &lt;CardWrapper&gt;
             &lt;CardHeader onClick={() =&gt; setShowJob(!showJob)}&gt;
               &lt;SectionTitle&gt;Job Details&lt;/SectionTitle&gt;
@@ -702,14 +706,19 @@ const formatDate = (date) =&gt; {
               &lt;CardContent&gt;
                 &lt;InfoGrid&gt;
                   &lt;ReadonlyInput value={employee.designation || ""} readOnly /&gt;
-                  &lt;ReadonlyInput value={employee.employment_type || ""} readOnly /&gt;
+                  &lt;ReadonlyInput
+                    value={employee.employment_type || ""}
+                    readOnly
+                  /&gt;
                   &lt;ReadonlyInput value={employee.department || ""} readOnly /&gt;
-                  &lt;ReadonlyInput value={formatDate(employee.joining_date)} readOnly /&gt;
+                  &lt;ReadonlyInput
+                    value={formatDate(employee.joining_date)}
+                    readOnly
+                  /&gt;
                 &lt;/InfoGrid&gt;
               &lt;/CardContent&gt;
             )}
           &lt;/CardWrapper&gt;
-&nbsp;
 &nbsp;
           {/* --- Leave Application Card --- */}
           &lt;CardWrapper&gt;
@@ -723,7 +732,10 @@ const formatDate = (date) =&gt; {
             {showLeaveApp &amp;&amp; (
               &lt;CardContent&gt;
                 &lt;InfoRow&gt;
-                  &lt;ReadonlyInput value={leaveDetails?.leave_type || <span class="branch-1 cbranch-no" title="branch not covered" >""} r</span>eadOnly /&gt;
+                  &lt;ReadonlyInput
+                    value={leaveDetails?.leave_type || <span class="branch-1 cbranch-no" title="branch not covered" >""}</span>
+                    readOnly
+                  /&gt;
                 &lt;/InfoRow&gt;
 &nbsp;
                 &lt;InfoGrid columns="2"&gt;
@@ -755,7 +767,6 @@ const formatDate = (date) =&gt; {
             )}
           &lt;/CardWrapper&gt;
 &nbsp;
-&nbsp;
           {/* --- Leave Balance Card --- */}
           &lt;CardWrapper&gt;
             &lt;CardHeader onClick={() =&gt; setShowBalance(!showBalance)}&gt;
@@ -770,17 +781,22 @@ const formatDate = (date) =&gt; {
                 &lt;InfoGrid&gt;
                   &lt;div&gt;
                     &lt;Label&gt;Balance Leave&lt;/Label&gt;
-                    &lt;ReadonlyInput value={employee?.total_leave || <span class="branch-1 cbranch-no" title="branch not covered" >""} r</span>eadOnly /&gt;
+                    &lt;ReadonlyInput
+                      value={employee?.total_leave || <span class="branch-1 cbranch-no" title="branch not covered" >""}</span>
+                      readOnly
+                    /&gt;
                   &lt;/div&gt;
                   &lt;div&gt;
                     &lt;Label&gt;Paid Leave&lt;/Label&gt;
-                    &lt;ReadonlyInput value={employee?.paid_leave || <span class="branch-1 cbranch-no" title="branch not covered" >""} r</span>eadOnly /&gt;
+                    &lt;ReadonlyInput
+                      value={employee?.paid_leave || <span class="branch-1 cbranch-no" title="branch not covered" >""}</span>
+                      readOnly
+                    /&gt;
                   &lt;/div&gt;
                 &lt;/InfoGrid&gt;
               &lt;/CardContent&gt;
             )}
           &lt;/CardWrapper&gt;
-&nbsp;
 &nbsp;
           {/* --- Reason --- */}
           &lt;CardWrapper&gt;
@@ -800,7 +816,6 @@ const formatDate = (date) =&gt; {
             )}
           &lt;/CardWrapper&gt;
 &nbsp;
-&nbsp;
           {/* Buttons */}
           &lt;ButtonRow&gt;
             &lt;DeclineButton
@@ -812,16 +827,15 @@ const formatDate = (date) =&gt; {
               Decline
             &lt;/DeclineButton&gt;
 &nbsp;
-           &lt;ApproveButton
-  onClick={() =&gt; {
-    setActionType("approve");
-    setShowModal(true);
-  }}
-&gt;
-  Approve
-&lt;/ApproveButton&gt;
+            &lt;ApproveButton
+              onClick={() =&gt; {
+                setActionType("approve");
+                setShowModal(true);
+              }}
+            &gt;
+              Approve
+            &lt;/ApproveButton&gt;
           &lt;/ButtonRow&gt;
-&nbsp;
         &lt;/PageCard&gt;
 &nbsp;
         {/* Modal */}
@@ -832,8 +846,6 @@ const formatDate = (date) =&gt; {
           actionType={actionType}
           leaveId={id}
         /&gt;
-&nbsp;
-&nbsp;
       &lt;/Container&gt;
     &lt;/&gt;
   );
@@ -847,7 +859,7 @@ export default EmployeeLeaveForm;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-31T09:56:39.573Z
+                at 2026-08-04T11:13:33.358Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

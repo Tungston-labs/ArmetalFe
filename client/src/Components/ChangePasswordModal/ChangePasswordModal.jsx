@@ -3,19 +3,19 @@ import API from "../../services/api";
 import Swal from "sweetalert2";
 
 import {
-    Overlay,
-    Modal,
-    Title,
-    FormGroup,
-    Label,
-    Input,
-    ButtonContainer,
-    CancelButton,
-    SaveButton,
+  Overlay,
+  Modal,
+  Title,
+  FormGroup,
+  Label,
+  Input,
+  ButtonContainer,
+  CancelButton,
+  SaveButton,
+  InputWrapper,
+  EyeIcon,
 } from "./ChangePasswordModal.styles";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { InputWrapper } from "./ChangePasswordModal.styles";
-import { EyeIcon } from "./ChangePasswordModal.styles";
 const ChangePasswordModal = ({ onClose }) => {
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");

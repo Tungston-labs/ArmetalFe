@@ -16,13 +16,14 @@ import {
   StyledTable,
   CardContent,
   CompanyLogo,
-  CardSlider,TopBar
+  CardSlider,
+  TopBar,
 } from "./Superadmin_Dashboard.Styles";
-import Navbar from "../../Components/Navbar"
+import Navbar from "../../Components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompanyOverview } from "../../Redux/superAdminSlice";
-import Loader from "../../Components/Loader"
+import Loader from "../../Components/Loader";
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,21 +35,20 @@ const Dashboard = () => {
   }, [dispatch]);
 
   if (loading) {
-    return <Loader/>;
+    return <Loader />;
   }
-console.log({overview});
+  console.log({ overview });
 
   const companies = overview?.companies || [];
   const payments = overview?.unpaid_companies || [];
-  console.log({companies});
-  
+  console.log({ companies });
 
   return (
     <DashboardWrapper>
-        <TopBar>
+      <TopBar>
         <div />
         <Navbar bgColor="#f3f3f3" />
-                </TopBar>
+      </TopBar>
       <Header>
         <Title>Dashboard</Title>
         <Subtitle>Unifying Teams. Simplifying Operations</Subtitle>
@@ -73,7 +73,10 @@ console.log({overview});
               >
                 <CompanyCard>
                   <CardContent>
-                    <CompanyLogo src={c.logo_url || "/default-logo.png"} alt={c.name} />
+                    <CompanyLogo
+                      src={c.logo_url || "/default-logo.png"}
+                      alt={c.name}
+                    />
                     <div>
                       <CardTitle>Company Name</CardTitle>
                       <CardSubtitle>{c.name}</CardSubtitle>
