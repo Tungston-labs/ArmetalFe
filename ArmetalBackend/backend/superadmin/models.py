@@ -260,14 +260,30 @@ class CompanySubscription(TimeStampedModel):
 
 
 
+from django.db import models
+from shared.models import TimeStampedModel
+
+
+class SubscriptionFeature(TimeStampedModel):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=255, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class SubscriptionPlan(TimeStampedModel):
 
     PLAN_TYPE = (
         ("basic", "Basic"),
         ("enterprise", "Enterprise"),
+        ("pro", "Pro"),
+        ("custom", "Custom"),
     )
-
-    
 
     name = models.CharField(max_length=100, unique=True)
 
@@ -276,8 +292,16 @@ class SubscriptionPlan(TimeStampedModel):
         choices=PLAN_TYPE
     )
 
-    description = models.TextField(blank=True)
+    description = models.CharField(
+        max_length=255,
+        blank=True
+    )
 
+    features = models.ManyToManyField(
+        SubscriptionFeature,
+        blank=True,
+        related_name="plans"
+    )
 
     base_price = models.DecimalField(
         max_digits=10,
@@ -291,6 +315,12 @@ class SubscriptionPlan(TimeStampedModel):
     )
 
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
 
 
 

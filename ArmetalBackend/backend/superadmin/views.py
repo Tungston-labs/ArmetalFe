@@ -398,33 +398,127 @@ class SendSubscriptionReminderMailAPIView(APIView):
     
 
 
+#  plan module
 
+from django.shortcuts import get_object_or_404
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from user.permissions import IsSuperAdmin
+
+from .models import SubscriptionFeature
+from .serializers import SubscriptionFeatureSerializer
+
+
+class SubscriptionFeatureCreateListAPIView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get(self, request):
+        queryset = SubscriptionFeature.objects.all()
+
+        serializer = SubscriptionFeatureSerializer(
+            queryset,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = SubscriptionFeatureSerializer(
+            data=request.data
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Feature created successfully.",
+                "data": serializer.data
+            },
+            status=status.HTTP_201_CREATED
+        )
+
+
+class SubscriptionFeatureRetrieveUpdateDeleteAPIView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get_object(self, pk):
+        return get_object_or_404(
+            SubscriptionFeature,
+            pk=pk
+        )
+
+    def get(self, request, pk):
+        serializer = SubscriptionFeatureSerializer(
+            self.get_object(pk)
+        )
+
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        feature = self.get_object(pk)
+
+        serializer = SubscriptionFeatureSerializer(
+            feature,
+            data=request.data
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Feature updated successfully.",
+                "data": serializer.data
+            }
+        )
+
+    def delete(self, request, pk):
+        self.get_object(pk).delete()
+
+        return Response(
+            {
+                "message": "Feature deleted successfully."
+            }
+        )
+
+
+from .models import SubscriptionPlan
+from .serializers import SubscriptionPlanSerializer
 
 
 class SubscriptionPlanCreateListAPIView(APIView):
     permission_classes = [IsSuperAdmin]
 
     def get(self, request):
-        plans = SubscriptionPlan.objects.all().order_by("-id")
-        serializer = SubscriptionPlanSerializer(plans, many=True)
+        queryset = SubscriptionPlan.objects.prefetch_related(
+            "features"
+        )
+
+        serializer = SubscriptionPlanSerializer(
+            queryset,
+            many=True
+        )
+
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = SubscriptionPlanSerializer(data=request.data)
+        serializer = SubscriptionPlanSerializer(
+            data=request.data
+        )
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    "message": "Subscription plan created successfully.",
-                    "data": serializer.data
-                },
-                status=status.HTTP_201_CREATED
-            )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
+            {
+                "message": "Subscription plan created successfully.",
+                "data": serializer.data
+            },
+            status=status.HTTP_201_CREATED
         )
 
 
@@ -432,64 +526,41 @@ class SubscriptionPlanRetrieveUpdateDeleteAPIView(APIView):
     permission_classes = [IsSuperAdmin]
 
     def get_object(self, pk):
-        try:
-            return SubscriptionPlan.objects.get(pk=pk)
-        except SubscriptionPlan.DoesNotExist:
-            return None
+        return get_object_or_404(
+            SubscriptionPlan,
+            pk=pk
+        )
 
     def get(self, request, pk):
-        plan = self.get_object(pk)
+        serializer = SubscriptionPlanSerializer(
+            self.get_object(pk)
+        )
 
-        if not plan:
-            return Response(
-                {"error": "Subscription plan not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        serializer = SubscriptionPlanSerializer(plan)
         return Response(serializer.data)
 
     def put(self, request, pk):
         plan = self.get_object(pk)
-
-        if not plan:
-            return Response(
-                {"error": "Subscription plan not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
 
         serializer = SubscriptionPlanSerializer(
             plan,
             data=request.data
         )
 
-        if serializer.is_valid():
-            serializer.save()
-
-            return Response(
-                {
-                    "message": "Subscription plan updated successfully.",
-                    "data": serializer.data
-                }
-            )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
+            {
+                "message": "Subscription plan updated successfully.",
+                "data": serializer.data
+            }
         )
 
     def delete(self, request, pk):
-        plan = self.get_object(pk)
-
-        if not plan:
-            return Response(
-                {"error": "Subscription plan not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        plan.delete()
+        self.get_object(pk).delete()
 
         return Response(
-            {"message": "Subscription plan deleted successfully."},
-            status=status.HTTP_200_OK
+            {
+                "message": "Subscription plan deleted successfully."
+            }
         )

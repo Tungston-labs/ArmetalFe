@@ -380,16 +380,89 @@ class SubscriptionReminderSimpleSerializer(serializers.Serializer):
 
 
 
+from rest_framework import serializers
+from .models import SubscriptionPlan
+
+
+from rest_framework import serializers
+from .models import SubscriptionFeature, SubscriptionPlan
+
+
+class SubscriptionFeatureSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SubscriptionFeature
+        fields = "__all__"
+
+    def validate_name(self, value):
+        queryset = SubscriptionFeature.objects.filter(
+            name__iexact=value
+        )
+
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "Feature already exists."
+            )
+
+        return value
+    
+
 class SubscriptionPlanSerializer(serializers.ModelSerializer):
+
+    features = SubscriptionFeatureSerializer(
+        many=True,
+        read_only=True
+    )
+
+    feature_ids = serializers.PrimaryKeyRelatedField(
+        queryset=SubscriptionFeature.objects.filter(
+            is_active=True
+        ),
+        many=True,
+        write_only=True,
+        source="features"
+    )
+
     class Meta:
         model = SubscriptionPlan
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "plan_type",
+            "description",
+            "base_price",
+            "extra_employee_price",
+            "is_active",
+            "features",
+            "feature_ids",
+            "created_at",
+            "updated_at",
+        ]
+
+    def validate_name(self, value):
+        queryset = SubscriptionPlan.objects.filter(
+            name__iexact=value
+        )
+
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "Plan already exists."
+            )
+
+        return value
 
     def validate_base_price(self, value):
         if value <= 0:
             raise serializers.ValidationError(
                 "Base price must be greater than 0."
             )
+
         return value
 
     def validate_extra_employee_price(self, value):
@@ -397,4 +470,5 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Extra employee price cannot be negative."
             )
+
         return value
