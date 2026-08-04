@@ -10,7 +10,7 @@ import {
   TopBar,
 } from "../finance/FinancePage.Styles";
 import EmployeeIcon from "../../assets/employee.svg";
-import EmployeeTitle from "../../Components/EmployeeTitle";
+import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
 import FinanceModal from "./NewFinance";
 import {
   createFinance,

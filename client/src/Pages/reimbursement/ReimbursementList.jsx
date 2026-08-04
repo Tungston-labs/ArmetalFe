@@ -19,7 +19,7 @@ import {
   LeftWrapper,
   DepartmentIcon,
 } from "../attendance/AttendanceList.Styles";
-import EmployeeTitle from "../../Components/EmployeeTitle";
+import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartments } from "../../Redux/departmentSlice";
 import {
@@ -27,7 +27,7 @@ import {
   updateReimbursementStatus,
 } from "../../services/reimbursement";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../Components/Loader";
+import Loader from "../../Components/Loader/Loader.jsx";
 import { ClipLoader } from "react-spinners";
 import { FaAnglesRight, FaAnglesLeft } from "react-icons/fa6";
 import HistoryIcon from "../../assets/history.svg";

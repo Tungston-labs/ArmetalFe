@@ -40,9 +40,9 @@ import {
   InputsWrapper,
   RightActions,
 } from "../department/DepartmentDetails.Styles";
-import Loader from "../../Components/Loader.jsx";
+import Loader from "../../Components/Loader/Loader.jsx";
 import { ClipLoader } from "react-spinners";
-import EmployeeTitle from "../../Components/EmployeeTitle.jsx";
+import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle.jsx";
 import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
 import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
 import { fetchDepartmentById } from "../../services/departmentServices"; 

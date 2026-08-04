@@ -1,55 +1,41 @@
 import { Route, Routes } from "react-router-dom";
 import "./index.css";
 import LoginForm from "./Pages/login/Login";
-import Layout from "./Components/Layout";
+import Layout from "./Components/layout/Layout.jsx";
 import DepartmentList from "./Pages/department/DepartmentList";
-// import Dashboard from "./Pages/dashboard/Dashboard";
-import DepartmentDetails from "./Pages/department/DepartmentDetails.jsx";
-
 import EmployeeList from "./Pages/leaveDetails/EmployeeList.jsx";
 import Holiday from "./Pages/holiday/Holiday.jsx";
-// import Payroll from "./Pages/payroll/PayrollDetailsView.jsx";
 import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx";
 import AddCompany from "./Pages/superAdmin/AddCompany.jsx";
 import Visa from "./Pages/visa/Visa.jsx";
-import DailyTask from "./Pages/dailytask/Daily.jsx";
-import BasicLevel from "./Pages/employee/BasicLevel.jsx";
-import BankPayment from "./Pages/employee/BankPayment.jsx";
-import Documents from "./Pages/employee/Documents.jsx";
+import BasicLevel from "./Pages/employee/Form/BasicLevel.jsx";
+import BankPayment from "./Pages/employee/Form/BankPayment.jsx";
+import Documents from "./Pages/employee/Form/Documents.jsx";
 import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
 import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
 import Attendance from "./Pages/attendance/Attendance.jsx";
-// import OnLeave from "./Pages/attendance/OnLeave.jsx";
 import EmployeesOnLeave from "./Pages/onLeave/EmployeesOnLeave.jsx";
-
-import ViewBasic from "./Pages/employee/ViewBasic.jsx"
-import ViewBankpayment from "./Pages/employee/ViewBankpayment.jsx"
-import ViewDocument from "./Pages/employee/ViewDocument.jsx"
+import ViewBasic from "./Pages/employee/ViewForm/ViewBasic.jsx"
+import ViewBankpayment from "./Pages/employee/ViewForm/ViewBankpayment.jsx"
+import ViewDocument from "./Pages/employee/ViewForm/ViewDocument.jsx"
 import Payroll1 from "./Pages/payroll/PaymentOverview.jsx";
 import RequireAuth from "./Components/RequireAuth.jsx";
 import Viewpage from "./Pages/superAdmin/Viewpage.jsx";
-// import PayrollFinal from "./Pages/payroll/PayrollFinal.jsx";
 import ForgetPassword from "./Pages/login/ForgetPassword.jsx";
 import Verification from "./Pages/login/Verification.jsx";
 import NewPassword from "./Pages/login/NewPassword.jsx";
-import Loder from "./Components/Loder.jsx";
-import LeftContent from "./Pages/employeDashboard/LeftContent.jsx";
-import Employeedashboard from "./Pages/employeDashboard/Employeedashboard.jsx"
-import FullDashboard from "./Pages/employeDashboard/FullDashboard.jsx";
+import Loder from "./Components/Loader/Loder.jsx";
 import LeaveList from "./Pages/onLeave/LeaveList.jsx";
 import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
-import NewDashboard from "./Pages/dashboard/NewDashboard.jsx";
 import DashboardNew from "./Pages/dashboard/DashboardNew.jsx";
-import Reimbpage from "./Pages/reimbursement/ReimbPage.jsx"
 import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
 import FinancePage from "./Pages/finance/FinancePage.jsx"
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./Redux/authSlice";
 import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
-import FieldShift from "./Pages/Shift/FieldShift.jsx"
-import FieldDepartment from "./Pages/Shift/FieldDepartment.jsx"
-import FieldInfo from "./Pages/Shift/FieldInfo.jsx";
+import FieldShift from "./Pages/Project/Project.jsx"
+import FieldDepartment from "./Pages/Project/ProjectInfo.jsx"
 import AttendanceList from "./Pages/attendance/AttendanceList.jsx"
 import ReimbursementList from "./Pages/reimbursement/ReimbursementList.jsx";
 import Daily from "./Pages/dailytask/DailyTask.jsx"
@@ -57,14 +43,10 @@ import ViewLayout from "./Pages/employee/layout/ViewLayout.jsx";
 import HomeDashboard from "./Pages/dashboard/HomeDashboard.jsx"
 import ErrorSomething from "./Pages/error/ErrorSomething.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";
-import Parent from "./Pages/employeDashboard/Parent.jsx";
-import ProgressModal from "./Components/ProgressModal.jsx";
 import AttendanceReport from "./Pages/attendanceReport/AttendanceReport.jsx";
-import EmployeeAttendanceModal from "./Pages/attendanceReport/EmployeeAttendanceModal.jsx";
 import PayrollDetailsContainer from "./Pages/payroll/PayrollDetailsContainer.jsx";
 import PayrollTable from "./Pages/payroll/PayrollTable.jsx";
 import AttendanceRequestScreen from "./Pages/attendanceRequest/AttendanceRequest.jsx";
-import Invoice from "./Pages/superAdmin/print/Invoice.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -96,7 +78,6 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<HomeDashboard />} />
               <Route path="/department" element={<DepartmentList />} />
-              <Route path="/departments/:id" element={<DepartmentDetails />} />
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
               <Route path="/holiday" element={<Holiday />} />
@@ -110,37 +91,23 @@ function App() {
               <Route path="/basic-details" element={<BasicLevel />} />
               <Route path="/bank-payment" element={<BankPayment />} />
               <Route path="/documents" element={<Documents />} />
-              {/* <Route path="/edit-basic-level " element={<EditBasicLevel />} /> */}
               <Route path="/employee-leave-request" element={<LeaveRequest />} />
               <Route path="/employee-leave-details/:id"  element={<EmployeeLeaveDetails />} />
               <Route path="/employee-attendance/detail/:id" element={<Attendance />} />
               <Route path="/leave" element={<LeaveList />} />
               <Route path="/ViewBasic/:id" element={<ViewBasic />} />
               <Route path="/employee-on-leave" element={<LeaveList />} />
-              <Route path="/dashboard" element={<NewDashboard />} />
               <Route path="/employee-attendance" element={<AttendanceList />} />
               <Route path="/employee-leave" element={<DetailOnleave />} />
               <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
               <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
-              <Route path="/employee-dashboard" element={<Employeedashboard />} />
-              <Route path="/leftcontent" element={<LeftContent />} />
-              <Route path="/fulldashboard/:employeeId" element={<FullDashboard />} />
               <Route path="/reimbursement" element={<ReimbursementList />} />
-              <Route path="/reimbursement_detail/:id" element={<Reimbpage />} />
               <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
               <Route path="/finance" element={<FinancePage />} />
               <Route path="/project" element={<FieldShift />} />
               <Route path="/project-department/:id/" element={<FieldDepartment />} />
-              <Route path="/project/:id" element={<FieldInfo />} />
-              <Route path="/parent" element={<Parent />} />
               <Route path="/layout" element={<ViewLayout />} />
-              <Route path="/modal" element={<ProgressModal />} />
               <Route path ="/employee-attendance-report" element={< AttendanceReport/>} />
-
-              <Route path="/right-modal" element={<EmployeeAttendanceModal />}/>
-
-              <Route path="/invoice" element={<Invoice />}/>
-
               <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />}/>
               <Route path="*" element={<ErrorSomething />} />
             </Route>

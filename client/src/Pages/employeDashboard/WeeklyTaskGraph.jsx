@@ -44,11 +44,11 @@ const WeeklyTaskGraph = ({ weeklyData }) => {
             const fillPercent = (d.tasksCompleted / Y_AXIS_MAX) * 100;
             return (
               <ChartColumn key={i}>
-                  <HourLabel>{d.tasksCompleted} hrs</HourLabel>
+                <HourLabel>{d.tasksCompleted} hrs</HourLabel>
                 <BarWrapper>
-                <BarFill 
-  $percentage={fillPercent}
-/>
+                  <BarFill
+                    $percentage={fillPercent}
+                  />
 
                 </BarWrapper>
                 <XAxisLabel>{d.day.slice(0, 1)}</XAxisLabel>

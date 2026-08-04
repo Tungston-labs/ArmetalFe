@@ -17,10 +17,10 @@ import {
   ArrowIcon,
 } from "./EmployeeLeaveDetails.Styles";
 
-import Header from "../../Components/Header";
-import EmployeeTitle from "../../Components/EmployeeTitle";
-import ConfirmLeaveModal from "../../Components/ConfirmLeaveModal";
-import Loader from "../../Components/Loader";
+import Header from "../../Components/Employee/Headers/Header";
+import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
+import ConfirmLeaveModal from "../../Components/modals/ConfirmLeaveModal";
+import Loader from "../../Components/Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { getLeaveDetails, patchLeaveStatus } from "../../Redux/leaveSlice";
 import { useParams, useNavigate } from "react-router-dom";

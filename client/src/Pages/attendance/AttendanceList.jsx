@@ -18,13 +18,13 @@ import {
   PaginationButton,
   PaginationInfo,
 } from "./AttendanceList.Styles";
-import EmployeeTitle from "../../Components/EmployeeTitle";
+import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartmentsMin } from "../../Redux/departmentSlice";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../Components/Loader";
+import Loader from "../../Components/Loader/Loader";
 import { ClipLoader } from "react-spinners";
 import { FaAnglesLeft,FaAnglesRight } from "react-icons/fa6";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";

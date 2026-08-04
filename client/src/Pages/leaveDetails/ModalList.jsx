@@ -10,7 +10,7 @@ import {
   DeclineButton,
 } from "./ModalList.Styles";
 
-import ConfirmLeaveModal from "../../Components/ConfirmLeaveModal";
+import ConfirmLeaveModal from "../../Components/modals/ConfirmLeaveModal";
 import { useDispatch } from "react-redux";
 import { patchLeaveStatus } from "../../Redux/leaveSlice";
 import { BodyCell, BodyRow, HeadCell, HeadRow, StyledTable, TableBody } from "./EmployeeList.styles";
