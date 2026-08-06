@@ -18,7 +18,7 @@ from user.permissions import IsSuperAdmin
 from superadmin.models import (
     Company,
     CompanySubscription,
-    SubscriptionPlan,
+    SubscriptionPlan,SubscriptionFeature
 )
 
 from superadmin.serializers import (
@@ -29,7 +29,7 @@ from superadmin.serializers import (
     CompanySubscriptionActionSerializer,
     SubscriptionPlanSerializer,
     SubscriptionReminderSerializer,
-    SubscriptionReminderSimpleSerializer,
+    SubscriptionReminderSimpleSerializer,SubscriptionFeatureSerializer
 )
 
 from superadmin.management.commands.subscriptions import (
@@ -43,6 +43,7 @@ from superadmin.management.commands.subscription_service import (
 from superadmin.management.commands.subscription_email_service import (
     SubscriptionEmailService,
 )
+
 
 # permission class
 
@@ -400,16 +401,7 @@ class SendSubscriptionReminderMailAPIView(APIView):
 
 #  plan module
 
-from django.shortcuts import get_object_or_404
 
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-from user.permissions import IsSuperAdmin
-
-from .models import SubscriptionFeature
-from .serializers import SubscriptionFeatureSerializer
 
 
 class SubscriptionFeatureCreateListAPIView(APIView):
