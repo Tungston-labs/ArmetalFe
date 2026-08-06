@@ -10,14 +10,13 @@ urlpatterns = [
     path("invoice/send-email/",views.SendInvoiceEmailView.as_view(), name="send-invoice-email"),
     path("companies/overview/", views.CompanyOverviewView.as_view(), name="company-overview"),
     path("company/self/", views.CompanySelfView.as_view(), name="company-self"),
-    path("subscription/company-status/",
-        views.CompanySubscriptionStatusAPIView.as_view(),
-        name="company-status"),
-        path(
-        "subscription/send-reminder/",
-        views.SendSubscriptionReminderAPIView.as_view(),
-        name="subscription-reminder",
-    ),
+    path("subscription/company-status/",views.CompanySubscriptionStatusAPIView.as_view(),name="company-status"),
+    path("subscription/send-reminder/",views.SendSubscriptionReminderAPIView.as_view(),name="subscription-reminder"),
+    path("subscription/send-reminder-email/",views.SendSubscriptionReminderMailAPIView.as_view(),name="send-reminder-email"),
+    path("subscription-features/",views.SubscriptionFeatureCreateListAPIView.as_view(),name="subscription-feature-create-list"),
+    path("subscription-features/<int:pk>/",views.SubscriptionFeatureRetrieveUpdateDeleteAPIView.as_view(),name="subscription-feature-detail"),
+    path("plans/",views.SubscriptionPlanCreateListAPIView.as_view(),name="subscription-plan-create-list"),
+    path("plans/<int:pk>/",views.SubscriptionPlanRetrieveUpdateDeleteAPIView.as_view(),name="subscription-plan-detail"),
 
 ]
 

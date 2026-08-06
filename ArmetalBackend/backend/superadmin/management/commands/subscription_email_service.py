@@ -125,3 +125,69 @@ Tungston Labs
             recipient_list=[company.email],
             fail_silently=False,
         )
+
+
+# -------------------------------------only remainder email
+
+
+import calendar
+from datetime import date
+from django.conf import settings
+from django.core.mail import send_mail
+from django.utils.timezone import now
+
+
+class SubscriptionEmailService:
+
+    @staticmethod
+    def send_reminder_email(company, extra_email=None):
+        today = now().date()
+
+        billing_day = company.created_at.day
+
+        year = today.year
+        month = today.month
+
+        days = calendar.monthrange(year, month)[1]
+        due_day = min(billing_day, days)
+        due_date = date(year, month, due_day)
+
+        if today > due_date:
+            if month == 12:
+                month = 1
+                year += 1
+            else:
+                month += 1
+
+            days = calendar.monthrange(year, month)[1]
+            due_day = min(billing_day, days)
+            due_date = date(year, month, due_day)
+
+        recipients = [company.email]
+
+        if extra_email and extra_email not in recipients:
+            recipients.append(extra_email)
+
+        send_mail(
+            subject="Subscription Reminder",
+            message=f"""
+Dear {company.name},
+
+This is a friendly reminder that your Rekory HR System subscription is due soon.
+
+Next Due Date:
+{due_date.strftime("%d %B %Y")}
+
+Kindly ensure your subscription is renewed before the due date to avoid any interruption of services.
+
+If you have already completed the payment, please ignore this email.
+
+Regards,
+
+Support Team
+Tungston Labs
+""",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=recipients,
+            fail_silently=False,
+        )
