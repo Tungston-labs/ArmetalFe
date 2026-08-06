@@ -556,3 +556,25 @@ class SubscriptionPlanRetrieveUpdateDeleteAPIView(APIView):
                 "message": "Subscription plan deleted successfully."
             }
         )
+    
+
+from django.db.models import Min, Max
+
+
+
+class SubscriptionPlanSummaryAPIView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get(self, request):
+        summary = SubscriptionPlan.objects.aggregate(
+            lowest_plan_amount=Min("base_price"),
+            highest_plan_amount=Max("base_price"),
+        )
+
+        data = {
+            "total_plans": SubscriptionPlan.objects.count(),
+            "lowest_plan_amount": summary["lowest_plan_amount"] or 0,
+            "highest_plan_amount": summary["highest_plan_amount"] or 0,
+        }
+
+        return Response(data, status=status.HTTP_200_OK)

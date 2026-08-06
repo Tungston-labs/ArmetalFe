@@ -60,4 +60,43 @@ export const updateCompanyStatus = async (companyId, action) => {
   return response.data;
 };
 
-  
+
+
+// GET: List Features
+export const fetchSubscriptionFeatures = async () => {
+  const response = await API.get("/subscription-features/");
+  return response.data;
+};
+
+// POST: Create Feature
+export const createSubscriptionFeature = async (data) => {
+  const response = await API.post("/subscription-features/", data);
+  return response.data;
+};
+
+
+
+
+// GET: List Plans
+export const fetchSubscriptionPlans = async () => {
+  const response = await API.get("/plans/");
+  return response.data;
+};
+
+// POST: Create Plan
+export const createSubscriptionPlan = async (data) => {
+  const response = await API.post("/plans/", data);
+  return response.data;
+};
+
+// GET: Retrieve Plan
+export const fetchSubscriptionPlanById = async (id) => {
+  const response = await API.get(`/plans/${id}/`);
+  return response.data;
+};
+
+// PUT: Update Plan
+export const updateSubscriptionPlan = async (id, data) => {
+  const response = await API.put(`/plans/${id}/`, data);
+  return response.data;
+};
