@@ -3,7 +3,7 @@ import "./index.css";
 import LoginForm from "./Pages/login/Login";
 import Layout from "./Components/layout/Layout.jsx";
 import DepartmentList from "./Pages/department/DepartmentList";
-import EmployeeList from "./Pages/leaveDetails/EmployeeList.jsx";
+import EmployeeList from "./Pages/employee/EmployeeList.jsx";
 import Holiday from "./Pages/holiday/Holiday.jsx";
 import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx";
 import AddCompany from "./Pages/superAdmin/AddCompany.jsx";
@@ -47,6 +47,11 @@ import AttendanceReport from "./Pages/attendanceReport/AttendanceReport.jsx";
 import PayrollDetailsContainer from "./Pages/payroll/PayrollDetailsContainer.jsx";
 import PayrollTable from "./Pages/payroll/PayrollTable.jsx";
 import AttendanceRequestScreen from "./Pages/attendanceRequest/AttendanceRequest.jsx";
+import Table from "./Pages/Table.jsx";
+import LeaveRequestList from "./Pages/leaveDetails/LeaveRequestList.jsx";
+import ContractAndVisaExpiry from "./Pages/visa/ContractAndVisaExpiry.jsx";
+import PayrollList from "./Pages/payroll/PayrollList.jsx";
+import PlanAndPricing from "./Pages/superAdmin/PlanAndPricing/PlanAndPricing.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -109,6 +114,12 @@ function App() {
               <Route path="/layout" element={<ViewLayout />} />
               <Route path ="/employee-attendance-report" element={< AttendanceReport/>} />
               <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />}/>
+<Route path="/PlanAndPricing" element={<PlanAndPricing />}/>
+<Route path="/PayrollList" element={<PayrollList />}/>
+<Route path="/employee-ContractAndVisaExpiry" element={<ContractAndVisaExpiry />}/>
+<Route path="/employee-leaveRequestList" element={<LeaveRequestList />}/>
+   <Route path="/table" element={<Table />}/>
+
               <Route path="*" element={<ErrorSomething />} />
             </Route>
           </Route>

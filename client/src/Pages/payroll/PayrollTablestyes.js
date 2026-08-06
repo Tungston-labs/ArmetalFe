@@ -3,7 +3,6 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 export const Container = styled.div`
   font-family: "Segoe UI", sans-serif;
-  background-color: white;
   padding: 20px;
 `;
 

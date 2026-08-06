@@ -49,6 +49,7 @@ import { fetchDepartmentById } from "../../services/departmentServices";
 import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
 import AddDepartment from "./AddDepartment.jsx";
+import ReusableHeader from "../../Components/ReusableTable/ReusableHeader.jsx";
 const DepartmentList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -297,28 +298,16 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
   return (
     <>
       <PageContainer>
-        <EmployeeTitle
-          iconSrc={EmployeeIcon}
-          title="Departments"
-          subtitle="Manage your departments"
-          buttonText="Add Department"
-          searchValue={search}
-          onSearchChange={setSearch}
-          onAddClick={() => setShowAddModal(true)}
-          showDropdown={false}
-          showBackArrow={false}
-          showTabs={false}
-          searchPlaceholder="Search  Department Name"
-          showReportButton={false}
-        />
+         <ReusableHeader
+                    title="Department"
+                    breadcrumbs={["Dashboard", "Department"]}
+                    buttonText="ADD NEW EMPLOYEE"
+                    onButtonClick={() => console.log("Add Employee")}
+                />
 
-        {loading ? (
-          <div
-            style={{ display: "flex", justifyContent: "center", padding: 40 }}
-          >
-            <Loader size={32} color="#3352BA" />
-          </div>
-        ) : (
+     
+        
+     
           <DepartmentGrid>
             {filteredDepartments?.length > 0 ? (
               filteredDepartments.map((dept) => {
@@ -668,8 +657,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
   </div>
             )}
           </DepartmentGrid>
-        )}
-
+      
      {showAddModal && (
   <AddDepartment onClose={() => setShowAddModal(false)} />
 )}

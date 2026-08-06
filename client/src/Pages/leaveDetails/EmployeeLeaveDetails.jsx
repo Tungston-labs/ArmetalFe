@@ -19,7 +19,7 @@ import {
 
 import Header from "../../Components/Employee/Headers/Header";
 import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
-import ConfirmLeaveModal from "../../Components/modals/ConfirmLeaveModal";
+import ReusableConfirmModal from "../../Components/modals/ReusableConfirmModal";
 import Loader from "../../Components/Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { getLeaveDetails, patchLeaveStatus } from "../../Redux/leaveSlice";
@@ -242,7 +242,7 @@ const formatDate = (date) => {
         </PageCard>
 
         {/* Modal */}
-        <ConfirmLeaveModal
+        <ReusableConfirmModal
           show={showModal}
           onClose={() => setShowModal(false)}
           onConfirm={handleStatusUpdate}

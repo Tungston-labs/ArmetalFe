@@ -4,7 +4,6 @@ import { FiSearch } from "react-icons/fi";
 export const Container = styled.div`
   padding: 20px;
   font-family: Satoshi;
-  background: white;
 `;
 
 export const Pagination = styled.div`
