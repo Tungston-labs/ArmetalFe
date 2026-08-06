@@ -86,7 +86,7 @@ function App() {
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
               <Route path="/holiday" element={<Holiday />} />
-              <Route path="/payrolldetails/:id" element={< PayrollDetailsContainer/>} />
+              <Route path="/payrolldetails/:id" element={< PayrollDetailsContainer />} />
               <Route path="/payrolldetails" element={<PayrollTable />} />
               <Route path="/company" element={<SuperAdmin />} />
               <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard />} />
@@ -97,7 +97,7 @@ function App() {
               <Route path="/bank-payment" element={<BankPayment />} />
               <Route path="/documents" element={<Documents />} />
               <Route path="/employee-leave-request" element={<LeaveRequest />} />
-              <Route path="/employee-leave-details/:id"  element={<EmployeeLeaveDetails />} />
+              <Route path="/employee-leave-details/:id" element={<EmployeeLeaveDetails />} />
               <Route path="/employee-attendance/detail/:id" element={<Attendance />} />
               <Route path="/leave" element={<LeaveList />} />
               <Route path="/ViewBasic/:id" element={<ViewBasic />} />
@@ -112,13 +112,13 @@ function App() {
               <Route path="/project" element={<FieldShift />} />
               <Route path="/project-department/:id/" element={<FieldDepartment />} />
               <Route path="/layout" element={<ViewLayout />} />
-              <Route path ="/employee-attendance-report" element={< AttendanceReport/>} />
-              <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />}/>
-<Route path="/PlanAndPricing" element={<PlanAndPricing />}/>
-<Route path="/PayrollList" element={<PayrollList />}/>
-<Route path="/employee-ContractAndVisaExpiry" element={<ContractAndVisaExpiry />}/>
-<Route path="/employee-leaveRequestList" element={<LeaveRequestList />}/>
-   <Route path="/table" element={<Table />}/>
+              <Route path="/employee-attendance-report" element={< AttendanceReport />} />
+              <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />} />
+              <Route path="/PlanAndPricing" element={<PlanAndPricing />} />
+              <Route path="/PayrollList" element={<PayrollList />} />
+              <Route path="/employee-ContractAndVisaExpiry" element={<ContractAndVisaExpiry />} />
+              <Route path="/employee-leaveRequestList" element={<LeaveRequestList />} />
+              <Route path="/table" element={<Table />} />
 
               <Route path="*" element={<ErrorSomething />} />
             </Route>

@@ -13,27 +13,70 @@ import { planColumns, planData,planCards } from "./planData";
 import StatsCards from "../../../Components/ StatsCards/StatsCards";
 import PlanCards from "./PlanCards";
 import ReusablePagination from "../../../Components/Pagination/ReusablePagination";
+import PlanModal from "./modal/PlanModal";
 function PlanAndPricing() {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 20;
 const [view, setView] = useState("table");
+const [plans, setPlans] = useState(planData);
+
   const paginatedData = useMemo(() => {
-    const start = (currentPage - 1) * rowsPerPage;
-    return planData.slice(start, start + rowsPerPage);
-  }, [currentPage]);
+  const start = (currentPage - 1) * rowsPerPage;
+  return plans.slice(start, start + rowsPerPage);
+}, [plans, currentPage]);
+const [isModalOpen, setIsModalOpen] = useState(false);
 
+const [selectedPlan, setSelectedPlan] = useState(null);
+const [mode, setMode] = useState("add");
 
-    const totalPages = Math.ceil(
-        planData.length / rowsPerPage
+  const totalPages = Math.ceil(plans.length / rowsPerPage);
+const handleAddPlan = () => {
+  setMode("add");
+  setSelectedPlan(null);
+  setIsModalOpen(true);
+};
+
+const handleEditPlan = (plan) => {
+  setMode("edit");
+  setSelectedPlan(plan);
+  setIsModalOpen(true);
+};
+
+const handleSavePlan = (formData) => {
+  if (mode === "add") {
+    const newPlan = {
+      id: Date.now(),
+      ...formData,
+      priceText: `₹${formData.price}/-`,
+      extra: formData.extraCharge,
+      status: "Active",
+    };
+
+    setPlans((prev) => [...prev, newPlan]);
+  } else {
+    setPlans((prev) =>
+      prev.map((item) =>
+        item.id === selectedPlan.id
+          ? {
+              ...item,
+              ...formData,
+              priceText: `₹${formData.price}/-`,
+              extra: formData.extraCharge,
+            }
+          : item
+      )
     );
+  }
 
-
+  setIsModalOpen(false);
+};
   return (
     <Container>
       <ReusableHeader
         title="Plans & Pricing"
         breadcrumbs={["Dashboard", "Plans & Pricing"]}
-        buttonText="ADD PLAN"
+       buttonText="ADD PLAN"
+onButtonClick={handleAddPlan}
       />
   <StatsCards cards={planCards} />
 
@@ -62,7 +105,10 @@ const [view, setView] = useState("table");
       totalPages={Math.ceil(planData.length / rowsPerPage)}
     />
   ) : (
-    <PlanCards plans={planData} />
+<PlanCards
+  plans={plans}
+  onEdit={handleEditPlan}
+/>
   )}
   <ReusablePagination
                 currentPage={currentPage}
@@ -70,6 +116,13 @@ const [view, setView] = useState("table");
                 onPageChange={setCurrentPage}
             />
 </TableCard>
+<PlanModal
+  open={isModalOpen}
+  mode={mode}
+  initialData={selectedPlan}
+  onClose={() => setIsModalOpen(false)}
+  onSubmit={handleSavePlan}
+/>
     </Container>
   );
 }
