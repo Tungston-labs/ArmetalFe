@@ -442,6 +442,7 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
             "plan_type",
             "description",
             "base_price",
+            "employee_limit",
             "extra_employee_price",
             "is_active",
             "status",
