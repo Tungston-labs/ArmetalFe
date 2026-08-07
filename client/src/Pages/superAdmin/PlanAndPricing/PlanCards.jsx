@@ -16,52 +16,55 @@ import {
 
 import { FiCheckCircle } from "react-icons/fi";
 
-const PlanCards = ({ plans }) => {
+const PlanCards = ({ plans, onEdit }) => {
   return (
     <CardContainer>
-      {plans.map((plan, index) => (
+      {plans.map((plan) => (
         <PlanCard
-          key={index}
-          orange={plan.plan === "Enterprise"}
+          key={plan.id}
+          orange={plan.tier?.toLowerCase() === "enterprise"}
         >
           <Top>
-            <PlanName>{plan.plan}</PlanName>
-            <Badge>{plan.tier}</Badge>
+            <PlanName>
+              {plan.plan}
+            </PlanName>
+
+            <Badge>
+              {plan.tier}
+            </Badge>
           </Top>
 
           <Price>
-            <Currency>₹</Currency> {plan.price}
+            <Currency>₹</Currency>{" "}
+            {plan.price}
             <Month>/ Month</Month>
           </Price>
 
           <Description>
-            Lorem Ipsum is simply dummy text of the printing and
-            typesetting.
+            {plan.description || "No description available."}
           </Description>
 
           <FeatureList>
-            <Feature>
-              <FiCheckCircle />
-              {plan.employees} Employees
-            </Feature>
-
-            <Feature>
-              <FiCheckCircle />
-              Lorem Ipsum is simply dummy text
-            </Feature>
-
-            <Feature>
-              <FiCheckCircle />
-              Lorem Ipsum is simply dummy
-            </Feature>
-
-            <Feature>
-              <FiCheckCircle />
-              Lorem Ipsum is simply dummy text
-            </Feature>
+            {plan.featureList?.length > 0 ? (
+              plan.featureList.map((feature) => (
+                <Feature key={feature.id}>
+                  <FiCheckCircle />
+                  {feature.name}
+                </Feature>
+              ))
+            ) : (
+              <Feature>
+                No features available
+              </Feature>
+            )}
           </FeatureList>
 
-          <EditButton>EDIT PLAN</EditButton>
+          <EditButton
+            type="button"
+            onClick={() => onEdit?.(plan.raw)}
+          >
+            EDIT PLAN
+          </EditButton>
         </PlanCard>
       ))}
     </CardContainer>

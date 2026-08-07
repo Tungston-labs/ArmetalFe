@@ -100,3 +100,11 @@ export const updateSubscriptionPlan = async (id, data) => {
   const response = await API.put(`/plans/${id}/`, data);
   return response.data;
 };
+
+
+
+// GET: Subscription Plan Summary
+export const fetchSubscriptionPlanSummary = async () => {
+  const response = await API.get("/plans/summary/");
+  return response.data;
+};

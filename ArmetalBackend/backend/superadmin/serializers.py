@@ -48,6 +48,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "working_hours_per_day",
             "half_day_hours",
             "is_active",
+            "plan",
         ]
 
         read_only_fields = [
@@ -63,6 +64,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "modules": {"required": True},
             "amount_per_employee": {"required": False},
             "initial_payment": {"required": False},
+            "plan": {"required": False},
         }
     def validate(self, attrs):
 
