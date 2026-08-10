@@ -33,7 +33,7 @@ from superadmin.serializers import (
 )
 
 from superadmin.management.commands.subscriptions import (
-    get_billable_employee_count,
+    get_billable_employee_count,calculate_subscription_amount
 )
 
 from superadmin.management.commands.subscription_service import (
@@ -79,7 +79,6 @@ class CompanyDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     
 # create and list subscriptions for a company
-
 class CompanySubscriptionListCreateView(APIView):
 
     def get(self, request, company_id, year=None):
@@ -108,7 +107,9 @@ class CompanySubscriptionListCreateView(APIView):
                 }
             )
 
-            # Update only while subscription is unpaid
+            # -----------------------------------------
+            # Update only unpaid subscriptions
+            # -----------------------------------------
             if obj.status == "unpaid":
 
                 employee_count = get_billable_employee_count(
@@ -117,14 +118,33 @@ class CompanySubscriptionListCreateView(APIView):
                     year
                 )
 
+                amount = calculate_subscription_amount(
+                    company,
+                    employee_count
+                )
+
                 obj.employee_count = employee_count
-                obj.amount_per_employee = company.amount_per_employee
-                obj.amount = employee_count * company.amount_per_employee
+
+                # Keep old value for companies without plan
+                if company.plan:
+                    obj.amount_per_employee = (
+                        company.plan.extra_employee_price or 0
+                    )
+                else:
+                    obj.amount_per_employee = (
+                        company.amount_per_employee or 0
+                    )
+
+                obj.amount = amount
+
                 obj.save()
 
             subs.append(obj)
 
-        serializer = CompanySubscriptionSerializer(subs, many=True)
+        serializer = CompanySubscriptionSerializer(
+            subs,
+            many=True
+        )
 
         return Response({
             "company": {
@@ -136,13 +156,19 @@ class CompanySubscriptionListCreateView(APIView):
                 "country": company.country,
                 "contact_number": company.contact_number,
                 "email": company.email,
+
                 "employee_count": Employee_db.objects.filter(
                     department__company=company,
                     is_deleted=False
-                ).count(),                "amount_per_employee": company.amount_per_employee,
+                ).count(),
+
+                "amount_per_employee": company.amount_per_employee,
+
                 "currency": subs[0].currency if subs else "AED",
+
                 "today": now().date(),
             },
+
             "subscriptions": serializer.data
         })
 
