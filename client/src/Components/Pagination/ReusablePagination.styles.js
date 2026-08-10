@@ -5,8 +5,13 @@ export const PaginationWrapper = styled.div`
   justify-content: right;
   align-items: center;
   gap: 6px;
-  margin-top: 24px;
   flex-wrap: wrap;
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 16px 0;
+  z-index: 10;
 `;
 
 export const ArrowButton = styled.button`

@@ -33,7 +33,7 @@ const FinanceDetail = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedPayment, setSelectedPayment] = useState(""); // "IN" | "OUT" | ""
   const [page, setPage] = useState(1);
-    const [month, setMonth] = useState("");
+  const [month, setMonth] = useState("");
   // Fetch Data
   useEffect(() => {
     dispatch(
@@ -102,7 +102,7 @@ const FinanceDetail = () => {
           onButtonClick={() => setIsOpen(true)}
         />
         <StatsCards cards={statCards} />
- <ReusableFilter
+        <ReusableFilter
           showSearch
           search={searchText}
           onSearch={setSearchText}
@@ -117,11 +117,9 @@ const FinanceDetail = () => {
           onDate={setMonth}
           showDate
         />
-        {!loading && list.length === 0 ? (
-          <NoEmployeeFound searchTerm={searchText} label="No Finance Records Found" />
-        ) : (
-          <ReusableTable columns={columns} data={list} loading={loading} />
-        )}
+
+        <ReusableTable columns={columns} data={list} loading={loading} />
+
 
         <Pagination
           currentPage={page}

@@ -200,20 +200,14 @@ const AttendanceReport = () => {
         showDate
       />
       <PageWrapper>
-        
-
-        {!summaryLoading && visibleRows.length === 0 ? (
-          <p style={{ textAlign: "center", color: "#888", padding: "16px 0" }}>
-            No records for {selectedMonthName || "this month"}
-          </p>
-        ) : (
+ 
           <ReusableTable
             columns={columns}
             data={visibleRows}
             loading={summaryLoading}
             onRowClick={handleRowClick}
           />
-        )}
+      
 
         <Pagination
           currentPage={currentPage}

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
+   ModalOverlay,
+  ModalContainer,
   FormWrapper,
   BackHeader,
   FormSection,
@@ -152,17 +154,11 @@ const AddCompanyModal = ({
   });
 
 
-  // ---------------------------------------------------------
-  // RENDER
-  // ---------------------------------------------------------
 
   return (
+      <ModalOverlay onClick={onClose}>
+    <ModalContainer onClick={(e) => e.stopPropagation()}>
     <FormWrapper>
-
-      {/* ------------------------------------------------ */}
-      {/* HEADER */}
-      {/* ------------------------------------------------ */}
-
       <BackHeader>
 
         <GoArrowLeft
@@ -176,13 +172,7 @@ const AddCompanyModal = ({
 
       </BackHeader>
 
-
       <form onSubmit={handleSubmit}>
-
-        {/* ================================================= */}
-        {/* COMPANY DETAILS */}
-        {/* ================================================= */}
-
         <SectionTitle>
           Company details
         </SectionTitle>
@@ -190,13 +180,9 @@ const AddCompanyModal = ({
 
         <FormSection>
 
-          {/* ================================================= */}
-          {/* LEFT COLUMN */}
-          {/* ================================================= */}
 
           <div>
 
-            {/* COMPANY NAME */}
             <FormField>
 
               <Label>
@@ -267,11 +253,6 @@ const AddCompanyModal = ({
 
             </FormField>
 
-
-            {/* ================================================= */}
-            {/* SUBSCRIPTION PLAN */}
-            {/* ================================================= */}
-
             <FormField>
 
               <Label>
@@ -322,11 +303,6 @@ const AddCompanyModal = ({
 
             </FormField>
 
-
-            {/* ================================================= */}
-            {/* AMOUNT PER EMPLOYEE */}
-            {/* ================================================= */}
-
             <FormField>
 
               <Label>
@@ -340,11 +316,6 @@ const AddCompanyModal = ({
                 value={formData.amount_per_employee}
                 onChange={handleChange}
                 placeholder="Enter amount per employee"
-
-                /*
-                 * If a plan is selected,
-                 * plan pricing will be used.
-                 */
                 disabled={!!formData.plan}
               />
 
@@ -355,11 +326,6 @@ const AddCompanyModal = ({
               )}
 
             </FormField>
-
-
-            {/* ================================================= */}
-            {/* INITIAL PAYMENT */}
-            {/* ================================================= */}
 
             <FormField>
 
@@ -377,11 +343,6 @@ const AddCompanyModal = ({
               />
 
             </FormField>
-
-
-            {/* ================================================= */}
-            {/* LOGO */}
-            {/* ================================================= */}
 
             <FormField>
 
@@ -459,11 +420,6 @@ const AddCompanyModal = ({
             </FormField>
 
           </div>
-
-
-          {/* ================================================= */}
-          {/* RIGHT COLUMN */}
-          {/* ================================================= */}
 
           <div>
 
@@ -649,11 +605,6 @@ const AddCompanyModal = ({
 
         </FormSection>
 
-
-        {/* ================================================= */}
-        {/* PRIVILEGES */}
-        {/* ================================================= */}
-
         {showPrivileges && (
 
           <>
@@ -707,11 +658,6 @@ const AddCompanyModal = ({
 
 
         <Hr />
-
-
-        {/* ================================================= */}
-        {/* SALARY STRUCTURE */}
-        {/* ================================================= */}
 
         <SalaryWrapper>
 
@@ -881,11 +827,6 @@ const AddCompanyModal = ({
 
           </SalaryTableWrapper>
 
-
-          {/* ================================================= */}
-          {/* WORKING HOURS */}
-          {/* ================================================= */}
-
           <FormSection
             style={{
               marginTop: "20px",
@@ -949,12 +890,6 @@ const AddCompanyModal = ({
           </FormSection>
 
         </SalaryWrapper>
-
-
-        {/* ================================================= */}
-        {/* BUTTONS */}
-        {/* ================================================= */}
-
         <ButtonGroup>
 
           <Button
@@ -1009,6 +944,8 @@ const AddCompanyModal = ({
       </form>
 
     </FormWrapper>
+    </ModalContainer>
+    </ModalOverlay>
   );
 };
 

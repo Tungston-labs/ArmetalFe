@@ -25,6 +25,7 @@ import { FaAnglesRight, FaAnglesLeft } from "react-icons/fa6";
 import Side_detail from "./Side_detail.jsx";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader.jsx";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable.jsx";
+import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
 
 const PAGE_SIZE = 10;
 
@@ -246,7 +247,7 @@ const ReimbursementList = () => {
             );
           })
         ) : (
-          <p>No departments found.</p>
+        <NoEmployeeFound />
         )}
       </DepartmentGrid>
 

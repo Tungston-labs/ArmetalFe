@@ -15,7 +15,52 @@ const color = {
   danger: "#D8452F",
   dangerSoft: "#FBEAE7",
 };
+export const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+
+  background: rgba(15, 23, 42, 0.45);
+
+  z-index: 9999;
+`;
+
+export const ModalContainer = styled.div`
+  width: 100%;
+  max-width: 1100px;
+  max-height: 90vh;
+
+  background: ${color.surface};
+
+  border-radius: 14px;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+
+  overflow: hidden;
+
+  animation: modalOpen 0.2s ease-out;
+
+  @keyframes modalOpen {
+    from {
+      opacity: 0;
+      transform: translateY(15px) scale(0.98);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @media (max-width: 768px) {
+    max-height: 95vh;
+  }
+`;
 export const Container = styled.div`
   font-family: "Raleway", "Segoe UI", sans-serif;
   background-color: ${color.surface};
@@ -84,6 +129,33 @@ export const Subtitle = styled.p`
 export const FormWrapper = styled.div`
   background: ${color.surface};
   border-radius: 12px;
+
+  max-height: 90vh;
+  overflow-y: auto;
+
+  padding: 24px;
+
+  box-sizing: border-box;
+
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  @media (max-width: 768px) {
+    padding: 18px;
+    max-height: 95vh;
+  }
 `;
 
 export const BackHeader = styled.h3`

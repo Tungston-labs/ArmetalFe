@@ -94,25 +94,45 @@ export const ShadowLine = styled.div`
 `;
 
 // ---------- Component ----------
-const NoEmployeeFound = ({ searchTerm = "" }) => {
+/**
+ * Generic "no records" empty state — usable for employees, companies,
+ * departments, or any other list.
+ *
+ * Examples:
+ *   <NoRecordsFound entityLabel="employees" searchTerm={debouncedSearch} />
+ *   <NoRecordsFound entityLabel="companies" searchTerm={search} />
+ *   <NoRecordsFound entityLabel="departments" />
+ */
+const NoRecordsFound = ({
+  entityLabel = "records",
+  searchTerm = "",
+  icon = "🔍",
+  title,
+  emptyMessage,
+}) => {
+  const resolvedTitle = title || `No ${entityLabel} found`;
+  const resolvedEmptyMessage =
+    emptyMessage ||
+    `No ${entityLabel} match your current search or filter. Try adjusting your query.`;
+
   return (
     <Wrapper>
       <IllustrationWrap>
         <CircleBg>
-          <EmojiIcon>🔍</EmojiIcon>
+          <EmojiIcon>{icon}</EmojiIcon>
         </CircleBg>
       </IllustrationWrap>
 
-      <Title>No Employee Found</Title>
+      <Title>{resolvedTitle}</Title>
 
       <Subtitle>
         {searchTerm ? (
           <>
-            We couldn't find anyone matching{" "}
-            <SearchTerm>"{searchTerm}"</SearchTerm>. Try a different name or ID.
+            We couldn't find any {entityLabel} matching{" "}
+            <SearchTerm>"{searchTerm}"</SearchTerm>. Try a different search.
           </>
         ) : (
-          "No employees match your current search or filter. Try adjusting your query."
+          resolvedEmptyMessage
         )}
       </Subtitle>
 
@@ -121,4 +141,4 @@ const NoEmployeeFound = ({ searchTerm = "" }) => {
   );
 };
 
-export default NoEmployeeFound;
+export default NoRecordsFound;

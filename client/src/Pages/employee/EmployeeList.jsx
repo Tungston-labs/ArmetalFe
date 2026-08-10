@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
     Container,
     TruncatedText,
@@ -9,44 +9,66 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
-import Loader from "../../Components/Loader/Loader";
 import RightSideModal from "../employeDashboard/RightSideModal";
-import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import { Status } from "../../Components/ReusableTable/ReusableTable.styles";
 import ReusableConfirmModal from "../../Components/modals/ReusableConfirmModal";
+import ReusablePagination from "../../Components/Pagination/ReusablePagination";
 
 const EmployeeList = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [openModal, setOpenModal] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
-    const [departmentFilter, setDepartmentFilter] = useState("");
-    const [searchText, setSearchText] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
-    const [page] = useState(1);
+    const [page, setPage] = useState(1);
+    const paginationLimit = 20;
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [search, setSearch] = useState("");
+
+    // Single source of truth for the selected department — stores the
+    // department NAME (what the dropdown displays/selects).
     const [department, setDepartment] = useState("");
     const [status, setStatus] = useState("");
     const [month, setMonth] = useState("");
-    const { employeeList, loading } = useSelector((state) => state.employees);
+
+    const { employeeList, loading,pagination } = useSelector((state) => state.employees);
+    const { list: departmentList } = useSelector(
+        (state) => state.departments
+    );
 
     useEffect(() => {
         dispatch(getDepartments({ page: 1, search: "" }));
     }, [dispatch]);
+    const departmentRows = Array.isArray(departmentList?.results)
+        ? departmentList.results
+        : Array.isArray(departmentList)
+            ? departmentList
+            : [];
+    const departmentOptions = useMemo(
+        () => departmentRows.map((d) => d.name),
+        [departmentRows],
+    );
+
+    const departmentIdByName = useMemo(
+        () => Object.fromEntries(departmentRows.map((d) => [d.name, d.id])),
+        [departmentRows],
+    );
+    const selectedDepartmentId = department ? departmentIdByName[department] : "";
 
     useEffect(() => {
-        dispatch(getAllEmployees({ page, search: "", department_id: departmentFilter }));
-    }, [dispatch, page, departmentFilter]);
+        dispatch(
+            getAllEmployees({ page,limit: paginationLimit,search: "", department_id: selectedDepartmentId }),
+        );
+    }, [dispatch, page, selectedDepartmentId]);
 
     useEffect(() => {
-        const handler = setTimeout(() => setDebouncedSearch(searchText), 300);
+        const handler = setTimeout(() => setDebouncedSearch(search), 300);
         return () => clearTimeout(handler);
-    }, [searchText]);
+    }, [search]);
 
     const handleDeleteClick = (id) => {
         setSelectedEmployeeId(id);
@@ -55,7 +77,9 @@ const EmployeeList = () => {
 
     const confirmDelete = async () => {
         await dispatch(deleteEmployeeById(selectedEmployeeId));
-        dispatch(getAllEmployees({ page, search: "", department_id: departmentFilter }));
+        dispatch(
+            getAllEmployees({ page, search: "", department_id: selectedDepartmentId }),
+        );
         setShowDeleteModal(false);
         setSelectedEmployeeId(null);
     };
@@ -65,20 +89,27 @@ const EmployeeList = () => {
         setSelectedEmployeeId(null);
     };
 
-    const filteredEmployees = Array.isArray(employeeList)
-        ? employeeList.filter(
-            (emp) =>
-                emp.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-                emp.employee_id?.toString().toLowerCase().includes(debouncedSearch.toLowerCase()),
-        )
-        : [];
+   const filteredEmployees = Array.isArray(employeeList)
+    ? employeeList.filter((emp) => {
+        const searchValue = debouncedSearch.toLowerCase().trim();
+
+        return (
+            emp.name?.toLowerCase().includes(searchValue) ||
+            emp.employee_id
+                ?.toString()
+                .toLowerCase()
+                .includes(searchValue)
+        );
+    })
+    : [];
 
     const columns = [
         {
             header: "Sl No",
             accessor: "slno",
             sortable: false,
-            render: (_row, index) => index + 1 + (page - 1) * 20,
+           render: (_row, index) =>
+    index + 1 + (page - 1) * paginationLimit,
         },
         {
             header: "Employee name",
@@ -128,7 +159,7 @@ const EmployeeList = () => {
                         style={{ cursor: "pointer" }}
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/edit-employee/${row.id}`);
+                            navigate(`/ViewBasic/${row.id}`);
                         }}
                     />
                     <FaTrash
@@ -146,28 +177,19 @@ const EmployeeList = () => {
 
     return (
         <>
-            {loading && (
-                <Loader />
-            )}
-
             <Container>
                 <ReusableHeader
                     title="Employees"
                     breadcrumbs={["Dashboard", "Employees"]}
                     buttonText="+ ADD NEW EMPLOYEE"
-                   onButtonClick={() => navigate("/basic-details")}
+                    onButtonClick={() => navigate("/basic-details")}
                 />
                 <ReusableFilter
                     search={search}
                     onSearch={setSearch}
-
+                    searchPlaceholder="Search by Employee name or ID"
                     department={department}
-                    departments={[
-                        "HR",
-                        "Finance",
-                        "Development",
-                        "Marketing",
-                    ]}
+                    departments={departmentOptions}
                     onDepartment={setDepartment}
 
                     status={status}
@@ -176,17 +198,13 @@ const EmployeeList = () => {
                         "Absent",
                         "On Leave",
                     ]}
-                    onStatus={setStatus}
-                    date={month}
-                    onDate={setMonth}
+                    onStatus={setStatus}                   
                     showSearch
                     showDepartment
                     showStatus
-                    showDate
                 />
                 {!loading && (
                     <TableWrapper>
-                        {filteredEmployees.length > 0 ? (
                             <ReusableTable
                                 columns={columns}
                                 data={filteredEmployees}
@@ -196,12 +214,20 @@ const EmployeeList = () => {
                                     setOpenModal(true);
                                 }}
                             />
-                        ) : (
-                            <NoEmployeeFound searchTerm={debouncedSearch} />
-                        )}
                     </TableWrapper>
                 )}
-
+{!loading &&
+          pagination?.total_pages > 1 && (
+            <ReusablePagination
+              currentPage={
+                pagination?.current_page || page
+              }
+              totalPages={
+                pagination?.total_pages || 1
+              }
+              onPageChange={setPage}
+            />
+          )}
                 <ReusableConfirmModal
                     show={showDeleteModal}
                     onClose={cancelDelete}

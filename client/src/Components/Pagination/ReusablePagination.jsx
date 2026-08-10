@@ -1,17 +1,17 @@
 import React from "react";
 import {
   PaginationWrapper,
-//   PageButton,
+  //   PageButton,
   PageNumber,
   Ellipsis,
   ArrowButton,
 } from "./ReusablePagination.styles";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-const ReusablePagination = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}) => {
+
+const ReusablePagination = ({ currentPage, totalPages, onPageChange }) => {
+  // Nothing to paginate — don't render anything until there's more than one page
+  if (!totalPages || totalPages <= 1) return null;
+
   const getPages = () => {
     const pages = [];
 
@@ -45,37 +45,35 @@ const ReusablePagination = ({
   };
 
   return (
-   <PaginationWrapper>
-
-    <ArrowButton
+    <PaginationWrapper>
+      <ArrowButton
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
-    >
+      >
         <FaAngleLeft />
-    </ArrowButton>
+      </ArrowButton>
 
-    {getPages().map((page, index) =>
+      {getPages().map((page, index) =>
         page === "..." ? (
-            <Ellipsis key={index}>...</Ellipsis>
+          <Ellipsis key={index}>...</Ellipsis>
         ) : (
-            <PageNumber
-                key={page}
-                $active={currentPage === page}
-                onClick={() => onPageChange(page)}
-            >
-                {page}
-            </PageNumber>
+          <PageNumber
+            key={page}
+            $active={currentPage === page}
+            onClick={() => onPageChange(page)}
+          >
+            {page}
+          </PageNumber>
         )
-    )}
+      )}
 
-    <ArrowButton
+      <ArrowButton
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-    >
+      >
         <FaAngleRight />
-    </ArrowButton>
-
-</PaginationWrapper>
+      </ArrowButton>
+    </PaginationWrapper>
   );
 };
 

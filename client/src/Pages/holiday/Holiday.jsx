@@ -238,15 +238,7 @@ const HolidayManager = () => {
           date={selectedMonth}
           onDate={setSelectedMonth}
         />
-
-   
-
-        {!loading && sortedHolidays.length === 0 ? (
-          <NoEmployeeFound searchTerm={searchText} />
-        ) : (
           <ReusableTable columns={columns} data={sortedHolidays} loading={loading} />
-        )}
-
         <ReusableConfirmModal
           show={showDeleteModal}
           title="Confirm Deletion"

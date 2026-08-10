@@ -5,9 +5,8 @@ import { FiSearch } from "react-icons/fi";
 export const Container = styled.div`
   padding:20px;
   font-family: "Segoe UI", sans-serif;
-  background: white;
   min-height: 100vh;
-  max-width: 1600px; /* prevents over-stretching on large screens */
+  max-width: 1600px; 
   margin: 0 auto;
 `;
 
