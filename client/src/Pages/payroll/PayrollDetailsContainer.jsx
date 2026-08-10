@@ -93,7 +93,7 @@ const formatDate = (date) => {
 
         {/* ================= BACK ================= */}
         <Header>
-          <BackTitle onClick={() => navigate("/payrolldetails")}>
+          <BackTitle onClick={() => navigate("/PayrollList")}>
             <BackIcon className="no-print" />
           </BackTitle>
         </Header>

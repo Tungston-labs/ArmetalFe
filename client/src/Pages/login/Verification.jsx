@@ -20,7 +20,7 @@ import { IoIosArrowBack } from "react-icons/io";
 
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import PunchLoader from "../../Components/Loader"; // ✅ adjust path if needed
+import PunchLoader from "../../Components/Loader/Loader"; // ✅ adjust path if needed
 import { FaChevronLeft } from "react-icons/fa6";
 import { BASE_URL } from "../../services/api";
 const VerifyCodePage = () => {

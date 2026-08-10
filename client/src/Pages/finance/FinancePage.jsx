@@ -10,7 +10,7 @@ import {
   TopBar,
 } from "../finance/FinancePage.Styles";
 import EmployeeIcon from "../../assets/employee.svg";
-import EmployeeTitle from "../../Components/EmployeeTitle";
+import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
 import FinanceModal from "./NewFinance";
 import {
   createFinance,
@@ -102,15 +102,15 @@ const FinanceDetail = () => {
   };
 
   const formatDate = (date) => {
-  if (!date) return "----";
+    if (!date) return "----";
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
 
-  return `${day}/${month}/${year}`;
-};
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <>
@@ -136,7 +136,6 @@ const FinanceDetail = () => {
           />
         </TopBar>
 
-        {/* ✅ Use API Totals */}
         <FinanceSummary
           income={totalIncome}
           expense={totalExpense}
@@ -184,11 +183,11 @@ const FinanceDetail = () => {
                   </Tr>
                 ))
               ) : (
-                 <tr>
-    <Td colSpan={6}>
-      <NoEmployeeFound searchTerm={searchText} label="No Finance Records Found" />
-    </Td>
-  </tr>
+                <tr>
+                  <Td colSpan={6}>
+                    <NoEmployeeFound searchTerm={searchText} label="No Finance Records Found" />
+                  </Td>
+                </tr>
               )}
             </tbody>
           </StyledTable>

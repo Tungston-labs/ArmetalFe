@@ -13,7 +13,6 @@ def get_billable_employee_count(company, month, year):
     first_day = date(year, month, 1)
     last_day = date(year, month, monthrange(year, month)[1])
 
-
     employees = Employee_db.objects.filter(
         department__company=company
     ).filter(
@@ -28,7 +27,6 @@ def get_billable_employee_count(company, month, year):
 
     for emp in employees:
 
-        # Joined after month
         if emp.joining_date > last_day:
             continue
 
@@ -45,3 +43,45 @@ def get_billable_employee_count(company, month, year):
             total += 1
 
     return total
+
+
+def calculate_subscription_amount(company, employee_count):
+    """
+    Calculate monthly subscription amount.
+
+    If company has a plan:
+        base_price + extra employees * extra_employee_price
+
+    If company has no plan:
+        employee_count * company.amount_per_employee
+    """
+
+    # -----------------------------------------
+    # NEW PLAN-BASED CALCULATION
+    # -----------------------------------------
+    if company.plan:
+
+        plan = company.plan
+
+        employee_limit = plan.employee_limit or 0
+        base_price = plan.base_price or 0
+        extra_employee_price = plan.extra_employee_price or 0
+
+        extra_employees = max(
+            0,
+            employee_count - employee_limit
+        )
+
+        amount = (
+            base_price +
+            (extra_employees * extra_employee_price)
+        )
+
+        return amount
+
+    # -----------------------------------------
+    # OLD CALCULATION
+    # -----------------------------------------
+    amount_per_employee = company.amount_per_employee or 0
+
+    return employee_count * amount_per_employee

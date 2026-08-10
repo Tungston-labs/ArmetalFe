@@ -19,7 +19,7 @@ import {
   SearchIcon,
   SearchWrapper,
 } from "./SuperAdmin.Styles";
-import Loader from "../../Components/Loader"
+import Loader from "../../Components/Loader/Loader"
 import { MdOutlineEmail } from "react-icons/md";
 import { FaTrashAlt, FaPlus } from "react-icons/fa";
 import { TbPencilMinus } from "react-icons/tb";

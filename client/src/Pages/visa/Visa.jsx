@@ -10,9 +10,9 @@ import {
   deleteEmployeeById,
   getUpcomingExpiryEmployees,
 } from "../../Redux/employeeSlice";
-import Loader from "../../Components/Loader";
+import Loader from "../../Components/Loader/Loader";
 import Pagination from "../../Components/Pagination/Pagination"
-import EmployeeTitle from "../../Components/EmployeeTitle";
+import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
 import { BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, TableHead, TableWrapper } from "../leaveDetails/EmployeeList.styles";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 const EmployeeList = () => {

@@ -3,8 +3,8 @@ import { FiSearch } from "react-icons/fi";
 
 export const Container = styled.div`
   padding: 20px;
-  font-family: Satoshi;
-  background: white;
+  font-family: "Satoshi";
+
 `;
 
 export const StyledTable = styled.table`
@@ -175,33 +175,7 @@ export const DeleteIconWrapper = styled.td`
 `;
 
 export const TableWrapper = styled.div`
-  width: 100%;
-  overflow-y: auto;
-  overflow-x: auto;
-
-  border: 1px solid #eee;
-  border-radius: 10px;
-  border: none;
-
-  /* Vertical scrollbar */
-  &::-webkit-scrollbar {
-    width: 2px;
-  }
-
-  /* Horizontal scrollbar */
-  &::-webkit-scrollbar:horizontal {
-    height: 2px;
-  }
-
-  /* Thumb styling */
-  &::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb:horizontal {
-    background: #c1c1c1;
-  }
+  
 `;
 
 export const ProfileImg = styled.img`

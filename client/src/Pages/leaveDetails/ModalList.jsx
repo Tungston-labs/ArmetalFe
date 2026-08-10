@@ -10,7 +10,7 @@ import {
   DeclineButton,
 } from "./ModalList.Styles";
 
-import ConfirmLeaveModal from "../../Components/ConfirmLeaveModal";
+import ReusableConfirmModal from "../../Components/modals/ReusableConfirmModal";
 import { useDispatch } from "react-redux";
 import { patchLeaveStatus } from "../../Redux/leaveSlice";
 import { BodyCell, BodyRow, HeadCell, HeadRow, StyledTable, TableBody } from "./EmployeeList.styles";
@@ -141,7 +141,7 @@ const OnLeaveModal = ({ onClose, employeeId, date, leaveId }) => {
       </ModalOverlay>
 
       {showConfirmModal && selectedLeaveId && (
-        <ConfirmLeaveModal
+        <ReusableConfirmModal
           leaveId={selectedLeaveId}
           actionType={actionType}
           onClose={() => setShowConfirmModal(false)}

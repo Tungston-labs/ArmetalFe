@@ -4,8 +4,8 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getAttendanceDetail } from "../../Redux/attendanceSlice";
 import { Container,} from "./Attendance.Style";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import Loader from '../../Components/Loader';
-import EmployeeTitle from "../../Components/EmployeeTitle";
+import Loader from '../../Components/Loader/Loader';
+import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
 import EmployeeHeader from "../../Components/header/EmployeeHeader";
 import AttendanceDetailsContainer from "../../Components/attendance/AttendanceDetailsContainer";
 

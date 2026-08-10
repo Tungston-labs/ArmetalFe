@@ -204,7 +204,7 @@ export const EmployeeItem = styled.li`
 export const DropdownHeader = styled.div`
   display: grid;
 grid-template-columns: repeat(7, 1fr);
-  background: #3352BA;
+  background: #F78926;
   color: white;
   font-weight: 600;
   font-size: 0.95rem;
@@ -246,7 +246,7 @@ grid-template-columns: repeat(7, 1fr);
   text-align: center;
   justify-content: center;
   transition: background 0.2s ease;
-background: #f4f8ff;
+/* background: #f4f8ff; */
   &:hover {
     background: #f5f5f5;
   }

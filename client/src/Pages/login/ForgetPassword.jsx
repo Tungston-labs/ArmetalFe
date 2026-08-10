@@ -20,7 +20,7 @@ import { HiArrowLeft } from "react-icons/hi"; // for the back arrow
 import { FaChevronLeft } from "react-icons/fa6";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import PunchLoader from "../../Components/Loader"; // ✅ adjust path if needed
+import PunchLoader from "../../Components/Loader/Loader"; // ✅ adjust path if needed
 import "@fontsource/anek-malayalam/400.css"; // Regular
 import "@fontsource/anek-malayalam/700.css"; // Bold
 import { BASE_URL } from "../../services/api";

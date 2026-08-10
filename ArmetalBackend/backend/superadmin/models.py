@@ -9,10 +9,73 @@ from django.core.exceptions import ValidationError
 from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIntegerField,EncryptedTextField
 from django.db import transaction
 from django.core.validators import MinValueValidator, MaxValueValidator
-
-
-
 import re
+from django.db import models
+from shared.models import TimeStampedModel
+
+
+class SubscriptionFeature(TimeStampedModel):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=255, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class SubscriptionPlan(TimeStampedModel):
+
+    PLAN_TYPE = (
+        ("basic", "Basic"),
+        ("enterprise", "Enterprise"),
+        ("pro", "Pro"),
+        ("custom", "Custom"),
+    )
+
+    name = models.CharField(max_length=100, unique=True)
+
+    plan_type = models.CharField(
+        max_length=20,
+        choices=PLAN_TYPE
+    )
+    employee_limit = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of employees included in the base plan price"
+    )
+
+    description = models.CharField(
+        max_length=255,
+        blank=True
+    )
+
+    features = models.ManyToManyField(
+        SubscriptionFeature,
+        blank=True,
+        related_name="plans"
+    )
+
+    base_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    extra_employee_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
 def generate_password():
     return 'CMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
@@ -61,6 +124,13 @@ class Company(TimeStampedModel):
     modules = models.JSONField(default=dict)  # e.g. {"attendance": True, "leave": True}
     number_of_employees = models.PositiveIntegerField(default=0, editable=False)
     default_password = models.CharField(max_length=200, editable=False)
+    plan = models.ForeignKey(
+        SubscriptionPlan,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="companies"
+    )
     logo = models.FileField(
                 upload_to='company_logos/',
                 null=True,
@@ -259,6 +329,10 @@ class CompanySubscription(TimeStampedModel):
                     )
 
 
+
+
+
+
 class ImpersonationRequest(models.Model):
     super_admin = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -268,4 +342,7 @@ class ImpersonationRequest(models.Model):
 
     class Meta:
         unique_together = ('super_admin', 'company')
+
+
+
 

@@ -13,7 +13,7 @@ import {
   MonthSelector,
   ReportButton,
 } from "./AttendanceReportStyles";
-import EmployeeTitle from "../../Components/EmployeeTitle";
+import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
 import { getAttendanceSummary } from "../../Redux/attendanceSlice";

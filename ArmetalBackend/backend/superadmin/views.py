@@ -1,28 +1,51 @@
-from django.shortcuts import render
-from rest_framework import generics, permissions
-from .serializers import CompanyCreateSerializer,CompanyListSerializer
-from .permissions import IsSuperAdmin
-from rest_framework import generics, filters
-from rest_framework import serializers
-from calendar import month_name
-from rest_framework import generics, status
+from calendar import month_name, monthrange
+
+from django.core.mail import EmailMessage
+from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
+from django.utils.timezone import now
+
+from rest_framework import filters, generics, permissions, serializers, status
+from rest_framework.generics import UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.utils.timezone import now
-from superadmin.serializers import CompanySubscriptionSerializer
-from calendar import monthrange
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import UpdateAPIView
-from .models import Company, CompanySubscription
-from django.template.loader import render_to_string
-from django.core.mail import EmailMessage
-from rest_framework.views import APIView
-from rest_framework import status
-from .serializers import CompanySelfUpdateSerializer
-from .management.commands.subscriptions import get_billable_employee_count
+
 from employee.models import Employee_db
 
+from user.permissions import IsSuperAdmin
 
+from superadmin.models import (
+    Company,
+    CompanySubscription,
+    SubscriptionPlan,SubscriptionFeature
+)
+
+from superadmin.serializers import (
+    CompanyCreateSerializer,
+    CompanyListSerializer,
+    CompanySelfUpdateSerializer,
+    CompanySubscriptionSerializer,
+    CompanySubscriptionActionSerializer,
+    SubscriptionPlanSerializer,
+    SubscriptionReminderSerializer,
+    SubscriptionReminderSimpleSerializer,SubscriptionFeatureSerializer
+)
+
+from superadmin.management.commands.subscriptions import (
+    get_billable_employee_count,calculate_subscription_amount
+)
+
+from superadmin.management.commands.subscription_service import (
+    SubscriptionService,
+)
+
+from superadmin.management.commands.subscription_email_service import (
+    SubscriptionEmailService,
+)
+
+
+# permission class
 
 class IsSuperAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -55,13 +78,7 @@ class CompanyDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
 
     
-
-
-    
-from django.utils.timezone import now
-
-from django.utils.timezone import now
-
+# create and list subscriptions for a company
 class CompanySubscriptionListCreateView(APIView):
 
     def get(self, request, company_id, year=None):
@@ -90,7 +107,9 @@ class CompanySubscriptionListCreateView(APIView):
                 }
             )
 
-            # Update only while subscription is unpaid
+            # -----------------------------------------
+            # Update only unpaid subscriptions
+            # -----------------------------------------
             if obj.status == "unpaid":
 
                 employee_count = get_billable_employee_count(
@@ -99,14 +118,33 @@ class CompanySubscriptionListCreateView(APIView):
                     year
                 )
 
+                amount = calculate_subscription_amount(
+                    company,
+                    employee_count
+                )
+
                 obj.employee_count = employee_count
-                obj.amount_per_employee = company.amount_per_employee
-                obj.amount = employee_count * company.amount_per_employee
+
+                # Keep old value for companies without plan
+                if company.plan:
+                    obj.amount_per_employee = (
+                        company.plan.extra_employee_price or 0
+                    )
+                else:
+                    obj.amount_per_employee = (
+                        company.amount_per_employee or 0
+                    )
+
+                obj.amount = amount
+
                 obj.save()
 
             subs.append(obj)
 
-        serializer = CompanySubscriptionSerializer(subs, many=True)
+        serializer = CompanySubscriptionSerializer(
+            subs,
+            many=True
+        )
 
         return Response({
             "company": {
@@ -118,13 +156,19 @@ class CompanySubscriptionListCreateView(APIView):
                 "country": company.country,
                 "contact_number": company.contact_number,
                 "email": company.email,
+
                 "employee_count": Employee_db.objects.filter(
                     department__company=company,
                     is_deleted=False
-                ).count(),                "amount_per_employee": company.amount_per_employee,
+                ).count(),
+
+                "amount_per_employee": company.amount_per_employee,
+
                 "currency": subs[0].currency if subs else "AED",
+
                 "today": now().date(),
             },
+
             "subscriptions": serializer.data
         })
 
@@ -237,21 +281,6 @@ class CompanySelfView(APIView):
 
 
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
-from superadmin.models import Company
-
-from superadmin.management.commands.subscription_service import (
-    SubscriptionService
-)
-
-from superadmin.serializers import (
-    CompanySubscriptionActionSerializer
-)
-
-from user.permissions import IsSuperAdmin
 
 
 
@@ -336,16 +365,7 @@ class CompanySubscriptionStatusAPIView(APIView):
                 }
             )
         
-from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 
-from superadmin.models import Company
-from superadmin.serializers import SubscriptionReminderSerializer
-from superadmin.management.commands.subscription_email_service import SubscriptionEmailService
-
-from user.permissions import IsSuperAdmin
 
 
 class SendSubscriptionReminderAPIView(APIView):
@@ -375,16 +395,7 @@ class SendSubscriptionReminderAPIView(APIView):
         )
     
 
-from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 
-from superadmin.models import Company
-from superadmin.serializers import SubscriptionReminderSimpleSerializer
-from superadmin.management.commands.subscription_email_service import SubscriptionEmailService
-
-from user.permissions import IsSuperAdmin
 
 
 class SendSubscriptionReminderMailAPIView(APIView):
@@ -411,3 +422,185 @@ class SendSubscriptionReminderMailAPIView(APIView):
             },
             status=status.HTTP_200_OK
         )
+    
+
+
+#  plan module
+
+
+
+
+class SubscriptionFeatureCreateListAPIView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get(self, request):
+        queryset = SubscriptionFeature.objects.all()
+
+        serializer = SubscriptionFeatureSerializer(
+            queryset,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = SubscriptionFeatureSerializer(
+            data=request.data
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Feature created successfully.",
+                "data": serializer.data
+            },
+            status=status.HTTP_201_CREATED
+        )
+
+
+class SubscriptionFeatureRetrieveUpdateDeleteAPIView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get_object(self, pk):
+        return get_object_or_404(
+            SubscriptionFeature,
+            pk=pk
+        )
+
+    def get(self, request, pk):
+        serializer = SubscriptionFeatureSerializer(
+            self.get_object(pk)
+        )
+
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        feature = self.get_object(pk)
+
+        serializer = SubscriptionFeatureSerializer(
+            feature,
+            data=request.data
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Feature updated successfully.",
+                "data": serializer.data
+            }
+        )
+
+    def delete(self, request, pk):
+        self.get_object(pk).delete()
+
+        return Response(
+            {
+                "message": "Feature deleted successfully."
+            }
+        )
+
+
+from .models import SubscriptionPlan
+from .serializers import SubscriptionPlanSerializer
+
+
+class SubscriptionPlanCreateListAPIView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get(self, request):
+        queryset = SubscriptionPlan.objects.prefetch_related(
+            "features"
+        )
+
+        serializer = SubscriptionPlanSerializer(
+            queryset,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = SubscriptionPlanSerializer(
+            data=request.data
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Subscription plan created successfully.",
+                "data": serializer.data
+            },
+            status=status.HTTP_201_CREATED
+        )
+
+
+class SubscriptionPlanRetrieveUpdateDeleteAPIView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get_object(self, pk):
+        return get_object_or_404(
+            SubscriptionPlan,
+            pk=pk
+        )
+
+    def get(self, request, pk):
+        serializer = SubscriptionPlanSerializer(
+            self.get_object(pk)
+        )
+
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        plan = self.get_object(pk)
+
+        serializer = SubscriptionPlanSerializer(
+            plan,
+            data=request.data
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Subscription plan updated successfully.",
+                "data": serializer.data
+            }
+        )
+
+    def delete(self, request, pk):
+        self.get_object(pk).delete()
+
+        return Response(
+            {
+                "message": "Subscription plan deleted successfully."
+            }
+        )
+    
+
+from django.db.models import Min, Max
+
+
+
+class SubscriptionPlanSummaryAPIView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get(self, request):
+        summary = SubscriptionPlan.objects.aggregate(
+            lowest_plan_amount=Min("base_price"),
+            highest_plan_amount=Max("base_price"),
+        )
+
+        data = {
+            "total_plans": SubscriptionPlan.objects.count(),
+            "lowest_plan_amount": summary["lowest_plan_amount"] or 0,
+            "highest_plan_amount": summary["highest_plan_amount"] or 0,
+        }
+
+        return Response(data, status=status.HTTP_200_OK)

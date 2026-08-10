@@ -1,21 +1,15 @@
 from rest_framework import serializers
-from .models import Company,CompanySubscription
+from .models import Company,CompanySubscription,SubscriptionPlan
 from user.models import User
 from calendar import month_name
-from datetime import date
-import calendar
 from rest_framework import serializers
-from superadmin.models import Company
-from user.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 from datetime import date, timedelta
 import calendar
 from django.utils.timezone import now
-from rest_framework import serializers
 from django.conf import settings
 from django.core.mail import send_mail
-from .models import Company, User
 import json
 from decimal import Decimal
 from finance.models import FinanceCategory
@@ -54,6 +48,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "working_hours_per_day",
             "half_day_hours",
             "is_active",
+            "plan",
         ]
 
         read_only_fields = [
@@ -69,6 +64,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "modules": {"required": True},
             "amount_per_employee": {"required": False},
             "initial_payment": {"required": False},
+            "plan": {"required": False},
         }
     def validate(self, attrs):
 
@@ -348,8 +344,6 @@ class CompanySelfUpdateSerializer(serializers.ModelSerializer):
             "email": {"required": False},
             "modules": {"required": False},
         }
-from rest_framework import serializers
-from superadmin.models import Company
 
 
 class CompanySubscriptionActionSerializer(serializers.Serializer):
@@ -384,3 +378,112 @@ class SubscriptionReminderSerializer(serializers.Serializer):
 class SubscriptionReminderSimpleSerializer(serializers.Serializer):
     company_id = serializers.IntegerField()
     email = serializers.EmailField(required=False, allow_blank=False)
+
+
+
+
+from rest_framework import serializers
+from .models import SubscriptionPlan
+
+
+from rest_framework import serializers
+from .models import SubscriptionFeature, SubscriptionPlan
+
+
+class SubscriptionFeatureSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SubscriptionFeature
+        fields = "__all__"
+
+    def validate_name(self, value):
+        queryset = SubscriptionFeature.objects.filter(
+            name__iexact=value
+        )
+
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "Feature already exists."
+            )
+
+        return value
+    
+from rest_framework import serializers
+from .models import SubscriptionPlan, SubscriptionFeature
+
+
+class SubscriptionPlanSerializer(serializers.ModelSerializer):
+
+    features = SubscriptionFeatureSerializer(
+        many=True,
+        read_only=True
+    )
+
+    feature_ids = serializers.PrimaryKeyRelatedField(
+        queryset=SubscriptionFeature.objects.filter(
+            is_active=True
+        ),
+        many=True,
+        write_only=True,
+        source="features"
+    )
+
+    feature_count = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SubscriptionPlan
+        fields = [
+            "id",
+            "name",
+            "plan_type",
+            "description",
+            "base_price",
+            "employee_limit",
+            "extra_employee_price",
+            "is_active",
+            "status",
+            "feature_count",
+            "features",
+            "feature_ids",
+            "created_at",
+            "updated_at",
+        ]
+
+    def get_feature_count(self, obj):
+        return obj.features.count()
+
+    def get_status(self, obj):
+        return "Active" if obj.is_active else "Inactive"
+
+    def validate_name(self, value):
+        queryset = SubscriptionPlan.objects.filter(
+            name__iexact=value
+        )
+
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "Plan already exists."
+            )
+
+        return value
+
+    def validate_base_price(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                "Base price must be greater than 0."
+            )
+        return value
+
+    def validate_extra_employee_price(self, value):
+        if value < 0:
+            raise serializers.ValidationError(
+                "Extra employee price cannot be negative."
+            )
+        return value
