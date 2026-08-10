@@ -16,7 +16,7 @@ import {
   Amount,
 } from "./Side_detail.Styles";
 import { getGroupedReimbursements } from "../../services/reimbursement";
-import Loader from "../../Components/Loader/Loader"
+// import Loader from "../../Components/Loader/Loader"
 const ReimbursementHistory = ({ onClose }) => {
   const [reimbursements, setReimbursements] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,8 +43,8 @@ const ReimbursementHistory = ({ onClose }) => {
     }
   };
 
-  if (loading) return <Loader/>;
-  if (!reimbursements.length) return <p>No reimbursements found.</p>;
+  // if (loading) return <Loader/>;
+  // if (!reimbursements.length) return <p>No reimbursements found.</p>;
 
 const formatDate = (date) => {
   if (!date) return "----";

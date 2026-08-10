@@ -589,3 +589,23 @@ export const TextBlock = styled.div`
   justify-content: center;
   margin-left: 10px;
 `;
+export const DetailsBar = styled.div`
+  padding: 0.75rem;
+  background: #fff;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+export const EditButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: ${({ $active }) => ($active ? "#3352BA" : "transparent")};
+  color: ${({ $active }) => ($active ? "#fff" : "#111827")};
+  cursor: pointer;
+`;

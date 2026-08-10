@@ -18,16 +18,14 @@ import {
   PaginationButton,
   PaginationInfo,
 } from "./AttendanceList.Styles";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
-import EmployeeIcon from "../../assets/employeeicon.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartmentsMin } from "../../Redux/departmentSlice";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../Components/Loader/Loader";
 import { ClipLoader } from "react-spinners";
 import { FaAnglesLeft,FaAnglesRight } from "react-icons/fa6";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
+import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 const AttendanceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -125,19 +123,12 @@ const departmentsToRender = departmentList
 };
   return (
     <PageContainer>
-      <EmployeeTitle
-        iconSrc={EmployeeIcon}
-        showAddButton={false}
-        showDropdown={false}
-       searchValue={searchText}  
-        onSearchChange={setSearchText}
-        showBackArrow={false}
-        showReportButton={false}
-        showTabs={true}
-      />
-      {loading ? (
-        <Loader />
-      ) : (
+<ReusableHeader
+ title="Employee Attendance"
+  breadcrumbs={["Dashboard", "Employees","Employee Attendance"]}
+/>   
+      {/* <StatsCards cards={payrollCards} /> */}
+      
         <DepartmentGrid>
         {departmentsToRender.length === 0 ? (
     <div style={{ 
@@ -210,7 +201,7 @@ const departmentsToRender = departmentList
                               <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
                               <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
                               <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
-                   <EmployeeCell>{formatDate(emp.date)}</EmployeeCell>
+                             <EmployeeCell>{formatDate(emp.date)}</EmployeeCell>
                               <EmployeeCell>{emp.first_swipe_in || tIn}</EmployeeCell>
                               <EmployeeCell>{emp.last_swipe_out || tOut}</EmployeeCell>
                               <EmployeeCell>
@@ -269,7 +260,7 @@ const departmentsToRender = departmentList
         )}
         </DepartmentGrid>
         
-      )}
+  
       
     </PageContainer>
   );

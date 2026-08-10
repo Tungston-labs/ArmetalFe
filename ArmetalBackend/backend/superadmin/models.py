@@ -35,7 +35,7 @@ class SubscriptionPlan(TimeStampedModel):
         ("custom", "Custom"),
     )
 
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
 
     plan_type = models.CharField(
         max_length=20,

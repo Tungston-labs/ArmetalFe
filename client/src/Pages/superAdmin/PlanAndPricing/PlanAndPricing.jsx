@@ -80,33 +80,27 @@ planCards[3].count = `${Number(summaryRes.highest_plan_amount).toFixed(2)}/-`;
     setLoading(false);
   }
 };
-const handleSavePlan = (formData) => {
-  if (mode === "add") {
-    const newPlan = {
-      id: Date.now(),
-      ...formData,
-      priceText: `₹${formData.price}/-`,
-      extra: formData.extraCharge,
-      status: "Active",
-    };
+const handleSavePlan = async () => {
+  try {
+    setLoading(true);
 
-    setPlans((prev) => [...prev, newPlan]);
-  } else {
-    setPlans((prev) =>
-      prev.map((item) =>
-        item.id === selectedPlan.id
-          ? {
-              ...item,
-              ...formData,
-              priceText: `₹${formData.price}/-`,
-              extra: formData.extraCharge,
-            }
-          : item
-      )
-    );
+    // Always reload from backend after add/edit
+    const response = await fetchSubscriptionPlans();
+
+    setPlans(mapPlanData(response));
+
+    // Reset to first page after adding/updating
+    setCurrentPage(1);
+
+    setIsModalOpen(false);
+    setSelectedPlan(null);
+    setMode("add");
+
+  } catch (error) {
+    console.error("Failed to refresh plans:", error);
+  } finally {
+    setLoading(false);
   }
-
-  setIsModalOpen(false);
 };
   return (
     <Container>

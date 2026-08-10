@@ -280,37 +280,28 @@ const AddCompanyModal = ({
 
               <Select
                 name="plan"
-                value={formData.plan || ""}
+                value={String(formData.plan ?? "")}
                 onChange={handleChange}
               >
-
                 <option value="">
                   No Plan - Use Amount Per Employee
                 </option>
 
-
                 {loadingPlans ? (
-
                   <option disabled>
                     Loading plans...
                   </option>
-
                 ) : (
-
                   plans.map((plan) => (
-
                     <option
                       key={plan.id}
-                      value={plan.id}
+                      value={String(plan.id)}
                     >
                       {plan.name} - ₹
                       {Number(plan.base_price || 0).toFixed(2)}
                     </option>
-
                   ))
-
                 )}
-
               </Select>
 
 
@@ -419,7 +410,7 @@ const AddCompanyModal = ({
                 <LogoPreview>
 
                   {formData.logo?.type ===
-                  "image/svg+xml" ? (
+                    "image/svg+xml" ? (
 
                     <object
                       data={logoPreview}

@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AddCompanyModal from "../superAdmin/AddCompany";
 import {
   Container,
   Title,
   Subtitle,
-  TopBar,
   AddButton,
   SearchInput,
-  TableWrapper,
-  Table,
-  Th,
-  Td,
   IconButton,
   Pagination,
   HeaderSection,
@@ -19,7 +14,8 @@ import {
   SearchIcon,
   SearchWrapper,
 } from "./SuperAdmin.Styles";
-import Loader from "../../Components/Loader/Loader"
+import ReusableTable from "../../Components/ReusableTable/ReusableTable";
+import Loader from "../../Components/Loader/Loader";
 import { MdOutlineEmail } from "react-icons/md";
 import { FaTrashAlt, FaPlus } from "react-icons/fa";
 import { TbPencilMinus } from "react-icons/tb";
@@ -28,6 +24,8 @@ import { getCompanies, removeCompany } from "../../Redux/superAdminSlice";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import EmailComposeModal from "../../Components/superadmin/EmailCompose/EmailCompose";
+import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
+
 const CompanyTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,6 +42,7 @@ const CompanyTable = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
+
   useEffect(() => {
     dispatch(getCompanies({ page, search: search.trim() }));
   }, [dispatch, page, search]);
@@ -81,30 +80,96 @@ const CompanyTable = () => {
     setSelectedCompany(company);
     setShowCompanyModal(true);
   };
+
   const handleSendEmail = (company) => {
     setSelectedCompany(company);
     setShowEmailModal(true);
   };
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "Sl no",
+        accessor: "slNo",
+        sortable: false,
+        render: (row, index) => (page - 1) * 7 + index + 1,
+      },
+      {
+        header: "Company name",
+        accessor: "name",
+      },
+      {
+        header: "Company ID",
+        accessor: "company_id",
+      },
+      {
+        header: "Contact details",
+        accessor: "contact_number",
+      },
+      {
+        header: "No of Employees",
+        accessor: "number_of_employees",
+      },
+      {
+        header: "Email",
+        accessor: "email",
+        sortable: false,
+        render: (row) => (
+          <IconButton onClick={() => handleSendEmail(row)}>
+            <MdOutlineEmail />
+          </IconButton>
+        ),
+      },
+      {
+        header: "Info",
+        accessor: "info",
+        sortable: false,
+        render: (row) => (
+          <div
+            onClick={() => navigate(`/superadmin/view/${row.id}`)}
+            style={{ cursor: "pointer" }}
+          >
+            <IoInformationCircleOutline />
+          </div>
+        ),
+      },
+      {
+        header: "Edit",
+        accessor: "edit",
+        sortable: false,
+        render: (row) => (
+          <IconButton onClick={() => handleEdit(row)}>
+            <TbPencilMinus />
+          </IconButton>
+        ),
+      },
+      {
+        header: "Delete",
+        accessor: "delete",
+        sortable: false,
+        render: (row) => (
+          <IconButton danger onClick={() => handleDelete(row.id)}>
+            <FaTrashAlt />
+          </IconButton>
+        ),
+      },
+    ],
+    [page, navigate],
+  );
+
   return (
     <Container>
       {loading && <Loader />}
+     <ReusableHeader
+  title="COMPANY"
+  breadcrumbs={["Dashboard", "Company"]}
+  buttonText="+ ADD NEW COMPANY"
+  onButtonClick={handleAdd}
+/>  
       <HeaderSection>
-        <TitleSection>
-          {/* <LuArrowLeft style={{ width: "30px", height: 30 }} /> */}
-          <img
-            src="/images/superadminlogo.png"
-            alt="Payroll Icon"
-            style={{ height: "50px" }}
-          />
-          <div>
-            <Title>Super admin</Title>
-            <Subtitle>Manage all departments within the organization.</Subtitle>
-          </div>
-        </TitleSection>
+     
         <ActionArea>
-          <AddButton onClick={handleAdd}>
-            <FaPlus /> Add Company
-          </AddButton>
+        
 
           <SearchWrapper>
             <SearchIcon />
@@ -121,72 +186,7 @@ const CompanyTable = () => {
         </ActionArea>
       </HeaderSection>
 
-      <TableWrapper>
-        <Table>
-          <thead>
-            <tr>
-              <Th>Sl no</Th>
-              <Th>Company name</Th>
-              {/* <Th>Address</Th> */}
-              <Th>Company ID</Th>
-              <Th>Contact details</Th>
-              <Th>No of Employees</Th>
-              <Th>Email</Th>
-              <Th>Info</Th>
-              <Th>Edit</Th>
-              <Th>Delete</Th>
-
-
-            </tr>
-          </thead>
-          <tbody>
-            {!loading && companies.length > 0 ? (
-              companies.map((item, idx) => (
-                <tr key={item.id}>
-                  <Td>{(page - 1) * 7 + idx + 1}</Td>
-                  <Td>{item.name}</Td>
-                  {/* <Td>{item.address}</Td> */}
-                  <Td>{item.company_id}</Td>
-                  <Td>{item.contact_number}</Td>
-                  <Td>{item.number_of_employees}</Td>
-                  <Td>
-                    <IconButton onClick={() => handleSendEmail(item)}>
-                      <MdOutlineEmail />
-                    </IconButton>
-                  </Td>
-
-                  <Td
-                    onClick={() => navigate(`/superadmin/view/${item.id}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <IoInformationCircleOutline />
-                  </Td>
-
-                  <Td>
-                    <IconButton onClick={() => handleEdit(item)}>
-                      <TbPencilMinus />
-                    </IconButton>
-                  </Td>
-                  <Td>
-                    <IconButton danger onClick={() => handleDelete(item.id)}>
-                      <FaTrashAlt />
-                    </IconButton>
-                  </Td>
-                  {/* <Td>
-                    <ImpersonateButton>Impersonate</ImpersonateButton>
-                  </Td> */}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <Td colSpan="10" style={{ textAlign: "center" }}>
-                  {loading ? "Loading..." : "No companies found"}
-                </Td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
-      </TableWrapper>
+      <ReusableTable columns={columns} data={companies} loading={loading} />
 
       {/* Delete Modal */}
       {showDeleteModal && (
@@ -287,7 +287,6 @@ const CompanyTable = () => {
       )}
 
       {/* Pagination */}
-
       <Pagination>
         <span onClick={() => handlePageChange(Math.max(page - 1, 1))}>
           &larr;
@@ -314,6 +313,7 @@ const CompanyTable = () => {
           &rarr;
         </span>
       </Pagination>
+
       {showEmailModal && (
         <EmailComposeModal
           company={selectedCompany}

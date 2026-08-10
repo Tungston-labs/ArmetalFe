@@ -11,8 +11,8 @@ import Visa from "./Pages/visa/Visa.jsx";
 import BasicLevel from "./Pages/employee/Form/BasicLevel.jsx";
 import BankPayment from "./Pages/employee/Form/BankPayment.jsx";
 import Documents from "./Pages/employee/Form/Documents.jsx";
-import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
-import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
+// import LeaveRequest from "./Pages/leaveDetails/LeaveRequest.jsx";
+// import EmployeeLeaveDetails from "./Pages/leaveDetails/EmployeeLeaveDetails.jsx";
 import Attendance from "./Pages/attendance/Attendance.jsx";
 import EmployeesOnLeave from "./Pages/onLeave/EmployeesOnLeave.jsx";
 import ViewBasic from "./Pages/employee/ViewForm/ViewBasic.jsx"
@@ -48,10 +48,12 @@ import PayrollDetailsContainer from "./Pages/payroll/PayrollDetailsContainer.jsx
 import PayrollTable from "./Pages/payroll/PayrollTable.jsx";
 import AttendanceRequestScreen from "./Pages/attendanceRequest/AttendanceRequest.jsx";
 import Table from "./Pages/Table.jsx";
-import LeaveRequestList from "./Pages/leaveDetails/LeaveRequestList.jsx";
+import LeaveRequestList from "./Pages/employee/LeaveRequest/LeaveRequestList.jsx";
 import ContractAndVisaExpiry from "./Pages/visa/ContractAndVisaExpiry.jsx";
 import PayrollList from "./Pages/payroll/PayrollList.jsx";
 import PlanAndPricing from "./Pages/superAdmin/PlanAndPricing/PlanAndPricing.jsx";
+import ArchivedStaff from "./Pages/employee/ArchivedStaff/ArchivedStaff.jsx";
+import HrDashboard from "./Pages/HrDashboard/HrDashboard.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -96,8 +98,8 @@ function App() {
               <Route path="/basic-details" element={<BasicLevel />} />
               <Route path="/bank-payment" element={<BankPayment />} />
               <Route path="/documents" element={<Documents />} />
-              <Route path="/employee-leave-request" element={<LeaveRequest />} />
-              <Route path="/employee-leave-details/:id" element={<EmployeeLeaveDetails />} />
+              {/* <Route path="/employee-leave-request" element={<LeaveRequest />} /> */}
+              {/* <Route path="/employee-leave-details/:id" element={<EmployeeLeaveDetails />} /> */}
               <Route path="/employee-attendance/detail/:id" element={<Attendance />} />
               <Route path="/leave" element={<LeaveList />} />
               <Route path="/ViewBasic/:id" element={<ViewBasic />} />
@@ -114,10 +116,14 @@ function App() {
               <Route path="/layout" element={<ViewLayout />} />
               <Route path="/employee-attendance-report" element={< AttendanceReport />} />
               <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />} />
+
+
+                  <Route path="/Dashboard" element={<HrDashboard />} />
               <Route path="/PlanAndPricing" element={<PlanAndPricing />} />
               <Route path="/PayrollList" element={<PayrollList />} />
               <Route path="/employee-ContractAndVisaExpiry" element={<ContractAndVisaExpiry />} />
               <Route path="/employee-leaveRequestList" element={<LeaveRequestList />} />
+              <Route path="/employee-archived-staff" element={<ArchivedStaff/>}/>
               <Route path="/table" element={<Table />} />
 
               <Route path="*" element={<ErrorSomething />} />

@@ -94,7 +94,15 @@ class CompanySubscriptionListCreateView(APIView):
 
         subs = []
 
-        for m in range(1, 13):
+        # -----------------------------------------
+        # Start from company creation month
+        # -----------------------------------------
+        if year == company.created_at.year:
+            start_month = company.created_at.month
+        else:
+            start_month = 1
+
+        for m in range(start_month, 13):
 
             obj, created = CompanySubscription.objects.get_or_create(
                 company=company,
@@ -125,7 +133,9 @@ class CompanySubscriptionListCreateView(APIView):
 
                 obj.employee_count = employee_count
 
-                # Keep old value for companies without plan
+                # -----------------------------------------
+                # Plan pricing
+                # -----------------------------------------
                 if company.plan:
                     obj.amount_per_employee = (
                         company.plan.extra_employee_price or 0

@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getLeaveRequests, patchLeaveStatus } from '../../Redux/leaveSlice';
+import { getLeaveRequests, patchLeaveStatus } from '../../../Redux/leaveSlice';
 import { useNavigate } from 'react-router-dom';
-import { getDepartments } from "../../Redux/departmentSlice";
-import { Container } from './LeaveRequest.Styles';
-import Loader from "../../Components/Loader/Loader"
-import ReusableTable from '../../Components/ReusableTable/ReusableTable';
-import NoEmployeeFound from '../../Components/No found/Noemployeefound';
-import ReusableHeader from '../../Components/ReusableTable/ReusableHeader';
-import ReusableFilter from '../../Components/ReusableTable/ReusableFilter';
-import ReusableConfirmModal from '../../Components/modals/ReusableConfirmModal';
+import { getDepartments } from "../../../Redux/departmentSlice";
+import { Container } from './leaveColumns.style';
+import ReusableTable from '../../../Components/ReusableTable/ReusableTable';
+import NoEmployeeFound from '../../../Components/No found/Noemployeefound';
+import ReusableHeader from '../../../Components/ReusableTable/ReusableHeader';
+import ReusableFilter from '../../../Components/ReusableTable/ReusableFilter';
+import ReusableConfirmModal from '../../../Components/modals/ReusableConfirmModal';
 import { getLeaveColumns } from './leaveColumns';
-
+import StatsCards from '../../../Components/ StatsCards/StatsCards';
+import {
+  getPayrollCards,
+} from "./leaveColumns";
 export default function LeaveRequestList() {
   const dispatch = useDispatch();
   const { leaves, loading, pagination } = useSelector(state => state.leave);
@@ -28,6 +30,7 @@ export default function LeaveRequestList() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
+    const payrollCards = getPayrollCards();
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
     const d = new Date(dateStr);
@@ -120,9 +123,9 @@ export default function LeaveRequestList() {
         <ReusableHeader
           title="Employees"
           breadcrumbs={["Dashboard", "Employees"]}
-          buttonText="ADD NEW EMPLOYEE"
-          onButtonClick={() => console.log("Add Employee")}
+      
         />
+              <StatsCards cards={payrollCards} />
         <ReusableFilter
           search={searchText}
           onSearch={setSearchText}
@@ -149,7 +152,6 @@ export default function LeaveRequestList() {
           loading={loading}
           loadingComponent={null}
           emptyComponent={<NoEmployeeFound />}
-          onRowClick={(row) => navigate(`/employee-leave-details/${row.id}`)}
         />
 
         <ReusableConfirmModal

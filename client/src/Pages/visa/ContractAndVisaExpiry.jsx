@@ -132,8 +132,7 @@ const ContractAndVisaExpiry = () => {
         <ReusableHeader
                     title="Employees"
                     breadcrumbs={["Dashboard", "Employees"]}
-                    buttonText="ADD NEW EMPLOYEE"
-                    onButtonClick={() => console.log("Add Employee")}
+               
                 />
 <ReusableFilter
   search={searchText}

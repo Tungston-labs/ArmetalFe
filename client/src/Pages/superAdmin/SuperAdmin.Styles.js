@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FiSearch } from "react-icons/fi";
 
 export const Container = styled.div`
-  padding: clamp(16px, 2vw, 32px);
+  padding:20px;
   font-family: "Segoe UI", sans-serif;
   background: white;
   min-height: 100vh;

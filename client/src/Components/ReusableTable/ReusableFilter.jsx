@@ -15,6 +15,7 @@ import { FiSearch } from "react-icons/fi";
 const ReusableFilter = ({
   search = "",
   onSearch,
+  searchPlaceholder = "Search Employee ID",
 
   department = "",
   departments = [],
@@ -41,7 +42,7 @@ const ReusableFilter = ({
           <SearchWrapper>
 
             <SearchInput
-              placeholder="Search Employee ID"
+              placeholder={searchPlaceholder}
               value={search}
               onChange={(e) => onSearch(e.target.value)}
             />

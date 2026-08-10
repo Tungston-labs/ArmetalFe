@@ -6,10 +6,10 @@ export const PageWrapper = styled.div`
 `;
 
 export const Card = styled.div`
-background: #EAEFF4;
+background: #F7F8FC;
   padding: 24px;
-  border-radius: 14px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
   margin-bottom: 25px;
 `;
 
@@ -325,3 +325,24 @@ export const Arrow = styled.span`
   }
 `;
 
+export const TopStatusBar = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  @media (max-width: 600px) {
+    justify-content: space-between;
+  }
+`;
+
+export const TopStatusLabel = styled.span`
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+
+  @media (min-width: 1440px) {
+    font-size: 15px;
+  }
+`;

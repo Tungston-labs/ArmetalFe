@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCompanyById,
   clearSelectedCompany,
-    updateCompanyStatusThunk,
+  updateCompanyStatusThunk,
 } from "../../Redux/superAdminSlice";
 import { useParams, useNavigate } from "react-router-dom";
 import Plan from "../../Components/superadmin/Plan";
@@ -30,7 +30,7 @@ const CompanyViewPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-const [isBlocked, setIsBlocked] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
   const selectedCompany = useSelector(
     (state) => state.superAdmin.selectedCompany,
   );
@@ -44,14 +44,14 @@ const [isBlocked, setIsBlocked] = useState(false);
       dispatch(clearSelectedCompany());
     };
   }, [dispatch, id]);
- useEffect(() => {
-  if (selectedCompany) {
-    console.log(selectedCompany);
-    console.log("is_active:", selectedCompany.is_active);
+  useEffect(() => {
+    if (selectedCompany) {
+      console.log(selectedCompany);
+      console.log("is_active:", selectedCompany.is_active);
 
-    setIsBlocked(!selectedCompany.is_active);
-  }
-}, [selectedCompany]);
+      setIsBlocked(!selectedCompany.is_active);
+    }
+  }, [selectedCompany]);
 
   if (!selectedCompany) return <Loader />;
 
@@ -62,61 +62,61 @@ const [isBlocked, setIsBlocked] = useState(false);
     <>
 
       <FormWrapper>
-     <TitleSection>
-  <div className="left">
-    <LuArrowLeft
-      style={{ width: "30px", height: 30, cursor: "pointer" }}
-      onClick={() => navigate("/company")}
-    />
+        <TitleSection>
+          <div className="left">
+            <LuArrowLeft
+              style={{ width: "30px", height: 30, cursor: "pointer" }}
+              onClick={() => navigate("/company")}
+            />
 
-    <img
-      src="/images/superadminlogo.png"
-      alt="Payroll Icon"
-      style={{ height: "50px" }}
-    />
+            <img
+              src="/images/superadminlogo.png"
+              alt="Payroll Icon"
+              style={{ height: "50px" }}
+            />
 
-    <div>
-      <Title>Super admin</Title>
-      <Subtitle>
-        Manage all departments within the organization.
-      </Subtitle>
-    </div>
-  </div>
+            <div>
+              <Title>Super admin</Title>
+              <Subtitle>
+                Manage all departments within the organization.
+              </Subtitle>
+            </div>
+          </div>
 
-  <BlockSection>
-    <BlockText blocked={isBlocked}>
-  {isBlocked ? "Company Blocked" : "Company Active"}
-</BlockText>
+          <BlockSection>
+            <BlockText blocked={isBlocked}>
+              {isBlocked ? "Company Blocked" : "Company Active"}
+            </BlockText>
 
-<Switch>
-  <input
-    type="checkbox"
-    checked={isBlocked}
-    onChange={async (e) => {
-  const checked = e.target.checked;
-  setIsBlocked(checked);
+            <Switch>
+              <input
+                type="checkbox"
+                checked={isBlocked}
+                onChange={async (e) => {
+                  const checked = e.target.checked;
+                  setIsBlocked(checked);
 
-  try {
-    const result = await dispatch(
-      updateCompanyStatusThunk({
-        companyId: selectedCompany.id,
-        action: checked ? "freeze" : "unfreeze",
-      })
-    ).unwrap();
+                  try {
+                    const result = await dispatch(
+                      updateCompanyStatusThunk({
+                        companyId: selectedCompany.id,
+                        action: checked ? "freeze" : "unfreeze",
+                      })
+                    ).unwrap();
 
-    console.log("✅ Thunk succeeded, result:", result); // <--- ADD THIS
+                    console.log("✅ Thunk succeeded, result:", result); // <--- ADD THIS
 
-  } catch (error) {
-    setIsBlocked(!checked);
-    console.error("❌ Thunk failed:", error); // <--- you already log, but check what error actually is
-    alert("Failed to update company status");
-  }
-}}
-  />
-  <span className="slider"></span>
-</Switch>
-  </BlockSection>
-</TitleSection>
+                  } catch (error) {
+                    setIsBlocked(!checked);
+                    console.error("❌ Thunk failed:", error); // <--- you already log, but check what error actually is
+                    alert("Failed to update company status");
+                  }
+                }}
+              />
+              <span className="slider"></span>
+            </Switch>
+          </BlockSection>
+        </TitleSection>
 
 
         <FormSection>
@@ -135,6 +135,17 @@ const [isBlocked, setIsBlocked] = useState(false);
               <Label>Email</Label>
               <Input type="text" value={selectedCompany.email} readOnly />
             </FormField>
+
+            <FormField>
+              <Label>Plan Name</Label>
+              <Input
+                type="text"
+                value={selectedCompany.plan_name ?? "No Plan"}
+                readOnly
+              />
+            </FormField>
+
+           
 
             <FormField>
               <Label>Amount Per Employee</Label>

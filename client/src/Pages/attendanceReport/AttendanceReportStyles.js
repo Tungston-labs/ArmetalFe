@@ -108,7 +108,7 @@ export const LopTd = styled.td`
 
 export const TopBar = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
   margin-bottom: 16px;
 `;
 export const MonthSelector = styled.div`

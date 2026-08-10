@@ -7,7 +7,12 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   ActionButton,
+  TitleRow,
+  BackButton,
 } from "./ReusableHeader.styles";
+
+import { IoArrowBack } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const ReusableHeader = ({
   title,
@@ -15,17 +20,35 @@ const ReusableHeader = ({
   buttonText,
   onButtonClick,
   children,
+  showBack = false,
+  onBack,
 }) => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
+
   return (
     <HeaderContainer>
       <LeftSection>
-        <PageTitle>{title}</PageTitle>
+        <TitleRow>
+          {showBack && (
+            <BackButton onClick={handleBack}>
+              <IoArrowBack />
+            </BackButton>
+          )}
+
+          <PageTitle>{title}</PageTitle>
+        </TitleRow>
 
         <Breadcrumb>
           {breadcrumbs.map((item, index) => (
-            <BreadcrumbItem key={index}>
-              {item}
-            </BreadcrumbItem>
+            <BreadcrumbItem key={index}>{item}</BreadcrumbItem>
           ))}
         </Breadcrumb>
       </LeftSection>
@@ -35,7 +58,7 @@ const ReusableHeader = ({
 
         {buttonText && (
           <ActionButton onClick={onButtonClick}>
-            + {buttonText}
+            {buttonText}
           </ActionButton>
         )}
       </RightSection>

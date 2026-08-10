@@ -18,6 +18,7 @@ export const useAddCompany = ({
 
   const [formData, setFormData] = useState({
     name: "",
+    plan: "",
     address: "",
     email: "",
     location: "",
@@ -47,42 +48,43 @@ export const useAddCompany = ({
       const modulesChecked =
         allModules?.filter((mod) => selectedCompany.modules?.[mod]) || [];
 
-    const phone = selectedCompany.contact_number || "";
+      const phone = selectedCompany.contact_number || "";
 
-const countryCodes = [
-  "+971",
-  "+966",
-  "+965",
-  "+973",
-  "+968",
-  "+974",
-  "+91",
-  "+880",
-  "+92",
-];
+      const countryCodes = [
+        "+971",
+        "+966",
+        "+965",
+        "+973",
+        "+968",
+        "+974",
+        "+91",
+        "+880",
+        "+92",
+      ];
 
-let countryCode = "+971";
-let contactNumber = phone;
+      let countryCode = "+971";
+      let contactNumber = phone;
 
-const matchedCode = countryCodes.find((code) =>
-  phone.startsWith(code)
-);
+      const matchedCode = countryCodes.find((code) =>
+        phone.startsWith(code)
+      );
 
-if (matchedCode) {
-  countryCode = matchedCode;
-  contactNumber = phone.slice(matchedCode.length);
-}
+      if (matchedCode) {
+        countryCode = matchedCode;
+        contactNumber = phone.slice(matchedCode.length);
+      }
 
-console.log(selectedCompany);
-console.log(selectedCompany);
+      console.log(selectedCompany);
+      console.log(selectedCompany);
       setFormData({
         name: selectedCompany.name ?? "",
+        plan: selectedCompany.plan ?? "",
         address: selectedCompany.address ?? "",
         email: selectedCompany.email ?? "",
         location: selectedCompany.location ?? "",
         country: selectedCompany.country ?? "",
-       country_code: countryCode,
-contact_number: contactNumber,
+        country_code: countryCode,
+        contact_number: contactNumber,
         modules: modulesChecked,
         logo: null,
         latitude: selectedCompany.latitude ?? "",
@@ -110,9 +112,30 @@ contact_number: contactNumber,
   ========================= */
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const { name, value } = e.target;
+
+  setFormData((prev) => {
+    if (name === "plan" && value) {
+      return {
+        ...prev,
+        plan: value,
+        amount_per_employee: "",
+      };
+    }
+
+    if (name === "plan" && !value) {
+      return {
+        ...prev,
+        plan: "",
+      };
+    }
+
+    return {
+      ...prev,
+      [name]: value,
+    };
+  });
+};
 
   const handleModuleChange = (value) => {
     setFormData((prev) => ({
@@ -123,26 +146,26 @@ contact_number: contactNumber,
     }));
   };
 
-const handleLogoChange = (e) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+  const handleLogoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const allowed = ["image/png", "image/svg+xml"];
-  if (!allowed.includes(file.type)) {
-    Swal.fire("Invalid file", "Only PNG or SVG allowed", "error");
-    return;
-  }
+    const allowed = ["image/png", "image/svg+xml"];
+    if (!allowed.includes(file.type)) {
+      Swal.fire("Invalid file", "Only PNG or SVG allowed", "error");
+      return;
+    }
 
-  // ✅ Add this size check
-  const maxSize = 2 * 1024 * 1024; // 2MB in bytes
-  if (file.size > maxSize) {
-    Swal.fire("File too large", "Logo must be under 2MB", "error");
-    return;
-  }
+    // ✅ Add this size check
+    const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+    if (file.size > maxSize) {
+      Swal.fire("File too large", "Logo must be under 2MB", "error");
+      return;
+    }
 
-  setFormData((prev) => ({ ...prev, logo: file }));
-  setLogoPreview(URL.createObjectURL(file));
-};
+    setFormData((prev) => ({ ...prev, logo: file }));
+    setLogoPreview(URL.createObjectURL(file));
+  };
 
   const removeLogo = () => {
     setFormData((prev) => ({ ...prev, logo: null }));
@@ -181,146 +204,163 @@ const handleLogoChange = (e) => {
      FINAL VALIDATION ON SUBMIT
   ========================= */
 
-const validate = () => {
-  const errs = {};
+  const validate = () => {
+    const errs = {};
 
-  // ── Company Name ──────────────────────────────────────────
-  if (!formData.name?.trim()) {
-    errs.name = "Company name is required";
-  } else if (formData.name.trim().length < 2) {
-    errs.name = "Company name must be at least 2 characters";
+    // ── Company Name ──────────────────────────────────────────
+    if (!formData.name?.trim()) {
+      errs.name = "Company name is required";
+    } else if (formData.name.trim().length < 2) {
+      errs.name = "Company name must be at least 2 characters";
+    }
+// ── Subscription Plan / Amount per Employee ───────────────
+if (formData.plan) {
+  // Plan selected:
+  // amount_per_employee is NOT required and should NOT be validated.
+  // This also allows existing companies with amount_per_employee = "0.00".
+} else {
+  // No plan selected:
+  // amount_per_employee is required.
+  if (
+    formData.amount_per_employee === "" ||
+    formData.amount_per_employee === null ||
+    formData.amount_per_employee === undefined
+  ) {
+    errs.amount_per_employee =
+      "Amount per employee is required when no plan is selected";
+  } else if (
+    isNaN(Number(formData.amount_per_employee)) ||
+    Number(formData.amount_per_employee) <= 0
+  ) {
+    errs.amount_per_employee =
+      "Enter a valid amount greater than 0";
   }
+}
 
-  // ── Address ───────────────────────────────────────────────
-  if (!formData.address?.trim()) {
-    errs.address = "Address is required";
-  }
+    // ── Address ───────────────────────────────────────────────
+    if (!formData.address?.trim()) {
+      errs.address = "Address is required";
+    }
 
-  // ── Email ─────────────────────────────────────────────────
-  if (!formData.email?.trim()) {
-    errs.email = "Email is required";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-    errs.email = "Enter a valid email address";
-  }
+    // ── Email ─────────────────────────────────────────────────
+    if (!formData.email?.trim()) {
+      errs.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      errs.email = "Enter a valid email address";
+    }
 
-  // ── Location ──────────────────────────────────────────────
-  if (!formData.location?.trim()) {
-    errs.location = "Location is required";
-  }
+    // ── Location ──────────────────────────────────────────────
+    if (!formData.location?.trim()) {
+      errs.location = "Location is required";
+    }
 
-  // ── Amount per Employee ───────────────────────────────────
-  if (formData.amount_per_employee === "" || formData.amount_per_employee === null || formData.amount_per_employee === undefined) {
-    errs.amount_per_employee = "Amount per employee is required";
-  } else if (isNaN(Number(formData.amount_per_employee)) || Number(formData.amount_per_employee) <= 0) {
-    errs.amount_per_employee = "Enter a valid amount greater than 0";
-  }
+ 
 
 
 
+    // ── Logo (now required) ───────────────────────────────────
+    if (!formData.logo && !logoPreview) {
+      errs.logo = "Company logo is required";
+    }
 
-  // ── Logo (now required) ───────────────────────────────────
-  if (!formData.logo && !logoPreview) {
-    errs.logo = "Company logo is required";
-  }
-
-  // ── Contact Number ────────────────────────────────────────
-  if (!formData.contact_number?.trim()) {
-    errs.contact_number = "Contact number is required";
-  } else {
-    const phone = formData.contact_number.trim();
-    if (formData.country_code === "+91") {
-      if (!/^[0-9]{10}$/.test(phone)) {
-        errs.contact_number = "Enter a valid 10-digit phone number";
-      }
+    // ── Contact Number ────────────────────────────────────────
+    if (!formData.contact_number?.trim()) {
+      errs.contact_number = "Contact number is required";
     } else {
-      if (!/^[0-9]{7,15}$/.test(phone)) {
-        errs.contact_number = "Enter a valid phone number (7–15 digits)";
+      const phone = formData.contact_number.trim();
+      if (formData.country_code === "+91") {
+        if (!/^[0-9]{10}$/.test(phone)) {
+          errs.contact_number = "Enter a valid 10-digit phone number";
+        }
+      } else {
+        if (!/^[0-9]{7,15}$/.test(phone)) {
+          errs.contact_number = "Enter a valid phone number (7–15 digits)";
+        }
       }
     }
-  }
 
-  // ── Country ───────────────────────────────────────────────
-  if (!formData.country) {
-    errs.country = "Please select a country";
-  }
-
-  // ── Latitude (now required) ───────────────────────────────
-  if (formData.latitude === "" || formData.latitude === null || formData.latitude === undefined) {
-    errs.latitude = "Latitude is required";
-  } else {
-    const lat = Number(formData.latitude);
-    if (isNaN(lat) || lat < -90 || lat > 90) {
-      errs.latitude = "Latitude must be between -90 and 90";
+    // ── Country ───────────────────────────────────────────────
+    if (!formData.country) {
+      errs.country = "Please select a country";
     }
-  }
 
-  // ── Longitude (now required) ──────────────────────────────
-  if (formData.longitude === "" || formData.longitude === null || formData.longitude === undefined) {
-    errs.longitude = "Longitude is required";
-  } else {
-    const lng = Number(formData.longitude);
-    if (isNaN(lng) || lng < -180 || lng > 180) {
-      errs.longitude = "Longitude must be between -180 and 180";
+    // ── Latitude (now required) ───────────────────────────────
+    if (formData.latitude === "" || formData.latitude === null || formData.latitude === undefined) {
+      errs.latitude = "Latitude is required";
+    } else {
+      const lat = Number(formData.latitude);
+      if (isNaN(lat) || lat < -90 || lat > 90) {
+        errs.latitude = "Latitude must be between -90 and 90";
+      }
     }
-  }
 
-  // ── Modules ───────────────────────────────────────────────
-  if (!formData.modules || formData.modules.length === 0) {
-    errs.modules = "Select at least one module";
-  }
-
-  // ── Salary Structure ──────────────────────────────────────
-  const salaryFields = [
-    { key: "basic_salary_percent",        label: "Basic" },
-    { key: "house_allowance_percent",     label: "House Allowance" },
-    { key: "transport_allowance_percent", label: "Transport" },
-    { key: "special_allowance_percent",   label: "Special" },
-  ];
-
-  salaryFields.forEach(({ key, label }) => {
-    const val = formData[key];
-    if (val === "" || val === null || val === undefined) {
-      errs[key] = `${label} % is required`;
-    } else if (isNaN(Number(val)) || Number(val) < 0 || Number(val) > 100) {
-      errs[key] = `${label} % must be between 0 and 100`;
+    // ── Longitude (now required) ──────────────────────────────
+    if (formData.longitude === "" || formData.longitude === null || formData.longitude === undefined) {
+      errs.longitude = "Longitude is required";
+    } else {
+      const lng = Number(formData.longitude);
+      if (isNaN(lng) || lng < -180 || lng > 180) {
+        errs.longitude = "Longitude must be between -180 and 180";
+      }
     }
-  });
 
-  const noSalaryFieldErrors = !errs.basic_salary_percent &&
-    !errs.house_allowance_percent &&
-    !errs.transport_allowance_percent &&
-    !errs.special_allowance_percent;
-
-  if (noSalaryFieldErrors && totalPercent !== 100) {
-    errs.salary = `Percentages must total 100% (currently ${totalPercent}%)`;
-  }
-
-  // ── Working Hours ─────────────────────────────────────────
-  if (formData.working_hours_per_day === "" || formData.working_hours_per_day === null || formData.working_hours_per_day === undefined) {
-    errs.working_hours_per_day = "Working hours per day is required";
-  } else {
-    const wh = Number(formData.working_hours_per_day);
-    if (isNaN(wh) || wh <= 0 || wh > 24) {
-      errs.working_hours_per_day = "Working hours must be between 1 and 24";
+    // ── Modules ───────────────────────────────────────────────
+    if (!formData.modules || formData.modules.length === 0) {
+      errs.modules = "Select at least one module";
     }
-  }
 
-  // ── Half Day Hours ────────────────────────────────────────
-  if (formData.half_day_hours === "" || formData.half_day_hours === null || formData.half_day_hours === undefined) {
-    errs.half_day_hours = "Half day hours is required";
-  } else {
-    const hd = Number(formData.half_day_hours);
-    const wh = Number(formData.working_hours_per_day);
-    if (isNaN(hd) || hd <= 0) {
-      errs.half_day_hours = "Half day hours must be greater than 0";
-    } else if (!isNaN(wh) && wh > 0 && hd >= wh) {
-      errs.half_day_hours = "Half day hours must be less than working hours per day";
+    // ── Salary Structure ──────────────────────────────────────
+    const salaryFields = [
+      { key: "basic_salary_percent", label: "Basic" },
+      { key: "house_allowance_percent", label: "House Allowance" },
+      { key: "transport_allowance_percent", label: "Transport" },
+      { key: "special_allowance_percent", label: "Special" },
+    ];
+
+    salaryFields.forEach(({ key, label }) => {
+      const val = formData[key];
+      if (val === "" || val === null || val === undefined) {
+        errs[key] = `${label} % is required`;
+      } else if (isNaN(Number(val)) || Number(val) < 0 || Number(val) > 100) {
+        errs[key] = `${label} % must be between 0 and 100`;
+      }
+    });
+
+    const noSalaryFieldErrors = !errs.basic_salary_percent &&
+      !errs.house_allowance_percent &&
+      !errs.transport_allowance_percent &&
+      !errs.special_allowance_percent;
+
+    if (noSalaryFieldErrors && totalPercent !== 100) {
+      errs.salary = `Percentages must total 100% (currently ${totalPercent}%)`;
     }
-  }
 
-  setFormErrors(errs);
-  return Object.keys(errs).length === 0;
-};
+    // ── Working Hours ─────────────────────────────────────────
+    if (formData.working_hours_per_day === "" || formData.working_hours_per_day === null || formData.working_hours_per_day === undefined) {
+      errs.working_hours_per_day = "Working hours per day is required";
+    } else {
+      const wh = Number(formData.working_hours_per_day);
+      if (isNaN(wh) || wh <= 0 || wh > 24) {
+        errs.working_hours_per_day = "Working hours must be between 1 and 24";
+      }
+    }
+
+    // ── Half Day Hours ────────────────────────────────────────
+    if (formData.half_day_hours === "" || formData.half_day_hours === null || formData.half_day_hours === undefined) {
+      errs.half_day_hours = "Half day hours is required";
+    } else {
+      const hd = Number(formData.half_day_hours);
+      const wh = Number(formData.working_hours_per_day);
+      if (isNaN(hd) || hd <= 0) {
+        errs.half_day_hours = "Half day hours must be greater than 0";
+      } else if (!isNaN(wh) && wh > 0 && hd >= wh) {
+        errs.half_day_hours = "Half day hours must be less than working hours per day";
+      }
+    }
+
+    setFormErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   /* =========================
      SUBMIT
@@ -365,26 +405,26 @@ const validate = () => {
       }
 
       onClose?.();
-   } catch (err) {
-     console.log("ERROR:", err);
-  const data = err?.response?.data || err;
+    } catch (err) {
+      console.log("ERROR:", err);
+      const data = err?.response?.data || err;
 
-  if (data?.email) {
-    setFormErrors((prev) => ({
-      ...prev,
-      email: "Email already exists",
-    }));
-    return;
-  }
+      if (data?.email) {
+        setFormErrors((prev) => ({
+          ...prev,
+          email: "Email already exists",
+        }));
+        return;
+      }
 
-  Swal.fire({
-    icon: "error",
-    title: "Error",
-    text: "Something went wrong.",
-  });
-} finally {
-  setIsSubmitting(false);
-}
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Something went wrong.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return {

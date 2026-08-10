@@ -3,41 +3,43 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
   PageWrapper,
-  TableWrapper,
-  StyledTable,
-  Th,
-  Td,
-  Tr,
-  LopTd,
   TopBar,
   MonthSelector,
   ReportButton,
 } from "./AttendanceReportStyles";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
-import EmployeeIcon from "../../assets/employeeicon.svg";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
 import { getAttendanceSummary } from "../../Redux/attendanceSlice";
 import Pagination from "../../Components/Pagination/Pagination";
 import { exportAttendanceExcel } from "../../utils/montlyAttendance";
+import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
+import ReusableTable from "../../Components/ReusableTable/ReusableTable";
+import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 
 const AttendanceReport = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth || {});
   const token = auth?.accessToken || auth?.token || "";
   const attendanceState = useSelector((state) => state.attendance || {});
-  const attendanceSummary =
-    attendanceState.attendanceSummary?.results || [];
+  const attendanceSummary = attendanceState.attendanceSummary?.results || [];
   const summaryLoading = attendanceState.summaryLoading || false;
   const summaryData = attendanceState.attendanceSummary;
   const currentPage = summaryData?.current_page || 1;
   const totalPages = summaryData?.total_pages || 1;
+  const [department, setDepartment] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().slice(0, 7)
   );
   const [searchTerm, setSearchTerm] = useState("");
-
+  const departments = [
+    "HR",
+    "Finance",
+    "IT",
+    "Sales",
+    "Marketing",
+    "Operations",
+  ];
   const getMonthNameFromYYYYMM = (yyyyMM) => {
     if (!yyyyMM) return "";
     const d = new Date(`${yyyyMM}-01T00:00:00`);
@@ -53,33 +55,50 @@ const AttendanceReport = () => {
   useEffect(() => {
     if (!selectedMonth || !token) return;
     const [year, month] = selectedMonth.split("-");
-    dispatch
-      (getAttendanceSummary({
+    dispatch(
+      getAttendanceSummary({
         year: Number(year),
         month: Number(month),
         page: 1,
-        token
-      }));
+        token,
+      })
+    );
   }, [selectedMonth, dispatch, token]);
 
-const visibleRows = useMemo(() => {
-  if (!Array.isArray(attendanceSummary)) return [];
-  const q = (searchTerm || "").trim().toLowerCase();
+  // ReusableTable needs a unique `id` per row — the API gives us employee_id
+  const visibleRows = useMemo(() => {
+    if (!Array.isArray(attendanceSummary)) return [];
 
-  return attendanceSummary
-    .filter((emp) => emp.employee_name.toLowerCase().includes(q))
-    .sort((a, b) => a.employee_name.localeCompare(b.employee_name));
-}, [attendanceSummary, searchTerm]);
+    const q = searchTerm.trim().toLowerCase();
+
+    return attendanceSummary
+      .filter((emp) => {
+        const matchSearch = emp.employee_name
+          .toLowerCase()
+          .includes(q);
+
+        const matchDepartment =
+          department === "" || emp.department === department;
+
+        return matchSearch && matchDepartment;
+      })
+      .sort((a, b) =>
+        a.employee_name.localeCompare(b.employee_name)
+      )
+      .map((emp) => ({
+        ...emp,
+        id: emp.employee_id,
+      }));
+  }, [attendanceSummary, searchTerm, department]);
 
   const handleRowClick = (employee) => {
     setSelectedEmployee(employee);
     setIsModalOpen(true);
   };
+
   const handlePageChange = (page) => {
     if (!selectedMonth || !token) return;
-
     const [year, month] = selectedMonth.split("-");
-
     dispatch(
       getAttendanceSummary({
         year: Number(year),
@@ -89,98 +108,113 @@ const visibleRows = useMemo(() => {
       })
     );
   };
-const handleReportClick = (type) => {
-  if (type === "excel") {
-    exportAttendanceExcel(attendanceSummary);
-  }
 
-  if (type === "pdf") {
-    exportAttendancePDF(attendanceSummary);
-  }
-};
-const handleDownloadExcel = () => {
-  exportAttendanceExcel(summaryData.results, selectedMonth);
-};
+  const handleReportClick = (type) => {
+    if (type === "excel") {
+      exportAttendanceExcel(attendanceSummary);
+    }
+    if (type === "pdf") {
+      exportAttendancePDF(attendanceSummary);
+    }
+  };
+
+  const handleDownloadExcel = () => {
+    exportAttendanceExcel(summaryData.results, selectedMonth);
+  };
+
+  const getLop = (row) => row.lop_days ?? row.lop ?? 0;
+
+  // Column config replaces the old <thead>/<tbody> markup 1:1
+  const columns = [
+    {
+      header: "Sl No.",
+      accessor: "slNo",
+      sortable: false,
+      render: (row, index) => index + 1 + (currentPage - 1) * 20,
+    },
+    {
+      header: "Employee Name",
+      accessor: "employee_name",
+    },
+    {
+      header: "Department",
+      accessor: "department",
+    },
+    {
+      header: "Month",
+      accessor: "month",
+      sortable: false,
+      render: () => selectedMonthName,
+    },
+    {
+      header: "Total Working Days",
+      accessor: "working_days",
+      render: (row) => row.working_days ?? row.workingDays ?? "-",
+    },
+    {
+      header: "Present",
+      accessor: "present_days",
+      render: (row) => row.present_days ?? row.present ?? "-",
+    },
+    {
+      header: "Absent",
+      accessor: "absent_days",
+      render: (row) => row.absent_days ?? row.absent ?? "-",
+    },
+    {
+      header: "Loss of Pay",
+      accessor: "lop",
+      render: (row) => {
+        const lop = getLop(row);
+        return (
+          <span style={{ color: lop > 0 ? "#e53935" : "inherit", fontWeight: lop > 0 ? 600 : 400 }}>
+            {lop}
+          </span>
+        );
+      },
+    },
+  ];
+
   return (
     <Container>
-      <EmployeeTitle
-        iconSrc={EmployeeIcon}
-        showBackArrow={false}
-        showTabs={true}
-        showDropdown={false}
-        showAddButton={false}
-        showSearch={true}
-        searchValue={searchTerm}
-        onSearchChange={(val) => setSearchTerm(val)}
-          showReportButton={false}
-                reportButtonText="Reports"
-          onReportClick={handleReportClick}
+      <ReusableHeader
+        title="Employees Attendance Report"
+        breadcrumbs={["Dashboard", "Employees", "Employees Attendance Report"]}
+         buttonText="📊 Monthly Report (Excel)"
+                    onButtonClick={() => console.log("handleDownloadExcel")}
       />
+      <ReusableFilter
+        search={searchTerm}
+        onSearch={setSearchTerm}
+        searchPlaceholder="Search Employee Name"
 
+        department={department}
+        departments={departments}
+        onDepartment={setDepartment}
+
+        date={selectedMonth}
+        onDate={setSelectedMonth}
+
+        showSearch
+        showDepartment
+        showDate
+      />
       <PageWrapper>
-        <TopBar>
-          <MonthSelector>
-            <input
-              type="month"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-            />
-          </MonthSelector>
-           <ReportButton onClick={handleDownloadExcel}>
-    📊 Monthly Report (Excel)
-  </ReportButton>
-        </TopBar>
+        
 
-        <TableWrapper>
-          <StyledTable>
-            <thead>
-              <tr>
-                <Th>Sl No.</Th>
-                <Th>Employee Name</Th>
-                <Th>Month</Th>
-                <Th>Total Working Days</Th>
-                <Th>Present</Th>
-                <Th>Absent</Th>
-                <Th>Loss of Pay</Th>
-              </tr>
-            </thead>
+        {!summaryLoading && visibleRows.length === 0 ? (
+          <p style={{ textAlign: "center", color: "#888", padding: "16px 0" }}>
+            No records for {selectedMonthName || "this month"}
+          </p>
+        ) : (
+          <ReusableTable
+            columns={columns}
+            data={visibleRows}
+            loading={summaryLoading}
+            onRowClick={handleRowClick}
+          />
+        )}
 
-            <tbody>
-              {summaryLoading ? (
-                <Tr>
-                  <Td colSpan={6} style={{ textAlign: "center" }}>
-                    Loading attendance...
-                  </Td>
-                </Tr>
-              ) : visibleRows.length === 0 ? (
-                <Tr>
-                  <Td colSpan={6} style={{ textAlign: "center" }}>
-                    No records for {selectedMonthName || "this month"}
-                  </Td>
-                </Tr>
-              ) : (
-                visibleRows.map((emp, index) => (
-                  <Tr
-                    key={emp.employee_id}
-                    $lop={emp.lop_days ?? emp.lop ?? 0}
-                    onClick={() => handleRowClick(emp)}
-                    style={{ cursor: "pointer" }}
-                  >
-                     <Td>{index + 1 + (currentPage - 1) * 20}</Td>
-                    <Td>{emp.employee_name}</Td>
-                    <Td>{selectedMonthName}</Td>
-                    <Td>{emp.working_days ?? emp.workingDays ?? "-"}</Td>
-                    <Td>{emp.present_days ?? emp.present ?? "-"}</Td>
-                    <Td>{emp.absent_days ?? emp.absent ?? "-"}</Td>
-                    <LopTd $lop={emp.lop_days ?? emp.lop ?? 0}>
-                      {emp.lop_days ?? emp.lop ?? 0}
-                    </LopTd>
-                  </Tr>
-                ))
-              )}
-            </tbody>
-          </StyledTable>
-        </TableWrapper>
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

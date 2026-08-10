@@ -1,32 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Container,
-  TableWrapper,
-  StyledTable,
-  Th,
-  Td,
-  Tr,
-  TopBar,
-} from "../finance/FinancePage.Styles";
-import EmployeeIcon from "../../assets/employee.svg";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
+import { Container, } from "../finance/FinancePage.Styles";
 import FinanceModal from "./NewFinance";
-import {
-  createFinance,
-  fetchFinanceList,
-} from "../../Redux/financeThunks";
-import FinanceSummary from "../../Components/finance/FinanceSummary";
+import { createFinance, fetchFinanceList } from "../../Redux/financeThunks";
+import StatsCards from "../../Components/ StatsCards/StatsCards";
 import Pagination from "../../Components/Pagination/Pagination";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
+import ReusableTable from "../../Components/ReusableTable/ReusableTable";
+import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
+import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 
-const PAYMENT_TYPE_LABELS = {
-  IN: "Income",
-  OUT: "Expense",
-};
+import { getFinanceColumns, getStatCards } from "./FinanceColumns";
 
-const PAGE_SIZE = 12;
-const FALLBACK = "----";
+const PAGE_SIZE = 20;
+
+const PAYMENT_LABEL_TO_CODE = { Income: "IN", Expense: "OUT" };
+const PAYMENT_CODE_TO_LABEL = { IN: "Income", OUT: "Expense" };
 
 const FinanceDetail = () => {
   const dispatch = useDispatch();
@@ -42,14 +31,9 @@ const FinanceDetail = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [selectedPayment, setSelectedPayment] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState(""); // "IN" | "OUT" | ""
   const [page, setPage] = useState(1);
-
-  const paymentOptions = [
-    { label: "Income", value: "IN" },
-    { label: "Expense", value: "OUT" },
-  ];
-
+    const [month, setMonth] = useState("");
   // Fetch Data
   useEffect(() => {
     dispatch(
@@ -101,97 +85,43 @@ const FinanceDetail = () => {
     setPage(newPage);
   };
 
-  const formatDate = (date) => {
-    if (!date) return "----";
+  const columns = getFinanceColumns({ page, pageSize: PAGE_SIZE });
 
-    const d = new Date(date);
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = d.toLocaleString("en-US", { month: "short" });
-    const year = d.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
+  // Cards fed into the generic StatsCards component — built from the
+  // live Redux totals, since FinanceColumns.jsx has no access to them
+  const statCards = getStatCards({ totalIncome, totalExpense, cashBalance });
 
   return (
     <>
       <Container>
-        <TopBar>
-          <EmployeeTitle
-            iconSrc={EmployeeIcon}
-            title="Finance"
-            subtitle="Manage your Finance"
-            buttonText="Add Finance"
-            searchValue={searchText}
-            onSearchChange={setSearchText}
-            onAddClick={() => setIsOpen(true)}
-            showDropdown
-            dropdownOptions={paymentOptions}
-            selectedDropdownValue={selectedPayment}
-            dropdownPlaceholder="All Payments"
-            onDropdownChange={setSelectedPayment}
-            showBackArrow={false}
-            showTabs={false}
-            searchPlaceholder="Search Category / Note"
-            showReportButton={false}
-          />
-        </TopBar>
 
-        <FinanceSummary
-          income={totalIncome}
-          expense={totalExpense}
-          cashBalance={cashBalance}
+        <ReusableHeader
+          title="Finance"
+          breadcrumbs={["Dashboard", "Finance"]}
+          buttonText="+ ADD NEW FINANCE"
+          onButtonClick={() => setIsOpen(true)}
         />
-
-        <TableWrapper>
-          <StyledTable>
-            <thead>
-              <Tr>
-                <Th>Sl No</Th>
-                <Th>Date</Th>
-                <Th>Category</Th>
-                <Th>Note</Th>
-                <Th>Income</Th>
-                <Th>Expense</Th>
-              </Tr>
-            </thead>
-
-            <tbody>
-              {loading ? (
-                <Tr>
-                  <Td colSpan={6} style={{ textAlign: "center" }}>
-                    Loading...
-                  </Td>
-                </Tr>
-              ) : list.length > 0 ? (
-                list.map((record, index) => (
-                  <Tr key={record.id}>
-                    <Td>{(page - 1) * PAGE_SIZE + index + 1}</Td>
-                    <Td>{formatDate(record.date)}</Td>
-                    <Td>{record.category_name || FALLBACK}</Td>
-                    <Td>{record.note || FALLBACK}</Td>
-                    <Td>
-                      {record.payment_type === "IN"
-                        ? record.amount ?? FALLBACK
-                        : "--"}
-                    </Td>
-
-                    <Td>
-                      {record.payment_type === "OUT"
-                        ? record.amount ?? FALLBACK
-                        : "--"}
-                    </Td>
-                  </Tr>
-                ))
-              ) : (
-                <tr>
-                  <Td colSpan={6}>
-                    <NoEmployeeFound searchTerm={searchText} label="No Finance Records Found" />
-                  </Td>
-                </tr>
-              )}
-            </tbody>
-          </StyledTable>
-        </TableWrapper>
+        <StatsCards cards={statCards} />
+ <ReusableFilter
+          showSearch
+          search={searchText}
+          onSearch={setSearchText}
+          searchPlaceholder="Search Category / Note"
+          showStatus
+          status={PAYMENT_CODE_TO_LABEL[selectedPayment] || ""}
+          statuses={["Income", "Expense"]}
+          onStatus={(label) =>
+            setSelectedPayment(PAYMENT_LABEL_TO_CODE[label] || "")
+          }
+          date={month}
+          onDate={setMonth}
+          showDate
+        />
+        {!loading && list.length === 0 ? (
+          <NoEmployeeFound searchTerm={searchText} label="No Finance Records Found" />
+        ) : (
+          <ReusableTable columns={columns} data={list} loading={loading} />
+        )}
 
         <Pagination
           currentPage={page}

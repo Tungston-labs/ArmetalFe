@@ -36,6 +36,7 @@ import {
   fetchSubscriptionFeatures,
   createSubscriptionFeature,
   createSubscriptionPlan,
+  updateSubscriptionPlan,
 } from "../../../../services/superAdminService";
 
 const initialForm = {
@@ -79,26 +80,26 @@ function PlanModal({
 
     if (mode === "edit" && initialData) {
       setFormData({
-  ...initialForm,
-  planName: initialData.name || initialData.planName || "",
-  tier: initialData.plan_type || initialData.tier || "",
-  employeeLimit:
-    initialData.employee_limit ||
-    initialData.employeeLimit ||
-    "",
-  price:
-    initialData.base_price ||
-    initialData.price ||
-    "",
-  extraCharge:
-    initialData.extra_employee_price ||
-    initialData.extraCharge ||
-    "",
-  description:
-    initialData.description || "",
-  features:
-    initialData.features || [],
-});
+        ...initialForm,
+        planName: initialData.name || initialData.planName || "",
+        tier: initialData.plan_type || initialData.tier || "",
+        employeeLimit:
+          initialData.employee_limit ||
+          initialData.employeeLimit ||
+          "",
+        price:
+          initialData.base_price ||
+          initialData.price ||
+          "",
+        extraCharge:
+          initialData.extra_employee_price ||
+          initialData.extraCharge ||
+          "",
+        description:
+          initialData.description || "",
+        features:
+          initialData.features || [],
+      });
     } else {
       setFormData(initialForm);
     }
@@ -116,38 +117,32 @@ function PlanModal({
 
       const response = await fetchSubscriptionFeatures();
 
-      /*
-       * Depending on your API response, it may be:
-       *
-       * [
-       *   {...},
-       *   {...}
-       * ]
-       *
-       * or:
-       *
-       * {
-       *   results: [...]
-       * }
-       */
+      console.log("Subscription features response:", response);
 
       const features = Array.isArray(response)
         ? response
         : response.results || [];
 
       setAvailableFeatures(features);
+
     } catch (error) {
-      console.error("Failed to fetch subscription features:", error);
+      console.error(
+        "Failed to fetch subscription features:",
+        error
+      );
+
+      console.log("Status:", error.response?.status);
+      console.log("Response:", error.response?.data);
+      console.log("URL:", error.config?.url);
 
       alert(
         error.response?.data?.detail ||
-          "Failed to load subscription features."
+        "Failed to load subscription features."
       );
     } finally {
       setLoadingFeatures(false);
     }
   };
-
   /*
    * Normal form fields
    */
@@ -224,8 +219,8 @@ function PlanModal({
       if (errorData) {
         alert(
           errorData.name?.[0] ||
-            errorData.detail ||
-            "Failed to create feature."
+          errorData.detail ||
+          "Failed to create feature."
         );
       } else {
         alert("Failed to create feature.");
@@ -287,112 +282,96 @@ function PlanModal({
     e.preventDefault();
 
     if (!formData.planName.trim()) {
-  alert("Plan Name is required.");
-  return;
-}
+      alert("Plan Name is required.");
+      return;
+    }
 
-if (!formData.tier) {
-  alert("Select Tier.");
-  return;
-}
+    if (!formData.tier) {
+      alert("Select Tier.");
+      return;
+    }
 
-if (
-  !formData.employeeLimit ||
-  Number(formData.employeeLimit) <= 0
-) {
-  alert("Enter a valid employee limit.");
-  return;
-}
+    if (
+      !formData.employeeLimit ||
+      Number(formData.employeeLimit) <= 0
+    ) {
+      alert("Enter a valid employee limit.");
+      return;
+    }
 
-if (!formData.price || Number(formData.price) <= 0) {
-  alert("Enter Plan Price.");
-  return;
-}
+    if (!formData.price || Number(formData.price) <= 0) {
+      alert("Enter Plan Price.");
+      return;
+    }
 
     try {
-      setSubmitting(true);
+  setSubmitting(true);
 
-      /*
-       * Convert:
-       *
-       * Basic
-       * Pro
-       * Enterprise
-       * Custom
-       *
-       * into:
-       *
-       * basic
-       * pro
-       * enterprise
-       * custom
-       */
-      const planType = formData.tier.toLowerCase();
+  const planType = formData.tier.toLowerCase();
 
-      /*
-       * Only checked feature IDs.
-       */
-      const selectedFeatureIds = formData.features.map(
-        (feature) => feature.id
-      );
+  const selectedFeatureIds = formData.features.map(
+    (feature) => feature.id
+  );
 
-      /*
-       * Payload matching your backend.
-       *
-       * employees is intentionally NOT included because
-       * SubscriptionPlan currently doesn't have that field.
-       */
-      const payload = {
-  name: formData.planName.trim(),
+  const payload = {
+    name: formData.planName.trim(),
+    plan_type: planType,
+    description: formData.description.trim(),
+    employee_limit: Number(formData.employeeLimit),
+    feature_ids: selectedFeatureIds,
+    base_price: formData.price,
+    extra_employee_price: formData.extraCharge || "0",
+    is_active: true,
+  };
 
-  plan_type: planType,
+  // ============================
+  // SAVE TO BACKEND
+  // ============================
 
-  description: formData.description.trim(),
+  if (mode === "edit" && initialData?.id) {
+    await updateSubscriptionPlan(
+      initialData.id,
+      payload
+    );
+  } else {
+    await createSubscriptionPlan(payload);
+  }
 
-  employee_limit: Number(formData.employeeLimit),
+  // ============================
+  // REFRESH PARENT TABLE
+  // ============================
 
-  feature_ids: selectedFeatureIds,
+  await onSubmit?.();
 
-  base_price: formData.price,
+  onClose();
 
-  extra_employee_price:
-    formData.extraCharge || "0",
+} catch (error) {
+  console.error(
+    mode === "edit"
+      ? "Failed to update plan:"
+      : "Failed to create plan:",
+    error
+  );
 
-  is_active: true,
-};
+  const errorData = error.response?.data;
 
-      /*
-       * POST /plans/
-       */
-      const response = await createSubscriptionPlan(
-        payload
-      );
+  if (errorData) {
+    alert(
+      errorData.detail ||
+      errorData.name?.[0] ||
+      errorData.plan_type?.[0] ||
+      errorData.employee_limit?.[0] ||
+      errorData.base_price?.[0] ||
+      errorData.extra_employee_price?.[0] ||
+      "Failed to save plan."
+    );
+  } else {
+    alert("Failed to save plan.");
+  }
 
-      /*
-       * Send created plan back to parent.
-       */
-      onSubmit?.(response.data || response);
-
-      onClose();
-    } catch (error) {
-      console.error("Failed to create plan:", error);
-
-      const errorData = error.response?.data;
-
-      if (errorData) {
-        alert(
-          errorData.detail ||
-            errorData.name?.[0] ||
-            errorData.plan_type?.[0] ||
-            errorData.base_price?.[0] ||
-            "Failed to create plan."
-        );
-      } else {
-        alert("Failed to create plan.");
-      }
-    } finally {
-      setSubmitting(false);
-    }
+} finally {
+  setSubmitting(false);
+}
   };
 
   if (!open) return null;
@@ -480,17 +459,17 @@ if (!formData.price || Number(formData.price) <= 0) {
           <Row>
             <Field>
               <Label>
-  Employee Limit
-  <Required>*</Required>
-</Label>
+                Employee Limit
+                <Required>*</Required>
+              </Label>
 
-<Input
-  type="number"
-  name="employeeLimit"
-  value={formData.employeeLimit}
-  onChange={handleChange}
-  placeholder="10"
-/>
+              <Input
+                type="number"
+                name="employeeLimit"
+                value={formData.employeeLimit}
+                onChange={handleChange}
+                placeholder="10"
+              />
             </Field>
           </Row>
 
@@ -504,7 +483,7 @@ if (!formData.price || Number(formData.price) <= 0) {
               </Label>
 
               <PriceInputWrapper>
-                <Currency>₹</Currency>
+                {/* <Currency>₹</Currency> */}
 
                 <Input
                   type="number"
@@ -523,7 +502,7 @@ if (!formData.price || Number(formData.price) <= 0) {
               </Label>
 
               <PriceInputWrapper>
-                <Currency>₹</Currency>
+                {/* <Currency>₹</Currency> */}
 
                 <Input
                   type="number"
@@ -671,8 +650,8 @@ if (!formData.price || Number(formData.price) <= 0) {
               {submitting
                 ? "Saving..."
                 : mode === "add"
-                ? "Create Plan"
-                : "Update Plan"}
+                  ? "Create Plan"
+                  : "Update Plan"}
             </SubmitButton>
 
           </Footer>
