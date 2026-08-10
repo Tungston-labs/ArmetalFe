@@ -76,6 +76,7 @@ const CompanyViewPage = () => {
         <TitleSection>
           <div className="left">
             <LuArrowLeft
+              data-testid="back-arrow"
               style={{ width: "30px", height: 30, cursor: "pointer" }}
               onClick={() => navigate("/company")}
             />

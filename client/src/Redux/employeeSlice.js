@@ -13,7 +13,7 @@ import {
   fetchEmployeeDocuments,
   deleteEmployeeDocument,
   updateEmployeeDocument,
-    updateEmployeeDocuments
+  updateEmployeeDocuments
 } from '../services/employeeService';
 import API from '../services/api';
 
@@ -64,11 +64,6 @@ export const submitEmployee = createAsyncThunk(
   }
 );
 
-
-
-
-
-// Delete Employee
 export const deleteEmployeeById = createAsyncThunk(
   'employees/deleteEmployeeById',
   async (employeeId, { rejectWithValue }) => {
@@ -81,7 +76,6 @@ export const deleteEmployeeById = createAsyncThunk(
   }
 );
 
-// Submit Bank Payment
 export const submitBankPayment = createAsyncThunk(
   "employees/submitBankPayment",
   async ({ employeeId, data, paymentId }, thunkAPI) => {
@@ -97,13 +91,6 @@ export const submitBankPayment = createAsyncThunk(
   }
 );
 
-
-
-
-
-
-
-// Delete Bank Payment
 export const deleteBankPayment = createAsyncThunk(
   'employee/deleteBankPayment',
   async ({ employeeId, paymentId }, { rejectWithValue }) => {
@@ -116,7 +103,6 @@ export const deleteBankPayment = createAsyncThunk(
   }
 );
 
-// Get Single Employee
 export const getEmployeeById = createAsyncThunk(
   'employees/getById',
   async (id, thunkAPI) => {
@@ -128,7 +114,6 @@ export const getEmployeeById = createAsyncThunk(
   }
 );
 
-// Fetch All Employees
 export const getAllEmployees = createAsyncThunk(
   'employees/getAll',
   async ({ page, search, department_id }, thunkAPI) => {
@@ -154,17 +139,11 @@ export const getUpcomingExpiryEmployees = createAsyncThunk(
   }
 );
 
-
-// Fetch All Bank Payments
 export const fetchAllBankPaymentsThunk = createAsyncThunk(
   'employee/fetchAllBankPayments',
   async (employeeId) => await fetchAllBankPaymentsByEmployee(employeeId)
 );
 
-// Upload Temp Image
-
-
-// Submit Documents
 export const submitDocumentsThunk = createAsyncThunk(
   'documents/submit',
   async ({ employeeId, documents }, { rejectWithValue }) => {
@@ -176,7 +155,6 @@ export const submitDocumentsThunk = createAsyncThunk(
   }
 );
 
-// Fetch Employee Documents
 export const getEmployeeDocumentsThunk = createAsyncThunk(
   "employees/getDocuments",
   async (employeeId, thunkAPI) => {
@@ -243,8 +221,10 @@ export const uploadImageThunk = createAsyncThunk(
     try {
       const response = await uploadTempImage(file);
       return response.url;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || "Upload failed");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || error.message || "Upload failed"
+      );
     }
   }
 );
@@ -288,7 +268,7 @@ const employeeSlice = createSlice({
     setBankPaymentId: (state, action) => {
       state.bankPaymentId = action.payload;
     },
-     clearBankPayment: (state) => {
+    clearBankPayment: (state) => {
       state.bankPayment = null;
       state.formData.bank = null;
     },
@@ -308,7 +288,7 @@ const employeeSlice = createSlice({
       state.employeeId = null;
       state.isDirty = false; // reset after saving or cancelling
     },
-    
+
   },
   extraReducers: (builder) => {
     builder
@@ -322,7 +302,7 @@ const employeeSlice = createSlice({
       .addCase(submitEmployee.rejected, (state, action) => {
         state.status = 'failed'; state.error = action.payload;
       })
-  .addCase(updateEmployeeDocumentThunk.pending, (state) => {
+      .addCase(updateEmployeeDocumentThunk.pending, (state) => {
         state.updateStatus = "loading";
         state.updateError = null;
       })
@@ -337,8 +317,8 @@ const employeeSlice = createSlice({
         state.updateStatus = "failed";
         state.updateError = action.payload;
       })
-       // getUpcomingExpiryEmployees
-       .addCase(getUpcomingExpiryEmployees.pending, (state) => {
+      // getUpcomingExpiryEmployees
+      .addCase(getUpcomingExpiryEmployees.pending, (state) => {
         state.loading = true;
       })
       .addCase(getUpcomingExpiryEmployees.fulfilled, (state, action) => {
@@ -352,13 +332,13 @@ const employeeSlice = createSlice({
           previous: action.payload.previous || null,
         };
       })
-      
+
       .addCase(getUpcomingExpiryEmployees.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-          .addCase(submitBankPayment.fulfilled, (state, action) => {
+      .addCase(submitBankPayment.fulfilled, (state, action) => {
         const updated = action.payload;
         if (!Array.isArray(state.employeeBankPayments)) {
           state.employeeBankPayments = [action.payload]; // fallback

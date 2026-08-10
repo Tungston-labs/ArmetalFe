@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>10/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -226,26 +226,26 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -268,7 +268,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -315,9 +315,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -363,26 +363,26 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompanyOverview } from "../../Redux/superAdminSlice";
 import Loader from "../../Components/Loader";
-const Dashboard = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-  const <span class="cstat-no" title="statement not covered" >dispatch = useDispatch();</span>
-  const <span class="cstat-no" title="statement not covered" >navigate = useNavigate();</span>
+const Dashboard = () =&gt; {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 &nbsp;
-  const { overview, loading <span class="cstat-no" title="statement not covered" >} = useSelector(<span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; <span class="cstat-no" title="statement not covered" >state.superAdmin)</span>;</span>
+  const { overview, loading } = useSelector((state) =&gt; state.superAdmin);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >    dispatch(getCompanyOverview());</span>
+  useEffect(() =&gt; {
+    dispatch(getCompanyOverview());
   }, [dispatch]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (loading) {</span>
-<span class="cstat-no" title="statement not covered" >    return &lt;Loader /&gt;;</span>
+  if (loading) {
+    return &lt;Loader /&gt;;
   }
-<span class="cstat-no" title="statement not covered" >  console.log({ overview });</span>
+  console.log({ overview });
 &nbsp;
-  const companies = <span class="cstat-no" title="statement not covered" >overview?.companies || [];</span>
-  const payments = <span class="cstat-no" title="statement not covered" >overview?.unpaid_companies || [];</span>
-<span class="cstat-no" title="statement not covered" >  console.log({ companies });</span>
+  const companies = overview?.companies || <span class="branch-1 cbranch-no" title="branch not covered" >[];</span>
+  const payments = overview?.unpaid_companies || <span class="branch-1 cbranch-no" title="branch not covered" >[];</span>
+  console.log({ companies });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;DashboardWrapper&gt;
       &lt;TopBar&gt;
         &lt;div /&gt;
@@ -404,8 +404,8 @@ const Dashboard = <span class="cstat-no" title="statement not covered" ><span cl
 &nbsp;
         &lt;CardContainer&gt;
           &lt;CardSlider&gt;
-            {companies.map(<span class="fstat-no" title="function not covered" >(c</span>, i) =&gt; (
-<span class="cstat-no" title="statement not covered" >              &lt;Link</span>
+            {companies.map((c, i) =&gt; (
+              &lt;Link
                 key={i}
                 to={`/superadmin/view/${c.id}`}
                 style={{ textDecoration: "none", color: "inherit" }}
@@ -451,10 +451,10 @@ const Dashboard = <span class="cstat-no" title="statement not covered" ><span cl
               &lt;/tr&gt;
             &lt;/thead&gt;
             &lt;tbody&gt;
-              {payments.map(<span class="fstat-no" title="function not covered" >(r</span>ow, i) =&gt; (
-<span class="cstat-no" title="statement not covered" >                &lt;tr</span>
+              {payments.map((row, i) =&gt; (
+                &lt;tr
                   key={i}
-                  onClick={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >n</span>avigate(`/superadmin/view/${row.id}`)}</span>
+                  onClick={() =&gt; navigate(`/superadmin/view/${row.id}`)}
                   style={{ cursor: "pointer" }}
                 &gt;
                   &lt;td&gt;{row.name}&lt;/td&gt;
@@ -481,7 +481,7 @@ export default Dashboard;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-04T11:13:33.669Z
+                at 2026-08-10T11:30:40.520Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

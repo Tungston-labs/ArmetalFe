@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -108,40 +108,40 @@
 <a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -150,40 +150,40 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import API from "./api"; // Your Axios instance with baseURL &amp; headers
 &nbsp;
 &nbsp;
-export const fetchHolidayTypes = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
-  const response = <span class="cstat-no" title="statement not covered" >await API.get("/holiday-types/");</span>
-<span class="cstat-no" title="statement not covered" >  return response.data; </span> // Expects: [{key: "public", label: "Public Holiday"}, ...]
+export const fetchHolidayTypes = async () =&gt; {
+  const response = await API.get("/holiday-types/");
+  return response.data;  // Expects: [{key: "public", label: "Public Holiday"}, ...]
 };
 &nbsp;
 &nbsp;
 // GET: List all holidays
-export const fetchHolidays = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(page = <span class="branch-0 cbranch-no" title="branch not covered" >1)</span> =&gt; {</span>
-  const response = <span class="cstat-no" title="statement not covered" >await API.get(`/holidays/?page=${page}`);</span>
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+export const fetchHolidays = async (page = 1) =&gt; {
+  const response = await API.get(`/holidays/?page=${page}`);
+  return response.data;
 };
 &nbsp;
 // POST: Create a holiday
-export const createHolidays = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(data) =&gt; {</span>
-  const response = <span class="cstat-no" title="statement not covered" >await API.post("/holidays/",data);</span>
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+export const createHolidays = async (data) =&gt; {
+  const response = await API.post("/holidays/",data);
+  return response.data;
 };
 &nbsp;
 // GET: holiday detail by ID
-export const fetchHolidaysById = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(id) =&gt; {</span>
-  const response = <span class="cstat-no" title="statement not covered" >await API.get(`/holidays/${id}/`);</span>
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+export const fetchHolidaysById = async (id) =&gt; {
+  const response = await API.get(`/holidays/${id}/`);
+  return response.data;
 };
 &nbsp;
 // PUT: Update holidays by ID
-export const updateHolidays = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(id, data) =&gt; {</span>
-  const response = <span class="cstat-no" title="statement not covered" >await API.put(`/holidays/${id}/`, data);</span>
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+export const updateHolidays = async (id, data) =&gt; {
+  const response = await API.put(`/holidays/${id}/`, data);
+  return response.data;
 };
 &nbsp;
 // DELETE: Delete holidays by ID
-export const deleteHolidays = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(id) =&gt; {</span>
-  const response = <span class="cstat-no" title="statement not covered" >await API.delete(`/holidays/${id}/`);</span>
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+export const deleteHolidays = async (id) =&gt; {
+  const response = await API.delete(`/holidays/${id}/`);
+  return response.data;
 };
 &nbsp;
 &nbsp;
@@ -196,7 +196,7 @@ export const deleteHolidays = <span class="cstat-no" title="statement not covere
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-04T11:13:33.358Z
+                at 2026-08-10T11:30:40.084Z
             </div>
         <script src="../prettify.js"></script>
         <script>

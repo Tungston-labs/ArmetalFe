@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/23</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -108,7 +108,7 @@
 <a name='L43'></a><a href='#L43'>43</a>
 <a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -116,81 +116,81 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import API from './api';
 &nbsp;
-export const fetchAllLeaveRequests = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>({</span>
-  page = <span class="branch-0 cbranch-no" title="branch not covered" >1,</span>
+export const fetchAllLeaveRequests = async ({
+  page = 1,
   status,
   department_id,
   search,
   month,
   year,
 }) =&gt; {
-  const params = <span class="cstat-no" title="statement not covered" >new URLSearchParams({ page });</span>
+  const params = new URLSearchParams({ page });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (status) <span class="cstat-no" title="statement not covered" >params.append("status", status);</span></span>
-<span class="cstat-no" title="statement not covered" >  if (department_id) <span class="cstat-no" title="statement not covered" >params.append("department_id", department_id);</span></span>
-<span class="cstat-no" title="statement not covered" >  if (search) <span class="cstat-no" title="statement not covered" >params.append("search", search);</span></span>
+  if (status) params.append("status", status);
+  if (department_id) params.append("department_id", department_id);
+  if (search) params.append("search", search);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (month) <span class="cstat-no" title="statement not covered" >params.append("month", month);</span></span>
-<span class="cstat-no" title="statement not covered" >  if (year) <span class="cstat-no" title="statement not covered" >params.append("year", year);</span></span>
+  if (month) params.append("month", month);
+  if (year) params.append("year", year);
 &nbsp;
-  const response = <span class="cstat-no" title="statement not covered" >await API.get(</span>
+  const response = await API.get(
     `/leave/admin/?${params.toString()}`
   );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+  return response.data;
 };
 &nbsp;
 // Fetch leave details by ID
-export const fetchLeaveDetailsById = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(id) =&gt; {</span>
-  const response = <span class="cstat-no" title="statement not covered" >await API.get(`/leave/admin/${id}/`);</span>
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+export const fetchLeaveDetailsById = async (id) =&gt; {
+  const response = await API.get(`/leave/admin/${id}/`);
+  return response.data;
 };
 &nbsp;
 // Update leave status
-export const updateLeaveStatus = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(leaveId, status) =&gt; {</span>
-  const response = <span class="cstat-no" title="statement not covered" >await API.patch(`/leave/admin/${leaveId}/`, { status });</span>
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+export const updateLeaveStatus = async (leaveId, status) =&gt; {
+  const response = await API.patch(`/leave/admin/${leaveId}/`, { status });
+  return response.data;
 };
 &nbsp;
 // ✅ Fixed: fetch on-leave employees by department
-export const fetchOnLeaveEmployees = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(departmentId) =&gt; {</span>
-  const response = <span class="cstat-no" title="statement not covered" >await API.get(`/departments/${departmentId}/on-leave-employees/`);</span>
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+export const fetchOnLeaveEmployees = async (departmentId) =&gt; {
+  const response = await API.get(`/departments/${departmentId}/on-leave-employees/`);
+  return response.data;
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -199,7 +199,7 @@ export const fetchOnLeaveEmployees = <span class="cstat-no" title="statement not
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-04T11:13:33.669Z
+                at 2026-08-10T11:30:40.520Z
             </div>
         <script src="../prettify.js"></script>
         <script>

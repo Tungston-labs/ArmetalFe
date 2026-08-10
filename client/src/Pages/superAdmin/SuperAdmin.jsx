@@ -19,7 +19,7 @@ import {
   SearchIcon,
   SearchWrapper,
 } from "./SuperAdmin.Styles";
-import Loader from "../../Components/Loader"
+import Loader from "../../Components/Loader";
 import { MdOutlineEmail } from "react-icons/md";
 import { FaTrashAlt, FaPlus } from "react-icons/fa";
 import { TbPencilMinus } from "react-icons/tb";
@@ -135,8 +135,6 @@ const CompanyTable = () => {
               <Th>Info</Th>
               <Th>Edit</Th>
               <Th>Delete</Th>
-
-
             </tr>
           </thead>
           <tbody>
@@ -150,12 +148,16 @@ const CompanyTable = () => {
                   <Td>{item.contact_number}</Td>
                   <Td>{item.number_of_employees}</Td>
                   <Td>
-                    <IconButton onClick={() => handleSendEmail(item)}>
+                    <IconButton
+                      data-testid={`email-btn-${item.id}`}
+                      onClick={() => handleSendEmail(item)}
+                    >
                       <MdOutlineEmail />
                     </IconButton>
                   </Td>
 
                   <Td
+                    data-testid={`info-cell-${item.id}`}
                     onClick={() => navigate(`/superadmin/view/${item.id}`)}
                     style={{ cursor: "pointer" }}
                   >
@@ -163,18 +165,22 @@ const CompanyTable = () => {
                   </Td>
 
                   <Td>
-                    <IconButton onClick={() => handleEdit(item)}>
+                    <IconButton
+                      data-testid={`edit-btn-${item.id}`}
+                      onClick={() => handleEdit(item)}
+                    >
                       <TbPencilMinus />
                     </IconButton>
                   </Td>
                   <Td>
-                    <IconButton danger onClick={() => handleDelete(item.id)}>
+                    <IconButton
+                      data-testid={`delete-btn-${item.id}`}
+                      danger
+                      onClick={() => handleDelete(item.id)}
+                    >
                       <FaTrashAlt />
                     </IconButton>
                   </Td>
-                  {/* <Td>
-                    <ImpersonateButton>Impersonate</ImpersonateButton>
-                  </Td> */}
                 </tr>
               ))
             ) : (
@@ -188,7 +194,6 @@ const CompanyTable = () => {
         </Table>
       </TableWrapper>
 
-      {/* Delete Modal */}
       {showDeleteModal && (
         <div
           style={{

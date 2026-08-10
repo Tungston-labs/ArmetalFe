@@ -8,7 +8,6 @@ import {
     updateEmployeeIncentive,
       updateEmployeeDeduction,
 } from "../services/payrollService";
-
 export const getPayrollData = createAsyncThunk(
   "payroll/getPayrollData",
   async ({ month, year, search = "", page = 1, department = "" }, { rejectWithValue }) => {
@@ -22,9 +21,6 @@ export const getPayrollData = createAsyncThunk(
     }
   }
 );
-
-
-
 // 2. Create or update payroll for selected employees
 export const submitPayrollRecords = createAsyncThunk(
   "payroll/submitPayrollRecords",
@@ -37,7 +33,6 @@ export const submitPayrollRecords = createAsyncThunk(
     }
   }
 );
-
 // 3. Update payroll status for a single employee
 export const updatePayrollStatus = createAsyncThunk(
   "payroll/updatePayrollStatus",
@@ -50,7 +45,6 @@ export const updatePayrollStatus = createAsyncThunk(
     }
   }
 );
-
 // ✅ 4. Get payroll detail by record ID (for payslip)
 export const getPayrollDetail = createAsyncThunk(
   "payroll/getPayrollDetail",
@@ -77,7 +71,6 @@ export const verifyEmployeePayroll = createAsyncThunk(
     }
   }
 );
-
 export const updatePayrollIncentive = createAsyncThunk(
   "payroll/updatePayrollIncentive",
   async ({ employeeId, month, year, incentive_amount, incentive_type, incentive_reason }, { rejectWithValue }) => {
@@ -186,7 +179,6 @@ const payrollSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
       // POST payroll
       .addCase(submitPayrollRecords.pending, (state) => {
         state.loading = true;
@@ -195,7 +187,6 @@ const payrollSlice = createSlice({
       .addCase(submitPayrollRecords.fulfilled, (state, action) => {
         state.loading = false;
         state.submitSuccess = true;
-
         // Update the status of selected employees in state.data
         if (action.meta.arg.employee_ids && action.meta.arg.status) {
           const { employee_ids, status } = action.meta.arg;
@@ -206,13 +197,11 @@ const payrollSlice = createSlice({
           );
         }
       })
-
       .addCase(submitPayrollRecords.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.submitSuccess = false;
       })
-
       // PATCH payroll status
       .addCase(updatePayrollStatus.pending, (state) => {
         state.loading = true;
@@ -227,13 +216,11 @@ const payrollSlice = createSlice({
             : emp
         );
       })
-
       .addCase(updatePayrollStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.updateStatusSuccess = false;
       })
-
       // ✅ GET single payroll detail
       .addCase(getPayrollDetail.pending, (state) => {
         state.loading = true;
@@ -264,7 +251,6 @@ const payrollSlice = createSlice({
         );
 
       })
-
       .addCase(verifyEmployeePayroll.rejected, (state, action) => {
         state.loading = false;
         state.verifySuccess = false;
@@ -293,28 +279,23 @@ const payrollSlice = createSlice({
       .addCase(updatePayrollDeduction.pending, (state) => {
   state.loading = true;
 })
-
 .addCase(updatePayrollDeduction.fulfilled, (state, action) => {
   state.loading = false;
-
   state.data = state.data.map((emp) =>
     emp.id === action.payload.employeeId
       ? action.payload.data
       : emp
   );
 })
-
 .addCase(updatePayrollDeduction.rejected, (state, action) => {
   state.loading = false;
   state.error = action.payload;
 });
   },
 });
-
 export const { resetPayrollState,
   resetSubmitSuccess,
   resetUpdateStatusSuccess,
   resetIncentiveSuccess ,
   resetVerifySuccess } = payrollSlice.actions;
-
 export default payrollSlice.reducer;

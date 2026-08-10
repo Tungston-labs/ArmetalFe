@@ -196,7 +196,6 @@ const ViewBasic = () => {
     }
   };
 
-
   if (loading || !formData || Object.keys(formData).length === 0) {
     return (
       <FullPageLoaderWrapper>
@@ -240,19 +239,19 @@ const ViewBasic = () => {
                 />
               </FieldGroup>
 
-             <FieldGroup>
-  <Label>Joining Date</Label>
-  <Input
-    type="date"
-    name="joining_date"
-    value={
-      formData.joining_date
-        ? formData.joining_date.split("T")[0]
-        : ""
-    }
-    onChange={handleChange}
-  />
-</FieldGroup>
+              <FieldGroup>
+                <Label>Joining Date</Label>
+                <Input
+                  type="date"
+                  name="joining_date"
+                  value={
+                    formData.joining_date
+                      ? formData.joining_date.split("T")[0]
+                      : ""
+                  }
+                  onChange={handleChange}
+                />
+              </FieldGroup>
               <FieldGroup>
                 <Label>Employment Type</Label>
                 <Input
@@ -278,8 +277,6 @@ const ViewBasic = () => {
               </FieldGroup>
             </Rowes>
             <Rowes>
-
-
               <FieldGroup>
                 <Label>Casual Leave</Label>
                 <Input
@@ -336,14 +333,9 @@ const ViewBasic = () => {
               </FieldGroup>
               <FieldGroup>
                 <Label>Total Leave</Label>
-                <Input
-                  type="number"
-                  value={calculatedTotal}
-                  readOnly
-                />
+                <Input type="number" value={calculatedTotal} readOnly />
               </FieldGroup>
             </Rowes>
-
           </CardContent>
         </Card>
         <Card>
@@ -413,7 +405,7 @@ const ViewBasic = () => {
                       />
                     </FieldGroup>
                     <FieldGroup>
-                      <Label>Iqama Number</Label>
+                      <label htmlFor="iqama_number">Iqama Number</label>
                       <Input
                         name="iqama_number"
                         value={formData.iqama_number || ""}

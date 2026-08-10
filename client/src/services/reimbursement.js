@@ -6,8 +6,6 @@ export const getGroupedReimbursements = async () => {
   return response.data;
 };
 
-
-
 // Fetch reimbursements of a department by its ID
 
 // services/reimbursement.js
@@ -21,10 +19,6 @@ export const fetchReimbursementsByDepartment = async (
   );
   return response.data;
 };
-
-
-
-
 
 // ✅ Update reimbursement status by Admin
 export const updateReimbursementStatus = async (reimbursementId, status) => {
