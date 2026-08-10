@@ -26,6 +26,16 @@ export const planColumns = [
   {
     header: "Features",
     accessor: "features",
+    sortable: false,
+    render: (row) => {
+      if (!row.features?.length) {
+        return "No features";
+      }
+
+      return row.features
+        .map((feature) => feature.name)
+        .join(", ");
+    },
   },
   {
     header: "Status",
@@ -33,18 +43,36 @@ export const planColumns = [
   },
 ];
 
-export const mapPlanData = (plans) => {
-  return plans.map((item) => ({
-    id: item.id,
-    plan: item.name,
-    tier: item.plan_type,
-    employeeLimit: item.employee_limit,
-    price: item.base_price,
-    priceText: `₹${item.base_price}`,
-    extra: `₹${item.extra_employee_price}`,
-    features: `${item.feature_count} Features`,
-    status: item.status,
-    raw: item,
+export const mapPlanData = (plans = []) => {
+  return plans.map((plan) => ({
+    // Original API fields
+    id: plan.id,
+    name: plan.name,
+    plan_type: plan.plan_type,
+    description: plan.description,
+    base_price: plan.base_price,
+    employee_limit: plan.employee_limit,
+    extra_employee_price: plan.extra_employee_price,
+    is_active: plan.is_active,
+    status: plan.status,
+    feature_count: plan.feature_count,
+    features: plan.features || [],
+    created_at: plan.created_at,
+    updated_at: plan.updated_at,
+
+    // Table fields
+    plan: plan.name,
+    tier: plan.plan_type,
+    employeeLimit: plan.employee_limit,
+    priceText: `₹${plan.base_price}/-`,
+    extra: `₹${plan.extra_employee_price}/-`,
+
+    // Card fields
+    price: plan.base_price,
+    featureList: plan.features || [],
+
+    // Keep original API object for edit
+    raw: plan,
   }));
 };
 

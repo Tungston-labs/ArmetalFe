@@ -29,13 +29,14 @@ export const fetchCompanyById = async (id) => {
   return response.data;
 };
 
-// PUT: compny  by ID
+// PATCH: Update company by ID
 export const updateCompany = async (id, data) => {
-  const response = await API.put(`/companies/${id}/`, data, {
+  const response = await API.patch(`/companies/${id}/`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
+
   return response.data;
 };
 

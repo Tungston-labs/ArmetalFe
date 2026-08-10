@@ -19,6 +19,10 @@ from employee.models import Employee_db
 
 class CompanyCreateSerializer(serializers.ModelSerializer):
     number_of_employees = serializers.SerializerMethodField()
+    plan_name = serializers.CharField(
+        source="plan.name",
+        read_only=True
+    )
 
     class Meta:
         model = Company
@@ -49,6 +53,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "half_day_hours",
             "is_active",
             "plan",
+            "plan_name",
         ]
 
         read_only_fields = [
@@ -68,21 +73,75 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
         }
     def validate(self, attrs):
 
-    # -------------------------------
-    # Handle decimal fields from multipart
-    # -------------------------------
+        # ---------------------------------------------------------
+        # PLAN / AMOUNT PER EMPLOYEE
+        # ---------------------------------------------------------
+
+        plan = attrs.get("plan", getattr(self.instance, "plan", None))
+
         ape = self.initial_data.get("amount_per_employee")
         ip = self.initial_data.get("initial_payment")
 
-        if ape not in [None, ""]:
-            attrs["amount_per_employee"] = Decimal(ape)
+        # If a plan is selected, amount_per_employee is optional.
+        # The plan pricing will be used.
+        if plan:
+            if ape not in [None, ""]:
+                try:
+                    attrs["amount_per_employee"] = Decimal(ape)
+                except Exception:
+                    raise serializers.ValidationError({
+                        "amount_per_employee": "Enter a valid amount."
+                    })
+
+        else:
+            # No plan → amount per employee is required
+            if self.instance:
+                current_amount = self.instance.amount_per_employee
+
+                if ape in [None, ""]:
+                    if not current_amount or current_amount <= 0:
+                        raise serializers.ValidationError({
+                            "amount_per_employee":
+                                "Amount per employee is required when no plan is selected."
+                        })
+            else:
+                if ape in [None, ""]:
+                    raise serializers.ValidationError({
+                        "amount_per_employee":
+                            "Amount per employee is required when no plan is selected."
+                    })
+
+            if ape not in [None, ""]:
+                try:
+                    amount = Decimal(ape)
+
+                    if amount <= 0:
+                        raise serializers.ValidationError({
+                            "amount_per_employee":
+                                "Enter a valid amount greater than 0."
+                        })
+
+                    attrs["amount_per_employee"] = amount
+
+                except serializers.ValidationError:
+                    raise
+
+                except Exception:
+                    raise serializers.ValidationError({
+                        "amount_per_employee": "Enter a valid amount."
+                    })
+
+        # ---------------------------------------------------------
+        # INITIAL PAYMENT
+        # ---------------------------------------------------------
 
         if ip not in [None, ""]:
             attrs["initial_payment"] = Decimal(ip)
 
-        # -------------------------------
-        # Salary Percentage Validation
-        # -------------------------------
+        # ---------------------------------------------------------
+        # SALARY PERCENTAGE VALIDATION
+        # ---------------------------------------------------------
+
         basic = attrs.get("basic_salary_percent", 0)
         hra = attrs.get("house_allowance_percent", 0)
         transport = attrs.get("transport_allowance_percent", 0)
@@ -95,9 +154,10 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
                 "Total salary percentage cannot exceed 100%."
             )
 
-        # -------------------------------
-        # Working Hours Validation
-        # -------------------------------
+        # ---------------------------------------------------------
+        # WORKING HOURS VALIDATION
+        # ---------------------------------------------------------
+
         working_hours = attrs.get("working_hours_per_day")
         half_day_hours = attrs.get("half_day_hours")
 
