@@ -17,6 +17,11 @@ urlpatterns = [
     path("subscription-features/<int:pk>/",views.SubscriptionFeatureRetrieveUpdateDeleteAPIView.as_view(),name="subscription-feature-detail"),
     path("plans/",views.SubscriptionPlanCreateListAPIView.as_view(),name="subscription-plan-create-list"),
     path("plans/<int:pk>/",views.SubscriptionPlanRetrieveUpdateDeleteAPIView.as_view(),name="subscription-plan-detail"),
+    path(
+    "plans/summary/",
+    views.SubscriptionPlanSummaryAPIView.as_view(),
+    name="subscription-plan-summary",
+),
 
 ]
 

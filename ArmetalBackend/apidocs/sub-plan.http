@@ -3,8 +3,7 @@
 ###############################################################
 
 @baseUrl = https://api.rekory.com/api
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2MDI4ODkwLCJpYXQiOjE3ODYwMDAwOTAsImp0aSI6IjJhNDY2MjA1ZWY5OTQ0NzRhZmQwMmY5ZTgxYmZmN2Q1IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.cTRccY_INjVpAdTyimYlRHzCJfc0k3hL_cy6zhDNB1g
-
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2MDMwODM5LCJpYXQiOjE3ODYwMDIwMzksImp0aSI6IjViODA5MTk0ZGRhNjRiMTdhMTBkYmExM2E5NDdhNTY4IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.JrSy5M5aN3XHJztq990B4vw700NF-Q11twO9q53awHw
 ###############################################################
 ### Create Feature
 ###############################################################
@@ -14,8 +13,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "name": "testing",
-    "description": "free one month trial",
+    "name": "",
+    "description": "",
     "is_active": true
 }
 
@@ -151,7 +150,7 @@ Content-Type: application/json
 ###############################################################
 
 GET {{baseUrl}}/plans/
-Authorization: Bearer {{token}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2MDMwODM5LCJpYXQiOjE3ODYwMDIwMzksImp0aSI6IjViODA5MTk0ZGRhNjRiMTdhMTBkYmExM2E5NDdhNTY4IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.JrSy5M5aN3XHJztq990B4vw700NF-Q11twO9q53awHw
 
 ###
 
@@ -192,3 +191,6 @@ DELETE {{baseUrl}}/plans/1/
 Authorization: Bearer {{token}}
 
 ###
+
+GET {{baseUrl}}/plans/summary/
+Authorization: Bearer {{token}}

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
 import ReusableTable from "../../../Components/ReusableTable/ReusableTable";
 import {
@@ -9,16 +9,26 @@ import {
   TitleUnderline,
 } from "./PlanAndPricing.styles";
 import { VscFiles } from "react-icons/vsc";
-import { planColumns, planData,planCards } from "./planData";
+import {
+  planColumns,
+  planCards,
+  mapPlanData,
+} from "./planData";
 import StatsCards from "../../../Components/ StatsCards/StatsCards";
 import PlanCards from "./PlanCards";
 import ReusablePagination from "../../../Components/Pagination/ReusablePagination";
 import PlanModal from "./modal/PlanModal";
+import {
+  fetchSubscriptionPlans,
+  fetchSubscriptionPlanSummary,
+} from "../../../services/superAdminService";
 function PlanAndPricing() {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 20;
 const [view, setView] = useState("table");
-const [plans, setPlans] = useState(planData);
+const [plans, setPlans] = useState([]);
+const [summary, setSummary] = useState({});
+const [loading, setLoading] = useState(false);
 
   const paginatedData = useMemo(() => {
   const start = (currentPage - 1) * rowsPerPage;
@@ -41,7 +51,35 @@ const handleEditPlan = (plan) => {
   setSelectedPlan(plan);
   setIsModalOpen(true);
 };
+useEffect(() => {
+  loadPlans();
+}, []);
 
+const loadPlans = async () => {
+  try {
+    setLoading(true);
+
+    const [planRes, summaryRes] = await Promise.all([
+      fetchSubscriptionPlans(),
+      fetchSubscriptionPlanSummary(),
+    ]);
+
+    setPlans(mapPlanData(planRes));
+
+    setSummary(summaryRes);
+
+    // Update stats cards
+    // Update stats cards
+planCards[0].count = summaryRes.total_plans;
+planCards[1].count = "0.00/-"; // Monthly Revenue (for now)
+planCards[2].count = `${Number(summaryRes.lowest_plan_amount).toFixed(2)}/-`;
+planCards[3].count = `${Number(summaryRes.highest_plan_amount).toFixed(2)}/-`;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 const handleSavePlan = (formData) => {
   if (mode === "add") {
     const newPlan = {
@@ -102,7 +140,7 @@ onButtonClick={handleAddPlan}
       data={paginatedData}
       currentPage={currentPage}
       setCurrentPage={setCurrentPage}
-      totalPages={Math.ceil(planData.length / rowsPerPage)}
+      totalPages={totalPages}
     />
   ) : (
 <PlanCards

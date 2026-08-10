@@ -48,6 +48,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "working_hours_per_day",
             "half_day_hours",
             "is_active",
+            "plan",
         ]
 
         read_only_fields = [
@@ -63,6 +64,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "modules": {"required": True},
             "amount_per_employee": {"required": False},
             "initial_payment": {"required": False},
+            "plan": {"required": False},
         }
     def validate(self, attrs):
 
@@ -409,6 +411,9 @@ class SubscriptionFeatureSerializer(serializers.ModelSerializer):
 
         return value
     
+from rest_framework import serializers
+from .models import SubscriptionPlan, SubscriptionFeature
+
 
 class SubscriptionPlanSerializer(serializers.ModelSerializer):
 
@@ -426,6 +431,9 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
         source="features"
     )
 
+    feature_count = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+
     class Meta:
         model = SubscriptionPlan
         fields = [
@@ -434,13 +442,22 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
             "plan_type",
             "description",
             "base_price",
+            "employee_limit",
             "extra_employee_price",
             "is_active",
+            "status",
+            "feature_count",
             "features",
             "feature_ids",
             "created_at",
             "updated_at",
         ]
+
+    def get_feature_count(self, obj):
+        return obj.features.count()
+
+    def get_status(self, obj):
+        return "Active" if obj.is_active else "Inactive"
 
     def validate_name(self, value):
         queryset = SubscriptionPlan.objects.filter(
@@ -462,7 +479,6 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Base price must be greater than 0."
             )
-
         return value
 
     def validate_extra_employee_price(self, value):
@@ -470,5 +486,4 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Extra employee price cannot be negative."
             )
-
         return value
