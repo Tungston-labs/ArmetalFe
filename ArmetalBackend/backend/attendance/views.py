@@ -757,7 +757,7 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
 
         for emp in self.get_queryset():
 
-            # ---------- FUTURE MONTH ----------
+          
             if start_date > today.replace(day=1):
                 results.append({
                     "employee_id": emp.employee_id,
