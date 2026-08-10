@@ -182,17 +182,41 @@ class CompanySubscriptionListCreateView(APIView):
             "subscriptions": serializer.data
         })
 
+from django.utils.timezone import now
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.generics import UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+
 class MarkSubscriptionPaidView(UpdateAPIView):
     queryset = CompanySubscription.objects.all()
     serializer_class = CompanySubscriptionSerializer
-    permission_classes = [IsAuthenticated,IsSuperAdmin]
+    permission_classes = [IsAuthenticated, IsSuperAdmin]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.status = 'paid'
-        instance.paid_date = now().date()
+
+        new_status = request.data.get("status")
+
+        if new_status not in ["paid", "unpaid"]:
+            return Response(
+                {
+                    "detail": "Status must be either 'paid' or 'unpaid'."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        instance.status = new_status
+
+        if new_status == "paid":
+            instance.paid_date = now().date()
+        else:
+            instance.paid_date = None
+
         instance.save()
+
         serializer = self.get_serializer(instance)
+
         return Response(serializer.data)
     
 

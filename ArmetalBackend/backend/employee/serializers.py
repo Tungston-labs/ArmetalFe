@@ -723,3 +723,26 @@ class SalaryIncrementSerializer(serializers.ModelSerializer):
         validated_data["total_salary"] = total_salary
 
         return super().create(validated_data)
+    
+
+
+
+class DeletedEmployeeSerializer(serializers.ModelSerializer):
+    department_name = serializers.CharField(
+        source="department.name",
+        read_only=True
+    )
+    exit_date = serializers.DateTimeField(
+        source="deleted_at",
+        read_only=True
+    )
+
+    class Meta:
+        model = Employee_db
+        fields = [
+            "name",
+            "employee_id",
+            "email",
+            "department_name",
+            "exit_date",
+        ]

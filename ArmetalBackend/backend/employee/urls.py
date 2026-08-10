@@ -44,7 +44,14 @@ urlpatterns = [
         "salary-increment/<int:employee_id>/",
         views.SalaryIncrementListCreateView.as_view(),
         name="salary-increment",
+      
     ),
+    path(
+        "employees/deleted/",
+        views.DeletedEmployeeListView.as_view(),
+        name="deleted-employees"
+    ),
+
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
