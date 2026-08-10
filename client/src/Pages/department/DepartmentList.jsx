@@ -1,15 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getDepartments,
-  getEmployeesByDepartment,
-  updateDepartmentById,
-  createNewDepartment,
-} from "../../Redux/departmentSlice.js";
-import { deleteEmployeeById } from "../../Redux/employeeSlice.js";
-import { useNavigate } from "react-router-dom";
-import EmployeeIcon from "../../assets/employeeicon.svg";
-import Swal from "sweetalert2";
+import { getDepartments, createNewDepartment } from "../../Redux/departmentSlice.js";
+
 
 import {
   PageContainer,
@@ -19,10 +11,6 @@ import {
   DepartmentName,
   EmployeeCount,
   DropdownWrapper,
-  DropdownHeader,
-  EmployeeCell,
-  EmployeeRow,
-  NoRecordMessage,
   LeftWrapper,
   DepartmentIcon,
   PaginationWrapper,
@@ -39,44 +27,46 @@ import {
   TopRow,
   InputsWrapper,
   RightActions,
+  DetailsBar,
+  EditButton,
 } from "../department/DepartmentDetails.Styles";
-import Loader from "../../Components/Loader/Loader.jsx";
-import { ClipLoader } from "react-spinners";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle.jsx";
-import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
-import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
-import { fetchDepartmentById } from "../../services/departmentServices"; 
-import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
+import { FaEdit, FaSave } from "react-icons/fa";
+import { GoArrowUpRight } from "react-icons/go";
+import { FaAnglesRight, FaAnglesLeft } from "react-icons/fa6";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
 import AddDepartment from "./AddDepartment.jsx";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader.jsx";
+import ReusableTable from "../../Components/ReusableTable/ReusableTable.jsx";
+import { useDepartmentDetails, PAGE_SIZE } from "./useDepartmentDetails.js";
+
+const paginate = (items, page, size) => {
+  const start = (page - 1) * size;
+  return items.slice(start, start + size);
+};
+
 const DepartmentList = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { list: departments = [] } = useSelector((state) => state.departments);
 
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newDeptForm, setNewDeptForm] = useState({
-    name: "",
-    department_code: "",
-  });
-  const [newDeptError, setNewDeptError] = useState("");
-  const { list: departments = [], loading } = useSelector(
-    (state) => state.departments,
-  );
   const [search, setSearch] = useState("");
-  const [selectedDept, setSelectedDept] = useState(null);
-  const [deptEmployees, setDeptEmployees] = useState({}); 
-  const [loadingDept, setLoadingDept] = useState(false);
-  const [savingDept, setSavingDept] = useState(false);
-  const [pageByDept, setPageByDept] = useState({}); 
-  const pageSize = 10;
-  const [deptDetails, setDeptDetails] = useState({});
-  const [formDatas, setFormDatas] = useState({}); 
-  const [editingDeptId, setEditingDeptId] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newDeptForm, setNewDeptForm] = useState({ name: "", department_code: "" });
+  const [newDeptError, setNewDeptError] = useState("");
+  const [savingNewDept, setSavingNewDept] = useState(false);
+
+  const {
+    selectedDeptId,
+    loadingDept,
+    getEntry,
+    toggleDepartment,
+    toggleEdit,
+    updateFormField,
+    setPage,
+    saveDepartment,
+  } = useDepartmentDetails();
 
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" })).then((res) => {
-    });
+    dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
 
   const filteredDepartments = useMemo(() => {
@@ -89,175 +79,9 @@ const DepartmentList = () => {
     );
   }, [departments, search]);
 
-  const paginate = (items, page, size) => {
-    const start = (page - 1) * size;
-    return items.slice(start, start + size);
-  };
-
-  const handleToggle = async (deptId) => {
-    if (selectedDept === deptId) {
-      setSelectedDept(null);
-      setEditingDeptId(null);
-      return;
-    }
-
-    setSelectedDept(deptId);
-    setEditingDeptId(null);
-    setPageByDept((prev) => ({ ...prev, [deptId]: 1 }));
-
-    if (deptEmployees[deptId] && deptDetails[deptId]) return;
-
-    setLoadingDept(true);
-    try {
-      const employeesRes = await dispatch(
-        getEmployeesByDepartment(deptId),
-      ).unwrap();
-      setDeptEmployees((prev) => ({ ...prev, [deptId]: employeesRes || [] }));
-      try {
-        const deptData = await fetchDepartmentById(deptId);
-        setDeptDetails((prev) => ({ ...prev, [deptId]: deptData }));
-        setFormDatas((prev) => ({
-          ...prev,
-          [deptId]: {
-            name: deptData.name || "",
-            department_code: deptData.department_code || "",
-            department_head_id: deptData.department_head?.id || "",
-          },
-        }));
-      } catch (err) {
-        const fallback = departments.find((d) => d.id === deptId) || {};
-        setDeptDetails((prev) => ({ ...prev, [deptId]: fallback }));
-        setFormDatas((prev) => ({
-          ...prev,
-          [deptId]: {
-            name: fallback.name || "",
-            department_code: fallback.department_code || "",
-            department_head_id: fallback.department_head?.id || "",
-          },
-        }));
-      }
-    } catch (err) {
-      Swal.fire("Error", "Failed to load department data.", "error");
-    } finally {
-      setLoadingDept(false);
-    }
-  };
-const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: `Employee "${employeeName}" will be permanently deleted.`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete!",
-  }).then(async (result) => {
-    if (!result.isConfirmed) return;
-    try {
-      await dispatch(deleteEmployeeById(employeeId)).unwrap();
-
-      // ✅ Try to fetch updated employees, handle 404 if last employee deleted
-      try {
-        const updated = await dispatch(
-          getEmployeesByDepartment(deptId),
-        ).unwrap();
-        setDeptEmployees((prev) => ({ ...prev, [deptId]: updated || [] }));
-
-        Swal.fire(
-          "Deleted!",
-          `Employee "${employeeName}" has been deleted.`,
-          "success",
-        );
-      } catch (fetchErr) {
-        // ✅ Last employee deleted — department now empty, close and refresh
-        setDeptEmployees((prev) => ({ ...prev, [deptId]: [] }));
-        setSelectedDept(null); // close the card
-
-        // ✅ Refresh department list to remove empty department from UI
-        dispatch(getDepartments({ page: 1, search: "" }));
-
-        Swal.fire(
-          "Deleted!",
-          `Employee "${employeeName}" has been deleted. The department has been removed as it has no employees.`,
-          "success",
-        );
-      }
-    } catch (err) {
-      Swal.fire("Error", "Failed to delete employee.", "error");
-    }
-  });
-};
-
-  const handleFormChange = (deptId, e) => {
-    const { name, value } = e.target;
-    setFormDatas((prev) => ({
-      ...prev,
-      [deptId]: {
-        ...(prev[deptId] || {}),
-        [name]: value,
-      },
-    }));
-  };
-  const toggleEdit = (deptId) => {
-    if (editingDeptId === deptId) {
-      setEditingDeptId(null);
-    } else {
-      setEditingDeptId(deptId);
-    }
-  };
-  const handleUpdate = async (deptId) => {
-    const form = formDatas[deptId] || {};
-    const payload = {
-      name: form.name,
-      department_code: form.department_code,
-      department_head_id: form.department_head_id
-        ? parseInt(form.department_head_id, 10)
-        : null,
-    };
-
-    if (!payload.department_head_id) {
-      Swal.fire({
-        icon: "warning",
-        title: "Missing Department Head",
-        text: "Please select a department head before saving.",
-        confirmButtonColor: "#3352BA",
-      });
-      return;
-    }
-
-    try {
-      await dispatch(
-        updateDepartmentById({ id: deptId, data: payload }),
-      ).unwrap();
-      const updatedDept = await fetchDepartmentById(deptId);
-      setDeptDetails((prev) => ({ ...prev, [deptId]: updatedDept }));
-      setFormDatas((prev) => ({
-        ...prev,
-        [deptId]: {
-          name: updatedDept.name || "",
-          department_code: updatedDept.department_code || "",
-          department_head_id: updatedDept.department_head?.id || "",
-        },
-      }));
-      dispatch(getDepartments({ page: 1, search: "" }));
-
-      Swal.fire("Updated!", "Department updated successfully.", "success");
-      setEditingDeptId(null);
-    } catch (err) {
-      Swal.fire(
-        "Error",
-        "Something went wrong while updating department.",
-        "error",
-      );
-    }
-  };
-
   const handleNewDeptChange = (e) => {
     const { name, value } = e.target;
-    setNewDeptForm((prev) => ({
-      ...prev,
-      [name]: value.toUpperCase(), 
-    }));
+    setNewDeptForm((prev) => ({ ...prev, [name]: value.toUpperCase() }));
   };
 
   const handleCreateDepartment = async () => {
@@ -275,394 +99,250 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
     }
 
     setNewDeptError("");
-    setSavingDept(true);
+    setSavingNewDept(true);
 
     try {
-      const created = await dispatch(createNewDepartment(newDeptForm)).unwrap();
+      await dispatch(createNewDepartment(newDeptForm)).unwrap();
       setShowAddModal(false);
       setNewDeptForm({ name: "", department_code: "" });
-      setNewDeptError("");
       dispatch(getDepartments({ page: 1, search: "" }));
     } catch (err) {
-      const message =
+      setNewDeptError(
         err?.payload?.detail ||
-        err?.payload?.message ||
-        err?.message ||
-        "Something went wrong. Please try again later.";
-      setNewDeptError(message);
+          err?.payload?.message ||
+          err?.message ||
+          "Something went wrong. Please try again later.",
+      );
     } finally {
-      setSavingDept(false);
+      setSavingNewDept(false);
     }
   };
 
+  const openAddModal = () => {
+    setShowAddModal(true);
+    setNewDeptForm({ name: "", department_code: "" });
+    setNewDeptError("");
+  };
+
   return (
-    <>
-      <PageContainer>
-         <ReusableHeader
-                    title="Department"
-                    breadcrumbs={["Dashboard", "Department"]}
-                    buttonText="ADD NEW EMPLOYEE"
-                    onButtonClick={() => console.log("Add Employee")}
-                />
+    <PageContainer>
+      <ReusableHeader
+        title="Department"
+        breadcrumbs={["Dashboard", "Department"]}
+        buttonText="+ ADD NEW DEPARTMENT"
+        onButtonClick={openAddModal}
+      />
 
-     
-        
-     
-          <DepartmentGrid>
-            {filteredDepartments?.length > 0 ? (
-              filteredDepartments.map((dept) => {
-                const isOpen = selectedDept === dept.id;
-                const employees = deptEmployees[dept.id] || [];
-                const sortedEmployees = (employees || []).slice().sort((a, b) =>
-                  (a?.name || "").localeCompare(b?.name || "", undefined, {
-                    sensitivity: "base",
-                  }),
-                );
+      <DepartmentGrid>
+        {filteredDepartments.length > 0 ? (
+          filteredDepartments.map((dept) => {
+            const isOpen = selectedDeptId === dept.id;
+            const entry = getEntry(dept.id);
+            const { employees, details, form, page, isEditing } = entry;
 
-                const currentPage = pageByDept[dept.id] || 1;
-                const totalPages = Math.max(
-                  1,
-                  Math.ceil(sortedEmployees.length / pageSize),
-                );
-                const paginatedEmployees = paginate(
-                  sortedEmployees,
-                  currentPage,
-                  pageSize,
-                );
-                const startIndex = (currentPage - 1) * pageSize;
-                const hasNextPage = currentPage < totalPages;
+            const sortedEmployees = [...employees].sort((a, b) =>
+              (a?.name || "").localeCompare(b?.name || "", undefined, {
+                sensitivity: "base",
+              }),
+            );
 
-                const details = deptDetails[dept.id] || {};
-                const form = formDatas[dept.id] || {};
+            const totalPages = Math.max(1, Math.ceil(sortedEmployees.length / PAGE_SIZE));
+            const currentPage = page || 1;
+            const paginatedEmployees = paginate(sortedEmployees, currentPage, PAGE_SIZE);
+            const startIndex = (currentPage - 1) * PAGE_SIZE;
 
-                return (
-                  <DepartmentCard key={dept.id}>
-                    <DepartmentHeader onClick={() => handleToggle(dept.id)}>
-                      <LeftWrapper>
-                        <DepartmentIcon>{dept.name?.charAt(0)}</DepartmentIcon>
-                        <DepartmentName>{dept.name}</DepartmentName>
-                      </LeftWrapper>
+            const employeeColumns = [
+              {
+                header: "Sl No",
+                accessor: "slNo",
+                sortable: false,
+                render: (_row, index) => startIndex + index + 1,
+              },
+              {
+            header: "Employee name",
+            accessor: "name",
+            render: (row) => (
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <span style={{ fontWeight: 600 }}>
+                        {row.name ? row.name.charAt(0).toUpperCase() + row.name.slice(1) : ""}
+                    </span>
+                    <span style={{ fontSize: 12, color: "#888" }}>{row.email}</span>
+                </div>
+            ),
+        },
+              { header: "Employee ID", accessor: "employee_code" },
+              { header: "Job Position", accessor: "designation" },
+            ];
 
-                      <EmployeeCount>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
-                        >
-                          <div>{dept.employee_count ?? 0}</div>
-                          <GoArrowUpRight
-                            size={15}
-                            style={{ strokeWidth: 2 }}
-                          />
-                        </div>
-                      </EmployeeCount>
-                    </DepartmentHeader>
+            return (
+              <DepartmentCard key={dept.id}>
+                <DepartmentHeader onClick={() => toggleDepartment(dept.id, departments)}>
+                  <LeftWrapper>
+                    <DepartmentIcon>{dept.name?.charAt(0)}</DepartmentIcon>
+                    <DepartmentName>{dept.name}</DepartmentName>
+                  </LeftWrapper>
 
-                    {isOpen && (
-                      <>
-                        <div style={{ padding: "0.75rem", background: "#fff" }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                              marginBottom: 8,
-                            }}
-                          >
-                            <div style={{ fontWeight: 700 }}></div>
+                  <EmployeeCount>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div>{dept.employee_count ?? 0}</div>
+                      <GoArrowUpRight size={15} style={{ strokeWidth: 2 }} />
+                    </div>
+                  </EmployeeCount>
+                </DepartmentHeader>
 
-                            <div style={{ display: "flex", gap: 8 }}>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (editingDeptId === dept.id) {
-                                    handleUpdate(dept.id);
-                                  } else {
-                                    toggleEdit(dept.id);
-                                  }
-                                }}
+                {isOpen && (
+                  <>
+                    <DetailsBar>
+                      <EditButton
+                        $active={isEditing}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          isEditing ? saveDepartment(dept.id) : toggleEdit(dept.id);
+                        }}
+                        aria-label={isEditing ? "Save department" : "Edit department"}
+                      >
+                        {isEditing ? <FaSave /> : <FaEdit />}
+                        {isEditing ? "Save" : "Edit"}
+                      </EditButton>
+                    </DetailsBar>
+
+                    <FormSection>
+                      <TopRow>
+                        <InputsWrapper>
+                          <InputGroup>
+                            <Label>Department name</Label>
+                            <Input
+                              name="name"
+                              value={form.name ?? ""}
+                              autoComplete="off"
+                              onChange={(e) => updateFormField(dept.id, e)}
+                              disabled={!isEditing}
+                              style={{
+                                cursor: isEditing ? "text" : "default",
+                                textTransform: "capitalize",
+                              }}
+                            />
+                          </InputGroup>
+
+                          <InputGroup>
+                            <Label>Department Code Name</Label>
+                            <Input
+                              name="department_code"
+                              value={form.department_code ?? ""}
+                              autoComplete="off"
+                              onChange={(e) => updateFormField(dept.id, e)}
+                              disabled={!isEditing}
+                              style={{ cursor: isEditing ? "text" : "default" }}
+                            />
+                          </InputGroup>
+
+                          <InputGroup>
+                            <Label>Department head</Label>
+                            {isEditing ? (
+                              <select
+                                name="department_head_id"
+                                value={form.department_head_id ?? ""}
+                                onChange={(e) => updateFormField(dept.id, e)}
                                 style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 8,
-                                  padding: "6px 10px",
-                                  borderRadius: 6,
-                                  border: "1px solid #d1d5db",
-                                  background:
-                                    editingDeptId === dept.id
-                                      ? "#3352BA"
-                                      : "transparent",
-                                  color:
-                                    editingDeptId === dept.id
-                                      ? "#fff"
-                                      : "#111827",
+                                  padding: "10px",
+                                  borderRadius: "8px",
+                                  border: "1px solid #ccc",
+                                  fontSize: "16px",
                                   cursor: "pointer",
                                 }}
-                                aria-label={
-                                  editingDeptId === dept.id
-                                    ? "Save department"
-                                    : "Edit department"
-                                }
                               >
-                                {editingDeptId === dept.id ? (
-                                  <FaSave />
-                                ) : (
-                                  <FaEdit />
-                                )}
-                                {editingDeptId === dept.id ? "Save" : "Edit"}
-                              </button>
-                            </div>
-                          </div>
+                                <option value="">-- Select Department Head --</option>
+                                {employees.map((emp) => (
+                                  <option key={emp.id} value={emp.id}>
+                                    {emp.name}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              <Input
+                                name="department_head"
+                                value={details.department_head?.name || "Not Assigned"}
+                                disabled
+                              />
+                            )}
+                          </InputGroup>
+                        </InputsWrapper>
 
-                          <FormSection>
-                            <TopRow>
-                              <InputsWrapper>
-                                <InputGroup>
-                                  <Label>Department name</Label>
-                                  <Input
-                                    name="name"
-                                    value={form.name ?? ""}
-                                    autoComplete='off'
-                                    onChange={(e) =>
-                                      handleFormChange(dept.id, e)
-                                    }
-                                    disabled={editingDeptId !== dept.id}
-                                    style={{
-                                      cursor:
-                                        editingDeptId === dept.id
-                                          ? "text"
-                                          : "default",
-                                             textTransform: "capitalize",
-                                    }}
-                                  />
-                                </InputGroup>
-
-                                <InputGroup>
-                                  <Label>Department Code Name</Label>
-                                  <Input
-                                    name="department_code"
-                                    value={form.department_code ?? ""}
-                                    autoComplete='off'
-                                    onChange={(e) =>
-                                      handleFormChange(dept.id, e)
-                                    }
-                                    disabled={editingDeptId !== dept.id}
-                                    style={{
-                                      cursor:
-                                        editingDeptId === dept.id
-                                          ? "text"
-                                          : "default",
-                                    }}
-                                  />
-                                </InputGroup>
-
-                                <InputGroup>
-                                  <Label>Department head</Label>
-                                  {editingDeptId === dept.id ? (
-                                    <select
-                                      name="department_head_id"
-                                      value={form.department_head_id ?? ""}
-                                      onChange={(e) =>
-                                        handleFormChange(dept.id, e)
-                                      }
-                                      style={{
-                                        padding: "10px",
-                                        borderRadius: "8px",
-                                        border: "1px solid #ccc",
-                                        fontSize: "16px",
-                                        cursor: "pointer",
-                                      }}
-                                    >
-                                      <option value="">
-                                        -- Select Department Head --
-                                      </option>
-                                      {(deptEmployees[dept.id] || []).map(
-                                        (emp) => (
-                                          <option key={emp.id} value={emp.id}>
-                                            {emp.name}
-                                          </option>
-                                        ),
-                                      )}
-                                    </select>
-                                  ) : (
-                                    <Input
-                                      name="department_head"
-                                      value={
-                                        details.department_head?.name ||
-                                        "Not Assigned"
-                                      }
-                                      disabled
-                                    />
-                                  )}
-                                </InputGroup>
-                              </InputsWrapper>
-
-                              <RightActions>
-                                {editingDeptId === dept.id && (
-                                  <ButtonGroups>
-                                    <CancelButton
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setEditingDeptId(null);
-                                      }}
-                                    >
-                                      Cancel
-                                    </CancelButton>
-                                  </ButtonGroups>
-                                )}
-                              </RightActions>
-                            </TopRow>
-                          </FormSection>
-                        </div>
-
-                        <DropdownWrapper>
-                          {loadingDept ? (
-                            <div
-                              style={{ textAlign: "center", padding: "1rem" }}
-                            >
-                              <ClipLoader size={24} color="#003366" />
-                            </div>
-                          ) : paginatedEmployees.length > 0 ? (
-                            <>
-                              <DropdownHeader>
-                                <EmployeeCell style={{ fontWeight: 700 }}>
-                                  Sl No
-                                </EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>
-                                  Name
-                                </EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>
-                                  Employee ID
-                                </EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>
-                                  Email
-                                </EmployeeCell>
-                                <EmployeeCell style={{ fontWeight: 700 }}>
-                                  Job Position
-                                </EmployeeCell>
-                                <EmployeeCell
-                                  style={{
-                                    fontWeight: 700,
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Delete
-                                </EmployeeCell>
-                              </DropdownHeader>
-
-                              {paginatedEmployees.map((emp, idx) => (
-                                <EmployeeRow
-                                  key={
-                                    emp.id ??
-                                    emp.employee_id ??
-                                    `${dept.id}-${startIndex + idx}`
-                                  }
-                                  // onClick={() => navigate(`/ViewBasic/${emp.id}`, { state: { from: "department" } })}
-                                  // style={{ cursor: "pointer" }}
-                                >
-                                  <EmployeeCell>
-                                    {startIndex + idx + 1}
-                                  </EmployeeCell>
-
-                                  <EmployeeCell>{emp.name}</EmployeeCell>
-
-                                  <EmployeeCell>{emp.employee_id}</EmployeeCell>
-                                  <EmployeeCell>{emp.email}</EmployeeCell>
-                                  <EmployeeCell>{emp.designation}</EmployeeCell>
-
-                                  <EmployeeCell style={{ textAlign: "center" }}>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDeleteEmployee(
-                                          emp.id,
-                                          emp.name,
-                                          dept.id,
-                                        );
-                                      }}
-                                      style={{
-                                        border: "none",
-                                        background: "transparent",
-                                        cursor: "pointer",
-                                        color: "red",
-                                      }}
-                                      aria-label={`Delete ${emp.name}`}
-                                    >
-                                      <FaTrash />
-                                    </button>
-                                  </EmployeeCell>
-                                </EmployeeRow>
-                              ))}
-                            </>
-                          ) : (
-                            <NoRecordMessage>
-                              No employees found.
-                            </NoRecordMessage>
+                        <RightActions>
+                          {isEditing && (
+                            <ButtonGroups>
+                              <CancelButton
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleEdit(dept.id);
+                                }}
+                              >
+                                Cancel
+                              </CancelButton>
+                            </ButtonGroups>
                           )}
-                        </DropdownWrapper>
+                        </RightActions>
+                      </TopRow>
+                    </FormSection>
 
-                  
-                        {sortedEmployees.length > pageSize && (
-                          <PaginationWrapper
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <PageButton
-                              disabled={currentPage === 1}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setPageByDept((prev) => ({
-                                  ...prev,
-                                  [dept.id]: Math.max(1, currentPage - 1),
-                                }));
-                              }}
-                            >
-                         <FaAnglesLeft/>
-                            </PageButton>
+                    <DropdownWrapper onClick={(e) => e.stopPropagation()}>
+                      <ReusableTable
+                        columns={employeeColumns}
+                        data={paginatedEmployees}
+                        loading={loadingDept}
+                      />
+                    </DropdownWrapper>
 
-                            <PageInfo>
-                              Page {currentPage} / {totalPages}
-                            </PageInfo>
+                    {sortedEmployees.length > PAGE_SIZE && (
+                      <PaginationWrapper onClick={(e) => e.stopPropagation()}>
+                        <PageButton
+                          disabled={currentPage === 1}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPage(dept.id, Math.max(1, currentPage - 1));
+                          }}
+                        >
+                          <FaAnglesLeft />
+                        </PageButton>
 
-                            <PageButton
-                              disabled={currentPage === totalPages}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setPageByDept((prev) => ({
-                                  ...prev,
-                                  [dept.id]: Math.min(
-                                    totalPages,
-                                    currentPage + 1,
-                                  ),
-                                }));
-                              }}
-                            >
-                          <FaAnglesRight/>
-                            </PageButton>
-                          </PaginationWrapper>
-                        )}
-                      </>
+                        <PageInfo>
+                          Page {currentPage} / {totalPages}
+                        </PageInfo>
+
+                        <PageButton
+                          disabled={currentPage === totalPages}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPage(dept.id, Math.min(totalPages, currentPage + 1));
+                          }}
+                        >
+                          <FaAnglesRight />
+                        </PageButton>
+                      </PaginationWrapper>
                     )}
-                  </DepartmentCard>
-                );
-              })
-            ) : (
-           <div style={{ 
-    width: "100%", 
-    display: "flex", 
-    justifyContent: "center" 
-  }}>
-    <NoEmployeeFound searchTerm={search} label="No Department Found" />
-  </div>
-            )}
-          </DepartmentGrid>
-      
-     {showAddModal && (
-  <AddDepartment onClose={() => setShowAddModal(false)} />
-)}
-      </PageContainer>
-    </>
+                  </>
+                )}
+              </DepartmentCard>
+            );
+          })
+        ) : (
+          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+            <NoEmployeeFound searchTerm={search} label="No Department Found" />
+          </div>
+        )}
+      </DepartmentGrid>
+
+      {showAddModal && (
+        <AddDepartment
+          onClose={() => setShowAddModal(false)}
+          form={newDeptForm}
+          error={newDeptError}
+          loading={savingNewDept}
+          onChange={handleNewDeptChange}
+          onSubmit={handleCreateDepartment}
+        />
+      )}
+    </PageContainer>
   );
 };
 

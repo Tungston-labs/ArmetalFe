@@ -28,7 +28,6 @@ export const ModalContent = styled.div`
   max-width: 700px;
   height: 100%;
   overflow-y: auto;
-  padding: 1.5rem;
   box-shadow: -2px 0 6px rgba(0, 0, 0, 0.2);
 
   animation: ${slideIn} 0.3s ease-out; 

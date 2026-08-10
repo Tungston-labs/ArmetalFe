@@ -1,6 +1,9 @@
 import React from "react";
-import { ActionButtons, ApproveButton, RejectButton } from "./LeaveRequest.Styles";
-
+import { ActionButtons, ApproveButton, RejectButton } from "./leaveColumns.style";
+import { FaRegMessage } from "react-icons/fa6";
+import { MdOutlinePendingActions } from "react-icons/md";
+import { FaCalendarCheck } from "react-icons/fa";
+import { MdFreeCancellation } from "react-icons/md";
 export const getLeaveColumns = ({
   page,
   formatDate,
@@ -141,4 +144,42 @@ export const getLeaveColumns = ({
       </div>
     ),
   },
+];
+
+export const getPayrollCards = ({
+  totalPayroll = 0,
+  totalEmployees = 0,
+  pendingVerification = 0,
+  incentiveAmount = 0,
+  deductionAmount = 0,
+} = {}) => [
+  {
+    title: "All Leave Request",
+    count: totalPayroll,
+    icon: <FaRegMessage />,
+    iconColor: "#157baa",
+    backgroundColor: "#e3f5f7",
+  },
+  {
+    title: "Pending Request",
+    count: totalEmployees,
+    icon: <MdOutlinePendingActions />,
+    iconColor: "#ffa600",
+    backgroundColor: "#fdf2e4",
+  },
+  {
+    title: "Approved Request",
+    count: pendingVerification,
+    icon: <FaCalendarCheck />,
+    iconColor: "#309e48",
+    backgroundColor: "#caf7dd",
+  },
+  {
+    title: "Rejected Request",
+    count: incentiveAmount,
+    icon: <MdFreeCancellation />,
+    iconColor: "#aa1a15",
+    backgroundColor: "#f0d0d0",
+  },
+ 
 ];

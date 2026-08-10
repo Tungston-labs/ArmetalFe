@@ -8,6 +8,7 @@ import Loader from '../../Components/Loader/Loader';
 import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
 import EmployeeHeader from "../../Components/header/EmployeeHeader";
 import AttendanceDetailsContainer from "../../Components/attendance/AttendanceDetailsContainer";
+import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 
 const TimesheetPage = () => {
   const { id } = useParams();
@@ -39,15 +40,11 @@ const TimesheetPage = () => {
 
   return (
     <Container>
-      <EmployeeTitle
-        iconSrc={EmployeeIcon}
-        showAddButton={false}
-        showDropdown={false}
-        showSearch={false}
-        showTabs={false}
-        showReportButton={false}
-
-      />
+ <ReusableHeader
+  title="Employee Attendance"
+   breadcrumbs={["Dashboard", "Employees","Employee Attendance"]}
+  showBack={true}
+/>
 
       <EmployeeHeader employee={employee} editable={false} />
 

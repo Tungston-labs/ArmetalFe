@@ -154,8 +154,8 @@ const EmployeeList = () => {
                 <ReusableHeader
                     title="Employees"
                     breadcrumbs={["Dashboard", "Employees"]}
-                    buttonText="ADD NEW EMPLOYEE"
-                    onButtonClick={() => console.log("Add Employee")}
+                    buttonText="+ ADD NEW EMPLOYEE"
+                   onButtonClick={() => navigate("/basic-details")}
                 />
                 <ReusableFilter
                     search={search}

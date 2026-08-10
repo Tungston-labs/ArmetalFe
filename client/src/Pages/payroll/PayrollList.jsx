@@ -62,8 +62,6 @@ const PayrollList = () => {
       <ReusableHeader
         title="Payroll Overview"
         breadcrumbs={["Dashboard", "Payroll"]}
-        buttonText="ADD NEW EMPLOYEE"
-        onButtonClick={() => console.log("Add Employee")}
       />
 
       <StatsCards cards={payrollCards} />

@@ -3,7 +3,7 @@
 ###############################################################
 
 @baseUrl = https://api.rekory.com/api
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg1ODY1OTE4LCJpYXQiOjE3ODU4MzcxMTgsImp0aSI6ImRjMzZmMDY0MDEzOTRlZmJhYzAxNzhmYzcwY2Y4ODJlIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.xj701X6JSPFiZ_CUTHS1g0wCi0is_dwUJzn4iKjRWck
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2MDI4ODkwLCJpYXQiOjE3ODYwMDAwOTAsImp0aSI6IjJhNDY2MjA1ZWY5OTQ0NzRhZmQwMmY5ZTgxYmZmN2Q1IiwidXNlcl9pZCI6MSwiaXNfc3VwZXJhZG1pbiI6dHJ1ZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.cTRccY_INjVpAdTyimYlRHzCJfc0k3hL_cy6zhDNB1g
 
 ###############################################################
 ### Create Feature
@@ -14,7 +14,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "name": "trailing",
+    "name": "testing",
     "description": "free one month trial",
     "is_active": true
 }

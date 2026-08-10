@@ -201,9 +201,16 @@ export const EmployeeItem = styled.li`
     border-bottom: none;
   }
 `;
+
+/**
+ * $columns controls the column count for both DropdownHeader and EmployeeRow.
+ * Always pass the SAME $columns value to both, based on however many
+ * EmployeeCell entries you actually render, so header and body line up
+ * whether a page shows 5 columns or 7.
+ */
 export const DropdownHeader = styled.div`
   display: grid;
-grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(${({ $columns }) => $columns || 7}, 1fr);
   background: #F78926;
   color: white;
   font-weight: 600;
@@ -216,28 +223,27 @@ grid-template-columns: repeat(7, 1fr);
 
   /* Responsive adjustments */
   @media (min-width: 1920px) {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(${({ $columns }) => $columns || 7}, minmax(120px, 1fr));
     font-size: 1rem;
     padding: 1rem 1.5rem;
   }
 
   @media (min-width: 2560px) {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(${({ $columns }) => $columns || 7}, minmax(150px, 1fr));
     font-size: 1.3rem;
     padding: 1.2rem 2rem;
   }
 
   @media (min-width: 3840px) {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(${({ $columns }) => $columns || 7}, minmax(200px, 1fr));
     font-size: 1.6rem;
     padding: 1.5rem 2.5rem;
   }
 `;
 
-
 export const EmployeeRow = styled.li`
   display: grid;
-grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(${({ $columns }) => $columns || 7}, 1fr);
 
   padding: 0.6rem 1rem;
   border-bottom: 1px solid #eee;
@@ -260,19 +266,19 @@ grid-template-columns: repeat(7, 1fr);
     font-size: 0.9rem;
   }
   @media (min-width: 1920px) {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(${({ $columns }) => $columns || 7}, minmax(120px, 1fr));
     padding: 0.8rem 1.2rem;
     /* font-size: 1.1rem; */
   }
 
   @media (min-width: 2560px) {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(${({ $columns }) => $columns || 7}, minmax(150px, 1fr));
     padding: 1rem 1.5rem;
     font-size: 1.3rem;
   }
 
   @media (min-width: 3840px) {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(${({ $columns }) => $columns || 7}, minmax(200px, 1fr));
     padding: 1.2rem 2rem;
     font-size: 1.5rem;
   }

@@ -3,11 +3,11 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 export const employeeColumns = [
   {
     header: "Sl No",
-    accessor: "slno",
+    accessor: "id",
   },
   {
     header: "Employee Name",
-    accessor: "employee",
+    accessor: "name",
   },
   {
     header: "Username",

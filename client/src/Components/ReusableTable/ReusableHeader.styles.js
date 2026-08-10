@@ -81,3 +81,31 @@ export const ActionButton = styled.button`
     width: 100%;
   }
 `;
+export const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const BackButton = styled.button`
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #3352ba;
+  font-size: 20px;
+
+  transition: 0.3s;
+
+  &:hover {
+    background: #3352ba;
+    color: #fff;
+  }
+`;

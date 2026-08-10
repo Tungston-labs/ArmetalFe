@@ -27,7 +27,7 @@ const getSidebarData = (user) => {
         path: "/company",
       },
       {
-        title: "FINANCE",
+        title: "BILLING",
         icon: <FaReceipt />,
         path: "/finance",
       },
@@ -59,9 +59,9 @@ const getSidebarData = (user) => {
           { title: "EMPLOYEE LIST", path: "/employee" },
           { title: "LEAVE REQUEST", path: "/employee-leaveRequestList" },
           { title: "ATTENDANCE", path: "/employee-attendance" },
-          { title: "ARCHIVED STAFF", path: "/archived-staff" },
           { title: "ATTEND. REPORT", path: "/employee-attendance-report" },
           { title: "VISA & CONTRACT", path: "/employee-ContractAndVisaExpiry" },
+          { title: "ARCHIVED STAFF", path: "/employee-archived-staff" },
         ],
       });
     }
