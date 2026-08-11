@@ -1082,3 +1082,48 @@ class SalaryIncrementListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
+
+
+
+# archieved employee list
+
+from rest_framework import generics, filters
+from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+
+from .models import Employee_db
+from .serializers import DeletedEmployeeSerializer
+
+
+class DeletedEmployeeListView(generics.ListAPIView):
+    serializer_class = DeletedEmployeeSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
+
+    filter_backends = [
+        filters.SearchFilter,
+        DjangoFilterBackend,
+    ]
+
+    search_fields = [
+        "employee_id",
+    ]
+
+    filterset_fields = [
+        "department",
+    ]
+
+    def get_queryset(self):
+        queryset = Employee_db.objects.filter(
+            is_deleted=True
+        ).select_related("department")
+
+        # Calendar/date filter
+        deleted_date = self.request.query_params.get("deleted_date")
+
+        if deleted_date:
+            queryset = queryset.filter(
+                deleted_at__date=deleted_date
+            )
+
+        return queryset.order_by("-deleted_at")
