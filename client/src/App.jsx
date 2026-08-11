@@ -83,7 +83,7 @@ function App() {
           <Route path="/payrolls" element={<Payroll1 />} />
           <Route element={<RequireAuth />}>
             <Route path="/" element={<Layout />}>
-              <Route index element={<HomeDashboard />} />
+              <Route index element={<HrDashboard />} />
               <Route path="/department" element={<DepartmentList />} />
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
@@ -118,7 +118,7 @@ function App() {
               <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />} />
 
 
-                  <Route path="/Dashboard" element={<HrDashboard />} />
+                  {/* <Route path="/Dashboard" element={<HrDashboard />} /> */}
               <Route path="/PlanAndPricing" element={<PlanAndPricing />} />
               <Route path="/PayrollList" element={<PayrollList />} />
               <Route path="/employee-ContractAndVisaExpiry" element={<ContractAndVisaExpiry />} />

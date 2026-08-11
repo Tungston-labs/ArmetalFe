@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import {
   Overlay,
   Modal,
@@ -12,7 +13,6 @@ import {
   Input,
   Select,
   PriceInputWrapper,
-  Currency,
   TextArea,
   FeatureSection,
   FeatureHeader,
@@ -26,6 +26,12 @@ import {
   SubmitButton,
   Rows,
   Required,
+  ErrorMessage,
+  FormError,
+  FeatureInputWrapper,
+  FeatureInput,
+  FeatureEmpty,
+  FeatureLoading,
 } from "./PlanModal.styles";
 
 import { IoClose } from "react-icons/io5";
@@ -59,16 +65,16 @@ function PlanModal({
   const [formData, setFormData] = useState(initialForm);
 
   const [featureInput, setFeatureInput] = useState("");
-
   const [featureDescription, setFeatureDescription] = useState("");
 
   const [availableFeatures, setAvailableFeatures] = useState([]);
 
   const [loadingFeatures, setLoadingFeatures] = useState(false);
-
   const [addingFeature, setAddingFeature] = useState(false);
-
   const [submitting, setSubmitting] = useState(false);
+
+  const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState("");
 
   /*
    * Load features whenever modal opens
@@ -78,27 +84,45 @@ function PlanModal({
 
     loadFeatures();
 
+    setErrors({});
+    setSubmitError("");
+
     if (mode === "edit" && initialData) {
       setFormData({
         ...initialForm,
-        planName: initialData.name || initialData.planName || "",
-        tier: initialData.plan_type || initialData.tier || "",
+
+        planName:
+          initialData.name ||
+          initialData.planName ||
+          "",
+
+        tier:
+          initialData.plan_type ||
+          initialData.tier ||
+          "",
+
         employeeLimit:
           initialData.employee_limit ||
           initialData.employeeLimit ||
           "",
+
         price:
           initialData.base_price ||
           initialData.price ||
           "",
+
         extraCharge:
           initialData.extra_employee_price ||
           initialData.extraCharge ||
           "",
+
         description:
-          initialData.description || "",
+          initialData.description ||
+          "",
+
         features:
-          initialData.features || [],
+          initialData.features ||
+          [],
       });
     } else {
       setFormData(initialForm);
@@ -117,32 +141,31 @@ function PlanModal({
 
       const response = await fetchSubscriptionFeatures();
 
-      console.log("Subscription features response:", response);
+      console.log(
+        "Subscription features response:",
+        response
+      );
 
       const features = Array.isArray(response)
         ? response
-        : response.results || [];
+        : response?.results || [];
 
       setAvailableFeatures(features);
-
     } catch (error) {
       console.error(
         "Failed to fetch subscription features:",
         error
       );
 
-      console.log("Status:", error.response?.status);
-      console.log("Response:", error.response?.data);
-      console.log("URL:", error.config?.url);
-
-      alert(
+      setSubmitError(
         error.response?.data?.detail ||
-        "Failed to load subscription features."
+          "Failed to load subscription features."
       );
     } finally {
       setLoadingFeatures(false);
     }
   };
+
   /*
    * Normal form fields
    */
@@ -153,6 +176,91 @@ function PlanModal({
       ...prev,
       [name]: value,
     }));
+
+    /*
+     * Clear error for this field
+     * when user starts correcting it.
+     */
+    if (errors[name]) {
+      setErrors((prev) => {
+        const updated = { ...prev };
+
+        delete updated[name];
+
+        return updated;
+      });
+    }
+
+    /*
+     * Clear general API error
+     */
+    if (submitError) {
+      setSubmitError("");
+    }
+  };
+
+  /*
+   * Validate form
+   */
+  const validateForm = () => {
+    const newErrors = {};
+
+    /*
+     * Plan Name
+     */
+    if (!formData.planName.trim()) {
+      newErrors.planName =
+        "Plan name is required.";
+    }
+
+    /*
+     * Tier
+     */
+    if (!formData.tier) {
+      newErrors.tier =
+        "Please select a tier.";
+    }
+
+    /*
+     * Employee Limit
+     */
+    if (!formData.employeeLimit) {
+      newErrors.employeeLimit =
+        "Employee limit is required.";
+    } else if (
+      Number(formData.employeeLimit) <= 0
+    ) {
+      newErrors.employeeLimit =
+        "Employee limit must be greater than 0.";
+    }
+
+    /*
+     * Price
+     */
+    if (!formData.price) {
+      newErrors.price =
+        "Plan price is required.";
+    } else if (
+      Number(formData.price) <= 0
+    ) {
+      newErrors.price =
+        "Plan price must be greater than 0.";
+    }
+
+    /*
+     * Extra Employee Charge
+     */
+    if (
+      formData.extraCharge &&
+      Number(formData.extraCharge) < 0
+    ) {
+      newErrors.extraCharge =
+        "Extra employee charge cannot be negative.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
   /*
@@ -163,19 +271,28 @@ function PlanModal({
   const addFeature = async () => {
     const name = featureInput.trim();
 
+    /*
+     * Clear previous error
+     */
+    setSubmitError("");
+
     if (!name) {
-      alert("Enter feature name.");
+      setSubmitError(
+        "Please enter a feature name."
+      );
       return;
     }
 
     try {
       setAddingFeature(true);
 
-      const response = await createSubscriptionFeature({
-        name: name,
-        description: featureDescription.trim(),
-        is_active: true,
-      });
+      const response =
+        await createSubscriptionFeature({
+          name: name,
+          description:
+            featureDescription.trim(),
+          is_active: true,
+        });
 
       /*
        * API may return:
@@ -188,10 +305,12 @@ function PlanModal({
        * }
        */
 
-      const newFeature = response.data || response;
+      const newFeature =
+        response?.data || response;
 
       /*
-       * Add newly created feature to local feature list.
+       * Add newly created feature
+       * to local feature list.
        */
       setAvailableFeatures((prev) => [
         ...prev,
@@ -199,7 +318,8 @@ function PlanModal({
       ]);
 
       /*
-       * Automatically tick the newly created feature.
+       * Automatically select
+       * newly created feature.
        */
       setFormData((prev) => ({
         ...prev,
@@ -209,22 +329,27 @@ function PlanModal({
         ],
       }));
 
+      /*
+       * Clear inputs
+       */
       setFeatureInput("");
       setFeatureDescription("");
+
+      setSubmitError("");
     } catch (error) {
-      console.error("Failed to create feature:", error);
+      console.error(
+        "Failed to create feature:",
+        error
+      );
 
-      const errorData = error.response?.data;
+      const errorData =
+        error.response?.data;
 
-      if (errorData) {
-        alert(
-          errorData.name?.[0] ||
-          errorData.detail ||
+      setSubmitError(
+        errorData?.name?.[0] ||
+          errorData?.detail ||
           "Failed to create feature."
-        );
-      } else {
-        alert("Failed to create feature.");
-      }
+      );
     } finally {
       setAddingFeature(false);
     }
@@ -235,16 +360,19 @@ function PlanModal({
    */
   const toggleFeature = (feature) => {
     setFormData((prev) => {
-      const alreadySelected = prev.features.some(
-        (item) => item.id === feature.id
-      );
+      const alreadySelected =
+        prev.features.some(
+          (item) => item.id === feature.id
+        );
 
       if (alreadySelected) {
         return {
           ...prev,
-          features: prev.features.filter(
-            (item) => item.id !== feature.id
-          ),
+          features:
+            prev.features.filter(
+              (item) =>
+                item.id !== feature.id
+            ),
         };
       }
 
@@ -256,136 +384,225 @@ function PlanModal({
         ],
       };
     });
+
+    setSubmitError("");
   };
 
   /*
    * Remove selected feature from plan.
    *
-   * This does NOT delete the feature from database.
-   * It only removes it from this plan.
+   * This does NOT delete feature
+   * from database.
    */
   const removeFeature = (featureId) => {
     setFormData((prev) => ({
       ...prev,
-      features: prev.features.filter(
-        (item) => item.id !== featureId
-      ),
+      features:
+        prev.features.filter(
+          (item) =>
+            item.id !== featureId
+        ),
     }));
   };
 
   /*
-   * Create Plan
-   *
-   * Only selected feature IDs are sent.
+   * Submit Plan
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.planName.trim()) {
-      alert("Plan Name is required.");
-      return;
-    }
+    /*
+     * Clear previous API error
+     */
+    setSubmitError("");
 
-    if (!formData.tier) {
-      alert("Select Tier.");
-      return;
-    }
+    /*
+     * Validate frontend fields
+     */
+    const isValid = validateForm();
 
-    if (
-      !formData.employeeLimit ||
-      Number(formData.employeeLimit) <= 0
-    ) {
-      alert("Enter a valid employee limit.");
-      return;
-    }
-
-    if (!formData.price || Number(formData.price) <= 0) {
-      alert("Enter Plan Price.");
+    if (!isValid) {
       return;
     }
 
     try {
-  setSubmitting(true);
+      setSubmitting(true);
 
-  const planType = formData.tier.toLowerCase();
+      const planType =
+        formData.tier.toLowerCase();
 
-  const selectedFeatureIds = formData.features.map(
-    (feature) => feature.id
-  );
+      /*
+       * Only send feature IDs
+       */
+      const selectedFeatureIds =
+        formData.features.map(
+          (feature) => feature.id
+        );
 
-  const payload = {
-    name: formData.planName.trim(),
-    plan_type: planType,
-    description: formData.description.trim(),
-    employee_limit: Number(formData.employeeLimit),
-    feature_ids: selectedFeatureIds,
-    base_price: formData.price,
-    extra_employee_price: formData.extraCharge || "0",
-    is_active: true,
+      const payload = {
+        name: formData.planName.trim(),
+
+        plan_type: planType,
+
+        description:
+          formData.description.trim(),
+
+        employee_limit:
+          Number(formData.employeeLimit),
+
+        feature_ids:
+          selectedFeatureIds,
+
+        base_price:
+          formData.price,
+
+        extra_employee_price:
+          formData.extraCharge || "0",
+
+        is_active: true,
+      };
+
+      console.log(
+        "Plan payload:",
+        payload
+      );
+
+      /*
+       * EDIT
+       */
+      if (
+        mode === "edit" &&
+        initialData?.id
+      ) {
+        await updateSubscriptionPlan(
+          initialData.id,
+          payload
+        );
+      }
+
+      /*
+       * CREATE
+       */
+      else {
+        await createSubscriptionPlan(
+          payload
+        );
+      }
+
+      /*
+       * Refresh parent table
+       */
+      await onSubmit?.();
+
+      /*
+       * Close modal
+       */
+      onClose();
+    } catch (error) {
+      console.error(
+        mode === "edit"
+          ? "Failed to update plan:"
+          : "Failed to create plan:",
+        error
+      );
+
+      const errorData =
+        error.response?.data;
+
+      /*
+       * Backend validation errors
+       */
+      if (errorData) {
+        const backendErrors = {};
+
+        if (errorData.name) {
+          backendErrors.planName =
+            Array.isArray(errorData.name)
+              ? errorData.name[0]
+              : errorData.name;
+        }
+
+        if (errorData.plan_type) {
+          backendErrors.tier =
+            Array.isArray(
+              errorData.plan_type
+            )
+              ? errorData.plan_type[0]
+              : errorData.plan_type;
+        }
+
+        if (errorData.employee_limit) {
+          backendErrors.employeeLimit =
+            Array.isArray(
+              errorData.employee_limit
+            )
+              ? errorData.employee_limit[0]
+              : errorData.employee_limit;
+        }
+
+        if (errorData.base_price) {
+          backendErrors.price =
+            Array.isArray(
+              errorData.base_price
+            )
+              ? errorData.base_price[0]
+              : errorData.base_price;
+        }
+
+        if (
+          errorData.extra_employee_price
+        ) {
+          backendErrors.extraCharge =
+            Array.isArray(
+              errorData.extra_employee_price
+            )
+              ? errorData
+                  .extra_employee_price[0]
+              : errorData
+                  .extra_employee_price;
+        }
+
+        setErrors((prev) => ({
+          ...prev,
+          ...backendErrors,
+        }));
+
+        /*
+         * General backend error
+         */
+        setSubmitError(
+          errorData.detail ||
+            errorData.message ||
+            ""
+        );
+      } else {
+        setSubmitError(
+          "Something went wrong. Please try again."
+        );
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  // ============================
-  // SAVE TO BACKEND
-  // ============================
-
-  if (mode === "edit" && initialData?.id) {
-    await updateSubscriptionPlan(
-      initialData.id,
-      payload
-    );
-  } else {
-    await createSubscriptionPlan(payload);
-  }
-
-  // ============================
-  // REFRESH PARENT TABLE
-  // ============================
-
-  await onSubmit?.();
-
-  onClose();
-
-} catch (error) {
-  console.error(
-    mode === "edit"
-      ? "Failed to update plan:"
-      : "Failed to create plan:",
-    error
-  );
-
-  const errorData = error.response?.data;
-
-  if (errorData) {
-    alert(
-      errorData.detail ||
-      errorData.name?.[0] ||
-      errorData.plan_type?.[0] ||
-      errorData.employee_limit?.[0] ||
-      errorData.base_price?.[0] ||
-      errorData.extra_employee_price?.[0] ||
-      "Failed to save plan."
-    );
-  } else {
-    alert("Failed to save plan.");
-  }
-
-} finally {
-  setSubmitting(false);
-}
-  };
-
+  /*
+   * Don't render modal when closed
+   */
   if (!open) return null;
 
   /*
-   * IDs of currently selected features
+   * IDs of selected features
    */
-  const selectedFeatureIds = formData.features.map(
-    (feature) => feature.id
-  );
+  const selectedFeatureIds =
+    formData.features.map(
+      (feature) => feature.id
+    );
 
   return (
     <Overlay>
       <Modal>
+        {/* HEADER */}
+
         <Header>
           <Title>
             {mode === "add"
@@ -396,12 +613,20 @@ function PlanModal({
           <CloseButton
             type="button"
             onClick={onClose}
+            aria-label="Close"
           >
             <IoClose />
           </CloseButton>
         </Header>
 
         <Form onSubmit={handleSubmit}>
+          {/* GENERAL ERROR */}
+
+          {submitError && (
+            <FormError>
+              {submitError}
+            </FormError>
+          )}
 
           {/* PLAN NAME + TIER */}
 
@@ -417,7 +642,17 @@ function PlanModal({
                 value={formData.planName}
                 onChange={handleChange}
                 placeholder="Enter plan name"
+                autoComplete="off"
+                $hasError={
+                  !!errors.planName
+                }
               />
+
+              {errors.planName && (
+                <ErrorMessage>
+                  {errors.planName}
+                </ErrorMessage>
+              )}
             </Field>
 
             <Field>
@@ -430,6 +665,7 @@ function PlanModal({
                 name="tier"
                 value={formData.tier}
                 onChange={handleChange}
+                $hasError={!!errors.tier}
               >
                 <option value="">
                   Select Tier
@@ -451,6 +687,12 @@ function PlanModal({
                   Custom
                 </option>
               </Select>
+
+              {errors.tier && (
+                <ErrorMessage>
+                  {errors.tier}
+                </ErrorMessage>
+              )}
             </Field>
           </Row>
 
@@ -466,10 +708,23 @@ function PlanModal({
               <Input
                 type="number"
                 name="employeeLimit"
-                value={formData.employeeLimit}
+                value={
+                  formData.employeeLimit
+                }
                 onChange={handleChange}
                 placeholder="10"
+                autoComplete="off"
+                min="1"
+                $hasError={
+                  !!errors.employeeLimit
+                }
               />
+
+              {errors.employeeLimit && (
+                <ErrorMessage>
+                  {errors.employeeLimit}
+                </ErrorMessage>
+              )}
             </Field>
           </Row>
 
@@ -483,16 +738,26 @@ function PlanModal({
               </Label>
 
               <PriceInputWrapper>
-                {/* <Currency>₹</Currency> */}
-
                 <Input
                   type="number"
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
                   placeholder="1500"
+                  autoComplete="off"
+                  min="0"
+                  step="0.01"
+                  $hasError={
+                    !!errors.price
+                  }
                 />
               </PriceInputWrapper>
+
+              {errors.price && (
+                <ErrorMessage>
+                  {errors.price}
+                </ErrorMessage>
+              )}
             </Field>
 
             <Field>
@@ -502,29 +767,46 @@ function PlanModal({
               </Label>
 
               <PriceInputWrapper>
-                {/* <Currency>₹</Currency> */}
-
                 <Input
                   type="number"
                   name="extraCharge"
-                  value={formData.extraCharge}
+                  value={
+                    formData.extraCharge
+                  }
                   onChange={handleChange}
                   placeholder="Per Employee"
+                  autoComplete="off"
+                  min="0"
+                  step="0.01"
+                  $hasError={
+                    !!errors.extraCharge
+                  }
                 />
               </PriceInputWrapper>
+
+              {errors.extraCharge && (
+                <ErrorMessage>
+                  {errors.extraCharge}
+                </ErrorMessage>
+              )}
             </Field>
           </Rows>
 
           {/* DESCRIPTION */}
 
           <Field>
-            <Label>Description</Label>
+            <Label>
+              Description
+            </Label>
 
             <TextArea
               name="description"
-              value={formData.description}
+              value={
+                formData.description
+              }
               onChange={handleChange}
               placeholder="Enter plan description"
+              autoComplete="off"
               rows={3}
             />
           </Field>
@@ -532,32 +814,17 @@ function PlanModal({
           {/* FEATURES */}
 
           <FeatureSection>
-
             <FeatureHeader>
               <Label>
                 Features
               </Label>
-            </FeatureHeader>
-
-            {/* ADD NEW FEATURE */}
-
-            <Row>
-              <Field>
-                <Input
-                  value={featureInput}
-                  onChange={(e) =>
-                    setFeatureInput(
-                      e.target.value
-                    )
-                  }
-                  placeholder="Enter new feature"
-                />
-              </Field>
 
               <AddFeatureButton
                 type="button"
                 onClick={addFeature}
-                disabled={addingFeature}
+                disabled={
+                  addingFeature
+                }
               >
                 <FiPlus />
 
@@ -565,24 +832,45 @@ function PlanModal({
                   ? "Adding..."
                   : "Add"}
               </AddFeatureButton>
-            </Row>
+            </FeatureHeader>
+
+            {/* NEW FEATURE */}
+
+            <FeatureInputWrapper>
+              <FeatureInput
+                type="text"
+                value={featureInput}
+                onChange={(e) => {
+                  setFeatureInput(
+                    e.target.value
+                  );
+
+                  if (submitError) {
+                    setSubmitError("");
+                  }
+                }}
+                placeholder="Enter new feature name"
+                autoComplete="off"
+              />
+
+              
+            </FeatureInputWrapper>
 
             {/* EXISTING FEATURES */}
 
             <FeatureList>
-
               {loadingFeatures ? (
-                <div>
+                <FeatureLoading>
                   Loading features...
-                </div>
-              ) : availableFeatures.length === 0 ? (
-                <div>
+                </FeatureLoading>
+              ) : availableFeatures.length ===
+                0 ? (
+                <FeatureEmpty>
                   No features available.
-                </div>
+                </FeatureEmpty>
               ) : (
                 availableFeatures.map(
                   (feature) => {
-
                     const isChecked =
                       selectedFeatureIds.includes(
                         feature.id
@@ -592,11 +880,12 @@ function PlanModal({
                       <FeatureItem
                         key={feature.id}
                       >
-
                         <Checkbox>
                           <input
                             type="checkbox"
-                            checked={isChecked}
+                            checked={
+                              isChecked
+                            }
                             onChange={() =>
                               toggleFeature(
                                 feature
@@ -617,28 +906,26 @@ function PlanModal({
                                 feature.id
                               )
                             }
+                            aria-label={`Remove ${feature.name}`}
                           >
                             <RiDeleteBin6Line />
                           </RemoveButton>
                         )}
-
                       </FeatureItem>
                     );
                   }
                 )
               )}
-
             </FeatureList>
-
           </FeatureSection>
 
           {/* FOOTER */}
 
           <Footer>
-
             <CancelButton
               type="button"
               onClick={onClose}
+              disabled={submitting}
             >
               Cancel
             </CancelButton>
@@ -650,12 +937,10 @@ function PlanModal({
               {submitting
                 ? "Saving..."
                 : mode === "add"
-                  ? "Create Plan"
-                  : "Update Plan"}
+                ? "Create Plan"
+                : "Update Plan"}
             </SubmitButton>
-
           </Footer>
-
         </Form>
       </Modal>
     </Overlay>

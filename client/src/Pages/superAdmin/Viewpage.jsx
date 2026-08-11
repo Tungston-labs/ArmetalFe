@@ -145,7 +145,7 @@ const CompanyViewPage = () => {
               />
             </FormField>
 
-           
+
 
             <FormField>
               <Label>Amount Per Employee</Label>

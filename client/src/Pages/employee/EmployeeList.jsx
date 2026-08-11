@@ -35,7 +35,7 @@ const EmployeeList = () => {
     const [status, setStatus] = useState("");
     const [month, setMonth] = useState("");
 
-    const { employeeList, loading,pagination } = useSelector((state) => state.employees);
+    const { employeeList, loading, pagination } = useSelector((state) => state.employees);
     const { list: departmentList } = useSelector(
         (state) => state.departments
     );
@@ -61,7 +61,7 @@ const EmployeeList = () => {
 
     useEffect(() => {
         dispatch(
-            getAllEmployees({ page,limit: paginationLimit,search: "", department_id: selectedDepartmentId }),
+            getAllEmployees({ page, limit: paginationLimit, search: "", department_id: selectedDepartmentId }),
         );
     }, [dispatch, page, selectedDepartmentId]);
 
@@ -89,27 +89,27 @@ const EmployeeList = () => {
         setSelectedEmployeeId(null);
     };
 
-   const filteredEmployees = Array.isArray(employeeList)
-    ? employeeList.filter((emp) => {
-        const searchValue = debouncedSearch.toLowerCase().trim();
+    const filteredEmployees = Array.isArray(employeeList)
+        ? employeeList.filter((emp) => {
+            const searchValue = debouncedSearch.toLowerCase().trim();
 
-        return (
-            emp.name?.toLowerCase().includes(searchValue) ||
-            emp.employee_id
-                ?.toString()
-                .toLowerCase()
-                .includes(searchValue)
-        );
-    })
-    : [];
+            return (
+                emp.name?.toLowerCase().includes(searchValue) ||
+                emp.employee_id
+                    ?.toString()
+                    .toLowerCase()
+                    .includes(searchValue)
+            );
+        })
+        : [];
 
     const columns = [
         {
             header: "Sl No",
             accessor: "slno",
             sortable: false,
-           render: (_row, index) =>
-    index + 1 + (page - 1) * paginationLimit,
+            render: (_row, index) =>
+                index + 1 + (page - 1) * paginationLimit,
         },
         {
             header: "Employee name",
@@ -198,36 +198,36 @@ const EmployeeList = () => {
                         "Absent",
                         "On Leave",
                     ]}
-                    onStatus={setStatus}                   
+                    onStatus={setStatus}
                     showSearch
                     showDepartment
                     showStatus
                 />
                 {!loading && (
                     <TableWrapper>
-                            <ReusableTable
-                                columns={columns}
-                                data={filteredEmployees}
-                                loading={loading}
-                                onRowClick={(row) => {
-                                    setSelectedEmployee(row);
-                                    setOpenModal(true);
-                                }}
-                            />
+                        <ReusableTable
+                            columns={columns}
+                            data={filteredEmployees}
+                            loading={loading}
+                            onRowClick={(row) => {
+                                setSelectedEmployee(row);
+                                setOpenModal(true);
+                            }}
+                        />
                     </TableWrapper>
                 )}
-{!loading &&
-          pagination?.total_pages > 1 && (
-            <ReusablePagination
-              currentPage={
-                pagination?.current_page || page
-              }
-              totalPages={
-                pagination?.total_pages || 1
-              }
-              onPageChange={setPage}
-            />
-          )}
+                {!loading &&
+                    pagination?.total_pages > 1 && (
+                        <ReusablePagination
+                            currentPage={
+                                pagination?.current_page || page
+                            }
+                            totalPages={
+                                pagination?.total_pages || 1
+                            }
+                            onPageChange={setPage}
+                        />
+                    )}
                 <ReusableConfirmModal
                     show={showDeleteModal}
                     onClose={cancelDelete}

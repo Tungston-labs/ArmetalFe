@@ -20,6 +20,7 @@ import EmployeeIcon from "../../../assets/employeeicon.svg";
 import EmployeeHeader from "../../../Components/Employee/Headers/EmployeeHeader";
 import { ButtonWrapper, NextButton } from "../../../Components/Employee/AddForm/JobDetails.Styles";
 import EmployeeTitle from "../../../Components/Employee/Headers/EmployeeTitle";
+import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
 
 
 export default function AddEmployeeForm() {
@@ -202,16 +203,14 @@ export default function AddEmployeeForm() {
       {loading && <Loader />}
       <Container>
         <UnsavedChangesGuard isDirty={isFormDirty} />
+           <ReusableHeader
+                    title="Employees"
+                    breadcrumbs={["Dashboard", "Employees","Add Form"]}
+                   showBack
 
-        <EmployeeTitle
-          key={departmentList?.length || 0}
-          iconSrc={EmployeeIcon}
-          showAddButton={false}
-          showTabs={false}
-          showSearch={false}
-          showDropdown={false}
-          showReportButton={false}
-        />
+                />
+
+    
         <div
           style={{ display: "flex", justifyContent: "center", padding: "0px" }}
         >

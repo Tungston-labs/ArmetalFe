@@ -44,7 +44,7 @@ const getSidebarData = (user) => {
     const items = [];
 
     if (modules.dashboard) {
-      items.push({ title: "DASHBOARD", icon: <GoHome />, path: "/dashboard" });
+      items.push({ title: "DASHBOARD", icon: <GoHome />, path: "/" });
     }
 
     if (modules.department) {

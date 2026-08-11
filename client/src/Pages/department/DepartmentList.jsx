@@ -38,6 +38,7 @@ import AddDepartment from "./AddDepartment.jsx";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader.jsx";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable.jsx";
 import { useDepartmentDetails, PAGE_SIZE } from "./useDepartmentDetails.js";
+import ReusablePagination from "../../Components/Pagination/ReusablePagination.jsx";
 
 const paginate = (items, page, size) => {
   const start = (page - 1) * size;
@@ -293,32 +294,14 @@ const DepartmentList = () => {
                       />
                     </DropdownWrapper>
 
-                    {sortedEmployees.length > PAGE_SIZE && (
-                      <PaginationWrapper onClick={(e) => e.stopPropagation()}>
-                        <PageButton
-                          disabled={currentPage === 1}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPage(dept.id, Math.max(1, currentPage - 1));
-                          }}
-                        >
-                          <FaAnglesLeft />
-                        </PageButton>
-
-                        <PageInfo>
-                          Page {currentPage} / {totalPages}
-                        </PageInfo>
-
-                        <PageButton
-                          disabled={currentPage === totalPages}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPage(dept.id, Math.min(totalPages, currentPage + 1));
-                          }}
-                        >
-                          <FaAnglesRight />
-                        </PageButton>
-                      </PaginationWrapper>
+                  {sortedEmployees.length > PAGE_SIZE && (
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <ReusablePagination
+                          currentPage={currentPage}
+                          totalPages={totalPages}
+                          onPageChange={(newPage) => setPage(dept.id, newPage)}
+                        />
+                      </div>
                     )}
                   </>
                 )}

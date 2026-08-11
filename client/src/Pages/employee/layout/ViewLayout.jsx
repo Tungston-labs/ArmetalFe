@@ -8,9 +8,9 @@ import {
   TabsRow,
   TabButton,
 } from "./ViewLayout.Styles";
-import EmployeeTitle from "../../../Components/Employee/Headers/EmployeeTitle";
-import EmployeeIcon from "../../../assets/employeeicon.svg";
 import Header from "../../../Components/Employee/Headers/Header";
+import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
+import { useNavigate } from "react-router-dom";
 
 const ViewBasicLayout = ({
   id,
@@ -25,7 +25,7 @@ const ViewBasicLayout = ({
 }) => {
   const location = useLocation();
   const rowRef = useRef(null);
-
+  const navigate = useNavigate();
   const tabs = [
     { path: `/ViewBasic/${id}`, label: "Basic Details" },
     { path: `/ViewBasic/${id}/bank`, label: "Bank & Payment" },
@@ -35,19 +35,15 @@ const ViewBasicLayout = ({
   return (
     <Container>
       <TopSection>
-        <EmployeeTitle
-          key={departmentList?.length || 0}
-          iconSrc={EmployeeIcon}
-          showAddButton={true}
-          showTabs={false}
-          showSearch={false}
-          showDropdown={false}
-          onAddClick={handleSubmit}
-          buttonText="Save"
-          showBackArrow={false}
-          showReportButton={false}
-        />
 
+<ReusableHeader
+  title="Employees"
+  breadcrumbs={["Dashboard", "Employees"]}
+  buttonText="SAVE"
+  onButtonClick={handleSubmit}
+  showBack
+    onBack={() => navigate("/employee")}
+/>
         <Header
           employee={formData}
           editable={true}
@@ -55,8 +51,6 @@ const ViewBasicLayout = ({
           onImageChange={handleImageChange}
         
         />
-
- 
         <TabsRowContainer>
           <TabsRow ref={rowRef}>
             {tabs.map((tab) => (

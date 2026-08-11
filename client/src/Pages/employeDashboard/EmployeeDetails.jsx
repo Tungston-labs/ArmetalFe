@@ -165,6 +165,28 @@ const formatDate = (date) => {
             </InfoGrid>
           </>
         )}
+
+        {activeTab === "documents" && (
+  <>
+    <Title>Documents</Title>
+
+    <InfoGrid>
+      {documentsInfo.map((row, index) => (
+        <InfoRow key={index}>
+          <InfoTitle>{row.title}</InfoTitle>
+          <InfoValue>{row.value}</InfoValue>
+
+          {row.title2 && (
+            <>
+              <InfoTitle>{row.title2}</InfoTitle>
+              <InfoValue>{row.value2}</InfoValue>
+            </>
+          )}
+        </InfoRow>
+      ))}
+    </InfoGrid>
+  </>
+)}
       </ContentSection>
       <MailModal
         isOpen={isMailOpen}

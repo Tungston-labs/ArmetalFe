@@ -10,7 +10,6 @@ import {
   TitleRow,
   BackButton,
 } from "./ReusableHeader.styles";
-
 import { IoArrowBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
