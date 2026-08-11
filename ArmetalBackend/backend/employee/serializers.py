@@ -213,6 +213,28 @@ class EmployeeSerializer(serializers.ModelSerializer):
             )
 
         return value
+        # =====================================================
+    # employee_code VALIDATION
+    # =====================================================
+
+    def validate_employee_code(self, value):
+
+        if not value:
+           return value
+
+        qs = Employee_db.objects.filter(
+             employee_code=value
+        )
+
+        if self.instance:
+         qs = qs.exclude(id=self.instance.id)
+
+         if qs.exists():
+             raise serializers.ValidationError(
+            "Employee code already exists."
+        )
+
+        return value
 
     # =====================================================
     # AADHAR VALIDATION
