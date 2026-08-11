@@ -40,24 +40,60 @@ export const RightSection = styled.div`
   }
 `;
 
+export const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
 export const PageTitle = styled.h2`
   margin: 0;
+  font-family: "Poppins", sans-serif;
   font-size: 24px;
   font-weight: 500;
-  color: #3250BC;
-  font-weight: "poppins", sans-serif;
+  color: #3250bc;
+  line-height: 1.3;
 `;
 
 export const Breadcrumb = styled.div`
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  /* margin-top: 8px; */
+  gap: 4px;
+  margin-top: 3px;
+  font-family: "Poppins", sans-serif;
 `;
 
-export const BreadcrumbItem = styled.span`
+export const BreadcrumbItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
   font-size: 14px;
-  color: #666;
+  font-weight: ${({ $active }) => ($active ? "400" : "400")};
+  color: ${({ $active }) => ($active ? "#888" : "#888")};
+
+  line-height: 20px;
+  white-space: nowrap;
+`;
+
+export const HomeIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #888;
+  font-size: 16px;
+`;
+
+export const Separator = styled.span`
+  display: flex;
+  align-items: center;
+
+  color: #333;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 16px;
 `;
 
 export const ActionButton = styled.button`
@@ -65,13 +101,13 @@ export const ActionButton = styled.button`
   padding: 0 20px;
   border: none;
   border-radius: 5px;
-  background: #3352BA;
+  background: #3352ba;
   color: white;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
-  transition: .3s;
+  transition: 0.3s;
 
   &:hover {
     background: #1638b8;
@@ -80,11 +116,6 @@ export const ActionButton = styled.button`
   @media (max-width: 480px) {
     width: 100%;
   }
-`;
-export const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
 `;
 
 export const BackButton = styled.button`
@@ -101,7 +132,6 @@ export const BackButton = styled.button`
 
   color: #3352ba;
   font-size: 20px;
-
   transition: 0.3s;
 
   &:hover {

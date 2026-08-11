@@ -4,7 +4,7 @@ POST https://api.rekory.com/api/token/
 Content-Type: application/json
 
 {
-  "username": "mediora",
+  "username": "dummy",
   "password": "CMPPSPI4Z6TPE"
 }
 ###

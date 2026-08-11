@@ -9,8 +9,12 @@ import {
   ActionButton,
   TitleRow,
   BackButton,
+  HomeIcon,
+  Separator,
 } from "./ReusableHeader.styles";
+
 import { IoArrowBack } from "react-icons/io5";
+import { IoHomeOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 const ReusableHeader = ({
@@ -46,8 +50,25 @@ const ReusableHeader = ({
         </TitleRow>
 
         <Breadcrumb>
+          {/* Home */}
+          <BreadcrumbItem>
+            <HomeIcon>
+              <IoHomeOutline />
+            </HomeIcon>
+            <span>Dashboard</span>
+          </BreadcrumbItem>
+
+          {/* Breadcrumb items */}
           {breadcrumbs.map((item, index) => (
-            <BreadcrumbItem key={index}>{item}</BreadcrumbItem>
+            <React.Fragment key={index}>
+              <Separator>›</Separator>
+
+              <BreadcrumbItem
+                $active={index === breadcrumbs.length - 1}
+              >
+                {item}
+              </BreadcrumbItem>
+            </React.Fragment>
           ))}
         </Breadcrumb>
       </LeftSection>

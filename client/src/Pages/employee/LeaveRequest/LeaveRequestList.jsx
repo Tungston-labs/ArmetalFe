@@ -244,7 +244,6 @@ const selectedDepartmentId = departmentFilter
       <ReusableHeader
         title="Leave Requests"
         breadcrumbs={[
-          "Dashboard",
           "Employees",
           "LeaveRequest",
         ]}

@@ -51,42 +51,42 @@ export const getPayrollCards = ({
   incentiveAmount = 0,
   deductionAmount = 0,
 } = {}) => [
-  {
-    title: "Total Payroll",
-    count: totalPayroll,
-    icon: <PiMoneyWavyLight />,
-    iconColor: "#15aa60",
-    backgroundColor: "#E3F7ED",
-  },
-  {
-    title: "Total Employees",
-    count: totalEmployees,
-    icon: <LuUserRound />,
-    iconColor: "#507edb",
-    backgroundColor: "#EFF4FE",
-  },
-  {
-    title: "Pending Verification",
-    count: pendingVerification,
-    icon: <PiClockCountdown />,
-    iconColor: "#f78400",
-    backgroundColor: "#FEEDDA",
-  },
-  {
-    title: "Incentive Amount",
-    count: incentiveAmount,
-    icon: <GoGift />,
-    iconColor: "#15aa60",
-    backgroundColor: "#E3F7ED",
-  },
-  {
-    title: "Deduction Amount",
-    count: deductionAmount,
-    icon: <HiArrowTrendingDown />,
-    iconColor: "#f3214f",
-    backgroundColor: "#FFEDED",
-  },
-];
+    {
+      title: "Total Payroll",
+      count: totalPayroll,
+      icon: <PiMoneyWavyLight />,
+      iconColor: "#15aa60",
+      backgroundColor: "#E3F7ED",
+    },
+    {
+      title: "Total Employees",
+      count: totalEmployees,
+      icon: <LuUserRound />,
+      iconColor: "#507edb",
+      backgroundColor: "#EFF4FE",
+    },
+    {
+      title: "Pending Verification",
+      count: pendingVerification,
+      icon: <PiClockCountdown />,
+      iconColor: "#f78400",
+      backgroundColor: "#FEEDDA",
+    },
+    {
+      title: "Incentive Amount",
+      count: incentiveAmount,
+      icon: <GoGift />,
+      iconColor: "#15aa60",
+      backgroundColor: "#E3F7ED",
+    },
+    {
+      title: "Deduction Amount",
+      count: deductionAmount,
+      icon: <HiArrowTrendingDown />,
+      iconColor: "#f3214f",
+      backgroundColor: "#FFEDED",
+    },
+  ];
 
 export function usePayrollList() {
   const dispatch = useDispatch();
@@ -123,6 +123,16 @@ export function usePayrollList() {
     return copy;
   }, [data]);
 
+  const departmentRows = Array.isArray(departmentList?.results)
+    ? departmentList.results
+    : Array.isArray(departmentList)
+      ? departmentList
+      : [];
+
+  const departmentIdByName = departmentRows.reduce((acc, d) => {
+    acc[d.name] = d.id;
+    return acc;
+  }, {});
   const refetch = () =>
     dispatch(
       getPayrollData({
@@ -131,7 +141,7 @@ export function usePayrollList() {
         search: searchTerm,
         month: selectedMonth,
         year: selectedYear,
-        department: selectedDepartment,
+        department: selectedDepartment ? departmentIdByName[selectedDepartment] : "",
       })
     );
 
@@ -304,12 +314,12 @@ export function usePayrollList() {
     handleSingleStatusChange,
     handlePageChange,
     showModal,
-    selectedEmployee,setSelectedEmployee,
+    selectedEmployee, setSelectedEmployee,
     setShowModal,
     incentiveAddedIds,
     handleCloseModal,
-    showDeductionModal,setShowDeductionModal,
-    selectedDeductionEmployee,setSelectedDeductionEmployee,
+    showDeductionModal, setShowDeductionModal,
+    selectedDeductionEmployee, setSelectedDeductionEmployee,
     deductionAddedIds,
     handleCloseDeductionModal,
   };

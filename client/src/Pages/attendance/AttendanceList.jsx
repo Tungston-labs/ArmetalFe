@@ -125,7 +125,7 @@ const departmentsToRender = departmentList
     <PageContainer>
 <ReusableHeader
  title="Employee Attendance"
-  breadcrumbs={["Dashboard", "Employees","Employee Attendance"]}
+  breadcrumbs={["Employees","Employee Attendance"]}
 />   
       {/* <StatsCards cards={payrollCards} /> */}
       

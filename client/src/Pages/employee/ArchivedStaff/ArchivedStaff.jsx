@@ -1,91 +1,127 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-
-import React, { useMemo, useState } from "react";
 import ReusableTable from "../../../Components/ReusableTable/ReusableTable";
 import ReusablePagination from "../../../Components/Pagination/ReusablePagination";
-import {
-    employeeColumns,
-    employeeData,
-} from "../../../Components/ReusableTable/dummydata";
+import { employeeColumns } from "./ArchivedStaffData";
 import ReusableFilter from "../../../Components/ReusableTable/ReusableFilter";
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
 
+import { getDeletedEmployees } from "../../../Redux/employeeSlice";
+import { getDepartments } from "../../../Redux/departmentSlice";
+
 const ArchivedStaff = () => {
-    const [search, setSearch] = useState("");
-    const [department, setDepartment] = useState("");
-    const [status, setStatus] = useState("");
-    const [month, setMonth] = useState("");
-    const rowsPerPage = 10;
+  const dispatch = useDispatch();
 
-    const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
 
-    const totalPages = Math.ceil(
-        employeeData.length / rowsPerPage
+  // Employee Redux state
+  const {
+    deletedEmployeeList = [],
+    deletedEmployeePagination = {},
+    loading,
+  } = useSelector((state) => state.employee);
+
+  // Department Redux state
+  const departmentList = useSelector(
+    (state) => state.departments?.list || []
+  );
+
+  // Convert department objects to names
+  const departments = departmentList.map(
+    (department) => department.name
+  );
+
+  const [search, setSearch] = useState("");
+  const [department, setDepartment] = useState("");
+  const [month, setMonth] = useState("");
+
+  const currentPage =
+    deletedEmployeePagination?.current_page || 1;
+
+  const totalPages =
+    deletedEmployeePagination?.total_pages || 1;
+
+  // Fetch departments
+  useEffect(() => {
+    dispatch(
+      getDepartments({
+        page: 1,
+        search: "",
+      })
     );
+  }, [dispatch]);
 
-    const paginatedData = useMemo(() => {
-
-        const start =
-            (currentPage - 1) * rowsPerPage;
-
-        return employeeData.slice(
-            start,
-            start + rowsPerPage
-        );
-
-    }, [currentPage]);
-
-    return (
-
-        <div style={{ padding: 20 }}>
-<ReusableHeader
- title="Employees"
-  breadcrumbs={["Dashboard", "Employees"]}
-
-/>           <ReusableFilter
-                search={search}
-                onSearch={setSearch}
-
-                department={department}
-                departments={[
-                    "HR",
-                    "Finance",
-                    "Development",
-                    "Marketing",
-                ]}
-                onDepartment={setDepartment}
-
-                status={status}
-                statuses={[
-                    "Present",
-                    "Absent",
-                    "On Leave",
-                ]}
-                onStatus={setStatus}
-
-                date={month}
-                onDate={setMonth}
-
-                showSearch
-                showDepartment
-                showStatus
-                showDate
-            />
-
-            <ReusableTable
-                columns={employeeColumns}
-                data={paginatedData}
-            />
-
-            <ReusablePagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-            />
-
-        </div>
-
+  // Fetch archived employees
+  useEffect(() => {
+    dispatch(
+      getDeletedEmployees({
+        page: currentPage,
+        search,
+        department,
+        deleted_date: month,
+      })
     );
+  }, [
+    dispatch,
+    currentPage,
+    search,
+    department,
+    month,
+  ]);
+
+  return (
+    <div style={{ padding: 20 }}>
+      <ReusableHeader
+        title="Archived Employees"
+        breadcrumbs={["Employees", "Archived"]}
+      />
+
+      <ReusableFilter
+        search={search}
+        onSearch={setSearch}
+        searchPlaceholder="Search by Employee name or ID"
+
+        department={department}
+        departments={departments}
+        onDepartment={setDepartment}
+
+        date={month}
+        onDate={setMonth}
+
+        showSearch
+        showDepartment
+        showDate
+      />
+
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <ReusableTable
+          columns={employeeColumns(
+            currentPage,
+            rowsPerPage
+          )}
+          data={deletedEmployeeList}
+        />
+      )}
+
+      <ReusablePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => {
+          dispatch(
+            getDeletedEmployees({
+              page,
+              search,
+              department,
+              deleted_date: month,
+            })
+          );
+        }}
+      />
+    </div>
+  );
 };
 
 export default ArchivedStaff;
