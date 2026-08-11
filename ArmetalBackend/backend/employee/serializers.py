@@ -218,21 +218,20 @@ class EmployeeSerializer(serializers.ModelSerializer):
     # =====================================================
 
     def validate_employee_code(self, value):
-
         if not value:
-           return value
+            return value
 
         qs = Employee_db.objects.filter(
-             employee_code=value
+            employee_code=value
         )
 
         if self.instance:
-         qs = qs.exclude(id=self.instance.id)
+            qs = qs.exclude(id=self.instance.id)
 
-         if qs.exists():
-             raise serializers.ValidationError(
-            "Employee code already exists."
-        )
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Employee code already exists."
+            )
 
         return value
 
@@ -764,6 +763,7 @@ class DeletedEmployeeSerializer(serializers.ModelSerializer):
         fields = [
             "name",
             "employee_id",
+            "employee_code",
             "email",
             "department_name",
             "exit_date",
