@@ -13,7 +13,8 @@ import {
   fetchEmployeeDocuments,
   deleteEmployeeDocument,
   updateEmployeeDocument,
-    updateEmployeeDocuments
+    updateEmployeeDocuments,
+    fetchDeletedEmployees,
 } from '../services/employeeService';
 import API from '../services/api';
 
@@ -140,6 +141,28 @@ export const getAllEmployees = createAsyncThunk(
   }
 );
 
+
+export const getDeletedEmployees = createAsyncThunk(
+  "employees/getDeletedEmployees",
+  async (
+    { page = 1, search = "", department = "", deleted_date = "" },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await fetchDeletedEmployees({
+        page,
+        search,
+        department,
+        deleted_date,
+      });
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch deleted employees"
+      );
+    }
+  }
+);
+
 export const getUpcomingExpiryEmployees = createAsyncThunk(
   "employees/getUpcomingExpiry",
   async ({ expiryType, page = 1, search = "" }, { rejectWithValue }) => {
@@ -255,11 +278,14 @@ const employeeSlice = createSlice({
     status: 'idle',
     error: null,
     loading: false,
+
     employeeCreated: false,
     employeeId: null,
     bankPaymentId: null,
+
     formData: {},
     isDirty: false,
+
     documentUrls: {
       passport: [],
       workPermit: [],
@@ -267,10 +293,20 @@ const employeeSlice = createSlice({
       insurance: [],
       certificate: [],
     },
+
     documentList: [],
     employeeDocuments: [],
     employeeBankPayments: [],
     employeeList: [],
+
+   deletedEmployeeList: [],
+   deletedEmployeePagination: {
+  total_items: 0,
+  total_pages: 1,
+  current_page: 1,
+  next: null,
+  previous: null,
+},
     pagination: { count: 0, next: null, previous: null },
   },
   reducers: {
@@ -407,7 +443,31 @@ const employeeSlice = createSlice({
 
       .addCase(getEmployeeById.fulfilled, (state, action) => {
         state.employeeDetail = action.payload;
-      });
+      })
+    .addCase(getDeletedEmployees.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+
+.addCase(getDeletedEmployees.fulfilled, (state, action) => {
+  state.loading = false;
+
+  state.deletedEmployeeList = action.payload.results || [];
+
+  state.deletedEmployeePagination = {
+    total_items: action.payload.total_items || 0,
+    total_pages: action.payload.total_pages || 1,
+    current_page: action.payload.current_page || 1,
+    next: action.payload.next || null,
+    previous: action.payload.previous || null,
+  };
+})
+
+.addCase(getDeletedEmployees.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+})
+      ;
   },
 });
 

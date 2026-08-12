@@ -1132,7 +1132,7 @@ class SalaryIncrementListCreateView(generics.ListCreateAPIView):
 
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import ValidationError
 
 from .models import Employee_db
 from .serializers import DeletedEmployeeSerializer
@@ -1145,15 +1145,13 @@ class DeletedEmployeeListView(generics.ListAPIView):
 
     filter_backends = [
         filters.SearchFilter,
-        DjangoFilterBackend,
     ]
 
+    # Search by name, employee code, or email
     search_fields = [
-        "employee_id",
-    ]
-
-    filterset_fields = [
-        "department",
+        "name",
+        "employee_code",
+        "email",
     ]
 
     def get_queryset(self):
@@ -1161,13 +1159,39 @@ class DeletedEmployeeListView(generics.ListAPIView):
             is_deleted=True
         ).select_related("department")
 
-        # Calendar/date filter
+        # Department filter
+        department = self.request.query_params.get("department")
+
+        if department:
+            queryset = queryset.filter(
+                department__name=department
+            )
+
+        # Exit month filter
+        # Example: 2026-08
         deleted_date = self.request.query_params.get("deleted_date")
 
         if deleted_date:
-            queryset = queryset.filter(
-                deleted_at__date=deleted_date
-            )
+            try:
+                year, month = deleted_date.split("-")
+
+                year = int(year)
+                month = int(month)
+
+                if month < 1 or month > 12:
+                    raise ValueError
+
+                queryset = queryset.filter(
+                    deleted_at__year=year,
+                    deleted_at__month=month,
+                )
+
+            except (ValueError, TypeError):
+                raise ValidationError({
+                    "deleted_date": [
+                        "Use YYYY-MM format, for example 2026-08."
+                    ]
+                })
 
         return queryset.order_by("-deleted_at")
     

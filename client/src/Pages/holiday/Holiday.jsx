@@ -224,7 +224,7 @@ const HolidayManager = () => {
       <Container>
         <ReusableHeader
           title="Holiday"
-          breadcrumbs={["Dashboard", "Holiday"]}
+          breadcrumbs={["Holiday"]}
           buttonText="+ ADD NEW HOLIDAY"
           onButtonClick={handleOpenModal}
         />

@@ -36,12 +36,12 @@ const Employee = () => {
     return (
 
         <div style={{ padding: 20 }}>
-<ReusableHeader
- title="Employees"
-  breadcrumbs={["Dashboard", "Employees"]}
-  buttonText="ADD NEW EMPLOYEE"
-  onButtonClick={() => console.log("Add Employee")}
-/>           <ReusableFilter
+            <ReusableHeader
+                title="Employees"
+                breadcrumbs={["Dashboard", "Employees"]}
+                buttonText="ADD NEW EMPLOYEE"
+                onButtonClick={() => console.log("Add Employee")}
+            />           <ReusableFilter
                 search={search}
                 onSearch={setSearch}
 

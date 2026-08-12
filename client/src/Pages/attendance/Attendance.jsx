@@ -42,7 +42,7 @@ const TimesheetPage = () => {
     <Container>
  <ReusableHeader
   title="Employee Attendance"
-   breadcrumbs={["Dashboard", "Employees","Employee Attendance"]}
+   breadcrumbs={["Employees","Employee Attendance"]}
   showBack={true}
 />
 

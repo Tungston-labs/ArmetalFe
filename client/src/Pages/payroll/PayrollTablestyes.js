@@ -6,6 +6,14 @@ export const Container = styled.div`
   padding: 20px;
 `;
 
+const Status = styled.span`
+  color: ${({ $color }) => $color};
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-weight: 500;
+`;
+
 export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;

@@ -14,6 +14,7 @@ import { exportAttendanceExcel } from "../../utils/montlyAttendance";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
+import { getDepartments } from "../../Redux/departmentSlice";
 
 const AttendanceReport = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const AttendanceReport = () => {
   const summaryData = attendanceState.attendanceSummary;
   const currentPage = summaryData?.current_page || 1;
   const totalPages = summaryData?.total_pages || 1;
+
   const [department, setDepartment] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,14 +34,22 @@ const AttendanceReport = () => {
     new Date().toISOString().slice(0, 7)
   );
   const [searchTerm, setSearchTerm] = useState("");
-  const departments = [
-    "HR",
-    "Finance",
-    "IT",
-    "Sales",
-    "Marketing",
-    "Operations",
-  ];
+const { list: departmentList } = useSelector((state) => state.departments || {});
+
+  const departmentRows = Array.isArray(departmentList?.results)
+    ? departmentList.results
+    : Array.isArray(departmentList)
+      ? departmentList
+      : [];
+
+  const departments = useMemo(
+    () => departmentRows.map((d) => d.name),
+    [departmentRows],
+  );
+    useEffect(() => {
+    dispatch(getDepartments({ page: 1, search: "" }));
+  }, [dispatch]);
+  
   const getMonthNameFromYYYYMM = (yyyyMM) => {
     if (!yyyyMM) return "";
     const d = new Date(`${yyyyMM}-01T00:00:00`);
@@ -109,14 +119,7 @@ const AttendanceReport = () => {
     );
   };
 
-  const handleReportClick = (type) => {
-    if (type === "excel") {
-      exportAttendanceExcel(attendanceSummary);
-    }
-    if (type === "pdf") {
-      exportAttendancePDF(attendanceSummary);
-    }
-  };
+
 
   const handleDownloadExcel = () => {
     exportAttendanceExcel(summaryData.results, selectedMonth);
@@ -132,9 +135,18 @@ const AttendanceReport = () => {
       sortable: false,
       render: (row, index) => index + 1 + (currentPage - 1) * 20,
     },
-    {
-      header: "Employee Name",
+   
+     {
+      header: "Employee name",
       accessor: "employee_name",
+      render: (row) => (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span style={{ fontWeight: 600 }}>
+            {row.employee_name ? row.employee_name.charAt(0).toUpperCase() + row.employee_name.slice(1) : ""}
+          </span>
+          <span style={{ fontSize: 12, color: "#888" }}>{row.employee_id}</span>
+        </div>
+      ),
     },
     {
       header: "Department",
@@ -179,9 +191,9 @@ const AttendanceReport = () => {
     <Container>
       <ReusableHeader
         title="Employees Attendance Report"
-        breadcrumbs={["Dashboard", "Employees", "Employees Attendance Report"]}
-         buttonText="📊 Monthly Report (Excel)"
-                    onButtonClick={() => console.log("handleDownloadExcel")}
+        breadcrumbs={["Employees", "Employees Attendance Report"]}
+        buttonText="📊 Monthly Report (Excel)"
+        onButtonClick={handleDownloadExcel}
       />
       <ReusableFilter
         search={searchTerm}

@@ -40,52 +40,83 @@ export const RightSection = styled.div`
   }
 `;
 
-export const PageTitle = styled.h2`
-  margin: 0;
-  font-size: 24px;
-  font-weight: 500;
-  color: #3250BC;
-  font-weight: "poppins", sans-serif;
-`;
-
-export const Breadcrumb = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  /* margin-top: 8px; */
-`;
-
-export const BreadcrumbItem = styled.span`
-  font-size: 14px;
-  color: #666;
-`;
-
-export const ActionButton = styled.button`
-  height: 40px;
-  padding: 0 20px;
-  border: none;
-  border-radius: 5px;
-  background: #3352BA;
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: .3s;
-
-  &:hover {
-    background: #1638b8;
-  }
-
-  @media (max-width: 480px) {
-    width: 100%;
-  }
-`;
 export const TitleRow = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
 `;
+
+export const PageTitle = styled.h2`
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #3250bc;
+  line-height: 1.3;
+`;
+
+export const Breadcrumb = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 3px;
+  font-family: "Poppins", sans-serif;
+`;
+
+export const BreadcrumbItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  font-size: 14px;
+  font-weight: ${({ $active }) => ($active ? "400" : "400")};
+  color: ${({ $active }) => ($active ? "#888" : "#888")};
+
+  line-height: 20px;
+  white-space: nowrap;
+`;
+
+export const HomeIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #888;
+  font-size: 16px;
+`;
+
+export const Separator = styled.span`
+  display: flex;
+  align-items: center;
+
+  color: #333;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 16px;
+`;
+
+// export const ActionButton = styled.button`
+//   height: 40px;
+//   padding: 0 20px;
+//   border: none;
+//   border-radius: 5px;
+//   background: #3352ba;
+//   color: white;
+//   font-size: 14px;
+//   font-weight: 500;
+//   cursor: pointer;
+//   white-space: nowrap;
+//   transition: 0.3s;
+
+//   &:hover {
+//     background: #1638b8;
+//   }
+
+//   @media (max-width: 480px) {
+//     width: 100%;
+//   }
+// `;
 
 export const BackButton = styled.button`
   width: 36px;
@@ -101,11 +132,65 @@ export const BackButton = styled.button`
 
   color: #3352ba;
   font-size: 20px;
-
   transition: 0.3s;
 
   &:hover {
     background: #3352ba;
     color: #fff;
+  }
+`;
+export const ActionButton = styled.button`
+  height: 40px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 5px;
+  background: #3352ba;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.3s;
+
+  &:hover {
+    background: #1638b8;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
+`;
+
+export const HeaderButton = styled.button`
+  height: 40px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.3s;
+
+  background: ${({ $variant }) => {
+    switch ($variant) {
+      case "danger":
+        return "#DB0F12";
+      case "success":
+        return "#15B03E";
+      case "blue":
+        return "#3352BA";
+      default:
+        return "#3352ba";
+    }
+  }};
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
   }
 `;

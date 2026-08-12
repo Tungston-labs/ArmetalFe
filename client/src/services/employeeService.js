@@ -213,4 +213,31 @@ export const sendEmail = async (data) => {
 };
 
 
+export const fetchDeletedEmployees = async ({
+  page = 1,
+  search = "",
+  department = "",
+  deleted_date = "",
+}) => {
+  const params = {
+    page,
+  };
 
+  if (search) {
+    params.search = search;
+  }
+
+  if (department) {
+    params.department = department;
+  }
+
+  if (deleted_date) {
+    params.deleted_date = deleted_date;
+  }
+
+  const response = await API.get("/employees/deleted/", {
+    params,
+  });
+
+  return response.data;
+};

@@ -12,8 +12,8 @@ export const Overlay = styled.div`
 `;
 
 export const Modal = styled.div`
-  width: 100%;
-  max-width: 480px;
+  width: 40%;
+  /* max-width: 480px; */
   /* background: #2b2b2b; */
   background: white;
   border-radius: 12px;
@@ -174,5 +174,93 @@ export const SaveBtn = styled.button`
 
   &:hover {
     background: #2f47a0;
+  }
+`;
+
+export const SearchInput = styled.input`
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 13px;
+  color: #000;
+
+  &:focus {
+    outline: none;
+    border-color: #3352ba;
+  }
+`;
+
+export const EmployeeList = styled.div`
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 10px;
+`;
+
+export const EmployeeItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+
+  background: ${({ $selected }) =>
+    $selected ? "#f0f3ff" : "#fff"};
+
+  &:hover {
+    background: #f5f6ff;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+export const Checkbox = styled.input`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+`;
+
+export const SelectedCount = styled.div`
+  font-size: 12px;
+  color: #3352ba;
+  font-weight: 500;
+  margin-bottom: 8px;
+`;
+
+export const SelectedEmployees = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 15px;
+`;
+
+export const SelectedEmployee = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: #eef2ff;
+  color: #3352ba;
+  border-radius: 15px;
+  font-size: 11px;
+`;
+
+export const RemoveBtn = styled.button`
+  border: none;
+  background: transparent;
+  color: #3352ba;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 0;
+
+  &:hover {
+    color: red;
   }
 `;

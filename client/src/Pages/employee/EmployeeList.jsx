@@ -16,7 +16,7 @@ import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import { Status } from "../../Components/ReusableTable/ReusableTable.styles";
 import ReusableConfirmModal from "../../Components/modals/ReusableConfirmModal";
 import ReusablePagination from "../../Components/Pagination/ReusablePagination";
-
+import { useEmployeeColumns } from "./useEmployeeColumns.jsx";
 const EmployeeList = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -88,7 +88,12 @@ const EmployeeList = () => {
         setShowDeleteModal(false);
         setSelectedEmployeeId(null);
     };
-
+  const columns = useEmployeeColumns({
+        page,
+        paginationLimit,
+        navigate,
+        onDeleteClick: handleDeleteClick,
+    });
     const filteredEmployees = Array.isArray(employeeList)
         ? employeeList.filter((emp) => {
             const searchValue = debouncedSearch.toLowerCase().trim();
@@ -103,84 +108,12 @@ const EmployeeList = () => {
         })
         : [];
 
-    const columns = [
-        {
-            header: "Sl No",
-            accessor: "slno",
-            sortable: false,
-            render: (_row, index) =>
-                index + 1 + (page - 1) * paginationLimit,
-        },
-        {
-            header: "Employee name",
-            accessor: "name",
-            render: (row) => (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontWeight: 600 }}>
-                        {row.name ? row.name.charAt(0).toUpperCase() + row.name.slice(1) : ""}
-                    </span>
-                    <span style={{ fontSize: 12, color: "#888" }}>{row.email}</span>
-                </div>
-            ),
-        },
-        { header: "Username", accessor: "employee_id" },
-        { header: "Employee ID", accessor: "employee_code" },
-        {
-            header: "Job Position",
-            accessor: "designation",
-            render: (row) => (
-                <TruncatedText title={row.designation?.toUpperCase()}>
-                    {row.designation?.toUpperCase()}
-                </TruncatedText>
-            ),
-        },
-        {
-            header: "Department",
-            accessor: "department",
-            render: (row) => <TruncatedText title={row.department}>{row.department}</TruncatedText>,
-        },
-        {
-            header: "Status",
-            accessor: "status",
-            sortable: false,
-            render: (row) => (
-                <Status $status={row.status}>
-                    {row.status || "N/A"}
-                </Status>
-            ),
-        },
-        {
-            header: "Action",
-            accessor: "action",
-            sortable: false,
-            render: (row) => (
-                <div style={{ display: "flex", gap: 12 }}>
-                    <FaEdit
-                        style={{ cursor: "pointer" }}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/ViewBasic/${row.id}`);
-                        }}
-                    />
-                    <FaTrash
-                        color="red"
-                        style={{ cursor: "pointer" }}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteClick(row.id);
-                        }}
-                    />
-                </div>
-            ),
-        },
-    ];
-
     return (
         <>
             <Container>
                 <ReusableHeader
                     title="Employees"
-                    breadcrumbs={["Dashboard", "Employees"]}
+                    breadcrumbs={["Employees"]}
                     buttonText="+ ADD NEW EMPLOYEE"
                     onButtonClick={() => navigate("/basic-details")}
                 />
