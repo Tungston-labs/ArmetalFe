@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  getSimpleNotifications,
+} from "../../../../Redux/dashboardSlice";
 
 import {
   ModalOverlay,
@@ -30,78 +35,43 @@ import {
   FiX,
 } from "react-icons/fi";
 
-const notifications = [
-  {
-    id: 1,
-    title: "Lorem Ipsum is simply dummy",
-    description: "Learn more about managing account info and activity",
-    time: "1 day ago",
-    section: "Today",
-  },
-  {
-    id: 2,
-    title: "Lorem Ipsum is simply dummy",
-    description: "Learn more about managing account info and activity",
-    time: "1 day ago",
-    section: "Today",
-  },
-  {
-    id: 3,
-    title: "Lorem Ipsum is simply dummy",
-    description: "Learn more about managing account info and activity",
-    time: "1 day ago",
-    section: "Today",
-  },
-  {
-    id: 4,
-    title: "Lorem Ipsum is simply dummy",
-    description: "Learn more about managing account info and activity",
-    time: "1 day ago",
-    section: "Yesterday",
-  },
-  {
-    id: 5,
-    title: "Lorem Ipsum is simply dummy",
-    description: "Learn more about managing account info and activity",
-    time: "1 day ago",
-    section: "Yesterday",
-  },
-  {
-    id: 6,
-    title: "Lorem Ipsum is simply dummy",
-    description: "Learn more about managing account info and activity",
-    time: "1 day ago",
-    section: "Yesterday",
-  },
-  {
-    id: 7,
-    title: "Lorem Ipsum is simply dummy",
-    description: "Learn more about managing account info and activity",
-    time: "1 day ago",
-    section: "Yesterday",
-  },
-  {
-    id: 8,
-    title: "Lorem Ipsum is simply dummy",
-    description: "Learn more about managing account info and activity",
-    time: "1 day ago",
-    section: "Yesterday",
-  },
-];
-
 const NotificationModal = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch();
+
   const [showSearch, setShowSearch] = useState(false);
   const [search, setSearch] = useState("");
 
+  const {
+    simpleNotifications,
+    simpleNotificationsLoading,
+    simpleNotificationsError,
+  } = useSelector((state) => state.dashboard);
+
+  // Fetch notifications when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      dispatch(getSimpleNotifications());
+    }
+  }, [isOpen, dispatch]);
+
   if (!isOpen) return null;
+
+  // Make sure API response is always treated as an array
+  const notifications = Array.isArray(simpleNotifications)
+    ? simpleNotifications
+    : [];
 
   // Search notifications
   const filteredNotifications = notifications.filter((notification) => {
     const searchText = search.toLowerCase();
 
     return (
-      notification.title.toLowerCase().includes(searchText) ||
-      notification.description.toLowerCase().includes(searchText)
+      String(notification.title || "")
+        .toLowerCase()
+        .includes(searchText) ||
+      String(notification.description || "")
+        .toLowerCase()
+        .includes(searchText)
     );
   });
 
@@ -129,9 +99,13 @@ const NotificationModal = ({ isOpen, onClose }) => {
         </Description>
       </Content>
 
-      <Time>{notification.time}</Time>
+      <Time>
+        {notification.time}
+      </Time>
     </NotificationItem>
   );
+
+  const todayCount = todayNotifications.length;
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -148,7 +122,12 @@ const NotificationModal = ({ isOpen, onClose }) => {
               <Title>Notifications</Title>
 
               <Subtitle>
-                You have <strong>2 Notifications</strong> today.
+                You have{" "}
+                <strong>
+                  {todayCount} Notification
+                  {todayCount !== 1 ? "s" : ""}
+                </strong>{" "}
+                today.
               </Subtitle>
             </TitleWrapper>
           </HeaderLeft>
@@ -169,7 +148,6 @@ const NotificationModal = ({ isOpen, onClose }) => {
           </HeaderActions>
         </Header>
 
-        {/* Search Box */}
         {showSearch && (
           <SearchBox>
             <FiSearch size={16} />
@@ -191,26 +169,38 @@ const NotificationModal = ({ isOpen, onClose }) => {
         )}
 
         <NotificationList>
-          {todayNotifications.length > 0 && (
-            <>
-              <SectionTitle>Today</SectionTitle>
-
-              {todayNotifications.map(renderNotification)}
-            </>
-          )}
-
-          {yesterdayNotifications.length > 0 && (
-            <>
-              <SectionTitle>Yesterday</SectionTitle>
-
-              {yesterdayNotifications.map(renderNotification)}
-            </>
-          )}
-
-          {filteredNotifications.length === 0 && (
+          {simpleNotificationsLoading ? (
             <NoResults>
-              No notifications found
+              Loading notifications...
             </NoResults>
+          ) : simpleNotificationsError ? (
+            <NoResults>
+              Failed to load notifications.
+            </NoResults>
+          ) : (
+            <>
+              {todayNotifications.length > 0 && (
+                <>
+                  <SectionTitle>Today</SectionTitle>
+
+                  {todayNotifications.map(renderNotification)}
+                </>
+              )}
+
+              {yesterdayNotifications.length > 0 && (
+                <>
+                  <SectionTitle>Yesterday</SectionTitle>
+
+                  {yesterdayNotifications.map(renderNotification)}
+                </>
+              )}
+
+              {filteredNotifications.length === 0 && (
+                <NoResults>
+                  No notifications found
+                </NoResults>
+              )}
+            </>
           )}
         </NotificationList>
       </NotificationModalContainer>

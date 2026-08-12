@@ -31,7 +31,7 @@ export const LeftSection = styled.div`
 export const RightSection = styled.div`
   display:flex;
   justify-content:flex-end;
-
+gap:10px;
   @media(max-width:992px){
     justify-content:stretch;
   }
@@ -103,5 +103,89 @@ export const DateInput = styled.input`
 
   @media(max-width:768px){
     width:100%;
+  }
+`;
+
+export const MoreOptionsWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+
+
+export const MoreOptionsMenu = styled.div`
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #ffffff;
+  border: 0.5px solid #eeeeee;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 8px;
+  min-width: 140px;
+  z-index: 20;
+`;
+
+export const MenuItem = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  font-size: 14px;
+  color: #1a1a1a;
+  cursor: pointer;
+  border-radius: 6px;
+
+  &:hover {
+    background: #f7f8fa;
+  }
+`;
+export const MoreOptionsButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 46px;
+  padding: 0 10px;
+  border: 1px solid ${({ $active }) => ($active ? "#16a34a" : "#2563eb")};
+  border-radius: 8px;
+  background: ${({ $active }) => ($active ? "#ecfdf5" : "#ffffff")};
+  cursor: pointer;
+  color: #1a1a1a;
+  font-size: 14px;
+
+  svg {
+    font-size: 14px;
+  }
+
+  &:hover {
+    background: ${({ $active }) => ($active ? "#dcf5e6" : "#f7f8fa")};
+  }
+`;
+
+export const MenuHeader = styled.div`
+  padding: 6px 8px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-bottom: 0.5px solid #eeeeee;
+  margin-bottom: 4px;
+`;
+
+export const MenuStatusItem = styled.button`
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    background: #f7f8fa;
   }
 `;

@@ -5,7 +5,6 @@ import FinanceModal from "./NewFinance";
 import { createFinance, fetchFinanceList } from "../../Redux/financeThunks";
 import StatsCards from "../../Components/ StatsCards/StatsCards";
 import Pagination from "../../Components/Pagination/Pagination";
-import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
