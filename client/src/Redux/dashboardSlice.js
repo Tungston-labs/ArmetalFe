@@ -12,7 +12,8 @@ import {
   fetchTodayEmployeeStats,
   fetchHolidaySummary,
   fetchProjectEmployeeCount,
-  fetchDashboardCounts
+  fetchDashboardCounts,
+  fetchWeeklyAttendanceStats,
 } from '../services/dashboardService';
 
 
@@ -40,18 +41,6 @@ export const getDashCounts = createAsyncThunk(
     }
   }
 );
-
-export const getReimbursementCounts = createAsyncThunk(
-  'dashboard/getReimbursementCounts',
-  async (_, thunkAPI) => {
-    try {
-      return await fetchReimbursementCounts();
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data);
-    }
-  }
-);
-
 export const getReimbursementMonthwise = createAsyncThunk(
   'dashboard/getReimbursementMonthwise',
   async (_, thunkAPI) => {
@@ -130,18 +119,6 @@ export const getHolidaySummary = createAsyncThunk(
     }
   }
 );
-
-export const getProjectEmployeeCount = createAsyncThunk(
-  'dashboard/getProjectEmployeeCount',
-  async (_, thunkAPI) => {
-    try {
-      return await fetchProjectEmployeeCount();
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data);
-    }
-  }
-);
-
 export const getDashboardCounts = createAsyncThunk(
   "dashboard/getDashboardCounts",
   async (_, thunkAPI) => {
@@ -155,12 +132,50 @@ export const getDashboardCounts = createAsyncThunk(
   }
 );
 
+export const getProjectEmployeeCount = createAsyncThunk(
+  "dashboard/getProjectEmployeeCount",
+  async (_, thunkAPI) => {
+    try {
+      return await fetchProjectEmployeeCount();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch project employee count"
+      );
+    }
+  }
+);
+export const getWeeklyAttendanceStats = createAsyncThunk(
+  "dashboard/getWeeklyAttendanceStats",
+  async (_, thunkAPI) => {
+    try {
+      return await fetchWeeklyAttendanceStats();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch weekly attendance stats"
+      );
+    }
+  }
+);
+
+export const getReimbursementCounts = createAsyncThunk(
+  "dashboard/getReimbursementCounts",
+  async (_, thunkAPI) => {
+    try {
+      return await fetchReimbursementCounts();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data ||
+        "Failed to fetch reimbursement counts"
+      );
+    }
+  }
+);
 const dashboardSlice = createSlice({
   name: 'dashboard',
   initialState: {
     summary: {},
     counts: {},
-     dashboardCounts: {},
+    dashboardCounts: {},
     reimbursements: {},
     reimbursementMonthwise: {},
     departmentSummary: {},
@@ -170,10 +185,16 @@ const dashboardSlice = createSlice({
     todayStats: {},
     holidaySummary: {},
     projectEmployeeCount: {},
+    weeklyAttendanceStats: {
+      week_start: "",
+      week_end: "",
+      total_employees: 0,
+      data: [],
+    },
     loading: {
       summary: false,
       counts: false,
-          dashboardCounts: false,
+      dashboardCounts: false,
       reimbursements: false,
       reimbursementMonthwise: false,
       departmentSummary: false,
@@ -183,33 +204,34 @@ const dashboardSlice = createSlice({
       todayStats: false,
       holidaySummary: false,
       projectEmployeeCount: false,
+      weeklyAttendanceStats: false,
     },
-    
+
     error: null
   },
 
   reducers: {},
 
   extraReducers: (builder) => {
-    
+
     builder
-    .addCase(getDashboardSummary.pending, (state) => {
-      state.loading.summary = true;
-      state.error = null;
-    })
-    .addCase(getDashboardSummary.fulfilled, (state, action) => {
-      state.loading.summary = false;
-      state.summary = action.payload;
-    })
-    .addCase(getDashboardSummary.rejected, (state, action) => {
-      state.loading.summary = false;
-      state.error = action.payload;
-    });
-    
+      .addCase(getDashboardSummary.pending, (state) => {
+        state.loading.summary = true;
+        state.error = null;
+      })
+      .addCase(getDashboardSummary.fulfilled, (state, action) => {
+        state.loading.summary = false;
+        state.summary = action.payload;
+      })
+      .addCase(getDashboardSummary.rejected, (state, action) => {
+        state.loading.summary = false;
+        state.error = action.payload;
+      });
+
 
 
     addAsync(builder, getDashCounts, "counts");
-      addAsync(  builder,  getDashboardCounts, "dashboardCounts");
+    addAsync(builder, getDashboardCounts, "dashboardCounts");
     addAsync(builder, getReimbursementCounts, "reimbursements");
     addAsync(builder, getReimbursementMonthwise, "reimbursementMonthwise");
     addAsync(builder, getDepartmentDashboard, "departmentSummary");
@@ -218,7 +240,9 @@ const dashboardSlice = createSlice({
     addAsync(builder, getSimpleNotifications, "notifications");
     addAsync(builder, getTodayEmployeeStats, "todayStats");
     addAsync(builder, getHolidaySummary, "holidaySummary");
+    addAsync(builder, getWeeklyAttendanceStats, "weeklyAttendanceStats");
     addAsync(builder, getProjectEmployeeCount, "projectEmployeeCount");
+
   }
 });
 
@@ -238,6 +262,6 @@ function addAsync(builder, thunk, key) {
       state.error = action.payload;
     });
 }
-                                                                                 
+
 
 export default dashboardSlice.reducer;

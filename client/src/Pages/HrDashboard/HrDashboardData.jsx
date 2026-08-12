@@ -132,30 +132,30 @@ export const payrollData = [
 // Reimbursement
 // ===============================
 
-export const reimbursementData = [
+export const getReimbursementData = (data = {}) => [
   {
     name: "Approved",
-    value: 110,
-    amount: "SAR 14,65",
-    color: "#4169E1",
+    value: data.approved_count ?? 0,
+    amount: data.approved_amount ?? 0,
+    color: "#4F6EF7",
   },
   {
-    name: "Paid",
-    value: 225,
-    amount: "SAR 12,40",
-    color: "#16A34A",
-  },
-  {
-    name: "Pending",
-    value: 95,
-    amount: "SAR 9,25",
-    color: "#FDBA2D",
+    name: "Verification",
+    value: data.verification_count ?? 0,
+    amount: 0,
+    color: "#10B981",
   },
   {
     name: "Rejected",
-    value: 48,
-    amount: "SAR 4,80",
-    color: "#FF2D0A",
+    value: data.rejected_count ?? 0,
+    amount: 0,
+    color: "#F43F5E",
+  },
+  {
+    name: "Pending",
+    value: data.pending_count ?? 0,
+    amount: 0,
+    color: "#F59E0B",
   },
 ];
 
@@ -163,18 +163,18 @@ export const reimbursementData = [
 // Resource Allocation
 // ===============================
 
-export const resourceAllocationData = [
+export const getResourceAllocationData = (data = {}) => [
   {
     name: "Onsite",
-    value: 0,
+    value: data.on_site ?? 0,
   },
   {
     name: "Variant",
-    value: 3,
+    value: data.variant ?? 0,
   },
   {
     name: "Bench",
-    value: 0,
+    value: data.bench ?? 0,
   },
 ];
 

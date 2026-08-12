@@ -15,10 +15,6 @@ export const fetchDashCounts = async () => {
   return response.data;
 };
 
-export const fetchReimbursementCounts = async () => {
-  const response = await API.get(`${BASE}reimbursement/counts/`);
-  return response.data;
-};
 
 export const fetchReimbursementMonthwise = async () => {
   const response = await API.get(`${BASE}reimbursement/monthwise/`);
@@ -56,13 +52,27 @@ export const fetchHolidaySummary = async () => {
   return response.data;
 };
 
-export const fetchProjectEmployeeCount = async () => {
-  const response = await API.get(`${BASE}project/employee-count/`);
-  return response.data;
-};
+
 
 export const fetchDashboardCounts = async () => {
   const response = await API.get(`${BASE}counts/`);
   return response.data;
 };
 
+export const fetchProjectEmployeeCount = async () => {
+  const response = await API.get(`${BASE}project/count/`);
+  return response.data;
+};
+
+export const fetchWeeklyAttendanceStats = async () => {
+  const response = await API.get(`${BASE}weekly-attendance/`);
+  return response.data;
+};
+
+export const fetchReimbursementCounts = async () => {
+  const response = await API.get(`${BASE}reimbursement/counts/`);
+
+  console.log("Reimbursement Counts:", response.data);
+
+  return response.data;
+};
