@@ -11,7 +11,8 @@ import {
   fetchSimpleNotifications,
   fetchTodayEmployeeStats,
   fetchHolidaySummary,
-  fetchProjectEmployeeCount
+  fetchProjectEmployeeCount,
+  fetchDashboardCounts
 } from '../services/dashboardService';
 
 
@@ -107,12 +108,14 @@ export const getSimpleNotifications = createAsyncThunk(
 );
 
 export const getTodayEmployeeStats = createAsyncThunk(
-  'dashboard/getTodayEmployeeStats',
+  "dashboard/getTodayEmployeeStats",
   async (_, thunkAPI) => {
     try {
       return await fetchTodayEmployeeStats();
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data);
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch today's employee stats"
+      );
     }
   }
 );
@@ -139,13 +142,25 @@ export const getProjectEmployeeCount = createAsyncThunk(
   }
 );
 
-
+export const getDashboardCounts = createAsyncThunk(
+  "dashboard/getDashboardCounts",
+  async (_, thunkAPI) => {
+    try {
+      return await fetchDashboardCounts();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch dashboard counts"
+      );
+    }
+  }
+);
 
 const dashboardSlice = createSlice({
   name: 'dashboard',
   initialState: {
     summary: {},
     counts: {},
+     dashboardCounts: {},
     reimbursements: {},
     reimbursementMonthwise: {},
     departmentSummary: {},
@@ -158,6 +173,7 @@ const dashboardSlice = createSlice({
     loading: {
       summary: false,
       counts: false,
+          dashboardCounts: false,
       reimbursements: false,
       reimbursementMonthwise: false,
       departmentSummary: false,
@@ -193,6 +209,7 @@ const dashboardSlice = createSlice({
 
 
     addAsync(builder, getDashCounts, "counts");
+      addAsync(  builder,  getDashboardCounts, "dashboardCounts");
     addAsync(builder, getReimbursementCounts, "reimbursements");
     addAsync(builder, getReimbursementMonthwise, "reimbursementMonthwise");
     addAsync(builder, getDepartmentDashboard, "departmentSummary");

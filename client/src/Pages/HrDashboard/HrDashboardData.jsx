@@ -1,76 +1,77 @@
-// ===============================
-// Dashboard Statistics
-// ===============================
-
 import { BiUser } from "react-icons/bi";
 import { CiWallet } from "react-icons/ci";
 import { FaRegBuilding } from "react-icons/fa";
 import { AiOutlineFileText } from "react-icons/ai";
-export const dashboardStats = [
+
+export const getDashboardStats = (data = {}) => [
   {
     id: 1,
     title: "Total Employees",
-    value: 248,
-    icon: <BiUser/>,
+    value: data.total_employees ?? 0,
+    icon: <BiUser />,
     iconBg: "#EEF2FF",
     iconColor: "#4F46E5",
-    percentage: "+12%",
+    percentage: `+${data.employee_change_percentage ?? 0}%`,
     percentageColor: "#16A34A",
     description: "Compared to last month",
   },
-   {
+
+  {
     id: 2,
     title: "Departments",
-    value: 18,
-    icon: <FaRegBuilding/>,
+    value: data.total_departments ?? 0,
+    icon: <FaRegBuilding />,
     iconBg: "#FFF7ED",
     iconColor: "#F97316",
-    percentage: "+2",
+    percentage: `+${data.new_departments ?? 0}`,
     percentageColor: "#F97316",
     description: "New departments",
   },
+
   {
     id: 3,
-    title: "Total project",
-    value: 18,
-    icon: <FaRegBuilding/>,
+    title: "Total Project",
+    value: data.total_projects ?? 0,
+    icon: <FaRegBuilding />,
     iconBg: "#FFF7ED",
     iconColor: "#F97316",
-    percentage: "+2",
+    percentage: `+${data.new_projects ?? 0}`,
     percentageColor: "#F97316",
-    description: "New departments",
+    description: "New projects",
   },
+
   {
     id: 4,
     title: "Leave Requests",
-    value: 14,
-    icon: <AiOutlineFileText/>,
+    value: data.pending_leave_requests ?? 0,
+    icon: <AiOutlineFileText />,
     iconBg: "#FEF2F2",
     iconColor: "#EF4444",
-    percentage: "-5%",
+    percentage: `${data.leave_change_percentage ?? 0}%`,
     percentageColor: "#EF4444",
     description: "Compared to yesterday",
   },
+
   {
     id: 5,
     title: "Monthly Payroll",
-    value: "$78,500",
-    icon: <CiWallet/>,
+    value: `₹${data.monthly_payroll_amount ?? 0}`,
+    icon: <CiWallet />,
     iconBg: "#ECFDF3",
     iconColor: "#10B981",
-    percentage: "+8%",
+    percentage: `+${data.payroll_change_percentage ?? 0}%`,
     percentageColor: "#16A34A",
     description: "Compared to last month",
   },
 
   {
     id: 6,
-    title: "Visa ",
-    value: 14,
-    icon: <AiOutlineFileText/>,
+    title: "Visa",
+    value: data.expiry_count ?? 0,
+    icon: <AiOutlineFileText />,
     iconBg: "#FEF2F2",
     iconColor: "#EF4444",
-    percentage: "-5%",
+    percentage: `${data.expiry_change_percentage ?? 0}%`,
     percentageColor: "#EF4444",
     description: "Compared to yesterday",
   },
