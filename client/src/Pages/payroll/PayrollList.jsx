@@ -15,7 +15,7 @@ import {
   getPayrollCards,
 } from "./usePayrollList";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
-
+import { HeaderButton } from '../../Components/ReusableTable/ReusableHeader.styles';
 const PayrollList = () => {
 
   const LIMIT = 20;
@@ -40,9 +40,12 @@ const PayrollList = () => {
     handlePageChange,
     showModal,
     selectedEmployee,
+    setSelectedEmployee,
+    setShowModal,
     handleCloseModal,
+
     showDeductionModal,
-    selectedDeductionEmployee,
+    setShowDeductionModal,
     handleCloseDeductionModal,
   } = usePayrollList();
 
@@ -81,23 +84,39 @@ const PayrollList = () => {
   });
 
   const payrollCards = getPayrollCards();
-
-  // month/year are separate numeric fields in the hook; ReusableFilter's
-  // date field expects a single value, so combine to "YYYY-MM" for display
-  // and split back out when the user picks a new date.
   const monthValue = `${selectedYear}-${String(selectedMonth).padStart(2, "0")}`;
   const handleDateChange = (value) => {
     const [year, month] = value.split("-");
     setSelectedYear(Number(year));
     setSelectedMonth(Number(month));
   };
-
+  const handleAddIncentive = () => {
+    setShowModal(true);
+  };
+const handleAddDeduction = () => {
+  setShowDeductionModal(true);
+};
   return (
     <Container>
       <ReusableHeader
-        title="Payroll Overview"
+        title="Payroll Overview – May 2026"
         breadcrumbs={["Payroll"]}
-      />
+      >
+        <HeaderButton
+          $variant="danger"
+          onClick={handleAddDeduction}
+        >
+          + ADD DEDUCTION
+        </HeaderButton>
+
+        <HeaderButton
+          $variant="success"
+          onClick={handleAddIncentive}
+        >
+          + ADD INCENTIVE
+        </HeaderButton>
+      </ReusableHeader>
+
       <StatsCards cards={payrollCards} />
       <ReusableFilter
         search={searchTerm}
@@ -133,23 +152,24 @@ const PayrollList = () => {
         onPageChange={handlePageChange}
       />
 
-      {showModal && selectedEmployee && (
+      {showModal && (
         <IncentiveModal
-          employee={selectedEmployee}
+          employees={sortedData}
           month={selectedMonth}
           year={selectedYear}
           onClose={handleCloseModal}
         />
       )}
 
-      {showDeductionModal && selectedDeductionEmployee && (
-        <DeductionModal
-          employee={selectedDeductionEmployee}
-          month={selectedMonth}
-          year={selectedYear}
-          onClose={handleCloseDeductionModal}
-        />
-      )}
+      {showDeductionModal && (
+  <DeductionModal
+    employees={sortedData}
+    month={selectedMonth}
+    year={selectedYear}
+    onClose={handleCloseDeductionModal}
+  />
+)}
+
     </Container>
   );
 };

@@ -100,9 +100,9 @@ const ContractAndVisaExpiry = () => {
     },
     {
       header: "Employee ID",
-      accessor: "employee_id",
+      accessor: "employee_code",
       sortable: false,
-      render: (row) => row.employee_id,
+      render: (row) => row.employee_code,
     },
     {
       header: "Email",

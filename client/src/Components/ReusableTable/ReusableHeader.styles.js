@@ -96,6 +96,49 @@ export const Separator = styled.span`
   line-height: 16px;
 `;
 
+// export const ActionButton = styled.button`
+//   height: 40px;
+//   padding: 0 20px;
+//   border: none;
+//   border-radius: 5px;
+//   background: #3352ba;
+//   color: white;
+//   font-size: 14px;
+//   font-weight: 500;
+//   cursor: pointer;
+//   white-space: nowrap;
+//   transition: 0.3s;
+
+//   &:hover {
+//     background: #1638b8;
+//   }
+
+//   @media (max-width: 480px) {
+//     width: 100%;
+//   }
+// `;
+
+export const BackButton = styled.button`
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #3352ba;
+  font-size: 20px;
+  transition: 0.3s;
+
+  &:hover {
+    background: #3352ba;
+    color: #fff;
+  }
+`;
 export const ActionButton = styled.button`
   height: 40px;
   padding: 0 20px;
@@ -118,24 +161,36 @@ export const ActionButton = styled.button`
   }
 `;
 
-export const BackButton = styled.button`
-  width: 36px;
-  height: 36px;
+export const HeaderButton = styled.button`
+  height: 40px;
+  padding: 0 14px;
   border: none;
-  background: #f5f5f5;
-  border-radius: 50%;
+  border-radius: 5px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #3352ba;
-  font-size: 20px;
+  white-space: nowrap;
   transition: 0.3s;
 
+  background: ${({ $variant }) => {
+    switch ($variant) {
+      case "danger":
+        return "#DB0F12";
+      case "success":
+        return "#15B03E";
+      case "blue":
+        return "#3352BA";
+      default:
+        return "#3352ba";
+    }
+  }};
+
   &:hover {
-    background: #3352ba;
-    color: #fff;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
   }
 `;
