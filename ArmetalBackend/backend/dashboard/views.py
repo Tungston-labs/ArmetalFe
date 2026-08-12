@@ -713,55 +713,266 @@ class TodayEmployeeStatsAPI(APIView):
 # --------------------------------------------------------------------
 # 9. HOLIDAY SUMMARY
 # --------------------------------------------------------------------
-class HolidaySummaryAPI(APIView):
+# class HolidaySummaryAPI(APIView):
+#     permission_classes = [IsAuthenticated, IsHRAdmin]
+
+#     def get(self, request):
+#         try:
+#             today = date.today()
+#             company = request.user.company
+
+#             holidays = PublicHoliday.objects.filter(company=company).order_by("date")
+
+#             holiday_data = [
+#                 {
+#                     "id": h.id,
+#                     "date": h.date,
+#                     "day": h.day,
+#                     "description": h.description,
+#                     "holiday_type": h.holiday_type,
+#                 }
+#                 for h in holidays
+#             ]
+
+#             upcoming = PublicHoliday.objects.filter(
+#                 company=company,
+#                 date__gte=today
+#             ).exclude(
+#                 holiday_type__in=["off_day", "weekend"]
+#             ).order_by("date")[:5]
+
+#             upcoming_data = [
+#                 {
+#                     "date": h.date,
+#                     "description": h.description,
+#                     "holiday_type": h.holiday_type,
+#                     "days_left": (h.date - today).days
+#                 }
+#                 for h in upcoming
+#             ]
+
+#             return Response({
+#                 "upcoming_holidays": upcoming_data,
+#                 "all_holidays": {
+#                     "count": holidays.count(),
+#                     "list": holiday_data
+#                 }
+#             })
+
+#         except Exception as e:
+#             return error(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+from datetime import date
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+
+from employee.models import Employee_db
+from holidays.models import PublicHoliday
+
+
+class UpcomingHolidayBirthdayAPI(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
     def get(self, request):
         try:
-            today = date.today()
             company = request.user.company
 
-            holidays = PublicHoliday.objects.filter(company=company).order_by("date")
+            if not company:
+                return error(
+                    "Company not assigned",
+                    status.HTTP_404_NOT_FOUND
+                )
 
-            holiday_data = [
-                {
-                    "id": h.id,
-                    "date": h.date,
-                    "day": h.day,
-                    "description": h.description,
-                    "holiday_type": h.holiday_type,
-                }
-                for h in holidays
-            ]
+            today = date.today()
 
-            upcoming = PublicHoliday.objects.filter(
+            # =====================================================
+            # UPCOMING HOLIDAYS
+            # =====================================================
+
+            upcoming_holidays = PublicHoliday.objects.filter(
                 company=company,
                 date__gte=today
             ).exclude(
                 holiday_type__in=["off_day", "weekend"]
             ).order_by("date")[:5]
 
-            upcoming_data = [
-                {
-                    "date": h.date,
-                    "description": h.description,
-                    "holiday_type": h.holiday_type,
-                    "days_left": (h.date - today).days
-                }
-                for h in upcoming
-            ]
+            holiday_data = []
+
+            for holiday in upcoming_holidays:
+                holiday_data.append({
+                    "id": holiday.id,
+                    "date": holiday.date,
+                    "day": holiday.day,
+                    "description": holiday.description,
+                    "holiday_type": holiday.holiday_type,
+                    "days_left": (
+                        holiday.date - today
+                    ).days
+                })
+
+            # =====================================================
+            # UPCOMING EMPLOYEE BIRTHDAYS
+            # =====================================================
+
+            employees = Employee_db.objects.filter(
+                department__company=company,
+                is_deleted=False,
+                dob__isnull=False
+            )
+
+            birthday_data = []
+
+            for employee in employees:
+
+                # Birthday in current year
+                birthday = employee.dob.replace(
+                    year=today.year
+                )
+
+                # If birthday already passed, use next year
+                if birthday < today:
+                    birthday = birthday.replace(
+                        year=today.year + 1
+                    )
+
+                days_left = (
+                    birthday - today
+                ).days
+
+                birthday_data.append({
+                    "employee_id": employee.employee_id,
+                    "employee_name": employee.name,
+                    "date_of_birth": employee.dob,
+                    "birthday": birthday,
+                    "days_left": days_left,
+                    "department": (
+                        employee.department.name
+                        if employee.department
+                        else None
+                    ),
+                    "profile_pic": (
+                        request.build_absolute_uri(
+                            employee.profile_pic.url
+                        )
+                        if employee.profile_pic
+                        else None
+                    )
+                })
+
+            # Sort by nearest birthday
+            birthday_data.sort(
+                key=lambda x: x["days_left"]
+            )
+
+            # Only next 5 birthdays
+            birthday_data = birthday_data[:5]
+
+            # =====================================================
+            # RESPONSE
+            # =====================================================
 
             return Response({
-                "upcoming_holidays": upcoming_data,
-                "all_holidays": {
-                    "count": holidays.count(),
-                    "list": holiday_data
-                }
+                "upcoming_holidays": holiday_data,
+                "upcoming_birthdays": birthday_data
             })
 
         except Exception as e:
-            return error(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return error(
+                str(e),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+class HolidayListAPI(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
 
+    def get(self, request):
+        try:
+            company = request.user.company
+
+            if not company:
+                return error(
+                    "Company not assigned",
+                    status.HTTP_404_NOT_FOUND
+                )
+
+            holidays = PublicHoliday.objects.filter(
+                company=company
+            )
+
+            # =====================================================
+            # YEAR FILTER
+            # =====================================================
+
+            year = request.query_params.get("year")
+
+            if year:
+                try:
+                    year = int(year)
+                except ValueError:
+                    return error(
+                        "Invalid year",
+                        status.HTTP_400_BAD_REQUEST
+                    )
+
+                holidays = holidays.filter(
+                    date__year=year
+                )
+
+            # =====================================================
+            # MONTH FILTER
+            # =====================================================
+
+            month = request.query_params.get("month")
+
+            if month:
+                try:
+                    month = int(month)
+
+                    if month < 1 or month > 12:
+                        raise ValueError
+
+                except ValueError:
+                    return error(
+                        "Invalid month",
+                        status.HTTP_400_BAD_REQUEST
+                    )
+
+                holidays = holidays.filter(
+                    date__month=month
+                )
+
+            # =====================================================
+            # ORDER
+            # =====================================================
+
+            holidays = holidays.order_by("date")
+
+            # =====================================================
+            # RESPONSE
+            # =====================================================
+
+            holiday_data = []
+
+            for holiday in holidays:
+                holiday_data.append({
+                    "id": holiday.id,
+                    "date": holiday.date,
+                    "day": holiday.day,
+                    "description": holiday.description,
+                    "holiday_type": holiday.holiday_type
+                })
+
+            return Response({
+                "count": len(holiday_data),
+                "results": holiday_data
+            })
+
+        except Exception as e:
+            return error(
+                str(e),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 # --------------------------------------------------------------------
 # 10. PROJECT EMPLOYEE COUNT (ON-SITE / VARIANT / BENCH)
@@ -961,6 +1172,165 @@ class WeeklyAttendanceStatsView(APIView):
                 "week_end": week_end,
                 "total_employees": total_employees,
                 "data": data
+            })
+
+        except Exception as e:
+            return error(
+                str(e),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
+from django.db import models
+from decimal import Decimal
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+
+from employee.models import Employee_db
+from payroll.models import EmployeePayrollRecord
+
+class MonthlyPayrollSummaryView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def get(self, request):
+        try:
+            company = request.user.company
+
+            if not company:
+                return error(
+                    "Company not assigned",
+                    status.HTTP_404_NOT_FOUND
+                )
+
+            # ---------------------------------------------
+            # YEAR FILTER
+            # ---------------------------------------------
+            year = request.query_params.get("year")
+
+            if not year:
+                year = date.today().year
+            else:
+                try:
+                    year = int(year)
+                except ValueError:
+                    return error(
+                        "Invalid year",
+                        status.HTTP_400_BAD_REQUEST
+                    )
+
+            # ---------------------------------------------
+            # COMPANY PAYROLL
+            # ---------------------------------------------
+            payroll_qs = EmployeePayrollRecord.objects.filter(
+                employee__department__company=company,
+                employee__is_deleted=False,
+                year=year,
+                status="Paid"
+            )
+
+            # ---------------------------------------------
+            # MONTH-WISE DATA
+            # ---------------------------------------------
+            monthly_data = []
+
+            for month in range(1, 13):
+
+                month_qs = payroll_qs.filter(
+                    month=month
+                )
+
+                totals = month_qs.aggregate(
+                    paid_salary=Coalesce(
+                        Sum("basic_salary"),
+                        Decimal("0")
+                    ),
+                    salary_increment=Coalesce(
+                        Sum("salary_increment"),
+                        Decimal("0")
+                    ),
+                    incentive=Coalesce(
+                        Sum("incentive_amount"),
+                        Decimal("0")
+                    ),
+                    deduction=Coalesce(
+                        Sum("deduction_amount"),
+                        Decimal("0")
+                    )
+                )
+
+                monthly_data.append({
+                    "month": month,
+                    "month_name": date(
+                        year,
+                        month,
+                        1
+                    ).strftime("%B"),
+
+                    "paid_salary": float(
+                        totals["paid_salary"]
+                    ),
+
+                    "salary_increment": float(
+                        totals["salary_increment"]
+                    ),
+
+                    "incentive": float(
+                        totals["incentive"]
+                    ),
+
+                    "deduction": float(
+                        totals["deduction"]
+                    )
+                })
+
+            # ---------------------------------------------
+            # YEAR TOTAL
+            # ---------------------------------------------
+            yearly_totals = payroll_qs.aggregate(
+                paid_salary=Coalesce(
+                    Sum("basic_salary"),
+                    Decimal("0")
+                ),
+                salary_increment=Coalesce(
+                    Sum("salary_increment"),
+                    Decimal("0")
+                ),
+                incentive=Coalesce(
+                    Sum("incentive_amount"),
+                    Decimal("0")
+                ),
+                deduction=Coalesce(
+                    Sum("deduction_amount"),
+                    Decimal("0")
+                )
+            )
+
+            return Response({
+                "year": year,
+
+                "year_total": {
+                    "paid_salary": float(
+                        yearly_totals["paid_salary"]
+                    ),
+
+                    "salary_increment": float(
+                        yearly_totals["salary_increment"]
+                    ),
+
+                    "incentive": float(
+                        yearly_totals["incentive"]
+                    ),
+
+                    "deduction": float(
+                        yearly_totals["deduction"]
+                    )
+                },
+
+                "monthly_data": monthly_data
             })
 
         except Exception as e:
