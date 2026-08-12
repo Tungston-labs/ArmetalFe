@@ -15,7 +15,8 @@ export const PlanCard = styled.div`
   margin-bottom: 1.5rem;
   width: 40%;
   height: auto;
-  gap: 1rem;  /* spacing between logo/details */
+  gap: 1rem;  
+  
 `;
 
 export const PlanIconWrapper = styled.div`
@@ -42,8 +43,6 @@ export const PlanIcon = styled.div`
 
 export const PlanDetails = styled.div`
   flex-grow: 1;
-
-
   h3 {
     font-size: 1rem;
     margin: 0 0 4px 0;
@@ -169,3 +168,43 @@ export const ScrollWrapper = styled.div`
 
 
 
+export const Toast = styled.div`
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: ${({ $type }) => ($type === "error" ? "#fcebeb" : "#eaf3de")};
+  color: ${({ $type }) => ($type === "error" ? "#a32d2d" : "#3b6d11")};
+  border: 1px solid ${({ $type }) => ($type === "error" ? "#f5b8b8" : "#bfe3a0")};
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  animation: toastIn 0.2s ease-out;
+
+  @keyframes toastIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
+export const SpinningIcon = styled.svg`
+  font-size: 18px;
+  animation: spin 0.8s linear infinite;
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;

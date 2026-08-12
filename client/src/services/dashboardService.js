@@ -60,3 +60,9 @@ export const fetchProjectEmployeeCount = async () => {
   const response = await API.get(`${BASE}project/employee-count/`);
   return response.data;
 };
+
+export const fetchDashboardCounts = async () => {
+  const response = await API.get(`${BASE}counts/`);
+  return response.data;
+};
+

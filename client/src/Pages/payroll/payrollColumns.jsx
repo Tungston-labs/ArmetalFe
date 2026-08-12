@@ -7,6 +7,7 @@ import VerificationCircles from "../../Components/payroll/VerificationCircle";
 export const getPayrollColumns = ({
   page,
   limit,
+  totalRows,
   selectedEmployees,
   handleSelectAll,
   toggleEmployeeSelect,
@@ -17,11 +18,11 @@ export const getPayrollColumns = ({
   handleSingleStatusChange,
   getStatusColor,
 }) => [
-  {
+ {
     header: (
       <input
         type="checkbox"
-        checked={selectedEmployees.length > 0 && selectedEmployees.length === arguments}
+        checked={selectedEmployees.length > 0 && selectedEmployees.length === totalRows}
         onChange={handleSelectAll}
       />
     ),

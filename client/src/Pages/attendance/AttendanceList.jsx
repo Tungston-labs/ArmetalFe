@@ -7,25 +7,19 @@ import {
   DepartmentName,
   EmployeeCount,
   DropdownWrapper,
-  DropdownHeader,
-  EmployeeList,
-  EmployeeItem,
-  EmployeeRow,
-  EmployeeCell,
   LeftWrapper,
   DepartmentIcon,
-  PaginationWrapper,
-  PaginationButton,
-  PaginationInfo,
 } from "./AttendanceList.Styles";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartmentsMin } from "../../Redux/departmentSlice";
 import { getAttendanceList } from "../../Redux/attendanceSlice";
 import { useNavigate } from "react-router-dom";
-import { ClipLoader } from "react-spinners";
-import { FaAnglesLeft,FaAnglesRight } from "react-icons/fa6";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
+import ReusableTable from "../../Components/ReusableTable/ReusableTable";
+import ReusablePagination from "../../Components/Pagination/ReusablePagination";
+
+
 const AttendanceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,10 +32,13 @@ const AttendanceList = () => {
 
   const pageSize = 10;
 
- const { minList: departmentList = [], loading } = useSelector(
-  (state) => state.departments
-);
-  const handleRowClick = (id) => navigate(`/employee-attendance/detail/${id}`);
+  const { minList: departmentList = [], loading } = useSelector(
+    (state) => state.departments
+  );
+
+  const handleRowClick = (row) =>
+    navigate(`/employee-attendance/detail/${row.employee}`);
+
   useEffect(() => {
     dispatch(getDepartmentsMin({ page: 1, search: "" }));
   }, [dispatch]);
@@ -65,10 +62,20 @@ const AttendanceList = () => {
     }
   };
 
+  const formatDate = (date) => {
+    if (!date) return "-";
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   const paginate = (items, page) => {
     const start = (page - 1) * pageSize;
     return items.slice(start, start + pageSize);
   };
+
   const loadAttendanceForDept = async (deptId) => {
     setLoadingDept(true);
     try {
@@ -102,43 +109,98 @@ const AttendanceList = () => {
     setDepartmentAttendance((prev) => ({ ...prev, [deptId]: results }));
   };
 
-const departmentsToRender = departmentList
-  .filter((dept) =>
-    dept.name?.toLowerCase().includes(searchText.toLowerCase())
-  )
-  .map((dept) => ({
-    ...dept,
-    employees: departmentAttendance[dept.id] || [],
-  }));
+  const departmentsToRender = departmentList
+    .filter((dept) =>
+      dept.name?.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .map((dept) => ({
+      ...dept,
+      employees: departmentAttendance[dept.id] || [],
+    }));
 
-  const formatDate = (date) => {
-  if (!date) return "-";
+  // Columns for ReusableTable
+  const getColumns = (startIndex) => [
+    {
+      header: "Sl No",
+      accessor: "slNo",
+      sortable: false,
+      render: (row, idx) => startIndex + idx + 1,
+    },
+    {
+      header: "Name",
+      accessor: "employee_name",
+      render: (row) => row.employee_name || "-",
+    },
+    {
+      header: "Employee ID",
+      accessor: "employee_id",
+      render: (row) => row.employee_id || "-",
+    },
+    {
+      header: "In Date",
+      accessor: "date",
+      render: (row) => formatDate(row.date),
+    },
+    {
+      header: "In Time",
+      accessor: "first_swipe_in",
+      sortable: false,
+      render: (row) => {
+        const sessions = row.sessions || [];
+        const inTimes = sessions
+          .map((s) => parseTimeToTimestamp(s.time_in))
+          .filter((t) => !isNaN(t));
+        const tIn = inTimes.length ? formatTime(Math.min(...inTimes)) : "-";
+        return row.first_swipe_in || tIn;
+      },
+    },
+    {
+      header: "Out Time",
+      accessor: "last_swipe_out",
+      sortable: false,
+      render: (row) => {
+        const sessions = row.sessions || [];
+        let tOut = "-";
+        if (sessions.length > 0) {
+          const lastSession = sessions[sessions.length - 1];
+          tOut =
+            lastSession.time_out && lastSession.time_out !== ""
+              ? formatTime(parseTimeToTimestamp(lastSession.time_out))
+              : "---";
+        }
+        return row.last_swipe_out || tOut;
+      },
+    },
+    {
+      header: "Status",
+      accessor: "attendance_today",
+      sortable: false,
+      render: (row) => (
+        <span
+          style={{
+            color: row.attendance_today ? "green" : "red",
+            fontSize: "14px",
+          }}
+        >
+          ●
+        </span>
+      ),
+    },
+  ];
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
-
-  return `${day}/${month}/${year}`;
-};
   return (
     <PageContainer>
-<ReusableHeader
- title="Employee Attendance"
-  breadcrumbs={["Employees","Employee Attendance"]}
-/>   
-      {/* <StatsCards cards={payrollCards} /> */}
-      
-        <DepartmentGrid>
+      <ReusableHeader
+        title="Employee Attendance"
+        breadcrumbs={["Employees", "Employee Attendance"]}
+      />
+
+      <DepartmentGrid>
         {departmentsToRender.length === 0 ? (
-    <div style={{ 
-      width: "100%", 
-      display: "flex", 
-      justifyContent: "center" 
-    }}>
-      <NoEmployeeFound searchTerm={searchText} />
-    </div>
-  ) : (
+          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+            <NoEmployeeFound searchTerm={searchText} />
+          </div>
+        ) : (
           departmentsToRender.map((dept) => {
             const isOpen = selectedDept === dept.id;
             const employees = dept.employees || [];
@@ -159,109 +221,33 @@ const departmentsToRender = departmentList
                     {dept.swiped_employee_count || 0} / {dept.total_employee_count || 0} Swiped
                   </EmployeeCount>
                 </DepartmentHeader>
+
                 {isOpen && (
                   <DropdownWrapper>
-                    <DropdownHeader>
-                      <span>Sl No</span>
-                      <span>Name</span>
-                      <span>Employee ID</span>
-                      <span>In Date</span>
-                      <span>In Time</span>
-                      <span>Out Time</span>
-                      <span>Status</span>
-                    </DropdownHeader>
-                    <EmployeeList>
-                      {loadingDept ? (
-                        <EmployeeItem style={{ textAlign: "center" }}>
-                          <ClipLoader size={24} />
-                        </EmployeeItem>
-                      ) : paginated.length > 0 ? (
-                        paginated.map((emp, idx) => {
-                          const sessions = emp.sessions || [];
-                          const inTimes = sessions
-                            .map((s) => parseTimeToTimestamp(s.time_in))
-                            .filter((t) => !isNaN(t));
+                    <ReusableTable
+                      columns={getColumns(startIndex)}
+                      data={paginated.map((emp) => ({ ...emp, id: emp.employee }))}
+                      loading={loadingDept}
+                      onRowClick={handleRowClick}
+                    />
 
-                          const tIn = inTimes.length
-                            ? formatTime(Math.min(...inTimes))
-                            : "-";
-
-                          let tOut = "-";
-                          if (sessions.length > 0) {
-                            const lastSession = sessions[sessions.length - 1];
-                            tOut =
-                              lastSession.time_out && lastSession.time_out !== ""
-                                ? formatTime(parseTimeToTimestamp(lastSession.time_out))
-                                : "---";
-                          }
-                          return (
-                            <EmployeeRow
-                              key={emp.employee}
-                              onClick={() => handleRowClick(emp.employee)} >
-                              <EmployeeCell>{startIndex + idx + 1}</EmployeeCell>
-                              <EmployeeCell>{emp.employee_name || "-"}</EmployeeCell>
-                              <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
-                             <EmployeeCell>{formatDate(emp.date)}</EmployeeCell>
-                              <EmployeeCell>{emp.first_swipe_in || tIn}</EmployeeCell>
-                              <EmployeeCell>{emp.last_swipe_out || tOut}</EmployeeCell>
-                              <EmployeeCell>
-                                <span
-                                  style={{
-                                    color: emp.attendance_today ? "green" : "red",
-                                    fontSize: "14px",
-                                  }}
-                                >
-                                  ●
-                                </span>
-                              </EmployeeCell>
-                            </EmployeeRow>
-                          );
-                        })
-                      ) : (
-                        <EmployeeItem>No attendance found.</EmployeeItem>
-                      )}
-                    </EmployeeList>
-                   {employees.length > pageSize && (
-  <PaginationWrapper>
-    <PaginationButton
-      disabled={currentPage === 1}
-      onClick={() =>
-        setPageByDept((p) => ({
-          ...p,
-          [dept.id]: currentPage - 1,
-        }))
-      }
-    >
-<FaAnglesLeft/>
-    </PaginationButton>
-
-    <PaginationInfo>
-      Page {currentPage} / {totalPages}
-    </PaginationInfo>
-
-    <PaginationButton
-      disabled={currentPage === totalPages}
-      onClick={() =>
-        setPageByDept((p) => ({
-          ...p,
-          [dept.id]: currentPage + 1,
-        }))
-      }
-    >
-<FaAnglesRight/>
-    </PaginationButton>
-  </PaginationWrapper>
-)}
+                    <ReusablePagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={(page) =>
+                        setPageByDept((p) => ({
+                          ...p,
+                          [dept.id]: page,
+                        }))
+                      }
+                    />
                   </DropdownWrapper>
                 )}
               </DepartmentCard>
             );
           })
         )}
-        </DepartmentGrid>
-        
-  
-      
+      </DepartmentGrid>
     </PageContainer>
   );
 };

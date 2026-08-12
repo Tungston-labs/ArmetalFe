@@ -4,7 +4,7 @@ export const Container = styled.section`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 40px;
+  /* gap: 40px; */
   padding: 20px;
   background: linear-gradient(
     110deg,

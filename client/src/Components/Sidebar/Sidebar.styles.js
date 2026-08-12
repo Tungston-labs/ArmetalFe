@@ -9,7 +9,8 @@ const breakpoints = {
 };
 
 export const SidebarContainer = styled.aside`
-  width: ${({ $collapsed }) => ($collapsed ? "90px" : "280px")};
+width:280px ;
+  /* width: ${({ $collapsed }) => ($collapsed ? "90px" : "280px")}; */
   height: 100vh;
   background:#3250B5;
   color: #fff;
@@ -108,9 +109,9 @@ export const Label = styled.span`
   font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
-
+/* 
   display: ${({ $collapsed }) =>
-    $collapsed ? "none" : "block"};
+    $collapsed ? "none" : "block"}; */
 `;
 
 export const Arrow = styled.div`
@@ -244,19 +245,19 @@ export const MobileButton = styled.button`
 
       position:fixed;
 
-      top:20px;
-      left:20px;
+      top:10px;
+      left:10px;
 
-      width:45px;
-      height:45px;
+      width:40px;
+      height:40px;
 
       border:none;
 
       border-radius:10px;
 
-      background:#3c57b7;
+      background:#fff;
 
-      color:white;
+      color:#3c57b7;
 
       align-items:center;
       justify-content:center;
