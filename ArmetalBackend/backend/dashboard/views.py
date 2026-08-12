@@ -344,31 +344,98 @@ class DashboardCountsView(APIView):
 # --------------------------------------------------------------------
 # 2. REIMBURSEMENT COUNTS
 # --------------------------------------------------------------------
+from django.db.models import Count, Sum
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
 class ReimbursementCountsView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
     def get(self, request):
         try:
             company = request.user.company
+
             if not company:
-                return error("Company not assigned", status.HTTP_404_NOT_FOUND)
+                return error(
+                    "Company not assigned",
+                    status.HTTP_404_NOT_FOUND
+                )
 
             qs = Reimbursement.objects.filter(
                 employee__department__company=company
             )
 
-            data = {
-                "total_requests": qs.count(),
-                "pending_count": qs.filter(status="On Hold").count(),
-                "verified_count": qs.filter(status="Approve").count(),
-                "rejected_count": qs.filter(status="Reject").count(),
-            }
+            total_requests = qs.count()
 
-            return Response(data)
+            pending_count = qs.filter(
+                status="On Hold"
+            ).count()
+
+            verification_count = qs.filter(
+                status="In Verification"
+            ).count()
+
+            approved_qs = qs.filter(
+                status="Approve"
+            )
+
+            approved_count = approved_qs.count()
+
+            rejected_count = qs.filter(
+                status="Reject"
+            ).count()
+
+            # Total approved reimbursement amount
+            approved_amount = approved_qs.aggregate(
+                total=Sum("amount")
+            )["total"] or 0
+
+            # Percentages
+            pending_percentage = (
+                round((pending_count / total_requests) * 100, 2)
+                if total_requests else 0
+            )
+
+            verification_percentage = (
+                round((verification_count / total_requests) * 100, 2)
+                if total_requests else 0
+            )
+
+            approved_percentage = (
+                round((approved_count / total_requests) * 100, 2)
+                if total_requests else 0
+            )
+
+            rejected_percentage = (
+                round((rejected_count / total_requests) * 100, 2)
+                if total_requests else 0
+            )
+
+            return Response({
+                "total_requests": total_requests,
+
+                "pending_count": pending_count,
+                "pending_percentage": pending_percentage,
+
+                "verification_count": verification_count,
+                "verification_percentage": verification_percentage,
+
+                "approved_count": approved_count,
+                "approved_percentage": approved_percentage,
+
+                "rejected_count": rejected_count,
+                "rejected_percentage": rejected_percentage,
+
+                "approved_amount": approved_amount,
+            })
 
         except Exception as e:
-            return error(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            return error(
+                str(e),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 # --------------------------------------------------------------------
 # 3. REIMBURSEMENT MONTH-WISE AMOUNT
@@ -699,29 +766,205 @@ class HolidaySummaryAPI(APIView):
 # --------------------------------------------------------------------
 # 10. PROJECT EMPLOYEE COUNT (ON-SITE / VARIANT / BENCH)
 # --------------------------------------------------------------------
-class ProjectEmployeeCountView(APIView):
+class ProjectCountView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
     def get(self, request):
         try:
             company = request.user.company
 
+            if not company:
+                return error(
+                    "Company not assigned to user",
+                    status.HTTP_404_NOT_FOUND
+                )
+
             projects = Project.objects.filter(company=company)
 
             counts = {
-                "on_site": projects.filter(punch_type="on_site")
-                    .aggregate(count=Count("employees", distinct=True))["count"] or 0,
+                "on_site": projects.filter(
+                    punch_type="on_site"
+                ).count(),
 
-                "variant": projects.filter(punch_type="variant")
-                    .aggregate(count=Count("employees", distinct=True))["count"] or 0,
+                "variant": projects.filter(
+                    punch_type="variant"
+                ).count(),
 
-                "bench": projects.filter(punch_type="bench")
-                    .aggregate(count=Count("employees", distinct=True))["count"] or 0
+                "bench": projects.filter(
+                    punch_type="bench"
+                ).count(),
             }
 
-            counts["total"] = counts["on_site"] + counts["variant"] + counts["bench"]
+            counts["total"] = (
+                counts["on_site"]
+                + counts["variant"]
+                + counts["bench"]
+            )
 
             return Response(counts)
 
         except Exception as e:
-            return error(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return error(
+                str(e),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+
+
+from datetime import date, datetime, time, timedelta
+
+from django.db.models import Min
+from attendance.models import AttendanceSession
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+
+class WeeklyAttendanceStatsView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    # Employees punching after this time are considered late
+    LATE_TIME = time(9, 0)
+
+    def get(self, request):
+        try:
+            company = request.user.company
+
+            if not company:
+                return error(
+                    "Company not assigned",
+                    status.HTTP_404_NOT_FOUND
+                )
+
+            today = date.today()
+
+            # Monday = 0, Sunday = 6
+            week_start = today - timedelta(days=today.weekday())
+            week_end = week_start + timedelta(days=6)
+
+            # Active employees of this company
+            employees = Employee_db.objects.filter(
+                department__company=company,
+                is_deleted=False
+            )
+
+            total_employees = employees.count()
+
+            data = []
+
+            for i in range(7):
+
+                current_date = week_start + timedelta(days=i)
+
+                # Don't calculate attendance for future dates
+                if current_date > today:
+                    data.append({
+                        "date": current_date,
+                        "day": current_date.strftime("%A"),
+                        "present": 0,
+                        "late": 0,
+                        "absent": 0
+                    })
+                    continue
+
+                # -------------------------------------------------
+                # APPROVED LEAVE
+                # -------------------------------------------------
+
+                leave_employee_ids = set(
+                    LeaveRequest.objects.filter(
+                        employee__in=employees,
+                        status="approved",
+                        from_date__lte=current_date,
+                        to_date__gte=current_date
+                    ).values_list(
+                        "employee_id",
+                        flat=True
+                    )
+                )
+
+                # -------------------------------------------------
+                # ATTENDANCE FOR THE DAY
+                # -------------------------------------------------
+
+                attendance_qs = Attendance.objects.filter(
+                    employee__in=employees,
+                    date=current_date
+                )
+
+                attendance_employee_ids = set(
+                    attendance_qs.values_list(
+                        "employee_id",
+                        flat=True
+                    )
+                )
+
+                # -------------------------------------------------
+                # PRESENT
+                # -------------------------------------------------
+
+                present_count = len(attendance_employee_ids)
+
+                # -------------------------------------------------
+                # LATE
+                # -------------------------------------------------
+
+                late_count = 0
+
+                sessions = AttendanceSession.objects.filter(
+                    attendance__in=attendance_qs,
+                    time_in__isnull=False
+                ).values(
+                    "attendance__employee_id"
+                ).annotate(
+                    first_time_in=Min("time_in")
+                )
+
+                for session in sessions:
+
+                    employee_id = session["attendance__employee_id"]
+                    first_time_in = session["first_time_in"]
+
+                    if not first_time_in:
+                        continue
+
+                    # Convert datetime to local time
+                    punch_time = first_time_in.time()
+
+                    if punch_time > self.LATE_TIME:
+                        late_count += 1
+
+                # -------------------------------------------------
+                # ABSENT
+                # -------------------------------------------------
+
+                # Employees who didn't punch and aren't on approved
+                # leave are absent.
+                absent_count = max(
+                    total_employees
+                    - present_count
+                    - len(leave_employee_ids),
+                    0
+                )
+
+                data.append({
+                    "date": current_date,
+                    "day": current_date.strftime("%A"),
+                    "present": present_count,
+                    "late": late_count,
+                    "absent": absent_count
+                })
+
+            return Response({
+                "week_start": week_start,
+                "week_end": week_end,
+                "total_employees": total_employees,
+                "data": data
+            })
+
+        except Exception as e:
+            return error(
+                str(e),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
