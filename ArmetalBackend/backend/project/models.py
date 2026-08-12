@@ -1,6 +1,7 @@
 from django.db import models
 from employee.models import Employee_db
 from superadmin.models import Company
+from shared.models import TimeStampedModel
 
 class Project(models.Model):
     PUNCH_TYPE_CHOICES = [
@@ -23,6 +24,8 @@ class Project(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='projects',null=True,blank=True)
     employees = models.ManyToManyField(Employee_db, related_name='projects', blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='in_progress')
+    created_at =models.DateField(max_length=20,null=True,blank=True)
+    updated_at =models.DateField(max_length=20,null=True,blank=True)
 
     def __str__(self):
         return self.name

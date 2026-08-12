@@ -31,7 +31,7 @@ from decimal import Decimal
 from django.utils import timezone
 from .models import SalaryIncrement
 from .serializers import SalaryIncrementSerializer
-
+from django.db import transaction, IntegrityError
 
 
 
@@ -69,24 +69,51 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
 
 
     def create(self, request, *args, **kwargs):
+
         serializer = self.get_serializer(data=request.data)
+
         serializer.is_valid(raise_exception=True)
-        employee = serializer.save()
 
-        company = employee.department.company
-        company.number_of_employees = (company.number_of_employees or 0) + 1
-        company.save()
-
-        # ⚠️ Assuming employee.email and employee.password are available
         try:
+
+            with transaction.atomic():
+
+                employee = serializer.save()
+
+                company = employee.department.company
+
+                company.number_of_employees = (
+                    company.number_of_employees or 0
+                ) + 1
+
+                company.save(
+                    update_fields=["number_of_employees"]
+                )
+
+        except IntegrityError:
+
+            return Response(
+                {
+                    "detail": (
+                        "Employee could not be created because "
+                        "some employee details already exist."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+
             send_mail(
                 subject=f"Welcome to {company.name}",
+
                 message=f"""
     Hello {employee.name},
 
     You have been successfully registered as an employee at {company.name}.
 
     Your login credentials are:
+
     Username: {employee.employee_id}
     Password: {employee.password}
 
@@ -95,21 +122,37 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
     Regards,
     {company.name} HR
     """,
+
                 from_email=company.email,
+
                 recipient_list=[employee.email],
+
                 fail_silently=False,
             )
-        except Exception as e:
-            print(f"❌ Failed to send email to {employee.email}: {str(e)}")
 
-        return Response({
-            "message": "Employee created successfully.",
-            "employee": EmployeeSerializer(employee).data,
-            "login_credentials": {
-                "username": employee.employee_id,
-                "password": employee.password
-            }
-        }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+
+            print(
+                f"❌ Failed to send email to "
+                f"{employee.email}: {str(e)}"
+            )
+
+        return Response(
+            {
+                "message": "Employee created successfully.",
+
+                "employee": EmployeeSerializer(
+                    employee,
+                    context={"request": request}
+                ).data,
+
+                "login_credentials": {
+                    "username": employee.employee_id,
+                    "password": employee.password
+                }
+            },
+            status=status.HTTP_201_CREATED
+        )
 
 
 # list employees without pagination
@@ -1127,3 +1170,48 @@ class DeletedEmployeeListView(generics.ListAPIView):
             )
 
         return queryset.order_by("-deleted_at")
+    
+
+
+class EmployeeRehireView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def post(self, request, id):
+        try:
+            employee = Employee_db.objects.select_related("user").get(
+                id=id
+            )
+
+            if not employee.is_deleted:
+                return Response(
+                    {"error": "Employee is already active."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            with transaction.atomic():
+
+                employee.is_deleted = False
+                employee.deleted_at = None
+                employee.save(
+                    update_fields=["is_deleted", "deleted_at"]
+                )
+
+                if employee.user:
+                    employee.user.is_active = True
+                    employee.user.save(
+                        update_fields=["is_active"]
+                    )
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except Employee_db.DoesNotExist:
+            return Response(
+                {"error": "Employee not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        except Exception:
+            return Response(
+                {"error": "Unable to rehire employee."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

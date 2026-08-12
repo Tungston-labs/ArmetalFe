@@ -30,43 +30,316 @@ def error(message, code=status.HTTP_400_BAD_REQUEST):
 # --------------------------------------------------------------------
 # 1. DASHBOARD COUNTS
 # --------------------------------------------------------------------
+from datetime import date, timedelta
+from decimal import Decimal
+
+from django.db.models import Sum, Q
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+
+from employee.models import Employee_db
+from departments.models import Department
+from leave.models import LeaveRequest
+from payroll.models import EmployeePayrollRecord
+from project.models import Project
+from user.permissions import IsHRAdmin
+
+
 class DashboardCountsView(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
 
+    def get_percentage(self, current, previous):
+        """
+        Calculate percentage change.
+
+        Example:
+        previous = 100
+        current = 120
+        result = 20%
+
+        If previous is 0:
+            current > 0 -> 100%
+            current = 0 -> 0%
+        """
+
+        if previous == 0:
+            if current > 0:
+                return 100
+            return 0
+
+        percentage = ((current - previous) / previous) * 100
+
+        return round(percentage, 2)
+
     def get(self, request):
+
         try:
-            today = date.today()
-            upcoming_range = today + timedelta(days=30)
-            company = request.user.company
+            company = getattr(request.user, "company", None)
 
             if not company:
-                return error("Company not assigned to user", status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {
+                        "detail": "Company not assigned to user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
 
-            employees_qs = Employee_db.objects.filter(department__company=company,is_deleted=False)
+            today = date.today()
+
+            # =====================================================
+            # CURRENT MONTH
+            # =====================================================
+
+            current_year = today.year
+            current_month = today.month
+
+            # =====================================================
+            # PREVIOUS MONTH
+            # =====================================================
+
+            first_day_current_month = today.replace(day=1)
+
+            previous_month_last_day = (
+                first_day_current_month - timedelta(days=1)
+            )
+
+            previous_year = previous_month_last_day.year
+            previous_month = previous_month_last_day.month
+
+            # =====================================================
+            # ACTIVE EMPLOYEES
+            # =====================================================
+
+            active_employees = Employee_db.objects.filter(
+                department__company=company,
+                is_deleted=False
+            )
+
+            total_employees = active_employees.count()
+
+            # -----------------------------------------------------
+            # Active employees at the end of previous month
+            # -----------------------------------------------------
+
+            previous_month_employees = Employee_db.objects.filter(
+                department__company=company,
+                joining_date__lte=previous_month_last_day
+            ).filter(
+                Q(is_deleted=False) |
+                Q(deleted_at__gt=previous_month_last_day)
+            )
+
+            previous_employee_count = previous_month_employees.count()
+
+            employee_change_percentage = self.get_percentage(
+                total_employees,
+                previous_employee_count
+            )
+
+            # =====================================================
+            # DEPARTMENTS
+            # =====================================================
+
+            total_departments = Department.objects.filter(
+                company=company
+            ).count()
+
+            # Departments created during current month
+            new_departments = Department.objects.filter(
+                company=company,
+                created_at__year=current_year,
+                created_at__month=current_month
+            ).count()
+
+            # =====================================================
+            # PROJECTS
+            # =====================================================
+
+            total_projects = Project.objects.filter(
+                company=company
+            ).count()
+
+            # Projects added during current month
+            new_projects = Project.objects.filter(
+                company=company,
+                created_at__year=current_year,
+                created_at__month=current_month
+            ).count()
+
+            # =====================================================
+            # PENDING LEAVE REQUESTS
+            # =====================================================
+
+            pending_leave_requests = LeaveRequest.objects.filter(
+                employee__department__company=company,
+                employee__is_deleted=False,
+                status="pending"
+            ).count()
+
+            # Pending leave requests created during previous month
+            previous_pending_leave_requests = LeaveRequest.objects.filter(
+                employee__department__company=company,
+                employee__is_deleted=False,
+                status="pending",
+                created_at__year=previous_year,
+                created_at__month=previous_month
+            ).count()
+
+            leave_change_percentage = self.get_percentage(
+                pending_leave_requests,
+                previous_pending_leave_requests
+            )
+
+            # =====================================================
+            # PAYROLL
+            # =====================================================
+            #
+            # Current month:
+            # Sum of BASIC SALARY only
+            # for PAID payroll records
+            #
+            # Company is determined through:
+            #
+            # EmployeePayrollRecord
+            #       ↓
+            # Employee
+            #       ↓
+            # Department
+            #       ↓
+            # Company
+            #
+            # =====================================================
+
+            current_payroll = EmployeePayrollRecord.objects.filter(
+                employee__department__company=company,
+                year=current_year,
+                month=current_month,
+                status="Paid"
+            ).aggregate(
+                total=Sum("basic_salary")
+            )["total"] or Decimal("0")
+
+            # Previous month payroll
+
+            previous_payroll = EmployeePayrollRecord.objects.filter(
+                employee__department__company=company,
+                year=previous_year,
+                month=previous_month,
+                status="Paid"
+            ).aggregate(
+                total=Sum("basic_salary")
+            )["total"] or Decimal("0")
+
+            payroll_change_percentage = self.get_percentage(
+                current_payroll,
+                previous_payroll
+            )
+
+            # =====================================================
+            # VISA / CONTRACT EXPIRY
+            # =====================================================
+
+            # Today's upcoming expiry window
+            #
+            # Today -> next 30 days
+            #
+
+            upcoming_expiry_end = today + timedelta(days=30)
+
+            expiry_filter = (
+                Q(
+                    visa_expiry_date__range=[
+                        today,
+                        upcoming_expiry_end
+                    ]
+                )
+                |
+                Q(
+                    contract_expiry_date__range=[
+                        today,
+                        upcoming_expiry_end
+                    ]
+                )
+            )
+
+            expiry_count = active_employees.filter(
+                expiry_filter
+            ).count()
+
+            # -----------------------------------------------------
+            # Yesterday's expiry window
+            #
+            # Yesterday -> next 30 days
+            #
+            # This allows comparison of how many upcoming
+            # expiries were visible yesterday vs today.
+            # -----------------------------------------------------
+
+            yesterday = today - timedelta(days=1)
+
+            yesterday_expiry_end = yesterday + timedelta(days=30)
+
+            yesterday_expiry_filter = (
+                Q(
+                    visa_expiry_date__range=[
+                        yesterday,
+                        yesterday_expiry_end
+                    ]
+                )
+                |
+                Q(
+                    contract_expiry_date__range=[
+                        yesterday,
+                        yesterday_expiry_end
+                    ]
+                )
+            )
+
+            previous_expiry_count = active_employees.filter(
+                yesterday_expiry_filter
+            ).count()
+
+            expiry_change_percentage = self.get_percentage(
+                expiry_count,
+                previous_expiry_count
+            )
+
+            # =====================================================
+            # RESPONSE
+            # =====================================================
 
             data = {
-                "total_employees": employees_qs.count(),
-                "pending_leave_requests": LeaveRequest.objects.filter(
-                    status="pending",
-                    employee__department__company=company
-                ).count(),
-                "upcoming_visa_expiry": employees_qs.filter(
-                    visa_expiry_date__range=[today, upcoming_range]
-                ).count(),
-                "upcoming_contract_expiry": employees_qs.filter(
-                    contract_expiry_date__range=[today, upcoming_range]
-                ).count(),
-                "todays_attendance_count": Attendance.objects.filter(
-                    date=today,
-                    employee__department__company=company
-                ).count(),
+                "total_employees": total_employees,
+                "employee_change_percentage": employee_change_percentage,
+
+                "total_departments": total_departments,
+                "new_departments": new_departments,
+
+                "total_projects": total_projects,
+                "new_projects": new_projects,
+
+                "pending_leave_requests": pending_leave_requests,
+                "leave_change_percentage": leave_change_percentage,
+
+                "monthly_payroll_amount": current_payroll,
+                "payroll_change_percentage": payroll_change_percentage,
+
+                "expiry_count": expiry_count,
+                "expiry_change_percentage": expiry_change_percentage,
             }
 
-            return Response(data)
+            return Response(data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return error(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+            return Response(
+                {
+                    "detail": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 # --------------------------------------------------------------------
 # 2. REIMBURSEMENT COUNTS
@@ -293,7 +566,7 @@ class SimpleNotificationsAPI(APIView):
 
 
 # --------------------------------------------------------------------
-# 8. TODAY EMPLOYEE STATS
+# 8. TODAY EMPLOYEE ATTENDANCE STATS
 # --------------------------------------------------------------------
 class TodayEmployeeStatsAPI(APIView):
     permission_classes = [IsAuthenticated, IsHRAdmin]
@@ -303,32 +576,72 @@ class TodayEmployeeStatsAPI(APIView):
             today = date.today()
             company = request.user.company
 
-            employees = Employee_db.objects.filter(department__company=company,is_deleted=False)
-            total = employees.count()
+            if not company:
+                return error(
+                    "Company not assigned to user",
+                    status.HTTP_404_NOT_FOUND
+                )
 
-            present = Attendance.objects.filter(
+            # -----------------------------------------
+            # TOTAL ACTIVE EMPLOYEES
+            # -----------------------------------------
+            employees = Employee_db.objects.filter(
+                department__company=company,
+                is_deleted=False
+            )
+
+            total_employees = employees.count()
+
+            # -----------------------------------------
+            # CHECKED-IN / PRESENT TODAY
+            # -----------------------------------------
+            present_count = Attendance.objects.filter(
                 date=today,
-                employee__department__company=company
-            ).values("employee").distinct().count()
+                employee__department__company=company,
+                employee__is_deleted=False
+            ).values(
+                "employee"
+            ).distinct().count()
 
-            on_leave = LeaveRequest.objects.filter(
+            # -----------------------------------------
+            # APPROVED LEAVE TODAY
+            # -----------------------------------------
+            on_leave_count = LeaveRequest.objects.filter(
                 status="approved",
                 from_date__lte=today,
                 to_date__gte=today,
-                employee__department__company=company
-            ).values("employee").distinct().count()
+                employee__department__company=company,
+                employee__is_deleted=False
+            ).values(
+                "employee"
+            ).distinct().count()
+
+            # -----------------------------------------
+            # PERCENTAGES
+            # -----------------------------------------
+            present_percentage = (
+                round((present_count / total_employees) * 100, 2)
+                if total_employees else 0
+            )
+
+            leave_percentage = (
+                round((on_leave_count / total_employees) * 100, 2)
+                if total_employees else 0
+            )
 
             return Response({
-                "total_employees": total,
-                "present_today_count": present,
-                "on_leave_today_count": on_leave,
-                "present_percentage": round((present / total) * 100, 2) if total else 0,
-                "leave_percentage": round((on_leave / total) * 100, 2) if total else 0,
+                "total_employees": total_employees,
+                "present_today_count": present_count,
+                "on_leave_today_count": on_leave_count,
+                "present_percentage": present_percentage,
+                "leave_percentage": leave_percentage,
             })
 
         except Exception as e:
-            return error(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            return error(
+                str(e),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 # --------------------------------------------------------------------
 # 9. HOLIDAY SUMMARY
