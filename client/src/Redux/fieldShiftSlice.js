@@ -1,9 +1,7 @@
 // src/features/projects/projectSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import projectService, { fieldInfoService } from "../services/fieldShiftService";
-
 // Thunks
-
 export const getProjects = createAsyncThunk(
   "projects/getAll",
   async ({ search = "", page = 1 } = {}, { rejectWithValue }) => {
@@ -14,7 +12,6 @@ export const getProjects = createAsyncThunk(
     }
   }
 );
-
 export const createProject = createAsyncThunk(
   "projects/create",
   async (projectData, { rejectWithValue }) => {
@@ -25,7 +22,6 @@ export const createProject = createAsyncThunk(
     }
   }
 );
-
 export const getProjectById = createAsyncThunk(
   "projects/getById",
   async (id, { rejectWithValue }) => {
@@ -36,7 +32,6 @@ export const getProjectById = createAsyncThunk(
     }
   }
 );
-
 export const updateProject = createAsyncThunk(
   "projects/update",
   async ({ id, projectData }, { rejectWithValue }) => {
@@ -47,7 +42,6 @@ export const updateProject = createAsyncThunk(
     }
   }
 );
-
 export const deleteProject = createAsyncThunk(
   "projects/delete",
   async (id, { rejectWithValue }) => {
@@ -59,7 +53,6 @@ export const deleteProject = createAsyncThunk(
     }
   }
 );
-
 export const getEmployeesNotInProject = createAsyncThunk(
   "projects/getEmployeesNotInProject",
   async (projectId, { rejectWithValue }) => {
@@ -80,7 +73,6 @@ export const assignEmployees = createAsyncThunk(
     }
   }
 );
-
 export const removeEmployeeFromProject = createAsyncThunk(
   "projects/removeEmployeeFromProject",
   async ({ projectId, employeeId }, { rejectWithValue }) => {
@@ -275,6 +267,5 @@ const projectSlice = createSlice({
 
   },
 });
-
 export const { reset } = projectSlice.actions;
 export default projectSlice.reducer;

@@ -3,7 +3,12 @@ import EmployeeModal from "../../Components/EmployeeModal";
 import EditProjectModal from "../../Components/EditProjectModal";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProjectById, updateProject, deleteProject, removeEmployeeFromProject } from "../../Redux/fieldShiftSlice";
+import {
+  getProjectById,
+  updateProject,
+  deleteProject,
+  removeEmployeeFromProject,
+} from "../../Redux/fieldShiftSlice";
 import {
   PageWrapper,
   FormContainer,
@@ -20,8 +25,11 @@ import {
   StyledTable,
   BodyCell,
   BodyRow,
-  HeadCell, HeadRow, TableBody, TableHead,
-  TableWrapper
+  HeadCell,
+  HeadRow,
+  TableBody,
+  TableHead,
+  TableWrapper,
 } from "./FieldDepartment.Styles";
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import { FaPlus, FaTrash } from "react-icons/fa";
@@ -34,9 +42,7 @@ const FieldShift = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-
   const { project, loading, error } = useSelector((state) => state.projects);
-
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
@@ -54,16 +60,15 @@ const FieldShift = () => {
     cancelled: "Cancelled",
   };
   const statusColors = {
-    in_progress: "#f59e0b",   // yellow
-    completed: "#10b981",     // green
-    on_hold: "#3b82f6",       // blue
-    cancelled: "#ef4444",     // red
+    in_progress: "#f59e0b", // yellow
+    completed: "#10b981", // green
+    on_hold: "#3b82f6", // blue
+    cancelled: "#ef4444", // red
   };
   const [employees, setEmployees] = useState([]);
   useEffect(() => {
     if (id) dispatch(getProjectById(id));
   }, [dispatch, id]);
-
   useEffect(() => {
     if (project) {
       setFormData({
@@ -73,8 +78,6 @@ const FieldShift = () => {
         longitude: project.longitude || "",
         status: project.status || "in_progress",
       });
-
-
       setEmployees(
         project.employees?.map((emp) => ({
           id: emp.id,
@@ -83,18 +86,15 @@ const FieldShift = () => {
           email: emp.email,
           position: emp.designation,
           department_name: emp.department_name,
-        })) || []
+        })) || [],
       );
     }
   }, [project]);
-
   const handleInfoClick = (employeeId) => {
     console.log("Navigating to employee info for ID:", employeeId);
-
     navigate(`/project/${employeeId}`, { state: { employeeId } });
   };
-
-const handleDelete = () => {
+  const handleDelete = () => {
     Swal.fire({
       title: "Are you sure?",
       text: "This will permanently delete the project!",
@@ -126,10 +126,8 @@ const handleDelete = () => {
       }
     });
   };
-
   const handleEmployeeDelete = async (employeeId) => {
     const employee = employees.find((emp) => emp.id === employeeId);
-
     Swal.fire({
       title: "Are you sure?",
       text: `You are about to remove ${employee.name} from this project.`,
@@ -141,9 +139,10 @@ const handleDelete = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await dispatch(removeEmployeeFromProject({ projectId: id, employeeId })).unwrap();
+          await dispatch(
+            removeEmployeeFromProject({ projectId: id, employeeId }),
+          ).unwrap();
           setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId));
-
           Swal.fire({
             title: "Removed!",
             text: `${employee.name} has been successfully removed from this project.`,
@@ -162,9 +161,6 @@ const handleDelete = () => {
       }
     });
   };
-
-
-
   const handleSaveFromModal = async (updatedData) => {
     const updatedProject = {
       name: updatedData.projectName,
@@ -173,11 +169,10 @@ const handleDelete = () => {
       longitude: updatedData.longitude,
       status: updatedData.status,
     };
-
-
     try {
-      await dispatch(updateProject({ id, projectData: updatedProject })).unwrap();
-
+      await dispatch(
+        updateProject({ id, projectData: updatedProject }),
+      ).unwrap();
       Swal.fire({
         title: "Updated!",
         text: "Project details have been updated successfully.",
@@ -185,7 +180,6 @@ const handleDelete = () => {
         timer: 1500,
         showConfirmButton: false,
       });
-
       setIsEditModalOpen(false);
       dispatch(getProjectById(id));
     } catch (err) {
@@ -196,7 +190,6 @@ const handleDelete = () => {
       });
     }
   };
-
   if (loading) {
     return (
       <>
@@ -206,7 +199,6 @@ const handleDelete = () => {
       </>
     );
   }
-
   if (error) {
     return (
       <>
@@ -216,7 +208,6 @@ const handleDelete = () => {
       </>
     );
   }
-
   return (
     <>
       <PageWrapper>
@@ -239,14 +230,15 @@ const handleDelete = () => {
                   status={formData.status}
                 />
               </LeftSide>
-
               <RightSide>
                 <ButtonWrapper>
-                  <ActionButton color="edit" onClick={() => setIsEditModalOpen(true)}>
+                  <ActionButton
+                    color="edit"
+                    onClick={() => setIsEditModalOpen(true)}
+                  >
                     <BiEditAlt style={{ marginRight: "6px" }} />
                     Edit
                   </ActionButton>
-
                   <ActionButton color="delete" onClick={handleDelete}>
                     <FaTrash style={{ marginRight: "6px" }} />
                     Delete
@@ -272,7 +264,6 @@ const handleDelete = () => {
                       <InputField value={formData.punchType} disabled />
                     </div>
                   </FormRow>
-
                   <FormRow>
                     <div>
                       <label>Latitude</label>
@@ -285,9 +276,7 @@ const handleDelete = () => {
                   </FormRow>
                 </div>
               </div>
-
             </FormContainer>
-
             <EmployeesSection>
               <EmployeeHeader>
                 <h2>Employees</h2>
@@ -308,7 +297,6 @@ const handleDelete = () => {
                       <HeadCell>Delete</HeadCell>
                     </HeadRow>
                   </TableHead>
-
                   <TableBody>
                     {employees.map((emp, i) => (
                       <BodyRow
@@ -323,8 +311,6 @@ const handleDelete = () => {
                         <BodyCell>{emp.email}</BodyCell>
                         <BodyCell>{emp.position}</BodyCell>
                         <BodyCell>{emp.department_name}</BodyCell>
-
-
                         <BodyCell
                           onClick={(e) => {
                             e.stopPropagation();
@@ -336,7 +322,6 @@ const handleDelete = () => {
                       </BodyRow>
                     ))}
                   </TableBody>
-
                 </StyledTable>
               </TableWrapper>
             </EmployeesSection>
@@ -347,7 +332,6 @@ const handleDelete = () => {
                 projectId={id}
               />
             )}
-
           </>
         ) : (
           <div style={{ textAlign: "center", marginTop: "4rem" }}>
@@ -355,19 +339,19 @@ const handleDelete = () => {
           </div>
         )}
       </PageWrapper>
-
-
-
       {isEditModalOpen && (
         <EditProjectModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           onSave={handleSaveFromModal}
-          projectData={{ ...formData, punchInType: formData.punchType, status: formData.status, }}
+          projectData={{
+            ...formData,
+            punchInType: formData.punchType,
+            status: formData.status,
+          }}
         />
       )}
     </>
   );
 };
-
 export default FieldShift;

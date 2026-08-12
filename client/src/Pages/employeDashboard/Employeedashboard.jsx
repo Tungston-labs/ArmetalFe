@@ -49,7 +49,6 @@ const TimeLogDashboard = () => {
 
   const { employeeDashData, loadingEmployeeDash, employeeDashError } =
     useSelector((state) => state.auth);
-    
 
   useEffect(() => {
     if (employeeId) {
@@ -57,76 +56,74 @@ const TimeLogDashboard = () => {
     }
   }, [employeeId, dispatch]);
 
-  const baseUrl =BASE_URL;
+  const baseUrl = BASE_URL;
 
   if (loadingEmployeeDash) {
- 
   }
   if (employeeDashError) return <p>Error: {employeeDashError}</p>;
   const getPreviousMonthName = () => {
-  const date = new Date();
-  date.setMonth(date.getMonth() - 1);
-  return date.toLocaleString('default', { month: 'long' });
-};
+    const date = new Date();
+    date.setMonth(date.getMonth() - 1);
+    return date.toLocaleString("default", { month: "long" });
+  };
 
-const infoCards = [
-  {
-    title: employeeDashData?.contract_expiry_date || "N/A",
-    subtitle: "Days",
-    label: "Contract Expiry",
-    icon: InCompanyIcon,
-  },
-  {
-    title: employeeDashData?.visa_expiry_date || "N/A",
-    subtitle: "Date",
-    label: "Visa Expiry",
-    icon: InCompanyIcon,
-  },
-  {
-    title: getPreviousMonthName(), 
-    subtitle: "Month",
-    label: "Pay slip",
-    icon: InCompanyIcon,
-  },
-  {
-    title: employeeDashData?.attendance_summary?.monthly_working_hours,
-    subtitle: " Logged Hours",
-    label: "Monthly  ",
-    icon: LeaveIcon,
-  },
-];
+  const infoCards = [
+    {
+      title: employeeDashData?.contract_expiry_date || "N/A",
+      subtitle: "Days",
+      label: "Contract Expiry",
+      icon: InCompanyIcon,
+    },
+    {
+      title: employeeDashData?.visa_expiry_date || "N/A",
+      subtitle: "Date",
+      label: "Visa Expiry",
+      icon: InCompanyIcon,
+    },
+    {
+      title: getPreviousMonthName(),
+      subtitle: "Month",
+      label: "Pay slip",
+      icon: InCompanyIcon,
+    },
+    {
+      title: employeeDashData?.attendance_summary?.monthly_working_hours,
+      subtitle: " Logged Hours",
+      label: "Monthly  ",
+      icon: LeaveIcon,
+    },
+  ];
   const members = employeeDashData?.department_employees?.employees || [];
-const formatTime = (timeStr) => {
-  if (!timeStr) return "--";
-  const today = new Date().toISOString().split("T")[0]; 
-  return new Date(`${today}T${timeStr}`).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-const formatUTCToLocal = (utcTimeStr) => {
-  if (!utcTimeStr) return "--";
+  const formatTime = (timeStr) => {
+    if (!timeStr) return "--";
+    const today = new Date().toISOString().split("T")[0];
+    return new Date(`${today}T${timeStr}`).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+  const formatUTCToLocal = (utcTimeStr) => {
+    if (!utcTimeStr) return "--";
 
-  // Get today's date in UTC (YYYY-MM-DD)
-  const nowUTC = new Date();
-  const utcYear = nowUTC.getUTCFullYear();
-  const utcMonth = String(nowUTC.getUTCMonth() + 1).padStart(2, "0");
-  const utcDay = String(nowUTC.getUTCDate()).padStart(2, "0");
+    // Get today's date in UTC (YYYY-MM-DD)
+    const nowUTC = new Date();
+    const utcYear = nowUTC.getUTCFullYear();
+    const utcMonth = String(nowUTC.getUTCMonth() + 1).padStart(2, "0");
+    const utcDay = String(nowUTC.getUTCDate()).padStart(2, "0");
 
-  // Build full UTC datetime string
-  const utcDateTimeStr = `${utcYear}-${utcMonth}-${utcDay}T${utcTimeStr}Z`;
+    // Build full UTC datetime string
+    const utcDateTimeStr = `${utcYear}-${utcMonth}-${utcDay}T${utcTimeStr}Z`;
 
-  // Parse and convert to local time
-  return new Date(utcDateTimeStr).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-
+    // Parse and convert to local time
+    return new Date(utcDateTimeStr).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <Container>
-    <MainWrapper>
+      <MainWrapper>
         <CardGrid>
           {infoCards.map((card, index) => (
             <InfoCard key={index}>
@@ -140,21 +137,24 @@ const formatUTCToLocal = (utcTimeStr) => {
           ))}
         </CardGrid>
         <DepartmentBox>
-         
           <Department>
             <DepartmentTitleRow>
               <DepartmentTitle>
                 {employeeDashData?.bank_details?.employee?.department}
               </DepartmentTitle>
-              <ArrowIcon onClick={() => navigate("/department")} style={{ cursor: "pointer" }}>
-      <BiSolidRightTopArrowCircle style={{color:"#2f49d1"}} />
-    </ArrowIcon>
-    
+              <ArrowIcon
+                onClick={() => navigate("/department")}
+                style={{ cursor: "pointer" }}
+              >
+                <BiSolidRightTopArrowCircle style={{ color: "#2f49d1" }} />
+              </ArrowIcon>
             </DepartmentTitleRow>
 
             <hr></hr>
             <SubLabel>Department head</SubLabel>
-            <DepartmentHead>{employeeDashData?.department_head?.name}</DepartmentHead>
+            <DepartmentHead>
+              {employeeDashData?.department_head?.name}
+            </DepartmentHead>
           </Department>
           <MemberList>
             {members.map((member, index) => (
@@ -173,7 +173,7 @@ const formatUTCToLocal = (utcTimeStr) => {
             ))}
           </MemberList>
         </DepartmentBox>
-    </MainWrapper>
+      </MainWrapper>
     </Container>
   );
 };

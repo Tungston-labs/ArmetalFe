@@ -1,6 +1,12 @@
 import React from "react";
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  cleanup,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import EditProfileModal from "../../Components/homepage/EditProfileModal";
@@ -12,7 +18,10 @@ const mocks = vi.hoisted(() => ({
   dispatch: vi.fn(),
   onClose: vi.fn(),
   getCompanySelf: vi.fn(() => ({ type: "company/getCompanySelf" })),
-  patchCompanySelf: vi.fn((payload) => ({ type: "company/patchCompanySelf", payload })),
+  patchCompanySelf: vi.fn((payload) => ({
+    type: "company/patchCompanySelf",
+    payload,
+  })),
   swalFire: vi.fn(() => Promise.resolve()),
   createObjectURL: vi.fn(() => "blob:test-logo-url"),
 }));
@@ -53,7 +62,12 @@ vi.mock("sweetalert2", () => ({
 
 vi.mock("react-icons/go", () => ({
   GoArrowLeft: ({ onClick, ...props }) => (
-    <button type="button" data-testid="back-button" onClick={onClick} {...props}>
+    <button
+      type="button"
+      data-testid="back-button"
+      onClick={onClick}
+      {...props}
+    >
       Back
     </button>
   ),
@@ -173,7 +187,9 @@ describe("EditProfileModal", () => {
     renderComponent();
 
     const fileInput = screen.getByTestId("logo-file-input");
-    const invalidFile = new File(["dummy content"], "doc.pdf", { type: "application/pdf" });
+    const invalidFile = new File(["dummy content"], "doc.pdf", {
+      type: "application/pdf",
+    });
 
     fireEvent.change(fileInput, { target: { files: [invalidFile] } });
 
@@ -188,7 +204,9 @@ describe("EditProfileModal", () => {
   it("removes logo when remove button is clicked", async () => {
     renderComponent();
 
-    const removeBtn = await waitFor(() => screen.getByTestId("remove-logo-button"));
+    const removeBtn = await waitFor(() =>
+      screen.getByTestId("remove-logo-button"),
+    );
     fireEvent.click(removeBtn);
 
     expect(screen.queryByAltText("company logo")).toBeNull();
@@ -198,10 +216,18 @@ describe("EditProfileModal", () => {
     renderComponent();
 
     fireEvent.change(getInput("name"), { target: { name: "name", value: "" } });
-    fireEvent.change(getInput("address"), { target: { name: "address", value: "" } });
-    fireEvent.change(getInput("location"), { target: { name: "location", value: "" } });
-    fireEvent.change(getInput("latitude"), { target: { name: "latitude", value: "" } });
-    fireEvent.change(getInput("longitude"), { target: { name: "longitude", value: "" } });
+    fireEvent.change(getInput("address"), {
+      target: { name: "address", value: "" },
+    });
+    fireEvent.change(getInput("location"), {
+      target: { name: "location", value: "" },
+    });
+    fireEvent.change(getInput("latitude"), {
+      target: { name: "latitude", value: "" },
+    });
+    fireEvent.change(getInput("longitude"), {
+      target: { name: "longitude", value: "" },
+    });
 
     fireEvent.submit(screen.getByRole("button", { name: /Update/i }));
 
@@ -209,8 +235,12 @@ describe("EditProfileModal", () => {
       expect(screen.getByText("Company name is required")).toBeInTheDocument();
       expect(screen.getByText("Address is required")).toBeInTheDocument();
       expect(screen.getByText("Location is required")).toBeInTheDocument();
-      expect(screen.getByText("Latitude must be between -90 and 90")).toBeInTheDocument();
-      expect(screen.getByText("Longitude must be between -180 and 180")).toBeInTheDocument();
+      expect(
+        screen.getByText("Latitude must be between -90 and 90"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("Longitude must be between -180 and 180"),
+      ).toBeInTheDocument();
     });
 
     expect(mocks.patchCompanySelf).not.toHaveBeenCalled();
@@ -223,11 +253,21 @@ describe("EditProfileModal", () => {
       expect(getInput("name")).toHaveValue("Test Company");
     });
 
-    fireEvent.change(getInput("name"), { target: { name: "name", value: "Updated Corp" } });
-    fireEvent.change(getInput("address"), { target: { name: "address", value: "456 New Road" } });
-    fireEvent.change(getInput("location"), { target: { name: "location", value: "Mumbai" } });
-    fireEvent.change(getInput("latitude"), { target: { name: "latitude", value: "19" } });
-    fireEvent.change(getInput("longitude"), { target: { name: "longitude", value: "72" } });
+    fireEvent.change(getInput("name"), {
+      target: { name: "name", value: "Updated Corp" },
+    });
+    fireEvent.change(getInput("address"), {
+      target: { name: "address", value: "456 New Road" },
+    });
+    fireEvent.change(getInput("location"), {
+      target: { name: "location", value: "Mumbai" },
+    });
+    fireEvent.change(getInput("latitude"), {
+      target: { name: "latitude", value: "19" },
+    });
+    fireEvent.change(getInput("longitude"), {
+      target: { name: "longitude", value: "72" },
+    });
 
     fireEvent.submit(screen.getByRole("button", { name: /Update/i }));
 

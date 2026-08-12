@@ -46,11 +46,11 @@ export const exportLeaveReport = (
 
   filteredLeaves.forEach((leave, index) => {
     rows.push([
-      index + 1 ,
+      index + 1,
       leave?.employee?.name || "N/A",
       leave?.employee?.employee_id ||
-        leave?.employee?.id ||
-        "N/A",
+      leave?.employee?.id ||
+      "N/A",
       leave?.employee?.department || "N/A",
       leave?.leave_type || "N/A",
       formatDate(leave?.from_date),
@@ -92,10 +92,10 @@ export const exportLeaveReport = (
         i === 0
           ? 35
           : i === 1
-          ? 24
-          : i < 7
-          ? 22
-          : 25,
+            ? 24
+            : i < 7
+              ? 22
+              : 25,
     };
   }
 
@@ -221,8 +221,8 @@ export const exportLeaveReport = (
             alignment: {
               horizontal:
                 col === "B" ||
-                col === "D" ||
-                col === "J"
+                  col === "D" ||
+                  col === "J"
                   ? "left"
                   : "center",
               vertical: "center",
@@ -230,15 +230,15 @@ export const exportLeaveReport = (
             },
             fill: even
               ? {
-                  fgColor: {
-                    rgb: "F8FAFC",
-                  },
-                }
-              : {
-                  fgColor: {
-                    rgb: "FFFFFF",
-                  },
+                fgColor: {
+                  rgb: "F8FAFC",
                 },
+              }
+              : {
+                fgColor: {
+                  rgb: "FFFFFF",
+                },
+              },
             border: {
               top: {
                 style: "thin",
@@ -297,7 +297,6 @@ export const exportLeaveReport = (
       };
     }
   }
-
   // Freeze Header
   ws["!freeze"] = {
     ySplit: 7,

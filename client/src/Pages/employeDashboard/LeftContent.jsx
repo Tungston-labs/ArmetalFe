@@ -32,11 +32,8 @@ const LeftContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from;
-
   const { employeeDashData, loadingEmployeeDash, employeeDashError } =
     useSelector((state) => state.auth);
-
-  const BASE_URL = `${BASE_URL}`;
 
   useEffect(() => {
     if (employeeId) {
@@ -73,26 +70,19 @@ const LeftContent = () => {
                 }
               />
             </ImageWrapper>
-
             <Details>
               <p>
                 Name: <strong>{employee.name || "-"}</strong>
               </p>
-
               <p>
                 Position: <strong>{employee.designation || "-"}</strong>
               </p>
-
               <p>
-  Email:{" "}
-  <strong>
-    {employee.email ? employee.email : "-"}
-  </strong>
-</p>
+                Email: <strong>{employee.email ? employee.email : "-"}</strong>
+              </p>
             </Details>
           </ProfileCardWrapper>
         </LeftColumn>
-
         {/* ---------------- Right Column ---------------- */}
         <RightColumn>
           <InfoGrid>
@@ -101,10 +91,9 @@ const LeftContent = () => {
               <p>{employee.company_days || 0} Days</p>
               <button>
                 <SvgImage src={InCompanyIcon} alt="icon" />
-                 Joined on
+                Joined on
               </button>
             </InfoCard>
-
             <InfoCard>
               <h3>
                 {employee.bank_details?.basic_salary
@@ -117,7 +106,6 @@ const LeftContent = () => {
                 Salary
               </button>
             </InfoCard>
-
             <InfoCard>
               <h3>{employee.leave_summary?.pending_leave || 0}</h3>
               <p>Pending Leave</p>
@@ -126,7 +114,6 @@ const LeftContent = () => {
                 Pending Leave
               </button>
             </InfoCard>
-
             <InfoCard>
               <h3>{employee.leave_summary?.leave_taken || 0}</h3>
               <p>Leaves Taken</p>
@@ -136,28 +123,23 @@ const LeftContent = () => {
               </button>
             </InfoCard>
           </InfoGrid>
-
           {/* -------- Time Tracking Card -------- */}
           <TimeTrackingCard>
             <TitleRow>
               <img src={TimeIcon} alt="clock icon" />
               <span>Time Tracking</span>
             </TitleRow>
-
             <Row>
               <span>Monthly Days:</span>
               <strong>{employee.attendance_summary?.monthly_days || 0}</strong>
             </Row>
-
             <Row>
               <span>Weekly Working Hour:</span>
               <strong>
                 {employee.attendance_summary?.weekly_working_hours || "00:00"}
               </strong>
             </Row>
-
             <hr />
-
             <Row>
               <span>Total Working Hour:</span>
               <strong>

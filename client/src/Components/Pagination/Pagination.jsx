@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  PaginationWrapper,
-  PageButton,
-  Ellipsis,
-} from "./Pagination.styles";
+import { PaginationWrapper, PageButton, Ellipsis } from "./Pagination.styles";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;
@@ -55,7 +51,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           >
             {page}
           </PageButton>
-        )
+        ),
       )}
 
       <PageButton

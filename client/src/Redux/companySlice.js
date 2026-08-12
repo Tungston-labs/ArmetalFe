@@ -3,7 +3,6 @@ import {
   fetchCompanySelf,
   updateCompanySelf,
 } from "../services/companyService";
-
 export const getCompanySelf = createAsyncThunk(
   "company/getSelf",
   async (_, { rejectWithValue }) => {
@@ -14,7 +13,6 @@ export const getCompanySelf = createAsyncThunk(
     }
   }
 );
-
 // PATCH
 export const patchCompanySelf = createAsyncThunk(
   "company/updateSelf",
@@ -26,7 +24,6 @@ export const patchCompanySelf = createAsyncThunk(
     }
   }
 );
-
 const companySlice = createSlice({
   name: "company",
   initialState: {
@@ -56,7 +53,6 @@ const companySlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
       // PATCH
       .addCase(patchCompanySelf.pending, (state) => {
         state.loading = true;
@@ -73,6 +69,5 @@ const companySlice = createSlice({
       });
   },
 });
-
 export const { resetCompanyState } = companySlice.actions;
 export default companySlice.reducer;

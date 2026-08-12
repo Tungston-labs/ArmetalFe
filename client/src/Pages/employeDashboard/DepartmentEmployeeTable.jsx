@@ -6,23 +6,19 @@ import {
   Left,
   Right,
   Divider,
-  Section
+  Section,
 } from "./DepartmentEmployeeTable.styles";
-
 const DepartmentEmployeeTable = ({ employee }) => {
   if (!employee) return null;
-
   const fields = [
     { label: "Department Name", value: employee.department || "—" },
     { label: "Employee ID", value: employee.employeeId || "—" },
     { label: "Employee Type", value: employee.employeeType || "—" },
     { label: "Role", value: employee.role || "—" },
   ];
-
   return (
     <Card>
       <Title>Department Information</Title>
-
       <Section>
         {fields.map((item, index) => (
           <React.Fragment key={index}>
@@ -37,5 +33,4 @@ const DepartmentEmployeeTable = ({ employee }) => {
     </Card>
   );
 };
-
 export default DepartmentEmployeeTable;

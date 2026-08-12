@@ -15,7 +15,7 @@ import {
   Td,
   AddButton,
   Select,
-  SaveBtn
+  SaveBtn,
 } from "./ViewTableBank.Styles";
 
 import {
@@ -56,9 +56,7 @@ const ViewTableBank = ({
 }) => {
   const dispatch = useDispatch();
 
-  const { increments = [] } = useSelector(
-    (state) => state.salaryIncrement
-  );
+  const { increments = [] } = useSelector((state) => state.salaryIncrement);
 
   const [showNewRow, setShowNewRow] = useState(false);
 
@@ -79,11 +77,9 @@ const ViewTableBank = ({
           data: {
             employee: employeeId,
             date: newIncrement.date,
-            increment_amount: Number(
-              newIncrement.increment_amount
-            ),
+            increment_amount: Number(newIncrement.increment_amount),
           },
-        })
+        }),
       ).unwrap();
 
       setNewIncrement({
@@ -117,7 +113,7 @@ const ViewTableBank = ({
             date: today,
             increment_amount: 0,
           },
-        })
+        }),
       ).unwrap();
 
       dispatch(fetchSalaryIncrements(employeeId));
@@ -143,36 +139,20 @@ const ViewTableBank = ({
             </div>
 
             <div>
-              <Label>
-                {country === "IN"
-                  ? "IFSC Code"
-                  : "SWIFT Code"}
-              </Label>
+              <Label>{country === "IN" ? "IFSC Code" : "SWIFT Code"}</Label>
 
               <Input
-                value={
-                  country === "IN"
-                    ? ifscCode
-                    : swiftCode
-                }
+                value={country === "IN" ? ifscCode : swiftCode}
                 onChange={(e) =>
                   country === "IN"
-                    ? setIfscCode(
-                      e.target.value.toUpperCase()
-                    )
-                    : setSwiftCode(
-                      e.target.value.toUpperCase()
-                    )
+                    ? setIfscCode(e.target.value.toUpperCase())
+                    : setSwiftCode(e.target.value.toUpperCase())
                 }
-                maxLength={
-                  country === "IN" ? 11 : 20
-                }
+                maxLength={country === "IN" ? 11 : 20}
               />
 
               <ErrorText>
-                {country === "IN"
-                  ? errors.ifscCode
-                  : errors.swiftCode}
+                {country === "IN" ? errors.ifscCode : errors.swiftCode}
               </ErrorText>
             </div>
 
@@ -180,9 +160,7 @@ const ViewTableBank = ({
               <Label>Basic Salary</Label>
               <Input
                 value={basicSalary}
-                onChange={(e) =>
-                  setBasicSalary(e.target.value)
-                }
+                onChange={(e) => setBasicSalary(e.target.value)}
               />
               <ErrorText>{errors.basicSalary}</ErrorText>
             </div>
@@ -193,45 +171,39 @@ const ViewTableBank = ({
               <Label>Account Number</Label>
               <Input
                 value={accountNumber}
-                onChange={(e) =>
-                  setAccountNumber(e.target.value)
-                }
+                onChange={(e) => setAccountNumber(e.target.value)}
               />
-              <ErrorText>
-                {errors.accountNumber}
-              </ErrorText>
+              <ErrorText>{errors.accountNumber}</ErrorText>
             </div>
 
             <div>
               <Label>PAN Number</Label>
               <Input
                 value={panNumber}
-                onChange={(e) =>
-                  setPanNumber(e.target.value)
-                }
+                onChange={(e) => setPanNumber(e.target.value)}
               />
               <ErrorText>{errors.panNumber}</ErrorText>
             </div>
             <div>
-  <Label>Tax Regime</Label>
-  <Select
-    value={taxRegime}
-    onChange={(e) => setTaxRegime(e.target.value)}
-  >
-    <option value="">Select Tax Regime</option>
-    <option value="old">Old Regime</option>
-    <option value="new">New Regime</option>
-  </Select>
-</div>
+              <Label>Tax Regime</Label>
+              <Select
+                value={taxRegime}
+                onChange={(e) => setTaxRegime(e.target.value)}
+              >
+                <option value="">Select Tax Regime</option>
+                <option value="old">Old Regime</option>
+                <option value="new">New Regime</option>
+              </Select>
+            </div>
 
-<div>
-  <Label>TDS Amount</Label>
-  <Input
-    type="number"
-    value={tdsAmount}
-    onChange={(e) => setTdsAmount(e.target.value)}
-  />
-</div>
+            <div>
+              <Label>TDS Amount</Label>
+              <Input
+                type="number"
+                value={tdsAmount}
+                onChange={(e) => setTdsAmount(e.target.value)}
+              />
+            </div>
           </Grid2>
         </CardBody>
       </Card>
@@ -295,30 +267,23 @@ const ViewTableBank = ({
                       onChange={(e) =>
                         setNewIncrement({
                           ...newIncrement,
-                          increment_amount:
-                            e.target.value,
+                          increment_amount: e.target.value,
                         })
                       }
                     />
                   </Td>
 
-                 <Td>
-  <SaveBtn
-    type="button"
-    onClick={saveIncrement}
-  >
-    Save
-  </SaveBtn>
-</Td>
+                  <Td>
+                    <SaveBtn type="button" onClick={saveIncrement}>
+                      Save
+                    </SaveBtn>
+                  </Td>
                 </tr>
               )}
             </tbody>
           </Table>
 
-          <AddButton
-            type="button"
-            onClick={() => setShowNewRow(true)}
-          >
+          <AddButton type="button" onClick={() => setShowNewRow(true)}>
             + Add Increment
           </AddButton>
         </TableWrapper>

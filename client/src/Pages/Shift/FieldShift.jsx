@@ -48,7 +48,7 @@ const DepartmentPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { projects = [], isLoading = false } = useSelector(
-    (state) => state.projects || {}
+    (state) => state.projects || {},
   );
 
   useEffect(() => {
@@ -125,7 +125,10 @@ const DepartmentPage = () => {
 
         {!isLoading && projects.length === 0 && (
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <NoEmployeeFound searchTerm={searchTerm} label="No Projects Found" />
+            <NoEmployeeFound
+              searchTerm={searchTerm}
+              label="No Projects Found"
+            />
           </div>
         )}
 
