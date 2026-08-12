@@ -723,6 +723,16 @@ from payroll.models import EmployeePayrollRecord
 from .serializers import EmployeeAttendanceSummarySerializer
 from .utils.dayscalculations import build_employee_month_calendar
 
+from datetime import date
+import calendar
+
+from django.db.models import Q
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from employee.models import Employee_db
+from payroll.models import EmployeePayrollRecord
 
 
 class EmployeeAttendanceSummaryView(generics.ListAPIView):
@@ -733,108 +743,253 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
 
-        qs = Employee_db.objects.select_related(
-            "department", "department__company"
-        ).filter(department__company=user.company,is_deleted=False)
+        if not user.company:
+            return Employee_db.objects.none()
 
-        if user.is_employee:
-            qs = qs.filter(user=user)
-
-        return qs
-
-    def list(self, request, *args, **kwargs):
         today = date.today()
 
-        year = int(request.query_params.get("year", today.year))
-        month = int(request.query_params.get("month", today.month))
+        year = int(
+            self.request.query_params.get(
+                "year",
+                today.year
+            )
+        )
+
+        month = int(
+            self.request.query_params.get(
+                "month",
+                today.month
+            )
+        )
+
+        # -------------------------------------------------
+        # Selected month's first and last day
+        # -------------------------------------------------
 
         start_date = date(year, month, 1)
 
         last_day = calendar.monthrange(year, month)[1]
-        end_date = date(year, month, last_day)
+
+        end_date = date(
+            year,
+            month,
+            last_day
+        )
+
+        # -------------------------------------------------
+        # Company employees
+        # -------------------------------------------------
+
+        qs = Employee_db.objects.select_related(
+            "department",
+            "department__company"
+        ).filter(
+            department__company=user.company
+        )
+
+        # -------------------------------------------------
+        # Employee / HR role
+        # -------------------------------------------------
+
+        if user.is_employee or user.is_hr:
+            qs = qs.filter(user=user)
+
+        # -------------------------------------------------
+        # Employee must have joined on or before the
+        # selected month's last day.
+        #
+        # This prevents a July employee from appearing
+        # when June is selected.
+        # -------------------------------------------------
+
+        qs = qs.filter(
+            joining_date__lte=end_date
+        )
+
+        # -------------------------------------------------
+        # Deleted employee handling
+        #
+        # If employee was deleted after the selected month,
+        # they should still be available for historical
+        # attendance.
+        #
+        # If employee was already deleted before the
+        # selected month started, don't show them.
+        # -------------------------------------------------
+
+        qs = qs.filter(
+            Q(is_deleted=False) |
+            Q(deleted_at__gte=start_date)
+        )
+
+        return qs.order_by(
+            "department__name",
+            "name_search"
+        )
+
+    def list(self, request, *args, **kwargs):
+
+        today = date.today()
+
+        year = int(
+            request.query_params.get(
+                "year",
+                today.year
+            )
+        )
+
+        month = int(
+            request.query_params.get(
+                "month",
+                today.month
+            )
+        )
+
+        start_date = date(
+            year,
+            month,
+            1
+        )
+
+        last_day = calendar.monthrange(
+            year,
+            month
+        )[1]
+
+        end_date = date(
+            year,
+            month,
+            last_day
+        )
 
         results = []
 
-        for emp in self.get_queryset():
+        # -------------------------------------------------
+        # Don't generate attendance for a future month
+        # -------------------------------------------------
 
-          
-            if start_date > today.replace(day=1):
+        if start_date > today.replace(day=1):
+
+            for emp in self.get_queryset():
+
                 results.append({
                     "employee_id": emp.employee_id,
                     "employee_name": emp.name,
-                    "department": emp.department.name if emp.department else None,
+                    "department": (
+                        emp.department.name
+                        if emp.department
+                        else None
+                    ),
                     "working_days": 0,
                     "present_days": 0,
                     "absent_days": 0,
                     "lop_days": 0,
                     "daily_records": [],
                 })
-                continue
 
-            # ---------- PAYROLL SNAPSHOT (ONLY IF PAID) ----------
-            payroll = EmployeePayrollRecord.objects.filter(
-                employee=emp,
-                year=year,
-                month=month
-            ).first()
+        else:
 
-            print("--------------------------------")
-            print("Employee:", emp.name)
-            print("Employee ID:", emp.id)
-            print("Month:", month, "Year:", year)
-            print("Payroll:", payroll)
+            for emp in self.get_queryset():
 
-            if payroll:
-                print("Status:", repr(payroll.status))
-                print("Working Days:", payroll.working_days)
-                print("Present Days:", payroll.days_present)
-                print("LOP Days:", payroll.lop_days)
-            print("--------------------------------")
+                # -------------------------------------------------
+                # Build attendance calendar
+                # -------------------------------------------------
 
-            calendar_working_days, calendar_present_days, calendar_absent_days, calendar_lop_days, daily_records = (
-            build_employee_month_calendar(
-                emp,
-                start_date,
-                end_date
+                (
+                    calendar_working_days,
+                    calendar_present_days,
+                    calendar_absent_days,
+                    calendar_lop_days,
+                    daily_records
+                ) = build_employee_month_calendar(
+                    emp,
+                    start_date,
+                    end_date
                 )
-            )
 
-            payroll = EmployeePayrollRecord.objects.filter(
-                employee=emp,
-                year=year,
-                month=month
-            ).first()
+                # -------------------------------------------------
+                # Payroll snapshot
+                # -------------------------------------------------
 
-            if payroll and payroll.status.lower() == "paid":
-                working_days = payroll.working_days or calendar_working_days
-                present_days = payroll.days_present or calendar_present_days
-                lop_days = payroll.lop_days or calendar_lop_days
-                absent_days = max(working_days - present_days, 0)
-            else:
-                working_days = calendar_working_days
-                present_days = calendar_present_days
-                absent_days = calendar_absent_days
-                lop_days = calendar_lop_days
+                payroll = EmployeePayrollRecord.objects.filter(
+                    employee=emp,
+                    year=year,
+                    month=month
+                ).first()
 
-            print(
-                f"{emp.name} -> Working={working_days}, Present={present_days}, Absent={absent_days}, LOP={lop_days}"
-            )
+                # -------------------------------------------------
+                # If payroll is PAID, use payroll snapshot
+                # Otherwise use attendance calendar
+                # -------------------------------------------------
 
-            results.append({
-                "employee_id": emp.employee_id,
-                "employee_name": emp.name,
-                "department": emp.department.name if emp.department else None,
-                "working_days": working_days,
-                "present_days": present_days,
-                "absent_days": absent_days,
-                "lop_days": lop_days,
-                "daily_records": daily_records,
-            })
+                if payroll and payroll.status.lower() == "paid":
+
+                    working_days = (
+                        payroll.working_days
+                        if payroll.working_days is not None
+                        else calendar_working_days
+                    )
+
+                    present_days = (
+                        payroll.days_present
+                        if payroll.days_present is not None
+                        else calendar_present_days
+                    )
+
+                    lop_days = (
+                        payroll.lop_days
+                        if payroll.lop_days is not None
+                        else calendar_lop_days
+                    )
+
+                    absent_days = max(
+                        working_days - present_days,
+                        0
+                    )
+
+                else:
+
+                    working_days = calendar_working_days
+                    present_days = calendar_present_days
+                    absent_days = calendar_absent_days
+                    lop_days = calendar_lop_days
+
+                results.append({
+                    "employee_id": emp.employee_id,
+                    "employee_name": emp.name,
+                    "department": (
+                        emp.department.name
+                        if emp.department
+                        else None
+                    ),
+                    "working_days": working_days,
+                    "present_days": present_days,
+                    "absent_days": absent_days,
+                    "lop_days": lop_days,
+                    "daily_records": daily_records,
+                })
+
+        # -------------------------------------------------
+        # Pagination
+        # -------------------------------------------------
 
         page = self.paginate_queryset(results)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(results, many=True)
-        return Response(serializer.data)
+        if page is not None:
+            serializer = self.get_serializer(
+                page,
+                many=True
+            )
+
+            return self.get_paginated_response(
+                serializer.data
+            )
+
+        serializer = self.get_serializer(
+            results,
+            many=True
+        )
+
+        return Response(
+            serializer.data
+        )

@@ -1,5 +1,4 @@
-import random
-import string
+
 from django.db import models
 from django.utils import timezone
 from user.models import User
@@ -9,18 +8,14 @@ from shared.dataencrpt import EncryptedCharField,EncryptedEmailField,EncryptedIn
 from django.contrib.postgres.fields import ArrayField  
 from django.db.models import JSONField  
 
-
-# def generate_employee_id(company_name, department_name):
-#     company_part = company_name[:3].upper()
-#     department_part = department_name[:3].upper()
-#     random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
-#     return f"{company_part}{department_part}{random_part}"
-
-def generate_password():
-    return 'EMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-
 class Employee_db(TimeStampedModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+            User,
+            on_delete=models.CASCADE,
+            null=True,
+            blank=True,
+            related_name="employee_profile"
+        )
     employee_id = models.CharField(max_length=200, unique=True, editable=False)
     employee_code = models.CharField(
         max_length=200,
@@ -70,44 +65,16 @@ class Employee_db(TimeStampedModel):
 
     def save(self, *args, **kwargs):
 
-        # If employee_id not provided
-        # use email as username
         if not self.employee_id:
             self.employee_id = self.email
 
-        # searchable lowercase name
         if self.name:
             self.name_search = str(self.name).strip().lower()
 
-        # CREATE USER
-        if not self.user_id:
-
-            password = generate_password()
-            self.password = password
-
-            self.user = User.objects.create_user(
-                username=self.employee_id,
-                email=self.email,
-                password=password,
-                is_employee=True,
-                is_hr=self.role == 'hr',
-                company=(
-                    self.department.company
-                    if self.department else None
-                )
-            )
-
-        else:
-            # UPDATE USER DETAILS
-            self.user.username = self.employee_id
-            self.user.email = self.email
-            self.user.is_hr = self.role == 'hr'
-            self.user.save()
-
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return f"{self.name} - {self.employee_id}"
+        def __str__(self):
+            return f"{self.name} - {self.employee_id}"
 
 
 

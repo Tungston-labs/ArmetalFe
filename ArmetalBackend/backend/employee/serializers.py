@@ -1,7 +1,10 @@
 from rest_framework import serializers
+from user.models import User
 from .models import ScheduleReminder
 from django.db.models import Sum
 from datetime import datetime
+import random
+import string
 from .models import (
     Employee_db, EmpBankPaymentModel, EmpDocument, TempUpload
 )
@@ -12,7 +15,9 @@ from leave.models import LeaveRequest,EmployeeLeaveBalance
 from datetime import date, timedelta
 from calendar import monthrange
 from decimal import Decimal
-
+from django.db import transaction, IntegrityError
+def generate_password():
+    return 'EMP' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
 class SafeDateField(serializers.DateField):
     def to_representation(self, value):
         if isinstance(value, datetime):
@@ -27,25 +32,54 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     iqama_number = serializers.CharField(
         required=False,
-        allow_blank=True
+        allow_blank=True,
+        allow_null=True,
+        validators=[]
     )
 
     aadar_number = serializers.CharField(
         required=False,
-        allow_blank=True
+        allow_blank=True,
+        allow_null=True,
+        validators=[]
     )
 
     insurance_number = serializers.CharField(
         required=False,
-        allow_blank=True
+        allow_blank=True,
+        allow_null=True
     )
 
-    # Allow manual employee_id
     employee_id = serializers.CharField(
         required=False,
-        allow_blank=True
+        allow_blank=True,
+        validators=[]
     )
-    employee_code = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+
+    employee_code = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        validators=[]
+    )
+
+    email = serializers.EmailField(
+        validators=[]
+    )
+
+    phno = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        validators=[]
+    )
+
+    passport_number = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        validators=[]
+    )
 
     department_id = serializers.PrimaryKeyRelatedField(
         source='department',
@@ -61,10 +95,10 @@ class EmployeeSerializer(serializers.ModelSerializer):
     is_head = serializers.SerializerMethodField(read_only=True)
 
     casual_leave = serializers.DecimalField(
-    max_digits=5,
-    decimal_places=2,
-    required=False,
-    default=0,
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        default=0,
     )
 
     sick_leave = serializers.DecimalField(
@@ -72,7 +106,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         decimal_places=2,
         required=False,
         default=0,
-        
     )
 
     earned_leave = serializers.DecimalField(
@@ -80,7 +113,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         decimal_places=2,
         required=False,
         default=0,
-        
     )
 
     maternity_leave = serializers.DecimalField(
@@ -88,7 +120,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         decimal_places=2,
         required=False,
         default=0,
-        
     )
 
     other_leave = serializers.DecimalField(
@@ -96,7 +127,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         decimal_places=2,
         required=False,
         default=0,
-        
     )
 
     class Meta:
@@ -130,168 +160,227 @@ class EmployeeSerializer(serializers.ModelSerializer):
     # EMAIL VALIDATION
     # =====================================================
 
-    def validate_email(self, value):
-
-        qs = Employee_db.objects.filter(
-            email__iexact=value
-        )
-
-        # exclude current instance during update
-        if self.instance:
-            qs = qs.exclude(id=self.instance.id)
-
-        if qs.exists():
-            raise serializers.ValidationError(
-                "Email already exists."
-            )
-
-        return value
-
-    # =====================================================
-    # PHONE VALIDATION
-    # =====================================================
-
-    def validate_phno(self, value):
-
-        qs = Employee_db.objects.filter(
-            phno=value
-        )
-
-        if self.instance:
-            qs = qs.exclude(id=self.instance.id)
-
-        if qs.exists():
-            raise serializers.ValidationError(
-                "Phone number already exists."
-            )
-
-        return value
-
-    # =====================================================
-    # EMPLOYEE ID VALIDATION
-    # =====================================================
-
-    def validate_employee_id(self, value):
-
-        # skip empty because auto-generated possible
-        if not value:
-            return value
-
-        qs = Employee_db.objects.filter(
-            employee_id=value
-        )
-
-        if self.instance:
-            qs = qs.exclude(id=self.instance.id)
-
-        if qs.exists():
-            raise serializers.ValidationError(
-                "Employee ID already exists."
-            )
-
-        return value
-
-    # =====================================================
-    # IQAMA VALIDATION
-    # =====================================================
-
-    def validate_iqama_number(self, value):
-
-        if not value:
-            return value
-
-        qs = Employee_db.objects.filter(
-            iqama_number=value
-        )
-
-        if self.instance:
-            qs = qs.exclude(id=self.instance.id)
-
-        if qs.exists():
-            raise serializers.ValidationError(
-                "Iqama number already exists."
-            )
-
-        return value
-        # =====================================================
-    # employee_code VALIDATION
-    # =====================================================
-
-    def validate_employee_code(self, value):
-        if not value:
-            return value
-
-        qs = Employee_db.objects.filter(
-            employee_code=value
-        )
-
-        if self.instance:
-            qs = qs.exclude(id=self.instance.id)
-
-        if qs.exists():
-            raise serializers.ValidationError(
-                "Employee code already exists."
-            )
-
-        return value
-
-    # =====================================================
-    # AADHAR VALIDATION
-    # =====================================================
-
-    def validate_aadar_number(self, value):
-
-        if not value:
-            return value
-
-        qs = Employee_db.objects.filter(
-            aadar_number=value
-        )
-
-        if self.instance:
-            qs = qs.exclude(id=self.instance.id)
-
-        if qs.exists():
-            raise serializers.ValidationError(
-                "Aadhaar number already exists."
-            )
-
-        return value
-
     def validate(self, data):
 
-        country = self.context['request'].user.company.country
+        request = self.context.get("request")
 
-        if country == "IN":
-            if not data.get('aadar_number'):
-                raise serializers.ValidationError({
-                    "aadar_number":
-                    "Aadhaar number is required for India"
-                })
-
-        else:
-            if not data.get('iqama_number'):
-                raise serializers.ValidationError({
-                    "iqama_number":
-                    "Iqama number is required for this country"
-                })
-
-            if not data.get('visa_expiry_date'):
-                raise serializers.ValidationError({
-                    "visa_expiry_date":
-                    "Visa expiry date is required"
-                })
-
-        if (
-            country != "IN"
-            and not data.get('insurance_number')
-        ):
+        if not request or not request.user.is_authenticated:
             raise serializers.ValidationError({
-                "insurance_number":
-                "Insurance number is required for non-India"
+                "detail": "Authentication is required."
             })
 
+        company = getattr(request.user, "company", None)
+
+        if not company:
+            raise serializers.ValidationError({
+                "company": "No company is associated with this user."
+            })
+
+        errors = {}
+
+        # =====================================================
+        # VALUES
+        # =====================================================
+
+        email = data.get("email")
+        phno = data.get("phno")
+        employee_id = data.get("employee_id")
+        employee_code = data.get("employee_code")
+        iqama_number = data.get("iqama_number")
+        aadar_number = data.get("aadar_number")
+        passport_number = data.get("passport_number")
+
+        # Employee ID is automatically generated from email
+        # inside Employee_db.save() if not provided.
+        effective_employee_id = employee_id or email
+
+        # =====================================================
+        # EMAIL
+        # =====================================================
+
+        if email:
+
+            employee_email_exists = Employee_db.objects.filter(
+                email__iexact=email
+            )
+
+            user_email_exists = User.objects.filter(
+                email__iexact=email
+            )
+
+            if self.instance:
+                employee_email_exists = employee_email_exists.exclude(
+                    pk=self.instance.pk
+                )
+
+                if self.instance.user_id:
+                    user_email_exists = user_email_exists.exclude(
+                        pk=self.instance.user_id
+                    )
+
+            if employee_email_exists.exists() or user_email_exists.exists():
+
+                errors["email"] = "An employee with this email already exists."
+
+        # =====================================================
+        # PHONE
+        # =====================================================
+
+        if phno:
+
+            qs = Employee_db.objects.filter(phno=phno)
+
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                errors["phno"] = "This phone number is already registered."
+
+        # =====================================================
+        # EMPLOYEE ID
+        # =====================================================
+
+        if effective_employee_id:
+
+            employee_id_exists = Employee_db.objects.filter(
+                employee_id=effective_employee_id
+            )
+
+            user_username_exists = User.objects.filter(
+                username=effective_employee_id
+            )
+
+            if self.instance:
+                employee_id_exists = employee_id_exists.exclude(
+                    pk=self.instance.pk
+                )
+
+                if self.instance.user_id:
+                    user_username_exists = user_username_exists.exclude(
+                        pk=self.instance.user_id
+                    )
+
+            if (
+                employee_id_exists.exists()
+                or user_username_exists.exists()
+            ):
+                errors["employee_id"] = (
+                    "This employee ID is already in use."
+                )
+
+        # =====================================================
+        # EMPLOYEE CODE
+        # =====================================================
+
+        if employee_code:
+
+            qs = Employee_db.objects.filter(
+                employee_code=employee_code
+            )
+
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                errors["employee_code"] = (
+                    "This employee code is already in use."
+                )
+
+        # =====================================================
+        # IQAMA
+        # =====================================================
+
+        if iqama_number:
+
+            qs = Employee_db.objects.filter(
+                iqama_number=iqama_number
+            )
+
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                errors["iqama_number"] = (
+                    "This Iqama number is already registered."
+                )
+
+        # =====================================================
+        # AADHAAR
+        # =====================================================
+
+        if aadar_number:
+
+            qs = Employee_db.objects.filter(
+                aadar_number=aadar_number
+            )
+
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                errors["aadar_number"] = (
+                    "This Aadhaar number is already registered."
+                )
+
+        # =====================================================
+        # PASSPORT
+        # =====================================================
+
+        if passport_number:
+
+            qs = Employee_db.objects.filter(
+                passport_number=passport_number
+            )
+
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                errors["passport_number"] = (
+                    "This passport number is already registered."
+                )
+
+        # =====================================================
+        # COUNTRY-SPECIFIC VALIDATION
+        # =====================================================
+
+        country = company.country
+
+        if country == "IN":
+
+            if not aadar_number:
+                errors["aadar_number"] = (
+                    "Aadhaar number is required for India."
+                )
+
+        else:
+
+            if not iqama_number:
+                errors["iqama_number"] = (
+                    "Iqama number is required for this country."
+                )
+
+            if not data.get("visa_expiry_date"):
+                errors["visa_expiry_date"] = (
+                    "Visa expiry date is required."
+                )
+
+            if not data.get("insurance_number"):
+                errors["insurance_number"] = (
+                    "Insurance number is required for this country."
+                )
+
+        # =====================================================
+        # RETURN ALL VALIDATION ERRORS
+        # =====================================================
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
         return data
+
+
+
 
 
     def create(self, validated_data):
@@ -302,41 +391,80 @@ class EmployeeSerializer(serializers.ModelSerializer):
         maternity_leave = validated_data.pop("maternity_leave", 0)
         other_leave = validated_data.pop("other_leave", 0)
 
-        employee = Employee_db.objects.create(
-            **validated_data
-        )
+        try:
+            with transaction.atomic():
 
-        leave_data = [
-            ("casual", casual_leave),
-            ("sick", sick_leave),
-            ("earned", earned_leave),
-            ("maternity", maternity_leave),
-            ("others", other_leave),
-        ]
+                # 1. CREATE EMPLOYEE FIRST
+                employee = Employee_db.objects.create(
+                    **validated_data
+                )
 
-        total_leave = Decimal("0")
+                # 2. GENERATE PASSWORD
+                password = generate_password()
 
-        for leave_type, total in leave_data:
+                # 3. CREATE USER AFTER EMPLOYEE
+                user = User.objects.create_user(
+                    username=employee.employee_id,
+                    email=employee.email,
+                    password=password,
+                    is_employee=True,
+                    is_hr=employee.role == "hr",
+                    company=(
+                        employee.department.company
+                        if employee.department
+                        else None
+                    )
+                )
 
-            total = Decimal(str(total or 0))
+                # 4. LINK USER TO EMPLOYEE
+                employee.user = user
+                employee.password = password
 
-            EmployeeLeaveBalance.objects.create(
-                employee=employee,
-                leave_type=leave_type,
-                total_leave=total,
-                used_leave=0,
-                remaining_leave=total
-            )
+                employee.save(
+                    update_fields=["user", "password"]
+                )
 
-            total_leave += total
+                # 5. CREATE LEAVE BALANCES
+                leave_data = [
+                    ("casual", casual_leave),
+                    ("sick", sick_leave),
+                    ("earned", earned_leave),
+                    ("maternity", maternity_leave),
+                    ("others", other_leave),
+                ]
 
-        employee.total_leave = total_leave
-        employee.save(update_fields=["total_leave"])
+                total_leave = Decimal("0")
 
-        return employee
+                for leave_type, total in leave_data:
 
+                    total = Decimal(str(total or 0))
 
+                    EmployeeLeaveBalance.objects.create(
+                        employee=employee,
+                        leave_type=leave_type,
+                        total_leave=total,
+                        used_leave=0,
+                        remaining_leave=total
+                    )
 
+                    total_leave += total
+
+                # 6. UPDATE TOTAL LEAVE
+                employee.total_leave = total_leave
+
+                employee.save(
+                    update_fields=["total_leave"]
+                )
+
+                return employee
+
+        except IntegrityError as e:
+            raise serializers.ValidationError({
+                "detail": (
+                    "Unable to create employee. "
+                    "One or more details already exist."
+                )
+            })
 
     def update(self, instance, validated_data):
 
