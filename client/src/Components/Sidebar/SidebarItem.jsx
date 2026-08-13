@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import {
@@ -19,17 +19,23 @@ const SidebarItem = ({ item, collapsed }) => {
 
   const hasChildren = item.children && item.children.length > 0;
 
-  const [open, setOpen] = useState(
+  const isChildActive =
     hasChildren &&
-      item.children.some((child) =>
-        location.pathname.startsWith(child.path)
-      )
-  );
+    item.children.some((child) =>
+      location.pathname.startsWith(child.path)
+    );
+
+  const [open, setOpen] = useState(isChildActive);
+
+  // Re-sync open state whenever the route changes: open this
+  // dropdown when one of its children becomes active, and close
+  // it when navigating away to a different module entirely.
+  useEffect(() => {
+    setOpen(isChildActive);
+  }, [location.pathname, isChildActive]);
 
   const isActive = hasChildren
-    ? item.children.some((child) =>
-        location.pathname.startsWith(child.path)
-      )
+    ? isChildActive
     : location.pathname === item.path;
 
   const handleClick = () => {

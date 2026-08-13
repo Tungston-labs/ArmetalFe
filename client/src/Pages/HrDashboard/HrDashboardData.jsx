@@ -81,51 +81,18 @@ export const getDashboardStats = (data = {}) => [
 // ===============================
 // Payroll Chart
 // ===============================
+export const getPayrollData = (data = {}) => {
+  if (!Array.isArray(data.monthly_data)) {
+    return [];
+  }
 
-export const payrollData = [
-  {
-    month: "Jan",
-    salary: 260000,
-    incentive: 55000,
-    deduction: 50000,
-  },
-  {
-    month: "Feb",
-    salary: 190000,
-    incentive: 80000,
-    deduction: 50000,
-  },
-  {
-    month: "Mar",
-    salary: 230000,
-    incentive: 65000,
-    deduction: 35000,
-  },
-  {
-    month: "Apr",
-    salary: 180000,
-    incentive: 90000,
-    deduction: 45000,
-  },
-  {
-    month: "May",
-    salary: 150000,
-    incentive: 40000,
-    deduction: 100000,
-  },
-  {
-    month: "Jun",
-    salary: 190000,
-    incentive: 120000,
-    deduction: 50000,
-  },
-  {
-    month: "Jul",
-    salary: 220000,
-    incentive: 130000,
-    deduction: 50000,
-  },
-];
+  return data.monthly_data.map((item) => ({
+    month: item.month_name?.slice(0, 3) || "",
+    salary: item.paid_salary ?? 0,
+    incentive: item.incentive ?? 0,
+    deduction: item.deduction ?? 0,
+  }));
+};
 
 
 // ===============================
@@ -246,20 +213,49 @@ export const gosiData = {
 // Employee Engagement
 // ===============================
 
-export const engagementData = [
-  {
-    title: "Upcoming Holiday!",
-    date: "20 Jul 2026",
-    subtitle: "Second Saturday",
-  },
-  {
-    title: "Upcoming Birthday!",
-    date: "20 Jul 2026",
-    subtitle: "Second Saturday",
-  },
-  {
-    title: "Upcoming Anniversary!",
-    date: "20 Jul 2026",
-    subtitle: "Second Saturday",
-  },
-];
+export const getEngagementData = (data = {}) => {
+  const events = [];
+
+  // ===============================
+  // Upcoming Holidays
+  // ===============================
+
+  if (Array.isArray(data.upcoming_holidays)) {
+    data.upcoming_holidays.forEach((holiday) => {
+      events.push({
+        type: "holiday",
+        title: "Upcoming Holiday!",
+        date: holiday.date || "",
+        subtitle:
+          holiday.description ||
+          "Holiday",
+        daysLeft: holiday.days_left,
+        holidayType: holiday.holiday_type,
+      });
+    });
+  }
+
+  // ===============================
+  // Upcoming Birthdays
+  // ===============================
+
+  if (Array.isArray(data.upcoming_birthdays)) {
+    data.upcoming_birthdays.forEach((birthday) => {
+      events.push({
+        type: "birthday",
+        title: "Upcoming Birthday!",
+        date:
+          birthday.birthday ||
+          birthday.date_of_birth ||
+          "",
+        subtitle:
+          birthday.employee_name ||
+          "Employee Birthday",
+        daysLeft: birthday.days_left,
+        employeeName: birthday.employee_name,
+      });
+    });
+  }
+
+  return events.slice(0, 3);
+};

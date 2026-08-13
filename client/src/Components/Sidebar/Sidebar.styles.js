@@ -183,22 +183,22 @@ margin-top: 8px;
 export const Footer = styled.div`
   width: 100%;
   padding: 18px 20px;
+
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 5px;
+
   color: #ffffff;
   font-family: "Poppins", sans-serif;
 
-  div {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
+  box-sizing: border-box;
 
   span {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
   }
 
   strong {
@@ -206,17 +206,7 @@ export const Footer = styled.div`
     font-weight: 700;
     color: #ffffff;
     letter-spacing: 0.5px;
-  }
-
-  svg {
-    font-size: 20px;
-    cursor: pointer;
-    transition: 0.25s;
-  }
-
-  svg:hover {
-    transform: translateX(3px);
-    color: #ffffff;
+    white-space: nowrap;
   }
 `;
 

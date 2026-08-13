@@ -62,14 +62,10 @@ const Sidebar = () => {
           ))}
         </Menu>
 
-        <Footer>
-          <div>
-            <span>POWERED BY </span>
-            <strong>REKORY</strong>
-          </div>
-
-          <FiLogOut onClick={handleLogout} style={{ cursor: "pointer" }} />
-        </Footer>
+       <Footer>
+  <span>POWERED BY</span>
+  <strong>REKORY</strong>
+</Footer>
       </SidebarContainer>
     </>
   );
