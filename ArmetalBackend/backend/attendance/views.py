@@ -28,7 +28,8 @@ from shared.pagination import CustomPagination
 from rest_framework.exceptions import ValidationError
 from rest_framework import status
 logger = logging.getLogger(__name__)
-
+from leave.models import LeaveRequest
+from datetime import time
 # --------------------------------------------------------------view for swipe in/out
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated]
@@ -115,19 +116,52 @@ class AttendanceSwipeView(APIView):
             now_company_tz = now_utc.astimezone(company_tz)
             today = now_company_tz.date()
 
-            from leave.models import LeaveRequest
-            is_on_leave = LeaveRequest.objects.filter(
+            
+
+            leave = LeaveRequest.objects.filter(
                 employee=employee,
                 status="approved",
                 from_date__lte=today,
                 to_date__gte=today
-            ).exists()
+            ).first()
 
-            if is_on_leave:
-                return Response(
-                    {"error": "You are currently on approved leave and cannot mark attendance."},
-                    status=400
-                )
+            if leave:
+                current_time = now_company_tz.time()
+
+                # Full-day leave
+                if (
+                    leave.from_date == leave.to_date and
+                    leave.from_date_type == "full" and
+                    leave.to_date_type == "full"
+                ):
+                    return Response(
+                        {"error": "You are currently on approved leave."},
+                        status=400
+                    )
+
+                # Same-day forenoon leave → block only before 1 PM
+                if (
+                    leave.from_date == leave.to_date and
+                    leave.from_date_type == "forenoon" and
+                    leave.to_date_type == "forenoon" and
+                    current_time < time(13, 0)
+                ):
+                    return Response(
+                        {"error": "You are currently on approved forenoon leave."},
+                        status=400
+                    )
+
+                # Same-day afternoon leave → block only after 1 PM
+                if (
+                    leave.from_date == leave.to_date and
+                    leave.from_date_type == "afternoon" and
+                    leave.to_date_type == "afternoon" and
+                    current_time >= time(13, 0)
+                ):
+                    return Response(
+                        {"error": "You are currently on approved afternoon leave."},
+                        status=400
+                    )
 
             attendance, _ = Attendance.objects.get_or_create(employee=employee, date=today)
             latest_session = attendance.sessions.last()
