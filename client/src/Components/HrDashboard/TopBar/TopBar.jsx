@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaRegBell } from "react-icons/fa6";
 import { CiCalendarDate } from "react-icons/ci";
 import { FaChevronDown } from "react-icons/fa";
 import { PiSwap } from "react-icons/pi";
 import { LuSunMedium } from "react-icons/lu";
+import { FiSettings, FiLock, FiLogOut } from "react-icons/fi";
+
 import NotificationModal from "./NotificationModal/NotificationModal";
+import ChangePasswordModal from "../../ChangePasswordModal/ChangePasswordModal";
+
 import {
   Container,
   DateBox,
@@ -20,11 +24,28 @@ import {
   Name,
   Role,
   SwitchButton,
+  ProfileDropdown,
+  DropdownItem,
 } from "./TopBar.styles";
 
 const TopBar = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-const [showNotifications, setShowNotifications] = useState(false);
+
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  const [showChangePassword, setShowChangePassword] =
+    useState(false);
+
+  const [companyName] = useState("Rekory");
+
+  const companyInitial = companyName
+    .charAt(0)
+    .toUpperCase();
+
+  const profileRef = useRef(null);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDateTime(new Date());
@@ -33,70 +54,178 @@ const [showNotifications, setShowNotifications] = useState(false);
     return () => clearInterval(timer);
   }, []);
 
-  const formattedDate = currentDateTime.toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setShowProfileMenu(false);
+      }
+    };
 
-  const formattedTime = currentDateTime.toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
+  const handleChangePassword = () => {
+    setShowProfileMenu(false);
+    setShowChangePassword(true);
+  };
+
+  const handleConfigure = () => {
+    setShowProfileMenu(false);
+  };
+
+  const handleLogout = () => {
+    setShowProfileMenu(false);
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    window.location.href = "/login";
+  };
+
+  const formattedDate =
+    currentDateTime.toLocaleDateString("en-IN", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+
+  const formattedTime =
+    currentDateTime.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
 
   return (
     <>
-    <Container>
-      <DateBox>
-        <DateSection>
-          <CiCalendarDate size={20} />
-          <span>{formattedDate}</span>
-        </DateSection>
+      <Container>
+        <DateBox>
+          <DateSection>
+            <CiCalendarDate size={20} />
+            <span>{formattedDate}</span>
+          </DateSection>
 
+          <TimeSection>
+            <LuSunMedium size={16} />
+            <span>{formattedTime}</span>
+          </TimeSection>
+        </DateBox>
 
-        <TimeSection>
-          <LuSunMedium size={16} />
-          <span>{formattedTime}</span>
-        </TimeSection>
-      </DateBox>
+        <RightSection>
+          {/* Notification */}
+          <NotificationButton
+            onClick={() =>
+              setShowNotifications(true)
+            }
+          >
+            <FaRegBell size={25} />
+            <NotificationDot />
+          </NotificationButton>
 
-      <RightSection>
-        <NotificationButton
-          onClick={() => setShowNotifications(true)}
-        >
-          <FaRegBell size={25} />
-          <NotificationDot />
-        </NotificationButton>
+          {/* Language */}
+          <Language>
+            🇬🇧 English
+            <FaChevronDown size={14} />
+          </Language>
 
-        <Language>
-          🇬🇧 English
-          <FaChevronDown size={14} />
-        </Language>
+          {/* Profile */}
+          <Profile
+            ref={profileRef}
+            onClick={() =>
+              setShowProfileMenu(
+                (prev) => !prev
+              )
+            }
+          >
+            <Avatar>
+              {companyInitial}
+            </Avatar>
 
-        <Profile>
-          <Avatar
-            src="https://i.pravatar.cc/64?img=12"
-            alt="profile"
-          />
+            <UserInfo>
+              <Name>{companyName}</Name>
+              <Role>Admin</Role>
+            </UserInfo>
 
-          <UserInfo>
-            <Name>ARUN S</Name>
-            <Role>Admin</Role>
-          </UserInfo>
-        </Profile>
+            <FaChevronDown size={12} />
 
-        <SwitchButton>
-          <PiSwap size={15} />
-          SWITCH FINANCE
-        </SwitchButton>
-      </RightSection>
-    </Container>
-     <NotificationModal
-      isOpen={showNotifications}
-      onClose={() => setShowNotifications(false)}
-    />
+            {showProfileMenu && (
+              <ProfileDropdown>
+
+                {/* Configure */}
+                <DropdownItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleConfigure();
+                  }}
+                >
+                  <FiSettings size={17} />
+                  <span>Configure</span>
+                </DropdownItem>
+
+                {/* Change Password */}
+                <DropdownItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleChangePassword();
+                  }}
+                >
+                  <FiLock size={17} />
+                  <span>Change Password</span>
+                </DropdownItem>
+
+                {/* Logout */}
+                <DropdownItem
+                  logout
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLogout();
+                  }}
+                >
+                  <FiLogOut size={17} />
+                  <span>Logout</span>
+                </DropdownItem>
+
+              </ProfileDropdown>
+            )}
+          </Profile>
+
+          <SwitchButton>
+            <PiSwap size={15} />
+            SWITCH FINANCE
+          </SwitchButton>
+        </RightSection>
+      </Container>
+
+      {/* Notifications */}
+      <NotificationModal
+        isOpen={showNotifications}
+        onClose={() =>
+          setShowNotifications(false)
+        }
+      />
+
+      {/* Change Password */}
+      {showChangePassword && (
+        <ChangePasswordModal
+          onClose={() =>
+            setShowChangePassword(false)
+          }
+        />
+      )}
     </>
   );
 };

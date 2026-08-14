@@ -244,4 +244,27 @@ export const employeeColumns = (currentPage = 1, rowsPerPage = 10) => [
     }).replace(/ /g, "/");
   },
 },
+{
+    header: "Action",
+    accessor: "action",
+    sortable: false,
+
+    render: (row) => (
+      <button
+        type="button"
+        onClick={() => onRestore(row)}
+        style={{
+          border: "none",
+          background: "#E8F5E9",
+          color: "#2E7D32",
+          padding: "7px 14px",
+          borderRadius: "6px",
+          cursor: "pointer",
+          fontWeight: 600,
+        }}
+      >
+        Restore
+      </button>
+    ),
+  },
 ];

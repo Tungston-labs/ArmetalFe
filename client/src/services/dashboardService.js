@@ -15,10 +15,6 @@ export const fetchDashCounts = async () => {
   return response.data;
 };
 
-export const fetchReimbursementCounts = async () => {
-  const response = await API.get(`${BASE}reimbursement/counts/`);
-  return response.data;
-};
 
 export const fetchReimbursementMonthwise = async () => {
   const response = await API.get(`${BASE}reimbursement/monthwise/`);
@@ -51,18 +47,52 @@ export const fetchTodayEmployeeStats = async () => {
   return response.data;
 };
 
-export const fetchHolidaySummary = async () => {
-  const response = await API.get(`${BASE}holiday-summary/`);
-  return response.data;
-};
-
-export const fetchProjectEmployeeCount = async () => {
-  const response = await API.get(`${BASE}project/employee-count/`);
-  return response.data;
-};
-
 export const fetchDashboardCounts = async () => {
   const response = await API.get(`${BASE}counts/`);
   return response.data;
 };
 
+export const fetchProjectEmployeeCount = async () => {
+  const response = await API.get(`${BASE}project/count/`);
+  return response.data;
+};
+
+export const fetchWeeklyAttendanceStats = async () => {
+  const response = await API.get(`${BASE}weekly-attendance/`);
+  return response.data;
+};
+
+export const fetchReimbursementCounts = async () => {
+  const response = await API.get(`${BASE}reimbursement/counts/`);
+
+  console.log("Reimbursement Counts:", response.data);
+
+  return response.data;
+};
+
+export const fetchUpcomingHolidaysBirthdays = async () => {
+  const response = await API.get(
+    `${BASE}dashboard/upcoming-holidays-birthdays/`
+  );
+
+  return response.data;
+};
+
+
+export const fetchHolidays = async () => {
+  const response = await API.get("/holidays/");
+  return response.data;
+};
+
+export const fetchMonthlyPayrollSummary = async (year) => {
+  const response = await API.get(
+    "/admindashboard/payroll/monthly-summary/",
+    {
+      params: {
+        year,
+      },
+    }
+  );
+
+  return response.data;
+};

@@ -96,17 +96,85 @@ export const Language = styled.div`
 `;
 
 export const Profile = styled.div`
+  position: relative;
+
   display: flex;
   align-items: center;
   gap: 10px;
+
+  cursor: pointer;
+
+  padding: 5px 8px;
+  border-radius: 8px;
+
+  &:hover {
+    background: #f2f4f7;
+  }
+`;
+export const ProfileDropdown = styled.div`
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: 210px;
+
+  background: #ffffff;
+
+  border: 1px solid #eaecf0;
+  border-radius: 10px;
+
+  padding: 6px;
+
+  box-shadow: 0 8px 25px rgba(16, 24, 40, 0.12);
+
+  z-index: 1000;
 `;
 
-export const Avatar = styled.img`
+export const DropdownItem = styled.div`
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px 12px;
+
+  border-radius: 7px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  color: ${(props) =>
+    props.logout ? "#d92d20" : "#344054"};
+
+  cursor: pointer;
+
+  &:hover {
+    background: ${(props) =>
+      props.logout ? "#fef3f2" : "#f2f4f7"};
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+`;
+export const Avatar = styled.div`
   width: 40px;
   height: 40px;
 
   border-radius: 50%;
-  object-fit: cover;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f48211;
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  flex-shrink: 0;
 `;
 
 export const UserInfo = styled.div`

@@ -81,81 +81,48 @@ export const getDashboardStats = (data = {}) => [
 // ===============================
 // Payroll Chart
 // ===============================
+export const getPayrollData = (data = {}) => {
+  if (!Array.isArray(data.monthly_data)) {
+    return [];
+  }
 
-export const payrollData = [
-  {
-    month: "Jan",
-    salary: 260000,
-    incentive: 55000,
-    deduction: 50000,
-  },
-  {
-    month: "Feb",
-    salary: 190000,
-    incentive: 80000,
-    deduction: 50000,
-  },
-  {
-    month: "Mar",
-    salary: 230000,
-    incentive: 65000,
-    deduction: 35000,
-  },
-  {
-    month: "Apr",
-    salary: 180000,
-    incentive: 90000,
-    deduction: 45000,
-  },
-  {
-    month: "May",
-    salary: 150000,
-    incentive: 40000,
-    deduction: 100000,
-  },
-  {
-    month: "Jun",
-    salary: 190000,
-    incentive: 120000,
-    deduction: 50000,
-  },
-  {
-    month: "Jul",
-    salary: 220000,
-    incentive: 130000,
-    deduction: 50000,
-  },
-];
+  return data.monthly_data.map((item) => ({
+    month: item.month_name?.slice(0, 3) || "",
+    salary: item.paid_salary ?? 0,
+    incentive: item.incentive ?? 0,
+    deduction: item.deduction ?? 0,
+  }));
+};
 
 
 // ===============================
 // Reimbursement
 // ===============================
 
-export const reimbursementData = [
+export const getReimbursementData = (data = {}) => [
   {
     name: "Approved",
-    value: 110,
-    amount: "SAR 14,65",
-    color: "#4169E1",
+    value: data.approved_count ?? 0,
+    amount: data.approved_amount ?? 0,
+    color: "#4F6EF7",
   },
   {
-    name: "Paid",
-    value: 225,
-    amount: "SAR 12,40",
-    color: "#16A34A",
-  },
-  {
-    name: "Pending",
-    value: 95,
-    amount: "SAR 9,25",
-    color: "#FDBA2D",
+    name: "Verification",
+    value: data.verification_count ?? 0,
+    amount: 0,
+    color: "#10B981",
   },
   {
     name: "Rejected",
-    value: 48,
-    amount: "SAR 4,80",
-    color: "#FF2D0A",
+    value: data.rejected_count ?? 0,
+    amount: 0,
+    color: "#F43F5E",
+  },
+  {
+    name: "Pending",
+    value: data.pending_count ?? 0,
+    amount: 0,
+    color: "#F59E0B",
   },
 ];
 
@@ -163,18 +130,18 @@ export const reimbursementData = [
 // Resource Allocation
 // ===============================
 
-export const resourceAllocationData = [
+export const getResourceAllocationData = (data = {}) => [
   {
     name: "Onsite",
-    value: 0,
+    value: data.on_site ?? 0,
   },
   {
     name: "Variant",
-    value: 3,
+    value: data.variant ?? 0,
   },
   {
     name: "Bench",
-    value: 0,
+    value: data.bench ?? 0,
   },
 ];
 
@@ -246,20 +213,49 @@ export const gosiData = {
 // Employee Engagement
 // ===============================
 
-export const engagementData = [
-  {
-    title: "Upcoming Holiday!",
-    date: "20 Jul 2026",
-    subtitle: "Second Saturday",
-  },
-  {
-    title: "Upcoming Birthday!",
-    date: "20 Jul 2026",
-    subtitle: "Second Saturday",
-  },
-  {
-    title: "Upcoming Anniversary!",
-    date: "20 Jul 2026",
-    subtitle: "Second Saturday",
-  },
-];
+export const getEngagementData = (data = {}) => {
+  const events = [];
+
+  // ===============================
+  // Upcoming Holidays
+  // ===============================
+
+  if (Array.isArray(data.upcoming_holidays)) {
+    data.upcoming_holidays.forEach((holiday) => {
+      events.push({
+        type: "holiday",
+        title: "Upcoming Holiday!",
+        date: holiday.date || "",
+        subtitle:
+          holiday.description ||
+          "Holiday",
+        daysLeft: holiday.days_left,
+        holidayType: holiday.holiday_type,
+      });
+    });
+  }
+
+  // ===============================
+  // Upcoming Birthdays
+  // ===============================
+
+  if (Array.isArray(data.upcoming_birthdays)) {
+    data.upcoming_birthdays.forEach((birthday) => {
+      events.push({
+        type: "birthday",
+        title: "Upcoming Birthday!",
+        date:
+          birthday.birthday ||
+          birthday.date_of_birth ||
+          "",
+        subtitle:
+          birthday.employee_name ||
+          "Employee Birthday",
+        daysLeft: birthday.days_left,
+        employeeName: birthday.employee_name,
+      });
+    });
+  }
+
+  return events.slice(0, 3);
+};

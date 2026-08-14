@@ -13,8 +13,8 @@ import {
   fetchEmployeeDocuments,
   deleteEmployeeDocument,
   updateEmployeeDocument,
-    updateEmployeeDocuments,
-    fetchDeletedEmployees,
+  updateEmployeeDocuments,
+  fetchDeletedEmployees,
 } from '../services/employeeService';
 import API from '../services/api';
 
@@ -299,14 +299,14 @@ const employeeSlice = createSlice({
     employeeBankPayments: [],
     employeeList: [],
 
-   deletedEmployeeList: [],
-   deletedEmployeePagination: {
-  total_items: 0,
-  total_pages: 1,
-  current_page: 1,
-  next: null,
-  previous: null,
-},
+    deletedEmployeeList: [],
+    deletedEmployeePagination: {
+      total_items: 0,
+      total_pages: 1,
+      current_page: 1,
+      next: null,
+      previous: null,
+    },
     pagination: { count: 0, next: null, previous: null },
   },
   reducers: {
@@ -324,7 +324,7 @@ const employeeSlice = createSlice({
     setBankPaymentId: (state, action) => {
       state.bankPaymentId = action.payload;
     },
-     clearBankPayment: (state) => {
+    clearBankPayment: (state) => {
       state.bankPayment = null;
       state.formData.bank = null;
     },
@@ -344,7 +344,7 @@ const employeeSlice = createSlice({
       state.employeeId = null;
       state.isDirty = false; // reset after saving or cancelling
     },
-    
+
   },
   extraReducers: (builder) => {
     builder
@@ -358,7 +358,7 @@ const employeeSlice = createSlice({
       .addCase(submitEmployee.rejected, (state, action) => {
         state.status = 'failed'; state.error = action.payload;
       })
-  .addCase(updateEmployeeDocumentThunk.pending, (state) => {
+      .addCase(updateEmployeeDocumentThunk.pending, (state) => {
         state.updateStatus = "loading";
         state.updateError = null;
       })
@@ -373,8 +373,8 @@ const employeeSlice = createSlice({
         state.updateStatus = "failed";
         state.updateError = action.payload;
       })
-       // getUpcomingExpiryEmployees
-       .addCase(getUpcomingExpiryEmployees.pending, (state) => {
+      // getUpcomingExpiryEmployees
+      .addCase(getUpcomingExpiryEmployees.pending, (state) => {
         state.loading = true;
       })
       .addCase(getUpcomingExpiryEmployees.fulfilled, (state, action) => {
@@ -388,13 +388,13 @@ const employeeSlice = createSlice({
           previous: action.payload.previous || null,
         };
       })
-      
+
       .addCase(getUpcomingExpiryEmployees.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-          .addCase(submitBankPayment.fulfilled, (state, action) => {
+      .addCase(submitBankPayment.fulfilled, (state, action) => {
         const updated = action.payload;
         if (!Array.isArray(state.employeeBankPayments)) {
           state.employeeBankPayments = [action.payload]; // fallback
@@ -444,29 +444,29 @@ const employeeSlice = createSlice({
       .addCase(getEmployeeById.fulfilled, (state, action) => {
         state.employeeDetail = action.payload;
       })
-    .addCase(getDeletedEmployees.pending, (state) => {
-  state.loading = true;
-  state.error = null;
-})
+      .addCase(getDeletedEmployees.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
 
-.addCase(getDeletedEmployees.fulfilled, (state, action) => {
-  state.loading = false;
+      .addCase(getDeletedEmployees.fulfilled, (state, action) => {
+        state.loading = false;
 
-  state.deletedEmployeeList = action.payload.results || [];
+        state.deletedEmployeeList = action.payload.results || [];
 
-  state.deletedEmployeePagination = {
-    total_items: action.payload.total_items || 0,
-    total_pages: action.payload.total_pages || 1,
-    current_page: action.payload.current_page || 1,
-    next: action.payload.next || null,
-    previous: action.payload.previous || null,
-  };
-})
+        state.deletedEmployeePagination = {
+          total_items: action.payload.total_items || 0,
+          total_pages: action.payload.total_pages || 1,
+          current_page: action.payload.current_page || 1,
+          next: action.payload.next || null,
+          previous: action.payload.previous || null,
+        };
+      })
 
-.addCase(getDeletedEmployees.rejected, (state, action) => {
-  state.loading = false;
-  state.error = action.payload;
-})
+      .addCase(getDeletedEmployees.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       ;
   },
 });

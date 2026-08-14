@@ -18,7 +18,7 @@ import {
   CalendarButton,
 } from "./EngagementCard.styles";
 
-const EngagementCard = ({ data }) => {
+const EngagementCard = ({ data = [], holidays = [] }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -34,31 +34,36 @@ const EngagementCard = ({ data }) => {
       />
 
       <Container>
-        {data.map((item, index) => (
-          <EventCard key={index}>
-            <IconWrapper>
-              <PiRocketLaunchLight />
-            </IconWrapper>
+        {data.length > 0 ? (
+          data.map((item, index) => (
+            <EventCard key={index}>
+              <IconWrapper>
+                <PiRocketLaunchLight />
+              </IconWrapper>
 
-            <Content>
-              <TitleRow>
-                <Title>
-                  {item.title} <span>🎉</span>
-                </Title>
+              <Content>
+                <TitleRow>
+                  <Title>
+                    {item.title} <span>🎉</span>
+                  </Title>
 
-                <Date>{item.date}</Date>
-              </TitleRow>
+                  <Date>{item.date}</Date>
+                </TitleRow>
 
-              <Subtitle>{item.subtitle}</Subtitle>
-            </Content>
-          </EventCard>
-        ))}
+                <Subtitle>{item.subtitle}</Subtitle>
+              </Content>
+            </EventCard>
+          ))
+        ) : (
+          <div>No upcoming events</div>
+        )}
       </Container>
 
       <CalendarModal
         isOpen={isCalendarOpen}
         onClose={() => setIsCalendarOpen(false)}
         selectedDate={selectedDate}
+        holidays={holidays}
         onSelectDate={(date) => {
           setSelectedDate(date);
           setIsCalendarOpen(false);

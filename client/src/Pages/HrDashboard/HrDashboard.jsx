@@ -16,12 +16,11 @@ import {
 
 import {
   getDashboardStats,
-  payrollData,
-  reimbursementData,
-  resourceAllocationData,
-  attendanceData,
+  getPayrollData,
+  getReimbursementData,
+  getResourceAllocationData,
   gosiData,
-  engagementData,
+  getEngagementData,
 } from "./HrDashboardData";
 
 import PayrollChart from "../../Components/HrDashboard/PayrollChart/PayrollChart";
@@ -34,79 +33,322 @@ import AttendanceTrend from "../../Components/HrDashboard/AttendanceTrend/Attend
 import {
   getDashboardCounts,
   getTodayEmployeeStats,
+  getProjectEmployeeCount,
+  getWeeklyAttendanceStats,
+  getReimbursementCounts,
+  getUpcomingHolidaysBirthdays,
+  getMonthlyPayrollSummary,
+  getHolidays,
 } from "../../Redux/dashboardSlice";
 
 const HrDashboard = () => {
   const dispatch = useDispatch();
 
-  // Dashboard counts API
+  // =====================================================
+  // Dashboard Counts
+  // =====================================================
+
   const dashboardCounts = useSelector(
     (state) => state.dashboard.dashboardCounts
   );
 
-  // Today's employee stats API
+  // =====================================================
+  // Today's Employee Stats
+  // =====================================================
+
   const todayStats = useSelector(
     (state) => state.dashboard.todayStats
   );
+
+  // =====================================================
+  // Project Employee Count
+  // =====================================================
+
+  const projectEmployeeCount = useSelector(
+    (state) => state.dashboard.projectEmployeeCount
+  );
+
+  // =====================================================
+  // Weekly Attendance
+  // =====================================================
+
+  const weeklyAttendanceStats = useSelector(
+    (state) => state.dashboard.weeklyAttendanceStats
+  );
+
+  // =====================================================
+  // Reimbursement
+  // =====================================================
+
+  const reimbursementCounts = useSelector(
+    (state) => state.dashboard.reimbursements
+  );
+
+  const reimbursementLoading = useSelector(
+    (state) => state.dashboard.loading.reimbursements
+  );
+
+  // =====================================================
+  // Upcoming Holidays & Birthdays
+  // =====================================================
+
+  const upcomingHolidaysBirthdays = useSelector(
+    (state) => state.dashboard.upcomingHolidaysBirthdays
+  );
+
+  const upcomingLoading = useSelector(
+    (state) =>
+      state.dashboard.loading.upcomingHolidaysBirthdays
+  );
+
+  // =====================================================
+  // Payroll
+  // =====================================================
+
+  const monthlyPayrollSummary = useSelector(
+    (state) => state.dashboard.monthlyPayrollSummary
+  );
+
+  const payrollLoading = useSelector(
+    (state) =>
+      state.dashboard.loading.monthlyPayrollSummary
+  );
+
+  // =====================================================
+  // holiday
+  // =====================================================
+  const holidays = useSelector(
+    (state) => state.dashboard.holidays
+  );
+
+  const holidayLoading = useSelector(
+    (state) => state.dashboard.loading.holidays
+  );
+
+  const holidayCount = useSelector(
+    (state) => state.dashboard.holidayCount
+  );
+  // =====================================================
+  // Loading
+  // =====================================================
 
   const loading = useSelector(
     (state) => state.dashboard.loading.dashboardCounts
   );
 
+  const projectLoading = useSelector(
+    (state) =>
+      state.dashboard.loading.projectEmployeeCount
+  );
+
+  const attendanceLoading = useSelector(
+    (state) =>
+      state.dashboard.loading.weeklyAttendanceStats
+  );
+
+  // =====================================================
+  // Error
+  // =====================================================
+
   const error = useSelector(
     (state) => state.dashboard.error
   );
 
-  // Fetch dashboard APIs
+  // =====================================================
+  // API Calls
+  // =====================================================
+
   useEffect(() => {
     dispatch(getDashboardCounts());
     dispatch(getTodayEmployeeStats());
+    dispatch(getProjectEmployeeCount());
+    dispatch(getWeeklyAttendanceStats());
+    dispatch(getReimbursementCounts());
+    dispatch(getUpcomingHolidaysBirthdays());
+    dispatch(getMonthlyPayrollSummary(2026));
+    dispatch(getHolidays());
   }, [dispatch]);
 
-  // Convert API response into StatsGrid data
-  const dashboardStats = getDashboardStats(dashboardCounts);
+  // =====================================================
+  // Dashboard Stats
+  // =====================================================
+
+  const dashboardStats = getDashboardStats(
+    dashboardCounts
+  );
+
+  // =====================================================
+  // Payroll Data
+  // =====================================================
+
+  const payrollData = getPayrollData(
+    monthlyPayrollSummary
+  );
+
+  // =====================================================
+  // Reimbursement Data
+  // =====================================================
+
+  const reimbursementData =
+    getReimbursementData(reimbursementCounts);
+
+  // =====================================================
+  // Resource Allocation Data
+  // =====================================================
+
+  const resourceAllocationData =
+    getResourceAllocationData(
+      projectEmployeeCount
+    );
+
+  // =====================================================
+  // Weekly Attendance Data
+  // =====================================================
+
+  const attendanceData =
+    weeklyAttendanceStats?.data || [];
+
+  // =====================================================
+  // Employee Engagement Data
+  // =====================================================
+
+  const engagementData =
+    getEngagementData(
+      upcomingHolidaysBirthdays
+    );
 
   return (
     <DashboardWrapper>
 
+      {/* =================================================
+          Top Bar
+      ================================================= */}
+
       <TopBar />
 
-      {/* Pass today's API data */}
+      {/* =================================================
+          Welcome Banner
+      ================================================= */}
+
       <WelcomeBanner data={todayStats} />
 
       <DashboardContainer>
         <DashboardContent>
 
-          {/* Dashboard Statistics */}
+          {/* =================================================
+              Dashboard Statistics
+          ================================================= */}
+
           <StatsSection>
             {loading ? (
               <div>Loading dashboard...</div>
             ) : error ? (
-              <div>Failed to load dashboard data.</div>
+              <div>
+                Failed to load dashboard data.
+              </div>
             ) : (
               <StatsGrid data={dashboardStats} />
             )}
           </StatsSection>
 
-          {/* First Row */}
+          {/* =================================================
+              First Row
+          ================================================= */}
+
           <TopGrid>
 
-            <PayrollChart data={payrollData} />
+            {/* =================================================
+                Payroll
+                API Integrated
+            ================================================= */}
 
-            <ReimbursementChart data={reimbursementData} />
+            {payrollLoading ? (
+              <div>
+                Loading payroll...
+              </div>
+            ) : (
+              <PayrollChart
+                data={payrollData}
+              />
+            )}
 
-            <ResourceAllocation data={resourceAllocationData} />
+            {/* =================================================
+                Reimbursement
+                API Integrated
+            ================================================= */}
+
+            {reimbursementLoading ? (
+              <div>
+                Loading reimbursement...
+              </div>
+            ) : (
+              <ReimbursementChart
+                data={reimbursementData}
+              />
+            )}
+
+            {/* =================================================
+                Resource Allocation
+                API Integrated
+            ================================================= */}
+
+            {projectLoading ? (
+              <div>
+                Loading resource allocation...
+              </div>
+            ) : (
+              <ResourceAllocation
+                data={resourceAllocationData}
+              />
+            )}
 
           </TopGrid>
 
-          {/* Second Row */}
+          {/* =================================================
+              Second Row
+          ================================================= */}
+
           <BottomGrid>
 
-            <GosiCard data={gosiData} />
+            {/* =================================================
+                GOSI
+                Static
+            ================================================= */}
 
-            <AttendanceTrend data={attendanceData} />
+            <GosiCard
+              data={gosiData}
+            />
 
-            <EngagementCard data={engagementData} />
+            {/* =================================================
+                Attendance
+                API Integrated
+            ================================================= */}
+
+            {attendanceLoading ? (
+              <div>
+                Loading attendance...
+              </div>
+            ) : (
+              <AttendanceTrend
+                data={attendanceData}
+              />
+            )}
+
+            {/* =================================================
+                Employee Engagement
+                API Integrated
+            ================================================= */}
+
+            {upcomingLoading ? (
+              <div>
+                Loading employee engagement...
+              </div>
+            ) : (
+              <EngagementCard
+                data={engagementData}
+                holidays={holidays}
+              />
+            )}
 
           </BottomGrid>
 

@@ -9,7 +9,6 @@ import {
   Tooltip,
   Legend,
   ReferenceLine,
-  Scatter,
 } from "recharts";
 
 import Card from "../Common/Card";
@@ -20,13 +19,7 @@ import {
   ChartContainer,
 } from "./AttendanceTrend.styles";
 
-const AttendanceTrend = ({ data }) => {
-  const referencePoints = [
-    { day: "Thu", value: 160 },
-    { day: "Thu", value: 90 },
-    { day: "Thu", value: 60 },
-  ];
-
+const AttendanceTrend = ({ data = [] }) => {
   return (
     <Card>
       <CardHeader title="Weekly Attendance Trend" />
@@ -52,12 +45,13 @@ const AttendanceTrend = ({ data }) => {
                 dataKey="day"
                 tickLine={false}
                 axisLine={false}
+                tickFormatter={(day) => day.slice(0, 3)}
               />
 
               <YAxis
                 tickLine={false}
                 axisLine={false}
-                domain={[50, 280]}
+                domain={[0, "auto"]}
               />
 
               <Tooltip />
@@ -69,7 +63,7 @@ const AttendanceTrend = ({ data }) => {
               />
 
               <ReferenceLine
-                x="Thu"
+                x="Thursday"
                 stroke="#9CA3AF"
                 strokeDasharray="5 5"
               />
@@ -77,6 +71,7 @@ const AttendanceTrend = ({ data }) => {
               <Line
                 type="monotone"
                 dataKey="present"
+                name="Present"
                 stroke="#16A34A"
                 strokeWidth={2}
                 dot={false}
@@ -86,6 +81,7 @@ const AttendanceTrend = ({ data }) => {
               <Line
                 type="monotone"
                 dataKey="absent"
+                name="Absent"
                 stroke="#F59E0B"
                 strokeWidth={2}
                 dot={false}
@@ -95,6 +91,7 @@ const AttendanceTrend = ({ data }) => {
               <Line
                 type="monotone"
                 dataKey="late"
+                name="Late"
                 stroke="#FF2D0A"
                 strokeWidth={2}
                 dot={false}

@@ -102,24 +102,47 @@ export const DayGrid = styled.div`
 `;
 
 export const Day = styled.button`
-  aspect-ratio: 1;
+  position: relative;
+
+  width: 36px;
+  height: 36px;
+
   border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: ${({ empty }) => (empty ? "default" : "pointer")};
-  visibility: ${({ empty }) => (empty ? "hidden" : "visible")};
+  background: transparent;
 
-  background: ${({ isSelected }) => (isSelected ? "#4F6EF7" : "transparent")};
-  color: ${({ isSelected, isToday }) =>
-    isSelected ? "#fff" : isToday ? "#4F6EF7" : "#374151"};
-  box-shadow: ${({ isToday, isSelected }) =>
-    isToday && !isSelected ? "inset 0 0 0 1.5px #4F6EF7" : "none"};
+  border-radius: 50%;
 
-  transition: background 150ms ease, color 150ms ease;
+  cursor: ${({ empty }) =>
+    empty ? "default" : "pointer"};
+
+  color: ${({ isHoliday }) =>
+    isHoliday ? "#F97316" : "#1F2937"};
+
+  background: ${({ isHoliday, isSelected }) => {
+    if (isSelected) return "#3657C8";
+    if (isHoliday) return "#FFF7ED";
+    return "transparent";
+  }};
+
+  font-weight: ${({ isToday, isHoliday }) =>
+    isToday || isHoliday ? 600 : 400};
 
   &:hover {
-    background: ${({ isSelected }) => (isSelected ? "#4F6EF7" : "#eef2ff")};
+    background: ${({ empty }) =>
+      empty ? "transparent" : "#EEF2FF"};
+  }
+
+  span {
+    position: absolute;
+
+    bottom: 1px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    font-size: 12px;
+
+    color: #f97316;
   }
 `;
 

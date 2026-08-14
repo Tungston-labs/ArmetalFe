@@ -310,3 +310,60 @@ export const Title = styled.h3`
   font-family: "Poppins";
 
 `;
+export const DocumentsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-top: 20px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const DocumentCard = styled.div`
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+export const DocumentPreview = styled.img`
+  width: 100%;
+  height: 140px;
+  display: block;
+  object-fit: cover;
+  background: #f3f4f6;
+  cursor: pointer;
+
+  @media (max-width: 500px) {
+    height: 180px;
+  }
+
+  @media (min-width: 2560px) {
+    height: 200px;
+  }
+`;
+
+export const DocumentName = styled.div`
+  padding: 10px 12px;
+  font-family: "Poppins";
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+`;
