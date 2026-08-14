@@ -675,3 +675,86 @@ class PayrollDeductionUpdateView(APIView):
         )
 
         return Response(serializer.data)
+    
+
+from decimal import Decimal
+
+from django.db.models import Sum
+
+
+
+class PayrollCountsView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def get(self, request):
+        try:
+            company = getattr(request.user, "company", None)
+
+            if not company:
+                return Response(
+                    {
+                        "detail": "Company not assigned to user."
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # ---------------------------------------------
+            # Company payroll records
+            # ---------------------------------------------
+
+            payroll_qs = EmployeePayrollRecord.objects.filter(
+                employee__department__company=company
+            )
+
+            # ---------------------------------------------
+            # Total payroll records
+            # ---------------------------------------------
+
+            total_payroll = payroll_qs.count()
+
+            # ---------------------------------------------
+            # Pending payroll
+            # Pending + OnHold
+            # ---------------------------------------------
+
+            pending_payroll_count = payroll_qs.filter(
+                status__in=["Pending", "OnHold"]
+            ).count()
+
+            # ---------------------------------------------
+            # Total incentive
+            # ---------------------------------------------
+
+            total_incentive_amount = payroll_qs.aggregate(
+                total=Sum("incentive_amount")
+            )["total"] or Decimal("0.00")
+
+            # ---------------------------------------------
+            # Total deduction
+            # ---------------------------------------------
+
+            total_deduction_amount = payroll_qs.aggregate(
+                total=Sum("deduction_amount")
+            )["total"] or Decimal("0.00")
+
+            # ---------------------------------------------
+            # Response
+            # ---------------------------------------------
+
+            return Response(
+                {
+                    "total_payroll": total_payroll,
+                    "pending_payroll_count": pending_payroll_count,
+                    "total_incentive_amount": total_incentive_amount,
+                    "total_deduction_amount": total_deduction_amount,
+                },
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "detail": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
