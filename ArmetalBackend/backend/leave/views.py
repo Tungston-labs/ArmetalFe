@@ -16,6 +16,9 @@ from holidays.models import PublicHoliday
 from django.core.mail import EmailMessage
 from rest_framework.views import APIView
 from rest_framework import status
+def error(message, code=status.HTTP_400_BAD_REQUEST):
+    return Response({"error": message}, status=code)
+
 
 
 #  Employee: List + Create Leave Requests
@@ -579,3 +582,57 @@ class LeaveRequestEmpDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsEmployee]
     lookup_field = 'pk'
+
+
+from django.db.models import Count
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+
+
+class LeaveStatusCountsView(APIView):
+    permission_classes = [IsAuthenticated, IsHRAdmin]
+
+    def get(self, request):
+        try:
+            company = getattr(request.user, "company", None)
+
+            if not company:
+                return error(
+                    "Company not assigned to user",
+                    status.HTTP_404_NOT_FOUND
+                )
+
+            leave_qs = LeaveRequest.objects.filter(
+                employee__department__company=company,
+                employee__is_deleted=False
+            )
+
+            counts = leave_qs.values("status").annotate(
+                count=Count("id")
+            )
+
+            status_counts = {
+                "pending": 0,
+                "approved": 0,
+                "rejected": 0,
+            }
+
+            for item in counts:
+                status_counts[item["status"]] = item["count"]
+
+            total = sum(status_counts.values())
+
+            return Response({
+                "total": total,
+                "pending": status_counts["pending"],
+                "approved": status_counts["approved"],
+                "rejected": status_counts["rejected"],
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return error(
+                str(e),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
