@@ -41,3 +41,8 @@ export const fetchOnLeaveEmployees = async (departmentId) => {
   const response = await API.get(`/departments/${departmentId}/on-leave-employees/`);
   return response.data;
 };
+
+export const fetchLeaveCounts = async () => {
+  const response = await API.get('/leave-counts/');
+  return response.data;
+};

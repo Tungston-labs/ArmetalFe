@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getLeaveRequests,
   patchLeaveStatus,
+    getLeaveCounts,
 } from "../../../Redux/leaveSlice";
 import { useNavigate } from "react-router-dom";
 import { getDepartments } from "../../../Redux/departmentSlice";
@@ -20,9 +21,12 @@ export default function LeaveRequestList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { leaves, loading, pagination } = useSelector(
-    (state) => state.leave
-  );
+const {
+  leaves,
+  loading,
+  pagination,
+  leaveCounts,
+} = useSelector((state) => state.leave);
 
   // =========================
   // Search
@@ -92,7 +96,9 @@ const selectedDepartmentId = departmentFilter
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
-
+useEffect(() => {
+  dispatch(getLeaveCounts());
+}, [dispatch]);
   // =========================
   // Search debounce
   // =========================
