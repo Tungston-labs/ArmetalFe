@@ -91,16 +91,16 @@ const PayrollChart = ({ data }) => {
                 axisLine={false}
               />
 
-             <YAxis
-  tickLine={false}
-  axisLine={false}
-  domain={[0, 'auto']}
-  tickFormatter={(value) => {
-    if (value === 0) return "0";
-    if (value < 100000) return `${value / 1000}K`;
-    return `${value / 100000}L`;
-  }}
-/>
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                domain={[0, 'auto']}
+                tickFormatter={(value) => {
+                  if (value === 0) return "0";
+                  if (value < 100000) return `${value / 1000}K`;
+                  return `${value / 100000}L`;
+                }}
+              />
 
               <Tooltip
                 cursor={false}

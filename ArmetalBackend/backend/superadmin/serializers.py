@@ -16,9 +16,29 @@ from finance.models import FinanceCategory
 from employee.models import Employee_db
 
 
+COUNTRY_CURRENCY = {
+    "IN": "INR",
+    "AE": "AED",
+    "US": "USD",
+    "SG": "SGD",
+    "GB": "GBP",
+    "DE": "EUR",
+    "FR": "EUR",
+    "JP": "JPY",
+    "CN": "CNY",
+    "AU": "AUD",
+    "CA": "CAD",
+}
+
+
+def get_currency_for_country(country):
+    return COUNTRY_CURRENCY.get(country, "INR")
+
+
 
 class CompanyCreateSerializer(serializers.ModelSerializer):
     number_of_employees = serializers.SerializerMethodField()
+    currency = serializers.SerializerMethodField()
     plan_name = serializers.CharField(
         source="plan.name",
         read_only=True
@@ -34,6 +54,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             "location",
             "contact_number",
             "country",
+            "currency",
             "logo",
             "email",
             "modules",
@@ -281,6 +302,9 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
             is_deleted=False
         ).count()
 
+    def get_currency(self, obj):
+        return get_currency_for_country(obj.country)
+
     # ---------------------------------------------------------
     # VALIDATION
     # ---------------------------------------------------------
@@ -378,6 +402,8 @@ class CompanyListSerializer(serializers.ModelSerializer):
 
 
 class CompanySelfUpdateSerializer(serializers.ModelSerializer):
+    currency = serializers.SerializerMethodField()
+
     class Meta:
         model = Company
         fields = [
@@ -387,6 +413,7 @@ class CompanySelfUpdateSerializer(serializers.ModelSerializer):
             "latitude",
             "longitude",
             "country",
+            "currency",
             "contact_number",
             "email",
             "modules",
@@ -404,6 +431,9 @@ class CompanySelfUpdateSerializer(serializers.ModelSerializer):
             "email": {"required": False},
             "modules": {"required": False},
         }
+
+    def get_currency(self, obj):
+        return get_currency_for_country(obj.country)
 
 
 class CompanySubscriptionActionSerializer(serializers.Serializer):

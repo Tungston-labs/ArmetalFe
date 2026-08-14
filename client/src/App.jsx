@@ -50,7 +50,7 @@ import AttendanceRequestScreen from "./Pages/attendanceRequest/AttendanceRequest
 import Table from "./Pages/Table.jsx";
 import LeaveRequestList from "./Pages/employee/LeaveRequest/LeaveRequestList.jsx";
 import ContractAndVisaExpiry from "./Pages/visa/ContractAndVisaExpiry.jsx";
-import PayrollList from "./Pages/payroll/PayrollList.jsx";
+import PayrollList from "./Pages/payroll/NewPayroll/PayrollList.jsx";
 import PlanAndPricing from "./Pages/superAdmin/PlanAndPricing/PlanAndPricing.jsx";
 import ArchivedStaff from "./Pages/employee/ArchivedStaff/ArchivedStaff.jsx";
 import HrDashboard from "./Pages/HrDashboard/HrDashboard.jsx";

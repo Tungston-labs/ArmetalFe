@@ -11,9 +11,6 @@ export const getDashboardStats = (data = {}) => [
     icon: <BiUser />,
     iconBg: "#EEF2FF",
     iconColor: "#4F46E5",
-    percentage: `+${data.employee_change_percentage ?? 0}%`,
-    percentageColor: "#16A34A",
-    description: "Compared to last month",
   },
 
   {
@@ -23,9 +20,6 @@ export const getDashboardStats = (data = {}) => [
     icon: <FaRegBuilding />,
     iconBg: "#FFF7ED",
     iconColor: "#F97316",
-    percentage: `+${data.new_departments ?? 0}`,
-    percentageColor: "#F97316",
-    description: "New departments",
   },
 
   {
@@ -35,9 +29,6 @@ export const getDashboardStats = (data = {}) => [
     icon: <FaRegBuilding />,
     iconBg: "#FFF7ED",
     iconColor: "#F97316",
-    percentage: `+${data.new_projects ?? 0}`,
-    percentageColor: "#F97316",
-    description: "New projects",
   },
 
   {
@@ -47,9 +38,6 @@ export const getDashboardStats = (data = {}) => [
     icon: <AiOutlineFileText />,
     iconBg: "#FEF2F2",
     iconColor: "#EF4444",
-    percentage: `${data.leave_change_percentage ?? 0}%`,
-    percentageColor: "#EF4444",
-    description: "Compared to yesterday",
   },
 
   {
@@ -59,9 +47,6 @@ export const getDashboardStats = (data = {}) => [
     icon: <CiWallet />,
     iconBg: "#ECFDF3",
     iconColor: "#10B981",
-    percentage: `+${data.payroll_change_percentage ?? 0}%`,
-    percentageColor: "#16A34A",
-    description: "Compared to last month",
   },
 
   {
@@ -71,9 +56,6 @@ export const getDashboardStats = (data = {}) => [
     icon: <AiOutlineFileText />,
     iconBg: "#FEF2F2",
     iconColor: "#EF4444",
-    percentage: `${data.expiry_change_percentage ?? 0}%`,
-    percentageColor: "#EF4444",
-    description: "Compared to yesterday",
   },
 ];
 

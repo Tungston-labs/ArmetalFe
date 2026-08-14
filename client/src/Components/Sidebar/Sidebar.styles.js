@@ -81,7 +81,7 @@ export const MenuButton = styled.button`
   padding:0 15px;
   cursor:pointer;
   transition:.3s;
-
+  font-family: "Poppins", sans-serif;
   &:hover{
       background:${({ $active }) =>
         $active
@@ -128,6 +128,7 @@ export const SubMenu = styled.div`
   position: relative;
   margin-left: 26px;
   padding-left: 20px;
+    font-family: "Poppins", sans-serif;
   max-height: ${({ $open }) => ($open ? "500px" : "0")};
   overflow: hidden;
   transition: max-height .35s ease;
@@ -154,6 +155,7 @@ export const SubMenuItem = styled.button`
   padding-left:10px;
   font-size:12px;
   text-align:left;
+    font-family: "Poppins", sans-serif;
   cursor:pointer;
   transition:.25s;
   font-weight:500;

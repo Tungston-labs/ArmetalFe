@@ -32,11 +32,9 @@ import { GoArrowLeft } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
 import { ClipLoader } from "react-spinners";
-
 import { useAddCompany } from "./ useAddCompany";
-
 import { fetchSubscriptionPlans } from "../../services/superAdminService";
-
+import { COUNTRY_OPTIONS, getCountryByCode } from "../../utils/countryData";
 
 const AddCompanyModal = ({
   onClose,
@@ -44,35 +42,7 @@ const AddCompanyModal = ({
   selectedCompany = null,
   showPrivileges = true,
 }) => {
-
-  const countryDialCodes = [
-    { code: "+971", label: "UAE (+971)" },
-    { code: "+966", label: "Saudi Arabia (+966)" },
-    { code: "+965", label: "Kuwait (+965)" },
-    { code: "+973", label: "Bahrain (+973)" },
-    { code: "+968", label: "Oman (+968)" },
-    { code: "+974", label: "Qatar (+974)" },
-    { code: "+91", label: "India (+91)" },
-    { code: "+880", label: "Bangladesh (+880)" },
-    { code: "+92", label: "Pakistan (+92)" },
-  ];
-
-
-  const COUNTRY_CHOICES = [
-    { code: "IN", name: "India" },
-    { code: "US", name: "United States" },
-    { code: "AE", name: "United Arab Emirates" },
-    { code: "SG", name: "Singapore" },
-    { code: "GB", name: "United Kingdom" },
-    { code: "DE", name: "Germany" },
-    { code: "FR", name: "France" },
-    { code: "JP", name: "Japan" },
-    { code: "CN", name: "China" },
-    { code: "AU", name: "Australia" },
-    { code: "CA", name: "Canada" },
-  ];
-
-
+  
   const allModules = [
     "dashboard",
     "employee",
@@ -153,6 +123,27 @@ const AddCompanyModal = ({
     allModules,
   });
 
+
+  // ---------------------------------------------------------
+  // COUNTRY SELECT -> AUTO-FILLS DIAL CODE + CURRENCY
+  // Admin can still change currency afterwards; this only sets
+  // the default when the country changes.
+  // ---------------------------------------------------------
+
+  const handleCountryChange = (e) => {
+    handleChange(e); // keep existing name/value logic in the hook
+
+    const selected = getCountryByCode(e.target.value);
+
+    if (selected) {
+      handleChange({
+        target: { name: "currency", value: selected.currencyCode },
+      });
+      handleChange({
+        target: { name: "country_code", value: selected.dialCode },
+      });
+    }
+  };
 
 
   return (
@@ -297,7 +288,7 @@ const AddCompanyModal = ({
             <FormField>
 
               <Label>
-                Amount per Employee (INR)
+                Amount per Employee ({formData.currency || "INR"})
               </Label>
 
               <Input
@@ -460,18 +451,18 @@ const AddCompanyModal = ({
                   style={{ width: "42%" }}
                 >
 
-                  {countryDialCodes.map(
-                    (item) => (
+                  {COUNTRY_OPTIONS.filter(
+                    (item) => item.dialCode
+                  ).map((item) => (
 
-                      <option
-                        key={item.code}
-                        value={item.code}
-                      >
-                        {item.label}
-                      </option>
+                    <option
+                      key={item.code}
+                      value={item.dialCode}
+                    >
+                      {item.name} ({item.dialCode})
+                    </option>
 
-                    )
-                  )}
+                  ))}
 
                 </Select>
 
@@ -508,7 +499,7 @@ const AddCompanyModal = ({
               <Select
                 name="country"
                 value={formData.country}
-                onChange={handleChange}
+                onChange={handleCountryChange}
                 autoComplete="off"
               >
 
@@ -516,7 +507,7 @@ const AddCompanyModal = ({
                   Select country
                 </option>
 
-                {COUNTRY_CHOICES.map(
+                {COUNTRY_OPTIONS.map(
                   (item) => (
 
                     <option
@@ -535,6 +526,67 @@ const AddCompanyModal = ({
               {formErrors.country && (
                 <ErrorText>
                   {formErrors.country}
+                </ErrorText>
+              )}
+
+            </FormField>
+
+
+            {/* CURRENCY */}
+            <FormField>
+
+              <Label>
+                Currency
+              </Label>
+
+              <Select
+                name="currency"
+                value={formData.currency}
+                onChange={handleChange}
+                autoComplete="off"
+              >
+
+                <option value="">
+                  Select currency
+                </option>
+
+                {COUNTRY_OPTIONS.map(
+                  (item) => (
+
+                    <option
+                      key={`${item.code}-${item.currencyCode}`}
+                      value={item.currencyCode}
+                    >
+                      {item.currencyCode} ({item.currencySymbol})
+                    </option>
+
+                  )
+                )}
+
+              </Select>
+
+              {/* Gentle nudge if admin picked a currency that doesn't
+                  match the selected country's default - not blocked,
+                  just surfaced so it's clearly intentional. */}
+              {formData.country &&
+                formData.currency &&
+                getCountryByCode(formData.country)?.currencyCode !==
+                  formData.currency && (
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      color: "#8a6d00",
+                      marginTop: "4px",
+                      display: "inline-block",
+                    }}
+                  >
+                    Note: currency differs from the selected country's default.
+                  </span>
+                )}
+
+              {formErrors.currency && (
+                <ErrorText>
+                  {formErrors.currency}
                 </ErrorText>
               )}
 

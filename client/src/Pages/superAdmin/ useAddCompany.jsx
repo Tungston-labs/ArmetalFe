@@ -25,6 +25,7 @@ export const useAddCompany = ({
     country: "",
     country_code: "+971",
     contact_number: "",
+    currency: "AED", // matches default country_code (+971 = UAE) so it's never left blank
     modules: [],
     latitude: "",
     longitude: "",
@@ -85,6 +86,7 @@ export const useAddCompany = ({
         country: selectedCompany.country ?? "",
         country_code: countryCode,
         contact_number: contactNumber,
+        currency: selectedCompany.currency ?? "AED",
         modules: modulesChecked,
         logo: null,
         latitude: selectedCompany.latitude ?? "",
@@ -282,6 +284,11 @@ if (formData.plan) {
     // ── Country ───────────────────────────────────────────────
     if (!formData.country) {
       errs.country = "Please select a country";
+    }
+
+    // ── Currency ──────────────────────────────────────────────
+    if (!formData.currency) {
+      errs.currency = "Please select a currency";
     }
 
     // ── Latitude (now required) ───────────────────────────────

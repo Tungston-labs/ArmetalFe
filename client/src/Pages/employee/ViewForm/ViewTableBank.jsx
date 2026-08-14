@@ -22,6 +22,9 @@ import {
   fetchSalaryIncrements,
   addSalaryIncrement,
 } from "../../../Redux/salaryIncrementSlice";
+import {
+  getBankFieldConfig,
+} from "../../../utils/employeeCountryFields";
 
 const ViewTableBank = ({
   employeeId,
@@ -55,6 +58,9 @@ const ViewTableBank = ({
   errors = {},
 }) => {
   const dispatch = useDispatch();
+  const bankConfig = getBankFieldConfig(country);
+  const bankCodeValue = bankConfig.bankCodeField === "ifscCode" ? ifscCode : swiftCode;
+  const setBankCodeValue = bankConfig.bankCodeField === "ifscCode" ? setIfscCode : setSwiftCode;
 
   const { increments = [] } = useSelector(
     (state) => state.salaryIncrement
@@ -143,36 +149,16 @@ const ViewTableBank = ({
             </div>
 
             <div>
-              <Label>
-                {country === "IN"
-                  ? "IFSC Code"
-                  : "SWIFT Code"}
-              </Label>
+              <Label>{bankConfig.bankCodeLabel}</Label>
 
               <Input
-                value={
-                  country === "IN"
-                    ? ifscCode
-                    : swiftCode
-                }
-                onChange={(e) =>
-                  country === "IN"
-                    ? setIfscCode(
-                      e.target.value.toUpperCase()
-                    )
-                    : setSwiftCode(
-                      e.target.value.toUpperCase()
-                    )
-                }
-                maxLength={
-                  country === "IN" ? 11 : 20
-                }
+                value={bankCodeValue}
+                onChange={(e) => setBankCodeValue(e.target.value.toUpperCase())}
+                maxLength={bankConfig.bankCodeField === "ifscCode" ? 11 : 20}
               />
 
               <ErrorText>
-                {country === "IN"
-                  ? errors.ifscCode
-                  : errors.swiftCode}
+                {bankConfig.bankCodeField === "ifscCode" ? errors.ifscCode : errors.swiftCode}
               </ErrorText>
             </div>
 
@@ -190,7 +176,7 @@ const ViewTableBank = ({
 
           <Grid2>
             <div>
-              <Label>Account Number</Label>
+              <Label>{bankConfig.accountLabel}</Label>
               <Input
                 value={accountNumber}
                 onChange={(e) =>
@@ -202,6 +188,18 @@ const ViewTableBank = ({
               </ErrorText>
             </div>
 
+            {bankConfig.showUan && (
+              <div>
+                <Label>UAN / EPF Number</Label>
+                <Input
+                  value={uanNumber}
+                  onChange={(e) => setUanNumber(e.target.value)}
+                />
+                <ErrorText>{errors.uanNumber}</ErrorText>
+              </div>
+            )}
+
+            {bankConfig.showIndianTax && (
             <div>
               <Label>PAN Number</Label>
               <Input
@@ -212,6 +210,8 @@ const ViewTableBank = ({
               />
               <ErrorText>{errors.panNumber}</ErrorText>
             </div>
+            )}
+            {bankConfig.showIndianTax && (
             <div>
   <Label>Tax Regime</Label>
   <Select
@@ -222,8 +222,11 @@ const ViewTableBank = ({
     <option value="old">Old Regime</option>
     <option value="new">New Regime</option>
   </Select>
+  <ErrorText>{errors.taxRegime}</ErrorText>
 </div>
+            )}
 
+{bankConfig.showIndianTax && (
 <div>
   <Label>TDS Amount</Label>
   <Input
@@ -232,6 +235,7 @@ const ViewTableBank = ({
     onChange={(e) => setTdsAmount(e.target.value)}
   />
 </div>
+)}
           </Grid2>
         </CardBody>
       </Card>

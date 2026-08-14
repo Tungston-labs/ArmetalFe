@@ -1,6 +1,8 @@
 import React from "react";
 import { FaRegMessage } from "react-icons/fa6";
 import { FiTrendingUp, FiTrendingDown, FiDollarSign } from "react-icons/fi";
+import { formatCurrency } from "../../utils/FormatCurrency"; 
+
 const FALLBACK = "----";
 
 const formatDate = (date) => {
@@ -16,10 +18,11 @@ const formatDate = (date) => {
 
 /**
  * Returns the column config for the Finance table.
- * @param {number} page      current page (for Sl No numbering)
- * @param {number} pageSize  rows per page (for Sl No numbering)
+ * @param {number} page          current page (for Sl No numbering)
+ * @param {number} pageSize      rows per page (for Sl No numbering)
+ * @param {string} currencyCode  company's active currency, e.g. "INR", "AED"
  */
-export const getFinanceColumns = ({ page, pageSize }) => [
+export const getFinanceColumns = ({ page, pageSize, currencyCode }) => [
   {
     header: "Sl No",
     accessor: "slNo",
@@ -36,24 +39,50 @@ export const getFinanceColumns = ({ page, pageSize }) => [
     accessor: "category_name",
     render: (row) => row.category_name || FALLBACK,
   },
-  {
-    header: "Note",
-    accessor: "note",
-    render: (row) => row.note || FALLBACK,
+{
+  header: "Note",
+  accessor: "note",
+  render: (row) => {
+    const note = row.note || FALLBACK;
+
+    return (
+      <span
+        title={note}
+        style={{
+          display: "inline-block",
+          maxWidth: "180px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          cursor: "default",
+        }}
+      >
+        {note}
+      </span>
+    );
   },
+},
   {
     header: "Income",
     accessor: "income",
     sortable: false,
     render: (row) =>
-      row.payment_type === "IN" ? row.amount ?? FALLBACK : "--",
+      row.payment_type === "IN"
+        ? row.amount != null
+          ? formatCurrency(row.amount, currencyCode)
+          : FALLBACK
+        : "--",
   },
   {
     header: "Expense",
     accessor: "expense",
     sortable: false,
     render: (row) =>
-      row.payment_type === "OUT" ? row.amount ?? FALLBACK : "--",
+      row.payment_type === "OUT"
+        ? row.amount != null
+          ? formatCurrency(row.amount, currencyCode)
+          : FALLBACK
+        : "--",
   },
   {
     header: "Status",
@@ -84,34 +113,35 @@ export const getFinanceColumns = ({ page, pageSize }) => [
  * @param {number} totalIncome
  * @param {number} totalExpense
  * @param {number} cashBalance
+ * @param {string} currencyCode  company's active currency
  */
-export const getStatCards = ({ totalIncome, totalExpense, cashBalance }) => [
+export const getStatCards = ({ totalIncome, totalExpense, cashBalance, currencyCode }) => [
      {
     icon: <FaRegMessage size={20} />,
      iconColor: "#157baa",
     backgroundColor: "#e3f5f7",
-    count: ` ${totalIncome.toLocaleString("en-IN")}`,
+    count: `${formatCurrency(totalIncome, currencyCode)}`,
     title: "Total Records",
   },
   {
     icon: <FiTrendingUp size={20} />,
     backgroundColor: "#d3f3e0",
     iconColor: "#22c55e",
-    count: ` ${totalIncome.toLocaleString("en-IN")}/-`,
+    count: `${formatCurrency(totalIncome, currencyCode)}`,
     title: "Total Income",
   },
   {
     icon: <FiTrendingDown size={20} />,
     backgroundColor: "#fbdcdc",
     iconColor: "#ef4444",
-    count: `${totalExpense.toLocaleString("en-IN")}/-`,
+    count: `${formatCurrency(totalExpense, currencyCode)}`,
     title: "Total Expense",
   },
   {
     icon: <FiDollarSign size={20} />,
     backgroundColor: "#e0e7ff",
     iconColor: "#6366f1",
-    count: ` ${cashBalance.toLocaleString("en-IN")}/-`,
+    count: `${formatCurrency(cashBalance, currencyCode)}`,
     title: "Cash Balance",
   },
 ];
