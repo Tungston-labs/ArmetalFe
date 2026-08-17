@@ -7,6 +7,7 @@ import {
   verifyPayroll,
     updateEmployeeIncentive,
       updateEmployeeDeduction,
+      fetchPayrollCounts
 } from "../services/payrollService";
 
 export const getPayrollData = createAsyncThunk(
@@ -92,6 +93,19 @@ export const updatePayrollIncentive = createAsyncThunk(
     }
   }
 );
+
+export const getPayrollCounts = createAsyncThunk(
+  "payrollCounts/getPayrollCounts",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await fetchPayrollCounts();
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Error fetching payroll counts"
+      );
+    }
+  }
+);
 export const updatePayrollDeduction = createAsyncThunk(
   "payroll/updatePayrollDeduction",
   async (
@@ -136,6 +150,12 @@ const payrollSlice = createSlice({
     payrollDetail: null,
     incentiveUpdateSuccess: false,
     incentiveError: null,
+    totalPayroll: 0,
+    pendingPayrollCount: 0,
+    totalIncentiveAmount: 0,
+    totalDeductionAmount: 0,
+    countsLoading: false,
+    countsError: null,
   },
   reducers: {
     resetPayrollState: (state) => {
@@ -307,7 +327,33 @@ const payrollSlice = createSlice({
 .addCase(updatePayrollDeduction.rejected, (state, action) => {
   state.loading = false;
   state.error = action.payload;
-});
+})
+
+      // ✅ GET payroll summary counts - this case was missing entirely,
+      // so getPayrollCounts() was dispatched and resolved but the
+      // response never reached the store.
+      .addCase(getPayrollCounts.pending, (state) => {
+        state.countsLoading = true;
+        state.countsError = null;
+      })
+      .addCase(getPayrollCounts.fulfilled, (state, action) => {
+        state.countsLoading = false;
+
+        // Keys match the exact response shape from /payroll-counts/:
+        // { total_payroll, pending_payroll_count,
+        //   total_incentive_amount, total_deduction_amount }
+        state.totalPayroll = action.payload?.total_payroll ?? 0;
+        state.pendingPayrollCount =
+          action.payload?.pending_payroll_count ?? 0;
+        state.totalIncentiveAmount =
+          action.payload?.total_incentive_amount ?? 0;
+        state.totalDeductionAmount =
+          action.payload?.total_deduction_amount ?? 0;
+      })
+      .addCase(getPayrollCounts.rejected, (state, action) => {
+        state.countsLoading = false;
+        state.countsError = action.payload;
+      });
   },
 });
 

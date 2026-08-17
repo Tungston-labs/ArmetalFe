@@ -84,3 +84,16 @@ export const TooltipValue = styled.div`
   color: #111827;
   font-weight: 700;
 `;
+export const TooltipRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0;
+`;
+
+export const TooltipLabel = styled.span`
+  color: ${({ color }) => color};
+  font-weight: 600;
+  font-size: 13px;
+`;

@@ -6,6 +6,7 @@ import {
   getPayrollData,
   updatePayrollStatus,
   verifyEmployeePayroll,
+  getPayrollCounts,
 } from "../../Redux/payrollSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
 import { PiMoneyWavyLight } from "react-icons/pi";
@@ -45,52 +46,53 @@ export const calculateNetPay = (emp) => {
 };
 
 export const getPayrollCards = ({
-  totalPayroll = 0,
-  totalEmployees = 0,
-  pendingVerification = 0,
-  incentiveAmount = 0,
-  deductionAmount = 0,
+  total_payroll = 0,
+  pending_payroll_count = 0,
+  total_incentive_amount = 0,
+  total_deduction_amount = 0,
 } = {}) => [
-    {
-      title: "Total Payroll",
-      count: totalPayroll,
-      icon: <PiMoneyWavyLight />,
-      iconColor: "#15aa60",
-      backgroundColor: "#E3F7ED",
-    },
-    {
-      title: "Total Employees",
-      count: totalEmployees,
-      icon: <LuUserRound />,
-      iconColor: "#507edb",
-      backgroundColor: "#EFF4FE",
-    },
-    {
-      title: "Pending Verification",
-      count: pendingVerification,
-      icon: <PiClockCountdown />,
-      iconColor: "#f78400",
-      backgroundColor: "#FEEDDA",
-    },
-    {
-      title: "Incentive Amount",
-      count: incentiveAmount,
-      icon: <GoGift />,
-      iconColor: "#15aa60",
-      backgroundColor: "#E3F7ED",
-    },
-    {
-      title: "Deduction Amount",
-      count: deductionAmount,
-      icon: <HiArrowTrendingDown />,
-      iconColor: "#f3214f",
-      backgroundColor: "#FFEDED",
-    },
-  ];
+  {
+    title: "Total Payroll",
+    count: total_payroll,
+    icon: <PiMoneyWavyLight />,
+    iconColor: "#15aa60",
+    backgroundColor: "#E3F7ED",
+  },
 
+  {
+    title: "Pending Payroll",
+    count: pending_payroll_count,
+    icon: <PiClockCountdown />,
+    iconColor: "#f78400",
+    backgroundColor: "#FEEDDA",
+  },
+
+  {
+    title: "Incentive Amount",
+    count: total_incentive_amount,
+    icon: <GoGift />,
+    iconColor: "#15aa60",
+    backgroundColor: "#E3F7ED",
+  },
+
+  {
+    title: "Deduction Amount",
+    count: total_deduction_amount,
+    icon: <HiArrowTrendingDown />,
+    iconColor: "#f3214f",
+    backgroundColor: "#FFEDED",
+  },
+];
 export function usePayrollList() {
   const dispatch = useDispatch();
   const { data, loading, totalPages } = useSelector((state) => state.payroll);
+const counts = useSelector((state) => ({
+  total_payroll: state.payroll.totalPayroll,
+  pending_payroll_count: state.payroll.pendingPayrollCount,
+  total_incentive_amount: state.payroll.totalIncentiveAmount,
+  total_deduction_amount: state.payroll.totalDeductionAmount,
+}));
+  console.log('counts value:', counts);
   const departmentList = useSelector((state) => state.departments.list || []);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -133,12 +135,22 @@ export function usePayrollList() {
     acc[d.name] = d.id;
     return acc;
   }, {});
+
   const refetch = () =>
     dispatch(
       getPayrollData({
         page,
         limit: LIMIT,
         search: searchTerm,
+        month: selectedMonth,
+        year: selectedYear,
+        department: selectedDepartment ? departmentIdByName[selectedDepartment] : "",
+      })
+    );
+
+  const refetchCounts = () =>
+    dispatch(
+      getPayrollCounts({
         month: selectedMonth,
         year: selectedYear,
         department: selectedDepartment ? departmentIdByName[selectedDepartment] : "",
@@ -154,6 +166,12 @@ export function usePayrollList() {
       console.error("Error fetching payroll data:", err)
     );
   }, [dispatch, page, searchTerm, selectedMonth, selectedYear, selectedDepartment]);
+
+  useEffect(() => {
+    refetchCounts().unwrap?.().catch?.((err) =>
+      console.error("Error fetching payroll counts:", err)
+    );
+  }, [dispatch, selectedMonth, selectedYear, selectedDepartment]);
 
   useEffect(() => {
     if (sortedData?.length) {
@@ -204,6 +222,7 @@ export function usePayrollList() {
       ).unwrap();
 
       refetch();
+      refetchCounts();
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -249,6 +268,7 @@ export function usePayrollList() {
       }));
 
       await refetch();
+      await refetchCounts();
 
       Swal.fire({
         icon: "success",
@@ -278,6 +298,7 @@ export function usePayrollList() {
         prev.includes(selectedEmployee.id) ? prev : [...prev, selectedEmployee.id]
       );
       refetch();
+      refetchCounts();
     }
     setSelectedEmployee(null);
   };
@@ -291,6 +312,7 @@ export function usePayrollList() {
           : [...prev, selectedDeductionEmployee.id]
       );
       refetch();
+      refetchCounts();
     }
     setSelectedDeductionEmployee(null);
   };
@@ -301,6 +323,7 @@ export function usePayrollList() {
     totalPages,
     page,
     departmentList,
+    counts,
     searchTerm, setSearchTerm,
     selectedMonth, setSelectedMonth,
     selectedYear, setSelectedYear,

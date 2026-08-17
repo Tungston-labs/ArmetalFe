@@ -18,7 +18,7 @@ export const getPayrollColumns = ({
   handleSingleStatusChange,
   getStatusColor,
 }) => [
- {
+  {
     header: (
       <input
         type="checkbox"
