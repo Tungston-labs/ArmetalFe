@@ -53,11 +53,18 @@ from employee.models import Employee_db
 from .serializers import EmployeeSerializer
 
 
+
 class EmployeeListCreateView(generics.ListCreateAPIView):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
+
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name_search', 'employee_id']
+
+    search_fields = [
+        'name_search',
+        'employee_id'
+    ]
+
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -67,17 +74,97 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
         if not company:
             return Employee_db.objects.none()
 
-        department_id = self.request.query_params.get('department_id')
+        department_id = self.request.query_params.get(
+            'department_id'
+        )
+
+        attendance_status = self.request.query_params.get(
+            'attendance_status'
+        )
+
+        # =====================================================
+        # BASE EMPLOYEE QUERYSET
+        # =====================================================
 
         queryset = Employee_db.objects.filter(
             department__company=company,
             is_deleted=False
         )
 
+        # =====================================================
+        # DEPARTMENT FILTER
+        # =====================================================
+
         if department_id:
             queryset = queryset.filter(
                 department_id=department_id
             )
+
+        # =====================================================
+        # TODAY
+        # =====================================================
+
+        today = date.today()
+
+        # =====================================================
+        # TODAY'S PRESENT EMPLOYEES
+        # =====================================================
+
+        present_employee_ids = set(
+            Attendance.objects.filter(
+                employee__department__company=company,
+                date=today
+            ).values_list(
+                'employee_id',
+                flat=True
+            )
+        )
+
+        # =====================================================
+        # TODAY'S ON-LEAVE EMPLOYEES
+        # =====================================================
+
+        leave_employee_ids = set(
+            LeaveRequest.objects.filter(
+                employee__department__company=company,
+                employee__is_deleted=False,
+                status='approved',
+                from_date__lte=today,
+                to_date__gte=today
+            ).values_list(
+                'employee_id',
+                flat=True
+            )
+        )
+
+        # =====================================================
+        # ATTENDANCE STATUS FILTER
+        # =====================================================
+
+        if attendance_status:
+
+            attendance_status = attendance_status.lower()
+
+            if attendance_status == 'present':
+
+                queryset = queryset.filter(
+                    id__in=present_employee_ids
+                )
+
+            elif attendance_status == 'on_leave':
+
+                queryset = queryset.filter(
+                    id__in=leave_employee_ids
+                )
+
+            elif attendance_status == "absent":
+                queryset = queryset.exclude(
+                    id__in=present_employee_ids
+                )
+
+        # =====================================================
+        # SORT
+        # =====================================================
 
         queryset = queryset.order_by(
             'department__name',
@@ -86,78 +173,92 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
 
         return queryset
 
-    def list(self, request, *args, **kwargs):
-        """
-        Return employee list with today's attendance status.
-        """
+    # =========================================================
+    # LIST
+    # =========================================================
 
-        queryset = self.filter_queryset(self.get_queryset())
+    def list(self, request, *args, **kwargs):
+
+        queryset = self.filter_queryset(
+            self.get_queryset()
+        )
 
         today = date.today()
 
-        # -------------------------------------------------
-        # Get today's attendance employees
-        # -------------------------------------------------
+        # =====================================================
+        # PRESENT EMPLOYEES
+        # =====================================================
 
         present_employee_ids = set(
             Attendance.objects.filter(
                 employee__in=queryset,
                 date=today
             ).values_list(
-                "employee_id",
+                'employee_id',
                 flat=True
             )
         )
 
-        # -------------------------------------------------
-        # Get employees who are on approved leave today
-        # -------------------------------------------------
+        # =====================================================
+        # ON LEAVE EMPLOYEES
+        # =====================================================
 
         leave_employee_ids = set(
             LeaveRequest.objects.filter(
                 employee__in=queryset,
-                status="approved",
+                status='approved',
                 from_date__lte=today,
                 to_date__gte=today
             ).values_list(
-                "employee_id",
+                'employee_id',
                 flat=True
             )
         )
 
-        # -------------------------------------------------
-        # Serialize employees
-        # -------------------------------------------------
+        # =====================================================
+        # SERIALIZE
+        # =====================================================
 
         serializer = self.get_serializer(
             queryset,
             many=True,
-            context={"request": request}
+            context={
+                'request': request
+            }
         )
 
         data = serializer.data
 
-        # -------------------------------------------------
-        # Add today's attendance status
-        # -------------------------------------------------
+        # =====================================================
+        # ADD TODAY'S STATUS
+        # =====================================================
 
-        for employee_data, employee in zip(data, queryset):
+        for employee_data, employee in zip(
+            data,
+            queryset
+        ):
 
             if employee.id in leave_employee_ids:
 
-                employee_data["today_attendance_status"] = "on_leave"
+                employee_data[
+                    'today_attendance_status'
+                ] = 'on_leave'
 
             elif employee.id in present_employee_ids:
 
-                employee_data["today_attendance_status"] = "present"
+                employee_data[
+                    'today_attendance_status'
+                ] = 'present'
 
             else:
 
-                employee_data["today_attendance_status"] = "absent"
+                employee_data[
+                    'today_attendance_status'
+                ] = 'absent'
 
-        # -------------------------------------------------
-        # Pagination
-        # -------------------------------------------------
+        # =====================================================
+        # PAGINATION
+        # =====================================================
 
         page = self.paginate_queryset(data)
 
@@ -166,11 +267,19 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
 
         return Response(data)
 
+    # =========================================================
+    # CREATE
+    # =========================================================
+
     def create(self, request, *args, **kwargs):
 
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(
+            data=request.data
+        )
 
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid(
+            raise_exception=True
+        )
 
         try:
 
@@ -185,16 +294,18 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
                 ) + 1
 
                 company.save(
-                    update_fields=["number_of_employees"]
+                    update_fields=[
+                        'number_of_employees'
+                    ]
                 )
 
         except IntegrityError:
 
             return Response(
                 {
-                    "detail": (
-                        "Employee could not be created because "
-                        "some employee details already exist."
+                    'detail': (
+                        'Employee could not be created because '
+                        'some employee details already exist.'
                     )
                 },
                 status=status.HTTP_400_BAD_REQUEST
@@ -203,7 +314,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
         try:
 
             send_mail(
-                subject=f"Welcome to {company.name}",
+                subject=f'Welcome to {company.name}',
 
                 message=f"""
 Hello {employee.name},
@@ -223,7 +334,9 @@ Regards,
 
                 from_email=company.email,
 
-                recipient_list=[employee.email],
+                recipient_list=[
+                    employee.email
+                ],
 
                 fail_silently=False,
             )
@@ -231,27 +344,28 @@ Regards,
         except Exception as e:
 
             print(
-                f"❌ Failed to send email to "
-                f"{employee.email}: {str(e)}"
+                f'❌ Failed to send email to '
+                f'{employee.email}: {str(e)}'
             )
 
         return Response(
             {
-                "message": "Employee created successfully.",
+                'message': 'Employee created successfully.',
 
-                "employee": EmployeeSerializer(
+                'employee': EmployeeSerializer(
                     employee,
-                    context={"request": request}
+                    context={
+                        'request': request
+                    }
                 ).data,
 
-                "login_credentials": {
-                    "username": employee.employee_id,
-                    "password": employee.password
+                'login_credentials': {
+                    'username': employee.employee_id,
+                    'password': employee.password
                 }
             },
             status=status.HTTP_201_CREATED
         )
-
 # list employees without pagination
 
 # ------list employee according to admins company

@@ -22,21 +22,22 @@ import {
   TooltipBox,
   TooltipTitle,
   TooltipValue,
+  TooltipRow,
+  TooltipLabel,
 } from "./PayrollChart.styles";
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    const item = payload[payload.length - 1];
-
     return (
       <TooltipBox>
-        <TooltipTitle color={item.fill}>
-          {item.name}
-        </TooltipTitle>
+        {label && <TooltipTitle color="#1f2937">{label}</TooltipTitle>}
 
-        <TooltipValue>
-          SAR {item.value.toLocaleString()}
-        </TooltipValue>
+        {payload.map((item) => (
+          <TooltipRow key={item.dataKey}>
+            <TooltipLabel color={item.fill}>{item.name}</TooltipLabel>
+            <TooltipValue>{item.value.toLocaleString()}</TooltipValue>
+          </TooltipRow>
+        ))}
       </TooltipBox>
     );
   }
@@ -44,7 +45,30 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const PayrollChart = ({ data }) => {
+const transformChartData = (apiData) => {
+  if (!apiData?.monthly_data) return [];
+
+  return apiData.monthly_data.map((m) => ({
+    month: m.month_name.slice(0, 3),
+    salary: m.paid_salary,
+    incentive: m.incentive,
+    deduction: m.deduction,
+  }));
+};
+
+const getYearOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let y = currentYear - 5; y <= currentYear + 5; y++) {
+    years.push(y);
+  }
+  return years;
+};
+
+const PayrollChart = ({ apiData, selectedYear, onYearChange }) => {
+  const chartData = transformChartData(apiData);
+  const yearOptions = getYearOptions();
+
   return (
     <Card>
       <Container>
@@ -69,58 +93,37 @@ const PayrollChart = ({ data }) => {
                 </LegendItem>
               </LegendContainer>
 
-              <Dropdown label="2026" />
+              <Dropdown
+                label={String(selectedYear)}
+                options={yearOptions.map((y) => ({ label: String(y), value: y }))}
+                onSelect={(option) => onYearChange(option.value)}
+              />
             </>
           }
         />
 
         <ChartContainer>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={data}
-              barCategoryGap="30%"
-            >
-              <CartesianGrid
-                stroke="#ECECEC"
-                vertical={false}
-              />
+            <BarChart data={chartData} barCategoryGap="30%">
+              <CartesianGrid stroke="#ECECEC" vertical={false} />
 
-              <XAxis
-                dataKey="month"
+              <XAxis dataKey="month" tickLine={false} axisLine={false} />
+
+              <YAxis
                 tickLine={false}
                 axisLine={false}
+                domain={[0, "auto"]}
+                tickFormatter={(value) => {
+                  if (value === 0) return "0";
+                  if (value < 100000) return `${value / 1000}K`;
+                  return `${value / 100000}L`;
+                }}
               />
 
-             <YAxis
-  tickLine={false}
-  axisLine={false}
-  domain={[0, 'auto']}
-  tickFormatter={(value) => {
-    if (value === 0) return "0";
-    if (value < 100000) return `${value / 1000}K`;
-    return `${value / 100000}L`;
-  }}
-/>
+              <Tooltip cursor={false} content={<CustomTooltip />} />
 
-              <Tooltip
-                cursor={false}
-                content={<CustomTooltip />}
-              />
-
-              <Bar
-                stackId="payroll"
-                dataKey="deduction"
-                fill="#F44336"
-                name="Deduction"
-              />
-
-              <Bar
-                stackId="payroll"
-                dataKey="incentive"
-                fill="#E58D2B"
-                name="Incentive"
-              />
-
+              <Bar stackId="payroll" dataKey="deduction" fill="#F44336" name="Deduction" />
+              <Bar stackId="payroll" dataKey="incentive" fill="#E58D2B" name="Incentive" />
               <Bar
                 stackId="payroll"
                 dataKey="salary"

@@ -3,7 +3,8 @@ import {
   fetchAllLeaveRequests,
   fetchLeaveDetailsById,
   updateLeaveStatus,
-  fetchOnLeaveEmployees
+  fetchOnLeaveEmployees,
+   fetchLeaveCounts
 } from '../services/leaveService';
 
 // Get all leave requests
@@ -66,7 +67,18 @@ export const getEmployeePendingLeaves = createAsyncThunk(
   }
 );
 
-
+export const getLeaveCounts = createAsyncThunk(
+  'leave/getLeaveCounts',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await fetchLeaveCounts();
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || 'Error fetching leave counts'
+      );
+    }
+  }
+);
 
 
 const leaveSlice = createSlice({
@@ -76,6 +88,13 @@ const leaveSlice = createSlice({
     onLeaveEmployees: [],
     leaveDetails: null,
      pendingLeaves: 0,
+
+  leaveCounts: {
+    total: 0,
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+  },
     loading: false,
     error: null,
     pagination: {
@@ -147,7 +166,29 @@ const leaveSlice = createSlice({
       .addCase(getOnLeaveEmployees.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // Get Leave Counts
+.addCase(getLeaveCounts.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+
+.addCase(getLeaveCounts.fulfilled, (state, action) => {
+  state.loading = false;
+
+  state.leaveCounts = {
+    total: action.payload?.total ?? 0,
+    pending: action.payload?.pending ?? 0,
+    approved: action.payload?.approved ?? 0,
+    rejected: action.payload?.rejected ?? 0,
+  };
+})
+
+.addCase(getLeaveCounts.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+})
+      ;
   },
 });
 

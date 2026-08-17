@@ -29,6 +29,7 @@ const PayrollList = () => {
     totalPages,
     page,
     departmentList,
+    counts,
     searchTerm, setSearchTerm,
     selectedMonth, setSelectedMonth,
     selectedYear, setSelectedYear,
@@ -94,7 +95,7 @@ const PayrollList = () => {
     getStatusColor,
   });
 
-  const payrollCards = getPayrollCards();
+  const payrollCards = getPayrollCards(counts);
   const monthValue = `${selectedYear}-${String(selectedMonth).padStart(2, "0")}`;
   const handleDateChange = (value) => {
     const [year, month] = value.split("-");
@@ -107,18 +108,18 @@ const PayrollList = () => {
   const handleAddDeduction = () => {
     setShowDeductionModal(true);
   };
-const handleBulkStatusUpdate = async (newStatus) => {
-  const targets = sortedData.filter((emp) => selectedEmployees.includes(emp.id));
+  const handleBulkStatusUpdate = async (newStatus) => {
+    const targets = sortedData.filter((emp) => selectedEmployees.includes(emp.id));
 
-  for (const emp of targets) {
-    try {
-      await handleSingleStatusChange(emp, newStatus);
-    } catch (err) {
-      console.error(`Failed to update status for employee ${emp.id}`, err);
-      // decide: break here to stop on first failure, or continue to attempt the rest
+    for (const emp of targets) {
+      try {
+        await handleSingleStatusChange(emp, newStatus);
+      } catch (err) {
+        console.error(`Failed to update status for employee ${emp.id}`, err);
+        // decide: break here to stop on first failure, or continue to attempt the rest
+      }
     }
-  }
-};
+  };
   return (
     <Container>
       <ReusableHeader
@@ -141,42 +142,42 @@ const handleBulkStatusUpdate = async (newStatus) => {
       </ReusableHeader>
 
       <StatsCards cards={payrollCards} />
-   <ReusableFilter
-  search={searchTerm}
-  onSearch={setSearchTerm}
-  searchPlaceholder="Search Employee Name od ID"
-  department={selectedDepartment}
-  departments={departments}
-  onDepartment={setSelectedDepartment}
+      <ReusableFilter
+        search={searchTerm}
+        onSearch={setSearchTerm}
+        searchPlaceholder="Search Employee Name od ID"
+        department={selectedDepartment}
+        departments={departments}
+        onDepartment={setSelectedDepartment}
 
-  status={status}
-  statuses={["Pending", "Paid", "OnHold", "Cancelled"]}
-  onStatus={setStatus}
+        status={status}
+        statuses={["Pending", "Paid", "OnHold", "Cancelled"]}
+        onStatus={setStatus}
 
-  date={monthValue}
-  onDate={handleDateChange}
+        date={monthValue}
+        onDate={handleDateChange}
 
-  showSearch
-  showDepartment
-  showStatus
-  showDate
-  showMoreOptions
-  moreOptions={[
-    { label: "On Hold", value: "OnHold" },
-    { label: "Pending", value: "Pending" },
-  ]}
-  selectedMoreOptions={selectedMoreStatuses}
-  onMoreOptionsChange={setSelectedMoreStatuses}
+        showSearch
+        showDepartment
+        showStatus
+        showDate
+        showMoreOptions
+        moreOptions={[
+          { label: "On Hold", value: "OnHold" },
+          { label: "Pending", value: "Pending" },
+        ]}
+        selectedMoreOptions={selectedMoreStatuses}
+        onMoreOptionsChange={setSelectedMoreStatuses}
 
-  selectedCount={selectedEmployees.length}
-  bulkStatusOptions={[
-    { label: "Pending", value: "Pending" },
-    { label: "Paid", value: "Paid" },
-    { label: "On Hold", value: "OnHold" },
-    { label: "Cancelled", value: "Cancelled" },
-  ]}
-  onBulkStatusChange={handleBulkStatusUpdate}
-/>
+        selectedCount={selectedEmployees.length}
+        bulkStatusOptions={[
+          { label: "Pending", value: "Pending" },
+          { label: "Paid", value: "Paid" },
+          { label: "On Hold", value: "OnHold" },
+          { label: "Cancelled", value: "Cancelled" },
+        ]}
+        onBulkStatusChange={handleBulkStatusUpdate}
+      />
 
       <ReusableTable columns={columns} data={visibleRows} loading={loading} />
 

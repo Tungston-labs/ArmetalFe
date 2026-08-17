@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import TopBar from "../../Components/HrDashboard/TopBar/TopBar";
@@ -43,7 +43,7 @@ import {
 
 const HrDashboard = () => {
   const dispatch = useDispatch();
-
+  const [payrollYear, setPayrollYear] = useState(new Date().getFullYear());
   // =====================================================
   // Dashboard Counts
   // =====================================================
@@ -169,6 +169,7 @@ const HrDashboard = () => {
     dispatch(getHolidays());
   }, [dispatch]);
 
+  
   // =====================================================
   // Dashboard Stats
   // =====================================================
@@ -263,14 +264,14 @@ const HrDashboard = () => {
             ================================================= */}
 
             {payrollLoading ? (
-              <div>
-                Loading payroll...
-              </div>
-            ) : (
-              <PayrollChart
-                data={payrollData}
-              />
-            )}
+    <div>Loading payroll...</div>
+  ) : (
+    <PayrollChart
+      apiData={monthlyPayrollSummary}
+      selectedYear={payrollYear}
+      onYearChange={setPayrollYear}
+    />
+  )}
 
             {/* =================================================
                 Reimbursement

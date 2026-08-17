@@ -36,7 +36,7 @@ class AttendanceSwipeView(APIView):
     def post(self, request):
         try:
             user = request.user
-            employee = getattr(user, 'employee_db', None)
+            employee = getattr(user, "employee_profile", None)
 
             if not employee:
                 return Response({'error': 'Employee not found'}, status=404)
@@ -627,7 +627,7 @@ from datetime import datetime, time
 
 from employee.models import Employee_db
 from .models import HourlyLocationLog
-from .serializers import HourlyLocationLogSerializer
+from .serializers import HourlyLocationLogSerializer,AttendanceCorrectionRequestSerializer
 from .utils.geocoding_utils import get_location_name_sync
 from shared.pagination import HourlyLocationLogPagination  # Import the pagination class
 
@@ -992,4 +992,154 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
 
         return Response(
             serializer.data
+        )
+    
+from rest_framework import serializers
+class AttendanceCorrectionRequestCreateView(
+    generics.CreateAPIView
+):
+
+    serializer_class = AttendanceCorrectionRequestSerializer
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def perform_create(self, serializer):
+
+        employee = getattr(
+            self.request.user,
+            "employee_profile",
+            None
+        )
+
+        if not employee:
+            raise serializers.ValidationError({
+                "employee": "Employee profile not found."
+            })
+
+        serializer.save(
+            employee=employee
+        )
+
+
+from django.utils import timezone
+
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from .models import AttendanceCorrectionRequest
+from .serializers import AttendanceCorrectionRequestSerializer
+
+
+class AttendanceCorrectionStatusUpdateView(
+    generics.UpdateAPIView
+):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AttendanceCorrectionRequestSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        company = getattr(user, "company", None)
+
+        if not company:
+            return AttendanceCorrectionRequest.objects.none()
+
+        return AttendanceCorrectionRequest.objects.filter(
+            employee__department__company=company
+        )
+
+    def patch(self, request, *args, **kwargs):
+
+        correction_request = self.get_object()
+
+        new_status = request.data.get("status")
+        admin_reason = request.data.get("admin_reason", "")
+
+        # ---------------------------------------------
+        # STATUS VALIDATION
+        # ---------------------------------------------
+
+        if new_status not in ["approved", "rejected"]:
+            return Response(
+                {
+                    "status": [
+                        "Status must be either approved or rejected."
+                    ]
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ---------------------------------------------
+        # ONLY PENDING REQUEST CAN BE REVIEWED
+        # ---------------------------------------------
+
+        if correction_request.status != "pending":
+            return Response(
+                {
+                    "detail": (
+                        "This request has already been reviewed."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ---------------------------------------------
+        # REJECTION REASON
+        # ---------------------------------------------
+
+        if new_status == "rejected" and not admin_reason.strip():
+            return Response(
+                {
+                    "admin_reason": [
+                        "Admin reason is required when rejecting "
+                        "an attendance correction request."
+                    ]
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ---------------------------------------------
+        # UPDATE
+        # ---------------------------------------------
+
+        correction_request.status = new_status
+
+        correction_request.admin_reason = (
+            admin_reason.strip()
+            if admin_reason
+            else None
+        )
+
+        correction_request.reviewed_by = request.user
+        correction_request.reviewed_at = timezone.now()
+
+        correction_request.save(
+            update_fields=[
+                "status",
+                "admin_reason",
+                "reviewed_by",
+                "reviewed_at",
+                "updated_at",
+            ]
+        )
+
+        # ---------------------------------------------
+        # RESPONSE
+        # ---------------------------------------------
+
+        return Response(
+            {
+                "message": (
+                    f"Attendance correction request "
+                    f"{new_status} successfully."
+                ),
+                "request": AttendanceCorrectionRequestSerializer(
+                    correction_request,
+                    context={"request": request}
+                ).data,
+            },
+            status=status.HTTP_200_OK
         )

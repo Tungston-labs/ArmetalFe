@@ -132,11 +132,26 @@ export const getEmployeeById = createAsyncThunk(
 // Fetch All Employees
 export const getAllEmployees = createAsyncThunk(
   'employees/getAll',
-  async ({ page, search, department_id }, thunkAPI) => {
+  async (
+    {
+      page = 1,
+      search = "",
+      department_id = "",
+      attendance_status = "",
+    },
+    thunkAPI
+  ) => {
     try {
-      return await fetchAllEmployees(page, search, department_id);
+      return await fetchAllEmployees(
+        page,
+        search,
+        department_id,
+        attendance_status
+      );
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data || 'Server error');
+      return thunkAPI.rejectWithValue(
+        err.response?.data || "Server error"
+      );
     }
   }
 );

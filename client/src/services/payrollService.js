@@ -125,3 +125,7 @@ export const updateEmployeeDeduction = async ({
     throw new Error(msg);
   }
 };
+export const fetchPayrollCounts = async () => {
+  const response = await API.get("/payroll-counts/");
+  return response.data;
+};

@@ -12,6 +12,7 @@ import {
 import {
   getLeaveRequests,
   patchLeaveStatus,
+  getLeaveCounts,
 } from "../../../Redux/leaveSlice";
 
 import {
@@ -50,13 +51,12 @@ export default function LeaveRequestList() {
   // ======================================================
 
   const {
-    leaves,
-    loading,
-    pagination,
-    error,
-  } = useSelector(
-    (state) => state.leave
-  );
+  leaves,
+  loading,
+  pagination,
+  error,
+  leaveCounts,
+} = useSelector((state) => state.leave);
 
 
   const {
@@ -96,25 +96,8 @@ export default function LeaveRequestList() {
     useState("");
 
 
-  // ======================================================
-  // MONTH
-  // ======================================================
-
-  const [selectedMonth, setSelectedMonth] =
-    useState(
-      new Date().getMonth() + 1
-    );
-
-
-  // ======================================================
-  // YEAR
-  // ======================================================
-
-  const [selectedYear, setSelectedYear] =
-    useState(
-      new Date().getFullYear()
-    );
-
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
 
   // ======================================================
   // CONFIRM MODAL
@@ -138,9 +121,9 @@ export default function LeaveRequestList() {
     () =>
       Array.isArray(departmentList)
         ? departmentList.map(
-            (department) =>
-              department.name
-          )
+          (department) =>
+            department.name
+        )
         : [],
 
     [departmentList]
@@ -173,8 +156,8 @@ export default function LeaveRequestList() {
   const selectedDepartmentId =
     departmentFilter
       ? departmentIdByName[
-          departmentFilter
-        ]
+      departmentFilter
+      ]
       : "";
 
 
@@ -193,6 +176,14 @@ export default function LeaveRequestList() {
 
   }, [dispatch]);
 
+
+  // ======================================================
+// GET LEAVE COUNTS
+// ======================================================
+
+useEffect(() => {
+  dispatch(getLeaveCounts());
+}, [dispatch]);
 
   // ======================================================
   // SEARCH DEBOUNCE
@@ -238,15 +229,12 @@ export default function LeaveRequestList() {
   // ======================================================
 
   useEffect(() => {
-
     dispatch(
       getLeaveRequests({
-
         page,
 
         department_id:
-          selectedDepartmentId ||
-          undefined,
+          selectedDepartmentId || undefined,
 
         status:
           statusFilter
@@ -254,17 +242,15 @@ export default function LeaveRequestList() {
             : undefined,
 
         search:
-          debouncedSearch ||
-          undefined,
+          debouncedSearch || undefined,
 
         month:
-          selectedMonth,
+          selectedMonth || undefined,
 
         year:
-          selectedYear,
+          selectedYear || undefined,
       })
     );
-
   }, [
     dispatch,
     page,
@@ -274,7 +260,6 @@ export default function LeaveRequestList() {
     selectedMonth,
     selectedYear,
   ]);
-
 
   // ======================================================
   // LEAVE DATA
@@ -440,7 +425,7 @@ export default function LeaveRequestList() {
     if (
       newPage < 1 ||
       newPage >
-        pagination.total_pages
+      pagination.total_pages
     ) {
       return;
     }
@@ -470,9 +455,7 @@ export default function LeaveRequestList() {
   // CARDS
   // ======================================================
 
-  const payrollCards =
-    getPayrollCards();
-
+  const payrollCards = getPayrollCards(leaveCounts);
 
   // ======================================================
   // UI
@@ -563,17 +546,22 @@ export default function LeaveRequestList() {
 
 
         date={
-          selectedMonth
+          selectedYear && selectedMonth
+            ? `${selectedYear}-${String(selectedMonth).padStart(2, "0")}`
+            : ""
         }
 
-        onDate={(
-          value
-        ) => {
+        onDate={(value) => {
+          if (!value) {
+            setSelectedMonth("");
+            setSelectedYear("");
+            return;
+          }
 
-          setSelectedMonth(
-            Number(value)
-          );
+          const [year, month] = value.split("-");
 
+          setSelectedYear(year);
+          setSelectedMonth(month);
         }}
 
 
@@ -679,7 +667,7 @@ export default function LeaveRequestList() {
             disabled={
               !pagination.next ||
               page ===
-                pagination.total_pages
+              pagination.total_pages
             }
 
             onClick={() =>
