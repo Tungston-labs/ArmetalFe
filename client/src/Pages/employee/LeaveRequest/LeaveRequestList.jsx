@@ -1,324 +1,775 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
 import {
   getLeaveRequests,
   patchLeaveStatus,
 } from "../../../Redux/leaveSlice";
-import { useNavigate } from "react-router-dom";
-import { getDepartments } from "../../../Redux/departmentSlice";
 
-import { Container } from "./leaveColumns.style";
+import {
+  getDepartments,
+} from "../../../Redux/departmentSlice";
+
+import {
+  Container,
+} from "./leaveColumns.style";
+
 import ReusableTable from "../../../Components/ReusableTable/ReusableTable";
+
 import NoEmployeeFound from "../../../Components/No found/Noemployeefound";
+
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
+
 import ReusableFilter from "../../../Components/ReusableTable/ReusableFilter";
+
 import ReusableConfirmModal from "../../../Components/modals/ReusableConfirmModal";
-import { getLeaveColumns, getPayrollCards } from "./leaveColumns";
+
+import {
+  getLeaveColumns,
+  getPayrollCards,
+} from "./leaveColumns";
+
 import StatsCards from "../../../Components/ StatsCards/StatsCards";
 
-export default function LeaveRequestList() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const { leaves, loading, pagination } = useSelector(
+export default function LeaveRequestList() {
+
+  const dispatch = useDispatch();
+
+
+  // ======================================================
+  // REDUX
+  // ======================================================
+
+  const {
+    leaves,
+    loading,
+    pagination,
+    error,
+  } = useSelector(
     (state) => state.leave
   );
 
-  // =========================
-  // Search
-  // =========================
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  // =========================
-  // Pagination
-  // =========================
-  const [page, setPage] = useState(1);
-
-  // =========================
-  // Filters
-  // =========================
-  const [departmentFilter, setDepartmentFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-
-  const [selectedMonth, setSelectedMonth] = useState(
-    new Date().getMonth() + 1
+  const {
+    list: departmentList,
+  } = useSelector(
+    (state) => state.departments
   );
 
-  const [selectedYear, setSelectedYear] = useState(
-    new Date().getFullYear()
+
+  // ======================================================
+  // SEARCH
+  // ======================================================
+
+  const [search, setSearch] =
+    useState("");
+
+  const [debouncedSearch, setDebouncedSearch] =
+    useState("");
+
+
+  // ======================================================
+  // PAGINATION
+  // ======================================================
+
+  const [page, setPage] =
+    useState(1);
+
+
+  // ======================================================
+  // FILTERS
+  // ======================================================
+
+  const [departmentFilter, setDepartmentFilter] =
+    useState("");
+
+  const [statusFilter, setStatusFilter] =
+    useState("");
+
+
+  // ======================================================
+  // MONTH
+  // ======================================================
+
+  const [selectedMonth, setSelectedMonth] =
+    useState(
+      new Date().getMonth() + 1
+    );
+
+
+  // ======================================================
+  // YEAR
+  // ======================================================
+
+  const [selectedYear, setSelectedYear] =
+    useState(
+      new Date().getFullYear()
+    );
+
+
+  // ======================================================
+  // CONFIRM MODAL
+  // ======================================================
+
+  const [showModal, setShowModal] =
+    useState(false);
+
+  const [actionType, setActionType] =
+    useState("");
+
+  const [selectedLeaveId, setSelectedLeaveId] =
+    useState(null);
+
+
+  // ======================================================
+  // DEPARTMENT OPTIONS
+  // ======================================================
+
+  const departmentOptions = useMemo(
+    () =>
+      Array.isArray(departmentList)
+        ? departmentList.map(
+            (department) =>
+              department.name
+          )
+        : [],
+
+    [departmentList]
   );
 
-  // =========================
-  // Delete / Status Modal
-  // =========================
-  const [showModal, setShowModal] = useState(false);
-  const [actionType, setActionType] = useState("");
-  const [selectedLeaveId, setSelectedLeaveId] = useState(null);
 
-  // =========================
-  // Departments
-  // =========================
-const { list: departmentList } = useSelector(
-  (state) => state.departments
-);
+  // ======================================================
+  // DEPARTMENT NAME -> ID
+  // ======================================================
 
-const departmentOptions = useMemo(
-  () =>
-    Array.isArray(departmentList)
-      ? departmentList.map((department) => department.name)
-      : [],
-  [departmentList]
-);
+  const departmentIdByName = useMemo(
+    () =>
+      Object.fromEntries(
+        (departmentList || []).map(
+          (department) => [
+            department.name,
+            department.id,
+          ]
+        )
+      ),
 
-const departmentIdByName = useMemo(
-  () =>
-    Object.fromEntries(
-      (departmentList || []).map((department) => [
-        department.name,
-        department.id,
-      ])
-    ),
-  [departmentList]
-);
+    [departmentList]
+  );
 
-const selectedDepartmentId = departmentFilter
-  ? departmentIdByName[departmentFilter]
-  : "";
 
-  // =========================
-  // Get Departments
-  // =========================
+  // ======================================================
+  // SELECTED DEPARTMENT ID
+  // ======================================================
+
+  const selectedDepartmentId =
+    departmentFilter
+      ? departmentIdByName[
+          departmentFilter
+        ]
+      : "";
+
+
+  // ======================================================
+  // GET DEPARTMENTS
+  // ======================================================
+
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" }));
+
+    dispatch(
+      getDepartments({
+        page: 1,
+        search: "",
+      })
+    );
+
   }, [dispatch]);
 
-  // =========================
-  // Search debounce
-  // =========================
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 300);
 
-    return () => clearTimeout(handler);
+  // ======================================================
+  // SEARCH DEBOUNCE
+  // ======================================================
+
+  useEffect(() => {
+
+    const handler =
+      setTimeout(() => {
+
+        setDebouncedSearch(
+          search.trim()
+        );
+
+      }, 300);
+
+
+    return () =>
+      clearTimeout(handler);
+
   }, [search]);
 
-  // =========================
-  // Get Leave Requests
-  // =========================
- useEffect(() => {
-  dispatch(
-    getLeaveRequests({
-      page,
-      department_id: selectedDepartmentId || undefined,
-      status: statusFilter
-        ? statusFilter.toLowerCase()
-        : undefined,
-      month: selectedMonth,
-      year: selectedYear,
-    })
-  );
-}, [
-  dispatch,
-  page,
-  selectedDepartmentId,
-  statusFilter,
-  selectedMonth,
-  selectedYear,
-]);
 
-  const leaveData = Array.isArray(leaves) ? leaves : [];
+  // ======================================================
+  // RESET PAGE WHEN FILTER CHANGES
+  // ======================================================
 
-  // =========================
-  // Frontend Search
-  // =========================
-  const filteredLeaves = leaveData.filter((leave) => {
-    const searchValue = debouncedSearch.toLowerCase().trim();
+  useEffect(() => {
 
-    const name =
-      leave?.employee?.name?.toLowerCase() || "";
+    setPage(1);
 
-    const empId =
-      leave?.employee?.employee_id
-        ?.toString()
-        .toLowerCase() || "";
+  }, [
+    selectedDepartmentId,
+    statusFilter,
+    selectedMonth,
+    selectedYear,
+    debouncedSearch,
+  ]);
 
-    return (
-      name.includes(searchValue) ||
-      empId.includes(searchValue)
+
+  // ======================================================
+  // GET LEAVE REQUESTS
+  // ======================================================
+
+  useEffect(() => {
+
+    dispatch(
+      getLeaveRequests({
+
+        page,
+
+        department_id:
+          selectedDepartmentId ||
+          undefined,
+
+        status:
+          statusFilter
+            ? statusFilter.toLowerCase()
+            : undefined,
+
+        search:
+          debouncedSearch ||
+          undefined,
+
+        month:
+          selectedMonth,
+
+        year:
+          selectedYear,
+      })
     );
-  });
 
-  // =========================
-  // Date
-  // =========================
+  }, [
+    dispatch,
+    page,
+    selectedDepartmentId,
+    statusFilter,
+    debouncedSearch,
+    selectedMonth,
+    selectedYear,
+  ]);
+
+
+  // ======================================================
+  // LEAVE DATA
+  // ======================================================
+
+  const leaveData =
+    Array.isArray(leaves)
+      ? leaves
+      : [];
+
+
+  // ======================================================
+  // DATE FORMAT
+  // ======================================================
+
   const formatDate = (dateStr) => {
-    if (!dateStr) return "N/A";
 
-    const d = new Date(dateStr);
+    if (!dateStr) {
+      return "N/A";
+    }
 
-    const day = d.getDate().toString().padStart(2, "0");
+    const d =
+      new Date(dateStr);
 
-    const month = d.toLocaleString("en-GB", {
-      month: "short",
-    });
+    const day =
+      d.getDate()
+        .toString()
+        .padStart(2, "0");
+
+    const month =
+      d.toLocaleString(
+        "en-GB",
+        {
+          month: "short",
+        }
+      );
 
     return `${day}/${month}`;
   };
- //paste_date condition
-  // const isPastLeave = (leave) =>
-  //   new Date(leave.to_date) <
-  //   new Date().setHours(0, 0, 0, 0);
 
+
+  // ======================================================
+  // APPROVE MODAL
+  // ======================================================
 
   const openApproveModal = (id) => {
+
     setSelectedLeaveId(id);
+
     setActionType("approve");
+
     setShowModal(true);
   };
 
-  // =========================
-  // Reject
-  // =========================
+
+  // ======================================================
+  // REJECT MODAL
+  // ======================================================
+
   const openRejectModal = (id) => {
+
     setSelectedLeaveId(id);
+
     setActionType("reject");
+
     setShowModal(true);
   };
 
-  // =========================
-  // Update Status
-  // =========================
+
+  // ======================================================
+  // UPDATE STATUS
+  // ======================================================
+
   const handleStatusUpdate = async () => {
-    if (!selectedLeaveId || !actionType) return;
+
+    if (
+      !selectedLeaveId ||
+      !actionType
+    ) {
+      return;
+    }
+
 
     const status =
       actionType === "approve"
         ? "approved"
         : "rejected";
 
+
     try {
+
+      // ==============================================
+      // UPDATE STATUS API
+      // ==============================================
+
       await dispatch(
         patchLeaveStatus({
-          leaveId: selectedLeaveId,
+          leaveId:
+            selectedLeaveId,
+
           status,
+        })
+      ).unwrap();
+
+
+      // ==============================================
+      // REFRESH CURRENT LIST
+      // ==============================================
+
+      await dispatch(
+        getLeaveRequests({
+
+          page,
+
+          department_id:
+            selectedDepartmentId ||
+            undefined,
+
+          status:
+            statusFilter
+              ? statusFilter.toLowerCase()
+              : undefined,
+
+          search:
+            debouncedSearch ||
+            undefined,
+
+          month:
+            selectedMonth,
+
+          year:
+            selectedYear,
         })
       );
 
-      dispatch(
-        getLeaveRequests({
-          page,
-          department_id:
-            departmentFilter || undefined,
-          status:
-            statusFilter || undefined,
-          month: selectedMonth,
-          year: selectedYear,
-          search:
-            debouncedSearch || undefined,
-        })
+
+    } catch (error) {
+
+      console.error(
+        "Leave status update failed:",
+        error
       );
+
     } finally {
+
       setShowModal(false);
+
       setActionType("");
+
       setSelectedLeaveId(null);
     }
   };
 
-  // =========================
-  // Columns
-  // =========================
-  const columns = getLeaveColumns({
-    page,
-    formatDate,
-    // isPastLeave,
-    openApproveModal,
-    openRejectModal,
-  });
 
-  const payrollCards = getPayrollCards();
+  // ======================================================
+  // PAGE CHANGE
+  // ======================================================
+
+  const handlePageChange = (
+    newPage
+  ) => {
+
+    if (
+      newPage < 1 ||
+      newPage >
+        pagination.total_pages
+    ) {
+      return;
+    }
+
+    setPage(newPage);
+  };
+
+
+  // ======================================================
+  // COLUMNS
+  // ======================================================
+
+  const columns =
+    getLeaveColumns({
+
+      page,
+
+      formatDate,
+
+      openApproveModal,
+
+      openRejectModal,
+    });
+
+
+  // ======================================================
+  // CARDS
+  // ======================================================
+
+  const payrollCards =
+    getPayrollCards();
+
+
+  // ======================================================
+  // UI
+  // ======================================================
 
   return (
+
     <Container>
+
+      {/* ==========================================
+          HEADER
+      ========================================== */}
+
       <ReusableHeader
         title="Leave Requests"
+
         breadcrumbs={[
           "Employees",
           "LeaveRequest",
         ]}
       />
 
-      <StatsCards cards={payrollCards} />
+
+      {/* ==========================================
+          STATS
+      ========================================== */}
+
+      <StatsCards
+        cards={payrollCards}
+      />
+
+
+      {/* ==========================================
+          FILTERS
+      ========================================== */}
 
       <ReusableFilter
+
         search={search}
-        onSearch={setSearch}
-        searchPlaceholder="Search by Employee name or ID"
 
-        department={departmentFilter}
-        departments={departmentOptions}
-        onDepartment={setDepartmentFilter}
+        onSearch={(value) => {
+          setSearch(value);
+        }}
 
-        status={statusFilter}
+        searchPlaceholder={
+          "Search by Employee name or ID"
+        }
+
+
+        department={
+          departmentFilter
+        }
+
+        departments={
+          departmentOptions
+        }
+
+        onDepartment={(
+          value
+        ) => {
+
+          setDepartmentFilter(
+            value
+          );
+
+        }}
+
+
+        status={
+          statusFilter
+        }
+
         statuses={[
           "Pending",
           "Approved",
           "Rejected",
         ]}
-        onStatus={setStatusFilter}
 
-        date={selectedMonth}
-        onDate={setSelectedMonth}
+        onStatus={(
+          value
+        ) => {
+
+          setStatusFilter(
+            value
+          );
+
+        }}
+
+
+        date={
+          selectedMonth
+        }
+
+        onDate={(
+          value
+        ) => {
+
+          setSelectedMonth(
+            Number(value)
+          );
+
+        }}
+
 
         showSearch
+
         showDepartment
+
         showStatus
+
         showDate
       />
 
+
+      {/* ==========================================
+          ERROR
+      ========================================== */}
+
+      {error && (
+        <div
+          style={{
+            color: "red",
+            marginBottom: "10px",
+          }}
+        >
+          {typeof error === "string"
+            ? error
+            : "Failed to load leave requests"}
+        </div>
+      )}
+
+
+      {/* ==========================================
+          TABLE
+      ========================================== */}
+
       <ReusableTable
+
         columns={columns}
-        data={filteredLeaves}
+
+        data={leaveData}
+
         loading={loading}
+
         loadingComponent={null}
+
         emptyComponent={
+
           <NoEmployeeFound
-            searchTerm={debouncedSearch}
+            searchTerm={
+              debouncedSearch
+            }
           />
+
         }
       />
 
+
+      {/* ==========================================
+          PAGINATION
+      ========================================== */}
+
+      {pagination.total_pages > 1 && (
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "10px",
+            marginTop: "20px",
+          }}
+        >
+
+          <button
+            type="button"
+
+            disabled={
+              !pagination.previous ||
+              page === 1
+            }
+
+            onClick={() =>
+              handlePageChange(
+                page - 1
+              )
+            }
+          >
+            Previous
+          </button>
+
+
+          <span>
+            Page {pagination.current_page}
+            {" "}
+            of{" "}
+            {pagination.total_pages}
+          </span>
+
+
+          <button
+            type="button"
+
+            disabled={
+              !pagination.next ||
+              page ===
+                pagination.total_pages
+            }
+
+            onClick={() =>
+              handlePageChange(
+                page + 1
+              )
+            }
+          >
+            Next
+          </button>
+
+        </div>
+
+      )}
+
+
+      {/* ==========================================
+          APPROVE / REJECT MODAL
+      ========================================== */}
+
       <ReusableConfirmModal
-        show={showModal}
+
+        show={
+          showModal
+        }
+
         title={
+
           actionType === "approve"
+
             ? "Approve Leave"
+
             : "Reject Leave"
+
         }
+
+
         message={
+
           actionType === "approve"
+
             ? "Are you sure you want to approve this leave request?"
+
             : "Are you sure you want to reject this leave request?"
+
         }
+
+
         confirmText={
+
           actionType === "approve"
+
             ? "Approve"
+
             : "Reject"
+
         }
+
+
         cancelText="Cancel"
+
+
         confirmVariant={
+
           actionType === "approve"
+
             ? "success"
+
             : "danger"
+
         }
-        onConfirm={handleStatusUpdate}
+
+
+        onConfirm={
+          handleStatusUpdate
+        }
+
+
         onClose={() => {
+
           setShowModal(false);
+
           setActionType("");
+
           setSelectedLeaveId(null);
+
         }}
+
       />
+
     </Container>
   );
 }
