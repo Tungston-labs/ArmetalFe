@@ -3,10 +3,10 @@ import emailjs from '@emailjs/browser'; // Use this for Vite
 import { generateInvoiceHTML } from '../utlis/invoiceGenerator'; // adjust path as needed
 
 export const sendInvoiceEmail = async (entry, toEmail, companyName = "Your Company Name") => {
-const invoiceHtml = generateInvoiceHTML(entry, companyName);
+  const invoiceHtml = generateInvoiceHTML(entry, companyName);
 
-  console.log('------------',entry);
-  
+  console.log('------------', entry);
+
 
   const templateParams = {
     to_email: toEmail,
@@ -21,7 +21,7 @@ const invoiceHtml = generateInvoiceHTML(entry, companyName);
   };
   console.log("✅ Sending templateParams:", templateParams);
 
-  
+
 
   try {
     const response = await emailjs.send(

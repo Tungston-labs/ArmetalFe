@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -104,15 +104,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -121,33 +119,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import emailjs from '@emailjs/browser'; // Use this for Vite
 &nbsp;
 import { generateInvoiceHTML } from '../utlis/invoiceGenerator'; // adjust path as needed
 &nbsp;
-export const sendInvoiceEmail = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(entry, toEmail, companyName = <span class="branch-0 cbranch-no" title="branch not covered" >"Your Company Name")</span> =&gt; {</span>
-const invoiceHtml =<span class="cstat-no" title="statement not covered" > generateInvoiceHTML(entry, companyName);</span>
+export const sendInvoiceEmail = async (entry, toEmail, companyName = "Your Company Name") =&gt; {
+  const invoiceHtml = generateInvoiceHTML(entry, companyName);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  console.log('------------',entry);</span>
-  
+  console.log('------------', entry);
 &nbsp;
-  const templateParams = <span class="cstat-no" title="statement not covered" >{</span>
+&nbsp;
+  const templateParams = {
     to_email: toEmail,
     company_name: companyName,
     invoice_date: new Date().toLocaleDateString(),
@@ -158,20 +158,20 @@ const invoiceHtml =<span class="cstat-no" title="statement not covered" > genera
     paid_date: entry.paid_date,
     currency: entry.currency
   };
-<span class="cstat-no" title="statement not covered" >  console.log("✅ Sending templateParams:", templateParams);</span>
+  console.log("✅ Sending templateParams:", templateParams);
 &nbsp;
-  
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  try {</span>
-    const response = <span class="cstat-no" title="statement not covered" >await emailjs.send(</span>
+&nbsp;
+  try {
+    const response = await emailjs.send(
       'service_tfb6mdh',
       'template_xzlubi8',
       templateParams,
       'wJYPZOGHsxr8loRuC'
     );
-<span class="cstat-no" title="statement not covered" >    console.log('✅ Email sent:', response.status, response.text);</span>
+    console.log('✅ Email sent:', response.status, response.text);
   } catch (error) {
-<span class="cstat-no" title="statement not covered" >    console.error('❌ Email sending error:', error);</span>
+    console.error('❌ Email sending error:', error);
   }
 };
 &nbsp;</pre></td></tr></table></pre>
@@ -181,7 +181,7 @@ const invoiceHtml =<span class="cstat-no" title="statement not covered" > genera
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-18T03:33:59.098Z
+                at 2026-08-18T11:22:53.841Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

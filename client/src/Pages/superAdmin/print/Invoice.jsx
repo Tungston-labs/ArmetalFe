@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Page,
   Header,
@@ -34,12 +35,36 @@ import { IoMdCall } from "react-icons/io";
 import { CiGlobe } from "react-icons/ci";
 import { FaLocationDot } from "react-icons/fa6";
 
-import logo from "/images/invoice.png";
-import watermark from "/images/invoice.png";
+/*
+ * These images are inside the Vite public folder.
+ * Using the public URL avoids importing an absolute filesystem
+ * path during Vitest coverage processing.
+ */
+const logo = "/images/invoice.png";
+const watermark = "/images/invoice.png";
 
 const Invoice = ({ entry, company }) => {
-  if (!entry || !company) return null;
+  if (!entry || !company) {
+    return null;
+  }
 
+  const formatDate = (date) => {
+    if (!date) {
+      return "-";
+    }
+
+    const d = new Date(date);
+
+    if (Number.isNaN(d.getTime())) {
+      return "-";
+    }
+
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
 
   const invoiceItems = [
     {
@@ -49,17 +74,7 @@ const Invoice = ({ entry, company }) => {
       total: Number(entry.amount).toFixed(2),
     },
   ];
-  const formatDate = (date) => {
-    if (!date) return "-";
 
-    const d = new Date(date);
-
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = d.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
   return (
     <Page>
       <Watermark src={watermark} alt="watermark" />
@@ -83,7 +98,6 @@ const Invoice = ({ entry, company }) => {
             <br />
             {company.address}
             <br />
-
             Phone : {company.contact_number}
             <br />
             Email : {company.email}
@@ -98,7 +112,7 @@ const Invoice = ({ entry, company }) => {
             <br />
             Date : {formatDate(entry.paid_date || company.today)}
             <br />
-            Status : {entry.status.toUpperCase()}
+            Status : {String(entry.status || "").toUpperCase()}
           </InvoiceText>
         </InvoiceSection>
       </TopSection>
@@ -133,10 +147,8 @@ const Invoice = ({ entry, company }) => {
 
           <GrandTotalRow>
             <TableCell colSpan={3}>GRAND TOTAL</TableCell>
-            <TableCell>
 
-              {Number(entry.amount).toFixed(2)}
-            </TableCell>
+            <TableCell>{Number(entry.amount).toFixed(2)}</TableCell>
           </GrandTotalRow>
         </tbody>
       </Table>

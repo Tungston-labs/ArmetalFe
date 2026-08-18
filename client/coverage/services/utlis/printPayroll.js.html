@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -145,28 +145,28 @@
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
 <a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -220,35 +220,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export const printElement = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>lement) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  if (!element) <span class="cstat-no" title="statement not covered" >return;</span></span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export const printElement = (element) =&gt; {
+  if (!element) return;
 &nbsp;
-  const WinPrint = <span class="cstat-no" title="statement not covered" >window.open("", "", "width=1400,height=1000");</span>
+  const WinPrint = window.open("", "", "width=1400,height=1000");
   // Clone the element so we can modify it safely
-  const clonedElement = <span class="cstat-no" title="statement not covered" >element.cloneNode(true);</span>
+  const clonedElement = element.cloneNode(true);
 &nbsp;
   // Fix all image paths to absolute URLs
-  const images = <span class="cstat-no" title="statement not covered" >clonedElement.querySelectorAll("img");</span>
-<span class="cstat-no" title="statement not covered" >  images.forEach(<span class="fstat-no" title="function not covered" >(i</span>mg) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (img.src &amp;&amp; img.src.startsWith("/")) {</span>
-<span class="cstat-no" title="statement not covered" >      img.src = window.location.origin + img.getAttribute("src");</span>
+  const images = clonedElement.querySelectorAll("img");
+  images.forEach((img) =&gt; {
+    if (img.src &amp;&amp; img.src.startsWith("/")) {
+      img.src = window.location.origin + img.getAttribute("src");
     }
   });
 &nbsp;
-  const styles = <span class="cstat-no" title="statement not covered" >Array.from(</span>
+  const styles = Array.from(
     document.querySelectorAll('style, link[rel="stylesheet"]')
   )
-    .map(<span class="fstat-no" title="function not covered" >(n</span>ode) =&gt; <span class="cstat-no" title="statement not covered" >node.outerHTML)</span>
+    .map((node) =&gt; node.outerHTML)
     .join("\n");
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  WinPrint.document.write(`</span>
+  WinPrint.document.write(`
     &lt;html&gt;
       &lt;head&gt;
         &lt;title&gt;Payroll&lt;/title&gt;
@@ -302,12 +302,12 @@
     &lt;/html&gt;
   `);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  WinPrint.document.close();</span>
-<span class="cstat-no" title="statement not covered" >  WinPrint.focus();</span>
+  WinPrint.document.close();
+  WinPrint.focus();
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  setTimeout(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    WinPrint.print();</span>
-<span class="cstat-no" title="statement not covered" >    WinPrint.close();</span>
+  setTimeout(() =&gt; {
+    WinPrint.print();
+    WinPrint.close();
   }, 500);
 };</pre></td></tr></table></pre>
 
@@ -316,7 +316,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-18T03:33:59.933Z
+                at 2026-08-18T11:22:54.207Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
