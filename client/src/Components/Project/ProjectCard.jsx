@@ -1,0 +1,91 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+import {
+  Card,
+  CardCategory,
+  CardTitle,
+  TagsRow,
+  DateTag,
+  StatusTag,
+  PriorityTag,
+  BottomSection,
+  Members,
+  MemberAvatar,
+  MemberCount,
+  AddMember,
+  ViewMoreButton,
+} from "./ProjectCard.styles";
+
+const ProjectCard = ({
+  id,
+  category,
+  title,
+  date,
+  status,
+  priority,
+  members = [],
+  memberCount = 0,
+}) => {
+  const navigate = useNavigate();
+
+ const [categoryName, categoryType] = (category || "PROJECT_GENERAL").split("_");
+
+  const handleViewMore = () => {
+    console.log("clicked, navigating to id:", id);
+    navigate(`/projects/${id}`);
+  };
+
+  // Get first two letters from employee name
+  const getInitials = (name = "") => {
+    return name
+      .trim()
+      .split(/\s+/)
+      .map((word) => word.charAt(0).toUpperCase())
+      .slice(0, 2)
+      .join("");
+  };
+
+  return (
+    <Card>
+      <div>
+        <CardCategory>
+          {categoryName}
+          <strong>_{categoryType}</strong>
+        </CardCategory>
+
+        <CardTitle>{title}</CardTitle>
+
+        <TagsRow>
+          <DateTag>{date}</DateTag>
+          <StatusTag status={status}>{status}</StatusTag>
+          <PriorityTag>{priority}</PriorityTag>
+        </TagsRow>
+      </div>
+
+      <BottomSection>
+        <Members>
+          {members.slice(0, 4).map((member, index) => (
+            <MemberAvatar key={index}>
+              {getInitials(member)}
+            </MemberAvatar>
+          ))}
+
+          {memberCount > 4 && (
+            <MemberCount>
+              +{memberCount - 4}
+            </MemberCount>
+          )}
+
+          <AddMember>+</AddMember>
+        </Members>
+
+        <ViewMoreButton onClick={handleViewMore}>
+          VIEW MORE
+        </ViewMoreButton>
+      </BottomSection>
+    </Card>
+  );
+};
+
+export default ProjectCard;

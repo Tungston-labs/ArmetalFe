@@ -87,7 +87,7 @@ const getSidebarData = (user) => {
     }
 
     if (modules.project) {
-      items.push({ title: "PROJECT", icon: <FiCodesandbox />, path: "/project" });
+      items.push({ title: "PROJECT", icon: <FiCodesandbox />, path: "/projects" });
     }
 
     return items;

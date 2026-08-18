@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Container, } from "../finance/FinancePage.Styles";
 import FinanceModal from "./NewFinance";
 import { createFinance, fetchFinanceList } from "../../Redux/financeThunks";
-import StatsCards from "../../Components/ StatsCards/StatsCards";
+import StatsCards from "../../Components/StatsCards/StatsCards";
 import Pagination from "../../Components/Pagination/Pagination";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";

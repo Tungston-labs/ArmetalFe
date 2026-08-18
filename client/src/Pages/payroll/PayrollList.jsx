@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Container } from "./PayrollTablestyes";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
-import StatsCards from "../../Components/ StatsCards/StatsCards";
+import StatsCards from "../../Components/StatsCards/StatsCards";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import Pagination from "../../Components/Pagination/Pagination";
 import IncentiveModal from "../../Components/payroll/IncentiveModal/IncentiveModal";

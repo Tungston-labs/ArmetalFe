@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
 import {
   FilterWrapper,
   LeftSection,
@@ -16,71 +17,136 @@ import {
   MenuStatusItem,
 } from "./ReusableFilter.styles";
 
-import { FiSearch, FiMinus, FiChevronDown } from "react-icons/fi";
+import {
+  FiSearch,
+  FiMinus,
+  FiChevronDown,
+} from "react-icons/fi";
 
 const ReusableFilter = ({
+  // ================= SEARCH =================
   search = "",
   onSearch,
   searchPlaceholder = "Search Employee ID",
 
+  // ================= DEPARTMENT =================
   department = "",
   departments = [],
   onDepartment,
 
+  // ================= STATUS =================
   status = "",
   statuses = [],
   onStatus,
 
+  // ================= DATE =================
   date = "",
   onDate,
 
+  // ================= VISIBILITY =================
   showSearch = true,
   showDepartment = false,
   showStatus = false,
   showDate = false,
 
+  // ================= MORE OPTIONS =================
   showMoreOptions = false,
   moreOptions = [],
   selectedMoreOptions = [],
   onMoreOptionsChange,
 
-  // Bulk action mode — active when 1+ rows are selected
+  // ================= BULK ACTION =================
   selectedCount = 0,
-  bulkStatusOptions = [],   // e.g. [{ label: "Paid", value: "Paid" }, ...]
-  onBulkStatusChange,       // (value) => void
+  bulkStatusOptions = [],
+  onBulkStatusChange,
+
+  // ================= RIGHT ACTION =================
+  // Example:
+  // rightAction={
+  //   <button onClick={handleAdd}>+ ADD EMPLOYEE</button>
+  // }
+  rightAction = null,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+
   const wrapperRef = useRef(null);
 
+  // =========================================================
+  // CLOSE MORE OPTIONS WHEN CLICKING OUTSIDE
+  // =========================================================
+
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+    const handleClickOutside = (event) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target)
+      ) {
         setMenuOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
   }, []);
+
+  // =========================================================
+  // MORE OPTION CHECKBOX
+  // =========================================================
 
   const toggleOption = (value) => {
     if (!onMoreOptionsChange) return;
+
     const next = selectedMoreOptions.includes(value)
-      ? selectedMoreOptions.filter((v) => v !== value)
-      : [...selectedMoreOptions, value];
+      ? selectedMoreOptions.filter(
+          (item) => item !== value
+        )
+      : [
+          ...selectedMoreOptions,
+          value,
+        ];
+
     onMoreOptionsChange(next);
   };
 
+  // =========================================================
+  // BULK MODE
+  // =========================================================
+
   const isBulkMode = selectedCount > 0;
+
+  // =========================================================
+  // BULK STATUS
+  // =========================================================
 
   const handleBulkPick = (value) => {
     onBulkStatusChange?.(value);
+
     setMenuOpen(false);
   };
+
+  // =========================================================
+  // RENDER
+  // =========================================================
 
   return (
     <FilterWrapper>
 
+      {/* =====================================================
+          LEFT SECTION
+      ===================================================== */}
+
       <LeftSection>
+
+        {/* ================= SEARCH ================= */}
 
         {showSearch && (
           <SearchWrapper>
@@ -88,7 +154,9 @@ const ReusableFilter = ({
             <SearchInput
               placeholder={searchPlaceholder}
               value={search}
-              onChange={(e) => onSearch(e.target.value)}
+              onChange={(event) =>
+                onSearch?.(event.target.value)
+              }
             />
 
             <SearchIcon>
@@ -98,15 +166,24 @@ const ReusableFilter = ({
           </SearchWrapper>
         )}
 
+        {/* ================= DEPARTMENT ================= */}
+
         {showDepartment && (
           <Select
             value={department}
-            onChange={(e) => onDepartment(e.target.value)}
+            onChange={(event) =>
+              onDepartment?.(event.target.value)
+            }
           >
-            <option value="">All Departments</option>
+            <option value="">
+              All Departments
+            </option>
 
             {departments.map((item) => (
-              <option key={item} value={item}>
+              <option
+                key={item}
+                value={item}
+              >
                 {item}
               </option>
             ))}
@@ -114,15 +191,24 @@ const ReusableFilter = ({
           </Select>
         )}
 
+        {/* ================= STATUS ================= */}
+
         {showStatus && (
           <Select
             value={status}
-            onChange={(e) => onStatus(e.target.value)}
+            onChange={(event) =>
+              onStatus?.(event.target.value)
+            }
           >
-            <option value="">All Status</option>
+            <option value="">
+              All Status
+            </option>
 
             {statuses.map((item) => (
-              <option key={item} value={item}>
+              <option
+                key={item}
+                value={item}
+              >
                 {item}
               </option>
             ))}
@@ -132,59 +218,136 @@ const ReusableFilter = ({
 
       </LeftSection>
 
+
+      {/* =====================================================
+          RIGHT SECTION
+      ===================================================== */}
+
       <RightSection>
 
-        {showDate && (
+        {/* ===================================================
+            DATE
+
+            If rightAction exists, the date is hidden.
+        =================================================== */}
+
+        {showDate && !rightAction && (
           <DateInput
             type="month"
             value={date}
-            onChange={(e) => onDate(e.target.value)}
+            onChange={(event) =>
+              onDate?.(event.target.value)
+            }
           />
         )}
 
+
+        {/* ===================================================
+            CUSTOM RIGHT ACTION
+
+            Example:
+
+            rightAction={
+              <HeaderButton>
+                + ADD EMPLOYEE
+              </HeaderButton>
+            }
+        =================================================== */}
+
+        {rightAction}
+
+
+        {/* ===================================================
+            MORE OPTIONS
+        =================================================== */}
+
         {showMoreOptions && (
           <MoreOptionsWrapper ref={wrapperRef}>
+
+            {/* ================= BUTTON ================= */}
+
             <MoreOptionsButton
               type="button"
-              onClick={() => setMenuOpen((v) => !v)}
+              onClick={() =>
+                setMenuOpen(
+                  (previous) => !previous
+                )
+              }
               $active={isBulkMode}
             >
               <FiMinus />
+
               <FiChevronDown />
             </MoreOptionsButton>
 
+
+            {/* ================= MENU ================= */}
+
             {menuOpen && (
               <MoreOptionsMenu>
+
+                {/* =================================================
+                    BULK MODE
+                ================================================= */}
+
                 {isBulkMode ? (
                   <>
                     <MenuHeader>
-                      {selectedCount} selected — set status
+                      {selectedCount} selected —
+                      set status
                     </MenuHeader>
 
-                    {bulkStatusOptions.map((opt) => (
-                      <MenuStatusItem
-                        key={opt.value}
-                        type="button"
-                        onClick={() => handleBulkPick(opt.value)}
-                      >
-                        {opt.label}
-                      </MenuStatusItem>
-                    ))}
+                    {bulkStatusOptions.map(
+                      (option) => (
+                        <MenuStatusItem
+                          key={option.value}
+                          type="button"
+                          onClick={() =>
+                            handleBulkPick(
+                              option.value
+                            )
+                          }
+                        >
+                          {option.label}
+                        </MenuStatusItem>
+                      )
+                    )}
                   </>
                 ) : (
-                  moreOptions.map((opt) => (
-                    <MenuItem key={opt.value}>
-                      <input
-                        type="checkbox"
-                        checked={selectedMoreOptions.includes(opt.value)}
-                        onChange={() => toggleOption(opt.value)}
-                      />
-                      {opt.label}
-                    </MenuItem>
-                  ))
+
+                  /* =================================================
+                     NORMAL MORE OPTIONS
+                  ================================================= */
+
+                  moreOptions.map(
+                    (option) => (
+                      <MenuItem
+                        key={option.value}
+                      >
+
+                        <input
+                          type="checkbox"
+                          checked={selectedMoreOptions.includes(
+                            option.value
+                          )}
+                          onChange={() =>
+                            toggleOption(
+                              option.value
+                            )
+                          }
+                        />
+
+                        {option.label}
+
+                      </MenuItem>
+                    )
+                  )
+
                 )}
+
               </MoreOptionsMenu>
             )}
+
           </MoreOptionsWrapper>
         )}
 

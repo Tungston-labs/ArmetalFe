@@ -54,6 +54,9 @@ import PayrollList from "./Pages/payroll/PayrollList.jsx";
 import PlanAndPricing from "./Pages/superAdmin/PlanAndPricing/PlanAndPricing.jsx";
 import ArchivedStaff from "./Pages/employee/ArchivedStaff/ArchivedStaff.jsx";
 import HrDashboard from "./Pages/HrDashboard/HrDashboard.jsx";
+import Projects from "./Pages/Project/Projects.jsx";
+import ProjectDetails from "./Pages/Project/ProjectDetails.jsx";
+import LoginScreen from "./Pages/login/LoginScreen.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -77,6 +80,7 @@ function App() {
         <Routes>
           <Route path="/loader" element={<Loder />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/log" element={<LoginScreen/>} />
           <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/verification" element={<Verification />} />
           <Route path="/new-password" element={<NewPassword />} />
@@ -112,18 +116,21 @@ function App() {
               <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
               <Route path="/finance" element={<FinancePage />} />
               <Route path="/project" element={<FieldShift />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/projects/:id" element={<ProjectDetails />} />
+
               <Route path="/project-department/:id/" element={<FieldDepartment />} />
               <Route path="/layout" element={<ViewLayout />} />
               <Route path="/employee-attendance-report" element={< AttendanceReport />} />
               <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />} />
 
 
-                  {/* <Route path="/Dashboard" element={<HrDashboard />} /> */}
+              {/* <Route path="/Dashboard" element={<HrDashboard />} /> */}
               <Route path="/PlanAndPricing" element={<PlanAndPricing />} />
               <Route path="/PayrollList" element={<PayrollList />} />
               <Route path="/employee-ContractAndVisaExpiry" element={<ContractAndVisaExpiry />} />
               <Route path="/employee-leaveRequestList" element={<LeaveRequestList />} />
-              <Route path="/employee-archived-staff" element={<ArchivedStaff/>}/>
+              <Route path="/employee-archived-staff" element={<ArchivedStaff />} />
               <Route path="/table" element={<Table />} />
 
               <Route path="*" element={<ErrorSomething />} />

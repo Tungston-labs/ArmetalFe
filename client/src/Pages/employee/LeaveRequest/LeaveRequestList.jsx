@@ -15,7 +15,7 @@ import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../../Components/ReusableTable/ReusableFilter";
 import ReusableConfirmModal from "../../../Components/modals/ReusableConfirmModal";
 import { getLeaveColumns, getPayrollCards } from "./leaveColumns";
-import StatsCards from "../../../Components/ StatsCards/StatsCards";
+import StatsCards from "../../../Components/StatsCards/StatsCards";
 
 export default function LeaveRequestList() {
   const dispatch = useDispatch();

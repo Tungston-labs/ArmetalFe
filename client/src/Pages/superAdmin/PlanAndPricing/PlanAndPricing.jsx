@@ -25,7 +25,7 @@ import {
   mapPlanData,
 } from "./planData";
 
-import StatsCards from "../../../Components/ StatsCards/StatsCards";
+import StatsCards from "../../../Components/StatsCards/StatsCards";
 
 import PlanCards from "./PlanCards";
 
