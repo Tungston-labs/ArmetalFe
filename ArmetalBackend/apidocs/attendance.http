@@ -30,8 +30,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ### Swipe (Punch In/Out) -FOR EMPLOYEE
 
 
-POST http://178.248.112.16:8001/api/attendance/swipe/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc3MDEwODgyLCJpYXQiOjE3NzcwMDcyODIsImp0aSI6IjkyNTA1OGJmZDVhZjQwYjY4M2FjZTM5YzU4MDA4OTRkIiwidXNlcl9pZCI6NDkzLCJpc19zdXBlcmFkbWluIjpmYWxzZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6dHJ1ZSwiaXNfaHIiOmZhbHNlfQ.38dXa4gDC750i6wPMq0QXvUj50J-0IyZnEVoCviaN1c
+POST http://127.0.0.1:8000/api/attendance/swipe/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2OTk0MzM0LCJpYXQiOjE3ODY5NjU1MzQsImp0aSI6ImI5NGNlMzdkMjc2NjQ0Yjc5ZmY1MTZmZWEwOTMxZjA5IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjpmYWxzZX0.ba0QNlthvUxzyVXOVCv_xcxfsgsXYcMrRVwzmdlzRek
 Content-Type: application/json
 
 {
@@ -67,3 +67,25 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 GET https://api.rekory.com/api/employee-attendance/summary/?year=2026&month=05
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc5MzA2NTY5LCJpYXQiOjE3NzkyNzc3NjksImp0aSI6IjMwMDRmMDc3NGQ2ODRlZmRhZjRlOWJjODViNzBkMzQzIiwidXNlcl9pZCI6Njc4LCJpc19zdXBlcmFkbWluIjpmYWxzZSwiaXNfaHJfYWRtaW4iOnRydWUsImlzX2VtcGxveWVlIjpmYWxzZSwiaXNfaHIiOmZhbHNlfQ.N9RGCH2Jv05zkDrJgZhz19FmT21NEP8AoxJwb60VHzc
 
+
+###missed punch in/out request by employee
+POST http://127.0.0.1:8000/api/attendance/correction-request/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2OTkyODczLCJpYXQiOjE3ODY5NjQwNzMsImp0aSI6IjY4NjJkNTVkY2ZjNTQ2YTM5Y2JlMzVhNGIyODg2NjlmIiwidXNlcl9pZCI6NywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ._BlG26hR8M8HR_6Xdkw7VrMAHLVTgMChCpnwNMSDd30
+Content-Type: application/json
+
+{
+    "date": "2026-08-17",
+    "request_type": "punch_in",
+    "reason": "I forgot to punch in when I arrived at the office."
+}
+
+
+
+###
+PATCH http://127.0.0.1:8000/api/attendance-correction/1/status/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2OTkyODczLCJpYXQiOjE3ODY5NjQwNzMsImp0aSI6IjY4NjJkNTVkY2ZjNTQ2YTM5Y2JlMzVhNGIyODg2NjlmIiwidXNlcl9pZCI6NywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ._BlG26hR8M8HR_6Xdkw7VrMAHLVTgMChCpnwNMSDd30
+Content-Type: application/json
+
+{
+    "status": "approved"
+}

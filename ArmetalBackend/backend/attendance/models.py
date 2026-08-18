@@ -160,6 +160,72 @@ class AttendanceSession(models.Model):
             return dt_or_time
             
         return None
+    
+from django.conf import settings
+class AttendanceCorrectionRequest(models.Model):
+
+    TYPE_CHOICES = [
+        ("punch_in", "Punch In"),
+        ("punch_out", "Punch Out"),
+    ]
+
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
+    ]
+
+    employee = models.ForeignKey(
+        Employee_db,
+        on_delete=models.CASCADE,
+        related_name="attendance_correction_requests"
+    )
+
+    date = models.DateField()
+
+    request_type = models.CharField(
+        max_length=20,
+        choices=TYPE_CHOICES
+    )
+
+    reason = models.TextField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="pending"
+    )
+
+    admin_reason = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="attendance_correction_reviews"
+    )
+
+    reviewed_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["employee", "date"],
+                name="unique_attendance_correction_employee_date"
+            )
+        ]
+
+        ordering = ["-created_at"]
 # attendance/models.py
 from employee.models import Employee_db
 

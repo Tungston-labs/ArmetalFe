@@ -61,9 +61,22 @@ const EmployeeList = () => {
 
     useEffect(() => {
         dispatch(
-            getAllEmployees({ page, limit: paginationLimit, search: "", department_id: selectedDepartmentId }),
+            getAllEmployees({
+                page,
+                search: debouncedSearch,
+                department_id: selectedDepartmentId,
+                attendance_status: status
+                    ? status.toLowerCase().replace(" ", "_")
+                    : "",
+            })
         );
-    }, [dispatch, page, selectedDepartmentId]);
+    }, [
+        dispatch,
+        page,
+        selectedDepartmentId,
+        status,
+        debouncedSearch,
+    ]);
 
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearch(search), 300);
@@ -88,24 +101,14 @@ const EmployeeList = () => {
         setShowDeleteModal(false);
         setSelectedEmployeeId(null);
     };
-  const columns = useEmployeeColumns({
+    const columns = useEmployeeColumns({
         page,
         paginationLimit,
         navigate,
         onDeleteClick: handleDeleteClick,
     });
     const filteredEmployees = Array.isArray(employeeList)
-        ? employeeList.filter((emp) => {
-            const searchValue = debouncedSearch.toLowerCase().trim();
-
-            return (
-                emp.name?.toLowerCase().includes(searchValue) ||
-                emp.employee_id
-                    ?.toString()
-                    .toLowerCase()
-                    .includes(searchValue)
-            );
-        })
+        ? employeeList
         : [];
 
     return (

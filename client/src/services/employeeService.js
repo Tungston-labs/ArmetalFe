@@ -63,13 +63,21 @@ export const deleteEmployee = async (employeeId) => {
 export const fetchAllEmployees = async (
   page = 1,
   search = "",
-  department_id = ""
+  department_id = "",
+  attendance_status = ""
 ) => {
-  let url = `/employees/?page=${page}&search=${search}`;
+  let url = `/employees/?page=${page}&search=${encodeURIComponent(search)}`;
+
   if (department_id) {
     url += `&department_id=${department_id}`;
   }
+
+  if (attendance_status) {
+    url += `&attendance_status=${attendance_status}`;
+  }
+
   const response = await API.get(url);
+
   return response.data;
 };
 

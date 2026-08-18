@@ -285,7 +285,11 @@ class LeaveRequestAdminListView(generics.ListAPIView):
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['employee__name']
+    search_fields = [
+    'employee__name',
+    'employee__employee_id',
+    'employee__employee_code',
+]
     ordering_fields = ['from_date', 'to_date']
     pagination_class = CustomPagination
 

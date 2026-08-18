@@ -7,7 +7,7 @@ from rest_framework import serializers
 from .models import Attendance, AttendanceSession
 from datetime import time,datetime
 from rest_framework import serializers
-from .models import Attendance, AttendanceSession
+from .models import Attendance, AttendanceSession,AttendanceCorrectionRequest
 from .utils.timezone_utils import get_company_timezone,convert_to_company_timezone,safe_parse_datetime,ensure_timezone
 import pytz
 from django.db.models import Sum
@@ -327,3 +327,101 @@ class EmployeeAttendanceSummarySerializer(serializers.Serializer):
     lop_days = serializers.FloatField()
 
     daily_records = DailyAttendanceSerializer(many=True)
+
+
+
+
+
+class AttendanceCorrectionRequestSerializer(
+    serializers.ModelSerializer
+):
+
+    employee_name = serializers.CharField(
+        source="employee.name",
+        read_only=True
+    )
+
+    employee_id = serializers.CharField(
+        source="employee.employee_id",
+        read_only=True
+    )
+
+    class Meta:
+        model = AttendanceCorrectionRequest
+
+        fields = [
+            "id",
+            "employee",
+            "employee_name",
+            "employee_id",
+            "date",
+            "request_type",
+            "reason",
+            "status",
+            "admin_reason",
+            "reviewed_by",
+            "reviewed_at",
+            "created_at",
+            "updated_at",
+        ]
+
+        read_only_fields = [
+            "employee",
+            "status",
+            "admin_reason",
+            "reviewed_by",
+            "reviewed_at",
+            "created_at",
+            "updated_at",
+        ]
+
+    def validate(self, attrs):
+
+        request = self.context["request"]
+
+        employee = getattr(
+            request.user,
+            "employee_profile",
+            None
+        )
+
+        if not employee:
+            raise serializers.ValidationError({
+                "employee": "Employee profile not found."
+            })
+
+        date = attrs.get("date")
+
+        if AttendanceCorrectionRequest.objects.filter(
+            employee=employee,
+            date=date
+        ).exists():
+
+            raise serializers.ValidationError({
+                "date": (
+                    "You have already submitted an attendance "
+                    "correction request for this date."
+                )
+            })
+
+        return attrs
+    
+
+class MissingPunchStatusSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AttendanceCorrectionRequest
+        fields = [
+            "id",
+            "status",
+            "admin_reason",
+        ]
+
+    def validate_status(self, value):
+
+        if value not in ["approved", "rejected"]:
+            raise serializers.ValidationError(
+                "Status must be either approved or rejected."
+            )
+
+        return value

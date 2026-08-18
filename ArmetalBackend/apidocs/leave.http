@@ -3,8 +3,8 @@
 
 
 ### List All Leaves (HR Admin)
-GET http://127.0.0.1:8000/api/leave/admin/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwODM3MjE4LCJpYXQiOjE3NTA4MzM2MTgsImp0aSI6IjM4ZDVhMWM3NzI2YzRiNzJhMGRkZGQxMWI0MjRhOTc5IiwidXNlcl9pZCI6MywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2V9.xuQAcVUh5AjKZagoSCxsb8bhn47_7f71kyo3OtpyGMw
+GET http://127.0.0.1:8000/api/leave/admin/?search='jesna'
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2OTY4NDE1LCJpYXQiOjE3ODY5Mzk2MTUsImp0aSI6IjVjYjkwMjQ0YmRmZjQwYjM5NDkzYTI2MmQ4NTU3M2NjIiwidXNlcl9pZCI6MiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.TFOFSJCLSjSbdiQd1R7QJ_I-IkAE43a99c2h2JXrOP4
 
 
 
@@ -45,17 +45,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # api for applying leave.
 
 ### Create Leave (Employee)
-POST http://178.248.112.16:8001/api/leave/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMjQ0NjkzLCJpYXQiOjE3NjIyNDEwOTMsImp0aSI6IjU5ZTY3YTM5MjVkNzQzOWU5ZDdjZDFiODllYTdlYThjIiwidXNlcl9pZCI6IjUwMSIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6ZmFsc2V9.c45S9jziHbUtfWAxnmHkjEjIhwBi6uxjxTAFXY42Rkw
+POST http://127.0.0.1:8000/api/leave/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2OTg2NTI2LCJpYXQiOjE3ODY5NTc3MjYsImp0aSI6ImMyYWZmNjEzNjI5NTQzZGFhY2E4NGRlMGI0OTBiOWEwIiwidXNlcl9pZCI6NywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.9g7sJFlL_j4MjYcniriYyYcaDYmY04QFUM1jFuVkyuU
 Content-Type: application/json
 
 {
   "leave_type": "casual",
   "reason": "meeting",
-  "from_date": "2025-12-07",
-  "to_date": "2025-12-08",
+  "from_date": "2026-08-17",
+  "to_date": "2026-08-17",
   "from_date_type": "afternoon",
-  "to_date_type": "full",
+  "to_date_type": "afternoon",
   "to_email": "nisna@gmail.com",
   "cc_email": "nisnatls@gmail.com.com"
 }
@@ -77,5 +77,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ###LEAVE COUNT SUMMARY
 
 GET http://127.0.0.1:8000/api/leave-counts/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2NzE0NzA0LCJpYXQiOjE3ODY2ODU5MDQsImp0aSI6IjU2MzA5MThiZjc2OTQwMjU5ZjgzYTRjYjBiZDg2NWU0IiwidXNlcl9pZCI6MiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.KW7hLvP7uPYCN5JKtyjjNKDK5LRwFvu2mCZPRbGm4Ok
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2OTY4NDE1LCJpYXQiOjE3ODY5Mzk2MTUsImp0aSI6IjVjYjkwMjQ0YmRmZjQwYjM5NDkzYTI2MmQ4NTU3M2NjIiwidXNlcl9pZCI6MiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.TFOFSJCLSjSbdiQd1R7QJ_I-IkAE43a99c2h2JXrOP4
 

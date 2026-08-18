@@ -201,16 +201,15 @@ export const getLeaveColumns = ({
   },
 },
 ];
-
 export const getPayrollCards = ({
-  totalLeave = 0,
-  pendingLeave = 0,
-  approvedLeave = 0,
-  rejectedLeave = 0,
+  total = 0,
+  pending = 0,
+  approved = 0,
+  rejected = 0,
 } = {}) => [
   {
     title: "All Leave Request",
-    count: totalLeave,
+    count: total,
     icon: <FaRegMessage />,
     iconColor: "#157baa",
     backgroundColor: "#e3f5f7",
@@ -218,7 +217,7 @@ export const getPayrollCards = ({
 
   {
     title: "Pending Request",
-    count: pendingLeave,
+    count: pending,
     icon: <MdOutlinePendingActions />,
     iconColor: "#ffa600",
     backgroundColor: "#fdf2e4",
@@ -226,7 +225,7 @@ export const getPayrollCards = ({
 
   {
     title: "Approved Request",
-    count: approvedLeave,
+    count: approved,
     icon: <FaCalendarCheck />,
     iconColor: "#309e48",
     backgroundColor: "#caf7dd",
@@ -234,7 +233,7 @@ export const getPayrollCards = ({
 
   {
     title: "Rejected Request",
-    count: rejectedLeave,
+    count: rejected,
     icon: <MdFreeCancellation />,
     iconColor: "#aa1a15",
     backgroundColor: "#f0d0d0",
