@@ -19,39 +19,39 @@ const HalfDoughnutChart = ({ active, onLeave }) => {
   const total = active + onLeave;
   const navigate = useNavigate();
 
-const screenWidth = window.innerWidth;
+  const screenWidth = window.innerWidth;
 
-let borderWidth;
+  let borderWidth;
 
-if (screenWidth <= 768) {
-  borderWidth = 10;
-} else if (screenWidth <= 1024) {
-  borderWidth = 14;
-} else if (screenWidth <= 1440) {
-  borderWidth = 18;
-} else if (screenWidth <= 1920) {
-  borderWidth = 10;
-} else {
-  borderWidth = 26;
-}
+  if (screenWidth <= 768) {
+    borderWidth = 10;
+  } else if (screenWidth <= 1024) {
+    borderWidth = 14;
+  } else if (screenWidth <= 1440) {
+    borderWidth = 18;
+  } else if (screenWidth <= 1920) {
+    borderWidth = 10;
+  } else {
+    borderWidth = 26;
+  }
 
-const data = {
-  labels: ["Active Employees", "On Leave Today"],
-  datasets: [
-    {
-      data: [active, onLeave],
-      backgroundColor: ["#2f4ded", "#ff6b5f"],
-      borderColor: "#fff",
-      borderWidth: borderWidth,   
-      borderRadius: 10,
-      cutout: "68%",
-      circumference: 180,
-      rotation: -90,
-    },
-  ],
-};
+  const data = {
+    labels: ["Active Employees", "On Leave Today"],
+    datasets: [
+      {
+        data: [active, onLeave],
+        backgroundColor: ["#2f4ded", "#ff6b5f"],
+        borderColor: "#fff",
+        borderWidth: borderWidth,
+        borderRadius: 10,
+      },
+    ],
+  };
 
   const options = {
+    rotation: -90,
+    circumference: 180,
+    cutout: "80%",
     responsive: true,
     maintainAspectRatio: false,
     plugins: {

@@ -6,7 +6,7 @@ const TableWrapper = styled.div`
   background: white;
   padding: 2rem;
   border-radius: 12px;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 `;
 
 const Title = styled.h2`

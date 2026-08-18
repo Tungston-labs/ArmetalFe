@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -114,18 +114,15 @@
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
 <a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L52'></a><a href='#L52'>52</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,9 +133,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,9 +153,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -170,17 +168,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
 import styled, { keyframes } from "styled-components";
 &nbsp;
-const bounce = <span class="cstat-no" title="statement not covered" >keyframes`</span>
+const bounce = keyframes`
   0%, 80%, 100% { transform: scale(0); }
   40% { transform: scale(1); }
 `;
 &nbsp;
-const LoaderWrapper = <span class="cstat-no" title="statement not covered" >styled.div`</span>
+const LoaderWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.8);
   position: fixed;
   top: 0;
   left: 0;
@@ -188,7 +186,7 @@ const LoaderWrapper = <span class="cstat-no" title="statement not covered" >styl
   z-index: 9999;
 `;
 &nbsp;
-const Dot = <span class="cstat-no" title="statement not covered" >styled.div`</span>
+const Dot = styled.div`
   width: 12px;
   height: 12px;
   margin: 0 6px;
@@ -196,7 +194,7 @@ const Dot = <span class="cstat-no" title="statement not covered" >styled.div`</s
   border-radius: 50%;
   display: inline-block;
   animation: ${bounce} 1.4s infinite ease-in-out both;
-  
+&nbsp;
   &amp;:nth-child(1) {
     animation-delay: -0.32s;
   }
@@ -208,13 +206,12 @@ const Dot = <span class="cstat-no" title="statement not covered" >styled.div`</s
   }
 `;
 &nbsp;
-const SyncLoader = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; (</span></span>
-<span class="cstat-no" title="statement not covered" >  &lt;LoaderWrapper&gt;</span>
+const SyncLoader = () =&gt; (
+  &lt;LoaderWrapper&gt;
     &lt;Dot /&gt;
     &lt;Dot /&gt;
     &lt;Dot /&gt;
-   &lt;Dot /&gt;
-&nbsp;
+    &lt;Dot /&gt;
   &lt;/LoaderWrapper&gt;
 );
 &nbsp;
@@ -226,7 +223,7 @@ export default SyncLoader;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-12T05:36:37.437Z
+                at 2026-08-18T03:33:59.933Z
             </div>
         <script src="../prettify.js"></script>
         <script>

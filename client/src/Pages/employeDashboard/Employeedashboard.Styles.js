@@ -1,4 +1,3 @@
-// Employeedashboard.Styles.js
 import styled from "styled-components";
 
 export const MainWrapper = styled.div`
@@ -332,7 +331,6 @@ export const Avatar = styled.img`
 width: 3.5rem;
   height: 3.5rem;    }
 `;
-
 
 export const MemberName = styled.div`
   font-size: 14px;

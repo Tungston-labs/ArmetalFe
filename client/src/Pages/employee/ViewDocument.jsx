@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container, SectionTitle, Section, UploadSection, InlineUploadRow,
-  LabelRow, UploadButton, ImagePreviewRow, ImageBox, Hr
+  Container,
+  SectionTitle,
+  Section,
+  UploadSection,
+  InlineUploadRow,
+  LabelRow,
+  UploadButton,
+  ImagePreviewRow,
+  ImageBox,
+  Hr,
 } from "./ViewDocument.Styles";
 
 import { uploadImageThunk } from "../../Redux/employeeSlice";
@@ -10,14 +18,14 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getEmployeeDocumentsThunk,
-  updateEmployeeDocumentsThunk
+  updateEmployeeDocumentsThunk,
 } from "../../Redux/employeeSlice";
 
 import SyncLoader from "react-spinners/SyncLoader";
 import Swal from "sweetalert2";
 import styled from "styled-components";
 
-import ViewBasicLayout from "../employee/layout/ViewLayout"; 
+import ViewBasicLayout from "../employee/layout/ViewLayout";
 
 const FullPageLoaderWrapper = styled.div`
   display: flex;
@@ -36,7 +44,7 @@ const ViewDocument = () => {
   const dispatch = useDispatch();
 
   const { employeeDetail, employeeDocuments, loading } = useSelector(
-    (state) => state.employees
+    (state) => state.employees,
   );
 
   const [refreshKey, setRefreshKey] = useState(Date.now());
@@ -62,9 +70,9 @@ const ViewDocument = () => {
       <LabelRow>{label}</LabelRow>
 
       <InlineUploadRow>
-        {inputKeys.map((key,) => (
+        {inputKeys.map((key) => (
           <UploadButton as="label" key={key}>
-            <LuCirclePlus /> Choose Image 
+            <LuCirclePlus /> Choose Image
             <input
               type="file"
               accept="image/*"
@@ -92,7 +100,7 @@ const ViewDocument = () => {
                   />
                 </ImageBox>
               )
-            )
+            ),
           )}
         </ImagePreviewRow>
       </InlineUploadRow>
@@ -104,24 +112,32 @@ const ViewDocument = () => {
 
     try {
       if (formData.passport_image1_url?.[0] instanceof File) {
-        const res = await dispatch(uploadImageThunk(formData.passport_image1_url[0])).unwrap();
+        const res = await dispatch(
+          uploadImageThunk(formData.passport_image1_url[0]),
+        ).unwrap();
         form.append("passport_image1_url", res);
       }
 
       if (formData.passport_image2_url?.[0] instanceof File) {
-        const res = await dispatch(uploadImageThunk(formData.passport_image2_url[0])).unwrap();
+        const res = await dispatch(
+          uploadImageThunk(formData.passport_image2_url[0]),
+        ).unwrap();
         form.append("passport_image2_url", res);
       }
 
       if (formData.insurance_image_url?.[0] instanceof File) {
-        const res = await dispatch(uploadImageThunk(formData.insurance_image_url[0])).unwrap();
+        const res = await dispatch(
+          uploadImageThunk(formData.insurance_image_url[0]),
+        ).unwrap();
         form.append("insurance_image_url", res);
       }
 
       const handleArrayUpload = async (key) => {
         if (Array.isArray(formData[key])) {
           const urls = await Promise.all(
-            formData[key].map((file) => dispatch(uploadImageThunk(file)).unwrap())
+            formData[key].map((file) =>
+              dispatch(uploadImageThunk(file)).unwrap(),
+            ),
           );
           form.append(key, JSON.stringify(urls));
         }
@@ -167,24 +183,43 @@ const ViewDocument = () => {
       formData={employeeDetail}
       handleChange={() => {}}
       handleImageChange={() => {}}
-    >  
+    >
       <Hr />
 
       <SectionTitle>Documents</SectionTitle>
 
-      {renderImageList("Passport", [
-        employeeDocuments?.passport_image1_url,
-        employeeDocuments?.passport_image2_url,
-      ].filter(Boolean), ["passport_image1_url", "passport_image2_url"])}
+      {renderImageList(
+        "Passport",
+        [
+          employeeDocuments?.passport_image1_url,
+          employeeDocuments?.passport_image2_url,
+        ].filter(Boolean),
+        ["passport_image1_url", "passport_image2_url"],
+      )}
 
-      {renderImageList("Work Permit", employeeDocuments?.work_permit_urls || [], ["work_permit_urls"])}
+      {renderImageList(
+        "Work Permit",
+        employeeDocuments?.work_permit_urls || [],
+        ["work_permit_urls"],
+      )}
 
-      {renderImageList("Employment Contract", employeeDocuments?.contract_urls || [], ["contract_urls"])}
+      {renderImageList(
+        "Employment Contract",
+        employeeDocuments?.contract_urls || [],
+        ["contract_urls"],
+      )}
 
-      {renderImageList("Insurance", [employeeDocuments?.insurance_image_url].filter(Boolean), ["insurance_image_url"])}
+      {renderImageList(
+        "Insurance",
+        [employeeDocuments?.insurance_image_url].filter(Boolean),
+        ["insurance_image_url"],
+      )}
 
-      {renderImageList("Certificate", employeeDocuments?.certificate_urls || [], ["certificate_urls"])}
-
+      {renderImageList(
+        "Certificate",
+        employeeDocuments?.certificate_urls || [],
+        ["certificate_urls"],
+      )}
     </ViewBasicLayout>
   );
 };

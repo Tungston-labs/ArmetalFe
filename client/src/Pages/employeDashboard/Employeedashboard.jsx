@@ -104,17 +104,11 @@ const TimeLogDashboard = () => {
   };
   const formatUTCToLocal = (utcTimeStr) => {
     if (!utcTimeStr) return "--";
-
-    // Get today's date in UTC (YYYY-MM-DD)
     const nowUTC = new Date();
     const utcYear = nowUTC.getUTCFullYear();
     const utcMonth = String(nowUTC.getUTCMonth() + 1).padStart(2, "0");
     const utcDay = String(nowUTC.getUTCDate()).padStart(2, "0");
-
-    // Build full UTC datetime string
     const utcDateTimeStr = `${utcYear}-${utcMonth}-${utcDay}T${utcTimeStr}Z`;
-
-    // Parse and convert to local time
     return new Date(utcDateTimeStr).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -149,7 +143,6 @@ const TimeLogDashboard = () => {
                 <BiSolidRightTopArrowCircle style={{ color: "#2f49d1" }} />
               </ArrowIcon>
             </DepartmentTitleRow>
-
             <hr></hr>
             <SubLabel>Department head</SubLabel>
             <DepartmentHead>
@@ -167,7 +160,6 @@ const TimeLogDashboard = () => {
                   }
                   alt={member.name}
                 />
-
                 <MemberName>{member.name}</MemberName>
               </Member>
             ))}
@@ -177,5 +169,4 @@ const TimeLogDashboard = () => {
     </Container>
   );
 };
-
 export default TimeLogDashboard;

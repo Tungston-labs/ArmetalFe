@@ -1,6 +1,5 @@
 import styled, { keyframes } from 'styled-components';
 
-// --- Animation Keyframe ---
 const growAnimation = keyframes`
   from {
     height: 0%;
@@ -10,7 +9,6 @@ const growAnimation = keyframes`
   }
 `;
 
-// --- Color Palette & Sizing Variables ---
 const $primaryPurple = '#172554';
 const $lightPurple = '#3352BA';
 const $orangeAccent = '#fd7e14';
@@ -21,7 +19,6 @@ const $borderColor = '#e9ecef';
 const $borderRadius = '20px';
 const $cardPadding = '25px';
 
-// MAIN CARD
 export const TasksProgressCard = styled.div`
   background: ${$backgroundColor};
   border-radius: ${$borderRadius};
@@ -32,13 +29,11 @@ export const TasksProgressCard = styled.div`
   gap: 20px;
   width: 100%;
 cursor: pointer;
-  /* 2K screens */
   @media (min-width: 2540px) {
     padding: 40px;
     gap: 30px;
   }
 
-  /* 4K screens (3840px+) */
   @media (min-width: 3840px) {
     padding: 55px;
     gap: 40px;
@@ -51,7 +46,6 @@ export const CardHeader = styled.div`
   align-items: center;
 `;
 
-// CARD TITLE
 export const CardTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 700;
@@ -158,7 +152,6 @@ export const HourLabel = styled.div`
   color: #333;
 `;
 
-// BAR HEIGHT INCREASE FOR BIG SCREEN
 export const BarWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -213,7 +206,6 @@ export const XAxisLabel = styled.div`
   }
 `;
 
-// SUMMARY SECTION
 export const SummarySection = styled.div`
   flex: 0.7;
   display: flex;

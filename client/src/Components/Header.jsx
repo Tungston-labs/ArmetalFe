@@ -23,25 +23,22 @@ import {
 const Header = ({
   employee = {},
   editable = false,
-  onChange,
+  onChange = () => {},
   onImageChange,
   onBack,
 }) => {
   const fileInputRef = useRef(null);
-
   const handleImageClick = () => {
     if (editable && fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && onImageChange) {
       onImageChange(file);
     }
   };
-
   const formatDate = (date) => {
     if (!date) return "-";
 
@@ -56,7 +53,7 @@ const Header = ({
     <ProfileContainer>
       <ProfileCard>
         {onBack && (
-          <BackArrowWrapper onClick={onBack}>
+          <BackArrowWrapper onClick={onBack} data-testid="back-button">
             <GoArrowLeft size={24} color="#1034ad" />
           </BackArrowWrapper>
         )}
@@ -70,26 +67,32 @@ const Header = ({
               }
               alt="Employee Profile"
               onClick={handleImageClick}
-              editable={editable}
+              $editable={editable}
             />
           ) : (
-            <UserIconWrapper onClick={handleImageClick} editable={editable}>
+            <UserIconWrapper
+              onClick={handleImageClick}
+              $editable={editable}
+              data-testid="user-icon"
+            >
               <PiUserCirclePlusThin size={120} color="#ccc" />
             </UserIconWrapper>
           )}
-
           {editable && (
-            <PlusIconWrapper onClick={handleImageClick}>
+            <PlusIconWrapper
+              onClick={handleImageClick}
+              data-testid="plus-button"
+            >
               <FiPlus size={24} color="#fff" />
             </PlusIconWrapper>
           )}
-
           <input
             type="file"
             accept="image/*"
             ref={fileInputRef}
             onChange={handleFileChange}
             style={{ display: "none" }}
+            data-testid="file-input"
           />
         </ProfileImageWrapper>
         <ContentArea>
@@ -126,7 +129,6 @@ const Header = ({
               />
             </OutlinedField>
           </LeftColumn>
-
           <RightColumn>
             <OutlinedField>
               <OutlinedLabel>Address</OutlinedLabel>

@@ -26,7 +26,6 @@ export const ModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  /* ⭐ When modal opens → play animation */
   ${({ isOpen }) =>
     isOpen &&
     `
@@ -58,12 +57,10 @@ export const HeaderBar = styled.div`
   background: #ffffff;
   border-bottom: 1px solid #e2e2e2;
 
-  /* Small screens / Mobile */
   @media (max-width: 480px) {
     padding: 12px 14px;
   }
 
-  /* Ultra large screens (2K/4K) */
   @media (min-width: 2540px) {
     padding: 25px 40px;
   }
@@ -81,12 +78,10 @@ export const BackButton = styled.button`
     color: #0070f3;
   }
 
-  /* Small screens */
   @media (max-width: 480px) {
     font-size: 14px;
   }
 
-  /* Ultra large screens */
   @media (min-width: 2540px) {
     font-size: 22px;
   }
@@ -107,14 +102,12 @@ export const EditButton = styled.button`
     background: #1f3a8b;
   }
 
-  /* Mobile */
   @media (max-width: 480px) {
     font-size: 13px;
     padding: 6px 12px;
     border-radius: 5px;
   }
 
-  /* Ultra large screens */
   @media (min-width: 2540px) {
     font-size: 18px;
     padding: 12px 22px;

@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  NotiWrapper,
-  NotiBox,
-  Title,
-  Sub,
-} from "./ProgressModal.Styles";
+import { NotiWrapper, NotiBox, Title, Sub } from "./ProgressModal.Styles";
 
 const steps = [
   {
@@ -12,7 +7,7 @@ const steps = [
     title: "On-Hold",
     sub: "Project is waiting for approval",
     color: "#f4c542",
-    bg: "rgba(244, 197, 66, 0.15)", 
+    bg: "rgba(244, 197, 66, 0.15)",
   },
   {
     key: "in_progress",
@@ -32,7 +27,6 @@ const steps = [
 
 const ProgressModal = ({ isOpen, status }) => {
   if (!isOpen || !status) return null;
-
 
   const step = steps.find((s) => s.key === status) || steps[0];
 

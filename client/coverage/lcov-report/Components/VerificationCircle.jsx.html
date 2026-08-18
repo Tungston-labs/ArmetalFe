@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -184,7 +184,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -203,7 +203,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -211,7 +211,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -264,16 +264,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -283,7 +283,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -300,7 +300,7 @@ import React from "react";
 import styled from "styled-components";
 import { FaCheck } from "react-icons/fa";
 &nbsp;
-const CircleContainer = <span class="cstat-no" title="statement not covered" >styled.div`</span>
+const CircleContainer = styled.div`
   display: flex;
   gap: 8px;
 &nbsp;
@@ -319,7 +319,7 @@ const CircleContainer = <span class="cstat-no" title="statement not covered" >st
   }
 `;
 &nbsp;
-const Circle = <span class="cstat-no" title="statement not covered" >styled.div`</span>
+const Circle = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -327,7 +327,7 @@ const Circle = <span class="cstat-no" title="statement not covered" >styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: ${<span class="fstat-no" title="function not covered" >({</span> disabled }) =&gt; (<span class="cstat-no" title="statement not covered" >disabled ? "not-allowed" : "pointer")}</span>;
+  cursor: ${({ disabled }) =&gt; (disabled ? "not-allowed" : "pointer")};
 &nbsp;
   @media (max-width: 768px) {
     width: 18px;
@@ -380,16 +380,16 @@ const Circle = <span class="cstat-no" title="statement not covered" >styled.div`
   }
 `;
 &nbsp;
-const VerificationCircles = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span></span>
+const VerificationCircles = ({
   emp,
   verificationStatus,
   handleCircleClick,
 }) =&gt; (
-<span class="cstat-no" title="statement not covered" >  &lt;CircleContainer&gt;</span>
+  &lt;CircleContainer&gt;
     &lt;Circle
       disabled={verificationStatus[emp.id]?.first}
-      onClick={<span class="fstat-no" title="function not covered" >(e</span>) =&gt;
-<span class="cstat-no" title="statement not covered" >        !verificationStatus[emp.id]?.first &amp;&amp; handleCircleClick(e, emp, "first")</span>
+      onClick={(e) =&gt;
+        !verificationStatus[emp.id]?.first &amp;&amp; handleCircleClick(e, emp, "first")
       }
     &gt;
       {verificationStatus[emp.id]?.first &amp;&amp; (
@@ -398,8 +398,8 @@ const VerificationCircles = <span class="cstat-no" title="statement not covered"
     &lt;/Circle&gt;
     &lt;Circle
       disabled={verificationStatus[emp.id]?.second}
-      onClick={<span class="fstat-no" title="function not covered" >(e</span>) =&gt;
-<span class="cstat-no" title="statement not covered" >        !verificationStatus[emp.id]?.second &amp;&amp;</span>
+      onClick={(e) =&gt;
+        !verificationStatus[emp.id]?.second &amp;&amp;
         handleCircleClick(e, emp, "second")
       }
     &gt;
@@ -418,7 +418,7 @@ export default VerificationCircles;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-12T05:36:37.020Z
+                at 2026-08-18T03:33:59.098Z
             </div>
         <script src="../prettify.js"></script>
         <script>

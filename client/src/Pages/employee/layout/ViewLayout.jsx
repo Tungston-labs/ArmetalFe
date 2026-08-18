@@ -19,7 +19,7 @@ const ViewBasicLayout = ({
   handleSubmit,
   children,
   formData,
-  handleChange,
+  handleChange, 
   handleImageChange,
   isIndianCompany, 
 }) => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   ModalOverlay,
   ModalBox,
@@ -6,8 +6,8 @@ import {
   Title,
   Message,
   ButtonGroup,
-  ModalButton
-} from './Succes.Stles';
+  ModalButton,
+} from "./Succes.Stles";
 
 const SuccessModal = ({ onClose, onAddAnother, navigate }) => {
   return (
@@ -22,7 +22,7 @@ const SuccessModal = ({ onClose, onAddAnother, navigate }) => {
             variant="dark"
             onClick={() => {
               onClose();
-              navigate('/employee'); 
+              navigate("/employee");
             }}
           >
             Close
@@ -31,7 +31,7 @@ const SuccessModal = ({ onClose, onAddAnother, navigate }) => {
             variant="light"
             onClick={() => {
               onAddAnother();
-              navigate('/employee'); 
+              navigate("/employee");
             }}
           >
             Add another

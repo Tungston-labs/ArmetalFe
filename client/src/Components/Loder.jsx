@@ -11,7 +11,7 @@ const LoaderWrapper = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.8);
   position: fixed;
   top: 0;
   left: 0;
@@ -27,7 +27,7 @@ const Dot = styled.div`
   border-radius: 50%;
   display: inline-block;
   animation: ${bounce} 1.4s infinite ease-in-out both;
-  
+
   &:nth-child(1) {
     animation-delay: -0.32s;
   }
@@ -44,8 +44,7 @@ const SyncLoader = () => (
     <Dot />
     <Dot />
     <Dot />
-   <Dot />
-
+    <Dot />
   </LoaderWrapper>
 );
 

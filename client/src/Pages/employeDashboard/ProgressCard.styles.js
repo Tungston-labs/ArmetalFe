@@ -1,6 +1,5 @@
 import styled, { keyframes } from "styled-components";
 
-/* Bar grow animation */
 const growAnimation = keyframes`
   from {
     height: 0;

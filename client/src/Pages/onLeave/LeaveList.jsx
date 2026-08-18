@@ -26,7 +26,7 @@ const LeaveList = () => {
   const [searchText, setSearchText] = useState("");
 
   const { list: departmentList, loading } = useSelector(
-    (state) => state.departments
+    (state) => state.departments,
   );
   const { onLeaveEmployees } = useSelector((state) => state.leave);
 
@@ -45,7 +45,7 @@ const LeaveList = () => {
 
   // 🔍 Filter departments by search input
   const filteredDepartments = departmentList?.filter((dept) =>
-    dept.name?.toLowerCase().includes(searchText.toLowerCase())
+    dept.name?.toLowerCase().includes(searchText.toLowerCase()),
   );
 
   return (
@@ -54,7 +54,7 @@ const LeaveList = () => {
         iconSrc={EmployeeIcon}
         showAddButton={false}
         showDropdown={false}
-        onSearchChange={setSearchText} 
+        onSearchChange={setSearchText}
         showBackArrow={false}
       />
 
@@ -95,8 +95,12 @@ const LeaveList = () => {
                               }}
                             >
                               <EmployeeCell>{emp.name || "-"}</EmployeeCell>
-                              <EmployeeCell>{emp.employee_id || "-"}</EmployeeCell>
-                              <EmployeeCell>{emp.designation || "-"}</EmployeeCell>
+                              <EmployeeCell>
+                                {emp.employee_id || "-"}
+                              </EmployeeCell>
+                              <EmployeeCell>
+                                {emp.designation || "-"}
+                              </EmployeeCell>
                               <EmployeeCell>{emp.email || "-"}</EmployeeCell>
                             </EmployeeRow>
                           ))

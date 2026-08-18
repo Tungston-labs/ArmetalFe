@@ -22,11 +22,11 @@ const EmailCompose = ({ company, onClose }) => {
   });
 
   useEffect(() => {
-  if (company) {
-    setEmailData({
-      to: company.email || "",
-      subject: "Your Rekory HR Subscription is Expiring Soon",
-      message: `Dear ${company.name},
+    if (company) {
+      setEmailData({
+        to: company.email || "",
+        subject: "Your Rekory HR Subscription is Expiring Soon",
+        message: `Dear ${company.name},
 
 This is a friendly reminder that your Rekory HR subscription is approaching its expiration date.
 
@@ -43,9 +43,9 @@ If you have already completed your renewal, please disregard this email.
 Should you require any assistance with the renewal process, please feel free to contact our support team.
 
 Thank you for choosing Rekory HR.`,
-    });
-  }
-}, [company]);
+      });
+    }
+  }, [company]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -117,9 +117,7 @@ Thank you for choosing Rekory HR.`,
         />
 
         <Footer>
-          <SendButton onClick={handleSend}>
-            Send
-          </SendButton>
+          <SendButton onClick={handleSend}>Send</SendButton>
         </Footer>
       </Modal>
     </Overlay>

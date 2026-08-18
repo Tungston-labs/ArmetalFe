@@ -9,7 +9,7 @@ import {
   BarContainer,
   Bar,
   Day,
-  Tooltip
+  Tooltip,
 } from "./ProgressCard.styles";
 
 const ProgressCard = ({ attendanceGraph }) => {
@@ -43,8 +43,7 @@ const ProgressCard = ({ attendanceGraph }) => {
               onMouseLeave={() => setHoverIndex(null)}
             >
               {hoverIndex === i && <Tooltip>{hoursData[i]}h</Tooltip>}
-              <Bar height={height} 
-              highlight={i === 5} />
+              <Bar height={height} highlight={i === 5} />
               <Day>{day.slice(0, 3)}</Day>
             </BarContainer>
           );

@@ -45,8 +45,8 @@ import { ClipLoader } from "react-spinners";
 import EmployeeTitle from "../../Components/EmployeeTitle.jsx";
 import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
 import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
-import { fetchDepartmentById } from "../../services/departmentServices"; 
-import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
+import { fetchDepartmentById } from "../../services/departmentServices";
+import { FaAnglesRight, FaAnglesLeft } from "react-icons/fa6";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
 import AddDepartment from "./AddDepartment.jsx";
 const DepartmentList = () => {
@@ -64,18 +64,17 @@ const DepartmentList = () => {
   );
   const [search, setSearch] = useState("");
   const [selectedDept, setSelectedDept] = useState(null);
-  const [deptEmployees, setDeptEmployees] = useState({}); 
+  const [deptEmployees, setDeptEmployees] = useState({});
   const [loadingDept, setLoadingDept] = useState(false);
   const [savingDept, setSavingDept] = useState(false);
-  const [pageByDept, setPageByDept] = useState({}); 
+  const [pageByDept, setPageByDept] = useState({});
   const pageSize = 10;
   const [deptDetails, setDeptDetails] = useState({});
-  const [formDatas, setFormDatas] = useState({}); 
+  const [formDatas, setFormDatas] = useState({});
   const [editingDeptId, setEditingDeptId] = useState(null);
 
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" })).then((res) => {
-    });
+    dispatch(getDepartments({ page: 1, search: "" })).then((res) => {});
   }, [dispatch]);
 
   const filteredDepartments = useMemo(() => {
@@ -141,51 +140,51 @@ const DepartmentList = () => {
       setLoadingDept(false);
     }
   };
-const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: `Employee "${employeeName}" will be permanently deleted.`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete!",
-  }).then(async (result) => {
-    if (!result.isConfirmed) return;
-    try {
-      await dispatch(deleteEmployeeById(employeeId)).unwrap();
-
-      // ✅ Try to fetch updated employees, handle 404 if last employee deleted
+  const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Employee "${employeeName}" will be permanently deleted.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete!",
+    }).then(async (result) => {
+      if (!result.isConfirmed) return;
       try {
-        const updated = await dispatch(
-          getEmployeesByDepartment(deptId),
-        ).unwrap();
-        setDeptEmployees((prev) => ({ ...prev, [deptId]: updated || [] }));
+        await dispatch(deleteEmployeeById(employeeId)).unwrap();
 
-        Swal.fire(
-          "Deleted!",
-          `Employee "${employeeName}" has been deleted.`,
-          "success",
-        );
-      } catch (fetchErr) {
-        // ✅ Last employee deleted — department now empty, close and refresh
-        setDeptEmployees((prev) => ({ ...prev, [deptId]: [] }));
-        setSelectedDept(null); // close the card
+        // ✅ Try to fetch updated employees, handle 404 if last employee deleted
+        try {
+          const updated = await dispatch(
+            getEmployeesByDepartment(deptId),
+          ).unwrap();
+          setDeptEmployees((prev) => ({ ...prev, [deptId]: updated || [] }));
 
-        // ✅ Refresh department list to remove empty department from UI
-        dispatch(getDepartments({ page: 1, search: "" }));
+          Swal.fire(
+            "Deleted!",
+            `Employee "${employeeName}" has been deleted.`,
+            "success",
+          );
+        } catch (fetchErr) {
+          // ✅ Last employee deleted — department now empty, close and refresh
+          setDeptEmployees((prev) => ({ ...prev, [deptId]: [] }));
+          setSelectedDept(null); // close the card
 
-        Swal.fire(
-          "Deleted!",
-          `Employee "${employeeName}" has been deleted. The department has been removed as it has no employees.`,
-          "success",
-        );
+          // ✅ Refresh department list to remove empty department from UI
+          dispatch(getDepartments({ page: 1, search: "" }));
+
+          Swal.fire(
+            "Deleted!",
+            `Employee "${employeeName}" has been deleted. The department has been removed as it has no employees.`,
+            "success",
+          );
+        }
+      } catch (err) {
+        Swal.fire("Error", "Failed to delete employee.", "error");
       }
-    } catch (err) {
-      Swal.fire("Error", "Failed to delete employee.", "error");
-    }
-  });
-};
+    });
+  };
 
   const handleFormChange = (deptId, e) => {
     const { name, value } = e.target;
@@ -255,7 +254,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
     const { name, value } = e.target;
     setNewDeptForm((prev) => ({
       ...prev,
-      [name]: value.toUpperCase(), 
+      [name]: value.toUpperCase(),
     }));
   };
 
@@ -435,7 +434,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
                                   <Input
                                     name="name"
                                     value={form.name ?? ""}
-                                    autoComplete='off'
+                                    autoComplete="off"
                                     onChange={(e) =>
                                       handleFormChange(dept.id, e)
                                     }
@@ -445,7 +444,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
                                         editingDeptId === dept.id
                                           ? "text"
                                           : "default",
-                                             textTransform: "capitalize",
+                                      textTransform: "capitalize",
                                     }}
                                   />
                                 </InputGroup>
@@ -455,7 +454,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
                                   <Input
                                     name="department_code"
                                     value={form.department_code ?? ""}
-                                    autoComplete='off'
+                                    autoComplete="off"
                                     onChange={(e) =>
                                       handleFormChange(dept.id, e)
                                     }
@@ -614,7 +613,6 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
                           )}
                         </DropdownWrapper>
 
-                  
                         {sortedEmployees.length > pageSize && (
                           <PaginationWrapper
                             onClick={(e) => e.stopPropagation()}
@@ -629,7 +627,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
                                 }));
                               }}
                             >
-                         <FaAnglesLeft/>
+                              <FaAnglesLeft />
                             </PageButton>
 
                             <PageInfo>
@@ -649,7 +647,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
                                 }));
                               }}
                             >
-                          <FaAnglesRight/>
+                              <FaAnglesRight />
                             </PageButton>
                           </PaginationWrapper>
                         )}
@@ -659,20 +657,25 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
                 );
               })
             ) : (
-           <div style={{ 
-    width: "100%", 
-    display: "flex", 
-    justifyContent: "center" 
-  }}>
-    <NoEmployeeFound searchTerm={search} label="No Department Found" />
-  </div>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <NoEmployeeFound
+                  searchTerm={search}
+                  label="No Department Found"
+                />
+              </div>
             )}
           </DepartmentGrid>
         )}
 
-     {showAddModal && (
-  <AddDepartment onClose={() => setShowAddModal(false)} />
-)}
+        {showAddModal && (
+          <AddDepartment onClose={() => setShowAddModal(false)} />
+        )}
       </PageContainer>
     </>
   );

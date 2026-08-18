@@ -744,7 +744,10 @@
 <a name='L679'></a><a href='#L679'>679</a>
 <a name='L680'></a><a href='#L680'>680</a>
 <a name='L681'></a><a href='#L681'>681</a>
-<a name='L682'></a><a href='#L682'>682</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L682'></a><a href='#L682'>682</a>
+<a name='L683'></a><a href='#L683'>683</a>
+<a name='L684'></a><a href='#L684'>684</a>
+<a name='L685'></a><a href='#L685'>685</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -821,7 +824,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">49x</span>
@@ -1362,7 +1364,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1387,6 +1388,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1472,8 +1478,8 @@ import { ClipLoader } from "react-spinners";
 import EmployeeTitle from "../../Components/EmployeeTitle.jsx";
 import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
 import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
-import { fetchDepartmentById } from "../../services/departmentServices"; 
-import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
+import { fetchDepartmentById } from "../../services/departmentServices";
+import { FaAnglesRight, FaAnglesLeft } from "react-icons/fa6";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
 import AddDepartment from "./AddDepartment.jsx";
 const DepartmentList = () =&gt; {
@@ -1491,18 +1497,17 @@ const DepartmentList = () =&gt; {
   );
   const [search, setSearch] = useState("");
   const [selectedDept, setSelectedDept] = useState(null);
-  const [deptEmployees, setDeptEmployees] = useState({}); 
+  const [deptEmployees, setDeptEmployees] = useState({});
   const [loadingDept, setLoadingDept] = useState(false);
   const [savingDept, setSavingDept] = useState(false);
-  const [pageByDept, setPageByDept] = useState({}); 
+  const [pageByDept, setPageByDept] = useState({});
   const pageSize = 10;
   const [deptDetails, setDeptDetails] = useState({});
-  const [formDatas, setFormDatas] = useState({}); 
+  const [formDatas, setFormDatas] = useState({});
   const [editingDeptId, setEditingDeptId] = useState(null);
 &nbsp;
   useEffect(() =&gt; {
-    dispatch(getDepartments({ page: 1, search: "" })).then((res) =&gt; {
-    });
+    dispatch(getDepartments({ page: 1, search: "" })).then((res) =&gt; {});
   }, [dispatch]);
 &nbsp;
   const filteredDepartments = useMemo(() =&gt; {
@@ -1568,51 +1573,51 @@ const DepartmentList = () =&gt; {
       setLoadingDept(false);
     }
   };
-const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
-  Swal.fire({
-    title: "Are you sure?",
-    text: `Employee "${employeeName}" will be permanently deleted.`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete!",
-  }).then(async (result) =&gt; {
-    if (!result.isConfirmed) return;
-    try {
-      await dispatch(deleteEmployeeById(employeeId)).unwrap();
-&nbsp;
-      // ✅ Try to fetch updated employees, handle 404 if last employee deleted
+  const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Employee "${employeeName}" will be permanently deleted.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete!",
+    }).then(async (result) =&gt; {
+      if (!result.isConfirmed) return;
       try {
-        const updated = await dispatch(
-          getEmployeesByDepartment(deptId),
-        ).unwrap();
-        setDeptEmployees((prev) =&gt; ({ ...prev, [deptId]: updated || <span class="branch-1 cbranch-no" title="branch not covered" >[] }</span>));
+        await dispatch(deleteEmployeeById(employeeId)).unwrap();
 &nbsp;
-        Swal.fire(
-          "Deleted!",
-          `Employee "${employeeName}" has been deleted.`,
-          "success",
-        );
-      } catch (fetchErr) {
-        // ✅ Last employee deleted — department now empty, close and refresh
-        setDeptEmployees((prev) =&gt; ({ ...prev, [deptId]: [] }));
-        setSelectedDept(null); // close the card
+        // ✅ Try to fetch updated employees, handle 404 if last employee deleted
+        try {
+          const updated = await dispatch(
+            getEmployeesByDepartment(deptId),
+          ).unwrap();
+          setDeptEmployees((prev) =&gt; ({ ...prev, [deptId]: updated || <span class="branch-1 cbranch-no" title="branch not covered" >[] }</span>));
 &nbsp;
-        // ✅ Refresh department list to remove empty department from UI
-        dispatch(getDepartments({ page: 1, search: "" }));
+          Swal.fire(
+            "Deleted!",
+            `Employee "${employeeName}" has been deleted.`,
+            "success",
+          );
+        } catch (fetchErr) {
+          // ✅ Last employee deleted — department now empty, close and refresh
+          setDeptEmployees((prev) =&gt; ({ ...prev, [deptId]: [] }));
+          setSelectedDept(null); // close the card
 &nbsp;
-        Swal.fire(
-          "Deleted!",
-          `Employee "${employeeName}" has been deleted. The department has been removed as it has no employees.`,
-          "success",
-        );
+          // ✅ Refresh department list to remove empty department from UI
+          dispatch(getDepartments({ page: 1, search: "" }));
+&nbsp;
+          Swal.fire(
+            "Deleted!",
+            `Employee "${employeeName}" has been deleted. The department has been removed as it has no employees.`,
+            "success",
+          );
+        }
+      } catch (err) {
+<span class="cstat-no" title="statement not covered" >        Swal.fire("Error", "Failed to delete employee.", "error");</span>
       }
-    } catch (err) {
-<span class="cstat-no" title="statement not covered" >      Swal.fire("Error", "Failed to delete employee.", "error");</span>
-    }
-  });
-};
+    });
+  };
 &nbsp;
   const handleFormChange = (deptId, e) =&gt; {
     const { name, value } = e.target;
@@ -1682,7 +1687,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
     const { name, value } = <span class="cstat-no" title="statement not covered" >e.target;</span>
 <span class="cstat-no" title="statement not covered" >    setNewDeptForm(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
       ...prev,
-      [name]: value.toUpperCase(), 
+      [name]: value.toUpperCase(),
     }));
   };
 &nbsp;
@@ -1862,7 +1867,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
                                   &lt;Input
                                     name="name"
                                     value={form.name ?? ""}
-                                    autoComplete='off'
+                                    autoComplete="off"
                                     onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt;
 <span class="cstat-no" title="statement not covered" >                                      handleFormChange(dept.id, e)</span>
                                     }
@@ -1872,7 +1877,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
                                         editingDeptId === dept.id
                                           ? "text"
                                           : "default",
-                                             textTransform: "capitalize",
+                                      textTransform: "capitalize",
                                     }}
                                   /&gt;
                                 &lt;/InputGroup&gt;
@@ -1882,7 +1887,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
                                   &lt;Input
                                     name="department_code"
                                     value={form.department_code ?? ""}
-                                    autoComplete='off'
+                                    autoComplete="off"
                                     onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt;
 <span class="cstat-no" title="statement not covered" >                                      handleFormChange(dept.id, e)</span>
                                     }
@@ -2041,7 +2046,6 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
                           )}
                         &lt;/DropdownWrapper&gt;
 &nbsp;
-                  
                         {sortedEmployees.length &gt; pageSize &amp;&amp; (
                           &lt;PaginationWrapper
                             onClick={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >e.stopPropagation()}</span>
@@ -2056,7 +2060,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
                                 }));
                               }}
                             &gt;
-                         &lt;FaAnglesLeft/&gt;
+                              &lt;FaAnglesLeft /&gt;
                             &lt;/PageButton&gt;
 &nbsp;
                             &lt;PageInfo&gt;
@@ -2076,7 +2080,7 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
                                 }));
                               }}
                             &gt;
-                          &lt;FaAnglesRight/&gt;
+                              &lt;FaAnglesRight /&gt;
                             &lt;/PageButton&gt;
                           &lt;/PaginationWrapper&gt;
                         )}
@@ -2086,20 +2090,25 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) =&gt; {
                 );
               })
             ) : (
-           &lt;div style={{ 
-    width: "100%", 
-    display: "flex", 
-    justifyContent: "center" 
-  }}&gt;
-    &lt;NoEmployeeFound searchTerm={search} label="No Department Found" /&gt;
-  &lt;/div&gt;
+              &lt;div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              &gt;
+                &lt;NoEmployeeFound
+                  searchTerm={search}
+                  label="No Department Found"
+                /&gt;
+              &lt;/div&gt;
             )}
           &lt;/DepartmentGrid&gt;
         )}
 &nbsp;
-     {showAddModal &amp;&amp; (
-  &lt;AddDepartment onClose={() =&gt; setShowAddModal(false)} /&gt;
-)}
+        {showAddModal &amp;&amp; (
+          &lt;AddDepartment onClose={() =&gt; setShowAddModal(false)} /&gt;
+        )}
       &lt;/PageContainer&gt;
     &lt;/&gt;
   );
@@ -2113,7 +2122,7 @@ export default DepartmentList;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-12T05:36:37.437Z
+                at 2026-08-18T03:33:59.933Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

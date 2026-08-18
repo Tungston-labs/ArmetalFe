@@ -14,7 +14,7 @@ const DemoPage = () => {
     department: "Development",
     employeeId: "EMP12345",
     role: "Employee ",
-    workingProject: "Rekory"
+    workingProject: "Rekory",
   };
 
   return (
@@ -25,7 +25,7 @@ const DemoPage = () => {
         isOpen={open}
         onClose={() => setOpen(false)}
         onEdit={() => alert("Edit clicked")}
-        employee={employee}  
+        employee={employee}
       />
     </>
   );

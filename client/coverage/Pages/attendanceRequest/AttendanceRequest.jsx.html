@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -156,12 +156,7 @@
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -174,8 +169,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -196,7 +191,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -226,12 +221,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -272,8 +262,8 @@ import {
 } from "./AttendanceRequest.styles";
 import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-const AttendanceRequestList = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-  const attendanceRequests = <span class="cstat-no" title="statement not covered" >[</span>
+const AttendanceRequestList = () =&gt; {
+  const attendanceRequests = [
     {
       id: 1,
       employeeName: "John Doe",
@@ -294,24 +284,24 @@ const AttendanceRequestList = <span class="cstat-no" title="statement not covere
     },
   ];
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;Container&gt;
       &lt;EmployeeTitle
-              iconSrc={EmployeeIcon}
-              showBackArrow={false}
-              showTabs={false}
-              showDropdown={false}
-              showAddButton={false}
-              showSearch={true}
-             showReportButton={false}
-            /&gt;
-      
+        iconSrc={EmployeeIcon}
+        showBackArrow={false}
+        showTabs={false}
+        showDropdown={false}
+        showAddButton={false}
+        showSearch={true}
+        showReportButton={false}
+      /&gt;
+&nbsp;
       &lt;Title&gt;Attendance Requests&lt;/Title&gt;
 &nbsp;
       &lt;Table&gt;
         &lt;thead&gt;
           &lt;Tr&gt;
-                 &lt;Th&gt;Sl no.&lt;/Th&gt;
+            &lt;Th&gt;Sl no.&lt;/Th&gt;
             &lt;Th&gt;Employee&lt;/Th&gt;
             &lt;Th&gt;Employee ID&lt;/Th&gt;
             &lt;Th&gt;Request Type&lt;/Th&gt;
@@ -323,29 +313,23 @@ const AttendanceRequestList = <span class="cstat-no" title="statement not covere
         &lt;/thead&gt;
 &nbsp;
         &lt;tbody&gt;
-          {attendanceRequests.map(<span class="fstat-no" title="function not covered" >(i</span>tem, index) =&gt; (
-<span class="cstat-no" title="statement not covered" >    &lt;Tr key={item.id}&gt;</span>
-      &lt;Td&gt;{index + 1}&lt;/Td&gt;
+          {attendanceRequests.map((item, index) =&gt; (
+            &lt;Tr key={item.id}&gt;
+              &lt;Td&gt;{index + 1}&lt;/Td&gt;
               &lt;Td&gt;{item.employeeName}&lt;/Td&gt;
               &lt;Td&gt;{item.employeeId}&lt;/Td&gt;
               &lt;Td&gt;{item.requestType}&lt;/Td&gt;
               &lt;Td&gt;{item.date}&lt;/Td&gt;
               &lt;Td&gt;{item.reason}&lt;/Td&gt;
               &lt;Td&gt;
-                &lt;Status status={item.status}&gt;
-                  {item.status}
-                &lt;/Status&gt;
+                &lt;Status status={item.status}&gt;{item.status}&lt;/Status&gt;
               &lt;/Td&gt;
               &lt;Td&gt;
                 {item.status === "Pending" &amp;&amp; (
                   &lt;&gt;
-                    &lt;ActionButton approve&gt;
-                      Approve
-                    &lt;/ActionButton&gt;
+                    &lt;ActionButton approve&gt;Approve&lt;/ActionButton&gt;
 &nbsp;
-                    &lt;ActionButton reject&gt;
-                      Reject
-                    &lt;/ActionButton&gt;
+                    &lt;ActionButton reject&gt;Reject&lt;/ActionButton&gt;
                   &lt;/&gt;
                 )}
               &lt;/Td&gt;
@@ -357,14 +341,15 @@ const AttendanceRequestList = <span class="cstat-no" title="statement not covere
   );
 };
 &nbsp;
-export default AttendanceRequestList;</pre></td></tr></table></pre>
+export default AttendanceRequestList;
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-12T05:36:37.437Z
+                at 2026-08-18T03:33:59.933Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

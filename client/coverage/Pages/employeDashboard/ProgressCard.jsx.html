@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -119,8 +119,7 @@
 <a name='L54'></a><a href='#L54'>54</a>
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -134,19 +133,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">119x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,14 +153,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">119x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -188,20 +186,20 @@ import {
   BarContainer,
   Bar,
   Day,
-  Tooltip
+  Tooltip,
 } from "./ProgressCard.styles";
 &nbsp;
-const ProgressCard = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> attendanceGraph }) =&gt; {</span>
-  const days = <span class="cstat-no" title="statement not covered" >Object.keys(attendanceGraph);</span>
-  const hoursData = <span class="cstat-no" title="statement not covered" >Object.values(attendanceGraph);</span>
+const ProgressCard = ({ attendanceGraph }) =&gt; {
+  const days = Object.keys(attendanceGraph);
+  const hoursData = Object.values(attendanceGraph);
 &nbsp;
-  const [hoverIndex, setHoverIndex<span class="cstat-no" title="statement not covered" >] = useState(null);</span>
-  const maxHours = <span class="cstat-no" title="statement not covered" >Math.max(...hoursData);</span>
-  const maxBarHeight = <span class="cstat-no" title="statement not covered" >100;</span>
+  const [hoverIndex, setHoverIndex] = useState(null);
+  const maxHours = Math.max(...hoursData);
+  const maxBarHeight = 100;
 &nbsp;
-  const totalHours = <span class="cstat-no" title="statement not covered" >hoursData.reduce(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >a + b, 0</span>).toFixed(1);</span>
+  const totalHours = hoursData.reduce((a, b) =&gt; a + b, 0).toFixed(1);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;Card&gt;
       &lt;Header&gt;
         &lt;div&gt;
@@ -212,18 +210,17 @@ const ProgressCard = <span class="cstat-no" title="statement not covered" ><span
       &lt;/Header&gt;
 &nbsp;
       &lt;BarWrapper&gt;
-        {days.map(<span class="fstat-no" title="function not covered" >(d</span>ay, i) =&gt; {
-          const height = (<span class="cstat-no" title="statement not covered" >hoursData[i] / maxHours) * maxBarHeight + "px";</span>
+        {days.map((day, i) =&gt; {
+          const height = (hoursData[i] / maxHours) * maxBarHeight + "px";
 &nbsp;
-<span class="cstat-no" title="statement not covered" >          return (</span>
+          return (
             &lt;BarContainer
               key={i}
-              onMouseEnter={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etHoverIndex(i)}</span>
-              onMouseLeave={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etHoverIndex(null)}</span>
+              onMouseEnter={() =&gt; setHoverIndex(i)}
+              onMouseLeave={() =&gt; setHoverIndex(null)}
             &gt;
               {hoverIndex === i &amp;&amp; &lt;Tooltip&gt;{hoursData[i]}h&lt;/Tooltip&gt;}
-              &lt;Bar height={height} 
-              highlight={i === 5} /&gt;
+              &lt;Bar height={height} highlight={i === 5} /&gt;
               &lt;Day&gt;{day.slice(0, 3)}&lt;/Day&gt;
             &lt;/BarContainer&gt;
           );
@@ -241,7 +238,7 @@ export default ProgressCard;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-12T05:36:37.437Z
+                at 2026-08-18T03:33:59.933Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

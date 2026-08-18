@@ -64,16 +64,6 @@ export const TitleSection = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-
-  // img {
-  //   height: 51px;
-  // }
-
-  // Prevent every div from becoming a column (remove this block ↓)
-  // div {
-  //   display: flex;
-  //   flex-direction: column;
-  // }
 `;
 
 export const Title = styled.h2`

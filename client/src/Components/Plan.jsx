@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
 import { VscSend } from "react-icons/vsc";
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { generateInvoiceHTML } from '../services/utlis/invoiceGenerator';
+import { useParams } from "react-router-dom";
 import {
   SectionTitle,
   PlanCard,
@@ -16,68 +14,49 @@ import {
   TableRow,
   TableData,
   ScrollWrapper,
-  PlanIconWrapper
-} from './Plan.Styles';
-import API from '../services/api';
+  PlanIconWrapper,
+} from "./Plan.Styles";
+import API from "../services/api"; // Updated path from ../services/api
 import { useReactToPrint } from "react-to-print";
 import Invoice from "../Pages/superAdmin/print/Invoice";
+
 const PaymentOverview = ({ companyId: propCompanyId }) => {
   const { id: urlCompanyId } = useParams();
   const companyId = propCompanyId || urlCompanyId;
-  const invoiceRef = useRef();
-  const [selectedInvoice, setSelectedInvoice] = useState(null);
+
   const [paymentData, setPaymentData] = useState([]);
-const [company, setCompany] = useState(null);
+  const [company, setCompany] = useState(null);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const invoiceRef = useRef();
 
-console.log("Company ID:", companyId);
+  useEffect(() => {
+    if (companyId) {
+      fetchPaymentData(companyId);
+    }
+  }, [companyId]);
 
-useEffect(() => {
-  if (companyId) {
-    fetchPaymentData(companyId);
-  }
-}, [companyId]);
-
-const fetchPaymentData = async (id) => {
-  try {
-    const res = await API.get(`/subscriptions/${id}/`);
-
-    console.log("Subscription API Data:", res.data);
-
-    setCompany(res.data.company || null);
-    setPaymentData(res.data.subscriptions || []);
-  } catch (error) {
-    console.error(error);
-    setCompany(null);
-    setPaymentData([]);
-  }
-};
-
-  // const fetchCompanyName = async (id) => {
-  //   try {
-  //     const token = localStorage.getItem("accessToken");
-  //     const res = await API.get(`/companies/${id}/`
-  //     );
-
-  //     if (res.data?.name) {
-  //       setCompanyName(res.data.name);
-  //     }
-  //   } catch (error) {
-  //   }
-  // };
-
-
+  const fetchPaymentData = async (id) => {
+    try {
+      const res = await API.get(`/subscriptions/${id}/`);
+      const payload = res?.data || res;
+      setCompany(payload.company || null);
+      setPaymentData(payload.subscriptions || []);
+    } catch (error) {
+      console.error(error);
+      setCompany(null);
+      setPaymentData([]);
+    }
+  };
 
   const handleStatusChange = async (subscriptionId, currentStatus) => {
-    const newStatus = currentStatus === 'paid' ? 'unpaid' : 'paid';
+    const newStatus = currentStatus === "paid" ? "unpaid" : "paid";
     try {
-      const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
-      await API.patch(
-        `/subscriptions/mark-paid/${subscriptionId}/`,
-        { status: newStatus },
-
-      );
+      await API.patch(`/subscriptions/mark-paid/${subscriptionId}/`, {
+        status: newStatus,
+      });
       await fetchPaymentData(companyId);
     } catch (error) {
+      console.error(error);
     }
   };
 
@@ -88,22 +67,17 @@ const fetchPaymentData = async (id) => {
 
   const handleDownload = (entry) => {
     setSelectedInvoice(entry);
-
     setTimeout(() => {
       handlePrint();
     }, 100);
   };
 
-
-
-
   const handleSendEmail = async (entry) => {
     try {
-      const token = localStorage.getItem("accessToken");
       await API.post("/invoice/send-email/", {
         entry: entry,
         company_id: entry.company,
-      },);
+      });
 
       alert("Invoice email sent successfully.");
     } catch (error) {
@@ -125,21 +99,22 @@ const fetchPaymentData = async (id) => {
         <PlanDetails>
           <h3>Enterprise plan</h3>
           <p>
-            Pay a fixed amount per employee.<br />
-            Simple, transparent, and ideal for managing individual payroll with ease.
+            Pay a fixed amount per employee.
+            <br />
+            Simple, transparent, and ideal for managing individual payroll with
+            ease.
           </p>
         </PlanDetails>
 
         <PlanPrice></PlanPrice>
       </PlanCard>
 
-
       <ScrollWrapper>
         <PaymentTable>
           <thead>
             <tr>
               <TableHead>Month</TableHead>
-              <TableHead>Paid Date</TableHead>
+              <TableHead>Paid date</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Import</TableHead>
@@ -154,31 +129,52 @@ const fetchPaymentData = async (id) => {
               paymentData.map((entry) => (
                 <TableRow key={entry.id} status={entry.status}>
                   <TableData>{entry.month_display}</TableData>
-                  <TableData>{entry.paid_date || '-'} <SlCalender /></TableData>
-                  <TableData><strong>{entry.amount} </strong></TableData>
+                  <TableData>
+                    {entry.paid_date || "-"} <SlCalender />
+                  </TableData>
+                  <TableData>
+                    <strong>{entry.amount} </strong>
+                  </TableData>
                   <TableData>
                     <button
                       onClick={() => handleStatusChange(entry.id, entry.status)}
                       style={{
-                        backgroundColor: entry.status === 'paid' ? '#4CAF50' : '#f28b82',
-                        color: '#fff',
-                        border: 'none',
-                        padding: '6px 12px',
-                        borderRadius: '6px',
-                        fontWeight: 'bold',
-                        cursor: 'pointer',
-                        minWidth: '100px',
-                        textTransform: 'capitalize',
+                        backgroundColor:
+                          entry.status === "paid" ? "#4CAF50" : "#f28b82",
+                        color: "#fff",
+                        border: "none",
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        minWidth: "100px",
+                        textTransform: "capitalize",
                       }}
                     >
                       {entry.status}
                     </button>
                   </TableData>
-                  <TableData style={{ gap: '10px', justifyContent: 'center' }}>
-                    <button onClick={() => handleDownload(entry)} title="Download" style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
+                  <TableData style={{ gap: "10px", justifyContent: "center" }}>
+                    <button
+                      onClick={() => handleDownload(entry)}
+                      title="Download"
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        fontSize: "18px",
+                      }}
+                    >
                       <MdOutlineFileDownload />
                     </button>
-                    <button title="Import" onClick={() => handleSendEmail(entry)} style={{ background: 'transparent', border: 'none', fontSize: '18px' }}>
+                    <button
+                      title="Import"
+                      onClick={() => handleSendEmail(entry)}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        fontSize: "18px",
+                      }}
+                    >
                       <VscSend />
                     </button>
                   </TableData>
@@ -198,10 +194,7 @@ const fetchPaymentData = async (id) => {
       >
         <div ref={invoiceRef}>
           {selectedInvoice && (
-            <Invoice
-  entry={selectedInvoice}
-  company={company}
-/>
+            <Invoice entry={selectedInvoice} company={company} />
           )}
         </div>
       </div>

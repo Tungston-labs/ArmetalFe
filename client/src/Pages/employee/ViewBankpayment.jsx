@@ -2,21 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-
-import { getEmployeeById, fetchAllBankPaymentsThunk, submitBankPayment } from "../../Redux/employeeSlice";
+import {
+  getEmployeeById,
+  fetchAllBankPaymentsThunk,
+  submitBankPayment,
+} from "../../Redux/employeeSlice";
 import SyncLoader from "../../Components/Loder";
 import ViewBasicLayout from "./layout/ViewLayout";
 import ViewTableBank from "./ViewTableBank";
 import { Section } from "./ViewBankpayment.Styles";
-
 const ViewBankPayment = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-
   const { employeeDetail, employeeBankPayments, loading } = useSelector(
-    (state) => state.employees
+    (state) => state.employees,
   );
-
   const [bankProofImage, setBankProofImage] = useState(null);
   const [bankName, setBankName] = useState("");
   const [ifscCode, setIfscCode] = useState("");
@@ -32,20 +32,16 @@ const ViewBankPayment = () => {
   const [housingAllowance, setHousingAllowance] = useState("");
   const [transportation, setTransportation] = useState("");
   const [errors, setErrors] = useState({});
-
   const country = employeeDetail?.country || "IN";
-
   // Fetch employee details and bank payments
   useEffect(() => {
     dispatch(getEmployeeById(id));
     dispatch(fetchAllBankPaymentsThunk(id));
   }, [id, dispatch]);
-
   // Populate form fields with latest bank payment
   useEffect(() => {
     const latest = employeeBankPayments?.results?.[0];
     if (!latest) return;
-
     setBankName(latest.bank_name || "");
     setAccountNumber(latest.account_number || "");
     setUanNumber(latest.uan_epf_number || "");
@@ -57,7 +53,6 @@ const ViewBankPayment = () => {
     setSalaryIncrement(latest.salary_increment || "");
     setHousingAllowance(latest.housing_allowance || "");
     setTransportation(latest.transportation || "");
-
     // ✅ Handle IFSC/Swift properly
     if (country === "IN") {
       setIfscCode(latest.swift_code || ""); // IFSC stored in swift_code
@@ -67,11 +62,9 @@ const ViewBankPayment = () => {
       setIfscCode("");
     }
   }, [employeeBankPayments, country]);
-
   const handleSave = () => {
     const existingPayment = employeeBankPayments?.results?.[0];
     const existingPaymentId = existingPayment?.id || null;
-
     if (!bankName || !accountNumber || !basicSalary) {
       setErrors({
         bankName: !bankName ? "Bank Name is required" : "",
@@ -80,7 +73,6 @@ const ViewBankPayment = () => {
       });
       return;
     }
-
     const formData = new FormData();
     formData.append("bank_name", bankName);
     formData.append("swift_code", country === "IN" ? ifscCode : swiftCode);
@@ -88,22 +80,20 @@ const ViewBankPayment = () => {
     formData.append("uan_epf_number", uanNumber);
     formData.append("pan_number", panNumber);
     formData.append("tax_regime", taxRegime);
-formData.append("tds_deduction_amount", tdsAmount);
-formData.append("declaration_80c", declaration80C);
+    formData.append("tds_deduction_amount", tdsAmount);
+    formData.append("declaration_80c", declaration80C);
     formData.append("basic_salary", basicSalary);
     formData.append("salary_increment", salaryIncrement);
     formData.append("housing_allowance", housingAllowance);
     formData.append("transportation", transportation);
-
     if (bankProofImage) formData.append("bank_proof", bankProofImage);
-
     dispatch(
       submitBankPayment({
         employeeId: id,
         paymentId: existingPaymentId,
         data: formData,
         bankProofImage,
-      })
+      }),
     )
       .unwrap()
       .then(() => {
@@ -123,11 +113,9 @@ formData.append("declaration_80c", declaration80C);
         });
       });
   };
-
   return (
     <>
       {loading && <SyncLoader />}
-
       <ViewBasicLayout
         id={id}
         handleSubmit={handleSave}
@@ -137,7 +125,7 @@ formData.append("declaration_80c", declaration80C);
       >
         <Section>
           <ViewTableBank
-           employeeId={id}
+            employeeId={id}
             country={country}
             isEditMode={true}
             setBankProofImage={setBankProofImage}

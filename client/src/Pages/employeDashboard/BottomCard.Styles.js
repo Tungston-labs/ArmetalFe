@@ -5,15 +5,11 @@ export const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  // background: #f8f9fc;
-  // padding: 20px;
 `;
 
 export const Section = styled.div`
-  // background: #fff;
   border-radius: 12px;
   padding: 10px;
-  // box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 `;
 
 export const Header = styled.div`
@@ -34,22 +30,18 @@ export const Title = styled.h3`
   color: #3352BA;
   font-size: 20px; /* default */
 
-  /* Small devices (mobile) */
   @media (max-width: 480px) {
     font-size: 0.5rem;
   }
 
-  /* Medium devices (tablets) */
   @media (min-width: 481px) and (max-width: 1024px) {
     font-size: 0.9rem;
   }
 
-  /* Large desktops */
   @media (min-width: 1025px) and (max-width: 1600px) {
     font-size: 1.5rem;
   }
 
-  /* Extra-large / 4K screens */
   @media (min-width: 1601px) {
     font-size: 1.8rem;
   }
@@ -76,7 +68,6 @@ border-radius: 50%;
     color: white;
   }
 
-  /* Responsive sizes */
   @media (max-width: 480px) {
     font-size: 1rem;
   }
@@ -102,7 +93,6 @@ export const RightArrows = styled.div`
     color: #1e3a8a;
   }
 
-  /* Responsive sizes */
   @media (max-width: 480px) {
     font-size: 1rem;
   }
@@ -119,7 +109,6 @@ export const TaskList = styled.div`
   flex-direction: column;
   gap: 12px;
 
-  /* 👇 Scroll limit (3 visible tasks) */
   @media (max-width: 1600px) {
     max-height: 360px;
     overflow-y: auto;

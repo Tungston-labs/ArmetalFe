@@ -20,7 +20,7 @@ const ActivityLogModal = ({
   onClose,
   hourlyLocationData = [],
   liveLocationData = [],
-  onDateChange, 
+  onDateChange,
 }) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const calendarRef = useRef(null);
@@ -63,15 +63,15 @@ const ActivityLogModal = ({
     }));
   }, [liveLocationData]);
 
- const allLocations = useMemo(() => {
+  const allLocations = useMemo(() => {
     const merged = [...formattedLive, ...formattedLogs];
-    
+
     const sorted = merged.sort(
-      (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+      (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
     );
 
     const uniqueByTime = new Map();
-    
+
     sorted.forEach((item) => {
       if (!uniqueByTime.has(item.time)) {
         uniqueByTime.set(item.time, item);
@@ -98,6 +98,7 @@ const ActivityLogModal = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [calendarOpen]);
+
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -122,13 +123,18 @@ const ActivityLogModal = ({
               </div>
             </div>
 
-
-            <CalendarIconWrapper onClick={() => setCalendarOpen(!calendarOpen)}>
+            <CalendarIconWrapper
+              data-testid="calendar-icon"
+              onClick={() => setCalendarOpen(!calendarOpen)}
+            >
               <FaCalendarAlt size={18} />
             </CalendarIconWrapper>
 
             {calendarOpen && (
-              <div ref={calendarRef} style={{ position: "absolute", zIndex: 100, marginTop: 96 }}>
+              <div
+                ref={calendarRef}
+                style={{ position: "absolute", zIndex: 100, marginTop: 96 }}
+              >
                 <Calendar
                   onChange={(newDate) => {
                     setCalendarOpen(false);
@@ -164,7 +170,10 @@ const ActivityLogModal = ({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={2} style={{ textAlign: "center", color: "#777" }}>
+              <TableCell
+                colSpan={2}
+                style={{ textAlign: "center", color: "#777" }}
+              >
                 No location data available.
               </TableCell>
             </TableRow>

@@ -8,7 +8,7 @@ import {
   TextArea,
   SendBtn,
   Row,
-  Label
+  Label,
 } from "./MailModal.styles";
 import { sendEmail } from "../../services/employeeService";
 import Swal from "sweetalert2";
@@ -18,10 +18,8 @@ const MailModal = ({ isOpen, onClose, employee }) => {
     subject: "",
     body: "",
   };
-
   const [form, setForm] = useState(initialFormState);
   const [loading, setLoading] = useState(false);
-
   // RESET THE MODAL EVERY TIME IT OPENS
   useEffect(() => {
     if (isOpen) {
@@ -30,58 +28,50 @@ const MailModal = ({ isOpen, onClose, employee }) => {
   }, [isOpen, employee]);
 
   if (!isOpen) return null;
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
-
- const handleSend = async () => {
-  if (!form.to || !form.subject || !form.body) {
-    Swal.fire({
-      icon: "warning",
-      title: "Missing fields",
-      text: "Please fill all fields!",
-      confirmButtonColor: "#2563eb",
-    });
-    return;
-  }
-
-  try {
-    setLoading(true);
-    Swal.fire({
-      title: "Sending email...",
-      text: "Please wait",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
-
-    await sendEmail(form);
-
-    Swal.fire({
-      icon: "success",
-      title: "Sent!",
-      text: "Email sent successfully",
-      confirmButtonColor: "#16a34a",
-    });
-
-    setForm(initialFormState);
-    onClose();
-  } catch (err) {
-
-    Swal.fire({
-      icon: "error",
-      title: "Failed",
-      text: "Failed to send email!",
-      confirmButtonColor: "#dc2626",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
+  const handleSend = async () => {
+    if (!form.to || !form.subject || !form.body) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing fields",
+        text: "Please fill all fields!",
+        confirmButtonColor: "#2563eb",
+      });
+      return;
+    }
+    try {
+      setLoading(true);
+      Swal.fire({
+        title: "Sending email...",
+        text: "Please wait",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      await sendEmail(form);
+      Swal.fire({
+        icon: "success",
+        title: "Sent!",
+        text: "Email sent successfully",
+        confirmButtonColor: "#16a34a",
+      });
+      setForm(initialFormState);
+      onClose();
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: "Failed to send email!",
+        confirmButtonColor: "#dc2626",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <ModalOverlay onClick={onClose}>
       <ModalBox onClick={(e) => e.stopPropagation()}>
@@ -89,7 +79,6 @@ const MailModal = ({ isOpen, onClose, employee }) => {
           <span>New Message</span>
           <CloseBtn onClick={onClose}>✕</CloseBtn>
         </ModalHeader>
-
         <Row>
           <Label>To</Label>
           <Input
@@ -97,10 +86,9 @@ const MailModal = ({ isOpen, onClose, employee }) => {
             name="to"
             value={form.to}
             onChange={handleChange}
-              autoComplete="off"
+            autoComplete="off"
           />
         </Row>
-
         <Row>
           <Label>Subject</Label>
           <Input
@@ -112,17 +100,15 @@ const MailModal = ({ isOpen, onClose, employee }) => {
             placeholder="Enter subject"
           />
         </Row>
-
         <Row>
           <TextArea
             name="body"
             value={form.body}
             onChange={handleChange}
-              autoComplete="off"
+            autoComplete="off"
             placeholder="Write your message......"
           />
         </Row>
-
         <SendBtn onClick={handleSend} disabled={loading}>
           {loading ? "Sending..." : "Send"}
         </SendBtn>
@@ -130,5 +116,4 @@ const MailModal = ({ isOpen, onClose, employee }) => {
     </ModalOverlay>
   );
 };
-
 export default MailModal;

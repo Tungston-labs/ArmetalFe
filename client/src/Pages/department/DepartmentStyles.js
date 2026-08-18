@@ -18,12 +18,10 @@ export const HRManager = styled.div`
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.8rem;
-  // border: 1px solid #ccc;
-  // border-radius: 8px;
   background-color: #fff;
   font-size: 0.9rem;
   color: #333;
-  // box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  
 
   span {
     font-weight: 500;
@@ -129,18 +127,6 @@ export const TitleSection = styled.div`
     align-items: center;
     gap: 10px;
   }
-
-  // .icon-box {
-  //   background-color: white;
-  //   padding: 10px;
-  //   border-radius: 8px;
-  //   display: inline-block;
-  //   color: blue;
-  // }
-
-  // img {
-  //   height: 74px;
-  // }
 `;
 export const EmployeeImage = styled.img`
   height: clamp(50px, 8vw, 120px); /* scales between 50px and 120px */

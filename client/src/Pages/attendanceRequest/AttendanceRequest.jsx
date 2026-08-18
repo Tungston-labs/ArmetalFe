@@ -36,21 +36,21 @@ const AttendanceRequestList = () => {
   return (
     <Container>
       <EmployeeTitle
-              iconSrc={EmployeeIcon}
-              showBackArrow={false}
-              showTabs={false}
-              showDropdown={false}
-              showAddButton={false}
-              showSearch={true}
-             showReportButton={false}
-            />
-      
+        iconSrc={EmployeeIcon}
+        showBackArrow={false}
+        showTabs={false}
+        showDropdown={false}
+        showAddButton={false}
+        showSearch={true}
+        showReportButton={false}
+      />
+
       <Title>Attendance Requests</Title>
 
       <Table>
         <thead>
           <Tr>
-                 <Th>Sl no.</Th>
+            <Th>Sl no.</Th>
             <Th>Employee</Th>
             <Th>Employee ID</Th>
             <Th>Request Type</Th>
@@ -63,28 +63,22 @@ const AttendanceRequestList = () => {
 
         <tbody>
           {attendanceRequests.map((item, index) => (
-    <Tr key={item.id}>
-      <Td>{index + 1}</Td>
+            <Tr key={item.id}>
+              <Td>{index + 1}</Td>
               <Td>{item.employeeName}</Td>
               <Td>{item.employeeId}</Td>
               <Td>{item.requestType}</Td>
               <Td>{item.date}</Td>
               <Td>{item.reason}</Td>
               <Td>
-                <Status status={item.status}>
-                  {item.status}
-                </Status>
+                <Status status={item.status}>{item.status}</Status>
               </Td>
               <Td>
                 {item.status === "Pending" && (
                   <>
-                    <ActionButton approve>
-                      Approve
-                    </ActionButton>
+                    <ActionButton approve>Approve</ActionButton>
 
-                    <ActionButton reject>
-                      Reject
-                    </ActionButton>
+                    <ActionButton reject>Reject</ActionButton>
                   </>
                 )}
               </Td>

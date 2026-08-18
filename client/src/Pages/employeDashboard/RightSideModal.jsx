@@ -8,7 +8,7 @@ import {
   ContentArea,
   TwoColumnWrapper,
   LeftSide,
-  RightSide
+  RightSide,
 } from "./RightSideModal.styles";
 import { CiEdit } from "react-icons/ci";
 import EmployeeDetails from "./EmployeeDetails";
@@ -32,11 +32,9 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
       .then((res) => {
         setEmpData(res);
       })
-      .catch((err) => {
-      })
+      .catch((err) => {})
       .finally(() => setLoading(false));
   }, [isOpen, employeeId]);
-
 
   if (!isOpen) return null;
 
@@ -66,7 +64,7 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
                 <RightSide>
                   <WeeklyTaskGraph
                     weeklyData={Object.entries(empData.task_graph).map(
-                      ([day, value]) => ({ day, tasksCompleted: value })
+                      ([day, value]) => ({ day, tasksCompleted: value }),
                     )}
                   />
                 </RightSide>
@@ -75,7 +73,6 @@ const RightSideModal = ({ isOpen, onClose, employeeId }) => {
           )}
         </ContentArea>
       </ModalWrapper>
-
     </>
   );
 };

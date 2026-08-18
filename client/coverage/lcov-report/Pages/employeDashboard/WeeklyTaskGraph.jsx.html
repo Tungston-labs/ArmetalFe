@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -124,10 +124,7 @@
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
 <a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L62'></a><a href='#L62'>62</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -147,20 +144,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -170,11 +157,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">50x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">50x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -211,10 +205,10 @@ import {
   HourLabel,
 } from "./WeeklyTaskGraph.Styles";
 &nbsp;
-const WeeklyTaskGraph = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> weeklyData }) =&gt; {</span>
-  const Y_AXIS_MAX = <span class="cstat-no" title="statement not covered" >10;</span>
+const WeeklyTaskGraph = ({ weeklyData }) =&gt; {
+  const Y_AXIS_MAX = 10;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;TasksProgressCard&gt;
       &lt;CardHeader&gt;
         &lt;CardTitle&gt;Tasks Progress&lt;/CardTitle&gt;
@@ -224,7 +218,7 @@ const WeeklyTaskGraph = <span class="cstat-no" title="statement not covered" ><s
             &lt;SummaryLabel&gt;Weekly Task Hours&lt;/SummaryLabel&gt;
             &lt;SummaryValueContainer&gt;
               &lt;SummaryValue&gt;
-                {weeklyData.reduce(<span class="fstat-no" title="function not covered" >(s</span>um, d) =&gt; <span class="cstat-no" title="statement not covered" >sum + d.tasksCompleted, 0</span>)} hours
+                {weeklyData.reduce((sum, d) =&gt; sum + d.tasksCompleted, 0)} hours
               &lt;/SummaryValue&gt;
             &lt;/SummaryValueContainer&gt;
           &lt;/SummaryItem&gt;
@@ -233,16 +227,13 @@ const WeeklyTaskGraph = <span class="cstat-no" title="statement not covered" ><s
 &nbsp;
       &lt;ChartAndSummaryContainer&gt;
         &lt;ChartContainer&gt;
-          {weeklyData.map(<span class="fstat-no" title="function not covered" >(d</span>, i) =&gt; {
-            const fillPercent = (<span class="cstat-no" title="statement not covered" >d.tasksCompleted / Y_AXIS_MAX) * 100;</span>
-<span class="cstat-no" title="statement not covered" >            return (</span>
+          {weeklyData.map((d, i) =&gt; {
+            const fillPercent = (d.tasksCompleted / Y_AXIS_MAX) * 100;
+            return (
               &lt;ChartColumn key={i}&gt;
-                  &lt;HourLabel&gt;{d.tasksCompleted} hrs&lt;/HourLabel&gt;
+                &lt;HourLabel&gt;{d.tasksCompleted} hrs&lt;/HourLabel&gt;
                 &lt;BarWrapper&gt;
-                &lt;BarFill 
-  $percentage={fillPercent}
-/&gt;
-&nbsp;
+                  &lt;BarFill $percentage={fillPercent} /&gt;
                 &lt;/BarWrapper&gt;
                 &lt;XAxisLabel&gt;{d.day.slice(0, 1)}&lt;/XAxisLabel&gt;
               &lt;/ChartColumn&gt;
@@ -262,7 +253,7 @@ export default WeeklyTaskGraph;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-12T05:36:37.020Z
+                at 2026-08-18T03:33:59.098Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
