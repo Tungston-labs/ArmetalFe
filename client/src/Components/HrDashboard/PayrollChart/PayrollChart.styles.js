@@ -4,12 +4,15 @@ export const Container = styled.div`
   width: 100%;
   background: #ffffff;
   border-radius: 18px;
+  
 `;
 
 export const ChartContainer = styled.div`
   width: 100%;
   height: 340px;
   padding: 0 20px 20px;
+box-shadow: 0px 2.5px 25px 0px #4545501A;
+background-color: #fff;
 
   .recharts-wrapper {
     font-size: 13px;

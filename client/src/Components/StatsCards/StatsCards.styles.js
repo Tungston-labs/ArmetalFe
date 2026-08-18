@@ -10,15 +10,16 @@ export const Wrapper = styled.div`
 
 export const Card = styled.div`
   background: #fff;
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 22px;
   display: flex;
   align-items: center;
   gap: 18px;
   cursor: pointer;
   transition: 0.25s;
+border: 1px solid #0000001A;
+box-shadow: 0px 2.5px 25px 0px #4545501A;
 
-  box-shadow: 0 2px 10px rgba(0,0,0,.05);
 
   &:hover{
     transform: translateY(-3px);
@@ -37,8 +38,8 @@ export const IconWrapper = styled.div`
 
   font-size:28px;
 
-  color:${({color})=>color};
-  background:${({bg})=>bg};
+  color:${({ color }) => color};
+  background:${({ bg }) => bg};
 
   flex-shrink:0;
 `;

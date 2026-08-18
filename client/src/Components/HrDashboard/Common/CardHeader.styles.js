@@ -4,7 +4,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+/* background-color: #fff; */
   padding: 20px 24px 0;
 
   @media (max-width: 768px) {

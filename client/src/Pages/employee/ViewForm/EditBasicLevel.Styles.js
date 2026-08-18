@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 2rem;
-  background: white;
  font-family: Satoshi;
 `;
 

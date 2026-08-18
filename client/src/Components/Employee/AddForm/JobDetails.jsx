@@ -19,6 +19,11 @@ import {
   LeaveInput,
 
 } from "./JobDetails.Styles";
+import {
+  getLegalFieldConfig,
+  isIndiaCompany,
+  validateLegalIdentity,
+} from "../../../utils/employeeCountryFields";
 
 const JobDetails = forwardRef(({ country: propCountry, departments = [], initialValues = {}, onFormChange, errors: parentErrors }, ref) => {
   const savedUser = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
@@ -55,6 +60,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
 
   const [errors, setErrors] = useState({});
   const [country] = useState(defaultCountry);
+  const legalConfig = getLegalFieldConfig(country);
 
   useEffect(() => {
     if (initialValues && Object.keys(initialValues).length) setFormData(prev => ({ ...prev, ...initialValues }));
@@ -165,19 +171,16 @@ const handleChange = (e) => {
   if (totalLeave === 0) {
     newErrors.leave = "Please enter at least one leave.";
   }
-    if (country === "IN") baseRequired.push("aadar_number");
-    else baseRequired.push("visa_expiry_date", "insurance_number", "iqama_number");
+    baseRequired.push(...legalConfig.requiredFields);
 
     baseRequired.forEach(field => {
       if (!formData[field] || (typeof formData[field] === "string" && formData[field].trim() === "")) newErrors[field] = "This field is required";
     });
-    if (country === "IN" && formData.aadar_number && !/^[0-9]{12}$/.test(formData.aadar_number)) {
-      newErrors.aadar_number = "Aadhaar number must be exactly 12 digits";
-    }
+    Object.assign(newErrors, validateLegalIdentity(country, formData));
     if (formData.phno) {
       const phone = formData.phno.trim();
-      if (country === "IN" && !/^[0-9]{10}$/.test(phone)) newErrors.phno = "Enter a valid 10-digit phone number";
-      else if (country !== "IN" && !/^\+?[1-9]\d{7,14}$/.test(phone)) newErrors.phno = "Enter a valid international phone number";
+      if (isIndiaCompany(country) && !/^[0-9]{10}$/.test(phone)) newErrors.phno = "Enter a valid 10-digit phone number";
+      else if (!isIndiaCompany(country) && !/^\+?[1-9]\d{7,14}$/.test(phone)) newErrors.phno = "Enter a valid international phone number";
     }
 
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Enter a valid email";
@@ -326,11 +329,13 @@ const ALLOWED_TYPES = [
           {renderError("phno")}
         </FormGroup>
 
-        <FormGroup>
-          <Label>Passport Number</Label>
-          <Input name="passport_number" value={formData.passport_number} onChange={handleChange} placeholder="Enter Passport number" autoComplete="off" />
-          {renderError("passport_number")}
-        </FormGroup>
+        {!isIndiaCompany(country) && legalConfig.identityField !== "passport_number" && (
+          <FormGroup>
+            <Label>Passport Number</Label>
+            <Input name="passport_number" value={formData.passport_number} onChange={handleChange} placeholder="Enter Passport Number" autoComplete="off" />
+            {renderError("passport_number")}
+          </FormGroup>
+        )}
       </FormRow>
 
       <FormRow>
@@ -360,44 +365,35 @@ const ALLOWED_TYPES = [
         </FormGroup>
       </FormRow>
 
-      {country === "IN" ? (
-        <FormRow>
-          <FormGroup>
-            <Label>Aadhaar Number</Label>
-            <Input
-              name="aadar_number"
-              value={formData.aadar_number}
-              onChange={handleChange}
-              placeholder="Enter Aadhaar Number"
-              autoComplete="off"
-              maxLength={12}
-              onKeyPress={(e) => {
-                if (!/[0-9]/.test(e.key)) e.preventDefault();
-              }}
-            />            {renderError("aadar_number")}
-          </FormGroup>
+      <FormRow>
+        <FormGroup>
+          <Label>{legalConfig.identityLabel}</Label>
+          <Input
+            name={legalConfig.identityField}
+            value={formData[legalConfig.identityField]}
+            onChange={handleChange}
+            placeholder={legalConfig.identityPlaceholder}
+            autoComplete="off"
+            maxLength={legalConfig.identityMaxLength}
+            onKeyPress={(e) => {
+              if (isIndiaCompany(country) && !/[0-9]/.test(e.key)) e.preventDefault();
+            }}
+          />
+          {renderError(legalConfig.identityField)}
+        </FormGroup>
 
-          <FormGroup>
-            <Label>Contract Expiry Date</Label>
-            <Input type="date" name="contract_expiry_date" value={formData.contract_expiry_date} onChange={handleChange} autoComplete="off" />
-            {renderError("contract_expiry_date")}
-          </FormGroup>
-        </FormRow>
-      ) : (
-        <FormRow>
-          <FormGroup>
-            <Label>Iqama Number</Label>
-            <Input name="iqama_number" value={formData.iqama_number} onChange={handleChange} placeholder=" Enter Iqama Number" autoComplete="off" />
-            {renderError("iqama_number")}
-          </FormGroup>
-
-          <FormGroup>
-            <Label>Visa Expiry Date</Label>
-            <Input type="date" name="visa_expiry_date" value={formData.visa_expiry_date} onChange={handleChange} autoComplete="off" />
-            {renderError("visa_expiry_date")}
-          </FormGroup>
-        </FormRow>
-      )}
+        <FormGroup>
+          <Label>{isIndiaCompany(country) ? "Contract Expiry Date" : "Visa Expiry Date"}</Label>
+          <Input
+            type="date"
+            name={isIndiaCompany(country) ? "contract_expiry_date" : "visa_expiry_date"}
+            value={isIndiaCompany(country) ? formData.contract_expiry_date : formData.visa_expiry_date}
+            onChange={handleChange}
+            autoComplete="off"
+          />
+          {renderError(isIndiaCompany(country) ? "contract_expiry_date" : "visa_expiry_date")}
+        </FormGroup>
+      </FormRow>
 
 
     </FormContainer>

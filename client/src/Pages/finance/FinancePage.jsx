@@ -10,6 +10,7 @@ import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 
 import { getFinanceColumns, getStatCards } from "./FinanceColumns";
+import { useCurrency } from "../../hooks/useCurrency"; // adjust path to match where you saved it
 
 const PAGE_SIZE = 20;
 
@@ -18,6 +19,10 @@ const PAYMENT_CODE_TO_LABEL = { IN: "Income", OUT: "Expense" };
 
 const FinanceDetail = () => {
   const dispatch = useDispatch();
+
+  // Company's active currency, read from Redux (company slice) -
+  // same source used across Payroll, Reimbursement, etc.
+  const { currencyCode } = useCurrency();
 
   const {
     list = [],
@@ -33,22 +38,23 @@ const FinanceDetail = () => {
   const [selectedPayment, setSelectedPayment] = useState(""); // "IN" | "OUT" | ""
   const [page, setPage] = useState(1);
   const [month, setMonth] = useState("");
-  // Fetch Data
-  useEffect(() => {
-    dispatch(
-      fetchFinanceList({
-        page,
-        pageSize: PAGE_SIZE,
-        search: searchText,
-        payment_type: selectedPayment,
-      })
-    );
-  }, [dispatch, page, searchText, selectedPayment]);
+
+useEffect(() => {
+  dispatch(
+    fetchFinanceList({
+      page,
+      pageSize: PAGE_SIZE,
+      search: searchText,
+      payment_type: selectedPayment,
+      month: month,
+    })
+  );
+}, [dispatch, page, searchText, selectedPayment, month]);
 
   // Reset page when filters change
   useEffect(() => {
     setPage(1);
-  }, [searchText, selectedPayment]);
+  }, [searchText, selectedPayment,month]);
 
   // Fix page overflow
   useEffect(() => {
@@ -84,11 +90,11 @@ const FinanceDetail = () => {
     setPage(newPage);
   };
 
-  const columns = getFinanceColumns({ page, pageSize: PAGE_SIZE });
+  const columns = getFinanceColumns({ page, pageSize: PAGE_SIZE, currencyCode });
 
   // Cards fed into the generic StatsCards component — built from the
   // live Redux totals, since FinanceColumns.jsx has no access to them
-  const statCards = getStatCards({ totalIncome, totalExpense, cashBalance });
+  const statCards = getStatCards({ totalIncome, totalExpense, cashBalance, currencyCode });
 
   return (
     <>

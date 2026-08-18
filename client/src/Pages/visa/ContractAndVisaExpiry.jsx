@@ -139,8 +139,8 @@ const ContractAndVisaExpiry = () => {
 
           status={expiryFilter}
           statuses={[
-            "contract",
-            "visa",
+            "Contract Within 30 Days",
+            "Visa Within 30 Days",
           ]}
           onStatus={setExpiryFilter}
 

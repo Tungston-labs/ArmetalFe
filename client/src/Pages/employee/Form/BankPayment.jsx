@@ -23,6 +23,13 @@ import { EmployeeImage } from "./BasicLevel.Styles";
 
 import { Divider } from "../../reimbursement/Reimb_info.Styles";
 import EmployeeTitle from "../../../Components/Employee/Headers/EmployeeTitle";
+import {
+  getBankFieldConfig,
+  getBankSubmissionDefaults,
+  isIndiaCompany,
+  isUaeCompany,
+} from "../../../utils/employeeCountryFields";
+import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
 export default function BankPaymentForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,6 +39,11 @@ export default function BankPaymentForm() {
   const employeeId = useSelector((state) => state.employee.employeeId);
   const bankPayment = useSelector((state) => state.employee.bankPayment);
   const savedBankForm = useSelector((state) => state.employee.formData.bank);
+  const user = JSON.parse(
+    localStorage.getItem("user") || sessionStorage.getItem("user"),
+  );
+  const country = user?.company?.country || "IN";
+  const bankConfig = getBankFieldConfig(country);
 
   const [bankName, setBankName] = useState("");
   const [swiftCode, setSwiftCode] = useState("");
@@ -53,7 +65,7 @@ export default function BankPaymentForm() {
   useEffect(() => {
     if (savedBankForm) {
       setBankName(savedBankForm.bank_name || "");
-      if (country === "IN") {
+      if (isIndiaCompany(country)) {
         setIfscCode(savedBankForm.swift_code || "");
       } else {
         setSwiftCode(savedBankForm.swift_code || "");
@@ -71,7 +83,7 @@ export default function BankPaymentForm() {
     } else if (employeeId) {
       dispatch(fetchAllBankPaymentsThunk(employeeId));
     }
-  }, [dispatch, employeeId, savedBankForm]);
+  }, [dispatch, employeeId, savedBankForm, country]);
 
   useEffect(() => {
     if (bankPayment) {
@@ -90,24 +102,25 @@ export default function BankPaymentForm() {
 
     }
   }, [bankPayment]);
-
-  const user = JSON.parse(
-    localStorage.getItem("user") || sessionStorage.getItem("user"),
-  );
-  const country = user?.company?.country || "IN";
-
   const handleNext = async () => {
     const errors = {};
     const isDecimal = (value) => /^\d+(\.\d{1,2})?$/.test(value);
 
-    // PAN is required only for India
-    if (country === "IN") {
+    if (isIndiaCompany(country)) {
       if (!panNumber.trim()) errors.panNumber = "PAN Number is required.";
-    }
-    if (country === "IN") {
+      else if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(panNumber.trim().toUpperCase())) {
+        errors.panNumber = "Enter a valid PAN Number.";
+      }
+
       if (!ifscCode.trim()) errors.ifscCode = "IFSC Code is required.";
+      else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode.trim().toUpperCase())) {
+        errors.ifscCode = "Enter a valid IFSC Code.";
+      }
     } else {
       if (!swiftCode.trim()) errors.swiftCode = "SWIFT Code is required.";
+    }
+    if (isUaeCompany(country) && accountNumber.trim() && !/^AE[0-9]{21}$/.test(accountNumber.trim().replace(/\s/g, "").toUpperCase())) {
+      errors.accountNumber = "Enter a valid UAE IBAN.";
     }
     // Fields always required
     if (!bankName.trim()) errors.bankName = "Bank Name is required.";
@@ -121,7 +134,7 @@ export default function BankPaymentForm() {
       errors.housingAllowance = "Housing Allowance must be a valid number.";
     if (transportation && !isDecimal(transportation))
       errors.transportation = "Transportation must be a valid number.";
-    if (!taxRegime) {
+    if (isIndiaCompany(country) && !taxRegime) {
       errors.taxRegime = "Tax Regime is required.";
     }
     if (Object.keys(errors).length > 0) {
@@ -136,15 +149,16 @@ export default function BankPaymentForm() {
       return;
     }
 
+    const countryDefaults = getBankSubmissionDefaults(country);
     const bankData = {
       bank_name: bankName,
-      swift_code: country === "IN" ? ifscCode : swiftCode,
+      swift_code: isIndiaCompany(country) ? ifscCode.trim().toUpperCase() : swiftCode.trim().toUpperCase(),
       account_number: accountNumber,
-      uan_epf_number: uanNumber,
-      pan_number: panNumber,
-      tax_regime: taxRegime,
-      tds_deduction_amount: parseFloat(tdsAmount || 0),
-      declaration_80c: declaration80C,
+      uan_epf_number: isIndiaCompany(country) ? uanNumber : "",
+      pan_number: countryDefaults.pan_number ?? panNumber.trim().toUpperCase(),
+      tax_regime: countryDefaults.tax_regime ?? taxRegime,
+      tds_deduction_amount: countryDefaults.tds_deduction_amount ?? parseFloat(tdsAmount || 0),
+      declaration_80c: countryDefaults.declaration_80c ?? declaration80C,
       basic_salary: parseFloat(basicSalary),
       salary_increment: parseFloat(salaryIncrement || 0),
       housing_allowance: parseFloat(housingAllowance || 0),
@@ -174,15 +188,13 @@ export default function BankPaymentForm() {
 
       {loading && <Loader />}
       <Container>
-        <EmployeeTitle
-          iconSrc={EmployeeIcon}
-          showAddButton={false}
-          showTabs={false}
-          showSearch={false}
-          showDropdown={false}
-            showReportButton={false}
-        />
-        <Divider />
+        <ReusableHeader
+                    title="Employees"
+                    breadcrumbs={["Employees","Bank details"]}
+                   showBack
+
+                />
+     
         <div
           style={{
             width: "99%",
@@ -200,6 +212,7 @@ export default function BankPaymentForm() {
 
         <Table
           country={country}
+          bankConfig={bankConfig}
           bankName={bankName}
           setBankName={setBankName}
           swiftCode={swiftCode}

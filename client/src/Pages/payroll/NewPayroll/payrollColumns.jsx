@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { GoInfo } from "react-icons/go";
-import { Select } from "./PayrollTablestyes";
-import VerificationCircles from "../../Components/payroll/VerificationCircle";
+import { Select } from "../PayrollTablestyes";
+import VerificationCircles from "../../../Components/payroll/VerificationCircle";
+import { formatCurrency } from "../../../utils/FormatCurrency"; // adjust path to match where you saved it
 
 export const getPayrollColumns = ({
   page,
@@ -17,6 +18,7 @@ export const getPayrollColumns = ({
   handleCircleClick,
   handleSingleStatusChange,
   getStatusColor,
+  currencyCode, // company's active currency, e.g. "INR", "AED", "USD"
 }) => [
   {
     header: (
@@ -76,7 +78,10 @@ export const getPayrollColumns = ({
   {
     header: "Salary",
     accessor: "basic_salary",
-    render: (emp) => emp.basic_salary ?? "N/A",
+    render: (emp) =>
+      emp.basic_salary != null
+        ? formatCurrency(emp.basic_salary, currencyCode)
+        : "N/A",
   },
   {
     header: "Net Pay",
@@ -84,7 +89,7 @@ export const getPayrollColumns = ({
     sortable: false,
     render: (emp) => (
       <span style={{ color: "#16a34a", fontWeight: 600 }}>
-        {calculateNetPay(emp).toLocaleString("en-IN")}
+        {formatCurrency(calculateNetPay(emp), currencyCode)}
       </span>
     ),
   },
@@ -93,7 +98,7 @@ export const getPayrollColumns = ({
     accessor: "incentive_amount",
     sortable: false,
     render: (row) => (
-      <span>{Number(row.incentive_amount || 0).toLocaleString("en-IN")}</span>
+      <span>{formatCurrency(row.incentive_amount || 0, currencyCode)}</span>
     ),
   },
   {
@@ -101,7 +106,7 @@ export const getPayrollColumns = ({
     accessor: "deduction_amount",
     sortable: false,
     render: (row) => (
-      <span>{Number(row.deduction_amount || 0).toLocaleString("en-IN")}</span>
+      <span>{formatCurrency(row.deduction_amount || 0, currencyCode)}</span>
     ),
   },
   {

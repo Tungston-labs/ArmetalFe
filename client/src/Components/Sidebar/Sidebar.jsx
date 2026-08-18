@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FaBars } from "react-icons/fa";
-import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -27,21 +26,6 @@ const Sidebar = () => {
   if (!user) return null;
 
   const sidebarItems = getSidebarData(user);
-
-  const handleLogout = async () => {
-    try {
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (!refreshToken) return;
-
-      await API.post("/logout/", { refresh: refreshToken });
-
-      localStorage.clear();
-      sessionStorage.clear();
-      navigate("/login");
-    } catch (error) {
-     
-    }
-  };
 
   return (
     <>

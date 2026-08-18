@@ -120,7 +120,35 @@ const PayrollChart = ({ apiData, selectedYear, onYearChange }) => {
                 }}
               />
 
-              <Tooltip cursor={false} content={<CustomTooltip />} />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                domain={[0, 'auto']}
+                tickFormatter={(value) => {
+                  if (value === 0) return "0";
+                  if (value < 100000) return `${value / 1000}K`;
+                  return `${value / 100000}L`;
+                }}
+              />
+
+              <Tooltip
+                cursor={false}
+                content={<CustomTooltip />}
+              />
+
+              <Bar
+                stackId="payroll"
+                dataKey="deduction"
+                fill="#F44336"
+                name="Deduction"
+              />
+
+              <Bar
+                stackId="payroll"
+                dataKey="incentive"
+                fill="#E58D2B"
+                name="Incentive"
+              />
 
               <Bar stackId="payroll" dataKey="deduction" fill="#F44336" name="Deduction" />
               <Bar stackId="payroll" dataKey="incentive" fill="#E58D2B" name="Incentive" />

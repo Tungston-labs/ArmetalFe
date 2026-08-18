@@ -1,14 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
-import { BiMessageSquareDetail } from "react-icons/bi";
-import {
+import Swal from "sweetalert2";import {
   getPayrollData,
   updatePayrollStatus,
   verifyEmployeePayroll,
-  getPayrollCounts,
-} from "../../Redux/payrollSlice";
-import { getDepartments } from "../../Redux/departmentSlice";
+} from "../../../Redux/payrollSlice";
+import { getDepartments } from "../../../Redux/departmentSlice";
 import { PiMoneyWavyLight } from "react-icons/pi";
 import { LuUserRound } from "react-icons/lu";
 import { PiClockCountdown } from "react-icons/pi";

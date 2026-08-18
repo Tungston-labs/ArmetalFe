@@ -25,6 +25,7 @@ class SafeDateField(serializers.DateField):
         return super().to_representation(value)
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    company = serializers.SerializerMethodField(read_only=True)
 
     dob = SafeDateField(required=False)
     joining_date = SafeDateField(required=False)
@@ -138,6 +139,18 @@ class EmployeeSerializer(serializers.ModelSerializer):
             obj.department
             and obj.department.department_head == obj
         )
+
+    def get_company(self, obj):
+        company = obj.department.company if obj.department else None
+        if not company:
+            return None
+
+        return {
+            "id": company.id,
+            "name": company.name,
+            "country": company.country,
+        }
+
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
@@ -353,11 +366,28 @@ class EmployeeSerializer(serializers.ModelSerializer):
                     "Aadhaar number is required for India."
                 )
 
-        else:
+        elif country == "AE":
 
             if not iqama_number:
                 errors["iqama_number"] = (
-                    "Iqama number is required for this country."
+                    "Emirates ID is required for UAE."
+                )
+
+            if not data.get("visa_expiry_date"):
+                errors["visa_expiry_date"] = (
+                    "Visa expiry date is required."
+                )
+
+            if not data.get("insurance_number"):
+                errors["insurance_number"] = (
+                    "Insurance number is required for UAE."
+                )
+
+        else:
+
+            if not passport_number:
+                errors["passport_number"] = (
+                    "Passport number is required for this country."
                 )
 
             if not data.get("visa_expiry_date"):

@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Container } from "./PayrollTablestyes";
-import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
-import StatsCards from "../../Components/StatsCards/StatsCards";
-import ReusableTable from "../../Components/ReusableTable/ReusableTable";
-import Pagination from "../../Components/Pagination/Pagination";
-import IncentiveModal from "../../Components/payroll/IncentiveModal/IncentiveModal";
-import DeductionModal from "../../Components/payroll/DeductionModal/DeductionModal";
+import { Container } from "../PayrollTablestyes";
+import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
+import StatsCards from "../../../Components/ StatsCards/StatsCards";
+import ReusableTable from "../../../Components/ReusableTable/ReusableTable";
+import Pagination from "../../../Components/Pagination/Pagination";
+import IncentiveModal from "../../../Components/payroll/IncentiveModal/IncentiveModal";
+import DeductionModal from "../../../Components/payroll/DeductionModal/DeductionModal";
 import { getPayrollColumns } from "./payrollColumns";
 import {
   usePayrollList,
@@ -14,14 +14,19 @@ import {
   getStatusColor,
   getPayrollCards,
 } from "./usePayrollList";
-import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
-import { HeaderButton } from '../../Components/ReusableTable/ReusableHeader.styles';
+import ReusableFilter from "../../../Components/ReusableTable/ReusableFilter";
+import { HeaderButton } from '../../../Components/ReusableTable/ReusableHeader.styles';
+import { useCurrency } from "../../../hooks/useCurrency"; // adjust path to match where you saved it
 
 const PayrollList = () => {
 
   const LIMIT = 20;
   const [status, setStatus] = useState("");
   const [selectedMoreStatuses, setSelectedMoreStatuses] = useState([]);
+
+  // Company's active currency, read from Redux (company slice) -
+  // single source of truth shared across every module.
+  const { currencyCode } = useCurrency();
 
   const {
     sortedData,
@@ -93,9 +98,10 @@ const PayrollList = () => {
     handleCircleClick,
     handleSingleStatusChange,
     getStatusColor,
+    currencyCode, // ← passed so any money column can format correctly
   });
 
-  const payrollCards = getPayrollCards(counts);
+  const payrollCards = getPayrollCards(currencyCode); // ← stats cards (e.g. total payout) formatted correctly
   const monthValue = `${selectedYear}-${String(selectedMonth).padStart(2, "0")}`;
   const handleDateChange = (value) => {
     const [year, month] = value.split("-");
@@ -193,6 +199,7 @@ const PayrollList = () => {
           month={selectedMonth}
           year={selectedYear}
           onClose={handleCloseModal}
+          currencyCode={currencyCode} // ← so incentive amounts display in the right currency
         />
       )}
 
@@ -202,6 +209,7 @@ const PayrollList = () => {
           month={selectedMonth}
           year={selectedYear}
           onClose={handleCloseDeductionModal}
+          currencyCode={currencyCode} // ← same for deductions
         />
       )}
 
