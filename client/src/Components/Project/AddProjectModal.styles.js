@@ -19,32 +19,26 @@ export const Overlay = styled.div`
 
 export const Modal = styled.div`
   width: 100%;
-  max-width: 648px;
+  max-width: 1040px;
 
   max-height: calc(100vh - 40px);
 
-  padding: 24px 15px 24px;
-
   background: #ffffff;
-
-  border: 1px solid #111111;
-  border-radius: 20px;
+  border-radius: 5px;
 
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
 
-  overflow-y: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   @media (max-width: 768px) {
     max-width: 600px;
-    padding: 22px 15px;
   }
 
   @media (max-width: 480px) {
     max-height: calc(100vh - 20px);
-
-    padding: 18px 12px;
-
-    border-radius: 15px;
+    border-radius: 12px;
   }
 `;
 
@@ -53,41 +47,41 @@ export const ModalHeader = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  padding: 4px 0 10px;
+  padding: 18px 28px;
+
+  background: #3352BA;
 `;
 
 export const ModalTitle = styled.h2`
   margin: 0;
-  color: #111111;
-font-family: "Poppins";
-font-weight: 600;
-font-style: SemiBold;
-font-size: 20px;
-line-height: 100%;
-letter-spacing: 0px;
+  color: #ffffff;
+  font-family: "Poppins";
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: 0px;
 
   @media (max-width: 480px) {
-    font-size: 18px;
+    font-size: 16px;
   }
 `;
 
 export const CloseButton = styled.button`
-  width: 29px;
-  height: 29px;
+  width: 28px;
+  height: 28px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #e2e2e2;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 5px;
 
-  background: #ffffff;
-  color: #3858c8;
+  background: transparent;
+  color: #ffffff;
 
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 300;
-
   line-height: 1;
 
   cursor: pointer;
@@ -95,30 +89,28 @@ export const CloseButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: #3858c8;
-    color: #ffffff;
-    border-color: #3858c8;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff;
   }
 `;
 
 export const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-
-  background: #e5e5e5;
-
-  margin-bottom: 16px;
+  display: none;
 `;
 
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
 
-  gap: 11px;
+  gap: 18px;
+
+  padding: 24px 28px 28px;
+  overflow-y: auto;
 `;
 
 export const FormGroup = styled.div`
   width: 100%;
+  min-width: 0;
 
   display: flex;
   flex-direction: column;
@@ -128,14 +120,12 @@ export const FormGroup = styled.div`
 
 export const Label = styled.label`
   color: #333333;
-font-family: "Poppins";
-font-weight: 400;
-font-style: Regular;
-font-size: 14px;
-line-height: 20px;
-letter-spacing: -0.05px;
-vertical-align: middle;
-  line-height: 1.3;
+  font-family: "Poppins";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.05px;
+  vertical-align: middle;
 `;
 
 export const Required = styled.span`
@@ -144,7 +134,7 @@ export const Required = styled.span`
 
 export const Input = styled.input`
   width: 100%;
-  height: 36px;
+  height: 38px;
 
   padding: 0 11px;
 
@@ -159,7 +149,7 @@ export const Input = styled.input`
   color: #222222;
 
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
 
   transition: border-color 0.2s ease;
 
@@ -174,15 +164,11 @@ export const Input = styled.input`
   &:hover {
     border-color: #cfcfcf;
   }
-
-  @media (max-width: 480px) {
-    height: 38px;
-  }
 `;
 
 export const Select = styled.select`
   width: 100%;
-  height: 36px;
+  height: 38px;
 
   padding: 0 11px;
 
@@ -197,30 +183,48 @@ export const Select = styled.select`
   color: #222222;
 
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
 
   cursor: pointer;
 
   &:focus {
     border-color: #3858c8;
   }
-
-  @media (max-width: 480px) {
-    height: 38px;
-  }
 `;
 
+/* Top row: Project Name, Project Type, Latitude, Longitude, Priority */
 export const FieldsRow = styled.div`
   width: 100%;
 
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
 
-  gap: 32px;
+  gap: 20px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 500px) {
     grid-template-columns: 1fr;
-    gap: 11px;
+  }
+`;
+
+/* Bottom row: Start Date, Project Status, Add Employee (wider) */
+export const SecondFieldsRow = styled.div`
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+
+  gap: 20px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -228,24 +232,49 @@ export const ButtonRow = styled.div`
   display: flex;
   align-items: center;
 
-  gap: 11px;
+  gap: 12px;
 
-  margin-top: 4px;
+  margin-top: 6px;
 `;
 
 export const CancelButton = styled.button`
-  height: 32px;
+  height: 38px;
 
-  padding: 0 16px;
+  padding: 0 24px;
 
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
+
+  background: #3b4ccb;
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #2e3ea8;
+  }
+`;
+
+export const CreateButton = styled.button`
+  height: 38px;
+
+  padding: 0 24px;
+
+  border: none;
+  border-radius: 6px;
 
   background: #ff8b20;
   color: #ffffff;
 
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 
   cursor: pointer;
 
@@ -253,28 +282,5 @@ export const CancelButton = styled.button`
 
   &:hover {
     background: #e9760d;
-  }
-`;
-
-export const CreateButton = styled.button`
-  height: 32px;
-
-  padding: 0 20px;
-
-  border: none;
-  border-radius: 4px;
-
-  background: #3858c8;
-  color: #ffffff;
-
-  font-size: 11px;
-  font-weight: 500;
-
-  cursor: pointer;
-
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #2949b8;
   }
 `;

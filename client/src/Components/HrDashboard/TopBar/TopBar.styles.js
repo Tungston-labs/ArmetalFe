@@ -6,11 +6,7 @@ export const Container = styled.header`
   align-items: center;
   flex-wrap: wrap;
   gap: 20px;
-
   padding: 12px 20px;
-
-  background: #f8fafc;
-  border-bottom: 1px solid #edf1f7;
 `;
 
 export const DateBox = styled.div`

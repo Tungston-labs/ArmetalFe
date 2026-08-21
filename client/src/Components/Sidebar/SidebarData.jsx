@@ -19,7 +19,7 @@ const getSidebarData = (user) => {
       {
         title: "DASHBOARD",
         icon: <MdOutlineLaptopChromebook />,
-        path: "/superadmin-dashboard",
+        path: "/dashboard",
       },
       {
         title: "COMPANYS",

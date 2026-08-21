@@ -6,7 +6,6 @@ export const Container = styled.div`
   padding:20px;
   font-family: "Segoe UI", sans-serif;
   min-height: 100vh;
-  max-width: 1600px; 
   margin: 0 auto;
 `;
 

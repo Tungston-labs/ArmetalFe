@@ -5,8 +5,8 @@ import Layout from "./Components/layout/Layout.jsx";
 import DepartmentList from "./Pages/department/DepartmentList";
 import EmployeeList from "./Pages/employee/EmployeeList.jsx";
 import Holiday from "./Pages/holiday/Holiday.jsx";
-import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx";
-import AddCompany from "./Pages/superAdmin/AddCompany.jsx";
+// import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx";
+// import AddCompany from "./Pages/superAdmin/AddCompany.jsx";
 import Visa from "./Pages/visa/Visa.jsx";
 import BasicLevel from "./Pages/employee/Form/BasicLevel.jsx";
 import BankPayment from "./Pages/employee/Form/BankPayment.jsx";
@@ -57,6 +57,11 @@ import HrDashboard from "./Pages/HrDashboard/HrDashboard.jsx";
 import Projects from "./Pages/Project/Projects.jsx";
 import ProjectDetails from "./Pages/Project/ProjectDetails.jsx";
 import LoginScreen from "./Pages/login/LoginScreen.jsx";
+import SuperAdmin_Dashboard from "./Pages/superAdmin/Dashboard/SuperAdmin_Dashboard.jsx";
+import AddCompany from "./Pages/superAdmin/AddCompany/AddCompany.jsx"
+import Company from "./Pages/superAdmin/Company/Company.jsx"
+import DepartmentCard from "./Pages/department/Department/DepartmentCard.jsx";
+import DepartmentDetails from "./Pages/department/Department/DepartmentDetails.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -89,13 +94,21 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<HrDashboard />} />
               <Route path="/department" element={<DepartmentList />} />
+
+                            <Route path="/departmentlist" element={<DepartmentCard />} />
+                              <Route path="/departments/:id" element={<DepartmentDetails />} />
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
               <Route path="/holiday" element={<Holiday />} />
               <Route path="/payrolldetails/:id" element={< PayrollDetailsContainer />} />
               <Route path="/payrolldetails" element={<PayrollTable />} />
-              <Route path="/company" element={<SuperAdmin />} />
+              <Route path="/company" element={<Company />} />
               <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard />} />
+
+                <Route path="/dashboard" element={<SuperAdmin_Dashboard/>} />
+                <Route path="/addcompany" element={<AddCompany />} />
+
+
               <Route path="/add-company" element={<AddCompany />} />
               <Route path="/employee-Contract-Visa-Expiry" element={<Visa />} />
               <Route path="/daily-task" element={<Daily />} />

@@ -107,7 +107,7 @@ const LoginForm = () => {
         })
       );
 
-      if (user.is_superadmin) navigate("/superadmin-dashboard");
+      if (user.is_superadmin) navigate("/dashboard");
       else navigate("/");
     } catch (err) {
       console.log(err);
