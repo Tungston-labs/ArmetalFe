@@ -8,14 +8,13 @@ import {
   ReportButton,
 } from "./AttendanceReportStyles";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
-import { getAttendanceSummary } from "../../Redux/attendanceSlice";
+import { getAttendanceSummary, generateAttendanceExcelReport } from "../../Redux/attendanceSlice";
 import Pagination from "../../Components/Pagination/Pagination";
-import { exportAttendanceExcel } from "../../utils/montlyAttendance";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 import { getDepartments } from "../../Redux/departmentSlice";
-
+import Swal from "sweetalert2";
 const AttendanceReport = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth || {});
@@ -23,6 +22,8 @@ const AttendanceReport = () => {
   const attendanceState = useSelector((state) => state.attendance || {});
   const attendanceSummary = attendanceState.attendanceSummary?.results || [];
   const summaryLoading = attendanceState.summaryLoading || false;
+  const excelLoading =
+    attendanceState.attendanceExcelLoading || false;
   const summaryData = attendanceState.attendanceSummary;
   const currentPage = summaryData?.current_page || 1;
   const totalPages = summaryData?.total_pages || 1;
@@ -34,7 +35,7 @@ const AttendanceReport = () => {
     new Date().toISOString().slice(0, 7)
   );
   const [searchTerm, setSearchTerm] = useState("");
-const { list: departmentList } = useSelector((state) => state.departments || {});
+  const { list: departmentList } = useSelector((state) => state.departments || {});
 
   const departmentRows = Array.isArray(departmentList?.results)
     ? departmentList.results
@@ -46,10 +47,10 @@ const { list: departmentList } = useSelector((state) => state.departments || {})
     () => departmentRows.map((d) => d.name),
     [departmentRows],
   );
-    useEffect(() => {
+  useEffect(() => {
     dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
-  
+
   const getMonthNameFromYYYYMM = (yyyyMM) => {
     if (!yyyyMM) return "";
     const d = new Date(`${yyyyMM}-01T00:00:00`);
@@ -121,9 +122,41 @@ const { list: departmentList } = useSelector((state) => state.departments || {})
 
 
 
-  const handleDownloadExcel = () => {
-    exportAttendanceExcel(summaryData.results, selectedMonth);
-  };
+const handleDownloadExcel = async () => {
+  if (excelLoading || !selectedMonth || !token) {
+    return;
+  }
+
+  const [year, month] = selectedMonth.split("-");
+
+  try {
+    const result = await dispatch(
+      generateAttendanceExcelReport({
+        year: Number(year),
+        month: Number(month),
+        token,
+      })
+    ).unwrap();
+
+    console.log("Attendance Excel response:", result);
+
+    if (result?.download_url) {
+      window.open(result.download_url, "_blank");
+    }
+
+  } catch (error) {
+    console.error("Excel generation failed:", error);
+
+    Swal.fire({
+      icon: "warning",
+      title: "Cannot Generate Report",
+      text:
+        error?.detail ||
+        "Failed to generate attendance report.",
+      confirmButtonText: "OK",
+    });
+  }
+};
 
   const getLop = (row) => row.lop_days ?? row.lop ?? 0;
 
@@ -135,8 +168,8 @@ const { list: departmentList } = useSelector((state) => state.departments || {})
       sortable: false,
       render: (row, index) => index + 1 + (currentPage - 1) * 20,
     },
-   
-     {
+
+    {
       header: "Employee name",
       accessor: "employee_name",
       render: (row) => (
@@ -191,8 +224,15 @@ const { list: departmentList } = useSelector((state) => state.departments || {})
     <Container>
       <ReusableHeader
         title="Employees Attendance Report"
-        breadcrumbs={["Employees", "Employees Attendance Report"]}
-        buttonText="📊 Monthly Report (Excel)"
+        breadcrumbs={[
+          "Employees",
+          "Employees Attendance Report"
+        ]}
+        buttonText={
+          excelLoading
+            ? "Generating Excel..."
+            : "📊 Monthly Report (Excel)"
+        }
         onButtonClick={handleDownloadExcel}
       />
       <ReusableFilter
@@ -212,14 +252,14 @@ const { list: departmentList } = useSelector((state) => state.departments || {})
         showDate
       />
       <PageWrapper>
- 
-          <ReusableTable
-            columns={columns}
-            data={visibleRows}
-            loading={summaryLoading}
-            onRowClick={handleRowClick}
-          />
-      
+
+        <ReusableTable
+          columns={columns}
+          data={visibleRows}
+          loading={summaryLoading}
+          onRowClick={handleRowClick}
+        />
+
 
         <Pagination
           currentPage={currentPage}

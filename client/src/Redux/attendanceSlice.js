@@ -4,6 +4,7 @@ import {
   fetchAttendanceDetail,
   fetchDepartmentsAttendance,
   fetchAttendanceSummary,
+  generateAttendanceExcel,
 } from "../services/attendanceService";
 
 export const getAttendanceList = createAsyncThunk(
@@ -58,9 +59,9 @@ export const searchAttendanceEmployees = createAsyncThunk(
 
 export const getAttendanceSummary = createAsyncThunk(
   "attendance/getSummary",
-  async ({ year, month, token ,page = 1}, thunkAPI) => {
+  async ({ year, month, token, page = 1 }, thunkAPI) => {
     try {
-      return await fetchAttendanceSummary({ year, month, token,page });
+      return await fetchAttendanceSummary({ year, month, token, page });
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch attendance summary"
@@ -68,7 +69,34 @@ export const getAttendanceSummary = createAsyncThunk(
     }
   }
 );
+export const generateAttendanceExcelReport = createAsyncThunk(
+  "attendance/generateAttendanceExcelReport",
+  async (
+    {
+      year,
+      month,
+      token,
+    },
+    thunkAPI
+  ) => {
 
+    try {
+
+      return await generateAttendanceExcel({
+        year,
+        month,
+        token,
+      });
+
+    } catch (error) {
+
+      return thunkAPI.rejectWithValue(
+        error.response?.data ||
+        "Failed to generate attendance Excel"
+      );
+    }
+  }
+);
 /* Slice */
 const attendanceSlice = createSlice({
   name: "attendance",
@@ -102,6 +130,11 @@ const attendanceSlice = createSlice({
     // Monthly summary
     attendanceSummary: null,
     summaryLoading: false,
+
+    // Monthly Excel report
+    attendanceExcel: null,
+    attendanceExcelLoading: false,
+    attendanceExcelError: null,
 
     // Generic error holder
     error: null,
@@ -172,23 +205,61 @@ const attendanceSlice = createSlice({
         state.summaryLoading = true;
         state.error = null;
       })
-  .addCase(getAttendanceSummary.fulfilled, (state, action) => {
-  state.summaryLoading = false;
+      .addCase(getAttendanceSummary.fulfilled, (state, action) => {
+        state.summaryLoading = false;
 
-  state.attendanceSummary = {
-    results: action.payload.results || [],
-    total_pages: action.payload.total_pages || 1,
-    current_page: action.payload.current_page || 1,
-    total_items: action.payload.total_items || 0,
-    next: action.payload.next || null,
-    previous: action.payload.previous || null,
-  };
-})
+        state.attendanceSummary = {
+          results: action.payload.results || [],
+          total_pages: action.payload.total_pages || 1,
+          current_page: action.payload.current_page || 1,
+          total_items: action.payload.total_items || 0,
+          next: action.payload.next || null,
+          previous: action.payload.previous || null,
+        };
+      })
       .addCase(getAttendanceSummary.rejected, (state, action) => {
         state.summaryLoading = false;
         state.attendanceSummary = [];
         state.error = action.payload || "Failed to fetch summary";
-      });
+      })
+      // =========================================================
+// Generate Attendance Excel
+// =========================================================
+
+.addCase(
+  generateAttendanceExcelReport.pending,
+  (state) => {
+
+    state.attendanceExcelLoading = true;
+    state.attendanceExcelError = null;
+  }
+)
+
+.addCase(
+  generateAttendanceExcelReport.fulfilled,
+  (state, action) => {
+
+    state.attendanceExcelLoading = false;
+
+    state.attendanceExcel = action.payload;
+  }
+)
+
+.addCase(
+  generateAttendanceExcelReport.rejected,
+  (state, action) => {
+
+    state.attendanceExcelLoading = false;
+
+    state.attendanceExcelError =
+      action.payload ||
+      "Failed to generate attendance Excel";
+
+    state.error =
+      action.payload ||
+      "Failed to generate attendance Excel";
+  }
+);
 
   },
 });

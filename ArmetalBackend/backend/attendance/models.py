@@ -238,3 +238,46 @@ class HourlyLocationLog(models.Model):
 
     class Meta:
         ordering = ['-logged_at']
+
+
+class EmployeeAttendanceReport(models.Model):
+
+    company = models.ForeignKey(
+        "superadmin.Company",
+        on_delete=models.CASCADE,
+        related_name="attendance_reports"
+    )
+
+    year = models.PositiveIntegerField()
+
+    month = models.PositiveIntegerField()
+
+    report_file = models.FileField(
+        upload_to="attendance_reports/"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "company",
+                    "year",
+                    "month"
+                ],
+                name="unique_company_attendance_report"
+            )
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.company} - "
+            f"{self.year}-{self.month:02d}"
+        )

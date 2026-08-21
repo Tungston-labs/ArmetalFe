@@ -28,11 +28,12 @@ from shared.pagination import CustomPagination
 from rest_framework.exceptions import ValidationError
 from rest_framework import status
 logger = logging.getLogger(__name__)
+from leave.models import LeaveRequest
 
 # --------------------------------------------------------------view for swipe in/out
 class AttendanceSwipeView(APIView):
     permission_classes = [IsAuthenticated]
-
+ 
     def post(self, request):
         try:
             user = request.user
@@ -115,17 +116,25 @@ class AttendanceSwipeView(APIView):
             now_company_tz = now_utc.astimezone(company_tz)
             today = now_company_tz.date()
 
-            from leave.models import LeaveRequest
-            is_on_leave = LeaveRequest.objects.filter(
+            # =========================================================
+            # APPROVED LEAVE CHECK
+            # =========================================================
+
+            is_on_full_day_leave = LeaveRequest.objects.filter(
                 employee=employee,
                 status="approved",
                 from_date__lte=today,
-                to_date__gte=today
+                to_date__gte=today,
+                from_date_type="full",
+                to_date_type="full",
             ).exists()
 
-            if is_on_leave:
+            if is_on_full_day_leave:
                 return Response(
-                    {"error": "You are currently on approved leave and cannot mark attendance."},
+                    {
+                        "error":
+                            "You are currently on approved full-day leave and cannot mark attendance."
+                    },
                     status=400
                 )
 
@@ -784,15 +793,15 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
             "department",
             "department__company"
         ).filter(
-            department__company=user.company
+            department__company=user.company,is_deleted=False
         )
 
         # -------------------------------------------------
         # Employee / HR role
         # -------------------------------------------------
 
-        if user.is_employee or user.is_hr:
-            qs = qs.filter(user=user)
+        # if user.is_employee:
+        #     qs = qs.filter(user=user)
 
         # -------------------------------------------------
         # Employee must have joined on or before the
@@ -1140,6 +1149,263 @@ class AttendanceCorrectionStatusUpdateView(
                     correction_request,
                     context={"request": request}
                 ).data,
+            },
+            status=status.HTTP_200_OK
+        )
+    
+
+from django.core.files.base import ContentFile
+from django.db import transaction
+
+from attendance.models import EmployeeAttendanceReport
+
+from attendance.utils.attendance_excel import (
+    generate_attendance_excel
+)
+
+from .utils.dayscalculations import (
+    build_employee_month_calendar
+)
+class GenerateEmployeeAttendanceExcelView(
+    generics.GenericAPIView
+):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def post(self, request, *args, **kwargs):
+
+        user = request.user
+
+        # =====================================================
+        # COMPANY
+        # =====================================================
+
+        if not user.company:
+
+            return Response(
+                {
+                    "detail":
+                        "User is not associated with a company."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # YEAR / MONTH
+        # =====================================================
+
+        today = date.today()
+
+        try:
+
+            year = int(
+                request.data.get(
+                    "year",
+                    today.year
+                )
+            )
+
+            month = int(
+                request.data.get(
+                    "month",
+                    today.month
+                )
+            )
+
+        except (
+            TypeError,
+            ValueError
+        ):
+
+            return Response(
+                {
+                    "detail":
+                        "Invalid year or month."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # VALIDATE MONTH
+        # =====================================================
+
+        if month < 1 or month > 12:
+
+            return Response(
+                {
+                    "detail":
+                        "Month must be between 1 and 12."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # SELECTED MONTH
+        # =====================================================
+
+        start_date = date(
+            year,
+            month,
+            1
+        )
+
+        last_day = calendar.monthrange(
+            year,
+            month
+        )[1]
+
+        end_date = date(
+            year,
+            month,
+            last_day
+        )
+
+        # =====================================================
+        # FUTURE MONTH
+        # =====================================================
+
+        if start_date > today.replace(day=1):
+
+            return Response(
+                {
+                    "detail":
+                        "Cannot generate attendance report for a future month."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # EMPLOYEES
+        # =====================================================
+
+        employees = (
+            Employee_db.objects
+            .select_related(
+                "department",
+                "department__company"
+            )
+            .filter(
+                department__company=user.company,
+                joining_date__lte=end_date
+            )
+            .filter(
+                is_deleted=False
+            )
+            .order_by(
+                "department__name",
+                "name_search"
+            )
+        )
+
+        # =====================================================
+        # GENERATE EXCEL
+        # =====================================================
+
+        excel_file = generate_attendance_excel(
+            employees=employees,
+            year=year,
+            month=month,
+            build_calendar_func=
+                build_employee_month_calendar
+        )
+
+        # =====================================================
+        # FILE NAME
+        # =====================================================
+
+        file_name = (
+            f"Attendance_"
+            f"{year}_"
+            f"{month:02d}.xlsx"
+        )
+
+        # =====================================================
+        # REPLACE EXISTING REPORT
+        # =====================================================
+
+        with transaction.atomic():
+
+            existing_report = (
+                EmployeeAttendanceReport.objects
+                .filter(
+                    company=user.company,
+                    year=year,
+                    month=month
+                )
+                .first()
+            )
+
+            if existing_report:
+
+                # Delete old physical file
+                if existing_report.report_file:
+
+                    existing_report.report_file.delete(
+                        save=False
+                    )
+
+                existing_report.report_file.save(
+                    file_name,
+                    ContentFile(
+                        excel_file.getvalue()
+                    ),
+                    save=True
+                )
+
+                report = existing_report
+
+            else:
+
+                report = (
+                    EmployeeAttendanceReport.objects
+                    .create(
+                        company=user.company,
+                        year=year,
+                        month=month
+                    )
+                )
+
+                report.report_file.save(
+                    file_name,
+                    ContentFile(
+                        excel_file.getvalue()
+                    ),
+                    save=True
+                )
+
+        # =====================================================
+        # RESPONSE
+        # =====================================================
+
+        return Response(
+            {
+                "message":
+                    "Attendance report generated successfully.",
+
+                "year":
+                    year,
+
+                "month":
+                    month,
+
+                "report_id":
+                    report.id,
+
+                "file_name":
+                    file_name,
+
+                "download_url":
+                    request.build_absolute_uri(
+                        report.report_file.url
+                    ),
+
+                "created_at":
+                    report.created_at,
+
+                "updated_at":
+                    report.updated_at,
             },
             status=status.HTTP_200_OK
         )
