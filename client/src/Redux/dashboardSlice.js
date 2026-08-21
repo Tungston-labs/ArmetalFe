@@ -14,8 +14,6 @@ import {
   fetchProjectEmployeeCount
 } from '../services/dashboardService';
 
-
-
 export const getDashboardSummary = createAsyncThunk(
   'dashboard/getSummary',
   async (_, thunkAPI) => {
@@ -26,8 +24,6 @@ export const getDashboardSummary = createAsyncThunk(
     }
   }
 );
-
-
 
 export const getDashCounts = createAsyncThunk(
   'dashboard/getDashCounts',
@@ -139,8 +135,6 @@ export const getProjectEmployeeCount = createAsyncThunk(
   }
 );
 
-
-
 const dashboardSlice = createSlice({
   name: 'dashboard',
   initialState: {
@@ -168,29 +162,27 @@ const dashboardSlice = createSlice({
       holidaySummary: false,
       projectEmployeeCount: false,
     },
-    
+
     error: null
   },
 
   reducers: {},
 
   extraReducers: (builder) => {
-    
-    builder
-    .addCase(getDashboardSummary.pending, (state) => {
-      state.loading.summary = true;
-      state.error = null;
-    })
-    .addCase(getDashboardSummary.fulfilled, (state, action) => {
-      state.loading.summary = false;
-      state.summary = action.payload;
-    })
-    .addCase(getDashboardSummary.rejected, (state, action) => {
-      state.loading.summary = false;
-      state.error = action.payload;
-    });
-    
 
+    builder
+      .addCase(getDashboardSummary.pending, (state) => {
+        state.loading.summary = true;
+        state.error = null;
+      })
+      .addCase(getDashboardSummary.fulfilled, (state, action) => {
+        state.loading.summary = false;
+        state.summary = action.payload;
+      })
+      .addCase(getDashboardSummary.rejected, (state, action) => {
+        state.loading.summary = false;
+        state.error = action.payload;
+      });
 
     addAsync(builder, getDashCounts, "counts");
     addAsync(builder, getReimbursementCounts, "reimbursements");
@@ -204,7 +196,6 @@ const dashboardSlice = createSlice({
     addAsync(builder, getProjectEmployeeCount, "projectEmployeeCount");
   }
 });
-
 
 function addAsync(builder, thunk, key) {
   builder
@@ -221,6 +212,5 @@ function addAsync(builder, thunk, key) {
       state.error = action.payload;
     });
 }
-                                                                                 
 
 export default dashboardSlice.reducer;

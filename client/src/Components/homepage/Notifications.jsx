@@ -5,7 +5,7 @@ import {
   NotificationItem,
   NotificationText,
   NotificationTime,
-  NoNotification
+  NoNotification,
 } from "./Notifications.styles";
 
 const Notifications = ({ items }) => {

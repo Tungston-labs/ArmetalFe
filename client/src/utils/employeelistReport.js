@@ -135,9 +135,9 @@ export const exportEmployeeReport = (employees = []) => {
           alignment: {
             horizontal:
               col === "C" ||
-              col === "D" ||
-              col === "E" ||
-              col === "H"
+                col === "D" ||
+                col === "E" ||
+                col === "H"
                 ? "left"
                 : "center",
             vertical: "center",
