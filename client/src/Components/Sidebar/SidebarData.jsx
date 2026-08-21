@@ -48,7 +48,7 @@ const getSidebarData = (user) => {
     }
 
     if (modules.department) {
-      items.push({ title: "DEPARTMENT", icon: <PiNetworkLight />, path: "/department" });
+      items.push({ title: "DEPARTMENT", icon: <PiNetworkLight />, path: "/departmentlist" });
     }
 
     if (modules.employee) {
@@ -83,7 +83,7 @@ const getSidebarData = (user) => {
     }
 
     if (modules.reimbursement) {
-      items.push({ title: "REIMBURSEMENT", icon: <LuCircleDollarSign />, path: "/reimbursement" });
+      items.push({ title: "REIMBURSEMENT", icon: <LuCircleDollarSign />, path: "/ReimbursementCards" });
     }
 
     if (modules.project) {

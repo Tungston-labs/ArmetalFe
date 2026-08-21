@@ -35,7 +35,7 @@ import { useDispatch } from "react-redux";
 import { login } from "./Redux/authSlice";
 import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
 import FieldShift from "./Pages/Project/Project.jsx"
-import FieldDepartment from "./Pages/Project/ProjectInfo.jsx"
+// import FieldDepartment from "./Pages/Project/ProjectInfo.jsx"
 import AttendanceList from "./Pages/attendance/AttendanceList.jsx"
 import ReimbursementList from "./Pages/reimbursement/ReimbursementList.jsx";
 import Daily from "./Pages/dailytask/DailyTask.jsx"
@@ -62,6 +62,8 @@ import AddCompany from "./Pages/superAdmin/AddCompany/AddCompany.jsx"
 import Company from "./Pages/superAdmin/Company/Company.jsx"
 import DepartmentCard from "./Pages/department/Department/DepartmentCard.jsx";
 import DepartmentDetails from "./Pages/department/Department/DepartmentDetails.jsx";
+import ReimbursementCards from "./Pages/reimbursement/ReimbursementCards.jsx";
+import ReimbursementDetails from "./Pages/reimbursement/ReimbursementDetails.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -125,6 +127,11 @@ function App() {
               <Route path="/employee-leave" element={<DetailOnleave />} />
               <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
               <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
+
+
+
+                 <Route path="/ReimbursementCards" element={<ReimbursementCards />} />
+                     <Route path="/reimbursements/:id" element={<ReimbursementDetails />} />
               <Route path="/reimbursement" element={<ReimbursementList />} />
               <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
               <Route path="/finance" element={<FinancePage />} />
@@ -132,7 +139,7 @@ function App() {
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/:id" element={<ProjectDetails />} />
 
-              <Route path="/project-department/:id/" element={<FieldDepartment />} />
+              {/* <Route path="/project-department/:id/" element={<FieldDepartment />} /> */}
               <Route path="/layout" element={<ViewLayout />} />
               <Route path="/employee-attendance-report" element={< AttendanceReport />} />
               <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />} />

@@ -234,3 +234,77 @@ export const employeeData = [
     status: "Present",
   },
 ];
+
+export const reimbursementColumns = [
+    {
+        header: "Employee",
+        accessor: "employeeName",
+    },
+    {
+        header: "Reimbursement Type",
+        accessor: "reimbursementType",
+    },
+    {
+        header: "Amount",
+        accessor: "amount",
+    },
+    {
+        header: "Date",
+        accessor: "date",
+    },
+    {
+        header: "Description",
+        accessor: "description",
+    },
+    {
+        header: "Status",
+        accessor: "status",
+    },
+];
+export const reimbursementData = [
+    {
+        id: 1,
+        employeeName: "Ansal",
+        reimbursementType: "Travel",
+        amount: "₹12,500",
+        date: "21-08-2026",
+        description: "Client meeting travel expenses",
+        status: "Approved",
+    },
+    {
+        id: 2,
+        employeeName: "Rahul",
+        reimbursementType: "Medical",
+        amount: "₹8,500",
+        date: "20-08-2026",
+        description: "Medical expenses",
+        status: "Pending",
+    },
+    {
+        id: 3,
+        employeeName: "Priya",
+        reimbursementType: "Food",
+        amount: "₹4,500",
+        date: "19-08-2026",
+        description: "Business lunch expenses",
+        status: "Approved",
+    },
+    {
+        id: 4,
+        employeeName: "Amit",
+        reimbursementType: "Fuel",
+        amount: "₹6,000",
+        date: "18-08-2026",
+        description: "Official travel fuel expenses",
+        status: "Rejected",
+    },
+    {
+        id: 5,
+        employeeName: "Rishal",
+        reimbursementType: "Accommodation",
+        amount: "₹15,000",
+        date: "17-08-2026",
+        description: "Business trip accommodation",
+        status: "Pending",
+    },
+];

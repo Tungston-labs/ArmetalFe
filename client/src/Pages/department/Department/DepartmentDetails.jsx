@@ -21,9 +21,6 @@ import {
 
 const DepartmentDetails = () => {
     const [search, setSearch] = useState("");
-    const [department, setDepartment] = useState("");
-    const [status, setStatus] = useState("");
-    const [month, setMonth] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
 

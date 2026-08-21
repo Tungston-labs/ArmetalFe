@@ -308,14 +308,52 @@ export const AddMember = styled.button`
 
   font-size: 22px;
   font-weight: 300;
+  line-height: 1;
 
   cursor: pointer;
 
-  transition: all 0.3s ease;
+  box-sizing: border-box;
+  flex-shrink: 0;
+
+  position: relative;
+  z-index: 2;
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  /* When card is hovered */
+  ${Card}:hover & {
+    background: #ffffff;
+    color: #3858c8;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  }
+
+  /* When + button itself is hovered */
+  &:hover {
+    transform: translateY(-3px) scale(1.08);
+
+    background: #ff8b2c;
+    color: #ffffff;
+
+    border-color: #ffffff;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+
+    z-index: 10;
+  }
+
+  &:active {
+    transform: translateY(-1px) scale(1.03);
+  }
 
   @media (max-width: 480px) {
     width: 29px;
     height: 29px;
+
     font-size: 19px;
   }
 `;
