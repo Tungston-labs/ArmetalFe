@@ -26,24 +26,44 @@ const ProjectCard = ({
   priority,
   members = [],
   memberCount = 0,
+  onAddMember,
 }) => {
   const navigate = useNavigate();
 
- const [categoryName, categoryType] = (category || "PROJECT_GENERAL").split("_");
+  const [categoryName, categoryType] = (
+    category || "PROJECT_GENERAL"
+  ).split("_");
 
   const handleViewMore = () => {
     console.log("clicked, navigating to id:", id);
+
     navigate(`/projects/${id}`);
   };
 
-  // Get first two letters from employee name
+  // Get initials from employee name
   const getInitials = (name = "") => {
     return name
       .trim()
       .split(/\s+/)
-      .map((word) => word.charAt(0).toUpperCase())
+      .map((word) =>
+        word.charAt(0).toUpperCase()
+      )
       .slice(0, 2)
       .join("");
+  };
+
+  // Add employee
+  const handleAddMember = (e) => {
+    // Prevent card/view-more click if you later add
+    // an onClick to the card itself
+    e.stopPropagation();
+
+    if (onAddMember) {
+      onAddMember({
+        id,
+        title,
+      });
+    }
   };
 
   return (
@@ -58,8 +78,14 @@ const ProjectCard = ({
 
         <TagsRow>
           <DateTag>{date}</DateTag>
-          <StatusTag status={status}>{status}</StatusTag>
-          <PriorityTag>{priority}</PriorityTag>
+
+          <StatusTag status={status}>
+            {status}
+          </StatusTag>
+
+          <PriorityTag>
+            {priority}
+          </PriorityTag>
         </TagsRow>
       </div>
 
@@ -77,10 +103,19 @@ const ProjectCard = ({
             </MemberCount>
           )}
 
-          <AddMember>+</AddMember>
+          {/* ADD EMPLOYEE */}
+          <AddMember
+            type="button"
+            onClick={handleAddMember}
+          >
+            +
+          </AddMember>
         </Members>
 
-        <ViewMoreButton onClick={handleViewMore}>
+        <ViewMoreButton
+          type="button"
+          onClick={handleViewMore}
+        >
           VIEW MORE
         </ViewMoreButton>
       </BottomSection>

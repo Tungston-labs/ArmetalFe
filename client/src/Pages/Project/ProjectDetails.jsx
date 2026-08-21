@@ -28,7 +28,7 @@ import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import StatsCards from "../../Components/StatsCards/StatsCards";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
-
+import ProjectModal from "../../Components/Project/modal/ProjectModal";
 import {
     DetailsPage,
     DetailsContainer,
@@ -79,7 +79,8 @@ const ProjectDetails = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const [isDeleting, setIsDeleting] = useState(false);
-
+// EDIT PROJECT MODAL
+const [showProjectModal, setShowProjectModal] = useState(false);
 
     // =====================================================
     // ADD EMPLOYEE MODAL
@@ -184,7 +185,29 @@ const ProjectDetails = () => {
 
     };
 
+// =====================================================
+// EDIT PROJECT
+// =====================================================
 
+const handleOpenEditProject = () => {
+    if (!project) return;
+
+    setShowProjectModal(true);
+};
+
+const handleCloseProjectModal = () => {
+    setShowProjectModal(false);
+};
+
+const handleUpdateProject = (formData, editData) => {
+    console.log("UPDATE PROJECT");
+    console.log("Project:", editData);
+    console.log("Updated Data:", formData);
+
+    // PUT / PATCH API CALL HERE
+
+    setShowProjectModal(false);
+};
     // =====================================================
     // DELETE PROJECT
     // =====================================================
@@ -441,14 +464,12 @@ const ProjectDetails = () => {
                 {/* EDIT */}
 
                 <HeaderButton
-                    type="button"
-                >
-
-                    <PiPencilSimple />
-
-                    Edit
-
-                </HeaderButton>
+    type="button"
+    onClick={handleOpenEditProject}
+>
+    <PiPencilSimple />
+    Edit
+</HeaderButton>
 
 
                 {/* DELETE */}
@@ -601,7 +622,12 @@ const ProjectDetails = () => {
                 }}
 
             />
-
+<ProjectModal
+    isOpen={showProjectModal}
+    onClose={handleCloseProjectModal}
+    editData={project}
+    onSubmit={handleUpdateProject}
+/>
 
             {/* =================================================
                 ADD EMPLOYEE MODAL

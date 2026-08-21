@@ -15,7 +15,7 @@ import {
 } from "./Project.Styles";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import cardBg from "../../assets/shift.svg";
-import AddProjectModal from "../../Components/Project/modal/AddProjectModal";
+import AddProjectModal from "../../Components/Project/modal/ProjectModal";
 import FieldShiftIcon from "../../assets/projecticon.svg";
 import TagIcon from "../../assets/downicon.svg";
 import { getProjects } from "../../Redux/fieldShiftSlice";
