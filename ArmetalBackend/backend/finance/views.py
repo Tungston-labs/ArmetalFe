@@ -56,17 +56,33 @@ class FinanceRecordListCreateView(generics.ListCreateAPIView):
         user = self.request.user
 
         if getattr(user, "is_superadmin", False):
-            return FinanceRecord.objects.filter(
+            queryset = FinanceRecord.objects.filter(
                 company__isnull=True
-            ).order_by("-created_at")
-
-        if user.company:
-            return FinanceRecord.objects.filter(
+            )
+        elif user.company:
+            queryset = FinanceRecord.objects.filter(
                 company=user.company
-            ).order_by("-created_at")
+            )
+        else:
+            return FinanceRecord.objects.none()
 
-        return FinanceRecord.objects.none()
+        # Filter by selected month
+        month = self.request.query_params.get("month")
 
+        if month:
+            try:
+                year, month_number = month.split("-")
+
+                queryset = queryset.filter(
+                    date__year=int(year),
+                    date__month=int(month_number)
+                )
+
+            except (ValueError, TypeError):
+                pass
+
+        # Sort by finance transaction date
+        return queryset.order_by("-date", "-created_at")    
     # ---------------------------------------------------
     # CREATE (Auto assign company)
     # ---------------------------------------------------

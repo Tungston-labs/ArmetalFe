@@ -163,28 +163,51 @@ export const ActionButton = styled.button`
 
 export const HeaderButton = styled.button`
   height: 40px;
+
   padding: 0 14px;
+
   border: none;
+
   border-radius: 5px;
+
   color: white;
+
   font-size: 13px;
+
   font-weight: 500;
+
   cursor: pointer;
+
   white-space: nowrap;
+
   transition: 0.3s;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 
   background: ${({ $variant }) => {
     switch ($variant) {
       case "danger":
         return "#DB0F12";
+
       case "success":
         return "#15B03E";
+
       case "blue":
         return "#3352BA";
+
       default:
         return "#3352ba";
     }
   }};
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
 
   &:hover {
     opacity: 0.9;

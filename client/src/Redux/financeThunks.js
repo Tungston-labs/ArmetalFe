@@ -20,7 +20,13 @@ export const createFinance = createAsyncThunk(
 export const fetchFinanceList = createAsyncThunk(
   "finance/list",
   async (
-    { page = 1, pageSize = 20, search = "", payment_type = "" } = {},
+    {
+      page = 1,
+      pageSize = 20,
+      search = "",
+      payment_type = "",
+      month = "",
+    } = {},
     { rejectWithValue }
   ) => {
     try {
@@ -28,8 +34,10 @@ export const fetchFinanceList = createAsyncThunk(
         page,
         pageSize,
         search,
-        payment_type
+        payment_type,
+        month
       );
+
       return response;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

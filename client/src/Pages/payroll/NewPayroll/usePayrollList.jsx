@@ -1,16 +1,14 @@
 import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { BiMessageSquareDetail } from "react-icons/bi";
 import {
   getPayrollData,
   updatePayrollStatus,
   verifyEmployeePayroll,
   getPayrollCounts,
-} from "../../Redux/payrollSlice";
-import { getDepartments } from "../../Redux/departmentSlice";
+} from "../../../Redux/payrollSlice";
+import { getDepartments } from "../../../Redux/departmentSlice";
 import { PiMoneyWavyLight } from "react-icons/pi";
-import { LuUserRound } from "react-icons/lu";
 import { PiClockCountdown } from "react-icons/pi";
 import { GoGift } from "react-icons/go";
 import { HiArrowTrendingDown } from "react-icons/hi2";
@@ -50,7 +48,7 @@ export const getPayrollCards = ({
   pending_payroll_count = 0,
   total_incentive_amount = 0,
   total_deduction_amount = 0,
-} = {}) => [
+} = {}, currencyCode = "") => [
   {
     title: "Total Payroll",
     count: total_payroll,
@@ -69,7 +67,7 @@ export const getPayrollCards = ({
 
   {
     title: "Incentive Amount",
-    count: total_incentive_amount,
+    count: `${currencyCode} ${Number(total_incentive_amount).toLocaleString()}`,
     icon: <GoGift />,
     iconColor: "#15aa60",
     backgroundColor: "#E3F7ED",
@@ -77,7 +75,7 @@ export const getPayrollCards = ({
 
   {
     title: "Deduction Amount",
-    count: total_deduction_amount,
+    count: `${currencyCode} ${Number(total_deduction_amount).toLocaleString()}`,
     icon: <HiArrowTrendingDown />,
     iconColor: "#f3214f",
     backgroundColor: "#FFEDED",

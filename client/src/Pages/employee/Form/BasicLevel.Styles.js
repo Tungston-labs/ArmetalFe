@@ -4,7 +4,6 @@ import { FaPlus } from "react-icons/fa6";
 
 export const Container = styled.div`
   padding: 20px;
-  background: #FFFFFF;
   font-family: Satoshi;
   box-sizing: border-box;
 

@@ -9,6 +9,11 @@ import SyncLoader from "../../../Components/Loader/Loder";
 import ViewBasicLayout from "../layout/ViewLayout";
 import ViewTableBank from "./ViewTableBank";
 import { Section } from "./ViewBankpayment.Styles";
+import {
+  getBankSubmissionDefaults,
+  isIndiaCompany,
+  isUaeCompany,
+} from "../../../utils/employeeCountryFields";
 
 const ViewBankPayment = () => {
   const { id } = useParams();
@@ -34,7 +39,10 @@ const ViewBankPayment = () => {
   const [transportation, setTransportation] = useState("");
   const [errors, setErrors] = useState({});
 
-  const country = employeeDetail?.country || "IN";
+  const user =
+    JSON.parse(localStorage.getItem("user") || "null") ||
+    JSON.parse(sessionStorage.getItem("user") || "null");
+  const country = employeeDetail?.company?.country || user?.company?.country || "IN";
 
   // Fetch employee details and bank payments
   useEffect(() => {
@@ -60,7 +68,7 @@ const ViewBankPayment = () => {
     setTransportation(latest.transportation || "");
 
     // ✅ Handle IFSC/Swift properly
-    if (country === "IN") {
+    if (isIndiaCompany(country)) {
       setIfscCode(latest.swift_code || ""); // IFSC stored in swift_code
       setSwiftCode("");
     } else {
@@ -72,25 +80,47 @@ const ViewBankPayment = () => {
   const handleSave = () => {
     const existingPayment = employeeBankPayments?.results?.[0];
     const existingPaymentId = existingPayment?.id || null;
+    const newErrors = {};
 
-    if (!bankName || !accountNumber || !basicSalary) {
-      setErrors({
-        bankName: !bankName ? "Bank Name is required" : "",
-        accountNumber: !accountNumber ? "Account Number is required" : "",
-        basicSalary: !basicSalary ? "Basic Salary is required" : "",
-      });
+    if (!bankName) newErrors.bankName = "Bank Name is required";
+    if (!accountNumber) newErrors.accountNumber = "Account Number is required";
+    if (!basicSalary) newErrors.basicSalary = "Basic Salary is required";
+
+    if (isIndiaCompany(country)) {
+      if (!ifscCode.trim()) newErrors.ifscCode = "IFSC Code is required";
+      else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode.trim().toUpperCase())) {
+        newErrors.ifscCode = "Enter a valid IFSC Code";
+      }
+
+      if (!panNumber.trim()) newErrors.panNumber = "PAN Number is required";
+      else if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(panNumber.trim().toUpperCase())) {
+        newErrors.panNumber = "Enter a valid PAN Number";
+      }
+
+      if (!taxRegime) newErrors.taxRegime = "Tax Regime is required";
+    } else if (!swiftCode.trim()) {
+      newErrors.swiftCode = "SWIFT / BIC Code is required";
+    }
+
+    if (isUaeCompany(country) && accountNumber.trim() && !/^AE[0-9]{21}$/.test(accountNumber.trim().replace(/\s/g, "").toUpperCase())) {
+      newErrors.accountNumber = "Enter a valid UAE IBAN";
+    }
+
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors);
       return;
     }
 
+    const countryDefaults = getBankSubmissionDefaults(country);
     const formData = new FormData();
     formData.append("bank_name", bankName);
-    formData.append("swift_code", country === "IN" ? ifscCode : swiftCode);
+    formData.append("swift_code", isIndiaCompany(country) ? ifscCode.trim().toUpperCase() : swiftCode.trim().toUpperCase());
     formData.append("account_number", accountNumber);
-    formData.append("uan_epf_number", uanNumber);
-    formData.append("pan_number", panNumber);
-    formData.append("tax_regime", taxRegime);
-formData.append("tds_deduction_amount", tdsAmount);
-formData.append("declaration_80c", declaration80C);
+    formData.append("uan_epf_number", isIndiaCompany(country) ? uanNumber : "");
+    formData.append("pan_number", countryDefaults.pan_number ?? panNumber.trim().toUpperCase());
+    formData.append("tax_regime", countryDefaults.tax_regime ?? taxRegime);
+formData.append("tds_deduction_amount", countryDefaults.tds_deduction_amount ?? tdsAmount);
+formData.append("declaration_80c", countryDefaults.declaration_80c ?? declaration80C);
     formData.append("basic_salary", basicSalary);
     formData.append("salary_increment", salaryIncrement);
     formData.append("housing_allowance", housingAllowance);

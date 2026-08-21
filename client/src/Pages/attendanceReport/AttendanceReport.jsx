@@ -3,9 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
   PageWrapper,
-  TopBar,
-  MonthSelector,
-  ReportButton,
 } from "./AttendanceReportStyles";
 import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
 import { getAttendanceSummary, generateAttendanceExcelReport } from "../../Redux/attendanceSlice";

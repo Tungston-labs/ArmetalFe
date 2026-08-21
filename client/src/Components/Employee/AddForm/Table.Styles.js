@@ -4,7 +4,6 @@ import styled from "styled-components";
 // Main container
 export const Container = styled.div`
   padding: 20px;
-  background: #fff;
   margin: 0 auto;
 `;
 

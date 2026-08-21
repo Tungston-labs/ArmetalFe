@@ -24,6 +24,11 @@ import {
   UploadButton,
   HiddenInput,
 } from "./ViewBasic.Style";
+import {
+  getLegalFieldConfig,
+  isIndiaCompany,
+  validateLegalIdentity,
+} from "../../../utils/employeeCountryFields";
 
 const ViewBasic = () => {
   const dispatch = useDispatch();
@@ -46,6 +51,8 @@ const ViewBasic = () => {
     Number(formData.earned_leave || 0) +
     Number(formData.maternity_leave || 0) +
     Number(formData.other_leave || 0);
+  const country = formData?.company?.country || user?.company?.country || "IN";
+  const legalConfig = getLegalFieldConfig(country);
 
   useEffect(() => {
     if (departmentList.length === 0) {
@@ -130,23 +137,29 @@ const ViewBasic = () => {
       )
         delete payload[key];
     });
+    delete payload.company;
 
-    const country = formData?.company?.country;
-    if (country === "IN") {
+    const legalErrors = validateLegalIdentity(country, payload);
+
+    if (isIndiaCompany(country)) {
       delete payload.iqama_number;
       delete payload.insurance_number;
       delete payload.visa_expiry_date;
 
       if (!payload.aadar_number?.trim())
         return alert("Aadhaar number is required for India");
-      if (payload.aadar_number.length !== 12)
-        return alert("Aadhaar number must be 12 digits");
+      if (legalErrors.aadar_number)
+        return alert(legalErrors.aadar_number);
     } else {
       delete payload.aadar_number;
-      if (!payload.iqama_number?.trim())
-        return alert("Iqama number is required");
-      if (payload.iqama_number.length !== 12)
-        return alert("Iqama number must be 12 digits");
+      if (!payload[legalConfig.identityField]?.trim())
+        return alert(`${legalConfig.identityLabel} is required`);
+      if (legalErrors[legalConfig.identityField])
+        return alert(legalErrors[legalConfig.identityField]);
+      if (!payload.visa_expiry_date)
+        return alert("Visa expiry date is required");
+      if (!payload.insurance_number?.trim())
+        return alert("Insurance number is required");
     }
 
     const oldDept = employeeDetail.department;
@@ -359,14 +372,16 @@ const ViewBasic = () => {
                     onChange={handleChange}
                   />
                 </FieldGroup>
-                <FieldGroup>
-                  <Label>Passport Number</Label>
-                  <Input
-                    name="passport_number"
-                    value={formData.passport_number || ""}
-                    onChange={handleChange}
-                  />
-                </FieldGroup>
+                {!isIndiaCompany(country) && legalConfig.identityField !== "passport_number" && (
+                  <FieldGroup>
+                    <Label>Passport Number</Label>
+                    <Input
+                      name="passport_number"
+                      value={formData.passport_number || ""}
+                      onChange={handleChange}
+                    />
+                  </FieldGroup>
+                )}
                 <FieldGroup>
                   <Label>Role</Label>
                   <Select
@@ -382,25 +397,26 @@ const ViewBasic = () => {
                 </FieldGroup>
               </Rowes>
               <Rowes>
-                <FieldGroup>
-                  <Label>Contract Expiry Date</Label>
-                  <Input
-                    type="date"
-                    name="contract_expiry_date"
-                    value={formData.contract_expiry_date || ""}
-                    onChange={handleChange}
-                  />
-                </FieldGroup>
-
-                {formData?.company?.country === "IN" ? (
+                {isIndiaCompany(country) ? (
+                  <>
+                    <FieldGroup>
+                      <Label>Contract Expiry Date</Label>
+                      <Input
+                        type="date"
+                        name="contract_expiry_date"
+                        value={formData.contract_expiry_date || ""}
+                        onChange={handleChange}
+                      />
+                    </FieldGroup>
                   <FieldGroup>
-                    <Label>Aadhaar Number</Label>
+                    <Label>{legalConfig.identityLabel}</Label>
                     <Input
-                      name="aadar_number"
-                      value={formData.aadar_number || ""}
+                      name={legalConfig.identityField}
+                      value={formData[legalConfig.identityField] || ""}
                       onChange={handleChange}
                     />
                   </FieldGroup>
+                  </>
                 ) : (
                   <>
                     <FieldGroup>
@@ -413,10 +429,10 @@ const ViewBasic = () => {
                       />
                     </FieldGroup>
                     <FieldGroup>
-                      <Label>Iqama Number</Label>
+                      <Label>{legalConfig.identityLabel}</Label>
                       <Input
-                        name="iqama_number"
-                        value={formData.iqama_number || ""}
+                        name={legalConfig.identityField}
+                        value={formData[legalConfig.identityField] || ""}
                         onChange={handleChange}
                       />
                     </FieldGroup>

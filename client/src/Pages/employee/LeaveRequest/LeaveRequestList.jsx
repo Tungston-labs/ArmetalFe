@@ -38,7 +38,7 @@ import {
   getPayrollCards,
 } from "./leaveColumns";
 
-import StatsCards from "../../../Components/ StatsCards/StatsCards";
+import StatsCards from "../../../Components/StatsCards/StatsCards";
 
 
 export default function LeaveRequestList() {

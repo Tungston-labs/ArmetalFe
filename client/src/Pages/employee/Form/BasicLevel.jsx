@@ -21,6 +21,10 @@ import EmployeeHeader from "../../../Components/Employee/Headers/EmployeeHeader"
 import { ButtonWrapper, NextButton } from "../../../Components/Employee/AddForm/JobDetails.Styles";
 import EmployeeTitle from "../../../Components/Employee/Headers/EmployeeTitle";
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
+import {
+  getLegalFieldConfig,
+  validateLegalIdentity,
+} from "../../../utils/employeeCountryFields";
 
 
 export default function AddEmployeeForm() {
@@ -105,11 +109,7 @@ export default function AddEmployeeForm() {
       "department_id", "employment_type", "total_leave", "role","employee_code"
     ];
 
-    if (country !== "IN") {
-      requiredFields.push("visa_expiry_date", "insurance_number", "iqama_number");
-    } else {
-      requiredFields.push("aadar_number");
-    }
+    requiredFields.push(...getLegalFieldConfig(country).requiredFields);
 
     requiredFields.forEach((field) => {
       if (!formData[field] || !formData[field].toString().trim()) {
@@ -124,6 +124,7 @@ export default function AddEmployeeForm() {
     if (formData.joining_date && formData.joining_date > now) {
       newErrors.joining_date = "Joining date cannot be in the future";
     }
+    Object.assign(newErrors, validateLegalIdentity(country, formData));
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
