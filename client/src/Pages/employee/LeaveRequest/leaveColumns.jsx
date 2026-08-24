@@ -72,7 +72,7 @@ export const getLeaveColumns = ({
     header: "No Of Days",
     accessor: "no_of_days",
     sortable: false,
-    render: (row) => row.no_of_days ?? "0",
+    render: (row) => row.leave_days  ?? "0",
   },
 
   {

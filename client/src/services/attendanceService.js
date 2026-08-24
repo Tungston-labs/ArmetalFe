@@ -51,3 +51,29 @@ export const fetchAttendanceSummary = async ({
 
   return response.data;
 };
+
+
+
+// Generate monthly attendance Excel
+export const generateAttendanceExcel = async ({
+  year,
+  month,
+  token,
+}) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await API.post(
+    "attendance-summary/excel/",
+    {
+      year,
+      month,
+    },
+    config
+  );
+
+  return response.data;
+};
