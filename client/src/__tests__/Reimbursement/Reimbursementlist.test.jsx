@@ -1,5 +1,11 @@
 import React from "react";
-import { render, screen, waitFor, fireEvent, within } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  within,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -41,9 +47,7 @@ vi.mock("../../Components/EmployeeTitle", () => ({
       <span>{props.subtitle}</span>
 
       {props.buttonText && (
-        <button onClick={props.onAddClick}>
-          {props.buttonText}
-        </button>
+        <button onClick={props.onAddClick}>{props.buttonText}</button>
       )}
     </div>
   ),
@@ -125,7 +129,7 @@ const mockNavigate = vi.fn();
 
 const setupSelector = ({ list = departments, loading = false } = {}) => {
   useSelector.mockImplementation((selectorFn) =>
-    selectorFn({ departments: { list, loading } })
+    selectorFn({ departments: { list, loading } }),
   );
 };
 
@@ -185,7 +189,7 @@ describe("ReimbursementList", () => {
     fireEvent.click(screen.getByText("Engineering"));
 
     await waitFor(() =>
-      expect(fetchReimbursementsByDepartment).toHaveBeenCalledWith("d1", 1)
+      expect(fetchReimbursementsByDepartment).toHaveBeenCalledWith("d1", 1),
     );
 
     expect(await screen.findByText("Employee 1")).toBeInTheDocument();
@@ -230,9 +234,7 @@ describe("ReimbursementList", () => {
 
     fireEvent.click(screen.getByText("Sales"));
 
-    expect(
-      await screen.findByText("No reimbursement records found.")
-    ).toBeInTheDocument();
+    expect(await screen.findByText("No Records Found")).toBeInTheDocument();
   });
 
   test("shows an empty list when fetching a department's reimbursements fails", async () => {
@@ -242,9 +244,7 @@ describe("ReimbursementList", () => {
 
     fireEvent.click(screen.getByText("Engineering"));
 
-    expect(
-      await screen.findByText("No reimbursement records found.")
-    ).toBeInTheDocument();
+    expect(await screen.findByText("No Records Found")).toBeInTheDocument();
   });
 
   test("clicking an employee row navigates to its reimbursement detail page", async () => {
@@ -305,7 +305,10 @@ describe("ReimbursementList", () => {
 
     expect(select.value).toBe("On Hold");
     await waitFor(() =>
-      expect(updateReimbursementStatus).toHaveBeenCalledWith("emp-1", "On Hold")
+      expect(updateReimbursementStatus).toHaveBeenCalledWith(
+        "emp-1",
+        "On Hold",
+      ),
     );
   });
 
@@ -330,17 +333,17 @@ describe("ReimbursementList", () => {
     fetchReimbursementsByDepartment.mockReturnValue(
       new Promise((resolve) => {
         resolvePromise = resolve;
-      })
+      }),
     );
 
     render(<ReimbursementList />);
 
     fireEvent.click(screen.getByText("Engineering"));
-    expect(await screen.findByTestId("clip-loader")).toBeInTheDocument();
+    expect(await screen.findByText("Loading...")).toBeInTheDocument();
 
     resolvePromise({ results: [] });
     await waitFor(() =>
-      expect(screen.queryByTestId("clip-loader")).not.toBeInTheDocument()
+      expect(screen.queryByTestId("clip-loader")).not.toBeInTheDocument(),
     );
   });
 
