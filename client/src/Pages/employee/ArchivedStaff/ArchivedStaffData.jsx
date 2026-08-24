@@ -205,14 +205,6 @@ export const employeeColumns = (currentPage = 1, rowsPerPage = 10) => [
   {
             header: "Employee name",
             accessor: "name",
-            render: (row) => (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontWeight: 600 }}>
-                        {row.name ? row.name.charAt(0).toUpperCase() + row.name.slice(1) : ""}
-                    </span>
-                    <span style={{ fontSize: 12, color: "#888" }}>{row.email}</span>
-                </div>
-            ),
         },
 
   {

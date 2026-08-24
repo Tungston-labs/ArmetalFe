@@ -260,10 +260,7 @@ const ReimbursementDetails = () => {
                 breadcrumbs={[
                     "Reimbursement Details",
                 ]}
-                buttonText="Edit"
-                onButtonClick={
-                    handleEditReimbursement
-                }
+                
                 showBack
             />
 

@@ -4,7 +4,6 @@ import {
     TruncatedText,
     TableWrapper,
 } from "../leaveDetails/EmployeeList.styles";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
@@ -13,7 +12,6 @@ import RightSideModal from "../employeDashboard/RightSideModal";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
-import { Status } from "../../Components/ReusableTable/ReusableTable.styles";
 import ReusableConfirmModal from "../../Components/modals/ReusableConfirmModal";
 import ReusablePagination from "../../Components/Pagination/ReusablePagination";
 import { useEmployeeColumns } from "./useEmployeeColumns.jsx";
@@ -118,7 +116,7 @@ const EmployeeList = () => {
                     title="Employees"
                     breadcrumbs={["Employees"]}
                     buttonText="+ ADD NEW EMPLOYEE"
-                    onButtonClick={() => navigate("/basic-details")}
+                    onButtonClick={() => navigate("/add-employee")}
                 />
                 <ReusableFilter
                     search={search}

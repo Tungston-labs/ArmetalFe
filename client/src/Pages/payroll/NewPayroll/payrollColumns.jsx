@@ -47,18 +47,6 @@ export const getPayrollColumns = ({
   {
     header: "Employee Name",
     accessor: "employee_name",
-    render: (row) => (
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <span style={{ fontWeight: 600 }}>
-          {row.employee_name
-            ? row.employee_name.charAt(0).toUpperCase() + row.employee_name.slice(1)
-            : "N/A"}
-        </span>
-        <span style={{ fontSize: 12, color: "#888" }}>
-          {row.email || "-"}
-        </span>
-      </div>
-    ),
   },
   {
     header: "Employee ID",

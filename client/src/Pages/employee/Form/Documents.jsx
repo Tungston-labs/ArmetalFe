@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import {
   Container, Header, RoleInfo, SectionTitle,
   UploadSection, LabelRow, SizeHint, UploadButton, ImagePreviewRow,
-  ImageBox, ButtonGroup, Button, Title, Subtitle, Hr, InlineUploadRow
+  ImageBox, ButtonGroup, Button, Title, Subtitle, Hr, InlineUploadRow,
+  FormCard
 } from './Document.Styles';
 import Multistep from '../../../Components/Employee/AddForm/Multistep';
 import { LuCirclePlus } from "react-icons/lu";
@@ -19,6 +20,7 @@ import EmployeeIcon from "../../../assets/employeeicon.svg";
 import Loader from "../../../Components/Loader/Loader"
 import { EmployeeImage } from './BasicLevel.Styles';
 import ReusableHeader from '../../../Components/ReusableTable/ReusableHeader';
+import FormStepper from '../AddEmployee/Formstepper';
 
 export default function DocumentUploadForm() {
   const navigate = useNavigate();
@@ -184,9 +186,10 @@ const handleSubmit = async () => {
 
     return [...uploadedUrls, ...localFiles];
   };
-
+   
  const renderUploadBlock = (label, key) => (
   <UploadSection key={key}>
+    
     <LabelRow>
       {label}
       <SizeHint>Max 1 MB per image</SizeHint>
@@ -196,6 +199,7 @@ const handleSubmit = async () => {
         </span>
       )}
     </LabelRow>
+    
     <InlineUploadRow>
       <UploadButton onClick={() => handleUploadClick(key)}>
         <LuCirclePlus /> Upload images
@@ -221,16 +225,14 @@ const handleSubmit = async () => {
 
          <ReusableHeader
                     title="Employees"
-                    breadcrumbs={[ "Employees","Add Form","Documents"]}
+                    breadcrumbs={[ "Employees","Add Form",]}
                    showBack
-
                 />
-      <div style={{ width: "100%", justifyContent: "center", display: "flex", padding: "10px" }}>
-        <div style={{ width: "50%" }}>
-          <Multistep currentStep={2} />
-        </div>
-      </div>
-
+                <FormStepper
+            steps={["Basic Details", "Bank Details", "Documents"]}
+            activeStep={2}
+          />
+          <FormCard>
       <SectionTitle>Documents</SectionTitle>
       {renderUploadBlock("Passport-Front / Passport-Back", "passport")}
       {renderUploadBlock("Work Permit", "workPermit")}
@@ -250,7 +252,7 @@ const handleSubmit = async () => {
     navigate={navigate}
   />
 )}
-
+</FormCard>
     </Container>
     </>
   );

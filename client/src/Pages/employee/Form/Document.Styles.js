@@ -62,23 +62,20 @@ export const Step = styled.div`
 `;
 
 export const SectionTitle = styled.h4`
-  margin-bottom: 1rem;
-  font-family: Satoshi, sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  color: #030303;
+margin-top: 10px;
+  color: #171717;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 18px;
+font-size: "poppins";
+  @media (max-width: 600px) {
+    font-size: 14px;
 
-  /* Responsive font size */
-  font-size: clamp(1rem, 1.5vw, 1.8rem); /* min 1rem, max 1.8rem, scales with viewport */
-
-  /* Extra-large screen adjustments */
-  @media (min-width: 3840px) { /* 4K */
-    font-size: 2.5rem;
+    margin-bottom: 12px;
   }
 
-  @media (min-width: 7680px) { /* 8K */
-    font-size: 3.5rem;
+  @media (max-width: 420px) {
+    font-size: 13px;
   }
 `;
 
@@ -141,6 +138,10 @@ export const SizeHint = styled.span`
   }
 `;
 
+
+export const FormCard = styled.div`
+  padding:20px;
+`;
 export const UploadButton = styled.button`
   background-color: #1e40af;
   color: #fff;

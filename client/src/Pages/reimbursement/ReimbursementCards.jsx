@@ -217,7 +217,7 @@ const ReimbursementCards = () => {
         <ReusableHeader
           title="Reimbursement"
           breadcrumbs={["Reimbursement"]}
-          buttonText="+ ADD NEW REIMBURSEMENT"
+          buttonText="History"
           onButtonClick={handleAddReimbursement}
         />
       </HeaderWrapper>

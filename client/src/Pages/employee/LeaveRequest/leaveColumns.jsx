@@ -24,30 +24,6 @@ export const getLeaveColumns = ({
   {
     header: "Employee Name",
     accessor: "employee",
-    render: (row) => (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <span style={{ fontWeight: 600 }}>
-          {row.employee?.name
-            ? row.employee.name.charAt(0).toUpperCase() +
-              row.employee.name.slice(1)
-            : "N/A"}
-        </span>
-
-        <span
-          style={{
-            fontSize: 12,
-            color: "#888",
-          }}
-        >
-          {row.employee?.email || "N/A"}
-        </span>
-      </div>
-    ),
   },
 
   {

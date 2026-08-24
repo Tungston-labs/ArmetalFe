@@ -39,39 +39,23 @@ const DepartmentDetails = () => {
     // FILTER DATA
     // --------------------------------------------------
 
-    const filteredData = useMemo(() => {
-        let data = [...employeeData];
+const filteredData = useMemo(() => {
+    let data = [...employeeData];
 
-        if (search.trim()) {
-            const searchValue = search.toLowerCase();
+    if (search.trim()) {
+        const searchValue = search.toLowerCase();
 
-            data = data.filter((employee) =>
-                Object.values(employee).some((value) =>
-                    String(value)
-                        .toLowerCase()
-                        .includes(searchValue)
-                )
-            );
-        }
+        data = data.filter((employee) =>
+            Object.values(employee).some((value) =>
+                String(value)
+                    .toLowerCase()
+                    .includes(searchValue)
+            )
+        );
+    }
 
-        if (department) {
-            data = data.filter(
-                (employee) =>
-                    employee.department?.toLowerCase() ===
-                    department.toLowerCase()
-            );
-        }
-
-        if (status) {
-            data = data.filter(
-                (employee) =>
-                    employee.status?.toLowerCase() ===
-                    status.toLowerCase()
-            );
-        }
-
-        return data;
-    }, [search, department, status, month]);
+    return data;
+}, [search]);
 
     // --------------------------------------------------
     // PAGINATION

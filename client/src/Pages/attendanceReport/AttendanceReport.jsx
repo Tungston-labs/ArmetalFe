@@ -136,14 +136,6 @@ const { list: departmentList } = useSelector((state) => state.departments || {})
      {
       header: "Employee name",
       accessor: "employee_name",
-      render: (row) => (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <span style={{ fontWeight: 600 }}>
-            {row.employee_name ? row.employee_name.charAt(0).toUpperCase() + row.employee_name.slice(1) : ""}
-          </span>
-          <span style={{ fontSize: 12, color: "#888" }}>{row.employee_id}</span>
-        </div>
-      ),
     },
     {
       header: "Department",
