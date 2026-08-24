@@ -267,18 +267,27 @@ export const EmployeeCount = styled.div`
    EMPLOYEE IMAGE
 ===================================================== */
 
-export const EmployeeImage = styled.img`
+export const EmployeeImage = styled.div`
   width: 30px;
-
   height: 30px;
 
-  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #3559bd;
+  color: #ffffff;
 
   border-radius: 50%;
-
   border: 2px solid #ffffff;
 
   box-sizing: border-box;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+
+  flex-shrink: 0;
 `;
 
 /* =====================================================

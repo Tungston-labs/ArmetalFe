@@ -89,7 +89,7 @@ function App() {
         <Routes>
           <Route path="/loader" element={<Loder />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/log" element={<LoginScreen/>} />
+          <Route path="/log" element={<LoginScreen />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/verification" element={<Verification />} />
           <Route path="/new-password" element={<NewPassword />} />
@@ -99,8 +99,8 @@ function App() {
               <Route index element={<HrDashboard />} />
               <Route path="/department" element={<DepartmentList />} />
 
-                            <Route path="/departmentlist" element={<DepartmentCard />} />
-                              <Route path="/departments/:id" element={<DepartmentDetails />} />
+              <Route path="/departmentlist" element={<DepartmentCard />} />
+              <Route path="/departments/:id" element={<DepartmentDetails />} />
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
               <Route path="/holiday" element={<Holiday />} />
@@ -109,8 +109,8 @@ function App() {
               <Route path="/company" element={<Company />} />
               <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard />} />
 
-                <Route path="/dashboard" element={<SuperAdmin_Dashboard/>} />
-                <Route path="/addcompany" element={<AddCompany />} />
+              <Route path="/dashboard" element={<SuperAdmin_Dashboard />} />
+              <Route path="/addcompany" element={<AddCompany />} />
 
 
               <Route path="/add-company" element={<AddCompany />} />
@@ -130,10 +130,10 @@ function App() {
               <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
               <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
 
-       <Route path="/add-employee" element={<EmployeeForm />} />
-    <Route path="/bank" element={<BankDetailsForm />} />
-                 <Route path="/ReimbursementCards" element={<ReimbursementCards />} />
-                     <Route path="/reimbursements/:id" element={<ReimbursementDetails />} />
+              <Route path="/add-employee" element={<EmployeeForm />} />
+              <Route path="/bank" element={<BankDetailsForm />} />
+              <Route path="/ReimbursementCards" element={<ReimbursementCards />} />
+              <Route path="/reimbursements/:id" element={<ReimbursementDetails />} />
               <Route path="/reimbursement" element={<ReimbursementList />} />
               <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
               <Route path="/finance" element={<FinancePage />} />

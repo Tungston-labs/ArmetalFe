@@ -1,23 +1,24 @@
 export const departmentEmployeeColumns = [
   {
-    header: "Employee Code",
-    accessor: "employee_code",
+    header: "Sl No",
+  accessor: "slNo",
   },
   {
     header: "Employee Name",
-    accessor: "employee_name",
+    accessor: "name",
   },
+  {
+    header: "Employee Code",
+    accessor: "employee_id",
+  },
+  
   {
     header: "Email",
-    accessor: "email",
+    accessor: "employee_id",
   },
   {
-    header: "Phone",
-    accessor: "phone",
-  },
-  {
-    header: "Status",
-    accessor: "status",
+    header: "Profile",
+    accessor: "profile_pic",
   },
 ];
 

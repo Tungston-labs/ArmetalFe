@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -25,9 +26,27 @@ import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
 import DepartmentModal from "./modal/DepartmentModal";
 import ReusableFilter from "../../../Components/ReusableTable/ReusableFilter";
 
+import {
+  getDepartments,
+  createNewDepartment,
+} from "../../../Redux/departmentSlice";
+
 const DepartmentCards = () => {
   const navigate = useNavigate();
-   const [search, setSearch] = useState("");
+  const dispatch = useDispatch();
+
+  const [search, setSearch] = useState("");
+
+  // =====================================================
+  // REDUX DATA
+  // =====================================================
+
+  const {
+    list: departments = [],
+    loading,
+    error,
+  } = useSelector((state) => state.departments);
+
   // =====================================================
   // MODAL STATE
   // =====================================================
@@ -41,98 +60,32 @@ const DepartmentCards = () => {
     useState(null);
 
   // =====================================================
-  // DEPARTMENT DATA
+  // GET DEPARTMENTS
   // =====================================================
 
-  const departments = [
-    {
-      id: 1,
-      name: "HR DEPARTMENT",
-      head: "Ansal",
-      total: 1,
-      present: 1,
-      leave: 0,
-      status: "Active",
-      image: "https://i.pravatar.cc/100?img=12",
-    },
+  useEffect(() => {
+    dispatch(
+      getDepartments({
+        page: 1,
+        search: "",
+      })
+    );
+  }, [dispatch]);
 
-    {
-      id: 2,
-      name: "IT DEPARTMENT",
-      head: "Rahul",
-      total: 8,
-      present: 7,
-      leave: 1,
-      status: "Active",
-      image: "https://i.pravatar.cc/100?img=13",
-    },
+  // =====================================================
+  // SEARCH
+  // =====================================================
 
-    {
-      id: 3,
-      name: "SALES DEPARTMENT",
-      head: "Priya",
-      total: 12,
-      present: 10,
-      leave: 2,
-      status: "Active",
-      image: "https://i.pravatar.cc/100?img=14",
-    },
+  const handleSearch = (value) => {
+    setSearch(value);
 
-    {
-      id: 4,
-      name: "FINANCE DEPARTMENT",
-      head: "Amit",
-      total: 6,
-      present: 6,
-      leave: 0,
-      status: "Active",
-      image: "https://i.pravatar.cc/100?img=15",
-    },
-
-    {
-      id: 5,
-      name: "MARKETING DEPARTMENT",
-      head: "Rishal",
-      total: 5,
-      present: 4,
-      leave: 1,
-      status: "Active",
-      image: "https://i.pravatar.cc/100?img=16",
-    },
-
-    {
-      id: 6,
-      name: "UIUX DEPARTMENT",
-      head: "Rishal",
-      total: 4,
-      present: 4,
-      leave: 0,
-      status: "Active",
-      image: "https://i.pravatar.cc/100?img=17",
-    },
-
-    {
-      id: 7,
-      name: "DEVELOPMENT DEPARTMENT",
-      head: "Risvin",
-      total: 10,
-      present: 9,
-      leave: 1,
-      status: "Active",
-      image: "https://i.pravatar.cc/100?img=18",
-    },
-
-    {
-      id: 8,
-      name: "SUPPORT DEPARTMENT",
-      head: "John",
-      total: 7,
-      present: 6,
-      leave: 1,
-      status: "Active",
-      image: "https://i.pravatar.cc/100?img=19",
-    },
-  ];
+    dispatch(
+      getDepartments({
+        page: 1,
+        search: value,
+      })
+    );
+  };
 
   // =====================================================
   // VIEW DEPARTMENT
@@ -152,25 +105,146 @@ const DepartmentCards = () => {
     setShowDepartmentModal(true);
   };
 
-    const handleSearch = (value) => {
-        setSearch(value);
-        setCurrentPage(1);
-    };
   // =====================================================
-  // SUBMIT DEPARTMENT
+  // EDIT DEPARTMENT
   // =====================================================
 
-  const handleDepartmentSubmit = (data) => {
-    if (modalMode === "add") {
-      console.log("Create Department:", data);
+  const handleEditDepartment = (department) => {
+    setModalMode("edit");
 
-      // API call for creating department can come here
-    } else {
-      console.log("Update Department:", data);
+    setSelectedDepartment({
+      id: department.id,
 
-      // API call for updating department can come here
+      departmentName:
+        department.departmentName ||
+        department.name ||
+        "",
+
+      departmentCode:
+        department.departmentCode ||
+        department.department_code ||
+        department.code ||
+        "",
+
+      headOfDepartment:
+        department.headOfDepartment ||
+        department.head_of_department ||
+        department.department_head ||
+        department.head ||
+        "",
+
+      teamLead:
+        department.teamLead ||
+        department.team_lead ||
+        "",
+    });
+
+    setShowDepartmentModal(true);
+  };
+
+  // =====================================================
+  // CREATE / UPDATE DEPARTMENT
+  // =====================================================
+
+  const handleDepartmentSubmit = async (data) => {
+    try {
+      // =================================================
+      // CREATE
+      // =================================================
+
+      if (modalMode === "add") {
+        const payload = {
+          name: data.departmentName.trim(),
+
+          department_code:
+            data.departmentCode.trim(),
+
+          head_of_department:
+            data.headOfDepartment,
+
+          team_lead:
+            data.teamLead,
+        };
+
+        console.log(
+          "Creating department:",
+          payload
+        );
+
+        const result = await dispatch(
+          createNewDepartment(payload)
+        ).unwrap();
+
+        console.log(
+          "Department created successfully:",
+          result
+        );
+
+        // ===============================================
+        // CLOSE MODAL ONLY ON SUCCESS
+        // ===============================================
+
+        setShowDepartmentModal(false);
+
+        // ===============================================
+        // REFRESH DEPARTMENT LIST
+        // ===============================================
+
+        dispatch(
+          getDepartments({
+            page: 1,
+            search: search,
+          })
+        );
+
+        return result;
+      }
+
+      // =================================================
+      // UPDATE
+      // =================================================
+
+      if (modalMode === "edit") {
+        console.log(
+          "Update Department:",
+          data
+        );
+
+        // Update API will be added here later.
+      }
+    } catch (error) {
+      // =================================================
+      // IMPORTANT
+      // =================================================
+      //
+      // DO NOT swallow the error here.
+      //
+      // DepartmentModal needs this error so it can
+      // display:
+      //
+      // "Department code already exists."
+      //
+      // under the Department Code input.
+      // =================================================
+
+      console.error(
+        "Department save failed:",
+        error
+      );
+
+      throw error;
     }
   };
+
+  // =====================================================
+  // DEPARTMENT DATA
+  // =====================================================
+
+  const departmentList = departments;
+
+  // =====================================================
+  // RENDER
+  // =====================================================
 
   return (
     <Container>
@@ -186,85 +260,149 @@ const DepartmentCards = () => {
           onButtonClick={handleAddDepartment}
         />
       </HeaderWrapper>
- <ReusableFilter
-                search={search}
-                onSearch={handleSearch}
-                showSearch
-            />
+
+      {/* =================================================
+          SEARCH
+      ================================================= */}
+
+      <ReusableFilter
+        search={search}
+        onSearch={handleSearch}
+        showSearch
+      />
+
+      {/* =================================================
+          LOADING
+      ================================================= */}
+
+      {loading && (
+        <div>
+          Loading departments...
+        </div>
+      )}
+
+      {/* =================================================
+          ERROR
+      ================================================= */}
+
+      {error && (
+        <div>
+          {typeof error === "string"
+            ? error
+            : "Failed to load departments"}
+        </div>
+      )}
+
       {/* =================================================
           DEPARTMENT CARDS
       ================================================= */}
 
       <CardsGrid>
-        {departments.map((department) => (
-          <Card key={department.id}>
+        {departmentList.map((department) => {
+          const departmentId = department.id;
 
-            {/* ================= HEADER ================= */}
+          const departmentName =
+            department.name ||
+            "Department";
 
-            <CardHeader>
-              <DepartmentName>
-                {department.name}
-              </DepartmentName>
+          const departmentHead =
+            department.department_head ||
+            department.head_of_department ||
+            "—";
 
-              <ActiveBadge>
-                {department.status}
-              </ActiveBadge>
-            </CardHeader>
+          const totalEmployees =
+            department.employee_count ?? 0;
 
-            {/* ================= HEAD ================= */}
+          const presentEmployees =
+            department.attendance_employee_count ??
+            0;
 
-            <DepartmentHead>
-              Head Of The Department :{" "}
-              <strong>{department.head}</strong>
-            </DepartmentHead>
+          const leaveEmployees =
+            department.todays_leave_employee_count ??
+            0;
 
-            {/* ================= TOTAL ================= */}
+          return (
+            <Card key={departmentId}>
+              {/* HEADER */}
 
-            <TotalEmployee>
-              Total Employee:{" "}
-              {String(department.total).padStart(2, "0")}
-            </TotalEmployee>
+              <CardHeader>
+                <DepartmentName>
+                  {departmentName}
+                </DepartmentName>
 
-            {/* ================= STATUS ================= */}
+                <ActiveBadge>
+                  Active
+                </ActiveBadge>
+              </CardHeader>
 
-            <StatusRow>
-              <Present>
-                Present Today :{" "}
-                {String(department.present).padStart(2, "0")}
-              </Present>
+              {/* DEPARTMENT HEAD */}
 
-              <Leave>
-                On Leave Today :{" "}
-                {String(department.leave).padStart(2, "0")}
-              </Leave>
-            </StatusRow>
+              <DepartmentHead>
+                Head Of The Department :{" "}
+                <strong>
+                  {departmentHead}
+                </strong>
+              </DepartmentHead>
 
-            {/* ================= BOTTOM ================= */}
+              {/* TOTAL EMPLOYEES */}
 
-            <CardBottom>
-              <EmployeeCount>
-                <EmployeeImage
-                  src={department.image}
-                  alt={department.head}
-                />
+              <TotalEmployee>
+                Total Employee:{" "}
+                {String(totalEmployees).padStart(
+                  2,
+                  "0"
+                )}
+              </TotalEmployee>
 
-                <EmployeeNumber>
-                  {String(department.total).padStart(2, "0")}
-                </EmployeeNumber>
-              </EmployeeCount>
+              {/* STATUS */}
 
-              <ViewButton
-                type="button"
-                onClick={() =>
-                  handleViewDepartment(department.id)
-                }
-              >
-                VIEW DEPARTMENT
-              </ViewButton>
-            </CardBottom>
+              <StatusRow>
+                <Present>
+                  Present Today :{" "}
+                  {String(
+                    presentEmployees
+                  ).padStart(2, "0")}
+                </Present>
 
-          </Card>
-        ))}
+                <Leave>
+                  On Leave Today :{" "}
+                  {String(
+                    leaveEmployees
+                  ).padStart(2, "0")}
+                </Leave>
+              </StatusRow>
+
+              {/* BOTTOM */}
+
+             <CardBottom>
+  <EmployeeCount>
+    <EmployeeImage>
+      {departmentHead &&
+        departmentHead !== "—"
+        ? departmentHead
+            .trim()
+            .charAt(0)
+            .toUpperCase()
+        : "-"}
+    </EmployeeImage>
+
+    <EmployeeNumber>
+      {String(totalEmployees).padStart(2, "0")}
+    </EmployeeNumber>
+  </EmployeeCount>
+
+  <ViewButton
+    type="button"
+    onClick={() =>
+      handleViewDepartment(departmentId)
+    }
+  >
+    VIEW DEPARTMENT
+  </ViewButton>
+</CardBottom>
+            </Card>
+          );
+        })}
       </CardsGrid>
 
       {/* =================================================
@@ -278,9 +416,9 @@ const DepartmentCards = () => {
         }
         mode={modalMode}
         departmentData={selectedDepartment}
+        departments={departments}
         onSubmit={handleDepartmentSubmit}
       />
-
     </Container>
   );
 };

@@ -1,4 +1,17 @@
-import React, { useMemo, useState } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
+import {
+  useParams,
+} from "react-router-dom";
 
 import ReusableTable from "../../../Components/ReusableTable/ReusableTable";
 import ReusablePagination from "../../../Components/Pagination/ReusablePagination";
@@ -13,6 +26,12 @@ import {
 } from "./data";
 
 import {
+  getEmployeesByDepartment,
+  getDepartmentById,
+  updateDepartmentById,
+} from "../../../Redux/departmentSlice";
+
+import {
   FiUsers,
   FiUserCheck,
   FiUserX,
@@ -20,211 +39,469 @@ import {
 } from "react-icons/fi";
 
 const DepartmentDetails = () => {
-  const [search, setSearch] = useState("");
+  const dispatch = useDispatch();
+
+  const { id: departmentId } =
+    useParams();
+
+  const [search, setSearch] =
+    useState("");
 
   const [currentPage, setCurrentPage] =
     useState(1);
 
-  // --------------------------------------------------
-  // MODAL STATES
-  // --------------------------------------------------
-
-  const [showDepartmentModal, setShowDepartmentModal] =
-    useState(false);
+  const [
+    showDepartmentModal,
+    setShowDepartmentModal,
+  ] = useState(false);
 
   const [modalMode, setModalMode] =
     useState("edit");
 
-  const [selectedDepartment, setSelectedDepartment] =
-    useState(null);
+  const [
+    selectedDepartment,
+    setSelectedDepartment,
+  ] = useState(null);
 
   const rowsPerPage = 20;
 
-  // --------------------------------------------------
-  // EMPLOYEES
-  // --------------------------------------------------
+  // =========================================================
+  // REDUX STATE
+  // =========================================================
 
-  const employees =
-    departmentData?.employees || [];
-
-  // --------------------------------------------------
-  // FILTER DATA
-  // --------------------------------------------------
-
-  const filteredData = useMemo(() => {
-    let data = [...employees];
-
-    if (search.trim()) {
-      const searchValue = search
-        .trim()
-        .toLowerCase();
-
-      data = data.filter((employee) =>
-        Object.values(employee).some(
-          (value) =>
-            String(value)
-              .toLowerCase()
-              .includes(searchValue)
-        )
-      );
-    }
-
-    return data;
-  }, [employees, search]);
-
-  // --------------------------------------------------
-  // PAGINATION
-  // --------------------------------------------------
-
-  const totalPages = Math.ceil(
-    filteredData.length / rowsPerPage
+  const {
+    departmentEmployees,
+    loadingEmployees,
+    error,
+    current,
+  } = useSelector(
+    (state) => state.departments
   );
 
-  const paginatedData = useMemo(() => {
-    const start =
-      (currentPage - 1) * rowsPerPage;
+  // =========================================================
+  // GET DEPARTMENT + EMPLOYEES
+  // =========================================================
 
-    return filteredData.slice(
-      start,
-      start + rowsPerPage
+  useEffect(() => {
+    if (!departmentId) return;
+
+    dispatch(
+      getDepartmentById(
+        departmentId
+      )
+    );
+
+    dispatch(
+      getEmployeesByDepartment(
+        departmentId
+      )
     );
   }, [
-    currentPage,
-    filteredData,
+    dispatch,
+    departmentId,
   ]);
 
-  // --------------------------------------------------
-  // DEPARTMENT STATS
-  // --------------------------------------------------
+  // =========================================================
+  // EMPLOYEES
+  // =========================================================
 
-  const departmentCards = useMemo(() => {
-    const totalEmployees =
-      employees.length;
+  const employees = useMemo(() => {
+    if (
+      Array.isArray(
+        departmentEmployees
+      )
+    ) {
+      return departmentEmployees;
+    }
 
-    const presentEmployees =
-      employees.filter(
-        (employee) =>
-          employee.status
-            ?.toLowerCase() ===
-          "present"
-      ).length;
+    if (
+      departmentEmployees &&
+      Array.isArray(
+        departmentEmployees.results
+      )
+    ) {
+      return departmentEmployees.results;
+    }
 
-    const absentEmployees =
-      employees.filter(
-        (employee) =>
-          employee.status
-            ?.toLowerCase() ===
-          "absent"
-      ).length;
+    return [];
+  }, [
+    departmentEmployees,
+  ]);
 
-    const leaveEmployees =
-      employees.filter(
-        (employee) =>
-          employee.status
-            ?.toLowerCase() ===
-          "on leave"
-      ).length;
+  // =========================================================
+  // NORMALIZE EMPLOYEE DATA
+  // =========================================================
 
-    return [
-      {
-        title: "Total Employees",
-        count: totalEmployees,
-        icon: <FiUsers />,
-        backgroundColor: "#E8F1FF",
-        iconColor: "#2878FF",
-      },
+  const employeeTableData =
+    useMemo(() => {
+      return employees.map(
+        (employee, index) => ({
+          slNo: index + 1,
 
-      {
-        title: "Present",
-        count: presentEmployees,
-        icon: <FiUserCheck />,
-        backgroundColor: "#E9F9EF",
-        iconColor: "#16A34A",
-      },
+          name:
+            employee.name || "-",
 
-      {
-        title: "Absent",
-        count: absentEmployees,
-        icon: <FiUserX />,
-        backgroundColor: "#FFF0F0",
-        iconColor: "#EF4444",
-      },
+          employee_id:
+            employee.employee_id ||
+            "-",
 
-      {
-        title: "On Leave",
-        count: leaveEmployees,
-        icon: <FiCalendar />,
-        backgroundColor: "#FFF6E5",
-        iconColor: "#F59E0B",
-      },
-    ];
-  }, [employees]);
+          profile_pic:
+            employee.profile_pic ||
+            null,
 
-  // --------------------------------------------------
+          id: employee.id,
+        })
+      );
+    }, [employees]);
+
+  // =========================================================
   // SEARCH
-  // --------------------------------------------------
+  // =========================================================
 
-  const handleSearch = (value) => {
+  const filteredData =
+    useMemo(() => {
+      if (!search.trim()) {
+        return employeeTableData;
+      }
+
+      const searchValue =
+        search
+          .trim()
+          .toLowerCase();
+
+      return employeeTableData.filter(
+        (employee) =>
+          String(employee.name)
+            .toLowerCase()
+            .includes(
+              searchValue
+            ) ||
+          String(
+            employee.employee_id
+          )
+            .toLowerCase()
+            .includes(
+              searchValue
+            )
+      );
+    }, [
+      employeeTableData,
+      search,
+    ]);
+
+  // =========================================================
+  // PAGINATION
+  // =========================================================
+
+  const totalPages =
+    Math.ceil(
+      filteredData.length /
+        rowsPerPage
+    );
+
+  const paginatedData =
+    useMemo(() => {
+      const start =
+        (currentPage - 1) *
+        rowsPerPage;
+
+      return filteredData.slice(
+        start,
+        start + rowsPerPage
+      );
+    }, [
+      filteredData,
+      currentPage,
+    ]);
+
+  // =========================================================
+  // RESET PAGE WHEN SEARCH CHANGES
+  // =========================================================
+
+  const handleSearch = (
+    value
+  ) => {
     setSearch(value);
     setCurrentPage(1);
   };
 
-  // --------------------------------------------------
+  // =========================================================
+  // DEPARTMENT STATS
+  // =========================================================
+
+  const departmentCards =
+    useMemo(() => {
+      const totalEmployees =
+        employees.length;
+
+      const presentEmployees =
+        employees.filter(
+          (employee) =>
+            employee.status
+              ?.toLowerCase() ===
+            "present"
+        ).length;
+
+      const absentEmployees =
+        employees.filter(
+          (employee) =>
+            employee.status
+              ?.toLowerCase() ===
+            "absent"
+        ).length;
+
+      const leaveEmployees =
+        employees.filter(
+          (employee) =>
+            employee.status
+              ?.toLowerCase() ===
+            "on leave"
+        ).length;
+
+      return [
+        {
+          title:
+            "Total Employees",
+          count:
+            totalEmployees,
+          icon: <FiUsers />,
+          backgroundColor:
+            "#E8F1FF",
+          iconColor:
+            "#2878FF",
+        },
+
+        {
+          title: "Present",
+          count:
+            presentEmployees,
+          icon:
+            <FiUserCheck />,
+          backgroundColor:
+            "#E9F9EF",
+          iconColor:
+            "#16A34A",
+        },
+
+        {
+          title: "Absent",
+          count:
+            absentEmployees,
+          icon:
+            <FiUserX />,
+          backgroundColor:
+            "#FFF0F0",
+          iconColor:
+            "#EF4444",
+        },
+
+        {
+          title:
+            "On Leave",
+          count:
+            leaveEmployees,
+          icon:
+            <FiCalendar />,
+          backgroundColor:
+            "#FFF6E5",
+          iconColor:
+            "#F59E0B",
+        },
+      ];
+    }, [employees]);
+
+  // =========================================================
   // EDIT DEPARTMENT
-  // --------------------------------------------------
+  // =========================================================
 
-  const handleEditDepartment = () => {
-    setModalMode("edit");
+  const handleEditDepartment =
+    () => {
+      const department =
+        current ||
+        departmentData;
 
-    setSelectedDepartment({
-      id: departmentData.id,
+      if (!department) {
+        console.error(
+          "Department data not found"
+        );
 
-      departmentName:
-        departmentData.departmentName,
+        return;
+      }
 
-      departmentCode:
-        departmentData.departmentCode,
+      setModalMode("edit");
 
-      headOfDepartment:
-        departmentData.headOfDepartment,
+      setSelectedDepartment({
+        id: department.id,
 
-      teamLead:
-        departmentData.teamLead,
-    });
+        departmentName:
+          department.name ||
+          department.departmentName ||
+          "",
 
-    setShowDepartmentModal(true);
-  };
+        departmentCode:
+          department.department_code ||
+          department.departmentCode ||
+          "",
 
-  // --------------------------------------------------
+        headOfDepartment:
+          department.department_head ||
+          department.head_of_department ||
+          department.headOfDepartment ||
+          "",
+
+        teamLead:
+          department.team_lead ||
+          department.teamLead ||
+          "",
+      });
+
+      setShowDepartmentModal(
+        true
+      );
+    };
+
+  // =========================================================
   // UPDATE DEPARTMENT
-  // --------------------------------------------------
+  // =========================================================
 
-  const handleDepartmentSubmit = (data) => {
-    console.log(
-      "Updated Department:",
-      data
+  const handleDepartmentSubmit =
+    async (data) => {
+      try {
+        if (!departmentId) {
+          throw new Error(
+            "Department ID is missing."
+          );
+        }
+
+        const payload = {
+          name:
+            data.departmentName.trim(),
+
+          department_code:
+            data.departmentCode.trim(),
+
+          head_of_department:
+            data.headOfDepartment || "",
+
+          team_lead:
+            data.teamLead || "",
+        };
+
+        console.log(
+          "Updating department:",
+          {
+            id: departmentId,
+            data: payload,
+          }
+        );
+
+        // ===============================================
+        // CALL UPDATE API
+        // ===============================================
+
+        const result =
+          await dispatch(
+            updateDepartmentById({
+              id: departmentId,
+              data: payload,
+            })
+          ).unwrap();
+
+        console.log(
+          "Department updated successfully:",
+          result
+        );
+
+        // ===============================================
+        // CLOSE MODAL
+        // ===============================================
+
+        setShowDepartmentModal(
+          false
+        );
+
+        // ===============================================
+        // REFRESH DEPARTMENT DETAILS
+        // ===============================================
+
+        dispatch(
+          getDepartmentById(
+            departmentId
+          )
+        );
+
+        return result;
+      } catch (error) {
+        console.error(
+          "Department update failed:",
+          error
+        );
+
+        // VERY IMPORTANT:
+        // Throw error so DepartmentModal
+        // can display backend validation.
+        throw error;
+      }
+    };
+
+  // =========================================================
+  // LOADING
+  // =========================================================
+
+  if (loadingEmployees) {
+    return (
+      <div
+        style={{
+          padding: "40px",
+          textAlign: "center",
+        }}
+      >
+        Loading department
+        employees...
+      </div>
     );
+  }
 
-    // API update will come here
+  // =========================================================
+  // ERROR
+  // =========================================================
 
-    setShowDepartmentModal(false);
-  };
+  if (error) {
+    return (
+      <div
+        style={{
+          padding: "40px",
+          textAlign: "center",
+          color: "#ef4444",
+        }}
+      >
+        Failed to load department
+        employees.
+      </div>
+    );
+  }
 
-  // --------------------------------------------------
+  // =========================================================
   // RENDER
-  // --------------------------------------------------
+  // =========================================================
 
   return (
     <div
       style={{
-        padding: 20,
+        width: "100%",
+        padding: "20px",
+        boxSizing:
+          "border-box",
       }}
     >
       {/* HEADER */}
 
       <ReusableHeader
         title={
-          departmentData.departmentName
+          current?.name ||
+          departmentData
+            ?.departmentName ||
+          "Department Details"
         }
         breadcrumbs={[
           "Department",
@@ -264,8 +541,12 @@ const DepartmentDetails = () => {
 
       {totalPages > 0 && (
         <ReusablePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
+          currentPage={
+            currentPage
+          }
+          totalPages={
+            totalPages
+          }
           onPageChange={
             setCurrentPage
           }
@@ -287,6 +568,7 @@ const DepartmentDetails = () => {
         departmentData={
           selectedDepartment
         }
+        departments={[]}
         onSubmit={
           handleDepartmentSubmit
         }

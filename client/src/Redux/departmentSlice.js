@@ -100,16 +100,43 @@ export const deleteDepartmentById = createAsyncThunk(
 // -------------------------------------------------------------
 // 7️⃣ Get Employees By Department (Full)
 // -------------------------------------------------------------
-export const getEmployeesByDepartment = createAsyncThunk(
-  "departments/getEmployeesByDepartment",
-  async (departmentId, { rejectWithValue }) => {
-    try {
-      return await fetchEmployeesByDepartment(departmentId);
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+export const getEmployeesByDepartment =
+  createAsyncThunk(
+    "departments/getEmployeesByDepartment",
+    async (
+      departmentId,
+      { rejectWithValue }
+    ) => {
+      try {
+        console.log(
+          "Redux employee request:",
+          departmentId
+        );
+
+        const response =
+          await fetchEmployeesByDepartment(
+            departmentId
+          );
+
+        console.log(
+          "Redux employee response:",
+          response
+        );
+
+        return response;
+      } catch (error) {
+        console.error(
+          "Employee API error:",
+          error.response?.data || error.message
+        );
+
+        return rejectWithValue(
+          error.response?.data ||
+            error.message
+        );
+      }
     }
-  }
-);
+  );
 
 // -------------------------------------------------------------
 // 8️⃣ Get Employees By Department Mini (id + name + profile_pic)
