@@ -65,6 +65,7 @@ import PayrollDetailsContainer from "./Pages/payroll/PayrollDetailsContainer.jsx
 import PayrollTable from "./Pages/payroll/PayrollTable.jsx";
 import AttendanceRequestScreen from "./Pages/attendanceRequest/AttendanceRequest.jsx";
 import Invoice from "./Pages/superAdmin/print/Invoice.jsx";
+import EmployeeAttendance from "./Pages/attendanceReport/EmployeeAttendanceModal.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -114,6 +115,10 @@ function App() {
               <Route path="/employee-leave-request" element={<LeaveRequest />} />
               <Route path="/employee-leave-details/:id"  element={<EmployeeLeaveDetails />} />
               <Route path="/employee-attendance/detail/:id" element={<Attendance />} />
+<Route
+  path="/employee-attendance/:id"
+  element={<EmployeeAttendance />}
+/>
               <Route path="/leave" element={<LeaveList />} />
               <Route path="/ViewBasic/:id" element={<ViewBasic />} />
               <Route path="/employee-on-leave" element={<LeaveList />} />
