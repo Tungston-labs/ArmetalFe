@@ -8,216 +8,291 @@ import StatsCards from "../../../Components/StatsCards/StatsCards";
 import DepartmentModal from "./modal/DepartmentModal";
 
 import {
-    employeeColumns,
-    employeeData,
-} from "../../../Components/ReusableTable/dummydata";
+  departmentData,
+  departmentEmployeeColumns,
+} from "./data";
 
 import {
-    FiUsers,
-    FiUserCheck,
-    FiUserX,
-    FiCalendar,
+  FiUsers,
+  FiUserCheck,
+  FiUserX,
+  FiCalendar,
 } from "react-icons/fi";
 
 const DepartmentDetails = () => {
-    const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("");
 
-    const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] =
+    useState(1);
 
-    // Modal states
-    const [showDepartmentModal, setShowDepartmentModal] =
-        useState(false);
+  // --------------------------------------------------
+  // MODAL STATES
+  // --------------------------------------------------
 
-    const [modalMode, setModalMode] = useState("edit");
+  const [showDepartmentModal, setShowDepartmentModal] =
+    useState(false);
 
-    const [selectedDepartment, setSelectedDepartment] =
-        useState(null);
+  const [modalMode, setModalMode] =
+    useState("edit");
 
-    const rowsPerPage = 20;
+  const [selectedDepartment, setSelectedDepartment] =
+    useState(null);
 
-    // --------------------------------------------------
-    // FILTER DATA
-    // --------------------------------------------------
+  const rowsPerPage = 20;
 
-const filteredData = useMemo(() => {
-    let data = [...employeeData];
+  // --------------------------------------------------
+  // EMPLOYEES
+  // --------------------------------------------------
+
+  const employees =
+    departmentData?.employees || [];
+
+  // --------------------------------------------------
+  // FILTER DATA
+  // --------------------------------------------------
+
+  const filteredData = useMemo(() => {
+    let data = [...employees];
 
     if (search.trim()) {
-        const searchValue = search.toLowerCase();
+      const searchValue = search
+        .trim()
+        .toLowerCase();
 
-        data = data.filter((employee) =>
-            Object.values(employee).some((value) =>
-                String(value)
-                    .toLowerCase()
-                    .includes(searchValue)
-            )
-        );
+      data = data.filter((employee) =>
+        Object.values(employee).some(
+          (value) =>
+            String(value)
+              .toLowerCase()
+              .includes(searchValue)
+        )
+      );
     }
 
     return data;
-}, [search]);
+  }, [employees, search]);
 
-    // --------------------------------------------------
-    // PAGINATION
-    // --------------------------------------------------
+  // --------------------------------------------------
+  // PAGINATION
+  // --------------------------------------------------
 
-    const totalPages = Math.ceil(
-        filteredData.length / rowsPerPage
+  const totalPages = Math.ceil(
+    filteredData.length / rowsPerPage
+  );
+
+  const paginatedData = useMemo(() => {
+    const start =
+      (currentPage - 1) * rowsPerPage;
+
+    return filteredData.slice(
+      start,
+      start + rowsPerPage
+    );
+  }, [
+    currentPage,
+    filteredData,
+  ]);
+
+  // --------------------------------------------------
+  // DEPARTMENT STATS
+  // --------------------------------------------------
+
+  const departmentCards = useMemo(() => {
+    const totalEmployees =
+      employees.length;
+
+    const presentEmployees =
+      employees.filter(
+        (employee) =>
+          employee.status
+            ?.toLowerCase() ===
+          "present"
+      ).length;
+
+    const absentEmployees =
+      employees.filter(
+        (employee) =>
+          employee.status
+            ?.toLowerCase() ===
+          "absent"
+      ).length;
+
+    const leaveEmployees =
+      employees.filter(
+        (employee) =>
+          employee.status
+            ?.toLowerCase() ===
+          "on leave"
+      ).length;
+
+    return [
+      {
+        title: "Total Employees",
+        count: totalEmployees,
+        icon: <FiUsers />,
+        backgroundColor: "#E8F1FF",
+        iconColor: "#2878FF",
+      },
+
+      {
+        title: "Present",
+        count: presentEmployees,
+        icon: <FiUserCheck />,
+        backgroundColor: "#E9F9EF",
+        iconColor: "#16A34A",
+      },
+
+      {
+        title: "Absent",
+        count: absentEmployees,
+        icon: <FiUserX />,
+        backgroundColor: "#FFF0F0",
+        iconColor: "#EF4444",
+      },
+
+      {
+        title: "On Leave",
+        count: leaveEmployees,
+        icon: <FiCalendar />,
+        backgroundColor: "#FFF6E5",
+        iconColor: "#F59E0B",
+      },
+    ];
+  }, [employees]);
+
+  // --------------------------------------------------
+  // SEARCH
+  // --------------------------------------------------
+
+  const handleSearch = (value) => {
+    setSearch(value);
+    setCurrentPage(1);
+  };
+
+  // --------------------------------------------------
+  // EDIT DEPARTMENT
+  // --------------------------------------------------
+
+  const handleEditDepartment = () => {
+    setModalMode("edit");
+
+    setSelectedDepartment({
+      id: departmentData.id,
+
+      departmentName:
+        departmentData.departmentName,
+
+      departmentCode:
+        departmentData.departmentCode,
+
+      headOfDepartment:
+        departmentData.headOfDepartment,
+
+      teamLead:
+        departmentData.teamLead,
+    });
+
+    setShowDepartmentModal(true);
+  };
+
+  // --------------------------------------------------
+  // UPDATE DEPARTMENT
+  // --------------------------------------------------
+
+  const handleDepartmentSubmit = (data) => {
+    console.log(
+      "Updated Department:",
+      data
     );
 
-    const paginatedData = useMemo(() => {
-        const start =
-            (currentPage - 1) * rowsPerPage;
+    // API update will come here
 
-        return filteredData.slice(
-            start,
-            start + rowsPerPage
-        );
-    }, [currentPage, filteredData]);
+    setShowDepartmentModal(false);
+  };
 
-    // --------------------------------------------------
-    // DEPARTMENT STATS
-    // --------------------------------------------------
+  // --------------------------------------------------
+  // RENDER
+  // --------------------------------------------------
 
-    const departmentCards = useMemo(() => {
-        const totalEmployees = filteredData.length;
+  return (
+    <div
+      style={{
+        padding: 20,
+      }}
+    >
+      {/* HEADER */}
 
-        const presentEmployees = filteredData.filter(
-            (employee) =>
-                employee.status?.toLowerCase() === "present"
-        ).length;
+      <ReusableHeader
+        title={
+          departmentData.departmentName
+        }
+        breadcrumbs={[
+          "Department",
+          "Department Details",
+        ]}
+        buttonText="Edit"
+        onButtonClick={
+          handleEditDepartment
+        }
+        showBack
+      />
 
-        const absentEmployees = filteredData.filter(
-            (employee) =>
-                employee.status?.toLowerCase() === "absent"
-        ).length;
+      {/* STATS */}
 
-        const leaveEmployees = filteredData.filter(
-            (employee) =>
-                employee.status?.toLowerCase() === "on leave"
-        ).length;
+      <StatsCards
+        cards={departmentCards}
+      />
 
-        return [
-            {
-                title: "Total Employees",
-                count: totalEmployees,
-                icon: <FiUsers />,
-                backgroundColor: "#E8F1FF",
-                iconColor: "#2878FF",
-            },
-            {
-                title: "Present",
-                count: presentEmployees,
-                icon: <FiUserCheck />,
-                backgroundColor: "#E9F9EF",
-                iconColor: "#16A34A",
-            },
-            {
-                title: "Absent",
-                count: absentEmployees,
-                icon: <FiUserX />,
-                backgroundColor: "#FFF0F0",
-                iconColor: "#EF4444",
-            },
-            {
-                title: "On Leave",
-                count: leaveEmployees,
-                icon: <FiCalendar />,
-                backgroundColor: "#FFF6E5",
-                iconColor: "#F59E0B",
-            },
-        ];
-    }, [filteredData]);
+      {/* SEARCH */}
 
-    // --------------------------------------------------
-    // FILTER HANDLERS
-    // --------------------------------------------------
+      <ReusableFilter
+        search={search}
+        onSearch={handleSearch}
+        showSearch
+      />
 
-    const handleSearch = (value) => {
-        setSearch(value);
-        setCurrentPage(1);
-    };
-    // --------------------------------------------------
-    // EDIT DEPARTMENT
-    // --------------------------------------------------
+      {/* TABLE */}
 
-    const handleEditDepartment = () => {
-        setModalMode("edit");
+      <ReusableTable
+        columns={
+          departmentEmployeeColumns
+        }
+        data={paginatedData}
+      />
 
-        // Replace these values with your actual department data/API data
-        setSelectedDepartment({
-            id: 1,
-            departmentName: "Development",
-            departmentCode: "DEV-001",
-            headOfDepartment: "Riswin",
-            teamLead: "Ajay",
-        });
+      {/* PAGINATION */}
 
-        setShowDepartmentModal(true);
-    };
+      {totalPages > 0 && (
+        <ReusablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={
+            setCurrentPage
+          }
+        />
+      )}
 
-    // --------------------------------------------------
-    // UPDATE DEPARTMENT
-    // --------------------------------------------------
+      {/* EDIT MODAL */}
 
-    const handleDepartmentSubmit = (data) => {
-        console.log("Updated Department:", data);
-
-        // API update call can be added here
-
-        setShowDepartmentModal(false);
-    };
-
-    return (
-        <div style={{ padding: 20 }}>
-
-            {/* HEADER */}
-            <ReusableHeader
-                title="Department"
-                breadcrumbs={["Department Details"]}
-                buttonText="Edit"
-                onButtonClick={handleEditDepartment}
-                showBack
-            />
-
-            {/* STATS */}
-            <StatsCards cards={departmentCards} />
-
-            {/* SEARCH */}
-            <ReusableFilter
-                search={search}
-                onSearch={handleSearch}
-                showSearch
-            />
-
-            {/* TABLE */}
-            <ReusableTable
-                columns={employeeColumns}
-                data={paginatedData}
-            />
-
-            {/* PAGINATION */}
-            {totalPages > 0 && (
-                <ReusablePagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                />
-            )}
-
-            {/* EDIT DEPARTMENT MODAL */}
-            <DepartmentModal
-                isOpen={showDepartmentModal}
-                onClose={() =>
-                    setShowDepartmentModal(false)
-                }
-                mode={modalMode}
-                departmentData={selectedDepartment}
-                onSubmit={handleDepartmentSubmit}
-            />
-
-        </div>
-    );
+      <DepartmentModal
+        isOpen={
+          showDepartmentModal
+        }
+        onClose={() =>
+          setShowDepartmentModal(
+            false
+          )
+        }
+        mode={modalMode}
+        departmentData={
+          selectedDepartment
+        }
+        onSubmit={
+          handleDepartmentSubmit
+        }
+      />
+    </div>
+  );
 };
 
 export default DepartmentDetails;
