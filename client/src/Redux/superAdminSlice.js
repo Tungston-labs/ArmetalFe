@@ -4,18 +4,17 @@ import {
   createCompany,
   fetchCompanyById,
   updateCompany,
-  deleteCompany,fetchCompanyOverview,
-    updateCompanyStatus
+  deleteCompany, fetchCompanyOverview,
+  updateCompanyStatus
 } from '../services/superAdminService';
 
 // Async thunk for fetching paginated company list
 export const getCompanies = createAsyncThunk(
-    'superAdmin/getCompanies',
-    async ({ page = 1, search = '' }) => {
-      return await fetchCompany(page, search);
-    }
-  );
-  
+  'superAdmin/getCompanies',
+  async ({ page = 1, search = '' }) => {
+    return await fetchCompany(page, search);
+  }
+);
 
 // Create company
 export const addCompany = createAsyncThunk(
@@ -93,10 +92,10 @@ const superAdminSlice = createSlice({
       previous: null,
     },
     selectedCompany: null,
-    overview:null,
+    overview: null,
     loading: false,
     error: null,
-    searchQuery: "", 
+    searchQuery: "",
   },
   reducers: {
     clearSelectedCompany(state) {
@@ -164,29 +163,29 @@ const superAdminSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-            // Update Company Status
+      // Update Company Status
       .addCase(updateCompanyStatusThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
 
-    .addCase(updateCompanyStatusThunk.fulfilled, (state, action) => {
-  state.loading = false;
+      .addCase(updateCompanyStatusThunk.fulfilled, (state, action) => {
+        state.loading = false;
 
-  const isNowActive = action.payload.action !== "freeze"; // freeze -> inactive
+        const isNowActive = action.payload.action !== "freeze"; // freeze -> inactive
 
-  if (state.selectedCompany) {
-    state.selectedCompany.is_active = isNowActive;
-  }
+        if (state.selectedCompany) {
+          state.selectedCompany.is_active = isNowActive;
+        }
 
-  const index = state.companies.findIndex(
-    company => company.id === action.payload.companyId
-  );
+        const index = state.companies.findIndex(
+          company => company.id === action.payload.companyId
+        );
 
-  if (index !== -1) {
-    state.companies[index].is_active = isNowActive;
-  }
-})
+        if (index !== -1) {
+          state.companies[index].is_active = isNowActive;
+        }
+      })
       .addCase(updateCompanyStatusThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
@@ -194,6 +193,6 @@ const superAdminSlice = createSlice({
   }
 });
 
-export const { clearSelectedCompany,setSearchQuery } = superAdminSlice.actions;
+export const { clearSelectedCompany, setSearchQuery } = superAdminSlice.actions;
 
 export default superAdminSlice.reducer;

@@ -49,32 +49,29 @@ export default function UnsavedChangesGuard({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { forcePush } = useBlocker(
-    (args, originalPush) => {
-      if (isDirty) {
-        const nextPath = args[0]; // attempted path
+  const { forcePush } = useBlocker((args, originalPush) => {
+    if (isDirty) {
+      const nextPath = args[0]; // attempted path
 
-        MySwal.fire({
-          title: "Unsaved Changes",
-          text: "Leaving this page will lose your entered data. Continue?",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Leave Page",
-          cancelButtonText: "Cancel",
-          confirmButtonColor: "#d33",
-          cancelButtonColor: "#3085d6",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            originalPush(nextPath, args[1], args[2]);
-          }
-        });
+      MySwal.fire({
+        title: "Unsaved Changes",
+        text: "Leaving this page will lose your entered data. Continue?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Leave Page",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          originalPush(nextPath, args[1], args[2]);
+        }
+      });
 
-        return true; // block navigation
-      }
-      return false; // allow navigation
-    },
-    isDirty
-  );
+      return true; // block navigation
+    }
+    return false; // allow navigation
+  }, isDirty);
 
   // Browser refresh/tab close
   useEffect(() => {
@@ -85,8 +82,7 @@ export default function UnsavedChangesGuard({ children }) {
       }
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
-    return () =>
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isDirty]);
 
   return <>{children}</>;
