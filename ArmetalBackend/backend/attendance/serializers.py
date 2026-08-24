@@ -303,18 +303,42 @@ class HourlyLocationLogSerializer(serializers.ModelSerializer):
 class DailyAttendanceSerializer(serializers.Serializer):
     date = serializers.DateField()
     status = serializers.CharField()
+
     total_hours = serializers.FloatField()
 
     first_punch_in = serializers.CharField(
-        required=False,
-        allow_null=True
+        allow_null=True,
+        required=False
     )
 
     last_punch_out = serializers.CharField(
-        required=False,
-        allow_null=True
+        allow_null=True,
+        required=False
     )
 
+    # Manual/Admin attendance status
+    attendance_status = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    # Admin remark
+    remark = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    # User who modified attendance
+    updated_by = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    # Role of user who modified attendance
+    updated_by_role = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
 
 class EmployeeAttendanceSummarySerializer(serializers.Serializer):
     employee_id = serializers.CharField()
@@ -327,3 +351,124 @@ class EmployeeAttendanceSummarySerializer(serializers.Serializer):
     lop_days = serializers.FloatField()
 
     daily_records = DailyAttendanceSerializer(many=True)
+
+from rest_framework import serializers
+from attendance.models import Attendance
+
+
+class AttendanceManualUpdateSerializer(serializers.ModelSerializer):
+
+    employee = serializers.IntegerField(write_only=True)
+    date = serializers.DateField()
+
+    # Frontend sends "full" or "half"
+    day_limit = serializers.ChoiceField(
+        choices=["full", "half"],
+        write_only=True,
+        required=False
+    )
+
+    class Meta:
+        model = Attendance
+        fields = [
+            "employee",
+            "date",
+            "status",
+            "remark",
+            "day_limit",
+        ]
+
+    def validate_status(self, value):
+        allowed_statuses = [
+            "pending",
+            "approved",
+            "rejected",
+        ]
+
+        if value not in allowed_statuses:
+            raise serializers.ValidationError(
+                "Invalid attendance status."
+            )
+
+        return value
+
+    def validate_day_limit(self, value):
+        allowed_day_limits = [
+            "full",
+            "half",
+        ]
+
+        if value not in allowed_day_limits:
+            raise serializers.ValidationError(
+                "Invalid day_limit. Use 'full' or 'half'."
+            )
+
+        return value
+
+    def update(self, instance, validated_data):
+
+        request = self.context.get("request")
+
+        # employee and date are only used to identify the record
+        validated_data.pop("employee", None)
+        validated_data.pop("date", None)
+
+        status_value = validated_data.get(
+            "status",
+            instance.status
+        )
+
+        day_limit = validated_data.get("day_limit")
+
+        # --------------------------------------------------
+        # UPDATE STATUS
+        # --------------------------------------------------
+
+        instance.status = status_value
+
+        # --------------------------------------------------
+        # UPDATE REMARK
+        # --------------------------------------------------
+
+        instance.remark = validated_data.get(
+            "remark",
+            instance.remark
+        )
+
+        # --------------------------------------------------
+        # APPROVED ATTENDANCE
+        # --------------------------------------------------
+
+        if status_value == "approved":
+
+            if not day_limit:
+                raise serializers.ValidationError({
+                    "day_limit": (
+                        "day_limit is required when attendance "
+                        "status is approved."
+                    )
+                })
+
+            # Get company from employee
+            company = instance.employee.department.company
+
+            # FULL DAY
+            if day_limit == "full":
+
+                instance.total_hours = company.working_hours_per_day
+
+            # HALF DAY
+            elif day_limit == "half":
+
+                instance.total_hours = company.half_day_hours
+
+        # --------------------------------------------------
+        # UPDATED BY
+        # --------------------------------------------------
+
+        if request and request.user.is_authenticated:
+            instance.updated_by = request.user
+
+        instance.save()
+
+        return instance

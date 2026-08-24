@@ -9,7 +9,7 @@ from django.utils.dateparse import parse_datetime
 from django.utils.timezone import is_naive, make_aware, now as tz_now
 import pytz
 import logging
-
+from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
@@ -19,6 +19,24 @@ class Attendance(TimeStampedModel):
     total_hours = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     remark = models.CharField(max_length=255, blank=True, null=True)
     locations = models.JSONField(default=list, blank=True, null=True)
+    status = models.CharField(
+    max_length=20,
+    choices=[
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
+    ],
+    default="pending",
+    null=True,
+    blank=True,
+)
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="updated_attendances"
+    )
 
     class Meta:
         unique_together = ['employee', 'date']

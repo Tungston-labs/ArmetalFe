@@ -838,3 +838,110 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
 
         serializer = self.get_serializer(results, many=True)
         return Response(serializer.data)
+    
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+
+from attendance.models import Attendance
+from .serializers import AttendanceManualUpdateSerializer
+
+
+class AttendanceManualUpdateView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+
+        employee_id = request.data.get("employee")
+        attendance_date = request.data.get("date")
+
+        if not employee_id:
+            return Response(
+                {
+                    "error": "employee is required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not attendance_date:
+            return Response(
+                {
+                    "error": "date is required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # --------------------------------------------------
+        # PERMISSION CHECK
+        # --------------------------------------------------
+
+        user = request.user
+
+        if not (
+            user.is_superadmin
+            or user.is_hr_admin
+            or user.is_hr
+        ):
+            return Response(
+                {
+                    "error": (
+                        "You do not have permission "
+                        "to update attendance."
+                    )
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # --------------------------------------------------
+        # GET ATTENDANCE
+        # --------------------------------------------------
+
+        try:
+
+            attendance = Attendance.objects.select_related(
+                "employee",
+                "employee__department",
+                "employee__department__company",
+                "updated_by"
+            ).get(
+                employee_id=employee_id,
+                date=attendance_date,
+                employee__department__company=user.company
+            )
+
+        except Attendance.DoesNotExist:
+
+            return Response(
+                {
+                    "error": (
+                        f"No attendance record found for "
+                        f"employee {employee_id} on "
+                        f"{attendance_date}."
+                    )
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # --------------------------------------------------
+        # SERIALIZER
+        # --------------------------------------------------
+
+        serializer = AttendanceManualUpdateSerializer(
+            attendance,
+            data=request.data,
+            partial=True,
+            context={
+                "request": request
+            }
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )

@@ -16,12 +16,12 @@ Content-Type: application/json
   "password": "password123"
 }
 ###LOGIN FOR EMPLOYEE
-POST http://178.248.112.16:8001/api/token/
+POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "TUNDEV4QN",
-  "password": "password123"
+  "username": "dummycompany",
+  "password": "Password@123"
 }
 
 # common logout for super admin,hr comapny,employee
