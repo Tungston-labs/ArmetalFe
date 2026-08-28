@@ -126,9 +126,12 @@ function App() {
               <Route path="/leave" element={<LeaveList />} />
               <Route path="/ViewBasic/:id" element={<ViewBasic />} />
               <Route path="/employee-on-leave" element={<LeaveList />} />
-              <Route path="/employee-attendance" element={<AttendanceList />} />
-<Route path="/employee-attendance-tracking" element={<TrackingList />} />
 
+              <Route path="/employee-attendance" element={<AttendanceList />} />
+<Route
+  path="/employee-attendance-tracking/:id"
+  element={<TrackingList />}
+/>
               <Route path="/employee-leave" element={<DetailOnleave />} />
               <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
               <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
