@@ -1,11 +1,12 @@
-import React, { useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
   updateAttendanceThunk,
   clearAttendanceUpdate,
+  getAttendanceSummary, // reused from AttendanceReport — no new endpoint needed
 } from "../../Redux/attendanceSlice";
 
 import {
@@ -52,15 +53,22 @@ import {
   TooltipContent,
 } from "./EmployeeAttendanceModal.styles";
 
+// This is the route to go back to. Keep this in sync with your router config.
+const ATTENDANCE_REPORT_ROUTE = "/employee-attendance-report";
+
 const EmployeeAttendance = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // employeeId comes from the URL, so this page works on refresh / direct
+  // links too, not only when navigated to with router state.
+  const { employeeId: routeEmployeeId } = useParams();
+
   const {
-    employee,
-    monthName,
-    selectedMonth,
+    employee: stateEmployee,
+    monthName: stateMonthName,
+    selectedMonth: stateSelectedMonth,
   } = location.state || {};
 
   const printRef = useRef();
@@ -69,46 +77,150 @@ const EmployeeAttendance = () => {
   // REDUX STATE
   // ==================================================
 
-  const {
-    updateLoading,
-    updateSuccess,
-    updateError,
-  } = useSelector(
-    (state) => state.attendance
+  const auth = useSelector((state) => state.auth || {});
+  const token = auth?.accessToken || auth?.token || "";
+
+  const { updateLoading, updateSuccess, updateError } = useSelector(
+    (state) => state.attendance || {}
   );
+
+  // Same summary slice AttendanceReport uses.
+  const attendanceSummary = useSelector(
+    (state) => state.attendance?.attendanceSummary
+  );
+  const summaryLoading = useSelector(
+    (state) => state.attendance?.summaryLoading
+  );
+
+  // ==================================================
+  // MONTH
+  // ==================================================
+  // Falls back to the month passed via router state, or
+  // the current month if the page was opened directly.
+  // ==================================================
+
+  const [selectedMonth] = useState(
+    stateSelectedMonth || new Date().toISOString().slice(0, 7)
+  );
+
+  const monthName =
+    stateMonthName ||
+    new Date(`${selectedMonth}-01T00:00:00`).toLocaleString("default", {
+      month: "long",
+    });
+
+  // ==================================================
+  // FETCH THE SUMMARY, PAGE BY PAGE, UNTIL WE FIND
+  // THE EMPLOYEE WE CARE ABOUT
+  // ==================================================
+  // The summary endpoint is paginated (same one used by
+  // AttendanceReport), so the employee we want may not be
+  // on page 1. We walk forward until found or we run out
+  // of pages.
+  // ==================================================
+
+  const [searchPage, setSearchPage] = useState(1);
+  const [searchExhausted, setSearchExhausted] = useState(false);
+
+  const fetchSummaryPage = (page) => {
+    if (!selectedMonth || !token) {
+      return;
+    }
+
+    const [year, month] = selectedMonth.split("-");
+
+    dispatch(
+      getAttendanceSummary({
+        year: Number(year),
+        month: Number(month),
+        page,
+        token,
+      })
+    );
+  };
+
+  // Kick off the search whenever we land on this page for a
+  // (possibly) different employee/month.
+  useEffect(() => {
+    setSearchPage(1);
+    setSearchExhausted(false);
+    fetchSummaryPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeEmployeeId, selectedMonth, token]);
+
+  const employeeFromSummary = useMemo(() => {
+    if (!attendanceSummary?.results || !routeEmployeeId) {
+      return null;
+    }
+
+    return (
+      attendanceSummary.results.find(
+        (emp) => String(emp.employee_id) === String(routeEmployeeId)
+      ) || null
+    );
+  }, [attendanceSummary, routeEmployeeId]);
+
+  // If the employee wasn't on the page we just fetched, and there
+  // are more pages, fetch the next one automatically.
+  useEffect(() => {
+    if (!attendanceSummary || employeeFromSummary || summaryLoading) {
+      return;
+    }
+
+    const currentPage = attendanceSummary.current_page || searchPage;
+    const totalPages = attendanceSummary.total_pages || 1;
+
+    if (currentPage < totalPages) {
+      const nextPage = currentPage + 1;
+      setSearchPage(nextPage);
+      fetchSummaryPage(nextPage);
+    } else {
+      setSearchExhausted(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attendanceSummary, employeeFromSummary, summaryLoading]);
+
+  // Server data wins once found; state data is only the fallback
+  // for the very first paint (or if the employee genuinely can't
+  // be found in the summary for some reason).
+  const employee = employeeFromSummary || stateEmployee;
+
+  const stillSearching = !employeeFromSummary && !searchExhausted;
 
   // ==================================================
   // RECORDS
   // ==================================================
+  // Re-synced any time `employee` changes (fresh fetch,
+  // navigation back to this page, etc.) instead of only
+  // being set once on mount.
+  // ==================================================
 
-  const [records, setRecords] = useState(
-    employee?.daily_records || []
-  );
+  const [records, setRecords] = useState(employee?.daily_records || []);
+
+  useEffect(() => {
+    setRecords(employee?.daily_records || []);
+  }, [employee]);
 
   // ==================================================
   // EDIT MODAL STATE
   // ==================================================
 
-  const [isEditModalOpen, setIsEditModalOpen] =
-    useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const [selectedRecord, setSelectedRecord] =
-    useState(null);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
   // ==================================================
   // ATTENDANCE TYPE
   // paid / unpaid
   // ==================================================
 
-  const [attendanceType, setAttendanceType] =
-    useState("unpaid");
+  const [attendanceType, setAttendanceType] = useState("unpaid");
 
   // ==================================================
   // NOTE
   // ==================================================
 
-  const [editNote, setEditNote] =
-    useState("");
+  const [editNote, setEditNote] = useState("");
 
   // ==================================================
   // CURRENT USER
@@ -126,52 +238,51 @@ const EmployeeAttendance = () => {
   const handlePrint = useReactToPrint({
     contentRef: printRef,
 
-    documentTitle: `${employee?.employee_name || "Employee"
-      }-attendance`,
+    documentTitle: `${employee?.employee_name || "Employee"}-attendance`,
   });
 
   // ==================================================
-  // NO EMPLOYEE
+  // REFETCH HELPER (after a save)
+  // ==================================================
+
+  const refetchEmployee = () => {
+    setSearchPage(1);
+    setSearchExhausted(false);
+    fetchSummaryPage(1);
+  };
+
+  // ==================================================
+  // NO EMPLOYEE (still searching, or genuinely not found)
   // ==================================================
 
   if (!employee) {
     return (
       <AttendancePage>
         <AttendanceContainer>
-
           <PageHeader>
-
             <HeaderLeft>
-
               <BackButton
                 type="button"
-                onClick={() =>
-                  navigate(
-                    "/attendance-report"
-                  )
-                }
+                onClick={() => navigate(ATTENDANCE_REPORT_ROUTE)}
               >
                 ← Back
               </BackButton>
 
-              <PageTitle>
-                Employee Attendance
-              </PageTitle>
+              <PageTitle>Employee Attendance</PageTitle>
 
               <PageSubtitle>
-                Employee attendance data not
-                available.
+                {stillSearching
+                  ? "Loading employee attendance data..."
+                  : "Employee attendance data not available."}
               </PageSubtitle>
-
             </HeaderLeft>
-
           </PageHeader>
 
           <EmptyMessage>
-            Please open the attendance details
-            from the attendance report.
+            {stillSearching
+              ? "Please wait..."
+              : "Please open the attendance details from the attendance report."}
           </EmptyMessage>
-
         </AttendanceContainer>
       </AttendancePage>
     );
@@ -181,17 +292,13 @@ const EmployeeAttendance = () => {
   // SUMMARY
   // ==================================================
 
-  const workingDays =
-    employee.working_days ?? 0;
+  const workingDays = employee.working_days ?? 0;
 
-  const presentCount =
-    employee.present_days ?? 0;
+  const presentCount = employee.present_days ?? 0;
 
-  const absentCount =
-    employee.absent_days ?? 0;
+  const absentCount = employee.absent_days ?? 0;
 
-  const lopCount =
-    employee.lop_days ?? 0;
+  const lopCount = employee.lop_days ?? 0;
 
   // ==================================================
   // DATE
@@ -208,17 +315,11 @@ const EmployeeAttendance = () => {
       return "—";
     }
 
-    const day = d
-      .getDate()
-      .toString()
-      .padStart(2, "0");
+    const day = d.getDate().toString().padStart(2, "0");
 
-    const month = d.toLocaleString(
-      "en-GB",
-      {
-        month: "short",
-      }
-    );
+    const month = d.toLocaleString("en-GB", {
+      month: "short",
+    });
 
     return `${day} ${month}`;
   };
@@ -228,11 +329,7 @@ const EmployeeAttendance = () => {
   // ==================================================
 
   const formatTime = (timeStr) => {
-    if (
-      !timeStr ||
-      timeStr === "null" ||
-      timeStr === "undefined"
-    ) {
+    if (!timeStr || timeStr === "null" || timeStr === "undefined") {
       return "—";
     }
 
@@ -259,9 +356,9 @@ const EmployeeAttendance = () => {
 
     const existingAttendanceType = String(
       record.attendance_type ||
-      record.payment_type ||
-      record.day_limit ||
-      "unpaid"
+        record.payment_type ||
+        record.day_limit ||
+        "unpaid"
     )
       .toLowerCase()
       .trim();
@@ -276,11 +373,7 @@ const EmployeeAttendance = () => {
     // EXISTING NOTE
     // -----------------------------------------------
 
-    setEditNote(
-      record.remark ||
-      record.note ||
-      ""
-    );
+    setEditNote(record.remark || record.note || "");
 
     // -----------------------------------------------
     // CLEAR PREVIOUS UPDATE STATE
@@ -296,7 +389,6 @@ const EmployeeAttendance = () => {
   // ==================================================
 
   const handleCloseEdit = () => {
-
     if (updateLoading) {
       return;
     }
@@ -309,239 +401,143 @@ const EmployeeAttendance = () => {
 
     setEditNote("");
 
-    dispatch(
-      clearAttendanceUpdate()
-    );
+    dispatch(clearAttendanceUpdate());
   };
 
   // ==================================================
   // SAVE ATTENDANCE
   // ==================================================
 
-  const handleSaveAttendance =
-    async () => {
+  const handleSaveAttendance = async () => {
+    if (!selectedRecord) {
+      return;
+    }
 
-      if (!selectedRecord) {
-        return;
-      }
+    // ---------------------------------------------
+    // EMPLOYEE ID
+    // ---------------------------------------------
 
-      console.log(
-        "================================"
-      );
+    const employeeId =
+      selectedRecord?.employee ||
+      selectedRecord?.employee_id ||
+      employee?.employee_id ||
+      employee?.employee_pk ||
+      employee?.employee;
 
-      console.log(
-        "employee object:",
-        employee
-      );
+    // ---------------------------------------------
+    // VALIDATE EMPLOYEE
+    // ---------------------------------------------
 
-      console.log(
-        "selectedRecord object:",
-        selectedRecord
-      );
+    if (!employeeId) {
+      console.error("❌ Employee ID is missing");
 
-      // ---------------------------------------------
-      // EMPLOYEE ID
-      // ---------------------------------------------
-      console.log("employee object:", employee);
+      return;
+    }
 
-      const employeeId =
-        selectedRecord?.employee ||
-        selectedRecord?.employee_id ||
-        employee?.employee_pk ||
-        employee?.employee;
-      // ---------------------------------------------
-      // VALIDATE EMPLOYEE
-      // ---------------------------------------------
+    // ---------------------------------------------
+    // VALIDATE DATE
+    // ---------------------------------------------
 
-      if (!employeeId) {
+    if (!selectedRecord.date) {
+      console.error("❌ Attendance date is missing");
 
-        console.error(
-          "❌ Employee ID is missing"
-        );
+      return;
+    }
 
-        return;
-      }
+    // ---------------------------------------------
+    // ATTENDANCE TYPE
+    // ---------------------------------------------
 
-      // ---------------------------------------------
-      // VALIDATE DATE
-      // ---------------------------------------------
+    const dayLimit = attendanceType === "unpaid" ? "unpaid" : "paid";
 
-      if (!selectedRecord.date) {
+    // ---------------------------------------------
+    // API PAYLOAD
+    // ---------------------------------------------
 
-        console.error(
-          "❌ Attendance date is missing"
-        );
+    const payload = {
+      employee: employeeId,
 
-        return;
-      }
+      date: selectedRecord.date,
 
-      // ---------------------------------------------
-      // ATTENDANCE TYPE
-      // ---------------------------------------------
+      day_limit: dayLimit,
 
-      const dayLimit =
-        attendanceType === "unpaid"
-          ? "unpaid"
-          : "paid";
+      attendance_type: attendanceType,
 
-      // ---------------------------------------------
-      // API PAYLOAD
-      // ---------------------------------------------
-      //
-      // STATUS HAS BEEN COMPLETELY REMOVED
-      //
-      // ---------------------------------------------
-
-      const payload = {
-        employee: employeeId,
-
-        date: selectedRecord.date,
-
-        day_limit: dayLimit,
-
-        attendance_type:
-          attendanceType,
-
-        remark: editNote.trim(),
-      };
-
-      console.log(
-        "📤 Updating attendance"
-      );
-
-      console.log(
-        "Employee:",
-        employeeId
-      );
-
-      console.log(
-        "Date:",
-        selectedRecord.date
-      );
-
-      console.log(
-        "Attendance Type:",
-        attendanceType
-      );
-
-      console.log(
-        "Day Limit:",
-        dayLimit
-      );
-
-      console.log(
-        "Remark:",
-        editNote
-      );
-
-      console.log(
-        "📦 Full Payload:",
-        payload
-      );
-
-      console.log(
-        "================================"
-      );
-
-      try {
-
-        // -------------------------------------------
-        // CALL REDUX THUNK
-        // -------------------------------------------
-
-        const response =
-          await dispatch(
-            updateAttendanceThunk(
-              payload
-            )
-          ).unwrap();
-
-        console.log(
-          "✅ Attendance updated successfully:",
-          response
-        );
-
-        // -------------------------------------------
-        // UPDATE LOCAL TABLE
-        // -------------------------------------------
-
-        const now =
-          new Date().toISOString();
-
-        setRecords(
-          (prevRecords) =>
-            prevRecords.map(
-              (record, index) => {
-
-                if (
-                  index !==
-                  selectedRecord.index
-                ) {
-                  return record;
-                }
-
-                return {
-                  ...record,
-
-                  // --------------------------------
-                  // ATTENDANCE TYPE
-                  // --------------------------------
-
-                  attendance_type:
-                    attendanceType,
-
-                  day_limit:
-                    dayLimit,
-
-                  // --------------------------------
-                  // NOTE
-                  // --------------------------------
-
-                  note: editNote,
-
-                  remark: editNote,
-
-                  // --------------------------------
-                  // AUDIT
-                  // --------------------------------
-
-                  edited_by:
-                    currentUser,
-
-                  edited_at:
-                    now,
-                };
-              }
-            )
-        );
-
-        // -------------------------------------------
-        // CLOSE MODAL
-        // -------------------------------------------
-
-        setIsEditModalOpen(false);
-
-        setSelectedRecord(null);
-
-        setAttendanceType("unpaid");
-
-        setEditNote("");
-
-        dispatch(
-          clearAttendanceUpdate()
-        );
-
-      } catch (error) {
-
-        console.error(
-          "❌ Failed to update attendance:",
-          error
-        );
-
-        // Keep modal open
-        // so the user can see the error
-      }
+      remark: editNote.trim(),
     };
+
+    try {
+      // -------------------------------------------
+      // CALL REDUX THUNK
+      // -------------------------------------------
+
+      const response = await dispatch(
+        updateAttendanceThunk(payload)
+      ).unwrap();
+
+      // -------------------------------------------
+      // INSTANT LOCAL UPDATE
+      // -------------------------------------------
+      // updateAttendanceThunk.fulfilled only patches
+      // state.attendanceList in the slice — it never
+      // touches state.attendanceSummary, which is what
+      // this page actually reads from. So without this,
+      // the table only updates once the refetch below
+      // resolves, which can take a moment (or several
+      // sequential requests if this employee isn't on
+      // page 1). Patching from the save response makes
+      // the change visible immediately, every time.
+      // -------------------------------------------
+
+      const now = new Date().toISOString();
+
+      setRecords((prevRecords) =>
+        prevRecords.map((record) =>
+          record.date === selectedRecord.date
+            ? {
+                ...record,
+                ...response,
+                attendance_type: attendanceType,
+                day_limit: dayLimit,
+                note: editNote,
+                remark: editNote,
+                updated_by: currentUser,
+                updated_at: now,
+              }
+            : record
+        )
+      );
+
+      // -------------------------------------------
+      // RE-FETCH FROM SERVER (background sync)
+      // -------------------------------------------
+      // Keeps Redux (and the report page's summary)
+      // in sync with the server. The screen has already
+      // been updated above, so this just confirms it.
+      // -------------------------------------------
+
+      refetchEmployee();
+
+      // -------------------------------------------
+      // CLOSE MODAL
+      // -------------------------------------------
+
+      setIsEditModalOpen(false);
+
+      setSelectedRecord(null);
+
+      setAttendanceType("unpaid");
+
+      setEditNote("");
+
+      dispatch(clearAttendanceUpdate());
+    } catch (error) {
+      console.error("❌ Failed to update attendance:", error);
+
+      // Keep modal open
+      // so the user can see the error
+    }
+  };
 
   // ==================================================
   // SUMMARY CARDS
@@ -578,9 +574,7 @@ const EmployeeAttendance = () => {
   // ==================================================
 
   const handleBack = () => {
-    navigate(
-      "/employee-attendance-report"
-    );
+    navigate(ATTENDANCE_REPORT_ROUTE);
   };
 
   // ==================================================
@@ -589,51 +583,23 @@ const EmployeeAttendance = () => {
 
   return (
     <AttendancePage>
-
-      <AttendanceContainer
-        ref={printRef}
-      >
-
+      <AttendanceContainer ref={printRef}>
         {/* ========================================== */}
         {/* HEADER */}
         {/* ========================================== */}
 
         <PageHeader>
-
           <HeaderLeft>
-
-            <BackButton
-              type="button"
-              onClick={handleBack}
-            >
+            <BackButton type="button" onClick={handleBack}>
               ← Back
             </BackButton>
 
             <div>
+              <PageTitle>{employee.employee_name}</PageTitle>
 
-              <PageTitle>
-                {employee.employee_name}
-              </PageTitle>
-
-              <PageSubtitle>
-                {monthName} — Attendance Summary
-              </PageSubtitle>
-
+              <PageSubtitle>{monthName} — Attendance Summary</PageSubtitle>
             </div>
-
           </HeaderLeft>
-
-          <HeaderRight>
-
-            <PrintButton
-              type="button"
-              onClick={handlePrint}
-            >
-              Print
-            </PrintButton>
-
-          </HeaderRight>
-
         </PageHeader>
 
         {/* ========================================== */}
@@ -641,28 +607,13 @@ const EmployeeAttendance = () => {
         {/* ========================================== */}
 
         <CardsWrapper>
-
           {cards.map((card) => (
+            <Card key={card.label} type={card.type}>
+              <CardTitle>{card.label}</CardTitle>
 
-            <Card
-              key={card.label}
-              type={card.type}
-            >
-
-              <CardTitle>
-                {card.label}
-              </CardTitle>
-
-              <CardValue
-                type={card.type}
-              >
-                {card.value}
-              </CardValue>
-
+              <CardValue type={card.type}>{card.value}</CardValue>
             </Card>
-
           ))}
-
         </CardsWrapper>
 
         {/* ========================================== */}
@@ -670,29 +621,23 @@ const EmployeeAttendance = () => {
         {/* ========================================== */}
 
         {updateError && (
-
           <div
             style={{
               marginBottom: "15px",
               padding: "12px 15px",
               borderRadius: "8px",
               background: "#fff1f1",
-              border:
-                "1px solid #f1b5b5",
+              border: "1px solid #f1b5b5",
               color: "#c62828",
               fontSize: "14px",
             }}
           >
-
-            {typeof updateError ===
-              "object"
+            {typeof updateError === "object"
               ? updateError.detail ||
-              updateError.message ||
-              "Failed to update attendance"
+                updateError.message ||
+                "Failed to update attendance"
               : updateError}
-
           </div>
-
         )}
 
         {/* ========================================== */}
@@ -700,22 +645,19 @@ const EmployeeAttendance = () => {
         {/* ========================================== */}
 
         {updateSuccess && (
-
           <div
             style={{
               marginBottom: "15px",
               padding: "12px 15px",
               borderRadius: "8px",
               background: "#edf9f1",
-              border:
-                "1px solid #b7e4c7",
+              border: "1px solid #b7e4c7",
               color: "#18743e",
               fontSize: "14px",
             }}
           >
             Attendance updated successfully.
           </div>
-
         )}
 
         {/* ========================================== */}
@@ -723,592 +665,358 @@ const EmployeeAttendance = () => {
         {/* ========================================== */}
 
         <AttendanceTableWrapper>
-
           <AttendanceTable>
-
             <thead>
-
               <tr>
+                <TableHeader>Date</TableHeader>
 
-                <TableHeader>
-                  Date
-                </TableHeader>
+                <TableHeader>Attendance Type</TableHeader>
 
-                <TableHeader>
-                  Attendance Type
-                </TableHeader>
+                <TableHeader>Punch In</TableHeader>
 
-                <TableHeader>
-                  Punch In
-                </TableHeader>
+                <TableHeader>Punch Out</TableHeader>
 
-                <TableHeader>
-                  Punch Out
-                </TableHeader>
+                <TableHeader>Hours</TableHeader>
 
-                <TableHeader>
-                  Hours
-                </TableHeader>
+                <TableHeader>Note</TableHeader>
 
-                <TableHeader>
-                  Note
-                </TableHeader>
+                <TableHeader>Edited By</TableHeader>
 
-                <TableHeader>
-                  Edited By
-                </TableHeader>
-
-                <TableHeader>
-                  Action
-                </TableHeader>
-
+                <TableHeader>Action</TableHeader>
               </tr>
-
             </thead>
 
             <tbody>
-
-              {records.length === 0 ? (
-
+              {summaryLoading && records.length === 0 ? (
                 <tr>
-
-                  <TableCell
-                    colSpan={8}
-                  >
-
-                    <EmptyMessage>
-                      No attendance records
-                      available
-                    </EmptyMessage>
-
+                  <TableCell colSpan={8}>
+                    <EmptyMessage>Loading attendance records...</EmptyMessage>
                   </TableCell>
-
                 </tr>
-
+              ) : records.length === 0 ? (
+                <tr>
+                  <TableCell colSpan={8}>
+                    <EmptyMessage>
+                      No attendance records available
+                    </EmptyMessage>
+                  </TableCell>
+                </tr>
               ) : (
+                records.map((rec, idx) => {
+                  // --------------------------------
+                  // ATTENDANCE TYPE
+                  // --------------------------------
 
-                records.map(
-                  (rec, idx) => {
+                  const hasAttendanceType =
+                    rec.attendance_type !== null &&
+                    rec.attendance_type !== undefined &&
+                    String(rec.attendance_type).trim() !== "";
 
-                    // --------------------------------
-                    // ATTENDANCE TYPE
-                    // --------------------------------
+                  const currentAttendanceType = hasAttendanceType
+                    ? String(rec.attendance_type).toLowerCase().trim()
+                    : null;
 
-                    const hasAttendanceType =
-                      rec.attendance_type !== null &&
-                      rec.attendance_type !== undefined &&
-                      String(rec.attendance_type).trim() !== "";
+                  const attendanceText = hasAttendanceType
+                    ? currentAttendanceType === "unpaid"
+                      ? "Unpaid"
+                      : "Paid"
+                    : rec.status || "—";
 
-                    const currentAttendanceType = hasAttendanceType
-                      ? String(rec.attendance_type).toLowerCase().trim()
-                      : null;
+                  return (
+                    <TableRow key={`${rec.date}-${idx}`}>
+                      {/* DATE */}
 
-                    const attendanceText = hasAttendanceType
-                      ? currentAttendanceType === "unpaid"
-                        ? "Unpaid"
-                        : "Paid"
-                      : rec.status || "—";
+                      <TableCell>{formatDate(rec.date)}</TableCell>
 
-                    return (
+                      {/* ATTENDANCE TYPE */}
 
-                      <TableRow
-                        key={`${rec.date}-${idx}`}
-                      >
-
-                        {/* DATE */}
-
-                        <TableCell>
-                          {formatDate(
-                            rec.date
-                          )}
-                        </TableCell>
-
-                        {/* ATTENDANCE TYPE */}
-
-                        <TableCell>
-
-                          <strong
-                            style={{
-                              color:
-                                attendanceText ===
-                                  "Unpaid"
-                                  ? "#d13c3c"
-                                  : "#1d8a4b",
-                            }}
-                          >
-                            {attendanceText}
-                          </strong>
-
-                        </TableCell>
-
-                        {/* PUNCH IN */}
-
-                        <TableCell>
-                          {formatTime(
-                            rec.first_punch_in
-                          )}
-                        </TableCell>
-
-                        {/* PUNCH OUT */}
-
-                        <TableCell>
-                          {formatTime(
-                            rec.last_punch_out
-                          )}
-                        </TableCell>
-
-                        {/* HOURS */}
-
-                        <TableCell
-                          className="hours-cell"
+                      <TableCell>
+                        <strong
+                          style={{
+                            color:
+                              attendanceText === "Unpaid"
+                                ? "#d13c3c"
+                                : "#1d8a4b",
+                          }}
                         >
+                          {attendanceText}
+                        </strong>
+                      </TableCell>
 
-                          {Number(
-                            rec.total_hours ||
-                            0
-                          ).toFixed(2)}
+                      {/* PUNCH IN */}
 
-                          h
+                      <TableCell>
+                        {formatTime(rec.first_punch_in)}
+                      </TableCell>
 
-                        </TableCell>
+                      {/* PUNCH OUT */}
 
-                        {/* NOTE */}
+                      <TableCell>
+                        {formatTime(rec.last_punch_out)}
+                      </TableCell>
 
-                        <TableCell>
+                      {/* HOURS */}
 
-                          {rec.note ||
-                            rec.remark ? (
+                      <TableCell className="hours-cell">
+                        {Number(rec.total_hours || 0).toFixed(2)}h
+                      </TableCell>
 
-                            <NoteCell>
+                      {/* NOTE */}
 
-                              <NoteText>
-
-                                {(
-                                  rec.note ||
-                                  rec.remark
-                                ).length >
-                                  15
-                                  ? `${(
-                                    rec.note ||
-                                    rec.remark
-                                  ).substring(
+                      <TableCell>
+                        {rec.note || rec.remark ? (
+                          <NoteCell>
+                            <NoteText>
+                              {(rec.note || rec.remark).length > 15
+                                ? `${(rec.note || rec.remark).substring(
                                     0,
                                     15
                                   )}...`
-                                  : rec.note ||
-                                  rec.remark}
+                                : rec.note || rec.remark}
+                            </NoteText>
 
-                              </NoteText>
+                            <NoteTooltip>
+                              <TooltipLabel>HR Note</TooltipLabel>
 
-                              <NoteTooltip>
+                              <TooltipContent>
+                                {rec.note || rec.remark}
+                              </TooltipContent>
+                            </NoteTooltip>
+                          </NoteCell>
+                        ) : (
+                          <NoNote>—</NoNote>
+                        )}
+                      </TableCell>
 
-                                <TooltipLabel>
-                                  HR Note
-                                </TooltipLabel>
+                      {/* EDITED BY */}
 
-                                <TooltipContent>
-                                  {rec.note ||
-                                    rec.remark}
-                                </TooltipContent>
+                      <TableCell>
+                        {rec.updated_by ? (
+                          <div>
+                            <strong>{rec.updated_by}</strong>
 
-                              </NoteTooltip>
-
-                            </NoteCell>
-
-                          ) : (
-
-                            <NoNote>
-                              —
-                            </NoNote>
-
-                          )}
-
-                        </TableCell>
-
-                        {/* EDITED BY */}
-
-                        <TableCell>
-                          {rec.updated_by ? (
-                            <div>
-                              <strong>
-                                {rec.updated_by}
-                              </strong>
-
-                              {rec.updated_by_role && (
-                                <div
-                                  style={{
-                                    fontSize: "11px",
-                                    color: "#888",
-                                    marginTop: "3px",
-                                  }}
-                                >
-                                  {rec.updated_by_role}
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <span
-                              style={{
-                                color: "#999",
-                              }}
-                            >
-                              Not edited
-                            </span>
-                          )}
-                        </TableCell>
-
-                        {/* ACTION */}
-
-                        <TableCell>
-
-                          <EditButton
-                            type="button"
-                            onClick={() =>
-                              handleEdit(
-                                rec,
-                                idx
-                              )
-                            }
-                            disabled={
-                              updateLoading
-                            }
+                            {rec.updated_by_role && (
+                              <div
+                                style={{
+                                  fontSize: "11px",
+                                  color: "#888",
+                                  marginTop: "3px",
+                                }}
+                              >
+                                {rec.updated_by_role}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span
+                            style={{
+                              color: "#999",
+                            }}
                           >
-                            Edit
-                          </EditButton>
+                            Not edited
+                          </span>
+                        )}
+                      </TableCell>
 
-                        </TableCell>
+                      {/* ACTION */}
 
-                      </TableRow>
-
-                    );
-                  }
-                )
-
+                      <TableCell>
+                        <EditButton
+                          type="button"
+                          onClick={() => handleEdit(rec, idx)}
+                          disabled={updateLoading}
+                        >
+                          Edit
+                        </EditButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               )}
-
             </tbody>
-
           </AttendanceTable>
-
         </AttendanceTableWrapper>
-
       </AttendanceContainer>
 
       {/* ========================================== */}
       {/* EDIT ATTENDANCE MODAL */}
       {/* ========================================== */}
 
-      {isEditModalOpen &&
-        selectedRecord && (
+      {isEditModalOpen && selectedRecord && (
+        <EditModalOverlay onClick={handleCloseEdit}>
+          <EditModal onClick={(e) => e.stopPropagation()}>
+            {/* ================================= */}
+            {/* MODAL HEADER */}
+            {/* ================================= */}
 
-          <EditModalOverlay
-            onClick={
-              handleCloseEdit
-            }
-          >
-
-            <EditModal
-              onClick={(e) =>
-                e.stopPropagation()
-              }
-            >
-
-              {/* ================================= */}
-              {/* MODAL HEADER */}
-              {/* ================================= */}
-
-              <ModalHeader>
-
-                <div>
-
-                  <ModalTitle>
-                    Edit Attendance
-                  </ModalTitle>
-
-                  <div
-                    style={{
-                      fontSize:
-                        "13px",
-                      color:
-                        "#777",
-                      marginTop:
-                        "4px",
-                    }}
-                  >
-                    {formatDate(
-                      selectedRecord.date
-                    )}
-                  </div>
-
-                </div>
-
-                <CloseButton
-                  type="button"
-                  onClick={
-                    handleCloseEdit
-                  }
-                  disabled={
-                    updateLoading
-                  }
-                >
-                  ×
-                </CloseButton>
-
-              </ModalHeader>
-
-              {/* ================================= */}
-              {/* ATTENDANCE TYPE */}
-              {/* ================================= */}
-
-              <FormGroup>
-
-                <FormLabel>
-                  Attendance Type
-                </FormLabel>
+            <ModalHeader>
+              <div>
+                <ModalTitle>Edit Attendance</ModalTitle>
 
                 <div
                   style={{
-                    display:
-                      "flex",
-                    gap: "15px",
-                    flexWrap:
-                      "wrap",
-                    marginTop:
-                      "8px",
+                    fontSize: "13px",
+                    color: "#777",
+                    marginTop: "4px",
                   }}
                 >
-
-                  {/* PAID */}
-
-                  <label
-                    style={{
-                      display:
-                        "flex",
-                      alignItems:
-                        "center",
-                      gap: "8px",
-                      cursor:
-                        "pointer",
-                      padding:
-                        "10px 14px",
-                      border:
-                        attendanceType ===
-                          "paid"
-                          ? "2px solid #1d8a4b"
-                          : "1px solid #e2e2e2",
-                      borderRadius:
-                        "8px",
-                      background:
-                        attendanceType ===
-                          "paid"
-                          ? "#eaf8ef"
-                          : "#fff",
-                      fontWeight:
-                        "600",
-                    }}
-                  >
-
-                    <input
-                      type="radio"
-                      name="attendanceType"
-                      value="paid"
-                      checked={
-                        attendanceType ===
-                        "paid"
-                      }
-                      onChange={() =>
-                        setAttendanceType(
-                          "paid"
-                        )
-                      }
-                      disabled={
-                        updateLoading
-                      }
-                    />
-
-                    <span>
-                      Paid
-                    </span>
-
-                  </label>
-
-                  {/* UNPAID */}
-
-                  <label
-                    style={{
-                      display:
-                        "flex",
-                      alignItems:
-                        "center",
-                      gap: "8px",
-                      cursor:
-                        "pointer",
-                      padding:
-                        "10px 14px",
-                      border:
-                        attendanceType ===
-                          "unpaid"
-                          ? "2px solid #d13c3c"
-                          : "1px solid #e2e2e2",
-                      borderRadius:
-                        "8px",
-                      background:
-                        attendanceType ===
-                          "unpaid"
-                          ? "#fff0f0"
-                          : "#fff",
-                      fontWeight:
-                        "600",
-                    }}
-                  >
-
-                    <input
-                      type="radio"
-                      name="attendanceType"
-                      value="unpaid"
-                      checked={
-                        attendanceType ===
-                        "unpaid"
-                      }
-                      onChange={() =>
-                        setAttendanceType(
-                          "unpaid"
-                        )
-                      }
-                      disabled={
-                        updateLoading
-                      }
-                    />
-
-                    <span>
-                      Unpaid
-                    </span>
-
-                  </label>
-
+                  {formatDate(selectedRecord.date)}
                 </div>
+              </div>
 
-              </FormGroup>
+              <CloseButton
+                type="button"
+                onClick={handleCloseEdit}
+                disabled={updateLoading}
+              >
+                ×
+              </CloseButton>
+            </ModalHeader>
 
-              {/* ================================= */}
-              {/* NOTE */}
-              {/* ================================= */}
+            {/* ================================= */}
+            {/* ATTENDANCE TYPE */}
+            {/* ================================= */}
 
-              <FormGroup>
+            <FormGroup>
+              <FormLabel>Attendance Type</FormLabel>
 
-                <FormLabel>
-                  Note / Reason
-                </FormLabel>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "15px",
+                  flexWrap: "wrap",
+                  marginTop: "8px",
+                }}
+              >
+                {/* PAID */}
 
-                <FormTextarea
-                  value={
-                    editNote
-                  }
-                  onChange={(e) =>
-                    setEditNote(
-                      e.target.value
-                    )
-                  }
-                  placeholder="Enter note or reason..."
-                  rows={4}
-                  disabled={
-                    updateLoading
-                  }
-                />
-
-              </FormGroup>
-
-              {/* ================================= */}
-              {/* AUDIT INFORMATION */}
-              {/* ================================= */}
-
-              <AuditInfo>
-
-                <AuditTitle>
-                  Attendance Update
-                </AuditTitle>
-
-                <AuditText>
-                  Updated by:
-                </AuditText>
-
-                <AuditText>
-
-                  <strong>
-                    {currentUser}
-                  </strong>
-
-                </AuditText>
-
-                <AuditText>
-
-                  Attendance Type:{" "}
-
-                  <strong>
-                    {attendanceType ===
-                      "unpaid"
-                      ? "Unpaid"
-                      : "Paid"}
-                  </strong>
-
-                </AuditText>
-
-                <AuditText>
-
-                  Note:{" "}
-
-                  <strong>
-                    {editNote
-                      ? editNote
-                      : "No note added"}
-                  </strong>
-
-                </AuditText>
-
-              </AuditInfo>
-
-              {/* ================================= */}
-              {/* ACTIONS */}
-              {/* ================================= */}
-
-              <ModalActions>
-
-                <CancelButton
-                  type="button"
-                  onClick={
-                    handleCloseEdit
-                  }
-                  disabled={
-                    updateLoading
-                  }
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    cursor: "pointer",
+                    padding: "10px 14px",
+                    border:
+                      attendanceType === "paid"
+                        ? "2px solid #1d8a4b"
+                        : "1px solid #e2e2e2",
+                    borderRadius: "8px",
+                    background:
+                      attendanceType === "paid" ? "#eaf8ef" : "#fff",
+                    fontWeight: "600",
+                  }}
                 >
-                  Cancel
-                </CancelButton>
+                  <input
+                    type="radio"
+                    name="attendanceType"
+                    value="paid"
+                    checked={attendanceType === "paid"}
+                    onChange={() => setAttendanceType("paid")}
+                    disabled={updateLoading}
+                  />
 
-                <SaveButton
-                  type="button"
-                  onClick={
-                    handleSaveAttendance
-                  }
-                  disabled={
-                    updateLoading
-                  }
+                  <span>Paid</span>
+                </label>
+
+                {/* UNPAID */}
+
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    cursor: "pointer",
+                    padding: "10px 14px",
+                    border:
+                      attendanceType === "unpaid"
+                        ? "2px solid #d13c3c"
+                        : "1px solid #e2e2e2",
+                    borderRadius: "8px",
+                    background:
+                      attendanceType === "unpaid" ? "#fff0f0" : "#fff",
+                    fontWeight: "600",
+                  }}
                 >
+                  <input
+                    type="radio"
+                    name="attendanceType"
+                    value="unpaid"
+                    checked={attendanceType === "unpaid"}
+                    onChange={() => setAttendanceType("unpaid")}
+                    disabled={updateLoading}
+                  />
 
-                  {updateLoading
-                    ? "Saving..."
-                    : "Save Changes"}
+                  <span>Unpaid</span>
+                </label>
+              </div>
+            </FormGroup>
 
-                </SaveButton>
+            {/* ================================= */}
+            {/* NOTE */}
+            {/* ================================= */}
 
-              </ModalActions>
+            <FormGroup>
+              <FormLabel>Note / Reason</FormLabel>
 
-            </EditModal>
+              <FormTextarea
+                value={editNote}
+                onChange={(e) => setEditNote(e.target.value)}
+                placeholder="Enter note or reason..."
+                rows={4}
+                disabled={updateLoading}
+              />
+            </FormGroup>
 
-          </EditModalOverlay>
+            {/* ================================= */}
+            {/* AUDIT INFORMATION */}
+            {/* ================================= */}
 
-        )}
+            <AuditInfo>
+              <AuditTitle>Attendance Update</AuditTitle>
 
+              <AuditText>Updated by:</AuditText>
+
+              <AuditText>
+                <strong>{currentUser}</strong>
+              </AuditText>
+
+              <AuditText>
+                Attendance Type:{" "}
+                <strong>
+                  {attendanceType === "unpaid" ? "Unpaid" : "Paid"}
+                </strong>
+              </AuditText>
+
+              <AuditText>
+                Note: <strong>{editNote ? editNote : "No note added"}</strong>
+              </AuditText>
+            </AuditInfo>
+
+            {/* ================================= */}
+            {/* ACTIONS */}
+            {/* ================================= */}
+
+            <ModalActions>
+              <CancelButton
+                type="button"
+                onClick={handleCloseEdit}
+                disabled={updateLoading}
+              >
+                Cancel
+              </CancelButton>
+
+              <SaveButton
+                type="button"
+                onClick={handleSaveAttendance}
+                disabled={updateLoading}
+              >
+                {updateLoading ? "Saving..." : "Save Changes"}
+              </SaveButton>
+            </ModalActions>
+          </EditModal>
+        </EditModalOverlay>
+      )}
     </AttendancePage>
   );
 };

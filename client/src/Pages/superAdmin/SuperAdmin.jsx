@@ -131,7 +131,7 @@ const CompanyTable = () => {
               <Th>Company ID</Th>
               <Th>Contact details</Th>
               <Th>No of Employees</Th>
-              <Th>Email</Th>
+              {/* <Th>Email</Th> */}
               <Th>Info</Th>
               <Th>Edit</Th>
               <Th>Delete</Th>
@@ -149,11 +149,11 @@ const CompanyTable = () => {
                   <Td>{item.company_id}</Td>
                   <Td>{item.contact_number}</Td>
                   <Td>{item.number_of_employees}</Td>
-                  <Td>
+                  {/* <Td>
                     <IconButton onClick={() => handleSendEmail(item)}>
                       <MdOutlineEmail />
                     </IconButton>
-                  </Td>
+                  </Td> */}
 
                   <Td
                     onClick={() => navigate(`/superadmin/view/${item.id}`)}

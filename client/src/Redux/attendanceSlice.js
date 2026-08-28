@@ -247,28 +247,86 @@ const attendanceSlice = createSlice({
         state.updateError = null;
         state.updatedAttendance = action.payload;
 
-        // If API returns updated attendance
-        // update matching record in Redux list
-        if (action.payload && action.payload.employee) {
-          const updatedEmployee = action.payload.employee;
-          const updatedDate = action.payload.date;
+        const updatedEmployee = action.payload?.employee;
+        const updatedDate = action.payload?.date;
 
-          state.attendanceList = state.attendanceList.map((record) => {
-            const recordEmployee = record.employee || record.employee_id;
-            const recordDate = record.date;
+        if (!updatedEmployee || !updatedDate) {
+          return;
+        }
 
-            if (
-              String(recordEmployee) === String(updatedEmployee) &&
-              recordDate === updatedDate
-            ) {
+        // -----------------------------------------------
+        // Patch state.attendanceList (flat list view)
+        // -----------------------------------------------
+
+        state.attendanceList = state.attendanceList.map((record) => {
+          const recordEmployee = record.employee || record.employee_id;
+          const recordDate = record.date;
+
+          if (
+            String(recordEmployee) === String(updatedEmployee) &&
+            recordDate === updatedDate
+          ) {
+            return {
+              ...record,
+              ...action.payload,
+            };
+          }
+
+          return record;
+        });
+
+        // -----------------------------------------------
+        // Patch state.attendanceSummary.results (nested
+        // per-employee daily_records used by the Employee
+        // Attendance detail page)
+        // -----------------------------------------------
+        // Previously this reducer only touched
+        // attendanceList, so the detail page — which reads
+        // from attendanceSummary — never saw the update in
+        // Redux at all. The component was working around
+        // this by hand-patching local component state with
+        // client-side values (localStorage username, the
+        // browser clock), which could show a "successful"
+        // edit in the UI even if the server's response
+        // differed, and which reverted on refresh since it
+        // never touched Redux. Patching directly from
+        // `action.payload` — the server's own response to
+        // the update call — closes that gap: the summary
+        // now reflects exactly what the backend confirmed,
+        // immediately, and it survives navigating back to
+        // the report page since it's the same slice.
+        // -----------------------------------------------
+
+        if (state.attendanceSummary?.results) {
+          state.attendanceSummary.results =
+            state.attendanceSummary.results.map((emp) => {
+              if (String(emp.employee_id) !== String(updatedEmployee)) {
+                return emp;
+              }
+
+              const dailyRecords = emp.daily_records || [];
+
+              const dateExists = dailyRecords.some(
+                (rec) => rec.date === updatedDate
+              );
+
+              const updatedDailyRecords = dateExists
+                ? dailyRecords.map((rec) =>
+                    rec.date === updatedDate
+                      ? { ...rec, ...action.payload }
+                      : rec
+                  )
+                : // Defensive: if the summary somehow didn't have
+                  // this date yet (e.g. a record just created),
+                  // append it rather than silently dropping the
+                  // update.
+                  [...dailyRecords, action.payload];
+
               return {
-                ...record,
-                ...action.payload,
+                ...emp,
+                daily_records: updatedDailyRecords,
               };
-            }
-
-            return record;
-          });
+            });
         }
       })
 
