@@ -28,25 +28,23 @@ const ReusableFilter = ({
   search = "",
   onSearch,
   searchPlaceholder = "Search Employee ID",
+  showSearch = true,
 
   // ================= DEPARTMENT =================
   department = "",
   departments = [],
   onDepartment,
+  showDepartment = false,
 
   // ================= STATUS =================
   status = "",
   statuses = [],
   onStatus,
+  showStatus = false,
 
   // ================= DATE =================
   date = "",
   onDate,
-
-  // ================= VISIBILITY =================
-  showSearch = true,
-  showDepartment = false,
-  showStatus = false,
   showDate = false,
 
   // ================= MORE OPTIONS =================
@@ -61,10 +59,6 @@ const ReusableFilter = ({
   onBulkStatusChange,
 
   // ================= RIGHT ACTION =================
-  // Example:
-  // rightAction={
-  //   <button onClick={handleAdd}>+ ADD EMPLOYEE</button>
-  // }
   rightAction = null,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -72,7 +66,7 @@ const ReusableFilter = ({
   const wrapperRef = useRef(null);
 
   // =========================================================
-  // CLOSE MORE OPTIONS WHEN CLICKING OUTSIDE
+  // CLOSE MENU WHEN CLICKING OUTSIDE
   // =========================================================
 
   useEffect(() => {
@@ -85,10 +79,7 @@ const ReusableFilter = ({
       }
     };
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener(
@@ -109,10 +100,7 @@ const ReusableFilter = ({
       ? selectedMoreOptions.filter(
           (item) => item !== value
         )
-      : [
-          ...selectedMoreOptions,
-          value,
-        ];
+      : [...selectedMoreOptions, value];
 
     onMoreOptionsChange(next);
   };
@@ -129,7 +117,6 @@ const ReusableFilter = ({
 
   const handleBulkPick = (value) => {
     onBulkStatusChange?.(value);
-
     setMenuOpen(false);
   };
 
@@ -150,8 +137,8 @@ const ReusableFilter = ({
 
         {showSearch && (
           <SearchWrapper>
-
             <SearchInput
+              type="text"
               placeholder={searchPlaceholder}
               value={search}
               onChange={(event) =>
@@ -162,7 +149,6 @@ const ReusableFilter = ({
             <SearchIcon>
               <FiSearch />
             </SearchIcon>
-
           </SearchWrapper>
         )}
 
@@ -187,7 +173,6 @@ const ReusableFilter = ({
                 {item}
               </option>
             ))}
-
           </Select>
         )}
 
@@ -212,12 +197,10 @@ const ReusableFilter = ({
                 {item}
               </option>
             ))}
-
           </Select>
         )}
 
       </LeftSection>
-
 
       {/* =====================================================
           RIGHT SECTION
@@ -225,13 +208,9 @@ const ReusableFilter = ({
 
       <RightSection>
 
-        {/* ===================================================
-            DATE
+        {/* ================= DATE ================= */}
 
-            If rightAction exists, the date is hidden.
-        =================================================== */}
-
-        {showDate && !rightAction && (
+        {showDate && (
           <DateInput
             type="month"
             value={date}
@@ -241,30 +220,14 @@ const ReusableFilter = ({
           />
         )}
 
-
-        {/* ===================================================
-            CUSTOM RIGHT ACTION
-
-            Example:
-
-            rightAction={
-              <HeaderButton>
-                + ADD EMPLOYEE
-              </HeaderButton>
-            }
-        =================================================== */}
+        {/* ================= CUSTOM ACTION ================= */}
 
         {rightAction}
 
-
-        {/* ===================================================
-            MORE OPTIONS
-        =================================================== */}
+        {/* ================= MORE OPTIONS ================= */}
 
         {showMoreOptions && (
           <MoreOptionsWrapper ref={wrapperRef}>
-
-            {/* ================= BUTTON ================= */}
 
             <MoreOptionsButton
               type="button"
@@ -276,72 +239,51 @@ const ReusableFilter = ({
               $active={isBulkMode}
             >
               <FiMinus />
-
               <FiChevronDown />
             </MoreOptionsButton>
-
-
-            {/* ================= MENU ================= */}
 
             {menuOpen && (
               <MoreOptionsMenu>
 
-                {/* =================================================
-                    BULK MODE
-                ================================================= */}
+                {/* ================= BULK MODE ================= */}
 
                 {isBulkMode ? (
                   <>
                     <MenuHeader>
-                      {selectedCount} selected —
-                      set status
+                      {selectedCount} selected — set status
                     </MenuHeader>
 
-                    {bulkStatusOptions.map(
-                      (option) => (
-                        <MenuStatusItem
-                          key={option.value}
-                          type="button"
-                          onClick={() =>
-                            handleBulkPick(
-                              option.value
-                            )
-                          }
-                        >
-                          {option.label}
-                        </MenuStatusItem>
-                      )
-                    )}
+                    {bulkStatusOptions.map((option) => (
+                      <MenuStatusItem
+                        key={option.value}
+                        type="button"
+                        onClick={() =>
+                          handleBulkPick(option.value)
+                        }
+                      >
+                        {option.label}
+                      </MenuStatusItem>
+                    ))}
                   </>
                 ) : (
 
-                  /* =================================================
-                     NORMAL MORE OPTIONS
-                  ================================================= */
+                  /* ================= NORMAL OPTIONS ================= */
 
-                  moreOptions.map(
-                    (option) => (
-                      <MenuItem
-                        key={option.value}
-                      >
+                  moreOptions.map((option) => (
+                    <MenuItem key={option.value}>
+                      <input
+                        type="checkbox"
+                        checked={selectedMoreOptions.includes(
+                          option.value
+                        )}
+                        onChange={() =>
+                          toggleOption(option.value)
+                        }
+                      />
 
-                        <input
-                          type="checkbox"
-                          checked={selectedMoreOptions.includes(
-                            option.value
-                          )}
-                          onChange={() =>
-                            toggleOption(
-                              option.value
-                            )
-                          }
-                        />
-
-                        {option.label}
-
-                      </MenuItem>
-                    )
-                  )
+                      <span>{option.label}</span>
+                    </MenuItem>
+                  ))
 
                 )}
 

@@ -66,6 +66,7 @@ import ReimbursementCards from "./Pages/reimbursement/ReimbursementCards.jsx";
 import ReimbursementDetails from "./Pages/reimbursement/ReimbursementDetails.jsx";
 import EmployeeForm from "./Pages/employee/AddEmployee/BasicDetails/EmployeeForm.jsx";
 import BankDetailsForm from "./Pages/employee/AddEmployee/Bank/Bankdetailsform.jsx";
+import TrackingList from "./Pages/Attendance/TrackingList.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -126,6 +127,8 @@ function App() {
               <Route path="/ViewBasic/:id" element={<ViewBasic />} />
               <Route path="/employee-on-leave" element={<LeaveList />} />
               <Route path="/employee-attendance" element={<AttendanceList />} />
+<Route path="/employee-attendance-tracking" element={<TrackingList />} />
+
               <Route path="/employee-leave" element={<DetailOnleave />} />
               <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
               <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
