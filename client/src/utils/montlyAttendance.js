@@ -171,7 +171,7 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
 
     const details = [
       ["Employee Name", emp.employee_name],
-      ["User Name", emp.employee_id],
+      // ["User Name", emp.employee_id],
       ["Department", emp.department],
       ["Working Days", emp.working_days],
       ["Present Days", emp.present_days],
