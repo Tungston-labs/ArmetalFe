@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useReactToPrint } from "react-to-print";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -8,7 +7,7 @@ import {
   clearAttendanceUpdate,
   getAttendanceSummary, // reused from AttendanceReport — no new endpoint needed
 } from "../../Redux/attendanceSlice";
-
+import { exportAttendanceExcel } from "../../utils/montlyAttendance";
 import {
   AttendancePage,
   AttendanceContainer,
@@ -70,8 +69,6 @@ const EmployeeAttendance = () => {
     monthName: stateMonthName,
     selectedMonth: stateSelectedMonth,
   } = location.state || {};
-
-  const printRef = useRef();
 
   // ==================================================
   // REDUX STATE
@@ -235,11 +232,17 @@ const EmployeeAttendance = () => {
   // PRINT
   // ==================================================
 
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
+ const handlePrint = () => {
+  if (!employee) {
+    console.error("Employee data is not available");
+    return;
+  }
 
-    documentTitle: `${employee?.employee_name || "Employee"}-attendance`,
-  });
+  exportAttendanceExcel(
+    [employee],
+    selectedMonth
+  );
+};
 
   // ==================================================
   // REFETCH HELPER (after a save)
@@ -640,7 +643,7 @@ const EmployeeAttendance = () => {
 
   return (
     <AttendancePage>
-      <AttendanceContainer ref={printRef}>
+      <AttendanceContainer >
         {/* ========================================== */}
         {/* HEADER */}
         {/* ========================================== */}
@@ -657,6 +660,14 @@ const EmployeeAttendance = () => {
               <PageSubtitle>{monthName} — Attendance Summary</PageSubtitle>
             </div>
           </HeaderLeft>
+ <HeaderRight>
+  <PrintButton
+    type="button"
+    onClick={handlePrint}
+  >
+    📊 Employee Excel
+  </PrintButton>
+</HeaderRight>
         </PageHeader>
 
         {/* ========================================== */}

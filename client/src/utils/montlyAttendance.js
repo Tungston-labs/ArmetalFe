@@ -1,6 +1,9 @@
 import XLSX from "xlsx-js-style";
 
-export const exportAttendanceExcel = (employees, selectedMonth) => {
+export const exportAttendanceExcel = (
+  employees,
+  selectedMonth
+) => {
   const workbook = XLSX.utils.book_new();
   const ws = {};
   let row = 0;
@@ -103,15 +106,30 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
   // ADD CELL
   // =========================================================
 
-  const addCell = (r, c, value, style = {}) => {
+  const addCell = (
+    r,
+    c,
+    value,
+    style = {}
+  ) => {
     const ref = XLSX.utils.encode_cell({
       r,
       c,
     });
 
     ws[ref] = {
-      t: typeof value === "number" ? "n" : "s",
-      v: value ?? "-",
+      t:
+        typeof value === "number"
+          ? "n"
+          : "s",
+
+      v:
+        value !== null &&
+        value !== undefined &&
+        value !== ""
+          ? value
+          : "-",
+
       s: style,
     };
   };
@@ -121,6 +139,7 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
   // =========================================================
 
   employees.forEach((emp) => {
+
     // =======================================================
     // TITLE
     // =======================================================
@@ -132,6 +151,7 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
       titleStyle
     );
 
+    // 9 columns = 0 to 8
     merges.push({
       s: {
         r: row,
@@ -139,7 +159,7 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
       },
       e: {
         r: row,
-        c: 7,
+        c: 8,
       },
     });
 
@@ -169,33 +189,70 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
 
     row++;
 
+    // =======================================================
+    // PAID ABSENT DAYS
+    // =======================================================
+
+    const paidAbsentDays =
+      emp.paid_absent_days ??
+      emp.paid_absent ??
+      0;
+
+    // =======================================================
+    // EMPLOYEE SUMMARY
+    // =======================================================
+
     const details = [
-      ["Employee Name", emp.employee_name],
-      // ["User Name", emp.employee_id],
-      ["Department", emp.department],
-      ["Working Days", emp.working_days],
-      ["Present Days", emp.present_days],
-      ["Absent Days", emp.absent_days],
-      ["LOP Days", emp.lop_days],
+      [
+        "Employee Name",
+        emp.employee_name,
+      ],
+      [
+        "Department",
+        emp.department,
+      ],
+      [
+        "Working Days",
+        emp.working_days,
+      ],
+      [
+        "Present Days",
+        emp.present_days,
+      ],
+      [
+        "Absent Days",
+        emp.absent_days,
+      ],
+      [
+        "Paid Absent Days",
+        paidAbsentDays,
+      ],
+      [
+        "LOP Days",
+        emp.lop_days,
+      ],
     ];
 
-    details.forEach(([label, value]) => {
-      addCell(
-        row,
-        0,
-        label,
-        labelStyle
-      );
+    details.forEach(
+      ([label, value]) => {
 
-      addCell(
-        row,
-        1,
-        value ?? "-",
-        valueStyle
-      );
+        addCell(
+          row,
+          0,
+          label,
+          labelStyle
+        );
 
-      row++;
-    });
+        addCell(
+          row,
+          1,
+          value ?? "-",
+          valueStyle
+        );
+
+        row++;
+      }
+    );
 
     row++;
 
@@ -217,7 +274,7 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
       },
       e: {
         r: row,
-        c: 7,
+        c: 8,
       },
     });
 
@@ -229,23 +286,26 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
 
     const attendanceHeaders = [
       "Date",
+      "Attendance Status",
       "Attendance Type",
       "Punch In",
       "Punch Out",
       "Total Hours",
+      "Note",
       "Updated At",
-      "Updated By",
       "Updated By Role",
     ];
 
-    attendanceHeaders.forEach((text, col) => {
-      addCell(
-        row,
-        col,
-        text,
-        headerStyle
-      );
-    });
+    attendanceHeaders.forEach(
+      (text, col) => {
+        addCell(
+          row,
+          col,
+          text,
+          headerStyle
+        );
+      }
+    );
 
     row++;
 
@@ -253,68 +313,167 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
     // DAILY ATTENDANCE DATA
     // =======================================================
 
-    (emp.daily_records || []).forEach((record) => {
-      // -----------------------------------------------------
+    (
+      emp.daily_records || []
+    ).forEach((record) => {
+
+      // =====================================================
+      // ATTENDANCE STATUS
+      // =====================================================
+
+      let attendanceStatus =
+        record.attendance_status ||
+        record.status ||
+        "";
+
+      attendanceStatus =
+        String(
+          attendanceStatus
+        )
+          .toLowerCase()
+          .trim();
+
+      // =====================================================
       // ATTENDANCE TYPE
+      // =====================================================
+
+      let attendanceType =
+        record.attendance_type ||
+        record.payment_type ||
+        record.day_limit ||
+        "";
+
+      attendanceType =
+        String(
+          attendanceType
+        )
+          .toLowerCase()
+          .trim();
+
+      // =====================================================
+      // DISPLAY STATUS / TYPE
+      // =====================================================
+
+      let displayStatus = "—";
+      let displayType = "—";
+
       // -----------------------------------------------------
-      // If attendance_type exists:
-      //     paid / unpaid
-      //
-      // Otherwise:
-      //     use status
+      // PRESENT
       // -----------------------------------------------------
 
-      const attendanceType =
-        record.attendance_type !== null &&
-        record.attendance_type !== undefined &&
-        String(record.attendance_type).trim() !== ""
-          ? String(record.attendance_type)
-          : record.status || "-";
+      if (
+        attendanceStatus === "present" ||
+        record.first_punch_in
+      ) {
+        displayStatus = "Present";
+
+        displayType =
+          attendanceType === "unpaid"
+            ? "Unpaid"
+            : "Paid";
+      }
 
       // -----------------------------------------------------
+      // ABSENT
+      // -----------------------------------------------------
+
+      else if (
+        attendanceStatus === "absent"
+      ) {
+        displayStatus = "Absent";
+
+        displayType =
+          attendanceType === "paid"
+            ? "Paid"
+            : "Unpaid";
+      }
+
+      // -----------------------------------------------------
+      // PAID ABSENT
+      // -----------------------------------------------------
+
+      else if (
+        attendanceStatus ===
+          "paid absent" ||
+        attendanceStatus ===
+          "paid_absent"
+      ) {
+        displayStatus = "Absent";
+        displayType = "Paid";
+      }
+
+      // -----------------------------------------------------
+      // FALLBACK
+      // -----------------------------------------------------
+
+      else {
+        displayStatus =
+          record.status || "—";
+
+        displayType =
+          attendanceType === "paid"
+            ? "Paid"
+            : attendanceType === "unpaid"
+            ? "Unpaid"
+            : "—";
+      }
+
+      // =====================================================
+      // NOTE
+      // =====================================================
+
+      const note =
+        record.note ||
+        record.remark ||
+        "-";
+
+      // =====================================================
       // UPDATED AT
-      // -----------------------------------------------------
+      // =====================================================
 
-      let updatedAt = record.updated_at || "-";
+      let updatedAt =
+        record.updated_at || "-";
 
       if (
         updatedAt !== "-" &&
         updatedAt !== null &&
         updatedAt !== undefined
       ) {
-        const updatedDate = new Date(updatedAt);
+        const updatedDate =
+          new Date(updatedAt);
 
-        if (!isNaN(updatedDate.getTime())) {
-          updatedAt = updatedDate.toLocaleString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
+        if (
+          !isNaN(
+            updatedDate.getTime()
+          )
+        ) {
+          updatedAt =
+            updatedDate.toLocaleString(
+              "en-IN",
+              {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            );
         }
       }
 
-      // -----------------------------------------------------
-      // UPDATED BY
-      // -----------------------------------------------------
-
-      const updatedBy =
-        record.updated_by ||
-        "-";
-
-      // -----------------------------------------------------
+      // =====================================================
       // UPDATED BY ROLE
-      // -----------------------------------------------------
+      // =====================================================
 
       const updatedByRole =
         record.updated_by_role ||
         "-";
 
-      // -----------------------------------------------------
+      // =====================================================
       // ADD ROW
-      // -----------------------------------------------------
+      // =====================================================
 
+      // 0 - DATE
       addCell(
         row,
         0,
@@ -322,30 +481,42 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
         dataStyle
       );
 
+      // 1 - ATTENDANCE STATUS
       addCell(
         row,
         1,
-        attendanceType,
+        displayStatus,
         dataStyle
       );
 
+      // 2 - ATTENDANCE TYPE
       addCell(
         row,
         2,
+        displayType,
+        dataStyle
+      );
+
+      // 3 - PUNCH IN
+      addCell(
+        row,
+        3,
         record.first_punch_in || "-",
         dataStyle
       );
 
+      // 4 - PUNCH OUT
       addCell(
         row,
-        3,
+        4,
         record.last_punch_out || "-",
         dataStyle
       );
 
+      // 5 - TOTAL HOURS
       addCell(
         row,
-        4,
+        5,
         record.total_hours !== null &&
         record.total_hours !== undefined
           ? record.total_hours
@@ -353,23 +524,26 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
         dataStyle
       );
 
+      // 6 - NOTE
       addCell(
         row,
-        5,
+        6,
+        note,
+        dataStyle
+      );
+
+      // 7 - UPDATED AT
+      addCell(
+        row,
+        7,
         updatedAt,
         dataStyle
       );
 
+      // 8 - UPDATED BY ROLE
       addCell(
         row,
-        6,
-        updatedBy,
-        dataStyle
-      );
-
-      addCell(
-        row,
-        7,
+        8,
         updatedByRole,
         dataStyle
       );
@@ -384,45 +558,66 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
   // SHEET RANGE
   // =========================================================
 
-  ws["!ref"] = XLSX.utils.encode_range({
-    s: {
-      r: 0,
-      c: 0,
-    },
-    e: {
-      r: row,
-      c: 7,
-    },
-  });
+  ws["!ref"] =
+    XLSX.utils.encode_range({
+      s: {
+        r: 0,
+        c: 0,
+      },
+      e: {
+        r: row,
+        c: 8,
+      },
+    });
 
   // =========================================================
   // COLUMN WIDTHS
   // =========================================================
 
   ws["!cols"] = [
+    // 0 - Date
     {
       wch: 18,
     },
+
+    // 1 - Attendance Status
     {
       wch: 20,
     },
+
+    // 2 - Attendance Type
+    {
+      wch: 20,
+    },
+
+    // 3 - Punch In
     {
       wch: 18,
     },
+
+    // 4 - Punch Out
     {
       wch: 18,
     },
+
+    // 5 - Total Hours
     {
       wch: 15,
     },
+
+    // 6 - Note
+    {
+      wch: 35,
+    },
+
+    // 7 - Updated At
     {
       wch: 23,
     },
+
+    // 8 - Updated By Role
     {
       wch: 22,
-    },
-    {
-      wch: 18,
     },
   ];
 
@@ -430,20 +625,23 @@ export const exportAttendanceExcel = (employees, selectedMonth) => {
   // ROW HEIGHTS
   // =========================================================
 
-  ws["!rows"] = Array.from(
-    {
-      length: row + 1,
-    },
-    () => ({
-      hpt: 22,
-    })
-  );
+  ws["!rows"] =
+    Array.from(
+      {
+        length:
+          row + 1,
+      },
+      () => ({
+        hpt: 22,
+      })
+    );
 
   // =========================================================
   // MERGES
   // =========================================================
 
-  ws["!merges"] = merges;
+  ws["!merges"] =
+    merges;
 
   // =========================================================
   // APPEND SHEET
