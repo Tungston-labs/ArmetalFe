@@ -155,19 +155,19 @@ const AttendanceReport = () => {
   // Open Employee Attendance Page
   // --------------------------------------------------
 
-  const handleRowClick = (employee) => {
-    navigate(
+const handleRowClick = (employee) => {
+  navigate(
       `/employee-attendance/${employee.employee_id}`,
-      {
-        state: {
-          employee,
+    {
+      state: {
+        employee,
           monthName:
             selectedMonthName,
-          selectedMonth,
-        },
-      }
-    );
-  };
+        selectedMonth,
+      },
+    }
+  );
+};
 
   // --------------------------------------------------
   // Pagination
@@ -367,7 +367,7 @@ const AttendanceReport = () => {
                           1 +
                           (currentPage -
                             1) *
-                            20}
+                          20}
                       </Td>
 
                       <Td>
