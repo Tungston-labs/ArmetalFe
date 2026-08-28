@@ -855,22 +855,50 @@ from rest_framework import status
 from attendance.models import Attendance
 from .serializers import AttendanceManualUpdateSerializer
 
+from django.db import transaction
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+
+from attendance.models import Attendance
+
+from .serializers import AttendanceManualUpdateSerializer
+
 
 class AttendanceManualUpdateView(APIView):
 
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def patch(self, request):
 
-        employee_id = request.data.get("employee")
+        # ==================================================
+        # REQUEST DATA
+        # ==================================================
+
+        employee_value = request.data.get("employee")
         attendance_date = request.data.get("date")
 
-        # --------------------------------------------------
+        attendance_type = request.data.get(
+            "attendance_type"
+        )
+
+        day_limit = request.data.get(
+            "day_limit"
+        )
+
+        remark = request.data.get(
+            "remark",
+            ""
+        )
+
+        # ==================================================
         # REQUIRED FIELDS
-        # --------------------------------------------------
+        # ==================================================
 
-        if not employee_id:
-
+        if not employee_value:
             return Response(
                 {
                     "error": "employee is required."
@@ -879,7 +907,6 @@ class AttendanceManualUpdateView(APIView):
             )
 
         if not attendance_date:
-
             return Response(
                 {
                     "error": "date is required."
@@ -887,18 +914,17 @@ class AttendanceManualUpdateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # --------------------------------------------------
+        # ==================================================
         # PERMISSION CHECK
-        # --------------------------------------------------
+        # ==================================================
 
         user = request.user
 
         if not (
-            user.is_superadmin
-            or user.is_hr_admin
-            or user.is_hr
+            getattr(user, "is_superadmin", False)
+            or getattr(user, "is_hr_admin", False)
+            or getattr(user, "is_hr", False)
         ):
-
             return Response(
                 {
                     "error": (
@@ -909,60 +935,234 @@ class AttendanceManualUpdateView(APIView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
+        # ==================================================
+        # ATTENDANCE TYPE
+        # ==================================================
+
+        if attendance_type:
+            attendance_type = str(
+                attendance_type
+            ).lower().strip()
+
+        elif day_limit:
+            attendance_type = str(
+                day_limit
+            ).lower().strip()
+
+        else:
+            attendance_type = "unpaid"
+
+        if attendance_type not in [
+            "paid",
+            "unpaid"
+        ]:
+            return Response(
+                {
+                    "error": (
+                        "attendance_type must be "
+                        "'paid' or 'unpaid'."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ==================================================
+        # FIND EMPLOYEE
+        # ==================================================
+
+        employee = None
+
         # --------------------------------------------------
-        # GET ATTENDANCE
+        # 1. Employee primary key
         # --------------------------------------------------
 
         try:
+            if str(employee_value).isdigit():
 
-            attendance = Attendance.objects.select_related(
-                "employee",
-                "employee__department",
-                "employee__department__company",
-                "updated_by"
-            ).get(
-                employee_id=employee_id,
-                date=attendance_date,
-                employee__department__company=user.company
-            )
+                employee = Employee_db.objects.filter(
+                    id=int(employee_value)
+                ).first()
 
-        except Attendance.DoesNotExist:
+        except (
+            ValueError,
+            TypeError
+        ):
+            employee = None
+
+        # --------------------------------------------------
+        # 2. Employee ID
+        # --------------------------------------------------
+
+        if employee is None:
+
+            employee = Employee_db.objects.filter(
+                employee_id=str(employee_value)
+            ).first()
+
+        # --------------------------------------------------
+        # 3. Employee email
+        # --------------------------------------------------
+
+        if employee is None:
+
+            employee = Employee_db.objects.filter(
+                email__iexact=str(employee_value)
+            ).first()
+
+        # ==================================================
+        # EMPLOYEE NOT FOUND
+        # ==================================================
+
+        if employee is None:
 
             return Response(
                 {
                     "error": (
-                        f"No attendance record found for "
-                        f"employee {employee_id} on "
-                        f"{attendance_date}."
+                        f"No employee found for "
+                        f"'{employee_value}'."
                     )
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # --------------------------------------------------
+        # ==================================================
+        # COMPANY PERMISSION
+        # ==================================================
+
+        department = getattr(
+            employee,
+            "department",
+            None
+        )
+
+        company = getattr(
+            department,
+            "company",
+            None
+        )
+
+        user_company = getattr(
+            user,
+            "company",
+            None
+        )
+
+        if (
+            user_company
+            and company
+            and user_company.id != company.id
+        ):
+            return Response(
+                {
+                    "error": (
+                        "You do not have permission "
+                        "to modify this employee's "
+                        "attendance."
+                    )
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ==================================================
+        # GET OR CREATE ATTENDANCE
+        # ==================================================
+
+        attendance, created = (
+            Attendance.objects.select_related(
+                "employee",
+                "employee__department",
+                "employee__department__company",
+                "updated_by"
+            ).get_or_create(
+
+                employee=employee,
+
+                date=attendance_date,
+
+                defaults={
+                    "attendance_type": attendance_type,
+                    "remark": (
+                        remark.strip()
+                        if remark.strip()
+                        else None
+                    ),
+
+                    # Employee did not swipe,
+                    # therefore there are no sessions.
+                    "total_hours": 0,
+
+                    # Admin who manually created
+                    # this attendance record.
+                    "updated_by": user,
+                }
+            )
+        )
+
+        # ==================================================
+        # UPDATE EXISTING ATTENDANCE
+        # ==================================================
+
+        if not created:
+
+            attendance.attendance_type = (
+                attendance_type
+            )
+
+            attendance.remark = (
+                remark.strip()
+                if remark.strip()
+                else None
+            )
+
+            attendance.updated_by = user
+
+            # IMPORTANT:
+            #
+            # Do NOT change total_hours here.
+            #
+            # If employee has actual swipe sessions,
+            # preserve the calculated hours.
+
+            attendance.save(
+                update_fields=[
+                    "attendance_type",
+                    "remark",
+                    "updated_by",
+                    "updated_at",
+                ]
+            )
+
+        # ==================================================
         # SERIALIZER
-        # --------------------------------------------------
+        # ==================================================
 
         serializer = AttendanceManualUpdateSerializer(
             attendance,
-            data=request.data,
-            partial=True,
             context={
                 "request": request
             }
         )
 
-        serializer.is_valid(
-            raise_exception=True
-        )
-
-        serializer.save()
-
-        # --------------------------------------------------
+        # ==================================================
         # RESPONSE
-        # --------------------------------------------------
+        # ==================================================
 
         return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
+            {
+                "message": (
+                    "Attendance record created successfully."
+                    if created
+                    else
+                    "Attendance updated successfully."
+                ),
+
+                "created": created,
+
+                "data": serializer.data
+            },
+            status=(
+                status.HTTP_201_CREATED
+                if created
+                else status.HTTP_200_OK
+            )
         )
