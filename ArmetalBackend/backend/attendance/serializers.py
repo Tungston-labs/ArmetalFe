@@ -356,94 +356,88 @@ from attendance.models import Attendance
 from rest_framework import serializers
 from attendance.models import Attendance
 
+from rest_framework import serializers
+
+from attendance.models import Attendance
+
 
 class AttendanceManualUpdateSerializer(
     serializers.ModelSerializer
 ):
 
     employee = serializers.IntegerField(
-        write_only=True
+        source="employee.id",
+        read_only=True
     )
 
-    date = serializers.DateField()
+    updated_by = serializers.SerializerMethodField()
 
-    attendance_type = serializers.ChoiceField(
-        choices=["paid", "unpaid"],
-        required=True
-    )
+    updated_by_role = serializers.SerializerMethodField()
 
     class Meta:
 
         model = Attendance
 
         fields = [
+            "id",
             "employee",
             "date",
             "attendance_type",
             "remark",
+            "total_hours",
+            "updated_by",
+            "updated_by_role",
+            "created_at",
+            "updated_at",
         ]
 
-    def validate_attendance_type(self, value):
-
-        allowed_types = [
-            "paid",
-            "unpaid",
+        read_only_fields = [
+            "id",
+            "employee",
+            "total_hours",
+            "updated_by",
+            "updated_by_role",
+            "created_at",
+            "updated_at",
         ]
 
-        if value not in allowed_types:
+    # ==================================================
+    # UPDATED BY
+    # ==================================================
 
-            raise serializers.ValidationError(
-                "Invalid attendance_type. Use 'paid' or 'unpaid'."
-            )
+    def get_updated_by(self, obj):
 
-        return value
+        if not obj.updated_by:
+            return None
 
-    def update(self, instance, validated_data):
+        user = obj.updated_by
 
-        request = self.context.get("request")
-
-        # employee and date are only used
-        # to identify the attendance record.
-        validated_data.pop("employee", None)
-        validated_data.pop("date", None)
-
-        # ---------------------------------------------
-        # UPDATE ATTENDANCE TYPE
-        # ---------------------------------------------
-
-        instance.attendance_type = validated_data.get(
-            "attendance_type",
-            instance.attendance_type
+        return (
+            getattr(user, "company_name", None)
+            or getattr(user, "username", None)
+            or getattr(user, "email", None)
+            or getattr(user, "name", None)
+            or str(user)
         )
 
-        # ---------------------------------------------
-        # UPDATE REMARK
-        # ---------------------------------------------
+    # ==================================================
+    # UPDATED BY ROLE
+    # ==================================================
 
-        instance.remark = validated_data.get(
-            "remark",
-            instance.remark
-        )
+    def get_updated_by_role(self, obj):
 
-        # ---------------------------------------------
-        # UPDATED BY
-        # ---------------------------------------------
+        if not obj.updated_by:
+            return None
 
-        if request and request.user.is_authenticated:
+        user = obj.updated_by
 
-            instance.updated_by = request.user
+        if getattr(user, "is_superadmin", False):
+            return "Super Admin"
 
-        # ---------------------------------------------
-        # IMPORTANT
-        # ---------------------------------------------
-        #
-        # Do NOT update total_hours here.
-        #
-        # total_hours remains whatever was calculated
-        # from attendance sessions.
-        #
-        # ---------------------------------------------
+        if getattr(user, "is_hr_admin", False):
+            return "HR Admin"
 
-        instance.save()
+        if getattr(user, "is_hr", False):
+            return "HR"
 
-        return instance
+        return "User"
