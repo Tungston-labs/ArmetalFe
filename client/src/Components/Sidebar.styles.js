@@ -43,80 +43,126 @@ export const SidebarContainer = styled.div`
 `;
 
 
-
 export const TopSection = styled.div`
-  padding: 20px;
+  padding: 15px 20px;
   text-align: center;
-`;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
+  @media (max-width: 1024px) {
+    padding: 12px 10px;
+  }
+
+  @media (min-width: 2560px) {
+    padding: 20px;
+  }
+`;
 export const Logo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin: 30px 0; */
   width: 100%;
+  overflow: hidden;
 
   img {
-    width: 180px;
-    max-height: 110px;
+    width: 130px;
+    height: 70px;
     object-fit: contain;
-    transition: width 0.3s ease;
+    display: block;
+    transition: all 0.3s ease;
   }
 
- img.default-logo {
-    width: 300px;
-    max-height: 110px;
-  } 
-
-  @media (max-width: 1024px) {
-    img {
-      width: 120px;
-
-   img.default-logo {
-      width: 120px;
-    } 
-  }
-  }
-  @media (min-width: 768px) and (max-width:1024px){
-    display: none;
+  /* Default logo */
+  img.default-logo {
+    width: 140px;
+    height: 70px;
+    object-fit: contain;
   }
 
+  /* Collapsed sidebar */
   &.hidden {
     display: none;
   }
 
- @media (min-width: 1025px) {
-    img{
-    min-height: 150px;  
-    width: 150px;
+  /* Tablet */
+  @media (max-width: 1024px) {
+    img {
+      width: 100px;
+      height: 60px;
     }
 
-     img.default-logo {
-      width: 120px;
-    } 
-   }
+    img.default-logo {
+      width: 100px;
+      height: 60px;
+    }
+  }
 
- @media (min-width: 1440px) {
-    img{
-    min-height: 150px;   
-    width: 150px;
+  /* 1025px - 1439px */
+  @media (min-width: 1025px) and (max-width: 1439px) {
+    img {
+      width: 120px;
+      height: 65px;
     }
 
-     img.default-logo {
-      width: 120px;
-    } 
-   }
-  @media (min-width: 1920px) {
-    img{
-    min-height: 150px;
-    width: 200px;
+    img.default-logo {
+      width: 130px;
+      height: 65px;
     }
-     img.default-logo {
-      width: 120px;
-    } 
-   }
- 
-  
+  }
+
+  /* 1440px - 1919px */
+  @media (min-width: 1440px) and (max-width: 1919px) {
+    img {
+      width: 130px;
+      height: 70px;
+    }
+
+    img.default-logo {
+      width: 140px;
+      height: 70px;
+    }
+  }
+
+  /* 1920px - 2559px */
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    img {
+      width: 140px;
+      height: 75px;
+    }
+
+    img.default-logo {
+      width: 150px;
+      height: 75px;
+    }
+  }
+
+  /* 4K screens */
+  @media (min-width: 2560px) {
+    img {
+      width: 160px;
+      height: 85px;
+    }
+
+    img.default-logo {
+      width: 170px;
+      height: 85px;
+    }
+  }
+
+  /* 5K screens */
+  @media (min-width: 3840px) {
+    img {
+      width: 180px;
+      height: 95px;
+    }
+
+    img.default-logo {
+      width: 190px;
+      height: 95px;
+    }
+  }
 `;
 
 
