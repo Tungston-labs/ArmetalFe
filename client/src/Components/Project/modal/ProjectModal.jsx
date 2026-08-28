@@ -136,12 +136,12 @@ const ProjectModal = ({
                                             Onsite
                                         </option>
 
-                                        <option value="Offsite">
-                                            Offsite
+                                        <option value="variant">
+                                            Variant
                                         </option>
 
-                                        <option value="Remote">
-                                            Remote
+                                        <option value="bench">
+                                            Bench
                                         </option>
                                     </Select>
 
@@ -245,9 +245,7 @@ const ProjectModal = ({
                                         }
                                         onChange={handleChange}
                                     >
-                                        <option value="Onsite">
-                                            Onsite
-                                        </option>
+                                       
 
                                         <option value="Active">
                                             Active

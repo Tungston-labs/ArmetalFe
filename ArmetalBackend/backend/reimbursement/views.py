@@ -20,7 +20,7 @@ class ReimbursementListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.is_hr or user.is_admin:   #  check HR/Admin role properly
+        if user.is_hr or user.is_hr_admin:   #  check HR/Admin role properly
             return Reimbursement.objects.filter(
                 employee__department__company=user.company
             ).order_by("-created_at")

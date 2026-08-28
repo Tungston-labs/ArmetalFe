@@ -26,7 +26,6 @@ const AddEmployeeModal = ({
   isOpen,
   onClose,
   employees = [],
-  departments = [],
   onAdd,
   isLoading = false,
 }) => {
@@ -43,14 +42,26 @@ const AddEmployeeModal = ({
     }
   }, [isOpen]);
 
+  // Department options are derived from the real employee
+  // records (department_name, e.g. "HR and Admin") rather
+  // than a hardcoded list, so the dropdown always matches
+  // what's actually in the data.
+  const departmentOptions = useMemo(() => {
+    const names = employees
+      .map((employee) => employee.department_name)
+      .filter(Boolean);
+
+    return [...new Set(names)];
+  }, [employees]);
+
   const filteredEmployees = useMemo(() => {
     return employees.filter((employee) => {
-      const matchesSearch = employee.name
+      const matchesSearch = (employee.name || "")
         .toLowerCase()
         .includes(search.toLowerCase());
 
       const matchesDepartment =
-        !department || employee.department === department;
+        !department || employee.department_name === department;
 
       return matchesSearch && matchesDepartment;
     });
@@ -86,7 +97,7 @@ const AddEmployeeModal = ({
             onChange={(event) => setDepartment(event.target.value)}
           >
             <option value="">All Department</option>
-            {departments.map((dept) => (
+            {departmentOptions.map((dept) => (
               <option key={dept} value={dept}>
                 {dept}
               </option>

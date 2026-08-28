@@ -36,7 +36,7 @@ import { login } from "./Redux/authSlice";
 import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
 import FieldShift from "./Pages/Project/Project.jsx"
 // import FieldDepartment from "./Pages/Project/ProjectInfo.jsx"
-import AttendanceList from "./Pages/attendance/AttendanceList.jsx"
+import AttendanceList from "./Pages/Attendance/AttendanceList.jsx"
 import ReimbursementList from "./Pages/reimbursement/ReimbursementList.jsx";
 import Daily from "./Pages/dailytask/DailyTask.jsx"
 import ViewLayout from "./Pages/employee/layout/ViewLayout.jsx";

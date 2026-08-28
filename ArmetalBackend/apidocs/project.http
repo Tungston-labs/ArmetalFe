@@ -1,13 +1,13 @@
 # ----------------project module-------------------------
 ###
-POST http://178.248.112.16:8001/api/project/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5OTEyMDUxLCJpYXQiOjE3NTk5MDg0NTEsImp0aSI6Ijc3YzAzM2VhNTExZTQwNTFhNGM3YmQzMGUzMDlkODdlIiwidXNlcl9pZCI6IjcyIiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.3XFF-RdLJfn1IXBvQak7hZ1ZVG2jBM3pfGnHlxEdP2k
+POST http://127.0.0.1:8000/api/project/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3OTIyNTgyLCJpYXQiOjE3ODc4OTM3ODIsImp0aSI6ImEyNGIwYzBlMDMyYzQzMDBiYTQ5N2MyOTBhZTU1NDM3IiwidXNlcl9pZCI6NCwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.6hWqqTzYdieG5Jh9ZvqIMGLGDJ_jxNJOPKjqqoFNf1E
 Content-Type: application/json
 
 {
   "name": "Site Project B",
   "punch_type": "variant",
-  "employees": [53,65]
+  "employees": [2,3]
 }
 
 ###list projects
