@@ -76,7 +76,7 @@ Content-Type: application/json
 
 {
     "employee": 4,
-    "date": "2026-08-22",
+    "date": "2026-07-31",
     "attendance_type": "paid",
     "remark": "work from home"
 }
