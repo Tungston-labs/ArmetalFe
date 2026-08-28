@@ -128,6 +128,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         for h in holidays_qs:
 
+            # -----------------------------
+            # COMPANY WEEKLY OFF
+            # -----------------------------
             if h.holiday_type == "company_off_day":
 
                 if h.off_day_weekday is not None:
@@ -135,28 +138,62 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                         h.off_day_weekday
                     )
 
+            # -----------------------------
+            # PUBLIC / COMPANY HOLIDAY
+            # -----------------------------
             else:
 
                 if (
-                    h.date and
-                    first_day <= h.date <= last_day
+                    h.date
+                    and first_day <= h.date <= last_day
                 ):
                     holidays.add(h.date)
 
+
+        # ======================================================
+        # EMPLOYEE JOINING DATE
+        # ======================================================
+
+        joining_date = employee.joining_date
+
+        # If joining_date is datetime, convert to date
+        if isinstance(joining_date, datetime):
+            joining_date = joining_date.date()
+
+
+        # ======================================================
+        # ACTUAL EMPLOYEE START DATE FOR THIS MONTH
+        # ======================================================
+
+        attendance_start_date = max(
+            first_day,
+            joining_date
+        )
+
+
+        # ======================================================
+        # WORKING DATES
+        # ======================================================
+
         all_working_dates = [
-            first_day + timedelta(days=i)
-            for i in range((last_day - first_day).days + 1)
+            attendance_start_date + timedelta(days=i)
+            for i in range(
+                (
+                    last_day - attendance_start_date
+                ).days + 1
+            )
             if (
-                (first_day + timedelta(days=i)).weekday()
-                not in company_off_days
-            )
+                attendance_start_date + timedelta(days=i)
+            ).weekday() not in company_off_days
             and (
-                (first_day + timedelta(days=i))
-                not in holidays
-            )
+                attendance_start_date + timedelta(days=i)
+            ) not in holidays
         ]
 
-        working_days = Decimal(len(all_working_dates))
+
+        working_days = Decimal(
+            len(all_working_dates)
+        )
 
         # ======================================================
         # ATTENDANCE
@@ -172,7 +209,10 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         attendances = Attendance.objects.filter(
             employee=employee,
-            date__range=(first_day, last_day),
+            date__range=(
+                attendance_start_date,
+                last_day
+            ),
         )
 
         # Keep the complete attendance object because
@@ -245,7 +285,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             employee=employee,
             status="approved",
             from_date__lte=last_day,
-            to_date__gte=first_day,
+            to_date__gte=attendance_start_date,
         )
 
         approved_leave_dates = set()
