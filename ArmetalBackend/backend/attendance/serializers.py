@@ -300,6 +300,9 @@ class HourlyLocationLogSerializer(serializers.ModelSerializer):
 
 
 
+from rest_framework import serializers
+
+
 class DailyAttendanceSerializer(serializers.Serializer):
 
     date = serializers.DateField()
@@ -338,17 +341,34 @@ class DailyAttendanceSerializer(serializers.Serializer):
         required=False
     )
 
+    updated_at = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+
 class EmployeeAttendanceSummarySerializer(serializers.Serializer):
+
     employee_id = serializers.CharField()
+
     employee_name = serializers.CharField()
-    department = serializers.CharField()
+
+    department = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
 
     working_days = serializers.FloatField()
+
     present_days = serializers.FloatField()
+
     absent_days = serializers.FloatField()
+
     lop_days = serializers.FloatField()
 
-    daily_records = DailyAttendanceSerializer(many=True)
+    daily_records = DailyAttendanceSerializer(
+        many=True
+    )
 
 from rest_framework import serializers
 from attendance.models import Attendance

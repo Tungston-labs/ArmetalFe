@@ -733,14 +733,35 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
 
-        qs = Employee_db.objects.select_related(
-            "department", "department__company"
-        ).filter(department__company=user.company,is_deleted=False)
+        # Super Admin / HR Admin / HR
+        # → View all employees belonging to their company
+        if (
+            user.is_superadmin
+            or user.is_hr_admin
+            or user.is_hr
+        ):
+            return Employee_db.objects.select_related(
+                "department",
+                "department__company"
+            ).filter(
+                department__company=user.company,
+                is_deleted=False
+            )
 
+        # Employee
+        # → View only their own attendance
         if user.is_employee:
-            qs = qs.filter(user=user)
+            return Employee_db.objects.select_related(
+                "department",
+                "department__company"
+            ).filter(
+                department__company=user.company,
+                user=user,
+                is_deleted=False
+            )
 
-        return qs
+        # Any other user → no access
+        return Employee_db.objects.none()
 
     def list(self, request, *args, **kwargs):
         today = date.today()

@@ -1,17 +1,17 @@
 # -----REIMBURSMENT MODULE------
 
 ###add 
-POST http://178.248.112.16:8001/api/reimbursements/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwMTc5MzE0LCJpYXQiOjE3NzAxNzU3MTQsImp0aSI6IjJjOWViMjUyNWRkNzQ5MzBiYjVhMWVhMzI3Mzk3Njc0IiwidXNlcl9pZCI6NTAxLCJpc19zdXBlcmFkbWluIjpmYWxzZSwiaXNfaHJfYWRtaW4iOmZhbHNlLCJpc19lbXBsb3llZSI6dHJ1ZSwiaXNfaHIiOnRydWV9.WlL1aPJqvaeNpA1JXZqCljrq_fmeNn2aXMuc8q0pmLE
+POST http://127.0.0.1:8000/api/reimbursements/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3OTM1MTg5LCJpYXQiOjE3ODc5MDYzODksImp0aSI6IjIwMmExZTVlMDJkOTQyNjE4MjcwOWQxYzVmZTEyYWQ0IiwidXNlcl9pZCI6NywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.FLA59zC9NDsDMTn_1Ia_RMNqevY8o_HIGWlezuzoK40
 Content-Type: multipart/form-data
 
 {
   "expense_category": "TRAVEL",
   "to_mail": "manager@example.com",
   "note": "Taxi fare",
-  "date": "2025-08-23",
+  "date": "2026-08-23",
   "amount": "100.50",
-  "uploaded_images": ["<file1>", "<file2>"]
+  "uploaded_images": ["<file1>"]
 }
 
 ###list
