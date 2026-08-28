@@ -72,7 +72,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 {
     "employee": 4,
-    "date": "2026-08-19",
+    "date": "2026-08-28",
     "attendance_type": "paid",
     "remark": "work from home"
 }

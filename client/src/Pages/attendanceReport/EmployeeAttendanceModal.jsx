@@ -344,11 +344,12 @@ const EmployeeAttendance = () => {
       // ---------------------------------------------
       console.log("employee object:", employee);
 
-      const employeeId =
-        selectedRecord?.employee ||
-        selectedRecord?.employee_id ||
-        employee?.employee_pk ||
-        employee?.employee;
+  const employeeId =
+  selectedRecord?.employee ||
+  selectedRecord?.employee_id ||
+  employee?.employee_id ||   // <- this is the real ID now (e.g. "13")
+  employee?.employee_pk ||
+  employee?.employee;
       // ---------------------------------------------
       // VALIDATE EMPLOYEE
       // ---------------------------------------------

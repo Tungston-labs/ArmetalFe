@@ -48,32 +48,24 @@ export const fetchAttendanceSummary = async ({
 export const updateAttendance = async ({
   employee,
   date,
-  status,
-  day_limit,
+  attendance_type,
   remark,
 }) => {
   const payload = {
     employee,
     date,
-    status,
-    day_limit,
+    attendance_type,
     remark,
   };
 
-  console.log(
-    "📤 Updating attendance:",
-    payload
-  );
+  console.log("📤 Updating attendance:", payload);
 
   const response = await API.patch(
     "/attendance/update/",
     payload
   );
 
-  console.log(
-    "📥 Attendance update response:",
-    response.data
-  );
+  console.log("📥 Attendance update response:", response.data);
 
   return response.data;
 };
