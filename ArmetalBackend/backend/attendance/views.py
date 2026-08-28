@@ -760,7 +760,7 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
             # ---------- FUTURE MONTH ----------
             if start_date > today.replace(day=1):
                 results.append({
-                    "employee_id": emp.employee_id,
+                    "employee_id": emp.id,
                     "employee_name": emp.name,
                     "department": emp.department.name if emp.department else None,
                     "working_days": 0,
@@ -821,7 +821,7 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
             )
 
             results.append({
-                "employee_id": emp.employee_id,
+                "employee_id": emp.id,
                 "employee_name": emp.name,
                 "department": emp.department.name if emp.department else None,
                 "working_days": working_days,
