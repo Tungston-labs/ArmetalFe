@@ -9,7 +9,7 @@ Content-Type: multipart/form-data
   "expense_category": "TRAVEL",
   "to_mail": "manager@example.com",
   "note": "Taxi fare",
-  "date": "2025-08-23",
+  "date": "2025-08-28",
   "amount": "100.50",
   "uploaded_images": ["<file1>", "<file2>"]
 }
@@ -27,14 +27,14 @@ Content-Type: application/json
 
 
 ###list by department
-GET http://127.0.0.1:8000/api/reimbursements/department/16/
+GET http://127.0.0.1:8000/api/reimbursements/department/1/
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3OTIzNTYzLCJpYXQiOjE3ODc4OTQ3NjMsImp0aSI6ImY4MDk3OGU2NTA3OTQ4NDFiNjZkZWI5MzA2ZWQyNjJhIiwidXNlcl9pZCI6NCwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.eU-M1tfwZ6odOJuWtpC2pZ90k87qrG6V-SEJxuPFoVQ
 Content-Type: application/json
 
 
 ### update status by admin
-PATCH http://178.248.112.16:8001/api/reimbursements/157/   
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwMTgwODA1LCJpYXQiOjE3NzAxNzcyMDUsImp0aSI6IjU3OWY0YTk5YmFiZTQ3M2JhYTI2Y2NkNTY0MDhhNTI2IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.X2o-F8M1qcTgOJ43P5xzIYmOf7X_bX2DsBuQY2YX4XY
+PATCH http://127.0.0.1:8000/api/reimbursements/157/   
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3OTIzNTYzLCJpYXQiOjE3ODc4OTQ3NjMsImp0aSI6ImY4MDk3OGU2NTA3OTQ4NDFiNjZkZWI5MzA2ZWQyNjJhIiwidXNlcl9pZCI6NCwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.eU-M1tfwZ6odOJuWtpC2pZ90k87qrG6V-SEJxuPFoVQ
 Content-Type: application/json
 
 {

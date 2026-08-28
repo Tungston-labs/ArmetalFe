@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -25,6 +25,38 @@ import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 // import ReimbursementModal from "./modal/ReimbursementModal";
 
+import { getGroupedReimbursements } from "../../services/reimbursement";
+// If you fetch per-department instead, swap in:
+// import { fetchReimbursementsByDepartment } from "../../services/reimbursement";
+
+const DEFAULT_AVATAR = "https://i.pravatar.cc/100?img=1";
+
+// =====================================================
+// Helper: normalize API response -> card shape
+// Adjust the field names below to match your actual
+// backend response once you confirm the payload shape.
+// =====================================================
+const formatCurrency = (value) => {
+  const num = Number(value ?? 0);
+  return `₹${num.toLocaleString("en-IN")}`;
+};
+
+const mapReimbursementData = (item) => ({
+  id: item.id,
+  name: (item.category || item.type || item.name || "REIMBURSEMENT").toUpperCase(),
+  employee:
+    item.employee_name ||
+    item.employee?.name ||
+    item.employee ||
+    "—",
+  total: item.total_count ?? item.count ?? item.total ?? 0,
+  totalAmount: formatCurrency(item.total_amount ?? item.totalAmount),
+  approved: formatCurrency(item.approved_amount ?? item.approved),
+  pending: formatCurrency(item.pending_amount ?? item.pending),
+  status: item.status || (Number(item.pending_amount) > 0 ? "Pending" : "Approved"),
+  image: item.employee_image || item.employee?.image || DEFAULT_AVATAR,
+});
+
 const ReimbursementCards = () => {
   const navigate = useNavigate();
 
@@ -47,106 +79,37 @@ const ReimbursementCards = () => {
     useState(null);
 
   // =====================================================
-  // REIMBURSEMENT DATA
+  // REIMBURSEMENT DATA (from API)
   // =====================================================
 
-  const reimbursements = [
-    {
-      id: 1,
-      name: "TRAVEL REIMBURSEMENT",
-      employee: "Ansal",
-      total: 5,
-      totalAmount: "₹12,500",
-      approved: "₹10,000",
-      pending: "₹2,500",
-      status: "Approved",
-      image: "https://i.pravatar.cc/100?img=12",
-    },
+  const [reimbursements, setReimbursements] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    {
-      id: 2,
-      name: "MEDICAL REIMBURSEMENT",
-      employee: "Rahul",
-      total: 8,
-      totalAmount: "₹18,500",
-      approved: "₹15,000",
-      pending: "₹3,500",
-      status: "Pending",
-      image: "https://i.pravatar.cc/100?img=13",
-    },
+  const loadReimbursements = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-    {
-      id: 3,
-      name: "FOOD REIMBURSEMENT",
-      employee: "Priya",
-      total: 12,
-      totalAmount: "₹8,500",
-      approved: "₹7,000",
-      pending: "₹1,500",
-      status: "Approved",
-      image: "https://i.pravatar.cc/100?img=14",
-    },
+    try {
+      const data = await getGroupedReimbursements();
 
-    {
-      id: 4,
-      name: "FUEL REIMBURSEMENT",
-      employee: "Amit",
-      total: 6,
-      totalAmount: "₹15,000",
-      approved: "₹12,000",
-      pending: "₹3,000",
-      status: "Pending",
-      image: "https://i.pravatar.cc/100?img=15",
-    },
+      // Handle either a raw array or a paginated { results: [...] } shape
+      const list = Array.isArray(data) ? data : data?.results || [];
 
-    {
-      id: 5,
-      name: "ACCOMMODATION",
-      employee: "Rishal",
-      total: 5,
-      totalAmount: "₹25,000",
-      approved: "₹22,000",
-      pending: "₹3,000",
-      status: "Approved",
-      image: "https://i.pravatar.cc/100?img=16",
-    },
+      setReimbursements(list.map(mapReimbursementData));
+    } catch (err) {
+      console.error("Failed to load reimbursements:", err);
+      setError(
+        err?.message || "Something went wrong while loading reimbursements."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    {
-      id: 6,
-      name: "OFFICE EXPENSE",
-      employee: "Risvin",
-      total: 4,
-      totalAmount: "₹6,500",
-      approved: "₹5,500",
-      pending: "₹1,000",
-      status: "Pending",
-      image: "https://i.pravatar.cc/100?img=17",
-    },
-
-    {
-      id: 7,
-      name: "BUSINESS TRAVEL",
-      employee: "John",
-      total: 10,
-      totalAmount: "₹32,000",
-      approved: "₹28,000",
-      pending: "₹4,000",
-      status: "Approved",
-      image: "https://i.pravatar.cc/100?img=18",
-    },
-
-    {
-      id: 8,
-      name: "COMMUNICATION",
-      employee: "David",
-      total: 7,
-      totalAmount: "₹9,500",
-      approved: "₹8,000",
-      pending: "₹1,500",
-      status: "Pending",
-      image: "https://i.pravatar.cc/100?img=19",
-    },
-  ];
+  useEffect(() => {
+    loadReimbursements();
+  }, [loadReimbursements]);
 
   // =====================================================
   // SEARCH
@@ -233,88 +196,109 @@ const ReimbursementCards = () => {
       />
 
       {/* =================================================
+          LOADING / ERROR STATES
+      ================================================= */}
+
+      {loading && <p>Loading reimbursements...</p>}
+
+      {!loading && error && (
+        <p style={{ color: "red" }}>
+          {error}{" "}
+          <button type="button" onClick={loadReimbursements}>
+            Retry
+          </button>
+        </p>
+      )}
+
+      {!loading && !error && filteredReimbursements.length === 0 && (
+        <p>No reimbursements found.</p>
+      )}
+
+      {/* =================================================
           REIMBURSEMENT CARDS
       ================================================= */}
 
-      <CardsGrid>
-        {filteredReimbursements.map((reimbursement) => (
-          <Card key={reimbursement.id}>
+      {!loading && !error && (
+        <CardsGrid>
+          {filteredReimbursements.map((reimbursement) => (
+            <Card key={reimbursement.id}>
 
-            {/* ================= HEADER ================= */}
+              {/* ================= HEADER ================= */}
 
-            <CardHeader>
-              <ReimbursementName>
-                {reimbursement.name}
-              </ReimbursementName>
+              <CardHeader>
+                <ReimbursementName>
+                  {reimbursement.name}
+                </ReimbursementName>
 
-              <StatusBadge
-                status={reimbursement.status}
-              >
-                {reimbursement.status}
-              </StatusBadge>
-            </CardHeader>
+                <StatusBadge
+                  status={reimbursement.status}
+                >
+                  {reimbursement.status}
+                </StatusBadge>
+              </CardHeader>
 
-            {/* ================= EMPLOYEE ================= */}
+              {/* ================= EMPLOYEE ================= */}
 
-            <EmployeeName>
-              Employee :{" "}
-              <strong>{reimbursement.employee}</strong>
-            </EmployeeName>
+              <EmployeeName>
+                Employee :{" "}
+                <strong>{reimbursement.employee}</strong>
+              </EmployeeName>
 
-            {/* ================= TOTAL ================= */}
+              {/* ================= TOTAL ================= */}
 
-            <TotalAmount>
-              Total Amount :{" "}
-              {reimbursement.totalAmount}
-            </TotalAmount>
+              <TotalAmount>
+                Total Amount :{" "}
+                {reimbursement.totalAmount}
+              </TotalAmount>
 
-            {/* ================= STATUS ================= */}
+              {/* ================= STATUS ================= */}
 
-            <StatusRow>
-              <ApprovedAmount>
-                Approved :{" "}
-                {reimbursement.approved}
-              </ApprovedAmount>
+              <StatusRow>
+                <ApprovedAmount>
+                  Approved :{" "}
+                  {reimbursement.approved}
+                </ApprovedAmount>
 
-              <PendingAmount>
-                Pending :{" "}
-                {reimbursement.pending}
-              </PendingAmount>
-            </StatusRow>
+                <PendingAmount>
+                  Pending :{" "}
+                  {reimbursement.pending}
+                </PendingAmount>
+              </StatusRow>
 
-            {/* ================= BOTTOM ================= */}
+              {/* ================= BOTTOM ================= */}
 
-            <CardBottom>
-              <EmployeeCount>
+              <CardBottom>
+                <EmployeeCount>
 
-                <EmployeeImage
-                  src={reimbursement.image}
-                  alt={reimbursement.employee}
-                />
+                  <EmployeeImage
+                    src={reimbursement.image}
+                    alt={reimbursement.employee}
+                  />
 
-                <ReimbursementNumber>
-                  {String(
-                    reimbursement.total
-                  ).padStart(2, "0")}
-                </ReimbursementNumber>
+                  <ReimbursementNumber>
+                    {String(
+                      reimbursement.total
+                    ).padStart(2, "0")}
+                  </ReimbursementNumber>
 
-              </EmployeeCount>
+                </EmployeeCount>
 
-              <ViewButton
-                type="button"
-                onClick={() =>
-                  handleViewReimbursement(
-                    reimbursement.id
-                  )
-                }
-              >
-                VIEW REIMBURSEMENT
-              </ViewButton>
-            </CardBottom>
+                <ViewButton
+                  type="button"
+                  onClick={() =>
+                    handleViewReimbursement(
+                      reimbursement.id
+                    )
+                  }
+                >
+                  VIEW REIMBURSEMENT
+                </ViewButton>
+              </CardBottom>
 
-          </Card>
-        ))}
-      </CardsGrid>
+            </Card>
+          ))}
+        </CardsGrid>
+      )}
 
       {/* =================================================
           ADD / EDIT MODAL
