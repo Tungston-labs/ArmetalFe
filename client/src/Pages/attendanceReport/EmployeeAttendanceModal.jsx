@@ -126,9 +126,8 @@ const EmployeeAttendance = () => {
   const handlePrint = useReactToPrint({
     contentRef: printRef,
 
-    documentTitle: `${
-      employee?.employee_name || "Employee"
-    }-attendance`,
+    documentTitle: `${employee?.employee_name || "Employee"
+      }-attendance`,
   });
 
   // ==================================================
@@ -244,53 +243,53 @@ const EmployeeAttendance = () => {
   // OPEN EDIT MODAL
   // ==================================================
 
-const handleEdit = (record, index) => {
-  setSelectedRecord({
-    ...record,
-    index,
-  });
+  const handleEdit = (record, index) => {
+    setSelectedRecord({
+      ...record,
+      index,
+    });
 
-  // -----------------------------------------------
-  // ATTENDANCE TYPE
-  // -----------------------------------------------
-  // Unpaid is selected by default.
-  // If the existing record is Paid, show Paid.
-  // Otherwise show Unpaid.
-  // -----------------------------------------------
+    // -----------------------------------------------
+    // ATTENDANCE TYPE
+    // -----------------------------------------------
+    // Unpaid is selected by default.
+    // If the existing record is Paid, show Paid.
+    // Otherwise show Unpaid.
+    // -----------------------------------------------
 
-  const existingAttendanceType = String(
-    record.attendance_type ||
+    const existingAttendanceType = String(
+      record.attendance_type ||
       record.payment_type ||
       record.day_limit ||
       "unpaid"
-  )
-    .toLowerCase()
-    .trim();
+    )
+      .toLowerCase()
+      .trim();
 
-  if (existingAttendanceType === "paid") {
-    setAttendanceType("paid");
-  } else {
-    setAttendanceType("unpaid");
-  }
+    if (existingAttendanceType === "paid") {
+      setAttendanceType("paid");
+    } else {
+      setAttendanceType("unpaid");
+    }
 
-  // -----------------------------------------------
-  // EXISTING NOTE
-  // -----------------------------------------------
+    // -----------------------------------------------
+    // EXISTING NOTE
+    // -----------------------------------------------
 
-  setEditNote(
-    record.remark ||
+    setEditNote(
+      record.remark ||
       record.note ||
       ""
-  );
+    );
 
-  // -----------------------------------------------
-  // CLEAR PREVIOUS UPDATE STATE
-  // -----------------------------------------------
+    // -----------------------------------------------
+    // CLEAR PREVIOUS UPDATE STATE
+    // -----------------------------------------------
 
-  dispatch(clearAttendanceUpdate());
+    dispatch(clearAttendanceUpdate());
 
-  setIsEditModalOpen(true);
-};
+    setIsEditModalOpen(true);
+  };
 
   // ==================================================
   // CLOSE EDIT MODAL
@@ -343,12 +342,13 @@ const handleEdit = (record, index) => {
       // ---------------------------------------------
       // EMPLOYEE ID
       // ---------------------------------------------
+      console.log("employee object:", employee);
 
       const employeeId =
-        employee?.id ||
-        employee?.employee_id ||
+        selectedRecord?.employee ||
+        selectedRecord?.employee_id ||
+        employee?.employee_pk ||
         employee?.employee;
-
       // ---------------------------------------------
       // VALIDATE EMPLOYEE
       // ---------------------------------------------
@@ -685,10 +685,10 @@ const handleEdit = (record, index) => {
           >
 
             {typeof updateError ===
-            "object"
+              "object"
               ? updateError.detail ||
-                updateError.message ||
-                "Failed to update attendance"
+              updateError.message ||
+              "Failed to update attendance"
               : updateError}
 
           </div>
@@ -794,21 +794,20 @@ const handleEdit = (record, index) => {
                     // ATTENDANCE TYPE
                     // --------------------------------
 
-                    const currentAttendanceType =
-                      String(
-                        rec.attendance_type ||
-                        rec.payment_type ||
-                        rec.day_limit ||
-                        "paid"
-                      )
-                        .toLowerCase()
-                        .trim();
+                    const hasAttendanceType =
+                      rec.attendance_type !== null &&
+                      rec.attendance_type !== undefined &&
+                      String(rec.attendance_type).trim() !== "";
 
-                    const attendanceText =
-                      currentAttendanceType ===
-                      "unpaid"
+                    const currentAttendanceType = hasAttendanceType
+                      ? String(rec.attendance_type).toLowerCase().trim()
+                      : null;
+
+                    const attendanceText = hasAttendanceType
+                      ? currentAttendanceType === "unpaid"
                         ? "Unpaid"
-                        : "Paid";
+                        : "Paid"
+                      : rec.status || "—";
 
                     return (
 
@@ -832,7 +831,7 @@ const handleEdit = (record, index) => {
                             style={{
                               color:
                                 attendanceText ===
-                                "Unpaid"
+                                  "Unpaid"
                                   ? "#d13c3c"
                                   : "#1d8a4b",
                             }}
@@ -878,7 +877,7 @@ const handleEdit = (record, index) => {
                         <TableCell>
 
                           {rec.note ||
-                          rec.remark ? (
+                            rec.remark ? (
 
                             <NoteCell>
 
@@ -888,16 +887,16 @@ const handleEdit = (record, index) => {
                                   rec.note ||
                                   rec.remark
                                 ).length >
-                                15
+                                  15
                                   ? `${(
-                                      rec.note ||
-                                      rec.remark
-                                    ).substring(
-                                      0,
-                                      15
-                                    )}...`
+                                    rec.note ||
+                                    rec.remark
+                                  ).substring(
+                                    0,
+                                    15
+                                  )}...`
                                   : rec.note ||
-                                    rec.remark}
+                                  rec.remark}
 
                               </NoteText>
 
@@ -929,51 +928,33 @@ const handleEdit = (record, index) => {
                         {/* EDITED BY */}
 
                         <TableCell>
-
-                          {rec.edited_by ? (
-
+                          {rec.updated_by ? (
                             <div>
-
                               <strong>
-                                {
-                                  rec.edited_by
-                                }
+                                {rec.updated_by}
                               </strong>
 
-                              {rec.edited_at && (
-
+                              {rec.updated_by_role && (
                                 <div
                                   style={{
-                                    fontSize:
-                                      "11px",
-                                    color:
-                                      "#888",
-                                    marginTop:
-                                      "3px",
+                                    fontSize: "11px",
+                                    color: "#888",
+                                    marginTop: "3px",
                                   }}
                                 >
-                                  {new Date(
-                                    rec.edited_at
-                                  ).toLocaleString()}
+                                  {rec.updated_by_role}
                                 </div>
-
                               )}
-
                             </div>
-
                           ) : (
-
                             <span
                               style={{
-                                color:
-                                  "#999",
+                                color: "#999",
                               }}
                             >
                               Not edited
                             </span>
-
                           )}
-
                         </TableCell>
 
                         {/* ACTION */}
@@ -1112,14 +1093,14 @@ const handleEdit = (record, index) => {
                         "10px 14px",
                       border:
                         attendanceType ===
-                        "paid"
+                          "paid"
                           ? "2px solid #1d8a4b"
                           : "1px solid #e2e2e2",
                       borderRadius:
                         "8px",
                       background:
                         attendanceType ===
-                        "paid"
+                          "paid"
                           ? "#eaf8ef"
                           : "#fff",
                       fontWeight:
@@ -1166,14 +1147,14 @@ const handleEdit = (record, index) => {
                         "10px 14px",
                       border:
                         attendanceType ===
-                        "unpaid"
+                          "unpaid"
                           ? "2px solid #d13c3c"
                           : "1px solid #e2e2e2",
                       borderRadius:
                         "8px",
                       background:
                         attendanceType ===
-                        "unpaid"
+                          "unpaid"
                           ? "#fff0f0"
                           : "#fff",
                       fontWeight:
@@ -1265,7 +1246,7 @@ const handleEdit = (record, index) => {
 
                   <strong>
                     {attendanceType ===
-                    "unpaid"
+                      "unpaid"
                       ? "Unpaid"
                       : "Paid"}
                   </strong>

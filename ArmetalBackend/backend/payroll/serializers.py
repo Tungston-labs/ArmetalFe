@@ -175,23 +175,65 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             date__range=(first_day, last_day),
         )
 
+        # Keep the complete attendance object because
+        # we need both total_hours and attendance_type.
         attendance_map = {
-            att.date: Decimal(att.total_hours or 0)
+            att.date: att
             for att in attendances
         }
 
-        full_days = Decimal(0)
-        half_days = Decimal(0)
+        full_days = Decimal("0")
+        half_days = Decimal("0")
 
         for day in all_working_dates:
 
-            hours = attendance_map.get(day, Decimal(0))
+            attendance = attendance_map.get(day)
+
+            # --------------------------------------------------
+            # NO ATTENDANCE
+            # --------------------------------------------------
+
+            if not attendance:
+                continue
+
+            # --------------------------------------------------
+            # PAID ATTENDANCE
+            # --------------------------------------------------
+            # Paid attendance means the employee gets the day
+            # counted as PRESENT regardless of total_hours.
+            #
+            # Example:
+            # total_hours = 3
+            # attendance_type = "paid"
+            #
+            # Result:
+            # present = 1
+            # LOP = 0
+            # --------------------------------------------------
+
+            if (
+                attendance.attendance_type
+                and attendance.attendance_type.lower() == "paid"
+            ):
+                full_days += Decimal("1")
+                continue
+
+            # --------------------------------------------------
+            # NORMAL ATTENDANCE
+            # --------------------------------------------------
+
+            hours = Decimal(
+                attendance.total_hours or 0
+            )
 
             if hours >= full_day_hours:
-                full_days += 1
+
+                full_days += Decimal("1")
 
             elif hours >= half_day_hours:
+
                 half_days += Decimal("0.5")
+
 
         days_present = full_days + half_days
 

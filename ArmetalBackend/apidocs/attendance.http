@@ -64,20 +64,19 @@ GET http://178.248.112.16:8001/api/admin/attendance/351/?date=2026-02-04
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcyNDQyNjUzLCJpYXQiOjE3NzI0MzkwNTMsImp0aSI6IjUzYTliYTU1YTVkNjQzNTI4MDM2ZDhkMGY4YTRjZGQ3IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.sAfalR6BiMHhvA09x8N-G3H9lLEBllVem0gLWYkiSwY
 
 ###attendance summary
-GET https://api.rekory.com/api/employee-attendance/summary/?year=2026&month=05
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc5MzA2NTY5LCJpYXQiOjE3NzkyNzc3NjksImp0aSI6IjMwMDRmMDc3NGQ2ODRlZmRhZjRlOWJjODViNzBkMzQzIiwidXNlcl9pZCI6Njc4LCJpc19zdXBlcmFkbWluIjpmYWxzZSwiaXNfaHJfYWRtaW4iOnRydWUsImlzX2VtcGxveWVlIjpmYWxzZSwiaXNfaHIiOmZhbHNlfQ.N9RGCH2Jv05zkDrJgZhz19FmT21NEP8AoxJwb60VHzc
+GET http://127.0.0.1:8000/api/employee-attendance/summary/?year=2026&month=08
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3OTIyMzc1LCJpYXQiOjE3ODc4OTM1NzUsImp0aSI6IjA0ZTE2NTE0YzlhZjRkZDg4ZGE0MTk4ZmZiNTBiNzZlIiwidXNlcl9pZCI6MiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.rOfQ5OEsFqHzd4qbXa8YGD4KTBanswM5Mvvf8q9fBAc
 
 
 ###
 
 PATCH http://127.0.0.1:8000/api/attendance/update/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3NTk3Nzg4LCJpYXQiOjE3ODc1Njg5ODgsImp0aSI6IjZhMDkxMmVmOTNlMjQ3M2M5NGRlODE1YmYxMmZiOGUwIiwidXNlcl9pZCI6NCwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.D_eI07KfkmepJrLF0yiXe50YKscFMDFi_vhO4I03IJ0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3OTIyMzc1LCJpYXQiOjE3ODc4OTM1NzUsImp0aSI6IjA0ZTE2NTE0YzlhZjRkZDg4ZGE0MTk4ZmZiNTBiNzZlIiwidXNlcl9pZCI6MiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.rOfQ5OEsFqHzd4qbXa8YGD4KTBanswM5Mvvf8q9fBAc
 Content-Type: application/json
 
 {
-    "employee": 3,
-    "date": "2026-08-24",
-    "status": "approved",
-    "day_limit": "half",
-    "remark": "Employee arrived late due to traffic"
+    "employee": 4,
+    "date": "2026-08-19",
+    "attendance_type": "paid",
+    "remark": "work from home"
 }

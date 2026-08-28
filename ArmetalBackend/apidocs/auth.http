@@ -1,11 +1,11 @@
 ###LOGIN TO OBTAIN THE TOKEN PAIRS-FOR COMAPNY
 
-POST http://127.0.0.1:8000/api/token/
+POST https://api.rekory.com/api/token/
 Content-Type: application/json
 
 {
-  "username": "dummy",
-  "password": "password123"
+  "username": "mediora",
+  "password": "CMPPSPI4Z6TPE"
 }
 ###
 POST https://api.rekory.com/api/token/
@@ -20,7 +20,7 @@ POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
 {
-  "username": "dummy",
+  "username": "dummycompany",
   "password": "Password@123"
 }
 

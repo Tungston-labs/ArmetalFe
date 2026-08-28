@@ -847,6 +847,13 @@ from rest_framework import status
 
 from attendance.models import Attendance
 from .serializers import AttendanceManualUpdateSerializer
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+
+from attendance.models import Attendance
+from .serializers import AttendanceManualUpdateSerializer
 
 
 class AttendanceManualUpdateView(APIView):
@@ -858,7 +865,12 @@ class AttendanceManualUpdateView(APIView):
         employee_id = request.data.get("employee")
         attendance_date = request.data.get("date")
 
+        # --------------------------------------------------
+        # REQUIRED FIELDS
+        # --------------------------------------------------
+
         if not employee_id:
+
             return Response(
                 {
                     "error": "employee is required."
@@ -867,6 +879,7 @@ class AttendanceManualUpdateView(APIView):
             )
 
         if not attendance_date:
+
             return Response(
                 {
                     "error": "date is required."
@@ -885,6 +898,7 @@ class AttendanceManualUpdateView(APIView):
             or user.is_hr_admin
             or user.is_hr
         ):
+
             return Response(
                 {
                     "error": (
@@ -938,8 +952,15 @@ class AttendanceManualUpdateView(APIView):
             }
         )
 
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid(
+            raise_exception=True
+        )
+
         serializer.save()
+
+        # --------------------------------------------------
+        # RESPONSE
+        # --------------------------------------------------
 
         return Response(
             serializer.data,
