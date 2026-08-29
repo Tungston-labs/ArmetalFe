@@ -170,6 +170,9 @@ const AttendanceReport = () => {
   // Report
   // --------------------------------------------------
 
+  const currentMonth = new Date()
+  .toISOString()
+  .slice(0, 7);
   const handleReportClick = (type) => {
     if (type === "excel") {
       exportAttendanceExcel(attendanceSummary);
@@ -210,13 +213,16 @@ const AttendanceReport = () => {
         {/* Top Bar */}
 
         <TopBar>
-          <MonthSelector>
-            <input
-              type="month"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-            />
-          </MonthSelector>
+       <MonthSelector>
+  <input
+    type="month"
+    value={selectedMonth}
+    max={currentMonth}
+    onChange={(e) =>
+      setSelectedMonth(e.target.value)
+    }
+  />
+</MonthSelector>
 
           <ReportButton onClick={handleDownloadExcel}>
             📊 Monthly Report (Excel)

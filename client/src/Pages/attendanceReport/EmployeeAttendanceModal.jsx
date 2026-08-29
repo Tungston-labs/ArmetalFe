@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useReactToPrint } from "react-to-print";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -8,7 +7,7 @@ import {
   clearAttendanceUpdate,
   getAttendanceSummary, // reused from AttendanceReport — no new endpoint needed
 } from "../../Redux/attendanceSlice";
-
+import { exportAttendanceExcel } from "../../utils/montlyAttendance";
 import {
   AttendancePage,
   AttendanceContainer,
@@ -70,8 +69,6 @@ const EmployeeAttendance = () => {
     monthName: stateMonthName,
     selectedMonth: stateSelectedMonth,
   } = location.state || {};
-
-  const printRef = useRef();
 
   // ==================================================
   // REDUX STATE
@@ -235,11 +232,17 @@ const EmployeeAttendance = () => {
   // PRINT
   // ==================================================
 
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
+ const handlePrint = () => {
+  if (!employee) {
+    console.error("Employee data is not available");
+    return;
+  }
 
-    documentTitle: `${employee?.employee_name || "Employee"}-attendance`,
-  });
+  exportAttendanceExcel(
+    [employee],
+    selectedMonth
+  );
+};
 
   // ==================================================
   // REFETCH HELPER (after a save)
@@ -470,6 +473,16 @@ const EmployeeAttendance = () => {
       // -------------------------------------------
       // CALL REDUX THUNK
       // -------------------------------------------
+      // The API now responds with:
+      // {
+      //   message: "Attendance record created successfully.",
+      //   created: true,
+      //   data: { id, employee, date, attendance_type, remark,
+      //           total_hours, updated_by, updated_by_role,
+      //           created_at, updated_at }
+      // }
+      // (created: false on a plain update, but the shape is the same)
+      // -------------------------------------------
 
       const response = await dispatch(
         updateAttendanceThunk(payload)
@@ -487,26 +500,73 @@ const EmployeeAttendance = () => {
       // sequential requests if this employee isn't on
       // page 1). Patching from the save response makes
       // the change visible immediately, every time.
+      //
+      // The record fields live under `response.data`, not
+      // at the top level of `response` (top level is just
+      // { message, created, data }), so unwrap that first.
       // -------------------------------------------
+
+      const updatedRecord = response?.data || {};
 
       const now = new Date().toISOString();
 
-      setRecords((prevRecords) =>
-        prevRecords.map((record) =>
-          record.date === selectedRecord.date
-            ? {
-                ...record,
-                ...response,
-                attendance_type: attendanceType,
-                day_limit: dayLimit,
-                note: editNote,
-                remark: editNote,
-                updated_by: currentUser,
-                updated_at: now,
-              }
-            : record
-        )
-      );
+      setRecords((prevRecords) => {
+        const recordExists = prevRecords.some(
+          (record) => record.date === selectedRecord.date
+        );
+
+        // ---------------------------------------
+        // UPDATE EXISTING ROW
+        // ---------------------------------------
+
+        if (recordExists) {
+          return prevRecords.map((record) =>
+            record.date === selectedRecord.date
+              ? {
+                  ...record,
+                  ...updatedRecord,
+                  attendance_type:
+                    updatedRecord.attendance_type || attendanceType,
+                  day_limit: dayLimit,
+                  note: updatedRecord.remark ?? editNote,
+                  remark: updatedRecord.remark ?? editNote,
+                  updated_by: updatedRecord.updated_by || currentUser,
+                  updated_by_role:
+                    updatedRecord.updated_by_role ||
+                    record.updated_by_role,
+                  updated_at: updatedRecord.updated_at || now,
+                }
+              : record
+          );
+        }
+
+        // ---------------------------------------
+        // INSERT NEW ROW
+        // ---------------------------------------
+        // Covers the `created: true` case — the date didn't
+        // have a record before this save, so there's nothing
+        // to map over. Add it and keep the table sorted by date.
+        // ---------------------------------------
+
+        const newRecord = {
+          date: selectedRecord.date,
+          first_punch_in: null,
+          last_punch_out: null,
+          total_hours: "0.00",
+          ...updatedRecord,
+          attendance_type: updatedRecord.attendance_type || attendanceType,
+          day_limit: dayLimit,
+          note: updatedRecord.remark ?? editNote,
+          remark: updatedRecord.remark ?? editNote,
+          updated_by: updatedRecord.updated_by || currentUser,
+          updated_by_role: updatedRecord.updated_by_role,
+          updated_at: updatedRecord.updated_at || now,
+        };
+
+        return [...prevRecords, newRecord].sort((a, b) =>
+          a.date < b.date ? -1 : a.date > b.date ? 1 : 0
+        );
+      });
 
       // -------------------------------------------
       // RE-FETCH FROM SERVER (background sync)
@@ -583,7 +643,7 @@ const EmployeeAttendance = () => {
 
   return (
     <AttendancePage>
-      <AttendanceContainer ref={printRef}>
+      <AttendanceContainer >
         {/* ========================================== */}
         {/* HEADER */}
         {/* ========================================== */}
@@ -600,6 +660,14 @@ const EmployeeAttendance = () => {
               <PageSubtitle>{monthName} — Attendance Summary</PageSubtitle>
             </div>
           </HeaderLeft>
+ <HeaderRight>
+  <PrintButton
+    type="button"
+    onClick={handlePrint}
+  >
+    📊 Employee Excel
+  </PrintButton>
+</HeaderRight>
         </PageHeader>
 
         {/* ========================================== */}
@@ -793,9 +861,9 @@ const EmployeeAttendance = () => {
                       <TableCell>
                         {rec.updated_by ? (
                           <div>
-                            <strong>{rec.updated_by}</strong>
+                            <strong>{rec.updated_by_role}</strong>
 
-                            {rec.updated_by_role && (
+                            {rec.updated_at  && (
                               <div
                                 style={{
                                   fontSize: "11px",
@@ -803,7 +871,7 @@ const EmployeeAttendance = () => {
                                   marginTop: "3px",
                                 }}
                               >
-                                {rec.updated_by_role}
+                                {rec.updated_at }
                               </div>
                             )}
                           </div>
