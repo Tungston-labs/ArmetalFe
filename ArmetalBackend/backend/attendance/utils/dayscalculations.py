@@ -1,3 +1,4 @@
+
 from datetime import timedelta, datetime, date
 from decimal import Decimal
 import pytz
@@ -5,12 +6,34 @@ import pytz
 from attendance.models import Attendance
 from leave.models import LeaveRequest
 from holidays.models import PublicHoliday
-from employee.models import Employee_db
 
 
 def build_employee_month_calendar(employee, start_date, end_date):
 
     today = date.today()
+
+    # ============================================================
+    # CALCULATION DATE RANGE
+    # ============================================================
+    # Never calculate attendance after today.
+    calculation_end_date = min(end_date, today)
+
+    # Never calculate anything before employee joining date.
+    if employee.joining_date:
+        start_date = max(
+            start_date,
+            employee.joining_date
+        )
+
+    # Employee has not joined yet / no valid calculation range
+    if start_date > calculation_end_date:
+        return (
+            0,
+            0.0,
+            0.0,
+            0.0,
+            []
+        )
 
     # ============================================================
     # COMPANY SETTINGS
@@ -27,7 +50,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
     )
 
     # ============================================================
-    # HOLIDAYS & WEEKLY OFF
+    # HOLIDAYS & COMPANY OFF DAYS
     # ============================================================
 
     holidays_qs = PublicHoliday.objects.filter(
@@ -40,14 +63,16 @@ def build_employee_month_calendar(employee, start_date, end_date):
     for h in holidays_qs:
 
         # --------------------------------------------------------
-        # WEEKLY OFF
+        # WEEKLY COMPANY OFF DAY
         # --------------------------------------------------------
 
         if (
             h.holiday_type == "company_off_day"
             and h.off_day_weekday is not None
         ):
-            company_off_days[h.off_day_weekday] = (
+            company_off_days[
+                h.off_day_weekday
+            ] = (
                 h.description or "Company Off"
             )
 
@@ -56,7 +81,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
         # --------------------------------------------------------
 
         elif h.date:
-            holiday_map[h.date] = (
+            holiday_map[
+                h.date
+            ] = (
                 h.description or "Holiday"
             )
 
@@ -64,14 +91,26 @@ def build_employee_month_calendar(employee, start_date, end_date):
     # INITIAL VALUES
     # ============================================================
 
-    total_days_full_month = (
-        end_date - start_date
+    total_days = (
+        calculation_end_date - start_date
     ).days + 1
 
-    working_days = 0
+    working_days = Decimal("0")
 
     present_days = Decimal("0")
 
+    # This represents all working days without normal attendance.
+    #
+    # IMPORTANT:
+    # Paid attendance is also included here.
+    #
+    # Therefore:
+    #
+    # working_days = 9
+    # paid days    = 3
+    # present      = 0
+    # absent       = 9
+    #
     unswiped_days_till_today = Decimal("0")
 
     daily_records = []
@@ -80,54 +119,23 @@ def build_employee_month_calendar(employee, start_date, end_date):
     # ATTENDANCE
     # ============================================================
 
-    attendances = (
-        Attendance.objects
-        .filter(
-            employee=employee,
-            date__range=(start_date, today)
+    attendances = Attendance.objects.filter(
+        employee=employee,
+        date__range=(
+            start_date,
+            calculation_end_date
         )
-        .select_related(
-            "updated_by"
-        )
-        .prefetch_related(
-            "sessions"
-        )
+    ).select_related(
+        "updated_by"
     )
 
     attendance_map = {}
 
-    india_tz = pytz.timezone("Asia/Kolkata")
+    india_tz = pytz.timezone(
+        "Asia/Kolkata"
+    )
+
     utc_tz = pytz.UTC
-
-    # ============================================================
-    # GET EMPLOYEE_DB RECORDS FOR UPDATED USERS
-    # ============================================================
-
-    updated_user_ids = [
-        a.updated_by_id
-        for a in attendances
-        if a.updated_by_id
-    ]
-
-    employee_by_user_id = {}
-
-    if updated_user_ids:
-
-        employee_records = (
-            Employee_db.objects
-            .filter(
-                user_id__in=updated_user_ids
-            )
-        )
-
-        employee_by_user_id = {
-            emp.user_id: emp
-            for emp in employee_records
-        }
-
-    # ============================================================
-    # BUILD ATTENDANCE MAP
-    # ============================================================
 
     for a in attendances:
 
@@ -141,30 +149,6 @@ def build_employee_month_calendar(employee, start_date, end_date):
         last_punch_out = None
 
         # ========================================================
-        # ATTENDANCE UPDATED AT
-        # ========================================================
-
-        updated_at = None
-
-        if a.updated_at:
-
-            if a.updated_at.tzinfo:
-
-                updated_at = (
-                    a.updated_at
-                    .astimezone(india_tz)
-                    .strftime("%d-%m-%Y %I:%M %p")
-                )
-
-            else:
-
-                updated_at = (
-                    india_tz
-                    .localize(a.updated_at)
-                    .strftime("%d-%m-%Y %I:%M %p")
-                )
-
-        # ========================================================
         # FIRST / LAST SESSION
         # ========================================================
 
@@ -173,9 +157,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
             first_session = sessions.first()
             last_session = sessions.last()
 
-            # ----------------------------------------------------
+            # ====================================================
             # FIRST PUNCH IN
-            # ----------------------------------------------------
+            # ====================================================
 
             if first_session.time_in:
 
@@ -183,20 +167,16 @@ def build_employee_month_calendar(employee, start_date, end_date):
                     first_session.time_in,
                     datetime
                 ):
-
                     first_dt = (
                         first_session.time_in
                     )
-
                 else:
-
                     first_dt = datetime.combine(
                         a.date,
                         first_session.time_in
                     )
 
                 if first_dt.tzinfo is None:
-
                     first_dt = utc_tz.localize(
                         first_dt
                     )
@@ -213,9 +193,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
                     )
                 )
 
-            # ----------------------------------------------------
+            # ====================================================
             # LAST PUNCH OUT
-            # ----------------------------------------------------
+            # ====================================================
 
             if last_session.time_out:
 
@@ -223,20 +203,16 @@ def build_employee_month_calendar(employee, start_date, end_date):
                     last_session.time_out,
                     datetime
                 ):
-
                     last_dt = (
                         last_session.time_out
                     )
-
                 else:
-
                     last_dt = datetime.combine(
                         a.date,
                         last_session.time_out
                     )
 
                 if last_dt.tzinfo is None:
-
                     last_dt = utc_tz.localize(
                         last_dt
                     )
@@ -262,54 +238,51 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
         if a.updated_by:
 
-            # ----------------------------------------------------
-            # FIND Employee_db USING USER
-            # ----------------------------------------------------
-
-            updated_employee = (
-                employee_by_user_id.get(
-                    a.updated_by_id
-                )
+            updated_by = (
+                a.updated_by.username
             )
 
-            if updated_employee:
-
-                # Employee_db.name
-                updated_by = (
-                    updated_employee.name
-                )
-
-            else:
-
-                # Fallback to username if no
-                # Employee_db record exists
-                updated_by = (
-                    a.updated_by.username
-                )
-
-            # ----------------------------------------------------
-            # ROLE
-            # ----------------------------------------------------
-
             if a.updated_by.is_superadmin:
-
                 updated_by_role = "Super Admin"
 
             elif a.updated_by.is_hr_admin:
-
                 updated_by_role = "HR Admin"
 
             elif a.updated_by.is_hr:
-
                 updated_by_role = "HR"
 
             elif a.updated_by.is_employee:
-
                 updated_by_role = "Employee"
 
             else:
-
                 updated_by_role = "User"
+
+        # ========================================================
+        # UPDATED AT
+        # ========================================================
+
+        updated_at = None
+
+        if a.updated_at:
+
+            updated_at_dt = a.updated_at
+
+            if updated_at_dt.tzinfo is None:
+                updated_at_dt = utc_tz.localize(
+                    updated_at_dt
+                )
+
+            updated_at_dt = (
+                updated_at_dt.astimezone(
+                    india_tz
+                )
+            )
+
+            updated_at = (
+                updated_at_dt.strftime(
+                    "%d-%m-%Y %I:%M %p"
+                )
+            )
 
         # ========================================================
         # STORE ATTENDANCE DATA
@@ -321,9 +294,13 @@ def build_employee_month_calendar(employee, start_date, end_date):
                 a.total_hours or 0
             ),
 
-            "first_punch_in": first_punch_in,
+            "first_punch_in": (
+                first_punch_in
+            ),
 
-            "last_punch_out": last_punch_out,
+            "last_punch_out": (
+                last_punch_out
+            ),
 
             "attendance_type": (
                 a.attendance_type
@@ -333,7 +310,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
             "updated_by": updated_by,
 
-            "updated_by_role": updated_by_role,
+            "updated_by_role": (
+                updated_by_role
+            ),
 
             "updated_at": updated_at,
         }
@@ -346,123 +325,120 @@ def build_employee_month_calendar(employee, start_date, end_date):
     # APPROVED LEAVES
     # ============================================================
 
-    leave_requests = (
-        LeaveRequest.objects
-        .filter(
-            employee=employee,
-            status="approved",
-            from_date__lte=today,
-            to_date__gte=start_date
-        )
+    leave_requests = LeaveRequest.objects.filter(
+        employee=employee,
+        status="approved",
+        from_date__lte=calculation_end_date,
+        to_date__gte=start_date
     )
 
     approved_leave_dates = set()
 
     for leave in leave_requests:
 
-        start = max(
+        leave_start = max(
             leave.from_date,
             start_date
         )
 
-        end = min(
+        leave_end = min(
             leave.to_date,
-            today
+            calculation_end_date
         )
 
-        if isinstance(start, datetime):
-            start = start.date()
+        if isinstance(
+            leave_start,
+            datetime
+        ):
+            leave_start = leave_start.date()
 
-        if isinstance(end, datetime):
-            end = end.date()
+        if isinstance(
+            leave_end,
+            datetime
+        ):
+            leave_end = leave_end.date()
 
         for i in range(
-            (end - start).days + 1
+            (leave_end - leave_start).days + 1
         ):
-
             approved_leave_dates.add(
-                start + timedelta(days=i)
+                leave_start + timedelta(days=i)
             )
 
     # ============================================================
     # MAIN CALENDAR LOOP
     # ============================================================
 
-    for i in range(
-        total_days_full_month
-    ):
+    for i in range(total_days):
 
-        d = start_date + timedelta(days=i)
+        d = (
+            start_date +
+            timedelta(days=i)
+        )
 
         weekday = d.weekday()
 
         # ========================================================
-        # HOLIDAY
+        # PUBLIC / COMPANY HOLIDAY
         # ========================================================
 
         if d in holiday_map:
 
-            if d <= today:
+            daily_records.append({
 
-                daily_records.append({
+                "date": d,
 
-                    "date": d,
+                "status": holiday_map[d],
 
-                    "status": (
-                        holiday_map[d]
-                    ),
+                "total_hours": 0,
 
-                    "total_hours": 0,
+                "first_punch_in": None,
 
-                    "first_punch_in": None,
+                "last_punch_out": None,
 
-                    "last_punch_out": None,
+                "attendance_type": None,
 
-                    "attendance_type": None,
+                "remark": None,
 
-                    "remark": None,
+                "updated_by": None,
 
-                    "updated_by": None,
+                "updated_by_role": None,
 
-                    "updated_by_role": None,
-
-                    "updated_at": None,
-                })
+                "updated_at": None,
+            })
 
             continue
 
         # ========================================================
-        # WEEKLY OFF
+        # WEEKLY COMPANY OFF DAY
         # ========================================================
 
         if weekday in company_off_days:
 
-            if d <= today:
+            daily_records.append({
 
-                daily_records.append({
+                "date": d,
 
-                    "date": d,
+                "status": company_off_days[
+                    weekday
+                ],
 
-                    "status": (
-                        company_off_days[weekday]
-                    ),
+                "total_hours": 0,
 
-                    "total_hours": 0,
+                "first_punch_in": None,
 
-                    "first_punch_in": None,
+                "last_punch_out": None,
 
-                    "last_punch_out": None,
+                "attendance_type": None,
 
-                    "attendance_type": None,
+                "remark": None,
 
-                    "remark": None,
+                "updated_by": None,
 
-                    "updated_by": None,
+                "updated_by_role": None,
 
-                    "updated_by_role": None,
-
-                    "updated_at": None,
-                })
+                "updated_at": None,
+            })
 
             continue
 
@@ -470,11 +446,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
         # WORKING DAY
         # ========================================================
 
-        working_days += 1
-
-        # Future date
-        if d > today:
-            continue
+        working_days += Decimal("1")
 
         # ========================================================
         # DEFAULT VALUES
@@ -506,7 +478,13 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
             status = "leave"
 
-            unswiped_days_till_today += Decimal("1")
+            # Leave is a working day, but it is not
+            # counted as present.
+            #
+            # It is also not counted as LOP if the employee
+            # has sufficient leave balance.
+            #
+            # We handle the leave adjustment after the loop.
 
             daily_records.append({
 
@@ -529,7 +507,6 @@ def build_employee_month_calendar(employee, start_date, end_date):
                 "updated_by_role": None,
 
                 "updated_at": None,
-
             })
 
             continue
@@ -544,17 +521,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
                 attendance_map[d]
             )
 
-            # ----------------------------------------------------
-            # HOURS
-            # ----------------------------------------------------
-
             hours = (
                 attendance_data["hours"]
             )
-
-            # ----------------------------------------------------
-            # PUNCH IN
-            # ----------------------------------------------------
 
             first_punch_in = (
                 attendance_data[
@@ -562,19 +531,11 @@ def build_employee_month_calendar(employee, start_date, end_date):
                 ]
             )
 
-            # ----------------------------------------------------
-            # PUNCH OUT
-            # ----------------------------------------------------
-
             last_punch_out = (
                 attendance_data[
                     "last_punch_out"
                 ]
             )
-
-            # ----------------------------------------------------
-            # ATTENDANCE TYPE
-            # ----------------------------------------------------
 
             attendance_type = (
                 attendance_data[
@@ -582,19 +543,9 @@ def build_employee_month_calendar(employee, start_date, end_date):
                 ]
             )
 
-            # ----------------------------------------------------
-            # REMARK
-            # ----------------------------------------------------
-
             remark = (
-                attendance_data[
-                    "remark"
-                ]
+                attendance_data["remark"]
             )
-
-            # ----------------------------------------------------
-            # UPDATED BY
-            # ----------------------------------------------------
 
             updated_by = (
                 attendance_data[
@@ -602,19 +553,11 @@ def build_employee_month_calendar(employee, start_date, end_date):
                 ]
             )
 
-            # ----------------------------------------------------
-            # UPDATED BY ROLE
-            # ----------------------------------------------------
-
             updated_by_role = (
                 attendance_data[
                     "updated_by_role"
                 ]
             )
-
-            # ----------------------------------------------------
-            # UPDATED AT
-            # ----------------------------------------------------
 
             updated_at = (
                 attendance_data[
@@ -623,10 +566,47 @@ def build_employee_month_calendar(employee, start_date, end_date):
             )
 
             # ====================================================
-            # TODAY + PUNCH IN
+            # PAID ATTENDANCE
+            # ====================================================
+            #
+            # IMPORTANT:
+            #
+            # Paid attendance is NOT present.
+            #
+            # It remains an absent day.
+            #
+            # It will reduce LOP later.
+            #
+            # Example:
+            #
+            # Aug 20 -> paid -> absent
+            # Aug 21 -> paid -> absent
+            # Aug 22 -> paid -> absent
+            #
+            # present_days = 0
+            # absent_days  = 9
+            # paid_days    = 3
+            # lop_days     = 9 - 3 = 6
+            #
             # ====================================================
 
             if (
+                attendance_type
+                and attendance_type.lower() == "paid"
+            ):
+
+                status = "absent"
+
+                # IMPORTANT:
+                # Count paid day as absent for attendance
+                # statistics.
+                unswiped_days_till_today += Decimal("1")
+
+            # ====================================================
+            # TODAY + PUNCH IN
+            # ====================================================
+
+            elif (
                 d == today
                 and first_punch_in
                 and not last_punch_out
@@ -707,24 +687,38 @@ def build_employee_month_calendar(employee, start_date, end_date):
                 round(hours, 2)
             ),
 
-            "first_punch_in": first_punch_in,
+            "first_punch_in": (
+                first_punch_in
+            ),
 
-            "last_punch_out": last_punch_out,
+            "last_punch_out": (
+                last_punch_out
+            ),
 
-            "attendance_type": attendance_type,
+            "attendance_type": (
+                attendance_type
+            ),
 
             "remark": remark,
 
             "updated_by": updated_by,
 
-            "updated_by_role": updated_by_role,
+            "updated_by_role": (
+                updated_by_role
+            ),
 
             "updated_at": updated_at,
-
         })
 
     # ============================================================
-    # LEAVE ADJUSTMENT
+    # APPROVED LEAVE ADJUSTMENT
+    # ============================================================
+    #
+    # Approved leave should not become LOP when the employee
+    # has sufficient leave balance.
+    #
+    # But approved leave is NOT added to present_days.
+    #
     # ============================================================
 
     total_leave_balance = Decimal(
@@ -732,32 +726,88 @@ def build_employee_month_calendar(employee, start_date, end_date):
     )
 
     leave_adjustment = min(
-        Decimal(
-            len(approved_leave_dates)
-        ),
+        Decimal(len(approved_leave_dates)),
         total_leave_balance
     )
 
-    real_absent_days = (
-        unswiped_days_till_today
-        - leave_adjustment
+    # ============================================================
+    # ABSENT DAYS
+    # ============================================================
+    #
+    # IMPORTANT:
+    #
+    # Paid attendance is intentionally included in absent_days.
+    #
+    # Therefore:
+    #
+    # working_days = 9
+    # paid_days    = 3
+    # present_days = 0
+    # absent_days  = 9
+    #
+    # ============================================================
+
+    absent_days = max(
+        working_days - present_days,
+        Decimal("0")
     )
 
-    # ============================================================
-    # LOP
-    # ============================================================
+    # Remove approved leave from absent count if it is covered
+    # by available leave balance.
 
-    lop_days = max(
-        real_absent_days,
+    absent_days = max(
+        absent_days - leave_adjustment,
         Decimal("0")
     )
 
     # ============================================================
-    # ABSENT
+    # PAID ATTENDANCE DAYS
     # ============================================================
 
-    absent_days = max(
-        real_absent_days,
+    paid_attendance_days = Decimal("0")
+
+    for attendance_date, attendance_data in attendance_map.items():
+
+        # Only dates actually calculated.
+        if (
+            attendance_date < start_date
+            or attendance_date > calculation_end_date
+        ):
+            continue
+
+        attendance_type = (
+            attendance_data.get(
+                "attendance_type"
+            )
+        )
+
+        if (
+            attendance_type
+            and attendance_type.lower() == "paid"
+        ):
+
+            paid_attendance_days += Decimal("1")
+
+    # ============================================================
+    # LOP
+    # ============================================================
+    #
+    # EXACT RULE:
+    #
+    # LOP = absent_days - paid_days
+    #
+    # Example:
+    #
+    # absent_days = 9
+    # paid_days   = 3
+    #
+    # LOP = 9 - 3
+    #     = 6
+    #
+    # ============================================================
+
+    lop_days = max(
+        absent_days - paid_attendance_days,
         Decimal("0")
     )
 
@@ -766,9 +816,13 @@ def build_employee_month_calendar(employee, start_date, end_date):
     # ============================================================
 
     return (
-        working_days,
+        int(working_days),
+
         float(present_days),
+
         float(absent_days),
+
         float(lop_days),
+
         daily_records
     )
