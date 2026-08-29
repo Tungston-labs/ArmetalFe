@@ -9,62 +9,117 @@ from django.utils.dateparse import parse_datetime
 from django.utils.timezone import is_naive, make_aware, now as tz_now
 import pytz
 import logging
-
+from django.conf import settings
 logger = logging.getLogger(__name__)
 
-
 class Attendance(TimeStampedModel):
-    employee = models.ForeignKey(Employee_db, on_delete=models.CASCADE, related_name='attendances')
-    date = models.DateField(default=timezone.now)
-    total_hours = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    remark = models.CharField(max_length=255, blank=True, null=True)
-    locations = models.JSONField(default=list, blank=True, null=True)
+
+    employee = models.ForeignKey(
+        Employee_db,
+        on_delete=models.CASCADE,
+        related_name="attendances"
+    )
+
+    date = models.DateField(
+        default=timezone.now
+    )
+
+    total_hours = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
+
+    remark = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    attendance_type = models.CharField(
+        max_length=10,
+        choices=[
+            ("paid", "Paid"),
+            ("unpaid", "Unpaid"),
+        ],
+        null=True,
+        blank=True
+    )
+
+    locations = models.JSONField(
+        default=list,
+        blank=True,
+        null=True
+    )
+
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="updated_attendances"
+    )
 
     class Meta:
-        unique_together = ['employee', 'date']
+        unique_together = ["employee", "date"]
 
     def update_total_hours(self):
-        """Calculate total hours from all completed sessions for this attendance date"""
+        """Calculate total hours from completed sessions."""
+
         total_seconds = 0
-        
+
         for session in self.sessions.all():
+
             if session.time_in and session.time_out:
-                # Ensure both times are timezone-aware datetime objects
-                time_in = self._ensure_datetime(session.time_in)
-                time_out = self._ensure_datetime(session.time_out)
-                
+
+                time_in = self._ensure_datetime(
+                    session.time_in
+                )
+
+                time_out = self._ensure_datetime(
+                    session.time_out
+                )
+
                 if time_in and time_out:
-                    # Calculate duration in seconds
+
                     duration = time_out - time_in
+
                     total_seconds += duration.total_seconds()
-        
-        # Convert seconds to hours with 2 decimal places
-        self.total_hours = round(total_seconds / 3600, 2)
+
+        self.total_hours = round(
+            total_seconds / 3600,
+            2
+        )
+
         self.save()
 
     def _ensure_datetime(self, dt_or_time):
-        """Convert time objects to datetime and ensure timezone awareness"""
+
         if dt_or_time is None:
             return None
-            
-        # If it's a time object, combine with attendance date
+
         if isinstance(dt_or_time, time):
-            dt_or_time = datetime.combine(self.date, dt_or_time)
-        
-        # Ensure it's a datetime object
+
+            dt_or_time = datetime.combine(
+                self.date,
+                dt_or_time
+            )
+
         if not isinstance(dt_or_time, datetime):
             return None
-            
-        # Make timezone aware if naive
+
         if timezone.is_naive(dt_or_time):
-            # Use UTC as default, will be converted to company timezone later
-            dt_or_time = timezone.make_aware(dt_or_time, timezone=pytz.UTC)
-            
+
+            dt_or_time = timezone.make_aware(
+                dt_or_time,
+                timezone=pytz.UTC
+            )
+
         return dt_or_time
 
     def __str__(self):
         return f"{self.employee.name} - {self.date}"
-
 
 class AttendanceSession(models.Model):
     attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE, related_name='sessions')

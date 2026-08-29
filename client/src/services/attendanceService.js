@@ -1,13 +1,6 @@
 // services/attendanceService.js
 import API from "./api"; // your axios instance (adjust path if needed)
 
-/**
- * fetchAttendanceList(params)
- * fetchAttendanceDetail(attendanceId, date)
- * fetchDepartmentsAttendance({ page, search })
- * fetchAttendanceSummary({ year, month, token })
- */
-
 export const fetchAttendanceList = async (params = {}) => {
   const response = await API.get("/admin/attendance/", { params });
   // console.log("📥 Attendance API response:", response.data);
@@ -37,7 +30,7 @@ export const fetchAttendanceSummary = async ({
   page = 1,
 }) => {
   const config = {
-    params: { year, month, page,  page_size: 20 }, 
+    params: { year, month, page, page_size: 20 },
   };
 
   if (token) {
@@ -47,6 +40,48 @@ export const fetchAttendanceSummary = async ({
   const response = await API.get(
     "/employee-attendance/summary/",
     config
+  );
+
+  return response.data;
+};
+
+export const updateAttendance = async ({
+  employee,
+  date,
+  attendance_type,
+  remark,
+}) => {
+  const payload = {
+    employee,
+    date,
+    attendance_type,
+    remark,
+  };
+
+  console.log("📤 Updating attendance:", payload);
+
+  const response = await API.patch(
+    "/attendance/update/",
+    payload
+  );
+
+  console.log("📥 Attendance update response:", response.data);
+
+  return response.data;
+};
+
+// =====================================================
+// SEARCH EMPLOYEES (for attendance employee lookup)
+// NOTE: This is a placeholder implementation — update the
+// endpoint URL/param name ("search") to match your actual
+// backend route if it differs.
+// =====================================================
+export const searchEmployees = async (search = "") => {
+  const query = new URLSearchParams();
+  if (search) query.append("search", search);
+
+  const response = await API.get(
+    `/employees/search/?${query.toString()}`
   );
 
   return response.data;

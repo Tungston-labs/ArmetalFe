@@ -300,30 +300,164 @@ class HourlyLocationLogSerializer(serializers.ModelSerializer):
 
 
 
+from rest_framework import serializers
+
+
 class DailyAttendanceSerializer(serializers.Serializer):
+
     date = serializers.DateField()
+
     status = serializers.CharField()
+
     total_hours = serializers.FloatField()
 
     first_punch_in = serializers.CharField(
-        required=False,
-        allow_null=True
+        allow_null=True,
+        required=False
     )
 
     last_punch_out = serializers.CharField(
-        required=False,
-        allow_null=True
+        allow_null=True,
+        required=False
+    )
+
+    attendance_type = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    remark = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    updated_by = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    updated_by_role = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    updated_at = serializers.CharField(
+        allow_null=True,
+        required=False
     )
 
 
 class EmployeeAttendanceSummarySerializer(serializers.Serializer):
+
     employee_id = serializers.CharField()
+
     employee_name = serializers.CharField()
-    department = serializers.CharField()
+
+    department = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
 
     working_days = serializers.FloatField()
+
     present_days = serializers.FloatField()
+
     absent_days = serializers.FloatField()
+
     lop_days = serializers.FloatField()
 
-    daily_records = DailyAttendanceSerializer(many=True)
+    daily_records = DailyAttendanceSerializer(
+        many=True
+    )
+
+from rest_framework import serializers
+from attendance.models import Attendance
+
+from rest_framework import serializers
+from attendance.models import Attendance
+
+from rest_framework import serializers
+
+from attendance.models import Attendance
+
+
+class AttendanceManualUpdateSerializer(
+    serializers.ModelSerializer
+):
+
+    employee = serializers.IntegerField(
+        source="employee.id",
+        read_only=True
+    )
+
+    updated_by = serializers.SerializerMethodField()
+
+    updated_by_role = serializers.SerializerMethodField()
+
+    class Meta:
+
+        model = Attendance
+
+        fields = [
+            "id",
+            "employee",
+            "date",
+            "attendance_type",
+            "remark",
+            "total_hours",
+            "updated_by",
+            "updated_by_role",
+            "created_at",
+            "updated_at",
+        ]
+
+        read_only_fields = [
+            "id",
+            "employee",
+            "total_hours",
+            "updated_by",
+            "updated_by_role",
+            "created_at",
+            "updated_at",
+        ]
+
+    # ==================================================
+    # UPDATED BY
+    # ==================================================
+
+    def get_updated_by(self, obj):
+
+        if not obj.updated_by:
+            return None
+
+        user = obj.updated_by
+
+        return (
+            getattr(user, "company_name", None)
+            or getattr(user, "username", None)
+            or getattr(user, "email", None)
+            or getattr(user, "name", None)
+            or str(user)
+        )
+
+    # ==================================================
+    # UPDATED BY ROLE
+    # ==================================================
+
+    def get_updated_by_role(self, obj):
+
+        if not obj.updated_by:
+            return None
+
+        user = obj.updated_by
+
+        if getattr(user, "is_superadmin", False):
+            return "Super Admin"
+
+        if getattr(user, "is_hr_admin", False):
+            return "HR Admin"
+
+        if getattr(user, "is_hr", False):
+            return "HR"
+
+        return "User"
