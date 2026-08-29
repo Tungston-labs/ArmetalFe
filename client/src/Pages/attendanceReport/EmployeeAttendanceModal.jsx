@@ -232,17 +232,19 @@ const EmployeeAttendance = () => {
   // PRINT
   // ==================================================
 
- const handlePrint = () => {
-  if (!employee) {
-    console.error("Employee data is not available");
-    return;
-  }
+  const handlePrint = () => {
+    if (!employee) {
+      console.error("Employee data is not available");
+      return;
+    }
 
-  exportAttendanceExcel(
-    [employee],
-    selectedMonth
-  );
-};
+    const employeeForExport = {
+      ...employee,
+      daily_records: records, // use the locally-patched, up-to-date records
+    };
+
+    exportAttendanceExcel([employeeForExport], selectedMonth);
+  };
 
   // ==================================================
   // REFETCH HELPER (after a save)
@@ -359,9 +361,9 @@ const EmployeeAttendance = () => {
 
     const existingAttendanceType = String(
       record.attendance_type ||
-        record.payment_type ||
-        record.day_limit ||
-        "unpaid"
+      record.payment_type ||
+      record.day_limit ||
+      "unpaid"
     )
       .toLowerCase()
       .trim();
@@ -523,19 +525,19 @@ const EmployeeAttendance = () => {
           return prevRecords.map((record) =>
             record.date === selectedRecord.date
               ? {
-                  ...record,
-                  ...updatedRecord,
-                  attendance_type:
-                    updatedRecord.attendance_type || attendanceType,
-                  day_limit: dayLimit,
-                  note: updatedRecord.remark ?? editNote,
-                  remark: updatedRecord.remark ?? editNote,
-                  updated_by: updatedRecord.updated_by || currentUser,
-                  updated_by_role:
-                    updatedRecord.updated_by_role ||
-                    record.updated_by_role,
-                  updated_at: updatedRecord.updated_at || now,
-                }
+                ...record,
+                ...updatedRecord,
+                attendance_type:
+                  updatedRecord.attendance_type || attendanceType,
+                day_limit: dayLimit,
+                note: updatedRecord.remark ?? editNote,
+                remark: updatedRecord.remark ?? editNote,
+                updated_by: updatedRecord.updated_by || currentUser,
+                updated_by_role:
+                  updatedRecord.updated_by_role ||
+                  record.updated_by_role,
+                updated_at: updatedRecord.updated_at || now,
+              }
               : record
           );
         }
@@ -660,14 +662,14 @@ const EmployeeAttendance = () => {
               <PageSubtitle>{monthName} — Attendance Summary</PageSubtitle>
             </div>
           </HeaderLeft>
- <HeaderRight>
-  <PrintButton
-    type="button"
-    onClick={handlePrint}
-  >
-    📊 Employee Excel
-  </PrintButton>
-</HeaderRight>
+          <HeaderRight>
+            <PrintButton
+              type="button"
+              onClick={handlePrint}
+            >
+              📊 Employee Excel
+            </PrintButton>
+          </HeaderRight>
         </PageHeader>
 
         {/* ========================================== */}
@@ -702,8 +704,8 @@ const EmployeeAttendance = () => {
           >
             {typeof updateError === "object"
               ? updateError.detail ||
-                updateError.message ||
-                "Failed to update attendance"
+              updateError.message ||
+              "Failed to update attendance"
               : updateError}
           </div>
         )}
@@ -774,7 +776,6 @@ const EmployeeAttendance = () => {
                   // --------------------------------
                   // ATTENDANCE TYPE
                   // --------------------------------
-
                   const hasAttendanceType =
                     rec.attendance_type !== null &&
                     rec.attendance_type !== undefined &&
@@ -784,11 +785,29 @@ const EmployeeAttendance = () => {
                     ? String(rec.attendance_type).toLowerCase().trim()
                     : null;
 
+                  const rawStatus = String(rec.status || "").toLowerCase().trim();
+
                   const attendanceText = hasAttendanceType
                     ? currentAttendanceType === "unpaid"
                       ? "Unpaid"
                       : "Paid"
-                    : rec.status || "—";
+                    : rawStatus === "absent"
+                      ? "Absent"
+                      : rawStatus === "holiday"
+                        ? "Holiday"
+                        : rec.status || "—";
+
+                  const attendanceColor =
+                    attendanceText === "Unpaid"
+                      ? "#dc2626"
+                      : attendanceText === "Paid"
+                        ? "#16a34a"
+                        : attendanceText === "Absent"
+                          ? "#dc2626"
+                          : attendanceText === "Holiday"
+                            ? "#2563eb"
+                            : "#ffa939";
+
 
                   return (
                     <TableRow key={`${rec.date}-${idx}`}>
@@ -799,14 +818,7 @@ const EmployeeAttendance = () => {
                       {/* ATTENDANCE TYPE */}
 
                       <TableCell>
-                        <strong
-                          style={{
-                            color:
-                              attendanceText === "Unpaid"
-                                ? "#d13c3c"
-                                : "#1d8a4b",
-                          }}
-                        >
+                        <strong style={{ color: attendanceColor }}>
                           {attendanceText}
                         </strong>
                       </TableCell>
@@ -837,9 +849,9 @@ const EmployeeAttendance = () => {
                             <NoteText>
                               {(rec.note || rec.remark).length > 15
                                 ? `${(rec.note || rec.remark).substring(
-                                    0,
-                                    15
-                                  )}...`
+                                  0,
+                                  15
+                                )}...`
                                 : rec.note || rec.remark}
                             </NoteText>
 
@@ -863,7 +875,7 @@ const EmployeeAttendance = () => {
                           <div>
                             <strong>{rec.updated_by_role}</strong>
 
-                            {rec.updated_at  && (
+                            {rec.updated_at && (
                               <div
                                 style={{
                                   fontSize: "11px",
@@ -871,7 +883,7 @@ const EmployeeAttendance = () => {
                                   marginTop: "3px",
                                 }}
                               >
-                                {rec.updated_at }
+                                {rec.updated_at}
                               </div>
                             )}
                           </div>
