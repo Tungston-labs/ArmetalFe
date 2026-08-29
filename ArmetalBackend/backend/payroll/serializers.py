@@ -37,6 +37,18 @@ from employee.models import SalaryIncrement
 
 from .models import EmployeePayrollRecord
 
+from datetime import date, datetime, timedelta
+from decimal import Decimal, ROUND_HALF_UP
+import calendar
+
+from rest_framework import serializers
+
+from attendance.models import Attendance
+from leave.models import LeaveRequest
+from holidays.models import PublicHoliday
+from employee.models import SalaryIncrement
+from .models import EmployeePayrollRecord
+
 
 class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
@@ -87,6 +99,8 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         year = instance.year
         month = instance.month
 
+        today = date.today()
+
         first_day = date(year, month, 1)
 
         last_day = date(
@@ -104,10 +118,43 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         if isinstance(joining_date, datetime):
             joining_date = joining_date.date()
 
+        # ==========================================================
+        # EMPLOYEE START DATE
+        # ==========================================================
+
         employee_start_date = max(
             first_day,
             joining_date
         )
+
+        # ==========================================================
+        # CALCULATION END DATE
+        # ==========================================================
+        #
+        # CURRENT MONTH:
+        #     joining date -> today
+        #
+        # PAST MONTH:
+        #     joining date -> last day of month
+        #
+        # FUTURE MONTH:
+        #     no working days
+        #
+        # ==========================================================
+
+        if first_day > today:
+
+            calculation_end_date = None
+
+        elif last_day > today:
+
+            # Current month
+            calculation_end_date = today
+
+        else:
+
+            # Previous month
+            calculation_end_date = last_day
 
         # ==========================================================
         # COMPANY HOLIDAYS / OFF DAYS
@@ -149,6 +196,20 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # ==========================================================
         # COMPANY FULL MONTH WORKING DAYS
         # ==========================================================
+        #
+        # This is always the complete month's working days.
+        #
+        # Example:
+        #
+        # August = 25 working days
+        #
+        # This is used for:
+        #
+        # daily salary = monthly salary / company working days
+        #
+        # 20,000 / 25 = 800
+        #
+        # ==========================================================
 
         company_working_dates = [
             first_day + timedelta(days=i)
@@ -158,7 +219,6 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             if (
                 first_day + timedelta(days=i)
             ).weekday() not in company_off_days
-
             and (
                 first_day + timedelta(days=i)
             ) not in holidays
@@ -169,22 +229,48 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         )
 
         # ==========================================================
-        # EMPLOYEE WORKING DAYS AFTER JOINING
+        # EMPLOYEE WORKING DAYS
+        # ==========================================================
+        #
+        # IMPORTANT:
+        #
+        # Current month:
+        #     joining date -> TODAY
+        #
+        # Previous month:
+        #     joining date -> month end
+        #
+        # Future month:
+        #     0
+        #
         # ==========================================================
 
-        employee_working_dates = [
-            employee_start_date + timedelta(days=i)
-            for i in range(
-                (last_day - employee_start_date).days + 1
-            )
-            if (
-                employee_start_date + timedelta(days=i)
-            ).weekday() not in company_off_days
+        if (
+            calculation_end_date is not None
+            and employee_start_date <= calculation_end_date
+        ):
 
-            and (
+            employee_working_dates = [
                 employee_start_date + timedelta(days=i)
-            ) not in holidays
-        ]
+                for i in range(
+                    (
+                        calculation_end_date
+                        - employee_start_date
+                    ).days + 1
+                )
+                if (
+                    employee_start_date
+                    + timedelta(days=i)
+                ).weekday() not in company_off_days
+                and (
+                    employee_start_date
+                    + timedelta(days=i)
+                ) not in holidays
+            ]
+
+        else:
+
+            employee_working_dates = []
 
         employee_working_days = Decimal(
             len(employee_working_dates)
@@ -202,13 +288,26 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             str(company.half_day_hours or 4)
         )
 
-        attendances = Attendance.objects.filter(
-            employee=employee,
-            date__range=(
-                employee_start_date,
-                last_day
+        # ----------------------------------------------------------
+        # Attendance calculation end date
+        # ----------------------------------------------------------
+
+        if (
+            calculation_end_date is not None
+            and employee_start_date <= calculation_end_date
+        ):
+
+            attendances = Attendance.objects.filter(
+                employee=employee,
+                date__range=(
+                    employee_start_date,
+                    calculation_end_date
+                )
             )
-        )
+
+        else:
+
+            attendances = Attendance.objects.none()
 
         attendance_map = {
             attendance.date: attendance
@@ -217,6 +316,10 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         full_days = Decimal("0")
         half_days = Decimal("0")
+
+        # ==========================================================
+        # COUNT PRESENT DAYS
+        # ==========================================================
 
         for working_date in employee_working_dates:
 
@@ -268,12 +371,21 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # APPROVED LEAVES
         # ==========================================================
 
-        leave_requests = LeaveRequest.objects.filter(
-            employee=employee,
-            status="approved",
-            from_date__lte=last_day,
-            to_date__gte=employee_start_date
-        )
+        if (
+            calculation_end_date is not None
+            and employee_start_date <= calculation_end_date
+        ):
+
+            leave_requests = LeaveRequest.objects.filter(
+                employee=employee,
+                status="approved",
+                from_date__lte=calculation_end_date,
+                to_date__gte=employee_start_date
+            )
+
+        else:
+
+            leave_requests = LeaveRequest.objects.none()
 
         approved_leave_dates = set()
 
@@ -286,7 +398,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
             end = min(
                 leave.to_date,
-                last_day
+                calculation_end_date
             )
 
             if isinstance(start, datetime):
@@ -324,9 +436,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             approved_leave_days
         )
 
-        # Prevent payable days from exceeding employee
-        # working days.
-
+        # Never exceed employee's working days
         payable_days = min(
             payable_days,
             employee_working_days
@@ -356,7 +466,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         for increment in increments_qs:
 
             increment_amount = Decimal(
-                str(increment.increment_amount or 0)
+                str(
+                    increment.increment_amount or 0
+                )
             )
 
             total_increment_amount += increment_amount
@@ -369,24 +481,28 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             })
 
         # ==========================================================
-        # TOTAL MONTHLY SALARY
+        # TOTAL FULL MONTHLY SALARY
         # ==========================================================
         #
         # IMPORTANT:
         #
-        # This is the employee's FULL monthly salary.
+        # This is the employee's full company salary.
         #
         # Example:
-        # Basic salary = 20,000
-        # Increment = 0
+        #
+        # basic_salary = 20,000
+        # increment = 0
         #
         # total_salary = 20,000
         #
-        # DO NOT overwrite this variable later.
+        # This value is NOT reduced because of attendance.
+        #
         # ==========================================================
 
         total_salary = (
-            Decimal(str(instance.basic_salary or 0))
+            Decimal(
+                str(instance.basic_salary or 0)
+            )
             +
             total_increment_amount
         )
@@ -411,15 +527,17 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # DAILY SALARY
         # ==========================================================
         #
-        # Daily salary is based on FULL COMPANY working days.
+        # IMPORTANT:
+        #
+        # Daily salary uses FULL COMPANY working days.
         #
         # Example:
         #
-        # Monthly salary = 20,000
-        # Company working days = 25
+        # 20,000 / 25 = 800
         #
-        # Daily salary = 20,000 / 25
-        #              = 800
+        # NOT:
+        #
+        # 20,000 / employee working days
         #
         # ==========================================================
 
@@ -440,9 +558,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # PAYABLE SALARY
         # ==========================================================
         #
-        # Employee joined during the month.
-        #
-        # Salary is paid only for:
+        # Employee gets salary only for:
         #
         # Present days
         # +
@@ -450,8 +566,8 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         #
         # Example:
         #
-        # Payable days = 2
         # Daily salary = 800
+        # Payable days = 2
         #
         # Payable salary = 1,600
         #
@@ -481,12 +597,11 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # FULL MONTHLY SALARY COMPONENTS
         # ==========================================================
         #
-        # IMPORTANT:
+        # VERY IMPORTANT:
         #
-        # These values are ONLY for displaying the employee's
-        # company salary structure.
+        # These are based ONLY on total_salary.
         #
-        # They are NOT multiplied by payable_days.
+        # They are NOT based on payable_days.
         #
         # Example:
         #
@@ -497,29 +612,35 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # Transport   10% =  2,000
         # Special     10% =  2,000
         #
-        # Total             20,000
-        #
         # ==========================================================
 
         basic_percent = Decimal(
-            str(company.basic_salary_percent or 0)
+            str(
+                company.basic_salary_percent or 0
+            )
         )
 
         house_percent = Decimal(
-            str(company.house_allowance_percent or 0)
+            str(
+                company.house_allowance_percent or 0
+            )
         )
 
         transport_percent = Decimal(
-            str(company.transport_allowance_percent or 0)
+            str(
+                company.transport_allowance_percent or 0
+            )
         )
 
         special_percent = Decimal(
-            str(company.special_allowance_percent or 0)
+            str(
+                company.special_allowance_percent or 0
+            )
         )
 
-        # ----------------------------------------------------------
-        # FULL MONTHLY BASIC
-        # ----------------------------------------------------------
+        # ==========================================================
+        # BASIC SALARY
+        # ==========================================================
 
         earning_basic_salary = (
             total_salary *
@@ -530,9 +651,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             rounding=ROUND_HALF_UP
         )
 
-        # ----------------------------------------------------------
-        # FULL MONTHLY HOUSING
-        # ----------------------------------------------------------
+        # ==========================================================
+        # HOUSING ALLOWANCE
+        # ==========================================================
 
         earning_housing_allowance = (
             total_salary *
@@ -543,9 +664,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             rounding=ROUND_HALF_UP
         )
 
-        # ----------------------------------------------------------
-        # FULL MONTHLY TRANSPORTATION
-        # ----------------------------------------------------------
+        # ==========================================================
+        # TRANSPORTATION
+        # ==========================================================
 
         earning_transportation = (
             total_salary *
@@ -556,9 +677,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             rounding=ROUND_HALF_UP
         )
 
-        # ----------------------------------------------------------
-        # FULL MONTHLY SPECIAL ALLOWANCE
-        # ----------------------------------------------------------
+        # ==========================================================
+        # SPECIAL ALLOWANCE
+        # ==========================================================
 
         earning_special_allowance = (
             total_salary *
@@ -570,46 +691,23 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         )
 
         # ==========================================================
-        # ENSURE COMPONENTS ADD UP TO FULL MONTHLY SALARY
+        # DO NOT ADJUST SPECIAL ALLOWANCE
         # ==========================================================
         #
-        # This adjustment is ONLY used to handle rounding or if
-        # configured percentages do not add exactly to 100%.
+        # DO NOT do this:
         #
-        # Never make special allowance negative.
+        # calculated_total = basic + housing + transport + special
+        # difference = total_salary - calculated_total
+        # special += difference
+        #
+        # That logic was causing the negative special allowance.
+        #
+        # The company percentages directly determine each component.
         #
         # ==========================================================
-
-        calculated_monthly_components = (
-            earning_basic_salary
-            +
-            earning_housing_allowance
-            +
-            earning_transportation
-            +
-            earning_special_allowance
-        )
-
-        monthly_difference = (
-            total_salary -
-            calculated_monthly_components
-        )
-
-        # Only adjust special allowance when necessary.
-        earning_special_allowance += monthly_difference
-
-        # Safety: never allow negative special allowance.
-        if earning_special_allowance < Decimal("0"):
-            earning_special_allowance = Decimal("0")
 
         # ==========================================================
         # GROSS EARNINGS
-        # ==========================================================
-        #
-        # Actual salary earned for this payroll period.
-        #
-        # NOT the full salary structure.
-        #
         # ==========================================================
 
         gross_earnings = (
@@ -625,32 +723,13 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
         # ==========================================================
 
         tds = Decimal(
-            str(instance.tds_deduction_amount or 0)
+            str(
+                instance.tds_deduction_amount or 0
+            )
         )
 
         # ==========================================================
         # FINAL NET PAY
-        # ==========================================================
-        #
-        # IMPORTANT:
-        #
-        # Do NOT calculate:
-        #
-        # 20,000 - 6,400
-        #
-        # because this employee did NOT work from the beginning
-        # of the month.
-        #
-        # Instead:
-        #
-        # Payable salary = 1,600
-        #
-        # Net pay =
-        # 1,600 + incentive - TDS - other deduction
-        #
-        # LOP is informational here because the unpaid days were
-        # already excluded when calculating payable_salary.
-        #
         # ==========================================================
 
         net_pay = (
@@ -675,9 +754,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
 
         data.update({
 
-            # ------------------------------------------------------
+            # ======================================================
             # COMPANY
-            # ------------------------------------------------------
+            # ======================================================
 
             "company": {
 
@@ -709,28 +788,35 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                     request.build_absolute_uri(
                         company.logo.url
                     )
-                    if request
-                    and company
-                    and company.logo
+                    if (
+                        request
+                        and company
+                        and company.logo
+                    )
                     else None
                 ),
             },
 
-            # ------------------------------------------------------
+            # ======================================================
             # WORKING DAYS
-            # ------------------------------------------------------
+            # ======================================================
+
+            # Employee working days from joining date
+            # until today for current month.
 
             "working_days": float(
                 employee_working_days
             ),
 
+            # Full company's monthly working days.
+
             "company_working_days": float(
                 company_working_days
             ),
 
-            # ------------------------------------------------------
+            # ======================================================
             # ATTENDANCE
-            # ------------------------------------------------------
+            # ======================================================
 
             "days_present": float(
                 days_present
@@ -744,9 +830,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                 payable_days
             ),
 
-            # ------------------------------------------------------
+            # ======================================================
             # LOP
-            # ------------------------------------------------------
+            # ======================================================
 
             "lop_days": float(
                 lop_days
@@ -756,9 +842,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                 lop_amount
             ),
 
-            # ------------------------------------------------------
-            # SALARY CALCULATIONS
-            # ------------------------------------------------------
+            # ======================================================
+            # SALARY
+            # ======================================================
 
             "daily_salary": float(
                 daily_salary
@@ -786,9 +872,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                 net_pay
             ),
 
-            # ------------------------------------------------------
+            # ======================================================
             # INCENTIVE
-            # ------------------------------------------------------
+            # ======================================================
 
             "incentive_amount": float(
                 incentive_amount
@@ -802,9 +888,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                 instance.incentive_reason
             ),
 
-            # ------------------------------------------------------
+            # ======================================================
             # OTHER DEDUCTION
-            # ------------------------------------------------------
+            # ======================================================
 
             "deduction_amount": float(
                 deduction_amount
@@ -822,11 +908,9 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
             # EARNINGS
             # ======================================================
             #
-            # IMPORTANT:
+            # FULL COMPANY SALARY STRUCTURE
             #
-            # These are FULL MONTHLY salary components.
-            #
-            # They are NOT based on payable_days.
+            # NOT prorated by attendance.
             #
             # ======================================================
 
@@ -866,6 +950,7 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                         incentive_amount
                     )
                 },
+
             ],
 
             # ======================================================
@@ -893,16 +978,16 @@ class EmployeePayrollRecordSerializer(serializers.ModelSerializer):
                         instance.deduction_type
                         or "Other Deduction"
                     ),
-
                     "value": float(
                         deduction_amount
                     )
                 },
+
             ],
+
         })
 
         return data
-
 
 
 class EmployeePayrollRecordSerializer2(serializers.ModelSerializer):
