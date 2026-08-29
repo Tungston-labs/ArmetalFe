@@ -74,20 +74,16 @@ const LoginForm = () => {
     setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/token/`,
-        {
-          username: formData.username,
-          password: formData.password,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/token/`, {
+        username: formData.username,
+        password: formData.password,
+      });
 
       const { access, refresh, user } = response.data;
 
@@ -104,7 +100,7 @@ const LoginForm = () => {
           userName: user.username,
           accessToken: access,
           user,
-        })
+        }),
       );
 
       if (user.is_superadmin) navigate("/dashboard");
@@ -112,7 +108,7 @@ const LoginForm = () => {
     } catch (err) {
       console.log(err);
       setError(
-        err.response?.data?.detail || "Login failed. Check credentials."
+        err.response?.data?.detail || "Login failed. Check credentials.",
       );
     } finally {
       setLoading(false);
@@ -140,7 +136,7 @@ const LoginForm = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       alert("Password changed successfully");
@@ -254,8 +250,7 @@ const LoginForm = () => {
             </form>
           </FormBox>
         ) : (
-          <FormBox>
-          </FormBox>
+          <FormBox></FormBox>
         )}
       </RightPanel>
     </Container>

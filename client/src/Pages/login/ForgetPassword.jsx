@@ -44,12 +44,9 @@ const ForgotPasswordPage = () => {
     setLoading(true); // show loader
 
     try {
-      await axios.post(
-        `${BASE_URL}/api/forgot-password/send-otp/`,
-        {
-          email: formData.email,
-        }
-      );
+      await axios.post(`${BASE_URL}/api/forgot-password/send-otp/`, {
+        email: formData.email,
+      });
 
       setMessage("OTP sent to your email successfully.");
 
@@ -59,7 +56,7 @@ const ForgotPasswordPage = () => {
       }, 1000);
     } catch (err) {
       setError(
-        err.response?.data?.detail || "Failed to send OTP. Please try again."
+        err.response?.data?.detail || "Failed to send OTP. Please try again.",
       );
     } finally {
       setLoading(false); // hide loader
