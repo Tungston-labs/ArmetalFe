@@ -159,13 +159,23 @@ const cardColors = {
   },
 
   absent: {
-    bg: "#fcebeb",
-    text: "#a32d2d",
+    bg: "#fdeaea",
+    text: "#dc2626",
   },
 
   lop: {
     bg: "#faeeda",
     text: "#854f0b",
+  },
+
+  paid: {
+    bg: "#e7f7ed",
+    text: "#16a34a",
+  },
+
+  holiday: {
+    bg: "#e8f0fe",
+    text: "#2563eb",
   },
 
   default: {
@@ -290,6 +300,11 @@ export const TableCell = styled.td`
 `;
 
 const badgeStyles = {
+  paid: {
+    bg: "#e7f7ed",
+    color: "#16a34a",
+  },
+
   present: {
     bg: "#eaf3de",
     color: "#3b6d11",
@@ -311,13 +326,18 @@ const badgeStyles = {
   },
 
   holiday: {
-    bg: "#e1f5ee",
-    color: "#0f6e56",
+    bg: "#e8f0fe",
+    color: "#2563eb",
   },
 
   absent: {
-    bg: "#fcebeb",
-    color: "#a32d2d",
+    bg: "#fdeaea",
+    color: "#dc2626",
+  },
+
+  unpaid: {
+    bg: "#fdeaea",
+    color: "#dc2626",
   },
 
   off: {
