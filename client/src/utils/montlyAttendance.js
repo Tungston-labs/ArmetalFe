@@ -151,7 +151,7 @@ export const exportAttendanceExcel = (
       titleStyle
     );
 
-    // 9 columns = 0 to 8
+    // 10 columns = 0 to 9
     merges.push({
       s: {
         r: row,
@@ -159,7 +159,7 @@ export const exportAttendanceExcel = (
       },
       e: {
         r: row,
-        c: 8,
+        c: 9,
       },
     });
 
@@ -274,7 +274,7 @@ export const exportAttendanceExcel = (
       },
       e: {
         r: row,
-        c: 8,
+        c: 9,
       },
     });
 
@@ -293,6 +293,7 @@ export const exportAttendanceExcel = (
       "Total Hours",
       "Note",
       "Updated At",
+      "Updated By",
       "Updated By Role",
     ];
 
@@ -462,6 +463,26 @@ export const exportAttendanceExcel = (
       }
 
       // =====================================================
+      // UPDATED BY
+      // =====================================================
+
+      let updatedBy =
+        record.updated_by || "-";
+
+      // If updated_by is an object
+      if (
+        typeof updatedBy === "object" &&
+        updatedBy !== null
+      ) {
+        updatedBy =
+          updatedBy.name ||
+          updatedBy.username ||
+          updatedBy.email ||
+          updatedBy.id ||
+          "-";
+      }
+
+      // =====================================================
       // UPDATED BY ROLE
       // =====================================================
 
@@ -540,10 +561,18 @@ export const exportAttendanceExcel = (
         dataStyle
       );
 
-      // 8 - UPDATED BY ROLE
+      // 8 - UPDATED BY
       addCell(
         row,
         8,
+        updatedBy,
+        dataStyle
+      );
+
+      // 9 - UPDATED BY ROLE
+      addCell(
+        row,
+        9,
         updatedByRole,
         dataStyle
       );
@@ -566,7 +595,7 @@ export const exportAttendanceExcel = (
       },
       e: {
         r: row,
-        c: 8,
+        c: 9,
       },
     });
 
@@ -615,7 +644,12 @@ export const exportAttendanceExcel = (
       wch: 23,
     },
 
-    // 8 - Updated By Role
+    // 8 - Updated By
+    {
+      wch: 22,
+    },
+
+    // 9 - Updated By Role
     {
       wch: 22,
     },
