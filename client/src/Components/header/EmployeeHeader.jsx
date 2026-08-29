@@ -18,7 +18,13 @@ import {
   UserIconWrapper,
 } from "./EmployeeHeader.Styles";
 
-const EmployeeHeader = ({ employee = {}, editable = false, onChange, onImageChange, onBack }) => {
+const EmployeeHeader = ({
+  employee = {},
+  editable = false,
+  onChange,
+  onImageChange,
+  onBack,
+}) => {
   const fileInputRef = useRef(null);
 
   const handleImageClick = () => {
@@ -33,16 +39,16 @@ const EmployeeHeader = ({ employee = {}, editable = false, onChange, onImageChan
       onImageChange(file);
     }
   };
-const formatDate = (date) => {
-  if (!date) return "-";
+  const formatDate = (date) => {
+    if (!date) return "-";
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const year = d.getFullYear();
 
-  return `${day}/${month}/${year}`;
-};
+    return `${day}/${month}/${year}`;
+  };
   return (
     <ProfileContainer>
       <ProfileCard>
@@ -96,7 +102,7 @@ const formatDate = (date) => {
                 type="text"
                 name="dob"
                 placeholder="Date of Birth"
-                value={formatDate (employee.dob || "")}
+                value={formatDate(employee.dob || "")}
                 readOnly={!editable}
                 onChange={onChange}
                 autoComplete="off"

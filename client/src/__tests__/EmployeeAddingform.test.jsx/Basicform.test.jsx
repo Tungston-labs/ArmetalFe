@@ -18,7 +18,9 @@ vi.mock("react-router-dom", async () => ({
   useNavigate: vi.fn(),
 }));
 
-vi.mock("../../assets/employeeicon.svg", () => ({ default: "employee-icon.svg" }));
+vi.mock("../../assets/employeeicon.svg", () => ({
+  default: "employee-icon.svg",
+}));
 
 vi.mock("../../Components/Multistep", () => ({
   default: () => <div data-testid="multistep" />,
@@ -64,7 +66,9 @@ vi.mock("../../Components/JobDetails", () => {
         getData: () => mockJobDetailsData,
       }));
 
-      return ReactLib.createElement("div", { "data-testid": "job-details-mock" });
+      return ReactLib.createElement("div", {
+        "data-testid": "job-details-mock",
+      });
     }),
   };
 });
@@ -93,18 +97,30 @@ describe("AddEmployeeForm (page)", () => {
     localStorage.setItem("user", JSON.stringify({ company: { country } }));
   };
 
- const fillRequiredHeaderFields = async () => {
-  await userEvent.type(screen.getByPlaceholderText(/enter full name/i), "Jane Doe");
-  await userEvent.type(document.querySelector('input[name="email"]'), "jane@example.com");
-  fireEvent.change(document.querySelector('input[name="dob"]'), {
-    target: { name: "dob", value: "1990-01-01" },
-  });
-  fireEvent.change(document.querySelector('select[name="gender"]'), {
-    target: { name: "gender", value: "Female" },
-  });
-  await userEvent.type(screen.getByPlaceholderText(/enter full address/i), "123 Main St");
-  await userEvent.type(screen.getByPlaceholderText(/enter employee code/i), "EMP001");
-};
+  const fillRequiredHeaderFields = async () => {
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter full name/i),
+      "Jane Doe",
+    );
+    await userEvent.type(
+      document.querySelector('input[name="email"]'),
+      "jane@example.com",
+    );
+    fireEvent.change(document.querySelector('input[name="dob"]'), {
+      target: { name: "dob", value: "1990-01-01" },
+    });
+    fireEvent.change(document.querySelector('select[name="gender"]'), {
+      target: { name: "gender", value: "Female" },
+    });
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter full address/i),
+      "123 Main St",
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter employee code/i),
+      "EMP001",
+    );
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -129,7 +145,7 @@ describe("AddEmployeeForm (page)", () => {
       selectorFn({
         employee: { formData: {} },
         departments: { list: [{ id: 1, name: "Engineering" }] },
-      })
+      }),
     );
 
     // Generic thunk-aware dispatch mock:
@@ -155,7 +171,7 @@ describe("AddEmployeeForm (page)", () => {
 
   test("fetches departments on mount when the department list is empty", () => {
     useSelector.mockImplementation((selectorFn) =>
-      selectorFn({ employee: { formData: {} }, departments: { list: [] } })
+      selectorFn({ employee: { formData: {} }, departments: { list: [] } }),
     );
     setUser();
     render(<AddEmployeeForm />);
@@ -169,7 +185,9 @@ describe("AddEmployeeForm (page)", () => {
     fireEvent.click(screen.getByRole("button", { name: /next/i }));
 
     await waitFor(() => {
-      expect(screen.getAllByText(/this field is required/i).length).toBeGreaterThan(0);
+      expect(
+        screen.getAllByText(/this field is required/i).length,
+      ).toBeGreaterThan(0);
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });
@@ -185,7 +203,9 @@ describe("AddEmployeeForm (page)", () => {
     fireEvent.click(screen.getByRole("button", { name: /next/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/date of birth must be in the past/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/date of birth must be in the past/i),
+      ).toBeInTheDocument();
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });
@@ -221,7 +241,10 @@ describe("AddEmployeeForm (page)", () => {
       if (typeof action === "function") {
         return new Promise((resolve) => {
           resolveDispatch = () =>
-            resolve({ meta: { requestStatus: "fulfilled" }, payload: { employee: { id: 1 } } });
+            resolve({
+              meta: { requestStatus: "fulfilled" },
+              payload: { employee: { id: 1 } },
+            });
         });
       }
       return action;
@@ -262,7 +285,9 @@ describe("AddEmployeeForm (page)", () => {
     fireEvent.click(screen.getByRole("button", { name: /next/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/this email is already registered/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/this email is already registered/i),
+      ).toBeInTheDocument();
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });
@@ -298,13 +323,17 @@ describe("EmployeeHeader (sub-component)", () => {
     return { setFormData, setIsFormDirty, setErrors };
   };
 
-test("renders all basic info fields", () => {
-  renderComponent();
-  expect(screen.getByPlaceholderText(/enter full name/i)).toBeInTheDocument();
-  expect(document.querySelector('input[name="email"]')).toBeInTheDocument();
-  expect(screen.getByPlaceholderText(/enter employee code/i)).toBeInTheDocument();
-  expect(screen.getByPlaceholderText(/enter full address/i)).toBeInTheDocument();
-});
+  test("renders all basic info fields", () => {
+    renderComponent();
+    expect(screen.getByPlaceholderText(/enter full name/i)).toBeInTheDocument();
+    expect(document.querySelector('input[name="email"]')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter employee code/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter full address/i),
+    ).toBeInTheDocument();
+  });
 
   test("updates the name field and marks the form dirty", async () => {
     const { setFormData, setIsFormDirty } = renderComponent();
@@ -320,18 +349,24 @@ test("renders all basic info fields", () => {
     fireEvent.change(input, { target: { files: [file] } });
 
     const updater = setErrors.mock.calls[0][0];
-    expect(updater({})).toEqual({ profile_pic: "Please upload a valid image." });
+    expect(updater({})).toEqual({
+      profile_pic: "Please upload a valid image.",
+    });
     expect(setFormData).not.toHaveBeenCalled();
   });
 
   test("rejects an image larger than 5 MB", () => {
     const { setErrors, setFormData } = renderComponent();
-    const bigFile = new File([new ArrayBuffer(6 * 1024 * 1024)], "big.png", { type: "image/png" });
+    const bigFile = new File([new ArrayBuffer(6 * 1024 * 1024)], "big.png", {
+      type: "image/png",
+    });
     const input = document.getElementById("profile-upload");
     fireEvent.change(input, { target: { files: [bigFile] } });
 
     const updater = setErrors.mock.calls[0][0];
-    expect(updater({})).toEqual({ profile_pic: "Image size must be less than 5 MB." });
+    expect(updater({})).toEqual({
+      profile_pic: "Image size must be less than 5 MB.",
+    });
     expect(setFormData).not.toHaveBeenCalled();
   });
 
@@ -342,10 +377,15 @@ test("renders all basic info fields", () => {
     fireEvent.change(input, { target: { files: [file] } });
 
     const clearUpdater = setErrors.mock.calls[0][0];
-    expect(clearUpdater({ profile_pic: "old error" })).toEqual({ profile_pic: "" });
+    expect(clearUpdater({ profile_pic: "old error" })).toEqual({
+      profile_pic: "",
+    });
 
     const formUpdater = setFormData.mock.calls[0][0];
-    expect(formUpdater(baseFormData)).toEqual({ ...baseFormData, profile_pic: file });
+    expect(formUpdater(baseFormData)).toEqual({
+      ...baseFormData,
+      profile_pic: file,
+    });
     expect(setIsFormDirty).toHaveBeenCalledWith(true);
   });
 

@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import API from "../services/api";
 import { listEmployeeDash } from "../services/employeeService";
 
-
 export const fetchEmployeeDash = createAsyncThunk(
   "auth/fetchEmployeeDash",
   async (id, thunkAPI) => {
@@ -14,6 +13,7 @@ export const fetchEmployeeDash = createAsyncThunk(
     }
   }
 );
+
 const initialState = {
   userName: null,
   accessToken: null,

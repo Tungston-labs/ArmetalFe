@@ -21,42 +21,6 @@ const createFormData = (overrides = {}) => ({
   ...overrides,
 });
 
-const createErrors = (overrides = {}) => ({
-  ...overrides,
-});
-
-/* ============================================================
-   RENDER HELPER
-============================================================ */
-
-const renderComponent = (formOverrides = {}, errorOverrides = {}) => {
-  const formData = createFormData(formOverrides);
-
-  const setFormData = vi.fn();
-  const setIsFormDirty = vi.fn();
-  const setErrors = vi.fn();
-
-  const errors = createErrors(errorOverrides);
-
-  render(
-    <EmployeeHeader
-      formData={formData}
-      setFormData={setFormData}
-      setIsFormDirty={setIsFormDirty}
-      errors={errors}
-      setErrors={setErrors}
-    />,
-  );
-
-  return {
-    formData,
-    setFormData,
-    setIsFormDirty,
-    setErrors,
-    errors,
-  };
-};
-
 /* ============================================================
    FILE HELPERS
 ============================================================ */
@@ -94,6 +58,40 @@ const createExactFiveMBImageFile = () => {
 };
 
 /* ============================================================
+   RENDER HELPER
+============================================================ */
+
+const renderComponent = (formOverrides = {}, errorOverrides = {}) => {
+  const formData = createFormData(formOverrides);
+
+  const setFormData = vi.fn();
+  const setIsFormDirty = vi.fn();
+  const setErrors = vi.fn();
+
+  const errors = {
+    ...errorOverrides,
+  };
+
+  render(
+    <EmployeeHeader
+      formData={formData}
+      setFormData={setFormData}
+      setIsFormDirty={setIsFormDirty}
+      errors={errors}
+      setErrors={setErrors}
+    />,
+  );
+
+  return {
+    formData,
+    setFormData,
+    setIsFormDirty,
+    setErrors,
+    errors,
+  };
+};
+
+/* ============================================================
    TEST SUITE
 ============================================================ */
 
@@ -116,7 +114,7 @@ describe("EmployeeHeader Component", () => {
   ========================================================== */
 
   describe("Rendering", () => {
-    it("renders EmployeeHeader component", () => {
+    it("renders all employee fields", () => {
       renderComponent();
 
       expect(screen.getByText("Name")).toBeInTheDocument();
@@ -128,7 +126,7 @@ describe("EmployeeHeader Component", () => {
       expect(screen.getByText("Username")).toBeInTheDocument();
     });
 
-    it("renders all form fields", () => {
+    it("renders all form controls", () => {
       renderComponent();
 
       expect(
@@ -160,14 +158,14 @@ describe("EmployeeHeader Component", () => {
       expect(document.getElementById("profile-upload")).toBeInTheDocument();
     });
 
-    it("renders gender options", () => {
+    it("renders all gender options", () => {
       renderComponent();
 
-      const genderSelect = screen.getByRole("combobox", {
+      const select = screen.getByRole("combobox", {
         name: "Gender",
       });
 
-      expect(genderSelect).toBeInTheDocument();
+      expect(select).toBeInTheDocument();
 
       expect(
         screen.getByRole("option", {
@@ -194,30 +192,15 @@ describe("EmployeeHeader Component", () => {
       ).toBeInTheDocument();
     });
 
-    it("renders upload text when profile picture is not present", () => {
+    it("shows Upload when profile picture is missing", () => {
       renderComponent({
         profile_pic: null,
       });
 
       expect(screen.getByText("Upload")).toBeInTheDocument();
+      expect(screen.queryByText("Change")).not.toBeInTheDocument();
 
-      expect(screen.getByText("JPG, PNG · Max 5 MB")).toBeInTheDocument();
-    });
-
-    it("renders the camera picker button with accessible name", () => {
-      renderComponent();
-
-      const cameraButton = screen.getByRole("button", {
-        name: "Open profile image picker",
-      });
-
-      expect(cameraButton).toBeInTheDocument();
-    });
-
-    it("does not render remove button when profile picture is absent", () => {
-      renderComponent({
-        profile_pic: null,
-      });
+      expect(screen.queryByAltText("Profile")).not.toBeInTheDocument();
 
       expect(
         screen.queryByRole("button", {
@@ -225,22 +208,71 @@ describe("EmployeeHeader Component", () => {
         }),
       ).not.toBeInTheDocument();
     });
+
+    it("shows Change and profile image when profile picture exists", () => {
+      const file = createImageFile("profile.jpg", "image/jpeg");
+
+      renderComponent({
+        profile_pic: file,
+      });
+
+      expect(screen.getByAltText("Profile")).toBeInTheDocument();
+
+      expect(screen.getByText("Change")).toBeInTheDocument();
+
+      expect(screen.queryByText("Upload")).not.toBeInTheDocument();
+
+      expect(
+        screen.getByRole("button", {
+          name: "Remove profile photo",
+        }),
+      ).toBeInTheDocument();
+
+      expect(global.URL.createObjectURL).toHaveBeenCalledWith(file);
+    });
+
+    it("renders camera button correctly", () => {
+      renderComponent();
+
+      const button = screen.getByRole("button", {
+        name: "Open profile image picker",
+      });
+
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveAttribute("type", "button");
+    });
+
+    it("renders hidden profile upload input correctly", () => {
+      renderComponent();
+
+      const input = document.getElementById("profile-upload");
+
+      expect(input).toBeInTheDocument();
+      expect(input).toHaveAttribute("type", "file");
+      expect(input).toHaveAttribute("accept", "image/*");
+      expect(input).toHaveAttribute("name", "profile_pic");
+    });
   });
 
   /* ==========================================================
-     FORM FIELD CHANGES
+     NORMAL FORM CHANGES
   ========================================================== */
 
   describe("Form field changes", () => {
-    it("updates name field", () => {
+    it.each([
+      ["name", "Enter full name", "John Doe"],
+      ["email", "Enter email address", "john@example.com"],
+      ["employee_code", "Enter employee code", "EMP001"],
+      ["employee_id", "Enter username", "john123"],
+    ])("updates %s field", (fieldName, placeholder, value) => {
       const { setFormData, setIsFormDirty } = renderComponent();
 
-      const input = screen.getByPlaceholderText("Enter full name");
+      const input = screen.getByPlaceholderText(placeholder);
 
       fireEvent.change(input, {
         target: {
-          name: "name",
-          value: "John Doe",
+          name: fieldName,
+          value,
         },
       });
 
@@ -251,79 +283,7 @@ describe("EmployeeHeader Component", () => {
 
       expect(updater(createFormData())).toEqual(
         createFormData({
-          name: "John Doe",
-        }),
-      );
-    });
-
-    it("updates email field", () => {
-      const { setFormData, setIsFormDirty } = renderComponent();
-
-      const input = screen.getByPlaceholderText("Enter email address");
-
-      fireEvent.change(input, {
-        target: {
-          name: "email",
-          value: "john@example.com",
-        },
-      });
-
-      expect(setFormData).toHaveBeenCalledTimes(1);
-      expect(setIsFormDirty).toHaveBeenCalledWith(true);
-
-      const updater = setFormData.mock.calls[0][0];
-
-      expect(updater(createFormData())).toEqual(
-        createFormData({
-          email: "john@example.com",
-        }),
-      );
-    });
-
-    it("updates employee code field", () => {
-      const { setFormData, setIsFormDirty } = renderComponent();
-
-      const input = screen.getByPlaceholderText("Enter employee code");
-
-      fireEvent.change(input, {
-        target: {
-          name: "employee_code",
-          value: "EMP001",
-        },
-      });
-
-      expect(setFormData).toHaveBeenCalledTimes(1);
-      expect(setIsFormDirty).toHaveBeenCalledWith(true);
-
-      const updater = setFormData.mock.calls[0][0];
-
-      expect(updater(createFormData())).toEqual(
-        createFormData({
-          employee_code: "EMP001",
-        }),
-      );
-    });
-
-    it("updates username field", () => {
-      const { setFormData, setIsFormDirty } = renderComponent();
-
-      const input = screen.getByPlaceholderText("Enter username");
-
-      fireEvent.change(input, {
-        target: {
-          name: "employee_id",
-          value: "john123",
-        },
-      });
-
-      expect(setFormData).toHaveBeenCalledTimes(1);
-      expect(setIsFormDirty).toHaveBeenCalledWith(true);
-
-      const updater = setFormData.mock.calls[0][0];
-
-      expect(updater(createFormData())).toEqual(
-        createFormData({
-          employee_id: "john123",
+          [fieldName]: value,
         }),
       );
     });
@@ -331,9 +291,9 @@ describe("EmployeeHeader Component", () => {
     it("updates address field", () => {
       const { setFormData, setIsFormDirty } = renderComponent();
 
-      const input = screen.getByPlaceholderText("Enter full address");
+      const textarea = screen.getByPlaceholderText("Enter full address");
 
-      fireEvent.change(input, {
+      fireEvent.change(textarea, {
         target: {
           name: "address",
           value: "Kochi, Kerala",
@@ -352,7 +312,7 @@ describe("EmployeeHeader Component", () => {
       );
     });
 
-    it("updates date of birth field", () => {
+    it("updates date of birth", () => {
       const { setFormData, setIsFormDirty } = renderComponent();
 
       const input = screen.getByLabelText("Date of Birth");
@@ -376,7 +336,7 @@ describe("EmployeeHeader Component", () => {
       );
     });
 
-    it("updates gender field", () => {
+    it("updates gender", () => {
       const { setFormData, setIsFormDirty } = renderComponent();
 
       const select = screen.getByRole("combobox", {
@@ -404,129 +364,96 @@ describe("EmployeeHeader Component", () => {
   });
 
   /* ==========================================================
-     ERROR MESSAGES
+     VALIDATION ERROR DISPLAY
   ========================================================== */
 
   describe("Validation errors", () => {
-    it("displays name error", () => {
+    it("displays all validation errors", () => {
       renderComponent(
         {},
         {
+          profile_pic: "Profile picture error",
           name: "Name is required",
-        },
-      );
-
-      expect(screen.getByText("Name is required")).toBeInTheDocument();
-    });
-
-    it("displays date of birth error", () => {
-      renderComponent(
-        {},
-        {
           dob: "Date of birth is required",
-        },
-      );
-
-      expect(screen.getByText("Date of birth is required")).toBeInTheDocument();
-    });
-
-    it("displays gender error", () => {
-      renderComponent(
-        {},
-        {
           gender: "Gender is required",
-        },
-      );
-
-      expect(screen.getByText("Gender is required")).toBeInTheDocument();
-    });
-
-    it("displays address error", () => {
-      renderComponent(
-        {},
-        {
           address: "Address is required",
-        },
-      );
-
-      expect(screen.getByText("Address is required")).toBeInTheDocument();
-    });
-
-    it("displays email error", () => {
-      renderComponent(
-        {},
-        {
           email: "Invalid email",
-        },
-      );
-
-      expect(screen.getByText("Invalid email")).toBeInTheDocument();
-    });
-
-    it("displays employee code error", () => {
-      renderComponent(
-        {},
-        {
           employee_code: "Employee ID is required",
-        },
-      );
-
-      expect(screen.getByText("Employee ID is required")).toBeInTheDocument();
-    });
-
-    it("displays employee ID error", () => {
-      renderComponent(
-        {},
-        {
           employee_id: "Username is required",
         },
       );
 
-      expect(screen.getByText("Username is required")).toBeInTheDocument();
-    });
-
-    it("displays profile picture error", () => {
-      renderComponent(
-        {},
-        {
-          profile_pic: "Please upload a valid image.",
-        },
-      );
-
-      expect(
-        screen.getByText("Please upload a valid image."),
-      ).toBeInTheDocument();
-    });
-
-    it("renders multiple validation errors at the same time", () => {
-      renderComponent(
-        {},
-        {
-          name: "Name is required",
-          email: "Email is required",
-          gender: "Gender is required",
-        },
-      );
+      expect(screen.getByText("Profile picture error")).toBeInTheDocument();
 
       expect(screen.getByText("Name is required")).toBeInTheDocument();
 
-      expect(screen.getByText("Email is required")).toBeInTheDocument();
+      expect(screen.getByText("Date of birth is required")).toBeInTheDocument();
 
       expect(screen.getByText("Gender is required")).toBeInTheDocument();
+
+      expect(screen.getByText("Address is required")).toBeInTheDocument();
+
+      expect(screen.getByText("Invalid email")).toBeInTheDocument();
+
+      expect(screen.getByText("Employee ID is required")).toBeInTheDocument();
+
+      expect(screen.getByText("Username is required")).toBeInTheDocument();
+    });
+
+    it("does not render validation messages when errors are empty", () => {
+      renderComponent();
+
+      expect(screen.queryByText("Name is required")).not.toBeInTheDocument();
+
+      expect(screen.queryByText("Invalid email")).not.toBeInTheDocument();
+    });
+
+    it("handles undefined errors object", () => {
+      const formData = createFormData();
+
+      render(
+        <EmployeeHeader
+          formData={formData}
+          setFormData={vi.fn()}
+          setIsFormDirty={vi.fn()}
+          errors={undefined}
+          setErrors={vi.fn()}
+        />,
+      );
+
+      expect(screen.getByText("JPG, PNG · Max 5 MB")).toBeInTheDocument();
+
+      expect(screen.queryByText("Name is required")).not.toBeInTheDocument();
+    });
+
+    it("handles null errors object", () => {
+      const formData = createFormData();
+
+      render(
+        <EmployeeHeader
+          formData={formData}
+          setFormData={vi.fn()}
+          setIsFormDirty={vi.fn()}
+          errors={null}
+          setErrors={vi.fn()}
+        />,
+      );
+
+      expect(screen.getByText("JPG, PNG · Max 5 MB")).toBeInTheDocument();
     });
   });
 
   /* ==========================================================
-     FILE UPLOAD
+     PROFILE IMAGE UPLOAD
   ========================================================== */
 
   describe("Profile image upload", () => {
     it("does nothing when no file is selected", () => {
-      const { setFormData, setIsFormDirty, setErrors } = renderComponent();
+      const { setFormData, setErrors, setIsFormDirty } = renderComponent();
 
-      const fileInput = document.getElementById("profile-upload");
+      const input = document.getElementById("profile-upload");
 
-      fireEvent.change(fileInput, {
+      fireEvent.change(input, {
         target: {
           name: "profile_pic",
           type: "file",
@@ -539,16 +466,16 @@ describe("EmployeeHeader Component", () => {
       expect(setIsFormDirty).not.toHaveBeenCalled();
     });
 
-    it("rejects non-image file", () => {
-      const { setErrors, setFormData, setIsFormDirty } = renderComponent();
+    it("rejects a non-image file", () => {
+      const { setFormData, setErrors, setIsFormDirty } = renderComponent();
 
       const file = new File(["text content"], "document.pdf", {
         type: "application/pdf",
       });
 
-      const fileInput = document.getElementById("profile-upload");
+      const input = document.getElementById("profile-upload");
 
-      fireEvent.change(fileInput, {
+      fireEvent.change(input, {
         target: {
           name: "profile_pic",
           type: "file",
@@ -567,18 +494,18 @@ describe("EmployeeHeader Component", () => {
       });
     });
 
-    it("rejects image larger than 5 MB", () => {
-      const { setErrors, setFormData, setIsFormDirty } = renderComponent();
+    it("rejects an image larger than 5 MB", () => {
+      const { setFormData, setErrors, setIsFormDirty } = renderComponent();
 
-      const largeFile = createLargeImageFile();
+      const file = createLargeImageFile();
 
-      const fileInput = document.getElementById("profile-upload");
+      const input = document.getElementById("profile-upload");
 
-      fireEvent.change(fileInput, {
+      fireEvent.change(input, {
         target: {
           name: "profile_pic",
           type: "file",
-          files: [largeFile],
+          files: [file],
         },
       });
 
@@ -593,19 +520,14 @@ describe("EmployeeHeader Component", () => {
       });
     });
 
-    it("accepts valid JPG image file", () => {
+    it("accepts an image exactly 5 MB", () => {
       const { setErrors, setFormData, setIsFormDirty } = renderComponent();
 
-      const file = createImageFile("profile.jpg", "image/jpeg");
+      const file = createExactFiveMBImageFile();
 
-      Object.defineProperty(file, "size", {
-        value: 1024,
-        configurable: true,
-      });
+      const input = document.getElementById("profile-upload");
 
-      const fileInput = document.getElementById("profile-upload");
-
-      fireEvent.change(fileInput, {
+      fireEvent.change(input, {
         target: {
           name: "profile_pic",
           type: "file",
@@ -621,7 +543,7 @@ describe("EmployeeHeader Component", () => {
 
       expect(
         errorUpdater({
-          profile_pic: "old error",
+          profile_pic: "Previous error",
         }),
       ).toEqual({
         profile_pic: "",
@@ -636,14 +558,57 @@ describe("EmployeeHeader Component", () => {
       );
     });
 
-    it("accepts PNG image file", () => {
+    it("accepts a valid JPG image", () => {
+      const { setErrors, setFormData, setIsFormDirty } = renderComponent();
+
+      const file = createImageFile("profile.jpg", "image/jpeg");
+
+      Object.defineProperty(file, "size", {
+        value: 1024,
+        configurable: true,
+      });
+
+      const input = document.getElementById("profile-upload");
+
+      fireEvent.change(input, {
+        target: {
+          name: "profile_pic",
+          type: "file",
+          files: [file],
+        },
+      });
+
+      expect(setErrors).toHaveBeenCalledTimes(1);
+      expect(setFormData).toHaveBeenCalledTimes(1);
+      expect(setIsFormDirty).toHaveBeenCalledWith(true);
+
+      const errorUpdater = setErrors.mock.calls[0][0];
+
+      expect(
+        errorUpdater({
+          profile_pic: "Previous error",
+        }),
+      ).toEqual({
+        profile_pic: "",
+      });
+
+      const formUpdater = setFormData.mock.calls[0][0];
+
+      expect(formUpdater(createFormData())).toEqual(
+        createFormData({
+          profile_pic: file,
+        }),
+      );
+    });
+
+    it("accepts a valid PNG image", () => {
       const { setFormData, setIsFormDirty } = renderComponent();
 
       const file = createImageFile("profile.png", "image/png");
 
-      const fileInput = document.getElementById("profile-upload");
+      const input = document.getElementById("profile-upload");
 
-      fireEvent.change(fileInput, {
+      fireEvent.change(input, {
         target: {
           name: "profile_pic",
           type: "file",
@@ -663,48 +628,7 @@ describe("EmployeeHeader Component", () => {
       );
     });
 
-    it("accepts image exactly at 5 MB", () => {
-      const { setErrors, setFormData, setIsFormDirty } = renderComponent();
-
-      const file = createExactFiveMBImageFile();
-
-      const fileInput = document.getElementById("profile-upload");
-
-      fireEvent.change(fileInput, {
-        target: {
-          name: "profile_pic",
-          type: "file",
-          files: [file],
-        },
-      });
-
-      expect(setErrors).toHaveBeenCalledTimes(1);
-      expect(setFormData).toHaveBeenCalledTimes(1);
-      expect(setIsFormDirty).toHaveBeenCalledWith(true);
-    });
-
-    it("does not update form data for an invalid file", () => {
-      const { setFormData, setIsFormDirty } = renderComponent();
-
-      const file = new File(["not an image"], "test.txt", {
-        type: "text/plain",
-      });
-
-      const fileInput = document.getElementById("profile-upload");
-
-      fireEvent.change(fileInput, {
-        target: {
-          name: "profile_pic",
-          type: "file",
-          files: [file],
-        },
-      });
-
-      expect(setFormData).not.toHaveBeenCalled();
-      expect(setIsFormDirty).not.toHaveBeenCalled();
-    });
-
-    it("clears an existing profile picture error when valid image is uploaded", () => {
+    it("clears an existing profile image error after valid upload", () => {
       const { setErrors } = renderComponent(
         {},
         {
@@ -712,11 +636,11 @@ describe("EmployeeHeader Component", () => {
         },
       );
 
-      const file = createImageFile("profile.jpg", "image/jpeg");
+      const file = createImageFile();
 
-      const fileInput = document.getElementById("profile-upload");
+      const input = document.getElementById("profile-upload");
 
-      fireEvent.change(fileInput, {
+      fireEvent.change(input, {
         target: {
           name: "profile_pic",
           type: "file",
@@ -735,95 +659,6 @@ describe("EmployeeHeader Component", () => {
       ).toEqual({
         profile_pic: "",
       });
-    });
-
-    it("does not mark form dirty when image type is invalid", () => {
-      const { setIsFormDirty } = renderComponent();
-
-      const file = new File(["document"], "document.pdf", {
-        type: "application/pdf",
-      });
-
-      const fileInput = document.getElementById("profile-upload");
-
-      fireEvent.change(fileInput, {
-        target: {
-          name: "profile_pic",
-          type: "file",
-          files: [file],
-        },
-      });
-
-      expect(setIsFormDirty).not.toHaveBeenCalled();
-    });
-
-    it("does not mark form dirty when image exceeds maximum size", () => {
-      const { setIsFormDirty } = renderComponent();
-
-      const file = createLargeImageFile();
-
-      const fileInput = document.getElementById("profile-upload");
-
-      fireEvent.change(fileInput, {
-        target: {
-          name: "profile_pic",
-          type: "file",
-          files: [file],
-        },
-      });
-
-      expect(setIsFormDirty).not.toHaveBeenCalled();
-    });
-  });
-
-  /* ==========================================================
-     PROFILE IMAGE DISPLAY
-  ========================================================== */
-
-  describe("Profile image display", () => {
-    it("renders profile image when profile_pic exists", () => {
-      const file = createImageFile("profile.jpg", "image/jpeg");
-
-      renderComponent({
-        profile_pic: file,
-      });
-
-      const image = screen.getByAltText("Profile");
-
-      expect(image).toBeInTheDocument();
-
-      expect(image).toHaveAttribute(
-        "src",
-        "blob:http://localhost/profile-image",
-      );
-
-      expect(screen.getByText("Change")).toBeInTheDocument();
-
-      expect(global.URL.createObjectURL).toHaveBeenCalledWith(file);
-    });
-
-    it("renders upload text when profile picture is null", () => {
-      renderComponent({
-        profile_pic: null,
-      });
-
-      expect(screen.getByText("Upload")).toBeInTheDocument();
-
-      expect(screen.queryByAltText("Profile")).not.toBeInTheDocument();
-    });
-
-    it("renders remove button when profile picture exists", () => {
-      const file = createImageFile();
-
-      renderComponent({
-        profile_pic: file,
-      });
-
-      expect(
-        screen.getByRole("button", {
-          name: "Remove profile photo",
-        }),
-      ).toBeInTheDocument();
     });
   });
 
@@ -839,25 +674,24 @@ describe("EmployeeHeader Component", () => {
         profile_pic: file,
       });
 
-      const removeButton = screen.getByRole("button", {
+      const button = screen.getByRole("button", {
         name: "Remove profile photo",
       });
 
-      fireEvent.click(removeButton);
+      fireEvent.click(button);
 
       expect(setFormData).toHaveBeenCalledTimes(1);
-
       expect(setErrors).toHaveBeenCalledTimes(1);
-
       expect(setIsFormDirty).toHaveBeenCalledWith(true);
 
       const formUpdater = setFormData.mock.calls[0][0];
 
       expect(
-        formUpdater({
-          ...createFormData(),
-          profile_pic: file,
-        }),
+        formUpdater(
+          createFormData({
+            profile_pic: file,
+          }),
+        ),
       ).toEqual(
         createFormData({
           profile_pic: null,
@@ -868,42 +702,37 @@ describe("EmployeeHeader Component", () => {
 
       expect(
         errorUpdater({
-          profile_pic: "old error",
+          profile_pic: "Old error",
+          name: "Name error",
         }),
       ).toEqual({
         profile_pic: "",
+        name: "Name error",
       });
     });
 
-    it("clears profile picture error when removing image", () => {
+    it("prevents default action and stops event propagation", () => {
       const file = createImageFile();
 
-      const { setErrors } = renderComponent(
-        {
-          profile_pic: file,
-        },
-        {
-          profile_pic: "Previous error",
-        },
-      );
+      renderComponent({
+        profile_pic: file,
+      });
 
-      const removeButton = screen.getByRole("button", {
+      const button = screen.getByRole("button", {
         name: "Remove profile photo",
       });
 
-      fireEvent.click(removeButton);
-
-      expect(setErrors).toHaveBeenCalledTimes(1);
-
-      const updater = setErrors.mock.calls[0][0];
-
-      expect(
-        updater({
-          profile_pic: "Previous error",
-        }),
-      ).toEqual({
-        profile_pic: "",
+      const event = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
       });
+
+      const stopPropagationSpy = vi.spyOn(event, "stopPropagation");
+
+      fireEvent(button, event);
+
+      expect(event.defaultPrevented).toBe(true);
+      expect(stopPropagationSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -912,12 +741,10 @@ describe("EmployeeHeader Component", () => {
   ========================================================== */
 
   describe("Camera button", () => {
-    it("opens file input when camera badge is clicked", () => {
+    it("opens the profile file picker", () => {
       renderComponent();
 
       const fileInput = document.getElementById("profile-upload");
-
-      expect(fileInput).toBeInTheDocument();
 
       const clickSpy = vi
         .spyOn(fileInput, "click")
@@ -927,8 +754,6 @@ describe("EmployeeHeader Component", () => {
         name: "Open profile image picker",
       });
 
-      expect(cameraButton).toBeInTheDocument();
-
       fireEvent.click(cameraButton);
 
       expect(clickSpy).toHaveBeenCalledTimes(1);
@@ -936,14 +761,32 @@ describe("EmployeeHeader Component", () => {
       clickSpy.mockRestore();
     });
 
-    it("camera button has button type", () => {
+    it("does not throw when profile upload input does not exist", () => {
       renderComponent();
+
+      const originalGetElementById = document.getElementById;
+
+      const getElementSpy = vi
+        .spyOn(document, "getElementById")
+        .mockImplementation((id) => {
+          if (id === "profile-upload") {
+            return null;
+          }
+
+          return originalGetElementById.call(document, id);
+        });
 
       const cameraButton = screen.getByRole("button", {
         name: "Open profile image picker",
       });
 
-      expect(cameraButton).toHaveAttribute("type", "button");
+      expect(() => {
+        fireEvent.click(cameraButton);
+      }).not.toThrow();
+
+      expect(getElementSpy).toHaveBeenCalledWith("profile-upload");
+
+      getElementSpy.mockRestore();
     });
   });
 
@@ -952,7 +795,7 @@ describe("EmployeeHeader Component", () => {
   ========================================================== */
 
   describe("Existing form values", () => {
-    it("displays existing form values", () => {
+    it("displays existing employee values", () => {
       renderComponent({
         name: "John Doe",
         dob: "1995-01-10",
@@ -977,18 +820,6 @@ describe("EmployeeHeader Component", () => {
 
       expect(screen.getByDisplayValue("john123")).toBeInTheDocument();
     });
-
-    it("renders existing profile image and Change text", () => {
-      const file = createImageFile("existing.jpg", "image/jpeg");
-
-      renderComponent({
-        profile_pic: file,
-      });
-
-      expect(screen.getByAltText("Profile")).toBeInTheDocument();
-
-      expect(screen.getByText("Change")).toBeInTheDocument();
-    });
   });
 
   /* ==========================================================
@@ -996,7 +827,7 @@ describe("EmployeeHeader Component", () => {
   ========================================================== */
 
   describe("Multiple interactions", () => {
-    it("updates different form fields independently", () => {
+    it("marks form dirty for multiple normal field changes", () => {
       const { setFormData, setIsFormDirty } = renderComponent();
 
       fireEvent.change(screen.getByPlaceholderText("Enter full name"), {
@@ -1021,9 +852,7 @@ describe("EmployeeHeader Component", () => {
       });
 
       expect(setFormData).toHaveBeenCalledTimes(3);
-
       expect(setIsFormDirty).toHaveBeenCalledTimes(3);
-
       expect(setIsFormDirty).toHaveBeenLastCalledWith(true);
     });
   });
