@@ -56,7 +56,8 @@ import ArchivedStaff from "./Pages/employee/ArchivedStaff/ArchivedStaff.jsx";
 import HrDashboard from "./Pages/HrDashboard/HrDashboard.jsx";
 import Projects from "./Pages/Project/Projects.jsx";
 import ProjectDetails from "./Pages/Project/ProjectDetails.jsx";
-import LoginScreen from "./Pages/login/LoginScreen.jsx";
+import LoginScreen from "./Pages/login/Login/Loginscreen.jsx";
+import AuthLayout from "./Pages/login/Login/AuthLayout.jsx";
 import SuperAdmin_Dashboard from "./Pages/superAdmin/Dashboard/SuperAdmin_Dashboard.jsx";
 import AddCompany from "./Pages/superAdmin/AddCompany/AddCompany.jsx"
 import Company from "./Pages/superAdmin/Company/Company.jsx"
@@ -67,6 +68,9 @@ import ReimbursementDetails from "./Pages/reimbursement/ReimbursementDetails.jsx
 import EmployeeForm from "./Pages/employee/AddEmployee/BasicDetails/EmployeeForm.jsx";
 import BankDetailsForm from "./Pages/employee/AddEmployee/Bank/Bankdetailsform.jsx";
 import TrackingList from "./Pages/Attendance/TrackingList.jsx";
+import ForgetPasswordScreen from "./Pages/login/Login/Forgetpasswordscreen.jsx";
+import OtpScreen from "./Pages/login/Login/Otpscreen.jsx";
+import CreateNewPasswordScreen from "./Pages/login/Login/Createnewpasswordscreen.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -90,7 +94,14 @@ function App() {
         <Routes>
           <Route path="/loader" element={<Loder />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/log" element={<LoginScreen />} />
+
+
+{/* <Route element={<AuthLayout />}> */}
+    <Route path="/log" element={<LoginScreen />} />
+    <Route path="/forget-screen" element={<ForgetPasswordScreen/>}/>
+    <Route path="/otp" element={<OtpScreen/>}/>
+    <Route path="/create-password" element={<CreateNewPasswordScreen/>}/>
+{/* </Route> */}
           <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/verification" element={<Verification />} />
           <Route path="/new-password" element={<NewPassword />} />
