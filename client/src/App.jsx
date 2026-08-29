@@ -71,6 +71,7 @@ import TrackingList from "./Pages/Attendance/TrackingList.jsx";
 import ForgetPasswordScreen from "./Pages/login/Login/Forgetpasswordscreen.jsx";
 import OtpScreen from "./Pages/login/Login/Otpscreen.jsx";
 import CreateNewPasswordScreen from "./Pages/login/Login/Createnewpasswordscreen.jsx";
+import AttendanceSummary from "./Pages/attendanceReport/AttendanceSummary.jsx";
 function App() {
   const dispatch = useDispatch();
 
@@ -161,6 +162,9 @@ function App() {
               {/* <Route path="/project-department/:id/" element={<FieldDepartment />} /> */}
               <Route path="/layout" element={<ViewLayout />} />
               <Route path="/employee-attendance-report" element={< AttendanceReport />} />
+  <Route path="/employee-attendance-summary" element={< AttendanceSummary />} />
+
+
               <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />} />
 
 

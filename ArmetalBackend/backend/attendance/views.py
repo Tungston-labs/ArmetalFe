@@ -307,9 +307,6 @@ class AttendanceAdminListView(generics.ListAPIView):
         else:
             selected_date = self._get_default_selected_date()
 
-        if not department_id:
-            raise ValidationError({"department_id": "department_id is required"})
-
         attendance_qs = Attendance.objects.filter(
             employee=OuterRef("pk"),
             date=selected_date,
@@ -325,13 +322,23 @@ class AttendanceAdminListView(generics.ListAPIView):
             attendance__date=selected_date,
         ).order_by("-time_out")
 
+        base_qs = Employee_db.objects.filter(is_deleted=False)
+
+        if department_id:
+            # Optional now: only filter by department if it's explicitly passed
+            base_qs = base_qs.filter(department_id=department_id)
+        else:
+            # No department_id -> return the FULL list, scoped to the admin's company
+            company = getattr(self.request.user, "company", None)
+            if company:
+                base_qs = base_qs.filter(department__company=company)
+
         queryset = (
-            Employee_db.objects
-            .filter(department_id=department_id,is_deleted=False)
+            base_qs
             .annotate(
                 date=Subquery(attendance_qs.values("date")[:1]),
                 total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
-                attendance_id=Subquery(attendance_qs.values("id")[:1]),  
+                attendance_id=Subquery(attendance_qs.values("id")[:1]),
                 first_swipe_in=Subquery(first_session.values("time_in")[:1]),
                 last_swipe_out=Subquery(last_session.values("time_out")[:1]),
                 attendance_today=Case(

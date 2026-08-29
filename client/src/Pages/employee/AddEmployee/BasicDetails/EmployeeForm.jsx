@@ -2,25 +2,11 @@ import React, { useState } from "react";
 import {
   PageContainer,
   FormCard,
-  StepperWrapper,
-  ProfileImageWrapper,
-  ProfileImage,
-  StepperContent,
-  StepItem,
-  StepIcon,
-  StepTitle,
-  StepLine,
-  ActiveUnderline,
 } from "../EmployeeForm.styles";
-
-import { PiUser } from "react-icons/pi";
 
 import BasicDetailsSection from "./Basicdetailssection";
 import JobDetailsSection from "./jobdetailssection";
 import LegalInfoSection from "./Legalinfosection";
-
-// Same country-rules helper used by JobDetails.jsx / AddEmployeeForm.jsx.
-// Adjust the relative path below to match where this file actually lives.
 import {
   getLegalFieldConfig,
   isIndiaCompany,
@@ -30,9 +16,6 @@ import FormStepper from "../Formstepper";
 import ReusableHeader from "../../../../Components/ReusableTable/ReusableHeader";
 
 const EmployeeForm = () => {
-  // The COMPANY's country (India / UAE / other) drives which legal & ID
-  // fields are required. This is different from the employee's own address
-  // "Country" field inside BasicDetailsSection.
   const savedUser = JSON.parse(
     localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
   );
@@ -74,9 +57,6 @@ const EmployeeForm = () => {
     earnedLeave: "00",
     maternityLeave: "00",
     otherLeave: "00",
-
-    // Legal / ID fields — kept as a flat set of possible keys. Only the
-    // ones relevant to companyCountry are rendered, in LegalInfoSection.
     passportNumber: "",
     iqamaNumber: "",
     aadhaarNumber: "",

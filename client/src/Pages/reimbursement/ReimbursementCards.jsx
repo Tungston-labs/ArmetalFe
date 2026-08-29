@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   Container,
@@ -23,42 +23,14 @@ import {
 
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
+import { fetchReimbursementsByDepartment } from "../../services/reimbursement"; // adjust path to where you put this
 // import ReimbursementModal from "./modal/ReimbursementModal";
 
-import { getGroupedReimbursements } from "../../services/reimbursement";
-// If you fetch per-department instead, swap in:
-// import { fetchReimbursementsByDepartment } from "../../services/reimbursement";
-
-const DEFAULT_AVATAR = "https://i.pravatar.cc/100?img=1";
-
-// =====================================================
-// Helper: normalize API response -> card shape
-// Adjust the field names below to match your actual
-// backend response once you confirm the payload shape.
-// =====================================================
-const formatCurrency = (value) => {
-  const num = Number(value ?? 0);
-  return `₹${num.toLocaleString("en-IN")}`;
-};
-
-const mapReimbursementData = (item) => ({
-  id: item.id,
-  name: (item.category || item.type || item.name || "REIMBURSEMENT").toUpperCase(),
-  employee:
-    item.employee_name ||
-    item.employee?.name ||
-    item.employee ||
-    "—",
-  total: item.total_count ?? item.count ?? item.total ?? 0,
-  totalAmount: formatCurrency(item.total_amount ?? item.totalAmount),
-  approved: formatCurrency(item.approved_amount ?? item.approved),
-  pending: formatCurrency(item.pending_amount ?? item.pending),
-  status: item.status || (Number(item.pending_amount) > 0 ? "Pending" : "Approved"),
-  image: item.employee_image || item.employee?.image || DEFAULT_AVATAR,
-});
+const PAGE_SIZE = 20;
 
 const ReimbursementCards = () => {
   const navigate = useNavigate();
+  const { departmentId } = useParams(); // assumes route like /reimbursements/department/:departmentId
 
   // =====================================================
   // SEARCH
@@ -83,29 +55,38 @@ const ReimbursementCards = () => {
   // =====================================================
 
   const [reimbursements, setReimbursements] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // =====================================================
+  // FETCH REIMBURSEMENTS
+  // =====================================================
+
   const loadReimbursements = useCallback(async () => {
+    if (!departmentId) return;
+
     setLoading(true);
     setError(null);
 
     try {
-      const data = await getGroupedReimbursements();
-
-      // Handle either a raw array or a paginated { results: [...] } shape
-      const list = Array.isArray(data) ? data : data?.results || [];
-
-      setReimbursements(list.map(mapReimbursementData));
-    } catch (err) {
-      console.error("Failed to load reimbursements:", err);
-      setError(
-        err?.message || "Something went wrong while loading reimbursements."
+      const data = await fetchReimbursementsByDepartment(
+        departmentId,
+        page,
+        PAGE_SIZE
       );
+
+      // Adjust these keys to match your actual API response shape
+      setReimbursements(data.results ?? data);
+      setTotalCount(data.count ?? (data.results ?? data).length);
+    } catch (err) {
+      console.error("Failed to fetch reimbursements:", err);
+      setError("Failed to load reimbursements. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [departmentId, page]);
 
   useEffect(() => {
     loadReimbursements();
@@ -120,16 +101,16 @@ const ReimbursementCards = () => {
   };
 
   // =====================================================
-  // FILTER DATA
+  // FILTER DATA (client-side filter on current page's results)
   // =====================================================
 
   const filteredReimbursements = reimbursements.filter(
     (reimbursement) =>
       reimbursement.name
-        .toLowerCase()
+        ?.toLowerCase()
         .includes(search.toLowerCase()) ||
       reimbursement.employee
-        .toLowerCase()
+        ?.toLowerCase()
         .includes(search.toLowerCase())
   );
 
@@ -167,6 +148,21 @@ const ReimbursementCards = () => {
     }
 
     setShowReimbursementModal(false);
+    loadReimbursements(); // refresh list after create/update
+  };
+
+  // =====================================================
+  // PAGINATION
+  // =====================================================
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
+
+  const handleNextPage = () => {
+    if (page < totalPages) setPage((prev) => prev + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) setPage((prev) => prev - 1);
   };
 
   return (
@@ -200,19 +196,7 @@ const ReimbursementCards = () => {
       ================================================= */}
 
       {loading && <p>Loading reimbursements...</p>}
-
-      {!loading && error && (
-        <p style={{ color: "red" }}>
-          {error}{" "}
-          <button type="button" onClick={loadReimbursements}>
-            Retry
-          </button>
-        </p>
-      )}
-
-      {!loading && !error && filteredReimbursements.length === 0 && (
-        <p>No reimbursements found.</p>
-      )}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {/* =================================================
           REIMBURSEMENT CARDS
@@ -298,6 +282,24 @@ const ReimbursementCards = () => {
             </Card>
           ))}
         </CardsGrid>
+      )}
+
+      {/* =================================================
+          PAGINATION CONTROLS
+      ================================================= */}
+
+      {!loading && !error && totalPages > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "16px" }}>
+          <button type="button" onClick={handlePrevPage} disabled={page === 1}>
+            Previous
+          </button>
+          <span>
+            Page {page} of {totalPages}
+          </span>
+          <button type="button" onClick={handleNextPage} disabled={page === totalPages}>
+            Next
+          </button>
+        </div>
       )}
 
       {/* =================================================

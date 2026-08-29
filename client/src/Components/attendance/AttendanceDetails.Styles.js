@@ -11,7 +11,7 @@ export const AttendanceLayout = styled.div`
 `;
 export const PageWrapper = styled.div`
   margin-top: 20px;
-
+padding: 20px;
 `;
 
 export const Header = styled.h3`

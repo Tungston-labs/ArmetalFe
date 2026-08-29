@@ -147,17 +147,19 @@ const attendanceSlice = createSlice({
         state.listLoading = true;
         state.error = null;
       })
-      .addCase(getAttendanceList.fulfilled, (state, action) => {
-        state.listLoading = false;
-        state.attendanceList = action.payload.results || [];
-        state.pagination = {
-          total_pages: Math.ceil((action.payload.count || 0) / 10),
-          current_page: action.meta.arg?.page || 1,
-          total_items: action.payload.count || 0,
-          next: action.payload.next || null,
-          previous: action.payload.previous || null,
-        };
-      })
+     .addCase(getAttendanceList.fulfilled, (state, action) => {
+  state.listLoading = false;
+  state.attendanceList = action.payload.results || [];
+  state.pagination = {
+    total_pages: action.payload.total_pages || 1,
+    current_page: action.payload.current_page || action.meta.arg?.page || 1,
+    total_items: action.payload.total_items || 0,
+    next: action.payload.next || null,
+    previous: action.payload.previous || null,
+  };
+  state.swipedEmployeeCount = action.payload.swiped_employee_count || 0;
+  state.totalEmployeeCount = action.payload.total_employee_count || 0;
+})
       .addCase(getAttendanceList.rejected, (state, action) => {
         state.listLoading = false;
         state.error = action.payload || "Failed to fetch attendance data";

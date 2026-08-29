@@ -169,21 +169,7 @@ const BasicDetailsSection = ({ formData, errors, handleChange }) => {
           </SelectWrapper>
           {errors.country && <ErrorText>{errors.country}</ErrorText>}
         </FormGroup>
-
-        {/* Postal Code */}
-        <FormGroup>
-          <Label>
-            Postal Code<Required>*</Required>
-          </Label>
-          <Input
-            type="text"
-            name="postalCode"
-            placeholder="Enter Postal Code"
-            value={formData.postalCode}
-            onChange={handleChange}
-          />
-          {errors.postalCode && <ErrorText>{errors.postalCode}</ErrorText>}
-        </FormGroup>
+       
 
         {/* Blood Group */}
         <FormGroup>
