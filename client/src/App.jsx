@@ -57,7 +57,7 @@ import HrDashboard from "./Pages/HrDashboard/HrDashboard.jsx";
 import Projects from "./Pages/Project/Projects.jsx";
 import ProjectDetails from "./Pages/Project/ProjectDetails.jsx";
 import LoginScreen from "./Pages/login/Login/Loginscreen.jsx";
-import AuthLayout from "./Pages/login/Login/AuthLayout.jsx";
+// import AuthLayout from "./Pages/login/Login/AuthLayout.jsx";
 import SuperAdmin_Dashboard from "./Pages/superAdmin/Dashboard/SuperAdmin_Dashboard.jsx";
 import AddCompany from "./Pages/superAdmin/AddCompany/AddCompany.jsx"
 import Company from "./Pages/superAdmin/Company/Company.jsx"
