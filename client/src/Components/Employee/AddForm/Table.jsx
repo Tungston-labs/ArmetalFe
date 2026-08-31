@@ -211,7 +211,7 @@ setIfscCode,
         {showNextButton && (
           <ButtonGroup>
             <Button type="button" onClick={handleNext}>
-              Next
+              Save
             </Button>
           </ButtonGroup>
         )}

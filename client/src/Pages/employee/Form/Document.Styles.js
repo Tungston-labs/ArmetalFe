@@ -176,9 +176,8 @@ export const ButtonGroup = styled.div`
   gap: 1rem;
   margin-top: 2rem;
 `;
-
 export const Button = styled.button`
-  background: ${({ secondary }) => (secondary ? '#9EABD8' : '#172554')};
+  background: ${({ secondary }) => (secondary ? '#304EB0' : '#304EB0')};
   color: ${({ secondary }) => (secondary ? '#000' : '#fff')};
   padding: 0.7rem 1.5rem;
   border: none;
@@ -188,7 +187,7 @@ export const Button = styled.button`
 
 
   &:hover {
-    background: ${({ secondary }) => (secondary ? '#aab3d0' : '#002244')};
+    background: ${({ secondary }) => (secondary ? '#304EB0' : '#304EB0')};
   }
 `;
 export const Title = styled.h2`

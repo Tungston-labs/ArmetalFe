@@ -242,7 +242,7 @@ const handleSubmit = async () => {
       {renderUploadBlock("Certificate", "certificate")}
 
    <ButtonGroup>
-  <Button onClick={handleSubmit}>Submit</Button>
+  <Button onClick={handleSubmit}>Save</Button>
 </ButtonGroup>
 
      {showSuccessModal && (
