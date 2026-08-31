@@ -116,7 +116,7 @@ const EmployeeList = () => {
                     title="Employees"
                     breadcrumbs={["Employees"]}
                     buttonText="+ ADD NEW EMPLOYEE"
-                    onButtonClick={() => navigate("/add-employee")}
+                    onButtonClick={() => navigate("/basic-details")}
                 />
                 <ReusableFilter
                     search={search}

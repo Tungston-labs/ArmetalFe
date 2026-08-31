@@ -14,14 +14,13 @@ import {
   HiddenFileInput,
   HelperText,
   InfoWrapper,
-  LeftColumn,
-  RightColumn,
+  Row,
   FieldGroup,
   FieldLabel,
   Input,
   TextArea,
   Select,
-  ErrorText,
+  ErrorText,SectionTitle
 } from "./EmployeeHeader.Styles";
 import { PiUserCirclePlusThin, PiCameraThin } from "react-icons/pi";
 import { AiOutlineClose } from "react-icons/ai";
@@ -66,7 +65,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
   return (
     <Container>
       {/* Profile on Top */}
-      <ProfileWrapper>
+      {/* <ProfileWrapper>
         <UploadWrapper>
           <AvatarShell>
             <ProfileLabel htmlFor="profile-upload">
@@ -111,11 +110,13 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           <HelperText>JPG, PNG · Max 5 MB</HelperText>
           {errors?.profile_pic && <ErrorText>{errors.profile_pic}</ErrorText>}
         </UploadWrapper>
-      </ProfileWrapper>
+      </ProfileWrapper> */}
+            <SectionTitle>Basic Details</SectionTitle>
 
-      {/* Form Fields */}
       <InfoWrapper>
-        <LeftColumn>
+
+        {/* Row 1: Name, Email, DOB, Employee ID, Gender */}
+        <Row>
           <FieldGroup>
             <FieldLabel>Name</FieldLabel>
             <Input
@@ -130,37 +131,6 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Date of Birth</FieldLabel>
-            <Input type="date" name="dob" value={formData.dob} onChange={handleChange} />
-            {errors?.dob && <ErrorText>{errors.dob}</ErrorText>}
-          </FieldGroup>
-
-          <FieldGroup>
-            <FieldLabel>Gender</FieldLabel>
-            <Select name="gender" value={formData.gender} onChange={handleChange}>
-              <option value="">Select Gender</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </Select>
-            {errors?.gender && <ErrorText>{errors.gender}</ErrorText>}
-          </FieldGroup>
-
-          <FieldGroup>
-            <FieldLabel>Address</FieldLabel>
-            <TextArea
-              name="address"
-              placeholder="Enter full address"
-              value={formData.address}
-              onChange={handleChange}
-              autoComplete="off"
-            />
-            {errors?.address && <ErrorText>{errors.address}</ErrorText>}
-          </FieldGroup>
-        </LeftColumn>
-
-        <RightColumn>
-          <FieldGroup>
             <FieldLabel>Email</FieldLabel>
             <Input
               type="email"
@@ -171,6 +141,12 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
               autoComplete="off"
             />
             {errors?.email && <ErrorText>{errors.email}</ErrorText>}
+          </FieldGroup>
+
+          <FieldGroup>
+            <FieldLabel>Date of Birth</FieldLabel>
+            <Input type="date" name="dob" value={formData.dob} onChange={handleChange} />
+            {errors?.dob && <ErrorText>{errors.dob}</ErrorText>}
           </FieldGroup>
 
           <FieldGroup>
@@ -187,18 +163,73 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Username</FieldLabel>
+            <FieldLabel>Gender</FieldLabel>
+            <Select name="gender" value={formData.gender} onChange={handleChange}>
+              <option value="">Select Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </Select>
+            {errors?.gender && <ErrorText>{errors.gender}</ErrorText>}
+          </FieldGroup>
+        </Row>
+
+        {/* Row 2: Contact Number, Address, Country, Blood Group */}
+        <Row>
+          <FieldGroup>
+            <FieldLabel>Contact Number</FieldLabel>
             <Input
-              type="text"
-              name="employee_id"
-              placeholder="Enter email address"
-              value={formData.email}
+              type="tel"
+              name="contact_number"
+              placeholder="Enter contact number"
+              value={formData.contact_number}
               onChange={handleChange}
               autoComplete="off"
             />
-            {errors?.employee_id && <ErrorText>{errors.employee_id}</ErrorText>}
+            {errors?.contact_number && <ErrorText>{errors.contact_number}</ErrorText>}
           </FieldGroup>
-        </RightColumn>
+
+          <FieldGroup>
+            <FieldLabel>Address</FieldLabel>
+            <Input
+              name="address"
+              placeholder="Enter full address"
+              value={formData.address}
+              onChange={handleChange}
+              autoComplete="off"
+            />
+            {errors?.address && <ErrorText>{errors.address}</ErrorText>}
+          </FieldGroup>
+
+          <FieldGroup>
+            <FieldLabel>Country</FieldLabel>
+            <Input
+              type="text"
+              name="country"
+              placeholder="Enter country"
+              value={formData.country}
+              onChange={handleChange}
+              autoComplete="off"
+            />
+            {errors?.country && <ErrorText>{errors.country}</ErrorText>}
+          </FieldGroup>
+
+          <FieldGroup>
+            <FieldLabel>Blood Group</FieldLabel>
+            <Select name="blood_group" value={formData.blood_group} onChange={handleChange}>
+              <option value="">Select Blood Group</option>
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+              <option>O+</option>
+              <option>O-</option>
+            </Select>
+            {errors?.blood_group && <ErrorText>{errors.blood_group}</ErrorText>}
+          </FieldGroup>
+        </Row>
       </InfoWrapper>
     </Container>
   );

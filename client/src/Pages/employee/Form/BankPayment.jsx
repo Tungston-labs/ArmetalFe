@@ -30,6 +30,7 @@ import {
   isUaeCompany,
 } from "../../../utils/employeeCountryFields";
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
+import FormStepper from "../AddEmployee/Formstepper";
 export default function BankPaymentForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -195,18 +196,8 @@ export default function BankPaymentForm() {
 
                 />
      
-        <div
-          style={{
-            width: "99%",
-            justifyContent: "center",
-            display: "flex",
-            padding: "20px",
-          }}
-        >
-          <div style={{ width: "50%" }}>
-            <Multistep currentStep={1} /> {/* Step 2: Bank Details */}
-          </div>
-        </div>
+           <FormStepper/>
+   
 
         {error && <p>{error.message || error.toString()}</p>}
 

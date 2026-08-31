@@ -25,6 +25,7 @@ import {
   getLegalFieldConfig,
   validateLegalIdentity,
 } from "../../../utils/employeeCountryFields";
+import FormStepper from "../AddEmployee/Formstepper";
 
 
 export default function AddEmployeeForm() {
@@ -206,20 +207,12 @@ export default function AddEmployeeForm() {
         <UnsavedChangesGuard isDirty={isFormDirty} />
            <ReusableHeader
                     title="Employees"
-                    breadcrumbs={["Dashboard", "Employees","Add Form"]}
+                    breadcrumbs={["Employees","Add Form"]}
                    showBack
 
                 />
 
-    
-        <div
-          style={{ display: "flex", justifyContent: "center", padding: "0px" }}
-        >
-          <div style={{ width: "50%" }}>
-            <Multistep currentStep={currentStep} steps={stepTitles} />
-          </div>
-        </div>
-
+      <FormStepper/>
         <EmployeeHeader
           formData={formData}
           setFormData={setFormData}
