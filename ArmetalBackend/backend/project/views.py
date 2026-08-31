@@ -25,17 +25,79 @@ import calendar
 # ============================================================
 #  Project List/Create
 # ============================================================
+
 class ProjectListCreateView(generics.ListCreateAPIView):
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
+
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
     def get_queryset(self):
-        return Project.objects.filter(company=self.request.user.company).prefetch_related('employees')
+        user = self.request.user
+
+        queryset = Project.objects.filter(
+            company=user.company
+        ).prefetch_related('employees')
+
+        # ----------------------------------------------------
+        # Search by project name
+        # Example:
+        # ?search=website
+        # ----------------------------------------------------
+
+        # ----------------------------------------------------
+        # Filter by status
+        # Example:
+        # ?status=in_progress
+        # ?status=completed
+        # ?status=on_hold
+        # ?status=cancelled
+        # ----------------------------------------------------
+
+        status = self.request.query_params.get('status')
+
+        if status:
+            queryset = queryset.filter(status=status)
+
+        # ----------------------------------------------------
+        # Filter by exact created date
+        # Example:
+        # ?date=2026-08-31
+        # ----------------------------------------------------
+
+        date = self.request.query_params.get('date')
+
+        if date:
+            year, month = date.split("-")
+
+            queryset = queryset.filter(
+                created_at__year=int(year),
+                created_at__month=int(month)
+            )
+
+        # ----------------------------------------------------
+        # Filter by date range
+        # Example:
+        # ?start_date=2026-08-01&end_date=2026-08-31
+        # ----------------------------------------------------
+
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+
+        if start_date:
+            queryset = queryset.filter(created_at__gte=start_date)
+
+        if end_date:
+            queryset = queryset.filter(created_at__lte=end_date)
+
+        return queryset
 
     def perform_create(self, serializer):
-        serializer.save(company=self.request.user.company)
+        serializer.save(
+            company=self.request.user.company
+        )
+
 
 
 # ============================================================

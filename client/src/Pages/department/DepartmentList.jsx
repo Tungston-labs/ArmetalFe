@@ -110,9 +110,9 @@ const DepartmentList = () => {
     } catch (err) {
       setNewDeptError(
         err?.payload?.detail ||
-          err?.payload?.message ||
-          err?.message ||
-          "Something went wrong. Please try again later.",
+        err?.payload?.message ||
+        err?.message ||
+        "Something went wrong. Please try again later.",
       );
     } finally {
       setSavingNewDept(false);
@@ -160,17 +160,17 @@ const DepartmentList = () => {
                 render: (_row, index) => startIndex + index + 1,
               },
               {
-            header: "Employee name",
-            accessor: "name",
-            render: (row) => (
-                <div style={{ display: "flex", flexDirection: "column" }}>
+                header: "Employee name",
+                accessor: "name",
+                render: (row) => (
+                  <div style={{ display: "flex", flexDirection: "column" }}>
                     <span style={{ fontWeight: 600 }}>
-                        {row.name ? row.name.charAt(0).toUpperCase() + row.name.slice(1) : ""}
+                      {row.name ? row.name.charAt(0).toUpperCase() + row.name.slice(1) : ""}
                     </span>
                     <span style={{ fontSize: 12, color: "#888" }}>{row.email}</span>
-                </div>
-            ),
-        },
+                  </div>
+                ),
+              },
               { header: "Employee ID", accessor: "employee_code" },
               { header: "Job Position", accessor: "designation" },
             ];
@@ -262,7 +262,7 @@ const DepartmentList = () => {
                             ) : (
                               <Input
                                 name="department_head"
-                                value={details.department_head?.name || "Not Assigned"}
+                                value={dept.department_head?.employee_code || "Not Assigned"}
                                 disabled
                               />
                             )}
@@ -294,7 +294,7 @@ const DepartmentList = () => {
                       />
                     </DropdownWrapper>
 
-                  {sortedEmployees.length > PAGE_SIZE && (
+                    {sortedEmployees.length > PAGE_SIZE && (
                       <div onClick={(e) => e.stopPropagation()}>
                         <ReusablePagination
                           currentPage={currentPage}

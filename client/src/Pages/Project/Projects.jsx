@@ -73,9 +73,11 @@ const Projects = () => {
             getProjects({
                 search,
                 page,
+                status,
+                date: month,
             })
         );
-    }, [dispatch, search, page]);
+    }, [dispatch, search, page, status, month]);
 
     // =========================
     // ADD PROJECT
@@ -230,37 +232,6 @@ const Projects = () => {
         }
     };
 
-    // =========================
-    // FILTER PROJECTS
-    // =========================
-
-    const filteredProjects = projects.filter((project) => {
-        // Status filter
-        if (status && project.status !== status) {
-            return false;
-        }
-
-        // Month filter (backend field is start_date)
-        if (month) {
-            const projectDate = project.start_date || project.date;
-
-            if (projectDate) {
-                const selectedMonth = new Date(month)
-                    .toISOString()
-                    .slice(0, 7);
-
-                const projectMonth = new Date(projectDate)
-                    .toISOString()
-                    .slice(0, 7);
-
-                if (selectedMonth !== projectMonth) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    });
 
     // =========================
     // RENDER
@@ -298,12 +269,20 @@ const Projects = () => {
                 }}
                 status={status}
                 statuses={[
-                    "On Site",
-                    "Variant",
-                    "Office",
+                    "In Progress",
+                    "Completed",
+                    "On Hold",
+                    "Cancelled",
                 ]}
                 onStatus={(value) => {
-                    setStatus(value);
+                    const statusMap = {
+                        "In Progress": "in_progress",
+                        "Completed": "completed",
+                        "On Hold": "on_hold",
+                        "Cancelled": "cancelled",
+                    };
+
+                    setStatus(statusMap[value] || "");
                     setPage(1);
                 }}
                 date={month}
@@ -344,8 +323,8 @@ const Projects = () => {
                 <ProjectsContainer>
                     <ProjectsGrid>
 
-                        {filteredProjects.length > 0 ? (
-                            filteredProjects.map((project) => (
+                        {projects.length > 0 ? (
+                            projects.map((project) => (
                                 <ProjectCard
                                     key={project.id}
 

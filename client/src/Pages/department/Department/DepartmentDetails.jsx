@@ -220,7 +220,7 @@ const DepartmentDetails = () => {
   const totalPages =
     Math.ceil(
       filteredData.length /
-        rowsPerPage
+      rowsPerPage
     );
 
 
@@ -409,90 +409,49 @@ const DepartmentDetails = () => {
   // UPDATE DEPARTMENT
   // =========================================================
 
-  const handleDepartmentSubmit =
-    async (data) => {
-      try {
-        if (!departmentId) {
-          throw new Error(
-            "Department ID is missing."
-          );
-        }
+ const handleDepartmentSubmit = async (data) => {
+  try {
+    if (!departmentId) {
+      throw new Error("Department ID is missing.");
+    }
 
-        const payload = {
-          name:
-            data.departmentName.trim(),
-
-          department_code:
-            data.departmentCode.trim(),
-
-          head_of_department:
-            data.headOfDepartment ||
-            "",
-        };
-
-        console.log(
-          "Updating department:",
-          {
-            id: departmentId,
-            data: payload,
-          }
-        );
-
-
-        // ===============================================
-        // CALL UPDATE API
-        // ===============================================
-
-        const result =
-          await dispatch(
-            updateDepartmentById({
-              id: departmentId,
-              data: payload,
-            })
-          ).unwrap();
-
-
-        console.log(
-          "Department updated successfully:",
-          result
-        );
-
-
-        // ===============================================
-        // CLOSE MODAL
-        // ===============================================
-
-        setShowDepartmentModal(
-          false
-        );
-
-
-        // ===============================================
-        // REFRESH DEPARTMENT LIST
-        // ===============================================
-
-        dispatch(
-          getDepartments({
-            page: 1,
-            search: "",
-          })
-        );
-
-
-        return result;
-
-      } catch (error) {
-        console.error(
-          "Department update failed:",
-          error
-        );
-
-        // Throw error so DepartmentModal
-        // can display backend validation.
-        throw error;
-      }
+    const payload = {
+      name: data.departmentName.trim(),
+      department_code: data.departmentCode.trim(),
+      department_head_id: data.headOfDepartment
+        ? Number(data.headOfDepartment)
+        : null,
     };
 
+    console.log("Updating department:", {
+      id: departmentId,
+      data: payload,
+    });
+
+    const result = await dispatch(
+      updateDepartmentById({
+        id: departmentId,
+        data: payload,
+      })
+    ).unwrap();
+
+    console.log("Department updated successfully:", result);
+
+    setShowDepartmentModal(false);
+
+    dispatch(
+      getDepartments({
+        page: 1,
+        search: "",
+      })
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Department update failed:", error);
+    throw error;
+  }
+};
 
   // =========================================================
   // LOADING EMPLOYEES

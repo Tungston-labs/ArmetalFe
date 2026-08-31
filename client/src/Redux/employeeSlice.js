@@ -17,7 +17,7 @@ import {
   fetchDeletedEmployees,
 } from '../services/employeeService';
 import API from '../services/api';
-
+import { rehireEmployee } from "../services/employeeService";
 export const submitEmployee = createAsyncThunk(
   "employee/submitEmployee",
   async (formData, thunkAPI) => {
@@ -286,6 +286,20 @@ export const uploadImageThunk = createAsyncThunk(
     }
   }
 );
+
+export const rehireEmployeeById = createAsyncThunk(
+  "employee/rehireEmployeeById",
+  async (employeeId, { rejectWithValue }) => {
+    try {
+      const response = await rehireEmployee(employeeId);
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to restore employee"
+      );
+    }
+  }
+);
 // Slice
 const employeeSlice = createSlice({
   name: 'employee',
@@ -315,6 +329,8 @@ const employeeSlice = createSlice({
     employeeList: [],
 
     deletedEmployeeList: [],
+    rehireLoading: false,
+rehireError: null,
     deletedEmployeePagination: {
       total_items: 0,
       total_pages: 1,
@@ -482,7 +498,20 @@ const employeeSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      ;
+      
+      .addCase(rehireEmployeeById.pending, (state) => {
+  state.rehireLoading = true;
+  state.rehireError = null;
+})
+
+.addCase(rehireEmployeeById.fulfilled, (state) => {
+  state.rehireLoading = false;
+})
+
+.addCase(rehireEmployeeById.rejected, (state, action) => {
+  state.rehireLoading = false;
+  state.rehireError = action.payload;
+});
   },
 });
 

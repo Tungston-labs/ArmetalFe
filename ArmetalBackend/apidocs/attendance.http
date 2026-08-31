@@ -31,12 +31,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 POST http://127.0.0.1:8000/api/attendance/swipe/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4MTc2MTQ3LCJpYXQiOjE3ODgxNDczNDcsImp0aSI6IjA4MTdlYmM0NzJmZDRhZTY4YzZkMzkzMWU0MDM2Zjg0IiwidXNlcl9pZCI6MjksImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6dHJ1ZX0.pdp-6F-jdHPRTNMuhifBj2YwBBeG2AesvYRW3W6ZTEo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4MjAxNTMzLCJpYXQiOjE3ODgxNzI3MzMsImp0aSI6IjJjNzkwYWViMzJiYzQ4ZGE4YzJkMmRmMmQzMDNkYmQ0IiwidXNlcl9pZCI6NywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.xY4FcXC3wyGVrrY0MYZO0Y-tz21imN5XzOEV_BiiJ78
 Content-Type: application/json
 
 {
-  "latitude": 7.23568,
-  "longitude": 10.2356
+  "latitude": 10.106,
+  "longitude": 76.473
 
   
 }

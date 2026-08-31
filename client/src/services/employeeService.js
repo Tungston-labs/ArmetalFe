@@ -249,3 +249,13 @@ export const fetchDeletedEmployees = async ({
 
   return response.data;
 };
+
+
+export const rehireEmployee = async (employeeId) => {
+  const response = await API.post(
+    `/employees/${employeeId}/rehire/`,
+    {}
+  );
+
+  return response.data;
+};

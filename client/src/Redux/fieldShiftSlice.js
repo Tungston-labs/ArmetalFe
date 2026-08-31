@@ -6,11 +6,26 @@ import projectService, { fieldInfoService } from "../services/fieldShiftService"
 
 export const getProjects = createAsyncThunk(
   "projects/getAll",
-  async ({ search = "", page = 1 } = {}, { rejectWithValue }) => {
+  async (
+    {
+      search = "",
+      page = 1,
+      status = "",
+      date = "",
+    } = {},
+    { rejectWithValue }
+  ) => {
     try {
-      return await projectService.getProjects(search, page);
+      return await projectService.getProjects(
+        search,
+        page,
+        status,
+        date
+      );
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(
+        error.response?.data || error.message
+      );
     }
   }
 );

@@ -45,7 +45,7 @@ export const useEmployeeColumns = ({ page, paginationLimit, navigate, onDeleteCl
       header: "Status",
       accessor: "status",
       sortable: false,
-      render: (row) => <Status $status={row.status}>{row.status || "N/A"}</Status>,
+      render: (row) => <Status $status={row.today_attendance_status}>{row.today_attendance_status || "N/A"}</Status>,
     },
     {
       header: "Action",

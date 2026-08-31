@@ -54,21 +54,16 @@ const AttendanceList = () => {
             page: currentPage,
         };
 
-        // Only send department_id when a department is selected
         if (department) {
             params.department_id = department;
         }
 
-       if (date) {
-    const [year, month] = date.split("-");
-
-    // Use the first day of the selected month
-    params.date = `${year}-${month}-01`;
-}
+        if (date) {
+            params.date = date;
+        }
 
         dispatch(getAttendanceList(params));
     }, [dispatch, currentPage, department, date]);
-
     // --------------------------------------------------
     // Reset page when filters change
     // --------------------------------------------------
@@ -100,14 +95,14 @@ const AttendanceList = () => {
     // --------------------------------------------------
     const visibleRows = search
         ? mappedRows.filter(
-              (row) =>
-                  row.name
-                      ?.toLowerCase()
-                      .includes(search.toLowerCase()) ||
-                  row.employeeId
-                      ?.toLowerCase()
-                      .includes(search.toLowerCase())
-          )
+            (row) =>
+                row.name
+                    ?.toLowerCase()
+                    .includes(search.toLowerCase()) ||
+                row.employeeId
+                    ?.toLowerCase()
+                    .includes(search.toLowerCase())
+        )
         : mappedRows;
 
     // --------------------------------------------------
@@ -132,27 +127,27 @@ const AttendanceList = () => {
                 breadcrumbs={["Attendance"]}
             />
 
-           <ReusableFilter
-    search={search}
-    onSearch={setSearch}
+            <ReusableFilter
+                search={search}
+                onSearch={setSearch}
 
-    department={department}
-    departments={departmentOptions}
-    onDepartment={setDepartment}
+                department={department}
+                departments={departmentOptions}
+                onDepartment={setDepartment}
 
-    status={status}
-    statuses={["Present", "Absent", "On Leave"]}
-    onStatus={setStatus}
+                status={status}
+                statuses={["Present", "Absent", "On Leave"]}
+                onStatus={setStatus}
 
-    date={date}
-    onDate={setDate}
-    dateType="date"
+                date={date}
+                onDate={setDate}
+                dateType="date"
 
-    showSearch
-    showDepartment
-    showStatus
-    showDate
-/>
+                showSearch
+                showDepartment
+                showStatus
+                showDate
+            />
 
             {listLoading && (
                 <p>Loading attendance...</p>
