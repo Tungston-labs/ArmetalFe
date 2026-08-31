@@ -439,32 +439,44 @@ const ReimbursementDetails = () => {
         );
 
         return [
+
             {
                 title: "Total Request",
                 count: String(totalRequests).padStart(2, "0"),
                 icon: <FiFileText />,
+
                 backgroundColor: "#E8F1FF",
+
                 iconColor: "#2878FF",
             },
+
             {
                 title: "Approved",
                 count: String(approvedRequests).padStart(2, "0"),
                 icon: <FiCheckCircle />,
+
                 backgroundColor: "#E9F9EF",
+
                 iconColor: "#16A34A",
             },
+
             {
                 title: "Pending",
                 count: String(pendingRequests).padStart(2, "0"),
                 icon: <FiClock />,
+
                 backgroundColor: "#FFF6E5",
+
                 iconColor: "#F59E0B",
             },
+
             {
                 title: "Rejected",
                 count: String(rejectedRequests).padStart(2, "0"),
                 icon: <FiXCircle />,
+
                 backgroundColor: "#FFF0F0",
+
                 iconColor: "#EF4444",
             },
             {
@@ -482,10 +494,13 @@ const ReimbursementDetails = () => {
                 iconColor: "#2878FF",
             },
         ];
+
     }, [filteredData]);
 
     const handleSearch = (value) => {
+
         setSearch(value);
+
         setCurrentPage(1);
     };
 
@@ -744,7 +759,9 @@ const ReimbursementDetails = () => {
                 <ReusablePagination
                     currentPage={currentPage}
                     totalPages={totalPages}
-                    onPageChange={setCurrentPage}
+                    onPageChange={
+                        setCurrentPage
+                    }
                 />
             )}
 

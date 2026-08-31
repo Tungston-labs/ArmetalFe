@@ -51,7 +51,7 @@ const ViewBasicLayout = ({
           onImageChange={handleImageChange}
         
         />
-        <TabsRowContainer>
+        {/* <TabsRowContainer>
           <TabsRow ref={rowRef}>
             {tabs.map((tab) => (
               <NavLink
@@ -65,7 +65,7 @@ const ViewBasicLayout = ({
               </NavLink>
             ))}
           </TabsRow>
-        </TabsRowContainer>
+        </TabsRowContainer> */}
       </TopSection>
 
     <FormSection>{children}</FormSection>

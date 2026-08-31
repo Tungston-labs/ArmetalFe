@@ -64,7 +64,7 @@ export const Step = styled.div`
 export const SectionTitle = styled.h4`
 margin-top: 10px;
   color: #171717;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 500;
   line-height: 18px;
 font-size: "poppins";
@@ -140,7 +140,7 @@ export const SizeHint = styled.span`
 
 
 export const FormCard = styled.div`
-  padding:20px;
+  /* padding:20px; */
 `;
 export const UploadButton = styled.button`
   background-color: #1e40af;

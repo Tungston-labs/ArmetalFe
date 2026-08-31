@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllEmployees } from "../../../../Redux/employeeSlice";
 
 import {
   Overlay,
@@ -22,7 +24,6 @@ const emptyForm = {
   departmentName: "",
   departmentCode: "",
   headOfDepartment: "",
-  teamLead: "",
 };
 
 const DepartmentModal = ({
@@ -33,6 +34,8 @@ const DepartmentModal = ({
   onSubmit,
   departments = [],
 }) => {
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState(emptyForm);
 
   const [errors, setErrors] = useState({
@@ -42,6 +45,20 @@ const DepartmentModal = ({
   });
 
   const isEdit = mode === "edit";
+
+  // =====================================================
+  // FETCH EMPLOYEE LIST (for Head Of Department dropdown)
+  // =====================================================
+
+  const { employeeList = [] } = useSelector((state) => state.employee);
+
+  useEffect(() => {
+    // Only needed in edit mode, since that's the only
+    // place the dropdown is shown
+    if (isOpen && isEdit) {
+      dispatch(getAllEmployees({ page: 1, search: "" }));
+    }
+  }, [isOpen, isEdit, dispatch]);
 
   // =====================================================
   // FILL FORM
@@ -68,11 +85,6 @@ const DepartmentModal = ({
           departmentData.head_of_department ||
           departmentData.department_head ||
           "",
-
-        teamLead:
-          departmentData.teamLead ||
-          departmentData.team_lead ||
-          "",
       });
     } else {
       setFormData(emptyForm);
@@ -90,29 +102,23 @@ const DepartmentModal = ({
   // =====================================================
 
   const checkUniqueName = (value) => {
-    const name = String(value || "")
-      .trim()
-      .toLowerCase();
+    const name = String(value || "").trim().toLowerCase();
 
     if (!name) {
       return "";
     }
 
     const duplicate = departments.some((department) => {
-      // Ignore current department while editing
       if (
         isEdit &&
         departmentData &&
-        Number(department.id) ===
-          Number(departmentData.id)
+        Number(department.id) === Number(departmentData.id)
       ) {
         return false;
       }
 
       const existingName = String(
-        department.name ||
-          department.departmentName ||
-          ""
+        department.name || department.departmentName || ""
       )
         .trim()
         .toLowerCase();
@@ -132,21 +138,17 @@ const DepartmentModal = ({
   // =====================================================
 
   const checkUniqueCode = (value) => {
-    const code = String(value || "")
-      .trim()
-      .toLowerCase();
+    const code = String(value || "").trim().toLowerCase();
 
     if (!code) {
       return "";
     }
 
     const duplicate = departments.some((department) => {
-      // Ignore current department while editing
       if (
         isEdit &&
         departmentData &&
-        Number(department.id) ===
-          Number(departmentData.id)
+        Number(department.id) === Number(departmentData.id)
       ) {
         return false;
       }
@@ -182,31 +184,23 @@ const DepartmentModal = ({
       [name]: value,
     }));
 
-    // Department Name
     if (name === "departmentName") {
       setErrors((prev) => ({
         ...prev,
-        departmentName:
-          checkUniqueName(value),
+        departmentName: checkUniqueName(value),
         general: "",
       }));
     }
 
-    // Department Code
     if (name === "departmentCode") {
       setErrors((prev) => ({
         ...prev,
-        departmentCode:
-          checkUniqueCode(value),
+        departmentCode: checkUniqueCode(value),
         general: "",
       }));
     }
 
-    // Other fields
-    if (
-      name !== "departmentName" &&
-      name !== "departmentCode"
-    ) {
+    if (name !== "departmentName" && name !== "departmentCode") {
       setErrors((prev) => ({
         ...prev,
         general: "",
@@ -225,41 +219,21 @@ const DepartmentModal = ({
       general: "",
     };
 
-    // Department Name
     if (!formData.departmentName.trim()) {
-      newErrors.departmentName =
-        "Department name is required.";
+      newErrors.departmentName = "Department name is required.";
     } else {
-      newErrors.departmentName =
-        checkUniqueName(
-          formData.departmentName
-        );
+      newErrors.departmentName = checkUniqueName(formData.departmentName);
     }
 
-    // Department Code
     if (!formData.departmentCode.trim()) {
-      newErrors.departmentCode =
-        "Department code is required.";
+      newErrors.departmentCode = "Department code is required.";
     } else {
-      newErrors.departmentCode =
-        checkUniqueCode(
-          formData.departmentCode
-        );
-    }
-
-    // Team Lead
-    if (!formData.teamLead) {
-      newErrors.general =
-        "Please select a team lead.";
+      newErrors.departmentCode = checkUniqueCode(formData.departmentCode);
     }
 
     setErrors(newErrors);
 
-    return (
-      !newErrors.departmentName &&
-      !newErrors.departmentCode &&
-      !newErrors.general
-    );
+    return !newErrors.departmentName && !newErrors.departmentCode;
   };
 
   // =====================================================
@@ -273,19 +247,19 @@ const DepartmentModal = ({
       return;
     }
 
+    // Pass back plain camelCase — the parent components
+    // (DepartmentCards.jsx, DepartmentDetails.jsx) each do
+    // their own remapping to the API's snake_case fields.
     const submitData = {
       ...formData,
     };
 
-    // Add ID only when editing
     if (isEdit && departmentData?.id) {
       submitData.id = departmentData.id;
     }
 
     console.log(
-      isEdit
-        ? "Updating department:"
-        : "Creating department:",
+      isEdit ? "Updating department:" : "Creating department:",
       submitData
     );
 
@@ -296,19 +270,10 @@ const DepartmentModal = ({
     try {
       await onSubmit(submitData);
     } catch (error) {
-      console.error(
-        "Department modal submit error:",
-        error
-      );
-
-      // =================================================
-      // BACKEND DEPARTMENT CODE ERROR
-      // =================================================
+      console.error("Department modal submit error:", error);
 
       if (error?.department_code) {
-        const message = Array.isArray(
-          error.department_code
-        )
+        const message = Array.isArray(error.department_code)
           ? error.department_code[0]
           : error.department_code;
 
@@ -320,14 +285,8 @@ const DepartmentModal = ({
         return;
       }
 
-      // =================================================
-      // BACKEND DEPARTMENT NAME ERROR
-      // =================================================
-
       if (error?.name) {
-        const message = Array.isArray(
-          error.name
-        )
+        const message = Array.isArray(error.name)
           ? error.name[0]
           : error.name;
 
@@ -338,10 +297,6 @@ const DepartmentModal = ({
 
         return;
       }
-
-      // =================================================
-      // GENERAL BACKEND ERROR
-      // =================================================
 
       let message =
         error?.detail ||
@@ -385,181 +340,94 @@ const DepartmentModal = ({
 
   return (
     <Overlay onClick={handleClose}>
-      <Modal
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* HEADER */}
-
+      <Modal onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <ModalTitle>
-            {isEdit
-              ? "Edit Department"
-              : "Add Department"}
+            {isEdit ? "Edit Department" : "Add Department"}
           </ModalTitle>
         </ModalHeader>
 
         <Form onSubmit={handleSubmit}>
-          {/* =================================================
-              ROW 1
-          ================================================= */}
-
           <FormRow>
-            {/* Department Name */}
-
             <FormGroup>
               <Label>
-                Department Name{" "}
-                <Required>*</Required>
+                Department Name <Required>*</Required>
               </Label>
 
               <Input
                 type="text"
                 name="departmentName"
-                value={
-                  formData.departmentName
-                }
+                value={formData.departmentName}
                 onChange={handleChange}
                 placeholder="Development"
                 autoComplete="off"
               />
 
               {errors.departmentName && (
-                <ErrorMessage>
-                  {errors.departmentName}
-                </ErrorMessage>
+                <ErrorMessage>{errors.departmentName}</ErrorMessage>
               )}
             </FormGroup>
 
-            {/* Department Code */}
-
             <FormGroup>
               <Label>
-                Department Code{" "}
-                <Required>*</Required>
+                Department Code <Required>*</Required>
               </Label>
 
               <Input
                 type="text"
                 name="departmentCode"
-                value={
-                  formData.departmentCode
-                }
+                value={formData.departmentCode}
                 onChange={handleChange}
                 placeholder="DEV-001"
                 autoComplete="off"
               />
 
               {errors.departmentCode && (
-                <ErrorMessage>
-                  {errors.departmentCode}
-                </ErrorMessage>
+                <ErrorMessage>{errors.departmentCode}</ErrorMessage>
               )}
             </FormGroup>
           </FormRow>
 
-          {/* =================================================
-              ROW 2
-          ================================================= */}
+          {/* Head Of Department — edit mode only */}
+          {isEdit && (
+            <FormRow>
+              <FormGroup>
+                <Label>Head Of The Department</Label>
 
-          <FormRow>
-            {/* Head Of Department */}
+                <Select
+                  name="headOfDepartment"
+                  value={formData.headOfDepartment}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Head</option>
 
-            <FormGroup>
-              <Label>
-                Head Of The Department
-              </Label>
-
-              <Select
-                name="headOfDepartment"
-                value={
-                  formData.headOfDepartment
-                }
-                onChange={handleChange}
-              >
-                <option value="">
-                  Select Head
-                </option>
-
-                <option value="Riswin">
-                  Riswin
-                </option>
-
-                <option value="John">
-                  John
-                </option>
-
-                <option value="David">
-                  David
-                </option>
-              </Select>
-            </FormGroup>
-
-            {/* Team Lead */}
-
-            <FormGroup>
-              <Label>
-                Team Lead{" "}
-                <Required>*</Required>
-              </Label>
-
-              <Select
-                name="teamLead"
-                value={formData.teamLead}
-                onChange={handleChange}
-              >
-                <option value="">
-                  Select Team Lead
-                </option>
-
-                <option value="Ajay">
-                  Ajay
-                </option>
-
-                <option value="Alex">
-                  Alex
-                </option>
-
-                <option value="Robert">
-                  Robert
-                </option>
-              </Select>
-            </FormGroup>
-          </FormRow>
-
-          {/* =================================================
-              GENERAL ERROR
-          ================================================= */}
-
-          {errors.general && (
-            <ErrorMessage>
-              {errors.general}
-            </ErrorMessage>
+                  {employeeList.map((emp) => (
+                    <option key={emp.id} value={emp.id}>
+                      {emp.name ||
+                        emp.employee_name ||
+                        emp.full_name ||
+                        `Employee #${emp.id}`}
+                    </option>
+                  ))}
+                </Select>
+              </FormGroup>
+            </FormRow>
           )}
 
-          {/* =================================================
-              BUTTONS
-          ================================================= */}
+          {errors.general && <ErrorMessage>{errors.general}</ErrorMessage>}
 
           <ButtonRow>
-            <CancelButton
-              type="button"
-              onClick={handleClose}
-            >
+            <CancelButton type="button" onClick={handleClose}>
               CANCEL
             </CancelButton>
 
             <SubmitButton
               type="submit"
-              disabled={
-                Boolean(
-                  errors.departmentName ||
-                    errors.departmentCode
-                )
-              }
+              disabled={Boolean(
+                errors.departmentName || errors.departmentCode
+              )}
             >
-              {isEdit
-                ? "UPDATE"
-                : "CREATE"}
+              {isEdit ? "UPDATE" : "CREATE"}
             </SubmitButton>
           </ButtonRow>
         </Form>

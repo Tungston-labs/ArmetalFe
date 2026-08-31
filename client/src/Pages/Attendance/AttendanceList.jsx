@@ -1,125 +1,189 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
+import { getAttendanceList } from "../../Redux/attendanceSlice";
+import { getDepartmentsMin } from "../../Redux/departmentSlice";
 
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusablePagination from "../../Components/Pagination/ReusablePagination";
-
-import {
-    employeeColumns,
-    employeeData,
-} from "../../Components/ReusableTable/dummydata";
-
+import { attendanceColumns } from "./Attendancedata";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 
 const AttendanceList = () => {
-
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [search, setSearch] = useState("");
     const [department, setDepartment] = useState("");
     const [status, setStatus] = useState("");
-    const [month, setMonth] = useState("");
-
-    const rowsPerPage = 10;
-
+    const [date, setDate] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-    const totalPages = Math.ceil(
-        employeeData.length / rowsPerPage
-    );
+    // --------------------------------------------------
+    // Attendance Redux
+    // --------------------------------------------------
+    const {
+        attendanceList,
+        pagination,
+        listLoading,
+        error,
+    } = useSelector((state) => state.attendance);
 
-    const paginatedData = useMemo(() => {
+    // --------------------------------------------------
+    // Department Redux
+    // --------------------------------------------------
+    const {
+        minList: departments,
+        loading: departmentLoading,
+    } = useSelector((state) => state.departments);
 
-        const start =
-            (currentPage - 1) * rowsPerPage;
+    // --------------------------------------------------
+    // Get Departments
+    // --------------------------------------------------
+    useEffect(() => {
+        dispatch(getDepartmentsMin());
+    }, [dispatch]);
 
-        return employeeData.slice(
-            start,
-            start + rowsPerPage
-        );
+    // --------------------------------------------------
+    // Get Attendance
+    // --------------------------------------------------
+    useEffect(() => {
+        const params = {
+            page: currentPage,
+        };
 
-    }, [currentPage]);
+        // Only send department_id when a department is selected
+        if (department) {
+            params.department_id = department;
+        }
 
-    // =====================================================
-    // ROW CLICK
-    // =====================================================
+       if (date) {
+    const [year, month] = date.split("-");
 
+    // Use the first day of the selected month
+    params.date = `${year}-${month}-01`;
+}
+
+        dispatch(getAttendanceList(params));
+    }, [dispatch, currentPage, department, date]);
+
+    // --------------------------------------------------
+    // Reset page when filters change
+    // --------------------------------------------------
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [department, date]);
+
+    const pageSize = 10;
+
+    // --------------------------------------------------
+    // Map Attendance Data
+    // --------------------------------------------------
+    const mappedRows = (attendanceList || []).map((item, index) => ({
+        slNo: (currentPage - 1) * pageSize + index + 1,
+        id: item.employee,
+        name: item.employee_name,
+        employeeId: item.employee_id,
+        profilePic: item.profile_pic,
+        date: item.date,
+        firstSwipeIn: item.first_swipe_in || "--",
+        lastSwipeOut: item.last_swipe_out || "--",
+        totalHours: item.total_hours_formatted,
+        attendanceToday: item.attendance_today,
+        attendanceId: item.attendance_id,
+    }));
+
+    // --------------------------------------------------
+    // Client-side Search
+    // --------------------------------------------------
+    const visibleRows = search
+        ? mappedRows.filter(
+              (row) =>
+                  row.name
+                      ?.toLowerCase()
+                      .includes(search.toLowerCase()) ||
+                  row.employeeId
+                      ?.toLowerCase()
+                      .includes(search.toLowerCase())
+          )
+        : mappedRows;
+
+    // --------------------------------------------------
+    // Row Click
+    // --------------------------------------------------
     const handleRowClick = (employee) => {
-
-        console.log(
-            "Selected Employee:",
-            employee
-        );
-
-        console.log(
-            "Employee ID:",
-            employee.id
-        );
-
-        navigate(
-            `/employee-attendance-tracking/${employee.id}`
-        );
+        navigate(`/employee-attendance-tracking/${employee.id}`);
     };
 
+    // --------------------------------------------------
+    // Convert Department API Data
+    // --------------------------------------------------
+    const departmentOptions = (departments || []).map((item) => ({
+        label: item.name,
+        value: item.id,
+    }));
+
     return (
-
         <div style={{ padding: 20 }}>
-
             <ReusableHeader
-                title="Employees"
-                breadcrumbs={[
-                    "Dashboard",
-                    "Employees",
-                ]}
-                buttonText="ADD NEW EMPLOYEE"
-                onButtonClick={() =>
-                    console.log("Add Employee")
-                }
+                title="Attendance"
+                breadcrumbs={["Attendance"]}
             />
 
-            <ReusableFilter
-                search={search}
-                onSearch={setSearch}
+           <ReusableFilter
+    search={search}
+    onSearch={setSearch}
 
-                department={department}
-                departments={[
-                    "HR",
-                    "Finance",
-                    "Development",
-                    "Marketing",
-                ]}
-                onDepartment={setDepartment}
+    department={department}
+    departments={departmentOptions}
+    onDepartment={setDepartment}
 
-                status={status}
-                statuses={[
-                    "Present",
-                    "Absent",
-                    "On Leave",
-                ]}
-                onStatus={setStatus}
+    status={status}
+    statuses={["Present", "Absent", "On Leave"]}
+    onStatus={setStatus}
 
-                date={month}
-                onDate={setMonth}
+    date={date}
+    onDate={setDate}
+    dateType="date"
 
-                showSearch
-                showDepartment
-                showStatus
-                showDate
-            />
+    showSearch
+    showDepartment
+    showStatus
+    showDate
+/>
 
-            <ReusableTable
-                columns={employeeColumns}
-                data={paginatedData}
-                onRowClick={handleRowClick}
-            />
+            {listLoading && (
+                <p>Loading attendance...</p>
+            )}
 
-            <ReusablePagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-            />
+            {error && (
+                <p style={{ color: "red" }}>
+                    {String(error)}
+                </p>
+            )}
 
+            {!listLoading && !error && (
+                <>
+                    <ReusableTable
+                        columns={attendanceColumns}
+                        data={visibleRows}
+                        onRowClick={handleRowClick}
+                    />
+
+                    <ReusablePagination
+                        currentPage={
+                            pagination?.current_page ||
+                            currentPage
+                        }
+                        totalPages={
+                            pagination?.total_pages || 1
+                        }
+                        onPageChange={setCurrentPage}
+                    />
+                </>
+            )}
         </div>
     );
 };

@@ -12,10 +12,8 @@ import {
   Container,
 } from "./BasicLevel.Styles";
 
-import Multistep from "../../../Components/Employee/AddForm/Multistep";
 import JobDetails from "../../../Components/Employee/AddForm/JobDetails";
 import Loader from "../../../Components/Loader/Loader";
-import EmployeeIcon from "../../../assets/employeeicon.svg";
 // import Navbar from "../../Components/Navbar";
 import EmployeeHeader from "../../../Components/Employee/Headers/EmployeeHeader";
 import { ButtonWrapper, NextButton } from "../../../Components/Employee/AddForm/JobDetails.Styles";
@@ -25,6 +23,7 @@ import {
   getLegalFieldConfig,
   validateLegalIdentity,
 } from "../../../utils/employeeCountryFields";
+import FormStepper from "../AddEmployee/Formstepper";
 
 
 export default function AddEmployeeForm() {
@@ -206,20 +205,12 @@ export default function AddEmployeeForm() {
         <UnsavedChangesGuard isDirty={isFormDirty} />
            <ReusableHeader
                     title="Employees"
-                    breadcrumbs={["Dashboard", "Employees","Add Form"]}
+                    breadcrumbs={["Employees","Add Form"]}
                    showBack
 
                 />
 
-    
-        <div
-          style={{ display: "flex", justifyContent: "center", padding: "0px" }}
-        >
-          <div style={{ width: "50%" }}>
-            <Multistep currentStep={currentStep} steps={stepTitles} />
-          </div>
-        </div>
-
+      <FormStepper/>
         <EmployeeHeader
           formData={formData}
           setFormData={setFormData}

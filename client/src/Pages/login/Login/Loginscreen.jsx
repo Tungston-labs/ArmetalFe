@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-
-// Vite imports .svg as a URL string by default (not a React component),
-// so it needs to be rendered as an <img src={...} />.
-import girlIllustrationUrl from "../../assets/login.svg";
-import logo from "../../assets/logo3.svg";
+import girlIllustrationUrl from "../../../assets/login.svg";
+import logo from "../../../assets/logo3.svg";
 import {
     PageBackground,
     PageWrapper,
@@ -26,7 +23,7 @@ import {
 } from "./LoginScreen.styles";
 import { PiEye, PiEyeSlash } from "react-icons/pi";
 
-const Login = ({ onLogin, isLoading, error }) => {
+const Loginscreen = ({ onLogin, isLoading, error }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -111,7 +108,7 @@ const Login = ({ onLogin, isLoading, error }) => {
                                     {showPassword ? <PiEyeSlash /> : <PiEye />}
                                 </ToggleVisibility>
                             </InputWrapper>
-                            <ForgotPassword href="/forgot-password">
+                            <ForgotPassword to="/forget-screen">
                                 Forgot password?
                             </ForgotPassword>
                         </FieldGroup>
@@ -135,4 +132,4 @@ const Login = ({ onLogin, isLoading, error }) => {
     );
 };
 
-export default Login;
+export default Loginscreen;

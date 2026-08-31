@@ -6,7 +6,7 @@ export const Container = styled.div`
   padding: 20px;
   font-family: Satoshi;
   box-sizing: border-box;
-
+background-color:white;  
   /* Mobile screens */
   @media (max-width: 480px) {
     padding: 1rem;

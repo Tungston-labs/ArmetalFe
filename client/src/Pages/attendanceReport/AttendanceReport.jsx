@@ -1,68 +1,152 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import {
   Container,
   PageWrapper,
 } from "./AttendanceReportStyles";
-import EmployeeAttendanceModal from "./EmployeeAttendanceModal";
-import { getAttendanceSummary, generateAttendanceExcelReport } from "../../Redux/attendanceSlice";
+
+import {
+  getAttendanceSummary,
+  generateAttendanceExcelReport,
+} from "../../Redux/attendanceSlice";
+
 import Pagination from "../../Components/Pagination/Pagination";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
+
 import { getDepartments } from "../../Redux/departmentSlice";
 import Swal from "sweetalert2";
+
 const AttendanceReport = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const auth = useSelector((state) => state.auth || {});
-  const token = auth?.accessToken || auth?.token || "";
-  const attendanceState = useSelector((state) => state.attendance || {});
-  const attendanceSummary = attendanceState.attendanceSummary?.results || [];
-  const summaryLoading = attendanceState.summaryLoading || false;
+  const token =
+    auth?.accessToken ||
+    auth?.token ||
+    "";
+
+  const attendanceState = useSelector(
+    (state) => state.attendance || {}
+  );
+
+  const attendanceSummary =
+    attendanceState.attendanceSummary?.results || [];
+
+  const summaryLoading =
+    attendanceState.summaryLoading || false;
+
   const excelLoading =
     attendanceState.attendanceExcelLoading || false;
-  const summaryData = attendanceState.attendanceSummary;
-  const currentPage = summaryData?.current_page || 1;
-  const totalPages = summaryData?.total_pages || 1;
 
-  const [department, setDepartment] = useState("");
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState(
-    new Date().toISOString().slice(0, 7)
-  );
-  const [searchTerm, setSearchTerm] = useState("");
-  const { list: departmentList } = useSelector((state) => state.departments || {});
+  const summaryData =
+    attendanceState.attendanceSummary;
 
-  const departmentRows = Array.isArray(departmentList?.results)
-    ? departmentList.results
-    : Array.isArray(departmentList)
-      ? departmentList
-      : [];
+  const currentPage =
+    summaryData?.current_page || 1;
+
+  const totalPages =
+    summaryData?.total_pages || 1;
+
+  const [department, setDepartment] =
+    useState("");
+
+  const [selectedMonth, setSelectedMonth] =
+    useState(
+      new Date()
+        .toISOString()
+        .slice(0, 7)
+    );
+
+  const [searchTerm, setSearchTerm] =
+    useState("");
+
+  const { list: departmentList } =
+    useSelector(
+      (state) => state.departments || {}
+    );
+
+  // =========================================================
+  // DEPARTMENT DATA
+  // =========================================================
+
+  const departmentRows =
+    Array.isArray(departmentList?.results)
+      ? departmentList.results
+      : Array.isArray(departmentList)
+        ? departmentList
+        : [];
 
   const departments = useMemo(
-    () => departmentRows.map((d) => d.name),
-    [departmentRows],
+    () =>
+      departmentRows.map(
+        (d) => d.name
+      ),
+    [departmentRows]
   );
+
+  // =========================================================
+  // FETCH DEPARTMENTS
+  // =========================================================
+
   useEffect(() => {
-    dispatch(getDepartments({ page: 1, search: "" }));
+    dispatch(
+      getDepartments({
+        page: 1,
+        search: "",
+      })
+    );
   }, [dispatch]);
 
-  const getMonthNameFromYYYYMM = (yyyyMM) => {
+  // =========================================================
+  // MONTH NAME
+  // =========================================================
+
+  const getMonthNameFromYYYYMM = (
+    yyyyMM
+  ) => {
     if (!yyyyMM) return "";
-    const d = new Date(`${yyyyMM}-01T00:00:00`);
-    if (isNaN(d.getTime())) return "";
-    return d.toLocaleString("default", { month: "long" });
+
+    const d = new Date(
+      `${yyyyMM}-01T00:00:00`
+    );
+
+    if (isNaN(d.getTime())) {
+      return "";
+    }
+
+    return d.toLocaleString(
+      "default",
+      {
+        month: "long",
+      }
+    );
   };
 
   const selectedMonthName = useMemo(
-    () => getMonthNameFromYYYYMM(selectedMonth),
+    () =>
+      getMonthNameFromYYYYMM(
+        selectedMonth
+      ),
     [selectedMonth]
   );
 
+  // =========================================================
+  // FETCH ATTENDANCE SUMMARY
+  // =========================================================
+
   useEffect(() => {
-    if (!selectedMonth || !token) return;
-    const [year, month] = selectedMonth.split("-");
+    if (!selectedMonth || !token) {
+      return;
+    }
+
+    const [year, month] =
+      selectedMonth.split("-");
+
     dispatch(
       getAttendanceSummary({
         year: Number(year),
@@ -71,42 +155,107 @@ const AttendanceReport = () => {
         token,
       })
     );
-  }, [selectedMonth, dispatch, token]);
+  }, [
+    selectedMonth,
+    dispatch,
+    token,
+  ]);
 
-  // ReusableTable needs a unique `id` per row — the API gives us employee_id
+  // =========================================================
+  // FILTER / SEARCH DATA
+  // =========================================================
+
   const visibleRows = useMemo(() => {
-    if (!Array.isArray(attendanceSummary)) return [];
+    if (
+      !Array.isArray(
+        attendanceSummary
+      )
+    ) {
+      return [];
+    }
 
-    const q = searchTerm.trim().toLowerCase();
+    const q =
+      searchTerm
+        .trim()
+        .toLowerCase();
 
     return attendanceSummary
       .filter((emp) => {
-        const matchSearch = emp.employee_name
-          .toLowerCase()
-          .includes(q);
+        const employeeName =
+          emp.employee_name || "";
+
+        const matchSearch =
+          employeeName
+            .toLowerCase()
+            .includes(q);
 
         const matchDepartment =
-          department === "" || emp.department === department;
+          department === "" ||
+          emp.department ===
+            department;
 
-        return matchSearch && matchDepartment;
+        return (
+          matchSearch &&
+          matchDepartment
+        );
       })
       .sort((a, b) =>
-        a.employee_name.localeCompare(b.employee_name)
+        (
+          a.employee_name || ""
+        ).localeCompare(
+          b.employee_name || ""
+        )
       )
       .map((emp) => ({
         ...emp,
         id: emp.employee_id,
       }));
-  }, [attendanceSummary, searchTerm, department]);
+  }, [
+    attendanceSummary,
+    searchTerm,
+    department,
+  ]);
 
-  const handleRowClick = (employee) => {
-    setSelectedEmployee(employee);
-    setIsModalOpen(true);
+  // =========================================================
+  // OPEN EMPLOYEE ATTENDANCE SUMMARY PAGE
+  // =========================================================
+
+  const handleRowClick = (
+    employee
+  ) => {
+    navigate(
+      "/employee-attendance-summary",
+      {
+        state: {
+          employee,
+          employeeId:
+            employee?.employee_id,
+          employeeName:
+            employee?.employee_name,
+          department:
+            employee?.department,
+          selectedMonth,
+          monthName:
+            selectedMonthName,
+        },
+      }
+    );
   };
 
-  const handlePageChange = (page) => {
-    if (!selectedMonth || !token) return;
-    const [year, month] = selectedMonth.split("-");
+  // =========================================================
+  // PAGINATION
+  // =========================================================
+
+  const handlePageChange = (
+    page
+  ) => {
+    if (!selectedMonth || !token) {
+      return;
+    }
+
+    const [year, month] =
+      selectedMonth.split("-");
+
     dispatch(
       getAttendanceSummary({
         year: Number(year),
@@ -117,91 +266,172 @@ const AttendanceReport = () => {
     );
   };
 
+  // =========================================================
+  // DOWNLOAD EXCEL
+  // =========================================================
 
+  const handleDownloadExcel =
+    async () => {
+      if (
+        excelLoading ||
+        !selectedMonth ||
+        !token
+      ) {
+        return;
+      }
 
-const handleDownloadExcel = async () => {
-  if (excelLoading || !selectedMonth || !token) {
-    return;
-  }
+      const [year, month] =
+        selectedMonth.split("-");
 
-  const [year, month] = selectedMonth.split("-");
+      try {
+        const result =
+          await dispatch(
+            generateAttendanceExcelReport(
+              {
+                year: Number(year),
+                month: Number(month),
+                token,
+              }
+            )
+          ).unwrap();
 
-  try {
-    const result = await dispatch(
-      generateAttendanceExcelReport({
-        year: Number(year),
-        month: Number(month),
-        token,
-      })
-    ).unwrap();
+        console.log(
+          "Attendance Excel response:",
+          result
+        );
 
-    console.log("Attendance Excel response:", result);
+        if (
+          result?.download_url
+        ) {
+          window.open(
+            result.download_url,
+            "_blank"
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Excel generation failed:",
+          error
+        );
 
-    if (result?.download_url) {
-      window.open(result.download_url, "_blank");
-    }
+        Swal.fire({
+          icon: "warning",
+          title:
+            "Cannot Generate Report",
+          text:
+            error?.detail ||
+            "Failed to generate attendance report.",
+          confirmButtonText: "OK",
+        });
+      }
+    };
 
-  } catch (error) {
-    console.error("Excel generation failed:", error);
+  // =========================================================
+  // LOP
+  // =========================================================
 
-    Swal.fire({
-      icon: "warning",
-      title: "Cannot Generate Report",
-      text:
-        error?.detail ||
-        "Failed to generate attendance report.",
-      confirmButtonText: "OK",
-    });
-  }
-};
+  const getLop = (row) =>
+    row.lop_days ??
+    row.lop ??
+    0;
 
-  const getLop = (row) => row.lop_days ?? row.lop ?? 0;
+  // =========================================================
+  // TABLE COLUMNS
+  // =========================================================
 
-  // Column config replaces the old <thead>/<tbody> markup 1:1
   const columns = [
     {
       header: "Sl No.",
       accessor: "slNo",
       sortable: false,
-      render: (row, index) => index + 1 + (currentPage - 1) * 20,
+
+      render: (
+        row,
+        index
+      ) =>
+        index +
+        1 +
+        (currentPage - 1) *
+          20,
     },
 
     {
       header: "Employee name",
-      accessor: "employee_name",
+      accessor:
+        "employee_name",
     },
+
     {
       header: "Department",
-      accessor: "department",
+      accessor:
+        "department",
     },
+
     {
       header: "Month",
       accessor: "month",
       sortable: false,
-      render: () => selectedMonthName,
+
+      render: () =>
+        selectedMonthName,
     },
+
     {
-      header: "Total Working Days",
-      accessor: "working_days",
-      render: (row) => row.working_days ?? row.workingDays ?? "-",
+      header:
+        "Total Working Days",
+      accessor:
+        "working_days",
+
+      render: (row) =>
+        row.working_days ??
+        row.workingDays ??
+        "-",
     },
+
     {
       header: "Present",
-      accessor: "present_days",
-      render: (row) => row.present_days ?? row.present ?? "-",
+      accessor:
+        "present_days",
+
+      render: (row) =>
+        row.present_days ??
+        row.present ??
+        "-",
     },
+
     {
       header: "Absent",
-      accessor: "absent_days",
-      render: (row) => row.absent_days ?? row.absent ?? "-",
+      accessor:
+        "absent_days",
+
+      render: (row) =>
+        row.absent_days ??
+        row.absent ??
+        "-",
     },
+
     {
       header: "Loss of Pay",
       accessor: "lop",
+
       render: (row) => {
-        const lop = getLop(row);
+        const lop =
+          getLop(row);
+
         return (
-          <span style={{ color: lop > 0 ? "#e53935" : "inherit", fontWeight: lop > 0 ? 600 : 400 }}>
+          <span
+            style={{
+              color:
+                lop > 0
+                  ? "#e53935"
+                  : "inherit",
+
+              fontWeight:
+                lop > 0
+                  ? 600
+                  : 400,
+            }}
+          >
             {lop}
           </span>
         );
@@ -209,21 +439,31 @@ const handleDownloadExcel = async () => {
     },
   ];
 
+  // =========================================================
+  // RETURN
+  // =========================================================
+
   return (
     <Container>
+
+      {/* HEADER */}
       <ReusableHeader
         title="Employees Attendance Report"
         breadcrumbs={[
           "Employees",
-          "Employees Attendance Report"
+          "Employees Attendance Report",
         ]}
         buttonText={
           excelLoading
             ? "Generating Excel..."
             : "📊 Monthly Report (Excel)"
         }
-        onButtonClick={handleDownloadExcel}
+        onButtonClick={
+          handleDownloadExcel
+        }
       />
+
+      {/* FILTER */}
       <ReusableFilter
         search={searchTerm}
         onSearch={setSearchTerm}
@@ -231,7 +471,9 @@ const handleDownloadExcel = async () => {
 
         department={department}
         departments={departments}
-        onDepartment={setDepartment}
+        onDepartment={
+          setDepartment
+        }
 
         date={selectedMonth}
         onDate={setSelectedMonth}
@@ -240,29 +482,34 @@ const handleDownloadExcel = async () => {
         showDepartment
         showDate
       />
+
+      {/* TABLE */}
       <PageWrapper>
 
         <ReusableTable
           columns={columns}
           data={visibleRows}
           loading={summaryLoading}
-          onRowClick={handleRowClick}
+          onRowClick={
+            handleRowClick
+          }
         />
 
-
+        {/* PAGINATION */}
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+          currentPage={
+            currentPage
+          }
+          totalPages={
+            totalPages
+          }
+          onPageChange={
+            handlePageChange
+          }
         />
+
       </PageWrapper>
 
-      <EmployeeAttendanceModal
-        employee={selectedEmployee}
-        monthName={selectedMonthName}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </Container>
   );
 };

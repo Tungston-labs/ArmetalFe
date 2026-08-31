@@ -1,95 +1,101 @@
-import React, { useRef } from "react";
-import { FiPlus } from "react-icons/fi";
+import React from "react";
 import { GoArrowLeft } from "react-icons/go";
-import { PiUserCirclePlusThin } from "react-icons/pi";
+
 import {
   ProfileContainer,
   ProfileCard,
-  ProfileImageWrapper,
-  ProfileImage,
-  PlusIconWrapper,
+  ProfileCardBody,
   ContentArea,
-  LeftColumn,
-  RightColumn,
+  InputField,
+  InputLabel,
   InputBox,
-  BioBox,
-  InfoRow,
   BackArrowWrapper,
-  UserIconWrapper,
-  OutlinedField,
-  OutlinedLabel,
 } from "./Header.Styles";
 
-const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBack }) => {
-  const fileInputRef = useRef(null);
+import Stepper from "./Stepper";
 
-  const handleImageClick = () => {
-    if (editable && fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && onImageChange) {
-      onImageChange(file);
-    }
-  };
+const Header = ({
+  employee = {},
+  editable = false,
+  onChange,
+  onImageChange,
+  onBack,
+  currentStep = 1,
+  steps = ["Basic Details", "Bank Details", "Documents"],
+}) => {
+  /* =====================================================
+     DATE FORMAT
+  ====================================================== */
 
   const formatDate = (date) => {
     if (!date) return "-";
 
     const d = new Date(date);
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = d.toLocaleString("en-US", { month: "short" });
+
+    const day = String(
+      d.getDate()
+    ).padStart(2, "0");
+
+    const month = d.toLocaleString(
+      "en-US",
+      {
+        month: "short",
+      }
+    );
+
     const year = d.getFullYear();
 
     return `${day}/${month}/${year}`;
   };
+
   return (
     <ProfileContainer>
       <ProfileCard>
-        {onBack && (
-          <BackArrowWrapper onClick={onBack}>
-            <GoArrowLeft size={24} color="#1034ad" />
-          </BackArrowWrapper>
-        )}
-        <ProfileImageWrapper>
-          {employee?.profile_pic ? (
-            <ProfileImage
-              src={
-                employee.profile_pic instanceof File
-                  ? URL.createObjectURL(employee.profile_pic)
-                  : employee.profile_pic
-              }
-              alt="Employee Profile"
-              onClick={handleImageClick}
-              editable={editable}
-            />
-          ) : (
-            <UserIconWrapper onClick={handleImageClick} editable={editable}>
-              <PiUserCirclePlusThin size={120} color="#ccc" />
-            </UserIconWrapper>
+
+        {/* =====================================================
+            GRADIENT STEPPER — avatar + step track,
+            corners square on the bottom so it sits flush
+            against the card body below it
+        ====================================================== */}
+
+        <Stepper
+          embedded
+          currentStep={currentStep}
+          steps={steps}
+          profileImageSrc={
+            employee?.profile_pic || null
+          }
+          editable={editable}
+          onProfileImageChange={
+            onImageChange
+          }
+        />
+
+        <ProfileCardBody>
+
+          {/* =====================================================
+              BACK BUTTON
+          ====================================================== */}
+
+          {onBack && (
+            <BackArrowWrapper onClick={onBack}>
+              <GoArrowLeft size={20} />
+            </BackArrowWrapper>
           )}
 
-          {editable && (
-            <PlusIconWrapper onClick={handleImageClick}>
-              <FiPlus size={24} color="#fff" />
-            </PlusIconWrapper>
-          )}
+          {/* =====================================================
+              EMPLOYEE INFORMATION
+          ====================================================== */}
 
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
-        </ProfileImageWrapper>
-        <ContentArea>
-          <LeftColumn>
-            <OutlinedField>
-              <OutlinedLabel>Full Name</OutlinedLabel>
+          <ContentArea>
+
+            {/* ================= NAME ================= */}
+
+            <InputField>
+              <InputLabel>
+                Name
+              </InputLabel>
+
               <InputBox
                 type="text"
                 name="name"
@@ -98,68 +104,158 @@ const Header = ({ employee = {}, editable = false, onChange, onImageChange, onBa
                 onChange={onChange}
                 autoComplete="off"
               />
-            </OutlinedField>
-            <OutlinedField>
-              <OutlinedLabel>Employee Code</OutlinedLabel>
-              <InputBox
-                type="text"
-                name="employee_code"
-                value={employee.employee_code || ""}
-                readOnly={!editable}
-                onChange={onChange}
-              />
-            </OutlinedField>
-            <OutlinedField>
-              <OutlinedLabel>Email</OutlinedLabel>
+            </InputField>
+
+            {/* ================= EMAIL ================= */}
+
+            <InputField>
+              <InputLabel>
+                Email
+              </InputLabel>
+
               <InputBox
                 type="email"
                 name="email"
                 value={employee.email || ""}
                 readOnly={!editable}
                 onChange={onChange}
+                autoComplete="off"
               />
-            </OutlinedField>
+            </InputField>
 
-          </LeftColumn>
+            {/* ================= DATE OF BIRTH ================= */}
 
-          <RightColumn>
-            <OutlinedField>
-              <OutlinedLabel>Address</OutlinedLabel>
-              <BioBox
+            <InputField>
+              <InputLabel>
+                Date of Birth
+              </InputLabel>
+
+              <InputBox
+                type={editable ? "date" : "text"}
+                name="dob"
+                value={
+                  editable
+                    ? employee.dob
+                      ? employee.dob.split("T")[0]
+                      : ""
+                    : formatDate(employee.dob)
+                }
+                readOnly={!editable}
+                onChange={onChange}
+              />
+            </InputField>
+
+            {/* ================= EMPLOYEE ID ================= */}
+
+            <InputField>
+              <InputLabel>
+                Employee ID
+              </InputLabel>
+
+              <InputBox
+                type="text"
+                name="employee_id"
+                value={
+                  employee.employee_id || ""
+                }
+                readOnly={!editable}
+                onChange={onChange}
+                autoComplete="off"
+              />
+            </InputField>
+
+            {/* ================= GENDER ================= */}
+
+            <InputField>
+              <InputLabel>
+                Gender
+              </InputLabel>
+
+              <InputBox
+                type="text"
+                name="gender"
+                value={employee.gender || ""}
+                readOnly={!editable}
+                onChange={onChange}
+              />
+            </InputField>
+
+            {/* ================= CONTACT NUMBER ================= */}
+
+            <InputField>
+              <InputLabel>
+                Contact Number
+              </InputLabel>
+
+              <InputBox
+                type="tel"
+                name="contact_number"
+                value={
+                  employee.contact_number ||
+                  employee.phone ||
+                  ""
+                }
+                readOnly={!editable}
+                onChange={onChange}
+                autoComplete="off"
+              />
+            </InputField>
+
+            {/* ================= ADDRESS ================= */}
+
+            <InputField $fullWidth>
+              <InputLabel>
+                Address
+              </InputLabel>
+
+              <InputBox
+                type="text"
                 name="address"
                 value={employee.address || ""}
                 readOnly={!editable}
                 onChange={onChange}
+                autoComplete="off"
               />
-            </OutlinedField>
-            <InfoRow>
-              <OutlinedField>
-                <OutlinedLabel>Date of Birth</OutlinedLabel>
-                <InputBox
-                  type={editable ? "date" : "text"}
-                  name="dob"
-                  value={
-                    editable
-                      ? (employee.dob ? employee.dob.split("T")[0] : "")
-                      : formatDate(employee.dob)
-                  }
-                  readOnly={!editable}
-                  onChange={onChange}
-                />
-              </OutlinedField>
-              <OutlinedField>
-                <OutlinedLabel>Gender</OutlinedLabel>
-                <InputBox
-                  type="text"
-                  name="gender"
-                  value={employee.gender || ""}
-                  readOnly={!editable}
-                  onChange={onChange}
-                />
-              </OutlinedField>
-            </InfoRow>
-          </RightColumn>
-        </ContentArea>
+            </InputField>
+
+            {/* ================= COUNTRY ================= */}
+
+            <InputField>
+              <InputLabel>
+                Country
+              </InputLabel>
+
+              <InputBox
+                type="text"
+                name="country"
+                value={employee.country || ""}
+                readOnly={!editable}
+                onChange={onChange}
+                autoComplete="off"
+              />
+            </InputField>
+
+            {/* ================= BLOOD GROUP ================= */}
+
+            <InputField>
+              <InputLabel>
+                Blood Group
+              </InputLabel>
+
+              <InputBox
+                type="text"
+                name="blood_group"
+                value={
+                  employee.blood_group || ""
+                }
+                readOnly={!editable}
+                onChange={onChange}
+                autoComplete="off"
+              />
+            </InputField>
+
+          </ContentArea>
+        </ProfileCardBody>
       </ProfileCard>
     </ProfileContainer>
   );

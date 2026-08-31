@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const PageBackground = styled.div`
   min-height: 100vh;
@@ -275,7 +276,7 @@ export const ToggleVisibility = styled.button`
     outline: none;
   }
 `;
-export const ForgotPassword = styled.a`
+export const ForgotPassword = styled(Link)`
   display: inline-block;
   margin-top: 8px;
   font-size: 13px;

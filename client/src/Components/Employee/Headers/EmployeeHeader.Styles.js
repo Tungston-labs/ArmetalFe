@@ -3,7 +3,8 @@ import styled from "styled-components";
 export const Container = styled.div`
   width: 100%;
   margin: auto;
-  padding: 20px;
+  margin-top:15px
+  // padding: 20px;
 `;
 
 export const ProfileWrapper = styled.div`
@@ -140,37 +141,41 @@ export const HelperText = styled.div`
   text-align: center;
 `;
 
-/* ── Rest unchanged ───────────────────────────────────────── */
+/* ── Form layout ──────────────────────────────────────────── */
 
 export const InfoWrapper = styled.div`
   display: flex;
-  gap: 30px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
 `;
 
-export const LeftColumn = styled.div`
-  flex: 1 1 45%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-`;
+export const Row = styled.div`
+  display: grid;
+  grid-template-columns: repeat(${(props) => props.$columns || 5}, 1fr);
+  gap: 16px;
 
-export const RightColumn = styled.div`
-  flex: 1 1 45%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 export const FieldGroup = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 0;
 `;
-
 export const FieldLabel = styled.label`
   margin-bottom: 6px;
   font-weight: 500;
   color: #172554;
+  font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 14px;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Input = styled.input`
@@ -217,4 +222,15 @@ export const ErrorText = styled.div`
   font-size: 0.85em;
   margin-top: 4px;
   text-align: left;
+`;
+export const SectionTitle = styled.h2`
+  font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 16px;
+line-height: 100%;
+letter-spacing: 0%;
+
+  // border-bottom: 2px solid #e2e8f0;
+  // padding-bottom: 8px;
 `;
