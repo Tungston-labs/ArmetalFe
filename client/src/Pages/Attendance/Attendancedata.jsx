@@ -1,6 +1,6 @@
-
+import React from "react";
 export const attendanceColumns = [
-   {
+  {
     header: "Sl No",
     accessor: "slNo",
   },
@@ -9,10 +9,9 @@ export const attendanceColumns = [
     accessor: "name",
   },
   {
-    header: "Department",
+    header: "Employee ID",
     accessor: "employeeId",
   },
-
   {
     header: "Check In",
     accessor: "firstSwipeIn",
@@ -28,6 +27,18 @@ export const attendanceColumns = [
   {
     header: "Status",
     accessor: "attendanceToday",
+    sortable: false,
+    render: (row) => (
+      <span
+        style={{
+          color: row.attendanceToday ? "green" : "red",
+          fontWeight: 500,
+          fontSize: "13px",
+        }}
+      >
+        {row.attendanceToday ? "Present" : "Absent"}
+      </span>
+    ),
   },
 ];
 

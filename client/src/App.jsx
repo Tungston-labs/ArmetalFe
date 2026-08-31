@@ -97,12 +97,12 @@ function App() {
           <Route path="/login" element={<LoginForm />} />
 
 
-{/* <Route element={<AuthLayout />}> */}
-    <Route path="/log" element={<LoginScreen />} />
-    <Route path="/forget-screen" element={<ForgetPasswordScreen/>}/>
-    <Route path="/otp" element={<OtpScreen/>}/>
-    <Route path="/create-password" element={<CreateNewPasswordScreen/>}/>
-{/* </Route> */}
+          {/* <Route element={<AuthLayout />}> */}
+          <Route path="/log" element={<LoginScreen />} />
+          <Route path="/forget-screen" element={<ForgetPasswordScreen />} />
+          <Route path="/otp" element={<OtpScreen />} />
+          <Route path="/create-password" element={<CreateNewPasswordScreen />} />
+          {/* </Route> */}
           <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/verification" element={<Verification />} />
           <Route path="/new-password" element={<NewPassword />} />
@@ -136,15 +136,15 @@ function App() {
               {/* <Route path="/employee-leave-details/:id" element={<EmployeeLeaveDetails />} /> */}
               <Route path="/employee-attendance/detail/:id" element={<Attendance />} />
               <Route path="/leave" element={<LeaveList />} />
-              <Route path="/ViewBasic/:id" element={<ViewBasic />} />
               <Route path="/employee-on-leave" element={<LeaveList />} />
 
               <Route path="/employee-attendance" element={<AttendanceList />} />
-<Route
-  path="/employee-attendance-tracking/:id"
-  element={<TrackingList />}
-/>
+              <Route
+                path="/employee-attendance-tracking/:id"
+                element={<TrackingList />}
+              />
               <Route path="/employee-leave" element={<DetailOnleave />} />
+              <Route path="/ViewBasic/:id" element={<ViewBasic />} />
               <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
               <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
 
@@ -162,7 +162,7 @@ function App() {
               {/* <Route path="/project-department/:id/" element={<FieldDepartment />} /> */}
               <Route path="/layout" element={<ViewLayout />} />
               <Route path="/employee-attendance-report" element={< AttendanceReport />} />
-  <Route path="/employee-attendance-summary" element={< AttendanceSummary />} />
+              <Route path="/employee-attendance-summary" element={< AttendanceSummary />} />
 
 
               <Route path="/employee-attendance-request" element={<AttendanceRequestScreen />} />

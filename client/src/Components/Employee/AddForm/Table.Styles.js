@@ -3,32 +3,22 @@ import styled from "styled-components";
 
 // Main container
 export const Container = styled.div`
-  padding: 20px;
+  // padding: 20px;
   margin: 0 auto;
 `;
 
 // Header
 export const Header = styled.div`
-  margin-bottom: 20px;
-  h2 {
-    font-size: 1.5rem;
-    color: #333;
-  }
+  margin-top: 15px;
+ 
 `;
 
-export const SectionTitle = styled.h3`
-   font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 8px;
-`;
 
 // Form Section wrapper
 export const FormSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 `;
 
 // Row wrapper
@@ -105,4 +95,14 @@ export const Button = styled.button`
   &:hover {
     background-color: #172554;
   }
+`;
+
+export const SectionTitle = styled.h2`
+  font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 16px;
+line-height: 100%;
+letter-spacing: 0%;
+margin-bottom:15px;
 `;

@@ -31,6 +31,8 @@ import {
   createNewDepartment,
 } from "../../../Redux/departmentSlice";
 
+import { getAllEmployees } from "../../../Redux/employeeSlice";
+
 const DepartmentCards = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,6 +49,9 @@ const DepartmentCards = () => {
     error,
   } = useSelector((state) => state.departments);
 
+  // Employee list, used to resolve department_head (an ID) into a name
+  const { employeeList = [] } = useSelector((state) => state.employee);
+
   // =====================================================
   // MODAL STATE
   // =====================================================
@@ -60,7 +65,7 @@ const DepartmentCards = () => {
     useState(null);
 
   // =====================================================
-  // GET DEPARTMENTS
+  // GET DEPARTMENTS + EMPLOYEES
   // =====================================================
 
   useEffect(() => {
@@ -70,7 +75,31 @@ const DepartmentCards = () => {
         search: "",
       })
     );
+
+    // Needed to resolve department_head id -> employee name
+    dispatch(getAllEmployees({ page: 1, search: "" }));
   }, [dispatch]);
+
+  // =====================================================
+  // RESOLVE DEPARTMENT HEAD NAME FROM ID
+  // =====================================================
+
+  const getDepartmentHeadName = (headId) => {
+    if (!headId) return "—";
+
+    const match = employeeList.find(
+      (emp) => Number(emp.id) === Number(headId)
+    );
+
+    if (!match) return "—";
+
+    return (
+      match.name ||
+      match.employee_name ||
+      match.full_name ||
+      `Employee #${match.id}`
+    );
+  };
 
   // =====================================================
   // SEARCH
@@ -132,11 +161,6 @@ const DepartmentCards = () => {
         department.department_head ||
         department.head ||
         "",
-
-      teamLead:
-        department.teamLead ||
-        department.team_lead ||
-        "",
     });
 
     setShowDepartmentModal(true);
@@ -154,17 +178,10 @@ const DepartmentCards = () => {
 
       if (modalMode === "add") {
         const payload = {
-          name: data.departmentName.trim(),
-
-          department_code:
-            data.departmentCode.trim(),
-
-          head_of_department:
-            data.headOfDepartment,
-
-          team_lead:
-            data.teamLead,
-        };
+  name: data.departmentName.trim(),
+  department_code: data.departmentCode.trim(),
+  department_head: data.headOfDepartment || "",   // was: head_of_department
+};
 
         console.log(
           "Creating department:",
@@ -305,10 +322,12 @@ const DepartmentCards = () => {
             department.name ||
             "Department";
 
-          const departmentHead =
+          // department_head from the API is an employee ID,
+          // so resolve it to a display name via employeeList
+          const departmentHead = getDepartmentHeadName(
             department.department_head ||
-            department.head_of_department ||
-            "—";
+              department.head_of_department
+          );
 
           const totalEmployees =
             department.employee_count ?? 0;
@@ -374,32 +393,32 @@ const DepartmentCards = () => {
 
               {/* BOTTOM */}
 
-             <CardBottom>
-  <EmployeeCount>
-    <EmployeeImage>
-      {departmentHead &&
-        departmentHead !== "—"
-        ? departmentHead
-            .trim()
-            .charAt(0)
-            .toUpperCase()
-        : "-"}
-    </EmployeeImage>
+              <CardBottom>
+                <EmployeeCount>
+                  <EmployeeImage>
+                    {departmentHead &&
+                    departmentHead !== "—"
+                      ? departmentHead
+                          .trim()
+                          .charAt(0)
+                          .toUpperCase()
+                      : "-"}
+                  </EmployeeImage>
 
-    <EmployeeNumber>
-      {String(totalEmployees).padStart(2, "0")}
-    </EmployeeNumber>
-  </EmployeeCount>
+                  <EmployeeNumber>
+                    {String(totalEmployees).padStart(2, "0")}
+                  </EmployeeNumber>
+                </EmployeeCount>
 
-  <ViewButton
-    type="button"
-    onClick={() =>
-      handleViewDepartment(departmentId)
-    }
-  >
-    VIEW DEPARTMENT
-  </ViewButton>
-</CardBottom>
+                <ViewButton
+                  type="button"
+                  onClick={() =>
+                    handleViewDepartment(departmentId)
+                  }
+                >
+                  VIEW DEPARTMENT
+                </ViewButton>
+              </CardBottom>
             </Card>
           );
         })}

@@ -104,62 +104,59 @@ const PayrollChart = ({ apiData, selectedYear, onYearChange }) => {
 
         <ChartContainer>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} barCategoryGap="30%">
-              <CartesianGrid stroke="#ECECEC" vertical={false} />
+         <BarChart data={chartData} barCategoryGap="30%">
+  <CartesianGrid
+    stroke="#ECECEC"
+    vertical={false}
+  />
 
-              <XAxis dataKey="month" tickLine={false} axisLine={false} />
+  <XAxis
+    dataKey="month"
+    tickLine={false}
+    axisLine={false}
+  />
 
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                domain={[0, "auto"]}
-                tickFormatter={(value) => {
-                  if (value === 0) return "0";
-                  if (value < 100000) return `${value / 1000}K`;
-                  return `${value / 100000}L`;
-                }}
-              />
+  <YAxis
+    tickLine={false}
+    axisLine={false}
+    domain={[0, "auto"]}
+    tickFormatter={(value) => {
+      if (value === 0) return "0";
+      if (value < 100000) return `${value / 1000}K`;
+      return `${value / 100000}L`;
+    }}
+  />
 
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                domain={[0, 'auto']}
-                tickFormatter={(value) => {
-                  if (value === 0) return "0";
-                  if (value < 100000) return `${value / 1000}K`;
-                  return `${value / 100000}L`;
-                }}
-              />
+  <Tooltip
+    cursor={false}
+    content={<CustomTooltip />}
+  />
 
-              <Tooltip
-                cursor={false}
-                content={<CustomTooltip />}
-              />
+  {/* BOTTOM */}
+  <Bar
+    dataKey="deduction"
+    stackId="payroll"
+    fill="#F44336"
+    name="Deduction"
+  />
 
-              <Bar
-                stackId="payroll"
-                dataKey="deduction"
-                fill="#F44336"
-                name="Deduction"
-              />
+  {/* MIDDLE */}
+  <Bar
+    dataKey="incentive"
+    stackId="payroll"
+    fill="#E58D2B"
+    name="Incentive"
+  />
 
-              <Bar
-                stackId="payroll"
-                dataKey="incentive"
-                fill="#E58D2B"
-                name="Incentive"
-              />
-
-              <Bar stackId="payroll" dataKey="deduction" fill="#F44336" name="Deduction" />
-              <Bar stackId="payroll" dataKey="incentive" fill="#E58D2B" name="Incentive" />
-              <Bar
-                stackId="payroll"
-                dataKey="salary"
-                fill="#3657C8"
-                name="Salary"
-                radius={[6, 6, 0, 0]}
-              />
-            </BarChart>
+  {/* TOP */}
+  <Bar
+    dataKey="salary"
+    stackId="payroll"
+    fill="#3657C8"
+    name="Salary"
+    radius={[6, 6, 0, 0]}
+  />
+</BarChart>
           </ResponsiveContainer>
         </ChartContainer>
       </Container>

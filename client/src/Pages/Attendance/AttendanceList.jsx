@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { getAttendanceList } from "../../Redux/attendanceSlice"; 
+import { getAttendanceList } from "../../Redux/attendanceSlice";
+import { getDepartmentsMin } from "../../Redux/departmentSlice";
 
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusablePagination from "../../Components/Pagination/ReusablePagination";
@@ -20,32 +21,66 @@ const AttendanceList = () => {
     const [date, setDate] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
+    // --------------------------------------------------
+    // Attendance Redux
+    // --------------------------------------------------
     const {
         attendanceList,
         pagination,
         listLoading,
         error,
-        swipedEmployeeCount,
-        totalEmployeeCount,
     } = useSelector((state) => state.attendance);
 
-    useEffect(() => {
-        const params = { page: currentPage };
+    // --------------------------------------------------
+    // Department Redux
+    // --------------------------------------------------
+    const {
+        minList: departments,
+        loading: departmentLoading,
+    } = useSelector((state) => state.departments);
 
-        // department_id is optional now — omit it entirely for "All Departments"
-        if (department) params.department_id = department;
-        if (date) params.date = date;
+    // --------------------------------------------------
+    // Get Departments
+    // --------------------------------------------------
+    useEffect(() => {
+        dispatch(getDepartmentsMin());
+    }, [dispatch]);
+
+    // --------------------------------------------------
+    // Get Attendance
+    // --------------------------------------------------
+    useEffect(() => {
+        const params = {
+            page: currentPage,
+        };
+
+        // Only send department_id when a department is selected
+        if (department) {
+            params.department_id = department;
+        }
+
+       if (date) {
+    const [year, month] = date.split("-");
+
+    // Use the first day of the selected month
+    params.date = `${year}-${month}-01`;
+}
 
         dispatch(getAttendanceList(params));
     }, [dispatch, currentPage, department, date]);
 
-    // Reset to page 1 whenever filters change (department/date), not on page change itself
+    // --------------------------------------------------
+    // Reset page when filters change
+    // --------------------------------------------------
     useEffect(() => {
         setCurrentPage(1);
     }, [department, date]);
 
-    const pageSize = 10; // must match backend CustomPagination page size
+    const pageSize = 10;
 
+    // --------------------------------------------------
+    // Map Attendance Data
+    // --------------------------------------------------
     const mappedRows = (attendanceList || []).map((item, index) => ({
         slNo: (currentPage - 1) * pageSize + index + 1,
         id: item.employee,
@@ -60,51 +95,77 @@ const AttendanceList = () => {
         attendanceId: item.attendance_id,
     }));
 
-    // Client-side search filter (backend has no `search` param on this endpoint yet)
+    // --------------------------------------------------
+    // Client-side Search
+    // --------------------------------------------------
     const visibleRows = search
         ? mappedRows.filter(
               (row) =>
-                  row.name?.toLowerCase().includes(search.toLowerCase()) ||
-                  row.employeeId?.toLowerCase().includes(search.toLowerCase())
+                  row.name
+                      ?.toLowerCase()
+                      .includes(search.toLowerCase()) ||
+                  row.employeeId
+                      ?.toLowerCase()
+                      .includes(search.toLowerCase())
           )
         : mappedRows;
 
+    // --------------------------------------------------
+    // Row Click
+    // --------------------------------------------------
     const handleRowClick = (employee) => {
         navigate(`/employee-attendance-tracking/${employee.id}`);
     };
 
+    // --------------------------------------------------
+    // Convert Department API Data
+    // --------------------------------------------------
+    const departmentOptions = (departments || []).map((item) => ({
+        label: item.name,
+        value: item.id,
+    }));
+
     return (
         <div style={{ padding: 20 }}>
             <ReusableHeader
-                title="Employees"
-                breadcrumbs={["Dashboard", "Employees"]}
-                buttonText="ADD NEW EMPLOYEE"
-                onButtonClick={() => console.log("Add Employee")}
+                title="Attendance"
+                breadcrumbs={["Attendance"]}
             />
 
-            <ReusableFilter
-                search={search}
-                onSearch={setSearch}
-                department={department}
-                departments={["HR", "Finance", "Development", "Marketing"]}
-                onDepartment={setDepartment}
-                status={status}
-                statuses={["Present", "Absent", "On Leave"]}
-                onStatus={setStatus}
-                date={date}
-                onDate={setDate}
-                showSearch
-                showDepartment
-                showStatus
-                showDate
-            />
+           <ReusableFilter
+    search={search}
+    onSearch={setSearch}
 
-            {listLoading && <p>Loading attendance...</p>}
-            {error && <p style={{ color: "red" }}>{String(error)}</p>}
+    department={department}
+    departments={departmentOptions}
+    onDepartment={setDepartment}
+
+    status={status}
+    statuses={["Present", "Absent", "On Leave"]}
+    onStatus={setStatus}
+
+    date={date}
+    onDate={setDate}
+    dateType="date"
+
+    showSearch
+    showDepartment
+    showStatus
+    showDate
+/>
+
+            {listLoading && (
+                <p>Loading attendance...</p>
+            )}
+
+            {error && (
+                <p style={{ color: "red" }}>
+                    {String(error)}
+                </p>
+            )}
 
             {!listLoading && !error && (
                 <>
-                   
                     <ReusableTable
                         columns={attendanceColumns}
                         data={visibleRows}
@@ -112,8 +173,13 @@ const AttendanceList = () => {
                     />
 
                     <ReusablePagination
-                        currentPage={pagination?.current_page || currentPage}
-                        totalPages={pagination?.total_pages || 1}
+                        currentPage={
+                            pagination?.current_page ||
+                            currentPage
+                        }
+                        totalPages={
+                            pagination?.total_pages || 1
+                        }
                         onPageChange={setCurrentPage}
                     />
                 </>

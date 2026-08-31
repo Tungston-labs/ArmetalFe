@@ -11,6 +11,7 @@ import {
 } from "../../Components/attendance/AttendanceDetails.Styles";
 import { getAccessToken } from "../../hooks/useAccessToken";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
+import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 
 const ACTION_COLORS = {
   "Punch In": "#2F822F",
@@ -134,7 +135,11 @@ const TrackingList = ({
 
   return (
     <PageWrapper>
-      <Header>Attendance Details</Header>
+     <ReusableHeader
+                title="Employees"
+                breadcrumbs={["Employees","Live Tracking"]}
+               showBack
+            />
       <CardWrapper>
         {cardList.map((card, index) => (
           <Card key={index}>

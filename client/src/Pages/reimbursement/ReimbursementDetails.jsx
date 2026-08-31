@@ -404,6 +404,7 @@ const ReimbursementDetails = () => {
 
     // Statistics Cards Calculations (6 cards)
     const reimbursementCards = useMemo(() => {
+        const totalRequests = filteredData.length;
 
         const approvedRequests = filteredData.filter(
             (r) =>

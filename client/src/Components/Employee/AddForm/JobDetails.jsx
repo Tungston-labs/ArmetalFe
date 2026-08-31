@@ -5,6 +5,7 @@ import {
   SectionTitle,
   FormRow,
   FormGroup,
+  FullWidthGroup,
   Label,
   Input,
   Select,
@@ -12,18 +13,20 @@ import {
   FileInput,
   ErrorText,
   TotalLeaveBox,
-  LeaveContainer,
-  AddLeaveButton,
+  LeaveGrid,
   LeaveItem,
   LeaveLabel,
   LeaveInput,
-
 } from "./JobDetails.Styles";
 import {
   getLegalFieldConfig,
   isIndiaCompany,
   validateLegalIdentity,
 } from "../../../utils/employeeCountryFields";
+import { Divider } from "antd";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const JobDetails = forwardRef(({ country: propCountry, departments = [], initialValues = {}, onFormChange, errors: parentErrors }, ref) => {
   const savedUser = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
@@ -65,6 +68,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
   useEffect(() => {
     if (initialValues && Object.keys(initialValues).length) setFormData(prev => ({ ...prev, ...initialValues }));
   }, [initialValues]);
+
   useEffect(() => {
     const total =
       (Number(formData.casual_leave) || 0) +
@@ -94,83 +98,81 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
     formData.maternity_leave,
     formData.other_leave
   ]);
-const handleChange = (e) => {
-  const { name, value, files, type } = e.target;
 
-  if (type === "file") {
-    const file = files?.[0];
+  const handleChange = (e) => {
+    const { name, value, files, type } = e.target;
 
-    if (!file) {
-      setFormData((prev) => ({ ...prev, [name]: null }));
-      if (onFormChange) onFormChange(e);
-      return;
-    }
+    if (type === "file") {
+      const file = files?.[0];
 
-    // Validate file type
-    if (!ALLOWED_TYPES.includes(file.type)) {
+      if (!file) {
+        setFormData((prev) => ({ ...prev, [name]: null }));
+        if (onFormChange) onFormChange(e);
+        return;
+      }
+
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: "Only JPG, JPEG, PNG and WEBP images are allowed.",
+        }));
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: "Image size must be less than 5 MB.",
+        }));
+        return;
+      }
+
       setErrors((prev) => ({
         ...prev,
-        [name]: "Only JPG, JPEG, PNG and WEBP images are allowed.",
+        [name]: "",
       }));
-      return;
-    }
 
-    // Validate file size
-    if (file.size > MAX_FILE_SIZE) {
-      setErrors((prev) => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: "Image size must be less than 5 MB.",
+        [name]: file,
       }));
+
+      if (onFormChange) {
+        onFormChange({
+          target: {
+            name,
+            value: file,
+            files: [file],
+            type: "file",
+          },
+        });
+      }
+
       return;
     }
-
-    // Clear previous error
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
 
     setFormData((prev) => ({
       ...prev,
-      [name]: file,
+      [name]: value,
     }));
 
-    if (onFormChange) {
-      onFormChange({
-        target: {
-          name,
-          value: file,
-          files: [file],
-          type: "file",
-        },
-      });
-    }
-
-    return;
-  }
-
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-
-  if (onFormChange) onFormChange(e);
-};
+    if (onFormChange) onFormChange(e);
+  };
 
   const validateForm = () => {
     const newErrors = {};
     const now = new Date().toISOString().split("T")[0];
     const baseRequired = ["designation", "joining_date", "department_id", "employment_type", "total_leave", "phno", "email", "dob", "role",];
-  const totalLeave =
-    (Number(formData.casual_leave) || 0) +
-    (Number(formData.sick_leave) || 0) +
-    (Number(formData.earned_leave) || 0) +
-    (Number(formData.maternity_leave) || 0) +
-    (Number(formData.other_leave) || 0);
+    const totalLeave =
+      (Number(formData.casual_leave) || 0) +
+      (Number(formData.sick_leave) || 0) +
+      (Number(formData.earned_leave) || 0) +
+      (Number(formData.maternity_leave) || 0) +
+      (Number(formData.other_leave) || 0);
 
-  if (totalLeave === 0) {
-    newErrors.leave = "Please enter at least one leave.";
-  }
+    if (totalLeave === 0) {
+      newErrors.leave = "Please enter at least one leave.";
+    }
     baseRequired.push(...legalConfig.requiredFields);
 
     baseRequired.forEach(field => {
@@ -199,19 +201,13 @@ const handleChange = (e) => {
   }));
 
   const renderError = (field) => <>{errors[field] && <ErrorText>{errors[field]}</ErrorText>}</>;
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
-const ALLOWED_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
   return (
     <FormContainer noValidate>
+      <Divider/>
       <SectionTitle>Job Details</SectionTitle>
 
-      <FormRow>
+      <FormRow $columns={5}>
         <FormGroup>
           <Label>Designation</Label>
           <Input name="designation" value={formData.designation} onChange={handleChange} placeholder="Enter Designation" autoComplete="off" />
@@ -223,12 +219,10 @@ const ALLOWED_TYPES = [
           <Input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} autoComplete="off" />
           {renderError("joining_date")}
         </FormGroup>
-      </FormRow>
 
-      <FormRow>
         <FormGroup>
           <Label>Department</Label>
-          <Select name="department_id" value={formData.department_id} onChange={handleChange}  >
+          <Select name="department_id" value={formData.department_id} onChange={handleChange}>
             <option value="">Select Department</option>
             {departmentList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
           </Select>
@@ -237,7 +231,7 @@ const ALLOWED_TYPES = [
 
         <FormGroup>
           <Label>Employment Type</Label>
-          <Select name="employment_type" value={formData.employment_type} onChange={handleChange} >
+          <Select name="employment_type" value={formData.employment_type} onChange={handleChange}>
             <option value="">Select Type</option>
             <option value="Full-time">Full-time</option>
             <option value="Part-time">Part-time</option>
@@ -245,68 +239,6 @@ const ALLOWED_TYPES = [
           </Select>
           {renderError("employment_type")}
         </FormGroup>
-      </FormRow>
-
-      <FormRow>
-      <FormGroup>
-  <Label>Leave Allocation</Label>
-
-  <TotalLeaveBox>
-    Total Leave : {formData.total_leave}
-  </TotalLeaveBox>
-
-  {errors.leave && <ErrorText>{errors.leave}</ErrorText>}
-  <LeaveItem>
-    <LeaveLabel>Casual Leave</LeaveLabel>
-    <LeaveInput
-      type="number"
-      name="casual_leave"
-      value={formData.casual_leave}
-      onChange={handleChange}
-    />
-  </LeaveItem>
-
-  <LeaveItem>
-    <LeaveLabel>Sick Leave</LeaveLabel>
-    <LeaveInput
-      type="number"
-      name="sick_leave"
-      value={formData.sick_leave}
-      onChange={handleChange}
-    />
-  </LeaveItem>
-
-  <LeaveItem>
-    <LeaveLabel>Earned Leave</LeaveLabel>
-    <LeaveInput
-      type="number"
-      name="earned_leave"
-      value={formData.earned_leave}
-      onChange={handleChange}
-    />
-  </LeaveItem>
-
-  <LeaveItem>
-    <LeaveLabel>Maternity Leave</LeaveLabel>
-    <LeaveInput
-      type="number"
-      name="maternity_leave"
-      value={formData.maternity_leave}
-      onChange={handleChange}
-    />
-  </LeaveItem>
-
-  <LeaveItem>
-    <LeaveLabel>Other Leave</LeaveLabel>
-    <LeaveInput
-      type="number"
-      name="other_leave"
-      value={formData.other_leave}
-      onChange={handleChange}
-    />
-  </LeaveItem>
-
-</FormGroup>
 
         <FormGroup>
           <Label>Roles</Label>
@@ -320,9 +252,73 @@ const ALLOWED_TYPES = [
         </FormGroup>
       </FormRow>
 
+      <FormRow $columns={5}>
+        <FullWidthGroup>
+          <Label>Leave Allocation</Label>
+
+          <TotalLeaveBox>
+            Total Leave : {formData.total_leave}
+          </TotalLeaveBox>
+
+          {errors.leave && <ErrorText>{errors.leave}</ErrorText>}
+
+          <LeaveGrid>
+            <LeaveItem>
+              <LeaveLabel>Casual Leave</LeaveLabel>
+              <LeaveInput
+                type="number"
+                name="casual_leave"
+                value={formData.casual_leave}
+                onChange={handleChange}
+              />
+            </LeaveItem>
+
+            <LeaveItem>
+              <LeaveLabel>Sick Leave</LeaveLabel>
+              <LeaveInput
+                type="number"
+                name="sick_leave"
+                value={formData.sick_leave}
+                onChange={handleChange}
+              />
+            </LeaveItem>
+
+            <LeaveItem>
+              <LeaveLabel>Earned Leave</LeaveLabel>
+              <LeaveInput
+                type="number"
+                name="earned_leave"
+                value={formData.earned_leave}
+                onChange={handleChange}
+              />
+            </LeaveItem>
+
+            <LeaveItem>
+              <LeaveLabel>Maternity Leave</LeaveLabel>
+              <LeaveInput
+                type="number"
+                name="maternity_leave"
+                value={formData.maternity_leave}
+                onChange={handleChange}
+              />
+            </LeaveItem>
+
+            <LeaveItem>
+              <LeaveLabel>Other Leave</LeaveLabel>
+              <LeaveInput
+                type="number"
+                name="other_leave"
+                value={formData.other_leave}
+                onChange={handleChange}
+              />
+            </LeaveItem>
+          </LeaveGrid>
+        </FullWidthGroup>
+      </FormRow>
+      <Divider/>
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
 
-      <FormRow>
+      <FormRow $columns={4}>
         <FormGroup>
           <Label>Phone Number</Label>
           <Input name="phno" value={formData.phno} onChange={handleChange} placeholder="Enter Phone number" autoComplete="off" />
@@ -336,9 +332,7 @@ const ALLOWED_TYPES = [
             {renderError("passport_number")}
           </FormGroup>
         )}
-      </FormRow>
 
-      <FormRow>
         <FormGroup>
           <Label>Employee Contract</Label>
           <Input name="employeeContract" value={formData.employeeContract} onChange={handleChange} placeholder="Enter Contract Name" autoComplete="off" />
@@ -348,24 +342,22 @@ const ALLOWED_TYPES = [
           <Label>Work Permit</Label>
           <Input name="workPermit" value={formData.workPermit} onChange={handleChange} placeholder="Enter Work Permit" autoComplete="off" />
         </FormGroup>
-      </FormRow>
 
-      <FormRow>
         <FormGroup>
           <Label>Insurance Number</Label>
           <Input name="insurance_number" value={formData.insurance_number} onChange={handleChange} placeholder="Enter Insurance Number" autoComplete="off" />
           {renderError("insurance_number")}
         </FormGroup>
+      </FormRow>
 
+      <FormRow $columns={4}>
         <FormGroup>
           <Label>ID Card Photo</Label>
           <FileInputLabel htmlFor="idcard">{formData.idcard?.name || "Upload ID Card +"}</FileInputLabel>
           <FileInput id="idcard" name="idcard" type="file" onChange={handleChange} />
           {errors.idcard && <ErrorText>{errors.idcard}</ErrorText>}
         </FormGroup>
-      </FormRow>
 
-      <FormRow>
         <FormGroup>
           <Label>{legalConfig.identityLabel}</Label>
           <Input
@@ -394,8 +386,6 @@ const ALLOWED_TYPES = [
           {renderError(isIndiaCompany(country) ? "contract_expiry_date" : "visa_expiry_date")}
         </FormGroup>
       </FormRow>
-
-
     </FormContainer>
   );
 });

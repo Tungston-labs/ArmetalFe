@@ -6,28 +6,39 @@ export const FormContainer = styled.form`
   gap: 20px;
   width: 100%;
   margin: auto;
-  padding: 20px;
-  // background: #fff;
-  // border-radius: 12px;
-  // box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  // padding: 20px;
+  margin-top: -10px;
 `;
 
 export const SectionTitle = styled.h2`
-  font-size: 1.2rem;
-  font-weight: 600;
   color: #333;
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 8px;
+font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 16px;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const FormRow = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(${(props) => props.$columns || 5}, 1fr);
   gap: 16px;
-  flex-wrap: wrap;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 export const FormGroup = styled.div`
-  flex: 1 1 48%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+`;
+
+export const FullWidthGroup = styled.div`
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
 `;
@@ -35,8 +46,14 @@ export const FormGroup = styled.div`
 export const Label = styled.label`
   font-weight: 500;
   margin-bottom: 6px;
-  color: #172554;
   font-size: 14px;
+  font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 14px;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Input = styled.input`
@@ -121,17 +138,14 @@ export const LeaveContainer = styled.div`
 `;
 
 export const TotalLeaveBox = styled.div`
- padding: 8px;
+  padding: 8px;
   border: 1px solid lightgray;
   border-radius: 4px;
   font-size: 1rem;
-    margin-bottom: 10px;
-  &:focus {
-    border-color: #3352BA;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
-
-  }
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #172554;
+background-color:white;  
 `;
 
 export const AddLeaveButton = styled.button`
@@ -150,20 +164,28 @@ export const AddLeaveButton = styled.button`
   }
 `;
 
+export const LeaveGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
 export const LeaveItem = styled.div`
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
+  flex-direction: column;
+  gap: 6px;
 `;
 
 export const LeaveLabel = styled.span`
-  min-width: 140px;
   font-size: 14px;
   font-weight: 500;
   color: #172554;
 `;
 
 export const LeaveInput = styled(Input)`
-  flex: 1;
+  width: 100%;
 `;

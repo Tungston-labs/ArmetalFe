@@ -50,7 +50,7 @@ export const getFinanceColumns = ({ page, pageSize, currencyCode }) => [
         title={note}
         style={{
           display: "inline-block",
-          maxWidth: "180px",
+          // maxWidth: "180px",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",

@@ -78,15 +78,15 @@ describe("AddCompany", () => {
     expect(screen.getByPlaceholderText("Enter location")).toBeInTheDocument();
   });
 
-  test("form restricts creation to HR-only module (no Finance option visible)", () => {
+  test("form displays both HR and Finance modules and their features", () => {
     renderWithRouter();
 
     // Verify HR features checkbox is checked and visible
     expect(screen.getByText("EMPLOYEE")).toBeInTheDocument();
     expect(screen.getByText("DASHBOARD")).toBeInTheDocument();
 
-    // Verify Finance card is not present
-    expect(screen.queryByText("Finance Module")).not.toBeInTheDocument();
+    // Verify Finance card is present
+    expect(screen.getByText("Finance Module")).toBeInTheDocument();
   });
 
   test("validation errors are shown for required fields when submitting empty", async () => {

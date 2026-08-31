@@ -17,7 +17,6 @@ import {
     CloseButton,
     FormGroup,
     FormLabel,
-    OptionalText,
     AttendanceTypeOptions,
     AttendanceTypeOption,
     AttendanceRadio,
@@ -25,11 +24,13 @@ import {
     RadioCircle,
     AttendanceTypeContent,
     AttendanceTypeTitle,
-    AttendanceTypeDescription,
     NoteWrapper,
     NoteInput,
-    NoteCounter,
-    ApprovedInput,
+    AttendanceUpdateBox,
+    AttendanceUpdateTitle,
+    UpdateItem,
+    UpdateLabel,
+    UpdateValue,
     ModalFooter,
     CancelButton,
     SaveButton,
@@ -286,9 +287,8 @@ const AttendanceSummary = () => {
 
 {isEditModalOpen && (
     <ModalOverlay onClick={handleCloseModal}>
-        <AttendanceModal
-            onClick={(e) => e.stopPropagation()}
-        >
+        <AttendanceModal onClick={(e) => e.stopPropagation()}>
+
             {/* ================= HEADER ================= */}
 
             <ModalHeader>
@@ -297,14 +297,9 @@ const AttendanceSummary = () => {
                         Edit Attendance
                     </ModalTitle>
 
-                    {selectedEmployee && (
-                        <ModalSubtitle>
-                            Update attendance details for{" "}
-                            <strong>
-                                {selectedEmployee.employee_name}
-                            </strong>
-                        </ModalSubtitle>
-                    )}
+                    <ModalSubtitle>
+                        {selectedEmployee?.date || "01 Aug"}
+                    </ModalSubtitle>
                 </ModalHeaderContent>
 
                 <CloseButton
@@ -354,13 +349,10 @@ const AttendanceSummary = () => {
                                 <AttendanceTypeTitle type="Paid">
                                     Paid
                                 </AttendanceTypeTitle>
-
-                                <AttendanceTypeDescription>
-                                    Paid attendance
-                                </AttendanceTypeDescription>
                             </AttendanceTypeContent>
                         </AttendanceTypeCard>
                     </AttendanceTypeOption>
+
 
                     {/* UNPAID */}
 
@@ -392,10 +384,6 @@ const AttendanceSummary = () => {
                                 <AttendanceTypeTitle type="Unpaid">
                                     Unpaid
                                 </AttendanceTypeTitle>
-
-                                <AttendanceTypeDescription>
-                                    Unpaid attendance
-                                </AttendanceTypeDescription>
                             </AttendanceTypeContent>
                         </AttendanceTypeCard>
                     </AttendanceTypeOption>
@@ -403,14 +391,12 @@ const AttendanceSummary = () => {
                 </AttendanceTypeOptions>
             </FormGroup>
 
-            {/* ================= NOTE ================= */}
+
+            {/* ================= NOTE / REASON ================= */}
 
             <FormGroup>
                 <FormLabel>
-                    Note
-                    <OptionalText>
-                        (Optional)
-                    </OptionalText>
+                    Note / Reason
                 </FormLabel>
 
                 <NoteWrapper>
@@ -418,36 +404,59 @@ const AttendanceSummary = () => {
                         name="note"
                         value={editForm.note}
                         onChange={handleFormChange}
-                        placeholder="Add a note about this attendance..."
-                        rows={5}
+                        placeholder="Enter note or reason..."
+                        rows={4}
                         maxLength={500}
                     />
-
-                    <NoteCounter>
-                        {editForm.note?.length || 0}/500
-                    </NoteCounter>
                 </NoteWrapper>
             </FormGroup>
 
-            {/* ================= APPROVED BY ================= */}
 
-            <FormGroup>
-                <FormLabel>
-                    Approved By
-                </FormLabel>
+            {/* ================= ATTENDANCE UPDATE ================= */}
 
-                <ApprovedInput
-                    type="text"
-                    name="approvedBy"
-                    value={editForm.approvedBy}
-                    onChange={handleFormChange}
-                    placeholder="Enter approver name"
-                />
-            </FormGroup>
+            <AttendanceUpdateBox>
+
+                <AttendanceUpdateTitle>
+                    Attendance Update
+                </AttendanceUpdateTitle>
+
+                <UpdateItem>
+                    <UpdateLabel>
+                        Updated by:
+                    </UpdateLabel>
+
+                    <UpdateValue>
+                        HR Admin
+                    </UpdateValue>
+                </UpdateItem>
+
+                <UpdateItem>
+                    <UpdateLabel>
+                        Attendance Type:
+                    </UpdateLabel>
+
+                    <UpdateValue>
+                        {editForm.attendanceType}
+                    </UpdateValue>
+                </UpdateItem>
+
+                <UpdateItem>
+                    <UpdateLabel>
+                        Note:
+                    </UpdateLabel>
+
+                    <UpdateValue>
+                        {editForm.note || "No note added"}
+                    </UpdateValue>
+                </UpdateItem>
+
+            </AttendanceUpdateBox>
+
 
             {/* ================= FOOTER ================= */}
 
             <ModalFooter>
+
                 <CancelButton
                     type="button"
                     onClick={handleCloseModal}
@@ -461,7 +470,9 @@ const AttendanceSummary = () => {
                 >
                     Save Changes
                 </SaveButton>
+
             </ModalFooter>
+
         </AttendanceModal>
     </ModalOverlay>
 )}

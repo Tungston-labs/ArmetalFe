@@ -10,13 +10,12 @@ export const Card = styled.div`
   background: #ffffff;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 `;
 
 export const CardHeader = styled.h2`
   font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
   color: #304EB0;
 `;
 

@@ -253,19 +253,19 @@ const ViewBasic = () => {
                 />
               </FieldGroup>
 
-             <FieldGroup>
-  <Label>Joining Date</Label>
-  <Input
-    type="date"
-    name="joining_date"
-    value={
-      formData.joining_date
-        ? formData.joining_date.split("T")[0]
-        : ""
-    }
-    onChange={handleChange}
-  />
-</FieldGroup>
+              <FieldGroup>
+                <Label>Joining Date</Label>
+                <Input
+                  type="date"
+                  name="joining_date"
+                  value={
+                    formData.joining_date
+                      ? formData.joining_date.split("T")[0]
+                      : ""
+                  }
+                  onChange={handleChange}
+                />
+              </FieldGroup>
               <FieldGroup>
                 <Label>Employment Type</Label>
                 <Input
@@ -290,9 +290,15 @@ const ViewBasic = () => {
                 </Select>
               </FieldGroup>
             </Rowes>
+            <FieldGroup>
+              <Label>Total Leave</Label>
+              <Input
+                type="number"
+                value={calculatedTotal}
+                readOnly
+              />
+            </FieldGroup>
             <Rowes>
-
-
               <FieldGroup>
                 <Label>Casual Leave</Label>
                 <Input
@@ -347,15 +353,9 @@ const ViewBasic = () => {
                   min="0"
                 />
               </FieldGroup>
-              <FieldGroup>
-                <Label>Total Leave</Label>
-                <Input
-                  type="number"
-                  value={calculatedTotal}
-                  readOnly
-                />
-              </FieldGroup>
+
             </Rowes>
+
 
           </CardContent>
         </Card>
@@ -408,14 +408,14 @@ const ViewBasic = () => {
                         onChange={handleChange}
                       />
                     </FieldGroup>
-                  <FieldGroup>
-                    <Label>{legalConfig.identityLabel}</Label>
-                    <Input
-                      name={legalConfig.identityField}
-                      value={formData[legalConfig.identityField] || ""}
-                      onChange={handleChange}
-                    />
-                  </FieldGroup>
+                    <FieldGroup>
+                      <Label>{legalConfig.identityLabel}</Label>
+                      <Input
+                        name={legalConfig.identityField}
+                        value={formData[legalConfig.identityField] || ""}
+                        onChange={handleChange}
+                      />
+                    </FieldGroup>
                   </>
                 ) : (
                   <>

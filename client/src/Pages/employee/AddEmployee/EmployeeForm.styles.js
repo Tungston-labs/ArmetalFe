@@ -83,60 +83,18 @@ export const StepperWrapper = styled.div`
 
 export const ProfileImageWrapper = styled.div`
   position: relative;
-  flex: 0 0 106px;
-  width: 106px;
-  height: 106px;
-  margin-left: 25px;
+  width: 100%;
+  height: 100%;
   border: 3px solid #ffffff;
   border-radius: 50%;
   background: #eeeeee;
   overflow: hidden;
-  z-index: 10;
   box-sizing: border-box;
 
-  @media (max-width: 1200px) {
-    flex-basis: 90px;
-
-    width: 90px;
-    height: 90px;
-
-    margin-left: 20px;
-    margin-top: 25px;
-  }
-
   @media (max-width: 768px) {
-    flex-basis: 75px;
-
-    width: 75px;
-    height: 75px;
-
-    margin-left: 15px;
-    margin-top: 18px;
-
     border-width: 2px;
   }
-
-  @media (max-width: 600px) {
-    flex-basis: 60px;
-
-    width: 60px;
-    height: 60px;
-
-    margin-left: 12px;
-    margin-top: 12px;
-  }
-
-  @media (max-width: 420px) {
-    flex-basis: 52px;
-
-    width: 52px;
-    height: 52px;
-
-    margin-left: 10px;
-    margin-top: 10px;
-  }
 `;
-
 export const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
@@ -1165,4 +1123,180 @@ export const UploadIcon = styled.span`
 
 export const UploadInput = styled.input`
   display: none;
+`;
+/* =====================================================
+   PROFILE IMAGE HOVER OVERLAY
+===================================================== */
+
+export const ProfileHoverOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  cursor: pointer;
+
+  ${ProfileImageWrapper}:hover & {
+    opacity: 1;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 9px;
+  }
+
+  @media (max-width: 420px) {
+    span {
+      display: none;
+    }
+  }
+`;
+
+/* =====================================================
+   PROFILE PLACEHOLDER (no image yet)
+===================================================== */
+
+export const ProfilePlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a3a3a3;
+  background: #eeeeee;
+`;
+
+/* =====================================================
+   CAMERA BADGE
+===================================================== */
+
+export const CameraBadge = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #3c5dcc;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  z-index: 15;
+  transition: background 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background: #33509c;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 1200px) {
+    width: 26px;
+    height: 26px;
+  }
+
+  @media (max-width: 768px) {
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (max-width: 600px) {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+/* =====================================================
+   REMOVE BADGE
+===================================================== */
+
+export const RemoveBadge = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ef3434;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  z-index: 15;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #d62828;
+  }
+
+  @media (max-width: 768px) {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (max-width: 600px) {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+/* =====================================================
+   HIDDEN FILE INPUT (profile)
+===================================================== */
+
+export const HiddenProfileInput = styled.input`
+  display: none;
+`;
+
+export const AvatarShell = styled.div`
+  position: relative;
+  flex: 0 0 106px;
+  width: 106px;
+  height: 106px;
+  margin-left: 25px;
+  z-index: 10;
+
+  @media (max-width: 1200px) {
+    flex-basis: 90px;
+    width: 90px;
+    height: 90px;
+    margin-left: 20px;
+    margin-top: 25px;
+  }
+
+  @media (max-width: 768px) {
+    flex-basis: 75px;
+    width: 75px;
+    height: 75px;
+    margin-left: 15px;
+    margin-top: 18px;
+  }
+
+  @media (max-width: 600px) {
+    flex-basis: 60px;
+    width: 60px;
+    height: 60px;
+    margin-left: 12px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 420px) {
+    flex-basis: 52px;
+    width: 52px;
+    height: 52px;
+    margin-left: 10px;
+    margin-top: 10px;
+  }
 `;
