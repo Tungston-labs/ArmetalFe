@@ -235,7 +235,7 @@ export default function AddEmployeeForm() {
   onClick={handleNext}
   disabled={loading}
 >
-  {loading ? "Saving..." : "Next"}
+  {loading ? "Saving..." : "Save"}
 </NextButton>
         </ButtonWrapper>
       </Container>
