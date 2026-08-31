@@ -133,6 +133,7 @@
 
 // export default Loginscreen;
 
+
 import React, { useState } from "react";
 import girlIllustrationUrl from "../../../assets/login.svg";
 import logo from "../../../assets/logo3.svg";
@@ -237,7 +238,7 @@ const Loginscreen = ({ onLogin, isLoading, error }) => {
   };
 
   const handleForgotPassword = () => {
-    navigate("/forget-password");
+    navigate("/forget-screen");
   };
 
   const handlePasswordChange = async (e) => {

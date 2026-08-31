@@ -7,11 +7,12 @@ const RequireAuth = () => {
 
   // Check both localStorage and sessionStorage
   const accessTokenFromStorage =
-    localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+    localStorage.getItem("accessToken") ||
+    sessionStorage.getItem("accessToken");
 
   const isAuthenticated = accessTokenFromRedux || accessTokenFromStorage;
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/log" replace />;
 };
 
 export default RequireAuth;

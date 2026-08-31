@@ -162,7 +162,7 @@ const ForgotPasswordScreen = () => {
       setSuccess(true);
 
       setTimeout(() => {
-        navigate("/verification", {
+        navigate("/otp", {
           state: {
             email,
           },

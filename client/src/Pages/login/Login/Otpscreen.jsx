@@ -240,19 +240,10 @@ const ResendButton = styled.button`
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 30;
 
-const OTPScreen = ({
-  email,
-  onVerify,
-  onResend,
-  isLoading,
-  error,
-}) => {
-  const [otp, setOtp] = useState(
-    Array(OTP_LENGTH).fill("")
-  );
+const OTPScreen = ({ email, onVerify, onResend, isLoading, error }) => {
+  const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
 
-  const [secondsLeft, setSecondsLeft] =
-    useState(RESEND_SECONDS);
+  const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
 
   const inputsRef = useRef([]);
 
@@ -316,10 +307,7 @@ const OTPScreen = ({
     });
 
     // Move focus to the next appropriate input
-    const nextIndex = Math.min(
-      index + chars.length,
-      OTP_LENGTH - 1
-    );
+    const nextIndex = Math.min(index + chars.length, OTP_LENGTH - 1);
 
     focusInput(nextIndex);
   };
@@ -328,11 +316,7 @@ const OTPScreen = ({
   // Handle backspace
   // -----------------------------
   const handleKeyDown = (index, e) => {
-    if (
-      e.key === "Backspace" &&
-      !otp[index] &&
-      index > 0
-    ) {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
       focusInput(index - 1);
     }
   };
@@ -352,18 +336,13 @@ const OTPScreen = ({
 
     const next = Array(OTP_LENGTH).fill("");
 
-    pasted
-      .split("")
-      .forEach((char, index) => {
-        next[index] = char;
-      });
+    pasted.split("").forEach((char, index) => {
+      next[index] = char;
+    });
 
     setOtp(next);
 
-    const nextIndex = Math.min(
-      pasted.length,
-      OTP_LENGTH - 1
-    );
+    const nextIndex = Math.min(pasted.length, OTP_LENGTH - 1);
 
     focusInput(nextIndex);
   };
@@ -413,8 +392,7 @@ const OTPScreen = ({
   const code = otp.join("");
 
   const isComplete =
-    code.length === OTP_LENGTH &&
-    otp.every((digit) => digit !== "");
+    code.length === OTP_LENGTH && otp.every((digit) => digit !== "");
 
   return (
     <PageBackground>
@@ -432,8 +410,7 @@ const OTPScreen = ({
             </h1>
 
             <p>
-              Make everyday HR management faster, easier,
-              and more efficient.
+              Make everyday HR management faster, easier, and more efficient.
             </p>
           </HeroText>
 
@@ -456,11 +433,7 @@ const OTPScreen = ({
 
               <p>
                 Enter the {OTP_LENGTH}-digit code sent to{" "}
-                {email ? (
-                  <strong>{email}</strong>
-                ) : (
-                  "your email"
-                )}
+                {email ? <strong>{email}</strong> : "your email"}
               </p>
             </Welcome>
 
@@ -479,27 +452,14 @@ const OTPScreen = ({
                   <Input
                     key={index}
                     id={`otp-${index}`}
-                    ref={(el) =>
-                      (inputsRef.current[index] = el)
-                    }
+                    ref={(el) => (inputsRef.current[index] = el)}
                     type="text"
                     inputMode="numeric"
-                    autoComplete={
-                      index === 0
-                        ? "one-time-code"
-                        : "off"
-                    }
+                    autoComplete={index === 0 ? "one-time-code" : "off"}
                     maxLength={OTP_LENGTH}
                     value={digit}
-                    onChange={(e) =>
-                      handleChange(
-                        index,
-                        e.target.value
-                      )
-                    }
-                    onKeyDown={(e) =>
-                      handleKeyDown(index, e)
-                    }
+                    onChange={(e) => handleChange(index, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(index, e)}
                     style={{
                       textAlign: "center",
                       width: "3rem",
@@ -510,13 +470,8 @@ const OTPScreen = ({
               </InputWrapper>
             </FieldGroup>
 
-            <LoginButton
-              type="submit"
-              disabled={!isComplete || isLoading}
-            >
-              {isLoading
-                ? "VERIFYING..."
-                : "VERIFY CODE"}
+            <LoginButton type="submit" disabled={!isComplete || isLoading}>
+              {isLoading ? "VERIFYING..." : "VERIFY CODE"}
             </LoginButton>
 
             <div
@@ -528,14 +483,9 @@ const OTPScreen = ({
               }}
             >
               {secondsLeft > 0 ? (
-                <span>
-                  Resend code in {secondsLeft}s
-                </span>
+                <span>Resend code in {secondsLeft}s</span>
               ) : (
-                <ResendButton
-                  type="button"
-                  onClick={handleResend}
-                >
+                <ResendButton type="button" onClick={handleResend}>
                   Resend code
                 </ResendButton>
               )}
