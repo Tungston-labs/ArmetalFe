@@ -20,6 +20,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCompanyById,
   clearSelectedCompany,
+} from "../../Redux/companySlice";
+import {
   updateCompanyStatusThunk,
 } from "../../Redux/superAdminSlice";
 import { useParams, useNavigate } from "react-router-dom";
@@ -32,7 +34,7 @@ const CompanyViewPage = () => {
   const { id } = useParams();
   const [isBlocked, setIsBlocked] = useState(false);
   const selectedCompany = useSelector(
-    (state) => state.superAdmin.selectedCompany,
+    (state) => state.company.selectedCompany,
   );
 
   useEffect(() => {

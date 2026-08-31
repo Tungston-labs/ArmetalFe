@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusablePagination from "../../Components/Pagination/ReusablePagination";
@@ -35,15 +35,20 @@ const mapRow = (item) => ({
     employeeName:
         item.employee_name || item.employee?.name || item.employee || "—",
     reimbursementType:
-        item.reimbursement_type || item.type || item.category || "—",
+        item.expense_category || item.reimbursement_type || item.type || item.category || "—",
     amount: item.amount ?? item.total_amount ?? 0,
     date: item.date || item.created_at || "",
-    description: item.description || "",
+    description: item.note || item.description || "",
     status: item.status || "Pending",
 });
 
 const ReimbursementDetails = () => {
     const { id: departmentId } = useParams();
+    const navigate = useNavigate();
+
+    const handleRowClick = (row) => {
+        navigate(`/reimbursement_info/${row.id}`);
+    };
 
     // =====================================================
     // SEARCH
@@ -144,16 +149,20 @@ const ReimbursementDetails = () => {
 
         const approvedRequests = filteredData.filter(
             (reimbursement) =>
+                reimbursement.status?.toLowerCase() === "approve" ||
                 reimbursement.status?.toLowerCase() === "approved"
         ).length;
 
         const pendingRequests = filteredData.filter(
             (reimbursement) =>
-                reimbursement.status?.toLowerCase() === "pending"
+                reimbursement.status?.toLowerCase() === "pending" ||
+                reimbursement.status?.toLowerCase() === "on hold" ||
+                reimbursement.status?.toLowerCase() === "in verification"
         ).length;
 
         const rejectedRequests = filteredData.filter(
             (reimbursement) =>
+                reimbursement.status?.toLowerCase() === "reject" ||
                 reimbursement.status?.toLowerCase() === "rejected"
         ).length;
 
@@ -294,8 +303,7 @@ const ReimbursementDetails = () => {
                 <ReusableTable
                     columns={reimbursementColumns}
                     data={filteredData}
-                    onEdit={handleEditReimbursement}
-                    onStatusChange={handleStatusChange}
+                    onRowClick={handleRowClick}
                 />
             )}
 

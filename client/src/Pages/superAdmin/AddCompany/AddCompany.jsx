@@ -46,7 +46,7 @@ import {
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
 import { HeaderButton } from "../../../Components/ReusableTable/ReusableHeader.styles";
 import Loader from "../../../Components/Loader/Loader";
-import { getCompanyById, addCompany, editCompany } from "../../../Redux/superAdminSlice";
+import { getCompanyById, addCompany, editCompany, clearSelectedCompany } from "../../../Redux/companySlice";
 import { fetchSubscriptionPlans } from "../../../services/superAdminService";
 import { COUNTRY_OPTIONS, getCountryByCode } from "../../../utils/countryData";
 
@@ -57,7 +57,7 @@ const AddCompany = () => {
 
   const isEdit = !!id;
 
-  const selectedCompany = useSelector((state) => state.superAdmin.selectedCompany);
+  const selectedCompany = useSelector((state) => state.company.selectedCompany);
   const [loadingCompany, setLoadingCompany] = useState(false);
   const [plans, setPlans] = useState([]);
   const [loadingPlans, setLoadingPlans] = useState(false);
@@ -70,8 +70,7 @@ const AddCompany = () => {
   // =====================================================
   // OPEN / CLOSE STATES
   // =====================================================
-  const [hrOpen, setHrOpen] = useState(false);
-  const [financeOpen, setFinanceOpen] = useState(false);
+  const [hrOpen, setHrOpen] = useState(true);
 
   // =====================================================
   // FORM DATA
@@ -93,12 +92,20 @@ const AddCompany = () => {
     plan: "",
 
     // Modules
-    hrModule: false,
-    financeModule: false,
+    hrModule: true,
 
     // Features
-    hrFeatures: [],
-    financeFeatures: [],
+    hrFeatures: [
+      "DASHBOARD",
+      "DEPARTMENT",
+      "EMPLOYEE",
+      "DAILY TASK",
+      "PAYROLL",
+      "HOLIDAY",
+      "REIMBURSEMENT",
+      "PROJECT",
+      "FINANCE",
+    ],
 
     // Salary
     basic: "",
@@ -112,7 +119,7 @@ const AddCompany = () => {
   });
 
   // =====================================================
-  // HR & FINANCE FEATURES
+  // HR FEATURES
   // =====================================================
   const hrFeatures = [
     "DASHBOARD",
@@ -124,15 +131,6 @@ const AddCompany = () => {
     "REIMBURSEMENT",
     "PROJECT",
     "FINANCE",
-  ];
-
-  const financeFeatures = [
-    "DASHBOARD",
-    "SALES",
-    "PURCHASES",
-    "PRODUCTS",
-    "ACCOUNTING",
-    "REPORTS",
   ];
 
   // =====================================================
@@ -164,6 +162,9 @@ const AddCompany = () => {
         .unwrap()
         .finally(() => setLoadingCompany(false));
     }
+    return () => {
+      dispatch(clearSelectedCompany());
+    };
   }, [id, dispatch]);
 
   useEffect(() => {
@@ -188,29 +189,19 @@ const AddCompany = () => {
       }
 
       const activeModules = selectedCompany.modules || {};
-      const hrModule = Object.keys(activeModules).some(key => 
-        ["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement", "project", "finance"].includes(key) && activeModules[key]
-      );
-      const financeModule = Object.keys(activeModules).some(key => 
-        ["sales", "purchases", "products", "accounting", "reports"].includes(key) && activeModules[key]
-      );
 
       const hrFeaturesList = [];
-      const financeFeaturesList = [];
 
       Object.keys(activeModules).forEach(key => {
         if (activeModules[key]) {
           const upperKey = key.toUpperCase().replace("_", " ");
           if (["dashboard", "employee", "department", "daily_task", "payroll", "holiday", "reimbursement", "project", "finance"].includes(key)) {
             hrFeaturesList.push(upperKey);
-          } else {
-            financeFeaturesList.push(upperKey);
           }
         }
       });
 
-      setHrOpen(hrModule);
-      setFinanceOpen(financeModule);
+      setHrOpen(true);
 
       setFormData({
         companyName: selectedCompany.name ?? "",
@@ -222,10 +213,8 @@ const AddCompany = () => {
         phoneCode,
         phoneNumber,
         currency: selectedCompany.currency ?? "AED",
-        hrModule,
-        financeModule,
+        hrModule: true,
         hrFeatures: hrFeaturesList,
-        financeFeatures: financeFeaturesList,
         latitude: selectedCompany.latitude ?? "",
         longitude: selectedCompany.longitude ?? "",
         logo: null,
@@ -304,42 +293,25 @@ const AddCompany = () => {
     setLogoPreview(URL.createObjectURL(file));
   };
 
-  const handleHrToggle = () => {
-    setHrOpen((prev) => !prev);
-    setFormData((prev) => ({
-      ...prev,
-      hrModule: !prev.hrModule,
-    }));
-  };
-
-  const handleFinanceToggle = () => {
-    setFinanceOpen((prev) => !prev);
-    setFormData((prev) => ({
-      ...prev,
-      financeModule: !prev.financeModule,
-    }));
-  };
-
   const handleFeatureChange = (type, feature) => {
     setFormData((prev) => {
-      const currentFeatures = type === "hr" ? prev.hrFeatures : prev.financeFeatures;
+      const currentFeatures = prev.hrFeatures;
       const updatedFeatures = currentFeatures.includes(feature)
         ? currentFeatures.filter((item) => item !== feature)
         : [...currentFeatures, feature];
 
       return {
         ...prev,
-        [type === "hr" ? "hrFeatures" : "financeFeatures"]: updatedFeatures,
+        hrFeatures: updatedFeatures,
       };
     });
   };
 
   const handleSelectAll = (type, features) => {
     setFormData((prev) => {
-      const field = type === "hr" ? "hrFeatures" : "financeFeatures";
       return {
         ...prev,
-        [field]: prev[field].length === features.length ? [] : [...features],
+        hrFeatures: prev.hrFeatures.length === features.length ? [] : [...features],
       };
     });
   };
@@ -423,15 +395,8 @@ const AddCompany = () => {
       }
     }
 
-    if (!formData.hrModule && !formData.financeModule) {
-      errs.modules = "Select at least one module (HR or Finance)";
-    } else {
-      if (formData.hrModule && formData.hrFeatures.length === 0) {
-        errs.modules = "Select at least one feature for the HR Module";
-      }
-      if (formData.financeModule && formData.financeFeatures.length === 0) {
-        errs.modules = "Select at least one feature for the Finance Module";
-      }
+    if (formData.hrFeatures.length === 0) {
+      errs.modules = "Select at least one feature for the HR Module";
     }
 
     if (formData.plan) {
@@ -506,18 +471,10 @@ const AddCompany = () => {
       setIsSubmitting(true);
 
       const modulesPayload = {};
-      if (formData.hrModule) {
-        formData.hrFeatures.forEach(feature => {
-          const key = feature.toLowerCase().replace(" ", "_");
-          modulesPayload[key] = true;
-        });
-      }
-      if (formData.financeModule) {
-        formData.financeFeatures.forEach(feature => {
-          const key = feature.toLowerCase().replace(" ", "_");
-          modulesPayload[key] = true;
-        });
-      }
+      formData.hrFeatures.forEach(feature => {
+        const key = feature.toLowerCase().replace(" ", "_");
+        modulesPayload[key] = true;
+      });
 
       const formPayload = new FormData();
 
@@ -559,7 +516,7 @@ const AddCompany = () => {
         Swal.fire("Updated!", "Company updated successfully.", "success");
       } else {
         await dispatch(addCompany(formPayload)).unwrap();
-        Swal.fire("Created!", "Company created successfully.", "success");
+        Swal.fire("Created!", "Company created successfully. Credentials have been sent to their email.", "success");
       }
 
       navigate("/company");
@@ -612,8 +569,8 @@ const AddCompany = () => {
 
         <HeaderButton
           $variant="success"
-          type="button"
-          onClick={handleSubmit}
+          type="submit"
+          form="add-company-form"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -631,7 +588,7 @@ const AddCompany = () => {
           MAIN CARD
       ================================================= */}
       <MainCard>
-        <form onSubmit={handleSubmit}>
+        <form id="add-company-form" onSubmit={handleSubmit}>
           {/* =================================================
               COMPANY DETAILS
           ================================================= */}
@@ -928,39 +885,18 @@ const AddCompany = () => {
           <Section>
             <SectionTitle>Select Services</SectionTitle>
             <SectionDescription>
-              Choose the areas you want to enable for this company.
+              Select the features you want to enable for this company's HR Module.
             </SectionDescription>
             <ServicesGrid>
               {/* HR MODULE */}
-              <ServiceCard active={hrOpen}>
+              <ServiceCard active={true}>
                 <ServiceIcon hr>HR</ServiceIcon>
                 <ServiceContent>
                   <ServiceTitle>HR Module</ServiceTitle>
                   <ServiceDescription>
-                    Employee, attendance, leave and daily operations.
+                    Employee, department, attendance, leave, payroll and operations.
                   </ServiceDescription>
                 </ServiceContent>
-                <ToggleWrapper onClick={handleHrToggle}>
-                  <Toggle active={hrOpen}>
-                    <ToggleSlider active={hrOpen} />
-                  </Toggle>
-                </ToggleWrapper>
-              </ServiceCard>
-
-              {/* FINANCE MODULE */}
-              <ServiceCard active={financeOpen}>
-                <ServiceIcon finance>FI</ServiceIcon>
-                <ServiceContent>
-                  <ServiceTitle>Finance Module</ServiceTitle>
-                  <ServiceDescription>
-                    Sales, Purchase, Payroll, billing, expenses and reporting.
-                  </ServiceDescription>
-                </ServiceContent>
-                <ToggleWrapper onClick={handleFinanceToggle}>
-                  <Toggle active={financeOpen}>
-                    <ToggleSlider active={financeOpen} />
-                  </Toggle>
-                </ToggleWrapper>
               </ServiceCard>
             </ServicesGrid>
 
@@ -971,62 +907,31 @@ const AddCompany = () => {
             )}
 
             {/* HR FEATURES */}
-            {hrOpen && (
-              <FeatureBox>
-                <FeatureHeader>
-                  <FeatureTitle>Select HR Management Features</FeatureTitle>
-                  <SelectAllWrapper>
-                    <SelectAllLabel>Select All</SelectAllLabel>
-                    <ToggleWrapper onClick={() => handleSelectAll("hr", hrFeatures)}>
-                      <Toggle active={formData.hrFeatures.length === hrFeatures.length}>
-                        <ToggleSlider active={formData.hrFeatures.length === hrFeatures.length} />
-                      </Toggle>
-                    </ToggleWrapper>
-                  </SelectAllWrapper>
-                </FeatureHeader>
-                <FeatureGrid>
-                  {hrFeatures.map((feature) => (
-                    <FeatureItem key={feature}>
-                      <Checkbox
-                        type="checkbox"
-                        checked={formData.hrFeatures.includes(feature)}
-                        onChange={() => handleFeatureChange("hr", feature)}
-                      />
-                      <span>{feature}</span>
-                    </FeatureItem>
-                  ))}
-                </FeatureGrid>
-              </FeatureBox>
-            )}
-
-            {/* FINANCE FEATURES */}
-            {financeOpen && (
-              <FeatureBox>
-                <FeatureHeader>
-                  <FeatureTitle>Select Finance Management Features</FeatureTitle>
-                  <SelectAllWrapper>
-                    <SelectAllLabel>Select All</SelectAllLabel>
-                    <ToggleWrapper onClick={() => handleSelectAll("finance", financeFeatures)}>
-                      <Toggle active={formData.financeFeatures.length === financeFeatures.length}>
-                        <ToggleSlider active={formData.financeFeatures.length === financeFeatures.length} />
-                      </Toggle>
-                    </ToggleWrapper>
-                  </SelectAllWrapper>
-                </FeatureHeader>
-                <FeatureGrid>
-                  {financeFeatures.map((feature) => (
-                    <FeatureItem key={feature}>
-                      <Checkbox
-                        type="checkbox"
-                        checked={formData.financeFeatures.includes(feature)}
-                        onChange={() => handleFeatureChange("finance", feature)}
-                      />
-                      <span>{feature}</span>
-                    </FeatureItem>
-                  ))}
-                </FeatureGrid>
-              </FeatureBox>
-            )}
+            <FeatureBox>
+              <FeatureHeader>
+                <FeatureTitle>Select HR Management Features</FeatureTitle>
+                <SelectAllWrapper>
+                  <SelectAllLabel>Select All</SelectAllLabel>
+                  <ToggleWrapper onClick={() => handleSelectAll("hr", hrFeatures)}>
+                    <Toggle active={formData.hrFeatures.length === hrFeatures.length}>
+                      <ToggleSlider active={formData.hrFeatures.length === hrFeatures.length} />
+                    </Toggle>
+                  </ToggleWrapper>
+                </SelectAllWrapper>
+              </FeatureHeader>
+              <FeatureGrid>
+                {hrFeatures.map((feature) => (
+                  <FeatureItem key={feature}>
+                    <Checkbox
+                      type="checkbox"
+                      checked={formData.hrFeatures.includes(feature)}
+                      onChange={() => handleFeatureChange("hr", feature)}
+                    />
+                    <span>{feature}</span>
+                  </FeatureItem>
+                ))}
+              </FeatureGrid>
+            </FeatureBox>
           </Section>
 
           {/* =================================================

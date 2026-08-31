@@ -43,18 +43,18 @@ const formatCurrency = (value) => {
 
 const mapReimbursementData = (item) => ({
   id: item.id,
-  name: (item.category || item.type || item.name || "REIMBURSEMENT").toUpperCase(),
+  name: (item.expense_category || item.category || item.type || item.name || "REIMBURSEMENT").toUpperCase(),
   employee:
     item.employee_name ||
     item.employee?.name ||
     item.employee ||
     "—",
-  total: item.total_count ?? item.count ?? item.total ?? 0,
-  totalAmount: formatCurrency(item.total_amount ?? item.totalAmount),
-  approved: formatCurrency(item.approved_amount ?? item.approved),
-  pending: formatCurrency(item.pending_amount ?? item.pending),
-  status: item.status || (Number(item.pending_amount) > 0 ? "Pending" : "Approved"),
-  image: item.employee_image || item.employee?.image || DEFAULT_AVATAR,
+  total: item.total_count ?? item.count ?? item.total ?? 1,
+  totalAmount: formatCurrency(item.amount ?? item.total_amount ?? item.totalAmount),
+  approved: formatCurrency(item.status === "Approve" ? (item.amount ?? item.approved_amount ?? 0) : 0),
+  pending: formatCurrency(item.status !== "Approve" ? (item.amount ?? item.pending_amount ?? 0) : 0),
+  status: item.status || "On Hold",
+  image: item.profile_pic || item.employee_image || item.employee?.image || DEFAULT_AVATAR,
 });
 
 const ReimbursementCards = () => {
@@ -94,7 +94,10 @@ const ReimbursementCards = () => {
       const data = await getGroupedReimbursements();
 
       // Handle either a raw array or a paginated { results: [...] } shape
-      const list = Array.isArray(data) ? data : data?.results || [];
+      const groups = Array.isArray(data) ? data : data?.results || [];
+      
+      // Flatten the grouped date structure into individual items
+      const list = groups.flatMap((group) => group.reimbursements || []);
 
       setReimbursements(list.map(mapReimbursementData));
     } catch (err) {
@@ -138,7 +141,7 @@ const ReimbursementCards = () => {
   // =====================================================
 
   const handleViewReimbursement = (id) => {
-    navigate(`/reimbursements/${id}`);
+    navigate(`/reimbursement_info/${id}`);
   };
 
   // =====================================================
