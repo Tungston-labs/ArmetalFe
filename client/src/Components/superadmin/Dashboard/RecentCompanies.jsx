@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import {
   CompaniesSection,
@@ -14,19 +15,20 @@ import {
   CompanyUsername,
 } from "./RecentCompanies.Styles";
 
-const RecentlyAddedCompanies = ({ onViewAll }) => {
+const RecentlyAddedCompanies = () => {
+  const navigate = useNavigate();
   const { overview } = useSelector(
     (state) => state.superAdmin
   );
 
-  const companies = overview?.companies || [];
+  const companies = (overview?.companies || []).slice(0, 5);
 
   return (
     <CompaniesSection>
       <SectionHeader>
         <SectionTitle>Recently Added Company Details</SectionTitle>
 
-        <ViewAll onClick={onViewAll}>
+        <ViewAll onClick={() => navigate("/company")} style={{ cursor: "pointer" }}>
           View All Companies
         </ViewAll>
       </SectionHeader>
@@ -36,9 +38,13 @@ const RecentlyAddedCompanies = ({ onViewAll }) => {
           <p>No companies found.</p>
         ) : (
           companies.map((company) => (
-            <CompanyCard key={company.id}>
+            <CompanyCard
+              key={company.id}
+              onClick={() => navigate(`/superadmin/view/${company.id}`)}
+              style={{ cursor: "pointer" }}
+            >
               <CompanyLogo
-                src={company.logo_url}
+                src={company.logo_url || "/default-logo.png"}
                 alt={`${company.name} logo`}
               />
 

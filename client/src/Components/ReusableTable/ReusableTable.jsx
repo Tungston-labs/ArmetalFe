@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { ClipLoader } from "react-spinners";
 import {
   Container,
   TableContainer,
@@ -11,7 +12,7 @@ import {
   EmptyState,
 } from "./ReusableTable.styles";
 
-const ReusableTable = ({ columns = [], data = [], loading = false, onRowClick }) => {
+const ReusableTable = ({ columns = [], data = [], loading = false, onRowClick, emptyMessage = "No Records Found" }) => {
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState("asc");
 
@@ -63,7 +64,12 @@ const ReusableTable = ({ columns = [], data = [], loading = false, onRowClick })
             {loading && (
               <Tr>
                 <Td colSpan={columns.length}>
-                  <EmptyState>Loading...</EmptyState>
+                  <EmptyState>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                      <ClipLoader size={20} color="#3154d8" data-testid="clip-loader" />
+                      <span>Loading...</span>
+                    </div>
+                  </EmptyState>
                 </Td>
               </Tr>
             )}
@@ -71,7 +77,7 @@ const ReusableTable = ({ columns = [], data = [], loading = false, onRowClick })
             {!loading && sortedData.length === 0 && (
               <Tr>
                 <Td colSpan={columns.length}>
-                  <EmptyState>No Records Found</EmptyState>
+                  <EmptyState>{emptyMessage}</EmptyState>
                 </Td>
               </Tr>
             )}

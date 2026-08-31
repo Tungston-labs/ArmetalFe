@@ -26,6 +26,7 @@ import Side_detail from "./Side_detail.jsx";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader.jsx";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable.jsx";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
+import Loader from "../../Components/Loader/Loader";
 
 const PAGE_SIZE = 10;
 
@@ -45,11 +46,15 @@ const ReimbursementList = () => {
   const [showModal, setShowModal] = useState(false);
   const [pageByDept, setPageByDept] = useState({});
 
-  const { list: departmentList = [] } = useSelector((state) => state.departments);
+  const { list: departmentList = [], loading } = useSelector((state) => state.departments);
 
   useEffect(() => {
     dispatch(getDepartments({ page: 1, search: "" }));
   }, [dispatch]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   const loadDeptReimbursements = async (deptId) => {
     setLoadingDept(true);
@@ -132,7 +137,11 @@ const ReimbursementList = () => {
       />
 
       <DepartmentGrid>
-        {filteredDepartments.length > 0 ? (
+        {departmentList.length === 0 ? (
+          <div style={{ padding: "40px 20px", textAlign: "center", color: "#666", width: "100%", fontFamily: "Poppins, sans-serif" }}>
+            No departments found.
+          </div>
+        ) : filteredDepartments.length > 0 ? (
           filteredDepartments.map((dept) => {
             const isOpen = selectedDept === dept.id;
             const employees = departmentReimbursements[dept.id] || [];
@@ -179,9 +188,9 @@ const ReimbursementList = () => {
                         Select
                       </option>
                       <option value="Approve">Approved</option>
+                      <option value="Reject">Rejected</option>
                       <option value="On Hold">On Hold</option>
                       <option value="In Verification">In Verification</option>
-                      <option value="Reject">Reject</option>
                     </StatusSelect>
                   </div>
                 ),
@@ -205,6 +214,7 @@ const ReimbursementList = () => {
                       columns={reimbursementColumns}
                       data={paginatedEmployees}
                       loading={loadingDept}
+                      emptyMessage="No reimbursement records found."
                       onRowClick={(row) => navigate(`/reimbursement_info/${row.reimbursement_id}`)}
                     />
 
