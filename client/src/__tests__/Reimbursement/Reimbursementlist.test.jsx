@@ -31,7 +31,7 @@ vi.mock("../../services/reimbursement", () => ({
   updateReimbursementStatus: vi.fn(),
 }));
 
-vi.mock("../../Components/Loader", () => ({
+vi.mock("../../Components/Loader/Loader", () => ({
   default: () => <div data-testid="loader" />,
 }));
 vi.mock("../../Components/EmployeeTitle", () => ({

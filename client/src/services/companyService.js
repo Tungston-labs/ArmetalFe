@@ -25,3 +25,30 @@ export const updateCompanySelf = async (data) => {
 
   return response.data;
 };
+
+// POST: Create a Company (multipart/form-data)
+export const createCompany = async (data) => {
+  const response = await API.post("/create-company/", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+// GET: company detail by ID
+export const fetchCompanyById = async (id) => {
+  const response = await API.get(`/companies/${id}/`);
+  return response.data;
+};
+
+// PATCH: Update company by ID (multipart/form-data)
+export const updateCompany = async (id, data) => {
+  const response = await API.patch(`/companies/${id}/`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+

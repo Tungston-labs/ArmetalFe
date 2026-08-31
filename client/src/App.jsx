@@ -124,9 +124,9 @@ function App() {
 
               <Route path="/dashboard" element={<SuperAdmin_Dashboard />} />
               <Route path="/addcompany" element={<AddCompany />} />
-
-
+              <Route path="/addcompany/:id" element={<AddCompany />} />
               <Route path="/add-company" element={<AddCompany />} />
+              <Route path="/add-company/:id" element={<AddCompany />} />
               <Route path="/employee-Contract-Visa-Expiry" element={<Visa />} />
               <Route path="/daily-task" element={<Daily />} />
               <Route path="/basic-details" element={<BasicLevel />} />

@@ -16,7 +16,7 @@ vi.mock("../../services/reimbursement", () => ({
   updateReimbursementStatus: vi.fn(),
 }));
 
-vi.mock("../../Components/Loader", () => ({
+vi.mock("../../Components/Loader/Loader", () => ({
   default: () => <div data-testid="loader" />,
 }));
 
@@ -58,6 +58,8 @@ vi.mock("../../Pages/reimbursement/Reimb_info.Styles", () => {
     NoteCard: passthrough("div"),
     NoteHeader: passthrough("div"),
     Arrow: passthrough("span"),
+    TopStatusBar: passthrough("div"),
+    TopStatusLabel: passthrough("label"),
   };
 });
 

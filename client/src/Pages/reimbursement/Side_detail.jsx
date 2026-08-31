@@ -16,7 +16,7 @@ import {
   Amount,
 } from "./Side_detail.Styles";
 import { getGroupedReimbursements } from "../../services/reimbursement";
-// import Loader from "../../Components/Loader/Loader"
+import Loader from "../../Components/Loader/Loader";
 const ReimbursementHistory = ({ onClose }) => {
   const [reimbursements, setReimbursements] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,36 +65,46 @@ const formatDate = (date) => {
             <CloseButton onClick={onClose}>Close</CloseButton>
           </Header>
 
-          {reimbursements.map((section, idx) => (
-            <div key={idx}>
-              <DateHeading>{ formatDate(section.date)}</DateHeading>
-              {section.reimbursements.map((item) => (
-                <Card key={item.id}>
-                  <ProfileImage
-                    src={item.profile_pic || "https://via.placeholder.com/50"}
-                    alt={item.employee_name}
-                  />
-                  <Info>
-                    <div>
-                      <Label>Name</Label>
-                      <Value>{item.employee_name}</Value>
-                    </div>
-                    <div>
-                      <Label>Department</Label>
-                      <Value>{item.department?.name || "N/A"}</Value>
-                    </div>
-                  </Info>
-                  <RightSection>
-                    <div>
-                      <Label>Position</Label>
-                      <Value>{item.designation || "N/A"}</Value>
-                    </div>
-                    <Amount> {item.amount}</Amount>
-                  </RightSection>
-                </Card>
-              ))}
+          {loading ? (
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "60px" }}>
+              <Loader />
             </div>
-          ))}
+          ) : reimbursements.length === 0 ? (
+            <div style={{ padding: "40px 20px", textAlign: "center", color: "#666", fontFamily: "Poppins, sans-serif" }}>
+              No reimbursements found.
+            </div>
+          ) : (
+            reimbursements.map((section, idx) => (
+              <div key={idx}>
+                <DateHeading>{ formatDate(section.date)}</DateHeading>
+                {section.reimbursements.map((item) => (
+                  <Card key={item.id}>
+                    <ProfileImage
+                      src={item.profile_pic || "https://via.placeholder.com/50"}
+                      alt={item.employee_name}
+                    />
+                    <Info>
+                      <div>
+                        <Label>Name</Label>
+                        <Value>{item.employee_name}</Value>
+                      </div>
+                      <div>
+                        <Label>Department</Label>
+                        <Value>{item.department?.name || "N/A"}</Value>
+                      </div>
+                    </Info>
+                    <RightSection>
+                      <div>
+                        <Label>Position</Label>
+                        <Value>{item.designation || "N/A"}</Value>
+                      </div>
+                      <Amount> {item.amount}</Amount>
+                    </RightSection>
+                  </Card>
+                ))}
+              </div>
+            ))
+          )}
         </PageWrapper>
       </ModalContent>
     </ModalOverlay>

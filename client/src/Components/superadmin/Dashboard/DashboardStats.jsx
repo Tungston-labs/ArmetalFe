@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { BsBuildings } from "react-icons/bs";
 import {
   StatsContainer,
@@ -8,34 +9,43 @@ import {
   StatLabel,
 } from "./DashboardStats.Styles";
 
-const stats = [
-  {
-    value: "12",
-    label: "Total Companies",
-  },
-  {
-    value: "15000.00",
-    label: "Total Revenue",
-  },
-  {
-    value: "05",
-    label: "Pending Payments",
-  },
-  {
-    value: "Enterprise",
-    label: "Most Ordered Plan",
-  },
-  {
-    value: "10",
-    label: "Active Subscriptions",
-  },
-  {
-    value: "52",
-    label: "Total Users",
-  },
-];
-
 const DashboardStats = () => {
+  const { overview } = useSelector((state) => state.superAdmin);
+
+  const formattedRevenue = overview?.total_revenue !== undefined
+    ? `₹${Number(overview.total_revenue).toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    : "₹0.00";
+
+  const stats = [
+    {
+      value: overview?.total_companies ?? 0,
+      label: "Total Companies",
+    },
+    {
+      value: formattedRevenue,
+      label: "Total Revenue",
+    },
+    {
+      value: overview?.unpaid_companies_count ?? 0,
+      label: "Pending Payments",
+    },
+    {
+      value: overview?.most_ordered_plan ?? "No Plan",
+      label: "Most Ordered Plan",
+    },
+    {
+      value: overview?.active_subscriptions ?? 0,
+      label: "Active Subscriptions",
+    },
+    {
+      value: overview?.total_users ?? 0,
+      label: "Total Users",
+    },
+  ];
+
   return (
     <StatsContainer>
       {stats.map((stat, index) => (

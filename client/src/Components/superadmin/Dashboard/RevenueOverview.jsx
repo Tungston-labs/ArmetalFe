@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { FaCalendarAlt } from "react-icons/fa";
 import {
   ResponsiveContainer,
@@ -18,22 +19,27 @@ import {
   ChartContainer,
 } from "./RevenueOverview.Styles";
 
-const revenueData = [
-  { month: "Jan", revenue: 1.9 },
-  { month: "Feb", revenue: 3.05 },
-  { month: "Mar", revenue: 2.35 },
-  { month: "Apr", revenue: 0.72 },
-  { month: "May", revenue: 2.1 },
-  { month: "Jun", revenue: 2.15 },
-  { month: "Jul", revenue: 1.85 },
-  { month: "Aug", revenue: 3.0 },
-  { month: "Sep", revenue: 2.35 },
-  { month: "Oct", revenue: 0.7 },
-  { month: "Nov", revenue: 2.1 },
-  { month: "Dec", revenue: 2.15 },
-];
-
 const RevenueOverview = () => {
+  const { overview } = useSelector((state) => state.superAdmin);
+  const revenueData = overview?.revenue_overview || [];
+
+  const maxRevenue = revenueData.length > 0
+    ? Math.max(...revenueData.map((r) => r.revenue), 5000)
+    : 5000;
+
+  const formatINR = (value) => {
+    if (value === 0) return "0";
+    if (value >= 100000) return `₹${(value / 100000).toFixed(1)}L`;
+    if (value >= 1000) return `₹${(value / 1000).toFixed(1)}K`;
+    return `₹${Number(value).toFixed(0)}`;
+  };
+
+  const formatTooltip = (value) => {
+    if (value >= 100000) return [`₹${(value / 100000).toFixed(2)}L`, "Revenue"];
+    if (value >= 1000) return [`₹${(value / 1000).toFixed(2)}K`, "Revenue"];
+    return [`₹${Number(value).toFixed(2)}`, "Revenue"];
+  };
+
   return (
     <RevenueContainer>
       <RevenueHeader>
@@ -75,11 +81,8 @@ const RevenueOverview = () => {
             />
 
             <YAxis
-              domain={[0, 4]}
-              ticks={[0, 1, 2, 3, 4]}
-              tickFormatter={(value) =>
-                value === 0 ? "0" : `SAR ${value}M`
-              }
+              domain={[0, maxRevenue]}
+              tickFormatter={formatINR}
               tick={{
                 fontSize: 10,
                 fill: "#666",
@@ -89,7 +92,7 @@ const RevenueOverview = () => {
             />
 
             <Tooltip
-              formatter={(value) => [`SAR ${value}M`, "Revenue"]}
+              formatter={formatTooltip}
               contentStyle={{
                 borderRadius: "8px",
                 border: "none",
