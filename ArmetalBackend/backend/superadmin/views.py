@@ -151,6 +151,11 @@ class CompanySubscriptionListCreateView(APIView):
 
             subs.append(obj)
 
+        current_year = now().date().year
+        current_month = now().date().month
+        if int(year) == current_year:
+            subs = [s for s in subs if s.month <= current_month]
+
         serializer = CompanySubscriptionSerializer(
             subs,
             many=True
@@ -259,23 +264,158 @@ class SendInvoiceEmailView(APIView):
 
 class CompanyOverviewView(APIView):
     def get(self, request):
-        companies = Company.objects.all()
+        from django.db.models import Q, Count
+        from django.contrib.auth import get_user_model
+        
+        companies = Company.objects.order_by('-created_at')
         serializer = CompanyListSerializer(companies, many=True, context={'request': request})
 
-        # Find unpaid companies based on their latest subscription
+        current_date = now().date()
+        current_year = current_date.year
+        current_month = current_date.month
+        current_day = current_date.day
+
+        # Find unpaid companies based on active, overdue subscriptions
         unpaid_companies = []
         for company in companies:
-            latest_sub = company.subscriptions.order_by('-year', '-month').first()
-            if latest_sub and latest_sub.status == "unpaid":
+            billing_day = company.created_at.day
+            start_year = company.created_at.year
+            start_month = company.created_at.month
+            
+            # Fetch all unpaid subscriptions
+            unpaid_subs = company.subscriptions.filter(status="unpaid")
+            
+            is_overdue = False
+            for sub in unpaid_subs:
+                # Ignore subscriptions before company creation month
+                if sub.year < start_year or (sub.year == start_year and sub.month < start_month):
+                    continue
+                
+                # Overdue check:
+                # 1. Year is in the past
+                # 2. Year is current, but month is in the past
+                # 3. Year is current, month is current, and billing day <= current day
+                if sub.year < current_year:
+                    is_overdue = True
+                    break
+                elif sub.year == current_year:
+                    if sub.month < current_month:
+                        is_overdue = True
+                        break
+                    elif sub.month == current_month and billing_day <= current_day:
+                        is_overdue = True
+                        break
+            
+            if is_overdue:
                 unpaid_companies.append(company)
 
         unpaid_serializer = CompanyListSerializer(unpaid_companies, many=True, context={'request': request})
+
+        # Calculate Total Revenue in Indian Rupees (INR)
+        paid_subs = CompanySubscription.objects.filter(status="paid")
+        total_revenue_inr = 0.0
+        for sub in paid_subs:
+            amt = float(sub.amount or 0)
+            curr = (sub.currency or "AED").upper()
+            if curr == "INR":
+                total_revenue_inr += amt
+            elif curr == "SAR":
+                total_revenue_inr += amt * 22.5
+            elif curr == "USD":
+                total_revenue_inr += amt * 83.5
+            else:  # AED or others
+                total_revenue_inr += amt * 22.8
+
+        # Calculate Most Ordered Plan
+        plan_counts = Company.objects.exclude(plan=None).values('plan__name').annotate(c=Count('id')).order_by('-c')
+        most_ordered_plan = "No Plan"
+        if plan_counts.exists():
+            most_ordered_plan = plan_counts.first()['plan__name']
+
+        # Calculate Active Subscriptions (Active Companies)
+        active_subscriptions = Company.objects.filter(is_active=True).count()
+
+        # Calculate Total Users
+        User = get_user_model()
+        total_users = User.objects.filter(is_active=True).count()
+
+        # Calculate Revenue Overview (12 months of the current year in INR)
+        months_short = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        revenue_overview = []
+        for i in range(1, 13):
+            subs_for_month = CompanySubscription.objects.filter(
+                status="paid",
+                year=current_year,
+                month=i
+            )
+            monthly_revenue_inr = 0.0
+            for sub in subs_for_month:
+                amt = float(sub.amount or 0)
+                curr = (sub.currency or "AED").upper()
+                if curr == "INR":
+                    monthly_revenue_inr += amt
+                elif curr == "SAR":
+                    monthly_revenue_inr += amt * 22.5
+                elif curr == "USD":
+                    monthly_revenue_inr += amt * 83.5
+                else:  # AED or others
+                    monthly_revenue_inr += amt * 22.8
+            revenue_overview.append({
+                "month": months_short[i-1],
+                "revenue": monthly_revenue_inr
+            })
+
+        # Calculate Top Plans chart data in INR
+        plan_revenue = {
+            "Enterprise": 0.0,
+            "PRO": 0.0,
+            "Custom": 0.0,
+            "Basic": 0.0
+        }
+        current_year_paid_subs = CompanySubscription.objects.filter(
+            status="paid",
+            year=current_year
+        )
+        for sub in current_year_paid_subs:
+            amt = float(sub.amount or 0)
+            curr = (sub.currency or "AED").upper()
+            
+            # Convert to INR
+            amt_inr = amt
+            if curr == "SAR":
+                amt_inr = amt * 22.5
+            elif curr == "USD":
+                amt_inr = amt * 83.5
+            elif curr != "INR":  # AED or default
+                amt_inr = amt * 22.8
+                
+            plan_name = "Custom"
+            if sub.company.plan:
+                p_name_lower = sub.company.plan.name.lower()
+                if "enterprise" in p_name_lower:
+                    plan_name = "Enterprise"
+                elif "pro" in p_name_lower:
+                    plan_name = "PRO"
+                elif "basic" in p_name_lower:
+                    plan_name = "Basic"
+            
+            plan_revenue[plan_name] += amt_inr
+            
+        top_plans = [
+            {"name": k, "value": v} for k, v in plan_revenue.items()
+        ]
 
         data = {
             "total_companies": companies.count(),
             "unpaid_companies_count": len(unpaid_companies),
             "companies": serializer.data,
             "unpaid_companies": unpaid_serializer.data,
+            "total_revenue": total_revenue_inr,
+            "most_ordered_plan": most_ordered_plan,
+            "active_subscriptions": active_subscriptions,
+            "total_users": total_users,
+            "revenue_overview": revenue_overview,
+            "top_plans": top_plans
         }
         return Response(data)
 

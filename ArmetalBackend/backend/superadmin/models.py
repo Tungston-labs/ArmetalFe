@@ -302,7 +302,7 @@ class CompanySubscription(TimeStampedModel):
             ):
 
                 # prevent duplicate finance entry
-                subscription_category = FinanceCategory.objects.get(
+                subscription_category, _ = FinanceCategory.objects.get_or_create(
                     name="subscription",
                     payment_type="IN",
                     company=None

@@ -145,61 +145,28 @@ export const StatIcon = styled.div`
 
 export const StatValue = styled.div`
   width: 100%;
-  font-size: 12px;
-  color: #171717;
-  line-height: 18px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-family: "Poppins";
-font-weight: 500;
-font-style: Medium;
-line-height: 18px;
-letter-spacing: 0%;
-vertical-align: bottom;
-margin-bottom: 4px;
-
-
-  @media (min-width: 1920px) {
-    font-size: 14px;
-  }
+  font-size: 20px;
+  font-weight: 600;
+  color: #111111;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 2px;
+  line-height: 1.2;
 
   @media (max-width: 768px) {
-    font-size: 12px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 13px;
-  }
-
-  @media (max-width: 360px) {
-    font-size: 12px;
+    font-size: 16px;
   }
 `;
 
 export const StatLabel = styled.div`
   width: 100%;
-
-  font-size: 14px;
-  font-weight: 400;
-
-  color: #171717;
-
-  line-height: 17px;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  @media (min-width: 1920px) {
-    font-size: 12px;
-  }
+  font-size: 10px;
+  font-weight: 500;
+  color: #888888;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 
   @media (max-width: 768px) {
-    font-size: 10px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 11px;
+    font-size: 9px;
   }
 `;

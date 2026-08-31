@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { FaCalendarAlt } from "react-icons/fa";
 import {
   PlanContainer,
@@ -16,28 +17,26 @@ import {
   TooltipValue,
 } from "./TopPlan.Styles";
 
-const plans = [
-  {
-    name: "Enterprise",
-    value: 2.05,
-  },
-  {
-    name: "PRO",
-    value: 1.45,
-  },
-  {
-    name: "Custom",
-    value: 2.5,
-  },
-  {
-    name: "Basic",
-    value: 0.55,
-  },
-];
-
-const maxValue = 2.5;
-
 const TopPlan = () => {
+  const { overview } = useSelector((state) => state.superAdmin);
+  const plans = overview?.top_plans || [];
+
+  const maxValue = plans.length > 0 ? Math.max(...plans.map((p) => p.value), 5000) : 5000;
+
+  const formatINR = (value) => {
+    if (value === 0) return "0";
+    if (value >= 100000) return `₹${(value / 100000).toFixed(1)}L`;
+    if (value >= 1000) return `₹${(value / 1000).toFixed(1)}K`;
+    return `₹${Number(value).toFixed(0)}`;
+  };
+
+  // Find the highest revenue plan for the tooltip summary
+  const topPlan = plans.length > 0
+    ? plans.reduce((max, p) => (p.value > max.value ? p : max), plans[0])
+    : null;
+
+  const currentMonthName = new Date().toLocaleString("en-US", { month: "long" });
+
   return (
     <PlanContainer>
       <PlanHeader>
@@ -66,16 +65,20 @@ const TopPlan = () => {
 
         <div className="axis-labels">
           <span>0</span>
-          <span>SAR 1M</span>
-          <span>SAR 1.5M</span>
-          <span>SAR 2M</span>
-          <span>SAR 2.5M</span>
+          <span>{formatINR(maxValue * 0.25)}</span>
+          <span>{formatINR(maxValue * 0.5)}</span>
+          <span>{formatINR(maxValue * 0.75)}</span>
+          <span>{formatINR(maxValue)}</span>
         </div>
 
-        <TooltipBox>
-          <TooltipMonth>July</TooltipMonth>
-          <TooltipValue>Custom · SAR 2.5M</TooltipValue>
-        </TooltipBox>
+        {topPlan && topPlan.value > 0 && (
+          <TooltipBox>
+            <TooltipMonth>{currentMonthName}</TooltipMonth>
+            <TooltipValue>
+              {topPlan.name} · {formatINR(topPlan.value)}
+            </TooltipValue>
+          </TooltipBox>
+        )}
       </ChartWrapper>
     </PlanContainer>
   );

@@ -1,4 +1,6 @@
 import React from "react";
+import { useSelector } from "react-redux";
+
 import {
   CompaniesSection,
   SectionHeader,
@@ -12,35 +14,13 @@ import {
   CompanyUsername,
 } from "./RecentCompanies.Styles";
 
-const companies = [
-  {
-    name: "YFLY",
-    username: "yfly",
-    // logo: "/images/yfly.png",
-  },
-  {
-    name: "Tungston Labs",
-    username: "tungstonlabs",
-    // logo: "/images/tungston.png",
-  },
-  {
-    name: "Stampede",
-    username: "jim_arm_per_434",
-    // logo: "/images/stampede.png",
-  },
-  {
-    name: "Mediora",
-    username: "mediora",
-    // logo: "/images/mediora.png",
-  },
-  {
-    name: "Tungston Labs",
-    username: "tungstonlabs",
-    // logo: "/images/tungston.png",
-  },
-];
-
 const RecentlyAddedCompanies = ({ onViewAll }) => {
+  const { overview } = useSelector(
+    (state) => state.superAdmin
+  );
+
+  const companies = overview?.companies || [];
+
   return (
     <CompaniesSection>
       <SectionHeader>
@@ -52,19 +32,23 @@ const RecentlyAddedCompanies = ({ onViewAll }) => {
       </SectionHeader>
 
       <CompaniesGrid>
-        {companies.map((company, index) => (
-          <CompanyCard key={`${company.name}-${index}`}>
-            <CompanyLogo
-              src={company.logo}
-              alt={`${company.name} logo`}
-            />
+        {companies.length === 0 ? (
+          <p>No companies found.</p>
+        ) : (
+          companies.map((company) => (
+            <CompanyCard key={company.id}>
+              <CompanyLogo
+                src={company.logo_url}
+                alt={`${company.name} logo`}
+              />
 
-            <CompanyInfo>
-              <CompanyName>{company.name}</CompanyName>
-              <CompanyUsername>{company.username}</CompanyUsername>
-            </CompanyInfo>
-          </CompanyCard>
-        ))}
+              <CompanyInfo>
+                <CompanyName>{company.name}</CompanyName>
+                <CompanyUsername>{company.company_id}</CompanyUsername>
+              </CompanyInfo>
+            </CompanyCard>
+          ))
+        )}
       </CompaniesGrid>
     </CompaniesSection>
   );
