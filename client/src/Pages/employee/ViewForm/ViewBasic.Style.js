@@ -4,6 +4,7 @@ export const Container = styled.div`
   padding: 20px;
   max-width: 1200px;
   margin: auto;
+  background-color: white;
 `;
 
 export const Section = styled.div`
@@ -11,16 +12,17 @@ export const Section = styled.div`
 `;
 
 export const Label = styled.label`
-  font-size: 0.9rem;
-  font-weight: 500;
   color: #333;
   margin-bottom: 5px;
   display: block;
+    font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 14px;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
-
-
-
-
 
 
 export const Hr = styled.hr`
@@ -32,7 +34,7 @@ export const Rowes = styled.div`
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-  margin-bottom: 15px;
+  /* margin-bottom: 10px; */
 `;
 
 export const Column = styled.div`
@@ -76,8 +78,7 @@ export const Card = styled.div`
   background: #fff;
   border-radius: 8px;
   padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  /* margin-bottom: 20px; */
 `;
 
 export const CardHeader = styled.div`

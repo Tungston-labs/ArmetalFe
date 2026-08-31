@@ -168,7 +168,6 @@ const ViewDocument = () => {
       handleChange={() => {}}
       handleImageChange={() => {}}
     >  
-      <Hr />
 
       <SectionTitle>Documents</SectionTitle>
 

@@ -47,6 +47,11 @@ const ReusableFilter = ({
   onDate,
   showDate = false,
 
+  // IMPORTANT:
+  // "month" -> YYYY-MM
+  // "date"  -> YYYY-MM-DD
+  dateType = "month",
+
   // ================= MORE OPTIONS =================
   showMoreOptions = false,
   moreOptions = [],
@@ -165,14 +170,32 @@ const ReusableFilter = ({
               All Departments
             </option>
 
-            {departments.map((item) => (
-              <option
-                key={item}
-                value={item}
-              >
-                {item}
-              </option>
-            ))}
+            {departments.map((item, index) => {
+              const isObject =
+                typeof item === "object" &&
+                item !== null;
+
+              const label = isObject
+                ? item.label
+                : item;
+
+              const value = isObject
+                ? item.value
+                : item;
+
+              return (
+                <option
+                  key={
+                    isObject
+                      ? `department-${item.value}`
+                      : `department-${item}-${index}`
+                  }
+                  value={value}
+                >
+                  {label}
+                </option>
+              );
+            })}
           </Select>
         )}
 
@@ -189,14 +212,32 @@ const ReusableFilter = ({
               All Status
             </option>
 
-            {statuses.map((item) => (
-              <option
-                key={item}
-                value={item}
-              >
-                {item}
-              </option>
-            ))}
+            {statuses.map((item, index) => {
+              const isObject =
+                typeof item === "object" &&
+                item !== null;
+
+              const label = isObject
+                ? item.label
+                : item;
+
+              const value = isObject
+                ? item.value
+                : item;
+
+              return (
+                <option
+                  key={
+                    isObject
+                      ? `status-${item.value}`
+                      : `status-${item}-${index}`
+                  }
+                  value={value}
+                >
+                  {label}
+                </option>
+              );
+            })}
           </Select>
         )}
 
@@ -212,7 +253,7 @@ const ReusableFilter = ({
 
         {showDate && (
           <DateInput
-            type="month"
+            type={dateType}
             value={date}
             onChange={(event) =>
               onDate?.(event.target.value)
@@ -281,7 +322,9 @@ const ReusableFilter = ({
                         }
                       />
 
-                      <span>{option.label}</span>
+                      <span>
+                        {option.label}
+                      </span>
                     </MenuItem>
                   ))
 

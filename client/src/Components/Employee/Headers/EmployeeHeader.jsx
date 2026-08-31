@@ -115,7 +115,6 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
 
       <InfoWrapper>
 
-        {/* Row 1: Name, Email, DOB, Employee ID, Gender */}
         <Row>
           <FieldGroup>
             <FieldLabel>Name</FieldLabel>

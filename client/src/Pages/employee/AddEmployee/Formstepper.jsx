@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   StepperWrapper,
@@ -19,7 +19,11 @@ import {
   ActiveUnderline,
 } from "./EmployeeForm.styles";
 
-import { PiUser, PiUserCirclePlusThin, PiCameraThin } from "react-icons/pi";
+import {
+  PiUser,
+  PiUserCirclePlusThin,
+  PiCameraThin,
+} from "react-icons/pi";
 import { AiOutlineClose } from "react-icons/ai";
 
 const MAX_SIZE = 5 * 1024 * 1024;
@@ -36,8 +40,24 @@ const FormStepper = ({
   ],
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [localImage, setLocalImage] = useState(profileImageSrc);
   const [imageError, setImageError] = useState("");
+
+  /*
+   * Find active step from current URL
+   */
+  const currentStep = routes.findIndex((route) => {
+    return location.pathname === route;
+  });
+
+  /*
+   * Use URL step if found.
+   * Otherwise fallback to activeStep prop.
+   */
+  const selectedStep =
+    currentStep !== -1 ? currentStep : activeStep;
 
   const handleStepClick = (index) => {
     const route = routes[index];
@@ -49,6 +69,7 @@ const FormStepper = ({
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
+
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
@@ -62,7 +83,9 @@ const FormStepper = ({
     }
 
     setImageError("");
+
     const previewUrl = URL.createObjectURL(file);
+
     setLocalImage(previewUrl);
 
     if (onProfileImageChange) {
@@ -73,6 +96,7 @@ const FormStepper = ({
   const removeImage = (e) => {
     e.preventDefault();
     e.stopPropagation();
+
     setLocalImage(null);
     setImageError("");
 
@@ -83,11 +107,14 @@ const FormStepper = ({
 
   return (
     <StepperWrapper>
-      {/* Profile Image with Upload */}
+      {/* Profile Image */}
       <AvatarShell>
         <ProfileImageWrapper>
           {localImage ? (
-            <ProfileImage src={localImage} alt="Employee" />
+            <ProfileImage
+              src={localImage}
+              alt="Employee"
+            />
           ) : (
             <ProfilePlaceholder>
               <PiUserCirclePlusThin size={40} />
@@ -95,21 +122,35 @@ const FormStepper = ({
           )}
 
           <ProfileHoverOverlay
-            onClick={() => document.getElementById("stepper-profile-upload").click()}
+            onClick={() =>
+              document
+                .getElementById("stepper-profile-upload")
+                ?.click()
+            }
           >
             <PiCameraThin size={16} />
-            <span>{localImage ? "Change" : "Upload"}</span>
+            <span>
+              {localImage ? "Change" : "Upload"}
+            </span>
           </ProfileHoverOverlay>
         </ProfileImageWrapper>
 
         <CameraBadge
-          onClick={() => document.getElementById("stepper-profile-upload").click()}
+          onClick={() =>
+            document
+              .getElementById("stepper-profile-upload")
+              ?.click()
+          }
         >
           <PiCameraThin size={14} />
         </CameraBadge>
 
         {localImage && (
-          <RemoveBadge type="button" onClick={removeImage} title="Remove photo">
+          <RemoveBadge
+            type="button"
+            onClick={removeImage}
+            title="Remove photo"
+          >
             <AiOutlineClose size={11} />
           </RemoveBadge>
         )}
@@ -122,14 +163,15 @@ const FormStepper = ({
         />
       </AvatarShell>
 
+      {/* Stepper */}
       <StepperContent>
         {steps.map((label, index) => {
-          const isActive = index === activeStep;
+          const isActive = index === selectedStep;
 
           return (
             <React.Fragment key={label}>
               {/* Line */}
-              <StepLine />
+              {index > 0 && <StepLine />}
 
               {/* Step */}
               <StepItem
@@ -140,6 +182,7 @@ const FormStepper = ({
                 tabIndex={0}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
                     handleStepClick(index);
                   }
                 }}

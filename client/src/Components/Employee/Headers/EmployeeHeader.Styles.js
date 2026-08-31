@@ -147,6 +147,7 @@ export const InfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-top: 20px;
 `;
 
 export const Row = styled.div`
@@ -168,6 +169,13 @@ export const FieldLabel = styled.label`
   margin-bottom: 6px;
   font-weight: 500;
   color: #172554;
+  font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 14px;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Input = styled.input`
@@ -216,9 +224,13 @@ export const ErrorText = styled.div`
   text-align: left;
 `;
 export const SectionTitle = styled.h2`
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #333;
+  font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 16px;
+line-height: 100%;
+letter-spacing: 0%;
+
   // border-bottom: 2px solid #e2e8f0;
   // padding-bottom: 8px;
 `;

@@ -13,10 +13,12 @@ import {
   TwoColumnRows,
   FormGroups,
   Label,
+
 } from "./Table.Styles";
 import {
   getBankFieldConfig,
 } from "../../../utils/employeeCountryFields";
+import { Divider } from "antd";
 
 const ErrorMsg = ({ msg }) =>
   msg ? (
@@ -66,9 +68,9 @@ setIfscCode,
   return (
     <Container>
       <Header>
-        <h2>Bank and Payment Details</h2>
+            <SectionTitle >Bank Details</SectionTitle>
       </Header>
-
+ 
       <FormSection>
         <Row>
                     <TwoColumnRows>
@@ -141,6 +143,7 @@ setIfscCode,
    
         {bankConfig.showIndianTax && (
           <>
+          <Divider/>
             <SectionTitle>Tax and Compliance</SectionTitle>
             <Row>
               <TwoColumnRows>

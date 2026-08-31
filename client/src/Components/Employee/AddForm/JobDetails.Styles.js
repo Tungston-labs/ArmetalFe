@@ -7,14 +7,18 @@ export const FormContainer = styled.form`
   width: 100%;
   margin: auto;
   // padding: 20px;
+  margin-top: -10px;
 `;
 
 export const SectionTitle = styled.h2`
-  font-size: 1.2rem;
-  font-weight: 600;
   color: #333;
-  // border-bottom: 2px solid #e2e8f0;
-  // padding-bottom: 8px;
+font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 16px;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const FormRow = styled.div`
@@ -42,8 +46,14 @@ export const FullWidthGroup = styled.div`
 export const Label = styled.label`
   font-weight: 500;
   margin-bottom: 6px;
-  color: #172554;
   font-size: 14px;
+  font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 14px;
+line-height: 100%;
+letter-spacing: 0%;
+
 `;
 
 export const Input = styled.input`

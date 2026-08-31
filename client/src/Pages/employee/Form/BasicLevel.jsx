@@ -12,10 +12,8 @@ import {
   Container,
 } from "./BasicLevel.Styles";
 
-import Multistep from "../../../Components/Employee/AddForm/Multistep";
 import JobDetails from "../../../Components/Employee/AddForm/JobDetails";
 import Loader from "../../../Components/Loader/Loader";
-import EmployeeIcon from "../../../assets/employeeicon.svg";
 // import Navbar from "../../Components/Navbar";
 import EmployeeHeader from "../../../Components/Employee/Headers/EmployeeHeader";
 import { ButtonWrapper, NextButton } from "../../../Components/Employee/AddForm/JobDetails.Styles";
