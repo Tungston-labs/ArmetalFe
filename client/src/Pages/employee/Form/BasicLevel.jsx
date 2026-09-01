@@ -17,7 +17,6 @@ import Loader from "../../../Components/Loader/Loader";
 // import Navbar from "../../Components/Navbar";
 import EmployeeHeader from "../../../Components/Employee/Headers/EmployeeHeader";
 import { ButtonWrapper, NextButton } from "../../../Components/Employee/AddForm/JobDetails.Styles";
-import EmployeeTitle from "../../../Components/Employee/Headers/EmployeeTitle";
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
 import {
   getLegalFieldConfig,
@@ -43,34 +42,45 @@ export default function AddEmployeeForm() {
   );
   const country = user?.company?.country || "IN";
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phno: "",
-    address: "",
-    dob: "",
-    gender: "",
-    designation: "",
-    joining_date: "",
-    department_id: "",
-    employment_type: "",
-    passport_number: "",
-    visa_expiry_date: "",
-    iqama_number: "",
-    aadar_number: "",
-    insurance_number: "",
-    profile_pic: null,
-    total_leave: "",
-    casual_leave: "",
-    sick_leave: "",
-    earned_leave: "",
-    maternity_leave: "",
-    other_leave: "",
-    role: "",
-    contract_expiry_date: "",
-    idcard: null,
-    employee_id: "",
-  });
+const [formData, setFormData] = useState({
+  name: "",
+  email: "",
+  phno: "",
+  address: "",
+  dob: "",
+  gender: "",
+
+  // ADD THESE
+  country: "",
+  blood_group: "",
+
+  designation: "",
+  joining_date: "",
+  department_id: "",
+  employment_type: "",
+
+  passport_number: "",
+  visa_expiry_date: "",
+  iqama_number: "",
+  aadar_number: "",
+  insurance_number: "",
+
+  profile_pic: null,
+
+  total_leave: "",
+  casual_leave: "",
+  sick_leave: "",
+  earned_leave: "",
+  maternity_leave: "",
+  other_leave: "",
+
+  role: "",
+  contract_expiry_date: "",
+  idcard: null,
+
+  employee_id: "",
+  employee_code: "",
+});
   useEffect(() => {
     if (departmentList.length === 0) {
       dispatch(getDepartments({ page: 1, search: "" }));
@@ -105,7 +115,7 @@ export default function AddEmployeeForm() {
     const requiredFields = [
       "name", "address", "email", "dob", "phno",
       "gender", "designation", "joining_date",
-      "department_id", "employment_type", "total_leave", "role","employee_code"
+      "department_id", "employment_type", "total_leave", "role", "employee_code","blood_group","country"
     ];
 
     requiredFields.push(...getLegalFieldConfig(country).requiredFields);
@@ -203,14 +213,23 @@ export default function AddEmployeeForm() {
       {loading && <Loader />}
       <Container>
         <UnsavedChangesGuard isDirty={isFormDirty} />
-           <ReusableHeader
-                    title="Employees"
-                    breadcrumbs={["Employees","Add Form"]}
-                   showBack
+        <ReusableHeader
+          title="Employees"
+          breadcrumbs={["Employees", "Add Form"]}
+          showBack
+          onBack={() => navigate("/employee")}
+        />
 
-                />
-
-      <FormStepper/>
+        <FormStepper
+          profileImageSrc={
+            formData.profile_pic
+              ? typeof formData.profile_pic === "string"
+                ? formData.profile_pic
+                : URL.createObjectURL(formData.profile_pic)
+              : null
+          }
+          onProfileImageChange={(file) => handleFileChange(file)}
+        />
         <EmployeeHeader
           formData={formData}
           setFormData={setFormData}
@@ -230,13 +249,13 @@ export default function AddEmployeeForm() {
         />
 
         <ButtonWrapper>
-         <NextButton
-  type="button"
-  onClick={handleNext}
-  disabled={loading}
->
-  {loading ? "Saving..." : "Save"}
-</NextButton>
+          <NextButton
+            type="button"
+            onClick={handleNext}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
+          </NextButton>
         </ButtonWrapper>
       </Container>
     </>

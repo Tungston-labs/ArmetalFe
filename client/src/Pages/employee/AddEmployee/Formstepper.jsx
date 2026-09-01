@@ -33,6 +33,7 @@ const FormStepper = ({
   activeStep = 0,
   profileImageSrc = null,
   onProfileImageChange,
+  readOnly = false,
   routes = [
     "/basic-details",
     "/bank-payment",
@@ -44,6 +45,15 @@ const FormStepper = ({
 
   const [localImage, setLocalImage] = useState(profileImageSrc);
   const [imageError, setImageError] = useState("");
+
+  /*
+   * Keep the displayed image in sync if the prop changes after mount
+   * (e.g. navigating to a later step where the image is passed in
+   * from Redux instead of picked locally).
+   */
+  useEffect(() => {
+    setLocalImage(profileImageSrc);
+  }, [profileImageSrc]);
 
   /*
    * Find active step from current URL
@@ -121,31 +131,35 @@ const FormStepper = ({
             </ProfilePlaceholder>
           )}
 
-          <ProfileHoverOverlay
+          {!readOnly && (
+            <ProfileHoverOverlay
+              onClick={() =>
+                document
+                  .getElementById("stepper-profile-upload")
+                  ?.click()
+              }
+            >
+              <PiCameraThin size={16} />
+              <span>
+                {localImage ? "Change" : "Upload"}
+              </span>
+            </ProfileHoverOverlay>
+          )}
+        </ProfileImageWrapper>
+
+        {!readOnly && (
+          <CameraBadge
             onClick={() =>
               document
                 .getElementById("stepper-profile-upload")
                 ?.click()
             }
           >
-            <PiCameraThin size={16} />
-            <span>
-              {localImage ? "Change" : "Upload"}
-            </span>
-          </ProfileHoverOverlay>
-        </ProfileImageWrapper>
+            <PiCameraThin size={14} />
+          </CameraBadge>
+        )}
 
-        <CameraBadge
-          onClick={() =>
-            document
-              .getElementById("stepper-profile-upload")
-              ?.click()
-          }
-        >
-          <PiCameraThin size={14} />
-        </CameraBadge>
-
-        {localImage && (
+        {!readOnly && localImage && (
           <RemoveBadge
             type="button"
             onClick={removeImage}
@@ -155,12 +169,14 @@ const FormStepper = ({
           </RemoveBadge>
         )}
 
-        <HiddenProfileInput
-          id="stepper-profile-upload"
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-        />
+        {!readOnly && (
+          <HiddenProfileInput
+            id="stepper-profile-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+        )}
       </AvatarShell>
 
       {/* Stepper */}

@@ -40,6 +40,17 @@ export default function BankPaymentForm() {
   const employeeId = useSelector((state) => state.employee.employeeId);
   const bankPayment = useSelector((state) => state.employee.bankPayment);
   const savedBankForm = useSelector((state) => state.employee.formData.bank);
+
+  // Profile photo picked in step 1 (Basic Details) — shown here read-only.
+  const basicProfilePic = useSelector(
+    (state) => state.employee.formData?.basic?.profile_pic
+  );
+  const profileImageSrc = basicProfilePic
+    ? typeof basicProfilePic === "string"
+      ? basicProfilePic
+      : URL.createObjectURL(basicProfilePic)
+    : null;
+
   const user = JSON.parse(
     localStorage.getItem("user") || sessionStorage.getItem("user"),
   );
@@ -189,14 +200,17 @@ export default function BankPaymentForm() {
 
       {loading && <Loader />}
       <Container>
-        <ReusableHeader
-                    title="Employees"
-                    breadcrumbs={["Employees","Bank details"]}
-                   showBack
-
-                />
+          <ReusableHeader
+  title="Employees"
+  breadcrumbs={["Employees", "Add Form"]}
+  showBack
+  onBack={() => navigate("/employee")}
+/>
      
-           <FormStepper/>
+           <FormStepper
+             profileImageSrc={profileImageSrc}
+             readOnly
+           />
    
 
         {error && <p>{error.message || error.toString()}</p>}

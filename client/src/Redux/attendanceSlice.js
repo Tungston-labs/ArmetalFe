@@ -5,6 +5,7 @@ import {
   fetchDepartmentsAttendance,
   fetchAttendanceSummary,
   generateAttendanceExcel,
+  generateEmployeeAttendanceExcel,
   updateAttendance,
 } from "../services/attendanceService";
 
@@ -70,6 +71,10 @@ export const getAttendanceSummary = createAsyncThunk(
     }
   }
 );
+
+// =========================================================
+// COMPANY-WIDE Excel report (all employees for the month)
+// =========================================================
 export const generateAttendanceExcelReport = createAsyncThunk(
   "attendance/generateAttendanceExcelReport",
   async (
@@ -94,6 +99,40 @@ export const generateAttendanceExcelReport = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         error.response?.data ||
         "Failed to generate attendance Excel"
+      );
+    }
+  }
+);
+
+// =========================================================
+// SINGLE EMPLOYEE Excel report (one employee for the month)
+// =========================================================
+export const generateEmployeeAttendanceExcelReport = createAsyncThunk(
+  "attendance/generateEmployeeAttendanceExcelReport",
+  async (
+    {
+      employee,
+      year,
+      month,
+      token,
+    },
+    thunkAPI
+  ) => {
+
+    try {
+
+      return await generateEmployeeAttendanceExcel({
+        employee,
+        year,
+        month,
+        token,
+      });
+
+    } catch (error) {
+
+      return thunkAPI.rejectWithValue(
+        error.response?.data ||
+        "Failed to generate employee attendance Excel"
       );
     }
   }
@@ -162,10 +201,14 @@ const attendanceSlice = createSlice({
     attendanceSummary: null,
     summaryLoading: false,
 
-    // Monthly Excel report
+    // Monthly Excel report (company-wide)
     attendanceExcel: null,
     attendanceExcelLoading: false,
     attendanceExcelError: null,
+
+    // Single-employee Excel report
+    employeeAttendanceExcelLoading: false,
+    employeeAttendanceExcelError: null,
 
     // Update (mark) attendance
     updateLoading: false,
@@ -261,7 +304,7 @@ const attendanceSlice = createSlice({
         state.error = action.payload || "Failed to fetch summary";
       })
       // =========================================================
-// Generate Attendance Excel
+// Generate Attendance Excel (company-wide)
 // =========================================================
 
 .addCase(
@@ -296,6 +339,46 @@ const attendanceSlice = createSlice({
     state.error =
       action.payload ||
       "Failed to generate attendance Excel";
+  }
+)
+
+// =========================================================
+// Generate Attendance Excel (single employee)
+// NOTE: payload here is a raw Blob (the .xlsx file), not JSON,
+// so it is intentionally NOT stored in state — the component
+// handles the blob directly to trigger a browser download.
+// =========================================================
+
+.addCase(
+  generateEmployeeAttendanceExcelReport.pending,
+  (state) => {
+
+    state.employeeAttendanceExcelLoading = true;
+    state.employeeAttendanceExcelError = null;
+  }
+)
+
+.addCase(
+  generateEmployeeAttendanceExcelReport.fulfilled,
+  (state) => {
+
+    state.employeeAttendanceExcelLoading = false;
+  }
+)
+
+.addCase(
+  generateEmployeeAttendanceExcelReport.rejected,
+  (state, action) => {
+
+    state.employeeAttendanceExcelLoading = false;
+
+    state.employeeAttendanceExcelError =
+      action.payload ||
+      "Failed to generate employee attendance Excel";
+
+    state.error =
+      action.payload ||
+      "Failed to generate employee attendance Excel";
   }
 )
 

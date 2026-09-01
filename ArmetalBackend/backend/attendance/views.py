@@ -1745,3 +1745,193 @@ class AttendanceManualUpdateView(APIView):
                 else status.HTTP_200_OK
             )
         )
+
+
+from django.http import HttpResponse
+
+
+class GenerateSingleEmployeeAttendanceExcelView(
+    generics.GenericAPIView
+):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def post(self, request, *args, **kwargs):
+
+        user = request.user
+
+        # =====================================================
+        # COMPANY
+        # =====================================================
+
+        if not user.company:
+
+            return Response(
+                {
+                    "detail":
+                        "User is not associated with a company."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # EMPLOYEE
+        # =====================================================
+
+        employee_value = request.data.get("employee")
+
+        if not employee_value:
+
+            return Response(
+                {
+                    "detail": "employee is required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        employee = None
+
+        try:
+            if str(employee_value).isdigit():
+
+                employee = Employee_db.objects.filter(
+                    id=int(employee_value)
+                ).first()
+
+        except (ValueError, TypeError):
+            employee = None
+
+        if employee is None:
+
+            employee = Employee_db.objects.filter(
+                employee_id=str(employee_value)
+            ).first()
+
+        if employee is None:
+
+            employee = Employee_db.objects.filter(
+                email__iexact=str(employee_value)
+            ).first()
+
+        if employee is None:
+
+            return Response(
+                {
+                    "detail": (
+                        f"No employee found for "
+                        f"'{employee_value}'."
+                    )
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # =====================================================
+        # COMPANY OWNERSHIP CHECK
+        # =====================================================
+
+        department = getattr(employee, "department", None)
+        company = getattr(department, "company", None)
+
+        if company and user.company_id != company.id:
+
+            return Response(
+                {
+                    "detail": (
+                        "You do not have permission to "
+                        "generate a report for this employee."
+                    )
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # =====================================================
+        # YEAR / MONTH
+        # =====================================================
+
+        today = date.today()
+
+        try:
+
+            year = int(
+                request.data.get("year", today.year)
+            )
+
+            month = int(
+                request.data.get("month", today.month)
+            )
+
+        except (TypeError, ValueError):
+
+            return Response(
+                {
+                    "detail": "Invalid year or month."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if month < 1 or month > 12:
+
+            return Response(
+                {
+                    "detail": "Month must be between 1 and 12."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        start_date = date(year, month, 1)
+
+        last_day = calendar.monthrange(year, month)[1]
+
+        end_date = date(year, month, last_day)
+
+        if start_date > today.replace(day=1):
+
+            return Response(
+                {
+                    "detail": (
+                        "Cannot generate attendance report "
+                        "for a future month."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # GENERATE EXCEL (single employee)
+        # =====================================================
+
+        excel_file = generate_attendance_excel(
+            employees=[employee],
+            year=year,
+            month=month,
+            build_calendar_func=build_employee_month_calendar
+        )
+
+        file_name = (
+            f"Attendance_"
+            f"{employee.employee_id}_"
+            f"{year}_"
+            f"{month:02d}.xlsx"
+        )
+
+        # =====================================================
+        # RESPONSE — direct file download
+        # (not saved to EmployeeAttendanceReport, since that
+        # model is unique per company/year/month, not per employee)
+        # =====================================================
+
+        response = HttpResponse(
+            excel_file.getvalue(),
+            content_type=(
+                "application/vnd.openxmlformats-officedocument"
+                ".spreadsheetml.sheet"
+            )
+        )
+
+        response["Content-Disposition"] = (
+            f'attachment; filename="{file_name}"'
+        )
+
+        return response

@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (
     AttendanceSwipeView,AttendanceAdminListView,AttendanceManualUpdateView,AttendanceDetailByDateView,AttendanceAdminDetailView,AddPunchOutNoteView,GenerateEmployeeAttendanceExcelView,AttendanceLocationUpdateView,BackgroundLocationUpdateView,EmployeeAttendanceSummaryView,AttendanceCorrectionRequestCreateView,AttendanceCorrectionStatusUpdateView
+,GenerateSingleEmployeeAttendanceExcelView
 )
 
 urlpatterns = [
@@ -30,6 +31,11 @@ path(
         AttendanceManualUpdateView.as_view(),
         name="attendance-manual-update"
     ),
+    path(
+    "attendance/employee-excel/",
+    GenerateSingleEmployeeAttendanceExcelView.as_view(),
+    name="generate-single-employee-attendance-excel"
+),
 
 ]
 

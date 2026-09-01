@@ -34,6 +34,29 @@ class Employee_db(TimeStampedModel):
     gender = models.CharField(max_length=10, choices=[
         ('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')
     ])
+    country = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    BLOOD_GROUP_CHOICES = [
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+    ]
+
+    blood_group = models.CharField(
+        max_length=5,
+        choices=BLOOD_GROUP_CHOICES,
+        blank=True,
+        null=True
+    )
+
     designation = models.CharField(max_length=100)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name='employees')
     joining_date = models.DateField(default=timezone.now)

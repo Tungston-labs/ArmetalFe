@@ -179,13 +179,13 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
             <FieldLabel>Contact Number</FieldLabel>
             <Input
               type="tel"
-              name="contact_number"
+              name="phno"
               placeholder="Enter contact number"
-              value={formData.contact_number}
+              value={formData.phno}
               onChange={handleChange}
               autoComplete="off"
             />
-            {errors?.contact_number && <ErrorText>{errors.contact_number}</ErrorText>}
+            {errors?.phno && <ErrorText>{errors.phno}</ErrorText>}
           </FieldGroup>
 
           <FieldGroup>
@@ -201,33 +201,44 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Country</FieldLabel>
-            <Input
-              type="text"
-              name="country"
-              placeholder="Enter country"
-              value={formData.country}
-              onChange={handleChange}
-              autoComplete="off"
-            />
-            {errors?.country && <ErrorText>{errors.country}</ErrorText>}
-          </FieldGroup>
+  <FieldLabel>Country</FieldLabel>
 
-          <FieldGroup>
-            <FieldLabel>Blood Group</FieldLabel>
-            <Select name="blood_group" value={formData.blood_group} onChange={handleChange}>
-              <option value="">Select Blood Group</option>
-              <option>A+</option>
-              <option>A-</option>
-              <option>B+</option>
-              <option>B-</option>
-              <option>AB+</option>
-              <option>AB-</option>
-              <option>O+</option>
-              <option>O-</option>
-            </Select>
-            {errors?.blood_group && <ErrorText>{errors.blood_group}</ErrorText>}
-          </FieldGroup>
+  <Input
+    type="text"
+    name="country"
+    placeholder="Enter country"
+    value={formData.country}
+    onChange={handleChange}
+    autoComplete="off"
+  />
+
+  {errors?.country && (
+    <ErrorText>{errors.country}</ErrorText>
+  )}
+</FieldGroup>
+       <FieldGroup>
+  <FieldLabel>Blood Group</FieldLabel>
+
+  <Select
+    name="blood_group"
+    value={formData.blood_group}
+    onChange={handleChange}
+  >
+    <option value="">Select Blood Group</option>
+    <option>A+</option>
+    <option>A-</option>
+    <option>B+</option>
+    <option>B-</option>
+    <option>AB+</option>
+    <option>AB-</option>
+    <option>O+</option>
+    <option>O-</option>
+  </Select>
+
+  {errors?.blood_group && (
+    <ErrorText>{errors.blood_group}</ErrorText>
+  )}
+</FieldGroup>
         </Row>
       </InfoWrapper>
     </Container>

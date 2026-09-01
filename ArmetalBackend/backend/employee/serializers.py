@@ -919,6 +919,7 @@ class DeletedEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee_db
         fields = [
+             "id",   
             "name",
             "employee_id",
             "employee_code",

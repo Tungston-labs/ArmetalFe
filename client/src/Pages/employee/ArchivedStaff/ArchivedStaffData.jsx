@@ -62,6 +62,11 @@ export const employeeColumns = (
           console.log("RESTORE BUTTON CLICKED");
           console.log("Employee ID:", row.id);
 
+          if (!row.id) {
+            console.error("No numeric id found on row:", row);
+            return;
+          }
+
           if (typeof onRestore === "function") {
             onRestore(row.id);
           } else {
@@ -78,6 +83,21 @@ export const employeeColumns = (
           fontWeight: 600,
           position: "relative",
           zIndex: 100,
+
+          // Small click effect
+          transition: "transform 0.12s ease, background 0.2s ease",
+        }}
+        onMouseDown={(e) => {
+          e.currentTarget.style.transform = "scale(0.94)";
+          e.currentTarget.style.background = "#C8E6C9";
+        }}
+        onMouseUp={(e) => {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.background = "#E8F5E9";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.background = "#E8F5E9";
         }}
       >
         Restore

@@ -106,3 +106,29 @@ export const updateAttendance = async ({
 
   return response.data;
 };
+
+export const generateEmployeeAttendanceExcel = async ({
+  employee,
+  year,
+  month,
+  token,
+}) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    responseType: "blob",   // <-- binary file, not JSON
+  };
+
+  const response = await API.post(
+    "/attendance/employee-excel/",   // <-- single-employee endpoint
+    {
+      employee,
+      year,
+      month,
+    },
+    config
+  );
+
+  return response.data; // Blob (the .xlsx file itself)
+};

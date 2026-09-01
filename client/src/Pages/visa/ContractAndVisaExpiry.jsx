@@ -13,6 +13,14 @@ import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 
+// =========================================================
+// LABEL -> BACKEND EXPIRY TYPE MAPPING
+// =========================================================
+const EXPIRY_TYPE_MAP = {
+  "Contract Within 30 Days": "contract",
+  "Visa Within 30 Days": "visa",
+};
+
 const ContractAndVisaExpiry = () => {
   const dispatch = useDispatch();
 
@@ -40,9 +48,13 @@ const ContractAndVisaExpiry = () => {
 
   useEffect(() => {
     if (expiryFilter) {
+      const mappedType =
+        EXPIRY_TYPE_MAP[expiryFilter] || expiryFilter;
+
       dispatch(
         getUpcomingExpiryEmployees({
-          expiryType: expiryFilter,
+          expiryType: mappedType,
+          days: 30,
           page,
           search: debouncedSearch,
         })
@@ -128,7 +140,7 @@ const ContractAndVisaExpiry = () => {
         <ReusableFilter
           search={searchText}
           onSearch={handleSearch}
-
+          searchPlaceholder="Search by Employee name "
           status={expiryFilter}
           statuses={[
             "Contract Within 30 Days",

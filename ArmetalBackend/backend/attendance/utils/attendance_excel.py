@@ -117,6 +117,12 @@ def generate_attendance_excel(
     month_name = start_date.strftime("%B %Y")
 
     # =========================================================
+    # TABLE COLUMN COUNT (used for merged section/title widths)
+    # =========================================================
+
+    TABLE_COLUMN_COUNT = 10
+
+    # =========================================================
     # ROW POINTER
     # =========================================================
 
@@ -152,7 +158,7 @@ def generate_attendance_excel(
             start_row=row,
             start_column=1,
             end_row=row,
-            end_column=5
+            end_column=TABLE_COLUMN_COUNT
         )
 
         cell = worksheet.cell(
@@ -270,7 +276,7 @@ def generate_attendance_excel(
             start_row=row,
             start_column=1,
             end_row=row,
-            end_column=5
+            end_column=TABLE_COLUMN_COUNT
         )
 
         cell = worksheet.cell(
@@ -292,9 +298,14 @@ def generate_attendance_excel(
         headers = [
             "Date",
             "Status",
+            "Attendance Type",
             "Punch In",
             "Punch Out",
-            "Total Hours"
+            "Total Hours",
+            "Note",
+            "Updated By",
+            "Role",
+            "Updated At",
         ]
 
         for column, header in enumerate(
@@ -321,6 +332,8 @@ def generate_attendance_excel(
 
         for record in daily_records:
 
+            attendance_type = record.get("attendance_type") or "-"
+
             values = [
                 (
                     record["date"].strftime("%Y-%m-%d")
@@ -330,6 +343,11 @@ def generate_attendance_excel(
                 record.get(
                     "status"
                 ) or "-",
+                (
+                    attendance_type.capitalize()
+                    if attendance_type != "-"
+                    else "-"
+                ),
                 record.get(
                     "first_punch_in"
                 ) or "-",
@@ -345,6 +363,18 @@ def generate_attendance_excel(
                     ) is not None
                     else "-"
                 ),
+                record.get(
+                    "remark"
+                ) or "-",
+                record.get(
+                    "updated_by"
+                ) or "-",
+                record.get(
+                    "updated_by_role"
+                ) or "-",
+                record.get(
+                    "updated_at"
+                ) or "-",
             ]
 
             for column, value in enumerate(
@@ -371,11 +401,16 @@ def generate_attendance_excel(
     # =========================================================
 
     widths = {
-        1: 18,
-        2: 25,
-        3: 18,
-        4: 18,
-        5: 18,
+        1: 14,   # Date
+        2: 12,   # Status
+        3: 16,   # Attendance Type
+        4: 14,   # Punch In
+        5: 14,   # Punch Out
+        6: 14,   # Total Hours
+        7: 25,   # Note
+        8: 18,   # Updated By
+        9: 14,   # Role
+        10: 20,  # Updated At
     }
 
     for column, width in widths.items():

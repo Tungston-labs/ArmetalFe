@@ -189,10 +189,10 @@ const Header = ({
 
               <InputBox
                 type="tel"
-                name="contact_number"
+                name="phno"
                 value={
-                  employee.contact_number ||
-                  employee.phone ||
+                  employee.phno ||
+                  employee.phno ||
                   ""
                 }
                 readOnly={!editable}
@@ -237,22 +237,39 @@ const Header = ({
 
             {/* ================= BLOOD GROUP ================= */}
 
-            <InputField>
-              <InputLabel>
-                Blood Group
-              </InputLabel>
+    {/* ================= BLOOD GROUP ================= */}
 
-              <InputBox
-                type="text"
-                name="blood_group"
-                value={
-                  employee.blood_group || ""
-                }
-                readOnly={!editable}
-                onChange={onChange}
-                autoComplete="off"
-              />
-            </InputField>
+<InputField>
+  <InputLabel>
+    Blood Group
+  </InputLabel>
+
+  {editable ? (
+    <InputBox
+      as="select"
+      name="blood_group"
+      value={employee.blood_group || ""}
+      onChange={onChange}
+    >
+      <option value="">Select Blood Group</option>
+      <option value="A+">A+</option>
+      <option value="A-">A-</option>
+      <option value="B+">B+</option>
+      <option value="B-">B-</option>
+      <option value="AB+">AB+</option>
+      <option value="AB-">AB-</option>
+      <option value="O+">O+</option>
+      <option value="O-">O-</option>
+    </InputBox>
+  ) : (
+    <InputBox
+      type="text"
+      name="blood_group"
+      value={employee.blood_group || "-"}
+      readOnly
+    />
+  )}
+</InputField>
 
           </ContentArea>
         </ProfileCardBody>

@@ -38,7 +38,7 @@ const ViewBasicLayout = ({
 
 <ReusableHeader
   title="Employees"
-  breadcrumbs={["Dashboard", "Employees"]}
+  breadcrumbs={[ "Employees","View Employee"]}
   buttonText="SAVE"
   onButtonClick={handleSubmit}
   showBack

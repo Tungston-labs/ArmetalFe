@@ -5,7 +5,7 @@ export const Container = styled.div`
   display: flex;
   width: 100vw;
   height: 100vh;
-  background:#F7F8FC;
+  background: #F7F8FC;
 `;
 
 export const ContentArea = styled.div`

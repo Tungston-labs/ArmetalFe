@@ -71,7 +71,7 @@ import TrackingList from "./Pages/Attendance/TrackingList.jsx";
 import ForgetPasswordScreen from "./Pages/login/Login/Forgetpasswordscreen.jsx";
 import OtpScreen from "./Pages/login/Login/Otpscreen.jsx";
 import CreateNewPasswordScreen from "./Pages/login/Login/Createnewpasswordscreen.jsx";
-import AttendanceSummary from "./Pages/attendanceReport/AttendanceSummary.jsx";
+import AttendanceSummary from "./Pages/attendanceReport/AttendanceSummary/AttendanceSummary.jsx";
 function App() {
   const dispatch = useDispatch();
 

@@ -318,12 +318,12 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       <Divider/>
       <SectionTitle>Employee Legal & ID Information</SectionTitle>
 
-      <FormRow $columns={4}>
-        <FormGroup>
+      <FormRow $columns={3}>
+        {/* <FormGroup>
           <Label>Phone Number</Label>
           <Input name="phno" value={formData.phno} onChange={handleChange} placeholder="Enter Phone number" autoComplete="off" />
           {renderError("phno")}
-        </FormGroup>
+        </FormGroup> */}
 
         {!isIndiaCompany(country) && legalConfig.identityField !== "passport_number" && (
           <FormGroup>
@@ -350,7 +350,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         </FormGroup>
       </FormRow>
 
-      <FormRow $columns={4}>
+      <FormRow $columns={3}>
         <FormGroup>
           <Label>ID Card Photo</Label>
           <FileInputLabel htmlFor="idcard">{formData.idcard?.name || "Upload ID Card +"}</FileInputLabel>

@@ -501,7 +501,7 @@ useEffect(() => {
         }}
 
         searchPlaceholder={
-          "Search by Employee name or ID"
+          "Search by Employee name"
         }
 
 

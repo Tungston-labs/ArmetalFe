@@ -9,7 +9,8 @@ import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
 import {
   getDeletedEmployees,
   rehireEmployeeById,
-} from "../../../Redux/employeeSlice"; import { getDepartments } from "../../../Redux/departmentSlice";
+} from "../../../Redux/employeeSlice"; 
+import { getDepartments } from "../../../Redux/departmentSlice";
 
 const ArchivedStaff = () => {
   const dispatch = useDispatch();
@@ -96,6 +97,12 @@ const ArchivedStaff = () => {
     month,
   ]);
 
+
+  useEffect(() => {
+    if (deletedEmployeeList.length > 0) {
+        console.log("Sample archived employee row:", deletedEmployeeList[0]);
+    }
+}, [deletedEmployeeList]);
   return (
     <div style={{ padding: 20 }}>
       <ReusableHeader
