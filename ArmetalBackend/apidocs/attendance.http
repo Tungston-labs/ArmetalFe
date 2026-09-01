@@ -104,4 +104,18 @@ Content-Type: application/json
     "month": 8
 }
 
+###attendance summary
+GET http://127.0.0.1:8000/api/employee-attendance/summary/?year=2026&month=08
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4MDA5MTc1LCJpYXQiOjE3ODc5ODAzNzUsImp0aSI6ImFlOTM4ZGNiZDA0NTRlNmU5YjVmMjU5YjI5NThjMzkwIiwidXNlcl9pZCI6NywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.rwCzV_S9owe1WiTlbFHUuNi8W7t5i1Di4dA_CDYaPzw
+###
 
+PATCH http://127.0.0.1:8000/api/attendance/update/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4MjY3MTc0LCJpYXQiOjE3ODgyMzgzNzQsImp0aSI6ImI3ZmU3MTQyOGVhMTQ1Yjc5YTI4ZGFjMGI0MDg5ODk2IiwidXNlcl9pZCI6MiwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.qj3MHJIJ62M-Ka4rO25FlAc_zuxEwmy37jg-gxIv_QI
+Content-Type: application/json
+
+{
+    "employee": 4,
+    "date": "2026-08-31",
+    "attendance_type": "paid",
+    "remark": "work from home"
+}
