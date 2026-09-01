@@ -22,9 +22,10 @@ import {
     updateProject,
     getEmployeesNotInProject,
     assignEmployees,
+    getProjectCount,
 } from "../../Redux/fieldShiftSlice";
 
-import { projectCards } from "../../utils/projectCards";
+import { getProjectCards } from "../../utils/projectCards";
 
 const Projects = () => {
     const dispatch = useDispatch();
@@ -32,13 +33,17 @@ const Projects = () => {
     // =========================
     // REDUX STATE
     // =========================
-    // NOTE: the slice stores isLoading / isError / message,
-    // not loading / error - using the wrong keys meant the
-    // loading and error UI never showed up.
 
     const {
         projects = [],
         employeesNotInProject = [],
+        projectCount = {
+            total: 0,
+            completed: 0,
+            in_progress: 0,
+            pending: 0,
+            high_priority: 0,
+        },
         isLoading,
         isError,
         message,
@@ -51,7 +56,6 @@ const Projects = () => {
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("");
     const [month, setMonth] = useState("");
-
     const [page, setPage] = useState(1);
 
     // Project modal
@@ -80,6 +84,14 @@ const Projects = () => {
     }, [dispatch, search, page, status, month]);
 
     // =========================
+    // GET PROJECT COUNTS
+    // =========================
+
+    useEffect(() => {
+        dispatch(getProjectCount());
+    }, [dispatch]);
+
+    // =========================
     // ADD PROJECT
     // =========================
 
@@ -91,8 +103,6 @@ const Projects = () => {
     // =========================
     // EDIT PROJECT
     // =========================
-    // Wire this to an edit action on ProjectCard if/when you
-    // want inline editing from the list view.
 
     const handleEditProject = (project) => {
         setSelectedProject(project);
@@ -109,18 +119,28 @@ const Projects = () => {
     };
 
     // =========================
-    // MODAL FIELDS -> BACKEND FIELDS
+    // PROJECT PAYLOAD
     // =========================
-    // Same mapping ProjectDetails.jsx uses for update, applied
-    // to create as well so both hit the API with matching keys.
 
     const toProjectPayload = (formData) => ({
-        name: formData.projectName,
+        name: formData.projectName.trim(),
+
         punch_type: formData.projectType,
-        latitude: formData.latitude ? Number(formData.latitude) : null,
-        longitude: formData.longitude ? Number(formData.longitude) : null,
+
+        latitude:
+            formData.latitude !== ""
+                ? Number(formData.latitude)
+                : null,
+
+        longitude:
+            formData.longitude !== ""
+                ? Number(formData.longitude)
+                : null,
+
         priority: formData.priority,
+
         start_date: formData.startDate || null,
+
         status: formData.projectStatus,
     });
 
@@ -132,48 +152,47 @@ const Projects = () => {
         try {
             const projectData = toProjectPayload(formData);
 
-            if (editData) {
-                // =====================================
-                // UPDATE PROJECT
-                // =====================================
+            console.log("PROJECT PAYLOAD:", projectData);
 
+            if (editData) {
                 await dispatch(
                     updateProject({
                         id: editData.id,
                         projectData,
                     })
                 ).unwrap();
-
             } else {
-                // =====================================
-                // CREATE PROJECT
-                // =====================================
-
                 await dispatch(
                     createProject(projectData)
                 ).unwrap();
             }
 
-            // Refresh project list either way
+            // Refresh project list
             dispatch(
                 getProjects({
                     search,
                     page,
+                    status,
+                    date: month,
                 })
             );
+
+            // Refresh stats
+            dispatch(getProjectCount());
 
             handleCloseProjectModal();
 
         } catch (error) {
-            console.error("Project operation failed:", error);
+            console.error(
+                "Project operation failed:",
+                error
+            );
         }
     };
 
     // =========================
     // ADD EMPLOYEE
     // =========================
-    // Fetch the employees not already on this project first,
-    // same as ProjectDetails.jsx, so the modal has data to show.
 
     const handleAddEmployee = async (project) => {
         if (!project?.id) return;
@@ -195,13 +214,24 @@ const Projects = () => {
         }
     };
 
+    // =========================
+    // CLOSE EMPLOYEE MODAL
+    // =========================
+
     const handleCloseAddEmployee = () => {
         setShowAddEmployee(false);
         setSelectedEmployeeProject(null);
     };
 
+    // =========================
+    // ASSIGN EMPLOYEES
+    // =========================
+
     const handleAssignEmployees = async (employeeIds) => {
-        if (!selectedEmployeeProject?.id || !employeeIds?.length) {
+        if (
+            !selectedEmployeeProject?.id ||
+            !employeeIds?.length
+        ) {
             return;
         }
 
@@ -215,23 +245,33 @@ const Projects = () => {
                 })
             ).unwrap();
 
-            // Refresh so member avatars/counts update on the card
+            // Refresh project list
             dispatch(
                 getProjects({
                     search,
                     page,
+                    status,
+                    date: month,
                 })
             );
 
             handleCloseAddEmployee();
 
         } catch (error) {
-            console.error("Failed to assign employees:", error);
+            console.error(
+                "Failed to assign employees:",
+                error
+            );
         } finally {
             setIsAssigning(false);
         }
     };
 
+    // =========================
+    // PROJECT STAT CARDS
+    // =========================
+
+    const projectCards = getProjectCards(projectCount);
 
     // =========================
     // RENDER
@@ -267,6 +307,8 @@ const Projects = () => {
                     setSearch(value);
                     setPage(1);
                 }}
+                searchPlaceholder="Search by Project Name"
+
                 status={status}
                 statuses={[
                     "In Progress",
@@ -282,14 +324,19 @@ const Projects = () => {
                         "Cancelled": "cancelled",
                     };
 
-                    setStatus(statusMap[value] || "");
+                    setStatus(
+                        statusMap[value] || ""
+                    );
+
                     setPage(1);
                 }}
+
                 date={month}
                 onDate={(value) => {
                     setMonth(value);
                     setPage(1);
                 }}
+
                 showSearch
                 showStatus
                 showDate
@@ -311,7 +358,8 @@ const Projects = () => {
 
             {isError && (
                 <div>
-                    {message || "Failed to load projects."}
+                    {message ||
+                        "Failed to load projects."}
                 </div>
             )}
 
@@ -332,9 +380,13 @@ const Projects = () => {
 
                                     project={project}
 
-                                    category={project.punch_type}
+                                    category={
+                                        project.punch_type
+                                    }
 
-                                    title={project.name}
+                                    title={
+                                        project.name
+                                    }
 
                                     date={
                                         project.start_date ||
@@ -342,17 +394,28 @@ const Projects = () => {
                                         ""
                                     }
 
-                                    status={project.status}
-
-                                    priority={project.priority || ""}
-
-                                    members={project.employees || []}
-
-                                    memberCount={
-                                        project.employees?.length || 0
+                                    status={
+                                        project.status
                                     }
 
-                                    onAddMember={handleAddEmployee}
+                                    priority={
+                                        project.priority ||
+                                        ""
+                                    }
+
+                                    members={
+                                        project.employees ||
+                                        []
+                                    }
+
+                                    memberCount={
+                                        project.employees
+                                            ?.length || 0
+                                    }
+
+                                    onAddMember={
+                                        handleAddEmployee
+                                    }
                                 />
                             ))
                         ) : (
@@ -371,9 +434,13 @@ const Projects = () => {
 
             <ProjectModal
                 isOpen={showProjectModal}
-                onClose={handleCloseProjectModal}
+                onClose={
+                    handleCloseProjectModal
+                }
                 editData={selectedProject}
-                onSubmit={handleProjectSubmit}
+                onSubmit={
+                    handleProjectSubmit
+                }
             />
 
             {/* ========================= */}
@@ -382,10 +449,18 @@ const Projects = () => {
 
             <AddEmployeeModal
                 isOpen={showAddEmployee}
-                onClose={handleCloseAddEmployee}
-                employees={employeesNotInProject}
-                onAdd={handleAssignEmployees}
-                isLoading={isAssigning}
+                onClose={
+                    handleCloseAddEmployee
+                }
+                employees={
+                    employeesNotInProject
+                }
+                onAdd={
+                    handleAssignEmployees
+                }
+                isLoading={
+                    isAssigning
+                }
             />
 
         </ProjectsPage>

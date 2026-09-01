@@ -32,25 +32,41 @@ const ProjectCard = ({
   const navigate = useNavigate();
 
   // ==========================================
-  // CATEGORY
+  // PROJECT TYPE LABEL
   // ==========================================
 
-  const categoryParts = (
-    category || "PROJECT_GENERAL"
-  ).split("_");
+  const getProjectTypeLabel = (type) => {
+    const typeMap = {
+      on_site: "On Site",
+      onsite: "On Site",
+      variant: "Variant",
+      bench: "Bench",
+    };
 
-  const categoryName = categoryParts[0] || "PROJECT";
-  const categoryType = categoryParts.slice(1).join("_");
+    return typeMap[type] || type || "Project";
+  };
+
+  // ==========================================
+  // STATUS LABEL
+  // ==========================================
+
+  const getStatusLabel = (value) => {
+    const statusMap = {
+      in_progress: "In Progress",
+      completed: "Completed",
+      on_hold: "On Hold",
+      cancelled: "Cancelled",
+    };
+
+    return statusMap[value] || value || "";
+  };
 
   // ==========================================
   // VIEW MORE
   // ==========================================
 
   const handleViewMore = () => {
-    console.log(
-      "clicked, navigating to id:",
-      id
-    );
+    console.log("clicked, navigating to id:", id);
 
     navigate(`/projects/${id}`);
   };
@@ -60,19 +76,15 @@ const ProjectCard = ({
   // ==========================================
 
   const getInitials = (member) => {
-    // ------------------------------------------
-    // Current API:
+    // API:
     // employees: [2, 3]
-    // ------------------------------------------
 
     if (typeof member === "number") {
       return `E${member}`;
     }
 
-    // ------------------------------------------
-    // If API returns:
+    // API:
     // { id: 2, name: "John Doe" }
-    // ------------------------------------------
 
     if (
       typeof member === "object" &&
@@ -98,10 +110,8 @@ const ProjectCard = ({
         .join("");
     }
 
-    // ------------------------------------------
-    // If API returns:
+    // API:
     // "John Doe"
-    // ------------------------------------------
 
     if (typeof member === "string") {
       return member
@@ -134,22 +144,21 @@ const ProjectCard = ({
     }
   };
 
+  const projectType = getProjectTypeLabel(category);
+  const formattedStatus = getStatusLabel(status);
+
   return (
     <Card>
-
       {/* ====================================== */}
       {/* PROJECT INFORMATION */}
       {/* ====================================== */}
 
       <div>
-
         <CardCategory>
-          Project Type
-          {categoryName && (
-            <strong>
-              _{categoryName}
-            </strong>
-          )}
+          Project Type{" "}
+          <strong>
+           _{projectType}
+          </strong>
         </CardCategory>
 
         <CardTitle>
@@ -157,16 +166,15 @@ const ProjectCard = ({
         </CardTitle>
 
         <TagsRow>
-
           {date && (
             <DateTag>
               {date}
             </DateTag>
           )}
 
-          {status && (
+          {formattedStatus && (
             <StatusTag status={status}>
-              {status}
+              {formattedStatus}
             </StatusTag>
           )}
 
@@ -175,9 +183,7 @@ const ProjectCard = ({
               {priority}
             </PriorityTag>
           )}
-
         </TagsRow>
-
       </div>
 
       {/* ====================================== */}
@@ -185,9 +191,7 @@ const ProjectCard = ({
       {/* ====================================== */}
 
       <BottomSection>
-
         <Members>
-
           {/* EMPLOYEES */}
 
           {members
@@ -214,7 +218,6 @@ const ProjectCard = ({
           >
             +
           </AddMember>
-
         </Members>
 
         {/* VIEW MORE */}
@@ -225,9 +228,7 @@ const ProjectCard = ({
         >
           VIEW MORE
         </ViewMoreButton>
-
       </BottomSection>
-
     </Card>
   );
 };

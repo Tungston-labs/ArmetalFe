@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.db.models import Sum
+from django.db.models import Count, Q
 
 from .models import Project
 from employee.models import Employee_db
@@ -285,3 +286,35 @@ class EmployeeProjectView(APIView):
             "latitude": project.latitude,
             "longitude": project.longitude
         })
+        
+class ProjectCountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        projects = Project.objects.all()
+
+        data = projects.aggregate(
+            total_projects=Count("id"),
+
+            completed=Count(
+                "id",
+                filter=Q(status="completed")
+            ),
+
+            in_progress=Count(
+                "id",
+                filter=Q(status="in_progress")
+            ),
+
+            pending=Count(
+                "id",
+                filter=Q(status="on_hold")
+            ),
+
+            high_priority=Count(
+                "id",
+                filter=Q(priority="high")
+            ),
+        )
+
+        return Response(data)

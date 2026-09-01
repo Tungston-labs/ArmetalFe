@@ -53,19 +53,23 @@ export const ModalBody = styled.div`
 export const FormGrid = styled.div`
   display: grid;
 
-  grid-template-columns:
-    1.15fr
-    1.15fr
-    1.1fr
-    1.1fr
-    1.1fr;
+  grid-template-columns: repeat(4, 1fr);
 
   column-gap: 16px;
-  row-gap: 19px;
+  row-gap: 20px;
 
   align-items: end;
-`;
 
+  width: 100%;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+`;
 export const FormGroup = styled.div`
   width: 100%;
 

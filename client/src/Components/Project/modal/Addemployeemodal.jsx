@@ -33,7 +33,10 @@ const AddEmployeeModal = ({
   const [department, setDepartment] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
-  // Reset local state every time the modal is opened fresh
+  // ==========================================
+  // RESET MODAL
+  // ==========================================
+
   useEffect(() => {
     if (isOpen) {
       setSearch("");
@@ -42,112 +45,271 @@ const AddEmployeeModal = ({
     }
   }, [isOpen]);
 
-  // Department options are derived from the real employee
-  // records (department_name, e.g. "HR and Admin") rather
-  // than a hardcoded list, so the dropdown always matches
-  // what's actually in the data.
-  const departmentOptions = useMemo(() => {
-    const names = employees
-      .map((employee) => employee.department_name)
-      .filter(Boolean);
+  // ==========================================
+  // GET DEPARTMENTS FROM EMPLOYEES
+  // ==========================================
 
-    return [...new Set(names)];
+  const departmentOptions = useMemo(() => {
+    const departments = employees
+      .map((employee) => employee.department_name)
+      .filter(
+        (departmentName) =>
+          departmentName &&
+          departmentName.trim() !== ""
+      );
+
+    return [...new Set(departments)].sort();
   }, [employees]);
 
+  // ==========================================
+  // FILTER EMPLOYEES
+  // ==========================================
+
   const filteredEmployees = useMemo(() => {
+    const searchValue = search.trim().toLowerCase();
+
     return employees.filter((employee) => {
-      const matchesSearch = (employee.name || "")
-        .toLowerCase()
-        .includes(search.toLowerCase());
+      const employeeName = (
+        employee.name || ""
+      ).toLowerCase();
 
+      const employeeDepartment = (
+        employee.department_name || ""
+      ).trim();
+
+      // Search employee
+      const matchesSearch =
+        !searchValue ||
+        employeeName.includes(searchValue);
+
+      // Selected department
       const matchesDepartment =
-        !department || employee.department_name === department;
+        !department ||
+        employeeDepartment === department;
 
-      return matchesSearch && matchesDepartment;
+      return (
+        matchesSearch &&
+        matchesDepartment
+      );
     });
-  }, [employees, search, department]);
+  }, [
+    employees,
+    search,
+    department,
+  ]);
+
+  // ==========================================
+  // SELECT / UNSELECT EMPLOYEE
+  // ==========================================
+
+  const toggleEmployee = (employeeId) => {
+    setSelectedIds((prev) => {
+      if (prev.includes(employeeId)) {
+        return prev.filter(
+          (id) => id !== employeeId
+        );
+      }
+
+      return [...prev, employeeId];
+    });
+  };
+
+  // ==========================================
+  // ADD EMPLOYEES
+  // ==========================================
+
+  const handleAdd = () => {
+    if (selectedIds.length === 0) {
+      return;
+    }
+
+    onAdd(selectedIds);
+  };
+
+  // ==========================================
+  // CLOSE
+  // ==========================================
 
   if (!isOpen) {
     return null;
   }
 
-  const toggleEmployee = (employeeId) => {
-    setSelectedIds((prev) =>
-      prev.includes(employeeId)
-        ? prev.filter((id) => id !== employeeId)
-        : [...prev, employeeId]
-    );
-  };
-
-  const handleAdd = () => {
-    if (selectedIds.length === 0) return;
-    onAdd(selectedIds);
-  };
-
   return (
     <Overlay onClick={onClose}>
-      <Modal onClick={(event) => event.stopPropagation()}>
+      <Modal
+        onClick={(event) =>
+          event.stopPropagation()
+        }
+      >
+        {/* ================================= */}
+        {/* HEADER */}
+        {/* ================================= */}
+
         <ModalHeader>
-          <ModalTitle>Add Employee</ModalTitle>
+          <ModalTitle>
+            Add Employee
+          </ModalTitle>
         </ModalHeader>
 
+        {/* ================================= */}
+        {/* FILTER ROW */}
+        {/* ================================= */}
+
         <FilterRow>
+
+          {/* =============================== */}
+          {/* DEPARTMENT DROPDOWN */}
+          {/* =============================== */}
+
           <Select
             value={department}
-            onChange={(event) => setDepartment(event.target.value)}
+            onChange={(event) => {
+              setDepartment(
+                event.target.value
+              );
+            }}
           >
-            <option value="">All Department</option>
-            {departmentOptions.map((dept) => (
-              <option key={dept} value={dept}>
-                {dept}
-              </option>
-            ))}
+            <option value="">
+              All Department
+            </option>
+
+            {departmentOptions.map(
+              (dept) => (
+                <option
+                  key={dept}
+                  value={dept}
+                >
+                  {dept}
+                </option>
+              )
+            )}
           </Select>
+
+          {/* =============================== */}
+          {/* SEARCH */}
+          {/* =============================== */}
 
           <SearchWrapper>
             <SearchInput
               type="text"
-              placeholder="Search"
+              placeholder="Search employee"
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => {
+                setSearch(
+                  event.target.value
+                );
+              }}
             />
+
             <SearchIcon>
-              <PiMagnifyingGlass size={16} />
+              <PiMagnifyingGlass
+                size={16}
+              />
             </SearchIcon>
           </SearchWrapper>
+
         </FilterRow>
 
+        {/* ================================= */}
+        {/* EMPLOYEE LIST */}
+        {/* ================================= */}
+
         <ListWrapper>
+
           {filteredEmployees.length === 0 ? (
-            <EmptyState>No employees found.</EmptyState>
+            <EmptyState>
+              {department
+                ? `No employees found in ${department}.`
+                : "No employees found."}
+            </EmptyState>
           ) : (
-            filteredEmployees.map((employee, index) => (
-              <EmployeeRow key={employee.id}>
-                <RowIndex>{String(index + 1).padStart(2, "0")}</RowIndex>
-                <RowName>{employee.name}</RowName>
-                <Checkbox
-                  type="checkbox"
-                  checked={selectedIds.includes(employee.id)}
-                  onChange={() => toggleEmployee(employee.id)}
-                />
-              </EmployeeRow>
-            ))
+            <>
+              {/* ============================= */}
+              {/* SELECTED DEPARTMENT TITLE */}
+              {/* ============================= */}
+
+              {department && (
+                <div
+                  style={{
+                    fontWeight: "600",
+                    fontSize: "14px",
+                    padding:
+                      "10px 0",
+                  }}
+                >
+                  {department}
+                </div>
+              )}
+
+              {/* ============================= */}
+              {/* EMPLOYEES */}
+              {/* ============================= */}
+
+              {filteredEmployees.map(
+                (employee, index) => (
+                  <EmployeeRow
+                    key={employee.id}
+                  >
+                    <RowIndex>
+                      {String(
+                        index + 1
+                      ).padStart(
+                        2,
+                        "0"
+                      )}
+                    </RowIndex>
+
+                    <RowName>
+                      {employee.name}
+                    </RowName>
+
+                    <Checkbox
+                      type="checkbox"
+                      checked={selectedIds.includes(
+                        employee.id
+                      )}
+                      onChange={() =>
+                        toggleEmployee(
+                          employee.id
+                        )
+                      }
+                    />
+                  </EmployeeRow>
+                )
+              )}
+            </>
           )}
+
         </ListWrapper>
 
+        {/* ================================= */}
+        {/* BUTTONS */}
+        {/* ================================= */}
+
         <ButtonRow>
-          <CancelButton type="button" onClick={onClose}>
+
+          <CancelButton
+            type="button"
+            onClick={onClose}
+          >
             CANCEL
           </CancelButton>
 
           <AddButton
             type="button"
             onClick={handleAdd}
-            disabled={selectedIds.length === 0 || isLoading}
+            disabled={
+              selectedIds.length === 0 ||
+              isLoading
+            }
           >
-            {isLoading ? "ADDING..." : "ADD"}
+            {isLoading
+              ? "ADDING..."
+              : "ADD"}
           </AddButton>
+
         </ButtonRow>
+
       </Modal>
     </Overlay>
   );
