@@ -72,51 +72,53 @@ const ReimbursementCards = () => {
     navigate(`/reimbursements/${deptId}`);
   };
 
-  // Process department cards
-  const deptCards = departmentList.map((dept) => {
-    // Filter reimbursements for this department
-    const deptReimbursements = allReimbursements.filter(
-      (r) => r.department?.id === dept.id
-    );
+  // Process department cards - Only show departments that have reimbursement requests (>0)
+  const deptCards = departmentList
+    .map((dept) => {
+      // Filter reimbursements for this department
+      const deptReimbursements = allReimbursements.filter(
+        (r) => String(r.department?.id) === String(dept.id)
+      );
 
-    const totalRequests = deptReimbursements.length;
+      const totalRequests = deptReimbursements.length;
 
-    const totalAmount = deptReimbursements.reduce(
-      (sum, r) => sum + Number(r.amount || 0),
-      0
-    );
+      const totalAmount = deptReimbursements.reduce(
+        (sum, r) => sum + Number(r.amount || 0),
+        0
+      );
 
-    const approvedAmount = deptReimbursements
-      .filter((r) => r.status === "Approve" || r.status === "Approved")
-      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+      const approvedAmount = deptReimbursements
+        .filter((r) => r.status === "Approve" || r.status === "Approved")
+        .reduce((sum, r) => sum + Number(r.amount || 0), 0);
 
-    // Unique employees list
-    const uniqueEmployees = [];
-    const empIds = new Set();
-    deptReimbursements.forEach((r) => {
-      if (r.employee_id && !empIds.has(r.employee_id)) {
-        empIds.add(r.employee_id);
-        uniqueEmployees.push({
-          id: r.employee_id,
-          name: r.employee_name,
-          image: r.profile_pic || DEFAULT_AVATAR
-        });
-      }
-    });
+      // Unique employees list
+      const uniqueEmployees = [];
+      const empIds = new Set();
+      deptReimbursements.forEach((r) => {
+        if (r.employee_id && !empIds.has(r.employee_id)) {
+          empIds.add(r.employee_id);
+          uniqueEmployees.push({
+            id: r.employee_id,
+            name: r.employee_name,
+            image: r.profile_pic || DEFAULT_AVATAR,
+          });
+        }
+      });
 
-    const headName = dept.department_head?.name || "N/A";
+      const headName = dept.department_head?.name || "N/A";
 
-    return {
-      id: dept.id,
-      name: dept.name,
-      head: headName,
-      totalRequests,
-      totalAmount,
-      approvedAmount,
-      employees: uniqueEmployees.slice(0, 3), // Show up to 3 avatars
-      employeeCount: empIds.size,
-    };
-  });
+      return {
+        id: dept.id,
+        name: dept.name,
+        head: headName,
+        totalRequests,
+        totalAmount,
+        approvedAmount,
+        employees: uniqueEmployees.slice(0, 3), // Show up to 3 avatars
+        employeeCount: empIds.size,
+      };
+    })
+    .filter((card) => card.totalRequests > 0);
 
   // Filter Cards by Selected Dropdown and Search Text
   const filteredCards = deptCards.filter((card) => {
@@ -128,6 +130,11 @@ const ReimbursementCards = () => {
     return matchesDeptFilter && matchesSearch;
   });
 
+  const departmentOptions = departmentList.map((d) => ({
+    label: d.name,
+    value: d.id,
+  }));
+
   return (
     <Container>
       <HeaderWrapper>
@@ -135,57 +142,22 @@ const ReimbursementCards = () => {
           title="Reimbursement"
           breadcrumbs={["Dashboard", "Reimbursement"]}
           buttonText="History"
-          onButtonClick={() => navigate("/reimbursement")} // Navigates to history / all listing page
+          onButtonClick={() => navigate("/reimbursement")}
         />
       </HeaderWrapper>
 
-      {/* FILTER PANEL */}
-      <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "20px" }}>
-        {/* Custom Department Filter Dropdown */}
-        <select
-          value={selectedDeptFilter}
-          onChange={(e) => setSelectedDeptFilter(e.target.value)}
-          style={{
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "1px solid #dcdcdc",
-            fontFamily: "Poppins, sans-serif",
-            fontSize: "13px",
-            background: "#ffffff",
-            cursor: "pointer",
-            outline: "none",
-          }}
-        >
-          <option value="all">All Department</option>
-          {departmentList.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.name}
-            </option>
-          ))}
-        </select>
-
-        <div style={{ flex: 1 }}>
-          <ReusableFilter search={search} onSearch={handleSearch} showSearch />
-        </div>
-
-        <button
-          type="button"
-          style={{
-            padding: "8px 16px",
-            borderRadius: "6px",
-            border: "1px solid #dcdcdc",
-            background: "#ffffff",
-            fontFamily: "Poppins, sans-serif",
-            fontSize: "13px",
-            fontWeight: "500",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            cursor: "pointer"
-          }}
-        >
-          📅 THIS MONTH
-        </button>
+      {/* REUSABLE FILTER COMPONENT */}
+      <div style={{ marginBottom: "20px" }}>
+        <ReusableFilter
+          search={search}
+          onSearch={handleSearch}
+          searchPlaceholder="Search Employee ID"
+          showSearch
+          department={selectedDeptFilter === "all" ? "" : selectedDeptFilter}
+          departments={departmentOptions}
+          onDepartment={(val) => setSelectedDeptFilter(val || "all")}
+          showDepartment
+        />
       </div>
 
       {/* LOADING & ERROR STATES */}
@@ -201,7 +173,7 @@ const ReimbursementCards = () => {
       )}
 
       {!loading && !error && filteredCards.length === 0 && (
-        <p>No department records found.</p>
+        <p>No reimbursement cards found.</p>
       )}
 
       {/* CARDS GRID */}
