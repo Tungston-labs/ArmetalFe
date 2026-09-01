@@ -21,12 +21,12 @@ import {
 
 const initialFormData = {
     projectName: "",
-    projectType: "Onsite",
+    projectType: "on_site",
     latitude: "",
     longitude: "",
     priority: "High",
     startDate: "",
-    projectStatus: "Onsite",
+    projectStatus: "in_progress",
     employee: "",
 };
 
@@ -43,16 +43,34 @@ const ProjectModal = ({
     useEffect(() => {
         if (editData) {
             setFormData({
-                projectName: editData.projectName || editData.title || "",
-                projectType: editData.projectType || "Onsite",
+                projectName:
+                    editData.projectName ||
+                    editData.name ||
+                    editData.title ||
+                    "",
+
+                projectType:
+                    editData.projectType ||
+                    editData.punch_type ||
+                    "on_site",
+
                 latitude: editData.latitude || "",
+
                 longitude: editData.longitude || "",
+
                 priority: editData.priority || "High",
-                startDate: editData.startDate || editData.date || "",
+
+                startDate:
+                    editData.startDate ||
+                    editData.start_date ||
+                    editData.date ||
+                    "",
+
                 projectStatus:
                     editData.projectStatus ||
                     editData.status ||
-                    "Onsite",
+                    "in_progress",
+
                 employee: editData.employee || "",
             });
         } else {
@@ -132,8 +150,8 @@ const ProjectModal = ({
                                         value={formData.projectType}
                                         onChange={handleChange}
                                     >
-                                        <option value="Onsite">
-                                            Onsite
+                                        <option value="on_site">
+                                            On Site
                                         </option>
 
                                         <option value="variant">
@@ -196,15 +214,15 @@ const ProjectModal = ({
                                         value={formData.priority}
                                         onChange={handleChange}
                                     >
-                                        <option value="High">
+                                        <option value="high">
                                             High
                                         </option>
 
-                                        <option value="Medium">
+                                        <option value="medium">
                                             Medium
                                         </option>
 
-                                        <option value="Low">
+                                        <option value="low">
                                             Low
                                         </option>
                                     </Select>
@@ -240,59 +258,23 @@ const ProjectModal = ({
                                 <SelectWrapper>
                                     <Select
                                         name="projectStatus"
-                                        value={
-                                            formData.projectStatus
-                                        }
+                                        value={formData.projectStatus}
                                         onChange={handleChange}
                                     >
-                                       
-
-                                        <option value="Active">
-                                            Active
+                                        <option value="in_progress">
+                                            In Progress
                                         </option>
 
-                                        <option value="Inactive">
-                                            Inactive
-                                        </option>
-
-                                        <option value="Completed">
+                                        <option value="completed">
                                             Completed
                                         </option>
-                                    </Select>
 
-                                    <SelectArrow>
-                                        ⌄
-                                    </SelectArrow>
-                                </SelectWrapper>
-                            </FormGroup>
-
-                            {/* Employee */}
-                            <FormGroup $fullWidth>
-                                <Label>
-                                    Add Employee{" "}
-                                    <Required>*</Required>
-                                </Label>
-
-                                <SelectWrapper>
-                                    <Select
-                                        name="employee"
-                                        value={formData.employee}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="">
-                                            Select Employee
+                                        <option value="on_hold">
+                                            On Hold
                                         </option>
 
-                                        <option value="employee1">
-                                            Employee 1
-                                        </option>
-
-                                        <option value="employee2">
-                                            Employee 2
-                                        </option>
-
-                                        <option value="employee3">
-                                            Employee 3
+                                        <option value="cancelled">
+                                            Cancelled
                                         </option>
                                     </Select>
 
@@ -301,6 +283,8 @@ const ProjectModal = ({
                                     </SelectArrow>
                                 </SelectWrapper>
                             </FormGroup>
+
+                         
 
                         </FormGrid>
 

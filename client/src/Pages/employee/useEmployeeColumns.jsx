@@ -41,12 +41,24 @@ export const useEmployeeColumns = ({ page, paginationLimit, navigate, onDeleteCl
       accessor: "department",
       render: (row) => <TruncatedText title={row.department}>{row.department}</TruncatedText>,
     },
-    {
-      header: "Status",
-      accessor: "status",
-      sortable: false,
-      render: (row) => <Status $status={row.status}>{row.status || "N/A"}</Status>,
-    },
+{
+  header: "Status",
+  accessor: "status",
+  sortable: false,
+  render: (row) => {
+    const status = row.today_attendance_status
+      ? row.today_attendance_status
+          .replace(/_/g, " ")
+          .replace(/\b\w/g, (char) => char.toUpperCase())
+      : "N/A";
+
+    return (
+      <Status $status={status}>
+        {status}
+      </Status>
+    );
+  },
+},
     {
       header: "Action",
       accessor: "action",

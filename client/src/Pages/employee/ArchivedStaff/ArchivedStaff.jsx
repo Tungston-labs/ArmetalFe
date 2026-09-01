@@ -6,9 +6,10 @@ import ReusablePagination from "../../../Components/Pagination/ReusablePaginatio
 import { employeeColumns } from "./ArchivedStaffData";
 import ReusableFilter from "../../../Components/ReusableTable/ReusableFilter";
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
-
-import { getDeletedEmployees } from "../../../Redux/employeeSlice";
-import { getDepartments } from "../../../Redux/departmentSlice";
+import {
+  getDeletedEmployees,
+  rehireEmployeeById,
+} from "../../../Redux/employeeSlice"; import { getDepartments } from "../../../Redux/departmentSlice";
 
 const ArchivedStaff = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,31 @@ const ArchivedStaff = () => {
 
   const totalPages =
     deletedEmployeePagination?.total_pages || 1;
+
+
+  const handleRestore = async (employeeId) => {
+    console.log("handleRestore called:", employeeId);
+
+    try {
+      const result = await dispatch(
+        rehireEmployeeById(employeeId)
+      ).unwrap();
+
+      console.log("Employee restored successfully:", result);
+
+      // Refresh archived employees
+      dispatch(
+        getDeletedEmployees({
+          page: currentPage,
+          search,
+          department,
+          deleted_date: month,
+        })
+      );
+    } catch (error) {
+      console.error("Failed to restore employee:", error);
+    }
+  };
 
   // Fetch departments
   useEffect(() => {
@@ -97,13 +123,7 @@ const ArchivedStaff = () => {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <ReusableTable
-          columns={employeeColumns(
-            currentPage,
-            rowsPerPage
-          )}
-          data={deletedEmployeeList}
-        />
+        <ReusableTable columns={employeeColumns(currentPage, rowsPerPage, handleRestore)} data={deletedEmployeeList} />
       )}
 
       <ReusablePagination

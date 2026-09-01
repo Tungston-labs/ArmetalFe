@@ -8,12 +8,23 @@ const createProject = async (projectData) => {
 };
 
 // Get all projects
-const getProjects = async (search = "", page = 1) => {
+const getProjects = async (
+  search = "",
+  page = 1,
+  status = "",
+  date = ""
+) => {
   const response = await API.get("/project/", {
-    params: { search, page },
+    params: {
+      search,
+      page,
+      status,
+      date,
+    },
   });
-  return response.data; 
-}
+
+  return response.data;
+};
 
 
 // Get a single project by ID
@@ -57,6 +68,11 @@ export const fieldInfoService = async (employeeId, date) => {
   return response.data;
 };
 
+export const fetchProjectCount = async () => {
+  const response = await API.get("/project/count/");
+  return response.data;
+};
+
 const projectService = {
   createProject,
   getProjects,
@@ -64,7 +80,7 @@ const projectService = {
   updateProject,
   deleteProject,
   getEmployeesNotInProject,
-  removeEmployeeFromProject,assignEmployees
+  removeEmployeeFromProject,assignEmployees,fetchProjectCount
 };
 
 export default projectService;

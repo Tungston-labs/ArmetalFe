@@ -178,10 +178,10 @@ const DepartmentCards = () => {
 
       if (modalMode === "add") {
         const payload = {
-  name: data.departmentName.trim(),
-  department_code: data.departmentCode.trim(),
-  department_head: data.headOfDepartment || "",   // was: head_of_department
-};
+          name: data.departmentName.trim(),
+          department_code: data.departmentCode.trim(),
+          department_head: data.headOfDepartment || "",   // was: head_of_department
+        };
 
         console.log(
           "Creating department:",
@@ -319,31 +319,28 @@ const DepartmentCards = () => {
           const departmentId = department.id;
 
           const departmentName =
-            department.name ||
-            "Department";
+            department.name || "Department";
 
-          // department_head from the API is an employee ID,
-          // so resolve it to a display name via employeeList
-          const departmentHead = getDepartmentHeadName(
-            department.department_head ||
-              department.head_of_department
-          );
+       const departmentHead =
+  department.department_head?.name ||
+  department.department_head?.employee_name ||
+  department.department_head?.full_name ||
+  department.department_head?.employee_code ||
+  "—";
 
           const totalEmployees =
             department.employee_count ?? 0;
 
           const presentEmployees =
-            department.attendance_employee_count ??
-            0;
+            department.attendance_employee_count ?? 0;
 
           const leaveEmployees =
-            department.todays_leave_employee_count ??
-            0;
+            department.todays_leave_employee_count ?? 0;
 
           return (
             <Card key={departmentId}>
-              {/* HEADER */}
 
+              {/* HEADER */}
               <CardHeader>
                 <DepartmentName>
                   {departmentName}
@@ -355,59 +352,49 @@ const DepartmentCards = () => {
               </CardHeader>
 
               {/* DEPARTMENT HEAD */}
-
               <DepartmentHead>
-                Head Of The Department :{" "}
+                Head Of The Department:{" "}
                 <strong>
                   {departmentHead}
                 </strong>
               </DepartmentHead>
 
               {/* TOTAL EMPLOYEES */}
-
               <TotalEmployee>
                 Total Employee:{" "}
-                {String(totalEmployees).padStart(
-                  2,
-                  "0"
-                )}
+                {String(totalEmployees).padStart(2, "0")}
               </TotalEmployee>
 
               {/* STATUS */}
-
               <StatusRow>
                 <Present>
-                  Present Today :{" "}
-                  {String(
-                    presentEmployees
-                  ).padStart(2, "0")}
+                  Present Today:{" "}
+                  {String(presentEmployees).padStart(2, "0")}
                 </Present>
 
                 <Leave>
-                  On Leave Today :{" "}
-                  {String(
-                    leaveEmployees
-                  ).padStart(2, "0")}
+                  On Leave Today:{" "}
+                  {String(leaveEmployees).padStart(2, "0")}
                 </Leave>
               </StatusRow>
 
               {/* BOTTOM */}
-
               <CardBottom>
                 <EmployeeCount>
+
                   <EmployeeImage>
-                    {departmentHead &&
-                    departmentHead !== "—"
+                    {departmentHead !== "—"
                       ? departmentHead
-                          .trim()
-                          .charAt(0)
-                          .toUpperCase()
+                        .trim()
+                        .charAt(0)
+                        .toUpperCase()
                       : "-"}
                   </EmployeeImage>
 
                   <EmployeeNumber>
                     {String(totalEmployees).padStart(2, "0")}
                   </EmployeeNumber>
+
                 </EmployeeCount>
 
                 <ViewButton
@@ -419,6 +406,7 @@ const DepartmentCards = () => {
                   VIEW DEPARTMENT
                 </ViewButton>
               </CardBottom>
+
             </Card>
           );
         })}

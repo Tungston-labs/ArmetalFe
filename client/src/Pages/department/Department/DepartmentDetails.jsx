@@ -157,27 +157,43 @@ const DepartmentDetails = () => {
   // NORMALIZE EMPLOYEE DATA
   // =========================================================
 
-  const employeeTableData =
-    useMemo(() => {
-      return employees.map(
-        (employee, index) => ({
-          slNo: index + 1,
+const employeeTableData = useMemo(() => {
+  return employees.map((employee, index) => ({
+    slNo: index + 1,
 
-          name:
-            employee.name || "-",
+    id: employee.id,
 
-          employee_id:
-            employee.employee_id ||
-            "-",
+    name:
+      employee.name ||
+      employee.employee_name ||
+      employee.full_name ||
+      "-",
 
-          profile_pic:
-            employee.profile_pic ||
-            null,
+    employee_code:
+      employee.employee_code ||
+      employee.employee_id ||
+      "-",
 
-          id: employee.id,
-        })
-      );
-    }, [employees]);
+    email:
+      employee.email ||
+      "-",
+
+    designation:
+      employee.designation ||
+      employee.job_position ||
+      "-",
+
+    profile_pic:
+      employee.profile_pic ||
+      null,
+
+    // Keep attendance status available for stats
+    status:
+      employee.today_attendance_status ||
+      employee.status ||
+      "",
+  }));
+}, [employees]);
 
 
   // =========================================================
@@ -220,7 +236,7 @@ const DepartmentDetails = () => {
   const totalPages =
     Math.ceil(
       filteredData.length /
-        rowsPerPage
+      rowsPerPage
     );
 
 
@@ -256,108 +272,52 @@ const DepartmentDetails = () => {
   // DEPARTMENT STATS
   // =========================================================
 
-  const departmentCards =
-    useMemo(() => {
-      const totalEmployees =
-        employees.length;
+ const departmentCards = useMemo(() => {
+  const totalEmployees =
+    Number(currentDepartment?.employee_count) || 0;
 
-      const presentEmployees =
-        employees.filter(
-          (employee) =>
-            employee.status
-              ?.toLowerCase() ===
-            "present"
-        ).length;
+  const presentEmployees =
+    Number(currentDepartment?.attendance_employee_count) || 0;
 
-      const absentEmployees =
-        employees.filter(
-          (employee) =>
-            employee.status
-              ?.toLowerCase() ===
-            "absent"
-        ).length;
+  const leaveEmployees =
+    Number(currentDepartment?.todays_leave_employee_count) || 0;
 
-      const leaveEmployees =
-        employees.filter(
-          (employee) =>
-            employee.status
-              ?.toLowerCase() ===
-            "on leave"
-        ).length;
+  const absentEmployees = Math.max(
+    totalEmployees - presentEmployees - leaveEmployees,
+    0
+  );
 
-      return [
-        {
-          title:
-            "Total Employees",
-
-          count:
-            totalEmployees,
-
-          icon:
-            <FiUsers />,
-
-          backgroundColor:
-            "#E8F1FF",
-
-          iconColor:
-            "#2878FF",
-        },
-
-        {
-          title:
-            "Present",
-
-          count:
-            presentEmployees,
-
-          icon:
-            <FiUserCheck />,
-
-          backgroundColor:
-            "#E9F9EF",
-
-          iconColor:
-            "#16A34A",
-        },
-
-        {
-          title:
-            "Absent",
-
-          count:
-            absentEmployees,
-
-          icon:
-            <FiUserX />,
-
-          backgroundColor:
-            "#FFF0F0",
-
-          iconColor:
-            "#EF4444",
-        },
-
-        {
-          title:
-            "On Leave",
-
-          count:
-            leaveEmployees,
-
-          icon:
-            <FiCalendar />,
-
-          backgroundColor:
-            "#FFF6E5",
-
-          iconColor:
-            "#F59E0B",
-        },
-      ];
-    }, [
-      employees,
-    ]);
-
+  return [
+    {
+      title: "Total Employees",
+      count: totalEmployees,
+      icon: <FiUsers />,
+      backgroundColor: "#E8F1FF",
+      iconColor: "#2878FF",
+    },
+    {
+      title: "Present",
+      count: presentEmployees,
+      icon: <FiUserCheck />,
+      backgroundColor: "#E9F9EF",
+      iconColor: "#16A34A",
+    },
+    {
+      title: "Absent",
+      count: absentEmployees,
+      icon: <FiUserX />,
+      backgroundColor: "#FFF0F0",
+      iconColor: "#EF4444",
+    },
+    {
+      title: "On Leave",
+      count: leaveEmployees,
+      icon: <FiCalendar />,
+      backgroundColor: "#FFF6E5",
+      iconColor: "#F59E0B",
+    },
+  ];
+}, [currentDepartment]);
 
   // =========================================================
   // EDIT DEPARTMENT
@@ -409,90 +369,49 @@ const DepartmentDetails = () => {
   // UPDATE DEPARTMENT
   // =========================================================
 
-  const handleDepartmentSubmit =
-    async (data) => {
-      try {
-        if (!departmentId) {
-          throw new Error(
-            "Department ID is missing."
-          );
-        }
+ const handleDepartmentSubmit = async (data) => {
+  try {
+    if (!departmentId) {
+      throw new Error("Department ID is missing.");
+    }
 
-        const payload = {
-          name:
-            data.departmentName.trim(),
-
-          department_code:
-            data.departmentCode.trim(),
-
-          head_of_department:
-            data.headOfDepartment ||
-            "",
-        };
-
-        console.log(
-          "Updating department:",
-          {
-            id: departmentId,
-            data: payload,
-          }
-        );
-
-
-        // ===============================================
-        // CALL UPDATE API
-        // ===============================================
-
-        const result =
-          await dispatch(
-            updateDepartmentById({
-              id: departmentId,
-              data: payload,
-            })
-          ).unwrap();
-
-
-        console.log(
-          "Department updated successfully:",
-          result
-        );
-
-
-        // ===============================================
-        // CLOSE MODAL
-        // ===============================================
-
-        setShowDepartmentModal(
-          false
-        );
-
-
-        // ===============================================
-        // REFRESH DEPARTMENT LIST
-        // ===============================================
-
-        dispatch(
-          getDepartments({
-            page: 1,
-            search: "",
-          })
-        );
-
-
-        return result;
-
-      } catch (error) {
-        console.error(
-          "Department update failed:",
-          error
-        );
-
-        // Throw error so DepartmentModal
-        // can display backend validation.
-        throw error;
-      }
+    const payload = {
+      name: data.departmentName.trim(),
+      department_code: data.departmentCode.trim(),
+      department_head_id: data.headOfDepartment
+        ? Number(data.headOfDepartment)
+        : null,
     };
 
+    console.log("Updating department:", {
+      id: departmentId,
+      data: payload,
+    });
+
+    const result = await dispatch(
+      updateDepartmentById({
+        id: departmentId,
+        data: payload,
+      })
+    ).unwrap();
+
+    console.log("Department updated successfully:", result);
+
+    setShowDepartmentModal(false);
+
+    dispatch(
+      getDepartments({
+        page: 1,
+        search: "",
+      })
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Department update failed:", error);
+    throw error;
+  }
+};
 
   // =========================================================
   // LOADING EMPLOYEES
