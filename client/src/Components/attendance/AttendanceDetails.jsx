@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import API from "../../services/api";
 import {
   PageWrapper,
   Header,
@@ -14,7 +15,6 @@ import {
   CalendarWrapper,
   TableScrollWrapper,
 } from "./AttendanceDetails.Styles";
-import { useEffect } from "react";
 import { getAccessToken } from "../../hooks/useAccessToken";
 
 const AttendanceDetails = ({
@@ -61,46 +61,23 @@ const AttendanceDetails = ({
     .sort((a, b) => new Date(b.time) - new Date(a.time));
 
   useEffect(() => {
+    if (!employeeId || !selectedDate) return;
 
+    const fetchEmployeeLocations = async () => {
+      try {
+        const formattedDate = new Date(selectedDate)
+          .toISOString()
+          .split("T")[0];
 
+        const response = await API.get(`/background-location/${employeeId}/`, {
+          params: { date: formattedDate },
+        });
 
-  const fetchEmployeeLocations = async () => {
-  try {
-    const token = await getAccessToken();
-
-    console.log("Token:", token);
-
-    if (!token) {
-      console.log("No token found");
-      return;
-    }
-
-    const formattedDate = new Date(selectedDate)
-      .toISOString()
-      .split("T")[0];
-
-    const url = `https://api.rekory.com/api/background-location/${employeeId}/?date=${formattedDate}`;
-
-    console.log("API URL:", url);
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    console.log("Response status:", response.status);
-
-    const json = await response.json();
-    console.log("Response Data:", json);
-
-    setHourlyLocationData(json?.results || []);
-  } catch (err) {
-    console.error("Error fetching location:", err);
-  }
-};
+        setHourlyLocationData(response.data?.results || []);
+      } catch (err) {
+        console.error("Error fetching location:", err);
+      }
+    };
 
     fetchEmployeeLocations();
   }, [employeeId, selectedDate]);
