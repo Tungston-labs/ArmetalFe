@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
   "username": "dummy",
-  "password": "password123"
+  "password": "password@123"
 }
 ###local sqlite super admin
 POST http://127.0.0.1:8000/api/token/
