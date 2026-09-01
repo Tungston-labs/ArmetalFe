@@ -22,14 +22,24 @@ import {
 } from "./LoginScreen.styles";
 import { PiEye, PiEyeSlash } from "react-icons/pi";
 
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../services/api";
+
 const MIN_LENGTH = 8;
 
-const CreateNewPasswordScreen = ({ onSubmit, isLoading, error }) => {
+const CreateNewPasswordScreen = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [touched, setTouched] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    const email = location.state?.email || sessionStorage.getItem("resetEmail");
 
     const tooShort = password.length > 0 && password.length < MIN_LENGTH;
     const mismatch = touched && confirmPassword.length > 0 && password !== confirmPassword;
@@ -38,11 +48,30 @@ const CreateNewPasswordScreen = ({ onSubmit, isLoading, error }) => {
         confirmPassword.length > 0 &&
         password === confirmPassword;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setTouched(true);
+        setError(null);
         if (!isValid) return;
-        onSubmit?.({ password });
+
+        setIsLoading(true);
+        try {
+            await axios.post(`${BASE_URL}/api/forgot-password/reset/`, {
+                email,
+                new_password: password,
+                confirm_password: confirmPassword,
+            });
+
+            sessionStorage.removeItem("resetEmail");
+            navigate("/log");
+        } catch (err) {
+            console.log(err);
+            setError(
+                err.response?.data?.detail || "Failed to reset password. Please try again."
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

@@ -6,6 +6,7 @@ import API from "./api"; // your axios instance (adjust path if needed)
  * fetchAttendanceDetail(attendanceId, date)
  * fetchDepartmentsAttendance({ page, search })
  * fetchAttendanceSummary({ year, month, token })
+ * updateAttendance({ employee, date, attendance_type, remark, token })
  */
 
 export const fetchAttendanceList = async (params = {}) => {
@@ -71,6 +72,34 @@ export const generateAttendanceExcel = async ({
     {
       year,
       month,
+    },
+    config
+  );
+
+  return response.data;
+};
+
+// Update (mark) a single attendance record
+export const updateAttendance = async ({
+  employee,
+  date,
+  attendance_type,
+  remark,
+  token,
+}) => {
+  const config = {};
+
+  if (token) {
+    config.headers = { Authorization: `Bearer ${token}` };
+  }
+
+  const response = await API.patch(
+    "/attendance/update/",
+    {
+      employee,
+      date,
+      attendance_type,
+      remark,
     },
     config
   );

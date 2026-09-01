@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import styled from "styled-components";
 import girlIllustrationUrl from "../../../assets/login.svg";
 import logo from "../../../assets/logo3.svg";
 import {
@@ -16,36 +15,28 @@ import {
     FieldGroup,
     InputWrapper,
     Input,
-    ForgotPassword as BackToLoginLink,
+    ForgotPassword,
     LoginButton,
     ErrorText,
 } from "./LoginScreen.styles";
 
-const ResendButton = styled.button`
-    background: none;
-    border: none;
-    padding: 0;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-        color: #ffffff;
-    }
-
-    &:focus {
-        outline: none;
-    }
-`;
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+import { BASE_URL } from "../../../services/api";
 
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 30;
 
-const OTPScreen = ({ email, onVerify, onResend, isLoading, error }) => {
-    const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
+const OtpScreen = () => {
+    const [digits, setDigits] = useState(Array(OTP_LENGTH).fill(""));
     const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
     const inputsRef = useRef([]);
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const email = location.state?.email || sessionStorage.getItem("resetEmail");
 
     useEffect(() => {
         if (secondsLeft <= 0) return;
@@ -53,49 +44,105 @@ const OTPScreen = ({ email, onVerify, onResend, isLoading, error }) => {
         return () => clearInterval(timer);
     }, [secondsLeft]);
 
+    useEffect(() => {
+        inputsRef.current[0]?.focus();
+    }, []);
+
+    useEffect(() => {
+        if (!email) {
+            setError("Email not found. Please go back and try again.");
+        }
+    }, [email]);
+
     const focusInput = (index) => {
         inputsRef.current[index]?.focus();
     };
 
-    const handleChange = (index, value) => {
-        const digit = value.replace(/\D/g, "").slice(-1);
-        const next = [...otp];
-        next[index] = digit;
-        setOtp(next);
-
-        if (digit && index < OTP_LENGTH - 1) {
-            focusInput(index + 1);
+    const handleChange = (index, rawValue) => {
+        const value = rawValue.replace(/[^0-9]/g, "");
+        if (!value) {
+            setDigits((prev) => {
+                const next = [...prev];
+                next[index] = "";
+                return next;
+            });
+            return;
         }
+
+        // Handle pasted multi-character strings gracefully.
+        const chars = value.split("");
+        setDigits((prev) => {
+            const next = [...prev];
+            chars.forEach((char, i) => {
+                if (index + i < OTP_LENGTH) next[index + i] = char;
+            });
+            return next;
+        });
+
+        const nextIndex = Math.min(index + chars.length, OTP_LENGTH - 1);
+        focusInput(nextIndex);
     };
 
     const handleKeyDown = (index, e) => {
-        if (e.key === "Backspace" && !otp[index] && index > 0) {
+        if (e.key === "Backspace" && !digits[index] && index > 0) {
             focusInput(index - 1);
         }
     };
 
-    const handlePaste = (e) => {
-        const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, OTP_LENGTH);
-        if (!pasted) return;
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const next = Array(OTP_LENGTH).fill("");
-        pasted.split("").forEach((char, i) => (next[i] = char));
-        setOtp(next);
-        focusInput(Math.min(pasted.length, OTP_LENGTH - 1));
+        const code = digits.join("");
+        if (code.length !== OTP_LENGTH) return;
+
+        setError(null);
+        setIsLoading(true);
+
+        try {
+            const response = await axios.post(
+                `${BASE_URL}/api/forgot-password/verify-otp/`,
+                {
+                    email,
+                    otp: code,
+                }
+            );
+
+            // Pass along whatever the backend returns (if anything)
+            // so the next screen (create new password) can use it.
+            navigate("/create-password", {
+                state: { email, ...response.data },
+            });
+        } catch (err) {
+            console.log(err);
+            setError(
+                err.response?.data?.detail || "Invalid or expired code. Please try again."
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onVerify?.({ code: otp.join("") });
-    };
-
-    const handleResend = () => {
+    const handleResend = async () => {
         if (secondsLeft > 0) return;
-        onResend?.();
-        setSecondsLeft(RESEND_SECONDS);
+
+        setError(null);
+
+        try {
+            await axios.post(`${BASE_URL}/api/forgot-password/send-otp/`, {
+                email,
+            });
+
+            setDigits(Array(OTP_LENGTH).fill(""));
+            focusInput(0);
+            setSecondsLeft(RESEND_SECONDS);
+        } catch (err) {
+            console.log(err);
+            setError(
+                err.response?.data?.detail || "Failed to resend code. Please try again."
+            );
+        }
     };
 
-    const isComplete = otp.every((d) => d !== "");
+    const code = digits.join("");
 
     return (
         <PageBackground>
@@ -134,59 +181,67 @@ const OTPScreen = ({ email, onVerify, onResend, isLoading, error }) => {
                         <Welcome>
                             <h2>Verify your email</h2>
                             <p>
-                                Enter the {OTP_LENGTH}-digit code sent to{" "}
-                                {email ? <strong>{email}</strong> : "your email"}
+                                Enter the {OTP_LENGTH}-digit code we sent to{" "}
+                                <strong>{email || "your email"}</strong>.
                             </p>
                         </Welcome>
 
                         {error && <ErrorText>{error}</ErrorText>}
 
                         <FieldGroup>
+                            <label htmlFor="otp-0">Verification code</label>
                             <InputWrapper
                                 style={{
                                     display: "flex",
-                                    gap: "0.5rem",
+                                    gap: "10px",
                                     justifyContent: "space-between",
                                 }}
-                                onPaste={handlePaste}
                             >
-                                {otp.map((digit, index) => (
+                                {digits.map((digit, index) => (
                                     <Input
                                         key={index}
+                                        id={`otp-${index}`}
                                         ref={(el) => (inputsRef.current[index] = el)}
                                         type="text"
                                         inputMode="numeric"
-                                        maxLength={1}
+                                        autoComplete={index === 0 ? "one-time-code" : "off"}
+                                        maxLength={OTP_LENGTH}
                                         value={digit}
                                         onChange={(e) => handleChange(index, e.target.value)}
                                         onKeyDown={(e) => handleKeyDown(index, e)}
                                         style={{
                                             textAlign: "center",
-                                            width: "3rem",
-                                            padding: "0.75rem 0",
+                                            width: "44px",
+                                            padding: "10px 0",
                                         }}
                                     />
                                 ))}
                             </InputWrapper>
                         </FieldGroup>
 
-                        <LoginButton type="submit" disabled={isLoading || !isComplete}>
-                            {isLoading ? "VERIFYING..." : "VERIFY CODE"}
+                        <LoginButton
+                            type="submit"
+                            disabled={isLoading || code.length !== OTP_LENGTH}
+                        >
+                            {isLoading ? "VERIFYING..." : "VERIFY"}
                         </LoginButton>
 
-                        <div style={{ textAlign: "center", marginTop: "1rem", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
-                            {secondsLeft > 0 ? (
-                                <span>Resend code in {secondsLeft}s</span>
-                            ) : (
-                                <ResendButton type="button" onClick={handleResend}>
-                                    Resend code
-                                </ResendButton>
-                            )}
-                        </div>
-
-                        <BackToLoginLink to="/log" style={{ textAlign: "center", marginTop: "8px" }}>
-                            Back to log in
-                        </BackToLoginLink>
+                        <ForgotPassword
+                            as="button"
+                            type="button"
+                            onClick={handleResend}
+                            disabled={secondsLeft > 0}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                cursor: secondsLeft > 0 ? "default" : "pointer",
+                                opacity: secondsLeft > 0 ? 0.6 : 1,
+                            }}
+                        >
+                            {secondsLeft > 0
+                                ? `Resend code in ${secondsLeft}s`
+                                : "Resend code"}
+                        </ForgotPassword>
                     </FormCard>
                 </RightPanel>
             </PageWrapper>
@@ -194,4 +249,4 @@ const OTPScreen = ({ email, onVerify, onResend, isLoading, error }) => {
     );
 };
 
-export default OTPScreen;
+export default OtpScreen;

@@ -39,7 +39,8 @@ const ReimbursementCards = () => {
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
-  const [selectedDeptFilter, setSelectedDeptFilter] = useState("all");
+  const [selectedDeptFilter, setSelectedDeptFilter] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
   const [allReimbursements, setAllReimbursements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -56,7 +57,18 @@ const ReimbursementCards = () => {
       // 2. Fetch all grouped reimbursements
       const groupedData = await getGroupedReimbursements();
       const groups = Array.isArray(groupedData) ? groupedData : groupedData?.results || [];
-      const flatList = groups.flatMap((group) => group.reimbursements || []);
+
+      // Flatten groups and attach group.date to each item (production grouped API returns date on the group object)
+      const flatList = groups.flatMap((group) => {
+        const groupDate = group.date || group.created_at || "";
+        const list = group.reimbursements || (Array.isArray(group) ? group : []);
+        return list.map((r) => ({
+          ...r,
+          date: r.date || r.expense_date || groupDate,
+          created_at: r.created_at || r.submitted_date || groupDate,
+        }));
+      });
+
       setAllReimbursements(flatList);
     } catch (err) {
       console.error("Failed to load reimbursement cards:", err);
@@ -79,11 +91,43 @@ const ReimbursementCards = () => {
     navigate(`/reimbursements/${deptId}`);
   };
 
+  // Helper to extract YYYY-MM from reimbursement record (prioritizing sending date created_at / submitted_date)
+  const getReimbursementMonth = (r) => {
+    const dateStr = r.created_at || r.submitted_date || r.submittedDate || r.date || r.expense_date || r.expenseDate;
+    if (!dateStr) return "";
+    const str = String(dateStr).trim();
+    if (!str) return "";
+
+    // Direct YYYY-MM match if format starts with YYYY-MM
+    if (/^\d{4}-\d{2}/.test(str)) {
+      return str.slice(0, 7);
+    }
+
+    // Fallback date parsing
+    const normalized = str.includes(" ") && !str.includes("T") ? str.replace(" ", "T") : str;
+    const d = new Date(normalized);
+    if (!isNaN(d.getTime())) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      return `${year}-${month}`;
+    }
+
+    return "";
+  };
+
+  // Filter reimbursements by selected month if present
+  const monthFilteredReimbursements = selectedMonth
+    ? allReimbursements.filter((r) => {
+        const rMonth = getReimbursementMonth(r);
+        return rMonth ? rMonth === selectedMonth : false;
+      })
+    : allReimbursements;
+
   // Process department cards - Only show departments that have reimbursement requests (>0)
   const deptCards = departmentList
     .map((dept) => {
       // Filter reimbursements for this department
-      const deptReimbursements = allReimbursements.filter(
+      const deptReimbursements = monthFilteredReimbursements.filter(
         (r) => String(r.department?.id) === String(dept.id)
       );
 
@@ -130,24 +174,17 @@ const ReimbursementCards = () => {
   // Filter Cards by Selected Dropdown and Search Text
   const filteredCards = deptCards.filter((card) => {
     const matchesDeptFilter =
-      selectedDeptFilter === "all" || String(card.id) === String(selectedDeptFilter);
+      selectedDeptFilter === "" || String(card.id) === String(selectedDeptFilter);
     const matchesSearch =
       card.name.toLowerCase().includes(search.toLowerCase()) ||
       card.head.toLowerCase().includes(search.toLowerCase());
     return matchesDeptFilter && matchesSearch;
   });
 
-  // Calculate summary totals across active/filtered cards
-  const totalRequestsSum = filteredCards.reduce((sum, card) => sum + card.totalRequests, 0);
-  const totalApprovedSum = filteredCards.reduce((sum, card) => sum + card.approvedAmount, 0);
-  const totalAmountSum = filteredCards.reduce((sum, card) => sum + card.totalAmount, 0);
-
-  const departmentOptions = departmentList
-    .filter((d) => deptCards.some((c) => String(c.id) === String(d.id)))
-    .map((d) => ({
-      label: d.name,
-      value: d.id,
-    }));
+  const departmentOptions = departmentList.map((d) => ({
+    label: d.name,
+    value: d.id,
+  }));
 
   return (
     <Container>
@@ -160,33 +197,21 @@ const ReimbursementCards = () => {
         />
       </HeaderWrapper>
 
-      {/* SUMMARY STATS CARDS */}
-      <CardWrapper>
-        <SummaryCard>
-          <CardTitle>Total Requests</CardTitle>
-          <CardValue>{String(totalRequestsSum).padStart(2, "0")}</CardValue>
-        </SummaryCard>
-        <SummaryCard>
-          <CardTitle>Total Approved Amount</CardTitle>
-          <CardValue>₹{totalApprovedSum.toLocaleString("en-IN")}</CardValue>
-        </SummaryCard>
-        <SummaryCard>
-          <CardTitle>Total Reimbursement Amount</CardTitle>
-          <CardValue>₹{totalAmountSum.toLocaleString("en-IN")}</CardValue>
-        </SummaryCard>
-      </CardWrapper>
-
-      {/* REUSABLE FILTER COMPONENT */}
+      {/* FILTER PANEL */}
       <div style={{ marginBottom: "20px" }}>
         <ReusableFilter
           search={search}
           onSearch={handleSearch}
-          searchPlaceholder="Search Department"
           showSearch
-          department={selectedDeptFilter === "all" ? "" : selectedDeptFilter}
-          departments={departmentOptions}
-          onDepartment={(val) => setSelectedDeptFilter(val || "all")}
           showDepartment
+          department={selectedDeptFilter}
+          departments={departmentOptions}
+          onDepartment={setSelectedDeptFilter}
+          showDate
+          dateType="month"
+          date={selectedMonth}
+          onDate={setSelectedMonth}
+          searchPlaceholder="Search by Department Name"
         />
       </div>
 

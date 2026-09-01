@@ -24,20 +24,25 @@ import {
 
 const ROWS_PER_PAGE = 20;
 
-const mapRow = (item) => ({
-    id: item.id,
-    employeeName:
-        item.employee_name || item.employee?.name || item.employee || "—",
-    reimbursementType:
-        item.expense_category || item.reimbursement_type || item.type || item.category || "—",
-    amount: item.amount ?? item.total_amount ?? 0,
-    date: item.date || item.created_at || "",
-    expenseDate: item.date || "",
-    submittedDate: item.created_at || "",
-    description: item.note || item.description || "",
-    status: item.status || "Pending",
-    images: item.images || [],
-});
+const mapRow = (item) => {
+    const expenseDateVal = item.date || item.expense_date || item.expenseDate || item.date_of_expense || "";
+    const submittedDateVal = item.created_at || item.submitted_date || item.submittedDate || item.date || "";
+
+    return {
+        id: item.id,
+        employeeName:
+            item.employee_name || item.employee?.name || item.employee || "—",
+        reimbursementType:
+            item.expense_category || item.reimbursement_type || item.type || item.category || "—",
+        amount: item.amount ?? item.total_amount ?? 0,
+        date: expenseDateVal || submittedDateVal,
+        expenseDate: expenseDateVal,
+        submittedDate: submittedDateVal,
+        description: item.note || item.description || "",
+        status: item.status || "Pending",
+        images: item.images || [],
+    };
+};
 
 /* =================================================
    Reimbursement Detail Modal Component
@@ -352,7 +357,36 @@ const ReimbursementDetails = () => {
             const results = response?.results || response || [];
             const count = response?.count ?? results.length;
 
-            setTableData(results.map(mapRow));
+            let mappedItems = results.map(mapRow);
+
+            // If list response items lack date fields (e.g. production list API omitting date/created_at),
+            // fetch single detail in parallel for items missing dates (single detail API contains date & created_at)
+            const missingDateItems = results.filter(
+                (item) => !item.date && !item.created_at && !item.expense_date && !item.submitted_date
+            );
+
+            if (missingDateItems.length > 0) {
+                const detailPromises = missingDateItems.map((item) =>
+                    fetchReimbursementDetail(item.id).catch(() => null)
+                );
+
+                const details = await Promise.all(detailPromises);
+
+                const detailMap = new Map();
+                details.forEach((detail) => {
+                    if (detail && detail.id) {
+                        detailMap.set(detail.id, detail);
+                    }
+                });
+
+                mappedItems = results.map((item) => {
+                    const detail = detailMap.get(item.id);
+                    const mergedItem = detail ? { ...item, ...detail } : item;
+                    return mapRow(mergedItem);
+                });
+            }
+
+            setTableData(mappedItems);
             setTotalPages(Math.max(1, Math.ceil(count / ROWS_PER_PAGE)));
         } catch (err) {
             console.error("Failed to load reimbursement details:", err);
@@ -369,17 +403,22 @@ const ReimbursementDetails = () => {
         loadData();
     }, [loadData]);
 
+    const [selectedMonth, setSelectedMonth] = useState("");
+
     const formatDate = (dateString) => {
         if (!dateString) return "—";
-        const d = new Date(dateString);
+        const str = String(dateString).trim();
+        if (!str) return "—";
+        const normalized = str.includes(" ") && !str.includes("T") ? str.replace(" ", "T") : str;
+        const d = new Date(normalized);
         if (isNaN(d.getTime())) return dateString;
-        const day = d.getDate();
-        const month = d.toLocaleString("en-US", { month: "long" });
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = d.toLocaleString("en-US", { month: "short" });
         const year = d.getFullYear();
-        return `${month} ${day}, ${year}`;
+        return `${day} ${month} ${year}`;
     };
 
-    // Client-side status and search filter
+    // Client-side status, month, and search filter
     const filteredData = useMemo(() => {
         let result = tableData;
 
@@ -388,6 +427,27 @@ const ReimbursementDetails = () => {
             result = result.filter(
                 (r) => r.status?.toLowerCase() === statusFilter.toLowerCase()
             );
+        }
+
+        // Apply Month Filter
+        if (selectedMonth) {
+            result = result.filter((r) => {
+                const dateStr = r.submittedDate || r.created_at || r.expenseDate || r.date;
+                if (!dateStr) return true;
+                const str = String(dateStr).trim();
+                if (!str) return true;
+                if (/^\d{4}-\d{2}/.test(str)) {
+                    return str.slice(0, 7) === selectedMonth;
+                }
+                const normalized = str.includes(" ") && !str.includes("T") ? str.replace(" ", "T") : str;
+                const d = new Date(normalized);
+                if (!isNaN(d.getTime())) {
+                    const year = d.getFullYear();
+                    const month = String(d.getMonth() + 1).padStart(2, "0");
+                    return `${year}-${month}` === selectedMonth;
+                }
+                return true;
+            });
         }
 
         // Apply Search Text Filter
@@ -400,7 +460,7 @@ const ReimbursementDetails = () => {
         }
 
         return result;
-    }, [search, statusFilter, tableData]);
+    }, [search, statusFilter, selectedMonth, tableData]);
 
     // Statistics Cards Calculations (6 cards)
     const reimbursementCards = useMemo(() => {
@@ -678,56 +738,27 @@ const ReimbursementDetails = () => {
             <StatsCards cards={reimbursementCards} />
 
             {/* FILTERS PANEL */}
-            <div style={{ display: "flex", gap: "12px", alignItems: "center", margin: "20px 0" }}>
-                <div style={{ flex: 1 }}>
-                    <ReusableFilter
-                        search={search}
-                        onSearch={handleSearch}
-                        showSearch
-                        placeholder="Search Employee Name / ID"
-                    />
-                </div>
-
-                <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    style={{
-                        padding: "8px 12px",
-                        borderRadius: "6px",
-                        border: "1px solid #dcdcdc",
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: "13px",
-                        background: "#ffffff",
-                        cursor: "pointer",
-                        outline: "none",
-                    }}
-                >
-                    <option value="all">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="on hold">On Hold</option>
-                    <option value="in verification">In Verification</option>
-                    <option value="approve">Approved</option>
-                    <option value="reject">Rejected</option>
-                </select>
-
-                <button
-                    type="button"
-                    style={{
-                        padding: "8px 16px",
-                        borderRadius: "6px",
-                        border: "1px solid #dcdcdc",
-                        background: "#ffffff",
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: "13px",
-                        fontWeight: "500",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        cursor: "pointer"
-                    }}
-                >
-                    📅 THIS MONTH
-                </button>
+            <div style={{ margin: "20px 0" }}>
+                <ReusableFilter
+                    search={search}
+                    onSearch={handleSearch}
+                    searchPlaceholder="Search Employee Name / Category"
+                    showSearch
+                    status={statusFilter === "all" ? "" : statusFilter}
+                    statuses={[
+                        { label: "Pending", value: "pending" },
+                        { label: "On Hold", value: "on hold" },
+                        { label: "In Verification", value: "in verification" },
+                        { label: "Approved", value: "approve" },
+                        { label: "Rejected", value: "reject" },
+                    ]}
+                    onStatus={(val) => setStatusFilter(val || "all")}
+                    showStatus
+                    date={selectedMonth}
+                    onDate={setSelectedMonth}
+                    showDate
+                    dateType="month"
+                />
             </div>
 
             {/* LOADING / ERROR STATES */}

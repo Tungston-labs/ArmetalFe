@@ -5,6 +5,7 @@ import {
   fetchDepartmentsAttendance,
   fetchAttendanceSummary,
   generateAttendanceExcel,
+  updateAttendance,
 } from "../services/attendanceService";
 
 export const getAttendanceList = createAsyncThunk(
@@ -97,6 +98,36 @@ export const generateAttendanceExcelReport = createAsyncThunk(
     }
   }
 );
+
+// Update (mark) a single attendance record
+export const updateAttendanceRecord = createAsyncThunk(
+  "attendance/updateRecord",
+  async (
+    {
+      employee,
+      date,
+      attendance_type,
+      remark,
+      token,
+    },
+    thunkAPI
+  ) => {
+    try {
+      return await updateAttendance({
+        employee,
+        date,
+        attendance_type,
+        remark,
+        token,
+      });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to update attendance"
+      );
+    }
+  }
+);
+
 /* Slice */
 const attendanceSlice = createSlice({
   name: "attendance",
@@ -135,6 +166,11 @@ const attendanceSlice = createSlice({
     attendanceExcel: null,
     attendanceExcelLoading: false,
     attendanceExcelError: null,
+
+    // Update (mark) attendance
+    updateLoading: false,
+    updateError: null,
+    lastUpdatedAttendance: null,
 
     // Generic error holder
     error: null,
@@ -261,7 +297,37 @@ const attendanceSlice = createSlice({
       action.payload ||
       "Failed to generate attendance Excel";
   }
-);
+)
+
+// =========================================================
+// Update (mark) Attendance
+// =========================================================
+
+.addCase(updateAttendanceRecord.pending, (state) => {
+  state.updateLoading = true;
+  state.updateError = null;
+})
+
+.addCase(updateAttendanceRecord.fulfilled, (state, action) => {
+  state.updateLoading = false;
+  state.lastUpdatedAttendance = action.payload?.data || action.payload;
+
+  // NOTE: the update response identifies the employee by numeric FK id
+  // (e.g. "employee": 4), while attendanceSummary.results rows are keyed
+  // by employee_id (email) with no numeric id of their own. There isn't
+  // enough info here to safely patch the matching daily_records entry
+  // in place, so the recommended approach is to re-dispatch
+  // getAttendanceSummary({ year, month, token, page }) after a
+  // successful update to refresh the table with the latest data.
+})
+
+.addCase(updateAttendanceRecord.rejected, (state, action) => {
+  state.updateLoading = false;
+  state.updateError =
+    action.payload || "Failed to update attendance";
+  state.error =
+    action.payload || "Failed to update attendance";
+});
 
   },
 });

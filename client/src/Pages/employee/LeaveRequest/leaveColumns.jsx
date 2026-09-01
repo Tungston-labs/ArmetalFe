@@ -24,6 +24,8 @@ export const getLeaveColumns = ({
   {
     header: "Employee Name",
     accessor: "employee",
+    sortable: false,
+    render: (row) => row.employee?.name || "-",
   },
 
   {
