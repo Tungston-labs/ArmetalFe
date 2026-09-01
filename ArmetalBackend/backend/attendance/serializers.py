@@ -301,34 +301,71 @@ class HourlyLocationLogSerializer(serializers.ModelSerializer):
 
 
 class DailyAttendanceSerializer(serializers.Serializer):
+
     date = serializers.DateField()
+
     status = serializers.CharField()
+
     total_hours = serializers.FloatField()
 
     first_punch_in = serializers.CharField(
-        required=False,
-        allow_null=True
+        allow_null=True,
+        required=False
     )
 
     last_punch_out = serializers.CharField(
-        required=False,
-        allow_null=True
+        allow_null=True,
+        required=False
+    )
+
+    attendance_type = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    remark = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    updated_by = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    updated_by_role = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
+
+    updated_at = serializers.CharField(
+        allow_null=True,
+        required=False
     )
 
 
 class EmployeeAttendanceSummarySerializer(serializers.Serializer):
+
     employee_id = serializers.CharField()
+
     employee_name = serializers.CharField()
-    department = serializers.CharField()
+
+    department = serializers.CharField(
+        allow_null=True,
+        required=False
+    )
 
     working_days = serializers.FloatField()
+
     present_days = serializers.FloatField()
+
     absent_days = serializers.FloatField()
+
     lop_days = serializers.FloatField()
 
-    daily_records = DailyAttendanceSerializer(many=True)
-
-
+    daily_records = DailyAttendanceSerializer(
+        many=True
+    )
 
 
 
