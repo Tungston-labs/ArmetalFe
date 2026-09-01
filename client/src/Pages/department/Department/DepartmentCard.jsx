@@ -321,8 +321,12 @@ const DepartmentCards = () => {
           const departmentName =
             department.name || "Department";
 
-          const departmentHead =
-            department.department_head?.employee_code || "—";
+       const departmentHead =
+  department.department_head?.name ||
+  department.department_head?.employee_name ||
+  department.department_head?.full_name ||
+  department.department_head?.employee_code ||
+  "—";
 
           const totalEmployees =
             department.employee_count ?? 0;

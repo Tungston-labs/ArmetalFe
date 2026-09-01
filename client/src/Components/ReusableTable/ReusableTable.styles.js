@@ -111,28 +111,54 @@ export const EmployeeEmail = styled.div`
 `;
 
 export const Status = styled.span`
-  font-size:14px;
-  font-weight:600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 80px;
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 
   ${({ $status }) =>
     $status === "Present" &&
     css`
-      color:${colors.success};
+      color: #15803d;
+      background: #dcfce7;
     `}
 
   ${({ $status }) =>
     $status === "Absent" &&
     css`
-      color:${colors.danger};
+      color: #dc2626;
+      background: #fee2e2;
     `}
 
   ${({ $status }) =>
     $status === "On Leave" &&
     css`
-      color:${colors.warning};
+      color: #d97706;
+      background: #fef3c7;
+    `}
+
+  ${({ $status }) =>
+    $status === "Half Day" &&
+    css`
+      color: #2563eb;
+      background: #dbeafe;
+    `}
+
+  ${({ $status }) =>
+    $status === "N/A" &&
+    css`
+      color: #6b7280;
+      background: #f3f4f6;
     `}
 `;
-
 export const ActionWrapper = styled.div`
   display:flex;
   gap:8px;

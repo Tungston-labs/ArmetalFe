@@ -73,26 +73,18 @@ export const fetchDepartmentById = async (id) => {
 // IMPORTANT:
 // Backend endpoint is /employees/dep/{id}/
 // =====================================================
-export const fetchEmployeesByDepartment = async (
-  departmentId
-) => {
-  console.log(
-    "Calling employee API for department:",
-    departmentId
-  );
-
+export const fetchEmployeesByDepartment = async (departmentId) => {
   const response = await API.get(
-    `/employees/dep/${departmentId}/`
+    `/employees/department/${departmentId}/`
   );
 
   console.log(
-    "Employee API response:",
+    "Employees by department response:",
     response.data
   );
 
   return response.data;
 };
-
 // =====================================================
 // PATCH: Update department
 // =====================================================
@@ -132,3 +124,4 @@ export const fetchEmployeesByDepartmentMini = async (
 
   return response.data;
 };
+
