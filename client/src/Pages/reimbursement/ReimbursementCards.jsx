@@ -8,7 +8,7 @@ import {
   Container,
   HeaderWrapper,
   CardsGrid,
-  Card,
+  Card as DeptCard,
   CardHeader,
   ReimbursementName,
   StatusBadge,
@@ -21,6 +21,13 @@ import {
   ReimbursementNumber,
   ViewButton,
 } from "./ReimbursementCard.Styles";
+
+import {
+  CardWrapper,
+  Card as SummaryCard,
+  CardTitle,
+  CardValue,
+} from "../../Components/attendance/AttendanceDetails.Styles";
 
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
@@ -130,10 +137,17 @@ const ReimbursementCards = () => {
     return matchesDeptFilter && matchesSearch;
   });
 
-  const departmentOptions = departmentList.map((d) => ({
-    label: d.name,
-    value: d.id,
-  }));
+  // Calculate summary totals across active/filtered cards
+  const totalRequestsSum = filteredCards.reduce((sum, card) => sum + card.totalRequests, 0);
+  const totalApprovedSum = filteredCards.reduce((sum, card) => sum + card.approvedAmount, 0);
+  const totalAmountSum = filteredCards.reduce((sum, card) => sum + card.totalAmount, 0);
+
+  const departmentOptions = departmentList
+    .filter((d) => deptCards.some((c) => String(c.id) === String(d.id)))
+    .map((d) => ({
+      label: d.name,
+      value: d.id,
+    }));
 
   return (
     <Container>
@@ -146,12 +160,28 @@ const ReimbursementCards = () => {
         />
       </HeaderWrapper>
 
+      {/* SUMMARY STATS CARDS */}
+      <CardWrapper>
+        <SummaryCard>
+          <CardTitle>Total Requests</CardTitle>
+          <CardValue>{String(totalRequestsSum).padStart(2, "0")}</CardValue>
+        </SummaryCard>
+        <SummaryCard>
+          <CardTitle>Total Approved Amount</CardTitle>
+          <CardValue>₹{totalApprovedSum.toLocaleString("en-IN")}</CardValue>
+        </SummaryCard>
+        <SummaryCard>
+          <CardTitle>Total Reimbursement Amount</CardTitle>
+          <CardValue>₹{totalAmountSum.toLocaleString("en-IN")}</CardValue>
+        </SummaryCard>
+      </CardWrapper>
+
       {/* REUSABLE FILTER COMPONENT */}
       <div style={{ marginBottom: "20px" }}>
         <ReusableFilter
           search={search}
           onSearch={handleSearch}
-          searchPlaceholder="Search Employee ID"
+          searchPlaceholder="Search Department"
           showSearch
           department={selectedDeptFilter === "all" ? "" : selectedDeptFilter}
           departments={departmentOptions}
@@ -180,7 +210,7 @@ const ReimbursementCards = () => {
       {!loading && !error && filteredCards.length > 0 && (
         <CardsGrid>
           {filteredCards.map((card) => (
-            <Card key={card.id}>
+            <DeptCard key={card.id}>
               <CardHeader>
                 <ReimbursementName>
                   {card.name} DEPARTMENT
@@ -251,7 +281,7 @@ const ReimbursementCards = () => {
                   VIEW REQUEST
                 </ViewButton>
               </CardBottom>
-            </Card>
+            </DeptCard>
           ))}
         </CardsGrid>
       )}
