@@ -137,31 +137,25 @@ const EmployeeList = () => {
                     showDepartment
                     showStatus
                 />
-                {!loading && (
-                    <TableWrapper>
-                        <ReusableTable
-                            columns={columns}
-                            data={filteredEmployees}
-                            loading={loading}
-                            onRowClick={(row) => {
-                                setSelectedEmployee(row);
-                                setOpenModal(true);
-                            }}
-                        />
-                    </TableWrapper>
-                )}
-                {!loading &&
-                    pagination?.total_pages > 1 && (
-                        <ReusablePagination
-                            currentPage={
-                                pagination?.current_page || page
-                            }
-                            totalPages={
-                                pagination?.total_pages || 1
-                            }
-                            onPageChange={setPage}
-                        />
-                    )}
+                <TableWrapper>
+    <ReusableTable
+        columns={columns}
+        data={filteredEmployees}
+        loading={loading}
+        onRowClick={(row) => {
+            setSelectedEmployee(row);
+            setOpenModal(true);
+        }}
+    />
+</TableWrapper>
+
+                {!loading && pagination?.total_pages > 1 && (
+    <ReusablePagination
+        currentPage={pagination?.current_page || page}
+        totalPages={pagination?.total_pages || 1}
+        onPageChange={setPage}
+    />
+)}
                 <ReusableConfirmModal
                     show={showDeleteModal}
                     onClose={cancelDelete}

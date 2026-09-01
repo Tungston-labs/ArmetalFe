@@ -7,7 +7,6 @@ import {
   getAllEmployees,
   getUpcomingExpiryEmployees,
 } from "../../Redux/employeeSlice";
-import Loader from "../../Components/Loader/Loader";
 import Pagination from "../../Components/Pagination/Pagination"
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
@@ -128,10 +127,7 @@ const ContractAndVisaExpiry = () => {
   return (
     <>
       <Container>
-        {loading && (
-          <Loader />
-        )}
-
+     
         <ReusableHeader
           title="Employees"
           breadcrumbs={["Employees", "Visa & Contract"]}
@@ -152,10 +148,10 @@ const ContractAndVisaExpiry = () => {
           showStatus
         />
         <ReusableTable
-          columns={columns}
-          data={employeeList || []}
-          loading={loading}
-        />
+      columns={columns}
+      data={employeeList || []}
+      loading={loading}
+    />
 
         <Pagination
           currentPage={currentPage}

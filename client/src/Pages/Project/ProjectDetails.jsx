@@ -109,30 +109,6 @@ const ProjectDetails = () => {
         }
     }, [project]);
 
-    // =====================================================
-    // PROJECT EMPLOYEES
-    // =====================================================
-
-    /*
-     * Real API shape:
-     *
-     * {
-     *   id: 2,
-     *   name: "DUMMY002",
-     *   employee_id: "abc2002@yopmail.com",
-     *   email: "abc2002@yopmail.com",
-     *   department: 1,
-     *   department_name: "HR and Admin",
-     *   designation: "DESIGNER",
-     *   gender: "Male",
-     *   joining_date: "2026-08-10",
-     *   profile_pic: null,
-     * }
-     *
-     * Falls back to a bare numeric id in case an older
-     * endpoint ever returns employees as [2, 3] instead.
-     */
-
     const normalizeEmployee = (employee) => {
         if (typeof employee === "object" && employee !== null) {
             return {
@@ -163,13 +139,6 @@ const ProjectDetails = () => {
     const normalizedEmployees = useMemo(() => {
         return employees.map(normalizeEmployee);
     }, [employees]);
-
-    // =====================================================
-    // DEPARTMENT FILTER OPTIONS
-    // =====================================================
-    // Derived from the actual employees on this project,
-    // rather than a hardcoded list that won't match real
-    // department_name values (e.g. "HR and Admin").
 
     const departmentOptions = useMemo(() => {
         const names = normalizedEmployees
@@ -477,74 +446,73 @@ const ProjectDetails = () => {
             ),
         },
     ];
+const formatDate = (date) => {
+    if (!date) return "-";
 
+    const parsedDate = new Date(date);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+        return "-";
+    }
+
+    const day = String(parsedDate.getDate()).padStart(2, "0");
+    const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+    const year = parsedDate.getFullYear();
+
+    return `${day}/${month}/${year}`;
+};
     // =====================================================
     // PROJECT STATS
     // =====================================================
 
     const projectStats = project
         ? [
-              {
-                  title: "Project Status",
-                  count:
-                      project.status ||
-                      "-",
-                  icon: <PiCheckCircle />,
-                  iconColor: "#15AA60",
-                  backgroundColor:
-                      "#E3F7ED",
-              },
+            {
+                title: "Project Status",
+                count:
+                    project.status ||
+                    "-",
+                icon: <PiCheckCircle />,
+                iconColor: "#15AA60",
+                backgroundColor:
+                    "#E3F7ED",
+            },
 
-              {
-                  title: "Priority",
-                  count:
-                      project.priority ||
-                      "-",
-                  icon: <PiFlag />,
-                  iconColor: "#FF8B2C",
-                  backgroundColor:
-                      "#FFF1E5",
-              },
+            {
+                title: "Priority",
+                count:
+                    project.priority ||
+                    "-",
+                icon: <PiFlag />,
+                iconColor: "#FF8B2C",
+                backgroundColor:
+                    "#FFF1E5",
+            },
 
-              {
-                  title: "Project Date",
-                  count:
-                      project.start_date ||
-                      project.date ||
-                      "-",
-                  icon: <PiCalendarBlank />,
-                  iconColor: "#3858C8",
-                  backgroundColor:
-                      "#E8EDFF",
-              },
+            {
+                title: "Project Date",
+                  count: formatDate(
+        project.start_date || project.date
+    ),  
+                icon: <PiCalendarBlank />,
+                iconColor: "#3858C8",
+                backgroundColor:
+                    "#E8EDFF",
+            },
 
-              {
-                  title: "Total Members",
-                  count:
-                      employees.length,
-                  icon: <PiUsersThree />,
-                  iconColor: "#8E44AD",
-                  backgroundColor:
-                      "#F3E8FF",
-              },
-          ]
+            {
+                title: "Total Members",
+                count:
+                    employees.length,
+                icon: <PiUsersThree />,
+                iconColor: "#8E44AD",
+                backgroundColor:
+                    "#F3E8FF",
+            },
+        ]
         : [];
 
-    // =====================================================
-    // LOADING
-    // =====================================================
 
-    if (isLoading && !project) {
-        return (
-            <DetailsPage>
-                <DetailsContainer>
-                    <Title>
-                        Loading project...
-                    </Title>
-                </DetailsContainer>
-            </DetailsPage>
-        );
-    }
 
     // =====================================================
     // ERROR / NOT FOUND
@@ -638,8 +606,8 @@ const ProjectDetails = () => {
                     setSearch(value);
                     setCurrentPage(1);
                 }}
-                             showSearch
-        
+                showSearch
+
 
                 rightAction={
                     <HeaderButton
@@ -661,6 +629,8 @@ const ProjectDetails = () => {
             <ReusableTable
                 columns={employeeColumns}
                 data={paginatedData}
+                loading={isLoading}
+                skeletonRows={8}
             />
 
             {/* ================================================= */}

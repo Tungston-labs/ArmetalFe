@@ -17,17 +17,46 @@ export const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 0;
+  background: ${colors.background};
 `;
 
-export const TableContainer = styled.div`
-  width: 100%;
-  overflow-x: auto;
-  border-radius: 5px;
-  background: #ffffff;
+/* =========================================================
+   TABLE HEADER
+========================================================= */
 
+export const TableHeaderContainer = styled.div`
+  width: 100%;
+  overflow: hidden;
+  background: ${colors.background};
+  border-radius: 5px 5px 0 0;
+`;
+
+/* =========================================================
+   TABLE BODY
+========================================================= */
+
+export const TableBodyContainer = styled.div`
+  width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: auto;
+
+  border-radius: 0 0 5px 5px;
+  background: ${colors.background};
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #d7d7d7 transparent;
+
+  /* Chrome / Edge / Safari */
   &::-webkit-scrollbar {
-    height: 7px;
+    width: 5px;
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -35,37 +64,62 @@ export const TableContainer = styled.div`
     border-radius: 10px;
   }
 `;
+
+/* =========================================================
+   TABLE
+========================================================= */
+
 export const StyledTable = styled.table`
   width: 100%;
-  min-width: 1200px;
   border-collapse: separate;
   border-spacing: 0;
+  table-layout: fixed;
 `;
 
+/* =========================================================
+   HEADER
+========================================================= */
+
 export const Thead = styled.thead`
-  position:sticky;
-  top:0;
-  z-index:5;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 `;
 
 export const Tbody = styled.tbody``;
 
-export const Tr = styled.tr`
-  transition:.3s;
+/* =========================================================
+   ROW
+========================================================= */
 
-  &:hover{
-      background:${colors.hover};
+export const Tr = styled.tr`
+  transition: 0.3s;
+
+  &:hover {
+    background: ${colors.hover};
   }
 `;
 
+/* =========================================================
+   HEADER CELL
+========================================================= */
+
 export const Th = styled.th`
-  background: #F78926;
+  background: #f78926;
   color: white;
-  padding:14px;
+
+  padding: 14px;
+
   text-align: left;
+
   font-size: 14px;
   font-weight: 600;
+
   white-space: nowrap;
+
+  position: sticky;
+  top: 0;
+  z-index: 10;
 
   &:first-child {
     border-radius: 5px 0 0 5px;
@@ -73,42 +127,70 @@ export const Th = styled.th`
 
   &:last-child {
     border-radius: 0 5px 5px 0;
-    
   }
 `;
 
+/* =========================================================
+   TABLE CELL
+========================================================= */
+
 export const Td = styled.td`
-  padding:10px 15px;
-  border-bottom:1px solid ${colors.border};
-  white-space:nowrap;
-  font-size:14px;
-  color:${colors.text};
+  padding: 10px 15px;
+
+  border-bottom: 1px solid ${colors.border};
+
+  white-space: nowrap;
+
+  font-size: 14px;
+  color: ${colors.text};
+
   font-weight: 400;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+export const EmptyState = styled.div`
+  width: 100%;
+  text-align: center;
+  padding: 50px;
+  color: #888;
+`;
+
+/* =========================================================
+   EMPLOYEE
+========================================================= */
 
 export const EmployeeCell = styled.div`
-  display:flex;
-  align-items:center;
-  gap:12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 `;
 
-
 export const EmployeeInfo = styled.div`
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const EmployeeName = styled.div`
-  font-size:15px;
-  font-weight:500;
-  color:${colors.text};
+  font-size: 15px;
+  font-weight: 500;
+  color: ${colors.text};
 `;
 
 export const EmployeeEmail = styled.div`
-  font-size:12px;
-  color:${colors.secondaryText};
-  margin-top:3px;
+  font-size: 12px;
+  color: ${colors.secondaryText};
+  margin-top: 3px;
 `;
+
+/* =========================================================
+   STATUS
+========================================================= */
 
 export const Status = styled.span`
   display: inline-flex;
@@ -116,12 +198,14 @@ export const Status = styled.span`
   justify-content: center;
 
   min-width: 80px;
+
   padding: 6px 12px;
 
   border-radius: 20px;
 
   font-size: 12px;
   font-weight: 600;
+
   white-space: nowrap;
 
   ${({ $status }) =>
@@ -159,34 +243,61 @@ export const Status = styled.span`
       background: #f3f4f6;
     `}
 `;
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
 export const ActionWrapper = styled.div`
-  display:flex;
-  gap:8px;
+  display: flex;
+  gap: 8px;
 `;
 
 export const IconButton = styled.button`
-  width:34px;
-  height:34px;
-  border-radius:8px;
-  border:1px solid ${colors.border};
-  background:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  transition:.25s;
+  width: 34px;
+  height: 34px;
 
-  &:hover{
-      background:#f5f5f5;
+  border-radius: 8px;
+  border: 1px solid ${colors.border};
+
+  background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+
+  &:hover {
+    background: #f5f5f5;
   }
 
-  svg{
-      font-size:15px;
+  svg {
+    font-size: 15px;
   }
 `;
 
-export const EmptyState = styled.div`
-  text-align:center;
-  padding:50px;
-  color:#888;
+export const LoadingState = styled.div`
+  min-height: 180px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+`;
+
+export const LoadingContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  font-weight: 500;
 `;

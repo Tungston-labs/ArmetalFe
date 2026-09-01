@@ -1,7 +1,7 @@
 export const departmentEmployeeColumns = [
   {
     header: "Sl No",
-  accessor: "slNo",
+    accessor: "slNo",
   },
   {
     header: "Employee Name",
@@ -11,7 +11,6 @@ export const departmentEmployeeColumns = [
     header: "Employee Code",
     accessor: "employee_code",
   },
-  
   {
     header: "Email",
     accessor: "email",
@@ -25,9 +24,13 @@ export const departmentEmployeeColumns = [
 
 export const departmentData = {
   id: 1,
+
   departmentName: "Development",
+
   departmentCode: "DEV-001",
+
   headOfDepartment: "Riswin",
+
   teamLead: "Ajay",
 
   employees: [
@@ -69,46 +72,6 @@ export const departmentData = {
       employee_name: "Arun Raj",
       email: "arun@example.com",
       phone: "9876543214",
-      status: "Present",
-    },
-    {
-      id: 6,
-      employee_code: "EMP006",
-      employee_name: "Sneha Paul",
-      email: "sneha@example.com",
-      phone: "9876543215",
-      status: "Present",
-    },
-    {
-      id: 7,
-      employee_code: "EMP007",
-      employee_name: "Vishnu Das",
-      email: "vishnu@example.com",
-      phone: "9876543216",
-      status: "Absent",
-    },
-    {
-      id: 8,
-      employee_code: "EMP008",
-      employee_name: "Amal Thomas",
-      email: "amal@example.com",
-      phone: "9876543217",
-      status: "Present",
-    },
-    {
-      id: 9,
-      employee_code: "EMP009",
-      employee_name: "Neha George",
-      email: "neha@example.com",
-      phone: "9876543218",
-      status: "On Leave",
-    },
-    {
-      id: 10,
-      employee_code: "EMP010",
-      employee_name: "Adithya Menon",
-      email: "adithya@example.com",
-      phone: "9876543219",
       status: "Present",
     },
   ],

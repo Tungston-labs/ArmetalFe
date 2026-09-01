@@ -24,6 +24,7 @@ import {
 
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
+import SkeletonCard from "../../Components/Skeleton/ SkeletonCard";
 
 const DEFAULT_AVATAR = "https://i.pravatar.cc/100?img=1";
 
@@ -174,8 +175,13 @@ const ReimbursementCards = () => {
       </div>
 
       {/* LOADING & ERROR STATES */}
-      {loading && <p>Loading department cards...</p>}
-
+{loading && (
+  <CardsGrid>
+    {Array.from({ length: 6 }).map((_, index) => (
+      <SkeletonCard key={index} />
+    ))}
+  </CardsGrid>
+)}
       {!loading && error && (
         <p style={{ color: "red" }}>
           {error}{" "}
