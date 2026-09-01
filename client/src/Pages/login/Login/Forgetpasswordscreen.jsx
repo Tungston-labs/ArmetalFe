@@ -20,12 +20,41 @@ import {
     ErrorText,
 } from "./LoginScreen.styles";
 
-const ForgotPasswordScreen = ({ onSubmit, isLoading, error, success }) => {
-    const [email, setEmail] = useState("");
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../services/api";
 
-    const handleSubmit = (e) => {
+const ForgotPasswordScreen = () => {
+    const [email, setEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSubmit?.({ email });
+        setError(null);
+        setIsLoading(true);
+
+        try {
+            await axios.post(`${BASE_URL}/api/forgot-password/send-otp/`, {
+                email,
+            });
+
+            setSuccess(true);
+            sessionStorage.setItem("resetEmail", email);
+
+            setTimeout(() => {
+                navigate("/otp", { state: { email } });
+            }, 1000);
+        } catch (err) {
+            setError(
+                err.response?.data?.detail || "Failed to send OTP. Please try again."
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -83,7 +112,7 @@ const ForgotPasswordScreen = ({ onSubmit, isLoading, error, success }) => {
                                             type="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            autoComplete="email"
+                                            autoComplete="off"
                                             required
                                         />
                                     </InputWrapper>

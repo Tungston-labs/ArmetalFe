@@ -32,7 +32,10 @@ const ReimbursementCards = () => {
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
-  const [selectedDeptFilter, setSelectedDeptFilter] = useState("all");
+  const [selectedDeptFilter, setSelectedDeptFilter] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date().toISOString().slice(0, 7) // YYYY-MM, defaults to this month
+  );
   const [allReimbursements, setAllReimbursements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -72,10 +75,18 @@ const ReimbursementCards = () => {
     navigate(`/reimbursements/${deptId}`);
   };
 
+  // Reimbursements narrowed down by the selected month (YYYY-MM)
+  const reimbursementsForMonth = allReimbursements.filter((r) => {
+    if (!selectedMonth) return true;
+    const dateValue = r.date || r.created_at || r.createdAt;
+    if (!dateValue) return true; // keep records we can't date-filter rather than hiding them
+    return String(dateValue).slice(0, 7) === selectedMonth;
+  });
+
   // Process department cards
   const deptCards = departmentList.map((dept) => {
     // Filter reimbursements for this department
-    const deptReimbursements = allReimbursements.filter(
+    const deptReimbursements = reimbursementsForMonth.filter(
       (r) => r.department?.id === dept.id
     );
 
@@ -121,12 +132,17 @@ const ReimbursementCards = () => {
   // Filter Cards by Selected Dropdown and Search Text
   const filteredCards = deptCards.filter((card) => {
     const matchesDeptFilter =
-      selectedDeptFilter === "all" || String(card.id) === String(selectedDeptFilter);
+      selectedDeptFilter === "" || String(card.id) === String(selectedDeptFilter);
     const matchesSearch =
       card.name.toLowerCase().includes(search.toLowerCase()) ||
       card.head.toLowerCase().includes(search.toLowerCase());
     return matchesDeptFilter && matchesSearch;
   });
+
+  const departmentOptions = departmentList.map((d) => ({
+    label: d.name,
+    value: d.id,
+  }));
 
   return (
     <Container>
@@ -140,52 +156,21 @@ const ReimbursementCards = () => {
       </HeaderWrapper>
 
       {/* FILTER PANEL */}
-      <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "20px" }}>
-        {/* Custom Department Filter Dropdown */}
-        <select
-          value={selectedDeptFilter}
-          onChange={(e) => setSelectedDeptFilter(e.target.value)}
-          style={{
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "1px solid #dcdcdc",
-            fontFamily: "Poppins, sans-serif",
-            fontSize: "13px",
-            background: "#ffffff",
-            cursor: "pointer",
-            outline: "none",
-          }}
-        >
-          <option value="all">All Department</option>
-          {departmentList.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.name}
-            </option>
-          ))}
-        </select>
-
-        <div style={{ flex: 1 }}>
-          <ReusableFilter search={search} onSearch={handleSearch} showSearch />
-        </div>
-
-        <button
-          type="button"
-          style={{
-            padding: "8px 16px",
-            borderRadius: "6px",
-            border: "1px solid #dcdcdc",
-            background: "#ffffff",
-            fontFamily: "Poppins, sans-serif",
-            fontSize: "13px",
-            fontWeight: "500",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            cursor: "pointer"
-          }}
-        >
-          📅 THIS MONTH
-        </button>
+      <div style={{ marginBottom: "20px" }}>
+        <ReusableFilter
+          search={search}
+          onSearch={handleSearch}
+          showSearch
+          showDepartment
+          department={selectedDeptFilter}
+          departments={departmentOptions}
+          onDepartment={setSelectedDeptFilter}
+          showDate
+          dateType="month"
+          date={selectedMonth}
+          onDate={setSelectedMonth}
+          searchPlaceholder="Search by Department Name"
+        />
       </div>
 
       {/* LOADING & ERROR STATES */}

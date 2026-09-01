@@ -46,14 +46,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### Create Leave (Employee)
 POST http://127.0.0.1:8000/api/leave/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3MzIzNTgwLCJpYXQiOjE3ODcyOTQ3ODAsImp0aSI6Ijc2MzQxMGJiMDU5MzRjZjViY2RlMzE4NDQ5YzU2ODEzIiwidXNlcl9pZCI6NywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.-7hOdhCvX3pBh8A-aCc8_NjmyMe26ym6CP1tnk-bHC8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4MjcyODY1LCJpYXQiOjE3ODgyNDQwNjUsImp0aSI6ImYxODQ3YTBkOGE4OTQzMDFhMDUxZDM0YTZmZTRmYWI3IiwidXNlcl9pZCI6MjksImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6dHJ1ZX0.QhYzuPkiYos87vjlsmFeAyl4kvTGmculWkPfFzmI6p0
 Content-Type: application/json
 
 {
   "leave_type": "casual",
   "reason": "hospital",
-  "from_date": "2026-08-21",
-  "to_date": "2026-08-21",
+  "from_date": "2026-09-11",
+  "to_date": "2026-09-20",
   "from_date_type": "afternoon",
   "to_date_type": "afternoon",
   "to_email": "nisna@gmail.com",

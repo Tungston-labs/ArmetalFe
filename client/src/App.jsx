@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import "./index.css";
-import LoginForm from "./Pages/login/Login";
+import LoginForm from "./Pages/login/Loginscreen.jsx";
 import Layout from "./Components/layout/Layout.jsx";
 import DepartmentList from "./Pages/department/DepartmentList";
 import EmployeeList from "./Pages/employee/EmployeeList.jsx";
@@ -21,9 +21,9 @@ import ViewDocument from "./Pages/employee/ViewForm/ViewDocument.jsx"
 import Payroll1 from "./Pages/payroll/PaymentOverview.jsx";
 import RequireAuth from "./Components/RequireAuth.jsx";
 import Viewpage from "./Pages/superAdmin/Viewpage.jsx";
-import ForgetPassword from "./Pages/login/ForgetPassword.jsx";
-import Verification from "./Pages/login/Verification.jsx";
-import NewPassword from "./Pages/login/NewPassword.jsx";
+// import ForgetPassword from "./Pages/login/ForgetPassword.jsx";
+// import Verification from "./Pages/login/Verification.jsx";
+// import NewPassword from "./Pages/login/NewPassword.jsx";
 import Loder from "./Components/Loader/Loder.jsx";
 import LeaveList from "./Pages/onLeave/LeaveList.jsx";
 import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
@@ -56,7 +56,7 @@ import ArchivedStaff from "./Pages/employee/ArchivedStaff/ArchivedStaff.jsx";
 import HrDashboard from "./Pages/HrDashboard/HrDashboard.jsx";
 import Projects from "./Pages/Project/Projects.jsx";
 import ProjectDetails from "./Pages/Project/ProjectDetails.jsx";
-import LoginScreen from "./Pages/login/Login/Loginscreen.jsx";
+// import LoginScreen from "./Pages/login/Login/Loginscreen.jsx";
 // import AuthLayout from "./Pages/login/Login/AuthLayout.jsx";
 import SuperAdmin_Dashboard from "./Pages/superAdmin/Dashboard/SuperAdmin_Dashboard.jsx";
 import AddCompany from "./Pages/superAdmin/AddCompany/AddCompany.jsx"
@@ -98,14 +98,14 @@ function App() {
 
 
           {/* <Route element={<AuthLayout />}> */}
-          <Route path="/log" element={<LoginScreen />} />
+          {/* <Route path="/log" element={<LoginScreen />} /> */}
           <Route path="/forget-screen" element={<ForgetPasswordScreen />} />
           <Route path="/otp" element={<OtpScreen />} />
           <Route path="/create-password" element={<CreateNewPasswordScreen />} />
           {/* </Route> */}
-          <Route path="/forget-password" element={<ForgetPassword />} />
+          {/* <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/verification" element={<Verification />} />
-          <Route path="/new-password" element={<NewPassword />} />
+          <Route path="/new-password" element={<NewPassword />} /> */}
           <Route path="/payrolls" element={<Payroll1 />} />
           <Route element={<RequireAuth />}>
             <Route path="/" element={<Layout />}>
