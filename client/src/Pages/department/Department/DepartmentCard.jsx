@@ -286,6 +286,7 @@ const DepartmentCards = () => {
         search={search}
         onSearch={handleSearch}
         showSearch
+      searchPlaceholder="Search by Department Name "
       />
 
       {/* =================================================

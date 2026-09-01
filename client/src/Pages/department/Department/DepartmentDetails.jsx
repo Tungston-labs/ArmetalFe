@@ -509,6 +509,7 @@ const employeeTableData = useMemo(() => {
         search={search}
         onSearch={handleSearch}
         showSearch
+         searchPlaceholder="Search by Employee Name "
       />
 
 

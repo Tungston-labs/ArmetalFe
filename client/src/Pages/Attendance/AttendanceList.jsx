@@ -130,7 +130,7 @@ const AttendanceList = () => {
             <ReusableFilter
                 search={search}
                 onSearch={setSearch}
-                searchPlaceholder="Search by Employee name "
+                searchPlaceholder="Search by Employee Name "
                 department={department}
                 departments={departmentOptions}
                 onDepartment={setDepartment}

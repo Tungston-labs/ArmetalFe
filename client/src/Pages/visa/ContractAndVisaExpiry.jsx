@@ -140,7 +140,7 @@ const ContractAndVisaExpiry = () => {
         <ReusableFilter
           search={searchText}
           onSearch={handleSearch}
-          searchPlaceholder="Search by Employee name "
+          searchPlaceholder="Search by Employee Name "
           status={expiryFilter}
           statuses={[
             "Contract Within 30 Days",
