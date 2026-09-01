@@ -425,3 +425,96 @@ class MissingPunchStatusSerializer(serializers.ModelSerializer):
             )
 
         return value
+    
+
+from rest_framework import serializers
+from attendance.models import Attendance
+
+from rest_framework import serializers
+from attendance.models import Attendance
+
+from rest_framework import serializers
+
+from attendance.models import Attendance
+
+
+class AttendanceManualUpdateSerializer(
+    serializers.ModelSerializer
+):
+
+    employee = serializers.IntegerField(
+        source="employee.id",
+        read_only=True
+    )
+
+    updated_by = serializers.SerializerMethodField()
+
+    updated_by_role = serializers.SerializerMethodField()
+
+    class Meta:
+
+        model = Attendance
+
+        fields = [
+            "id",
+            "employee",
+            "date",
+            "attendance_type",
+            "remark",
+            "total_hours",
+            "updated_by",
+            "updated_by_role",
+            "created_at",
+            "updated_at",
+        ]
+
+        read_only_fields = [
+            "id",
+            "employee",
+            "total_hours",
+            "updated_by",
+            "updated_by_role",
+            "created_at",
+            "updated_at",
+        ]
+
+    # ==================================================
+    # UPDATED BY
+    # ==================================================
+
+    def get_updated_by(self, obj):
+
+        if not obj.updated_by:
+            return None
+
+        user = obj.updated_by
+
+        return (
+            getattr(user, "company_name", None)
+            or getattr(user, "username", None)
+            or getattr(user, "email", None)
+            or getattr(user, "name", None)
+            or str(user)
+        )
+
+    # ==================================================
+    # UPDATED BY ROLE
+    # ==================================================
+
+    def get_updated_by_role(self, obj):
+
+        if not obj.updated_by:
+            return None
+
+        user = obj.updated_by
+
+        if getattr(user, "is_superadmin", False):
+            return "Super Admin"
+
+        if getattr(user, "is_hr_admin", False):
+            return "HR Admin"
+
+        if getattr(user, "is_hr", False):
+            return "HR"
+
+        return "User"
