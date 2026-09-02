@@ -838,7 +838,7 @@ const EmployeeAttendance = () => {
                       {/* HOURS */}
 
                       <TableCell className="hours-cell">
-                        {Number(rec.total_hours || 0).toFixed(2)}h
+                        {rec.total_hours_formatted || "00:00"}
                       </TableCell>
 
                       {/* NOTE */}

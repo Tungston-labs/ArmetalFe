@@ -125,8 +125,8 @@ export const exportAttendanceExcel = (
 
       v:
         value !== null &&
-        value !== undefined &&
-        value !== ""
+          value !== undefined &&
+          value !== ""
           ? value
           : "-",
 
@@ -395,9 +395,9 @@ export const exportAttendanceExcel = (
 
       else if (
         attendanceStatus ===
-          "paid absent" ||
+        "paid absent" ||
         attendanceStatus ===
-          "paid_absent"
+        "paid_absent"
       ) {
         displayStatus = "Absent";
         displayType = "Paid";
@@ -415,8 +415,8 @@ export const exportAttendanceExcel = (
           attendanceType === "paid"
             ? "Paid"
             : attendanceType === "unpaid"
-            ? "Unpaid"
-            : "—";
+              ? "Unpaid"
+              : "—";
       }
 
       // =====================================================
@@ -535,13 +535,11 @@ export const exportAttendanceExcel = (
       );
 
       // 5 - TOTAL HOURS
+      // 5 - TOTAL HOURS
       addCell(
         row,
         5,
-        record.total_hours !== null &&
-        record.total_hours !== undefined
-          ? record.total_hours
-          : "-",
+        record.total_hours_formatted || "00:00",
         dataStyle
       );
 
