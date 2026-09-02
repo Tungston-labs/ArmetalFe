@@ -101,6 +101,14 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     first_swipe_in = serializers.SerializerMethodField()
     last_swipe_out = serializers.SerializerMethodField()
+    attendance_type = serializers.CharField(
+        read_only=True,
+        allow_null=True
+    )
+
+    attendance_status = serializers.CharField(
+        read_only=True
+    )
 
     class Meta:
         model = Employee_db
@@ -116,6 +124,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "total_hours_formatted",
             "attendance_today",
             "attendance_id",
+            "attendance_status",
+            "attendance_type",
         ]
 
     # ---------- format total_hours ----------
