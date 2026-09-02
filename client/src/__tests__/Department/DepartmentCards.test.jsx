@@ -18,7 +18,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter } from "react-router-dom";
 
-import DepartmentCards from "./DepartmentCards";
+import DepartmentCard from "../../Pages/department/Department/DepartmentCard";
 
 import {
   getDepartments,

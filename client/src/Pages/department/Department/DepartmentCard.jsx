@@ -20,6 +20,10 @@ import {
   EmployeeImage,
   EmployeeNumber,
   ViewButton,
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateTitle,
+  EmptyStateText,
 } from "./DepartmentCard.Styles";
 
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
@@ -33,6 +37,7 @@ import {
 
 import { getAllEmployees } from "../../../Redux/employeeSlice";
 import SkeletonCard from "../../../Components/Skeleton/ SkeletonCard";
+import { FiInbox } from "react-icons/fi";
 
 const DepartmentCards = () => {
   const navigate = useNavigate();
@@ -320,6 +325,21 @@ const DepartmentCards = () => {
     Array.from({ length: 8 }).map((_, index) => (
       <SkeletonCard key={index} />
     ))
+     ) : departmentList.length === 0 ? (
+   <EmptyState>
+         <EmptyStateIcon>
+             <FiInbox />
+         </EmptyStateIcon>
+ 
+         <EmptyStateTitle>
+             No Department Found
+         </EmptyStateTitle>
+ 
+         <EmptyStateText>
+             There are no department matching your
+             current search or filter selection.
+         </EmptyStateText>
+     </EmptyState>
   ) : (
     departmentList.map((department) => {
       const departmentId = department.id;

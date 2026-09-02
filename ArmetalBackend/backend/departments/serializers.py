@@ -30,7 +30,7 @@ class DepartmentAttendanceSerializer(serializers.ModelSerializer):
 class DepartmentSerializer(serializers.ModelSerializer):
     department_head = EmployeeSerializer(read_only=True)
     department_head_id = serializers.PrimaryKeyRelatedField(
-        queryset=Employee_db.objects.all(),
+        queryset=Employee_db.objects.filter(is_deleted=False),
         source='department_head',
         write_only=True,
         required=False

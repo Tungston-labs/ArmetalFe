@@ -16,14 +16,11 @@ const AttendanceList = () => {
     const navigate = useNavigate();
 
     const [search, setSearch] = useState("");
-    const [department, setDepartment] = useState("");
+    const [department, setDepartment] = useState(""); // "" = All Departments
     const [status, setStatus] = useState("");
     const [date, setDate] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-    // --------------------------------------------------
-    // Attendance Redux
-    // --------------------------------------------------
     const {
         attendanceList,
         pagination,
@@ -31,34 +28,24 @@ const AttendanceList = () => {
         error,
     } = useSelector((state) => state.attendance);
 
-    // --------------------------------------------------
-    // Department Redux
-    // --------------------------------------------------
     const {
         minList: departments,
         loading: departmentLoading,
     } = useSelector((state) => state.departments);
 
-    // --------------------------------------------------
-    // Get Departments
-    // --------------------------------------------------
     useEffect(() => {
         dispatch(getDepartmentsMin());
     }, [dispatch]);
 
-    const activeDepartment =
-        department || (departments && departments.length > 0 ? departments[0].id : "");
+    // No more auto-defaulting to departments[0].id — "" means "All Departments"
 
-    // --------------------------------------------------
-    // Get Attendance
-    // --------------------------------------------------
     useEffect(() => {
         const params = {
             page: currentPage,
         };
 
-        if (activeDepartment) {
-            params.department_id = activeDepartment;
+        if (department) {
+            params.department_id = department;
         }
 
         if (date) {
@@ -66,14 +53,11 @@ const AttendanceList = () => {
         }
 
         dispatch(getAttendanceList(params));
-    }, [dispatch, currentPage, activeDepartment, date]);
+    }, [dispatch, currentPage, department, date]);
 
-    // --------------------------------------------------
-    // Reset page when filters change
-    // --------------------------------------------------
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeDepartment, date]);
+    }, [department, date]);
 
     const pageSize = 10;
 
@@ -99,9 +83,6 @@ const AttendanceList = () => {
         return String(err);
     };
 
-    // --------------------------------------------------
-    // Map Attendance Data
-    // --------------------------------------------------
     const mappedRows = (attendanceList || []).map((item, index) => ({
         slNo: (currentPage - 1) * pageSize + index + 1,
         id: item.employee,
@@ -115,49 +96,46 @@ const AttendanceList = () => {
         attendanceToday: item.attendance_today,
         attendanceId: item.attendance_id,
     }));
-
-    // --------------------------------------------------
-    // Client-side Search
-    // --------------------------------------------------
-    const visibleRows = search
+    // Search filter
+    let visibleRows = search
         ? mappedRows.filter(
             (row) =>
-                row.name
-                    ?.toLowerCase()
-                    .includes(search.toLowerCase()) ||
-                row.employeeId
-                    ?.toLowerCase()
-                    .includes(search.toLowerCase())
+                row.name?.toLowerCase().includes(search.toLowerCase()) ||
+                row.employeeId?.toLowerCase().includes(search.toLowerCase())
         )
         : mappedRows;
 
-    // --------------------------------------------------
-    // Row Click
-    // --------------------------------------------------
+    // Status filter (client-side, based on attendanceToday)
+    if (status) {
+    visibleRows = visibleRows.filter((row) => {
+        if (status.toLowerCase() === "present") return row.attendanceToday === true;
+        if (status.toLowerCase() === "absent") return row.attendanceToday === false;
+        // "On Leave" has no equivalent in attendanceToday — needs a separate field
+        return true;
+    });
+}
+
     const handleRowClick = (employee) => {
         navigate(`/employee-attendance-tracking/${employee.id}`);
     };
 
-    // --------------------------------------------------
-    // Convert Department API Data
-    // --------------------------------------------------
-    const departmentOptions = (departments || []).map((item) => ({
-        label: item.name,
-        value: item.id,
-    }));
+    const departmentOptions = [
+        { label: "All Departments", value: "" },
+        ...(departments || []).map((item) => ({
+            label: item.name,
+            value: item.id,
+        })),
+    ];
 
     return (
         <div style={{ padding: 20 }}>
-            <ReusableHeader
-                title="Attendance"
-                breadcrumbs={["Attendance"]}
-            />
+            <ReusableHeader title="Attendance" breadcrumbs={["Attendance"]} />
 
             <ReusableFilter
                 search={search}
                 onSearch={setSearch}
 
-                department={department || activeDepartment}
+                department={department}
                 departments={departmentOptions}
                 onDepartment={setDepartment}
 
@@ -175,15 +153,9 @@ const AttendanceList = () => {
                 showDate
             />
 
-            {listLoading && (
-                <p>Loading attendance...</p>
-            )}
+            {listLoading && <p>Loading attendance...</p>}
 
-            {error && (
-                <p style={{ color: "red" }}>
-                    {renderError(error)}
-                </p>
-            )}
+            {error && <p style={{ color: "red" }}>{renderError(error)}</p>}
 
             {!listLoading && !error && (
                 <>
@@ -194,13 +166,8 @@ const AttendanceList = () => {
                     />
 
                     <ReusablePagination
-                        currentPage={
-                            pagination?.current_page ||
-                            currentPage
-                        }
-                        totalPages={
-                            pagination?.total_pages || 1
-                        }
+                        currentPage={pagination?.current_page || currentPage}
+                        totalPages={pagination?.total_pages || 1}
                         onPageChange={setCurrentPage}
                     />
                 </>

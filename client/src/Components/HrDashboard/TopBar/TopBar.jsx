@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useSelector } from "react-redux";
 import { FaRegBell } from "react-icons/fa6";
 import { CiCalendarDate } from "react-icons/ci";
 import { FaChevronDown } from "react-icons/fa";
@@ -28,21 +29,32 @@ import {
   DropdownItem,
 } from "./TopBar.styles";
 
+// Maps the boolean role flags from the login response to a display label
+const getRoleLabel = (user) => {
+  if (!user) return "";
+  if (user.is_superadmin) return "Super Admin";
+  if (user.is_hr_admin) return "HR Admin";
+  if (user.is_hr) return "HR";
+  if (user.is_employee) return "Employee";
+  return "";
+};
+
 const TopBar = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   const [showNotifications, setShowNotifications] = useState(false);
-
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
-  const [showChangePassword, setShowChangePassword] =
-    useState(false);
+  // Pull the logged-in user (and nested company) from Redux
+  const user = useSelector((state) => state.auth.user);
 
-  const [companyName] = useState("Rekory");
+  const companyName = user?.company?.name || "";
+  const roleLabel = getRoleLabel(user);
 
   const companyInitial = companyName
-    .charAt(0)
-    .toUpperCase();
+    ? companyName.charAt(0).toUpperCase()
+    : "";
 
   const profileRef = useRef(null);
 
@@ -64,16 +76,10 @@ const TopBar = () => {
       }
     };
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -95,20 +101,18 @@ const TopBar = () => {
     window.location.href = "/login";
   };
 
-  const formattedDate =
-    currentDateTime.toLocaleDateString("en-IN", {
-      weekday: "long",
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
+  const formattedDate = currentDateTime.toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
 
-  const formattedTime =
-    currentDateTime.toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
+  const formattedTime = currentDateTime.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
 
   return (
     <>
@@ -127,11 +131,7 @@ const TopBar = () => {
 
         <RightSection>
           {/* Notification */}
-          <NotificationButton
-            onClick={() =>
-              setShowNotifications(true)
-            }
-          >
+          <NotificationButton onClick={() => setShowNotifications(true)}>
             <FaRegBell size={25} />
             <NotificationDot />
           </NotificationButton>
@@ -145,28 +145,21 @@ const TopBar = () => {
           {/* Profile */}
           <Profile
             ref={profileRef}
-            onClick={() =>
-              setShowProfileMenu(
-                (prev) => !prev
-              )
-            }
+            onClick={() => setShowProfileMenu((prev) => !prev)}
           >
-            <Avatar>
-              {companyInitial}
-            </Avatar>
+            <Avatar>{companyInitial}</Avatar>
 
             <UserInfo>
               <Name>{companyName}</Name>
-              <Role>Admin</Role>
+              <Role>{roleLabel}</Role>
             </UserInfo>
 
             <FaChevronDown size={12} />
 
             {showProfileMenu && (
               <ProfileDropdown>
-
                 {/* Configure */}
-                <DropdownItem
+                {/* <DropdownItem
                   onClick={(e) => {
                     e.stopPropagation();
                     handleConfigure();
@@ -174,7 +167,7 @@ const TopBar = () => {
                 >
                   <FiSettings size={17} />
                   <span>Configure</span>
-                </DropdownItem>
+                </DropdownItem> */}
 
                 {/* Change Password */}
                 <DropdownItem
@@ -198,33 +191,27 @@ const TopBar = () => {
                   <FiLogOut size={17} />
                   <span>Logout</span>
                 </DropdownItem>
-
               </ProfileDropdown>
             )}
           </Profile>
 
-          <SwitchButton>
+          {/* <SwitchButton>
             <PiSwap size={15} />
             SWITCH FINANCE
-          </SwitchButton>
+          </SwitchButton> */}
+
         </RightSection>
       </Container>
 
       {/* Notifications */}
       <NotificationModal
         isOpen={showNotifications}
-        onClose={() =>
-          setShowNotifications(false)
-        }
+        onClose={() => setShowNotifications(false)}
       />
 
       {/* Change Password */}
       {showChangePassword && (
-        <ChangePasswordModal
-          onClose={() =>
-            setShowChangePassword(false)
-          }
-        />
+        <ChangePasswordModal onClose={() => setShowChangePassword(false)} />
       )}
     </>
   );

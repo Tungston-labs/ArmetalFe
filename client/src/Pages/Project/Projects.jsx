@@ -7,6 +7,10 @@ import {
     ProjectsPage,
     ProjectsContainer,
     ProjectsGrid,
+    EmptyState,
+    EmptyStateIcon,
+    EmptyStateTitle,
+    EmptyStateText,
 } from "./Projects.styles";
 
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
@@ -28,6 +32,7 @@ import {
 
 import { getProjectCards } from "../../utils/projectCards";
 import SkeletonCard from "../../Components/Skeleton/ SkeletonCard";
+import { FiInbox } from "react-icons/fi";
 
 const Projects = () => {
     const dispatch = useDispatch();
@@ -99,15 +104,6 @@ const Projects = () => {
 
     const handleAddProject = () => {
         setSelectedProject(null);
-        setShowProjectModal(true);
-    };
-
-    // =========================
-    // EDIT PROJECT
-    // =========================
-
-    const handleEditProject = (project) => {
-        setSelectedProject(project);
         setShowProjectModal(true);
     };
 
@@ -429,12 +425,22 @@ const Projects = () => {
 
                     ) : (
 
-                        <div>
-                            No projects found.
-                        </div>
+    <EmptyState>
+        <EmptyStateIcon>
+            <FiInbox />
+        </EmptyStateIcon>
 
-                    )}
+        <EmptyStateTitle>
+            No Projects Found
+        </EmptyStateTitle>
 
+        <EmptyStateText>
+            There are no projects matching your
+            current search or filter selection.
+        </EmptyStateText>
+    </EmptyState>
+
+)}
                 </ProjectsGrid>
             </ProjectsContainer>
 

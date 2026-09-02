@@ -291,7 +291,9 @@ class ProjectCountView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        projects = Project.objects.all()
+        projects = Project.objects.filter(
+    company=request.user.company
+   ) 
 
         data = projects.aggregate(
             total_projects=Count("id"),

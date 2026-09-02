@@ -69,8 +69,8 @@ export const CompanyCard = styled.div`
 
 export const CompanyLogo = styled.img`
   width: 105px;
-  max-width: 45%;
-  height: 55px;
+  max-width: 55%;
+  height: 65px;
   object-fit: contain;
   flex-shrink: 0;
 `;

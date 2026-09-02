@@ -61,3 +61,75 @@ export const ProjectsGrid = styled.div`
     gap: 18px;
   }
 `;
+export const EmptyState = styled.div`
+  width: 100%;
+  min-height: 280px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 20px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border-radius: 14px;
+
+  border: 1px solid #eeeeee;
+
+  text-align: center;
+
+  font-family: "Poppins", sans-serif;
+
+  grid-column: 1 / -1;
+`;
+
+export const EmptyStateIcon = styled.div`
+  width: 60px;
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 16px;
+
+  border-radius: 50%;
+
+  background: #eef3ff;
+
+  color: #3154d8;
+
+  font-size: 26px;
+`;
+
+export const EmptyStateTitle = styled.h3`
+  margin: 0 0 6px;
+
+  color: #222222;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  font-family: "Poppins", sans-serif;
+`;
+
+export const EmptyStateText = styled.p`
+  margin: 0;
+
+  max-width: 400px;
+
+  color: #8a8a8a;
+
+  font-size: 12px;
+
+  font-weight: 400;
+
+  line-height: 1.6;
+
+  font-family: "Poppins", sans-serif;
+`;

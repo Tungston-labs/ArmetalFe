@@ -420,11 +420,21 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_destroy(self, instance):
         company = instance.department.company if instance.department else None
+        department = instance.department
 
         # Soft delete employee
         instance.is_deleted = True
         instance.deleted_at = timezone.now()
         instance.save(update_fields=["is_deleted", "deleted_at"])
+
+        # Clear department_head if this employee was the head
+        if department and department.department_head_id == instance.id:
+            department.department_head = None
+            department.save(update_fields=["department_head"])
+
+        # NEW: remove from all projects (M2M cleanup)
+        for project in instance.projects.all():
+            project.employees.remove(instance)
 
         # Disable login
         if instance.user:
@@ -435,7 +445,6 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if company:
             company.number_of_employees = max((company.number_of_employees or 1) - 1, 0)
             company.save(update_fields=["number_of_employees"])
-
 
 # ------------------------create,list bank details of employee by admin
 

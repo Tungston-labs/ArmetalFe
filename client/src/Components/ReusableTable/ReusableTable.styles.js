@@ -38,7 +38,7 @@ export const TableHeaderContainer = styled.div`
 
 export const TableBodyContainer = styled.div`
   width: 100%;
-  max-height: 500px;
+  max-height: 100vh;
   overflow-y: auto;
   overflow-x: auto;
 

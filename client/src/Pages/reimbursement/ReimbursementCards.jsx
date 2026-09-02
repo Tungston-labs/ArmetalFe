@@ -20,19 +20,15 @@ import {
   EmployeeImage,
   ReimbursementNumber,
   ViewButton,
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateTitle,
+  EmptyStateText,
 } from "./ReimbursementCard.Styles";
-
-import {
-  CardWrapper,
-  Card as SummaryCard,
-  CardTitle,
-  CardValue,
-} from "../../Components/attendance/AttendanceDetails.Styles";
-
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 import SkeletonCard from "../../Components/Skeleton/ SkeletonCard";
-
+import { FiFileText } from "react-icons/fi";
 const DEFAULT_AVATAR = "https://i.pravatar.cc/100?img=1";
 
 const ReimbursementCards = () => {
@@ -192,9 +188,8 @@ const ReimbursementCards = () => {
       <HeaderWrapper>
         <ReusableHeader
           title="Reimbursement"
-          breadcrumbs={["Dashboard", "Reimbursement"]}
-          buttonText="History"
-          onButtonClick={() => navigate("/reimbursement")}
+          breadcrumbs={[ "Reimbursement"]}
+       
         />
       </HeaderWrapper>
 
@@ -233,9 +228,24 @@ const ReimbursementCards = () => {
         </p>
       )}
 
-      {!loading && !error && filteredCards.length === 0 && (
-        <p>No reimbursement cards found.</p>
-      )}
+   {!loading && !error && filteredCards.length === 0 && (
+  <CardsGrid>
+    <EmptyState>
+      <EmptyStateIcon>
+        <FiFileText />
+      </EmptyStateIcon>
+
+      <EmptyStateTitle>
+        No Reimbursement Found
+      </EmptyStateTitle>
+
+      <EmptyStateText>
+        There are no reimbursement requests matching your
+        current search or filter selection.
+      </EmptyStateText>
+    </EmptyState>
+  </CardsGrid>
+)}
 
       {/* CARDS GRID */}
       {!loading && !error && filteredCards.length > 0 && (
