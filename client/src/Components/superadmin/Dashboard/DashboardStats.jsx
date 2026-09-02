@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { BsBuildings } from "react-icons/bs";
+
 import {
   StatsContainer,
   StatItem,
@@ -12,12 +13,13 @@ import {
 const DashboardStats = () => {
   const { overview } = useSelector((state) => state.superAdmin);
 
-  const formattedRevenue = overview?.total_revenue !== undefined
-    ? `₹${Number(overview.total_revenue).toLocaleString("en-IN", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`
-    : "₹0.00";
+  const formattedRevenue =
+    overview?.total_revenue !== undefined
+      ? `₹${Number(overview.total_revenue).toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`
+      : "₹0.00";
 
   const stats = [
     {
@@ -40,21 +42,19 @@ const DashboardStats = () => {
       value: overview?.active_subscriptions ?? 0,
       label: "Active Subscriptions",
     },
-    {
-      value: overview?.total_users ?? 0,
-      label: "Total Users",
-    },
   ];
 
   return (
     <StatsContainer>
-      {stats.map((stat, index) => (
-        <StatItem key={index}>
+      {stats.map((stat) => (
+        <StatItem key={stat.label}>
           <StatIcon>
             <BsBuildings />
           </StatIcon>
 
-          <StatValue>{stat.value}</StatValue>
+          <StatValue title={stat.value}>
+            {stat.value}
+          </StatValue>
 
           <StatLabel>{stat.label}</StatLabel>
         </StatItem>

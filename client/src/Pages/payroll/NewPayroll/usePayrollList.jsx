@@ -49,13 +49,13 @@ export const getPayrollCards = ({
   total_incentive_amount = 0,
   total_deduction_amount = 0,
 } = {}, currencyCode = "") => [
-  {
-    title: "Total Payroll",
-    count: total_payroll,
-    icon: <PiMoneyWavyLight />,
-    iconColor: "#15aa60",
-    backgroundColor: "#E3F7ED",
-  },
+  // {
+  //   title: "Total Payroll",
+  //   count: total_payroll,
+  //   icon: <PiMoneyWavyLight />,
+  //   iconColor: "#15aa60",
+  //   backgroundColor: "#E3F7ED",
+  // },
 
   {
     title: "Pending Payroll",

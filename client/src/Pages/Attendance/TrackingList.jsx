@@ -238,18 +238,18 @@ const TrackingList = ({
         <EmployeeHeader employee={employee} editable={false} />
       )}
 
-      <CardWrapper>
+      {/* <CardWrapper>
         {computedCardList.map((card, index) => (
           <Card key={index}>
             <CardTitle>{card.title}</CardTitle>
             <CardValue>{card.value}</CardValue>
           </Card>
         ))}
-      </CardWrapper>
+      </CardWrapper> */}
 
       <HistoryTable>
         <div style={{ marginBottom: "15px" }}>
-          <Header>Sessions</Header>
+          {/* <Header>Sessions</Header> */}
           <CalendarWrapper>
             <input
               type="date"

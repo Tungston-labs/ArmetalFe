@@ -2,8 +2,9 @@ import styled from "styled-components";
 
 export const StatsContainer = styled.div`
   width: 100%;
+
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 
   background: #ffffff;
   border-radius: 6px;
@@ -16,18 +17,13 @@ export const StatsContainer = styled.div`
   box-sizing: border-box;
   overflow: hidden;
 
-  /* Large Desktop */
+  /* Large screens */
   @media (min-width: 1920px) {
     padding: 14px 0;
   }
 
-  /* Desktop / Laptop */
-  @media (max-width: 1400px) {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
-  /* Small Laptop / Tablet Landscape */
-  @media (max-width: 1100px) {
+  /* Laptop */
+  @media (max-width: 1200px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
@@ -58,12 +54,11 @@ export const StatItem = styled.div`
 
   box-sizing: border-box;
 
-  /* Desktop separators */
+  /* Desktop separator */
   &:not(:last-child)::after {
     content: "";
 
     position: absolute;
-
     right: 0;
     top: 8px;
 
@@ -74,7 +69,7 @@ export const StatItem = styled.div`
   }
 
   /* 3-column layout */
-  @media (max-width: 1100px) {
+  @media (max-width: 1200px) {
     &:nth-child(3n)::after {
       display: none;
     }
@@ -97,7 +92,6 @@ export const StatItem = styled.div`
   /* Mobile */
   @media (max-width: 480px) {
     min-height: 68px;
-
     padding: 10px 16px;
 
     &:not(:last-child)::after {
@@ -119,13 +113,14 @@ export const StatItem = styled.div`
 export const StatIcon = styled.div`
   display: flex;
   align-items: center;
+
   margin-bottom: 6px;
 
   svg {
     width: 18px;
     height: 18px;
-
     color: #171717;
+    flex-shrink: 0;
   }
 
   @media (max-width: 768px) {
@@ -145,26 +140,46 @@ export const StatIcon = styled.div`
 
 export const StatValue = styled.div`
   width: 100%;
+
   font-size: 20px;
   font-weight: 600;
   color: #111111;
+
   font-family: "Poppins", sans-serif;
+
   margin-bottom: 2px;
+
   line-height: 1.2;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (max-width: 768px) {
     font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 17px;
   }
 `;
 
 export const StatLabel = styled.div`
   width: 100%;
+
   font-size: 10px;
   font-weight: 500;
+
   color: #888888;
+
   line-height: 1.2;
+
   text-transform: uppercase;
   letter-spacing: 0.3px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (max-width: 768px) {
     font-size: 9px;

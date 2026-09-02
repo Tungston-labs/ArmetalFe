@@ -116,13 +116,13 @@ export const getFinanceColumns = ({ page, pageSize, currencyCode }) => [
  * @param {string} currencyCode  company's active currency
  */
 export const getStatCards = ({ totalIncome, totalExpense, cashBalance, currencyCode }) => [
-     {
-    icon: <FaRegMessage size={20} />,
-     iconColor: "#157baa",
-    backgroundColor: "#e3f5f7",
-    count: `${formatCurrency(totalIncome, currencyCode)}`,
-    title: "Total Records",
-  },
+  //    {
+  //   icon: <FaRegMessage size={20} />,
+  //    iconColor: "#157baa",
+  //   backgroundColor: "#e3f5f7",
+  //   count: `${formatCurrency(totalIncome, currencyCode)}`,
+  //   title: "Total Records",
+  // },
   {
     icon: <FiTrendingUp size={20} />,
     backgroundColor: "#d3f3e0",
