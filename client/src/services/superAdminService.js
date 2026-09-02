@@ -3,12 +3,14 @@
 // list or search comapany
 import API from './api'; // axios instance
 
-export const fetchCompany = async (page = 1, search = '') => {
-  let url = `/companies/list/?page=${page}`;
-  if (search && search.trim() !== '') {
-    url += `&search=${search}`;
-  }
-  const response = await API.get(url);
+export const fetchCompany = async (page = 1, search = "") => {
+  const response = await API.get("/companies/list/", {
+    params: {
+      page,
+      search: search.trim(),
+    },
+  });
+
   return response.data;
 };
 

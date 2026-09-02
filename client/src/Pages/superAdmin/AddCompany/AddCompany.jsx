@@ -41,6 +41,16 @@ import {
   SalaryInputWrapper,
   SalaryInput,
   TotalInput,
+  LogoUploadWrapper,
+  LogoUploadBox,
+  LogoInput,
+  LogoUploadIcon,
+  LogoUploadTitle,
+  LogoUploadText,
+  LogoPreviewWrapper,
+  LogoPreview,
+  RemoveLogoButton,
+  LogoUploadContent,
 } from "./AddCompany.Styles";
 
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
@@ -784,6 +794,29 @@ const AddCompany = () => {
                   </span>
                 )}
               </FormGroup>
+              <FormGroup>
+  <Label>Registration Date</Label>
+
+  <Input
+    type="date"
+    name="registrationDate"
+    value={formData.registrationDate}
+    onChange={handleChange}
+  />
+
+  {formErrors.registrationDate && (
+    <span
+      style={{
+        color: "#ef3333",
+        fontSize: "11px",
+        marginTop: "4px",
+        display: "block",
+      }}
+    >
+      {formErrors.registrationDate}
+    </span>
+  )}
+</FormGroup>
 
               {/* Email */}
               <FormGroup>
@@ -842,40 +875,93 @@ const AddCompany = () => {
               </FormGroup>
 
               {/* Logo */}
-              <FormGroup>
-                <Label>Upload Logo</Label>
-                <Input
-                  type="file"
-                  accept=".png,.svg"
-                  ref={fileInputRef}
-                  onChange={handleLogoChange}
-                />
-                {logoPreview && (
-                  <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px" }}>
-                    <img
-                      src={logoPreview}
-                      alt="Logo Preview"
-                      style={{ width: "40px", height: "40px", objectFit: "contain", border: "1px solid #ccc", borderRadius: "4px", padding: "2px" }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFormData((prev) => ({ ...prev, logo: null }));
-                        setLogoPreview(null);
-                        if (fileInputRef.current) fileInputRef.current.value = "";
-                      }}
-                      style={{ background: "#f28b82", border: "none", color: "#fff", padding: "2px 6px", borderRadius: "4px", fontSize: "11px", cursor: "pointer" }}
+           <FormGroup>
+                <Label>
+                  Company Logo
+                </Label>
+
+                <LogoUploadWrapper>
+                  {!logoPreview ? (
+                    <LogoUploadBox
+                      htmlFor="company-logo"
+                      hasError={
+                        !!formErrors.logo
+                      }
                     >
-                      Remove
-                    </button>
-                  </div>
-                )}
+                      <LogoInput
+                        id="company-logo"
+                        type="file"
+                        accept=".png,.jpg,.jpeg,.svg"
+                        ref={fileInputRef}
+                        onChange={
+                          handleLogoChange
+                        }
+                      />
+
+                      <LogoUploadContent>
+                        <LogoUploadIcon>
+                          ↑
+                        </LogoUploadIcon>
+
+                        <LogoUploadTitle>
+                          Upload Company Logo
+                        </LogoUploadTitle>
+
+                        <LogoUploadText>
+                          Click to browse or
+                          choose a logo file
+                        </LogoUploadText>
+
+                        <LogoUploadText>
+                          PNG, JPG, JPEG or SVG
+                          · Max 2MB
+                        </LogoUploadText>
+                      </LogoUploadContent>
+                    </LogoUploadBox>
+                  ) : (
+                    <LogoPreviewWrapper>
+                      <LogoPreview
+                        src={logoPreview}
+                        alt="Company Logo Preview"
+                      />
+
+                      <div>
+                        <LogoUploadTitle>
+                          Company Logo
+                        </LogoUploadTitle>
+
+                        <LogoUploadText>
+                          Logo uploaded
+                          successfully
+                        </LogoUploadText>
+                      </div>
+
+                      <RemoveLogoButton
+                        type="button"
+                        onClick={
+                          handleRemoveLogo
+                        }
+                      >
+                        Remove
+                      </RemoveLogoButton>
+                    </LogoPreviewWrapper>
+                  )}
+                </LogoUploadWrapper>
+
                 {formErrors.logo && (
-                  <span style={{ color: "#ef3333", fontSize: "11px", marginTop: "4px", display: "block" }}>
+                  <span
+                    style={{
+                      color: "#ef3333",
+                      fontSize: "11px",
+                      marginTop: "4px",
+                      display: "block",
+                    }}
+                  >
                     {formErrors.logo}
                   </span>
                 )}
               </FormGroup>
+
 
               {/* Subscription Plan */}
               <FormGroup className="wide-field">
@@ -927,7 +1013,7 @@ const AddCompany = () => {
 
               {/* Initial Payment */}
               <FormGroup className="wide-field">
-                <Label>Initial Payment (Advance)</Label>
+                <Label>Installation Amount</Label>
                 <Input
                   type="number"
                   name="initialPayment"

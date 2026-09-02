@@ -980,3 +980,165 @@ export const TotalInput = styled.input`
     box-shadow: 0 0 0 2px rgba(82, 112, 209, 0.08);
   }
 `;
+/* =========================================================
+   LOGO UPLOAD
+========================================================= */
+
+export const LogoUploadWrapper = styled.div`
+  width: 100%;
+`;
+
+export const LogoUploadBox = styled.label`
+  width: 100%;
+  min-height: 125px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+
+  border: 1px dashed
+    ${(props) => (props.hasError ? "#ef3333" : "#cfd5e3")};
+
+  border-radius: 8px;
+
+  background: #fafbfe;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: #5270d1;
+    background: #f6f8fd;
+    box-shadow: 0 2px 8px rgba(61, 91, 194, 0.06);
+  }
+
+  &:focus-within {
+    border-color: #5270d1;
+    box-shadow: 0 0 0 3px rgba(82, 112, 209, 0.08);
+  }
+`;
+
+export const LogoInput = styled.input`
+  display: none;
+`;
+
+export const LogoUploadContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+`;
+
+export const LogoUploadIcon = styled.div`
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 8px;
+
+  border-radius: 50%;
+
+  background: #eef2ff;
+  color: #3d5bc2;
+
+  font-size: 21px;
+  font-weight: 600;
+
+  line-height: 1;
+`;
+
+export const LogoUploadTitle = styled.div`
+  margin-bottom: 4px;
+
+  color: #202020;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+`;
+
+export const LogoUploadText = styled.div`
+  color: #888;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+
+  line-height: 1.5;
+`;
+
+export const LogoPreviewWrapper = styled.div`
+  width: 100%;
+  min-height: 88px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #dfe4ef;
+  border-radius: 8px;
+
+  background: #fafbfe;
+`;
+
+export const LogoPreview = styled.img`
+  width: 64px;
+  height: 64px;
+
+  flex-shrink: 0;
+
+  object-fit: contain;
+
+  padding: 5px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e1e1e1;
+  border-radius: 7px;
+
+  background: #fff;
+`;
+
+export const RemoveLogoButton = styled.button`
+  margin-left: auto;
+
+  flex-shrink: 0;
+
+  padding: 6px 10px;
+
+  border: 1px solid #efc5c5;
+  border-radius: 5px;
+
+  background: #fff;
+  color: #d64545;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #fff2f2;
+    border-color: #e7a5a5;
+  }
+`;

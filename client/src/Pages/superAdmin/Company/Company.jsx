@@ -20,7 +20,6 @@ import {
   removeCompany,
 } from "../../../Redux/superAdminSlice";
 
-import { IoInformationCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
@@ -42,11 +41,8 @@ const CompanyTable = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
-  const [selectedCompanyId, setSelectedCompanyId] =
-    useState(null);
-
-  const [showDeleteModal, setShowDeleteModal] =
-    useState(false);
+  const [selectedCompanyId, setSelectedCompanyId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // =====================================================
   // GET COMPANIES
@@ -112,63 +108,60 @@ const CompanyTable = () => {
   // STATS CARDS
   // =====================================================
 
-const statsCards = useMemo(() => {
-  const totalCompanies =
-    pagination?.count ?? companies.length;
+  const statsCards = useMemo(() => {
+    const totalCompanies =
+      pagination?.count ?? companies.length;
 
-  const activeCompanies = companies.filter(
-    (company) =>
-      company.status === "active" ||
-      company.is_active === true
-  ).length;
+    const activeCompanies = companies.filter(
+      (company) =>
+        company.status === "active" ||
+        company.is_active === true
+    ).length;
 
-  const inactiveCompanies = companies.filter(
-    (company) =>
-      company.status === "inactive" ||
-      company.is_active === false
-  ).length;
+    const inactiveCompanies = companies.filter(
+      (company) =>
+        company.status === "inactive" ||
+        company.is_active === false
+    ).length;
 
-  const totalEmployees = companies.reduce(
-    (total, company) =>
-      total +
-      (Number(company.number_of_employees) || 0),
-    0
-  );
+    const totalEmployees = companies.reduce(
+      (total, company) =>
+        total +
+        (Number(company.number_of_employees) || 0),
+      0
+    );
 
-  return [
-    {
-      title: "Total Companies",
-      count: totalCompanies,
-      icon: <FaBuilding />,
-      iconColor: "#2563EB",
-      backgroundColor: "#E8F0FF",
-    },
-
-    {
-      title: "Active Companies",
-      count: activeCompanies,
-      icon: <FaUserCheck />,
-      iconColor: "#16A34A",
-      backgroundColor: "#E8F7ED",
-    },
-
-    {
-      title: "Inactive Companies",
-      count: inactiveCompanies,
-      icon: <FaUserTimes />,
-      iconColor: "#DC2626",
-      backgroundColor: "#FDECEC",
-    },
-
-    {
-      title: "Total Employees",
-      count: totalEmployees,
-      icon: <FaUsers />,
-      iconColor: "#9333EA",
-      backgroundColor: "#F3E8FF",
-    },
-  ];
-}, [companies, pagination]);
+    return [
+      {
+        title: "Total Companies",
+        count: totalCompanies,
+        icon: <FaBuilding />,
+        iconColor: "#2563EB",
+        backgroundColor: "#E8F0FF",
+      },
+      {
+        title: "Active Companies",
+        count: activeCompanies,
+        icon: <FaUserCheck />,
+        iconColor: "#16A34A",
+        backgroundColor: "#E8F7ED",
+      },
+      {
+        title: "Inactive Companies",
+        count: inactiveCompanies,
+        icon: <FaUserTimes />,
+        iconColor: "#DC2626",
+        backgroundColor: "#FDECEC",
+      },
+      {
+        title: "Total Employees",
+        count: totalEmployees,
+        icon: <FaUsers />,
+        iconColor: "#9333EA",
+        backgroundColor: "#F3E8FF",
+      },
+    ];
+  }, [companies, pagination]);
 
   // =====================================================
   // TABLE COLUMNS
@@ -206,27 +199,16 @@ const statsCards = useMemo(() => {
       },
 
       {
-        header: "Info",
-        accessor: "info",
-        sortable: false,
-
-        render: (row) => (
-          <IconButton
-            onClick={() => handleView(row)}
-          >
-            <IoInformationCircleOutline />
-          </IconButton>
-        ),
-      },
-
-      {
         header: "Edit",
         accessor: "edit",
         sortable: false,
 
         render: (row) => (
           <IconButton
-            onClick={() => handleEdit(row)}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleEdit(row);
+            }}
           >
             <TbPencilMinus />
           </IconButton>
@@ -241,26 +223,27 @@ const statsCards = useMemo(() => {
         render: (row) => (
           <IconButton
             danger
-            onClick={() => handleDelete(row.id)}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleDelete(row.id);
+            }}
           >
             <FaTrashAlt />
           </IconButton>
         ),
       },
     ],
-    [page, navigate]
+    [page]
   );
 
   return (
     <Container>
-
       {/* ================= HEADER ================= */}
 
       <ReusableHeader
-        title="COMPANY"
+        title="Companies"
         breadcrumbs={[
-          "Dashboard",
-          "Company",
+          "Companies",
         ]}
         buttonText="+ ADD NEW COMPANY"
         onButtonClick={handleAdd}
@@ -268,9 +251,7 @@ const statsCards = useMemo(() => {
 
       {/* ================= STATS ================= */}
 
-      <StatsCards
-        cards={statsCards}
-      />
+      <StatsCards cards={statsCards} />
 
       {/* ================= FILTER ================= */}
 
@@ -290,6 +271,7 @@ const statsCards = useMemo(() => {
         columns={columns}
         data={companies}
         loading={loading}
+        onRowClick={handleView}
       />
 
       {/* ================= DELETE MODAL ================= */}
@@ -305,7 +287,6 @@ const statsCards = useMemo(() => {
         onConfirm={confirmDelete}
         onClose={cancelDelete}
       />
-
     </Container>
   );
 };

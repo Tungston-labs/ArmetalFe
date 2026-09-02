@@ -37,6 +37,8 @@ import {
   fetchSubscriptionPlans,
   fetchSubscriptionPlanSummary,
 } from "../../../services/superAdminService";
+import { FiGrid, FiList } from "react-icons/fi";
+import { PiFingerprintDuotone } from "react-icons/pi";
 
 function PlanAndPricing() {
   /* =====================================================
@@ -339,7 +341,6 @@ function PlanAndPricing() {
       <ReusableHeader
         title="Plans & Pricing"
         breadcrumbs={[
-          "Dashboard",
           "Plans & Pricing",
         ]}
         buttonText="+ ADD NEW PLAN"
@@ -361,32 +362,36 @@ function PlanAndPricing() {
       ================================================= */}
 
       <TableCard>
-        <TableHeader>
-          <div>
-            <Title>
-              Plans & Pricing
+       <TableHeader>
+  <div className="header-content">
+    <div className="title-section">
+      <Title>Plans & Pricing</Title>
+      <TitleUnderline />
+    </div>
 
-              <VscFiles
-                style={{
-                  cursor:
-                    "pointer",
-                  marginLeft:
-                    "10px",
-                }}
-                onClick={() =>
-                  setView(
-                    view ===
-                      "table"
-                      ? "card"
-                      : "table"
-                  )
-                }
-              />
-            </Title>
+    <div className="view-switcher">
+      <button
+        type="button"
+        className={view === "table" ? "active" : ""}
+        onClick={() => setView("table")}
+        title="Table View"
+      >
+        <FiList />
+        <span>Table</span>
+      </button>
 
-            <TitleUnderline />
-          </div>
-        </TableHeader>
+      <button
+        type="button"
+        className={view === "card" ? "active" : ""}
+        onClick={() => setView("card")}
+        title="Card View"
+      >
+        <FiGrid />
+        <span>Cards</span>
+      </button>
+    </div>
+  </div>
+</TableHeader>
 
         {/* =================================================
             LOADING

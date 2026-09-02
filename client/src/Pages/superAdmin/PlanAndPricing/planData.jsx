@@ -266,13 +266,6 @@ export const planCards = [
     iconColor: "#4F6EF7",
   },
 
-  {
-    title: "Monthly Revenue",
-    count: "₹0.00",
-    icon: <FiDollarSign />,
-    backgroundColor: "#FFF2E1",
-    iconColor: "#F59E0B",
-  },
 
   {
     title: "Lowest Plan",
