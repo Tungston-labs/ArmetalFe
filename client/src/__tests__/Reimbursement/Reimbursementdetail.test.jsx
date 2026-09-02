@@ -2,6 +2,7 @@ import React from "react";
 import { render, screen, waitFor, fireEvent, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { vi } from 'vitest';
 
 import ReimbursementDetail from "../../Pages/reimbursement/Reimb_info"; // adjust path/filename to match your project
 import {

@@ -204,20 +204,14 @@ const AttendanceSummary = () => {
         setSelectedDay(record);
         setSaveError(null);
 
-        // Pre-select Paid/Unpaid based on the record's actual saved status.
-        // Records can hold "paid"/"unpaid" directly once they've been
-        // edited before, or the original computed statuses like
-        // "absent"/"present"/"onam" if they've never been touched.
-        const status = (record?.status || "").toLowerCase();
-
-        let attendanceType;
-        if (status === "paid") {
-            attendanceType = "Paid";
-        } else if (status === "unpaid" || status === "absent" || !status) {
-            attendanceType = "Unpaid";
-        } else {
-            attendanceType = "Paid";
-        }
+        // Pre-select Paid/Unpaid based on the record's actual saved
+        // attendance_type field (a separate field from `status`, which
+        // is the independently-computed present/absent/etc. value).
+        const type = (record?.attendance_type || "").toLowerCase();
+        const attendanceType = type === "unpaid" ? "Unpaid" : type === "paid" ? "Paid" :
+            // Fallback for days that have never been manually edited and
+            // so have no attendance_type override yet.
+            (record?.status || "").toLowerCase() === "absent" ? "Unpaid" : "Paid";
 
         setEditForm({
             attendanceType,
@@ -276,10 +270,17 @@ const AttendanceSummary = () => {
                     record.date === selectedDay.date
                         ? {
                               ...record,
-                              status:
+                              attendance_type:
                                   savedData?.attendance_type ||
                                   editForm.attendanceType.toLowerCase(),
                               remark: savedData?.remark ?? editForm.note,
+                              updated_by:
+                                  savedData?.updated_by ?? record.updated_by,
+                              updated_by_role:
+                                  savedData?.updated_by_role ??
+                                  record.updated_by_role,
+                              updated_at:
+                                  savedData?.updated_at ?? record.updated_at,
                           }
                         : record
                 )

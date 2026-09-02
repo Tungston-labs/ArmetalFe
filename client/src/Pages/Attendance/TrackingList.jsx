@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getAttendanceDetail } from "../../Redux/attendanceSlice";
+import API from "../../services/api";
 import {
   PageWrapper,
   Header,
@@ -12,6 +16,8 @@ import {
 import { getAccessToken } from "../../hooks/useAccessToken";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
+import EmployeeHeader from "../../Components/header/EmployeeHeader";
+import Loader from "../../Components/Loader/Loader";
 
 const ACTION_COLORS = {
   "Punch In": "#2F822F",
@@ -19,16 +25,109 @@ const ACTION_COLORS = {
   "Live Tracking": "#2563EB",
 };
 
+const defaultFormatTime = (datetimeStr) => {
+  if (!datetimeStr) return "---";
+
+  if (/^\d{2}:\d{2}$/.test(datetimeStr)) {
+    const [hours, minutes] = datetimeStr.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
+  const parsedDate = new Date(String(datetimeStr).replace(" ", "T"));
+  if (isNaN(parsedDate.getTime())) return datetimeStr;
+
+  return parsedDate.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
 const TrackingList = ({
-  cardList = [],
-  sessions = [],
-  selectedDate,
-  onDateChange,
-  formatTime,
-  employeeId,
+  cardList: cardListProp,
+  sessions: sessionsProp,
+  selectedDate: selectedDateProp,
+  onDateChange: onDateChangeProp,
+  formatTime: formatTimeProp,
+  employeeId: employeeIdProp,
 }) => {
+  const { id: paramId } = useParams();
+  const dispatch = useDispatch();
+
+  const { attendanceDetail, detailLoading, error } = useSelector(
+    (state) => state.attendance
+  );
+
+  const targetEmployeeId = employeeIdProp || paramId;
+
+  const [selectedDateState, setSelectedDateState] = useState("");
   const [hourlyLocationData, setHourlyLocationData] = useState([]);
   const [loadingLocations, setLoadingLocations] = useState(false);
+
+  const effectiveDate =
+    selectedDateProp !== undefined
+      ? selectedDateProp
+      : selectedDateState || attendanceDetail?.date || new Date().toISOString().split("T")[0];
+
+  // Dispatch getAttendanceDetail via Redux on mount and date/id change
+  useEffect(() => {
+    if (!targetEmployeeId) return;
+    dispatch(
+      getAttendanceDetail({
+        attendanceId: targetEmployeeId,
+        date: selectedDateState,
+      })
+    );
+  }, [dispatch, targetEmployeeId, selectedDateState]);
+
+  const handleDateChange = (e) => {
+    const newDate = e.target.value;
+    setSelectedDateState(newDate);
+    if (onDateChangeProp) {
+      onDateChangeProp(e);
+    }
+  };
+
+  const actualFormatTime = formatTimeProp || defaultFormatTime;
+  const sessions =
+    sessionsProp && sessionsProp.length > 0
+      ? sessionsProp
+      : attendanceDetail?.sessions || [];
+
+  const employee = attendanceDetail?.employee || {};
+
+  // Background location tracking
+  useEffect(() => {
+    const activeId = employee?.id || targetEmployeeId;
+    if (!activeId || !effectiveDate) return;
+
+    const fetchEmployeeLocations = async () => {
+      setLoadingLocations(true);
+      try {
+        const formattedDate = new Date(effectiveDate)
+          .toISOString()
+          .split("T")[0];
+
+        const response = await API.get(`/background-location/${activeId}/`, {
+          params: { date: formattedDate },
+        });
+
+        setHourlyLocationData(response.data?.results || []);
+      } catch (err) {
+        console.error("Error fetching location:", err);
+      } finally {
+        setLoadingLocations(false);
+      }
+    };
+
+    fetchEmployeeLocations();
+  }, [employee?.id, targetEmployeeId, effectiveDate]);
 
   const sessionEvents = sessions
     .flatMap((s) => {
@@ -63,54 +162,44 @@ const TrackingList = ({
   const allEvents = [...sessionEvents, ...backgroundEvents]
     .filter((event) => event.time)
     .sort((a, b) => new Date(b.time) - new Date(a.time))
-    // ReusableTable keys rows by `id`, so give each event a stable synthetic id
-    .map((event, index) => ({ ...event, id: `${event.action}-${event.time}-${index}` }));
+    .map((event, index) => ({
+      ...event,
+      id: `${event.action}-${event.time}-${index}`,
+    }));
 
-  useEffect(() => {
-    // Guard: don't attempt to fetch without an employee/date context yet
-    if (!employeeId || !selectedDate) return;
+  const todayFirstPunchIn = attendanceDetail?.today_first_punch_in
+    ? actualFormatTime(attendanceDetail.today_first_punch_in)
+    : sessions.length > 0 && sessions[0]?.time_in
+    ? actualFormatTime(sessions[0].time_in)
+    : "---";
 
-    const fetchEmployeeLocations = async () => {
-      setLoadingLocations(true);
-      try {
-        const token = await getAccessToken();
+  const todayLastPunchOut = attendanceDetail?.today_last_punch_out
+    ? actualFormatTime(attendanceDetail.today_last_punch_out)
+    : sessions.length > 0 && sessions[sessions.length - 1]?.time_out
+    ? actualFormatTime(sessions[sessions.length - 1].time_out)
+    : "---";
 
-        if (!token) {
-          console.log("No token found");
-          return;
-        }
-
-        const formattedDate = new Date(selectedDate)
-          .toISOString()
-          .split("T")[0];
-
-        const url = `https://api.rekory.com/api/background-location/${employeeId}/?date=${formattedDate}`;
-
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+  const computedCardList =
+    cardListProp && cardListProp.length > 0
+      ? cardListProp
+      : [
+          { title: "Today Punch In", value: todayFirstPunchIn },
+          { title: "Today Punch Out", value: todayLastPunchOut },
+          {
+            title: "Weekly Hours",
+            value: attendanceDetail?.weekly_hours_formatted || "00:00",
           },
-        });
-
-        const json = await response.json();
-        setHourlyLocationData(json?.results || []);
-      } catch (err) {
-        console.error("Error fetching location:", err);
-      } finally {
-        setLoadingLocations(false);
-      }
-    };
-
-    fetchEmployeeLocations();
-  }, [employeeId, selectedDate]);
+          {
+            title: "Monthly Hours",
+            value: attendanceDetail?.monthly_hours_formatted || "00:00",
+          },
+        ];
 
   const eventColumns = [
     {
       header: "Time",
       accessor: "time",
-      render: (row) => formatTime(row.time),
+      render: (row) => actualFormatTime(row.time),
     },
     {
       header: "Action",
@@ -133,15 +222,24 @@ const TrackingList = ({
     },
   ];
 
+  if (detailLoading && !attendanceDetail) {
+    return <Loader />;
+  }
+
   return (
     <PageWrapper>
-     <ReusableHeader
-                title="Employees"
-                breadcrumbs={["Employees","Live Tracking"]}
-               showBack
-            />
+      <ReusableHeader
+        title="Employees"
+        breadcrumbs={["Employees", "Live Tracking"]}
+        showBack
+      />
+
+      {employee && (employee.name || employee.employee_id) && (
+        <EmployeeHeader employee={employee} editable={false} />
+      )}
+
       <CardWrapper>
-        {cardList.map((card, index) => (
+        {computedCardList.map((card, index) => (
           <Card key={index}>
             <CardTitle>{card.title}</CardTitle>
             <CardValue>{card.value}</CardValue>
@@ -155,8 +253,8 @@ const TrackingList = ({
           <CalendarWrapper>
             <input
               type="date"
-              value={selectedDate}
-              onChange={onDateChange}
+              value={effectiveDate}
+              onChange={handleDateChange}
               style={{
                 padding: "6px 10px",
                 borderRadius: "6px",
@@ -165,6 +263,8 @@ const TrackingList = ({
             />
           </CalendarWrapper>
         </div>
+
+        {error && <p style={{ color: "red" }}>{String(error)}</p>}
 
         <ReusableTable
           columns={eventColumns}

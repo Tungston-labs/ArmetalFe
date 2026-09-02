@@ -113,7 +113,7 @@ const ArchivedStaff = () => {
       <ReusableFilter
         search={search}
         onSearch={setSearch}
-        searchPlaceholder="Search by Employee name or ID"
+        searchPlaceholder="Search by Employee Name"
 
         department={department}
         departments={departments}

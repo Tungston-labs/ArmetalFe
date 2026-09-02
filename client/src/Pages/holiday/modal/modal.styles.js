@@ -31,7 +31,7 @@ export const Overlay = styled.div`
 
 export const Panel = styled.div`
   background: #fff;
-  border-radius: 14px;
+  // border-radius: 14px;
   max-width: ${(props) => props.$maxWidth || "520px"};
   width: 100%;
   max-height: 90vh;

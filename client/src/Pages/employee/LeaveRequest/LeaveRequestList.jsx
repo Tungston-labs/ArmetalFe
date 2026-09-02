@@ -396,6 +396,13 @@ useEffect(() => {
       );
 
 
+      // ==============================================
+      // REFRESH COUNTS (Pending/Approved/Rejected cards)
+      // ==============================================
+
+      dispatch(getLeaveCounts());
+
+
     } catch (error) {
 
       console.error(
@@ -501,7 +508,7 @@ useEffect(() => {
         }}
 
         searchPlaceholder={
-          "Search by Employee name"
+          "Search by Employee Name"
         }
 
 

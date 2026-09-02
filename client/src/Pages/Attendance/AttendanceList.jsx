@@ -46,6 +46,9 @@ const AttendanceList = () => {
         dispatch(getDepartmentsMin());
     }, [dispatch]);
 
+    const activeDepartment =
+        department || (departments && departments.length > 0 ? departments[0].id : "");
+
     // --------------------------------------------------
     // Get Attendance
     // --------------------------------------------------
@@ -54,8 +57,8 @@ const AttendanceList = () => {
             page: currentPage,
         };
 
-        if (department) {
-            params.department_id = department;
+        if (activeDepartment) {
+            params.department_id = activeDepartment;
         }
 
         if (date) {
@@ -63,15 +66,38 @@ const AttendanceList = () => {
         }
 
         dispatch(getAttendanceList(params));
-    }, [dispatch, currentPage, department, date]);
+    }, [dispatch, currentPage, activeDepartment, date]);
+
     // --------------------------------------------------
     // Reset page when filters change
     // --------------------------------------------------
     useEffect(() => {
         setCurrentPage(1);
-    }, [department, date]);
+    }, [activeDepartment, date]);
 
     const pageSize = 10;
+
+    const renderError = (err) => {
+        if (!err) return null;
+        if (typeof err === "string") return err;
+        if (typeof err === "object") {
+            if (err.detail) return String(err.detail);
+            if (err.message) return String(err.message);
+            if (err.department_id) {
+                return Array.isArray(err.department_id)
+                    ? err.department_id.join(", ")
+                    : String(err.department_id);
+            }
+            const vals = Object.values(err).flat();
+            if (vals.length > 0) {
+                return vals
+                    .map((v) => (typeof v === "object" ? JSON.stringify(v) : String(v)))
+                    .join(", ");
+            }
+            return JSON.stringify(err);
+        }
+        return String(err);
+    };
 
     // --------------------------------------------------
     // Map Attendance Data
@@ -130,8 +156,8 @@ const AttendanceList = () => {
             <ReusableFilter
                 search={search}
                 onSearch={setSearch}
-                searchPlaceholder="Search by Employee name "
-                department={department}
+
+                department={department || activeDepartment}
                 departments={departmentOptions}
                 onDepartment={setDepartment}
 
@@ -155,7 +181,7 @@ const AttendanceList = () => {
 
             {error && (
                 <p style={{ color: "red" }}>
-                    {String(error)}
+                    {renderError(error)}
                 </p>
             )}
 

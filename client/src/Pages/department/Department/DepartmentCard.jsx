@@ -32,6 +32,7 @@ import {
 } from "../../../Redux/departmentSlice";
 
 import { getAllEmployees } from "../../../Redux/employeeSlice";
+import SkeletonCard from "../../../Components/Skeleton/ SkeletonCard";
 
 const DepartmentCards = () => {
   const navigate = useNavigate();
@@ -286,6 +287,7 @@ const DepartmentCards = () => {
         search={search}
         onSearch={handleSearch}
         showSearch
+      searchPlaceholder="Search by Department Name "
       />
 
       {/* =================================================
@@ -313,104 +315,107 @@ const DepartmentCards = () => {
       {/* =================================================
           DEPARTMENT CARDS
       ================================================= */}
+<CardsGrid>
+  {loading ? (
+    Array.from({ length: 8 }).map((_, index) => (
+      <SkeletonCard key={index} />
+    ))
+  ) : (
+    departmentList.map((department) => {
+      const departmentId = department.id;
 
-      <CardsGrid>
-        {departmentList.map((department) => {
-          const departmentId = department.id;
+      const departmentName =
+        department.name || "Department";
 
-          const departmentName =
-            department.name || "Department";
+      const departmentHead =
+        department.department_head?.name ||
+        department.department_head?.employee_name ||
+        department.department_head?.full_name ||
+        department.department_head?.employee_code ||
+        "—";
 
-       const departmentHead =
-  department.department_head?.name ||
-  department.department_head?.employee_name ||
-  department.department_head?.full_name ||
-  department.department_head?.employee_code ||
-  "—";
+      const totalEmployees =
+        department.employee_count ?? 0;
 
-          const totalEmployees =
-            department.employee_count ?? 0;
+      const presentEmployees =
+        department.attendance_employee_count ?? 0;
 
-          const presentEmployees =
-            department.attendance_employee_count ?? 0;
+      const leaveEmployees =
+        department.todays_leave_employee_count ?? 0;
 
-          const leaveEmployees =
-            department.todays_leave_employee_count ?? 0;
+      return (
+        <Card key={departmentId}>
 
-          return (
-            <Card key={departmentId}>
+          {/* HEADER */}
+          <CardHeader>
+            <DepartmentName>
+              {departmentName}
+            </DepartmentName>
 
-              {/* HEADER */}
-              <CardHeader>
-                <DepartmentName>
-                  {departmentName}
-                </DepartmentName>
+            <ActiveBadge>
+              Active
+            </ActiveBadge>
+          </CardHeader>
 
-                <ActiveBadge>
-                  Active
-                </ActiveBadge>
-              </CardHeader>
+          {/* DEPARTMENT HEAD */}
+          <DepartmentHead>
+            Head Of The Department:{" "}
+            <strong>
+              {departmentHead}
+            </strong>
+          </DepartmentHead>
 
-              {/* DEPARTMENT HEAD */}
-              <DepartmentHead>
-                Head Of The Department:{" "}
-                <strong>
-                  {departmentHead}
-                </strong>
-              </DepartmentHead>
+          {/* TOTAL EMPLOYEES */}
+          <TotalEmployee>
+            Total Employee:{" "}
+            {String(totalEmployees).padStart(2, "0")}
+          </TotalEmployee>
 
-              {/* TOTAL EMPLOYEES */}
-              <TotalEmployee>
-                Total Employee:{" "}
+          {/* STATUS */}
+          <StatusRow>
+            <Present>
+              Present Today:{" "}
+              {String(presentEmployees).padStart(2, "0")}
+            </Present>
+
+            <Leave>
+              On Leave Today:{" "}
+              {String(leaveEmployees).padStart(2, "0")}
+            </Leave>
+          </StatusRow>
+
+          {/* BOTTOM */}
+          <CardBottom>
+            <EmployeeCount>
+              <EmployeeImage>
+                {departmentHead !== "—"
+                  ? departmentHead
+                      .trim()
+                      .charAt(0)
+                      .toUpperCase()
+                  : "-"}
+              </EmployeeImage>
+
+              <EmployeeNumber>
                 {String(totalEmployees).padStart(2, "0")}
-              </TotalEmployee>
+              </EmployeeNumber>
+            </EmployeeCount>
 
-              {/* STATUS */}
-              <StatusRow>
-                <Present>
-                  Present Today:{" "}
-                  {String(presentEmployees).padStart(2, "0")}
-                </Present>
+            <ViewButton
+              type="button"
+              onClick={() =>
+                handleViewDepartment(departmentId)
+              }
+            >
+              VIEW DEPARTMENT
+            </ViewButton>
+          </CardBottom>
 
-                <Leave>
-                  On Leave Today:{" "}
-                  {String(leaveEmployees).padStart(2, "0")}
-                </Leave>
-              </StatusRow>
-
-              {/* BOTTOM */}
-              <CardBottom>
-                <EmployeeCount>
-
-                  <EmployeeImage>
-                    {departmentHead !== "—"
-                      ? departmentHead
-                        .trim()
-                        .charAt(0)
-                        .toUpperCase()
-                      : "-"}
-                  </EmployeeImage>
-
-                  <EmployeeNumber>
-                    {String(totalEmployees).padStart(2, "0")}
-                  </EmployeeNumber>
-
-                </EmployeeCount>
-
-                <ViewButton
-                  type="button"
-                  onClick={() =>
-                    handleViewDepartment(departmentId)
-                  }
-                >
-                  VIEW DEPARTMENT
-                </ViewButton>
-              </CardBottom>
-
-            </Card>
-          );
-        })}
-      </CardsGrid>
+        </Card>
+      );
+    })
+  )}
+</CardsGrid>
 
       {/* =================================================
           ADD / EDIT DEPARTMENT MODAL

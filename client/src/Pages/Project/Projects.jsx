@@ -16,6 +16,7 @@ import StatsCards from "../../Components/StatsCards/StatsCards";
 import ProjectModal from "../../Components/Project/modal/ProjectModal";
 import AddEmployeeModal from "../../Components/Project/modal/Addemployeemodal";
 
+
 import {
     getProjects,
     createProject,
@@ -26,6 +27,7 @@ import {
 } from "../../Redux/fieldShiftSlice";
 
 import { getProjectCards } from "../../utils/projectCards";
+import SkeletonCard from "../../Components/Skeleton/ SkeletonCard";
 
 const Projects = () => {
     const dispatch = useDispatch();
@@ -181,7 +183,6 @@ const Projects = () => {
             dispatch(getProjectCount());
 
             handleCloseProjectModal();
-
         } catch (error) {
             console.error(
                 "Project operation failed:",
@@ -205,7 +206,6 @@ const Projects = () => {
             ).unwrap();
 
             setShowAddEmployee(true);
-
         } catch (error) {
             console.error(
                 "Failed to get available employees:",
@@ -256,7 +256,6 @@ const Projects = () => {
             );
 
             handleCloseAddEmployee();
-
         } catch (error) {
             console.error(
                 "Failed to assign employees:",
@@ -295,7 +294,14 @@ const Projects = () => {
             {/* STATS */}
             {/* ========================= */}
 
-            <StatsCards cards={projectCards} />
+          {isLoading ? (
+    <StatsCards
+        cards={Array.from({ length: 4 }).map(() => ({}))}
+        loading
+    />
+) : (
+    <StatsCards cards={projectCards} />
+)}
 
             {/* ========================= */}
             {/* FILTERS */}
@@ -339,18 +345,8 @@ const Projects = () => {
 
                 showSearch
                 showStatus
-                showDate
+                // showDate
             />
-
-            {/* ========================= */}
-            {/* LOADING */}
-            {/* ========================= */}
-
-            {isLoading && (
-                <div>
-                    Loading projects...
-                </div>
-            )}
 
             {/* ========================= */}
             {/* ERROR */}
@@ -367,66 +363,80 @@ const Projects = () => {
             {/* PROJECT CARDS */}
             {/* ========================= */}
 
-            {!isLoading && (
-                <ProjectsContainer>
-                    <ProjectsGrid>
+            <ProjectsContainer>
+                <ProjectsGrid>
 
-                        {projects.length > 0 ? (
-                            projects.map((project) => (
-                                <ProjectCard
-                                    key={project.id}
+                    {isLoading ? (
 
-                                    id={project.id}
-
-                                    project={project}
-
-                                    category={
-                                        project.punch_type
-                                    }
-
-                                    title={
-                                        project.name
-                                    }
-
-                                    date={
-                                        project.start_date ||
-                                        project.date ||
-                                        ""
-                                    }
-
-                                    status={
-                                        project.status
-                                    }
-
-                                    priority={
-                                        project.priority ||
-                                        ""
-                                    }
-
-                                    members={
-                                        project.employees ||
-                                        []
-                                    }
-
-                                    memberCount={
-                                        project.employees
-                                            ?.length || 0
-                                    }
-
-                                    onAddMember={
-                                        handleAddEmployee
-                                    }
+                        // Skeleton cards
+                        Array.from({ length: 8 }).map(
+                            (_, index) => (
+                                <SkeletonCard
+                                    key={index}
                                 />
-                            ))
-                        ) : (
-                            <div>
-                                No projects found.
-                            </div>
-                        )}
+                            )
+                        )
 
-                    </ProjectsGrid>
-                </ProjectsContainer>
-            )}
+                    ) : projects.length > 0 ? (
+
+                        // Actual project cards
+                        projects.map((project) => (
+                            <ProjectCard
+                                key={project.id}
+
+                                id={project.id}
+
+                                project={project}
+
+                                category={
+                                    project.punch_type
+                                }
+
+                                title={
+                                    project.name
+                                }
+
+                                date={
+                                    project.start_date ||
+                                    project.date ||
+                                    ""
+                                }
+
+                                status={
+                                    project.status
+                                }
+
+                                priority={
+                                    project.priority ||
+                                    ""
+                                }
+
+                                members={
+                                    project.employees ||
+                                    []
+                                }
+
+                                memberCount={
+                                    project.employees
+                                        ?.length || 0
+                                }
+
+                                onAddMember={
+                                    handleAddEmployee
+                                }
+                            />
+                        ))
+
+                    ) : (
+
+                        <div>
+                            No projects found.
+                        </div>
+
+                    )}
+
+                </ProjectsGrid>
+            </ProjectsContainer>
 
             {/* ========================= */}
             {/* ADD / EDIT PROJECT MODAL */}

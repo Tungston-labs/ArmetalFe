@@ -38,6 +38,10 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 
+import {
+  DepartmentHeadLabel,
+} from "./DepartmentDetails.styles";
+
 
 const DepartmentDetails = () => {
   const dispatch = useDispatch();
@@ -69,16 +73,15 @@ const DepartmentDetails = () => {
   // REDUX STATE
   // =========================================================
 
-  const {
-    list: departmentList,
-    departmentEmployees,
-    loading,
-    loadingEmployees,
-    error,
-  } = useSelector(
-    (state) => state.departments
-  );
-
+const {
+  list: departmentList,
+  departmentEmployees,
+  loading: loadingDepartments,
+  loadingEmployees,
+  error,
+} = useSelector(
+  (state) => state.departments
+);
 
   // =========================================================
   // GET DEPARTMENTS + EMPLOYEES
@@ -87,7 +90,6 @@ const DepartmentDetails = () => {
   useEffect(() => {
     if (!departmentId) return;
 
-    // Get all departments
     dispatch(
       getDepartments({
         page: 1,
@@ -95,7 +97,6 @@ const DepartmentDetails = () => {
       })
     );
 
-    // Get employees of selected department
     dispatch(
       getEmployeesByDepartment(
         departmentId
@@ -108,7 +109,7 @@ const DepartmentDetails = () => {
 
 
   // =========================================================
-  // GET CURRENT DEPARTMENT FROM DEPARTMENT LIST
+  // CURRENT DEPARTMENT
   // =========================================================
 
   const currentDepartment = useMemo(() => {
@@ -157,76 +158,141 @@ const DepartmentDetails = () => {
   // NORMALIZE EMPLOYEE DATA
   // =========================================================
 
-const employeeTableData = useMemo(() => {
-  return employees.map((employee, index) => ({
-    slNo: index + 1,
+  const employeeTableData = useMemo(() => {
 
-    id: employee.id,
+    /*
+     * Department head can come from API as:
+     *
+     * department_head: 12
+     *
+     * OR
+     *
+     * department_head: {
+     *   id: 12,
+     *   name: "John"
+     * }
+     */
 
-    name:
-      employee.name ||
-      employee.employee_name ||
-      employee.full_name ||
-      "-",
+    const departmentHead =
+      currentDepartment?.department_head;
 
-    employee_code:
-      employee.employee_code ||
-      employee.employee_id ||
-      "-",
+    const departmentHeadId =
+      typeof departmentHead === "object"
+        ? departmentHead?.id
+        : departmentHead;
 
-    email:
-      employee.email ||
-      "-",
 
-    designation:
-      employee.designation ||
-      employee.job_position ||
-      "-",
+    return employees.map(
+      (employee, index) => {
 
-    profile_pic:
-      employee.profile_pic ||
-      null,
+        const employeeId =
+          employee.id ||
+          employee.employee_id;
 
-    // Keep attendance status available for stats
-    status:
-      employee.today_attendance_status ||
-      employee.status ||
-      "",
-  }));
-}, [employees]);
+
+        const employeeName =
+          employee.name ||
+          employee.employee_name ||
+          employee.full_name ||
+          "-";
+
+
+        const isDepartmentHead =
+          departmentHeadId &&
+          String(employeeId) ===
+            String(departmentHeadId);
+
+
+        return {
+          slNo: index + 1,
+
+          id: employeeId,
+          name: (
+            <div>
+              <div>
+                {employeeName}
+              </div>
+
+              {isDepartmentHead && (
+                <DepartmentHeadLabel>
+                  Department Head
+                </DepartmentHeadLabel>
+              )}
+            </div>
+          ),
+
+          /*
+           * Keep a normal searchable value.
+           */
+          employeeNameSearch:
+            employeeName,
+
+          employee_code:
+            employee.employee_code ||
+            employee.employee_id ||
+            "-",
+
+          email:
+            employee.email ||
+            "-",
+
+          designation:
+            employee.designation ||
+            employee.job_position ||
+            "-",
+
+          profile_pic:
+            employee.profile_pic ||
+            null,
+
+          status:
+            employee.today_attendance_status ||
+            employee.status ||
+            "",
+        };
+      }
+    );
+
+  }, [
+    employees,
+    currentDepartment,
+  ]);
 
 
   // =========================================================
   // SEARCH
   // =========================================================
 
-  const filteredData =
-    useMemo(() => {
-      if (!search.trim()) {
-        return employeeTableData;
-      }
+  const filteredData = useMemo(() => {
 
-      const searchValue =
-        search
-          .trim()
-          .toLowerCase();
+    if (!search.trim()) {
+      return employeeTableData;
+    }
 
-      return employeeTableData.filter(
-        (employee) =>
-          String(employee.name)
-            .toLowerCase()
-            .includes(searchValue) ||
+    const searchValue =
+      search
+        .trim()
+        .toLowerCase();
 
-          String(
-            employee.employee_id
-          )
-            .toLowerCase()
-            .includes(searchValue)
-      );
-    }, [
-      employeeTableData,
-      search,
-    ]);
+    return employeeTableData.filter(
+      (employee) =>
+        String(
+          employee.employeeNameSearch
+        )
+          .toLowerCase()
+          .includes(searchValue) ||
+
+        String(
+          employee.employee_code
+        )
+          .toLowerCase()
+          .includes(searchValue)
+    );
+
+  }, [
+    employeeTableData,
+    search,
+  ]);
 
 
   // =========================================================
@@ -236,12 +302,13 @@ const employeeTableData = useMemo(() => {
   const totalPages =
     Math.ceil(
       filteredData.length /
-      rowsPerPage
+        rowsPerPage
     );
 
 
   const paginatedData =
     useMemo(() => {
+
       const start =
         (currentPage - 1) *
         rowsPerPage;
@@ -250,6 +317,7 @@ const employeeTableData = useMemo(() => {
         start,
         start + rowsPerPage
       );
+
     }, [
       filteredData,
       currentPage,
@@ -257,13 +325,15 @@ const employeeTableData = useMemo(() => {
 
 
   // =========================================================
-  // RESET PAGE WHEN SEARCH CHANGES
+  // SEARCH HANDLER
   // =========================================================
 
   const handleSearch = (
     value
   ) => {
+
     setSearch(value);
+
     setCurrentPage(1);
   };
 
@@ -272,52 +342,76 @@ const employeeTableData = useMemo(() => {
   // DEPARTMENT STATS
   // =========================================================
 
- const departmentCards = useMemo(() => {
-  const totalEmployees =
-    Number(currentDepartment?.employee_count) || 0;
+  const departmentCards =
+    useMemo(() => {
 
-  const presentEmployees =
-    Number(currentDepartment?.attendance_employee_count) || 0;
+      const totalEmployees =
+        Number(
+          currentDepartment?.employee_count
+        ) || 0;
 
-  const leaveEmployees =
-    Number(currentDepartment?.todays_leave_employee_count) || 0;
 
-  const absentEmployees = Math.max(
-    totalEmployees - presentEmployees - leaveEmployees,
-    0
-  );
+      const presentEmployees =
+        Number(
+          currentDepartment
+            ?.attendance_employee_count
+        ) || 0;
 
-  return [
-    {
-      title: "Total Employees",
-      count: totalEmployees,
-      icon: <FiUsers />,
-      backgroundColor: "#E8F1FF",
-      iconColor: "#2878FF",
-    },
-    {
-      title: "Present",
-      count: presentEmployees,
-      icon: <FiUserCheck />,
-      backgroundColor: "#E9F9EF",
-      iconColor: "#16A34A",
-    },
-    {
-      title: "Absent",
-      count: absentEmployees,
-      icon: <FiUserX />,
-      backgroundColor: "#FFF0F0",
-      iconColor: "#EF4444",
-    },
-    {
-      title: "On Leave",
-      count: leaveEmployees,
-      icon: <FiCalendar />,
-      backgroundColor: "#FFF6E5",
-      iconColor: "#F59E0B",
-    },
-  ];
-}, [currentDepartment]);
+
+      const leaveEmployees =
+        Number(
+          currentDepartment
+            ?.todays_leave_employee_count
+        ) || 0;
+
+
+      const absentEmployees =
+        Math.max(
+          totalEmployees -
+            presentEmployees -
+            leaveEmployees,
+          0
+        );
+
+
+      return [
+        {
+          title: "Total Employees",
+          count: totalEmployees,
+          icon: <FiUsers />,
+          backgroundColor: "#E8F1FF",
+          iconColor: "#2878FF",
+        },
+
+        {
+          title: "Present",
+          count: presentEmployees,
+          icon: <FiUserCheck />,
+          backgroundColor: "#E9F9EF",
+          iconColor: "#16A34A",
+        },
+
+        {
+          title: "Absent",
+          count: absentEmployees,
+          icon: <FiUserX />,
+          backgroundColor: "#FFF0F0",
+          iconColor: "#EF4444",
+        },
+
+        {
+          title: "On Leave",
+          count: leaveEmployees,
+          icon: <FiCalendar />,
+          backgroundColor: "#FFF6E5",
+          iconColor: "#F59E0B",
+        },
+      ];
+
+    }, [
+      currentDepartment,
+    ]);
+
 
   // =========================================================
   // EDIT DEPARTMENT
@@ -325,9 +419,11 @@ const employeeTableData = useMemo(() => {
 
   const handleEditDepartment =
     () => {
+
       const department =
         currentDepartment ||
         departmentData;
+
 
       if (!department) {
         console.error(
@@ -337,9 +433,12 @@ const employeeTableData = useMemo(() => {
         return;
       }
 
+
       setModalMode("edit");
 
+
       setSelectedDepartment({
+
         id: department.id,
 
         departmentName:
@@ -353,11 +452,15 @@ const employeeTableData = useMemo(() => {
           "",
 
         headOfDepartment:
-          department.department_head ||
-          department.head_of_department ||
-          department.headOfDepartment ||
-          "",
+          typeof department.department_head ===
+          "object"
+            ? department.department_head?.id
+            : department.department_head ||
+              department.head_of_department ||
+              department.headOfDepartment ||
+              "",
       });
+
 
       setShowDepartmentModal(
         true
@@ -369,67 +472,69 @@ const employeeTableData = useMemo(() => {
   // UPDATE DEPARTMENT
   // =========================================================
 
- const handleDepartmentSubmit = async (data) => {
-  try {
-    if (!departmentId) {
-      throw new Error("Department ID is missing.");
-    }
+  const handleDepartmentSubmit =
+    async (data) => {
 
-    const payload = {
-      name: data.departmentName.trim(),
-      department_code: data.departmentCode.trim(),
-      department_head_id: data.headOfDepartment
-        ? Number(data.headOfDepartment)
-        : null,
+      try {
+
+        if (!departmentId) {
+          throw new Error(
+            "Department ID is missing."
+          );
+        }
+
+
+        const payload = {
+
+          name:
+            data.departmentName.trim(),
+
+          department_code:
+            data.departmentCode.trim(),
+
+          department_head_id:
+            data.headOfDepartment
+              ? Number(
+                  data.headOfDepartment
+                )
+              : null,
+        };
+
+
+        const result =
+          await dispatch(
+            updateDepartmentById({
+              id: departmentId,
+              data: payload,
+            })
+          ).unwrap();
+
+
+        setShowDepartmentModal(
+          false
+        );
+
+
+        dispatch(
+          getDepartments({
+            page: 1,
+            search: "",
+          })
+        );
+
+
+        return result;
+
+      } catch (error) {
+
+        console.error(
+          "Department update failed:",
+          error
+        );
+
+        throw error;
+      }
     };
-
-    console.log("Updating department:", {
-      id: departmentId,
-      data: payload,
-    });
-
-    const result = await dispatch(
-      updateDepartmentById({
-        id: departmentId,
-        data: payload,
-      })
-    ).unwrap();
-
-    console.log("Department updated successfully:", result);
-
-    setShowDepartmentModal(false);
-
-    dispatch(
-      getDepartments({
-        page: 1,
-        search: "",
-      })
-    );
-
-    return result;
-  } catch (error) {
-    console.error("Department update failed:", error);
-    throw error;
-  }
-};
-
-  // =========================================================
-  // LOADING EMPLOYEES
-  // =========================================================
-
-  if (loadingEmployees) {
-    return (
-      <div
-        style={{
-          padding: "40px",
-          textAlign: "center",
-        }}
-      >
-        Loading department
-        employees...
-      </div>
-    );
-  }
 
 
   // =========================================================
@@ -437,6 +542,7 @@ const employeeTableData = useMemo(() => {
   // =========================================================
 
   if (error) {
+
     return (
       <div
         style={{
@@ -470,6 +576,7 @@ const employeeTableData = useMemo(() => {
       ====================================================== */}
 
       <ReusableHeader
+
         title={
           currentDepartment?.name ||
           currentDepartment?.departmentName ||
@@ -496,32 +603,44 @@ const employeeTableData = useMemo(() => {
           STATS
       ====================================================== */}
 
-      <StatsCards
-        cards={departmentCards}
-      />
-
+ <StatsCards
+  cards={departmentCards}
+  loading={loadingDepartments}
+/>
 
       {/* =====================================================
           SEARCH
       ====================================================== */}
 
       <ReusableFilter
+
         search={search}
+
         onSearch={handleSearch}
+
         showSearch
+
+        searchPlaceholder="Search by Employee Name"
       />
 
 
       {/* =====================================================
-          TABLE
+          EMPLOYEE TABLE
       ====================================================== */}
 
       <ReusableTable
+
         columns={
           departmentEmployeeColumns
         }
 
         data={paginatedData}
+
+        loading={
+          loadingEmployees
+        }
+
+        loadingMessage="Loading employees..."
       />
 
 
@@ -530,7 +649,9 @@ const employeeTableData = useMemo(() => {
       ====================================================== */}
 
       {totalPages > 0 && (
+
         <ReusablePagination
+
           currentPage={
             currentPage
           }
@@ -543,6 +664,7 @@ const employeeTableData = useMemo(() => {
             setCurrentPage
           }
         />
+
       )}
 
 
@@ -551,6 +673,7 @@ const employeeTableData = useMemo(() => {
       ====================================================== */}
 
       <DepartmentModal
+
         isOpen={
           showDepartmentModal
         }
@@ -572,6 +695,7 @@ const employeeTableData = useMemo(() => {
         onSubmit={
           handleDepartmentSubmit
         }
+
       />
 
     </div>

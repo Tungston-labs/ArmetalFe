@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Wrapper,
   Card,
@@ -8,11 +9,29 @@ import {
   Title,
 } from "./StatsCards.styles";
 
-const StatsCards = ({ cards = [] }) => {
+import SkeletonStatsCard from "../Skeleton/SkeletonStatsCard";
+
+const StatsCards = ({
+  cards = [],
+  loading = false,
+}) => {
+  if (loading) {
+    return (
+      <Wrapper>
+        {Array.from({ length: 4 }).map((_, index) => (
+          <SkeletonStatsCard key={index} />
+        ))}
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper>
       {cards.map((card, index) => (
-        <Card key={index} onClick={card.onClick}>
+        <Card
+          key={index}
+          onClick={card.onClick}
+        >
           <IconWrapper
             bg={card.backgroundColor}
             color={card.iconColor}
@@ -21,8 +40,13 @@ const StatsCards = ({ cards = [] }) => {
           </IconWrapper>
 
           <Content>
-            <Count>{card.count}</Count>
-            <Title>{card.title}</Title>
+            <Count>
+              {card.count}
+            </Count>
+
+            <Title>
+              {card.title}
+            </Title>
           </Content>
         </Card>
       ))}

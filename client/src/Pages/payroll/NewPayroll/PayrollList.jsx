@@ -131,6 +131,7 @@ const payrollCards = getPayrollCards(counts, currencyCode);
       <ReusableHeader
         title="Payroll Overview – May 2026"
         breadcrumbs={["Payroll"]}
+        
       >
         <HeaderButton
           $variant="danger"
@@ -151,7 +152,7 @@ const payrollCards = getPayrollCards(counts, currencyCode);
       <ReusableFilter
         search={searchTerm}
         onSearch={setSearchTerm}
-        searchPlaceholder="Search Employee Name od ID"
+        searchPlaceholder="Search by Employee Name "
         department={selectedDepartment}
         departments={departments}
         onDepartment={setSelectedDepartment}
