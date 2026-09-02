@@ -10,6 +10,7 @@ from django.utils.timezone import is_naive, make_aware, now as tz_now
 import pytz
 import logging
 from django.conf import settings
+from decimal import Decimal, ROUND_HALF_UP
 logger = logging.getLogger(__name__)
 
 class Attendance(TimeStampedModel):
@@ -70,29 +71,24 @@ class Attendance(TimeStampedModel):
         total_seconds = 0
 
         for session in self.sessions.all():
-
             if session.time_in and session.time_out:
-
-                time_in = self._ensure_datetime(
-                    session.time_in
-                )
-
-                time_out = self._ensure_datetime(
-                    session.time_out
-                )
+                time_in = self._ensure_datetime(session.time_in)
+                time_out = self._ensure_datetime(session.time_out)
 
                 if time_in and time_out:
-
                     duration = time_out - time_in
 
-                    total_seconds += duration.total_seconds()
+                    if duration.total_seconds() >= 0:
+                        total_seconds += duration.total_seconds()
 
-        self.total_hours = round(
-            total_seconds / 3600,
-            2
+        total_hours = Decimal(str(total_seconds)) / Decimal("3600")
+
+        self.total_hours = total_hours.quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP
         )
 
-        self.save()
+        self.save(update_fields=["total_hours"])
 
     def _ensure_datetime(self, dt_or_time):
 
