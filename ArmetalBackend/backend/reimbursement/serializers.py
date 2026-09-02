@@ -18,7 +18,8 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
     profile_pic = serializers.SerializerMethodField()
     department = serializers.SerializerMethodField()
     images = ReimbursementImageSerializer(many=True, read_only=True)
-
+    expense_date = serializers.DateField(source="date", read_only=True)
+    submitted_date = serializers.DateTimeField(source="created_at", read_only=True)
 
     class Meta:
         model = Reimbursement
@@ -34,7 +35,9 @@ class ReimbursementListSerializer(serializers.ModelSerializer):
             "note",
             "expense_category",
             "date",
+            "expense_date",
             "created_at",
+            "submitted_date",
             "images",
         ]
 
@@ -66,6 +69,8 @@ class ReimbursementDetailSerializer(serializers.ModelSerializer):
     department = serializers.SerializerMethodField()
     profile_pic = serializers.SerializerMethodField()  # ✅ change to SerializerMethodField
     images = ReimbursementImageSerializer(many=True, read_only=True)
+    expense_date = serializers.DateField(source="date", read_only=True)
+    submitted_date = serializers.DateTimeField(source="created_at", read_only=True)
 
     uploaded_images = serializers.ListField(
         child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
@@ -86,11 +91,13 @@ class ReimbursementDetailSerializer(serializers.ModelSerializer):
             "to_mail",
             "note",
             "date",
+            "expense_date",
             "amount",
             "status",
             "images",
             "uploaded_images",
             "created_at",
+            "submitted_date",
             "updated_at",
         ]
         read_only_fields = ["employee"]

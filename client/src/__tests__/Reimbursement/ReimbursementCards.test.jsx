@@ -157,7 +157,22 @@ describe("ReimbursementCards", () => {
   test("clicking VIEW REQUEST navigates to department-wise reimbursement list", async () => {
     getDepartments.mockReturnValue({ type: "departments/getDepartments" });
     mockDispatch.mockReturnValue({ unwrap: () => Promise.resolve([]) });
-    getGroupedReimbursements.mockResolvedValue([]);
+    const mockGrouped = [
+      {
+        date: "2026-08-31",
+        reimbursements: [
+          {
+            id: 1,
+            amount: 1500,
+            status: "Approve",
+            department: { id: 14, name: "HR" },
+            employee_id: "emp1",
+            employee_name: "Jane",
+          },
+        ],
+      },
+    ];
+    getGroupedReimbursements.mockResolvedValue(mockGrouped);
 
     render(
       <MemoryRouter>
