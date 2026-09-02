@@ -228,12 +228,26 @@ class AttendanceDetailSerializer(serializers.ModelSerializer):
 
     # ---------- format helpers ----------
     def format_hours(self, hours):
-        """Convert decimal hours → HH:MM"""
+        """Convert decimal hours to HH:MM."""
+
         if hours is None:
             return "00:00"
 
-        h = int(hours)
-        m = int(round((float(hours) - h) * 60))
+        total_hours = Decimal(str(hours))
+
+        h = int(total_hours)
+
+        m = int(
+            ((total_hours - Decimal(h)) * Decimal("60")).quantize(
+                Decimal("1"),
+                rounding=ROUND_HALF_UP
+            )
+        )
+
+        if m == 60:
+            h += 1
+            m = 0
+
         return f"{h:02d}:{m:02d}"
 
     # ---------- total ----------
@@ -318,6 +332,10 @@ class HourlyLocationLogSerializer(serializers.ModelSerializer):
 from rest_framework import serializers
 
 
+from decimal import Decimal, ROUND_HALF_UP
+from rest_framework import serializers
+
+
 class DailyAttendanceSerializer(serializers.Serializer):
 
     date = serializers.DateField()
@@ -325,6 +343,8 @@ class DailyAttendanceSerializer(serializers.Serializer):
     status = serializers.CharField()
 
     total_hours = serializers.FloatField()
+
+    total_hours_formatted = serializers.SerializerMethodField()
 
     first_punch_in = serializers.CharField(
         allow_null=True,
@@ -360,6 +380,28 @@ class DailyAttendanceSerializer(serializers.Serializer):
         allow_null=True,
         required=False
     )
+
+    def get_total_hours_formatted(self, obj):
+        total_hours = Decimal(
+            str(obj.get("total_hours") or 0)
+        )
+
+        hours = int(total_hours)
+
+        minutes = int(
+            (
+                (total_hours - Decimal(hours)) * Decimal("60")
+            ).quantize(
+                Decimal("1"),
+                rounding=ROUND_HALF_UP
+            )
+        )
+
+        if minutes == 60:
+            hours += 1
+            minutes = 0
+
+        return f"{hours:02d}:{minutes:02d}"
 
 
 class EmployeeAttendanceSummarySerializer(serializers.Serializer):
