@@ -31,12 +31,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 POST http://127.0.0.1:8000/api/attendance/swipe/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4MjY0MTQzLCJpYXQiOjE3ODgyMzUzNDMsImp0aSI6IjliNWJjYzc0ODI5NTRlMzlhOWE2OWNhODAzZGVmODI1IiwidXNlcl9pZCI6MjksImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6ZmFsc2UsImlzX2VtcGxveWVlIjp0cnVlLCJpc19ociI6dHJ1ZX0.KLRjqfhOWcAHm3xzt4IhLt699B7jJyUjsQB9cFC0-sw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4MzYzMTY3LCJpYXQiOjE3ODgzMzQzNjcsImp0aSI6ImM2OGI5NmU5YWI4NjQ4Yzc5OGZiZWU2M2Y5ZTIyMWM5IiwidXNlcl9pZCI6NywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.b4DkSc5ExtLJf6KcRQnyAhOPMraq-06nBqG56JhrOuQ
 Content-Type: application/json
 
 {
-  "latitude": 7.23568,
-  "longitude": 10.2356
+  "latitude": 10.106,
+  "longitude": 76.473
 
   
 }
@@ -105,8 +105,8 @@ Content-Type: application/json
 }
 
 ###attendance summary
-GET http://127.0.0.1:8000/api/employee-attendance/summary/?year=2026&month=08
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4MjczNDg1LCJpYXQiOjE3ODgyNDQ2ODUsImp0aSI6IjRjMTA0NTYwNjM3NTQ0YmI4MTU5ZWVkZjc0MGM5MWRlIiwidXNlcl9pZCI6NCwiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjp0cnVlLCJpc19lbXBsb3llZSI6ZmFsc2UsImlzX2hyIjpmYWxzZX0.jbQTDq8Rc2bt-a5GErBJwfd4T2JTZcFzC0dMTggT7ag
+GET https://api.rekory.com/api/employee-attendance/summary/?year=2026&month=08
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4Mjg5OTI2LCJpYXQiOjE3ODgyNjExMjYsImp0aSI6Ijg2OWI2M2E1ZDRiMzQ0ZDlhMDE3ZjU1ZWNiMDBhYzc0IiwidXNlcl9pZCI6NzIsImlzX3N1cGVyYWRtaW4iOmZhbHNlLCJpc19ocl9hZG1pbiI6dHJ1ZSwiaXNfZW1wbG95ZWUiOmZhbHNlLCJpc19ociI6ZmFsc2V9.SoQLj_jJ-Xllk_o1vn7iYh949ukO9KYLaFD7B9PlnC4
 ###
 
 PATCH http://127.0.0.1:8000/api/attendance/update/

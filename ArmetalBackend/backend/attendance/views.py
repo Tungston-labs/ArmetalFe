@@ -12,6 +12,16 @@ from .utils.timezone_utils import (
     ensure_timezone,
     safe_parse_datetime,
 )
+from django.db.models import (
+    OuterRef,
+    Subquery,
+    Case,
+    When,
+    Value,
+    BooleanField,
+    CharField,
+    F,
+)
 from user.permissions import IsEmployee, IsHRAdmin, IsHRorIsEmployee
 import pytz
 from geopy.distance import geodesic
@@ -315,12 +325,14 @@ class AttendanceAdminListView(generics.ListAPIView):
         first_session = AttendanceSession.objects.filter(
             attendance__employee=OuterRef("pk"),
             attendance__date=selected_date,
+            time_in__isnull=False,
         ).order_by("time_in")
 
         last_session = AttendanceSession.objects.filter(
-            attendance__employee=OuterRef("pk"),
-            attendance__date=selected_date,
-        ).order_by("-time_out")
+                attendance__employee=OuterRef("pk"),
+                attendance__date=selected_date,
+                time_out__isnull=False,
+            ).order_by("-time_out")
 
         base_qs = Employee_db.objects.filter(is_deleted=False)
 
@@ -339,12 +351,55 @@ class AttendanceAdminListView(generics.ListAPIView):
                 date=Subquery(attendance_qs.values("date")[:1]),
                 total_hours=Subquery(attendance_qs.values("total_hours")[:1]),
                 attendance_id=Subquery(attendance_qs.values("id")[:1]),
+                attendance_type=Subquery(
+                    attendance_qs.values("attendance_type")[:1]
+                ),
                 first_swipe_in=Subquery(first_session.values("time_in")[:1]),
                 last_swipe_out=Subquery(last_session.values("time_out")[:1]),
                 attendance_today=Case(
-                    When(attendance_id__isnull=False, then=Value(True)),
+                    When(
+                        first_swipe_in__isnull=False,
+                        then=Value(True)
+                    ),
                     default=Value(False),
                     output_field=BooleanField(),
+                ),
+                attendance_status=Case(
+
+                    # Paid attendance
+                    When(
+                        attendance_type="paid",
+                        then=Value("paid")
+                    ),
+
+                    # No attendance record
+                    When(
+                        attendance_id__isnull=True,
+                        then=Value("absent")
+                    ),
+
+                    # Attendance record exists but no punch-in
+                    When(
+                        first_swipe_in__isnull=True,
+                        then=Value("missed_punch_in")
+                    ),
+
+                    # Punch-in exists but punch-out doesn't
+                    When(
+                        first_swipe_in__isnull=False,
+                        last_swipe_out__isnull=True,
+                        then=Value("missed_punch_out")
+                    ),
+
+                    # Both punch-in and punch-out exist
+                    When(
+                        first_swipe_in__isnull=False,
+                        last_swipe_out__isnull=False,
+                        then=Value("present")
+                    ),
+
+                    default=Value("absent"),
+                    output_field=CharField(),
                 ),
             )
             .order_by(F("first_swipe_in").asc(nulls_last=True))

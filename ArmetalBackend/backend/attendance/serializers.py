@@ -12,7 +12,7 @@ from .utils.timezone_utils import get_company_timezone,convert_to_company_timezo
 import pytz
 from django.db.models import Sum
 from datetime import timedelta,date
-
+from decimal import Decimal, ROUND_HALF_UP
 
 class AttendanceSessionSerializer(serializers.ModelSerializer):
     time_in = serializers.SerializerMethodField()
@@ -101,6 +101,14 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     first_swipe_in = serializers.SerializerMethodField()
     last_swipe_out = serializers.SerializerMethodField()
+    attendance_type = serializers.CharField(
+        read_only=True,
+        allow_null=True
+    )
+
+    attendance_status = serializers.CharField(
+        read_only=True
+    )
 
     class Meta:
         model = Employee_db
@@ -116,12 +124,29 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "total_hours_formatted",
             "attendance_today",
             "attendance_id",
+            "attendance_status",
+            "attendance_type",
         ]
 
     # ---------- format total_hours ----------
     def get_total_hours_formatted(self, obj):
-        hours = int(obj.total_hours or 0)
-        minutes = int((float(obj.total_hours or 0) - hours) * 60)
+
+        total_hours = Decimal(str(obj.total_hours or 0))
+
+        hours = int(total_hours)
+
+        minutes = int(
+            ((total_hours - Decimal(hours)) * Decimal("60"))
+            .quantize(
+                Decimal("1"),
+                rounding=ROUND_HALF_UP
+            )
+        )
+
+        if minutes == 60:
+            hours += 1
+            minutes = 0
+
         return f"{hours:02d}:{minutes:02d}"
 
     # ---------- convert time to IST AM/PM ----------
