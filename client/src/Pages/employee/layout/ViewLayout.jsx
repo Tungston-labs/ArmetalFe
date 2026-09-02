@@ -8,9 +8,9 @@ import {
   TabsRow,
   TabButton,
 } from "./ViewLayout.Styles";
-import EmployeeTitle from "../../../Components/Employee/Headers/EmployeeTitle";
+import EmployeeTitle from "../../../Components/EmployeeTitle";
 import EmployeeIcon from "../../../assets/employeeicon.svg";
-import Header from "../../../Components/Employee/Headers/Header";
+import Header from "../../../Components/Header";
 
 const ViewBasicLayout = ({
   id,

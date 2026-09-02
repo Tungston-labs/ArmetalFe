@@ -73,7 +73,7 @@ const AddDepartment = ({ onClose }) => {
                 <Input
                   type="text" name="name" value={form.name}
                   onChange={handleChange} placeholder="e.g. Development"
-                  autoComplete="off" 
+                  autoComplete="off" required
                 />
               </Field>
               <Field>
@@ -81,7 +81,7 @@ const AddDepartment = ({ onClose }) => {
                 <Input
                   type="text" name="department_code" value={form.department_code}
                   onChange={handleChange} placeholder="e.g. DEV_00"
-                  autoComplete="off" maxLength={10} 
+                  autoComplete="off" maxLength={10} required
                 />
               </Field>
             </Row>

@@ -18,11 +18,11 @@ import {
   CompanyLogo,
   CardSlider,TopBar
 } from "./Superadmin_Dashboard.Styles";
-import Navbar from "../../Components/Navbar/SuperAdmin/Navbar"
+import Navbar from "../../Components/Navbar"
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompanyOverview } from "../../Redux/superAdminSlice";
-import Loader from "../../Components/Loader/Loader"
+import Loader from "../../Components/Loader"
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

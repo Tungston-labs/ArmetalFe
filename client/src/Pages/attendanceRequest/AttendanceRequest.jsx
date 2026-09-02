@@ -9,7 +9,7 @@ import {
   Status,
   ActionButton,
 } from "./AttendanceRequest.styles";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 const AttendanceRequestList = () => {
   const attendanceRequests = [

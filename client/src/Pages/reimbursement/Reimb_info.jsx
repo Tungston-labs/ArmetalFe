@@ -4,8 +4,8 @@ import {
   fetchReimbursementDetail,
   updateReimbursementStatus,
 } from "../../services/reimbursement";
-import Loader from "../../Components/Loader/Loader";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
+import Loader from "../../Components/Loader";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 import RemiIcon from "../../assets/remi.svg";
 
 import {

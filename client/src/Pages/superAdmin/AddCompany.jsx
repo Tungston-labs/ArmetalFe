@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   FormWrapper,
   BackHeader,
@@ -25,7 +25,6 @@ import {
   SectionTitle,
   ErrorText,
 } from "./AddCompany.Styles";
-
 import { GoArrowLeft } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
@@ -33,16 +32,7 @@ import { ClipLoader } from "react-spinners";
 
 import { useAddCompany } from "./ useAddCompany";
 
-import { fetchSubscriptionPlans } from "../../services/superAdminService";
-
-
-const AddCompanyModal = ({
-  onClose,
-  isEdit = false,
-  selectedCompany = null,
-  showPrivileges = true,
-}) => {
-
+const AddCompanyModal = ({ onClose, isEdit = false, selectedCompany = null, showPrivileges = true }) => {
   const countryDialCodes = [
     { code: "+971", label: "UAE (+971)" },
     { code: "+966", label: "Saudi Arabia (+966)" },
@@ -54,7 +44,6 @@ const AddCompanyModal = ({
     { code: "+880", label: "Bangladesh (+880)" },
     { code: "+92", label: "Pakistan (+92)" },
   ];
-
 
   const COUNTRY_CHOICES = [
     { code: "IN", name: "India" },
@@ -70,7 +59,6 @@ const AddCompanyModal = ({
     { code: "CA", name: "Canada" },
   ];
 
-
   const allModules = [
     "dashboard",
     "employee",
@@ -82,55 +70,6 @@ const AddCompanyModal = ({
     "project",
     "finance",
   ];
-
-
-  // ---------------------------------------------------------
-  // PLAN STATE
-  // ---------------------------------------------------------
-
-  const [plans, setPlans] = useState([]);
-  const [loadingPlans, setLoadingPlans] = useState(false);
-
-
-  // ---------------------------------------------------------
-  // LOAD PLANS
-  // ---------------------------------------------------------
-
-  useEffect(() => {
-    loadPlans();
-  }, []);
-
-
-  const loadPlans = async () => {
-    try {
-      setLoadingPlans(true);
-
-      const response = await fetchSubscriptionPlans();
-
-      const planList = Array.isArray(response)
-        ? response
-        : response?.results || [];
-
-      setPlans(planList);
-
-    } catch (error) {
-
-      console.error(
-        "Failed to load subscription plans:",
-        error
-      );
-
-    } finally {
-
-      setLoadingPlans(false);
-
-    }
-  };
-
-
-  // ---------------------------------------------------------
-  // COMPANY FORM
-  // ---------------------------------------------------------
 
   const {
     formData,
@@ -144,367 +83,87 @@ const AddCompanyModal = ({
     removeLogo,
     handleSubmit,
     totalPercent,
-  } = useAddCompany({
-    isEdit,
-    selectedCompany,
-    onClose,
-    allModules,
-  });
-
-
-  // ---------------------------------------------------------
-  // RENDER
-  // ---------------------------------------------------------
+  } = useAddCompany({ isEdit, selectedCompany, onClose, allModules });
 
   return (
     <FormWrapper>
-
-      {/* ------------------------------------------------ */}
-      {/* HEADER */}
-      {/* ------------------------------------------------ */}
-
       <BackHeader>
-
-        <GoArrowLeft
-          onClick={onClose}
-          style={{ cursor: "pointer" }}
-        />
-
-        <span>
-          {isEdit ? "Edit Company" : "Add Company"}
-        </span>
-
+        <GoArrowLeft onClick={onClose} style={{ cursor: "pointer" }} />
+        <span>{isEdit ? "Edit Company" : "Add Company"}</span>
       </BackHeader>
 
-
       <form onSubmit={handleSubmit}>
-
-        {/* ================================================= */}
-        {/* COMPANY DETAILS */}
-        {/* ================================================= */}
-
-        <SectionTitle>
-          Company details
-        </SectionTitle>
-
-
+        <SectionTitle>Company details</SectionTitle>
         <FormSection>
-
-          {/* ================================================= */}
-          {/* LEFT COLUMN */}
-          {/* ================================================= */}
-
           <div>
-
-            {/* COMPANY NAME */}
             <FormField>
-
-              <Label>
-                Company Name
-              </Label>
-
-              <Input
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Company name"
-                autoComplete="off"
-              />
-
-              {formErrors.name && (
-                <ErrorText>
-                  {formErrors.name}
-                </ErrorText>
-              )}
-
+              <Label>Company Name</Label>
+              <Input name="name" value={formData.name} onChange={handleChange} placeholder="Company name" autoComplete="off" />
+              {formErrors.name && <ErrorText>{formErrors.name}</ErrorText>}
             </FormField>
 
-
-            {/* ADDRESS */}
             <FormField>
-
-              <Label>
-                Address
-              </Label>
-
-              <Input
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="Company Address"
-                autoComplete="off"
-              />
-
-              {formErrors.address && (
-                <ErrorText>
-                  {formErrors.address}
-                </ErrorText>
-              )}
-
+              <Label>Address</Label>
+              <Input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" autoComplete="off" />
+              {formErrors.address && <ErrorText>{formErrors.address}</ErrorText>}
             </FormField>
 
-
-            {/* EMAIL */}
             <FormField>
-
-              <Label>
-                Email
-              </Label>
-
-              <Input
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Company E-mail"
-                autoComplete="off"
-              />
-
-              {formErrors.email && (
-                <ErrorText>
-                  {formErrors.email}
-                </ErrorText>
-              )}
-
+              <Label>Email</Label>
+              <Input name="email" value={formData.email} onChange={handleChange} placeholder="Company E-mail" autoComplete="off" />
+              {formErrors.email && <ErrorText>{formErrors.email}</ErrorText>}
+              
             </FormField>
 
-
-            {/* ================================================= */}
-            {/* SUBSCRIPTION PLAN */}
-            {/* ================================================= */}
-
             <FormField>
-
-              <Label>
-                Subscription Plan
-              </Label>
-
-              <Select
-                name="plan"
-                value={formData.plan || ""}
-                onChange={handleChange}
-              >
-
-                <option value="">
-                  No Plan - Use Amount Per Employee
-                </option>
-
-
-                {loadingPlans ? (
-
-                  <option disabled>
-                    Loading plans...
-                  </option>
-
-                ) : (
-
-                  plans.map((plan) => (
-
-                    <option
-                      key={plan.id}
-                      value={plan.id}
-                    >
-                      {plan.name} - ₹
-                      {Number(plan.base_price || 0).toFixed(2)}
-                    </option>
-
-                  ))
-
-                )}
-
-              </Select>
-
-
-              {formErrors.plan && (
-                <ErrorText>
-                  {formErrors.plan}
-                </ErrorText>
-              )}
-
+              <Label>Amount per Employee (INR)</Label>
+              <Input name="amount_per_employee" type="number" step="0.01" value={formData.amount_per_employee} onChange={handleChange} placeholder="Enter amount per employee" />
+              {formErrors.amount_per_employee && <ErrorText>{formErrors.amount_per_employee}</ErrorText>}
             </FormField>
 
-
-            {/* ================================================= */}
-            {/* AMOUNT PER EMPLOYEE */}
-            {/* ================================================= */}
-
             <FormField>
-
-              <Label>
-                Amount per Employee (INR)
-              </Label>
-
-              <Input
-                name="amount_per_employee"
-                type="number"
-                step="0.01"
-                value={formData.amount_per_employee}
-                onChange={handleChange}
-                placeholder="Enter amount per employee"
-
-                /*
-                 * If a plan is selected,
-                 * plan pricing will be used.
-                 */
-                disabled={!!formData.plan}
-              />
-
-              {formErrors.amount_per_employee && (
-                <ErrorText>
-                  {formErrors.amount_per_employee}
-                </ErrorText>
-              )}
-
+              <Label>Initial Payment (Advance)</Label>
+              <Input name="initial_payment" type="number" step="0.01" value={formData.initial_payment} onChange={handleChange} placeholder="Enter advance amount (optional)" />
+              {/* {formErrors.initial_payment && <ErrorText>{formErrors.initial_payment}</ErrorText>} */}
             </FormField>
 
-
-            {/* ================================================= */}
-            {/* INITIAL PAYMENT */}
-            {/* ================================================= */}
-
             <FormField>
-
-              <Label>
-                Initial Payment (Advance)
-              </Label>
-
-              <Input
-                name="initial_payment"
-                type="number"
-                step="0.01"
-                value={formData.initial_payment}
-                onChange={handleChange}
-                placeholder="Enter advance amount (optional)"
-              />
-
-            </FormField>
-
-
-            {/* ================================================= */}
-            {/* LOGO */}
-            {/* ================================================= */}
-
-            <FormField>
-
-              <Label>
-                Upload logo
-              </Label>
-
-              <LogoUploadBox
-                onClick={() =>
-                  fileInputRef.current?.click()
-                }
-              >
-
+              <Label>Upload logo</Label>
+              <LogoUploadBox onClick={() => fileInputRef.current?.click()}>
                 <FiUpload size={22} />
-
                 <p>
-                  Click to upload or drag and drop
-                  <br />
+                  Click to upload or drag and drop <br />
                   Max 2 MB · PNG or SVG only
                 </p>
-
-                <input
-                  type="file"
-                  accept=".png,.svg"
-                  ref={fileInputRef}
-                  onChange={handleLogoChange}
-                  style={{ display: "none" }}
-                />
-
+                <input type="file" accept=".png,.svg" ref={fileInputRef} onChange={handleLogoChange} style={{ display: "none" }} />
               </LogoUploadBox>
 
-
               {logoPreview && (
-
                 <LogoPreview>
-
-                  {formData.logo?.type ===
-                  "image/svg+xml" ? (
-
-                    <object
-                      data={logoPreview}
-                      type="image/svg+xml"
-                      width="52"
-                      height="52"
-                    />
-
+                  {formData.logo?.type === "image/svg+xml" ? (
+                    <object data={logoPreview} type="image/svg+xml" width="52" height="52" />
                   ) : (
-
-                    <img
-                      src={logoPreview}
-                      alt="Logo"
-                    />
-
+                    <img src={logoPreview} alt="Logo" />
                   )}
-
-
-                  <button
-                    onClick={removeLogo}
-                    type="button"
-                  >
+                  <button onClick={removeLogo} type="button">
                     <AiOutlineClose />
                   </button>
-
                 </LogoPreview>
-
               )}
-
-
-              {formErrors.logo && (
-                <ErrorText>
-                  {formErrors.logo}
-                </ErrorText>
-              )}
-
+                {formErrors.logo && <ErrorText>{formErrors.logo}</ErrorText>}
             </FormField>
-
           </div>
 
-
-          {/* ================================================= */}
-          {/* RIGHT COLUMN */}
-          {/* ================================================= */}
-
           <div>
-
-            {/* LOCATION */}
             <FormField>
-
-              <Label>
-                Company location
-              </Label>
-
-              <Input
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                placeholder="Location"
-                autoComplete="off"
-              />
-
-              {formErrors.location && (
-                <ErrorText>
-                  {formErrors.location}
-                </ErrorText>
-              )}
-
+              <Label>Company location</Label>
+              <Input name="location" value={formData.location} onChange={handleChange} placeholder="Location" autoComplete="off" />
+                {formErrors.location && <ErrorText>{formErrors.location}</ErrorText>}
             </FormField>
 
-
-            {/* CONTACT NUMBER */}
             <FormField>
-
-              <Label>
-                Contact Number
-              </Label>
-
-              <div
-                style={{
-                  display: "flex",
-                  gap: "8px",
-                }}
-              >
-
+              <Label>Contact Number</Label>
+              <div style={{ display: "flex", gap: "8px" }}>
                 <Select
                   name="country_code"
                   value={formData.country_code}
@@ -512,22 +171,12 @@ const AddCompanyModal = ({
                   autoComplete="off"
                   style={{ width: "42%" }}
                 >
-
-                  {countryDialCodes.map(
-                    (item) => (
-
-                      <option
-                        key={item.code}
-                        value={item.code}
-                      >
-                        {item.label}
-                      </option>
-
-                    )
-                  )}
-
+                  {countryDialCodes.map((item) => (
+                    <option key={item.code} value={item.code}>
+                      {item.label}
+                    </option>
+                  ))}
                 </Select>
-
 
                 <Input
                   name="contact_number"
@@ -538,479 +187,174 @@ const AddCompanyModal = ({
                   style={{ width: "58%" }}
                   autoComplete="off"
                 />
-
               </div>
-
-
-              {formErrors.contact_number && (
-                <ErrorText>
-                  {formErrors.contact_number}
-                </ErrorText>
-              )}
-
+              {formErrors.contact_number && <ErrorText>{formErrors.contact_number}</ErrorText>}
             </FormField>
 
-
-            {/* COUNTRY */}
             <FormField>
-
-              <Label>
-                Country
-              </Label>
-
-              <Select
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                autoComplete="off"
-              >
-
-                <option value="">
-                  Select country
-                </option>
-
-                {COUNTRY_CHOICES.map(
-                  (item) => (
-
-                    <option
-                      key={item.code}
-                      value={item.code}
-                    >
-                      {item.name}
-                    </option>
-
-                  )
-                )}
-
+              <Label>Country</Label>
+              <Select name="country" value={formData.country} onChange={handleChange} autoComplete="off">
+                <option value="">Select country</option>
+                {COUNTRY_CHOICES.map((item) => (
+                  <option key={item.code} value={item.code}>
+                    {item.name}
+                  </option>
+                ))}
               </Select>
-
-
-              {formErrors.country && (
-                <ErrorText>
-                  {formErrors.country}
-                </ErrorText>
-              )}
-
+              {formErrors.country && <ErrorText>{formErrors.country}</ErrorText>}
             </FormField>
 
-
-            {/* LATITUDE */}
             <FormField>
-
-              <Label>
-                Latitude
-              </Label>
-
-              <Input
-                name="latitude"
-                type="number"
-                step="any"
-                value={formData.latitude}
-                onChange={handleChange}
-                placeholder="Enter company latitude"
-                autoComplete="off"
-              />
-
-              {formErrors.latitude && (
-                <ErrorText>
-                  {formErrors.latitude}
-                </ErrorText>
-              )}
-
+              <Label>Latitude</Label>
+              <Input name="latitude" type="number" step="any" value={formData.latitude} onChange={handleChange} placeholder="Enter company latitude" autoComplete="off" />
+              {formErrors.latitude && <ErrorText>{formErrors.latitude}</ErrorText>}
             </FormField>
 
-
-            {/* LONGITUDE */}
             <FormField>
-
-              <Label>
-                Longitude
-              </Label>
-
-              <Input
-                name="longitude"
-                type="number"
-                step="any"
-                value={formData.longitude}
-                onChange={handleChange}
-                placeholder="Enter company longitude"
-                autoComplete="off"
-              />
-
-              {formErrors.longitude && (
-                <ErrorText>
-                  {formErrors.longitude}
-                </ErrorText>
-              )}
-
+              <Label>Longitude</Label>
+              <Input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="Enter company longitude" autoComplete="off" />
+              {formErrors.longitude && <ErrorText>{formErrors.longitude}</ErrorText>}
             </FormField>
-
           </div>
-
         </FormSection>
 
-
-        {/* ================================================= */}
-        {/* PRIVILEGES */}
-        {/* ================================================= */}
-
         {showPrivileges && (
-
           <>
-
             <Hr />
-
-            <SectionTitle>
-              Privileges
-            </SectionTitle>
-
-
+            <SectionTitle>Privileges</SectionTitle>
             <CheckboxGroup>
-
               {allModules.map((mod) => (
-
-                <CheckboxLabel
-                  key={mod}
-                >
-
-                  <input
-                    type="checkbox"
-                    checked={formData.modules.includes(mod)}
-                    onChange={() =>
-                      handleModuleChange(mod)
-                    }
-                  />
-
-                  {mod
-                    .charAt(0)
-                    .toUpperCase() +
-                    mod
-                      .slice(1)
-                      .replace("_", " ")}
-
+                <CheckboxLabel key={mod}>
+                  <input type="checkbox" checked={formData.modules.includes(mod)} onChange={() => handleModuleChange(mod)} />
+                  {mod.charAt(0).toUpperCase() + mod.slice(1).replace("_", " ")}
                 </CheckboxLabel>
-
               ))}
-
             </CheckboxGroup>
-
-
-            {formErrors.modules && (
-              <ErrorText>
-                {formErrors.modules}
-              </ErrorText>
-            )}
-
+            {formErrors.modules && <ErrorText>{formErrors.modules}</ErrorText>}
           </>
-
         )}
-
 
         <Hr />
 
-
-        {/* ================================================= */}
-        {/* SALARY STRUCTURE */}
-        {/* ================================================= */}
-
         <SalaryWrapper>
-
-          <SalaryTitle>
-            Salary structure (%)
-          </SalaryTitle>
-
+          <SalaryTitle>Salary structure (%)</SalaryTitle>
 
           <SalaryTableWrapper>
-
             <SalaryTable>
-
               <TableHead>
-
                 <tr>
-
-                  <Th>
-                    Basic %
-                  </Th>
-
-                  <Th>
-                    House Allowance %
-                  </Th>
-
-                  <Th>
-                    Transport %
-                  </Th>
-
-                  <Th>
-                    Special %
-                  </Th>
-
-                  <Th>
-                    Total %
-                  </Th>
-
+                  <Th>Basic %</Th>
+                  <Th>House Allowance %</Th>
+                  <Th>Transport %</Th>
+                  <Th>Special %</Th>
+                  <Th>Total %</Th>
                 </tr>
-
               </TableHead>
 
-
               <tbody>
-
                 <tr>
-
-                  {/* BASIC */}
                   <Td>
-
                     <Input
                       type="number"
                       name="basic_salary_percent"
-                      value={
-                        formData.basic_salary_percent
-                      }
+                      value={formData.basic_salary_percent}
                       onChange={handleChange}
                       placeholder="Basic"
                     />
-
-                    {formErrors.basic_salary_percent && (
-                      <ErrorText>
-                        {
-                          formErrors.basic_salary_percent
-                        }
-                      </ErrorText>
-                    )}
-
+                    {formErrors.basic_salary_percent && <ErrorText>{formErrors.basic_salary_percent}</ErrorText>}
                   </Td>
 
-
-                  {/* HRA */}
                   <Td>
-
                     <Input
                       type="number"
                       name="house_allowance_percent"
-                      value={
-                        formData.house_allowance_percent
-                      }
+                      value={formData.house_allowance_percent}
                       onChange={handleChange}
                       placeholder="HRA"
                     />
-
-                    {formErrors.house_allowance_percent && (
-                      <ErrorText>
-                        {
-                          formErrors.house_allowance_percent
-                        }
-                      </ErrorText>
-                    )}
-
+                    {formErrors.house_allowance_percent && <ErrorText>{formErrors.house_allowance_percent}</ErrorText>}
                   </Td>
 
-
-                  {/* TRANSPORT */}
                   <Td>
-
                     <Input
                       type="number"
                       name="transport_allowance_percent"
-                      value={
-                        formData.transport_allowance_percent
-                      }
+                      value={formData.transport_allowance_percent}
                       onChange={handleChange}
                       placeholder="Transport"
                     />
-
-                    {formErrors.transport_allowance_percent && (
-                      <ErrorText>
-                        {
-                          formErrors.transport_allowance_percent
-                        }
-                      </ErrorText>
-                    )}
-
+                    {formErrors.transport_allowance_percent && <ErrorText>{formErrors.transport_allowance_percent}</ErrorText>}
                   </Td>
 
-
-                  {/* SPECIAL */}
                   <Td>
-
                     <Input
                       type="number"
                       name="special_allowance_percent"
-                      value={
-                        formData.special_allowance_percent
-                      }
+                      value={formData.special_allowance_percent}
                       onChange={handleChange}
                       placeholder="Special"
                     />
-
-                    {formErrors.special_allowance_percent && (
-                      <ErrorText>
-                        {
-                          formErrors.special_allowance_percent
-                        }
-                      </ErrorText>
-                    )}
-
+                    {formErrors.special_allowance_percent && <ErrorText>{formErrors.special_allowance_percent}</ErrorText>}
                   </Td>
 
-
-                  {/* TOTAL */}
                   <Td>
-
-                    <TotalText
-                      isError={
-                        totalPercent !== 100
-                      }
-                    >
+                    <TotalText isError={totalPercent !== 100}>
                       {totalPercent} %
                     </TotalText>
-
                   </Td>
-
                 </tr>
-
               </tbody>
-
             </SalaryTable>
-
-
-            {formErrors.salary && (
-              <ErrorText>
-                {formErrors.salary}
-              </ErrorText>
-            )}
-
+            {formErrors.salary && <ErrorText>{formErrors.salary}</ErrorText>}
           </SalaryTableWrapper>
 
-
-          {/* ================================================= */}
-          {/* WORKING HOURS */}
-          {/* ================================================= */}
-
-          <FormSection
-            style={{
-              marginTop: "20px",
-              marginBottom: 0,
-            }}
-          >
-
+          <FormSection style={{ marginTop: "20px", marginBottom: 0 }}>
             <FormField>
-
-              <Label>
-                Working Hours Per Day
-              </Label>
-
+              <Label>Working Hours Per Day</Label>
               <Input
                 type="number"
                 name="working_hours_per_day"
-                value={
-                  formData.working_hours_per_day
-                }
+                value={formData.working_hours_per_day}
                 onChange={handleChange}
                 placeholder="e.g. 8"
               />
-
-              {formErrors.working_hours_per_day && (
-                <ErrorText>
-                  {
-                    formErrors.working_hours_per_day
-                  }
-                </ErrorText>
-              )}
-
+              {formErrors.working_hours_per_day && <ErrorText>{formErrors.working_hours_per_day}</ErrorText>}
             </FormField>
 
-
             <FormField>
-
-              <Label>
-                Half Day Hours
-              </Label>
-
+              <Label>Half Day Hours</Label>
               <Input
                 type="number"
                 name="half_day_hours"
-                value={
-                  formData.half_day_hours
-                }
+                value={formData.half_day_hours}
                 onChange={handleChange}
                 placeholder="e.g. 4"
               />
-
-              {formErrors.half_day_hours && (
-                <ErrorText>
-                  {
-                    formErrors.half_day_hours
-                  }
-                </ErrorText>
-              )}
-
+              {formErrors.half_day_hours && <ErrorText>{formErrors.half_day_hours}</ErrorText>}
             </FormField>
-
           </FormSection>
-
         </SalaryWrapper>
 
-
-        {/* ================================================= */}
-        {/* BUTTONS */}
-        {/* ================================================= */}
-
         <ButtonGroup>
-
-          <Button
-            type="button"
-            cancel
-            onClick={onClose}
-          >
+          <Button type="button" cancel onClick={onClose}>
             Cancel
           </Button>
-
-
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-          >
-
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? (
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-
-                <ClipLoader
-                  size={16}
-                  color="#fff"
-                />
-
-                {isEdit
-                  ? "Updating..."
-                  : "Saving..."}
-
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <ClipLoader size={16} color="#fff" />
+                {isEdit ? "Updating..." : "Saving..."}
               </div>
-
             ) : isEdit ? (
-
               "Update"
-
             ) : (
-
               "Save"
-
             )}
-
           </Button>
-
         </ButtonGroup>
-
       </form>
-
     </FormWrapper>
   );
 };
-
 
 export default AddCompanyModal;

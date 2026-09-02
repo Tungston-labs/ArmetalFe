@@ -16,9 +16,9 @@ import {
   TopActionRow,
   ExcelButton,
 } from './LeaveRequest.Styles';
-import Loader from "../../Components/Loader/Loader"
+import Loader from "../../Components/Loader"
 import { TableHead, BodyCell, BodyRow, EmptyRow, HeadCell, HeadRow, StyledTable, TableBody, Avatar, AvatarFallback, NameCell, TableWrapper } from './EmployeeList.styles';
-import EmployeeTitle from '../../Components/Employee/Headers/EmployeeTitle';
+import EmployeeTitle from '../../Components/EmployeeTitle';
 import Pagination from "../../Components/Pagination/Pagination"
 import NoEmployeeFound from '../../Components/No found/Noemployeefound';
 import { exportLeaveReport } from '../../utils/leaveExcelExport';

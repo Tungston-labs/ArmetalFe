@@ -28,9 +28,9 @@ import {
   verifyEmployeePayroll,
 } from "../../Redux/payrollSlice";
 import { getDepartments } from "../../Redux/departmentSlice";
-import Loader from "../../Components/Loader/Loader";
+import Loader from "../../Components/Loader";
 import Swal from "sweetalert2";
-import VerificationCircles from "../../Components/payroll/VerificationCircle";
+import VerificationCircles from "../../Components/VerificationCircle";
 import HolidayIcon from "../../assets/payroll.svg";
 import Pagination from "../../Components/Pagination/Pagination";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";

@@ -184,7 +184,7 @@ const TaskPanel = ({ employeeId }) => {
   );
 };
 
-export default function DailyTask() {
+export default function DepartmentView() {
   const dispatch = useDispatch();
 
   const [selectedDeptId, setSelectedDeptId] = useState(null);

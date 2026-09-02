@@ -30,7 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEmployees, deleteEmployeeById } from "../../Redux/employeeSlice";
 import { getOnLeaveEmployees } from "../../Redux/leaveSlice";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import Loader from "../../Components/Loader/Loader"
+import Loader from "../../Components/Loader"
 import { GoInfo } from "react-icons/go";
 import { BASE_URL } from "../../services/api";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound";

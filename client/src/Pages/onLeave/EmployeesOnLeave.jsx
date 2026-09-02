@@ -21,10 +21,10 @@ import { getDepartments } from "../../Redux/departmentSlice";
 import { GoArrowUpRight } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
 import EmployeeIcon from "../../assets/employeeicon.svg";
-import Loader from "../../Components/Loader/Loader"
+import Loader from "../../Components/Loader"
 // import Navbar from "../../Components/Navbar";
 import { FiSearch } from "react-icons/fi";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

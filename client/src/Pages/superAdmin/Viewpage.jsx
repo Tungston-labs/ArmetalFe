@@ -23,9 +23,9 @@ import {
     updateCompanyStatusThunk,
 } from "../../Redux/superAdminSlice";
 import { useParams, useNavigate } from "react-router-dom";
-import Plan from "../../Components/superadmin/Plan";
+import Plan from "../../Components/Plan";
 import { LuArrowLeft } from "react-icons/lu";
-import Loader from "../../Components/Loader/Loader"
+import Loader from "../../Components/Loader"
 const CompanyViewPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

@@ -40,16 +40,15 @@ import {
   InputsWrapper,
   RightActions,
 } from "../department/DepartmentDetails.Styles";
-import Loader from "../../Components/Loader/Loader.jsx";
+import Loader from "../../Components/Loader.jsx";
 import { ClipLoader } from "react-spinners";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle.jsx";
+import EmployeeTitle from "../../Components/EmployeeTitle.jsx";
 import { FaTimes, FaTrash, FaEdit, FaSave, FaArrowLeft } from "react-icons/fa";
 import { GoArrowLeft, GoArrowUpRight } from "react-icons/go";
 import { fetchDepartmentById } from "../../services/departmentServices"; 
 import { FaAnglesRight,FaAnglesLeft } from "react-icons/fa6";
 import NoEmployeeFound from "../../Components/No found/Noemployeefound.jsx";
 import AddDepartment from "./AddDepartment.jsx";
-import ReusableHeader from "../../Components/ReusableTable/ReusableHeader.jsx";
 const DepartmentList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -298,16 +297,28 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
   return (
     <>
       <PageContainer>
-         <ReusableHeader
-                    title="Department"
-                    breadcrumbs={["Dashboard", "Department"]}
-                    buttonText="ADD NEW EMPLOYEE"
-                    onButtonClick={() => console.log("Add Employee")}
-                />
+        <EmployeeTitle
+          iconSrc={EmployeeIcon}
+          title="Departments"
+          subtitle="Manage your departments"
+          buttonText="Add Department"
+          searchValue={search}
+          onSearchChange={setSearch}
+          onAddClick={() => setShowAddModal(true)}
+          showDropdown={false}
+          showBackArrow={false}
+          showTabs={false}
+          searchPlaceholder="Search  Department Name"
+          showReportButton={false}
+        />
 
-     
-        
-     
+        {loading ? (
+          <div
+            style={{ display: "flex", justifyContent: "center", padding: 40 }}
+          >
+            <Loader size={32} color="#3352BA" />
+          </div>
+        ) : (
           <DepartmentGrid>
             {filteredDepartments?.length > 0 ? (
               filteredDepartments.map((dept) => {
@@ -657,7 +668,8 @@ const handleDeleteEmployee = (employeeId, employeeName, deptId) => {
   </div>
             )}
           </DepartmentGrid>
-      
+        )}
+
      {showAddModal && (
   <AddDepartment onClose={() => setShowAddModal(false)} />
 )}

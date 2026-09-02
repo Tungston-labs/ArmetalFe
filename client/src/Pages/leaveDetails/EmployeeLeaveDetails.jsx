@@ -17,10 +17,10 @@ import {
   ArrowIcon,
 } from "./EmployeeLeaveDetails.Styles";
 
-import Header from "../../Components/Employee/Headers/Header";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
-import ReusableConfirmModal from "../../Components/modals/ReusableConfirmModal";
-import Loader from "../../Components/Loader/Loader";
+import Header from "../../Components/Header";
+import EmployeeTitle from "../../Components/EmployeeTitle";
+import ConfirmLeaveModal from "../../Components/ConfirmLeaveModal";
+import Loader from "../../Components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { getLeaveDetails, patchLeaveStatus } from "../../Redux/leaveSlice";
 import { useParams, useNavigate } from "react-router-dom";
@@ -242,7 +242,7 @@ const formatDate = (date) => {
         </PageCard>
 
         {/* Modal */}
-        <ReusableConfirmModal
+        <ConfirmLeaveModal
           show={showModal}
           onClose={() => setShowModal(false)}
           onConfirm={handleStatusUpdate}

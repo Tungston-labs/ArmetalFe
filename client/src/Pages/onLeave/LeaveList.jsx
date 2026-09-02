@@ -13,12 +13,12 @@ import {
   EmployeeCell,
   EmployeeRow,
 } from "../attendance/AttendanceList.Styles";
-import EmployeeTitle from "../../Components/Employee/Headers/EmployeeTitle";
+import EmployeeTitle from "../../Components/EmployeeTitle";
 import EmployeeIcon from "../../assets/employeeicon.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartments } from "../../Redux/departmentSlice";
 import { getOnLeaveEmployees } from "../../Redux/leaveSlice";
-import Loader from "../../Components/Loader/Loader";
+import Loader from "../../Components/Loader";
 
 const LeaveList = () => {
   const dispatch = useDispatch();

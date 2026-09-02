@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 import "antd/dist/reset.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getDashboardSummary } from "../../Redux/dashboardSlice";
-import Navbar from "../../Components/Navbar/SuperAdmin/Navbar";
-import Loader from "../../Components/Loader/Loader";
+import Navbar from "../../Components/Navbar";
+import Loader from "../../Components/Loader";
 
+// const Cards = React.lazy(() => import("../../Components/Cards"));
+// const DepartmentCalendar = React.lazy(() => import("../../Components/DepartmentCalender"));
 
 const CardsOnly = () => {
   const dispatch = useDispatch();
