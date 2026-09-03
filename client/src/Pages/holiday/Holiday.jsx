@@ -254,6 +254,7 @@ const HolidayManager = () => {
         <Pagination
           currentPage={page}
           totalPages={Number(totalPages) || 1}
+          totalRecords={count}
           onPageChange={handlePageChange}
         />
       </Container>

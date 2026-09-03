@@ -790,6 +790,7 @@ const ReimbursementDetails = () => {
                 <ReusablePagination
                     currentPage={currentPage}
                     totalPages={totalPages}
+                    totalRecords={filteredData.length}
                     onPageChange={
                         setCurrentPage
                     }

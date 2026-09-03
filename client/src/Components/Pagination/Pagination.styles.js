@@ -8,6 +8,13 @@ export const PaginationWrapper = styled.div`
   margin-top: 15px;
 `;
 
+export const TotalRecords = styled.span`
+  margin-right: auto;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+`;
+
 export const PageButton = styled.button`
   min-width: 32px;
   height: 32px;

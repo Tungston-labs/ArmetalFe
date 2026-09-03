@@ -5,12 +5,13 @@ import {
   PageNumber,
   Ellipsis,
   ArrowButton,
+  TotalRecords,
 } from "./ReusablePagination.styles";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
-const ReusablePagination = ({ currentPage, totalPages, onPageChange }) => {
+const ReusablePagination = ({ currentPage, totalPages, totalRecords, onPageChange }) => {
   // Nothing to paginate — don't render anything until there's more than one page
-  if (!totalPages || totalPages <= 1) return null;
+  if ((!totalPages || totalPages <= 1) && totalRecords === undefined) return null;
 
   const getPages = () => {
     const pages = [];
@@ -46,6 +47,11 @@ const ReusablePagination = ({ currentPage, totalPages, onPageChange }) => {
 
   return (
     <PaginationWrapper>
+      {totalRecords !== undefined && (
+        <TotalRecords>TOTAL RECORDS: {totalRecords}</TotalRecords>
+      )}
+      {totalPages > 1 && (
+        <>
       <ArrowButton
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
@@ -73,6 +79,8 @@ const ReusablePagination = ({ currentPage, totalPages, onPageChange }) => {
       >
         <FaAngleRight />
       </ArrowButton>
+        </>
+      )}
     </PaginationWrapper>
   );
 };

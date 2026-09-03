@@ -462,6 +462,7 @@ function PlanAndPricing() {
             totalPages={
               totalPages
             }
+            totalRecords={plans.length}
             onPageChange={
               setCurrentPage
             }

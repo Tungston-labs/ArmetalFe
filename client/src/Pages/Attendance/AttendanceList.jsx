@@ -168,6 +168,7 @@ const AttendanceList = () => {
                     <ReusablePagination
                         currentPage={pagination?.current_page || currentPage}
                         totalPages={pagination?.total_pages || 1}
+                        totalRecords={pagination?.total_items ?? 0}
                         onPageChange={setCurrentPage}
                     />
                 </>

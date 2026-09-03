@@ -632,6 +632,7 @@ const departmentCards = useMemo(() => {
           totalPages={
             totalPages
           }
+          totalRecords={filteredEmployees.length}
 
           onPageChange={
             setCurrentPage

@@ -412,7 +412,7 @@ rehireError: null,
         state.loading = false;
         state.employeeList = action.payload.results || [];
         state.pagination = {
-          count: action.payload.count || 0,
+          count: action.payload.count ?? action.payload.total_items ?? 0,
           total_pages: action.payload.total_pages || 1,
           current_page: action.payload.current_page || 1,
           next: action.payload.next || null,
@@ -464,7 +464,7 @@ rehireError: null,
       .addCase(getAllEmployees.fulfilled, (state, action) => {
         state.employeeList = action.payload.results;
         state.pagination = {
-          count: action.payload.count,
+          count: action.payload.count ?? action.payload.total_items ?? 0,
           total_pages: action.payload.total_pages,
           current_page: action.payload.current_page,
           next: action.payload.next,

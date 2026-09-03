@@ -503,6 +503,7 @@ const AttendanceReport = () => {
           totalPages={
             totalPages
           }
+          totalRecords={summaryData?.total_items ?? attendanceSummary.length}
           onPageChange={
             handlePageChange
           }

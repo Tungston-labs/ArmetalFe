@@ -338,6 +338,7 @@ const AttendanceSummary = () => {
                 <ReusablePagination
                     currentPage={currentPage}
                     totalPages={totalPages}
+                    totalRecords={filteredRecords.length}
                     onPageChange={setCurrentPage}
                 />
             </div>

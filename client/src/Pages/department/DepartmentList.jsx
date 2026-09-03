@@ -299,6 +299,7 @@ const DepartmentList = () => {
                         <ReusablePagination
                           currentPage={currentPage}
                           totalPages={totalPages}
+                          totalRecords={sortedEmployees.length}
                           onPageChange={(newPage) => setPage(dept.id, newPage)}
                         />
                       </div>

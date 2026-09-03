@@ -191,6 +191,7 @@ const payrollCards = getPayrollCards(counts, currencyCode);
       <Pagination
         currentPage={page}
         totalPages={totalPages}
+        totalRecords={sortedData.length}
         onPageChange={handlePageChange}
       />
 

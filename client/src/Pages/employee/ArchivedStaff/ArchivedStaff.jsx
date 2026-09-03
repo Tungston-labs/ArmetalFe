@@ -136,6 +136,7 @@ const ArchivedStaff = () => {
       <ReusablePagination
         currentPage={currentPage}
         totalPages={totalPages}
+        totalRecords={deletedEmployeePagination?.total_items ?? 0}
         onPageChange={(page) => {
           dispatch(
             getDeletedEmployees({
