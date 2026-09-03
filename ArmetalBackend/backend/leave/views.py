@@ -37,7 +37,7 @@ class LeaveRequestCreateListView(generics.ListCreateAPIView):
     serializer_class = LeaveRequestSerializer
     permission_classes = [IsAuthenticated, IsEmployee]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['employee__name']
+    search_fields = ['employee__name', 'employee__employee_id', 'employee__employee_code']
     pagination_class = CustomPagination
 
     def get_queryset(self):

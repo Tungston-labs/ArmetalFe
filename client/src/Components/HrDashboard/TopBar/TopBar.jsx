@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
+
 import { useSelector } from "react-redux";
+
 import { FaRegBell } from "react-icons/fa6";
 import { CiCalendarDate } from "react-icons/ci";
 import { FaChevronDown } from "react-icons/fa";
@@ -29,192 +31,446 @@ import {
   DropdownItem,
 } from "./TopBar.styles";
 
-// Maps the boolean role flags from the login response to a display label
+
+// =====================================================
+// ROLE LABEL
+// =====================================================
+
 const getRoleLabel = (user) => {
   if (!user) return "";
+
   if (user.is_superadmin) return "Super Admin";
+
   if (user.is_hr_admin) return "HR Admin";
+
   if (user.is_hr) return "HR";
+
   if (user.is_employee) return "Employee";
+
   return "";
 };
 
+
 const TopBar = () => {
+
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   const [showNotifications, setShowNotifications] = useState(false);
+
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+
   const [showChangePassword, setShowChangePassword] = useState(false);
 
-  // Pull the logged-in user (and nested company) from Redux
+
+  // =====================================================
+  // GET LOGGED-IN USER FROM REDUX
+  // =====================================================
+
   const user = useSelector((state) => state.auth.user);
 
+
+  // =====================================================
+  // COMPANY NAME
+  // =====================================================
+
   const companyName = user?.company?.name || "";
+
+
+  // =====================================================
+  // DISPLAY NAME
+  //
+  // HR / Employee -> Employee name
+  // Company Admin -> Company name
+  // =====================================================
+
+  const displayName =
+    user?.name ||
+    companyName ||
+    user?.username ||
+    "";
+
+
+  // =====================================================
+  // ROLE
+  // =====================================================
+
   const roleLabel = getRoleLabel(user);
 
-  const companyInitial = companyName
-    ? companyName.charAt(0).toUpperCase()
+
+  // =====================================================
+  // AVATAR INITIAL
+  // =====================================================
+
+  const displayInitial = displayName
+    ? displayName.charAt(0).toUpperCase()
     : "";
+
 
   const profileRef = useRef(null);
 
+
+  // =====================================================
+  // CLOCK
+  // =====================================================
+
   useEffect(() => {
+
     const timer = setInterval(() => {
+
       setCurrentDateTime(new Date());
+
     }, 1000);
 
     return () => clearInterval(timer);
+
   }, []);
 
+
+  // =====================================================
+  // CLOSE PROFILE DROPDOWN ON OUTSIDE CLICK
+  // =====================================================
+
   useEffect(() => {
+
     const handleClickOutside = (event) => {
+
       if (
         profileRef.current &&
         !profileRef.current.contains(event.target)
       ) {
+
         setShowProfileMenu(false);
+
       }
+
     };
 
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+
     };
+
   }, []);
 
+
+  // =====================================================
+  // CHANGE PASSWORD
+  // =====================================================
+
   const handleChangePassword = () => {
+
     setShowProfileMenu(false);
+
     setShowChangePassword(true);
+
   };
+
+
+  // =====================================================
+  // CONFIGURE
+  // =====================================================
 
   const handleConfigure = () => {
+
     setShowProfileMenu(false);
+
   };
 
+
+  // =====================================================
+  // LOGOUT
+  // =====================================================
+
   const handleLogout = () => {
+
     setShowProfileMenu(false);
 
     localStorage.clear();
+
     sessionStorage.clear();
 
     window.location.href = "/login";
+
   };
 
-  const formattedDate = currentDateTime.toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
 
-  const formattedTime = currentDateTime.toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
+  // =====================================================
+  // DATE
+  // =====================================================
+
+  const formattedDate =
+    currentDateTime.toLocaleDateString("en-IN", {
+
+      weekday: "long",
+
+      day: "2-digit",
+
+      month: "long",
+
+      year: "numeric",
+
+    });
+
+
+  // =====================================================
+  // TIME
+  // =====================================================
+
+  const formattedTime =
+    currentDateTime.toLocaleTimeString("en-IN", {
+
+      hour: "2-digit",
+
+      minute: "2-digit",
+
+      hour12: true,
+
+    });
+
 
   return (
+
     <>
+
       <Container>
+
+        {/* =================================================
+            DATE
+        ================================================= */}
+
         <DateBox>
+
           <DateSection>
+
             <CiCalendarDate size={20} />
-            <span>{formattedDate}</span>
+
+            <span>
+              {formattedDate}
+            </span>
+
           </DateSection>
 
+
           <TimeSection>
+
             <LuSunMedium size={16} />
-            <span>{formattedTime}</span>
+
+            <span>
+              {formattedTime}
+            </span>
+
           </TimeSection>
+
         </DateBox>
 
+
         <RightSection>
-          {/* Notification */}
-          <NotificationButton onClick={() => setShowNotifications(true)}>
+
+
+          {/* =================================================
+              NOTIFICATION
+          ================================================= */}
+
+          <NotificationButton
+            onClick={() => setShowNotifications(true)}
+          >
+
             <FaRegBell size={25} />
+
             <NotificationDot />
+
           </NotificationButton>
 
-          {/* Language */}
+
+          {/* =================================================
+              LANGUAGE
+          ================================================= */}
+
           <Language>
+
             🇬🇧 English
-            {/* <FaChevronDown size={14} /> */}
+
+            <FaChevronDown size={14} />
+
           </Language>
 
-          {/* Profile */}
+
+          {/* =================================================
+              PROFILE
+          ================================================= */}
+
           <Profile
+
             ref={profileRef}
-            onClick={() => setShowProfileMenu((prev) => !prev)}
+
+            onClick={() =>
+              setShowProfileMenu((prev) => !prev)
+            }
+
           >
-            <Avatar>{companyInitial}</Avatar>
+
+            {/* Avatar */}
+
+            <Avatar>
+
+              {displayInitial}
+
+            </Avatar>
+
+
+            {/* User Information */}
 
             <UserInfo>
-              <Name>{companyName}</Name>
-              <Role>{roleLabel}</Role>
+
+              <Name>
+
+                {displayName}
+
+              </Name>
+
+              <Role>
+
+                {roleLabel}
+
+              </Role>
+
             </UserInfo>
+
 
             <FaChevronDown size={12} />
 
+
+            {/* =================================================
+                PROFILE DROPDOWN
+            ================================================= */}
+
             {showProfileMenu && (
+
               <ProfileDropdown>
-                {/* Configure */}
-                {/* <DropdownItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleConfigure();
-                  }}
-                >
-                  <FiSettings size={17} />
-                  <span>Configure</span>
-                </DropdownItem> */}
 
-                {/* Change Password */}
+
+                {/* =================================================
+                    CHANGE PASSWORD
+                ================================================= */}
+
                 <DropdownItem
+
                   onClick={(e) => {
+
                     e.stopPropagation();
+
                     handleChangePassword();
+
                   }}
+
                 >
+
                   <FiLock size={17} />
-                  <span>Change Password</span>
+
+                  <span>
+                    Change Password
+                  </span>
+
                 </DropdownItem>
 
-                {/* Logout */}
+
+                {/* =================================================
+                    LOGOUT
+                ================================================= */}
+
                 <DropdownItem
+
                   logout
+
                   onClick={(e) => {
+
                     e.stopPropagation();
+
                     handleLogout();
+
                   }}
+
                 >
+
                   <FiLogOut size={17} />
-                  <span>Logout</span>
+
+                  <span>
+                    Logout
+                  </span>
+
                 </DropdownItem>
+
+
               </ProfileDropdown>
+
             )}
+
           </Profile>
 
-          {/* <SwitchButton>
+
+          {/* =================================================
+              SWITCH FINANCE
+          ================================================= */}
+
+          {/*
+          <SwitchButton>
+
             <PiSwap size={15} />
+
             SWITCH FINANCE
-          </SwitchButton> */}
+
+          </SwitchButton>
+          */}
+
 
         </RightSection>
+
       </Container>
 
-      {/* Notifications */}
+
+      {/* =====================================================
+          NOTIFICATIONS
+      ===================================================== */}
+
       <NotificationModal
+
         isOpen={showNotifications}
-        onClose={() => setShowNotifications(false)}
+
+        onClose={() =>
+          setShowNotifications(false)
+        }
+
       />
 
-      {/* Change Password */}
+
+      {/* =====================================================
+          CHANGE PASSWORD
+      ===================================================== */}
+
       {showChangePassword && (
-        <ChangePasswordModal onClose={() => setShowChangePassword(false)} />
+
+        <ChangePasswordModal
+
+          onClose={() =>
+            setShowChangePassword(false)
+          }
+
+        />
+
       )}
+
     </>
+
   );
+
 };
 
+
 export default TopBar;
+

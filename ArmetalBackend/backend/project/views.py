@@ -105,7 +105,10 @@ class ProjectListCreateView(generics.ListCreateAPIView):
 #  Project Retrieve/Update/Delete
 # ============================================================
 class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Project.objects.all().prefetch_related('employees')
+    queryset = Project.objects.all().prefetch_related(
+    'employees',
+    'team_leads'
+)
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
@@ -114,29 +117,87 @@ class ProjectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return ProjectReadSerializer
 
     def patch(self, request, *args, **kwargs):
+
         project = self.get_object()
+
         data = request.data.copy()
 
         # Convert "" → None for latitude & longitude
         if data.get("latitude") in ["", None]:
             data["latitude"] = None
+
         if data.get("longitude") in ["", None]:
             data["longitude"] = None
 
-        # Add new employees
+        # -----------------------------------------
+        # Add employees
+        # -----------------------------------------
         employee_ids = data.pop("employees", None)
+
         if employee_ids is not None:
             for emp_id in employee_ids:
                 project.employees.add(emp_id)
 
-        # Update other fields
-        serializer = self.get_serializer(project, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        # -----------------------------------------
+        # Add team leads
+        # -----------------------------------------
+        team_lead_ids = data.pop("team_leads", None)
+
+        if team_lead_ids is not None:
+
+            # Get current project employees
+            current_employee_ids = set(
+                project.employees.values_list(
+                    "id",
+                    flat=True
+                )
+            )
+
+            # Make sure all team leads are project employees
+            invalid_team_leads = (
+                set(team_lead_ids) - current_employee_ids
+            )
+
+            if invalid_team_leads:
+                return Response(
+                    {
+                        "team_leads":
+                            "All team leads must also be assigned to the project."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            for emp_id in team_lead_ids:
+                project.team_leads.add(emp_id)
+
+        # -----------------------------------------
+        # Update other project fields
+        # -----------------------------------------
+        serializer = self.get_serializer(
+            project,
+            data=data,
+            partial=True
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
         serializer.save()
 
-        read_serializer = ProjectReadSerializer(project, context={'request': request})
-        return Response(read_serializer.data)
+        # -----------------------------------------
+        # Return updated project
+        # -----------------------------------------
+        read_serializer = ProjectReadSerializer(
+            project,
+            context={
+                "request": request
+            }
+        )
 
+        return Response(
+            read_serializer.data
+        )
 
 
 # ============================================================
@@ -174,15 +235,30 @@ class RemoveEmployeeFromProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, project_id, employee_id):
-        project = get_object_or_404(Project, pk=project_id)
-        employee = get_object_or_404(Employee_db, pk=employee_id)
 
-        project.employees.remove(employee)
-        return Response(
-            {'detail': f'Employee {employee.name} removed from project {project.name}.'},
-            status=status.HTTP_200_OK
+        project = get_object_or_404(
+            Project,
+            pk=project_id
         )
 
+        employee = get_object_or_404(
+            Employee_db,
+            pk=employee_id
+        )
+
+        # Remove employee from project
+        project.employees.remove(employee)
+
+        # Also remove employee from team leads
+        project.team_leads.remove(employee)
+
+        return Response(
+            {
+                'detail':
+                    f'Employee {employee.name} removed from project {project.name}.'
+            },
+            status=status.HTTP_200_OK
+        )
 
 # ============================================================
 #  Employee Attendance Detail

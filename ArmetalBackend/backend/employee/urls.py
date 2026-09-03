@@ -56,6 +56,11 @@ urlpatterns = [
     views.EmployeeRehireView.as_view(),
     name="employee-rehire"
 ),
+path(
+        "employees/designations/",
+        views.CompanyDesignationListView.as_view(),
+        name="company-designations"
+    ),
 
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

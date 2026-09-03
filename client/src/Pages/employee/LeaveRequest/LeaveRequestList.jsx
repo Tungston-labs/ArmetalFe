@@ -96,8 +96,15 @@ export default function LeaveRequestList() {
     useState("");
 
 
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
+const today = new Date();
+
+const [selectedMonth, setSelectedMonth] = useState(
+  String(today.getMonth() + 1).padStart(2, "0")
+);
+
+const [selectedYear, setSelectedYear] = useState(
+  String(today.getFullYear())
+);
 
   // ======================================================
   // CONFIRM MODAL
@@ -508,7 +515,7 @@ useEffect(() => {
         }}
 
         searchPlaceholder={
-          "Search by Employee Name"
+          "Search by Employee Name / Code"
         }
 
 

@@ -135,13 +135,18 @@ export const getEmployeesNotInProject = createAsyncThunk(
 export const assignEmployees = createAsyncThunk(
   "projects/assignEmployees",
   async (
-    { projectId, employeeIds },
+    {
+      projectId,
+      employeeIds,
+      teamLeadIds,
+    },
     { rejectWithValue }
   ) => {
     try {
       return await projectService.assignEmployees(
         projectId,
-        employeeIds
+        employeeIds,
+        teamLeadIds
       );
     } catch (error) {
       return rejectWithValue(

@@ -62,7 +62,7 @@ class EmployeeListCreateView(generics.ListCreateAPIView):
 
     search_fields = [
         'name_search',
-        'employee_id'
+        'employee_id','employee_code'
     ]
 
     pagination_class = CustomPagination
@@ -1459,3 +1459,45 @@ class EmployeeRehireView(APIView):
                 {"error": "Unable to rehire employee."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+
+
+
+class CompanyDesignationListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        company = getattr(request.user, "company", None)
+
+        if not company:
+            return Response(
+                {"detail": "User has no company assigned."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        designations = (
+            Employee_db.objects
+            .filter(
+                department__company=company,
+                is_deleted=False
+            )
+            .exclude(
+                designation__isnull=True
+            )
+            .exclude(
+                designation=""
+            )
+            .values_list(
+                "designation",
+                flat=True
+            )
+            .distinct()
+            .order_by("designation")
+        )
+
+        return Response(
+            {
+                "designations": list(designations)
+            },
+            status=status.HTTP_200_OK
+        )

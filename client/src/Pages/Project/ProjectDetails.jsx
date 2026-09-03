@@ -113,15 +113,21 @@ const ProjectDetails = () => {
         if (typeof employee === "object" && employee !== null) {
             return {
                 id: employee.id,
+
                 name:
                     employee.name ||
                     employee.employee_name ||
                     employee.full_name ||
                     `Employee ${employee.id}`,
+
+                is_lead: employee.is_lead || false,
+
                 department_name:
                     employee.department_name || "-",
+
                 designation:
                     employee.designation || "-",
+
                 email:
                     employee.email || "-",
             };
@@ -130,6 +136,7 @@ const ProjectDetails = () => {
         return {
             id: employee,
             name: `Employee ${employee}`,
+            is_lead: false,
             department_name: "-",
             designation: "-",
             email: "-",
@@ -215,7 +222,10 @@ const ProjectDetails = () => {
     // ADD EMPLOYEES
     // =====================================================
 
-    const handleAddEmployees = async (employeeIds) => {
+    const handleAddEmployees = async ({
+        employeeIds,
+        teamLeadIds,
+    }) => {
         if (!project || !employeeIds?.length) {
             return;
         }
@@ -225,13 +235,10 @@ const ProjectDetails = () => {
                 assignEmployees({
                     projectId: project.id,
                     employeeIds,
+                    teamLeadIds,
                 })
             ).unwrap();
 
-            /*
-             * Reload project so the employee list
-             * always matches backend.
-             */
             await dispatch(
                 getProjectById(project.id)
             ).unwrap();
@@ -265,61 +272,59 @@ const ProjectDetails = () => {
     // =====================================================
 
     const handleUpdateProject = async (
-        formData,
-        editData
-    ) => {
-        if (!editData?.id) return;
+  formData,
+  editData
+) => {
+  if (!editData?.id) return;
 
-        try {
-            setIsUpdating(true);
+  try {
+    setIsUpdating(true);
 
-            /*
-             * Convert frontend modal fields
-             * to backend fields.
-             *
-             * Change these names if your
-             * serializer uses different names.
-             */
+    const projectData = {
+      name: formData.projectName,
+      punch_type: formData.projectType,
 
-            const projectData = {
-                name: formData.projectName,
-                punch_type: formData.projectType,
-                latitude: formData.latitude
-                    ? Number(formData.latitude)
-                    : null,
-                longitude: formData.longitude
-                    ? Number(formData.longitude)
-                    : null,
-                priority: formData.priority,
-                start_date: formData.startDate || null,
-                status: formData.projectStatus,
-            };
+      latitude: formData.latitude
+        ? Number(formData.latitude)
+        : null,
 
-            await dispatch(
-                updateProject({
-                    id: editData.id,
-                    projectData,
-                })
-            ).unwrap();
+      longitude: formData.longitude
+        ? Number(formData.longitude)
+        : null,
 
-            /*
-             * Reload details from backend.
-             */
-            await dispatch(
-                getProjectById(editData.id)
-            ).unwrap();
+      priority: formData.priority,
+      start_date: formData.startDate || null,
+      status: formData.projectStatus,
 
-            setShowProjectModal(false);
+      // Employees currently selected in Edit modal
+      employees: formData.employeeIds || [],
 
-        } catch (error) {
-            console.error(
-                "Failed to update project:",
-                error
-            );
-        } finally {
-            setIsUpdating(false);
-        }
+      // Employees marked as Team Lead
+      team_leads: formData.teamLeadIds || [],
     };
+
+    await dispatch(
+      updateProject({
+        id: editData.id,
+        projectData,
+      })
+    ).unwrap();
+
+    await dispatch(
+      getProjectById(editData.id)
+    ).unwrap();
+
+    setShowProjectModal(false);
+
+  } catch (error) {
+    console.error(
+      "Failed to update project:",
+      error
+    );
+  } finally {
+    setIsUpdating(false);
+  }
+};
 
     // =====================================================
     // DELETE PROJECT
@@ -395,6 +400,12 @@ const ProjectDetails = () => {
             accessor: "name",
             header: "Employee",
             sortable: true,
+            render: (row) => (
+                <span>
+                    {row.name}
+                    {row.is_lead && " (Team Lead)"}
+                </span>
+            ),
         },
         {
             accessor: "department_name",
@@ -446,21 +457,21 @@ const ProjectDetails = () => {
             ),
         },
     ];
-const formatDate = (date) => {
-    if (!date) return "-";
+    const formatDate = (date) => {
+        if (!date) return "-";
 
-    const parsedDate = new Date(date);
+        const parsedDate = new Date(date);
 
-    if (Number.isNaN(parsedDate.getTime())) {
-        return "-";
-    }
+        if (Number.isNaN(parsedDate.getTime())) {
+            return "-";
+        }
 
-    const day = String(parsedDate.getDate()).padStart(2, "0");
-    const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
-    const year = parsedDate.getFullYear();
+        const day = String(parsedDate.getDate()).padStart(2, "0");
+        const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+        const year = parsedDate.getFullYear();
 
-    return `${day}/${month}/${year}`;
-};
+        return `${day}/${month}/${year}`;
+    };
     // =====================================================
     // PROJECT STATS
     // =====================================================
@@ -478,24 +489,25 @@ const formatDate = (date) => {
                     "#E3F7ED",
             },
 
-            {
-                title: "Priority",
-                count:
-                    project.priority ||
-                    "-",
-                icon: <PiFlag />,
-                iconColor: "#FF8B2C",
-                backgroundColor:
-                    "#FFF1E5",
-            },
+            // {
+            //     title: "Priority",
+            //     count:
+            //         project.priority ||
+            //         "-",
+            //     icon: <PiFlag />,
+            //     iconColor: "#FF8B2C",
+            //     backgroundColor:
+            //         "#FFF1E5",
+            // },
 
             {
                 title: "Project Date",
-                  count: formatDate(
-        project.start_date || project.date
-    ),  
+                count: formatDate(
+                    project.start_date || project.date
+                ),
                 icon: <PiCalendarBlank />,
                 iconColor: "#3858C8",
+                
                 backgroundColor:
                     "#E8EDFF",
             },

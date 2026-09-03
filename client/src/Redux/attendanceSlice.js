@@ -61,12 +61,22 @@ export const searchAttendanceEmployees = createAsyncThunk(
 
 export const getAttendanceSummary = createAsyncThunk(
   "attendance/getSummary",
-  async ({ year, month, token, page = 1 }, thunkAPI) => {
+  async (
+    { year, month, token, page = 1, search = "" },
+    thunkAPI
+  ) => {
     try {
-      return await fetchAttendanceSummary({ year, month, token, page });
+      return await fetchAttendanceSummary({
+        year,
+        month,
+        token,
+        page,
+        search,
+      });
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch attendance summary"
+        error.response?.data ||
+          "Failed to fetch attendance summary"
       );
     }
   }

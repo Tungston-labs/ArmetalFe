@@ -23,7 +23,7 @@ import {
   validateLegalIdentity,
 } from "../../../utils/employeeCountryFields";
 import FormStepper from "../AddEmployee/Formstepper";
-
+import { getDesignations } from "../../../services/employeeService";
 
 export default function AddEmployeeForm() {
   const dispatch = useDispatch();
@@ -41,51 +41,71 @@ export default function AddEmployeeForm() {
     localStorage.getItem("user") || sessionStorage.getItem("user"),
   );
   const country = user?.company?.country || "IN";
+  const [designations, setDesignations] = useState([]);
 
-const [formData, setFormData] = useState({
-  name: "",
-  email: "",
-  phno: "",
-  address: "",
-  dob: "",
-  gender: "",
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phno: "",
+    address: "",
+    dob: "",
+    gender: "",
 
-  // ADD THESE
-  country: "",
-  blood_group: "",
+    // ADD THESE
+    country: "",
+    blood_group: "",
 
-  designation: "",
-  joining_date: "",
-  department_id: "",
-  employment_type: "",
+    designation: "",
+    joining_date: "",
+    department_id: "",
+    employment_type: "",
 
-  passport_number: "",
-  visa_expiry_date: "",
-  iqama_number: "",
-  aadar_number: "",
-  insurance_number: "",
+    passport_number: "",
+    visa_expiry_date: "",
+    iqama_number: "",
+    aadar_number: "",
+    insurance_number: "",
 
-  profile_pic: null,
+    profile_pic: null,
 
-  total_leave: "",
-  casual_leave: "",
-  sick_leave: "",
-  earned_leave: "",
-  maternity_leave: "",
-  other_leave: "",
+    total_leave: "",
+    casual_leave: "",
+    sick_leave: "",
+    earned_leave: "",
+    maternity_leave: "",
+    other_leave: "",
 
-  role: "",
-  contract_expiry_date: "",
-  idcard: null,
+    role: "",
+    contract_expiry_date: "",
+    idcard: null,
 
-  employee_id: "",
-  employee_code: "",
-});
+    employee_id: "",
+    employee_code: "",
+  });
   useEffect(() => {
     if (departmentList.length === 0) {
       dispatch(getDepartments({ page: 1, search: "" }));
     }
   }, [dispatch, departmentList.length]);
+
+  useEffect(() => {
+    const fetchDesignations = async () => {
+      try {
+        const data = await getDesignations();
+
+        setDesignations(
+          Array.isArray(data?.designations)
+            ? data.designations
+            : []
+        );
+      } catch (error) {
+        console.error("Failed to fetch designations:", error);
+        setDesignations([]);
+      }
+    };
+
+    fetchDesignations();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
@@ -115,7 +135,7 @@ const [formData, setFormData] = useState({
     const requiredFields = [
       "name", "address", "email", "dob", "phno",
       "gender", "designation", "joining_date",
-      "department_id", "employment_type", "total_leave", "role", "employee_code","blood_group","country"
+      "department_id", "employment_type", "total_leave", "role", "employee_code", "blood_group", "country"
     ];
 
     requiredFields.push(...getLegalFieldConfig(country).requiredFields);
@@ -260,8 +280,8 @@ const [formData, setFormData] = useState({
         <JobDetails
           country={country}
           departments={departmentList}
+          designations={designations}
           initialValues={formData}
-          // validateParent={validateForm}
           onFormChange={handleChange}
           errors={errors}
           ref={jobref}

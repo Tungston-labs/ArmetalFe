@@ -152,7 +152,7 @@ const payrollCards = getPayrollCards(counts, currencyCode);
       <ReusableFilter
         search={searchTerm}
         onSearch={setSearchTerm}
-        searchPlaceholder="Search by Employee Name "
+        searchPlaceholder="Search by Employee Name / Code"
         department={selectedDepartment}
         departments={departments}
         onDepartment={setSelectedDepartment}

@@ -16,6 +16,7 @@ from attendance.serializers import AttendanceSessionSerializer
 # ============================================================
 
 class EmployeeSerializer(serializers.ModelSerializer):
+
     department_name = serializers.CharField(
         source="department.name",
         read_only=True
@@ -23,8 +24,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     profile_pic = serializers.SerializerMethodField()
 
+    is_lead = serializers.SerializerMethodField()
+
     class Meta:
         model = Employee_db
+
         fields = [
             "id",
             "name",
@@ -36,9 +40,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "profile_pic",
             "joining_date",
             "gender",
+            "is_lead",
         ]
 
     def get_profile_pic(self, obj):
+
         request = self.context.get("request")
 
         if not obj.profile_pic:
@@ -50,6 +56,17 @@ class EmployeeSerializer(serializers.ModelSerializer):
             )
 
         return f"{settings.MEDIA_URL}{obj.profile_pic.url}"
+
+    def get_is_lead(self, obj):
+
+        project = self.context.get("project")
+
+        if not project:
+            return False
+
+        return project.team_leads.filter(
+            id=obj.id
+        ).exists()
 
 
 # ============================================================
@@ -82,6 +99,7 @@ class ProjectBaseSerializer(serializers.ModelSerializer):
             "status",
             "priority",
             "start_date",
+            "team_leads"
         ]
 
         read_only_fields = [
@@ -94,7 +112,7 @@ class ProjectBaseSerializer(serializers.ModelSerializer):
 # Used for Create / Update
 # ============================================================
 
-class ProjectSerializer(ProjectBaseSerializer):
+class ProjectSerializer(serializers.ModelSerializer):
 
     employees = serializers.PrimaryKeyRelatedField(
         queryset=Employee_db.objects.all(),
@@ -102,38 +120,72 @@ class ProjectSerializer(ProjectBaseSerializer):
         required=False
     )
 
-    company = serializers.StringRelatedField(
-        read_only=True
+    team_leads = serializers.PrimaryKeyRelatedField(
+        queryset=Employee_db.objects.all(),
+        many=True,
+        required=False
     )
+
+    company = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Project
+        fields = [
+            "id",
+            "name",
+            "punch_type",
+            "latitude",
+            "longitude",
+            "company",
+            "employees",
+            "team_leads",
+            "status",
+            "priority",
+            "start_date",
+        ]
+
+    def validate(self, attrs):
+        employees = attrs.get("employees", [])
+        team_leads = attrs.get("team_leads", [])
+
+        employee_ids = {employee.id for employee in employees}
+        team_lead_ids = {employee.id for employee in team_leads}
+
+        # Team leads must be project employees
+        if not team_lead_ids.issubset(employee_ids):
+            raise serializers.ValidationError({
+                "team_leads": "All team leads must also be assigned to the project."
+            })
+
+        return attrs
 
     def create(self, validated_data):
         employees = validated_data.pop("employees", [])
+        team_leads = validated_data.pop("team_leads", [])
 
-        project = Project.objects.create(
-            **validated_data
-        )
+        project = Project.objects.create(**validated_data)
 
         if employees:
             project.employees.set(employees)
 
+        if team_leads:
+            project.team_leads.set(team_leads)
+
         return project
 
     def update(self, instance, validated_data):
-        employees = validated_data.pop(
-            "employees",
-            None
-        )
+        employees = validated_data.pop("employees", None)
+        team_leads = validated_data.pop("team_leads", None)
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        instance.save()
+        instance = super().update(instance, validated_data)
 
         if employees is not None:
             instance.employees.set(employees)
 
-        return instance
+        if team_leads is not None:
+            instance.team_leads.set(team_leads)
 
+        return instance
 
 # ============================================================
 # Project Read Serializer
@@ -152,12 +204,13 @@ class ProjectReadSerializer(ProjectBaseSerializer):
         request = self.context.get("request")
 
         return EmployeeSerializer(
-            obj.employees.all(),
-            many=True,
-            context={
-                "request": request
-            }
-        ).data
+                obj.employees.all(),
+                many=True,
+                context={
+                    "request": request,
+                    "project": obj,
+                }
+            ).data
 
 
 # ============================================================
@@ -173,13 +226,44 @@ class ProjectWriteSerializer(ProjectBaseSerializer):
         required=False
     )
 
+    team_leads = serializers.PrimaryKeyRelatedField(
+        queryset=Employee_db.objects.all(),
+        many=True,
+        required=False
+    )
+
     # Company should not be sent from frontend
     company = serializers.StringRelatedField(
         read_only=True
     )
 
+    def validate(self, attrs):
+        employees = attrs.get("employees")
+        team_leads = attrs.get("team_leads")
+
+        # Only validate when both are provided
+        if employees is not None and team_leads is not None:
+
+            employee_ids = {
+                employee.id for employee in employees
+            }
+
+            team_lead_ids = {
+                employee.id for employee in team_leads
+            }
+
+            if not team_lead_ids.issubset(employee_ids):
+                raise serializers.ValidationError({
+                    "team_leads":
+                        "All team leads must also be assigned to the project."
+                })
+
+        return attrs
+
     def create(self, validated_data):
+
         employees = validated_data.pop("employees", [])
+        team_leads = validated_data.pop("team_leads", [])
 
         project = Project.objects.create(
             **validated_data
@@ -188,21 +272,36 @@ class ProjectWriteSerializer(ProjectBaseSerializer):
         if employees:
             project.employees.set(employees)
 
+        if team_leads:
+            project.team_leads.set(team_leads)
+
         return project
 
     def update(self, instance, validated_data):
+
         employees = validated_data.pop(
             "employees",
             None
         )
 
+        team_leads = validated_data.pop(
+            "team_leads",
+            None
+        )
+
+        # Update normal fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
         instance.save()
 
+        # Update employees
         if employees is not None:
             instance.employees.set(employees)
+
+        # Update team leads
+        if team_leads is not None:
+            instance.team_leads.set(team_leads)
 
         return instance
 

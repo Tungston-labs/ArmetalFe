@@ -504,16 +504,35 @@ class EmployeeSerializer(serializers.ModelSerializer):
         maternity_leave = validated_data.pop("maternity_leave", None)
         other_leave = validated_data.pop("other_leave", None)
 
+        # Keep old role before updating
+        old_role = instance.role
+
         employee_id = validated_data.get(
             "employee_id",
             instance.employee_id
         )
 
+        # Update employee fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
         instance.employee_id = employee_id
         instance.save()
+
+        # =====================================================
+        # UPDATE USER is_hr WHEN EMPLOYEE ROLE CHANGES
+        # =====================================================
+
+        if instance.user:
+            new_is_hr = instance.role == "hr"
+
+            if instance.user.is_hr != new_is_hr:
+                instance.user.is_hr = new_is_hr
+                instance.user.save(update_fields=["is_hr"])
+
+        # =====================================================
+        # UPDATE LEAVE BALANCES
+        # =====================================================
 
         leave_updates = {
             "casual": casual_leave,
@@ -554,6 +573,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
             total_leave += balance.total_leave
 
+        # Update total leave
         instance.total_leave = total_leave
         instance.save(update_fields=["total_leave"])
 
