@@ -148,15 +148,17 @@ const AttendanceReport = () => {
       selectedMonth.split("-");
 
     dispatch(
-      getAttendanceSummary({
-        year: Number(year),
-        month: Number(month),
-        page: 1,
-        token,
-      })
-    );
+  getAttendanceSummary({
+    year: Number(year),
+    month: Number(month),
+    page: 1,
+    search: searchTerm,
+    token,
+  })
+);
   }, [
     selectedMonth,
+    searchTerm,
     dispatch,
     token,
   ]);
@@ -165,57 +167,52 @@ const AttendanceReport = () => {
   // FILTER / SEARCH DATA
   // =========================================================
 
-  const visibleRows = useMemo(() => {
-    if (
-      !Array.isArray(
-        attendanceSummary
+const visibleRows = useMemo(() => {
+  if (!Array.isArray(attendanceSummary)) {
+    return [];
+  }
+
+  const q = searchTerm.trim().toLowerCase();
+
+  return attendanceSummary
+    .filter((emp) => {
+      const employeeName =
+        emp.employee_name || "";
+
+      const employeeCode =
+        emp.employee_id || "";
+
+      const matchSearch =
+        employeeName
+          .toLowerCase()
+          .includes(q) ||
+        employeeCode
+          .toLowerCase()
+          .includes(q);
+
+      const matchDepartment =
+        department === "" ||
+        emp.department === department;
+
+      return (
+        matchSearch &&
+        matchDepartment
+      );
+    })
+    .sort((a, b) =>
+      (a.employee_name || "").localeCompare(
+        b.employee_name || ""
       )
-    ) {
-      return [];
-    }
-
-    const q =
-      searchTerm
-        .trim()
-        .toLowerCase();
-
-    return attendanceSummary
-      .filter((emp) => {
-        const employeeName =
-          emp.employee_name || "";
-
-        const matchSearch =
-          employeeName
-            .toLowerCase()
-            .includes(q);
-
-        const matchDepartment =
-          department === "" ||
-          emp.department ===
-            department;
-
-        return (
-          matchSearch &&
-          matchDepartment
-        );
-      })
-      .sort((a, b) =>
-        (
-          a.employee_name || ""
-        ).localeCompare(
-          b.employee_name || ""
-        )
-      )
-      .map((emp) => ({
-        ...emp,
-        id: emp.employee_id,
-      }));
-  }, [
-    attendanceSummary,
-    searchTerm,
-    department,
-  ]);
-
+    )
+    .map((emp) => ({
+      ...emp,
+      id: emp.employee_id,
+    }));
+}, [
+  attendanceSummary,
+  searchTerm,
+  department,
+]);
   // =========================================================
   // OPEN EMPLOYEE ATTENDANCE SUMMARY PAGE
   // =========================================================
@@ -257,13 +254,14 @@ const AttendanceReport = () => {
       selectedMonth.split("-");
 
     dispatch(
-      getAttendanceSummary({
-        year: Number(year),
-        month: Number(month),
-        page,
-        token,
-      })
-    );
+  getAttendanceSummary({
+    year: Number(year),
+    month: Number(month),
+    page,
+    search: searchTerm,
+    token,
+  })
+);
   };
 
   // =========================================================
@@ -464,24 +462,22 @@ const AttendanceReport = () => {
       />
 
       {/* FILTER */}
-      <ReusableFilter
-        search={searchTerm}
-        onSearch={setSearchTerm}
-        searchPlaceholder="Search Employee Name"
+     <ReusableFilter
+  search={searchTerm}
+  onSearch={setSearchTerm}
+  searchPlaceholder="Search Employee Name or Code"
 
-        department={department}
-        departments={departments}
-        onDepartment={
-          setDepartment
-        }
+  department={department}
+  departments={departments}
+  onDepartment={setDepartment}
 
-        date={selectedMonth}
-        onDate={setSelectedMonth}
+  date={selectedMonth}
+  onDate={setSelectedMonth}
 
-        showSearch
-        showDepartment
-        showDate
-      />
+  showSearch
+  showDepartment
+  showDate
+/>
 
       {/* TABLE */}
       <PageWrapper>

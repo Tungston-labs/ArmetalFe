@@ -36,13 +36,22 @@ export const fetchAttendanceSummary = async ({
   month,
   token,
   page = 1,
+  search = "",
 }) => {
   const config = {
-    params: { year, month, page,  page_size: 20 }, 
+    params: {
+      year,
+      month,
+      page,
+      page_size: 20,
+      search,
+    },
   };
 
   if (token) {
-    config.headers = { Authorization: `Bearer ${token}` };
+    config.headers = {
+      Authorization: `Bearer ${token}`,
+    };
   }
 
   const response = await API.get(

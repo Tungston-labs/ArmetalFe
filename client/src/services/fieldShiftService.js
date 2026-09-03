@@ -39,10 +39,19 @@ const updateProject = async ({ id, projectData }) => {
   return response.data;
 };
 // Assign employees to a project
-const assignEmployees = async (projectId, employeeIds) => {
-  const response = await API.patch(`/project/${projectId}/`, {
-    employees: employeeIds,
-  });
+const assignEmployees = async (
+  projectId,
+  employeeIds,
+  teamLeadIds
+) => {
+  const response = await API.patch(
+    `/project/${projectId}/`,
+    {
+      employees: employeeIds,
+      team_leads: teamLeadIds,
+    }
+  );
+
   return response.data;
 };
 

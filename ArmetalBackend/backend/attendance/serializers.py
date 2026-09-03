@@ -87,6 +87,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     employee = serializers.IntegerField(source="id", read_only=True)
     employee_name = serializers.CharField(source="name", read_only=True)
     profile_pic = serializers.ImageField(read_only=True)
+    employee_code = serializers.CharField(read_only=True)
     attendance_id = serializers.IntegerField(read_only=True)  # comes from queryset annotation
 
     total_hours = serializers.DecimalField(
@@ -116,6 +117,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "employee",
             "employee_name",
             "employee_id",
+            "employee_code",
             "profile_pic",
             "date",
             "first_swipe_in",

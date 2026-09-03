@@ -87,7 +87,7 @@ const AttendanceList = () => {
         slNo: (currentPage - 1) * pageSize + index + 1,
         id: item.employee,
         name: item.employee_name,
-        employeeId: item.employee_id,
+        employeeId: item.employee_code,
         profilePic: item.profile_pic,
         date: item.date,
         firstSwipeIn: item.first_swipe_in || "--",

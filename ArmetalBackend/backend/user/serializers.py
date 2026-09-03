@@ -3,24 +3,43 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate, get_user_model
 
 User = get_user_model()
+from django.contrib.auth import authenticate
+from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+
     username_field = User.USERNAME_FIELD  # usually 'username' or 'email'
 
     @classmethod
     def get_token(cls, user):
+
         token = super().get_token(user)
-        # Add roles to token payload
+
+        # =====================================================
+        # USER ROLES IN JWT
+        # =====================================================
+
         token['is_superadmin'] = user.is_superadmin
         token['is_hr_admin'] = user.is_hr_admin
         token['is_employee'] = user.is_employee
-        token['is_hr'] = user.is_hr  # ✅ Add HR flag
+        token['is_hr'] = user.is_hr
+
         return token
 
     def validate(self, attrs):
+
         username = attrs.get("username")
         password = attrs.get("password")
-        fcm_token = self.context['request'].data.get("fcm_token")
+
+        request = self.context['request']
+
+        fcm_token = request.data.get("fcm_token")
+
+        # =====================================================
+        # AUTHENTICATE USER
+        # =====================================================
 
         user = authenticate(
             username=username,
@@ -32,68 +51,158 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 "Invalid username or password"
             )
 
+        # =====================================================
+        # CHECK USER ACTIVE
+        # =====================================================
+
         if not user.is_active:
             raise serializers.ValidationError(
                 "Your account has been disabled."
             )
 
-        company = None
+        # =====================================================
+        # FIND COMPANY
+        # =====================================================
 
-        # HR Admin / Company Admin
+        company = None
+        employee = None
+
+        # -----------------------------------------------------
+        # COMPANY / HR ADMIN
+        # -----------------------------------------------------
+
         if user.company:
             company = user.company
 
-        # Employee
-        elif hasattr(user, "employee_db"):
-            employee = user.employee_db
+        # -----------------------------------------------------
+        # EMPLOYEE / HR
+        # -----------------------------------------------------
+
+        elif hasattr(user, "employee_profile"):
+
+            employee = user.employee_profile
 
             if (
-                employee and
-                employee.department and
-                employee.department.company
+                employee
+                and employee.department
+                and employee.department.company
             ):
                 company = employee.department.company
+
+        # =====================================================
+        # CHECK COMPANY SUBSCRIPTION
+        # =====================================================
 
         if company and not company.is_active:
             raise serializers.ValidationError(
                 "Your company's subscription has expired."
             )
 
-        if user is None:
-            raise serializers.ValidationError("Invalid username or password")
+        # =====================================================
+        # UPDATE FCM TOKEN
+        # =====================================================
 
         if fcm_token:
+
             user.fcm_token = fcm_token
-            user.save(update_fields=["fcm_token"])
+
+            user.save(
+                update_fields=["fcm_token"]
+            )
+
+        # =====================================================
+        # GENERATE JWT
+        # =====================================================
 
         data = super().validate(attrs)
 
-        # ✅ Find company
+        # =====================================================
+        # FIND COMPANY AND EMPLOYEE
+        # =====================================================
+
         company = None
+        employee = None
+
+        # Always check employee profile first
+        if hasattr(user, "employee_profile"):
+            employee = user.employee_profile
+
+        # Company/Admin users have company directly
         if user.company:
             company = user.company
-        elif hasattr(user, "employee_db") and user.employee_db.department and user.employee_db.department.company:
-            company = user.employee_db.department.company
+
+        # Employee users may get company through department
+        elif (
+            employee
+            and employee.department
+            and employee.department.company
+        ):
+            company = employee.department.company
+
+
+        # =====================================================
+        # CHECK COMPANY SUBSCRIPTION
+        # =====================================================
+
+        if company and not company.is_active:
+            raise serializers.ValidationError(
+                "Your company's subscription has expired."
+            )
+
+
+        # =====================================================
+        # COMPANY MODULES
+        # =====================================================
 
         company_modules = company.modules if company else {}
 
-        # ✅ Return structured user data + company info
+
+        # =====================================================
+        # DISPLAY NAME
+        # =====================================================
+
+        if employee and user.is_employee:
+            # HR employee or normal employee
+            display_name = employee.name
+
+        elif company:
+            # Company Admin / HR Admin
+            display_name = company.name
+
+        else:
+            display_name = user.username
+
+
+        # =====================================================
+        # USER RESPONSE
+        # =====================================================
+
         data['user'] = {
             'id': user.id,
             'username': user.username,
             'email': user.email,
+
+            'name': display_name,
+
             'is_superadmin': user.is_superadmin,
             'is_hr_admin': user.is_hr_admin,
             'is_employee': user.is_employee,
             'is_hr': user.is_hr,
+
             'company_modules': company_modules,
+
             'fcm_token': user.fcm_token,
-            "company": {
-                "id": company.id if company else None,
-                "name": company.name if company else None,
-                "location": company.location if company else None,
-                "country":company.country if company else None,
-                "logo": self.context['request'].build_absolute_uri(company.logo.url) if company and company.logo else None  
+
+            'company': {
+                'id': company.id if company else None,
+                'name': company.name if company else None,
+                'location': company.location if company else None,
+                'country': company.country if company else None,
+                'logo': (
+                    request.build_absolute_uri(company.logo.url)
+                    if company and company.logo
+                    else None
+                )
             }
         }
 

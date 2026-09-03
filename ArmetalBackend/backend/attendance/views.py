@@ -851,12 +851,30 @@ class EmployeeAttendanceSummaryView(generics.ListAPIView):
         # Company employees
         # -------------------------------------------------
 
+        # -------------------------------------------------
+        # Company employees
+        # -------------------------------------------------
+
         qs = Employee_db.objects.select_related(
             "department",
             "department__company"
         ).filter(
-            department__company=user.company,is_deleted=False
+            department__company=user.company,
+            is_deleted=False
         )
+
+        # -------------------------------------------------
+        # Search by employee name / employee ID / code
+        # -------------------------------------------------
+
+        search = self.request.query_params.get("search", "").strip()
+
+        if search:
+            qs = qs.filter(
+                Q(name__icontains=search) |
+                Q(employee_id__icontains=search) |
+                Q(employee_code__icontains=search)
+            )
 
         # -------------------------------------------------
         # Employee / HR role

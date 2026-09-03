@@ -55,6 +55,11 @@ class Project(models.Model):
         related_name='projects',
         blank=True
     )
+    team_leads = models.ManyToManyField(
+        Employee_db,
+        related_name='team_lead_projects',
+        blank=True
+    )
 
     status = models.CharField(
         max_length=20,

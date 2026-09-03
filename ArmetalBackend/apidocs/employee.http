@@ -120,3 +120,10 @@ Content-Type: application/json
 {
   
 }
+
+
+
+###
+GET http://127.0.0.1:8000/api/employees/designations/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4NDUzNTI5LCJpYXQiOjE3ODg0MjQ3MjksImp0aSI6IjJiZWU1YzQ0N2RmOTQ3NmI5ZWY0MTU3OTIyZmJjOWU0IiwidXNlcl9pZCI6NywiaXNfc3VwZXJhZG1pbiI6ZmFsc2UsImlzX2hyX2FkbWluIjpmYWxzZSwiaXNfZW1wbG95ZWUiOnRydWUsImlzX2hyIjp0cnVlfQ.dMLBbmYZVsF51QF41Fvj4k3S5j9c0xCOSQcz1By_HDE
+

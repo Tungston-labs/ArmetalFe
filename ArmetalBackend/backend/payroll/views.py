@@ -49,7 +49,7 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
     serializer_class = EmployeePayrollRecordSerializer
     permission_classes = [IsAuthenticated, IsHRAdmin]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['employee__name', 'employee__employee_id']
+    search_fields = ['employee__name_search', 'employee__employee_id','employee__employee_code']
 
     def get_queryset(self):
         company = self.request.user.company
@@ -76,10 +76,16 @@ class EmployeePayrollRecordListCreateView(generics.GenericAPIView):
                 employee__in=employees,
                 year=year,
                 month=month
+            ).select_related(
+                'employee',
+                'employee__department'
             )
         else:
             queryset = EmployeePayrollRecord.objects.filter(
                 employee__in=employees
+            ).select_related(
+                'employee',
+                'employee__department'
             )
 
         return queryset
