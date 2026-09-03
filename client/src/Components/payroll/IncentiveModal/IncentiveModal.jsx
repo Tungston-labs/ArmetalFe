@@ -34,12 +34,7 @@ import {
 
 import { updatePayrollIncentive } from "../../../Redux/payrollSlice";
 
-const IncentiveModal = ({
-  onClose,
-  employees = [],
-  month,
-  year,
-}) => {
+const IncentiveModal = ({ onClose, employees = [], month, year }) => {
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
@@ -66,10 +61,7 @@ const IncentiveModal = ({
       const name = employee?.employee_name?.toLowerCase() || "";
       const employeeId = employee?.employee_id?.toLowerCase() || "";
 
-      return (
-        name.includes(value) ||
-        employeeId.includes(value)
-      );
+      return name.includes(value) || employeeId.includes(value);
     });
   }, [employees, search]);
 
@@ -78,14 +70,10 @@ const IncentiveModal = ({
   // -----------------------------------------
   const handleEmployeeSelect = (employee) => {
     setSelectedEmployees((prev) => {
-      const exists = prev.some(
-        (item) => item.id === employee.id
-      );
+      const exists = prev.some((item) => item.id === employee.id);
 
       if (exists) {
-        return prev.filter(
-          (item) => item.id !== employee.id
-        );
+        return prev.filter((item) => item.id !== employee.id);
       }
 
       return [...prev, employee];
@@ -104,140 +92,130 @@ const IncentiveModal = ({
   // -----------------------------------------
   const removeEmployee = (employeeId) => {
     setSelectedEmployees((prev) =>
-      prev.filter((item) => item.id !== employeeId)
+      prev.filter((item) => item.id !== employeeId),
     );
   };
 
   // -----------------------------------------
   // Save incentive for all selected employees
   // -----------------------------------------
-const handleSave = async () => {
-  const newErrors = {};
+  const handleSave = async () => {
+    const newErrors = {};
 
-  if (selectedEmployees.length === 0) {
-    newErrors.employee = "Please select at least one employee";
-  }
+    if (selectedEmployees.length === 0) {
+      newErrors.employee = "Please select at least one employee";
+    }
 
-  if (!amount) {
-    newErrors.amount = "Amount is required";
-  } else if (Number(amount) <= 0) {
-    newErrors.amount = "Amount must be greater than 0";
-  }
+    if (!amount) {
+      newErrors.amount = "Amount is required";
+    } else if (Number(amount) <= 0) {
+      newErrors.amount = "Amount must be greater than 0";
+    }
 
-  if (!type.trim()) {
-    newErrors.type = "Incentive type is required";
-  }
+    if (!type.trim()) {
+      newErrors.type = "Incentive type is required";
+    }
 
-  if (remarks.length > 200) {
-    newErrors.remarks = "Remarks cannot exceed 200 characters";
-  }
+    if (remarks.length > 200) {
+      newErrors.remarks = "Remarks cannot exceed 200 characters";
+    }
 
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    return;
-  }
-
-  setErrors({});
-  setLoading(true);
-
-  try {
-    const results = await Promise.allSettled(
-      selectedEmployees.map((employee) =>
-        dispatch(
-          updatePayrollIncentive({
-            employeeId: employee.employee,
-            month,
-            year,
-            incentive_amount: amount,
-            incentive_type: type,
-            incentive_reason: remarks,
-          })
-        ).unwrap()
-      )
-    );
-
-    const failedEmployees = [];
-    let successCount = 0;
-
-    results.forEach((result, index) => {
-      const employee = selectedEmployees[index];
-
-      if (result.status === "fulfilled") {
-        successCount++;
-      } else {
-        const error = result.reason;
-
-        let message =
-          error?.error ||
-          error?.message ||
-          error?.detail ||
-          (typeof error === "string" ? error : null) ||
-          "Failed to add incentive";
-
-        failedEmployees.push({
-          employee,
-          message,
-        });
-      }
-    });
-
-    // All successful
-    if (failedEmployees.length === 0) {
-      onClose(true);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
-    // Some failed / some successful
-    setErrors({
-      general:
-        successCount > 0
-          ? `${successCount} employee${
-              successCount > 1 ? "s" : ""
-            } updated successfully.`
-          : "Failed to add incentive.",
-      employeeErrors: failedEmployees,
-    });
-  } catch (error) {
-    console.error("Incentive Error:", error);
+    setErrors({});
+    setLoading(true);
 
-    setErrors({
-      general:
-        error?.error ||
-        error?.message ||
-        "Failed to add incentive",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      const results = await Promise.allSettled(
+        selectedEmployees.map((employee) =>
+          dispatch(
+            updatePayrollIncentive({
+              employeeId: employee.employee,
+              month,
+              year,
+              incentive_amount: amount,
+              incentive_type: type,
+              incentive_reason: remarks,
+            }),
+          ).unwrap(),
+        ),
+      );
+
+      const failedEmployees = [];
+      let successCount = 0;
+
+      results.forEach((result, index) => {
+        const employee = selectedEmployees[index];
+
+        if (result.status === "fulfilled") {
+          successCount++;
+        } else {
+          const error = result.reason;
+
+          let message =
+            error?.error ||
+            error?.message ||
+            error?.detail ||
+            (typeof error === "string" ? error : null) ||
+            "Failed to add incentive";
+
+          failedEmployees.push({
+            employee,
+            message,
+          });
+        }
+      });
+
+      // All successful
+      if (failedEmployees.length === 0) {
+        onClose(true);
+        return;
+      }
+
+      // Some failed / some successful
+      setErrors({
+        general:
+          successCount > 0
+            ? `${successCount} employee${
+                successCount > 1 ? "s" : ""
+              } updated successfully.`
+            : "Failed to add incentive.",
+        employeeErrors: failedEmployees,
+      });
+    } catch (error) {
+      console.error("Incentive Error:", error);
+
+      setErrors({
+        general: error?.error || error?.message || "Failed to add incentive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Overlay>
       <Modal>
-
         {/* HEADER */}
         <Header>
           <HeaderLeft>
             <Title>Add Incentive</Title>
 
             <Subtitle>
-              {new Date(
-                year,
-                month - 1
-              ).toLocaleString("en-IN", {
+              {new Date(year, month - 1).toLocaleString("en-IN", {
                 month: "long",
                 year: "numeric",
               })}
             </Subtitle>
           </HeaderLeft>
 
-          <CloseBtn onClick={() => onClose(false)}>
-            ✕
-          </CloseBtn>
+          <CloseBtn onClick={() => onClose(false)}>✕</CloseBtn>
         </Header>
 
         <Body>
-
           {/* SEARCH */}
           <Field>
             <Label>Search Employee</Label>
@@ -246,9 +224,7 @@ const handleSave = async () => {
               type="text"
               placeholder="Search by employee name or ID..."
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
+              onChange={(e) => setSearch(e.target.value)}
             />
           </Field>
 
@@ -273,40 +249,29 @@ const handleSave = async () => {
           <EmployeeList>
             {filteredEmployees.length > 0 ? (
               filteredEmployees.map((employee) => {
-                const isSelected =
-                  selectedEmployees.some(
-                    (item) => item.id === employee.id
-                  );
+                const isSelected = selectedEmployees.some(
+                  (item) => item.id === employee.id,
+                );
 
                 return (
                   <EmployeeItem
                     key={employee.id}
                     $selected={isSelected}
-                    onClick={() =>
-                      handleEmployeeSelect(employee)
-                    }
+                    onClick={() => handleEmployeeSelect(employee)}
                   >
                     <Checkbox
                       type="checkbox"
                       checked={isSelected}
-                      onChange={() =>
-                        handleEmployeeSelect(employee)
-                      }
-                      onClick={(e) =>
-                        e.stopPropagation()
-                      }
+                      onChange={() => handleEmployeeSelect(employee)}
+                      onClick={(e) => e.stopPropagation()}
                     />
 
                     <Avatar>
-                      {employee?.employee_name
-                        ?.slice(0, 2)
-                        .toUpperCase()}
+                      {employee?.employee_name?.slice(0, 2).toUpperCase()}
                     </Avatar>
 
                     <EmpInfo>
-                      <EmpName>
-                        {employee?.employee_name}
-                      </EmpName>
+                      <EmpName>{employee?.employee_name}</EmpName>
 
                       <EmpSub>
                         {employee?.employee_id} ·{" "}
@@ -330,75 +295,69 @@ const handleSave = async () => {
             )}
           </EmployeeList>
 
-      {errors.general && (
-  <div
-    style={{
-      marginTop: "10px",
-      padding: "10px",
-      borderRadius: "6px",
-      background: "#fff4f4",
-      border: "1px solid #f5c2c2",
-    }}
-  >
-    <p
-      style={{
-        color: "#d32f2f",
-        fontSize: "13px",
-        fontWeight: "600",
-        margin: "0 0 8px",
-      }}
-    >
-      {errors.general}
-    </p>
+          {errors.general && (
+            <div
+              style={{
+                marginTop: "10px",
+                padding: "10px",
+                borderRadius: "6px",
+                background: "#fff4f4",
+                border: "1px solid #f5c2c2",
+              }}
+            >
+              <p
+                style={{
+                  color: "#d32f2f",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  margin: "0 0 8px",
+                }}
+              >
+                {errors.general}
+              </p>
 
-    {errors.employeeErrors?.map((item) => (
-      <div
-        key={item.employee.id}
-        style={{
-          marginTop: "6px",
-          padding: "8px",
-          background: "#fff",
-          borderRadius: "5px",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "12px",
-            fontWeight: "600",
-            color: "#333",
-          }}
-        >
-          {item.employee.employee_name}
-        </div>
+              {errors.employeeErrors?.map((item) => (
+                <div
+                  key={item.employee.id}
+                  style={{
+                    marginTop: "6px",
+                    padding: "8px",
+                    background: "#fff",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      color: "#333",
+                    }}
+                  >
+                    {item.employee.employee_name}
+                  </div>
 
-        <div
-          style={{
-            color: "#d32f2f",
-            fontSize: "12px",
-            marginTop: "3px",
-          }}
-        >
-          {item.message}
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+                  <div
+                    style={{
+                      color: "#d32f2f",
+                      fontSize: "12px",
+                      marginTop: "3px",
+                    }}
+                  >
+                    {item.message}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* SELECTED EMPLOYEES */}
           {selectedEmployees.length > 0 && (
             <SelectedEmployees>
               {selectedEmployees.map((employee) => (
                 <SelectedEmployee key={employee.id}>
-                  <span>
-                    {employee.employee_name}
-                  </span>
+                  <span>{employee.employee_name}</span>
 
-                  <RemoveBtn
-                    onClick={() =>
-                      removeEmployee(employee.id)
-                    }
-                  >
+                  <RemoveBtn onClick={() => removeEmployee(employee.id)}>
                     ✕
                   </RemoveBtn>
                 </SelectedEmployee>
@@ -415,9 +374,7 @@ const handleSave = async () => {
                 type="number"
                 placeholder="e.g. 8000"
                 value={amount}
-                onChange={(e) =>
-                  setAmount(e.target.value)
-                }
+                onChange={(e) => setAmount(e.target.value)}
               />
 
               {errors.amount && (
@@ -439,9 +396,7 @@ const handleSave = async () => {
                 type="text"
                 placeholder="e.g. Sales Bonus"
                 value={type}
-                onChange={(e) =>
-                  setType(e.target.value)
-                }
+                onChange={(e) => setType(e.target.value)}
               />
 
               {errors.type && (
@@ -463,9 +418,7 @@ const handleSave = async () => {
             <TextArea
               placeholder="Briefly describe the reason for this incentive..."
               value={remarks}
-              onChange={(e) =>
-                setRemarks(e.target.value)
-              }
+              onChange={(e) => setRemarks(e.target.value)}
             />
 
             {errors.remarks && (
@@ -479,22 +432,13 @@ const handleSave = async () => {
               </p>
             )}
           </Field>
-
-          
         </Body>
 
         {/* FOOTER */}
         <Footer>
-          <CancelBtn
-            onClick={() => onClose(false)}
-          >
-            Cancel
-          </CancelBtn>
+          <CancelBtn onClick={() => onClose(false)}>Cancel</CancelBtn>
 
-          <SaveBtn
-            onClick={handleSave}
-            disabled={loading}
-          >
+          <SaveBtn onClick={handleSave} disabled={loading}>
             {loading
               ? "Saving..."
               : `Save Incentive${
@@ -504,7 +448,6 @@ const handleSave = async () => {
                 }`}
           </SaveBtn>
         </Footer>
-
       </Modal>
     </Overlay>
   );

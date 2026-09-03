@@ -275,17 +275,20 @@ const TopBar = () => {
 
           {/* =================================================
               NOTIFICATION
+              Hidden for Super Admins.
           ================================================= */}
 
-          <NotificationButton
-            onClick={() => setShowNotifications(true)}
-          >
+          {!user?.is_superadmin && (
+            <NotificationButton
+              onClick={() => setShowNotifications(true)}
+            >
 
-            <FaRegBell size={25} />
+              <FaRegBell size={25} />
 
-            <NotificationDot />
+              <NotificationDot />
 
-          </NotificationButton>
+            </NotificationButton>
+          )}
 
 
           {/* =================================================
@@ -473,4 +476,3 @@ const TopBar = () => {
 
 
 export default TopBar;
-

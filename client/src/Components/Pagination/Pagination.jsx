@@ -3,10 +3,11 @@ import {
   PaginationWrapper,
   PageButton,
   Ellipsis,
+  TotalRecords,
 } from "./Pagination.styles";
 
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  if (totalPages <= 1) return null;
+const Pagination = ({ currentPage, totalPages, totalRecords, onPageChange }) => {
+  if (totalPages <= 1 && totalRecords === undefined) return null;
 
   const getPages = () => {
     const pages = [];
@@ -37,6 +38,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
   return (
     <PaginationWrapper>
+      {totalRecords !== undefined && (
+        <TotalRecords>TOTAL RECORDS: {totalRecords}</TotalRecords>
+      )}
+      {totalPages > 1 && (
+        <>
       <PageButton
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
@@ -64,6 +70,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       >
         »
       </PageButton>
+        </>
+      )}
     </PaginationWrapper>
   );
 };

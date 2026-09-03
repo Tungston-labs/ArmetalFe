@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-} from "./Visa.Styles";
+import { Container } from "./Visa.Styles";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllEmployees,
   getUpcomingExpiryEmployees,
 } from "../../Redux/employeeSlice";
-import Pagination from "../../Components/Pagination/Pagination"
+import Pagination from "../../Components/Pagination/Pagination";
 import ReusableTable from "../../Components/ReusableTable/ReusableTable";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
@@ -24,10 +22,10 @@ const ContractAndVisaExpiry = () => {
   const dispatch = useDispatch();
 
   const { employeeList, loading, pagination } = useSelector(
-    (state) => state.employees
+    (state) => state.employees,
   );
   const user = JSON.parse(
-    localStorage.getItem("user") || sessionStorage.getItem("user")
+    localStorage.getItem("user") || sessionStorage.getItem("user"),
   );
 
   const country = user?.company?.country || "IN";
@@ -47,8 +45,7 @@ const ContractAndVisaExpiry = () => {
 
   useEffect(() => {
     if (expiryFilter) {
-      const mappedType =
-        EXPIRY_TYPE_MAP[expiryFilter] || expiryFilter;
+      const mappedType = EXPIRY_TYPE_MAP[expiryFilter] || expiryFilter;
 
       dispatch(
         getUpcomingExpiryEmployees({
@@ -56,18 +53,12 @@ const ContractAndVisaExpiry = () => {
           days: 30,
           page,
           search: debouncedSearch,
-        })
+        }),
       );
     } else {
       dispatch(getAllEmployees({ page, search: debouncedSearch }));
     }
   }, [dispatch, page, debouncedSearch, expiryFilter]);
-
-  useEffect(() => {
-    if (pagination?.total_pages && page > pagination.total_pages) {
-      setPage(pagination.total_pages);
-    }
-  }, [pagination?.total_pages]);
 
   const handleSearch = (value) => {
     setSearchText(value);
@@ -84,7 +75,6 @@ const ContractAndVisaExpiry = () => {
   };
 
   const currentPage = pagination?.current_page || 1;
-
   const handlePageChange = (newPage) => {
     if (!newPage || newPage < 1) return;
     setPage(newPage);
@@ -127,35 +117,30 @@ const ContractAndVisaExpiry = () => {
   return (
     <>
       <Container>
-     
         <ReusableHeader
           title="Employees"
           breadcrumbs={["Employees", "Visa & Contract"]}
-
         />
         <ReusableFilter
           search={searchText}
           onSearch={handleSearch}
           searchPlaceholder="Search by Employee Name "
           status={expiryFilter}
-          statuses={[
-            "Contract Within 30 Days",
-            "Visa Within 30 Days",
-          ]}
+          statuses={["Contract Within 30 Days", "Visa Within 30 Days"]}
           onStatus={setExpiryFilter}
-
           showSearch
           showStatus
         />
         <ReusableTable
-      columns={columns}
-      data={employeeList || []}
-      loading={loading}
-    />
+          columns={columns}
+          data={employeeList || []}
+          loading={loading}
+        />
 
         <Pagination
           currentPage={currentPage}
           totalPages={pagination?.total_pages || 1}
+          totalRecords={pagination?.count ?? pagination?.total_items ?? 0}
           onPageChange={handlePageChange}
         />
       </Container>

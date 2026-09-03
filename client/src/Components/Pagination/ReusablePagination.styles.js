@@ -14,6 +14,13 @@ export const PaginationWrapper = styled.div`
   z-index: 10;
 `;
 
+export const TotalRecords = styled.span`
+  margin-right: auto;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+`;
+
 export const ArrowButton = styled.button`
   width: 30px;
   height: 30px;

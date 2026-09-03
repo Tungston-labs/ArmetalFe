@@ -79,6 +79,7 @@ const Employee = () => {
             <ReusablePagination
                 currentPage={currentPage}
                 totalPages={totalPages}
+                totalRecords={employees.length}
                 onPageChange={setCurrentPage}
             />
 

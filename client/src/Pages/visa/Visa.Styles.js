@@ -6,6 +6,16 @@ export const Container = styled.div`
   font-family: Satoshi;
 `;
 
+export const ExpiryAlert = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1rem;
+  color: #000000;
+  font-size: 0.9rem;
+  font-weight: 600;
+`;
+
 export const Pagination = styled.div`
   display: flex;
   justify-content: flex-start; /* changed from flex-end to flex-start */

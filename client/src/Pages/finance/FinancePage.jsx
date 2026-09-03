@@ -129,6 +129,7 @@ useEffect(() => {
         <Pagination
           currentPage={page}
           totalPages={pagination?.totalPages || 1}
+          totalRecords={pagination?.totalItems ?? 0}
           onPageChange={handlePageChange}
         />
       </Container>

@@ -153,6 +153,7 @@ const EmployeeList = () => {
     <ReusablePagination
         currentPage={pagination?.current_page || page}
         totalPages={pagination?.total_pages || 1}
+        totalRecords={pagination?.count ?? pagination?.total_items ?? 0}
         onPageChange={setPage}
     />
 )}

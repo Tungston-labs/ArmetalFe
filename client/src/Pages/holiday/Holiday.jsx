@@ -38,6 +38,11 @@ const HolidayManager = () => {
     loading,
     totalPages = 1,
     currentPage = 1,
+    // `count` should be the server-side total record count for this
+    // Redux slice (e.g. from a DRF-style paginated response). Adjust
+    // this field name if your holidaySlice stores it under something
+    // else (e.g. totalCount, totalItems).
+    count,
   } = useSelector(state => state.holidays);
 
   const [searchText, setSearchText] = useState("");
@@ -254,6 +259,7 @@ const HolidayManager = () => {
         <Pagination
           currentPage={page}
           totalPages={Number(totalPages) || 1}
+          totalRecords={count ?? sortedHolidays.length}
           onPageChange={handlePageChange}
         />
       </Container>

@@ -595,6 +595,7 @@ const PayrollTable = () => {
         <Pagination
           currentPage={page}
           totalPages={totalPages}
+          totalRecords={data.length}
           onPageChange={handlePageChange}
         />
 

@@ -59,7 +59,7 @@ const AttendanceList = () => {
         setCurrentPage(1);
     }, [department, date]);
 
-    const pageSize = 10;
+    const pageSize = 20;
 
     const renderError = (err) => {
         if (!err) return null;
@@ -168,6 +168,7 @@ const AttendanceList = () => {
                     <ReusablePagination
                         currentPage={pagination?.current_page || currentPage}
                         totalPages={pagination?.total_pages || 1}
+                        totalRecords={pagination?.total_items ?? 0}
                         onPageChange={setCurrentPage}
                     />
                 </>
