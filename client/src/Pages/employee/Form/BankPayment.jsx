@@ -3,13 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   Container,
-  Header,
-  Title,
-  Subtitle,
-  RoleInfo,
-  Hr,
 } from "./BankPayment.Styles";
-import Multistep from "../../../Components/Employee/AddForm/Multistep";
 import Table from "../../../Components/Employee/AddForm/Table";
 import {
   submitBankPayment,
@@ -18,11 +12,6 @@ import {
 } from "../../../Redux/employeeSlice";
 import { clearBankPayment } from "../../../Redux/employeeSlice";
 import Loader from "../../../Components/Loader/Loader";
-import EmployeeIcon from "../../../assets/employeeicon.svg";
-import { EmployeeImage } from "./BasicLevel.Styles";
-
-import { Divider } from "../../reimbursement/Reimb_info.Styles";
-import EmployeeTitle from "../../../Components/Employee/Headers/EmployeeTitle";
 import {
   getBankFieldConfig,
   getBankSubmissionDefaults,

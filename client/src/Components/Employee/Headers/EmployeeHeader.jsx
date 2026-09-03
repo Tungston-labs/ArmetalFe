@@ -8,8 +8,12 @@ import {
   Input,
   TextArea,
   Select,
-  ErrorText,SectionTitle
+  ErrorText,
+  SectionTitle,
 } from "./EmployeeHeader.Styles";
+
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
 const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErrors }) => {
   const MAX_SIZE = 5 * 1024 * 1024;
@@ -35,23 +39,42 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
       setFormData((prev) => ({ ...prev, [name]: file }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
+
+      // Clear any existing email error while the user is still typing.
+      // Actual validation happens on blur (see handleBlur below).
+      if (name === "email" && errors?.email) {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
     }
 
     setIsFormDirty(true);
   };
 
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
 
+    if (name === "email") {
+      if (!value.trim()) {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      } else if (!EMAIL_REGEX.test(value.trim())) {
+        setErrors((prev) => ({
+          ...prev,
+          email: "Please enter a valid email address (e.g. name@example.com).",
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
+    }
+  };
 
   return (
     <Container>
- 
-            <SectionTitle>Basic Details</SectionTitle>
+      <SectionTitle>Basic Details</SectionTitle>
 
       <InfoWrapper>
-
         <Row>
           <FieldGroup>
-            <FieldLabel>Name</FieldLabel>
+            <FieldLabel $required>Name</FieldLabel>
             <Input
               type="text"
               name="name"
@@ -64,26 +87,27 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Email</FieldLabel>
+            <FieldLabel $required>Email</FieldLabel>
             <Input
               type="email"
               name="email"
               placeholder="Enter email address"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               autoComplete="off"
             />
             {errors?.email && <ErrorText>{errors.email}</ErrorText>}
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Date of Birth</FieldLabel>
+            <FieldLabel $required>Date of Birth</FieldLabel>
             <Input type="date" name="dob" value={formData.dob} onChange={handleChange} />
             {errors?.dob && <ErrorText>{errors.dob}</ErrorText>}
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Employee ID</FieldLabel>
+            <FieldLabel $required>Employee ID</FieldLabel>
             <Input
               type="text"
               name="employee_code"
@@ -96,7 +120,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Gender</FieldLabel>
+            <FieldLabel $required>Gender</FieldLabel>
             <Select name="gender" value={formData.gender} onChange={handleChange}>
               <option value="">Select Gender</option>
               <option>Male</option>
@@ -107,10 +131,9 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
         </Row>
 
-        {/* Row 2: Contact Number, Address, Country, Blood Group */}
         <Row>
           <FieldGroup>
-            <FieldLabel>Contact Number</FieldLabel>
+            <FieldLabel $required>Contact Number</FieldLabel>
             <Input
               type="number"
               name="phno"
@@ -123,7 +146,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Address</FieldLabel>
+            <FieldLabel $required>Address</FieldLabel>
             <Input
               name="address"
               placeholder="Enter full address"
@@ -135,44 +158,37 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-  <FieldLabel>Country</FieldLabel>
+            <FieldLabel $required>Country</FieldLabel>
+            <Input
+              type="text"
+              name="country"
+              placeholder="Enter country"
+              value={formData.country}
+              onChange={handleChange}
+              autoComplete="off"
+            />
+            {errors?.country && <ErrorText>{errors.country}</ErrorText>}
+          </FieldGroup>
 
-  <Input
-    type="text"
-    name="country"
-    placeholder="Enter country"
-    value={formData.country}
-    onChange={handleChange}
-    autoComplete="off"
-  />
-
-  {errors?.country && (
-    <ErrorText>{errors.country}</ErrorText>
-  )}
-</FieldGroup>
-       <FieldGroup>
-  <FieldLabel>Blood Group</FieldLabel>
-
-  <Select
-    name="blood_group"
-    value={formData.blood_group}
-    onChange={handleChange}
-  >
-    <option value="">Select Blood Group</option>
-    <option>A+</option>
-    <option>A-</option>
-    <option>B+</option>
-    <option>B-</option>
-    <option>AB+</option>
-    <option>AB-</option>
-    <option>O+</option>
-    <option>O-</option>
-  </Select>
-
-  {errors?.blood_group && (
-    <ErrorText>{errors.blood_group}</ErrorText>
-  )}
-</FieldGroup>
+          <FieldGroup>
+            <FieldLabel $required>Blood Group</FieldLabel>
+            <Select
+              name="blood_group"
+              value={formData.blood_group}
+              onChange={handleChange}
+            >
+              <option value="">Select Blood Group</option>
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+              <option>O+</option>
+              <option>O-</option>
+            </Select>
+            {errors?.blood_group && <ErrorText>{errors.blood_group}</ErrorText>}
+          </FieldGroup>
         </Row>
       </InfoWrapper>
     </Container>

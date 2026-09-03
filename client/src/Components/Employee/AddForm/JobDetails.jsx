@@ -225,19 +225,19 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
 
       <FormRow $columns={5}>
         <FormGroup>
-          <Label>Designation</Label>
+          <Label  $required>Designation</Label>
           <Input name="designation" value={formData.designation} onChange={handleChange} placeholder="Enter Designation" autoComplete="off" />
           {renderError("designation")}
         </FormGroup>
 
         <FormGroup>
-          <Label>Joining Date</Label>
+          <Label  $required>Joining Date</Label>
           <Input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} autoComplete="off" />
           {renderError("joining_date")}
         </FormGroup>
 
         <FormGroup>
-          <Label>Department</Label>
+          <Label  $required>Department</Label>
           <Select name="department_id" value={formData.department_id} onChange={handleChange}>
             <option value="">Select Department</option>
             {departmentList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
@@ -246,7 +246,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         </FormGroup>
 
         <FormGroup>
-          <Label>Employment Type</Label>
+          <Label  $required>Employment Type</Label>
           <Select name="employment_type" value={formData.employment_type} onChange={handleChange}>
             <option value="">Select Type</option>
             <option value="Full-time">Full-time</option>
@@ -257,7 +257,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         </FormGroup>
 
         <FormGroup>
-          <Label>Roles</Label>
+          <Label  $required>Roles</Label>
           <Select name="role" value={formData.role} onChange={handleChange}>
             <option value="">Select Role</option>
             <option value="employee">Employee</option>
@@ -270,7 +270,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
 
       <FormRow $columns={5}>
         <FullWidthGroup>
-          <Label>Leave Allocation</Label>
+          <Label  $required>Leave Allocation</Label>
 
           <TotalLeaveBox>
             Total Leave : {formData.total_leave}
@@ -375,7 +375,7 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
         </FormGroup>
 
         <FormGroup>
-          <Label>{legalConfig.identityLabel}</Label>
+          <Label $required>{legalConfig.identityLabel}</Label>
           <Input
             name={legalConfig.identityField}
             value={formData[legalConfig.identityField]}

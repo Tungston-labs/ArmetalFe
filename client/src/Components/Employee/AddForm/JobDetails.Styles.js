@@ -48,14 +48,21 @@ export const Label = styled.label`
   margin-bottom: 6px;
   font-size: 14px;
   font-family: "Poppins";
-font-weight: 400;
-font-style: Regular;
-font-size: 14px;
-line-height: 100%;
-letter-spacing: 0%;
+  font-weight: 400;
+  font-style: Regular;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
 
+  ${(props) =>
+    props.$required &&
+    `
+      &::after {
+        content: " *";
+        color: #ef4444;
+      }
+    `}
 `;
-
 export const Input = styled.input`
   padding: 8px;
   border: 1px solid lightgray;
