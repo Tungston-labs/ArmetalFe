@@ -34,12 +34,7 @@ import {
 
 import { updatePayrollDeduction } from "../../../Redux/payrollSlice";
 
-const DeductionModal = ({
-  onClose,
-  employees = [],
-  month,
-  year,
-}) => {
+const DeductionModal = ({ onClose, employees = [], month, year }) => {
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
@@ -66,10 +61,7 @@ const DeductionModal = ({
       const name = employee?.employee_name?.toLowerCase() || "";
       const employeeId = employee?.employee_id?.toLowerCase() || "";
 
-      return (
-        name.includes(value) ||
-        employeeId.includes(value)
-      );
+      return name.includes(value) || employeeId.includes(value);
     });
   }, [employees, search]);
 
@@ -78,17 +70,20 @@ const DeductionModal = ({
   // -----------------------------------------
   const handleEmployeeSelect = (employee) => {
     setSelectedEmployees((prev) => {
-      const exists = prev.some(
-        (item) => item.id === employee.id
-      );
+      const exists = prev.some((item) => item.id === employee.id);
 
       if (exists) {
-        return prev.filter(
-          (item) => item.id !== employee.id
-        );
+        return prev.filter((item) => item.id !== employee.id);
       }
 
       return [...prev, employee];
+    });
+
+    setErrors((prev) => {
+      if (!prev.employee) return prev;
+
+      const { employee: _employee, ...rest } = prev;
+      return rest;
     });
   };
 
@@ -97,7 +92,7 @@ const DeductionModal = ({
   // -----------------------------------------
   const removeEmployee = (employeeId) => {
     setSelectedEmployees((prev) =>
-      prev.filter((item) => item.id !== employeeId)
+      prev.filter((item) => item.id !== employeeId),
     );
   };
 
@@ -144,9 +139,9 @@ const DeductionModal = ({
               deduction_amount: amount,
               deduction_type: type,
               deduction_reason: remarks,
-            })
-          ).unwrap()
-        )
+            }),
+          ).unwrap(),
+        ),
       );
 
       const failedEmployees = [];
@@ -194,10 +189,7 @@ const DeductionModal = ({
       console.error("Deduction Error:", error);
 
       setErrors({
-        general:
-          error?.error ||
-          error?.message ||
-          "Failed to add deduction",
+        general: error?.error || error?.message || "Failed to add deduction",
       });
     } finally {
       setLoading(false);
@@ -207,30 +199,23 @@ const DeductionModal = ({
   return (
     <Overlay>
       <Modal>
-
         {/* HEADER */}
         <Header>
           <HeaderLeft>
             <Title>Add Deduction</Title>
 
             <Subtitle>
-              {new Date(
-                year,
-                month - 1
-              ).toLocaleString("en-IN", {
+              {new Date(year, month - 1).toLocaleString("en-IN", {
                 month: "long",
                 year: "numeric",
               })}
             </Subtitle>
           </HeaderLeft>
 
-          <CloseBtn onClick={() => onClose(false)}>
-            ✕
-          </CloseBtn>
+          <CloseBtn onClick={() => onClose(false)}>✕</CloseBtn>
         </Header>
 
         <Body>
-
           {/* SEARCH */}
           <Field>
             <Label>Search Employee</Label>
@@ -239,9 +224,7 @@ const DeductionModal = ({
               type="text"
               placeholder="Search by employee name or ID..."
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
+              onChange={(e) => setSearch(e.target.value)}
             />
           </Field>
 
@@ -251,43 +234,44 @@ const DeductionModal = ({
             {selectedEmployees.length !== 1 ? "s" : ""} selected
           </SelectedCount>
 
+          {errors.employee && (
+            <p
+              style={{
+                color: "red",
+                fontSize: "12px",
+                margin: "6px 0 8px",
+              }}
+            >
+              {errors.employee}
+            </p>
+          )}
+
           <EmployeeList>
             {filteredEmployees.length > 0 ? (
               filteredEmployees.map((employee) => {
-                const isSelected =
-                  selectedEmployees.some(
-                    (item) => item.id === employee.id
-                  );
+                const isSelected = selectedEmployees.some(
+                  (item) => item.id === employee.id,
+                );
 
                 return (
                   <EmployeeItem
                     key={employee.id}
                     $selected={isSelected}
-                    onClick={() =>
-                      handleEmployeeSelect(employee)
-                    }
+                    onClick={() => handleEmployeeSelect(employee)}
                   >
                     <Checkbox
                       type="checkbox"
                       checked={isSelected}
-                      onChange={() =>
-                        handleEmployeeSelect(employee)
-                      }
-                      onClick={(e) =>
-                        e.stopPropagation()
-                      }
+                      onChange={() => handleEmployeeSelect(employee)}
+                      onClick={(e) => e.stopPropagation()}
                     />
 
                     <Avatar>
-                      {employee?.employee_name
-                        ?.slice(0, 2)
-                        .toUpperCase()}
+                      {employee?.employee_name?.slice(0, 2).toUpperCase()}
                     </Avatar>
 
                     <EmpInfo>
-                      <EmpName>
-                        {employee?.employee_name}
-                      </EmpName>
+                      <EmpName>{employee?.employee_name}</EmpName>
 
                       <EmpSub>
                         {employee?.employee_id} ·{" "}
@@ -371,15 +355,9 @@ const DeductionModal = ({
             <SelectedEmployees>
               {selectedEmployees.map((employee) => (
                 <SelectedEmployee key={employee.id}>
-                  <span>
-                    {employee.employee_name}
-                  </span>
+                  <span>{employee.employee_name}</span>
 
-                  <RemoveBtn
-                    onClick={() =>
-                      removeEmployee(employee.id)
-                    }
-                  >
+                  <RemoveBtn onClick={() => removeEmployee(employee.id)}>
                     ✕
                   </RemoveBtn>
                 </SelectedEmployee>
@@ -396,9 +374,7 @@ const DeductionModal = ({
                 type="number"
                 placeholder="e.g. 2000"
                 value={amount}
-                onChange={(e) =>
-                  setAmount(e.target.value)
-                }
+                onChange={(e) => setAmount(e.target.value)}
               />
 
               {errors.amount && (
@@ -420,9 +396,7 @@ const DeductionModal = ({
                 type="text"
                 placeholder="e.g. Late Attendance"
                 value={type}
-                onChange={(e) =>
-                  setType(e.target.value)
-                }
+                onChange={(e) => setType(e.target.value)}
               />
 
               {errors.type && (
@@ -444,9 +418,7 @@ const DeductionModal = ({
             <TextArea
               placeholder="Briefly describe the reason for this deduction..."
               value={remarks}
-              onChange={(e) =>
-                setRemarks(e.target.value)
-              }
+              onChange={(e) => setRemarks(e.target.value)}
             />
 
             {errors.remarks && (
@@ -460,21 +432,13 @@ const DeductionModal = ({
               </p>
             )}
           </Field>
-
         </Body>
 
         {/* FOOTER */}
         <Footer>
-          <CancelBtn
-            onClick={() => onClose(false)}
-          >
-            Cancel
-          </CancelBtn>
+          <CancelBtn onClick={() => onClose(false)}>Cancel</CancelBtn>
 
-          <SaveBtn
-            onClick={handleSave}
-            disabled={loading}
-          >
+          <SaveBtn onClick={handleSave} disabled={loading}>
             {loading
               ? "Saving..."
               : `Save Deduction${
@@ -484,7 +448,6 @@ const DeductionModal = ({
                 }`}
           </SaveBtn>
         </Footer>
-
       </Modal>
     </Overlay>
   );
