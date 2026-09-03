@@ -121,7 +121,7 @@ const EmployeeList = () => {
                 <ReusableFilter
                     search={search}
                     onSearch={setSearch}
-                    searchPlaceholder="Search by Employee Name "
+                    searchPlaceholder="Search by Employee Name /Code"
                     department={department}
                     departments={departmentOptions}
                     onDepartment={setDepartment}

@@ -27,7 +27,7 @@ const getSidebarData = (user) => {
         path: "/company",
       },
       {
-        title: "BILLING",
+        title: "TRANSACTIONS",
         icon: <FaReceipt />,
         path: "/finance",
       },

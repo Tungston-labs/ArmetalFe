@@ -259,3 +259,9 @@ export const rehireEmployee = async (employeeId) => {
 
   return response.data;
 };
+
+export const getDesignations = async () => {
+  const response = await API.get("/employees/designations/");
+  return response.data;
+};
+
