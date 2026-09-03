@@ -1,7 +1,7 @@
 import React from "react";
 import { FaRegMessage } from "react-icons/fa6";
 import { FiTrendingUp, FiTrendingDown, FiDollarSign } from "react-icons/fi";
-import { formatCurrency } from "../../utils/FormatCurrency"; 
+import { formatCurrency } from "../../utils/FormatCurrency";
 
 const FALLBACK = "----";
 
@@ -39,29 +39,29 @@ export const getFinanceColumns = ({ page, pageSize, currencyCode }) => [
     accessor: "category_name",
     render: (row) => row.category_name || FALLBACK,
   },
-{
-  header: "Note",
-  accessor: "note",
-  render: (row) => {
-    const note = row.note || FALLBACK;
+  {
+    header: "Note",
+    accessor: "note",
+    render: (row) => {
+      const note = row.note || FALLBACK;
 
-    return (
-      <span
-        title={note}
-        style={{
-          display: "inline-block",
-          maxWidth: "180px",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          cursor: "default",
-        }}
-      >
-        {note}
-      </span>
-    );
+      return (
+        <span
+          title={note}
+          style={{
+            display: "inline-block",
+            maxWidth: "180px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            cursor: "default",
+          }}
+        >
+          {note}
+        </span>
+      );
+    },
   },
-},
   {
     header: "Income",
     accessor: "income",
@@ -96,8 +96,7 @@ export const getFinanceColumns = ({ page, pageSize, currencyCode }) => [
           fontSize: 12,
           fontWeight: 600,
           color: row.payment_type === "IN" ? "#16a34a" : "#dc2626",
-          backgroundColor:
-            row.payment_type === "IN" ? "#d3f3e0" : "#fbdcdc",
+          backgroundColor: row.payment_type === "IN" ? "#d3f3e0" : "#fbdcdc",
         }}
       >
         {row.payment_type === "IN" ? "Income" : "Expense"}
@@ -115,10 +114,15 @@ export const getFinanceColumns = ({ page, pageSize, currencyCode }) => [
  * @param {number} cashBalance
  * @param {string} currencyCode  company's active currency
  */
-export const getStatCards = ({ totalIncome, totalExpense, cashBalance, currencyCode }) => [
-     {
+export const getStatCards = ({
+  totalIncome,
+  totalExpense,
+  cashBalance,
+  currencyCode,
+}) => [
+  {
     icon: <FaRegMessage size={20} />,
-     iconColor: "#157baa",
+    iconColor: "#157baa",
     backgroundColor: "#e3f5f7",
     count: `${formatCurrency(totalIncome, currencyCode)}`,
     title: "Total Records",

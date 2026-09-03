@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Container} from './Holiday.styles';
+import React, { useEffect, useState } from "react";
+import { Container } from "./Holiday.styles";
 import { useDispatch, useSelector } from "react-redux";
-import { getHolidays, addHoliday, removeHoliday } from '../../Redux/holidaySlice';
-import { fetchHolidayTypes } from '../../services/holidayService';
-import ReusableHeader from '../../Components/ReusableTable/ReusableHeader';
-import ReusableTable from '../../Components/ReusableTable/ReusableTable';
-import ReusableFilter from '../../Components/ReusableTable/ReusableFilter';
+import {
+  getHolidays,
+  addHoliday,
+  removeHoliday,
+} from "../../Redux/holidaySlice";
+import { fetchHolidayTypes } from "../../services/holidayService";
+import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
+import ReusableTable from "../../Components/ReusableTable/ReusableTable";
+import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 import Pagination from "../../Components/Pagination/Pagination";
-import NoEmployeeFound from '../../Components/No found/Noemployeefound';
-import HolidayModal from './modal/HolidayModal';
-import { getHolidayColumns } from './Holidaycolumns';
-import ReusableConfirmModal from '../../Components/modals/ReusableConfirmModal';
+import NoEmployeeFound from "../../Components/No found/Noemployeefound";
+import HolidayModal from "./modal/HolidayModal";
+import { getHolidayColumns } from "./Holidaycolumns";
+import ReusableConfirmModal from "../../Components/modals/ReusableConfirmModal";
 
 const DEFAULT_HOLIDAY_TYPES = [
   { key: "public", label: "Public Holiday" },
@@ -22,8 +26,8 @@ const DEFAULT_HOLIDAY_TYPES = [
 const formatDateToISO = (dateStr) => {
   const date = new Date(dateStr);
   const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
 };
 
@@ -38,7 +42,7 @@ const HolidayManager = () => {
     loading,
     totalPages = 1,
     currentPage = 1,
-  } = useSelector(state => state.holidays);
+  } = useSelector((state) => state.holidays);
 
   const [searchText, setSearchText] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -48,7 +52,7 @@ const HolidayManager = () => {
     name: "",
     type: "",
     date: "",
-    off_day_weekday: ""
+    off_day_weekday: "",
   });
   const [typeOptions, setTypeOptions] = useState(DEFAULT_HOLIDAY_TYPES);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -56,7 +60,7 @@ const HolidayManager = () => {
 
   useEffect(() => {
     fetchHolidayTypes()
-      .then(data => {
+      .then((data) => {
         if (data?.holiday_types?.length) {
           setTypeOptions(data.holiday_types);
         } else {
@@ -96,7 +100,7 @@ const HolidayManager = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     setFormError("");
   };
@@ -141,7 +145,7 @@ const HolidayManager = () => {
       }
 
       const isDateAlreadyExists = holidays.some(
-        (holiday) => holiday.date === formattedDate
+        (holiday) => holiday.date === formattedDate,
       );
 
       if (isDateAlreadyExists) {
@@ -180,10 +184,20 @@ const HolidayManager = () => {
   };
 
   const confirmDelete = async () => {
-    await dispatch(removeHoliday(selectedIdToDelete));
-    dispatch(getHolidays(page));
-    setShowDeleteModal(false);
-    setSelectedIdToDelete(null);
+    if (selectedIdToDelete === null || selectedIdToDelete === undefined) {
+      return;
+    }
+
+    try {
+      await dispatch(removeHoliday(selectedIdToDelete));
+
+      dispatch(getHolidays(page));
+
+      setShowDeleteModal(false);
+      setSelectedIdToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete holiday:", error);
+    }
   };
 
   const cancelDelete = () => {
@@ -238,7 +252,11 @@ const HolidayManager = () => {
           date={selectedMonth}
           onDate={setSelectedMonth}
         />
-          <ReusableTable columns={columns} data={sortedHolidays} loading={loading} />
+        <ReusableTable
+          columns={columns}
+          data={sortedHolidays}
+          loading={loading}
+        />
         <ReusableConfirmModal
           show={showDeleteModal}
           title="Confirm Deletion"

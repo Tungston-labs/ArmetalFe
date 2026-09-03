@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getDepartments, createNewDepartment } from "../../Redux/departmentSlice.js";
-
+import {
+  getDepartments,
+  createNewDepartment,
+} from "../../Redux/departmentSlice.js";
 
 import {
   PageContainer,
@@ -51,7 +53,10 @@ const DepartmentList = () => {
 
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newDeptForm, setNewDeptForm] = useState({ name: "", department_code: "" });
+  const [newDeptForm, setNewDeptForm] = useState({
+    name: "",
+    department_code: "",
+  });
   const [newDeptError, setNewDeptError] = useState("");
   const [savingNewDept, setSavingNewDept] = useState(false);
 
@@ -147,9 +152,16 @@ const DepartmentList = () => {
               }),
             );
 
-            const totalPages = Math.max(1, Math.ceil(sortedEmployees.length / PAGE_SIZE));
+            const totalPages = Math.max(
+              1,
+              Math.ceil(sortedEmployees.length / PAGE_SIZE),
+            );
             const currentPage = page || 1;
-            const paginatedEmployees = paginate(sortedEmployees, currentPage, PAGE_SIZE);
+            const paginatedEmployees = paginate(
+              sortedEmployees,
+              currentPage,
+              PAGE_SIZE,
+            );
             const startIndex = (currentPage - 1) * PAGE_SIZE;
 
             const employeeColumns = [
@@ -160,31 +172,39 @@ const DepartmentList = () => {
                 render: (_row, index) => startIndex + index + 1,
               },
               {
-            header: "Employee name",
-            accessor: "name",
-            render: (row) => (
-                <div style={{ display: "flex", flexDirection: "column" }}>
+                header: "Employee name",
+                accessor: "name",
+                render: (row) => (
+                  <div style={{ display: "flex", flexDirection: "column" }}>
                     <span style={{ fontWeight: 600 }}>
-                        {row.name ? row.name.charAt(0).toUpperCase() + row.name.slice(1) : ""}
+                      {row.name
+                        ? row.name.charAt(0).toUpperCase() + row.name.slice(1)
+                        : ""}
                     </span>
-                    <span style={{ fontSize: 12, color: "#888" }}>{row.email}</span>
-                </div>
-            ),
-        },
+                    <span style={{ fontSize: 12, color: "#888" }}>
+                      {row.email}
+                    </span>
+                  </div>
+                ),
+              },
               { header: "Employee ID", accessor: "employee_code" },
               { header: "Job Position", accessor: "designation" },
             ];
 
             return (
               <DepartmentCard key={dept.id}>
-                <DepartmentHeader onClick={() => toggleDepartment(dept.id, departments)}>
+                <DepartmentHeader
+                  onClick={() => toggleDepartment(dept.id, departments)}
+                >
                   <LeftWrapper>
                     <DepartmentIcon>{dept.name?.charAt(0)}</DepartmentIcon>
                     <DepartmentName>{dept.name}</DepartmentName>
                   </LeftWrapper>
 
                   <EmployeeCount>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 8 }}
+                    >
                       <div>{dept.employee_count ?? 0}</div>
                       <GoArrowUpRight size={15} style={{ strokeWidth: 2 }} />
                     </div>
@@ -198,9 +218,13 @@ const DepartmentList = () => {
                         $active={isEditing}
                         onClick={(e) => {
                           e.stopPropagation();
-                          isEditing ? saveDepartment(dept.id) : toggleEdit(dept.id);
+                          isEditing
+                            ? saveDepartment(dept.id)
+                            : toggleEdit(dept.id);
                         }}
-                        aria-label={isEditing ? "Save department" : "Edit department"}
+                        aria-label={
+                          isEditing ? "Save department" : "Edit department"
+                        }
                       >
                         {isEditing ? <FaSave /> : <FaEdit />}
                         {isEditing ? "Save" : "Edit"}
@@ -252,7 +276,9 @@ const DepartmentList = () => {
                                   cursor: "pointer",
                                 }}
                               >
-                                <option value="">-- Select Department Head --</option>
+                                <option value="">
+                                  -- Select Department Head --
+                                </option>
                                 {employees.map((emp) => (
                                   <option key={emp.id} value={emp.id}>
                                     {emp.name}
@@ -262,7 +288,10 @@ const DepartmentList = () => {
                             ) : (
                               <Input
                                 name="department_head"
-                                value={details.department_head?.name || "Not Assigned"}
+                                value={
+                                  details.department_head?.name ||
+                                  "Not Assigned"
+                                }
                                 disabled
                               />
                             )}
@@ -294,7 +323,7 @@ const DepartmentList = () => {
                       />
                     </DropdownWrapper>
 
-                  {sortedEmployees.length > PAGE_SIZE && (
+                    {sortedEmployees.length > PAGE_SIZE && (
                       <div onClick={(e) => e.stopPropagation()}>
                         <ReusablePagination
                           currentPage={currentPage}
@@ -309,7 +338,9 @@ const DepartmentList = () => {
             );
           })
         ) : (
-          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
             <NoEmployeeFound searchTerm={search} label="No Department Found" />
           </div>
         )}

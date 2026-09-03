@@ -80,7 +80,9 @@ const HolidayModal = ({
         <Header>
           <div>
             <ModalTitle>Add Holiday</ModalTitle>
-            <ModalSubtitle>Create a new holiday or weekly off day</ModalSubtitle>
+            <ModalSubtitle>
+              Create a new holiday or weekly off day
+            </ModalSubtitle>
           </div>
           <CloseButton onClick={onClose} aria-label="Close">
             ×
@@ -98,7 +100,10 @@ const HolidayModal = ({
                 value={formData.name}
                 onChange={(e) =>
                   onChange({
-                    target: { name: "name", value: e.target.value.slice(0, 250) },
+                    target: {
+                      name: "name",
+                      value: e.target.value.slice(0, 250),
+                    },
                   })
                 }
               />

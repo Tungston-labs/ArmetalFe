@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -153,19 +153,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -175,7 +173,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -183,7 +183,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -225,17 +225,17 @@ import {
   DoughnutWrapper
 } from "./AttendanceCircle.styles";
 &nbsp;
-ChartJS.register(ArcElement, Tooltip, Legend);
+<span class="cstat-no" title="statement not covered" >ChartJS.register(ArcElement, Tooltip, Legend);</span>
 &nbsp;
-const AttendanceCircle = ({ present = 0, leave = 0 }) =&gt; {
+const AttendanceCircle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> present = <span class="branch-0 cbranch-no" title="branch not covered" >0, l</span>eave = <span class="branch-0 cbranch-no" title="branch not covered" >0 }</span>) =&gt; {</span>
 &nbsp;
-  const presentVal = Number(present) || 0;
-  const leaveVal = Number(leave) || 0;
+  const presentVal = <span class="cstat-no" title="statement not covered" >Number(present) || 0;</span>
+  const leaveVal = <span class="cstat-no" title="statement not covered" >Number(leave) || 0;</span>
 &nbsp;
   const safeData =
-    presentVal === 0 &amp;&amp; leaveVal === 0 ? [1, 0] : [presentVal, leaveVal];
+<span class="cstat-no" title="statement not covered" >    presentVal === 0 &amp;&amp; leaveVal === 0 ? [1, 0] : [presentVal, leaveVal];</span>
 &nbsp;
-  const data = {
+  const data = <span class="cstat-no" title="statement not covered" >{</span>
     labels: ["Present", "Leave"],
     datasets: [
       {
@@ -247,7 +247,7 @@ const AttendanceCircle = ({ present = 0, leave = 0 }) =&gt; {
     ],
   };
 &nbsp;
-  const options = {
+  const options = <span class="cstat-no" title="statement not covered" >{</span>
     rotation: -90,
     circumference: 180, 
     plugins: {
@@ -255,7 +255,7 @@ const AttendanceCircle = ({ present = 0, leave = 0 }) =&gt; {
     },
   };
 &nbsp;
-  return (
+<span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Wrapper&gt;
       &lt;Title&gt;Today's Attendance&lt;/Title&gt;
 &nbsp;
@@ -286,7 +286,7 @@ export default AttendanceCircle;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-31T12:01:59.915Z
+                at 2026-09-03T03:38:59.039Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

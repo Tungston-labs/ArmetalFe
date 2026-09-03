@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -140,13 +140,7 @@
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
 <a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a>
-<a name='L79'></a><a href='#L79'>79</a>
-<a name='L80'></a><a href='#L80'>80</a>
-<a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -173,7 +167,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -190,13 +184,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -239,9 +227,9 @@ import {
   TabsRow,
   TabButton,
 } from "./ViewLayout.Styles";
-import EmployeeTitle from "../../../Components/EmployeeTitle";
-import EmployeeIcon from "../../../assets/employeeicon.svg";
-import Header from "../../../Components/Header";
+import Header from "../../../Components/Employee/Headers/Header";
+import ReusableHeader from "../../../Components/ReusableTable/ReusableHeader";
+import { useNavigate } from "react-router-dom";
 &nbsp;
 const ViewBasicLayout = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span></span>
   id,
@@ -256,7 +244,7 @@ const ViewBasicLayout = <span class="cstat-no" title="statement not covered" ><s
 }) =&gt; {
   const <span class="cstat-no" title="statement not covered" >location = useLocation();</span>
   const <span class="cstat-no" title="statement not covered" >rowRef = useRef(null);</span>
-&nbsp;
+  const <span class="cstat-no" title="statement not covered" >navigate = useNavigate();</span>
   const tabs = <span class="cstat-no" title="statement not covered" >[</span>
     { path: `/ViewBasic/${id}`, label: "Basic Details" },
     { path: `/ViewBasic/${id}/bank`, label: "Bank &amp; Payment" },
@@ -266,19 +254,15 @@ const ViewBasicLayout = <span class="cstat-no" title="statement not covered" ><s
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Container&gt;
       &lt;TopSection&gt;
-        &lt;EmployeeTitle
-          key={departmentList?.length || 0}
-          iconSrc={EmployeeIcon}
-          showAddButton={true}
-          showTabs={false}
-          showSearch={false}
-          showDropdown={false}
-          onAddClick={handleSubmit}
-          buttonText="Save"
-          showBackArrow={false}
-          showReportButton={false}
-        /&gt;
 &nbsp;
+&lt;ReusableHeader
+  title="Employees"
+  breadcrumbs={["Dashboard", "Employees"]}
+  buttonText="SAVE"
+  onButtonClick={handleSubmit}
+  showBack
+    onBack={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >n</span>avigate("/employee")}</span>
+/&gt;
         &lt;Header
           employee={formData}
           editable={true}
@@ -286,8 +270,6 @@ const ViewBasicLayout = <span class="cstat-no" title="statement not covered" ><s
           onImageChange={handleImageChange}
         
         /&gt;
-&nbsp;
- 
         &lt;TabsRowContainer&gt;
           &lt;TabsRow ref={rowRef}&gt;
             {tabs.map(<span class="fstat-no" title="function not covered" >(t</span>ab) =&gt; (
@@ -319,7 +301,7 @@ export default ViewBasicLayout;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-31T12:02:00.038Z
+                at 2026-09-03T03:38:59.523Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

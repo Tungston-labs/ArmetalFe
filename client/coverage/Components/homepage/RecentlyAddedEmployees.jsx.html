@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/16</span>
+                <span class='fraction'>0/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/10</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/5</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.33% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/15</span>
+                <span class='fraction'>0/15</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -160,25 +160,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -192,7 +192,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -237,25 +237,25 @@ import {
 import { useNavigate } from "react-router-dom";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
 import { RiUserFill } from "react-icons/ri";
-const RecentlyAddedEmployees = ({ employees = [], showCount = 5 }) =&gt; {
-  const navigate = useNavigate();
+const RecentlyAddedEmployees = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> employees = <span class="branch-0 cbranch-no" title="branch not covered" >[], s</span>howCount = <span class="branch-0 cbranch-no" title="branch not covered" >5 }</span>) =&gt; {</span>
+  const <span class="cstat-no" title="statement not covered" >navigate = useNavigate();</span>
 &nbsp;
-  const sorted = [...employees].sort(
-    (a, b) =&gt; new Date(b.joiningDate) - new Date(a.joiningDate)
+  const sorted = <span class="cstat-no" title="statement not covered" >[...employees].sort(</span>
+<span class="fstat-no" title="function not covered" >    (a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >new Date(b.joiningDate) - new Date(a.joiningDate)</span>
   );
 &nbsp;
-  const list = sorted.slice(0, showCount);
-const formatDate = (date) =&gt; {
-  if (!date) return "-";
+  const list = <span class="cstat-no" title="statement not covered" >sorted.slice(0, showCount);</span>
+const formatDate = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ate) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  if (!date) <span class="cstat-no" title="statement not covered" >return "-";</span></span>
 &nbsp;
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const year = d.getFullYear();
+  const d = <span class="cstat-no" title="statement not covered" >new Date(date);</span>
+  const day = <span class="cstat-no" title="statement not covered" >String(d.getDate()).padStart(2, "0");</span>
+  const month = <span class="cstat-no" title="statement not covered" >d.toLocaleString("en-US", { month: "short" });</span>
+  const year = <span class="cstat-no" title="statement not covered" >d.getFullYear();</span>
 &nbsp;
-  return `${day}/${month}/${year}`;
+<span class="cstat-no" title="statement not covered" >  return `${day}/${month}/${year}`;</span>
 };
-  return (
+<span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Wrapper&gt;
       &lt;Header&gt;
         &lt;Title&gt;Recently Added Employees  &lt;/Title&gt;
@@ -268,10 +268,10 @@ const formatDate = (date) =&gt; {
       &lt;List&gt;
         {list.length === 0 &amp;&amp; &lt;NoData&gt;No employees found&lt;/NoData&gt;}
 &nbsp;
-        {list.map((emp, idx) =&gt; (
-          &lt;ListItem key={idx}&gt;
+        {list.map(<span class="fstat-no" title="function not covered" >(e</span>mp, idx) =&gt; (
+<span class="cstat-no" title="statement not covered" >          &lt;ListItem key={idx}&gt;</span>
          {emp.avatar ? (
-<span class="branch-0 cbranch-no" title="branch not covered" >  &lt;Avatar</span>
+  &lt;Avatar
     src={emp.avatar}
     alt={emp.name || "Employee"}
   /&gt;
@@ -301,7 +301,7 @@ export default RecentlyAddedEmployees;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-31T12:02:00.038Z
+                at 2026-09-03T03:38:59.523Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

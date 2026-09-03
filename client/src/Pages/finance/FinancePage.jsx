@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, } from "../finance/FinancePage.Styles";
+import { Container } from "../finance/FinancePage.Styles";
 import FinanceModal from "./NewFinance";
 import { createFinance, fetchFinanceList } from "../../Redux/financeThunks";
 import StatsCards from "../../Components/StatsCards/StatsCards";
@@ -39,22 +39,22 @@ const FinanceDetail = () => {
   const [page, setPage] = useState(1);
   const [month, setMonth] = useState("");
 
-useEffect(() => {
-  dispatch(
-    fetchFinanceList({
-      page,
-      pageSize: PAGE_SIZE,
-      search: searchText,
-      payment_type: selectedPayment,
-      month: month,
-    })
-  );
-}, [dispatch, page, searchText, selectedPayment, month]);
+  useEffect(() => {
+    dispatch(
+      fetchFinanceList({
+        page,
+        pageSize: PAGE_SIZE,
+        search: searchText,
+        payment_type: selectedPayment,
+        month: month,
+      }),
+    );
+  }, [dispatch, page, searchText, selectedPayment, month]);
 
   // Reset page when filters change
   useEffect(() => {
     setPage(1);
-  }, [searchText, selectedPayment,month]);
+  }, [searchText, selectedPayment, month]);
 
   // Fix page overflow
   useEffect(() => {
@@ -78,7 +78,7 @@ useEffect(() => {
         fetchFinanceList({
           page: 1,
           pageSize: PAGE_SIZE,
-        })
+        }),
       );
       setPage(1);
     });
@@ -90,16 +90,24 @@ useEffect(() => {
     setPage(newPage);
   };
 
-  const columns = getFinanceColumns({ page, pageSize: PAGE_SIZE, currencyCode });
+  const columns = getFinanceColumns({
+    page,
+    pageSize: PAGE_SIZE,
+    currencyCode,
+  });
 
   // Cards fed into the generic StatsCards component — built from the
   // live Redux totals, since FinanceColumns.jsx has no access to them
-  const statCards = getStatCards({ totalIncome, totalExpense, cashBalance, currencyCode });
+  const statCards = getStatCards({
+    totalIncome,
+    totalExpense,
+    cashBalance,
+    currencyCode,
+  });
 
   return (
     <>
       <Container>
-
         <ReusableHeader
           title="Finance"
           breadcrumbs={["Dashboard", "Finance"]}
@@ -124,7 +132,6 @@ useEffect(() => {
         />
 
         <ReusableTable columns={columns} data={list} loading={loading} />
-
 
         <Pagination
           currentPage={page}

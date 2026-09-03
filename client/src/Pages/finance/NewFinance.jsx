@@ -44,27 +44,25 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
   const [customCategory, setCustomCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
+  useEffect(() => {
+    const loadCategories = async () => {
+      if (!formData.paymentType) {
+        setCategories([]);
+        return;
+      }
 
- useEffect(() => {
-  const loadCategories = async () => {
-    if (!formData.paymentType) {
-      setCategories([]);  
-      return;
-    }
+      const res = await dispatch(
+        fetchFinanceCategoryList(formData.paymentType),
+      );
 
-    const res = await dispatch(
-      fetchFinanceCategoryList(formData.paymentType)
-    );
+      if (res.meta.requestStatus === "fulfilled") {
+        setCategories(res.payload.results);
+      }
+    };
 
-    if (res.meta.requestStatus === "fulfilled") {
-      setCategories(res.payload.results);
-    }
-  };
-
-  loadCategories();
-}, [formData.paymentType, dispatch]);
+    loadCategories();
+  }, [formData.paymentType, dispatch]);
   if (!isOpen) return null;
-
 
   const resetForm = () => {
     setFormData({
@@ -75,29 +73,28 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
     setErrors({});
   };
 
- const handleChange = (e) => {
-  const { name, value } = e.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-  setFormData((prev) => {
-    if (name === "paymentType") {
-      return {
-        ...prev,
-        paymentType: value,
-        category: "",  
-      };
-    }
-  return { ...prev, [name]: value };
-  });
-  setErrors((prev) => ({ ...prev, [name]: "" }));
-};
+    setFormData((prev) => {
+      if (name === "paymentType") {
+        return {
+          ...prev,
+          paymentType: value,
+          category: "",
+        };
+      }
+      return { ...prev, [name]: value };
+    });
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
 
   const validate = () => {
     const newErrors = {};
     if (!formData.category) newErrors.category = "Category is required";
     if (!formData.paymentType)
       newErrors.paymentType = "Payment type is required";
-    if (!formData.amount1)
-      newErrors.amount1 = "Amount is required";
+    if (!formData.amount1) newErrors.amount1 = "Amount is required";
     else if (Number(formData.amount1) <= 0)
       newErrors.amount1 = "Amount must be greater than 0";
     setErrors(newErrors);
@@ -117,15 +114,15 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
 
       const res = await dispatch(
         createFinanceCategory({
-          name: customCategory.toLowerCase(), 
+          name: customCategory.toLowerCase(),
           payment_type: formData.paymentType,
-        })
+        }),
       );
 
       if (res.meta.requestStatus === "fulfilled") {
         finalCategory = res.payload.id;
         const refresh = await dispatch(
-          fetchFinanceCategoryList(formData.paymentType)
+          fetchFinanceCategoryList(formData.paymentType),
         );
         if (refresh.meta.requestStatus === "fulfilled") {
           setCategories(refresh.payload.results);
@@ -154,9 +151,9 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
     <ModalOverlay>
       <ModalContainer>
         <ModalHeader>
-             <HeaderLeft>
-          <ModalTitle>New Finance Entry</ModalTitle>
-      </HeaderLeft>
+          <HeaderLeft>
+            <ModalTitle>New Finance Entry</ModalTitle>
+          </HeaderLeft>
         </ModalHeader>
 
         <Form onSubmit={handleSubmit}>
@@ -226,9 +223,7 @@ const FinanceModal = ({ isOpen, onClose, onSave }) => {
                 value={formData.amount1}
                 onChange={handleChange}
               />
-              {errors.amount1 && (
-                <p className="error">{errors.amount1}</p>
-              )}
+              {errors.amount1 && <p className="error">{errors.amount1}</p>}
             </div>
           </FormRow>
           <div>

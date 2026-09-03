@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.82% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/17</span>
+                <span class='fraction'>0/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/14</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/5</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.82% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/17</span>
+                <span class='fraction'>0/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -172,17 +172,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -197,10 +197,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -256,17 +256,17 @@ function <span class="fstat-no" title="function not covered" >daysLeft(d</span>a
 <span class="cstat-no" title="statement not covered" >  return Math.round(diff / (1000 * 60 * 60 * 24));</span>
 }
 &nbsp;
-const EmployeeContractExpiry = ({ employees = [], showCount = 5 }) =&gt; {
-  const navigate = useNavigate();
- const sorted = [...employees].sort(
-  (a, b) =&gt;
-    new Date(a.contract_expiry_date) -
+const EmployeeContractExpiry = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> employees = <span class="branch-0 cbranch-no" title="branch not covered" >[], s</span>howCount = <span class="branch-0 cbranch-no" title="branch not covered" >5 }</span>) =&gt; {</span>
+  const <span class="cstat-no" title="statement not covered" >navigate = useNavigate();</span>
+ const sorted = <span class="cstat-no" title="statement not covered" >[...employees].sort(</span>
+<span class="fstat-no" title="function not covered" >  (a</span>, b) =&gt;
+<span class="cstat-no" title="statement not covered" >    new Date(a.contract_expiry_date) -</span>
     new Date(b.contract_expiry_date)
 );
 &nbsp;
-  const list = sorted.slice(0, showCount);
-console.log("employees:", employees);
-  return (
+  const list = <span class="cstat-no" title="statement not covered" >sorted.slice(0, showCount);</span>
+<span class="cstat-no" title="statement not covered" >console.log("employees:", employees);</span>
+<span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Wrapper&gt;
       &lt;Header&gt;
         &lt;Title&gt;Contract Expiry&lt;/Title&gt;
@@ -280,11 +280,11 @@ console.log("employees:", employees);
       &lt;List&gt;
         {list.length === 0 &amp;&amp; &lt;NoData&gt;No expiring contracts&lt;/NoData&gt;}
 &nbsp;
-        {list.map((emp, idx) =&gt; {
-         const days = emp.days_left;
-          const isSoon = days &gt;= 0 &amp;&amp; days &lt;= 5;
+        {list.map(<span class="fstat-no" title="function not covered" >(e</span>mp, idx) =&gt; {
+         const days = <span class="cstat-no" title="statement not covered" >emp.days_left;</span>
+          const isSoon = <span class="cstat-no" title="statement not covered" >days &gt;= 0 &amp;&amp; days &lt;= 5;</span>
 &nbsp;
-          return (
+<span class="cstat-no" title="statement not covered" >          return (</span>
             &lt;ListItem key={idx} $highlight={isSoon}&gt;
               
               &lt;ExpiryBox $highlight={isSoon}&gt;
@@ -302,8 +302,8 @@ console.log("employees:", employees);
                   {days === 0
                     ? "Expires Today"
                     : days &gt; 0
-                    ? `${days} day${days &gt; 1 ? "s" : <span class="branch-1 cbranch-no" title="branch not covered" >""}</span> left`
-                    : <span class="branch-1 cbranch-no" title="branch not covered" >`${Math.abs(days)} day${Math.abs(days) &gt; 1 ? "s" : ""} ago`}</span>
+                    ? `${days} day${days &gt; 1 ? "s" : ""} left`
+                    : `${Math.abs(days)} day${Math.abs(days) &gt; 1 ? "s" : ""} ago`}
                 &lt;/IdText&gt;
               &lt;/Info&gt;
             &lt;/ListItem&gt;
@@ -322,7 +322,7 @@ export default EmployeeContractExpiry;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-31T12:02:00.038Z
+                at 2026-09-03T03:38:59.523Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
