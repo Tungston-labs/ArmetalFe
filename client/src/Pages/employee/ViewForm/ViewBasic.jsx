@@ -241,6 +241,7 @@ const ViewBasic = () => {
                   value={formData.employee_id || ""}
                   onChange={handleChange}
                   placeholder="Enter employee username"
+                       autoComplete="off"
                 />
               </FieldGroup>
 
@@ -250,6 +251,7 @@ const ViewBasic = () => {
                   name="designation"
                   value={formData.designation || ""}
                   onChange={handleChange}
+                  autoComplete="off"
                 />
               </FieldGroup>
 
@@ -267,13 +269,18 @@ const ViewBasic = () => {
                 />
               </FieldGroup>
               <FieldGroup>
-                <Label>Employment Type</Label>
-                <Input
-                  name="employment_type"
-                  value={formData.employment_type || ""}
-                  onChange={handleChange}
-                />
-              </FieldGroup>
+  <Label>Employment Type</Label>
+  <Select
+    name="employment_type"
+    value={formData.employment_type || ""}
+    onChange={handleChange}
+  >
+    <option value="">Select Type</option>
+    <option value="Full-time">Full-time</option>
+    <option value="Part-time">Part-time</option>
+    <option value="Contract">Contract</option>
+  </Select>
+</FieldGroup>
               <FieldGroup>
                 <Label>Department</Label>
                 <Select
@@ -364,14 +371,7 @@ const ViewBasic = () => {
           <CardContent>
             <Column>
               <Rowes>
-                <FieldGroup>
-                  <Label>Phone Number</Label>
-                  <Input
-                    name="phno"
-                    value={formData.phno || ""}
-                    onChange={handleChange}
-                  />
-                </FieldGroup>
+               
                 {!isIndiaCompany(country) && legalConfig.identityField !== "passport_number" && (
                   <FieldGroup>
                     <Label>Passport Number</Label>

@@ -74,6 +74,7 @@ export const StyledTable = styled.table`
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
+  min-width: 1200px;
 `;
 
 /* =========================================================

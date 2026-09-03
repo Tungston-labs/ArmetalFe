@@ -63,6 +63,7 @@ const EmployeeHeader = ({
               onChange={onChange}
               autoComplete="off"
               $error={Boolean(errors?.email)}
+             readOnly
             />
             {errors?.email && <ErrorText>{errors.email}</ErrorText>}
           </FieldGroup>
@@ -89,6 +90,7 @@ const EmployeeHeader = ({
               onChange={onChange}
               autoComplete="off"
               $error={Boolean(errors?.employee_code)}
+              readOnly
             />
             {errors?.employee_code && (
               <ErrorText>{errors.employee_code}</ErrorText>
@@ -178,6 +180,7 @@ const EmployeeHeader = ({
               <ErrorText>{errors.blood_group}</ErrorText>
             )}
           </FieldGroup>
+          
         </Row>
       </InfoWrapper>
     </Container>

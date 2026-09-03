@@ -14,7 +14,6 @@ import {
   MemberAvatar,
   MemberCount,
   AddMember,
-  ViewMoreButton,
 } from "./ProjectCard.styles";
 
 const ProjectCard = ({
@@ -31,10 +30,6 @@ const ProjectCard = ({
 }) => {
   const navigate = useNavigate();
 
-  // ==========================================
-  // PROJECT TYPE LABEL
-  // ==========================================
-
   const getProjectTypeLabel = (type) => {
     const typeMap = {
       on_site: "On Site",
@@ -42,13 +37,8 @@ const ProjectCard = ({
       variant: "Variant",
       bench: "Bench",
     };
-
     return typeMap[type] || type || "Project";
   };
-
-  // ==========================================
-  // STATUS LABEL
-  // ==========================================
 
   const getStatusLabel = (value) => {
     const statusMap = {
@@ -57,90 +47,43 @@ const ProjectCard = ({
       on_hold: "On Hold",
       cancelled: "Cancelled",
     };
-
     return statusMap[value] || value || "";
   };
 
-  // ==========================================
-  // VIEW MORE
-  // ==========================================
-
-  const handleViewMore = () => {
-    console.log("clicked, navigating to id:", id);
-
+  const handleCardClick = () => {
     navigate(`/projects/${id}`);
   };
 
-  // ==========================================
-  // GET INITIALS
-  // ==========================================
-
   const getInitials = (member) => {
-    // API:
-    // employees: [2, 3]
-
     if (typeof member === "number") {
       return `E${member}`;
     }
-
-    // API:
-    // { id: 2, name: "John Doe" }
-
-    if (
-      typeof member === "object" &&
-      member !== null
-    ) {
+    if (typeof member === "object" && member !== null) {
       const name =
-        member.name ||
-        member.employee_name ||
-        member.full_name ||
-        "";
-
-      if (!name) {
-        return `E${member.id || ""}`;
-      }
-
+        member.name || member.employee_name || member.full_name || "";
+      if (!name) return `E${member.id || ""}`;
       return name
         .trim()
         .split(/\s+/)
-        .map((word) =>
-          word.charAt(0).toUpperCase()
-        )
+        .map((word) => word.charAt(0).toUpperCase())
         .slice(0, 2)
         .join("");
     }
-
-    // API:
-    // "John Doe"
-
     if (typeof member === "string") {
       return member
         .trim()
         .split(/\s+/)
-        .map((word) =>
-          word.charAt(0).toUpperCase()
-        )
+        .map((word) => word.charAt(0).toUpperCase())
         .slice(0, 2)
         .join("");
     }
-
     return "E";
   };
 
-  // ==========================================
-  // ADD MEMBER
-  // ==========================================
-
   const handleAddMember = (e) => {
     e.stopPropagation();
-
     if (onAddMember) {
-      onAddMember(
-        project || {
-          id,
-          name: title,
-        }
-      );
+      onAddMember(project || { id, name: title });
     }
   };
 
@@ -148,86 +91,37 @@ const ProjectCard = ({
   const formattedStatus = getStatusLabel(status);
 
   return (
-    <Card>
-      {/* ====================================== */}
-      {/* PROJECT INFORMATION */}
-      {/* ====================================== */}
-
+    <Card onClick={handleCardClick} role="button" tabIndex={0}>
       <div>
         <CardCategory>
-          Project Type{" "}
-          <strong>
-           _{projectType}
-          </strong>
+          Project Type <strong>_{projectType}</strong>
         </CardCategory>
 
-        <CardTitle>
-          {title || "Untitled Project"}
-        </CardTitle>
+        <CardTitle>{title || "Untitled Project"}</CardTitle>
 
         <TagsRow>
-          {date && (
-            <DateTag>
-              {date}
-            </DateTag>
-          )}
-
+          {date && <DateTag>{date}</DateTag>}
           {formattedStatus && (
-            <StatusTag status={status}>
-              {formattedStatus}
-            </StatusTag>
+            <StatusTag status={status}>{formattedStatus}</StatusTag>
           )}
-
-          {priority && (
-            <PriorityTag>
-              {priority}
-            </PriorityTag>
-          )}
+          {priority && <PriorityTag>{priority}</PriorityTag>}
         </TagsRow>
       </div>
 
-      {/* ====================================== */}
-      {/* BOTTOM */}
-      {/* ====================================== */}
-
       <BottomSection>
         <Members>
-          {/* EMPLOYEES */}
-
-          {members
-            .slice(0, 4)
-            .map((member, index) => (
-              <MemberAvatar key={index}>
-                {getInitials(member)}
-              </MemberAvatar>
-            ))}
-
-          {/* REMAINING EMPLOYEES */}
+          {members.slice(0, 4).map((member, index) => (
+            <MemberAvatar key={index}>{getInitials(member)}</MemberAvatar>
+          ))}
 
           {memberCount > 4 && (
-            <MemberCount>
-              +{memberCount - 4}
-            </MemberCount>
+            <MemberCount>+{memberCount - 4}</MemberCount>
           )}
 
-          {/* ADD EMPLOYEE */}
-
-          <AddMember
-            type="button"
-            onClick={handleAddMember}
-          >
+          <AddMember type="button" onClick={handleAddMember}>
             +
           </AddMember>
         </Members>
-
-        {/* VIEW MORE */}
-
-        <ViewMoreButton
-          type="button"
-          onClick={handleViewMore}
-        >
-          VIEW MORE
-        </ViewMoreButton>
       </BottomSection>
     </Card>
   );

@@ -67,6 +67,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
     }
   };
 
+  
   return (
     <Container>
       <SectionTitle>Basic Details</SectionTitle>

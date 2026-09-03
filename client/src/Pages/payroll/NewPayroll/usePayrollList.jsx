@@ -12,6 +12,8 @@ import { PiMoneyWavyLight } from "react-icons/pi";
 import { PiClockCountdown } from "react-icons/pi";
 import { GoGift } from "react-icons/go";
 import { HiArrowTrendingDown } from "react-icons/hi2";
+import { formatCurrency } from "../../../utils/FormatCurrency"; // adjust path to match where you saved it
+
 const LIMIT = 20;
 const today = new Date();
 const defaultMonth = today.getMonth() + 1;
@@ -48,15 +50,7 @@ export const getPayrollCards = ({
   pending_payroll_count = 0,
   total_incentive_amount = 0,
   total_deduction_amount = 0,
-} = {}, currencyCode = "") => [
-  // {
-  //   title: "Total Payroll",
-  //   count: total_payroll,
-  //   icon: <PiMoneyWavyLight />,
-  //   iconColor: "#15aa60",
-  //   backgroundColor: "#E3F7ED",
-  // },
-
+} = {}) => [
   {
     title: "Pending Payroll",
     count: pending_payroll_count,
@@ -67,7 +61,7 @@ export const getPayrollCards = ({
 
   {
     title: "Incentive Amount",
-    count: `${currencyCode} ${Number(total_incentive_amount).toLocaleString()}`,
+    count: formatCurrency(total_incentive_amount),
     icon: <GoGift />,
     iconColor: "#15aa60",
     backgroundColor: "#E3F7ED",
@@ -75,12 +69,13 @@ export const getPayrollCards = ({
 
   {
     title: "Deduction Amount",
-    count: `${currencyCode} ${Number(total_deduction_amount).toLocaleString()}`,
+    count: formatCurrency(total_deduction_amount),
     icon: <HiArrowTrendingDown />,
     iconColor: "#f3214f",
     backgroundColor: "#FFEDED",
   },
 ];
+
 export function usePayrollList() {
   const dispatch = useDispatch();
   const { data, loading, totalPages } = useSelector((state) => state.payroll);

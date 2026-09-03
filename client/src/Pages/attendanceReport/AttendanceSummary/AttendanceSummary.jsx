@@ -269,19 +269,19 @@ const AttendanceSummary = () => {
                 prev.map((record) =>
                     record.date === selectedDay.date
                         ? {
-                              ...record,
-                              attendance_type:
-                                  savedData?.attendance_type ||
-                                  editForm.attendanceType.toLowerCase(),
-                              remark: savedData?.remark ?? editForm.note,
-                              updated_by:
-                                  savedData?.updated_by ?? record.updated_by,
-                              updated_by_role:
-                                  savedData?.updated_by_role ??
-                                  record.updated_by_role,
-                              updated_at:
-                                  savedData?.updated_at ?? record.updated_at,
-                          }
+                            ...record,
+                            attendance_type:
+                                savedData?.attendance_type ||
+                                editForm.attendanceType.toLowerCase(),
+                            remark: savedData?.remark ?? editForm.note,
+                            updated_by:
+                                savedData?.updated_by ?? record.updated_by,
+                            updated_by_role:
+                                savedData?.updated_by_role ??
+                                record.updated_by_role,
+                            updated_at:
+                                savedData?.updated_at ?? record.updated_at,
+                        }
                         : record
                 )
             );
@@ -327,19 +327,20 @@ const AttendanceSummary = () => {
                     searchPlaceholder="Search by date or status"
                     showSearch
                 />
+                <>
+                    <ReusableTable
+                        columns={columns}
+                        data={paginatedRecords}
+                        loading={recordsLoading}
+                        emptyMessage="No attendance records found for this month."
+                    />
 
-                <ReusableTable
-                    columns={columns}
-                    data={paginatedRecords}
-                    loading={recordsLoading}
-                    emptyMessage="No attendance records found for this month."
-                />
-
-                <ReusablePagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                />
+                    <ReusablePagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                    />
+                </>
             </div>
 
             {isEditModalOpen && (

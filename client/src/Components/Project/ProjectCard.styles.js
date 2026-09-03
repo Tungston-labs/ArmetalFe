@@ -4,17 +4,14 @@ export const Card = styled.div`
   width: 100%;
   min-height: 232px;
   padding: 36px 26px 26px;
-
   background: #ffffff;
   border: 1px solid #e8e8e8;
   border-radius: 17px;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   box-shadow: 0 7px 20px rgba(0, 0, 0, 0.05);
-
+cursor: pointer;
   transition:
     background 0.3s ease,
     border-color 0.3s ease,
@@ -126,8 +123,9 @@ export const DateTag = styled.span`
   transition: all 0.3s ease;
 
   ${Card}:hover & {
-    background: rgba(255, 255, 255, 0.12);
-    color: #ffffff;
+    /* background: rgba(255, 255, 255, 0.12); */
+    background-color: white;
+    color: black;
   }
 
   @media (max-width: 480px) {
@@ -162,8 +160,8 @@ export const StatusTag = styled.span`
   transition: all 0.3s ease;
 
   ${Card}:hover & {
-    background: rgba(255, 255, 255, 0.12);
-
+    /* background: rgba(255, 255, 255, 0.12); */
+background-color: white;
     color: ${({ status }) =>
       status === "Completed"
         ? "#13b34a"
@@ -195,7 +193,8 @@ export const PriorityTag = styled.span`
   transition: all 0.3s ease;
 
   ${Card}:hover & {
-    background: rgba(255, 255, 255, 0.12);
+    /* background: rgba(255, 255, 255, 0.12); */
+    background-color: white;
     color: #ff4b45;
   }
 

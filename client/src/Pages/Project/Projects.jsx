@@ -290,14 +290,14 @@ const Projects = () => {
             {/* STATS */}
             {/* ========================= */}
 
-          {isLoading ? (
-    <StatsCards
-        cards={Array.from({ length: 4 }).map(() => ({}))}
-        loading
-    />
-) : (
-    <StatsCards cards={projectCards} />
-)}
+            {isLoading ? (
+                <StatsCards
+                    cards={Array.from({ length: 4 }).map(() => ({}))}
+                    loading
+                />
+            ) : (
+                <StatsCards cards={projectCards} />
+            )}
 
             {/* ========================= */}
             {/* FILTERS */}
@@ -341,7 +341,7 @@ const Projects = () => {
 
                 showSearch
                 showStatus
-                // showDate
+            // showDate
             />
 
             {/* ========================= */}
@@ -425,22 +425,22 @@ const Projects = () => {
 
                     ) : (
 
-    <EmptyState>
-        <EmptyStateIcon>
-            <FiInbox />
-        </EmptyStateIcon>
+                        <EmptyState>
+                            <EmptyStateIcon>
+                                <FiInbox />
+                            </EmptyStateIcon>
 
-        <EmptyStateTitle>
-            No Projects Found
-        </EmptyStateTitle>
+                            <EmptyStateTitle>
+                                No Projects Found
+                            </EmptyStateTitle>
 
-        <EmptyStateText>
-            There are no projects matching your
-            current search or filter selection.
-        </EmptyStateText>
-    </EmptyState>
+                            <EmptyStateText>
+                                There are no projects matching your
+                                current search or filter selection.
+                            </EmptyStateText>
+                        </EmptyState>
 
-)}
+                    )}
                 </ProjectsGrid>
             </ProjectsContainer>
 

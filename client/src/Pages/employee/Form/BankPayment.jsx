@@ -103,6 +103,7 @@ export default function BankPaymentForm() {
 
     }
   }, [bankPayment]);
+
   const handleNext = async () => {
     const errors = {};
     const isDecimal = (value) => /^\d+(\.\d{1,2})?$/.test(value);
@@ -120,9 +121,25 @@ export default function BankPaymentForm() {
     } else {
       if (!swiftCode.trim()) errors.swiftCode = "SWIFT Code is required.";
     }
-    if (isUaeCompany(country) && accountNumber.trim() && !/^AE[0-9]{21}$/.test(accountNumber.trim().replace(/\s/g, "").toUpperCase())) {
-      errors.accountNumber = "Enter a valid UAE IBAN.";
+   if (!accountNumber.trim()) {
+    errors.accountNumber = "Account Number is required.";
+  } else {
+    const cleanedAccount = accountNumber.trim().replace(/\s/g, "");
+
+    if (isUaeCompany(country)) {
+      if (!/^AE[0-9]{21}$/.test(cleanedAccount.toUpperCase())) {
+        errors.accountNumber = "Enter a valid UAE IBAN.";
+      }
+    } else if (isIndiaCompany(country)) {
+      if (!/^[0-9]{9,18}$/.test(cleanedAccount)) {
+        errors.accountNumber = "Enter a valid bank account number (9–18 digits).";
+      }
+    } else {
+      if (!/^[A-Za-z0-9]{8,34}$/.test(cleanedAccount)) {
+        errors.accountNumber = "Enter a valid bank account number (8–34 alphanumeric characters).";
+      }
     }
+  }
     // Fields always required
     if (!bankName.trim()) errors.bankName = "Bank Name is required.";
     if (!accountNumber.trim())

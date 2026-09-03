@@ -8,7 +8,7 @@ export const Container = styled.div`
 `;
 
 export const Section = styled.div`
-  margin-top: 0px;
+  margin-top: 15px;
 `;
 
 export const Label = styled.label`
@@ -59,6 +59,7 @@ export const Select = styled.select`
   padding: 6px 12px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  background-color: white;
 `;
 
 export const FullPageLoaderWrapper = styled.div`
@@ -78,14 +79,17 @@ export const Card = styled.div`
   background: #fff;
   border-radius: 8px;
   /* padding: 20px; */
-  /* margin-bottom: 20px; */
+  margin-bottom: 20px;
 `;
 
 export const CardHeader = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: #304EB0;
+ font-family: "Poppins";
+font-weight: 400;
+font-style: Regular;
+font-size: 16px;
+line-height: 100%;
+letter-spacing: 0%;
+margin-bottom: 15px;
 `;
 
 export const CardContent = styled.div`
