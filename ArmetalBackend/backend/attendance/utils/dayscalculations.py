@@ -1,6 +1,6 @@
 
 from datetime import timedelta, datetime, date
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 import pytz
 
 from attendance.models import Attendance
@@ -145,89 +145,67 @@ def build_employee_month_calendar(employee, start_date, end_date):
             .order_by("time_in")
         )
 
-        first_punch_in = None
-        last_punch_out = None
+        punch_in_times = []
+        punch_out_times = []
+        total_session_seconds = 0.0
 
-        # ========================================================
-        # FIRST / LAST SESSION
-        # ========================================================
+        for session in sessions:
+            in_dt_ist = None
+            out_dt_ist = None
 
-        if sessions.exists():
-
-            first_session = sessions.first()
-            last_session = sessions.last()
-
-            # ====================================================
-            # FIRST PUNCH IN
-            # ====================================================
-
-            if first_session.time_in:
-
+            if session.time_in:
                 if isinstance(
-                    first_session.time_in,
+                    session.time_in,
                     datetime
                 ):
-                    first_dt = (
-                        first_session.time_in
-                    )
+                    in_dt = session.time_in
                 else:
-                    first_dt = datetime.combine(
+                    in_dt = datetime.combine(
                         a.date,
-                        first_session.time_in
+                        session.time_in
                     )
 
-                if first_dt.tzinfo is None:
-                    first_dt = utc_tz.localize(
-                        first_dt
-                    )
+                if in_dt.tzinfo is None:
+                    in_dt = utc_tz.localize(in_dt)
 
-                first_dt_ist = (
-                    first_dt.astimezone(
-                        india_tz
-                    )
+                in_dt_ist = in_dt.astimezone(india_tz)
+                punch_in_times.append(
+                    in_dt_ist.strftime("%I:%M %p")
                 )
 
-                first_punch_in = (
-                    first_dt_ist.strftime(
-                        "%I:%M %p"
-                    )
-                )
-
-            # ====================================================
-            # LAST PUNCH OUT
-            # ====================================================
-
-            if last_session.time_out:
-
+            if session.time_out:
                 if isinstance(
-                    last_session.time_out,
+                    session.time_out,
                     datetime
                 ):
-                    last_dt = (
-                        last_session.time_out
-                    )
+                    out_dt = session.time_out
                 else:
-                    last_dt = datetime.combine(
+                    out_dt = datetime.combine(
                         a.date,
-                        last_session.time_out
+                        session.time_out
                     )
 
-                if last_dt.tzinfo is None:
-                    last_dt = utc_tz.localize(
-                        last_dt
-                    )
+                if out_dt.tzinfo is None:
+                    out_dt = utc_tz.localize(out_dt)
 
-                last_dt_ist = (
-                    last_dt.astimezone(
-                        india_tz
-                    )
+                out_dt_ist = out_dt.astimezone(india_tz)
+                punch_out_times.append(
+                    out_dt_ist.strftime("%I:%M %p")
                 )
 
-                last_punch_out = (
-                    last_dt_ist.strftime(
-                        "%I:%M %p"
-                    )
-                )
+            if in_dt_ist and out_dt_ist:
+                diff = (out_dt_ist - in_dt_ist).total_seconds()
+                if diff > 0:
+                    total_session_seconds += diff
+
+        first_punch_in = ", ".join(punch_in_times) if punch_in_times else None
+        last_punch_out = ", ".join(punch_out_times) if punch_out_times else None
+        has_unclosed_punch = len(punch_in_times) > len(punch_out_times)
+
+        session_hours = Decimal(str(total_session_seconds)) / Decimal("3600")
+        calculated_hours = session_hours.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        total_hours_decimal = Decimal(str(a.total_hours or 0))
+        final_hours = max(total_hours_decimal, calculated_hours)
 
         # ========================================================
         # UPDATED BY
@@ -280,7 +258,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
             updated_at = (
                 updated_at_dt.strftime(
-                    "%d-%m-%Y %I:%M %p"
+                    "%d %b %Y, %I:%M %p"
                 )
             )
 
@@ -290,9 +268,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
         attendance_map[a.date] = {
 
-            "hours": Decimal(
-                a.total_hours or 0
-            ),
+            "hours": final_hours,
 
             "first_punch_in": (
                 first_punch_in
@@ -300,6 +276,10 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
             "last_punch_out": (
                 last_punch_out
+            ),
+
+            "has_unclosed_punch": (
+                has_unclosed_punch
             ),
 
             "attendance_type": (
@@ -537,6 +517,13 @@ def build_employee_month_calendar(employee, start_date, end_date):
                 ]
             )
 
+            has_unclosed_punch = (
+                attendance_data.get(
+                    "has_unclosed_punch",
+                    False
+                )
+            )
+
             attendance_type = (
                 attendance_data[
                     "attendance_type"
@@ -609,7 +596,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
             elif (
                 d == today
                 and first_punch_in
-                and not last_punch_out
+                and has_unclosed_punch
             ):
 
                 status = "active"
@@ -620,7 +607,7 @@ def build_employee_month_calendar(employee, start_date, end_date):
 
             elif (
                 first_punch_in
-                and not last_punch_out
+                and has_unclosed_punch
             ):
 
                 status = "missed_punchout"
