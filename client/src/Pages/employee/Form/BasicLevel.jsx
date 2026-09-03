@@ -120,18 +120,37 @@ const [formData, setFormData] = useState({
 
     requiredFields.push(...getLegalFieldConfig(country).requiredFields);
 
+    const fieldNames = {
+      name: "employee's full name",
+      address: "full address",
+      email: "email address",
+      dob: "date of birth",
+      phno: "contact number",
+      gender: "gender",
+      designation: "designation",
+      joining_date: "joining date",
+      department_id: "department",
+      employment_type: "employment type",
+      total_leave: "total leave",
+      role: "role",
+      employee_code: "employee ID",
+      blood_group: "blood group",
+      country: "country"
+    };
+
     requiredFields.forEach((field) => {
       if (!formData[field] || !formData[field].toString().trim()) {
-        newErrors[field] = "This field is required";
+        const friendlyName = fieldNames[field];
+        newErrors[field] = friendlyName ? `Please provide the ${friendlyName}.` : "This field is required.";
       }
     });
 
     // ✅ Add these date checks:
     if (formData.dob && formData.dob >= now) {
-      newErrors.dob = "Date of birth must be in the past";
+      newErrors.dob = "Date of birth must be a past date.";
     }
     if (formData.joining_date && formData.joining_date > now) {
-      newErrors.joining_date = "Joining date cannot be in the future";
+      newErrors.joining_date = "Joining date cannot be a future date.";
     }
     Object.assign(newErrors, validateLegalIdentity(country, formData));
 

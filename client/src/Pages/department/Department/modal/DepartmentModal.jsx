@@ -567,29 +567,24 @@ const DepartmentModal = ({
           {/* =================================================
               BUTTONS
           ================================================= */}
+<ButtonRow>
+  <CancelButton
+    type="button"
+    onClick={handleClose}
+  >
+    CANCEL
+  </CancelButton>
 
-          <ButtonRow>
-
-            <CancelButton
-              type="button"
-              onClick={handleClose}
-            >
-              CANCEL
-            </CancelButton>
-
-            <SubmitButton
-              type="submit"
-              disabled={Boolean(
-                errors.departmentName ||
-                  errors.departmentCode
-              )}
-            >
-              {isEdit
-                ? "UPDATE"
-                : "CREATE"}
-            </SubmitButton>
-
-          </ButtonRow>
+  <SubmitButton
+    type="submit"
+    disabled={Boolean(
+      errors.departmentName ||
+        errors.departmentCode
+    )}
+  >
+    {isEdit ? "UPDATE" : "CREATE"}
+  </SubmitButton>
+</ButtonRow>
 
         </Form>
       </Modal>

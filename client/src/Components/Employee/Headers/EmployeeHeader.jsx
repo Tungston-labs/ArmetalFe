@@ -1,18 +1,6 @@
 import React from "react";
 import {
   Container,
-  ProfileWrapper,
-  UploadWrapper,
-  AvatarShell,
-  ProfileLabel,
-  AvatarCircle,
-  ProfileImage,
-  IconWrapper,
-  HoverOverlay,
-  CameraBadge,
-  RemoveBadge,
-  HiddenFileInput,
-  HelperText,
   InfoWrapper,
   Row,
   FieldGroup,
@@ -22,8 +10,6 @@ import {
   Select,
   ErrorText,SectionTitle
 } from "./EmployeeHeader.Styles";
-import { PiUserCirclePlusThin, PiCameraThin } from "react-icons/pi";
-import { AiOutlineClose } from "react-icons/ai";
 
 const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErrors }) => {
   const MAX_SIZE = 5 * 1024 * 1024;
@@ -54,63 +40,11 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
     setIsFormDirty(true);
   };
 
-  const removeProfilePic = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setFormData((prev) => ({ ...prev, profile_pic: null }));
-    setErrors((prev) => ({ ...prev, profile_pic: "" }));
-    setIsFormDirty(true);
-  };
+
 
   return (
     <Container>
-      {/* Profile on Top */}
-      {/* <ProfileWrapper>
-        <UploadWrapper>
-          <AvatarShell>
-            <ProfileLabel htmlFor="profile-upload">
-              <AvatarCircle>
-                {formData.profile_pic ? (
-                  <ProfileImage
-                    src={URL.createObjectURL(formData.profile_pic)}
-                    alt="Profile"
-                  />
-                ) : (
-                  <IconWrapper>
-                    <PiUserCirclePlusThin size={80} />
-                  </IconWrapper>
-                )}
-
-                <HoverOverlay>
-                  <PiCameraThin size={20} />
-                  <span>{formData.profile_pic ? "Change" : "Upload"}</span>
-                </HoverOverlay>
-              </AvatarCircle>
-            </ProfileLabel>
-
-            <CameraBadge onClick={() => document.getElementById("profile-upload").click()}>
-              <PiCameraThin size={16} />
-            </CameraBadge>
-
-            {formData.profile_pic && (
-              <RemoveBadge type="button" onClick={removeProfilePic} title="Remove photo">
-                <AiOutlineClose size={12} />
-              </RemoveBadge>
-            )}
-          </AvatarShell>
-
-          <HiddenFileInput
-            id="profile-upload"
-            type="file"
-            accept="image/*"
-            name="profile_pic"
-            onChange={handleChange}
-          />
-
-          <HelperText>JPG, PNG · Max 5 MB</HelperText>
-          {errors?.profile_pic && <ErrorText>{errors.profile_pic}</ErrorText>}
-        </UploadWrapper>
-      </ProfileWrapper> */}
+ 
             <SectionTitle>Basic Details</SectionTitle>
 
       <InfoWrapper>
@@ -178,7 +112,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           <FieldGroup>
             <FieldLabel>Contact Number</FieldLabel>
             <Input
-              type="tel"
+              type="number"
               name="phno"
               placeholder="Enter contact number"
               value={formData.phno}

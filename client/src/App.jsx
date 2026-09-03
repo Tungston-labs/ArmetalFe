@@ -110,10 +110,10 @@ function App() {
           <Route element={<RequireAuth />}>
             <Route path="/" element={<Layout />}>
               <Route index element={<HrDashboard />} />
-              <Route path="/department" element={<DepartmentList />} />
+              {/* <Route path="/department" element={<DepartmentList />} /> */}
 
-              <Route path="/departmentlist" element={<DepartmentCard />} />
-              <Route path="/departments/:id" element={<DepartmentDetails />} />
+              <Route path="/department" element={<DepartmentCard />} />
+              <Route path="/department/:id" element={<DepartmentDetails />} />
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
               <Route path="/holiday" element={<Holiday />} />

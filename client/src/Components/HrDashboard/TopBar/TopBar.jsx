@@ -139,7 +139,7 @@ const TopBar = () => {
           {/* Language */}
           <Language>
             🇬🇧 English
-            <FaChevronDown size={14} />
+            {/* <FaChevronDown size={14} /> */}
           </Language>
 
           {/* Profile */}

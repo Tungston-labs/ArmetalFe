@@ -127,7 +127,7 @@ const DepartmentCards = () => {
   // =====================================================
 
   const handleViewDepartment = (id) => {
-    navigate(`/departments/${id}`);
+    navigate(`/department/${id}`);
   };
 
   // =====================================================
@@ -364,7 +364,10 @@ const DepartmentCards = () => {
         department.todays_leave_employee_count ?? 0;
 
       return (
-        <Card key={departmentId}>
+<Card
+  key={departmentId}
+  onClick={() => handleViewDepartment(departmentId)}
+>
 
           {/* HEADER */}
           <CardHeader>
@@ -420,7 +423,7 @@ const DepartmentCards = () => {
                 {String(totalEmployees).padStart(2, "0")}
               </EmployeeNumber>
             </EmployeeCount>
-
+{/* 
             <ViewButton
               type="button"
               onClick={() =>
@@ -428,7 +431,7 @@ const DepartmentCards = () => {
               }
             >
               VIEW DEPARTMENT
-            </ViewButton>
+            </ViewButton> */}
           </CardBottom>
 
         </Card>

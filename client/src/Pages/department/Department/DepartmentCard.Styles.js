@@ -72,7 +72,11 @@ export const Card = styled.div`
 
   font-family: Arial, sans-serif;
 
-  transition: all 0.25s ease;
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 
   &:hover {
     transform: translateY(-3px);
@@ -102,13 +106,13 @@ export const CardHeader = styled.div`
 
 export const DepartmentName = styled.h3`
   margin: 0;
-  color: #202020;
+  color: #3352BA;
   line-height: 1.3;
 
   font-family: "Poppins";
 font-weight: 600;
 font-style: SemiBold;
-font-size: 14px;
+font-size: 16px;
 line-height: 18px;
 letter-spacing: 0%;
 text-transform: uppercase;
@@ -139,7 +143,7 @@ letter-spacing: 0%;
 
 export const DepartmentHead = styled.div`
   margin-bottom: 12px;
-  color: #3154d8;
+  /* color: #3154d8; */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -171,7 +175,7 @@ export const TotalEmployee = styled.div`
 font-family: "Poppins";
 font-weight: 400;
 font-style: Regular;
-font-size: 10px;
+font-size: 12px;
 line-height: 100%;
 letter-spacing: 0%;
 
@@ -211,7 +215,7 @@ export const Present = styled.span`
   font-family: "Poppins";
 font-weight: 400;
 font-style: Regular;
-font-size: 10px;
+font-size: 12px;
 line-height: 100%;
 letter-spacing: 0%;
 
@@ -233,7 +237,7 @@ export const Leave = styled.span`
   font-family: "Poppins";
 font-weight: 400;
 font-style: Regular;
-font-size: 10px;
+font-size: 12px;
 line-height: 100%;
 letter-spacing: 0%;
 

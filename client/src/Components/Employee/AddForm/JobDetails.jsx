@@ -171,25 +171,41 @@ const JobDetails = forwardRef(({ country: propCountry, departments = [], initial
       (Number(formData.other_leave) || 0);
 
     if (totalLeave === 0) {
-      newErrors.leave = "Please enter at least one leave.";
+      newErrors.leave = "Please allocate at least one leave day.";
     }
     baseRequired.push(...legalConfig.requiredFields);
 
+    const fieldNames = {
+      designation: "designation",
+      joining_date: "joining date",
+      department_id: "department",
+      employment_type: "employment type",
+      phno: "contact number",
+      email: "email address",
+      dob: "date of birth",
+      role: "role",
+      ...(legalConfig.identityField ? { [legalConfig.identityField]: `valid ${legalConfig.identityLabel?.toLowerCase() || "ID"}` } : {})
+    };
+
     baseRequired.forEach(field => {
-      if (!formData[field] || (typeof formData[field] === "string" && formData[field].trim() === "")) newErrors[field] = "This field is required";
+      if (!formData[field] || (typeof formData[field] === "string" && formData[field].trim() === "")) {
+        const friendlyName = fieldNames[field];
+        newErrors[field] = friendlyName ? `Please provide the ${friendlyName}.` : "This field is required.";
+      }
     });
     Object.assign(newErrors, validateLegalIdentity(country, formData));
+    
     if (formData.phno) {
       const phone = formData.phno.trim();
-      if (isIndiaCompany(country) && !/^[0-9]{10}$/.test(phone)) newErrors.phno = "Enter a valid 10-digit phone number";
-      else if (!isIndiaCompany(country) && !/^\+?[1-9]\d{7,14}$/.test(phone)) newErrors.phno = "Enter a valid international phone number";
+      if (isIndiaCompany(country) && !/^[0-9]{10}$/.test(phone)) newErrors.phno = "Please enter a valid 10-digit phone number.";
+      else if (!isIndiaCompany(country) && !/^\+?[1-9]\d{7,14}$/.test(phone)) newErrors.phno = "Please enter a valid international phone number.";
     }
 
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Enter a valid email";
-    if (formData.dob && formData.dob >= now) newErrors.dob = "Date of birth must be in the past";
-    if (formData.joining_date && formData.joining_date > now) newErrors.joining_date = "Joining date cannot be in the future";
-    if (formData.contract_expiry_date && formData.contract_expiry_date <= now) newErrors.contract_expiry_date = "Contract expiry must be in the future";
-    if (formData.visa_expiry_date && formData.visa_expiry_date <= now) newErrors.visa_expiry_date = "Visa expiry must be in the future";
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Please enter a valid email address.";
+    if (formData.dob && formData.dob >= now) newErrors.dob = "Date of birth must be a past date.";
+    if (formData.joining_date && formData.joining_date > now) newErrors.joining_date = "Joining date cannot be a future date.";
+    if (formData.contract_expiry_date && formData.contract_expiry_date <= now) newErrors.contract_expiry_date = "Contract expiry date must be a future date.";
+    if (formData.visa_expiry_date && formData.visa_expiry_date <= now) newErrors.visa_expiry_date = "Visa expiry date must be a future date.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
