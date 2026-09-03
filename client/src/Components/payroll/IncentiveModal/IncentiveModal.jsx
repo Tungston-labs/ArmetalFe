@@ -90,6 +90,13 @@ const IncentiveModal = ({
 
       return [...prev, employee];
     });
+
+    setErrors((prev) => {
+      if (!prev.employee) return prev;
+
+      const { employee: _employee, ...rest } = prev;
+      return rest;
+    });
   };
 
   // -----------------------------------------
@@ -250,6 +257,18 @@ const handleSave = async () => {
             {selectedEmployees.length} employee
             {selectedEmployees.length !== 1 ? "s" : ""} selected
           </SelectedCount>
+
+          {errors.employee && (
+            <p
+              style={{
+                color: "red",
+                fontSize: "12px",
+                margin: "6px 0 8px",
+              }}
+            >
+              {errors.employee}
+            </p>
+          )}
 
           <EmployeeList>
             {filteredEmployees.length > 0 ? (
