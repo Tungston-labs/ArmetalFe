@@ -82,12 +82,14 @@ def generate_attendance_excel(
 
     center_alignment = Alignment(
         horizontal="center",
-        vertical="center"
+        vertical="center",
+        wrap_text=True
     )
 
     left_alignment = Alignment(
         horizontal="left",
-        vertical="center"
+        vertical="center",
+        wrap_text=True
     )
 
     # =========================================================
@@ -268,9 +270,7 @@ def generate_attendance_excel(
 
         row += 1
 
-        # =====================================================
-        # DAILY ATTENDANCE HEADING
-        # =====================================================
+       
 
         worksheet.merge_cells(
             start_row=row,
@@ -400,24 +400,37 @@ def generate_attendance_excel(
     # COLUMN WIDTHS
     # =========================================================
 
-    widths = {
-        1: 14,   # Date
-        2: 12,   # Status
+    base_widths = {
+        1: 16,   # Date
+        2: 30,   # Status / Employee Detail Value (fits usernames/emails cleanly)
         3: 16,   # Attendance Type
-        4: 14,   # Punch In
-        5: 14,   # Punch Out
+        4: 42,   # Punch In (spacious for multiple comma-separated punch times)
+        5: 42,   # Punch Out (spacious for multiple comma-separated punch times)
         6: 14,   # Total Hours
-        7: 25,   # Note
-        8: 18,   # Updated By
+        7: 28,   # Note
+        8: 20,   # Updated By
         9: 14,   # Role
-        10: 20,  # Updated At
+        10: 24,  # Updated At ("DD MMM YYYY, HH:MM AM/PM")
     }
 
-    for column, width in widths.items():
+    # Calculate dynamic column width based on content length
+    for col_idx in range(1, TABLE_COLUMN_COUNT + 1):
+        col_letter = get_column_letter(col_idx)
+        max_content_length = 0
 
-        worksheet.column_dimensions[
-            get_column_letter(column)
-        ].width = width
+        for row_idx in range(1, worksheet.max_row + 1):
+            cell = worksheet.cell(row=row_idx, column=col_idx)
+            # Skip merged title and banner rows
+            if cell.coordinate in worksheet.merged_cells:
+                continue
+            val = cell.value
+            if val:
+                val_str = str(val)
+                if "MONTHLY ATTENDANCE REPORT" not in val_str and "Daily Attendance" not in val_str:
+                    max_content_length = max(max_content_length, len(val_str))
+
+        default_width = base_widths.get(col_idx, 16)
+        worksheet.column_dimensions[col_letter].width = max(default_width, max_content_length + 3)
 
     # =========================================================
     # ROW HEIGHT
