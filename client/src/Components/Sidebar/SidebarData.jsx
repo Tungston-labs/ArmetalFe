@@ -48,7 +48,7 @@ const getSidebarData = (user) => {
     }
 
     if (modules.department) {
-      items.push({ title: "DEPARTMENT", icon: <PiNetworkLight />, path: "/departmentlist" });
+      items.push({ title: "DEPARTMENT", icon: <PiNetworkLight />, path: "/department" });
     }
 
     if (modules.employee) {

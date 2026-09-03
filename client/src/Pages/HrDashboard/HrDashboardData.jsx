@@ -42,7 +42,7 @@ export const getDashboardStats = (data = {}) => [
 
   {
     id: 4,
-    title: "Leave Requests",
+    title: "Leave Count",
     value: data.pending_leave_requests ?? 0,
     icon: <AiOutlineFileText />,
     iconBg: "#FEF2F2",
@@ -66,7 +66,7 @@ export const getDashboardStats = (data = {}) => [
 
   {
     id: 6,
-    title: "Visa",
+    title: "Visa Expiry",
     value: data.expiry_count ?? 0,
     icon: <AiOutlineFileText />,
     iconBg: "#FEF2F2",

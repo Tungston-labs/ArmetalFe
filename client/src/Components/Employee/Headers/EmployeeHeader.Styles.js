@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div`
   width: 100%;
   margin: auto;
-  margin-top:15px
+  /* margin-top:15px */
   // padding: 20px;
 `;
 
@@ -170,12 +170,20 @@ export const FieldLabel = styled.label`
   font-weight: 500;
   color: #172554;
   font-family: "Poppins";
-font-weight: 400;
-font-style: Regular;
-font-size: 14px;
-line-height: 100%;
-letter-spacing: 0%;
+  font-weight: 400;
+  font-style: Regular;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
 
+  ${(props) =>
+    props.$required &&
+    `
+      &::after {
+        content: " *";
+        color: #ef4444;
+      }
+    `}
 `;
 
 export const Input = styled.input`
@@ -234,3 +242,4 @@ letter-spacing: 0%;
   // border-bottom: 2px solid #e2e8f0;
   // padding-bottom: 8px;
 `;
+

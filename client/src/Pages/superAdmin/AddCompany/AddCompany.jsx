@@ -330,7 +330,25 @@ const AddCompany = () => {
     setFormData((prev) => ({ ...prev, logo: file }));
     setLogoPreview(URL.createObjectURL(file));
   };
+const handleRemoveLogo = () => {
+  setFormData((prev) => ({
+    ...prev,
+    logo: null,
+  }));
 
+  setLogoPreview(null);
+
+  // Reset the file input so the same file can be selected again
+  if (fileInputRef.current) {
+    fileInputRef.current.value = "";
+  }
+
+  // Clear logo validation error
+  setFormErrors((prev) => ({
+    ...prev,
+    logo: undefined,
+  }));
+};
   const handleHrToggle = () => {
     setHrOpen((prev) => !prev);
     setFormData((prev) => ({

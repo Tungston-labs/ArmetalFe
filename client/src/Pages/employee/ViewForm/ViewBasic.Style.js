@@ -77,7 +77,7 @@ export const ResponsiveH3 = styled.h3`
 export const Card = styled.div`
   background: #fff;
   border-radius: 8px;
-  padding: 20px;
+  /* padding: 20px; */
   /* margin-bottom: 20px; */
 `;
 

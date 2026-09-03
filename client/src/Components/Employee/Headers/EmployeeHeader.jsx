@@ -1,18 +1,6 @@
 import React from "react";
 import {
   Container,
-  ProfileWrapper,
-  UploadWrapper,
-  AvatarShell,
-  ProfileLabel,
-  AvatarCircle,
-  ProfileImage,
-  IconWrapper,
-  HoverOverlay,
-  CameraBadge,
-  RemoveBadge,
-  HiddenFileInput,
-  HelperText,
   InfoWrapper,
   Row,
   FieldGroup,
@@ -20,10 +8,12 @@ import {
   Input,
   TextArea,
   Select,
-  ErrorText,SectionTitle
+  ErrorText,
+  SectionTitle,
 } from "./EmployeeHeader.Styles";
-import { PiUserCirclePlusThin, PiCameraThin } from "react-icons/pi";
-import { AiOutlineClose } from "react-icons/ai";
+
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
 const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErrors }) => {
   const MAX_SIZE = 5 * 1024 * 1024;
@@ -49,75 +39,42 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
       setFormData((prev) => ({ ...prev, [name]: file }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
+
+      // Clear any existing email error while the user is still typing.
+      // Actual validation happens on blur (see handleBlur below).
+      if (name === "email" && errors?.email) {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
     }
 
     setIsFormDirty(true);
   };
 
-  const removeProfilePic = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setFormData((prev) => ({ ...prev, profile_pic: null }));
-    setErrors((prev) => ({ ...prev, profile_pic: "" }));
-    setIsFormDirty(true);
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "email") {
+      if (!value.trim()) {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      } else if (!EMAIL_REGEX.test(value.trim())) {
+        setErrors((prev) => ({
+          ...prev,
+          email: "Please enter a valid email address (e.g. name@example.com).",
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
+    }
   };
 
   return (
     <Container>
-      {/* Profile on Top */}
-      {/* <ProfileWrapper>
-        <UploadWrapper>
-          <AvatarShell>
-            <ProfileLabel htmlFor="profile-upload">
-              <AvatarCircle>
-                {formData.profile_pic ? (
-                  <ProfileImage
-                    src={URL.createObjectURL(formData.profile_pic)}
-                    alt="Profile"
-                  />
-                ) : (
-                  <IconWrapper>
-                    <PiUserCirclePlusThin size={80} />
-                  </IconWrapper>
-                )}
-
-                <HoverOverlay>
-                  <PiCameraThin size={20} />
-                  <span>{formData.profile_pic ? "Change" : "Upload"}</span>
-                </HoverOverlay>
-              </AvatarCircle>
-            </ProfileLabel>
-
-            <CameraBadge onClick={() => document.getElementById("profile-upload").click()}>
-              <PiCameraThin size={16} />
-            </CameraBadge>
-
-            {formData.profile_pic && (
-              <RemoveBadge type="button" onClick={removeProfilePic} title="Remove photo">
-                <AiOutlineClose size={12} />
-              </RemoveBadge>
-            )}
-          </AvatarShell>
-
-          <HiddenFileInput
-            id="profile-upload"
-            type="file"
-            accept="image/*"
-            name="profile_pic"
-            onChange={handleChange}
-          />
-
-          <HelperText>JPG, PNG · Max 5 MB</HelperText>
-          {errors?.profile_pic && <ErrorText>{errors.profile_pic}</ErrorText>}
-        </UploadWrapper>
-      </ProfileWrapper> */}
-            <SectionTitle>Basic Details</SectionTitle>
+      <SectionTitle>Basic Details</SectionTitle>
 
       <InfoWrapper>
-
         <Row>
           <FieldGroup>
-            <FieldLabel>Name</FieldLabel>
+            <FieldLabel $required>Name</FieldLabel>
             <Input
               type="text"
               name="name"
@@ -130,26 +87,27 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Email</FieldLabel>
+            <FieldLabel $required>Email</FieldLabel>
             <Input
               type="email"
               name="email"
               placeholder="Enter email address"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               autoComplete="off"
             />
             {errors?.email && <ErrorText>{errors.email}</ErrorText>}
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Date of Birth</FieldLabel>
+            <FieldLabel $required>Date of Birth</FieldLabel>
             <Input type="date" name="dob" value={formData.dob} onChange={handleChange} />
             {errors?.dob && <ErrorText>{errors.dob}</ErrorText>}
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Employee ID</FieldLabel>
+            <FieldLabel $required>Employee ID</FieldLabel>
             <Input
               type="text"
               name="employee_code"
@@ -162,7 +120,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Gender</FieldLabel>
+            <FieldLabel $required>Gender</FieldLabel>
             <Select name="gender" value={formData.gender} onChange={handleChange}>
               <option value="">Select Gender</option>
               <option>Male</option>
@@ -173,12 +131,11 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
         </Row>
 
-        {/* Row 2: Contact Number, Address, Country, Blood Group */}
         <Row>
           <FieldGroup>
-            <FieldLabel>Contact Number</FieldLabel>
+            <FieldLabel $required>Contact Number</FieldLabel>
             <Input
-              type="tel"
+              type="number"
               name="phno"
               placeholder="Enter contact number"
               value={formData.phno}
@@ -189,7 +146,7 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-            <FieldLabel>Address</FieldLabel>
+            <FieldLabel $required>Address</FieldLabel>
             <Input
               name="address"
               placeholder="Enter full address"
@@ -201,44 +158,37 @@ const EmployeeHeader = ({ formData, setFormData, setIsFormDirty, errors, setErro
           </FieldGroup>
 
           <FieldGroup>
-  <FieldLabel>Country</FieldLabel>
+            <FieldLabel $required>Country</FieldLabel>
+            <Input
+              type="text"
+              name="country"
+              placeholder="Enter country"
+              value={formData.country}
+              onChange={handleChange}
+              autoComplete="off"
+            />
+            {errors?.country && <ErrorText>{errors.country}</ErrorText>}
+          </FieldGroup>
 
-  <Input
-    type="text"
-    name="country"
-    placeholder="Enter country"
-    value={formData.country}
-    onChange={handleChange}
-    autoComplete="off"
-  />
-
-  {errors?.country && (
-    <ErrorText>{errors.country}</ErrorText>
-  )}
-</FieldGroup>
-       <FieldGroup>
-  <FieldLabel>Blood Group</FieldLabel>
-
-  <Select
-    name="blood_group"
-    value={formData.blood_group}
-    onChange={handleChange}
-  >
-    <option value="">Select Blood Group</option>
-    <option>A+</option>
-    <option>A-</option>
-    <option>B+</option>
-    <option>B-</option>
-    <option>AB+</option>
-    <option>AB-</option>
-    <option>O+</option>
-    <option>O-</option>
-  </Select>
-
-  {errors?.blood_group && (
-    <ErrorText>{errors.blood_group}</ErrorText>
-  )}
-</FieldGroup>
+          <FieldGroup>
+            <FieldLabel $required>Blood Group</FieldLabel>
+            <Select
+              name="blood_group"
+              value={formData.blood_group}
+              onChange={handleChange}
+            >
+              <option value="">Select Blood Group</option>
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+              <option>O+</option>
+              <option>O-</option>
+            </Select>
+            {errors?.blood_group && <ErrorText>{errors.blood_group}</ErrorText>}
+          </FieldGroup>
         </Row>
       </InfoWrapper>
     </Container>

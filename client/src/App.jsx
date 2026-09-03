@@ -65,8 +65,6 @@ import DepartmentCard from "./Pages/department/Department/DepartmentCard.jsx";
 import DepartmentDetails from "./Pages/department/Department/DepartmentDetails.jsx";
 import ReimbursementCards from "./Pages/reimbursement/ReimbursementCards.jsx";
 import ReimbursementDetails from "./Pages/reimbursement/ReimbursementDetails.jsx";
-import EmployeeForm from "./Pages/employee/AddEmployee/BasicDetails/EmployeeForm.jsx";
-import BankDetailsForm from "./Pages/employee/AddEmployee/Bank/Bankdetailsform.jsx";
 import TrackingList from "./Pages/Attendance/TrackingList.jsx";
 import ForgetPasswordScreen from "./Pages/login/Login/Forgetpasswordscreen.jsx";
 import OtpScreen from "./Pages/login/Login/Otpscreen.jsx";
@@ -110,10 +108,10 @@ function App() {
           <Route element={<RequireAuth />}>
             <Route path="/" element={<Layout />}>
               <Route index element={<HrDashboard />} />
-              <Route path="/department" element={<DepartmentList />} />
+              {/* <Route path="/department" element={<DepartmentList />} /> */}
 
-              <Route path="/departmentlist" element={<DepartmentCard />} />
-              <Route path="/departments/:id" element={<DepartmentDetails />} />
+              <Route path="/department" element={<DepartmentCard />} />
+              <Route path="/department/:id" element={<DepartmentDetails />} />
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
               <Route path="/holiday" element={<Holiday />} />
@@ -148,8 +146,6 @@ function App() {
               <Route path="/ViewBasic/:id/bank" element={<ViewBankpayment />} />
               <Route path="/ViewBasic/:id/documents" element={<ViewDocument />} />
 
-              <Route path="/add-employee" element={<EmployeeForm />} />
-              <Route path="/bank" element={<BankDetailsForm />} />
               <Route path="/ReimbursementCards" element={<ReimbursementCards />} />
               <Route path="/reimbursements/:id" element={<ReimbursementDetails />} />
               <Route path="/reimbursement" element={<ReimbursementList />} />

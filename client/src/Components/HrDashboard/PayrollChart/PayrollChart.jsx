@@ -73,7 +73,7 @@ const PayrollChart = ({ apiData, selectedYear, onYearChange }) => {
     <Card>
       <Container>
         <CardHeader
-          title="Payroll Category"
+          title="Payroll Summary"
           control={
             <>
               <LegendContainer>
@@ -93,11 +93,11 @@ const PayrollChart = ({ apiData, selectedYear, onYearChange }) => {
                 </LegendItem>
               </LegendContainer>
 
-              <Dropdown
+              {/* <Dropdown
                 label={String(selectedYear)}
                 options={yearOptions.map((y) => ({ label: String(y), value: y }))}
                 onSelect={(option) => onYearChange(option.value)}
-              />
+              /> */}
             </>
           }
         />

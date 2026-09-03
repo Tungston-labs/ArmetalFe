@@ -175,71 +175,108 @@ export const Select = styled.select`
       0 0 0 2px rgba(53, 89, 189, 0.08);
   }
 `;
-
 export const ButtonRow = styled.div`
   display: flex;
-
   align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #eef0f4;
 
-  gap: 8px;
-
-  margin-top: 12px;
+  @media (max-width: 480px) {
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 14px;
+  }
 `;
 
 export const CancelButton = styled.button`
-  height: 30px;
+  min-width: 82px;
+  height: 34px;
+  padding: 0 16px;
 
-  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  border: none;
+  border: 1px solid #d9dee8;
+  border-radius: 6px;
 
-  border-radius: 3px;
+  background: #ffffff;
+  color: #6b7280;
 
-  background: #3559bd;
-
-  color: #ffffff;
-
+  font-family: "Poppins", sans-serif;
   font-size: 10px;
-
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 
   cursor: pointer;
 
-  transition: 0.2s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: #294aa5;
+    background: #f3f5f8;
+    border-color: #c5cad4;
+    color: #374151;
+  }
+
+  &:active {
+    transform: scale(0.97);
   }
 `;
 
 export const SubmitButton = styled.button`
-  height: 30px;
+  min-width: 82px;
+  height: 34px;
+  padding: 0 18px;
 
-  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   border: none;
+  border-radius: 6px;
 
-  border-radius: 3px;
-
-  background: #ef7d22;
-
+  background: #3559bd;
   color: #ffffff;
 
+  font-family: "Poppins", sans-serif;
   font-size: 10px;
-
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 
   cursor: pointer;
 
-  transition: 0.2s ease;
+  box-shadow: 0 2px 6px rgba(53, 89, 189, 0.18);
 
-  &:hover {
-    background: #d96812;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: #294aa5;
+    box-shadow: 0 4px 10px rgba(53, 89, 189, 0.25);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    background: #c8cdd6;
+    color: #ffffff;
+    cursor: not-allowed;
+    box-shadow: none;
   }
 `;
+
 export const ErrorMessage = styled.span`
   display: block;
-  margin-top: 5px;
-  font-size: 12px;
-  color: #ef4444;
+  margin-top: 6px;
+
+  color: #dc2626;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 15px;
 `;

@@ -1,281 +1,187 @@
 import React from "react";
-import { GoArrowLeft } from "react-icons/go";
 
 import {
-  ProfileContainer,
-  ProfileCard,
-  ProfileCardBody,
-  ContentArea,
-  InputField,
-  InputLabel,
-  InputBox,
-  BackArrowWrapper,
-} from "./Header.Styles";
-
+  Container,
+  InfoWrapper,
+  Row,
+  FieldGroup,
+  FieldLabel,
+  Input,
+  TextArea,
+  Select,
+  ErrorText,
+  SectionTitle,
+} from "./EmployeeHeader.Styles";
 import Stepper from "./Stepper";
 
-const Header = ({
+const EmployeeHeader = ({
   employee = {},
-  editable = false,
+  editable,
   onChange,
   onImageChange,
-  onBack,
-  currentStep = 1,
-  steps = ["Basic Details", "Bank Details", "Documents"],
+  errors,
 }) => {
-  /* =====================================================
-     DATE FORMAT
-  ====================================================== */
-
-  const formatDate = (date) => {
-    if (!date) return "-";
-
-    const d = new Date(date);
-
-    const day = String(
-      d.getDate()
-    ).padStart(2, "0");
-
-    const month = d.toLocaleString(
-      "en-US",
-      {
-        month: "short",
-      }
-    );
-
-    const year = d.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
-
   return (
-    <ProfileContainer>
-      <ProfileCard>
+    <Container>
+      <Stepper
+        currentStep={1}
+        editable={editable}
+        profileImageSrc={
+          employee.profile_pic instanceof File
+            ? URL.createObjectURL(employee.profile_pic)
+            : employee.profile_pic
+        }
+        onProfileImageChange={(file) => onImageChange?.(file)}
+      />
 
-        {/* =====================================================
-            GRADIENT STEPPER — avatar + step track,
-            corners square on the bottom so it sits flush
-            against the card body below it
-        ====================================================== */}
+      <SectionTitle>Basic Details</SectionTitle>
 
-        <Stepper
-          embedded
-          currentStep={currentStep}
-          steps={steps}
-          profileImageSrc={
-            employee?.profile_pic || null
-          }
-          editable={editable}
-          onProfileImageChange={
-            onImageChange
-          }
-        />
+      <InfoWrapper>
+        {/* ROW 1 */}
+        <Row>
+          <FieldGroup>
+            <FieldLabel>Name</FieldLabel>
+            <Input
+              type="text"
+              name="name"
+              placeholder="Enter full name"
+              value={employee.name || ""}
+              onChange={onChange}
+              autoComplete="off"
+              $error={Boolean(errors?.name)}
+            />
+            {errors?.name && <ErrorText>{errors.name}</ErrorText>}
+          </FieldGroup>
 
-        <ProfileCardBody>
+          <FieldGroup>
+            <FieldLabel>Email</FieldLabel>
+            <Input
+              type="email"
+              name="email"
+              placeholder="Enter email address"
+              value={employee.email || ""}
+              onChange={onChange}
+              autoComplete="off"
+              $error={Boolean(errors?.email)}
+            />
+            {errors?.email && <ErrorText>{errors.email}</ErrorText>}
+          </FieldGroup>
 
-          {/* =====================================================
-              BACK BUTTON
-          ====================================================== */}
+          <FieldGroup>
+            <FieldLabel>Date of Birth</FieldLabel>
+            <Input
+              type="date"
+              name="dob"
+              value={employee.dob || ""}
+              onChange={onChange}
+              $error={Boolean(errors?.dob)}
+            />
+            {errors?.dob && <ErrorText>{errors.dob}</ErrorText>}
+          </FieldGroup>
 
-          {onBack && (
-            <BackArrowWrapper onClick={onBack}>
-              <GoArrowLeft size={20} />
-            </BackArrowWrapper>
-          )}
+          <FieldGroup>
+            <FieldLabel>Employee ID</FieldLabel>
+            <Input
+              type="text"
+              name="employee_code"
+              placeholder="Enter employee ID"
+              value={employee.employee_code || ""}
+              onChange={onChange}
+              autoComplete="off"
+              $error={Boolean(errors?.employee_code)}
+            />
+            {errors?.employee_code && (
+              <ErrorText>{errors.employee_code}</ErrorText>
+            )}
+          </FieldGroup>
 
-          {/* =====================================================
-              EMPLOYEE INFORMATION
-          ====================================================== */}
+          <FieldGroup>
+            <FieldLabel>Gender</FieldLabel>
+            <Select
+              name="gender"
+              value={employee.gender || ""}
+              onChange={onChange}
+              $error={Boolean(errors?.gender)}
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </Select>
+            {errors?.gender && <ErrorText>{errors.gender}</ErrorText>}
+          </FieldGroup>
+        </Row>
 
-          <ContentArea>
+        {/* ROW 2 */}
+        <Row>
+          <FieldGroup>
+            <FieldLabel>Contact Number</FieldLabel>
+            <Input
+              type="tel"
+              name="phno"
+              placeholder="Enter contact number"
+              value={employee.phno || ""}
+              onChange={onChange}
+              autoComplete="off"
+              $error={Boolean(errors?.phno)}
+            />
+            {errors?.phno && <ErrorText>{errors.phno}</ErrorText>}
+          </FieldGroup>
 
-            {/* ================= NAME ================= */}
+          <FieldGroup>
+            <FieldLabel>Address</FieldLabel>
+            <Input
+              type="text"
+              name="address"
+              placeholder="Enter full address"
+              value={employee.address || ""}
+              onChange={onChange}
+              autoComplete="off"
+              $error={Boolean(errors?.address)}
+            />
+            {errors?.address && <ErrorText>{errors.address}</ErrorText>}
+          </FieldGroup>
 
-            <InputField>
-              <InputLabel>
-                Name
-              </InputLabel>
+          <FieldGroup>
+            <FieldLabel>Country</FieldLabel>
+            <Input
+              type="text"
+              name="country"
+              placeholder="Enter country"
+              value={employee.country || ""}
+              onChange={onChange}
+              autoComplete="off"
+              $error={Boolean(errors?.country)}
+            />
+            {errors?.country && <ErrorText>{errors.country}</ErrorText>}
+          </FieldGroup>
 
-              <InputBox
-                type="text"
-                name="name"
-                value={employee.name || ""}
-                readOnly={!editable}
-                onChange={onChange}
-                autoComplete="off"
-              />
-            </InputField>
-
-            {/* ================= EMAIL ================= */}
-
-            <InputField>
-              <InputLabel>
-                Email
-              </InputLabel>
-
-              <InputBox
-                type="email"
-                name="email"
-                value={employee.email || ""}
-                readOnly={!editable}
-                onChange={onChange}
-                autoComplete="off"
-              />
-            </InputField>
-
-            {/* ================= DATE OF BIRTH ================= */}
-
-            <InputField>
-              <InputLabel>
-                Date of Birth
-              </InputLabel>
-
-              <InputBox
-                type={editable ? "date" : "text"}
-                name="dob"
-                value={
-                  editable
-                    ? employee.dob
-                      ? employee.dob.split("T")[0]
-                      : ""
-                    : formatDate(employee.dob)
-                }
-                readOnly={!editable}
-                onChange={onChange}
-              />
-            </InputField>
-
-            {/* ================= EMPLOYEE ID ================= */}
-
-            <InputField>
-              <InputLabel>
-                Employee ID
-              </InputLabel>
-
-              <InputBox
-                type="text"
-                name="employee_id"
-                value={
-                  employee.employee_id || ""
-                }
-                readOnly={!editable}
-                onChange={onChange}
-                autoComplete="off"
-              />
-            </InputField>
-
-            {/* ================= GENDER ================= */}
-
-            <InputField>
-              <InputLabel>
-                Gender
-              </InputLabel>
-
-              <InputBox
-                type="text"
-                name="gender"
-                value={employee.gender || ""}
-                readOnly={!editable}
-                onChange={onChange}
-              />
-            </InputField>
-
-            {/* ================= CONTACT NUMBER ================= */}
-
-            <InputField>
-              <InputLabel>
-                Contact Number
-              </InputLabel>
-
-              <InputBox
-                type="tel"
-                name="phno"
-                value={
-                  employee.phno ||
-                  employee.phno ||
-                  ""
-                }
-                readOnly={!editable}
-                onChange={onChange}
-                autoComplete="off"
-              />
-            </InputField>
-
-            {/* ================= ADDRESS ================= */}
-
-            <InputField $fullWidth>
-              <InputLabel>
-                Address
-              </InputLabel>
-
-              <InputBox
-                type="text"
-                name="address"
-                value={employee.address || ""}
-                readOnly={!editable}
-                onChange={onChange}
-                autoComplete="off"
-              />
-            </InputField>
-
-            {/* ================= COUNTRY ================= */}
-
-            <InputField>
-              <InputLabel>
-                Country
-              </InputLabel>
-
-              <InputBox
-                type="text"
-                name="country"
-                value={employee.country || ""}
-                readOnly={!editable}
-                onChange={onChange}
-                autoComplete="off"
-              />
-            </InputField>
-
-            {/* ================= BLOOD GROUP ================= */}
-
-    {/* ================= BLOOD GROUP ================= */}
-
-<InputField>
-  <InputLabel>
-    Blood Group
-  </InputLabel>
-
-  {editable ? (
-    <InputBox
-      as="select"
-      name="blood_group"
-      value={employee.blood_group || ""}
-      onChange={onChange}
-    >
-      <option value="">Select Blood Group</option>
-      <option value="A+">A+</option>
-      <option value="A-">A-</option>
-      <option value="B+">B+</option>
-      <option value="B-">B-</option>
-      <option value="AB+">AB+</option>
-      <option value="AB-">AB-</option>
-      <option value="O+">O+</option>
-      <option value="O-">O-</option>
-    </InputBox>
-  ) : (
-    <InputBox
-      type="text"
-      name="blood_group"
-      value={employee.blood_group || "-"}
-      readOnly
-    />
-  )}
-</InputField>
-
-          </ContentArea>
-        </ProfileCardBody>
-      </ProfileCard>
-    </ProfileContainer>
+          <FieldGroup>
+            <FieldLabel>Blood Group</FieldLabel>
+            <Select
+              name="blood_group"
+              value={employee.blood_group || ""}
+              onChange={onChange}
+              $error={Boolean(errors?.blood_group)}
+            >
+              <option value="">Select Blood Group</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </Select>
+            {errors?.blood_group && (
+              <ErrorText>{errors.blood_group}</ErrorText>
+            )}
+          </FieldGroup>
+        </Row>
+      </InfoWrapper>
+    </Container>
   );
 };
 
-export default Header;
+export default EmployeeHeader;

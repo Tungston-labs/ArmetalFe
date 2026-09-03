@@ -34,13 +34,8 @@ import {
 import {
   FiUsers,
   FiUserCheck,
-  FiUserX,
-  FiCalendar,
+  FiHash,
 } from "react-icons/fi";
-
-import {
-  DepartmentHeadLabel,
-} from "./DepartmentDetails.styles";
 
 
 const DepartmentDetails = () => {
@@ -207,19 +202,11 @@ const {
           slNo: index + 1,
 
           id: employeeId,
-          name: (
-            <div>
-              <div>
-                {employeeName}
-              </div>
-
-              {isDepartmentHead && (
-                <DepartmentHeadLabel>
-                  Department Head
-                </DepartmentHeadLabel>
-              )}
-            </div>
-          ),
+         name: (
+  <div>
+    <div>{employeeName}</div>
+  </div>
+),
 
           /*
            * Keep a normal searchable value.
@@ -342,75 +329,61 @@ const {
   // DEPARTMENT STATS
   // =========================================================
 
-  const departmentCards =
-    useMemo(() => {
+const departmentCards = useMemo(() => {
+  const departmentCode =
+    currentDepartment?.department_code || "-";
 
-      const totalEmployees =
-        Number(
-          currentDepartment?.employee_count
-        ) || 0;
+  const departmentHead =
+    currentDepartment?.department_head;
 
+  const departmentHeadName =
+    typeof departmentHead === "object"
+      ? departmentHead?.name ||
+        departmentHead?.full_name ||
+        "-"
+      : departmentHead
+      ? String(departmentHead)
+      : "-";
 
-      const presentEmployees =
-        Number(
-          currentDepartment
-            ?.attendance_employee_count
-        ) || 0;
+  const totalEmployees =
+    Number(currentDepartment?.employee_count) || 0;
 
+  const leaveEmployees =
+    Number(
+      currentDepartment?.todays_leave_employee_count
+    ) || 0;
 
-      const leaveEmployees =
-        Number(
-          currentDepartment
-            ?.todays_leave_employee_count
-        ) || 0;
-
-
-      const absentEmployees =
-        Math.max(
-          totalEmployees -
-            presentEmployees -
-            leaveEmployees,
-          0
-        );
-
-
-      return [
-        {
-          title: "Total Employees",
-          count: totalEmployees,
-          icon: <FiUsers />,
-          backgroundColor: "#E8F1FF",
-          iconColor: "#2878FF",
-        },
-
-        {
-          title: "Present",
-          count: presentEmployees,
-          icon: <FiUserCheck />,
-          backgroundColor: "#E9F9EF",
-          iconColor: "#16A34A",
-        },
-
-        {
-          title: "Absent",
-          count: absentEmployees,
-          icon: <FiUserX />,
-          backgroundColor: "#FFF0F0",
-          iconColor: "#EF4444",
-        },
-
-        {
-          title: "On Leave",
-          count: leaveEmployees,
-          icon: <FiCalendar />,
-          backgroundColor: "#FFF6E5",
-          iconColor: "#F59E0B",
-        },
-      ];
-
-    }, [
-      currentDepartment,
-    ]);
+  return [
+    {
+    title: "Department Code",
+    count: departmentCode,
+    icon: <FiHash />,
+    backgroundColor: "#E8F1FF",
+    iconColor: "#2878FF",
+  },
+     {
+    title: "Department Head",
+    count: departmentHeadName,
+    icon: <FiUserCheck />,
+    backgroundColor: "#E9F9EF",
+    iconColor: "#16A34A",
+  },
+    {
+    title: "Total Employees",
+    count: totalEmployees,
+    icon: <FiUsers />,
+    backgroundColor: "#FFF6E5",
+    iconColor: "#F59E0B",
+  },
+  //  {
+  //   title: "On Leave",
+  //   count: leaveEmployees,
+  //   icon: <FiCalendar />,
+  //   backgroundColor: "#FFF6E5",
+  //   iconColor: "#F59E0B",
+  // },
+  ];
+}, [currentDepartment]);
 
 
   // =========================================================

@@ -7,7 +7,7 @@ import styled from "styled-components";
 export const StepperHeader = styled.div`
   display: flex;
   align-items: center;
-
+margin-bottom: 30px;
   gap: 24px;
 
   padding: 0 32px;
