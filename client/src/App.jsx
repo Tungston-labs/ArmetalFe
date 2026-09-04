@@ -2,12 +2,12 @@ import { Route, Routes } from "react-router-dom";
 import "./index.css";
 import LoginForm from "./Pages/login/Loginscreen.jsx";
 import Layout from "./Components/layout/Layout.jsx";
-import DepartmentList from "./Pages/department/DepartmentList";
+// import DepartmentList from "./Pages/department/DepartmentList";
 import EmployeeList from "./Pages/employee/EmployeeList.jsx";
 import Holiday from "./Pages/holiday/Holiday.jsx";
 // import SuperAdmin from "./Pages/superAdmin/SuperAdmin.jsx";
 // import AddCompany from "./Pages/superAdmin/AddCompany.jsx";
-import Visa from "./Pages/visa/Visa.jsx";
+// import Visa from "./Pages/visa/Visa.jsx";
 import BasicLevel from "./Pages/employee/Form/BasicLevel.jsx";
 import BankPayment from "./Pages/employee/Form/BankPayment.jsx";
 import Documents from "./Pages/employee/Form/Documents.jsx";
@@ -18,7 +18,7 @@ import EmployeesOnLeave from "./Pages/onLeave/EmployeesOnLeave.jsx";
 import ViewBasic from "./Pages/employee/ViewForm/ViewBasic.jsx"
 import ViewBankpayment from "./Pages/employee/ViewForm/ViewBankpayment.jsx"
 import ViewDocument from "./Pages/employee/ViewForm/ViewDocument.jsx"
-import Payroll1 from "./Pages/payroll/PaymentOverview.jsx";
+// import Payroll1 from "./Pages/payroll/PaymentOverview.jsx";
 import RequireAuth from "./Components/RequireAuth.jsx";
 import Viewpage from "./Pages/superAdmin/Viewpage.jsx";
 // import ForgetPassword from "./Pages/login/ForgetPassword.jsx";
@@ -28,24 +28,24 @@ import Loder from "./Components/Loader/Loder.jsx";
 import LeaveList from "./Pages/onLeave/LeaveList.jsx";
 import DetailOnleave from "./Pages/onLeave/DetailOnleave.jsx"
 import DashboardNew from "./Pages/dashboard/DashboardNew.jsx";
-import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
+// import Reimb_info from "./Pages/reimbursement/Reimb_info.jsx"
 import FinancePage from "./Pages/finance/FinancePage.jsx"
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./Redux/authSlice";
 import Superadmin_Dashboard from "./Pages/superAdmin/Superadmin_Dashboard.jsx"
-import FieldShift from "./Pages/Project/Project.jsx"
+// import FieldShift from "./Pages/Project/Project.jsx"
 // import FieldDepartment from "./Pages/Project/ProjectInfo.jsx"
 import AttendanceList from "./Pages/Attendance/AttendanceList.jsx"
-import ReimbursementList from "./Pages/reimbursement/ReimbursementList.jsx";
+// import ReimbursementList from "./Pages/reimbursement/ReimbursementList.jsx";
 import Daily from "./Pages/dailytask/DailyTask.jsx"
 import ViewLayout from "./Pages/employee/layout/ViewLayout.jsx";
 import HomeDashboard from "./Pages/dashboard/HomeDashboard.jsx"
 import ErrorSomething from "./Pages/error/ErrorSomething.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";
 import AttendanceReport from "./Pages/attendanceReport/AttendanceReport.jsx";
-import PayrollDetailsContainer from "./Pages/payroll/PayrollDetailsContainer.jsx";
-import PayrollTable from "./Pages/payroll/PayrollTable.jsx";
+// import PayrollDetailsContainer from "./Pages/payroll/PayrollDetailsContainer.jsx";
+// import PayrollTable from "./Pages/payroll/PayrollTable.jsx";
 import AttendanceRequestScreen from "./Pages/attendanceRequest/AttendanceRequest.jsx";
 import Table from "./Pages/Table.jsx";
 import LeaveRequestList from "./Pages/employee/LeaveRequest/LeaveRequestList.jsx";
@@ -104,7 +104,7 @@ function App() {
           {/* <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/verification" element={<Verification />} />
           <Route path="/new-password" element={<NewPassword />} /> */}
-          <Route path="/payrolls" element={<Payroll1 />} />
+          {/* <Route path="/payrolls" element={<Payroll1 />} /> */}
           <Route element={<RequireAuth />}>
             <Route path="/" element={<Layout />}>
               <Route index element={<HrDashboard />} />
@@ -115,8 +115,8 @@ function App() {
               <Route path="/employee" element={<EmployeeList />} />
               <Route path="superadmin/view/:id" element={<Viewpage />} />
               <Route path="/holiday" element={<Holiday />} />
-              <Route path="/payrolldetails/:id" element={< PayrollDetailsContainer />} />
-              <Route path="/payrolldetails" element={<PayrollTable />} />
+              {/* <Route path="/payrolldetails/:id" element={< PayrollDetailsContainer />} /> */}
+              {/* <Route path="/payrolldetails" element={<PayrollTable />} /> */}
               <Route path="/company" element={<Company />} />
               <Route path="/superadmin-dashboard" element={<Superadmin_Dashboard />} />
 
@@ -125,7 +125,7 @@ function App() {
               <Route path="/addcompany/:id" element={<AddCompany />} />
               <Route path="/add-company" element={<AddCompany />} />
               <Route path="/add-company/:id" element={<AddCompany />} />
-              <Route path="/employee-Contract-Visa-Expiry" element={<Visa />} />
+              {/* <Route path="/employee-Contract-Visa-Expiry" element={<Visa />} /> */}
               <Route path="/daily-task" element={<Daily />} />
               <Route path="/basic-details" element={<BasicLevel />} />
               <Route path="/bank-payment" element={<BankPayment />} />
@@ -148,10 +148,10 @@ function App() {
 
               <Route path="/ReimbursementCards" element={<ReimbursementCards />} />
               <Route path="/reimbursements/:id" element={<ReimbursementDetails />} />
-              <Route path="/reimbursement" element={<ReimbursementList />} />
-              <Route path="/reimbursement_info/:id" element={<Reimb_info />} />
+              {/* <Route path="/reimbursement" element={<ReimbursementList />} /> */}
+              {/* <Route path="/reimbursement_info/:id" element={<Reimb_info />} /> */}
               <Route path="/finance" element={<FinancePage />} />
-              <Route path="/project" element={<FieldShift />} />
+              {/* <Route path="/project" element={<FieldShift />} /> */}
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/:id" element={<ProjectDetails />} />
 

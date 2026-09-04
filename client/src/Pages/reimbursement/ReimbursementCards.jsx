@@ -24,7 +24,7 @@ import {
   EmptyStateIcon,
   EmptyStateTitle,
   EmptyStateText,
-} from "./ReimbursementCard.Styles";
+} from "./ReimbursementCards.Styles";
 import ReusableHeader from "../../Components/ReusableTable/ReusableHeader";
 import ReusableFilter from "../../Components/ReusableTable/ReusableFilter";
 import SkeletonCard from "../../Components/Skeleton/ SkeletonCard";
